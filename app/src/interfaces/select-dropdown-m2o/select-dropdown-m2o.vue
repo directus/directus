@@ -29,7 +29,7 @@
 
 			<template #append>
 				<template v-if="displayItem">
-					<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editModalActive = true" />
+					<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click="editModalActive = true" />
 					<v-icon
 						v-if="!disabled"
 						v-tooltip="t('deselect')"
@@ -44,7 +44,7 @@
 						v-tooltip="t('create_item')"
 						class="add"
 						name="add"
-						@click.stop="editModalActive = true"
+						@click="editModalActive = true"
 					/>
 					<v-icon v-if="enableSelect" class="expand" name="expand_more" />
 				</template>
@@ -81,8 +81,8 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/shared/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
@@ -186,6 +186,9 @@ const edits = computed(() => {
 
 function onPreviewClick() {
 	if (props.disabled) return;
+
+	// Prevent double dialog in case the edit dialog is already open
+	if (editModalActive.value === true) return;
 
 	if (props.enableSelect) {
 		selectModalActive.value = true;

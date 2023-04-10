@@ -6,4 +6,5 @@ export type Option = {
 	children?: Option[];
 	divider?: boolean;
 	selectable?: boolean;
+	hidden?: boolean;
 };

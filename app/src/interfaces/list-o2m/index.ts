@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceListO2M from './list-o2m.vue';
 import PreviewSVG from './preview.svg?raw';
 

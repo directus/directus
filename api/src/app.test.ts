@@ -1,9 +1,7 @@
 import { Router } from 'express';
 import request from 'supertest';
 import { describe, expect, test, vi } from 'vitest';
-
-import createApp from './app';
-import { ROBOTSTXT } from './constants';
+import createApp from './app.js';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),
@@ -97,7 +95,7 @@ describe('createApp', async () => {
 			const app = await createApp();
 			const response = await request(app).get('/robots.txt');
 
-			expect(response.text).toEqual(ROBOTSTXT);
+			expect(response.text).toEqual('User-agent: *\nDisallow: /');
 		});
 	});
 

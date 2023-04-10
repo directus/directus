@@ -66,6 +66,13 @@ project.
 
 ### Pull Requests
 
+Issues marked "Community" are ready to be implemented by anybody at any point! If you're looking to implement an issue that doesn't have that label, please make sure to ping the maintainers before getting started!
+
+#### Contributor License Agreement
+
+All code contributors are required to sign the Contributor License Agreement (CLA). When you start a pull request, a
+GitHub Action will prompt you to review the CLA and sign it by adding your name to contributors.yml
+
 #### Bug Fixes
 
 We treat Issues on the main repo as actionable items we want to get done. This also means that we welcome PRs for any

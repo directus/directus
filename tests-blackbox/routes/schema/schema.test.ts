@@ -4,6 +4,8 @@ import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
 import {
 	collectionAll,
+	collectionM2A,
+	collectionM2A2,
 	collectionM2M,
 	collectionM2M2,
 	collectionM2O,
@@ -12,6 +14,8 @@ import {
 	collectionO2M2,
 	collectionSelf,
 	deleteAllCollections,
+	junctionM2A,
+	junctionM2A2,
 	junctionM2M,
 	junctionM2M2,
 	junctionSelfM2M,
@@ -21,6 +25,7 @@ import { cloneDeep } from 'lodash';
 import { PrimaryKeyType, PRIMARY_KEY_TYPES } from '@common/index';
 import { load as loadYaml } from 'js-yaml';
 import { version as currentDirectusVersion } from '../../../api/package.json';
+import { v4 as uuid } from 'uuid';
 
 describe('Schema Snapshots', () => {
 	const snapshotsCacheOriginal: {
@@ -395,6 +400,249 @@ describe('Schema Snapshots', () => {
 				300000
 			);
 		});
+
+		describe('applies lhs that is not an object', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					expect(snapshotsCacheOriginal[vendor]).toBeDefined();
+
+					// Setup
+					for (const pkType of PRIMARY_KEY_TYPES) {
+						await request(getUrl(vendor))
+							.patch(`/collections/${collectionAll}_${pkType}`)
+							.send({ meta: { icon: 'abc', color: '#E35169' } })
+							.set('Content-type', 'application/json')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					}
+
+					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/schema/diff')
+						.send(snapshotsCacheOriginal[vendor])
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response = await request(getUrl(vendor))
+						.post('/schema/apply')
+						.send(responseDiff.body.data)
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(204);
+				},
+				300000
+			);
+		});
+
+		describe('applies Array type diffs', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					for (const pkType of PRIMARY_KEY_TYPES) {
+						const nameField = (
+							await request(getUrl(vendor))
+								.get(`/fields/${collectionAll}_${pkType}/name`)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						).body.data;
+
+						nameField.meta.translations = [
+							{ language: 'en-US', translation: `${pkType} name` },
+							{ language: 'nl-NL', translation: `${pkType} naam` },
+						];
+
+						await request(getUrl(vendor))
+							.patch(`/fields/${collectionAll}_${pkType}/name`)
+							.send(nameField)
+							.set('Content-type', 'application/json')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					}
+
+					const newSnapshot = (
+						await request(getUrl(vendor))
+							.get('/schema/snapshot')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					).body.data;
+
+					for (const pkType of PRIMARY_KEY_TYPES) {
+						const nameField = (
+							await request(getUrl(vendor))
+								.get(`/fields/${collectionAll}_${pkType}/name`)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						).body.data;
+
+						nameField.meta.translations = [
+							{ language: 'en-US', translation: `${pkType} name` },
+							{ language: 'es-ES', translation: `${pkType} nombre` },
+							{ language: 'nl-NL', translation: `${pkType} naam` },
+						];
+
+						await request(getUrl(vendor))
+							.patch(`/fields/${collectionAll}_${pkType}/name`)
+							.send(nameField)
+							.set('Content-type', 'application/json')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					}
+
+					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/schema/diff')
+						.send(newSnapshot)
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response = await request(getUrl(vendor))
+						.post('/schema/apply')
+						.send(responseDiff.body.data)
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(204);
+				},
+				300000
+			);
+		});
+
+		describe('applies with field meta changes', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					for (const pkType of PRIMARY_KEY_TYPES) {
+						const fields = (
+							await request(getUrl(vendor))
+								.get(`/fields/${collectionAll}_${pkType}`)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						).body.data.map((field: any) => {
+							return field.field;
+						});
+
+						fields.sort();
+
+						const payload = fields.map((field: string, index: number) => {
+							return { field, meta: { sort: index + 1 } };
+						});
+
+						await request(getUrl(vendor))
+							.patch(`/fields/${collectionAll}_${pkType}`)
+							.send(payload)
+							.set('Content-type', 'application/json')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					}
+
+					const newSnapshot = (
+						await request(getUrl(vendor))
+							.get('/schema/snapshot')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					).body.data;
+
+					for (const pkType of PRIMARY_KEY_TYPES) {
+						const fields = (
+							await request(getUrl(vendor))
+								.get(`/fields/${collectionAll}_${pkType}`)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						).body.data.map((field: any) => {
+							return field.field;
+						});
+
+						fields.sort().reverse();
+
+						const payload = fields.map((field: string, index: number) => {
+							return { field, meta: { sort: index + 1 } };
+						});
+
+						await request(getUrl(vendor))
+							.patch(`/fields/${collectionAll}_${pkType}`)
+							.send(payload)
+							.set('Content-type', 'application/json')
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+					}
+
+					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/schema/diff')
+						.send(newSnapshot)
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response = await request(getUrl(vendor))
+						.post('/schema/apply')
+						.send(responseDiff.body.data)
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(204);
+				},
+				300000
+			);
+		});
+
+		describe('confirm deletion of relational field does not nullify existing relational fields', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// TODO: Fix cockroachdb requiring schema changes to be applied first when in a transaction
+					if (vendor === 'cockroachdb') {
+						expect(true).toBe(true);
+						return;
+					}
+
+					expect(snapshotsCacheOriginal[vendor]).toBeDefined();
+
+					// Setup
+					const childrenIDs: Record<string, { id: any; m2o_id: any; o2m_id: any }> = {};
+					const tempRelationalField = 'temp_relational';
+					for (const pkType of PRIMARY_KEY_TYPES) {
+						const item = await common.CreateItem(vendor, {
+							collection: `${collectionAll}_${pkType}`,
+							item: {
+								id: pkType === 'string' ? uuid() : undefined,
+								all_id: { id: pkType === 'string' ? uuid() : undefined },
+								o2m: [{ id: pkType === 'string' ? uuid() : undefined }],
+							},
+						});
+						childrenIDs[pkType] = { id: item.id, m2o_id: item.all_id, o2m_id: item.o2m[0] };
+						await common.CreateFieldM2O(vendor, {
+							collection: `${collectionAll}_${pkType}`,
+							field: tempRelationalField,
+							otherCollection: collectionSelf,
+						});
+					}
+
+					// Action
+					const responseDiff = await request(getUrl(vendor))
+						.post('/schema/diff')
+						.send(snapshotsCacheOriginal[vendor])
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response = await request(getUrl(vendor))
+						.post('/schema/apply')
+						.send(responseDiff.body.data)
+						.set('Content-type', 'application/json')
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(204);
+					for (const pkType of PRIMARY_KEY_TYPES) {
+						const item = (
+							await request(getUrl(vendor))
+								.get(`/items/${collectionAll}_${pkType}/${childrenIDs[pkType].id}`)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+						).body.data;
+
+						expect(item.all_id).toBe(childrenIDs[pkType].m2o_id);
+						expect(item.o2m).toHaveLength(1);
+						expect(item.o2m[0]).toBe(childrenIDs[pkType].o2m_id);
+					}
+				},
+				300000
+			);
+		});
 	});
 
 	common.ClearCaches();
@@ -502,6 +750,7 @@ function parseSnapshot(vendor: string, snapshot: any) {
 async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) {
 	for (const setDefaultValues of [false, true]) {
 		const suffix = setDefaultValues ? '2' : '';
+		const responses = [];
 
 		// Setup
 		const localCollectionAll = `${collectionAll}_${pkType}${suffix}`;
@@ -509,6 +758,10 @@ async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) 
 		const localCollectionM2M2 = `${collectionM2M2}_${pkType}${suffix}`;
 		const localJunctionAllM2M = `${junctionM2M}_${pkType}${suffix}`;
 		const localJunctionM2MM2M2 = `${junctionM2M2}_${pkType}${suffix}`;
+		const localCollectionM2A = `${collectionM2A}_${pkType}${suffix}`;
+		const localCollectionM2A2 = `${collectionM2A2}_${pkType}${suffix}`;
+		const localJunctionAllM2A = `${junctionM2A}_${pkType}${suffix}`;
+		const localJunctionM2AM2A2 = `${junctionM2A2}_${pkType}${suffix}`;
 		const localCollectionM2O = `${collectionM2O}_${pkType}${suffix}`;
 		const localCollectionM2O2 = `${collectionM2O2}_${pkType}${suffix}`;
 		const localCollectionO2M = `${collectionO2M}_${pkType}${suffix}`;
@@ -516,51 +769,86 @@ async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) 
 		const localCollectionSelf = `${collectionSelf}_${pkType}${suffix}`;
 		const localJunctionSelfM2M = `${junctionSelfM2M}_${pkType}${suffix}`;
 
-		const response = await request(getUrl(vendor))
-			.get(`/items/${localJunctionSelfM2M}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response2 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionSelf}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response3 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionO2M2}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response4 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionO2M}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response5 = await request(getUrl(vendor))
-			.get(`/items/${localJunctionM2MM2M2}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response6 = await request(getUrl(vendor))
-			.get(`/items/${localJunctionAllM2M}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response7 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionM2M2}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response8 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionM2M}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response9 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionAll}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response10 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionM2O}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-		const response11 = await request(getUrl(vendor))
-			.get(`/items/${localCollectionM2O2}`)
-			.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionSelfM2M}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionSelf}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionO2M2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionO2M}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionM2AM2A2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionAllM2A}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2A2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2A}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionM2MM2M2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localJunctionAllM2M}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2M2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2M}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionAll}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2O}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
+		responses.push(
+			await request(getUrl(vendor))
+				.get(`/items/${localCollectionM2O2}`)
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+		);
 
 		// Assert
-		expect(response.statusCode).toEqual(403);
-		expect(response2.statusCode).toEqual(403);
-		expect(response3.statusCode).toEqual(403);
-		expect(response4.statusCode).toEqual(403);
-		expect(response5.statusCode).toEqual(403);
-		expect(response6.statusCode).toEqual(403);
-		expect(response7.statusCode).toEqual(403);
-		expect(response8.statusCode).toEqual(403);
-		expect(response9.statusCode).toEqual(403);
-		expect(response10.statusCode).toEqual(403);
-		expect(response11.statusCode).toEqual(403);
+		for (const response of responses) {
+			expect(response.statusCode).toEqual(403);
+		}
 	}
 }

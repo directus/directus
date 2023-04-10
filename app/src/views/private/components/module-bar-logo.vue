@@ -12,7 +12,7 @@
 			<transition name="fade">
 				<v-progress-linear v-if="showLoader" indeterminate rounded @animationiteration="stopSpinnerIfQueueIsEmpty" />
 			</transition>
-			<v-image class="custom-logo" :src="customLogoPath" alt="Project Logo" />
+			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>
 		<div v-else class="logo" :class="{ running: showLoader }" @animationiteration="stopSpinnerIfQueueIsEmpty" />
 	</component>
@@ -23,6 +23,7 @@ import { useRequestsStore } from '@/stores/requests';
 import { useSettingsStore } from '@/stores/settings';
 import { computed, defineComponent, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
 	setup() {
@@ -34,7 +35,7 @@ export default defineComponent({
 		const customLogoPath = computed<string | null>(() => {
 			if (settingsStore.settings === null) return null;
 			if (!settingsStore.settings?.project_logo) return null;
-			return '/assets/' + settingsStore.settings.project_logo;
+			return `${getRootPath()}assets/${settingsStore.settings.project_logo}`;
 		});
 
 		const showLoader = ref(false);

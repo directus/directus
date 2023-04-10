@@ -182,6 +182,7 @@ m2o_relationship: Daug su vienu sąrašis
 o2m_relationship: Vienas su daug sąryšis
 m2m_relationship: Daug su daug sąryšis
 m2a_relationship: Daug su bet kiek sąryšis
+modal: Dialogas
 next: Tęsti
 field_name: Lauko pavadinimas
 translations: Vertimai
@@ -979,6 +980,7 @@ layouts:
     comfortable: Patogus
     compact: Kompaktiškas
     cozy: Jaukus
+both: Abu
 panels:
   label:
     name: Žyma
