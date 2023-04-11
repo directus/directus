@@ -1,5 +1,6 @@
-import env from '../env';
-import { Request } from 'express';
+import type { Request } from 'express';
+import env from '../env.js';
+import { shouldSkipCache } from './should-skip-cache.js';
 
 /**
  * Returns the Cache-Control header for the current request
@@ -15,17 +16,14 @@ export function getCacheControlHeader(
 	globalCacheSettings: boolean,
 	personalized: boolean
 ): string {
-	const noCacheRequested =
-		req.headers['cache-control']?.includes('no-store') || req.headers['Cache-Control']?.includes('no-store');
-
 	// When the user explicitly asked to skip the cache
-	if (noCacheRequested) return 'no-store';
+	if (shouldSkipCache(req)) return 'no-store';
 
 	// When the resource / current request shouldn't be cached
 	if (ttl === undefined || ttl < 0) return 'no-cache';
 
 	// When the API cache can invalidate at any moment
-	if (globalCacheSettings && env.CACHE_AUTO_PURGE === true) return 'no-cache';
+	if (globalCacheSettings && env['CACHE_AUTO_PURGE'] === true) return 'no-cache';
 
 	const headerValues = [];
 
@@ -41,8 +39,8 @@ export function getCacheControlHeader(
 	headerValues.push(`max-age=${ttlSeconds}`);
 
 	// When the s-maxage flag should be included
-	if (globalCacheSettings && Number.isInteger(env.CACHE_CONTROL_S_MAXAGE) && env.CACHE_CONTROL_S_MAXAGE >= 0) {
-		headerValues.push(`s-maxage=${env.CACHE_CONTROL_S_MAXAGE}`);
+	if (globalCacheSettings && Number.isInteger(env['CACHE_CONTROL_S_MAXAGE']) && env['CACHE_CONTROL_S_MAXAGE'] >= 0) {
+		headerValues.push(`s-maxage=${env['CACHE_CONTROL_S_MAXAGE']}`);
 	}
 
 	return headerValues.join(', ');

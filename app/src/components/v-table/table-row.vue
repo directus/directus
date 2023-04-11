@@ -40,7 +40,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { ShowSelect } from '@directus/shared/types';
+import { ShowSelect } from '@directus/types';
 import { Header, Item } from './types';
 
 interface Props {

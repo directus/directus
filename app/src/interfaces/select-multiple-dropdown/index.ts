@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceSelectMultipleDropdown from './select-multiple-dropdown.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -31,6 +31,7 @@ export default defineInterface({
 								meta: {
 									width: 'half',
 									interface: 'system-input-translated-string',
+									required: true,
 									options: {
 										placeholder: '$t:interfaces.select-dropdown.choices_name_placeholder',
 									},
@@ -43,6 +44,7 @@ export default defineInterface({
 								meta: {
 									width: 'half',
 									interface: 'input',
+									required: true,
 									options: {
 										font: 'monospace',
 										placeholder: '$t:interfaces.select-dropdown.choices_value_placeholder',

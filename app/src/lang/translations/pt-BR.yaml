@@ -23,7 +23,7 @@ identifier: Identificador
 avatar: Imagem de Perfil
 application: Aplicação
 default_provider: Padrão
-method: Método 
+method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
@@ -295,6 +295,7 @@ o2m_relationship: Relacionamento Um-pra-Muitos
 m2m_relationship: Relacionamento Muitos-pra-Muitos
 m2a_relationship: Relacionamento Muitos-pra-Qualquer
 invalid_item: Item inválido
+modal: Modal
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
@@ -786,10 +787,7 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
-run_flow_on_current_collection: Executar fluxo na coleção atual
-run_flow_on_current: Executar fluxo no Item Atual
 run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
-run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow_success: Fluxo "{flow}" executado com sucesso
 trigger: Acionar
 trigger_options: Opções de ativação
@@ -1132,6 +1130,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Mapeamento
     basemaps: Basemaps
     basemaps_raster: Rasterizar
@@ -1195,7 +1194,7 @@ fields:
     module_list: Navegação do Módulo
   directus_webhooks:
     name: Nome
-    method: Método 
+    method: Método
     status: Status
     data: Dados
     header: Cabeçalho
@@ -1629,7 +1628,6 @@ interfaces:
   system-folder:
     folder: Pasta
     description: Selecionar uma pasta
-    field_hint: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:
@@ -1642,7 +1640,6 @@ interfaces:
     add_label: 'Texto de "Criar Novo"'
     sort: Ordenar
     sort_placeholder: Manual
-    field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira a nota de campo...
     incompatible_data: Os dados atuais não são compatíveis com a interface de repetição e serão substituídos ao adicionar novos itens
   slider:
@@ -1914,7 +1911,7 @@ panels:
     select_collection: Você deve selecionar uma coleção.
 triggers:
   webhook:
-    method: Método 
+    method: Método
 operations:
   item-create:
     payload: Payload
@@ -1927,7 +1924,7 @@ operations:
     message: Mensagem
   request:
     url: URL
-    method: Método 
+    method: Método
     data: Dados
     header: Cabeçalho
   trigger:
