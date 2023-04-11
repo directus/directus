@@ -1,4 +1,4 @@
-import { defineDisplay } from '@directus/shared/utils';
+import { defineDisplay } from '@directus/utils';
 import DisplayImage from './image.vue';
 
 export default defineDisplay({

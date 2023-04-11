@@ -21,16 +21,38 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 	return fieldSchema;
 }
 
-export const seedAllFieldTypesStructure = async (vendor: string, collection: string) => {
+export const seedAllFieldTypesStructure = async (vendor: string, collection: string, setDefaultValues = false) => {
 	try {
 		const fieldSchema = getTestsAllTypesSchema();
 
 		// Create fields
 		for (const key of Object.keys(fieldSchema)) {
+			let meta = {};
+			let schema = {};
+
+			const fieldType = fieldSchema[key].type;
+
+			if (fieldType === 'uuid') {
+				meta = { special: ['uuid'] };
+			}
+
+			if (setDefaultValues && SeedFunctions.generateValues[fieldType as keyof typeof SeedFunctions.generateValues]) {
+				schema = {
+					default_value: SeedFunctions.generateValues[fieldType as keyof typeof SeedFunctions.generateValues]({
+						quantity: 1,
+						seed: `${collection}_${fieldType}`,
+						vendor,
+						isDefaultValue: true,
+					})[0],
+				};
+			}
+
 			await CreateField(vendor, {
 				collection: collection,
 				field: fieldSchema[key].field.toLowerCase(),
-				type: fieldSchema[key].type,
+				type: fieldType,
+				meta,
+				schema,
 			});
 		}
 
@@ -158,8 +180,8 @@ export const seedM2MAliasAllFieldTypesValues = async (
 	otherPossibleKeys: any[]
 ) => {
 	try {
-		const collectionItems = await ReadItem(vendor, { collection: collection, fields: '*' });
-		const otherCollectionItems = await ReadItem(vendor, { collection: otherCollection, fields: '*' });
+		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['*'] });
+		const otherCollectionItems = await ReadItem(vendor, { collection: otherCollection, fields: ['*'] });
 		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
 		const newOtherCollectionKeys = otherCollectionItems
 			.map((i: any) => i.id)
@@ -192,8 +214,8 @@ export const seedM2AAliasAllFieldTypesValues = async (
 	otherPossibleKeys: any[]
 ) => {
 	try {
-		const collectionItems = await ReadItem(vendor, { collection: collection, fields: 'id' });
-		const otherCollectionItems = await ReadItem(vendor, { collection: relatedCollection, fields: 'id' });
+		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['id'] });
+		const otherCollectionItems = await ReadItem(vendor, { collection: relatedCollection, fields: ['id'] });
 		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
 		const newOtherCollectionKeys = otherCollectionItems
 			.map((i: any) => i.id)

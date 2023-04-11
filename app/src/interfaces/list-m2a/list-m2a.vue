@@ -142,10 +142,10 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/shared/types';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
-import { computed, ref, toRefs, unref } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
@@ -212,6 +212,10 @@ const fields = computed(() => {
 });
 
 const page = ref(1);
+
+watch([limit], () => {
+	page.value = 1;
+});
 
 const query = computed<RelationQueryMultiple>(() => ({
 	fields: fields.value,
