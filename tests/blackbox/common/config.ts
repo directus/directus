@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import path from 'node:path';
 import { promisify } from 'util';
 import { allVendors } from './get-dbs-to-test';
 
@@ -9,6 +10,11 @@ export type Config = {
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
 	names: Record<Vendor, string>;
 	envs: Env;
+};
+
+export const paths = {
+	cli: path.join(__dirname, '..', '..', '..', 'dist', 'cli'),
+	cwd: path.join(__dirname, '..'),
 };
 
 const migrationsDir = './setup/migrations';

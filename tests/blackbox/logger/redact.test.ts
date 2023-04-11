@@ -1,4 +1,4 @@
-import config, { getUrl } from '@common/config';
+import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
 import { TestLogger } from '@common/test-logger';
@@ -8,7 +8,6 @@ import { EnumType } from 'json-to-graphql-query';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
-import path from 'node:path';
 import request from 'supertest';
 
 describe('Logger Redact Tests', () => {
@@ -29,8 +28,7 @@ describe('Logger Redact Tests', () => {
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
-			const apiPath = path.join(__dirname, '../../../dist/cli');
-			const server = spawn('node', [apiPath, 'start'], { env: env[vendor] });
+			const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 			directusInstances[vendor] = server;
 
 			promises.push(awaitDirectusConnection(Number(env[vendor].PORT)));

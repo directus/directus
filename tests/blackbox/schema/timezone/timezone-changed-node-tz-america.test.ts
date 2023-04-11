@@ -1,4 +1,4 @@
-import config, { getUrl } from '@common/config';
+import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
 import { awaitDirectusConnection } from '@utils/await-connection';
@@ -8,7 +8,6 @@ import { ChildProcess, spawn } from 'child_process';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
-import path from 'path';
 import request from 'supertest';
 
 const collectionName = 'schema_timezone_tests';
@@ -75,8 +74,7 @@ describe('schema', () => {
 			config.envs[vendor]!.TZ = newTz;
 			config.envs[vendor]!.PORT = String(newServerPort);
 
-			const apiPath = path.join(__dirname, '../../../dist/cli');
-			const server = spawn('node', [apiPath, 'start'], { env: config.envs[vendor] });
+			const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: config.envs[vendor] });
 			tzDirectus[vendor] = server;
 
 			let serverOutput = '';
