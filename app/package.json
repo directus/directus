@@ -24,9 +24,7 @@
 		"build-storybook": "storybook build",
 		"dev": "vite --clearScreen false",
 		"storybook": "storybook dev -p 6006",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest"
+		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
 		"@babel/core": "7.21.3",
