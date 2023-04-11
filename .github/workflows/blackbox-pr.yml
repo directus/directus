@@ -35,4 +35,4 @@ jobs:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=sqlite3 pnpm run blackbox
+        run: TEST_DB=sqlite3 pnpm run test:blackbox

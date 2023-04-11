@@ -1,33 +1,18 @@
 {
 	"compilerOptions": {
 		"module": "commonjs",
-		"esModuleInterop": true,
 		"target": "ES2020",
 		"moduleResolution": "node",
-		"sourceMap": true,
-		"outDir": "dist",
-		"rootDir": "../../",
 		"strict": true,
-		"lib": ["es2020"],
 		"skipLibCheck": true,
-		"declaration": true,
+		"esModuleInterop": true,
 		"resolveJsonModule": true,
-		"baseUrl": "./",
 		"paths": {
-			"@directus/storage/*": ["../../packages/storage/src/*"],
-			"@directus/storage-driver-azure/*": ["../../packages/storage-driver-azure/src/*"],
-			"@directus/storage-driver-local/*": ["../../packages/storage-driver-local/src/*"],
-			"@directus/storage-driver-cloudinary/*": ["../../packages/storage-driver-cloudinary/src/*"],
-			"@directus/storage-driver-gcs/*": ["../../packages/storage-driver-gcs/src/*"],
-			"@directus/storage-driver-s3/*": ["../../packages/storage-driver-s3/src/*"],
-			"@directus/extension-sdk/*": ["../../packages/extension-sdk/src/*"],
-			"@directus/schema/*": ["../../packages/schema/src/*"],
-			"@directus/specs/*": ["../../packages/specs/*"],
 			"@common/*": ["./common/*"],
 			"@query/*": ["./query/*"],
 			"@schema/*": ["./schema/*"],
 			"@utils/*": ["./utils/*"]
 		}
 	},
-	"exclude": ["node_modules", "dist", "extensions"]
+	"exclude": ["node_modules", "extensions"]
 }
