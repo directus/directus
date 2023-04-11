@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { getUrl } from '@common/config';
+import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import { v4 as uuid } from 'uuid';
 import { CreateItem, ReadItem } from '@common/functions';
@@ -245,7 +245,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						const retrievedIngredient = await ReadItem(vendor, {
 							collection: localCollectionIngredients,
-							fields: '*.*.*',
+							fields: ['*.*.*'],
 							filter: { id: { _eq: insertedIngredient.id } },
 						});
 
@@ -463,7 +463,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							const retrievedIngredient = await ReadItem(vendor, {
 								collection: localCollectionIngredients,
-								fields: '*.*.*',
+								fields: ['*.*.*'],
 								filter: { id: { _eq: insertedIngredient.id } },
 							});
 
@@ -1499,6 +1499,1196 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				cachedSchema[pkType][localCollectionSuppliers],
 				vendorSchemaValues
 			);
+		});
+
+		describe('Depth Tests', () => {
+			describe('allow queries up to the field depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data).toEqual(
+						expect.objectContaining({
+							[localCollectionFoods]: expect.arrayContaining([
+								expect.objectContaining({
+									ingredients: expect.arrayContaining([
+										expect.objectContaining({
+											[`${localCollectionFoods}_id`]: expect.objectContaining({
+												ingredients: expect.arrayContaining([
+													expect.objectContaining({
+														[`${localCollectionFoods}_id`]: expect.objectContaining({
+															id: expect.any(String),
+														}),
+													}),
+												]),
+											}),
+										}),
+									]),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the field depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*.*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												ingredients: {
+													id: true,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+
+					expect(gqlResponse.body.errors).toBeDefined();
+					expect(gqlResponse.body.errors.length).toEqual(1);
+					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+
+			describe('allow queries up to deep depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							deep: JSON.stringify({
+								ingredients: {
+									_filter: {
+										[`${localCollectionFoods}_id`]: {
+											ingredients: {
+												[`${localCollectionFoods}_id`]: {
+													id: {
+														_eq: insertedFood.id,
+													},
+												},
+											},
+										},
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the deep depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const ingredient = createIngredient(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: ingredient }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							deep: JSON.stringify({
+								ingredients: {
+									_filter: {
+										[`${localCollectionFoods}_id`]: {
+											ingredients: {
+												[`${localCollectionFoods}_id`]: {
+													ingredients: {
+														id: {
+															_eq: ingredient.id,
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+
+			describe('allow queries up to filter depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							filter: JSON.stringify({
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												id: {
+													_eq: insertedFood.id,
+												},
+											},
+										},
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												__args: {
+													filter: {
+														id: {
+															_eq: insertedFood.id,
+														},
+													},
+												},
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data).toEqual(
+						expect.objectContaining({
+							[localCollectionFoods]: expect.arrayContaining([
+								expect.objectContaining({
+									ingredients: expect.arrayContaining([
+										expect.objectContaining({
+											[`${localCollectionFoods}_id`]: expect.objectContaining({
+												ingredients: expect.arrayContaining([
+													expect.objectContaining({
+														[`${localCollectionFoods}_id`]: expect.objectContaining({
+															id: expect.any(String),
+														}),
+													}),
+												]),
+											}),
+										}),
+									]),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the filter depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const ingredient = createIngredient(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: ingredient }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							filter: JSON.stringify({
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												ingredients: {
+													id: {
+														_eq: ingredient.id,
+													},
+												},
+											},
+										},
+									},
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												__args: {
+													filter: {
+														ingredients: {
+															id: {
+																_eq: insertedFood.id,
+															},
+														},
+													},
+												},
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+
+					expect(gqlResponse.body.errors).toBeDefined();
+					expect(gqlResponse.body.errors.length).toEqual(1);
+					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+
+			describe('allow queries up to sort depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							sort: `ingredients.${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.id`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												__args: {
+													sort: 'id',
+												},
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+
+					expect(gqlResponse.statusCode).toEqual(200);
+					expect(gqlResponse.body.data).toEqual(
+						expect.objectContaining({
+							[localCollectionFoods]: expect.arrayContaining([
+								expect.objectContaining({
+									ingredients: expect.arrayContaining([
+										expect.objectContaining({
+											[`${localCollectionFoods}_id`]: expect.objectContaining({
+												ingredients: expect.arrayContaining([
+													expect.objectContaining({
+														[`${localCollectionFoods}_id`]: expect.objectContaining({
+															id: expect.any(String),
+														}),
+													}),
+												]),
+											}),
+										}),
+									]),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the sort depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							sort: `ingredients.${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.ingredients.id`,
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+						query: {
+							[localCollectionFoods]: {
+								__args: {
+									filter: {
+										id: {
+											_eq: insertedFood.id,
+										},
+									},
+								},
+								ingredients: {
+									[`${localCollectionFoods}_id`]: {
+										ingredients: {
+											[`${localCollectionFoods}_id`]: {
+												__args: {
+													sort: 'ingredients.id',
+												},
+												id: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					});
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+
+					expect(gqlResponse.body.errors).toBeDefined();
+					expect(gqlResponse.body.errors.length).toEqual(1);
+					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+
+			describe('allow queries up to deep sort depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							deep: JSON.stringify({
+								ingredients: {
+									_sort: `${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.id`,
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response.body.data).toEqual(
+						expect.objectContaining({
+							ingredients: expect.arrayContaining([
+								expect.objectContaining({
+									[`${localCollectionFoods}_id`]: expect.objectContaining({
+										ingredients: expect.arrayContaining([
+											expect.objectContaining({
+												[`${localCollectionFoods}_id`]: expect.objectContaining({
+													ingredients: [expect.any(Number)],
+												}),
+											}),
+										]),
+									}),
+								}),
+							]),
+						})
+					);
+				});
+			});
+
+			describe('deny queries over the deep sort depth limit', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const food = createFood(pkType);
+					const insertedFood = await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: {
+							...food,
+							ingredients: {
+								create: [{ [`${localCollectionFoods}_id`]: createIngredient(pkType) }],
+								update: [],
+								delete: [],
+							},
+						},
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}/${insertedFood.id}`)
+						.query({
+							fields: '*.*.*.*.*',
+							deep: JSON.stringify({
+								ingredients: {
+									_sort: `${localCollectionFoods}_id.ingredients.${localCollectionFoods}_id.ingredients.id`,
+								},
+							}),
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(400);
+					expect(response.body.errors).toHaveLength(1);
+					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+				});
+			});
+		});
+
+		describe('MAX_BATCH_MUTATION Tests', () => {
+			describe('createOne', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// TODO: Fix Oracle exceeded directus_revisions limit of 4000
+							if (vendor === 'oracle') {
+								expect(true).toBe(true);
+								return;
+							}
+
+							// Setup
+							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 - 1;
+							const food: any = createFood(pkType);
+							const food2: any = createFood(pkType);
+
+							food.ingredients = Array(countNested)
+								.fill(0)
+								.map(() => {
+									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+								});
+
+							food2.ingredients = Array(countNested)
+								.fill(0)
+								.map(() => {
+									return {
+										[`${localCollectionIngredients}_id`]: createIngredient(pkType),
+									};
+								});
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionFoods}`)
+								.send(food)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionFoods}_item`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: food2,
+										},
+										id: true,
+										ingredients: {
+											id: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.ingredients.length).toBe(countNested);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].ingredients.length).toEqual(countNested);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+							if (vendor === 'oracle') {
+								expect(true).toBe(true);
+								return;
+							}
+
+							// Setup
+							const countNested = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2;
+							const food: any = createFood(pkType);
+							const food2: any = createFood(pkType);
+
+							food.ingredients = Array(countNested)
+								.fill(0)
+								.map(() => {
+									return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+								});
+
+							food2.ingredients = Array(countNested)
+								.fill(0)
+								.map(() => {
+									return {
+										[`${localCollectionIngredients}_id`]: createIngredient(pkType),
+									};
+								});
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionFoods}`)
+								.send(food)
+								.query({ fields: '*,ingredients.test_items_m2m_ingredients_integer_id.*' })
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionFoods}_item`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: food2,
+										},
+										id: true,
+										ingredients: {
+											id: true,
+										},
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('createMany', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countNested = 4;
+							const foods: any[] = [];
+							const foods2: any[] = [];
+
+							for (let i = 0; i < count; i++) {
+								foods.push(createFood(pkType));
+								foods[i].ingredients = Array(countNested)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+
+								foods2.push(createFood(pkType));
+								foods2[i].ingredients = Array(countNested)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionFoods}`)
+								.send(foods)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionFoods}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: foods2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+							if (vendor === 'oracle') {
+								expect(true).toBe(true);
+								return;
+							}
+
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countNested = 5;
+							const foods: any[] = [];
+							const foods2: any[] = [];
+
+							for (let i = 0; i < count; i++) {
+								foods.push(createFood(pkType));
+								foods[i].ingredients = Array(countNested)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+
+								foods2.push(createFood(pkType));
+								foods2[i].ingredients = Array(countNested)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post(`/items/${localCollectionFoods}`)
+								.send(foods)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `create_${localCollectionFoods}_items`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: foods2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
+
+			describe('updateBatch', () => {
+				describe('passes when below limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countCreate = 2;
+							const countUpdate = 3;
+							const countDelete = 2;
+							const foodsID = [];
+							const foodsID2 = [];
+
+							for (let i = 0; i < count; i++) {
+								const food: any = createFood(pkType);
+								food.ingredients = Array(countUpdate + countDelete)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+								foodsID.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food })).id);
+
+								const food2: any = createFood(pkType);
+								food2.ingredients = Array(countUpdate + countDelete)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+								foodsID2.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food2 })).id);
+							}
+
+							const foods = await ReadItem(vendor, {
+								collection: localCollectionFoods,
+								fields: [
+									'*',
+									'ingredients.id',
+									`ingredients.${localCollectionIngredients}.id`,
+									`ingredients.${localCollectionIngredients}.name`,
+								],
+								filter: { id: { _in: foodsID } },
+							});
+
+							const foods2 = await ReadItem(vendor, {
+								collection: localCollectionFoods,
+								fields: [
+									'*',
+									'ingredients.id',
+									`ingredients.${localCollectionIngredients}.id`,
+									`ingredients.${localCollectionIngredients}.name`,
+								],
+								filter: { id: { _in: foodsID2 } },
+							});
+
+							for (const food of foods) {
+								const ingredients = food.ingredients;
+								food.ingredients = {
+									create: Array(countCreate)
+										.fill(0)
+										.map(() => {
+											return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+										}),
+									update: ingredients.slice(0, countUpdate),
+									delete: ingredients.slice(-countDelete).map((ingredient: Ingredient) => ingredient.id),
+								};
+							}
+
+							for (const food of foods2) {
+								food.ingredients = [
+									...food.ingredients,
+									...Array(countCreate)
+										.fill(0)
+										.map(() => {
+											return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+										}),
+								];
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionFoods}`)
+								.send(foods)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionFoods}_batch`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: foods2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(200);
+							expect(response.body.data.length).toBe(count);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+						},
+						120000
+					);
+				});
+
+				describe('errors when above limit', () => {
+					it.each(vendors)(
+						'%s',
+						async (vendor) => {
+							// TODO: Fix Oracle ORA-01086 savepoint never established in this session or is invalid
+							if (vendor === 'oracle') {
+								expect(true).toBe(true);
+								return;
+							}
+
+							// Setup
+							const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 10;
+							const countCreate = 2;
+							const countUpdate = 3;
+							const countDelete = 3;
+							const foodsID = [];
+							const foodsID2 = [];
+
+							for (let i = 0; i < count; i++) {
+								const food: any = createFood(pkType);
+								food.ingredients = Array(countUpdate + countDelete)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+								foodsID.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food })).id);
+
+								const food2: any = createFood(pkType);
+								food2.ingredients = Array(countUpdate + countDelete)
+									.fill(0)
+									.map(() => {
+										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+									});
+								foodsID2.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food2 })).id);
+							}
+
+							const foods = await ReadItem(vendor, {
+								collection: localCollectionFoods,
+								fields: [
+									'*',
+									'ingredients.id',
+									`ingredients.${localCollectionIngredients}.id`,
+									`ingredients.${localCollectionIngredients}.name`,
+								],
+								filter: { id: { _in: foodsID } },
+							});
+
+							const foods2 = await ReadItem(vendor, {
+								collection: localCollectionFoods,
+								fields: [
+									'*',
+									'ingredients.id',
+									`ingredients.${localCollectionIngredients}.id`,
+									`ingredients.${localCollectionIngredients}.name`,
+								],
+								filter: { id: { _in: foodsID2 } },
+							});
+
+							for (const food of foods) {
+								const ingredients = food.ingredients;
+								food.ingredients = {
+									create: Array(countCreate)
+										.fill(0)
+										.map(() => {
+											return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+										}),
+									update: ingredients.slice(0, countUpdate),
+									delete: ingredients.slice(-countDelete).map((ingredient: Ingredient) => ingredient.id),
+								};
+							}
+
+							for (const food of foods2) {
+								food.ingredients = [
+									...food.ingredients,
+									...Array(countCreate)
+										.fill(0)
+										.map(() => {
+											return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
+										}),
+								];
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.patch(`/items/${localCollectionFoods}`)
+								.send(foods)
+								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const mutationKey = `update_${localCollectionFoods}_batch`;
+
+							const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
+								mutation: {
+									[mutationKey]: {
+										__args: {
+											data: foods2,
+										},
+										id: true,
+									},
+								},
+							});
+
+							// Assert
+							expect(response.statusCode).toBe(400);
+							expect(response.body.errors).toBeDefined();
+							expect(response.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+
+							expect(gqlResponse.statusCode).toBe(200);
+							expect(gqlResponse.body.errors).toBeDefined();
+							expect(gqlResponse.body.errors[0].message).toBe(
+								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+							);
+						},
+						120000
+					);
+				});
+			});
 		});
 	});
 });

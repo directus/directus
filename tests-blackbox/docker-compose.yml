@@ -96,6 +96,11 @@ services:
     ports:
       - 6107:26257
 
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 6108:6379
+
   auth-saml:
     image: kristophjunge/test-saml-idp
     ports:
@@ -105,3 +110,23 @@ services:
       - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://127.0.0.1:8080/auth/login/saml/acs
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+
+  minio:
+    image: minio/minio:latest
+    command: server /data/minio/ --console-address :9001
+    ports:
+      - 8881:9000
+      - 8882:9001
+    environment:
+      MINIO_ROOT_USER: directus
+      MINIO_ROOT_PASSWORD: miniosecret
+
+  minio-mc:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c " /usr/bin/mc alias set directusminio http://minio:9000 directus miniosecret; /usr/bin/mc mb
+      directusminio/directus-blackbox-test; while true; do
+          sleep 3600;
+      done "

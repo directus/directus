@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceMap from './map.vue';
 import Options from './options.vue';
 import PreviewSVG from './preview.svg?raw';

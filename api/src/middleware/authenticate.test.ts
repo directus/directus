@@ -1,13 +1,13 @@
+import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import env from '../env';
-import { InvalidCredentialsException } from '../exceptions';
-import { handler } from './authenticate';
+import type { Knex } from 'knex';
+import { afterEach, expect, test, vi } from 'vitest';
 import '../../src/types/express.d.ts';
-import { vi, afterEach, test, expect } from 'vitest';
-import { Request, Response } from 'express';
-import { Knex } from 'knex';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { InvalidCredentialsException } from '../exceptions/invalid-credentials.js';
+import { handler } from './authenticate.js';
 
 vi.mock('../../src/database');
 vi.mock('../../src/env', () => {
@@ -96,7 +96,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env.SECRET,
+		env['SECRET'],
 		{ issuer: 'directus' }
 	);
 
@@ -145,7 +145,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env.SECRET,
+		env['SECRET'],
 		{ issuer: 'directus' }
 	);
 

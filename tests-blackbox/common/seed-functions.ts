@@ -7,7 +7,9 @@ const FIVE_YEARS_IN_MILLISECONDS = 5 * 365 * 24 * 60 * 60 * 1000;
 
 type OptionsSeedGenerateBase = {
 	quantity: number;
-	seed?: string | undefined;
+	seed?: string;
+	vendor?: string;
+	isDefaultValue?: boolean;
 };
 
 export type OptionsSeedGeneratePrimaryKeys = OptionsSeedGenerateBase & OptionsSeedGenerateInteger;
@@ -262,6 +264,18 @@ function generateDate(options: OptionsSeedGenerateDate) {
 		}
 	}
 
+	if (options.isDefaultValue && options.vendor === 'oracle') {
+		for (let i = 0; i < values.length; i++) {
+			values[i] = new Date(values[i])
+				.toLocaleDateString('en-GB', {
+					day: 'numeric',
+					month: 'short',
+					year: 'numeric',
+				})
+				.replace(/ /g, '-');
+		}
+	}
+
 	return values;
 }
 
@@ -270,6 +284,12 @@ function generateDateTime(options: OptionsSeedGenerateDateTime) {
 
 	for (let i = 0; i < values.length; i++) {
 		values[i] = values[i].slice(0, -5);
+	}
+
+	if (options.isDefaultValue && options.vendor === 'oracle') {
+		for (let index = 0; index < values.length; index++) {
+			values[index] = 'CURRENT_TIMESTAMP';
+		}
 	}
 
 	return values;
@@ -315,6 +335,12 @@ function generateTime(options: OptionsSeedGenerateTime) {
 		}
 	}
 
+	if (options.isDefaultValue && options.vendor === 'oracle') {
+		for (let index = 0; index < values.length; index++) {
+			values[index] = 'CURRENT_TIMESTAMP';
+		}
+	}
+
 	return values;
 }
 
@@ -352,6 +378,18 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 	// Overcome MSSQL specific accuracy up to 1/300th of a second
 	for (let index = 0; index < values.length; index++) {
 		values[index] = values[index].slice(0, 20) + '000Z';
+	}
+
+	if (options.isDefaultValue && options.vendor) {
+		if (['mysql', 'mysql5', 'maria'].includes(options.vendor)) {
+			for (let index = 0; index < values.length; index++) {
+				values[index] = new Date(values[index]).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2');
+			}
+		} else if (options.vendor === 'oracle') {
+			for (let index = 0; index < values.length; index++) {
+				values[index] = 'CURRENT_TIMESTAMP';
+			}
+		}
 	}
 
 	return values;
