@@ -11,8 +11,8 @@ export type Config = {
 	envs: Env;
 };
 
-const migrationsDir = './tests-blackbox/setup/migrations';
-const seedsDir = './tests-blackbox/setup/seeds';
+const migrationsDir = './tests/blackbox/setup/migrations';
+const seedsDir = './tests/blackbox/setup/seeds';
 
 const knexConfig = {
 	waitTestSQL: 'SELECT 1',
@@ -70,7 +70,7 @@ const directusConfig = {
 	DB_EXCLUDE_TABLES: 'knex_migrations,knex_migrations_lock,spatial_ref_sys,sysdiagrams',
 	MAX_RELATIONAL_DEPTH: '5',
 	MAX_PAYLOAD_SIZE: '10mb',
-	EXTENSIONS_PATH: './tests-blackbox/extensions',
+	EXTENSIONS_PATH: './tests/blackbox/extensions',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: '2',
 	MAX_BATCH_MUTATION: '100', // Must be in multiples of 10 for tests
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer

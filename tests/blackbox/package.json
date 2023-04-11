@@ -2,9 +2,9 @@
 	"name": "tests-blackbox",
 	"private": true,
 	"scripts": {
-		"run": "jest",
-		"watch": "jest --watch",
-		"postwatch": "ts-node --transpile-only ./setup/teardown.ts"
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"posttest:watch": "ts-node --transpile-only ./setup/teardown.ts"
 	},
 	"devDependencies": {
 		"@directus/constants": "workspace:*",
