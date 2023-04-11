@@ -41,9 +41,6 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Deploy
-        run: pnpm --filter directus deploy --prod dist
-
       - name: Install Oracle client
         if: matrix.vendor == 'oracle'
         run: |
@@ -66,4 +63,4 @@ jobs:
           --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=${{ matrix.vendor }} pnpm --filter tests-blackbox test
+        run: TEST_DB=${{ matrix.vendor }} pnpm run blackbox

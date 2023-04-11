@@ -30,12 +30,9 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Deploy
-        run: pnpm --filter directus deploy --prod dist
-
       - name: Start services
         run:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=sqlite3 pnpm --filter tests-blackbox test
+        run: TEST_DB=sqlite3 pnpm run blackbox

@@ -7,9 +7,7 @@
 		"posttest:watch": "ts-node --transpile-only ./setup/teardown.ts"
 	},
 	"devDependencies": {
-		"@directus/constants": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@directus/utils": "workspace:*",
 		"@types/jest": "29.4.4",
 		"@types/js-yaml": "4.0.5",
 		"@types/lodash": "4.14.191",
