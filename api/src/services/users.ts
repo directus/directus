@@ -6,10 +6,11 @@ import { cloneDeep } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
+import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
+import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
 import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
@@ -349,7 +350,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env['SECRET'] as string, { issuer: 'directus' }) as {
+		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
 			email: string;
 			scope: string;
 		};
