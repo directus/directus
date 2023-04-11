@@ -22,9 +22,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { useFieldsStore } from '@/stores/fields';
 import { Permission, Role } from '@directus/types';
 import { useSync } from '@directus/composables';
+import { useRelationsStore } from '@/stores/relations';
 
 export default defineComponent({
 	props: {
@@ -41,9 +41,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { t } = useI18n();
 
-		const fieldsStore = useFieldsStore();
-		const fields = fieldsStore.getFieldsForCollection(props.permission.collection);
-
 		const internalPermission = useSync(props, 'permission', emit);
 
 		const presets = computed({
@@ -58,29 +55,28 @@ export default defineComponent({
 			},
 		});
 
-		/**
-		 * Interfaces that use the useRelationMultiple composable.
-		 */
-		const relationalInterfaces = ['list-m2a', 'list-m2m', 'list-o2m', 'list-o2m-tree-view', 'files'];
+		const relationsStore = useRelationsStore();
+		const relations = relationsStore.getRelationsForCollection(props.permission.collection);
+		const relationFields = relations.map((relation) => relation.field);
 
+		/**
+		 * Display a warning for all relational interfaces if an array is used as the preset value.
+		 *
+		 * The useRelationMultiple composable treats arrays as an empty value and the preset would therefore be ignored.
+		 * Presets for relational fields have to be entered with the detailed syntax.
+		 */
 		const fieldWarnings = computed(() => {
-			const errors = [];
+			const warnings: string[] = [];
 			if (!presets.value) {
-				return errors;
+				return warnings;
 			}
 			for (const key of Object.keys(presets.value)) {
-				const field = fields.find((f) => f.field === key);
-				if (
-					field &&
-					relationalInterfaces.includes(field.meta.interface) &&
-					Array.isArray(presets.value[key]) &&
-					presets.value[key].length > 0
-				) {
+				if (relationFields.includes(key) && Array.isArray(presets.value[key]) && presets.value[key].length > 0) {
 					// Don't allow arrays as these are interpreted as the initial item value in useRelationMultiple
-					errors.push(key);
+					warnings.push(key);
 				}
 			}
-			return errors;
+			return warnings;
 		});
 
 		return { t, presets, fieldWarnings };
