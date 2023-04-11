@@ -1,5 +1,5 @@
 import { App } from 'vue';
-import { OperationAppConfig } from '@directus/shared/types';
+import { OperationAppConfig } from '@directus/types';
 import { sortBy } from 'lodash';
 
 export function getInternalOperations(): OperationAppConfig[] {

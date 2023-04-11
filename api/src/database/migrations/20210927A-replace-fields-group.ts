@@ -1,5 +1,5 @@
-import { Knex } from 'knex';
-import { uniq } from 'lodash';
+import type { Knex } from 'knex';
+import { uniq } from 'lodash-es';
 
 export async function up(knex: Knex): Promise<void> {
 	const groupsInUse = await knex.select('id', 'group').from('directus_fields').whereNotNull('group');

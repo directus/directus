@@ -1,15 +1,16 @@
-import knex, { Knex } from 'knex';
+import type { Knex } from 'knex';
+import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
-import { FilesService, ItemsService } from '.';
-import { InvalidPayloadException } from '../exceptions';
+import { InvalidPayloadException } from '../exceptions/index.js';
+import { FilesService, ItemsService } from './index.js';
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
 	let tracker: Tracker;
 
 	beforeAll(() => {
-		db = vi.mocked(knex({ client: MockClient }));
+		db = vi.mocked(knex.default({ client: MockClient }));
 		tracker = createTracker(db);
 	});
 

@@ -73,7 +73,7 @@ export default {
 
 <script lang="ts" setup>
 import formatTitle from '@directus/format-title';
-import { getFunctionsForType } from '@directus/shared/utils';
+import { getFunctionsForType } from '@directus/utils';
 import { FieldNode } from '@/composables/use-field-tree';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

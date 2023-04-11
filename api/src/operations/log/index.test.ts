@@ -8,7 +8,7 @@ vi.mock('../../logger', () => ({
 	},
 }));
 
-import config from './index';
+import config from './index.js';
 
 afterEach(() => {
 	vi.clearAllMocks();

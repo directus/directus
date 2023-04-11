@@ -1,10 +1,10 @@
-import { version as currentDirectusVersion } from '../../package.json';
-import { InvalidPayloadException } from '../exceptions';
-import { getDatabaseClient } from '../database';
+import { version as currentDirectusVersion } from './package.js';
+import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
+import { getDatabaseClient } from '../database/index.js';
 import Joi from 'joi';
-import { TYPES } from '@directus/shared/constants';
-import { ALIAS_TYPES } from '../constants';
-import { DatabaseClients, Snapshot } from '../types';
+import { TYPES } from '@directus/constants';
+import { ALIAS_TYPES } from '../constants.js';
+import { DatabaseClients, Snapshot } from '../types/index.js';
 
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number().valid(1).required(),
