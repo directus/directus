@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, ref, reactive } from 'vue';
+import { ref, reactive } from 'vue';
 const props = defineProps({
 	title: {
 		type: String,
@@ -69,9 +69,9 @@ async function handleSubmission() {
 		if (data.comments) {
 			success.value = true;
 		}
-	} catch (error) {
-		error.value = error;
-		console.error(error);
+	} catch (err) {
+		error.value = err;
+		console.error(err);
 	} finally {
 		loading.value = false;
 	}
@@ -89,9 +89,9 @@ async function handleSubmission() {
 				</div>
 				<div class="button-container">
 					<button
-						class="btn"
 						v-for="item in ratingOptions"
 						:key="item.value"
+						class="btn"
 						@click="
 							feedback.rating = item.value;
 							handleSubmission();
@@ -113,7 +113,7 @@ async function handleSubmission() {
 				</div>
 				<p class="heading">{{ ratingOptions[feedback.rating - 1].message }}</p>
 				<textarea v-model="feedback.comments" autofocus class="input" />
-				<button class="btn btn-primary" @click="handleSubmission()" :disabled="!feedback.comments">
+				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission()">
 					Send Us Your Feedback
 				</button>
 			</div>
