@@ -1,5 +1,5 @@
-import { DeepPartial, Field, FlowRaw, TriggerType, Width } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
+import { DeepPartial, Field, FlowRaw, TriggerType, Width } from '@directus/types';
+import { toArray } from '@directus/utils';
 import { useI18n } from 'vue-i18n';
 import { getPublicURL } from '../../../../utils/get-root-path';
 
@@ -79,6 +79,7 @@ export function getTriggers() {
 									'items.create',
 									'items.update',
 									'items.delete',
+									'items.sort',
 									{ divider: true },
 									'server.start',
 									'server.stop',

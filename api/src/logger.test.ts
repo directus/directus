@@ -18,9 +18,9 @@ vi.mock('./env', async () => {
 });
 
 import { Writable } from 'node:stream';
-import pino from 'pino';
-import { REDACT_TEXT } from './constants';
-import { httpLoggerOptions } from './logger';
+import { pino } from 'pino';
+import { REDACT_TEXT } from './constants.js';
+import { httpLoggerOptions } from './logger.js';
 
 const logOutput = vi.fn();
 

@@ -1,12 +1,15 @@
-import type { Field, Relation, SchemaOverview } from '@directus/shared/types';
-import { applyChange, Diff, DiffDeleted, DiffNew } from 'deep-diff';
+import type { Field, Relation, SchemaOverview } from '@directus/types';
+import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
+import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
-import { cloneDeep, merge, set } from 'lodash';
-import { clearSystemCache } from '../cache';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import logger from '../logger';
-import { CollectionsService, FieldsService, RelationsService } from '../services';
+import { cloneDeep, merge, set } from 'lodash-es';
+import { clearSystemCache } from '../cache.js';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import logger from '../logger.js';
+import { CollectionsService } from '../services/collections.js';
+import { FieldsService } from '../services/fields.js';
+import { RelationsService } from '../services/relations.js';
 import {
 	ActionEventParams,
 	Collection,
@@ -15,8 +18,9 @@ import {
 	Snapshot,
 	SnapshotDiff,
 	SnapshotField,
-} from '../types';
-import { getSchema } from './get-schema';
+} from '../types/index.js';
+import { getSchema } from './get-schema.js';
+import { getHelpers } from '../database/helpers/index.js';
 
 type CollectionDelta = {
 	collection: string;
@@ -29,13 +33,17 @@ export async function applyDiff(
 	options?: { database?: Knex; schema?: SchemaOverview }
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
+	const helpers = getHelpers(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const nestedActionEvents: ActionEventParams[] = [];
 	const mutationOptions: MutationOptions = {
 		autoPurgeSystemCache: false,
 		bypassEmitAction: (params) => nestedActionEvents.push(params),
+		bypassLimits: true,
 	};
+
+	const runPostColumnChange = await helpers.schema.preColumnChange();
 
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
@@ -183,7 +191,7 @@ export async function applyDiff(
 				if (currentCollection) {
 					try {
 						const newValues = diff.reduce((acc, currentDiff) => {
-							applyChange(acc, undefined, currentDiff);
+							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentCollection));
 
@@ -219,7 +227,7 @@ export async function applyDiff(
 				if (currentField) {
 					try {
 						const newValues = diff.reduce((acc, currentDiff) => {
-							applyChange(acc, undefined, currentDiff);
+							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentField));
 						await fieldsService.updateField(collection, newValues, mutationOptions);
@@ -275,7 +283,7 @@ export async function applyDiff(
 				if (currentRelation) {
 					try {
 						const newValues = diff.reduce((acc, currentDiff) => {
-							applyChange(acc, undefined, currentDiff);
+							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentRelation));
 						await relationsService.updateOne(collection, field, newValues, mutationOptions);
@@ -296,6 +304,10 @@ export async function applyDiff(
 			}
 		}
 	});
+
+	if (runPostColumnChange) {
+		await helpers.schema.postColumnChange();
+	}
 
 	await clearSystemCache();
 

@@ -1,10 +1,10 @@
-import type { Query } from '@directus/shared/types';
-import { ForbiddenException, UnprocessableEntityException } from '../exceptions';
-import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types';
-import { ItemsService } from './items';
-import { PermissionsService } from './permissions';
-import { PresetsService } from './presets';
-import { UsersService } from './users';
+import type { Query } from '@directus/types';
+import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
+import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { ItemsService } from './items.js';
+import { PermissionsService } from './permissions.js';
+import { PresetsService } from './presets.js';
+import { UsersService } from './users.js';
 
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -159,14 +159,14 @@ export class RolesService extends ItemsService {
 				{
 					filter: { role: { _in: keys } },
 				},
-				opts
+				{ ...opts, bypassLimits: true }
 			);
 
 			await presetsService.deleteByQuery(
 				{
 					filter: { role: { _in: keys } },
 				},
-				opts
+				{ ...opts, bypassLimits: true }
 			);
 
 			await usersService.updateByQuery(
@@ -177,7 +177,7 @@ export class RolesService extends ItemsService {
 					status: 'suspended',
 					role: null,
 				},
-				opts
+				{ ...opts, bypassLimits: true }
 			);
 
 			await itemsService.deleteMany(keys, opts);

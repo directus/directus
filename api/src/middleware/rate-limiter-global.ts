@@ -1,12 +1,12 @@
 import type { RequestHandler } from 'express';
 import ms from 'ms';
 import type { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
-import env from '../env';
-import { HitRateLimitException } from '../exceptions/index';
-import logger from '../logger';
-import { createRateLimiter } from '../rate-limiter';
-import asyncHandler from '../utils/async-handler';
-import { validateEnv } from '../utils/validate-env';
+import env from '../env.js';
+import { HitRateLimitException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import { createRateLimiter } from '../rate-limiter.js';
+import asyncHandler from '../utils/async-handler.js';
+import { validateEnv } from '../utils/validate-env.js';
 
 const RATE_LIMITER_GLOBAL_KEY = 'global-rate-limit';
 
