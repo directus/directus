@@ -33,6 +33,7 @@ import {
 	resolvePackageExtensions,
 } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
+import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
@@ -61,6 +62,7 @@ import { Url } from './utils/url.js';
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
+const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
 
 const require = createRequire(import.meta.url);
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -84,6 +86,7 @@ type BundleConfig = {
 };
 
 type AppExtensions = string | null;
+
 type ApiExtensions = { path: string }[];
 
 type Options = {
@@ -103,6 +106,7 @@ class ExtensionManager {
 	private extensions: Extension[] = [];
 
 	private appExtensions: AppExtensions = null;
+	private appExtensionChunks: Map<string, string>;
 	private apiExtensions: ApiExtensions = [];
 
 	private apiEmitter: Emitter;
@@ -121,6 +125,8 @@ class ExtensionManager {
 		this.endpointRouter = Router();
 
 		this.reloadQueue = new JobQueue();
+
+		this.appExtensionChunks = new Map();
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
@@ -226,6 +232,10 @@ class ExtensionManager {
 
 	public getAppExtensions(): string | null {
 		return this.appExtensions;
+	}
+
+	public getAppExtensionChunk(name: string): string | null {
+		return this.appExtensionChunks.get(name) ?? null;
 	}
 
 	public getEndpointRouter(): Router {
@@ -355,9 +365,15 @@ class ExtensionManager {
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports })],
+				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
 			const { output } = await bundle.generate({ format: 'es', compact: true });
+
+			for (const out of output) {
+				if (out.type === 'chunk') {
+					this.appExtensionChunks.set(out.fileName, out.code);
+				}
+			}
 
 			await bundle.close();
 
