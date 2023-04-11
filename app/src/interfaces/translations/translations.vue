@@ -78,7 +78,7 @@ import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import { cloneDeep, isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -200,7 +200,7 @@ function updateValue(item: DisplayItem, lang: string | undefined) {
 
 		if (itemInfo[info.junctionPrimaryKeyField.field] !== undefined) {
 			itemUpdates[info.junctionPrimaryKeyField.field] = itemInfo[info.junctionPrimaryKeyField.field];
-		} else {
+		} else if (primaryKey.value !== '+') {
 			itemUpdates[info.reverseJunctionField.field] = primaryKey.value;
 		}
 

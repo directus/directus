@@ -32,7 +32,7 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ref, reactive, watch } from 'vue';
-import { FlowRaw } from '@directus/shared/types';
+import { FlowRaw } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { useFlowsStore } from '@/stores/flows';

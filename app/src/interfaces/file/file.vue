@@ -1,13 +1,14 @@
 <template>
 	<div class="file">
 		<v-menu attached :disabled="loading">
-			<template #activator="{ toggle }">
+			<template #activator="{ toggle, active }">
 				<div>
 					<v-skeleton-loader v-if="loading" type="input" />
 					<v-input
 						v-else
 						clickable
 						readonly
+						:active="active"
 						:disabled="disabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
@@ -144,19 +145,19 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed, toRefs } from 'vue';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
+import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
+import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
+import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { addQueryToPath } from '@/utils/add-query-to-path';
-import { useRelationM2O } from '@/composables/use-relation-m2o';
-import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
-import { Filter } from '@directus/shared/types';
-import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
+import { Filter } from '@directus/types';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type FileInfo = {
 	id: string;

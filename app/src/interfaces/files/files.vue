@@ -128,18 +128,18 @@
 
 <script setup lang="ts">
 import { useRelationM2M } from '@/composables/use-relation-m2m';
-import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { Filter } from '@directus/types';
+import { getFieldsFromTemplate } from '@directus/utils';
+import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item.vue';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import Draggable from 'vuedraggable';
-import { getAssetUrl } from '@/utils/get-asset-url';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { get, clamp, isEmpty, isNil, set } from 'lodash';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { Filter } from '@directus/shared/types';
-import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{

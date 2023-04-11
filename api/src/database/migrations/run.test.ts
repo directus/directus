@@ -1,6 +1,7 @@
-import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import run from './run';
+import knex from 'knex';
+import type { Knex } from 'knex';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import run from './run.js';
 import { describe, beforeAll, afterEach, it, expect, MockedFunction, vi } from 'vitest';
 
 describe('run', () => {
@@ -8,8 +9,8 @@ describe('run', () => {
 	let tracker: Tracker;
 
 	beforeAll(() => {
-		db = vi.mocked(knex({ client: MockClient }));
-		tracker = getTracker();
+		db = vi.mocked(knex.default({ client: MockClient }));
+		tracker = createTracker(db);
 	});
 
 	afterEach(() => {

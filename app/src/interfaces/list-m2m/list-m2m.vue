@@ -2,6 +2,9 @@
 	<v-notice v-if="!relationInfo" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
+	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ t('no_singleton_relations') }}
+	</v-notice>
 	<div v-else class="many-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
 			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
@@ -198,8 +201,8 @@
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
-import { Filter } from '@directus/shared/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -333,13 +336,13 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.search = search.value;
 	}
 	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${relationInfo.value.junctionField.field}.${sort.value.by}`];
+		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
 	}
 
 	return q;
 });
 
-watch([search, searchFilter], () => {
+watch([search, searchFilter, limit], () => {
 	page.value = 1;
 });
 
