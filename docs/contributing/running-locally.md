@@ -16,9 +16,6 @@ readTime: 4 min read
 You will need to have [the latest version of Node](https://nodejs.org/en/download/current) to _build_ a Development
 version of Directus.
 
-You can use the JavaScript tool manager [volta](https://volta.sh) to automatically install the current node and npm
-versions.
-
 You will also need to have the package manager [pnpm](https://pnpm.io) installed. You can install pnpm using the
 following command: `npm install -g pnpm`.
 
