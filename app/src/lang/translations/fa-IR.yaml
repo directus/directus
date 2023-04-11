@@ -502,6 +502,7 @@ disabled: غیرفعال شده
 information: اطلاعات
 report_bug: گزارش باگ
 request_feature: درخواست قابلیت جدید
+request_body: Request Body
 interface_not_found: 'رابط "{interface}" یافت نشد.'
 operation_not_found: 'عملیات "{operation}" یافت نشد.'
 reset_interface: بازنشانی رابط
@@ -512,7 +513,10 @@ item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
 file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
+user_count: 'No Users | One User | {count} Users'
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
+webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
+no_webhooks_copy: هنوز هیچ وب هوکی پیکربندی نشده است. با ایجاد یکی از زیر شروع کنید.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
@@ -791,7 +795,19 @@ run_flow_confirm: آیا مطمئنید که می خواهید این اتصال
 run_flow_on_current_collection: اجرای اتوماسیون در مجموعه فعلی
 run_flow_on_current: اجرای اتوماسیون در مجموعه فعلی
 run_flow_on_current_edited_confirm: این مورد ممکن است توسط این اتوماسیون به‌ روزرسانی شود، آیا مطمئن هستید که می‌خواهید آن را اجرا کنید؟
+run_flow_on_selected: ابتدا یک یا چند مورد را انتخاب کنید | اجرای اتوماسیون بر روی 1 مورد انتخاب شده | اتوماسیون را روی {n} مورد انتخابی اجرا کنید
 run_flow: اجرای اتوماسیون
+run_flow_success: اتوماسیون "{flow}" با موفقیت اجرا شد
+field_name_placeholder: ورود نام فیلد...
+field_key_placeholder: ورود کلید فیلد...
+trigger: محرک
+trigger_options: گزینه های محرک
+view_trigger: مشاهده محرک
+create_trigger: ایجاد محرک
+trigger_setup: تنظیمات محرک
+change_trigger: تغییر محرک
+flow_delete_confirm: آیا مطمئن هستید که می‌خواهید فیلد {flow} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+set_flow_active: تنظیم اتوماسیون به فعال
 set_flow_inactive: برگشت Flow به غیر‌فعال
 edit_flow: ویرایش Flow
 delete_flow: حذف Flow
@@ -1022,7 +1038,11 @@ directus_collection:
   directus_fields: پیکربندی فیلد اضافی و ابرداده
   directus_files: فراداده برای همه Assets های فایل مدیریت شده
   directus_flows: اتوماسیون Flow
+  directus_folders: دایرکتوری های مجازی برای فایل ها فراهم می کند
+  directus_migrations: از چه نسخه ای از پایگاه داده استفاده می کنید
   directus_notifications: اعلانهای ارسالی به کاربر
+  directus_operations: عملیاتی که در اتوماسیون اجرا می شوند
+  directus_panels: پنل‌های مجزا در داشبوردها
   directus_permissions: دسترسی به اجازه های این نقش
   directus_roles: گروههای اجازه برای کاربران سیستم
 fields:
@@ -1087,10 +1107,12 @@ fields:
     status_suspended: تعلیق شده
     status_archived: بایگانی شده
     role: نقش
+    token: رمز
     last_page: صفحه آخر
     last_access: آخرین دسترسی
     email_notifications: اعلان های ایمیلی
   directus_settings:
+    jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
@@ -1470,6 +1492,8 @@ interfaces:
     user: کاربر
     modes:
       dropdown: لیست کشویی
+  system-token:
+    system-token: رمز
 displays:
   translations:
     translations: ترجمه‌ها
