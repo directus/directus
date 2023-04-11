@@ -76,6 +76,9 @@ importers:
       '@directus/storage-driver-s3':
         specifier: workspace:*
         version: link:../packages/storage-driver-s3
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../packages/types
       '@directus/update-check':
         specifier: workspace:*
         version: link:../packages/update-check
@@ -342,9 +345,6 @@ importers:
       '@directus/tsconfig':
         specifier: 0.0.6
         version: 0.0.6
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../packages/types
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0

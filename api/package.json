@@ -89,6 +89,7 @@
 		"@directus/storage-driver-gcs": "workspace:*",
 		"@directus/storage-driver-local": "workspace:*",
 		"@directus/storage-driver-s3": "workspace:*",
+		"@directus/types": "workspace:*",
 		"@directus/update-check": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@godaddy/terminus": "4.11.2",
@@ -170,7 +171,6 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.6",
-		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
 		"@types/async": "3.2.18",
 		"@types/busboy": "1.5.0",
