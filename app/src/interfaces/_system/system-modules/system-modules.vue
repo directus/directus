@@ -60,13 +60,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { Settings, SettingsModuleBarModule, SettingsModuleBarLink } from '@directus/shared/types';
+import { Settings, SettingsModuleBarModule, SettingsModuleBarLink } from '@directus/types';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 import { assign } from 'lodash';
 import { useI18n } from 'vue-i18n';
 import { nanoid } from 'nanoid';
-import { Field, DeepPartial } from '@directus/shared/types';
+import { Field, DeepPartial } from '@directus/types';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
 

@@ -1,4 +1,4 @@
-import type { ActionHandler, FilterHandler, InitHandler } from '@directus/shared/types';
+import type { ActionHandler, FilterHandler, InitHandler } from '@directus/types';
 import type { ScheduledTask } from 'node-cron';
 
 export type EventHandler =

@@ -25,7 +25,13 @@
 				</nav>
 
 				<main ref="mainEl" class="main">
-					<header-bar :title="title" primary-action-icon="close" @primary="$emit('cancel')">
+					<header-bar
+						:title="title"
+						primary-action-icon="close"
+						:small="smallHeader"
+						:shadow="headerShadow"
+						@primary="$emit('cancel')"
+					>
 						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
@@ -74,6 +80,8 @@ interface Props {
 	icon?: string;
 	sidebarLabel?: string;
 	cancelable?: boolean;
+	headerShadow?: boolean;
+	smallHeader?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -83,6 +91,8 @@ const props = withDefaults(defineProps<Props>(), {
 	icon: 'box',
 	sidebarLabel: i18n.global.t('sidebar'),
 	cancelable: true,
+	headerShadow: true,
+	smallHeader: false,
 });
 
 const emit = defineEmits(['cancel', 'update:modelValue']);

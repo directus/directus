@@ -1,13 +1,14 @@
 <template>
 	<div class="file">
 		<v-menu attached :disabled="loading">
-			<template #activator="{ toggle }">
+			<template #activator="{ toggle, active }">
 				<div>
 					<v-skeleton-loader v-if="loading" type="input" />
 					<v-input
 						v-else
 						clickable
 						readonly
+						:active="active"
 						:disabled="disabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
@@ -155,7 +156,7 @@ import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
 import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 
 type FileInfo = {
 	id: string;

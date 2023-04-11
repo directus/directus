@@ -1,30 +1,33 @@
-import { BaseException } from '@directus/shared/exceptions';
-import type { Accountability } from '@directus/shared/types';
-import { parseJSON } from '@directus/shared/utils';
+import { BaseException } from '@directus/exceptions';
+import type { Accountability } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
 import { Client, errors, generators, Issuer } from 'openid-client';
-import { getAuthProvider } from '../../auth';
-import env from '../../env';
+import { getAuthProvider } from '../../auth.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
+import env from '../../env.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
 	InvalidProviderException,
 	InvalidTokenException,
 	ServiceUnavailableException,
-} from '../../exceptions';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import logger from '../../logger';
-import { respond } from '../../middleware/respond';
-import { AuthenticationService, UsersService } from '../../services';
-import type { AuthData, AuthDriverOptions, User } from '../../types';
-import asyncHandler from '../../utils/async-handler';
-import { getConfigFromEnv } from '../../utils/get-config-from-env';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { getMilliseconds } from '../../utils/get-milliseconds';
-import { Url } from '../../utils/url';
-import { LocalAuthDriver } from './local';
+} from '../../exceptions/index.js';
+import logger from '../../logger.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import { UsersService } from '../../services/users.js';
+import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { Url } from '../../utils/url.js';
+import { LocalAuthDriver } from './local.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -131,7 +134,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			const codeChallenge = generators.codeChallenge(payload['codeVerifier']);
 			tokenSet = await client.callback(
 				this.redirectUrl,
-				{ code: payload['code'], state: payload['state'] },
+				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge }
 			);
 			userInfo = tokenSet.claims();
@@ -160,15 +163,35 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
+		const userPayload = {
+			provider,
+			first_name: userInfo['given_name'],
+			last_name: userInfo['family_name'],
+			email: email,
+			external_identifier: identifier,
+			role: this.config['defaultRoleId'],
+			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
+		};
+
 		const userId = await this.fetchUserId(identifier);
 
 		if (userId) {
-			// Update user refreshToken if provided
-			if (tokenSet.refresh_token) {
-				await this.usersService.updateOne(userId, {
-					auth_data: JSON.stringify({ refreshToken: tokenSet.refresh_token }),
-				});
-			}
+			// Run hook so the end user has the chance to augment the
+			// user that is about to be updated
+			const updatedUserPayload = await emitter.emitFilter(
+				`auth.update`,
+				{},
+				{
+					identifier,
+					provider: this.config['provider'],
+					providerPayload: { accessToken: tokenSet.access_token, userInfo },
+				},
+				{ database: getDatabase(), schema: this.schema, accountability: null }
+			);
+
+			// Update user to update refresh_token and other properties that might have changed
+			await this.usersService.updateOne(userId, updatedUserPayload);
+
 			return userId;
 		}
 
@@ -180,16 +203,21 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsException();
 		}
 
+		// Run hook so the end user has the chance to augment the
+		// user that is about to be created
+		const updatedUserPayload = await emitter.emitFilter(
+			`auth.create`,
+			userPayload,
+			{
+				identifier,
+				provider: this.config['provider'],
+				providerPayload: { accessToken: tokenSet.access_token, userInfo },
+			},
+			{ database: getDatabase(), schema: this.schema, accountability: null }
+		);
+
 		try {
-			await this.usersService.createOne({
-				provider,
-				first_name: userInfo['given_name'],
-				last_name: userInfo['family_name'],
-				email: email,
-				external_identifier: identifier,
-				role: this.config['defaultRoleId'],
-				auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
-			});
+			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
 				logger.warn(e, '[OpenID] Failed to register user. User not unique');
@@ -338,6 +366,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					code: req.query['code'],
 					codeVerifier: verifier,
 					state: req.query['state'],
+					iss: req.query['iss'],
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated

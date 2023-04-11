@@ -1,5 +1,5 @@
 import api, { replaceQueue } from '@/api';
-import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_PROVIDER } from '@/constants';
+import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
 import formatTitle from '@directus/format-title';
@@ -76,7 +76,11 @@ export const useServerStore = defineStore('serverStore', () => {
 			.map((provider) => ({ text: formatTitle(provider.name), value: provider.name, driver: provider.driver }));
 
 		if (!auth.disableDefault) {
-			options.unshift({ text: i18n.global.t('default_provider'), value: DEFAULT_AUTH_PROVIDER, driver: 'default' });
+			options.unshift({
+				text: i18n.global.t('default_provider'),
+				value: DEFAULT_AUTH_PROVIDER,
+				driver: DEFAULT_AUTH_DRIVER,
+			});
 		}
 
 		return options;
