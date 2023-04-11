@@ -6,9 +6,9 @@ import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
 import { URL } from 'node:url';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import logger from '../logger';
-import { requestInterceptor } from './request-interceptor';
-import { validateIP } from './validate-ip';
+import logger from '../logger.js';
+import { requestInterceptor } from './request-interceptor.js';
+import { validateIP } from './validate-ip.js';
 
 vi.mock('axios');
 vi.mock('node:net');

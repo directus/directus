@@ -1,8 +1,8 @@
 import { Command } from 'commander';
-import create from './commands/create';
-import add from './commands/add';
-import build from './commands/build';
-import link from './commands/link';
+import add from './commands/add.js';
+import build from './commands/build.js';
+import create from './commands/create.js';
+import link from './commands/link.js';
 
 const pkg = require('../../../package.json');
 

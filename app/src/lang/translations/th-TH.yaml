@@ -256,6 +256,7 @@ o2m_relationship: ความสัมพันธ์แบบ One to Many
 m2m_relationship: ความสัมพันธ์แบบ Many to Many
 m2a_relationship: ความสัมพันธ์แบบ Many to Any
 invalid_item: ไอเท็มไม่ถูกต้อง
+modal: กล่อง
 next: ถัดไป
 field_name: ชื่อฟิลด์
 translations: การแปลภาษา
@@ -1241,7 +1242,6 @@ interfaces:
     edit_fields: แก้ไขฟิลด์
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
     sort: เรียง
-    field_name_placeholder: กรอกชื่อฟิลด์
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:
     slider: แถบเลื่อน

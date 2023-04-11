@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 
 export class InvalidOTPException extends BaseException {
 	constructor(message = 'Invalid user OTP.') {

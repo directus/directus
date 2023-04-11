@@ -1,9 +1,9 @@
 import express from 'express';
-import { ForbiddenException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { SettingsService } from '../services';
-import asyncHandler from '../utils/async-handler';
+import { ForbiddenException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { SettingsService } from '../services/settings.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
-import { toArray } from '@directus/shared/utils';
-import env from '../env';
+import { toArray } from '@directus/utils';
+import env from '../env.js';
 
 interface AuthProvider {
 	label: string;

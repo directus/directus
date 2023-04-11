@@ -1,7 +1,7 @@
-import type { DeepPartial } from '@directus/shared/types';
+import type { DeepPartial } from '@directus/types';
 import { expect, test } from 'vitest';
-import { InvalidQueryException } from '../../src/exceptions';
-import { ColPathProps, getColumnPath } from '../../src/utils/get-column-path';
+import { InvalidQueryException } from '../../src/exceptions/index.js';
+import { ColPathProps, getColumnPath } from '../../src/utils/get-column-path.js';
 
 /*
 {
