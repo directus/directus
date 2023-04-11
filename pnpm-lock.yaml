@@ -193,6 +193,9 @@ importers:
       commander:
         specifier: 9.5.0
         version: 9.5.0
+      content-disposition:
+        specifier: 0.5.4
+        version: 0.5.4
       cookie-parser:
         specifier: 1.4.6
         version: 1.4.6
@@ -432,6 +435,9 @@ importers:
       '@types/bytes':
         specifier: 3.1.1
         version: 3.1.1
+      '@types/content-disposition':
+        specifier: 0.5.5
+        version: 0.5.5
       '@types/cookie-parser':
         specifier: 1.4.3
         version: 1.4.3
@@ -6800,6 +6806,10 @@ packages:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
       '@types/node': 18.15.3
+    dev: true
+
+  /@types/content-disposition@0.5.5:
+    resolution: {integrity: sha512-v6LCdKfK6BwcqMo+wYW05rLS12S0ZO0Fl4w1h4aaZMD7bqT3gVUns6FvLJKGZHQmYn3SX55JWGpziwJRwVgutA==}
     dev: true
 
   /@types/cookie-parser@1.4.3:
