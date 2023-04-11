@@ -19,7 +19,7 @@ type ServerInfo = {
 	};
 };
 
-export type UsableProjectInfo = {
+type UsableProjectInfo = {
 	info: Ref<ServerInfo | undefined>;
 	parsedInfo: ComputedRef<{
 		directus: {
