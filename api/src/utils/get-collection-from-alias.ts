@@ -1,4 +1,4 @@
-import { AliasMap } from './get-column-path';
+import type { AliasMap } from './get-column-path.js';
 
 /**
  * Extract the collection of an alias within an aliasMap
@@ -10,4 +10,6 @@ export function getCollectionFromAlias(alias: string, aliasMap: AliasMap): strin
 			return aliasValue.collection;
 		}
 	}
+
+	return undefined;
 }
