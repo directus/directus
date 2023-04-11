@@ -31,10 +31,3 @@ TEST_DB=cockroachdb TEST_LOCAL=true pnpm -w run test:blackbox
 
 This will use `127.0.0.1:8055` as the URL for every test. Note: make sure to connect your local Directus database
 instance to the test database container found in docker-compose in this folder.
-
-### Watching for test changes
-
-Use `pnpm run test:watch` to enable Jest's `--watch` mode, especially useful in combination with the flags
-above.
-
-This _does not_ watch changes to Directus; it only watches changes to the tests.
