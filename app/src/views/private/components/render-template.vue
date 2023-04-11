@@ -3,17 +3,22 @@
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
 			<value-null v-if="part === null || (typeof part === 'object' && part.value === null)" />
-			<component
-				:is="`display-${part.component}`"
-				v-else-if="typeof part === 'object' && part.component"
-				v-bind="translate(part.options || {})"
-				:value="part.value"
-				:interface="part.interface"
-				:interface-options="part.interfaceOptions"
-				:type="part.type"
-				:collection="part.collection"
-				:field="part.field"
-			/>
+			<v-error-boundary v-else-if="typeof part === 'object' && part.component" :name="`display-${part.component}`">
+				<component
+					:is="`display-${part.component}`"
+					v-bind="part.options"
+					:value="part.value"
+					:interface="part.interface"
+					:interface-options="part.interfaceOptions"
+					:type="part.type"
+					:collection="part.collection"
+					:field="part.field"
+				/>
+
+				<template #fallback>
+					<span>{{ part.value }}</span>
+				</template>
+			</v-error-boundary>
 			<span v-else-if="typeof part === 'string'" :dir="direction">{{ translate(part) }}</span>
 			<span v-else>{{ part }}</span>
 		</template>
@@ -21,13 +26,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useFieldsStore } from '@/stores/fields';
-import { get } from 'lodash';
-import { Field } from '@directus/shared/types';
-import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { translate } from '@/utils/translate-object-values';
 import { useExtension } from '@/composables/use-extension';
+import { useFieldsStore } from '@/stores/fields';
+import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
+import { translate } from '@/utils/translate-literal';
+import { Field } from '@directus/types';
+import { get } from 'lodash';
+import { computed, ref } from 'vue';
 
 interface Props {
 	template: string;
@@ -159,6 +164,7 @@ function handleObject(fieldKey: string) {
 @import '@/styles/mixins/no-wrap';
 
 .render-template {
+	height: 100%;
 	position: relative;
 	max-width: 100%;
 	padding-right: 8px;

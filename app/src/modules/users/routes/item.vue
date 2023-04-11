@@ -201,8 +201,8 @@ import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { useCollection } from '@directus/shared/composables';
-import { Field } from '@directus/shared/types';
+import { useCollection } from '@directus/composables';
+import { Field } from '@directus/types';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -397,6 +397,7 @@ export default defineComponent({
 			try {
 				const savedItem: Record<string, any> = await save();
 				await setLang(savedItem);
+				await refreshCurrentUser();
 
 				revisionsDrawerDetail.value?.refresh?.();
 
@@ -432,6 +433,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
+				edits.value = {};
 				router.replace(`/users`);
 			} catch {
 				// `remove` will show the unexpected error dialog
@@ -446,8 +448,7 @@ export default defineComponent({
 			if (newLang && newLang !== locale.value) {
 				await setLanguage(newLang);
 
-				await fieldsStore.hydrate();
-				await collectionsStore.hydrate();
+				await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
 			}
 		}
 

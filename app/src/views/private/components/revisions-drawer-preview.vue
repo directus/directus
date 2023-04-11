@@ -13,7 +13,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType } from 'vue';
-import { Revision } from './types';
+import { Revision } from '@/types/revisions';
 
 export default defineComponent({
 	props: {

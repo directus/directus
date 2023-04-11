@@ -1,7 +1,8 @@
 import { Command } from 'commander';
-import create from './commands/create';
-import add from './commands/add';
-import build from './commands/build';
+import add from './commands/add.js';
+import build from './commands/build.js';
+import create from './commands/create.js';
+import link from './commands/link.js';
 
 const pkg = require('../../../package.json');
 
@@ -31,5 +32,11 @@ program
 	.option('--no-minify', 'disable minification')
 	.option('--sourcemap', 'include source maps in output')
 	.action(build);
+
+program
+	.command('link')
+	.description('Creates a symlink to the extension in the Directus extensions folder')
+	.argument('<path>', 'path to the extension folder of directus')
+	.action(link);
 
 program.parse(process.argv);

@@ -22,7 +22,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed } from 'vue';
-import { Revision } from './types';
+import { Revision } from '@/types/revisions';
 import { useFieldsStore } from '@/stores/fields';
 import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
 import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';

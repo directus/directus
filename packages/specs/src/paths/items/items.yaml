@@ -28,7 +28,7 @@ get:
                 items:
                   type: object
               meta:
-                $ref: '../../openapi.yaml#/components/x-metadata'
+                $ref: '../../openapi.yaml#/components/schemas/x-metadata'
     '401':
       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
 
@@ -43,6 +43,7 @@ post:
   requestBody:
     content:
       application/json:
+        # Intentionally empty, see https://github.com/directus/directus/pull/16294
         schema:
   responses:
     '200':

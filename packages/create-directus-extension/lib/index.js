@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
-const inquirer = require('inquirer');
-const { EXTENSION_LANGUAGES, EXTENSION_PACKAGE_TYPES, EXTENSION_TYPES } = require('@directus/shared/constants');
-const { create } = require('@directus/extensions-sdk/cli');
+import { inquirer } from 'inquirer';
+import { EXTENSION_LANGUAGES, EXTENSION_TYPES, BUNDLE_EXTENSION_TYPES } from '@directus/constants';
+import { create } from '@directus/extensions-sdk/cli';
 
 run();
 
@@ -16,7 +16,7 @@ async function run() {
 			type: 'list',
 			name: 'type',
 			message: 'Choose the extension type',
-			choices: EXTENSION_PACKAGE_TYPES,
+			choices: EXTENSION_TYPES,
 		},
 		{
 			type: 'input',
@@ -28,7 +28,7 @@ async function run() {
 			name: 'language',
 			message: 'Choose the language to use',
 			choices: EXTENSION_LANGUAGES,
-			when: ({ type }) => EXTENSION_TYPES.includes(type),
+			when: ({ type }) => BUNDLE_EXTENSION_TYPES.includes(type) === false,
 		},
 	]);
 

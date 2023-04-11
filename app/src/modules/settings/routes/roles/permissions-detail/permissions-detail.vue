@@ -48,7 +48,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, watch } from 'vue';
 import api from '@/api';
-import { Permission, Role } from '@directus/shared/types';
+import { Permission, Role } from '@directus/types';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRouter } from 'vue-router';
 import Actions from './components/actions.vue';
@@ -190,7 +190,11 @@ export default defineComponent({
 
 			try {
 				if (props.roleKey) {
-					const response = await api.get(`/roles/${props.roleKey}`);
+					const response = await api.get(`/roles/${props.roleKey}`, {
+						params: {
+							deep: { users: { _limit: 0 } },
+						},
+					});
 					role.value = response.data.data;
 				}
 
