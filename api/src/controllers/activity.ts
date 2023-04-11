@@ -168,7 +168,7 @@ router.delete(
 
 		const item = await adminService.readOne(req.params['pk']!, { fields: ['action'] });
 
-		if (!item || item['action'] !== 'comment') {
+		if (!item || item['action'] !== Action.COMMENT) {
 			throw new ForbiddenException();
 		}
 
