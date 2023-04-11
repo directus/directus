@@ -1,7 +1,8 @@
 {
 	"name": "directus",
-	"version": "10.0.0",
+	"version": "9.24.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
+  "type": "module",
 	"keywords": [
 		"directus",
 		"realtime",
@@ -28,7 +29,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
-		"directory": "api"
+		"directory": "directus"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "GPL-3.0-only",
@@ -50,15 +51,12 @@
 		}
 	],
 	"exports": {
-		".": "./dist/index.js",
-		"./*": "./dist/*.js",
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
 	"bin": {
 		"directus": "cli.js"
 	},
 	"dependencies": {
-		"@directus/api": "workspace:9.23.3"
+		"@directus/api": "workspace:9.24.0"
 	}
 }
