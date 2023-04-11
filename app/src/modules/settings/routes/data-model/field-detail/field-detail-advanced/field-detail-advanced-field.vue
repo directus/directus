@@ -38,7 +38,7 @@
 						name: t('language'),
 						meta: {
 							interface: 'system-language',
-							width: 'half',
+							width: 'full',
 							required: true,
 							display: 'formatted-value',
 							display_options: {
@@ -55,8 +55,8 @@
 						type: 'string',
 						name: t('translation'),
 						meta: {
-							interface: 'input',
-							width: 'half',
+							interface: 'input-multiline',
+							width: 'full',
 							required: true,
 							options: {
 								placeholder: t('translation_placeholder'),
