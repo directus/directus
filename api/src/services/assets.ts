@@ -1,29 +1,32 @@
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Range, Stat } from '@directus/storage';
-
-import { Accountability } from '@directus/shared/types';
-import { Semaphore } from 'async-mutex';
-import type { Readable } from 'node:stream';
-import { Knex } from 'knex';
+import type { Accountability } from '@directus/types';
+import type { Knex } from 'knex';
+import { clamp } from 'lodash-es';
 import { contentType } from 'mime-types';
+import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
 import sharp from 'sharp';
 import validateUUID from 'uuid-validate';
-import getDatabase from '../database';
-import env from '../env';
-import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions';
-import logger from '../logger';
-import { getStorage } from '../storage';
-import { AbstractServiceOptions, File, Transformation, TransformationParams, TransformationPreset } from '../types';
-import * as TransformationUtils from '../utils/transformations';
-import { AuthorizationService } from './authorization';
-
-sharp.concurrency(1);
-
-// Note: don't put this in the service. The service can be initialized in multiple places, but they
-// should all share the same semaphore instance.
-const semaphore = new Semaphore(env.ASSETS_TRANSFORM_MAX_CONCURRENT);
+import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { ForbiddenException } from '../exceptions/forbidden.js';
+import { IllegalAssetTransformation } from '../exceptions/illegal-asset-transformation.js';
+import { RangeNotSatisfiableException } from '../exceptions/range-not-satisfiable.js';
+import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
+import logger from '../logger.js';
+import { getStorage } from '../storage/index.js';
+import type {
+	AbstractServiceOptions,
+	File,
+	Transformation,
+	TransformationParams,
+	TransformationPreset,
+} from '../types/index.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import * as TransformationUtils from '../utils/transformations.js';
+import { AuthorizationService } from './authorization.js';
 
 export class AssetsService {
 	knex: Knex;
@@ -112,8 +115,7 @@ export class AssetsService {
 		const type = file.type;
 		const transforms = TransformationUtils.resolvePreset(transformation, file);
 
-		// We can only transform JPEG, PNG, and WebP
-		if (type && transforms.length > 0 && ['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].includes(type)) {
+		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 
 			const assetFilename =
@@ -143,39 +145,50 @@ export class AssetsService {
 			if (
 				!width ||
 				!height ||
-				width > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION ||
-				height > env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION
+				width > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] ||
+				height > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']
 			) {
 				throw new IllegalAssetTransformation(
 					`Image is too large to be transformed, or image size couldn't be determined.`
 				);
 			}
 
-			return await semaphore.runExclusive(async () => {
-				const readStream = await storage.location(file.storage).read(file.filename_disk, range);
-				const transformer = sharp({
-					limitInputPixels: Math.pow(env.ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
-					sequentialRead: true,
-					failOn: env.ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL,
+			const { queue, process } = sharp.counters();
+
+			if (queue + process > env['ASSETS_TRANSFORM_MAX_CONCURRENT']) {
+				throw new ServiceUnavailableException('Server too busy', {
+					service: 'files',
 				});
+			}
 
-				if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
+			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 
-				transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
-
-				readStream.on('error', (e: Error) => {
-					logger.error(e, `Couldn't transform file ${file.id}`);
-					readStream.unpipe(transformer);
-				});
-
-				await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
-
-				return {
-					stream: await storage.location(file.storage).read(assetFilename, range),
-					stat: await storage.location(file.storage).stat(assetFilename),
-					file,
-				};
+			const transformer = sharp({
+				limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'], 2),
+				sequentialRead: true,
+				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'],
 			});
+
+			transformer.timeout({
+				seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
+			});
+
+			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
+
+			transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
+
+			readStream.on('error', (e: Error) => {
+				logger.error(e, `Couldn't transform file ${file.id}`);
+				readStream.unpipe(transformer);
+			});
+
+			await storage.location(file.storage).write(assetFilename, readStream.pipe(transformer), type);
+
+			return {
+				stream: await storage.location(file.storage).read(assetFilename, range),
+				stat: await storage.location(file.storage).stat(assetFilename),
+				file,
+			};
 		} else {
 			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 			const stat = await storage.location(file.storage).stat(file.filename_disk);

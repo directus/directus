@@ -1,17 +1,18 @@
-import { Accountability, Action } from '@directus/shared/types';
-import { uniq } from 'lodash';
+import type { Accountability } from '@directus/types';
+import { Action } from '@directus/constants';
+import { uniq } from 'lodash-es';
 import validateUUID from 'uuid-validate';
-import env from '../env';
-import { ForbiddenException } from '../exceptions/forbidden';
-import logger from '../logger';
-import { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import { getPermissions } from '../utils/get-permissions';
-import { Url } from '../utils/url';
-import { userName } from '../utils/user-name';
-import { AuthorizationService } from './authorization';
-import { ItemsService } from './items';
-import { NotificationsService } from './notifications';
-import { UsersService } from './users';
+import env from '../env.js';
+import { ForbiddenException } from '../exceptions/forbidden.js';
+import logger from '../logger.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { getPermissions } from '../utils/get-permissions.js';
+import { Url } from '../utils/url.js';
+import { userName } from '../utils/user-name.js';
+import { AuthorizationService } from './authorization.js';
+import { ItemsService } from './items.js';
+import { NotificationsService } from './notifications.js';
+import { UsersService } from './users.js';
 
 export class ActivityService extends ItemsService {
 	notificationsService: NotificationsService;
@@ -23,11 +24,11 @@ export class ActivityService extends ItemsService {
 		this.usersService = new UsersService({ schema: this.schema });
 	}
 
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (data.action === Action.COMMENT && typeof data.comment === 'string') {
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (data['action'] === Action.COMMENT && typeof data['comment'] === 'string') {
 			const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 
-			const mentions = uniq(data.comment.match(usersRegExp) ?? []);
+			const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
 
 			const sender = await this.usersService.readOne(this.accountability!.user!, {
 				fields: ['id', 'first_name', 'last_name', 'email'],
@@ -42,9 +43,9 @@ export class ActivityService extends ItemsService {
 
 				const accountability: Accountability = {
 					user: userID,
-					role: user.role?.id ?? null,
-					admin: user.role?.admin_access ?? null,
-					app: user.role?.app_access ?? null,
+					role: user['role']?.id ?? null,
+					admin: user['role']?.admin_access ?? null,
+					app: user['role']?.app_access ?? null,
 				};
 
 				accountability.permissions = await getPermissions(accountability, this.schema);
@@ -53,7 +54,7 @@ export class ActivityService extends ItemsService {
 				const usersService = new UsersService({ schema: this.schema, accountability });
 
 				try {
-					await authorizationService.checkAccess('read', data.collection, data.item);
+					await authorizationService.checkAccess('read', data['collection'], data['item']);
 
 					const templateData = await usersService.readByQuery({
 						fields: ['id', 'first_name', 'last_name', 'email'],
@@ -61,11 +62,11 @@ export class ActivityService extends ItemsService {
 					});
 
 					const userPreviews = templateData.reduce((acc, user) => {
-						acc[user.id] = `<em>${userName(user)}</em>`;
+						acc[user['id']] = `<em>${userName(user)}</em>`;
 						return acc;
 					}, {} as Record<string, string>);
 
-					let comment = data.comment;
+					let comment = data['comment'];
 
 					for (const mention of mentions) {
 						const uuid = mention.substring(1);
@@ -83,18 +84,18 @@ ${userName(sender)} has mentioned you in a comment:
 
 ${comment}
 
-<a href="${new Url(env.PUBLIC_URL)
-						.addPath('admin', 'content', data.collection, data.item)
+<a href="${new Url(env['PUBLIC_URL'])
+						.addPath('admin', 'content', data['collection'], data['item'])
 						.toString()}">Click here to view.</a>
 `;
 
 					await this.notificationsService.createOne({
 						recipient: userID,
-						sender: sender.id,
-						subject: `You were mentioned in ${data.collection}`,
+						sender: sender['id'],
+						subject: `You were mentioned in ${data['collection']}`,
 						message,
-						collection: data.collection,
-						item: data.item,
+						collection: data['collection'],
+						item: data['item'],
 					});
 				} catch (err: any) {
 					if (err instanceof ForbiddenException) {

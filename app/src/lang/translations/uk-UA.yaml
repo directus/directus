@@ -245,6 +245,7 @@ float: Обтікання
 integer: Ціле число
 json: JSON
 xml: XML
+yaml: YAML
 string: Рядок
 text: Текст
 time: Час
@@ -295,6 +296,7 @@ o2m_relationship: Одне до багатьох відношеннь
 m2m_relationship: Багато до багатьох відношеннь
 m2a_relationship: Багато до будь-яких відношеннь
 invalid_item: Недійсний елемент
+modal: Модальне
 next: Уперед
 field_name: Назва поля
 translations: Переклади
@@ -786,10 +788,7 @@ label: Ярлик
 flows: Автоматизація
 flow: Автоматизація
 select_a_flow: Виберіть Автоматизацію
-run_flow_on_current_collection: Виконати Автоматизацію на Поточній Колекції
-run_flow_on_current: Виконати Автоматизацію на Вибраному Об'єкті
 run_flow_on_current_edited_confirm: Ця автоматизацією може внести зміни до вибраного об'єкту, ви впевнені що хочете її виконати?
-run_flow_on_selected: Спершу Виберіть Від Одного Об'єктів | Виконайте Автоматизацію над Вибраним Об'єктом | Виконайте Автоматизацію над {n} Вибраними Об'єктами
 run_flow_success: Автоматизацію {flow} успішно виконано
 trigger: Тригер
 trigger_options: Параметри Тригера
@@ -1132,6 +1131,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Порада
+    avif: AVIF
     mapping: Зіставлення
     basemaps: Карта-схеми
     basemaps_raster: Растровий
@@ -1629,7 +1629,6 @@ interfaces:
   system-folder:
     folder: Папка
     description: Обрати теку
-    field_hint: Тека для завантажених файлів. Не може вплинути на існуючі файли.
     root_name: Корінь файлової бібліотеки
     system_default: Стандартні налаштування
   select-radio:
@@ -1642,7 +1641,6 @@ interfaces:
     add_label: 'Ярлик «Створити новий»'
     sort: Сортування
     sort_placeholder: Ручний режим
-    field_name_placeholder: Введіть назву поля...
     field_note_placeholder: Примітка до поля...
     incompatible_data: Поточні дані не сумісні з інтерфейсом ретранслятора і будуть замінені під час додавання елементів до ретранслятора
   slider:
@@ -1940,6 +1938,10 @@ layouts:
     no_group: Без Групи
     not_all_loaded: Можна завантажити лише перші 1000 елементів.
 horizontal: Горизонтальний
+x_axis: Вісь X
+y_axis: Вісь Y
+show_x_only: Показувати лише вісь X
+show_y_only: Показувати лише вісь Y
 both: Обидва
 panels:
   metric:
@@ -2027,7 +2029,6 @@ operations:
     name: Надіслати сповіщення
     description: Надіслати сповіщення в застосунку одному або декільком користувачам
     recipient: Користувач
-    recipient_placeholder: Додати UUID користувача та натиснути Enter...
     message: Повідомлення
   request:
     name: Веб хук / URL запиту

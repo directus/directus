@@ -294,6 +294,7 @@ o2m_relationship: Relacja jeden do wielu
 m2m_relationship: Relacja wiele do wielu
 m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
+modal: Okno
 next: Następny
 field_name: Nazwa pola
 translations: Tłumaczenia
@@ -783,10 +784,7 @@ label: Etykieta
 flows: Przepływy
 flow: Przepływ
 select_a_flow: Wybierz przepływ
-run_flow_on_current_collection: Uruchom przepływ na bieżącej kolekcji
-run_flow_on_current: Uruchom przepływ na bieżącym elemencie
 run_flow_on_current_edited_confirm: Ten przedmiot może być aktualizowany przez ten przepływ, czy na pewno chcesz go wykonać?
-run_flow_on_selected: Najpierw wybierz jeden lub więcej elementów | Uruchom przepływ na 1 wybranym elemencie | Uruchom przepływ na {n} wybranych elementach
 run_flow_success: Przepływ "{flow}" wykonano pomyślnie
 trigger: Wyzwalacz
 trigger_options: Opcje wyzwalacza
@@ -1129,6 +1127,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Wskazówka
+    avif: AVIF
     mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
@@ -1625,7 +1624,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
-    field_hint: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
@@ -1638,7 +1636,6 @@ interfaces:
     add_label: 'Etykieta "Utwórz nowy"'
     sort: Sortuj
     sort_placeholder: Ręcznie
-    field_name_placeholder: Wprowadź nazwę pola...
     field_note_placeholder: Wprowadź opis pola...
     incompatible_data: Bieżące dane nie są kompatybilne z interfejsem iteratora i zostaną nadpisane podczas dodawania elementów do iteratora
   slider:
@@ -2085,7 +2082,6 @@ operations:
     name: Wyślij powiadomienie
     description: Wyślij powiadomienie w aplikacji do jednego lub więcej użytkowników
     recipient: Użytkownik
-    recipient_placeholder: Dodaj UUID użytkownika i naciśnij enter...
     message: Wiadomość
   request:
     name: Webhook / URL żądania
