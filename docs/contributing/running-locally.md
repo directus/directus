@@ -54,10 +54,25 @@ pnpm -r build
 Create an `.env` file under the `api` folder using vars from the online
 [config help](https://docs.directus.io/self-hosted/config-options)
 
+::: tip Docker Database Connection
+
+If you are using the [docker-compose.yml](../../docker-compose.yml) for your database. You will need to add the
+[Database Configuration](https://docs.directus.io/self-hosted/config-options.html#database) values along with the `KEY`
+& `SECRET` from [Security](https://docs.directus.io/self-hosted/config-options.html#security) to the `.env` file.
+
+:::
+
 ## 6. Initialize the database
 
 For this step, you'll need to already have a SQL database up-and-running, except if you're using the SQLite driver,
 which will create the database (file) for you.
+
+::: tip Admin Account
+
+Adding the `ADMIN_EMAIL` & `ADMIN_PASSWORD` to the `.env` before running the `bootstrap` command, will create the admin
+user you can use to login.
+
+:::
 
 To start the initialization run the following command:
 
@@ -67,6 +82,16 @@ pnpm --dir api cli bootstrap
 ```
 
 This will set-up the required tables for Directus and make sure all the migrations have run.
+
+:::tip M1/M2 MacBook & Postgres
+
+If you are running into issues with `postgres` on a M1/M2 Macs (arm64), you can try using
+`image: ghcr.io/baosystems/postgis:13-3.3` and include `platform: linux/arm64` to the
+[docker-compose.yml](../../docker-compose.yml) file.
+
+- (This is not officially supported, but provided as a work around to reduce memory usuage).
+
+:::
 
 ## 7. Start the development server
 

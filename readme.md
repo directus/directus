@@ -44,46 +44,6 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 <br />
 
-## Local Development
-
-<!-- Directus API Service -->
-
-1. Run `pnpm i` at the root `directus` folder.
-2. Run `pnpm -r build` at the root `directus` folder.
-3. Navigate to `/api`
-4. Create a ENV file named `.env`
-   - You can populate the environment variables from
-     [Configuration Files](https://docs.directus.io/self-hosted/config-options.html#configuration-files)
-     - **Note:** You will need to add at the Database config variables, along with the `KEY` & `SECRET`.
-5. Run `pnpm cli database install`
-6. Run `pnpm cli database migrate:latest` to run all migrations for the database.
-7. Run `pnpm cli roles create --role Administrator --admin` to create an admin role. This will return the id value for
-   the role created.
-8. Run `pnpm cli users create --email <email> --password <password> --role <role_id>` to create a new admin user and
-   return the user id.
-   - Example:
-     `pnpm cli users create --email email@directus.io --password secret_password --role b0600d5c-b768-4bbc-a8e4-49e89d35748a `
-9. Run `pnpm dev` to start the API service.
-
-<!-- Directus Admin App -->
-
-1. Navigate to `/app`.
-2. Create a ENV file named `.env.development`.
-   - You can populate the environment variables from
-     [Configuration Files](https://docs.directus.io/self-hosted/config-options.html#configuration-files)
-3. Run `pnpm -r run build` to build all required package dependencies.
-4. Navigate to `/app` and run `pnpm dev`.
-5. Navigate to your local Directus URL, and login with the credentials you just created.
-
-### Changing Local Database with Docker
-
-- To change from a local `sqlite` database, you can use anyone of the supported databases in the root
-  [docker-compose.yml](./docker-compose.yml) by running `docker compose up -d postgres redis minio`.
-
-**Note:** If you are trying to run `postgres` on a M1/M2 MacBook (arm64), you will need to change the postgres image to
-be `image: ghcr.io/baosystems/postgis:13-3.3` and include `platform: linux/arm64`. (This is not officially supported,
-but provided as a work around).
-
 ## ❤️ Contributing & Sponsoring
 
 Please read our [Contributing Guide](./contributing.md) before submitting Pull Requests.
@@ -93,6 +53,9 @@ All security vulnerabilities should be reported in accordance with our
 
 Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core
 team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
+
+See [Running Locally](https://docs.directus.io/contributing/running-locally.html) to get a local development version up
+and running.
 
 <br />
 
