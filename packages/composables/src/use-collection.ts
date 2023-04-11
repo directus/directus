@@ -37,7 +37,7 @@ export function useCollection(collectionKey: string | Ref<string | null>): Usabl
 		const defaults: Record<string, any> = {};
 
 		for (const field of fields.value) {
-			if (field.schema?.default_value) {
+			if (field.schema !== null && 'default_value' in field.schema) {
 				defaults[field.field] = field.schema.default_value;
 			}
 		}

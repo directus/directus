@@ -474,8 +474,6 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
-	if (isEmpty(item)) return;
-
 	if (newItem) {
 		create(item);
 	} else {
