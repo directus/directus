@@ -5,7 +5,8 @@
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
 		"lint": "eslint .",
-		"test": "pnpm --recursive --filter '!tests-blackbox' test"
+		"test": "pnpm --recursive --filter '!tests-blackbox' test",
+		"blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "5.55.0",
