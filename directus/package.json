@@ -57,6 +57,6 @@
 		"directus": "cli.js"
 	},
 	"dependencies": {
-		"@directus/api": "workspace:9.24.0"
+		"@directus/api": "workspace:*"
 	}
 }
