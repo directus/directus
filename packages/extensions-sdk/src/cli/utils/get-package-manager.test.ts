@@ -1,6 +1,6 @@
-import { vi, afterEach, expect, test } from 'vitest';
-import getPackageManagerAgent from './get-package-manager-agent';
-import getPackageManager from './get-package-manager';
+import { afterEach, expect, test, vi } from 'vitest';
+import getPackageManagerAgent from './get-package-manager-agent.js';
+import getPackageManager from './get-package-manager.js';
 
 vi.mock('./get-package-manager-agent');
 

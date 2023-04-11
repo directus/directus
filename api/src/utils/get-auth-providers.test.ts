@@ -1,5 +1,5 @@
 import { describe, expect, vi, test } from 'vitest';
-import { getAuthProviders } from '../../src/utils/get-auth-providers';
+import { getAuthProviders } from '../../src/utils/get-auth-providers.js';
 
 let factoryEnv: { [k: string]: any } = {};
 

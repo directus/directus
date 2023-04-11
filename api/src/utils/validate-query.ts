@@ -1,10 +1,10 @@
+import type { Query } from '@directus/types';
 import Joi from 'joi';
-import { isPlainObject, uniq } from 'lodash';
-import { InvalidQueryException } from '../exceptions';
-import { Query } from '@directus/shared/types';
+import { isPlainObject, uniq } from 'lodash-es';
 import { stringify } from 'wellknown';
-import { calculateFieldDepth } from './calculate-field-depth';
-import env from '../env';
+import env from '../env.js';
+import { InvalidQueryException } from '../exceptions/invalid-query.js';
+import { calculateFieldDepth } from './calculate-field-depth.js';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -12,11 +12,11 @@ const querySchema = Joi.object({
 	sort: Joi.array().items(Joi.string()),
 	filter: Joi.object({}).unknown(),
 	limit: Joi.number().integer().min(-1),
-	offset: Joi.number().integer().min(1),
+	offset: Joi.number().integer().min(0),
 	page: Joi.number().integer().min(0),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
-	export: Joi.string().valid('json', 'csv', 'xml'),
+	export: Joi.string().valid('csv', 'json', 'xml', 'yaml'),
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),
@@ -173,7 +173,7 @@ function validateAlias(alias: any) {
 }
 
 function validateRelationalDepth(query: Query) {
-	const maxRelationalDepth = Number(env.MAX_RELATIONAL_DEPTH) > 2 ? Number(env.MAX_RELATIONAL_DEPTH) : 2;
+	const maxRelationalDepth = Number(env['MAX_RELATIONAL_DEPTH']) > 2 ? Number(env['MAX_RELATIONAL_DEPTH']) : 2;
 
 	// Process the fields in the same way as api/src/utils/get-ast-from-query.ts
 	let fields = ['*'];

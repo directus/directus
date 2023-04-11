@@ -68,7 +68,7 @@ import { defineComponent, computed, ref, provide, watch } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
-import { Permission } from '@directus/shared/types';
+import { Permission } from '@directus/types';
 import api from '@/api';
 import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';

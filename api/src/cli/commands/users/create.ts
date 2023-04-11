@@ -1,7 +1,7 @@
-import { getSchema } from '../../../utils/get-schema';
-import { UsersService } from '../../../services';
-import getDatabase from '../../../database';
-import logger from '../../../logger';
+import { getSchema } from '../../../utils/get-schema.js';
+import { UsersService } from '../../../services/users.js';
+import getDatabase from '../../../database/index.js';
+import logger from '../../../logger.js';
 
 export default async function usersCreate({
 	email,

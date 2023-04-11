@@ -1,4 +1,4 @@
-import { DatabaseHelper } from '../types';
+import { DatabaseHelper } from '../types.js';
 import { parseISO } from 'date-fns';
 
 export abstract class DateHelper extends DatabaseHelper {
