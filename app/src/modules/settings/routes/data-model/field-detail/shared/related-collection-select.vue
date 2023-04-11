@@ -20,6 +20,7 @@
 						v-for="availableCollection in availableCollections"
 						:key="availableCollection.collection"
 						:active="modelValue === availableCollection.collection"
+						:disabled="availableCollection.meta?.singleton"
 						clickable
 						@click="$emit('update:modelValue', availableCollection.collection)"
 					>

@@ -196,6 +196,7 @@ o2m_relationship: Ena-na-več povezava
 m2m_relationship: Več-na-več povezava
 m2a_relationship: Več-na-karkoli povezava
 invalid_item: Neveljaven zapis
+modal: Modalno
 next: Naslednje
 field_name: Ime polja
 translations: Prevodi
@@ -1170,7 +1171,6 @@ interfaces:
     edit_fields: Uredi polja
     add_label: 'Oznaka za "Ustvari novo"'
     sort: Razvrsti
-    field_name_placeholder: Vnesite ime polja ...
     field_note_placeholder: Vnesite opis polja ...
   slider:
     slider: Drsnik

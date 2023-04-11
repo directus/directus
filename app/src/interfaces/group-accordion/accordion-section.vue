@@ -29,7 +29,8 @@
 						:batch-mode="batchMode"
 						:disabled="disabled"
 						:direction="direction"
-						nested
+						:show-no-visible-fields="false"
+						:show-validation-errors="false"
 						@update:model-value="$emit('apply', $event)"
 					/>
 				</div>
@@ -41,8 +42,8 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { merge, isNil } from 'lodash';
-import { Field } from '@directus/shared/types';
-import { ValidationError } from '@directus/shared/types';
+import { Field } from '@directus/types';
+import { ValidationError } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

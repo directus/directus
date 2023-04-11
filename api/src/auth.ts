@@ -1,17 +1,22 @@
-import getDatabase from './database';
-import env from './env';
-import logger from './logger';
-import { AuthDriver } from './auth/auth';
-import { LocalAuthDriver, OAuth2AuthDriver, OpenIDAuthDriver, LDAPAuthDriver, SAMLAuthDriver } from './auth/drivers';
+import { toArray } from '@directus/utils';
+import type { AuthDriver } from './auth/auth.js';
+import {
+	LDAPAuthDriver,
+	LocalAuthDriver,
+	OAuth2AuthDriver,
+	OpenIDAuthDriver,
+	SAMLAuthDriver,
+} from './auth/drivers/index.js';
+import { DEFAULT_AUTH_PROVIDER } from './constants.js';
+import getDatabase from './database/index.js';
+import env from './env.js';
+import { InvalidConfigException } from './exceptions/invalid-config.js';
+import logger from './logger.js';
+import type { AuthDriverOptions } from './types/index.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { getSchema } from './utils/get-schema.js';
 
-import { DEFAULT_AUTH_PROVIDER } from './constants';
-import { InvalidConfigException } from './exceptions';
-import { AuthDriverOptions } from './types';
-import { getConfigFromEnv } from './utils/get-config-from-env';
-import { getSchema } from './utils/get-schema';
-import { toArray } from '@directus/shared/utils';
-
-const providerNames = toArray(env.AUTH_PROVIDERS);
+const providerNames = toArray(env['AUTH_PROVIDERS']);
 
 const providers: Map<string, AuthDriver> = new Map();
 
@@ -27,12 +32,12 @@ export async function registerAuthProviders(): Promise<void> {
 	const options = { knex: getDatabase(), schema: await getSchema() };
 
 	// Register default provider if not disabled
-	if (!env.AUTH_DISABLE_DEFAULT) {
+	if (!env['AUTH_DISABLE_DEFAULT']) {
 		const defaultProvider = getProviderInstance('local', options)!;
 		providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
 	}
 
-	if (!env.AUTH_PROVIDERS) {
+	if (!env['AUTH_PROVIDERS']) {
 		return;
 	}
 
@@ -84,4 +89,6 @@ function getProviderInstance(
 		case 'saml':
 			return new SAMLAuthDriver(options, config);
 	}
+
+	return undefined;
 }

@@ -28,9 +28,6 @@ const mockServerInfo: Info = {
 		public_note: null,
 		custom_css: null,
 	},
-	flows: {
-		execAllowedModules: ['@directus/shared'],
-	},
 	directus: {
 		version: '10.10.10',
 	},

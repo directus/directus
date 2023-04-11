@@ -296,6 +296,7 @@ o2m_relationship: Egy a Többhöz kapcsolat
 m2m_relationship: Több a Többhöz kapcsolat
 m2a_relationship: M2A kapcsolat (polimorf asszociációs leképezéshez több táblából)
 invalid_item: Érvénytelen elem
+modal: Ablak
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
@@ -787,10 +788,7 @@ label: Címke
 flows: Folyamatok
 flow: Folyamat
 select_a_flow: Válasszon egy folyamatot
-run_flow_on_current_collection: Futtassa a folyamatot az aktuális gyűjteményben
-run_flow_on_current: Folyamat futtatása a jelenlegi tételen
 run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
-run_flow_on_selected: Válassz ki egy vagy több elemet | Futtasd a folyamatot 1 kiválasztott elemen | Futtasd a folyamatot {n} kiválasztott elemen
 run_flow_success: Folyamat "{flow}" sikeresen futtatva
 trigger: Eseményindító
 trigger_options: Trigger opciók
@@ -1630,7 +1628,6 @@ interfaces:
   system-folder:
     folder: Könyvtár
     description: Válasszon egy mappát
-    field_hint: Mappa a feltöltött fájlok számára. Nem érinti a meglévő fájlokat.
     root_name: Fájlok gyökérkönyvtára
     system_default: Rendszer alapértelmezései
   select-radio:
@@ -1643,7 +1640,6 @@ interfaces:
     add_label: '"Új létrehozása" címke'
     sort: Rendezés
     sort_placeholder: Manuális
-    field_name_placeholder: Mezőnév megadása...
     field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
     incompatible_data: Az aktuális adatok nem kompatibilisek az átjátszó interfésszel, és felülbírálásra kerülnek, amikor elemeket adunk az átjátszóhoz
   slider:
@@ -1941,7 +1937,28 @@ layouts:
     no_group: Keresés és szűrés engedélyezése
     not_all_loaded: Csak az első 100 elemet sikerült betölteni.
 horizontal: Horizontális
+vertical: Függőleges
+x_axis: X-tengely
+y_axis: Y tengely
+y_axis_function: Y tengelyes függvény
+show_x_only: Csak az X tengely látszódjon
+show_y_only: Csak az Y tengely látszódjon
+show_data_label: Adat címke mutatása
 both: Mindkettő
+show_axis_labels: Tengely címke mutatása
+function: Függvény
+half_circle: Félkör
+full_circle: Teljes kör
+stroke_width: Tollvastagság
+rounded_stroke: Görbe vonal
+thin: Vékony
+medium: Közepes
+broad: Széles
+show_labels: Címkék megjelenítése
+show_legend: Mutasd a magyarázatot
+right: Jobb
+left: Balra
+donut: Fánk
 panels:
   metric:
     name: Metrikus
@@ -1968,6 +1985,7 @@ panels:
   linechart:
     name: Vonaldiagram
     description: Vonaldiagram egy mező változásának összehasonlításához
+    disabled_grouping: Kikapcsolva, amikor csoportosítás van kiválasztva.
     disabled_no_grouping: Letiltva, ha nincs kiválasztva csoportosítás.
     show_marker: Eszköztipp-jelölő megjelenítése
     curve_type: Görbe típusa
@@ -2072,7 +2090,6 @@ operations:
     name: Értesítés küldése
     description: Alkalmazáson belüli értesítés küldése egy vagy több felhasználónak
     recipient: Felhasználó
-    recipient_placeholder: Adjon hozzá felhasználói UUID-t, és nyomja meg az Enter-t...
     message: Üzenet
   request:
     name: Webhook / URL-kérés
@@ -2098,3 +2115,9 @@ operations:
     flows: Folyamatok
     flow: Folyamat
     data: Adat
+    iteration_mode: Iteráló mód
+    iteration_mode_note: Tömbökön iteráló mód.
+    serial: Soros
+    parallel: Párhuzamos
+    batch: Tömeges
+    batch_size: Darabszám

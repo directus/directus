@@ -1,19 +1,19 @@
-import { toArray } from '@directus/shared/utils';
+import formatTitle from '@directus/format-title';
+import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
 import express, { RequestHandler } from 'express';
 import Joi from 'joi';
 import path from 'path';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { FilesService, MetaService } from '../services';
-import { File, PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
-
-// @ts-ignore
-import formatTitle from '@directus/format-title';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { FilesService } from '../services/files.js';
+import { MetaService } from '../services/meta.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
-	const existingPrimaryKey = req.params.pk || undefined;
+	const existingPrimaryKey = req.params['pk'] || undefined;
 
 	/**
 	 * The order of the fields in multipart/form-data is important. We require that all fields
@@ -45,7 +45,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	 * the row in directus_files async during the upload of the actual file.
 	 */
 
-	let disk: string = toArray(env.STORAGE_LOCATIONS)[0];
+	let disk: string = toArray(env['STORAGE_LOCATIONS'])[0];
 	let payload: any = {};
 	let fileCount = 0;
 
@@ -70,17 +70,16 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		fileCount++;
 
-		if (!payload.title) {
-			payload.title = formatTitle(path.parse(filename).name);
+		if (!existingPrimaryKey) {
+			if (!payload.title) {
+				payload.title = formatTitle(path.parse(filename).name);
+			}
+
+			payload.filename_download = filename;
 		}
 
-		const payloadWithRequiredFields: Partial<File> & {
-			filename_download: string;
-			type: string;
-			storage: string;
-		} = {
+		const payloadWithRequiredFields = {
 			...payload,
-			filename_download: filename,
 			type: mimeType,
 			storage: payload.storage || disk,
 		};
@@ -95,6 +94,8 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		} catch (error: any) {
 			busboy.emit('error', error);
 		}
+
+		return undefined;
 	});
 
 	busboy.on('error', (error: Error) => {
@@ -113,7 +114,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 				return next(new InvalidPayloadException(`No files were included in the body`));
 			}
 
-			res.locals.savedFiles = savedFiles;
+			res.locals['savedFiles'] = savedFiles;
 			return next();
 		}
 	}
@@ -130,7 +131,7 @@ router.post(
 		let keys: PrimaryKey | PrimaryKey[] = [];
 
 		if (req.is('multipart/form-data')) {
-			keys = res.locals.savedFiles;
+			keys = res.locals['savedFiles'];
 		} else {
 			keys = await service.createOne(req.body);
 		}
@@ -139,14 +140,14 @@ router.post(
 			if (Array.isArray(keys) && keys.length > 1) {
 				const records = await service.readMany(keys, req.sanitizedQuery);
 
-				res.locals.payload = {
+				res.locals['payload'] = {
 					data: records,
 				};
 			} else {
-				const key = Array.isArray(keys) ? keys[0] : keys;
+				const key = Array.isArray(keys) ? keys[0]! : keys;
 				const record = await service.readOne(key, req.sanitizedQuery);
 
-				res.locals.payload = {
+				res.locals['payload'] = {
 					data: record,
 				};
 			}
@@ -186,7 +187,7 @@ router.post(
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: record || null };
+			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -223,7 +224,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
 
-	res.locals.payload = { data: result, meta };
+	res.locals['payload'] = { data: result, meta };
 	return next();
 });
 
@@ -238,8 +239,8 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
-		res.locals.payload = { data: record || null };
+		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
+		res.locals['payload'] = { data: record || null };
 		return next();
 	}),
 	respond
@@ -261,12 +262,13 @@ router.patch(
 		} else if (req.body.keys) {
 			keys = await service.updateMany(req.body.keys, req.body.data);
 		} else {
-			keys = await service.updateByQuery(req.body.query, req.body.data);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			keys = await service.updateByQuery(sanitizedQuery, req.body.data);
 		}
 
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals.payload = { data: result || null };
+			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -289,11 +291,11 @@ router.patch(
 			schema: req.schema,
 		});
 
-		await service.updateOne(req.params.pk, req.body);
+		await service.updateOne(req.params['pk']!, req.body);
 
 		try {
-			const record = await service.readOne(req.params.pk, req.sanitizedQuery);
-			res.locals.payload = { data: record || null };
+			const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
+			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -310,7 +312,7 @@ router.patch(
 router.delete(
 	'/',
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -321,7 +323,8 @@ router.delete(
 		} else if (req.body.keys) {
 			await service.deleteMany(req.body.keys);
 		} else {
-			await service.deleteByQuery(req.body.query);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			await service.deleteByQuery(sanitizedQuery);
 		}
 
 		return next();
@@ -331,13 +334,13 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params.pk);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),
