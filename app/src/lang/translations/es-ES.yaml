@@ -1130,7 +1130,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: Mapeo
     basemaps: Mapas basales
     basemaps_raster: Raster
@@ -1914,7 +1913,13 @@ layouts:
     advanced: Avanzado
     not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 horizontal: Horizontal
+show_data_label: Mostrar Etiqueta de Datos
 both: Ambos
+function: Función
+show_labels: Mostrar etiquetas
+show_legend: Mostrar leyenda
+right: Derecha
+left: Izquierda
 panels:
   metric:
     name: Métrico
