@@ -15,7 +15,15 @@ export default function (
 	expandedParentClass = '',
 	xAxis = false,
 	emit: (
-		event: 'beforeEnter' | 'enter' | 'afterEnter' | 'enterCancelled' | 'leave' | 'afterLeave' | 'leaveCancelled',
+		event:
+			| 'beforeEnter'
+			| 'enter'
+			| 'afterEnter'
+			| 'enterCancelled'
+			| 'beforeLeave'
+			| 'leave'
+			| 'afterLeave'
+			| 'leaveCancelled',
 		...args: any[]
 	) => void
 ): Record<string, any> {
@@ -72,19 +80,36 @@ export default function (
 			resetStyles(el);
 		},
 
-		leave(el: HTMLExpandElement) {
-			emit('leave');
+		beforeLeave(el: HTMLExpandElement) {
+			emit('beforeLeave');
 
+			el._parent = el.parentNode as (Node & ParentNode & HTMLElement) | null;
 			el._initialStyle = {
-				transition: '',
-				visibility: '',
+				transition: el.style.transition,
+				visibility: el.style.visibility,
 				overflow: el.style.overflow,
 				[sizeProperty]: el.style[sizeProperty],
 			};
+		},
 
+		leave(el: HTMLExpandElement) {
+			emit('leave');
+
+			const initialStyle = el._initialStyle;
+			if (!initialStyle) return;
+
+			el.style.setProperty('transition', 'none', 'important');
 			el.style.overflow = 'hidden';
 			el.style[sizeProperty] = `${el[offsetProperty]}px`;
+
 			void el.offsetHeight; // force reflow
+
+			el.style.transition =
+				initialStyle.transition !== '' ? initialStyle.transition : `${sizeProperty} var(--medium) var(--transition)`;
+
+			if (expandedParentClass && el._parent) {
+				el._parent.classList.add(expandedParentClass);
+			}
 
 			requestAnimationFrame(() => (el.style[sizeProperty] = '0'));
 		},

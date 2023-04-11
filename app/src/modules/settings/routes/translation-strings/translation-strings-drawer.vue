@@ -50,7 +50,7 @@
 import { ref, computed, watch, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
-import { Field, DeepPartial } from '@directus/shared/types';
+import { Field, DeepPartial } from '@directus/types';
 import { useTranslationStrings, TranslationString } from '@/composables/use-translation-strings';
 
 interface Props {
@@ -133,6 +133,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 								interface: 'system-language',
 								width: 'half',
 								display: 'formatted-value',
+								required: true,
 								display_options: {
 									font: 'monospace',
 									color: 'var(--primary)',
@@ -147,6 +148,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 							meta: {
 								interface: 'input',
 								width: 'half',
+								required: true,
 								options: {
 									placeholder: '$t:field_options.directus_collections.translation_placeholder',
 								},

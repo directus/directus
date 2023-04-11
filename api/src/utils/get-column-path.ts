@@ -1,6 +1,6 @@
-import { Relation, SchemaOverview } from '@directus/shared/types';
-import { getRelationInfo } from './get-relation-info';
-import { InvalidQueryException } from '../exceptions';
+import type { Relation, SchemaOverview } from '@directus/types';
+import { InvalidQueryException } from '../exceptions/index.js';
+import { getRelationInfo } from './get-relation-info.js';
 
 export type AliasMap = { [key: string]: { alias: string; collection: string } };
 
@@ -15,7 +15,7 @@ export type ColPathProps = {
 export type ColPathResult = {
 	columnPath: string;
 	targetCollection: string;
-	addNestedPkField?: string;
+	addNestedPkField: string | undefined;
 };
 
 /**
@@ -36,20 +36,20 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 		/**
 		 * For A2M fields, the path can contain an optional collection scope <field>:<scope>
 		 */
-		const pathRoot = pathParts[0].split(':')[0];
-		const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot);
+		const pathRoot = pathParts[0]!.split(':')[0];
+		const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot!);
 
 		if (!relation) {
 			throw new InvalidQueryException(`"${parentCollection}.${pathRoot}" is not a relational field`);
 		}
 
-		const alias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`]?.alias : aliasMap[pathParts[0]]?.alias;
+		const alias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`]?.alias : aliasMap[pathParts[0]!]?.alias;
 		const remainingParts = pathParts.slice(1);
 
 		let parent: string;
 
 		if (relationType === 'a2o') {
-			const pathScope = pathParts[0].split(':')[1];
+			const pathScope = pathParts[0]!.split(':')[1];
 
 			if (!pathScope) {
 				throw new InvalidQueryException(`You have to provide a collection scope when sorting on a many-to-any item`);
@@ -65,13 +65,16 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 		// Top level alias field
 		if (schema && !((remainingParts[0] ?? parent).includes('(') && (remainingParts[0] ?? parent).includes(')'))) {
 			if (remainingParts.length === 0) {
-				remainingParts.push(schema.collections[parent].primary);
-				addNestedPkField = schema.collections[parent].primary;
+				remainingParts.push(schema.collections[parent]!.primary);
+				addNestedPkField = schema.collections[parent]!.primary;
 			}
 			// Nested level alias field
-			else if (remainingParts.length === 1 && schema.collections[parent].fields[remainingParts[0]].type === 'alias') {
-				remainingParts.push(schema.collections[relation!.related_collection!].primary);
-				addNestedPkField = schema.collections[relation!.related_collection!].primary;
+			else if (
+				remainingParts.length === 1 &&
+				schema.collections[parent]!.fields[remainingParts[0]!]!.type === 'alias'
+			) {
+				remainingParts.push(schema.collections[relation!.related_collection!]!.primary);
+				addNestedPkField = schema.collections[relation!.related_collection!]!.primary;
 			}
 		}
 

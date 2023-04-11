@@ -1,9 +1,9 @@
 import express from 'express';
-import { ForbiddenException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { SettingsService } from '../services';
-import asyncHandler from '../utils/async-handler';
+import { ForbiddenException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { SettingsService } from '../services/settings.js';
+import asyncHandler from '../utils/async-handler.js';
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get(
 			schema: req.schema,
 		});
 		const records = await service.readSingleton(req.sanitizedQuery);
-		res.locals.payload = { data: records || null };
+		res.locals['payload'] = { data: records || null };
 		return next();
 	}),
 	respond
@@ -34,7 +34,7 @@ router.patch(
 
 		try {
 			const record = await service.readSingleton(req.sanitizedQuery);
-			res.locals.payload = { data: record || null };
+			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();

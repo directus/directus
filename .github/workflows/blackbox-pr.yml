@@ -6,8 +6,8 @@ on:
       - main
     paths:
       - api/**
-      - tests-blackbox/**
-      - packages/shared/**
+      - tests/blackbox/**
+      - packages/**
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/blackbox-pr.yml
@@ -30,14 +30,9 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Reinstall production dependencies only
-        run: pnpm install --prod
-
-      - name: Reinstall dev dependencies in workspace root
-        run: pnpm install --workspace-root --dev
-
       - name: Start services
-        run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
+        run:
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=sqlite3 pnpm run -w test:blackbox
+        run: TEST_DB=sqlite3 pnpm run test:blackbox

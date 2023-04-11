@@ -1,5 +1,5 @@
-import { AbstractServiceOptions } from '../types';
-import { ItemsService } from './items';
+import type { AbstractServiceOptions } from '../types/index.js';
+import { ItemsService } from './items.js';
 
 export class PresetsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

@@ -3,6 +3,7 @@
 
 	<v-list-item
 		v-else
+		v-show="!item.hidden"
 		:active="isActive"
 		:disabled="item.disabled"
 		clickable

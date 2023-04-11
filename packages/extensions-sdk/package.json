@@ -1,8 +1,9 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "9.22.1",
+	"version": "9.24.0",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
+	"type": "module",
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
@@ -14,24 +15,12 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"author": "Nicola Krumschmidt",
 	"exports": {
-		".": {
-			"import": {
-				"types": "./dist/esm/index.d.ts",
-				"default": "./dist/esm/index.js"
-			},
-			"require": {
-				"types": "./dist/cjs/index.d.ts",
-				"default": "./dist/cjs/index.js"
-			}
-		},
-		"./cli": {
-			"import": "./dist/esm/cli/index.js",
-			"require": "./dist/cjs/cli/index.js"
-		},
+		".": "./dist/index.js",
+		"./cli": "./dist/cli/index.js",
 		"./package.json": "./package.json"
 	},
-	"main": "dist/cjs/index.js",
-	"types": "dist/cjs/index.d.ts",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"bin": {
 		"directus-extension": "cli.js"
 	},
@@ -41,42 +30,42 @@
 		"!**/*.d.ts.map"
 	],
 	"scripts": {
-		"build": "concurrently --prefix-colors auto --passthrough-arguments \"pnpm:build:* {@}\"",
-		"build:esm": "tsc --project ./tsconfig.json --module ES2015 --outDir ./dist/esm",
-		"build:cjs": "tsc --project ./tsconfig.json --module CommonJS --outDir ./dist/cjs",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage",
-		"dev": "pnpm build -- -w --preserveWatchOutput --incremental"
+		"build": "tsc --build",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@directus/shared": "workspace:*",
-		"@rollup/plugin-commonjs": "24.0.0",
+		"@directus/composables": "workspace:*",
+		"@directus/constants": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "workspace:*",
+		"@rollup/plugin-commonjs": "23.0.4",
 		"@rollup/plugin-json": "6.0.0",
 		"@rollup/plugin-node-resolve": "15.0.1",
 		"@rollup/plugin-replace": "5.0.2",
-		"@rollup/plugin-terser": "0.2.1",
+		"@rollup/plugin-terser": "0.4.0",
 		"@rollup/plugin-virtual": "3.0.1",
-		"@vue/compiler-sfc": "3.2.45",
-		"chalk": "4.1.1",
-		"commander": "9.4.1",
-		"esbuild": "0.16.10",
+		"@vue/compiler-sfc": "3.2.47",
+		"chalk": "4.1.2",
+		"commander": "9.5.0",
+		"esbuild": "0.17.11",
 		"execa": "5.1.1",
 		"fs-extra": "11.1.0",
-		"inquirer": "8.2.4",
-		"ora": "5.4.0",
-		"rollup": "3.7.5",
+		"inquirer": "8.2.5",
+		"ora": "5.4.1",
+		"rollup": "3.19.1",
 		"rollup-plugin-esbuild": "5.0.0",
 		"rollup-plugin-styles": "4.0.0",
 		"rollup-plugin-vue": "6.0.0"
 	},
 	"devDependencies": {
-		"@types/fs-extra": "9.0.13",
-		"@types/inquirer": "8.2.1",
-		"@vitest/coverage-c8": "0.26.2",
+		"@directus/tsconfig": "0.0.6",
+		"@types/fs-extra": "11.0.1",
+		"@types/inquirer": "8.2.6",
+		"@vitest/coverage-c8": "0.29.3",
 		"concurrently": "7.6.0",
-		"typescript": "4.9.4",
-		"vitest": "0.26.2"
+		"typescript": "4.9.5",
+		"vitest": "0.29.3"
 	},
 	"engines": {
 		"node": ">=12.20.0"

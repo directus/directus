@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { toRefs } from 'vue';
-import { useGroupableParent } from '@directus/shared/composables';
+import { useGroupableParent } from '@directus/composables';
 
 interface Props {
 	/** Model what elements should be currently active */

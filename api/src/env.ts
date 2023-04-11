@@ -3,12 +3,15 @@
  * For all possible keys, see: https://docs.directus.io/self-hosted/config-options/
  */
 
+import { parseJSON, toArray } from '@directus/utils';
 import dotenv from 'dotenv';
 import fs from 'fs';
-import { clone, toNumber, toString } from 'lodash';
+import { clone, toNumber, toString } from 'lodash-es';
 import path from 'path';
-import { requireYAML } from './utils/require-yaml';
-import { toArray, parseJSON } from '@directus/shared/utils';
+import { requireYAML } from './utils/require-yaml.js';
+
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
 
 // keeping this here for now to prevent a circular import to constants.ts
 const allowedEnvironmentVars = [
@@ -23,7 +26,9 @@ const allowedEnvironmentVars = [
 	'ROOT_REDIRECT',
 	'SERVE_APP',
 	'GRAPHQL_INTROSPECTION',
+	'MAX_BATCH_MUTATION',
 	'LOGGER_.+',
+	'ROBOTS_TXT',
 	// server
 	'SERVER_.+',
 	// database
@@ -57,6 +62,7 @@ const allowedEnvironmentVars = [
 	'CORS_CREDENTIALS',
 	'CORS_MAX_AGE',
 	// rate limiting
+	'RATE_LIMITER_GLOBAL_.+',
 	'RATE_LIMITER_.+',
 	// cache
 	'CACHE_ENABLED',
@@ -75,6 +81,7 @@ const allowedEnvironmentVars = [
 	'CACHE_REDIS_PASSWORD',
 	'CACHE_MEMCACHE',
 	'CACHE_VALUE_MAX_SIZE',
+	'CACHE_SKIP_ALLOWED',
 	'CACHE_HEALTHCHECK_THRESHOLD',
 	// storage
 	'STORAGE_LOCATIONS',
@@ -101,6 +108,7 @@ const allowedEnvironmentVars = [
 	'ASSETS_TRANSFORM_MAX_CONCURRENT',
 	'ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION',
 	'ASSETS_TRANSFORM_MAX_OPERATIONS',
+	'ASSETS_TRANSFORM_TIMEOUT',
 	'ASSETS_CONTENT_SECURITY_POLICY',
 	'ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL',
 	// auth
@@ -139,8 +147,10 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_IDP.+',
 	'AUTH_.+_SP.+',
 	// extensions
+	'PACKAGE_FILE_LOCATION',
 	'EXTENSIONS_PATH',
 	'EXTENSIONS_AUTO_RELOAD',
+	'EXTENSIONS_CACHE_TTL',
 	// messenger
 	'MESSENGER_STORE',
 	'MESSENGER_NAMESPACE',
@@ -192,6 +202,8 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
+	MAX_BATCH_MUTATION: Infinity,
+	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
 
@@ -200,9 +212,14 @@ const defaults: Record<string, any> = {
 	STORAGE_LOCAL_ROOT: './uploads',
 
 	RATE_LIMITER_ENABLED: false,
-	RATE_LIMITER_POINTS: 25,
+	RATE_LIMITER_POINTS: 50,
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
+
+	RATE_LIMITER_GLOBAL_ENABLED: false,
+	RATE_LIMITER_GLOBAL_POINTS: 1000,
+	RATE_LIMITER_GLOBAL_DURATION: 1,
+	RATE_LIMITER_GLOBAL_STORE: 'memory',
 
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
@@ -211,6 +228,7 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 
 	LOGIN_STALL_TIME: 500,
+	SERVER_SHUTDOWN_TIMEOUT: 1000,
 
 	ROOT_REDIRECT: './admin',
 
@@ -231,14 +249,16 @@ const defaults: Record<string, any> = {
 	CACHE_SCHEMA: true,
 	CACHE_PERMISSIONS: true,
 	CACHE_VALUE_MAX_SIZE: false,
+	CACHE_SKIP_ALLOWED: false,
 
 	AUTH_PROVIDERS: '',
 	AUTH_DISABLE_DEFAULT: false,
 
+	PACKAGE_FILE_LOCATION: '.',
 	EXTENSIONS_PATH: './extensions',
 	EXTENSIONS_AUTO_RELOAD: false,
 
-	EMAIL_FROM: 'no-reply@directus.io',
+	EMAIL_FROM: 'no-reply@example.com',
 	EMAIL_VERIFY_SETUP: true,
 	EMAIL_TRANSPORT: 'sendmail',
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
@@ -247,15 +267,16 @@ const defaults: Record<string, any> = {
 	TELEMETRY: true,
 
 	ASSETS_CACHE_TTL: '30d',
-	ASSETS_TRANSFORM_MAX_CONCURRENT: 1,
+	ASSETS_TRANSFORM_MAX_CONCURRENT: 25,
 	ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: 6000,
 	ASSETS_TRANSFORM_MAX_OPERATIONS: 5,
+	ASSETS_TRANSFORM_TIMEOUT: '7500ms',
 	ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL: 'warning',
 
 	IP_TRUST_PROXY: true,
 	IP_CUSTOM_HEADER: false,
 
-	IMPORT_IP_DENY_LIST: '0.0.0.0',
+	IMPORT_IP_DENY_LIST: ['0.0.0.0', '169.254.169.254'],
 
 	SERVE_APP: true,
 
@@ -284,11 +305,18 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 
 	DB_EXCLUDE_TABLES: 'array',
+
+	CACHE_SKIP_ALLOWED: 'boolean',
+
 	IMPORT_IP_DENY_LIST: 'array',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
 
 	GRAPHQL_INTROSPECTION: 'boolean',
+
+	MAX_BATCH_MUTATION: 'number',
+
+	SERVER_SHUTDOWN_TIMEOUT: 'number',
 };
 
 let env: Record<string, any> = {
@@ -325,7 +353,7 @@ export function refreshEnv(): void {
 }
 
 function processConfiguration() {
-	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
+	const configPath = path.resolve(process.env['CONFIG_PATH'] || defaults['CONFIG_PATH']);
 
 	if (fs.existsSync(configPath) === false) return {};
 
@@ -382,8 +410,8 @@ function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | 
 }
 
 function getEnvironmentValueByType(envVariableString: string) {
-	const variableType = getVariableType(envVariableString);
-	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
+	const variableType = getVariableType(envVariableString)!;
+	const envVariableValue = getEnvVariableValue(envVariableString, variableType)!;
 
 	switch (variableType) {
 		case 'number':

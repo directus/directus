@@ -1,6 +1,6 @@
 import { useServerStore } from '@/stores/server';
-import { DeepPartial, Field } from '@directus/shared/types';
-import { defineOperationApp } from '@directus/shared/utils';
+import { DeepPartial, Field } from '@directus/types';
+import { defineOperationApp } from '@directus/utils';
 import { i18n } from '@/lang';
 
 export default defineOperationApp({
