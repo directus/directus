@@ -50,6 +50,7 @@
 	"application/pkix-attr-cert": "Attribute Certificate",
 	"audio/x-aiff": "AIFF",
 	"video/x-msvideo": "AVI",
+	"image/avif": "AVIF",
 	"application/vnd.audiograph": "Audiograph",
 	"image/vnd.dxf": "AutoCAD DXF",
 	"model/vnd.dwf": "Autodesk Design Web Format (DWF)",

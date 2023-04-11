@@ -29,8 +29,6 @@
 	--vp-c-purple-dimm-1: rgba(102, 68, 255, 0.5);
 	--vp-c-purple-dimm-2: rgba(102, 68, 255, 0.25);
 	--vp-c-purple-dimm-3: rgba(102, 68, 255, 0.05);
-
-	--vp-custom-block-warning-text: #876717;
 }
 
 /**
@@ -61,9 +59,13 @@
 	--vp-custom-block-tip-text: var(--vp-c-purple-darker);
 	--vp-custom-block-tip-bg: var(--vp-c-purple-dimm-3);
 	--vp-custom-block-tip-code-bg: var(--vp-custom-block-tip-bg);
+
+	--vp-custom-block-warning-text: var(--vp-c-yellow-darker);
 }
 
 .dark {
 	--vp-custom-block-tip-border: var(--vp-c-purple-dimm-2);
 	--vp-custom-block-tip-text: var(--vp-c-purple-light);
+
+	--vp-custom-block-warning-text: var(--vp-c-yellow);
 }

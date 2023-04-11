@@ -1,4 +1,4 @@
-name: Bug Report
+name: Report a bug
 description: Create a report to help us improve
 body:
   - type: markdown
