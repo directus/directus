@@ -812,7 +812,7 @@ importers:
   directus:
     dependencies:
       '@directus/api':
-        specifier: workspace:9.24.0
+        specifier: workspace:*
         version: link:../api
 
   docs:
@@ -12434,7 +12434,7 @@ packages:
       jest-util: 29.5.0
       jest-validate: 29.5.0
       resolve: 1.22.1
-      resolve.exports: 2.0.2
+      resolve.exports: 2.0.0
       slash: 3.0.0
     dev: true
 
@@ -16313,8 +16313,8 @@ packages:
       protocol-buffers-schema: 3.6.0
     dev: true
 
-  /resolve.exports@2.0.2:
-    resolution: {integrity: sha512-X2UW6Nw3n/aMgDVy+0rSqgHlv39WZAlZrXCdnbyEiKm17DSqHX4MmQMaST3FbeWR5FTuRcUwYAziZajji0Y7mg==}
+  /resolve.exports@2.0.0:
+    resolution: {integrity: sha512-6K/gDlqgQscOlg9fSRpWstA8sYe8rbELsSTNpx+3kTrsVCzvSl0zIvRErM7fdl9ERWDsKnrLnwB+Ne89918XOg==}
     engines: {node: '>=10'}
     dev: true
 
