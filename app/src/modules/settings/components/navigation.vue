@@ -30,7 +30,6 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, computed } from 'vue';
 import { version } from '../../../../package.json';
 import { useProjectInfo } from '../composables/use-project-info';
-import { getGitHubIssueLink } from '@/utils/get-github-issue-link';
 
 export default defineComponent({
 	setup() {
@@ -81,12 +80,12 @@ export default defineComponent({
 				{
 					icon: 'bug_report',
 					name: t('report_bug'),
-					href: getGitHubIssueLink(projectInfo),
+					href: 'https://github.com/directus/directus/issues/new?template=bug_report.yml',
 				},
 				{
 					icon: 'new_releases',
 					name: t('request_feature'),
-					href: 'https://github.com/directus/directus/discussions/new',
+					href: 'https://github.com/directus/directus/discussions/new?category=feature-requests',
 				},
 			];
 		});
