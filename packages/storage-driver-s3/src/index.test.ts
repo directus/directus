@@ -12,6 +12,7 @@ import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
+	randBoolean,
 	randDirectoryPath,
 	randDomainName,
 	randFilePath,
@@ -71,6 +72,7 @@ beforeEach(() => {
 			root: randDirectoryPath(),
 			endpoint: randDomainName(),
 			region: randWord(),
+			forcePathStyle: randBoolean(),
 		},
 		path: {
 			input: randUnique() + randFilePath(),
@@ -113,6 +115,54 @@ afterEach(() => {
 });
 
 describe('#constructor', () => {
+	let getClientBackup: (typeof DriverS3.prototype)['getClient'];
+	let sampleClient: S3Client;
+
+	beforeEach(() => {
+		getClientBackup = DriverS3.prototype['getClient'];
+		sampleClient = {} as S3Client;
+		DriverS3.prototype['getClient'] = vi.fn().mockReturnValue(sampleClient);
+	});
+
+	afterEach(() => {
+		DriverS3.prototype['getClient'] = getClientBackup;
+	});
+
+	test('Saves passed config to local property', () => {
+		const driver = new DriverS3(sample.config);
+		expect(driver['config']).toBe(sample.config);
+	});
+
+	test('Creates shared client', () => {
+		const driver = new DriverS3(sample.config);
+		expect(driver['getClient']).toHaveBeenCalledOnce();
+		expect(driver['client']).toBe(sampleClient);
+	});
+
+	test('Defaults root to empty string', () => {
+		expect(driver['root']).toBe('');
+	});
+
+	test('Normalizes config path when root is given', () => {
+		const mockRoot = randDirectoryPath();
+
+		vi.mocked(normalizePath).mockReturnValue(mockRoot);
+
+		const driver = new DriverS3({
+			key: sample.config.key,
+			secret: sample.config.secret,
+			bucket: sample.config.bucket,
+			root: sample.config.root,
+		});
+
+		expect(normalizePath).toHaveBeenCalledWith(sample.config.root, { removeLeading: true });
+		expect(driver['root']).toBe(mockRoot);
+	});
+});
+
+describe('#getClient', () => {
+	// The constructor calls getClient(), so we don't have to call it separately
+
 	test('Throws error if key defined but secret missing', () => {
 		try {
 			new DriverS3({ key: 'key', bucket: 'bucket' });
@@ -150,36 +200,6 @@ describe('#constructor', () => {
 		expect(driver['client']).toBeInstanceOf(S3Client);
 	});
 
-	test('Sets private bucket reference based on config', () => {
-		expect(driver['bucket']).toBe(sample.config.bucket);
-	});
-
-	test('Sets private acl reference based on config', () => {
-		const driver = new DriverS3({
-			key: sample.config.key,
-			secret: sample.config.secret,
-			bucket: sample.config.bucket,
-			acl: sample.config.acl,
-		});
-
-		expect(driver['acl']).toBe(sample.config.acl);
-	});
-
-	test('Sets private serverSideEncryption reference based on config', () => {
-		const driver = new DriverS3({
-			key: sample.config.key,
-			secret: sample.config.secret,
-			bucket: sample.config.bucket,
-			serverSideEncryption: sample.config.serverSideEncryption,
-		});
-
-		expect(driver['serverSideEncryption']).toBe(sample.config.serverSideEncryption);
-	});
-
-	test('Defaults root to empty string', () => {
-		expect(driver['root']).toBe('');
-	});
-
 	test('Sets http endpoints', () => {
 		const sampleDomain = randDomainName();
 		const sampleHttpEndpoint = `http://${sampleDomain}`;
@@ -192,7 +212,6 @@ describe('#constructor', () => {
 		});
 
 		expect(S3Client).toHaveBeenCalledWith({
-			forcePathStyle: true,
 			endpoint: {
 				hostname: sampleDomain,
 				protocol: 'http:',
@@ -217,7 +236,6 @@ describe('#constructor', () => {
 		});
 
 		expect(S3Client).toHaveBeenCalledWith({
-			forcePathStyle: true,
 			endpoint: {
 				hostname: sampleDomain,
 				protocol: 'https:',
@@ -247,20 +265,21 @@ describe('#constructor', () => {
 		});
 	});
 
-	test('Normalizes config path when root is given', () => {
-		const mockRoot = randDirectoryPath();
-
-		vi.mocked(normalizePath).mockReturnValue(mockRoot);
-
-		const driver = new DriverS3({
+	test('Sets force path style', () => {
+		new DriverS3({
 			key: sample.config.key,
 			secret: sample.config.secret,
 			bucket: sample.config.bucket,
-			root: sample.config.root,
+			forcePathStyle: sample.config.forcePathStyle,
 		});
 
-		expect(normalizePath).toHaveBeenCalledWith(sample.config.root, { removeLeading: true });
-		expect(driver['root']).toBe(mockRoot);
+		expect(S3Client).toHaveBeenCalledWith({
+			forcePathStyle: sample.config.forcePathStyle,
+			credentials: {
+				accessKeyId: sample.config.key,
+				secretAccessKey: sample.config.secret,
+			},
+		});
 	});
 });
 
@@ -451,7 +470,7 @@ describe('#copy', () => {
 	});
 
 	test('Optionally sets ServerSideEncryption', async () => {
-		driver['serverSideEncryption'] = sample.config.serverSideEncryption;
+		driver['config'].serverSideEncryption = sample.config.serverSideEncryption;
 
 		await driver.copy(sample.path.src, sample.path.dest);
 
@@ -464,7 +483,7 @@ describe('#copy', () => {
 	});
 
 	test('Optionally sets ACL', async () => {
-		driver['acl'] = sample.config.acl;
+		driver['config'].acl = sample.config.acl;
 
 		await driver.copy(sample.path.src, sample.path.dest);
 
@@ -515,7 +534,7 @@ describe('#write', () => {
 	});
 
 	test('Optionally sets ServerSideEncryption', async () => {
-		driver['serverSideEncryption'] = sample.config.serverSideEncryption;
+		driver['config'].serverSideEncryption = sample.config.serverSideEncryption;
 
 		await driver.write(sample.path.input, sample.stream);
 
@@ -531,7 +550,7 @@ describe('#write', () => {
 	});
 
 	test('Optionally sets ACL', async () => {
-		driver['acl'] = sample.config.acl;
+		driver['config'].acl = sample.config.acl;
 
 		await driver.write(sample.path.input, sample.stream);
 

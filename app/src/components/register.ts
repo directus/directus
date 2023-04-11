@@ -4,7 +4,6 @@ import RenderTemplate from '@/views/private/components/render-template.vue';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import UserPopover from '@/views/private/components/user-popover.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
-import DocsWrapper from '@/views/private/components/docs-wrapper.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { App } from 'vue';
@@ -71,6 +70,7 @@ import VDatePicker from './v-date-picker.vue';
 import VEmojiPicker from './v-emoji-picker.vue';
 import VWorkspace from './v-workspace.vue';
 import VWorkspaceTile from './v-workspace-tile.vue';
+import VErrorBoundary from './v-error-boundary.vue';
 
 export function registerComponents(app: App): void {
 	app.component('VAvatar', VAvatar);
@@ -133,6 +133,7 @@ export function registerComponents(app: App): void {
 	app.component('VEmojiPicker', VEmojiPicker);
 	app.component('VWorkspace', VWorkspace);
 	app.component('VWorkspaceTile', VWorkspaceTile);
+	app.component('VErrorBoundary', VErrorBoundary);
 
 	app.component('TransitionBounce', TransitionBounce);
 	app.component('TransitionDialog', TransitionDialog);
@@ -144,7 +145,6 @@ export function registerComponents(app: App): void {
 	app.component('SidebarDetail', SidebarDetail);
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
-	app.component('DocsWrapper', DocsWrapper);
 	app.component('DrawerItem', DrawerItem);
 	app.component('DrawerBatch', DrawerBatch);
 }

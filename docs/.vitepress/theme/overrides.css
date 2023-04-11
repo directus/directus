@@ -1,0 +1,59 @@
+/**
+ * Border thickness to 2px where appropriate
+ * -------------------------------------------------------------------------- */
+.vp-doc h2,
+.vp-doc .custom-block,
+.VPSidebar .group + .group,
+.VPNavBarTitle.has-sidebar,
+.VPDocAside .VPDocAsideOutline .content {
+	border-width: 2px;
+}
+
+.VPDocAside .VPDocAsideOutline .outline-marker {
+	width: 2px;
+	left: -2px;
+}
+
+.menu + .translations::before,
+.menu + .appearance::before,
+.menu + .social-links::before,
+.translations + .appearance::before,
+.appearance + .social-links::before {
+	width: 2px !important;
+}
+
+/**
+ * Make logo size of the sidebar
+ * -------------------------------------------------------------------------- */
+.VPNav .VPNavBar .VPNavBarTitle .logo {
+	height: unset;
+}
+
+/**
+ * Border radius on inline media
+ * -------------------------------------------------------------------------- */
+.vp-doc img,
+.vp-doc video {
+	border-radius: 8px;
+	border: 2px solid var(--vp-custom-block-tip-border);
+	width: 100%;
+}
+
+/**
+ * Match font weight of app in headings
+ * -------------------------------------------------------------------------- */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4,
+.vp-doc h5,
+.vp-doc h6 {
+	font-weight: 700;
+}
+
+/**
+ * Hubspot color-scheme weirdness
+ * -------------------------------------------------------------------------- */
+#hubspot-messages-iframe-container {
+	color-scheme: auto;
+}

@@ -1,6 +1,6 @@
-import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import { DirectusTokenPayload } from '../types';
-import { InvalidTokenException, ServiceUnavailableException, TokenExpiredException } from '../exceptions';
+import jwt from 'jsonwebtoken';
+import { InvalidTokenException, ServiceUnavailableException, TokenExpiredException } from '../exceptions/index.js';
+import type { DirectusTokenPayload } from '../types/index.js';
 
 export function verifyJWT(token: string, secret: string): Record<string, any> {
 	let payload;
@@ -11,9 +11,9 @@ export function verifyJWT(token: string, secret: string): Record<string, any> {
 		}) as Record<string, any>;
 		payload = rest;
 	} catch (err) {
-		if (err instanceof TokenExpiredError) {
+		if (err instanceof jwt.TokenExpiredError) {
 			throw new TokenExpiredException();
-		} else if (err instanceof JsonWebTokenError) {
+		} else if (err instanceof jwt.JsonWebTokenError) {
 			throw new InvalidTokenException('Token invalid.');
 		} else {
 			throw new ServiceUnavailableException(`Couldn't verify token.`, { service: 'jwt' });

@@ -1,8 +1,8 @@
-import { RequestHandler } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { getPermissions as getPermissionsUtil } from '../utils/get-permissions';
+import type { RequestHandler } from 'express';
+import asyncHandler from '../utils/async-handler.js';
+import { getPermissions as getPermissionsUtil } from '../utils/get-permissions.js';
 
-const getPermissions: RequestHandler = asyncHandler(async (req, res, next) => {
+const getPermissions: RequestHandler = asyncHandler(async (req, _res, next) => {
 	if (!req.accountability) {
 		throw new Error('getPermissions middleware needs to be called after authenticate');
 	}

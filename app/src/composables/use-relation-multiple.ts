@@ -3,9 +3,9 @@ import { RelationM2A } from '@/composables/use-relation-m2a';
 import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Filter, Item } from '@directus/shared/types';
-import { getEndpoint } from '@directus/shared/utils';
-import { clamp, cloneDeep, isEqual, merge } from 'lodash';
+import { Filter, Item } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { clamp, cloneDeep, get, isEqual, merge, toArray } from 'lodash';
 import { computed, ref, Ref, unref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
@@ -77,7 +77,7 @@ export function useRelationMultiple(
 
 	watch([previewQuery, itemId, relation], updateFetchedItems, { immediate: true });
 
-	const { fetchedSelectItems, selected, isItemSelected } = useSelected();
+	const { fetchedSelectItems, selected, isItemSelected, selectedOnPage } = useSelected();
 
 	const totalItemCount = computed(() => {
 		if (relation.value?.type === 'o2m') {
@@ -146,7 +146,7 @@ export function useRelationMultiple(
 			return updatedItem;
 		});
 
-		const selectedOnPage = selected.value.map((edit) => {
+		const fullSelectedOnPage = selectedOnPage.value.map((edit) => {
 			const fetchedItem = fetchedSelectItems.value.find((item) => {
 				switch (relation.value?.type) {
 					case 'o2m':
@@ -176,14 +176,18 @@ export function useRelationMultiple(
 
 		const newItems = getPage(existingItemCount.value + selected.value.length, createdItems.value);
 
-		items.push(...selectedOnPage, ...newItems);
+		items.push(...fullSelectedOnPage, ...newItems);
 
-		const sortField = relation.value.sortField;
+		const sortField = (previewQuery.value.sort ?? toArray(relation.value.sortField))[0];
 
 		if ((previewQuery.value.limit > 0 && totalItemCount.value > previewQuery.value.limit) || !sortField) return items;
 
 		return items.sort((a, b) => {
-			return a[sortField] - b[sortField];
+			if (sortField.startsWith('-')) {
+				const field = sortField.substring(1);
+				return get(b, field) - get(a, field);
+			}
+			return get(a, sortField) - get(b, sortField);
 		});
 	});
 
@@ -298,13 +302,12 @@ export function useRelationMultiple(
 		}
 
 		let targetCollection: string;
-		let reverseJunctionField: string;
+		const reverseJunctionField = relation.value.reverseJunctionField.field;
 		const fields = new Set(previewQuery.value.fields);
 
 		switch (relation.value.type) {
 			case 'm2a':
 				targetCollection = relation.value.junctionCollection.collection;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(relation.value.collectionField.field);
 				for (const collection of relation.value.allowedCollections) {
@@ -314,13 +317,11 @@ export function useRelationMultiple(
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(`${relation.value.junctionField.field}.${relation.value.relatedPrimaryKeyField.field}`);
 				break;
 			case 'o2m':
 				targetCollection = relation.value.relatedCollection.collection;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				fields.add(relation.value.relatedPrimaryKeyField.field);
 				break;
 		}
@@ -385,23 +386,20 @@ export function useRelationMultiple(
 
 		let targetCollection: string;
 		let targetPKField: string;
-		let reverseJunctionField: string;
+		const reverseJunctionField = relation.value.reverseJunctionField.field;
 
 		switch (relation.value.type) {
 			case 'm2a':
 				targetCollection = relation.value.junctionCollection.collection;
 				targetPKField = relation.value.junctionPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
 				targetPKField = relation.value.junctionPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				break;
 			case 'o2m':
 				targetCollection = relation.value.relatedCollection.collection;
 				targetPKField = relation.value.relatedPrimaryKeyField.field;
-				reverseJunctionField = relation.value.reverseJunctionField.field;
 				break;
 		}
 
@@ -446,12 +444,28 @@ export function useRelationMultiple(
 		watch(
 			selectedOnPage,
 			(newVal, oldVal) => {
-				if (!isEqual(newVal, oldVal)) loadSelectedDisplay();
+				if (newVal.length !== oldVal?.length || !isEqual(newVal.map(getRelatedIDs), (oldVal ?? []).map(getRelatedIDs)))
+					loadSelectedDisplay();
 			},
 			{ immediate: true }
 		);
 
-		return { fetchedSelectItems, selected, isItemSelected };
+		return { fetchedSelectItems, selected, isItemSelected, selectedOnPage };
+
+		function getRelatedIDs(item: DisplayItem): string | number | undefined {
+			switch (relation.value?.type) {
+				case 'o2m':
+					return item[relation.value.relatedPrimaryKeyField.field];
+				case 'm2m':
+					return item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field];
+				case 'm2a': {
+					const collection = item[relation.value.collectionField.field];
+					return item[relation.value.junctionPrimaryKeyField.field][
+						relation.value.relationPrimaryKeyFields[collection].field
+					];
+				}
+			}
+		}
 
 		function isItemSelected(item: DisplayItem) {
 			return relation.value !== undefined && item[relation.value.reverseJunctionField.field] !== undefined;
@@ -474,14 +488,20 @@ export function useRelationMultiple(
 				return;
 			}
 
+			const fields = new Set(previewQuery.value.fields);
+			fields.add(relation.relatedPrimaryKeyField.field);
+
+			if (relation.sortField) fields.add(relation.sortField);
+
 			const targetCollection = relation.relatedCollection.collection;
 			const targetPKField = relation.relatedPrimaryKeyField.field;
 
 			const response = await api.get(getEndpoint(targetCollection), {
 				params: {
+					fields: Array.from(fields),
 					filter: {
 						[targetPKField]: {
-							_in: selectedOnPage.value.map((item) => item[targetPKField]),
+							_in: selectedOnPage.value.map(getRelatedIDs),
 						},
 					},
 					limit: -1,
@@ -497,13 +517,24 @@ export function useRelationMultiple(
 				return;
 			}
 
+			const fields = new Set(
+				previewQuery.value.fields.reduce<string[]>((acc, field) => {
+					const prefix = relation.junctionField.field + '.';
+
+					if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
+					return acc;
+				}, [])
+			);
+			fields.add(relation.relatedPrimaryKeyField.field);
+
 			const relatedPKField = relation.relatedPrimaryKeyField.field;
 
 			const response = await api.get(getEndpoint(relation.relatedCollection.collection), {
 				params: {
+					fields: Array.from(fields),
 					filter: {
 						[relatedPKField]: {
-							_in: selectedOnPage.value.map((item) => item[relation.junctionField.field][relatedPKField]),
+							_in: selectedOnPage.value.map(getRelatedIDs),
 						},
 					},
 					limit: -1,
@@ -535,8 +566,20 @@ export function useRelationMultiple(
 				Object.entries(selectGrouped).map(([collection, items]) => {
 					const pkField = relation.relationPrimaryKeyFields[collection].field;
 
+					const fields = new Set(
+						previewQuery.value.fields.reduce<string[]>((acc, field) => {
+							const prefix = `${relation.junctionField.field}:${collection}.`;
+
+							if (field.startsWith(prefix)) acc.push(field.replace(prefix, ''));
+							return acc;
+						}, [])
+					);
+
+					fields.add(pkField);
+
 					return api.get(getEndpoint(collection), {
 						params: {
+							fields: Array.from(fields),
 							filter: {
 								[pkField]: {
 									_in: items.map((item) => item[relation.junctionField.field][pkField]),

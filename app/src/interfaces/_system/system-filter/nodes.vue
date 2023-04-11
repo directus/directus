@@ -29,6 +29,7 @@
 								:field="field"
 								include-functions
 								:include-relations="includeRelations"
+								:relational-field-selectable="relationalFieldSelectable"
 								@select-field="updateField(index, $event)"
 							/>
 						</v-menu>
@@ -101,16 +102,9 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
-import { useSync } from '@directus/shared/composables';
-import {
-	FieldFilter,
-	FieldFilterOperator,
-	Filter,
-	LogicalFilterAND,
-	LogicalFilterOR,
-	Type,
-} from '@directus/shared/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/shared/utils';
+import { useSync } from '@directus/composables';
+import { FieldFilter, FieldFilterOperator, Filter, LogicalFilterAND, LogicalFilterOR, Type } from '@directus/types';
+import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/utils';
 import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -142,6 +136,7 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	relationalFieldSelectable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -150,6 +145,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	relationalFieldSelectable: true,
 });
 
 const emit = defineEmits(['remove-node', 'update:filter', 'change']);

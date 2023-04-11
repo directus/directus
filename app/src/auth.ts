@@ -170,7 +170,11 @@ export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 
 	// Only if the user manually signed out should we kill the session by hitting the logout endpoint
 	if (options.reason === LogoutReason.SIGN_OUT) {
-		await api.post(`/auth/logout`);
+		try {
+			await api.post(`/auth/logout`);
+		} catch {
+			// User already signed out
+		}
 	}
 
 	appStore.authenticated = false;

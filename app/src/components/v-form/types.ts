@@ -1,4 +1,4 @@
-import { DeepPartial, Field } from '@directus/shared/types';
+import { DeepPartial, Field } from '@directus/types';
 
 export type FormField = DeepPartial<Field> & {
 	field: string;
