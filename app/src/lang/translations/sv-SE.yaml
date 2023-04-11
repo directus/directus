@@ -53,6 +53,7 @@ init: Init
 dataset_too_large_currently_showing_n_items: Dataset är för stort. Visar för närvarande de första {n} objekten.
 modifier: Modifierare
 custom: Anpassad
+hook: Hook
 fill_width: Full bredd
 field_name_translations: Översättningar fältnamn
 enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
@@ -186,6 +187,7 @@ revision_post_create: Så här såg objektet ut när det skapades.
 revision_post_update: Så här såg objektet ut efter uppdateringen.
 changes_made: Nedan följer de specifika ändringarna i denna revision.
 no_relational_data: Tänk på att relationsdata inte ingår här.
+junction_field_location: Plats för kopplingsfält
 top: Överst
 bottom: Botten
 hide_field: Göm fält
@@ -294,6 +296,7 @@ o2m_relationship: One to Many relation
 m2m_relationship: Many to Many relation
 m2a_relationship: Many to Any relation
 invalid_item: Ogiltigt objekt
+modal: Popup
 next: Nästa
 field_name: Fältnamn
 translations: Översättningar
@@ -765,9 +768,7 @@ label: Etikett
 flows: Flöden
 flow: Flöde
 select_a_flow: Välj ett flöde
-run_flow_on_current: Kör flöde på aktuellt objekt
 run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
-run_flow_on_selected: Välj en eller flera objekt Första | Kör flöde på 1 Valda objekt | Kör flöde på {n} Valda objekt
 run_flow_success: Flödet "{flow}" kördes framgångsrikt
 trigger: Utlösare
 create_trigger: Skapa utlösare
@@ -1072,6 +1073,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     project_name: Projektnamn
@@ -1493,7 +1495,6 @@ interfaces:
   system-folder:
     folder: Mapp
     description: Välj en mapp
-    field_hint: Mapp för uppladdade filer. Påverkar inte befintliga filer.
     root_name: Filbibliotek
     system_default: Systemstandard
   select-radio:
@@ -1506,7 +1507,6 @@ interfaces:
     add_label: 'Etikett för "Skapa nytt"'
     sort: Sortera
     sort_placeholder: Manuell
-    field_name_placeholder: Ange fältnamn...
     field_note_placeholder: Ange fältanteckning...
   slider:
     slider: Reglage

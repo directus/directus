@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-import { ItemsService } from '../../services';
-import config from './index';
+import { ItemsService } from '../../services/items.js';
+import config from './index.js';
 
-vi.mock('../../services', () => {
+vi.mock('../../services/items.js', () => {
 	const ItemsService = vi.fn();
 	ItemsService.prototype.deleteByQuery = vi.fn();
 	ItemsService.prototype.deleteOne = vi.fn();
@@ -13,7 +13,7 @@ vi.mock('../../services', () => {
 
 const getSchema = vi.fn().mockResolvedValue({});
 
-vi.mock('../../utils/get-accountability-for-role', () => ({
+vi.mock('../../utils/get-accountability-for-role.js', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
 
