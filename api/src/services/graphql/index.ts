@@ -1,6 +1,7 @@
 import { FUNCTIONS } from '@directus/constants';
 import type { BaseException } from '@directus/exceptions';
-import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import { Action } from '@directus/constants';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
 import {

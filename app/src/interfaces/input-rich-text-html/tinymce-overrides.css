@@ -405,6 +405,11 @@ body.dark .tox .tox-toolbar__overflow {
 	visibility: hidden;
 }
 
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+	padding: 0;
+	box-shadow: none;
+}
+
 @media screen and (max-width: 767px) {
 	.tox .tox-dialog__body-nav-item {
 		text-align: center;

@@ -1458,6 +1458,7 @@ export_started: Export Started
 export_started_copy: Your export has started. You'll be notified when it's ready to download.
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
+disable_sort: Disable Sorting
 template: Template
 require_value_to_be_set: Require value to be set on creation
 translation: Translation

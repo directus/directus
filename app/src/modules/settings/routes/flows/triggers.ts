@@ -79,6 +79,7 @@ export function getTriggers() {
 									'items.create',
 									'items.update',
 									'items.delete',
+									'items.sort',
 									{ divider: true },
 									'server.start',
 									'server.stop',
