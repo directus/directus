@@ -164,7 +164,7 @@ allow_null_value: Zezwalaj na wartość NULL
 allow_multiple: Zezwalaj na wiele
 allow_multiple_to_be_open: Zezwalaj na otwieranie wielu
 enter_value_to_replace_nulls: Wprowadź nową wartość, aby zastąpić wszystkie pola NULL.
-field_standard: Standard
+field_standard: Standardowy
 field_presentation: Prezentacja i aliasy
 field_file: Pojedynczy plik
 field_files: Wiele plików
@@ -187,6 +187,7 @@ revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
 revision_post_update: Oto jak wyglądał ten element po aktualizacji.
 changes_made: Poniżej przedstawiono konkretne zmiany wprowadzone w tej rewizji.
 no_relational_data: Należy pamiętać, że nie uwzględniono tu danych dotyczących relacji.
+junction_field_location: Lokalizacja pól połączenia
 top: Góra
 bottom: Dolny
 hide_field: Ukryj pole
@@ -244,6 +245,7 @@ float: Liczba zmiennoprzecinkowa
 integer: Liczba całkowita
 json: JSON
 xml: XML
+yaml: YAML
 string: Ciąg znaków
 text: Tekst
 time: Czas
@@ -294,7 +296,11 @@ o2m_relationship: Relacja jeden do wielu
 m2m_relationship: Relacja wiele do wielu
 m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
+require_confirmation: Wymagaj potwierdzenia
 modal: Okno
+confirmation_dialog: Okno potwierdzenia
+confirmation_description: Opis potwierdzenia
+confirmation_input_fields: Potwierdź pola wejściowe
 next: Następny
 field_name: Nazwa pola
 translations: Tłumaczenia
@@ -313,6 +319,7 @@ updated_on: Edytowane
 updated_by: Aktualizowany przez
 primary_key: Klucz podstawowy
 foreign_key: Klucz obcy
+field_key: Klucz pola
 finish_setup: Zakończ konfigurację
 dismiss: Anuluj
 toggle_raw_editor: Przełącz edytor
@@ -538,6 +545,7 @@ activity_item: Element Aktywności
 action: Czynność
 ip_address: Adres IP
 user_agent: User agent
+origin: Pochodzenie
 webhooks: Webhooki
 decimals: Dziesiętne
 value_decimals: Wartość dziesiętna
@@ -784,8 +792,15 @@ label: Etykieta
 flows: Przepływy
 flow: Przepływ
 select_a_flow: Wybierz przepływ
+run_flow_confirm: Czy na pewno chcesz wykonać ten przepływ?
+run_flow_on_current_collection: Uruchom Przepływ na Aktualnej Kolekcji
+run_flow_on_current: Uruchom Przepływ na Bieżącym Przedmiocie
 run_flow_on_current_edited_confirm: Ten przedmiot może być aktualizowany przez ten przepływ, czy na pewno chcesz go wykonać?
+run_flow_on_selected: Najpierw wybierz jeden lub więcej elementów | Uruchom przepływ na 1 wybranym elemencie | Uruchom przepływ na {n} wybranych elementach
+run_flow: Uruchom Przepływ
 run_flow_success: Przepływ "{flow}" wykonano pomyślnie
+field_name_placeholder: Wprowadź nazwę pola...
+field_key_placeholder: Wprowadź klucz pola...
 trigger: Wyzwalacz
 trigger_options: Opcje wyzwalacza
 view_trigger: Wyświetl wyzwalacz
@@ -1421,6 +1436,7 @@ export_started: Eksport rozpoczęty
 export_started_copy: Eksport został rozpoczęty. Zostaniesz powiadomiony, gdy będzie gotowy do pobrania.
 sort_asc: Sortuj rosnąco
 sort_desc: Sortuj malejąco
+disable_sort: Wyłącz sortowanie
 template: Szablon
 require_value_to_be_set: Wymaga ustawienia wartości przy tworzeniu
 translation: Tłumaczenia
@@ -1583,6 +1599,9 @@ interfaces:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
     display_template: Wyświetl szablon
+  collection-item-dropdown:
+    collection-item-dropdown: Rozwijanie przedmiotów kolekcji
+    description: Wybierz element z kolekcji w formacie JSON
   input-rich-text-md:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
@@ -1624,6 +1643,7 @@ interfaces:
   system-folder:
     folder: Folder
     description: Wybierz folder
+    field_hint: Domyślny katalog przesłanych plików bez określonego folderu. Nie ma wpływu na istniejące pliki.
     root_name: Root biblioteki plików
     system_default: Ustawienia systemowe
   select-radio:
@@ -1932,6 +1952,7 @@ layouts:
     no_group: Brak grupy
     not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
 horizontal: Poziomy
+vertical: Pionowo
 x_axis: Oś X
 y_axis: Oś Y
 y_axis_function: Funkcja osi Y
@@ -1943,6 +1964,8 @@ show_axis_labels: Pokaż etykiety osi
 function: Funkcja
 half_circle: Połowa koła
 full_circle: Pełne okrążenie
+stroke_width: Szerokość obrysu
+rounded_stroke: Zaokrąglenie obrysu
 thin: Cienka
 medium: Średni
 broad: Szeroki
@@ -2082,6 +2105,8 @@ operations:
     name: Wyślij powiadomienie
     description: Wyślij powiadomienie w aplikacji do jednego lub więcej użytkowników
     recipient: Użytkownik
+    recipient_placeholder: Wprowadź UUID...
+    recipient_note: Dodaj UUID użytkownika i naciśnij enter...
     message: Wiadomość
   request:
     name: Webhook / URL żądania
@@ -2106,3 +2131,7 @@ operations:
     flows: Przepływy
     flow: Przepływ
     data: Dane
+    serial: Seryjny
+    parallel: Równoległy
+    batch: Partia
+    batch_size: Rozmiar partii
