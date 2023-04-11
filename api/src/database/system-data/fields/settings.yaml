@@ -260,6 +260,8 @@ fields:
                   text: WebP
                 - value: tiff
                   text: Tiff
+                - value: avif
+                  text: AVIF
             width: half
         - field: transforms
           name: $t:field_options.directus_settings.additional_transforms

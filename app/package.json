@@ -24,9 +24,7 @@
 		"build-storybook": "storybook build",
 		"dev": "vite --clearScreen false",
 		"storybook": "storybook dev -p 6006",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest"
+		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
 		"@babel/core": "7.21.3",
@@ -97,6 +95,7 @@
 		"date-fns": "2.29.3",
 		"diacritics": "1.3.0",
 		"diff": "5.1.0",
+		"directus": "workspace:*",
 		"dompurify": "3.0.1",
 		"escape-string-regexp": "5.0.0",
 		"file-saver": "2.0.5",
