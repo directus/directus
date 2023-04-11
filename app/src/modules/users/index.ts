@@ -1,4 +1,4 @@
-import { defineModule } from '@directus/shared/utils';
+import { defineModule } from '@directus/utils';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
 

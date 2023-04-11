@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 
 type LocalStorageObjectType = string | number | boolean | object | null;
 
@@ -35,7 +35,7 @@ export function useLocalStorage(key: string, defaultValue: LocalStorageObjectTyp
 
 	watch(data, () => {
 		if (data.value == null) {
-			localStorageObject.clear();
+			localStorage.removeItem(internalKey);
 		} else {
 			setValue(data.value);
 		}

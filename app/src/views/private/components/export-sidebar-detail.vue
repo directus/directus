@@ -104,13 +104,17 @@
 								text: t('xml'),
 								value: 'xml',
 							},
+							{
+								text: t('yaml'),
+								value: 'yaml',
+							},
 						]"
 					/>
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('limit') }}</p>
-					<v-input v-model="exportSettings.limit" type="number" :placeholder="t('unlimited')" />
+					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="t('unlimited')" />
 				</div>
 
 				<div class="field half-left">
@@ -134,9 +138,16 @@
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p>
-							<template v-if="itemCount === 0">{{ t('exporting_no_items_to_export') }}</template>
-
-							<template v-else-if="!exportSettings.limit || (itemCount && exportSettings.limit >= itemCount)">
+							<template v-if="exportSettings.limit === 0 || itemCount === 0">
+								{{ t('exporting_no_items_to_export') }}
+							</template>
+							<template
+								v-else-if="
+									!exportSettings.limit ||
+									exportSettings.limit === -1 ||
+									(itemCount && exportSettings.limit >= itemCount)
+								"
+							>
 								{{
 									t('exporting_all_items_in_collection', {
 										total: itemCount ? n(itemCount) : '??',
@@ -221,18 +232,18 @@
 
 <script lang="ts" setup>
 import api from '@/api';
+import { usePermissionsStore } from '@/stores/permissions';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { Filter } from '@directus/shared/types';
+import { unexpectedError } from '@/utils/unexpected-error';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import { useCollection } from '@directus/composables';
+import { Filter } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { debounce } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useCollection } from '@directus/shared/composables';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { debounce } from 'lodash';
-import { getEndpoint } from '@directus/shared/utils';
-import FolderPicker from '@/views/private/components/folder-picker.vue';
-import { usePermissionsStore } from '@/stores/permissions';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -255,7 +266,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['refresh', 'download']);
 
-const { t, n } = useI18n();
+const { t, n, te } = useI18n();
 
 const { collection } = toRefs(props);
 
@@ -344,18 +355,27 @@ const getItemCount = debounce(async () => {
 	itemCountLoading.value = true;
 
 	try {
+		const aggregate = primaryKeyField.value?.field
+			? {
+					countDistinct: [primaryKeyField.value.field],
+			  }
+			: {
+					count: ['*'],
+			  };
+
 		const count = await api
 			.get(getEndpoint(collection.value), {
 				params: {
 					...exportSettings,
-					aggregate: {
-						count: ['*'],
-					},
+					aggregate,
 				},
 			})
 			.then((response) => {
 				if (response.data.data?.[0]?.count) {
 					return Number(response.data.data[0].count);
+				}
+				if (response.data.data?.[0]?.countDistinct) {
+					return Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
 				}
 			});
 
@@ -453,10 +473,16 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (err: any) {
+			const code = err?.response?.data?.errors?.[0]?.extensions?.code;
+
 			notify({
-				title: t('import_data_error'),
+				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
 				type: 'error',
 			});
+
+			if (code === 'INTERNAL_SERVER_ERROR') {
+				unexpectedError(err);
+			}
 		} finally {
 			uploading.value = false;
 			importing.value = false;
@@ -474,10 +500,10 @@ function startExport() {
 }
 
 function exportDataLocal() {
-	const endpoint = collection.value.startsWith('directus_')
-		? `${collection.value.substring(9)}`
-		: `items/${collection.value}`;
-	const url = getPublicURL() + endpoint;
+	const endpoint = getEndpoint(collection.value);
+
+	// usually getEndpoint contains leading slash, but here we need to remove it
+	const url = getPublicURL() + endpoint.substring(1);
 
 	let params: Record<string, unknown> = {
 		access_token: api.defaults.headers.common['Authorization'].substring(7),

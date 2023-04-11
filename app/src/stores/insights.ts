@@ -2,14 +2,14 @@ import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Item, Panel } from '@directus/shared/types';
-import { getSimpleHash, toArray, applyOptionsData } from '@directus/shared/utils';
+import { Item, Panel } from '@directus/types';
+import { getSimpleHash, toArray, applyOptionsData } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash';
 import { nanoid } from 'nanoid';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, ref, unref } from 'vue';
-import { Dashboard } from '../types';
+import { Dashboard } from '@/types/insights';
 import escapeStringRegexp from 'escape-string-regexp';
 import { useExtensions } from '@/extensions';
 

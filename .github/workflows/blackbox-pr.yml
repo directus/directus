@@ -7,7 +7,7 @@ on:
     paths:
       - api/**
       - tests-blackbox/**
-      - packages/shared/**
+      - packages/**
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/blackbox-pr.yml
@@ -27,20 +27,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Prepare
-        uses: ./.github/actions/prepare
+      - name: Prepare test env
+        uses: ./.github/actions/prepare-test-env
 
-      - name: Prune Dependencies
-        run: find . -type d -name node_modules -prune -exec rm -rf {} \;
+      - name: Start services
+        run:
+          docker compose -f tests-blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
-      - name: Install Production Dependencies
-        run: pnpm install --prod
-
-      - name: Install Root Dev Dependencies
-        run: pnpm install -w --dev
-
-      - name: Start Services
-        run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml -d --quiet-pull --wait
-
-      - name: Run Tests
+      - name: Run tests
         run: TEST_DB=sqlite3 pnpm run -w test:blackbox

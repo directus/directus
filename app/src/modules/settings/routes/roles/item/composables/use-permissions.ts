@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Permission } from '@directus/shared/types';
+import { Permission } from '@directus/types';
 import { ref, Ref, watch } from 'vue';
 
 type UsablePermissions = {

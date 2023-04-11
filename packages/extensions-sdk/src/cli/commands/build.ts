@@ -2,17 +2,19 @@ import {
 	API_SHARED_DEPS,
 	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
-	EXTENSION_PACKAGE_TYPES,
 	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	ExtensionManifest,
+	ExtensionOptionsBundleEntries,
 	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import {
+} from '@directus/constants';
+import type {
 	ApiExtensionType,
 	AppExtensionType,
-	ExtensionManifestRaw,
 	ExtensionOptionsBundleEntry,
-} from '@directus/shared/types';
-import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/types';
+import { isIn, isTypeIn } from '@directus/utils';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -24,23 +26,23 @@ import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
 import {
-	OutputOptions as RollupOutputOptions,
 	Plugin,
-	rollup,
 	RollupError,
 	RollupOptions,
+	OutputOptions as RollupOutputOptions,
+	rollup,
 	watch as rollupWatch,
 } from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styles';
 import vue from 'rollup-plugin-vue';
-import { Language, RollupConfig, RollupMode } from '../types';
-import { getLanguageFromPath, isLanguage } from '../utils/languages';
-import { clear, log } from '../utils/logger';
-import tryParseJson from '../utils/try-parse-json';
-import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint';
-import loadConfig from './helpers/load-config';
-import { validateBundleEntriesOption, validateSplitEntrypointOption } from './helpers/validate-cli-options';
+import type { Language, RollupConfig, RollupMode } from '../types.js';
+import { getLanguageFromPath, isLanguage } from '../utils/languages.js';
+import { clear, log } from '../utils/logger.js';
+import tryParseJson from '../utils/try-parse-json.js';
+import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
+import loadConfig from './helpers/load-config.js';
+import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
 
 type BuildOptions = {
 	type?: string;
@@ -64,19 +66,16 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		const extensionManifest: ExtensionManifestRaw = await fse.readJSON(packagePath);
+		let extensionManifest: TExtensionManifest;
 
-		if (!validateExtensionManifest(extensionManifest)) {
+		try {
+			extensionManifest = ExtensionManifest.parse(await fse.readJSON(packagePath));
+		} catch (err) {
 			log(`Current directory is not a valid Directus extension.`, 'error');
 			process.exit(1);
 		}
 
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
-
-		if (extensionOptions.type === 'pack') {
-			log(`Building extension type ${chalk.bold('pack')} is not currently supported.`, 'error');
-			process.exit(1);
-		}
 
 		if (extensionOptions.type === 'bundle') {
 			await buildBundleExtension({
@@ -117,18 +116,13 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		if (!isIn(type, EXTENSION_PACKAGE_TYPES)) {
+		if (!isIn(type, EXTENSION_TYPES)) {
 			log(
-				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_PACKAGE_TYPES.map(
-					(t) => chalk.bold.magenta(t)
+				`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
+					chalk.bold.magenta(t)
 				).join(', ')}.`,
 				'error'
 			);
-			process.exit(1);
-		}
-
-		if (type === 'pack') {
-			log(`Building extension type ${chalk.bold('pack')} is not currently supported.`, 'error');
 			process.exit(1);
 		}
 
@@ -145,10 +139,10 @@ export default async function build(options: BuildOptions): Promise<void> {
 		}
 
 		if (type === 'bundle') {
-			const entries = tryParseJson(input);
+			const entries = ExtensionOptionsBundleEntries.safeParse(tryParseJson(input));
 			const splitOutput = tryParseJson(output);
 
-			if (!validateBundleEntriesOption(entries)) {
+			if (entries.success === false) {
 				log(
 					`Input option needs to be of the format ${chalk.blue(
 						`[-i '[{"type":"<extension-type>","name":"<extension-name>","source":<entrypoint>}]']`
@@ -168,7 +162,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 			}
 
 			await buildBundleExtension({
-				entries,
+				entries: entries.data,
 				outputApp: splitOutput.app,
 				outputApi: splitOutput.api,
 				watch,
@@ -566,21 +560,21 @@ function getRollupOptions({
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
-			typeof input !== 'string' ? virtual(input) : null,
-			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
-			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
-			mode === 'browser' ? styles() : null,
+			typeof input !== 'string' ? virtual.default(input) : null,
+			mode === 'browser' ? (vue.default({ preprocessStyles: true }) as Plugin) : null,
+			languages.includes('typescript') ? esbuild.default({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
+			mode === 'browser' ? styles.default() : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser' }),
-			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
-			json(),
-			replace({
+			commonjs.default({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
+			json.default(),
+			replace.default({
 				values: {
 					'process.env.NODE_ENV': JSON.stringify('production'),
 				},
 				preventAssignment: true,
 			}),
-			minify ? terser() : null,
+			minify ? terser.default() : null,
 		],
 	};
 }

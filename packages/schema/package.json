@@ -1,7 +1,8 @@
 {
 	"name": "@directus/schema",
-	"version": "9.21.2",
+	"version": "9.24.0",
 	"description": "Utility for extracting information about existing DB schema",
+	"type": "module",
 	"keywords": [
 		"sql",
 		"knex",
@@ -42,11 +43,11 @@
 		"dev": "pnpm build -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"knex": "2.3.0",
-		"knex-schema-inspector": "3.0.0"
+		"knex": "2.4.2"
 	},
 	"devDependencies": {
-		"typescript": "4.8.4"
+		"@directus/tsconfig": "0.0.6",
+		"typescript": "4.9.5"
 	},
 	"publishConfig": {
 		"access": "public"

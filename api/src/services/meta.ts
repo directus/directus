@@ -1,9 +1,9 @@
-import { Knex } from 'knex';
-import getDatabase from '../database';
-import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions } from '../types';
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { applyFilter, applySearch } from '../utils/apply-query';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import getDatabase from '../database/index.js';
+import { ForbiddenException } from '../exceptions/index.js';
+import type { AbstractServiceOptions } from '../types/index.js';
+import { applyFilter, applySearch } from '../utils/apply-query.js';
 
 export class MetaService {
 	knex: Knex;
@@ -24,6 +24,7 @@ export class MetaService {
 			query.meta.map((metaVal: string) => {
 				if (metaVal === 'total_count') return this.totalCount(collection);
 				if (metaVal === 'filter_count') return this.filterCount(collection, query);
+				return undefined;
 			})
 		);
 
@@ -47,7 +48,7 @@ export class MetaService {
 
 			const permissions = permissionsRecord.permissions ?? {};
 
-			applyFilter(this.knex, this.schema, dbQuery, permissions, collection);
+			applyFilter(this.knex, this.schema, dbQuery, permissions, collection, {});
 		}
 
 		const result = await dbQuery;
@@ -77,7 +78,7 @@ export class MetaService {
 		}
 
 		if (Object.keys(filter).length > 0) {
-			applyFilter(this.knex, this.schema, dbQuery, filter, collection);
+			applyFilter(this.knex, this.schema, dbQuery, filter, collection, {});
 		}
 
 		if (query.search) {
@@ -86,6 +87,6 @@ export class MetaService {
 
 		const records = await dbQuery;
 
-		return Number(records[0].count);
+		return Number(records[0]!.count);
 	}
 }

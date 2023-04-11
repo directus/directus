@@ -1,5 +1,6 @@
-import { getFilterOperatorsForType } from '@directus/shared/utils';
-import { ClientFilterOperator } from '@directus/shared/types';
+/** @TODO replace with import from @directus/utils */
+import { getFilterOperatorsForType } from '../../utils/get-filter-operators-for-type';
+import type { ClientFilterOperator } from '@directus/types';
 import { FilterValidator, FilterEmptyValidator } from '@query/filter';
 import { GeneratedFilter } from '..';
 
@@ -214,14 +215,14 @@ const _empty = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue === '') {
 		return true;
 	}
-	return false;
+	return _null(inputValue, _possibleValues);
 };
 
 const _nempty = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== '') {
 		return true;
 	}
-	return false;
+	return _nnull(inputValue, _possibleValues);
 };
 
 const _null = (inputValue: any, _possibleValues: any): boolean => {

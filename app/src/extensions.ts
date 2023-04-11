@@ -1,4 +1,4 @@
-import { AppExtensionConfigs, RefRecord } from '@directus/shared/types';
+import { AppExtensionConfigs, RefRecord } from '@directus/types';
 import { App, shallowRef, watch } from 'vue';
 import { getInternalDisplays, registerDisplays } from './displays';
 import { getInternalInterfaces, registerInterfaces } from './interfaces';
@@ -27,7 +27,7 @@ const onDehydrateCallbacks: (() => Promise<void>)[] = [];
 export async function loadExtensions(): Promise<void> {
 	try {
 		customExtensions = import.meta.env.DEV
-			? await import('@directus-extensions')
+			? await import(/* @vite-ignore */ '@directus-extensions')
 			: await import(/* @vite-ignore */ `${getRootPath()}extensions/sources/index.js`);
 	} catch (err: any) {
 		// eslint-disable-next-line no-console

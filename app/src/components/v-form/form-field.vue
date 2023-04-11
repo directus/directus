@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { Field, ValidationError } from '@directus/shared/types';
+import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -81,6 +81,7 @@ import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { useClipboard } from '@/composables/use-clipboard';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
+import { parseJSON } from '@directus/utils';
 
 interface Props {
 	field: Field;
@@ -178,8 +179,12 @@ function useRaw() {
 	async function pasteRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
-		internalValue.value = pastedValue;
-		emitValue(pastedValue);
+		try {
+			internalValue.value = parseJSON(pastedValue);
+		} catch (e) {
+			internalValue.value = pastedValue;
+		}
+		emitValue(internalValue.value);
 	}
 
 	return { showRaw, copyRaw, pasteRaw, onRawValueSubmit };
