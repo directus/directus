@@ -1,14 +1,14 @@
-import config, { getUrl } from '@common/config';
+import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
-import request from 'supertest';
-import knex from 'knex';
-import type { Knex } from 'knex';
-import { cloneDeep } from 'lodash';
-import { spawn, ChildProcess } from 'child_process';
-import { awaitDirectusConnection } from '@utils/await-connection';
-import { validateDateDifference } from '@utils/validate-date-difference';
 import * as common from '@common/index';
+import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
+import { validateDateDifference } from '@utils/validate-date-difference';
+import { ChildProcess, spawn } from 'child_process';
+import type { Knex } from 'knex';
+import knex from 'knex';
+import { cloneDeep } from 'lodash';
+import request from 'supertest';
 
 const collectionName = 'schema_timezone_tests';
 
@@ -29,14 +29,11 @@ describe('schema', () => {
 	const tzDirectus = {} as { [vendor: string]: ChildProcess };
 	const currentTzOffset = new Date().getTimezoneOffset();
 	const isWindows = ['win32', 'win64'].includes(process.platform);
-	const newTzOffset = currentTzOffset !== 180 ? 180 : 360;
+
+	const newTzOffset = currentTzOffset !== -540 ? -540 : -240;
 
 	// Different timezone format for Windows
-	const newTz = isWindows
-		? String(newTzOffset * 60)
-		: newTzOffset === 180
-		? 'America/Sao_Paulo'
-		: 'America/Mexico_City';
+	const newTz = isWindows ? String(newTzOffset * 60) : newTzOffset === -540 ? 'Asia/Seoul' : 'Asia/Dubai';
 
 	const sampleDates: SchemaTimezoneTypesObject[] = [];
 
@@ -74,7 +71,7 @@ describe('schema', () => {
 			config.envs[vendor]!.TZ = newTz;
 			config.envs[vendor]!.PORT = String(newServerPort);
 
-			const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
+			const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: config.envs[vendor] });
 			tzDirectus[vendor] = server;
 
 			let serverOutput = '';
@@ -100,13 +97,13 @@ describe('schema', () => {
 		}
 	});
 
-	describe('timezone (Changed Node Timezone America)', () => {
-		describe('returns existing datetime data correctly', () => {
+	describe('timezone (Changed Node Timezone Asia)', () => {
+		describe('returns existing timezone data correctly', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				const currentTimestamp = new Date();
 
 				const response = await request(getUrl(vendor))
-					.get(`/items/${collectionName}?fields=*`)
+					.get(`/items/${collectionName}?fields=*&limit=${sampleDates.length}`)
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
@@ -124,6 +121,66 @@ describe('schema', () => {
 
 						const newDateTimeString = new Date(
 							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - newTzOffset * 60 * 1000
+						).toISOString();
+
+						expect(responseObj.date).toBe(newDateString.substring(0, 10));
+						expect(responseObj.time).toBe(sampleDates[index]!.time);
+						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+						expect(responseObj.timestamp.substring(0, 19)).toBe(
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+						);
+						const dateCreated = new Date(responseObj.date_created);
+						expect(dateCreated.toISOString()).toBe(
+							validateDateDifference(currentTimestamp, dateCreated, 400000).toISOString()
+						);
+						continue;
+					} else if (vendor === 'oracle') {
+						expect(responseObj.date).toBe(sampleDates[index]!.date);
+						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+						expect(responseObj.timestamp.substring(0, 19)).toBe(
+							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+						);
+						const dateCreated = new Date(responseObj.date_created);
+						expect(dateCreated.toISOString()).toBe(
+							validateDateDifference(currentTimestamp, dateCreated, 400000).toISOString()
+						);
+						continue;
+					}
+
+					expect(responseObj.date).toBe(sampleDates[index]!.date);
+					expect(responseObj.time).toBe(sampleDates[index]!.time);
+					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+					expect(responseObj.timestamp.substring(0, 19)).toBe(
+						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
+					);
+					const dateCreated = new Date(responseObj.date_created);
+					expect(dateCreated.toISOString()).toBe(
+						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
+					);
+				}
+
+				const americanTzOffset = currentTzOffset !== 180 ? 180 : 360;
+
+				const response2 = await request(getUrl(vendor))
+					.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length}`)
+					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				expect(response2.body.data.length).toBe(sampleDates.length);
+
+				for (let index = 0; index < sampleDates.length; index++) {
+					const responseObj = response2.body.data[index] as SchemaTimezoneTypesResponse;
+
+					if (vendor === 'sqlite3') {
+						// Dates are saved in milliseconds at 00:00:00
+						const newDateString = new Date(
+							new Date(sampleDates[index]!.date + 'T00:00:00+00:00').valueOf() -
+								(newTzOffset - americanTzOffset) * 60 * 1000
+						).toISOString();
+
+						const newDateTimeString = new Date(
+							new Date(sampleDates[index]!.datetime + '+00:00').valueOf() - (newTzOffset - americanTzOffset) * 60 * 1000
 						).toISOString();
 
 						expect(responseObj.date).toBe(newDateString.substring(0, 10));
@@ -188,7 +245,7 @@ describe('schema', () => {
 					const insertionEndTimestamp = new Date();
 
 					const response = await request(getUrl(vendor))
-						.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length}`)
+						.get(`/items/${collectionName}?fields=*&offset=${sampleDates.length * 2}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 						.expect('Content-Type', /application\/json/)
 						.expect(200);
@@ -246,7 +303,7 @@ describe('schema', () => {
 				};
 
 				const existingDataResponse = await request(getUrl(vendor))
-					.get(`/items/${collectionName}?fields=*&limit=1&offset=${sampleDates.length}`)
+					.get(`/items/${collectionName}?fields=*&limit=1&offset=${sampleDates.length * 2}`)
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 					.expect('Content-Type', /application\/json/)
 					.expect(200);

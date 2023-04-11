@@ -3,3 +3,4 @@ packages:
   - api
   - docs
   - packages/*
+  - tests/*

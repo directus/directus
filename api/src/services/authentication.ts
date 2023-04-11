@@ -255,6 +255,8 @@ export class AuthenticationService {
 
 	async refresh(refreshToken: string): Promise<Record<string, any>> {
 		const { nanoid } = await import('nanoid');
+		const STALL_TIME = env['LOGIN_STALL_TIME'];
+		const timeStart = performance.now();
 
 		if (!refreshToken) {
 			throw new InvalidCredentialsException();
@@ -302,6 +304,18 @@ export class AuthenticationService {
 
 		if (!record || (!record.share_id && !record.user_id)) {
 			throw new InvalidCredentialsException();
+		}
+
+		if (record.user_id && record.user_status !== 'active') {
+			await this.knex('directus_sessions').where({ token: refreshToken }).del();
+
+			if (record.user_status === 'suspended') {
+				await stall(STALL_TIME, timeStart);
+				throw new UserSuspendedException();
+			} else {
+				await stall(STALL_TIME, timeStart);
+				throw new InvalidCredentialsException();
+			}
 		}
 
 		if (record.user_id) {

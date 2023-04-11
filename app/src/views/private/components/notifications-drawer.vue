@@ -191,12 +191,16 @@ export default defineComponent({
 		}
 
 		function onRowClick({ item }: { item: Item; event: PointerEvent }) {
-			const collection = collectionsStore.getCollection(item.collection);
+			if (item.collection) {
+				const collection = collectionsStore.getCollection(item.collection);
 
-			if (collection?.meta?.singleton) {
-				router.push(`/content/${item.collection}`);
-			} else {
-				router.push(`/content/${item.collection}/${item.item}`);
+				if (collection?.meta?.singleton) {
+					router.push(`/content/${item.collection}`);
+				} else {
+					router.push(`/content/${item.collection}/${item.item}`);
+				}
+			} else if (String(item.item).startsWith('/')) {
+				router.push(item.item);
 			}
 
 			notificationsDrawerOpen.value = false;
