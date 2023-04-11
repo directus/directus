@@ -72,12 +72,14 @@ fields:
           meta:
             interface: system-language
             width: half
+            required: true
         - field: translation
           name: $t:field_options.directus_collections.collection_name
           type: string
           meta:
             interface: input
             width: half
+            required: true
             options:
               placeholder: $t:field_options.directus_collections.translation_placeholder
         - field: singular

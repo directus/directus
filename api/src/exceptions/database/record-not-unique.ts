@@ -1,9 +1,9 @@
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 
 type Extensions = {
 	collection: string;
 	field: string | null;
-	invalid?: string;
+	invalid?: string | undefined;
 };
 
 export class RecordNotUniqueException extends BaseException {

@@ -1,6 +1,6 @@
-import { defineOperationApi, parseJSON } from '@directus/shared/utils';
+import { defineOperationApi, isValidJSON } from '@directus/utils';
 import encodeUrl from 'encodeurl';
-import { getAxios } from '../../request/index';
+import { getAxios } from '../../request/index.js';
 
 type Options = {
 	url: string;
@@ -19,27 +19,28 @@ export default defineOperationApi<Options>({
 				return acc;
 			}, {} as Record<string, string>) ?? {};
 
-		if (!customHeaders['Content-Type'] && isValidJSON(body)) {
+		if (!customHeaders['Content-Type'] && (typeof body === 'object' || isValidJSON(body))) {
 			customHeaders['Content-Type'] = 'application/json';
 		}
 
 		const axios = await getAxios();
-		const result = await axios({
-			url: encodeUrl(url),
-			method,
-			data: body,
-			headers: customHeaders,
-		});
 
-		return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
+		try {
+			const result = await axios({
+				url: encodeUrl(url),
+				method,
+				data: body,
+				headers: customHeaders,
+			});
 
-		function isValidJSON(value: any): boolean {
-			try {
-				parseJSON(value);
-				return true;
-			} catch {
-				return false;
-			}
+			return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
+		} catch (error: any) {
+			throw JSON.stringify({
+				status: error.response.status,
+				statusText: error.response.statusText,
+				headers: error.response.headers,
+				data: error.response.data,
+			});
 		}
 	},
 });

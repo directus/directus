@@ -19,7 +19,7 @@ import { computed } from 'vue';
 
 interface Props {
 	/** What value to represent when selected */
-	value: string | number;
+	value: string | number | null;
 	/** If `value` and `modelValue` match, the radio is selected */
 	modelValue?: string | number | null;
 	/** Label to render next to the radio */

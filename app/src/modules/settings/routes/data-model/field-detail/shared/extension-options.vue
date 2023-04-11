@@ -14,14 +14,18 @@
 		primary-key="+"
 	/>
 
-	<component
-		:is="`${type}-options-${extensionInfo!.id}`"
-		v-else
-		:value="optionsValues"
-		:collection="collection"
-		:field="field"
-		@input="optionsValues = $event"
-	/>
+	<v-error-boundary v-else :name="`${type}-options-${extensionInfo!.id}`">
+		<component
+			:is="`${type}-options-${extensionInfo!.id}`"
+			:value="optionsValues"
+			:collection="collection"
+			:field="field"
+			@input="optionsValues = $event"
+		/>
+		<template #fallback>
+			<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
+		</template>
+	</v-error-boundary>
 </template>
 
 <script lang="ts">

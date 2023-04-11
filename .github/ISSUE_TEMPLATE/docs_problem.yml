@@ -1,0 +1,20 @@
+name: Report a docs inaccuracy
+description: When something is wrong or incorrect in the docs
+labels: Documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Hi, thank you for taking the time to create an issue! If you're asking for _new_ docs, or have a suggestion on how to enhance existing docs, please open [a docs suggestion](https://github.com/directus/directus/discussions/new?category=docs-suggestions) instead!
+  - type: input
+    attributes:
+      label: Page
+      description: A direct link to the page with the problem
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the Inaccuracy
+      description: A clear and concise description of what the problem is
+    validations:
+      required: true

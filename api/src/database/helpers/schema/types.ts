@@ -1,9 +1,9 @@
-import { KNEX_TYPES } from '@directus/shared/constants';
-import { Field, Relation, Type } from '@directus/shared/types';
-import { Knex } from 'knex';
-import { DatabaseClient } from '../../../types';
-import { getDatabaseClient } from '../../index';
-import { DatabaseHelper } from '../types';
+import type { KNEX_TYPES } from '@directus/constants';
+import type { Field, Relation, Type } from '@directus/types';
+import type { Knex } from 'knex';
+import type { DatabaseClient } from '../../../types/index.js';
+import { getDatabaseClient } from '../../index.js';
+import { DatabaseHelper } from '../types.js';
 
 export type Options = { nullable?: boolean; default?: any; length?: number };
 
@@ -25,7 +25,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	async changeToType(
 		table: string,
 		column: string,
-		type: typeof KNEX_TYPES[number],
+		type: (typeof KNEX_TYPES)[number],
 		options: Options = {}
 	): Promise<void> {
 		await this.knex.schema.alterTable(table, (builder) => {
@@ -50,7 +50,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	protected async changeToTypeByCopy(
 		table: string,
 		column: string,
-		type: typeof KNEX_TYPES[number],
+		type: (typeof KNEX_TYPES)[number],
 		options: Options
 	): Promise<void> {
 		const tempName = `${column}__temp`;
