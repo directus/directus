@@ -1,3 +1,4 @@
+import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
 import express, { Request, RequestHandler, Response } from 'express';
 import type { ServerResponse } from 'http';
@@ -24,7 +25,6 @@ import notFoundHandler from './controllers/not-found.js';
 import notificationsRouter from './controllers/notifications.js';
 import operationsRouter from './controllers/operations.js';
 import panelsRouter from './controllers/panels.js';
-import { handlePressure } from '@directus/pressure';
 import permissionsRouter from './controllers/permissions.js';
 import presetsRouter from './controllers/presets.js';
 import relationsRouter from './controllers/relations.js';
@@ -46,6 +46,7 @@ import {
 import emitter from './emitter.js';
 import env from './env.js';
 import { InvalidPayloadException } from './exceptions/invalid-payload.js';
+import { ServiceUnavailableException } from './exceptions/service-unavailable.js';
 import { getExtensionManager } from './extensions.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
@@ -108,16 +109,16 @@ export default async function createApp(): Promise<express.Application> {
 	app.set('trust proxy', env['IP_TRUST_PROXY']);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
-	if (env.PRESSURE_LIMITER_ENABLED) {
+	if (env['PRESSURE_LIMITER_ENABLED']) {
 		app.use(
 			handlePressure({
-				sampleInterval: env.PRESSURE_LIMITER_SAMPLE_INTERVAL,
-				maxEventLoopUtilization: env.PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION,
-				maxEventLoopDelay: env.PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY,
-				maxMemoryRss: env.PRESSURE_LIMITER_MAX_MEMORY_RSS,
-				maxMemoryHeapUsed: env.PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED,
+				sampleInterval: env['PRESSURE_LIMITER_SAMPLE_INTERVAL'],
+				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'],
+				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'],
+				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'],
+				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'],
 				error: new ServiceUnavailableException('Under pressure', { service: 'api' }),
-				retryAfter: env.PRESSURE_LIMITER_RETRY_AFTER,
+				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'],
 			})
 		);
 	}
