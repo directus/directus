@@ -1,3 +1,4 @@
+import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
@@ -9,6 +10,7 @@ import { pipeline } from 'node:stream/promises';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
+import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
@@ -18,8 +20,6 @@ import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { ItemsService } from './items.js';
-import formatTitle from '@directus/format-title';
-import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
