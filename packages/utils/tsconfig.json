@@ -1,0 +1,11 @@
+{
+	"extends": "@directus/tsconfig/node18-esm.json",
+	"compilerOptions": {
+		"outDir": "dist"
+	},
+	"references": [
+		{ "path": "./browser/tsconfig.json" },
+		{ "path": "./node/tsconfig.json" },
+		{ "path": "./shared/tsconfig.json" }
+	]
+}

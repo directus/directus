@@ -1,8 +1,8 @@
-import { Accountability, PrimaryKey } from '@directus/shared/types';
-import { defineOperationApi, optionToObject, toArray } from '@directus/shared/utils';
-import { ItemsService } from '../../services';
-import { Item } from '../../types';
-import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
+import type { Accountability, PrimaryKey } from '@directus/types';
+import { defineOperationApi, optionToObject, toArray } from '@directus/utils';
+import { ItemsService } from '../../services/items.js';
+import type { Item } from '../../types/index.js';
+import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
 
 type Options = {
 	collection: string;

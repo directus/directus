@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
-import { LocalType } from '@directus/shared/types';
+import { LocalType } from '@directus/types';
 import { useFieldDetailStore } from './store/';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
 import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';

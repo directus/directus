@@ -1,24 +1,31 @@
-import path from 'path';
-import chalk from 'chalk';
-import fse from 'fs-extra';
-import execa from 'execa';
-import ora from 'ora';
 import {
-	EXTENSION_PKG_KEY,
+	BUNDLE_EXTENSION_TYPES,
 	EXTENSION_LANGUAGES,
-	HYBRID_EXTENSION_TYPES,
 	EXTENSION_NAME_REGEX,
-	EXTENSION_PACKAGE_TYPES,
-	PACKAGE_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import { isIn } from '@directus/shared/utils';
-import { ExtensionOptions, ExtensionPackageType, ExtensionType, PackageExtensionType } from '@directus/shared/types';
-import { log } from '../utils/logger';
-import { isLanguage, languageToShort } from '../utils/languages';
-import getSdkVersion from '../utils/get-sdk-version';
-import getExtensionDevDeps from './helpers/get-extension-dev-deps';
-import copyTemplate from './helpers/copy-template';
-import getPackageManager from '../utils/get-package-manager';
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/constants';
+import type {
+	ApiExtensionType,
+	AppExtensionType,
+	BundleExtensionType,
+	ExtensionOptions,
+	ExtensionType,
+	HybridExtensionType,
+} from '@directus/types';
+import { isIn } from '@directus/utils';
+import chalk from 'chalk';
+import execa from 'execa';
+import fse from 'fs-extra';
+import ora from 'ora';
+import path from 'path';
+import getPackageManager from '../utils/get-package-manager.js';
+import getSdkVersion from '../utils/get-sdk-version.js';
+import { isLanguage, languageToShort } from '../utils/languages.js';
+import { log } from '../utils/logger.js';
+import copyTemplate from './helpers/copy-template.js';
+import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
 type CreateOptions = { language?: string };
 
@@ -26,10 +33,10 @@ export default async function create(type: string, name: string, options: Create
 	const targetDir = name.substring(name.lastIndexOf('/') + 1);
 	const targetPath = path.resolve(targetDir);
 
-	if (!isIn(type, EXTENSION_PACKAGE_TYPES)) {
+	if (!isIn(type, EXTENSION_TYPES)) {
 		log(
-			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_PACKAGE_TYPES.map(
-				(t) => chalk.bold.magenta(t)
+			`Extension type ${chalk.bold(type)} is not supported. Available extension types: ${EXTENSION_TYPES.map((t) =>
+				chalk.bold.magenta(t)
 			).join(', ')}.`,
 			'error'
 		);
@@ -57,7 +64,7 @@ export default async function create(type: string, name: string, options: Create
 		}
 	}
 
-	if (isIn(type, PACKAGE_EXTENSION_TYPES)) {
+	if (isIn(type, BUNDLE_EXTENSION_TYPES)) {
 		await createPackageExtension({ type, name, targetDir, targetPath });
 	} else {
 		const language = options.language ?? 'javascript';
@@ -72,7 +79,7 @@ async function createPackageExtension({
 	targetDir,
 	targetPath,
 }: {
-	type: PackageExtensionType;
+	type: BundleExtensionType;
 	name: string;
 	targetDir: string;
 	targetPath: string;
@@ -83,8 +90,7 @@ async function createPackageExtension({
 	await copyTemplate(type, targetPath);
 
 	const host = `^${getSdkVersion()}`;
-	const options: ExtensionOptions =
-		type === 'bundle' ? { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host } : { type, host };
+	const options = { type, path: { app: 'dist/app.js', api: 'dist/api.js' }, entries: [], host };
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
@@ -105,7 +111,7 @@ async function createLocalExtension({
 	targetPath,
 	language,
 }: {
-	type: ExtensionType;
+	type: AppExtensionType | ApiExtensionType | HybridExtensionType;
 	name: string;
 	targetDir: string;
 	targetPath: string;
@@ -154,20 +160,29 @@ async function createLocalExtension({
 }
 
 function getPackageManifest(name: string, options: ExtensionOptions, deps: Record<string, string>) {
-	return {
+	const packageManifest: Record<string, any> = {
 		name: EXTENSION_NAME_REGEX.test(name) ? name : `directus-extension-${name}`,
+		description: 'Please enter a description for your extension',
+		icon: 'extension',
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${options.type}`],
 		[EXTENSION_PKG_KEY]: options,
 		scripts: {
 			build: 'directus-extension build',
 			dev: 'directus-extension build -w --no-minify',
+			link: 'directus-extension link',
 		},
 		devDependencies: deps,
 	};
+
+	if (options.type === 'bundle') {
+		packageManifest['scripts']['add'] = 'directus-extension add';
+	}
+
+	return packageManifest;
 }
 
-function getDoneMessage(type: ExtensionPackageType, targetDir: string, targetPath: string, packageManager: string) {
+function getDoneMessage(type: ExtensionType, targetDir: string, targetPath: string, packageManager: string) {
 	return `
 Your ${type} extension has been created at ${chalk.green(targetPath)}
 

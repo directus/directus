@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { LOCAL_TYPES } from '@directus/shared/constants';
+import { LOCAL_TYPES } from '@directus/constants';
 import { syncFieldDetailStoreProperty } from '../store';
 import { useI18n } from 'vue-i18n';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
@@ -81,7 +81,7 @@ export default defineComponent({
 	components: { RelatedCollectionSelect, RelatedFieldSelect },
 	props: {
 		localType: {
-			type: String as PropType<typeof LOCAL_TYPES[number]>,
+			type: String as PropType<(typeof LOCAL_TYPES)[number]>,
 			required: true,
 		},
 	},

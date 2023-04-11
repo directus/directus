@@ -1,11 +1,14 @@
 import fs from 'fs';
 import { Liquid } from 'liquidjs';
-import { nanoid } from 'nanoid';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
 import { v4 as uuid } from 'uuid';
-import { Credentials } from '../create-db-connection';
-import { drivers } from '../drivers';
+import type { Credentials } from '../create-db-connection.js';
+import type { drivers } from '../drivers.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -16,27 +19,25 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-const defaults = {
-	security: {
-		KEY: uuid(),
-		SECRET: nanoid(32),
-	},
-};
-
 export default async function createEnv(
 	client: keyof typeof drivers,
 	credentials: Credentials,
 	directory: string
 ): Promise<void> {
+	const { nanoid } = await import('nanoid');
+
 	const config: Record<string, any> = {
-		...defaults,
+		security: {
+			KEY: uuid(),
+			SECRET: nanoid(32),
+		},
 		database: {
 			DB_CLIENT: client,
 		},
 	};
 
 	for (const [key, value] of Object.entries(credentials)) {
-		config.database[`DB_${key.toUpperCase()}`] = value;
+		config['database'][`DB_${key.toUpperCase()}`] = value;
 	}
 
 	const configAsStrings: any = {};

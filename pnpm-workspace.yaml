@@ -1,4 +1,6 @@
 packages:
   - app
   - api
+  - docs
   - packages/*
+  - tests/*

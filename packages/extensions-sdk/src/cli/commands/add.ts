@@ -1,31 +1,32 @@
-import path from 'path';
-import chalk from 'chalk';
-import fse from 'fs-extra';
-import inquirer from 'inquirer';
-import { log } from '../utils/logger';
-import {
-	ExtensionManifestRaw,
-	ExtensionOptions,
-	ExtensionOptionsBundleEntry,
-	ExtensionType,
-} from '@directus/shared/types';
-import { isIn, isTypeIn, validateExtensionManifest } from '@directus/shared/utils';
-import { pathToRelativeUrl } from '@directus/shared/utils/node';
 import {
 	EXTENSION_LANGUAGES,
 	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
+	ExtensionManifest,
 	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import { getLanguageFromPath, isLanguage, languageToShort } from '../utils/languages';
-import { Language } from '../types';
-import getExtensionDevDeps from './helpers/get-extension-dev-deps';
+} from '@directus/constants';
+import type {
+	ExtensionOptions,
+	ExtensionOptionsBundleEntry,
+	NestedExtensionType,
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/types';
+import { isIn, isTypeIn } from '@directus/utils';
+import { pathToRelativeUrl } from '@directus/utils/node';
+import chalk from 'chalk';
 import execa from 'execa';
+import fse from 'fs-extra';
+import inquirer from 'inquirer';
 import ora from 'ora';
-import copyTemplate from './helpers/copy-template';
-import detectJsonIndent from '../utils/detect-json-indent';
-import getPackageManager from '../utils/get-package-manager';
+import path from 'path';
+import type { Language } from '../types.js';
+import detectJsonIndent from '../utils/detect-json-indent.js';
+import getPackageManager from '../utils/get-package-manager.js';
+import { getLanguageFromPath, isLanguage, languageToShort } from '../utils/languages.js';
+import { log } from '../utils/logger.js';
+import copyTemplate from './helpers/copy-template.js';
+import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
 export default async function add(): Promise<void> {
 	const extensionPath = process.cwd();
@@ -36,28 +37,25 @@ export default async function add(): Promise<void> {
 		process.exit(1);
 	}
 
-	const extensionManifestFile = await fse.readFile(packagePath, 'utf8');
-	const extensionManifest: ExtensionManifestRaw = JSON.parse(extensionManifestFile);
+	let extensionManifest: TExtensionManifest;
+	let indent: string | null = null;
 
-	const indent = detectJsonIndent(extensionManifestFile);
-
-	if (!validateExtensionManifest(extensionManifest)) {
+	try {
+		const extensionManifestFile = await fse.readFile(packagePath, 'utf8');
+		extensionManifest = ExtensionManifest.passthrough().parse(JSON.parse(extensionManifestFile));
+		indent = detectJsonIndent(extensionManifestFile);
+	} catch (e) {
 		log(`Current directory is not a valid Directus extension.`, 'error');
 		process.exit(1);
 	}
 
 	const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
-	if (extensionOptions.type === 'pack') {
-		log(`Adding entries to extensions with type ${chalk.bold('pack')} is not currently supported.`, 'error');
-		process.exit(1);
-	}
-
 	const sourceExists = await fse.pathExists(path.resolve('src'));
 
 	if (extensionOptions.type === 'bundle') {
 		const { type, name, language, alternativeSource } = await inquirer.prompt<{
-			type: ExtensionType;
+			type: NestedExtensionType;
 			name: string;
 			language: Language;
 			alternativeSource?: string;
@@ -149,7 +147,7 @@ export default async function add(): Promise<void> {
 		const oldName = extensionManifest.name.match(EXTENSION_NAME_REGEX)?.[1] ?? extensionManifest.name;
 
 		const { type, name, language, convertName, extensionName, alternativeSource } = await inquirer.prompt<{
-			type: ExtensionType;
+			type: NestedExtensionType;
 			name: string;
 			language: Language;
 			convertName: string;

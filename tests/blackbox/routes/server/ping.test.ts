@@ -1,0 +1,26 @@
+import { getUrl } from '@common/config';
+import request from 'supertest';
+import vendors from '@common/get-dbs-to-test';
+import { requestGraphQL } from '@common/transport';
+
+describe('/server', () => {
+	describe('GET /ping', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			// Action
+			const response = await request(getUrl(vendor))
+				.get('/server/ping')
+				.expect('Content-Type', /text\/html/)
+				.expect(200);
+
+			const gqlResponse = await requestGraphQL(getUrl(vendor), true, null, {
+				query: {
+					server_ping: true,
+				},
+			});
+
+			// Assert
+			expect(response.text).toBe('pong');
+			expect(gqlResponse.body.data.server_ping).toBe('pong');
+		});
+	});
+});
