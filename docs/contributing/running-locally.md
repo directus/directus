@@ -83,16 +83,6 @@ pnpm --dir api cli bootstrap
 
 This will set-up the required tables for Directus and make sure all the migrations have run.
 
-:::tip M1/M2 MacBook & Postgres
-
-If you are running into issues with `postgres` on a M1/M2 Macs (arm64), you can try using
-`image: ghcr.io/baosystems/postgis:13-3.3` and include `platform: linux/arm64` to the
-[docker-compose.yml](../../docker-compose.yml) file.
-
-- (This is not officially supported, but provided as a work around to reduce memory usuage).
-
-:::
-
 ## 7. Start the development server
 
 You can run all packages in development with the following command:
