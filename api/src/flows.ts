@@ -1,7 +1,6 @@
 import * as sharedExceptions from '@directus/exceptions';
-import {
+import type {
 	Accountability,
-	Action,
 	ActionHandler,
 	FilterHandler,
 	Flow,
@@ -9,6 +8,7 @@ import {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/types';
+import { Action } from '@directus/constants';
 import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import fastRedact from 'fast-redact';
 import type { Knex } from 'knex';
