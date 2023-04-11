@@ -61,11 +61,6 @@ export const COOKIE_OPTIONS: CookieOptions = {
 	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 };
 
-export const ROBOTSTXT = `
-User-agent: *
-Disallow: /
-`.trim();
-
 export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];
 
 /** Formats from which transformation is supported */
