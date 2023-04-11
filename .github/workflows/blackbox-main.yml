@@ -66,4 +66,4 @@ jobs:
           --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=${{ matrix.vendor }} pnpm --filter tests-blackbox run run
+        run: TEST_DB=${{ matrix.vendor }} pnpm --filter tests-blackbox test

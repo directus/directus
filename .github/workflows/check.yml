@@ -44,7 +44,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        run: pnpm --recursive test
+        run: pnpm test
 
   analyze:
     name: CodeQL Analysis
