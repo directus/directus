@@ -28,7 +28,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { version } from '../../../../package.json';
+import { version } from 'directus/package.json';
 
 export default defineComponent({
 	setup() {

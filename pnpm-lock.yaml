@@ -697,6 +697,9 @@ importers:
       diff:
         specifier: 5.1.0
         version: 5.1.0
+      directus:
+        specifier: workspace:*
+        version: link:../directus
       dompurify:
         specifier: 3.0.1
         version: 3.0.1
@@ -808,6 +811,12 @@ importers:
       wellknown:
         specifier: 0.5.0
         version: 0.5.0
+
+  directus:
+    dependencies:
+      '@directus/api':
+        specifier: workspace:*
+        version: link:../api
 
   docs:
     dependencies:
@@ -5688,7 +5697,7 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2
+      '@rollup/pluginutils': 5.0.2(rollup@3.19.1)
       js-yaml: 4.1.0
       tosource: 2.0.0-alpha.3
     dev: true
@@ -5700,20 +5709,6 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
     dev: false
-
-  /@rollup/pluginutils@5.0.2:
-    resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^1.20.0||^2.0.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@types/estree': 1.0.0
-      estree-walker: 2.0.2
-      picomatch: 2.3.1
-    dev: true
 
   /@rollup/pluginutils@5.0.2(rollup@3.19.1):
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
@@ -5728,7 +5723,6 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 3.19.1
-    dev: false
 
   /@sendgrid/client@6.5.5:
     resolution: {integrity: sha512-Nbfgo94gbWSL8PIgJfuHoifyOJJepvV8NQkkglctAEfb1hyozKhrzE6v1kPG/z4j0RodaTtXD5LJj/t0q/VhLA==}
