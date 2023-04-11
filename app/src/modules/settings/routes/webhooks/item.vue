@@ -65,7 +65,12 @@
 			<sidebar-detail icon="info_outline" :title="t('information')" close>
 				<div v-md="t('page_help_settings_webhooks_item')" class="page-description" />
 			</sidebar-detail>
-			<revisions-drawer-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
+			<revisions-drawer-detail
+				v-if="isNew === false"
+				ref="revisionsDrawerDetailRef"
+				collection="directus_webhooks"
+				:primary-key="primaryKey"
+			/>
 		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -110,6 +115,8 @@ export default defineComponent({
 		const router = useRouter();
 
 		const { primaryKey } = toRefs(props);
+
+		const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 		const {
 			isNew,
@@ -168,6 +175,7 @@ export default defineComponent({
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
+			revisionsDrawerDetailRef,
 		};
 
 		async function saveAndQuit() {
@@ -177,6 +185,7 @@ export default defineComponent({
 
 		async function saveAndStay() {
 			await save();
+			revisionsDrawerDetailRef.value?.refresh?.();
 		}
 
 		async function saveAndAddNew() {
