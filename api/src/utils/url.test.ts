@@ -1,5 +1,5 @@
 import { expect, test, describe } from 'vitest';
-import { Url } from './url';
+import { Url } from './url.js';
 
 describe('path handling', () => {
 	test('parse and serialize an URL without path', () => {

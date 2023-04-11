@@ -11,7 +11,7 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 - **Manage pure SQL.** Works with new or existing SQL databases, no migration required.
 - **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
 - **On-Prem or Cloud.** Run locally, install on-premises, or use our
-  [self-service Cloud service](https://directus.io/pricing) (free tier available).
+  [self-service Cloud service](https://directus.io/pricing).
 - **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
 - **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
@@ -36,9 +36,9 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 [The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
 
-- [Discord](https://directus.chat) (Live Discussions)
+- [Discord](https://directus.chat) (Questions, Live Discussions)
 - [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
-- [GitHub Discussions](https://github.com/directus/directus/discussions) (Questions, Feature Requests)
+- [GitHub Discussions](https://github.com/directus/directus/discussions) (Feature Requests)
 - [Twitter](https://twitter.com/directus) (Latest News)
 - [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 

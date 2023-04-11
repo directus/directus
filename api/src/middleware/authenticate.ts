@@ -1,28 +1,32 @@
-import { Accountability } from '@directus/shared/types';
-import { NextFunction, Request, Response } from 'express';
-import { isEqual } from 'lodash';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import env from '../env';
-import { InvalidCredentialsException } from '../exceptions';
-import asyncHandler from '../utils/async-handler';
-import { getIPFromReq } from '../utils/get-ip-from-req';
-import isDirectusJWT from '../utils/is-directus-jwt';
-import { verifyAccessJWT } from '../utils/jwt';
+import type { Accountability } from '@directus/types';
+import type { NextFunction, Request, Response } from 'express';
+import { isEqual } from 'lodash-es';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { InvalidCredentialsException } from '../exceptions/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import isDirectusJWT from '../utils/is-directus-jwt.js';
+import { verifyAccessJWT } from '../utils/jwt.js';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-export const handler = async (req: Request, res: Response, next: NextFunction) => {
+export const handler = async (req: Request, _res: Response, next: NextFunction) => {
 	const defaultAccountability: Accountability = {
 		user: null,
 		role: null,
 		admin: false,
 		app: false,
 		ip: getIPFromReq(req),
-		userAgent: req.get('user-agent'),
-		origin: req.get('origin'),
 	};
+
+	const userAgent = req.get('user-agent');
+	if (userAgent) defaultAccountability.userAgent = userAgent;
+
+	const origin = req.get('origin');
+	if (origin) defaultAccountability.origin = origin;
 
 	const database = getDatabase();
 
@@ -48,14 +52,15 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
 
 	if (req.token) {
 		if (isDirectusJWT(req.token)) {
-			const payload = verifyAccessJWT(req.token, env.SECRET);
+			const payload = verifyAccessJWT(req.token, env['SECRET']);
 
-			req.accountability.share = payload.share;
-			req.accountability.share_scope = payload.share_scope;
-			req.accountability.user = payload.id;
 			req.accountability.role = payload.role;
 			req.accountability.admin = payload.admin_access === true || payload.admin_access == 1;
 			req.accountability.app = payload.app_access === true || payload.app_access == 1;
+
+			if (payload.share) req.accountability.share = payload.share;
+			if (payload.share_scope) req.accountability.share_scope = payload.share_scope;
+			if (payload.id) req.accountability.user = payload.id;
 		} else {
 			// Try finding the user with the provided token
 			const user = await database
