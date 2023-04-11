@@ -26,16 +26,13 @@
 </template>
 
 <script lang="ts">
+import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
 import { version } from '../../../../package.json';
-import { useProjectInfo } from '../composables/use-project-info';
 
 export default defineComponent({
 	setup() {
 		const { t } = useI18n();
-
-		const { parsedInfo: projectInfo } = useProjectInfo();
 
 		const navItems = [
 			{
