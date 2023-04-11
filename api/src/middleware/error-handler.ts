@@ -99,8 +99,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				accountability: req.accountability ?? null,
 			}
 		)
-		.then(() => {
-			return res.json(payload);
+		.then((updatedErrors) => {
+			return res.json({ ...payload, errors: updatedErrors });
 		});
 };
 
