@@ -10,6 +10,7 @@ storybook-static
 coverage
 *.tsbuildinfo
 **/.vitepress/cache
+**/.vitepress/.temp
 .thumbsmith
 
 # Dotenv configs
@@ -20,7 +21,6 @@ coverage
 npm-debug.log
 debug
 .clinic
-/tests-blackbox/server-log-*
 
 # IDEs / Editors
 .vscode
@@ -37,10 +37,11 @@ debug
 # Temporary files
 TODO
 
-# Directus data
+# Directus
 /schema.yaml
 /schema.json
-/uploads
 /api/uploads
 /api/extensions
+/tests/blackbox/uploads
+/tests/blackbox/server-log-*
 *.db
