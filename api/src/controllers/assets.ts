@@ -167,8 +167,6 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		const access = req.accountability?.role ? 'private' : 'public';
-
 		const filename = req.params['filename'] ?? file.filename_download;
 		res.attachment(filename);
 		res.setHeader('Content-Type', file.type);
