@@ -60,10 +60,10 @@ import { useUserStore } from '@/stores/user';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useCollectionsStore } from '@/stores/collections';
 import { storeToRefs } from 'pinia';
-import { Notification } from '@directus/shared/types';
+import { Notification } from '@directus/types';
 import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import { Item } from '@directus/shared/types';
+import { Item } from '@directus/types';
 import { useRouter } from 'vue-router';
 import { parseISO } from 'date-fns';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
@@ -191,12 +191,16 @@ export default defineComponent({
 		}
 
 		function onRowClick({ item }: { item: Item; event: PointerEvent }) {
-			const collection = collectionsStore.getCollection(item.collection);
+			if (item.collection) {
+				const collection = collectionsStore.getCollection(item.collection);
 
-			if (collection?.meta?.singleton) {
-				router.push(`/content/${item.collection}`);
-			} else {
-				router.push(`/content/${item.collection}/${item.item}`);
+				if (collection?.meta?.singleton) {
+					router.push(`/content/${item.collection}`);
+				} else {
+					router.push(`/content/${item.collection}/${item.item}`);
+				}
+			} else if (String(item.item).startsWith('/')) {
+				router.push(item.item);
 			}
 
 			notificationsDrawerOpen.value = false;

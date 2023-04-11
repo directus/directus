@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { mapValuesDeep } from './map-values-deep';
+import { mapValuesDeep } from './map-values-deep.js';
 
 test('Replace all undefined values with null', () => {
 	const obj = { a: { b: { c: undefined } }, b: 'test' };

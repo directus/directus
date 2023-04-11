@@ -1,4 +1,4 @@
-import { defineOperationApi, optionToObject } from '@directus/shared/utils';
+import { defineOperationApi, optionToObject } from '@directus/utils';
 
 type Options = {
 	json: string | Record<string, any>;

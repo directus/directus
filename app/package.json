@@ -1,8 +1,9 @@
 {
 	"name": "@directus/app",
-	"version": "9.23.1",
+	"version": "9.24.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
+	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -21,19 +22,19 @@
 	"scripts": {
 		"build": "vite build",
 		"build-storybook": "storybook build",
-		"dev": "vite",
-		"serve": "vite preview",
+		"dev": "vite --clearScreen false",
 		"storybook": "storybook dev -p 6006",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest"
+		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
 		"@babel/core": "7.21.3",
 		"@babel/preset-env": "7.20.2",
+		"@directus/constants": "workspace:*",
+		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
-		"@directus/shared": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@directus/utils": "workspace:*",
 		"@fortawesome/fontawesome-svg-core": "6.3.0",
 		"@fortawesome/free-brands-svg-icons": "6.3.0",
 		"@fullcalendar/core": "6.1.4",
@@ -61,7 +62,7 @@
 		"@storybook/client-logger": "7.0.0-rc.4",
 		"@storybook/vue3": "7.0.0-rc.4",
 		"@storybook/vue3-vite": "7.0.0-rc.4",
-		"@tinymce/tinymce-vue": "4.0.7",
+		"@tinymce/tinymce-vue": "5.1.0",
 		"@turf/meta": "6.5.0",
 		"@types/base-64": "1.0.0",
 		"@types/codemirror": "5.60.7",
@@ -94,6 +95,7 @@
 		"date-fns": "2.29.3",
 		"diacritics": "1.3.0",
 		"diff": "5.1.0",
+		"directus": "workspace:*",
 		"dompurify": "3.0.1",
 		"escape-string-regexp": "5.0.0",
 		"file-saver": "2.0.5",
@@ -119,9 +121,9 @@
 		"qrcode": "1.5.1",
 		"react": "18",
 		"react-dom": "18",
-		"storybook": "7.0.0-rc.4",
 		"sass": "1.59.3",
-		"tinymce": "5.10.7",
+		"storybook": "7.0.0-rc.4",
+		"tinymce": "6.4.1",
 		"typescript": "4.9.5",
 		"vite": "4.1.4",
 		"vitest": "0.29.3",
@@ -134,5 +136,8 @@
 	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"dependencies": {
+		"@directus/composables": "workspace:*"
 	}
 }

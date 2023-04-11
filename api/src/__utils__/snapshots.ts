@@ -1,4 +1,4 @@
-import type { Snapshot, SnapshotField, SnapshotRelation } from '../types';
+import type { Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
 
 export const snapshotBeforeCreateCollection: Snapshot = {
 	version: 1,

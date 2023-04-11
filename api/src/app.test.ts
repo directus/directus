@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import request from 'supertest';
 import { describe, expect, test, vi } from 'vitest';
-
-import createApp from './app';
+import createApp from './app.js';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),

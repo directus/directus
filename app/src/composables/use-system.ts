@@ -1,6 +1,6 @@
 import { provide } from 'vue';
 import api from '@/api';
-import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '@directus/shared/constants';
+import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '@directus/constants';
 import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';

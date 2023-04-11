@@ -3,18 +3,18 @@
  */
 
 import type { RequestHandler } from 'express';
-import { systemCollectionRows } from '../database/system-data/collections';
-import { ForbiddenException } from '../exceptions';
-import asyncHandler from '../utils/async-handler';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import { ForbiddenException } from '../exceptions/index.js';
+import asyncHandler from '../utils/async-handler.js';
 
-const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => {
-	if (!req.params.collection) return next();
+const collectionExists: RequestHandler = asyncHandler(async (req, _res, next) => {
+	if (!req.params['collection']) return next();
 
-	if (req.params.collection in req.schema.collections === false) {
+	if (req.params['collection'] in req.schema.collections === false) {
 		throw new ForbiddenException();
 	}
 
-	req.collection = req.params.collection;
+	req.collection = req.params['collection'];
 
 	if (req.collection.startsWith('directus_')) {
 		const systemRow = systemCollectionRows.find((collection) => {
@@ -23,7 +23,7 @@ const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => 
 
 		req.singleton = !!systemRow?.singleton;
 	} else {
-		req.singleton = req.schema.collections[req.collection].singleton;
+		req.singleton = req.schema.collections[req.collection]?.singleton ?? false;
 	}
 
 	return next();

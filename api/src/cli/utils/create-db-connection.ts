@@ -1,7 +1,12 @@
-import { knex, Knex } from 'knex';
+import knex from 'knex';
+import type { Knex } from 'knex';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
-import type { Driver } from '../../types';
+import type { Driver } from '../../types/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export type Credentials = {
 	filename?: string;
@@ -35,7 +40,7 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 
 		if (client === 'pg' || client === 'cockroachdb') {
 			const { ssl } = credentials as Credentials;
-			connection['ssl'] = ssl;
+			connection.ssl = ssl;
 		}
 
 		if (client === 'mssql') {
@@ -73,6 +78,6 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 		};
 	}
 
-	const db = knex(knexConfig);
+	const db = knex.default(knexConfig);
 	return db;
 }

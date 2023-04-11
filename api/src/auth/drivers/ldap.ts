@@ -1,18 +1,10 @@
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
-import ldap, {
-	Client,
-	EqualityFilter,
-	Error,
-	InappropriateAuthenticationError,
-	InsufficientAccessRightsError,
-	InvalidCredentialsError,
-	LDAPResult,
-	SearchCallbackResponse,
-	SearchEntry,
-} from 'ldapjs';
-import env from '../../env';
+import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } from 'ldapjs';
+import ldap from 'ldapjs';
+import env from '../../env.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import {
 	InvalidConfigException,
 	InvalidCredentialsException,
@@ -20,16 +12,16 @@ import {
 	InvalidProviderException,
 	ServiceUnavailableException,
 	UnexpectedResponseException,
-} from '../../exceptions';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import logger from '../../logger';
-import { respond } from '../../middleware/respond';
-import { AuthenticationService, UsersService } from '../../services';
-import type { AuthDriverOptions, User } from '../../types';
-import asyncHandler from '../../utils/async-handler';
-import { getIPFromReq } from '../../utils/get-ip-from-req';
-import { getMilliseconds } from '../../utils/get-milliseconds';
-import { AuthDriver } from '../auth';
+} from '../../exceptions/index.js';
+import logger from '../../logger.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import { UsersService } from '../../services/users.js';
+import type { AuthDriverOptions, User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { AuthDriver } from '../auth.js';
 
 interface UserInfo {
 	dn: string;
@@ -62,12 +54,12 @@ export class LDAPAuthDriver extends AuthDriver {
 			bindPassword === undefined ||
 			!userDn ||
 			!provider ||
-			(!clientUrl && !config.client?.socketPath)
+			(!clientUrl && !config['client']?.socketPath)
 		) {
 			throw new InvalidConfigException('Invalid provider config', { provider });
 		}
 
-		const clientConfig = typeof config.client === 'object' ? config.client : {};
+		const clientConfig = typeof config['client'] === 'object' ? config['client'] : {};
 
 		this.bindClient = ldap.createClient({ url: clientUrl, reconnect: true, ...clientConfig });
 		this.bindClient.on('error', (err: Error) => {
@@ -121,7 +113,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	private async fetchUserInfo(
 		baseDn: string,
-		filter?: EqualityFilter,
+		filter?: ldap.EqualityFilter,
 		scope?: SearchScope
 	): Promise<UserInfo | undefined> {
 		let { firstNameAttribute, lastNameAttribute, mailAttribute } = this.config;
@@ -147,8 +139,8 @@ export class LDAPAuthDriver extends AuthDriver {
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
 						const user: UserInfo = {
-							dn: object.dn,
-							userAccountControl: Number(getEntryValue(object.userAccountControl) ?? 0),
+							dn: object['dn'],
+							userAccountControl: Number(getEntryValue(object['userAccountControl']) ?? 0),
 						};
 
 						const firstName = getEntryValue(object[firstNameAttribute]);
@@ -160,7 +152,7 @@ export class LDAPAuthDriver extends AuthDriver {
 						const email = getEntryValue(object[mailAttribute]);
 						if (email) user.email = email;
 
-						const uid = getEntryValue(object.uid);
+						const uid = getEntryValue(object['uid']);
 						if (uid) user.uid = uid;
 
 						resolve(user);
@@ -178,7 +170,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	private async fetchUserGroups(baseDn: string, filter?: EqualityFilter, scope?: SearchScope): Promise<string[]> {
+	private async fetchUserGroups(baseDn: string, filter?: ldap.EqualityFilter, scope?: SearchScope): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			let userGroups: string[] = [];
 
@@ -197,10 +189,10 @@ export class LDAPAuthDriver extends AuthDriver {
 					}
 
 					res.on('searchEntry', ({ object }: SearchEntry) => {
-						if (typeof object.cn === 'object') {
-							userGroups = [...userGroups, ...object.cn];
-						} else if (object.cn) {
-							userGroups.push(object.cn);
+						if (typeof object['cn'] === 'object') {
+							userGroups = [...userGroups, ...object['cn']];
+						} else if (object['cn']) {
+							userGroups.push(object['cn']);
 						}
 					});
 
@@ -227,7 +219,7 @@ export class LDAPAuthDriver extends AuthDriver {
 	}
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
-		if (!payload.identifier) {
+		if (!payload['identifier']) {
 			throw new InvalidCredentialsException();
 		}
 
@@ -237,9 +229,9 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
-			new EqualityFilter({
+			new ldap.EqualityFilter({
 				attribute: userAttribute ?? 'cn',
-				value: payload.identifier,
+				value: payload['identifier'],
 			}),
 			userScope ?? 'one'
 		);
@@ -253,7 +245,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (groupDn) {
 			const userGroups = await this.fetchUserGroups(
 				groupDn,
-				new EqualityFilter({
+				new ldap.EqualityFilter({
 					attribute: groupAttribute ?? 'member',
 					value: groupAttribute?.toLowerCase() === 'memberuid' && userInfo.uid ? userInfo.uid : userInfo.dn,
 				}),
@@ -288,7 +280,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		try {
 			await this.usersService.createOne({
-				provider: this.config.provider,
+				provider: this.config['provider'],
 				first_name: userInfo.firstName,
 				last_name: userInfo.lastName,
 				email: userInfo.email,
@@ -312,9 +304,9 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		return new Promise((resolve, reject) => {
-			const clientConfig = typeof this.config.client === 'object' ? this.config.client : {};
+			const clientConfig = typeof this.config['client'] === 'object' ? this.config['client'] : {};
 			const client = ldap.createClient({
-				url: this.config.clientUrl,
+				url: this.config['clientUrl'],
 				...clientConfig,
 				reconnect: false,
 			});
@@ -334,11 +326,11 @@ export class LDAPAuthDriver extends AuthDriver {
 		});
 	}
 
-	async login(user: User, payload: Record<string, any>): Promise<void> {
-		await this.verify(user, payload.password);
+	override async login(user: User, payload: Record<string, any>): Promise<void> {
+		await this.verify(user, payload['password']);
 	}
 
-	async refresh(user: User): Promise<void> {
+	override async refresh(user: User): Promise<void> {
 		await this.validateBindClient();
 
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
@@ -351,9 +343,9 @@ export class LDAPAuthDriver extends AuthDriver {
 
 const handleError = (e: Error) => {
 	if (
-		e instanceof InappropriateAuthenticationError ||
-		e instanceof InvalidCredentialsError ||
-		e instanceof InsufficientAccessRightsError
+		e instanceof ldap.InappropriateAuthenticationError ||
+		e instanceof ldap.InvalidCredentialsError ||
+		e instanceof ldap.InsufficientAccessRightsError
 	) {
 		return new InvalidCredentialsException();
 	}
@@ -415,20 +407,20 @@ export function createLDAPAuthRouter(provider: string): Router {
 			} as Record<string, Record<string, any>>;
 
 			if (mode === 'json') {
-				payload.data.refresh_token = refreshToken;
+				payload['data']!['refresh_token'] = refreshToken;
 			}
 
 			if (mode === 'cookie') {
-				res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
+				res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, {
 					httpOnly: true,
-					domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-					maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
-					secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-					sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+					domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+					maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
+					secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+					sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 				});
 			}
 
-			res.locals.payload = payload;
+			res.locals['payload'] = payload;
 
 			return next();
 		}),

@@ -49,8 +49,11 @@ group: Ομάδα
 export_items: Εξαγωγή στοιχείων
 and: Και
 or: Ή
+init: '΄Εναρξη'
 dataset_too_large_currently_showing_n_items: Τα δεδομένα είναι πολλά. Αυτή τη στιγμή εμφανίζονται τα πρώτα {n} στοιχεία.
+modifier: Μετατροπέας
 custom: Προσαρμοσμένο
+hook: Άγκιστρο
 fill_width: Πλήρες Πλάτος
 field_name_translations: Μεταφράσεις Ονόματος Πεδίου
 enter_password_to_enable_tfa: Εισάγετε τον κωδικό πρόσβασής σας για να ενεργοποιήσετε τον διπλό έλεγχο ταυτότητας
@@ -78,7 +81,11 @@ message: Μήνυμα
 delete_panel: Διαγραφή Πίνακα
 create_webhook: Δημιουργία Webhook
 create_translation_string: Δημιουργία Μετάφρασης
+no_translation_string: Δεν Υπάρχουν Μεταφράσεις
+no_translation_string_copy: Δεν υπάρχουν μεταφράσεις προς τον παρόν.
+translation_string_key_placeholder: Πλήκτρο μετάφρασης κειμένου...
 translation_string_translations_placeholder: Δημιουργία νέας μετάφρασης
+edit_translation_string: Επεξεργασία Μετάφρασης
 invite_users: Πρόσκληση Χρηστών
 invite: Πρόσκληση
 email_already_invited: To email "{email}" έχει ήδη προσκληθεί
@@ -165,6 +172,13 @@ create_field: Δημιουργία πεδίου
 hidden_on_detail: Κρυφό στις λεπτομέρειες
 text: Κείμενο
 auto_generate: Αυτόματη δημιουργία
+this_will_auto_setup_fields_relations: Αυτό θα ρυθμίσει αυτόματα όλα τα απαιτούμενα πεδία και σχέσεις.
+click_here: Κλικ εδώ
+to_manually_setup_translations: να ρυθμίσετε χειροκίνητα τις μεταφράσεις.
+click_to_manage_translated_fields: >-
+  Δεν υπάρχουν ακόμα μεταφρασμένα πεδία. Κάντε κλικ εδώ για να τα δημιουργήσετε. | Υπάρχει ένα μεταφρασμένο πεδίο. Κάντε κλικ εδώ για να το διαχειριστείτε. | Υπάρχουν {count} μεταφρασμένα πεδία. Κάντε κλικ εδώ για να τα διαχειριστείτε.
+fields_group: Ομάδα Πεδίων
+no_collections_found: Δε βρέθηκαν συλλογές.
 add_note: Προσθέστε μια χρήσιμη σημείωση για τους χρήστες...
 default_value: Προεπιλεγμένη τιμή
 next: Επόμενο
@@ -401,3 +415,14 @@ operations:
     message: Μήνυμα
   notification:
     message: Μήνυμα
+  trigger:
+    description: Πέρασμα δεδομένων σε άλλη ροή
+    flows: Ροές
+    flow: Ροή
+    data: Δεδομένα
+    iteration_mode: Κατάσταση διαπέρασης
+    iteration_mode_note: Κατάσταση διαπέρασης πινάκων.
+    serial: Σειριακά
+    parallel: Παράλληλα
+    batch: Δέσμη
+    batch_size: Μέγεθος δέσμης

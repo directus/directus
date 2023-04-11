@@ -141,6 +141,8 @@ field_m2m: Pluraj-al-pluraj-rilato
 field_translations: Tradukoj
 field_group: Kampogrupo
 field_validation: Validigo de la kampo
+permissions_for_role: 'Eroj, kiujn la rolo {role} povas {action}.'
+fields_for_role: 'Kampoj, kiujn la rolo {role} povas {action}.'
 presentation_and_aliases: Prezento kaj kromnomoj
 top: Supra
 bottom: Malsupra
@@ -324,6 +326,7 @@ download_file: Elŝuti la dosieron
 open_file_in_tab: Malfermi la dosieron en nova langeto
 start_export: Komenci eksporti
 not_available_for_local_downloads: Ne disponebla por lokaj elŝutoj
+collection_key: Ŝlosilo de la kolekto
 name: Nomo
 primary_key_field: Kampo de la ĉefa ŝlosilo
 type: Tipo
@@ -332,6 +335,7 @@ created_by: Kreita de
 created_on: Kreita je
 generated_uuid: Generita UUID
 save_and_create_new: Konservi kaj krei novan
+save_as_copy: Konservi kiel kopion
 add_existing: Aldoni ekzistantan
 creating_items: Krei erojn
 selecting_items: Elekti erojn
@@ -417,6 +421,7 @@ errors:
   INTERNAL_SERVER_ERROR: Neatendita eraro
   NOT_NULL_VIOLATION: Valoro ne povas esti NULL
   VALUE_TOO_LONG: Valoro estas tro longa
+  VALUE_OUT_OF_RANGE: Valoro estas ekster la intervalo
   INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
   UNKNOWN: Neatendita eraro
   SERVICE_UNAVAILABLE: Servo ne disponebla
@@ -1227,7 +1232,8 @@ operations:
   notification:
     name: Sendi sciigon
     recipient: Uzanto
-    recipient_placeholder: Aldoni UUID de la uzanto kaj premi Enter...
+    recipient_placeholder: Entajpu UUID...
+    recipient_note: Aldoni UUID de la uzanto kaj premi Enter...
     message: Mesaĝo
   request:
     url: URL
