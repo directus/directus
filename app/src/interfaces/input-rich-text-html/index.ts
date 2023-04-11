@@ -77,11 +77,11 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.superscript',
 							},
 							{
-								value: 'fontselect',
+								value: 'fontfamily',
 								text: '$t:wysiwyg_options.fontselect',
 							},
 							{
-								value: 'fontsizeselect',
+								value: 'fontsize',
 								text: '$t:wysiwyg_options.fontsizeselect',
 							},
 							{

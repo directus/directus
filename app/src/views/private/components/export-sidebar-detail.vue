@@ -232,18 +232,18 @@
 
 <script lang="ts" setup>
 import api from '@/api';
+import { usePermissionsStore } from '@/stores/permissions';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { unexpectedError } from '@/utils/unexpected-error';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
+import { getEndpoint } from '@directus/utils';
+import { debounce } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useCollection } from '@directus/composables';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { debounce } from 'lodash';
-import { getEndpoint } from '@directus/utils';
-import FolderPicker from '@/views/private/components/folder-picker.vue';
-import { usePermissionsStore } from '@/stores/permissions';
 
 type LayoutQuery = {
 	fields?: string[];
@@ -266,7 +266,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['refresh', 'download']);
 
-const { t, n } = useI18n();
+const { t, n, te } = useI18n();
 
 const { collection } = toRefs(props);
 
@@ -473,10 +473,16 @@ function useUpload() {
 				title: t('import_data_success', { filename: file.name }),
 			});
 		} catch (err: any) {
+			const code = err?.response?.data?.errors?.[0]?.extensions?.code;
+
 			notify({
-				title: t('import_data_error'),
+				title: te(`errors.${code}`) ? t(`errors.${code}`) : t('import_data_error'),
 				type: 'error',
 			});
+
+			if (code === 'INTERNAL_SERVER_ERROR') {
+				unexpectedError(err);
+			}
 		} finally {
 			uploading.value = false;
 			importing.value = false;

@@ -444,6 +444,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 			} else {
@@ -452,6 +453,7 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					mutationTracker: opts?.mutationTracker,
 				});
 			}
 
@@ -523,6 +525,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 			} else {
@@ -531,6 +534,7 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					mutationTracker: opts?.mutationTracker,
 				});
 			}
 
@@ -638,6 +642,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					}))
 				);
 
@@ -665,6 +670,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				} else {
 					await itemsService.updateByQuery(
@@ -675,6 +681,7 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
 						}
 					);
 				}
@@ -723,6 +730,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 
@@ -741,6 +749,7 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								mutationTracker: opts?.mutationTracker,
 							}
 						);
 					}
@@ -769,6 +778,7 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
 						});
 					} else {
 						await itemsService.updateByQuery(
@@ -779,6 +789,7 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								mutationTracker: opts?.mutationTracker,
 							}
 						);
 					}
