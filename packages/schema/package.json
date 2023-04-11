@@ -40,7 +40,7 @@
 	],
 	"scripts": {
 		"build": "tsc --build",
-		"dev": "pnpm build -w --preserveWatchOutput --incremental"
+		"dev": "tsc --watch"
 	},
 	"dependencies": {
 		"knex": "2.4.2"

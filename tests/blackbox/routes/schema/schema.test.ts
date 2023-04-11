@@ -24,7 +24,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { PrimaryKeyType, PRIMARY_KEY_TYPES } from '@common/index';
 import { load as loadYaml } from 'js-yaml';
-import { version as currentDirectusVersion } from '../../../api/package.json';
+import { version as currentDirectusVersion } from '../../../../api/package.json';
 import { v4 as uuid } from 'uuid';
 
 describe('Schema Snapshots', () => {

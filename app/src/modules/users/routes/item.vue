@@ -397,6 +397,7 @@ export default defineComponent({
 			try {
 				const savedItem: Record<string, any> = await save();
 				await setLang(savedItem);
+				await refreshCurrentUser();
 
 				revisionsDrawerDetail.value?.refresh?.();
 
