@@ -95,6 +95,7 @@
 		"date-fns": "2.29.3",
 		"diacritics": "1.3.0",
 		"diff": "5.1.0",
+		"directus": "workspace:*",
 		"dompurify": "3.0.1",
 		"escape-string-regexp": "5.0.0",
 		"file-saver": "2.0.5",

@@ -1,5 +1,5 @@
 {
-	"name": "directus",
+	"name": "@directus/api",
 	"version": "9.24.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"type": "module",
@@ -53,12 +53,10 @@
 	"exports": {
 		".": "./dist/index.js",
 		"./*": "./dist/*.js",
+		"./cli/run.js": "./dist/cli/run.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
-	"bin": {
-		"directus": "cli.js"
-	},
 	"files": [
 		"dist",
 		"!**/*.test.js",
@@ -68,7 +66,6 @@
 		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=false tsx watch --clear-screen=false src/start.ts",
-		"start": "node cli.js start",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -229,6 +226,6 @@
 		"tedious": "15.1.3"
 	},
 	"engines": {
-		"node": ">=12.20.0"
+		"node": ">=18.0.0"
 	}
 }
