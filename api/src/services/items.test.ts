@@ -1,4 +1,4 @@
-import type { NestedDeepQuery } from '@directus/types';
+import type { CollectionsOverview, NestedDeepQuery } from '@directus/types';
 import knex from 'knex';
 import type { Knex } from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
@@ -1240,6 +1240,148 @@ describe('Integration Tests', () => {
 						`where "inner"."directus_row_number" = \\? order by "inner"."sort_.{5}" asc limit \\?`
 				)
 			);
+		});
+	});
+
+	describe('readSingleton', () => {
+		it('should return non-null and defined default values when there is no existing record', async () => {
+			const testDefaultValues = {
+				id: null, // primary key is still returned as null. Ref #6444
+				name: 'test',
+				description: '',
+				count: 0,
+				enabled: false,
+				json: { key: 'value' },
+			};
+
+			const table = 'test';
+
+			const testSchema = {
+				collections: {
+					[table]: {
+						collection: table,
+						primary: 'id',
+						singleton: true,
+						note: null,
+						sortField: null,
+						accountability: null,
+						fields: {
+							id: {
+								field: 'id',
+								defaultValue: null,
+								nullable: false,
+								generated: false,
+								type: 'uuid',
+								dbType: 'uuid',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								alias: false,
+								validation: null,
+							},
+							name: {
+								field: 'name',
+								defaultValue: testDefaultValues.name,
+								nullable: true,
+								generated: false,
+								type: 'string',
+								dbType: 'string',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								alias: false,
+								validation: null,
+							},
+							description: {
+								field: 'description',
+								defaultValue: testDefaultValues.description,
+								nullable: true,
+								generated: false,
+								type: 'string',
+								dbType: 'string',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								alias: false,
+								validation: null,
+							},
+							count: {
+								field: 'count',
+								defaultValue: testDefaultValues.count,
+								nullable: true,
+								generated: false,
+								type: 'integer',
+								dbType: 'integer',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								alias: false,
+								validation: null,
+							},
+							enabled: {
+								field: 'enabled',
+								defaultValue: testDefaultValues.enabled,
+								nullable: true,
+								generated: false,
+								type: 'boolean',
+								dbType: 'boolean',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								alias: false,
+								validation: null,
+							},
+							json: {
+								field: 'json',
+								defaultValue: testDefaultValues.json,
+								nullable: true,
+								generated: false,
+								type: 'json',
+								dbType: 'json',
+								precision: null,
+								scale: null,
+								special: ['json'],
+								note: null,
+								alias: false,
+								validation: null,
+							},
+							// this should not appear in the response
+							updated_on: {
+								field: 'updated_on',
+								defaultValue: null,
+								nullable: true,
+								generated: false,
+								type: 'timestamp',
+								dbType: 'timestamp',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								alias: false,
+								validation: null,
+							},
+						},
+					},
+				} as CollectionsOverview,
+				relations: [],
+			};
+
+			tracker.on.select(table).responseOnce([]);
+
+			const itemsService = new ItemsService(table, {
+				knex: db,
+				accountability: { role: 'admin', admin: true },
+				schema: testSchema,
+			});
+			const response = await itemsService.readSingleton({ fields: ['*'] });
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(response).toStrictEqual(testDefaultValues);
 		});
 	});
 });
