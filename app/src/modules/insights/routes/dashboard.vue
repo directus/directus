@@ -121,18 +121,27 @@
 					>
 						{{ t('no_data') }}
 					</div>
-					<component
-						:is="`panel-${tile.data.type}`"
-						v-else
-						v-bind="tile.data.options"
-						:id="tile.id"
-						:dashboard="primaryKey"
-						:show-header="tile.showHeader"
-						:height="tile.height"
-						:width="tile.width"
-						:now="now"
-						:data="data[tile.id]"
-					/>
+					<v-error-boundary v-else :name="`panel-${tile.data.type}`">
+						<component
+							:is="`panel-${tile.data.type}`"
+							v-bind="tile.data.options"
+							:id="tile.id"
+							:dashboard="primaryKey"
+							:show-header="tile.showHeader"
+							:height="tile.height"
+							:width="tile.width"
+							:now="now"
+							:data="data[tile.id]"
+						/>
+
+						<template #fallback="{ error }">
+							<div class="panel-error">
+								<v-icon name="warning" />
+								{{ t('unexpected_error') }}
+								<v-error :error="error" />
+							</div>
+						</template>
+					</v-error-boundary>
 				</div>
 			</template>
 		</v-workspace>
@@ -201,7 +210,7 @@ import { useInsightsStore } from '@/stores/insights';
 import { usePermissionsStore } from '@/stores/permissions';
 import { pointOnLine } from '@/utils/point-on-line';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import { applyOptionsData } from '@directus/shared/utils';
+import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

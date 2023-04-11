@@ -245,6 +245,7 @@ float: Float
 integer: Integer
 json: JSON
 xml: XML
+yaml: YAML
 string: Zeichenkette
 text: Text
 time: Zeit
@@ -295,6 +296,7 @@ o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
 m2a_relationship: n:x-Beziehung (Many to Any)
 invalid_item: Ungültiges Element
+modal: Modal
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
@@ -786,10 +788,7 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
-run_flow_on_current_collection: Flow für aktuelle Sammlung ausführen
-run_flow_on_current: Flow für aktuelles Element ausführen
 run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
-run_flow_on_selected: Wählen Sie zuerst eins oder mehrere Elemente aus | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Items ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 trigger: Trigger
 trigger_options: Auslöse-Optionen
@@ -1132,6 +1131,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Zuordnung
     basemaps: Basiskarte
     basemaps_raster: Raster
@@ -1629,7 +1629,6 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
-    field_hint: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -1642,7 +1641,6 @@ interfaces:
     add_label: 'Label für "Neu erstellen"'
     sort: Sortieren
     sort_placeholder: Manuell
-    field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
     incompatible_data: Die aktuellen Daten sind nicht kompatibel mit der Repeater-Schnittstelle und werden beim Hinzufügen von Elementen zum Repeater überschrieben
   slider:
@@ -1751,6 +1749,7 @@ interfaces:
     remove_token: Token löschen
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
+    description: Eingabe von Roh- oder Mustache Template werten erlauben
 displays:
   translations:
     translations: Übersetzungen
@@ -1789,11 +1788,16 @@ displays:
     relative: Relativ
     relative_label: 'Zeige relative Zeit, z. B.: vor 5 Minuten'
     suffix: Suffix
+    suffix_label: Relativen Indikator anzeigen
     suffix_note: Verwendet Wörter wie 'in' und 'vor'
     strict: Strikt
+    strict_label: Strikte Einheiten verwenden
     strict_note: Entfernt Wörter wie 'fast', 'über', 'weniger als'
     round: Runden
     round_note: Wählen Sie eine Rundungsfunktion
+    down: Runter
+    nearest: Nächste
+    up: Hoch
   file:
     file: Datei
     description: Dateien anzeigen
@@ -1907,12 +1911,55 @@ layouts:
   kanban:
     name: Kanban
     group_field: Gruppieren nach
+    group_field_placeholder: Feld zum Gruppieren...
     group_title: Gruppentitel
+    group_title_placeholder: Feld für Grupentitel...
+    title: Kartentitel
+    title_placeholder: Optionales Titelfeld...
+    text: Kartentext
+    text_placeholder: Optionales Textfeld...
+    date: Kartendatum
+    date_placeholder: Optionales Datumsfeld...
+    tags: Karten-Tags
+    tags_placeholder: Optionales Tag-Feld...
+    user: Kartenbenutzer
+    user_placeholder: Optionales Benutzerfeld...
+    image: Kartenbild
+    image_placeholder: Optionales Bildfeld...
+    image_fit: Kartenbild passen
     crop: Zuschneiden
     advanced: Erweitert
+    edit_group: Gruppe bearbeiten
+    delete_group: Gruppe löschen
+    add_group: Gruppe hinzufügen
+    add_group_placeholder: Neuen Gruppentitel eingeben...
+    show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
     not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
+horizontal: Horizontal
+vertical: Vertikal
+x_axis: X-Achse
+y_axis: Y-Achse
+y_axis_function: Y-Achsenfunktion
+show_x_only: Nur X-Achse anzeigen
+show_y_only: Nur Y-Achse anzeigen
+show_data_label: Datenbezeichnung anzeigen
+both: Beide
+show_axis_labels: Achs-Labels anzeigen
+function: Funktion
+half_circle: Halbkreis
+full_circle: Vollkreis
+stroke_width: Strichbreite
+rounded_stroke: Abgerundete Strich
+thin: Dünn
+medium: Mittel
+broad: Breit
+show_labels: Beschriftungen anzeigen
+show_legend: Legende anzeigen
+right: Rechts
+left: Links
+donut: Donut
 panels:
   metric:
     name: Metrik
@@ -1934,57 +1981,23 @@ panels:
   barchart:
     name: Balkendiagramm
     description: Balken- oder Spaltendiagramme zum Vergleich von Wertegruppen
-    select_field: Sie müssen ein Feld auswählen.
-    select_collection: Sie müssen eine Sammlung auswählen.
-    select_x_axis: Sie müssen eine X-Achse auswählen.
-    function: Funktion
     horizontal: Horizontal
-    x_axis_grouping: Gruppierung X-Achse
-    x_axis: X-Achse
-    y_axis_function: Funktion Y-Achse
-    y_axis: Y-Achse
-    show_x_axis: X-Achse anzeigen
-    show_y_axis: Y-Achse anzeigen
-    show_data_label: Datenbezeichnung anzeigen
-    group_by: Gruppieren nach
-    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
-    y_axis_NaN: Die y-Achse muss eine Zahl sein.
-    y_axis_conditional_one: Der Wert für die Bedingung
-    y_axis_conditional_two: muss eine Zahl sein.
+    select_collection: Sie müssen eine Sammlung auswählen.
   linechart:
     name: Liniendiagramm
-    select_field: Sie müssen ein Feld auswählen.
-    select_collection: Sie müssen eine Sammlung auswählen.
-    select_x_axis: Sie müssen eine X-Achse auswählen.
-    function: Funktion
-    x_axis: X-Achse
-    y_axis: Y-Achse
-    datasets: Datensätze
-    show_legend: Legende anzeigen
-    group_and_function: Sie müssen sowohl eine Gruppe als auch eine Funktion hinzufügen oder weglassen.
+    description: Liniendiagramm zum Vergleich der Änderung eines Feldes
+    disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist.
+    disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist.
+    curve_type: Kurventyp
     smooth: Weich
     straight: Gerade
+    step_line: Schrittlinie
   meter:
     name: Meter
-    stroke_width: Strichbreite
-    select_max_value: Es muss einen Maximalwert ausgewählt werden.
-    max_greater_than_zero: Der Wert muss größer als 0 sein.
-    select_field: Sie müssen ein Feld auswählen.
-    select_collection: Sie müssen eine Sammlung auswählen.
-    function: Funktion
-    thin: Dünn
-    medium: Mittel
-    broad: Breit
+    description: Zähler für Tracking-Werte
   piechart:
     name: Kuchen oder Donut Diagramm
-    function: Funktion
-    donut: Donut
-    show_labels: Beschriftungen anzeigen
-    show_legend: Legende anzeigen
-    right: Rechts
-    bottom: Unten
-    monochrome: Monochrom
-    monochrome_color: Monochrome Farbe
+    description: Kreisdiagramm mit den Verhältnissen von Gruppen auf einer Spalte
   variable:
     name: Globale Variable
     description: Globalen Wert für die Verwendung in Filtern anderer Panels festlegen
@@ -2077,7 +2090,6 @@ operations:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
-    recipient_placeholder: Benutzer UUID eingeben und Enter drücken...
     message: Nachricht
   request:
     name: Webhook / Anfrage URL
@@ -2103,3 +2115,9 @@ operations:
     flows: Flows
     flow: Flow
     data: Daten
+    iteration_mode: Iterationsmodus
+    iteration_mode_note: Modus zum iterieren über Arrays.
+    serial: Seriell
+    parallel: Parallel
+    batch: Stapel
+    batch_size: Stapelgröße

@@ -1,4 +1,4 @@
-import { ResizeOptions, Sharp } from 'sharp';
+import type { ResizeOptions, Sharp } from 'sharp';
 
 // List of allowed sharp methods to expose.
 //
@@ -11,6 +11,7 @@ export const TransformationMethods /*: readonly (keyof Sharp)[]*/ = [
 	'png',
 	'tiff',
 	'webp',
+	'avif',
 
 	// Resizing
 	// https://sharp.pixelplumbing.com/api-resize
@@ -56,7 +57,7 @@ export const TransformationMethods /*: readonly (keyof Sharp)[]*/ = [
 ] as const;
 
 // Helper types
-type AllowedSharpMethods = Pick<Sharp, typeof TransformationMethods[number]>;
+type AllowedSharpMethods = Pick<Sharp, (typeof TransformationMethods)[number]>;
 
 export type TransformationMap = {
 	[M in keyof AllowedSharpMethods]: readonly [M, ...Parameters<AllowedSharpMethods[M]>];
@@ -75,7 +76,7 @@ export type TransformationPreset = TransformationPresetFormat &
 	TransformationParams & { key: string };
 
 export type TransformationPresetFormat = {
-	format?: 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff';
+	format?: 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif';
 	quality?: number;
 };
 

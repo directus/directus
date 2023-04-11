@@ -98,6 +98,7 @@ properties:
             - png
             - webp
             - tiff
+            - avif
         transforms:
           description: Additional transformations to apply
           type: array

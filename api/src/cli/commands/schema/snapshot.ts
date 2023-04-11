@@ -1,6 +1,6 @@
-import getDatabase from '../../../database';
-import logger from '../../../logger';
-import { getSnapshot } from '../../../utils/get-snapshot';
+import getDatabase from '../../../database/index.js';
+import logger from '../../../logger.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
 import { constants as fsConstants, promises as fs } from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';

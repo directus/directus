@@ -1,4 +1,4 @@
-import { defineOperationApp } from '@directus/shared/utils';
+import { defineOperationApp } from '@directus/utils';
 
 export default defineOperationApp({
 	id: 'request',
@@ -65,6 +65,7 @@ export default defineOperationApp({
 							meta: {
 								width: 'half',
 								interface: 'input',
+								required: true,
 								options: {
 									placeholder: '$t:operations.request.header_placeholder',
 								},
@@ -77,6 +78,7 @@ export default defineOperationApp({
 							meta: {
 								width: 'half',
 								interface: 'input',
+								required: true,
 								options: {
 									placeholder: '$t:operations.request.value_placeholder',
 								},

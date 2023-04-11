@@ -1,17 +1,549 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Auðkenni
+avatar: Auðkennismynd
+application: Forrit
+default_provider: Sjálfgefið
+method: Aðferð
+published: Útgefið
+draft: Drög
+archived: Í geymslu
+modules: Einingar
+reset_width: Endursetja Breidd
+edit_field: Breyta Reit
+location: Staðsetning
+input: Inntak
+maps: Kort
+switch_user: Skipta yfir á Notanda
+enter_a_name: Skrá Nafn...
+duplicate_field: Tvöfalda Reit
+half_width: Hálf Breidd
+full_width: Full Breidd
+group: Hópur
+export_items: Flytja út Hluti
+and: Og
+or: Eða
+custom: Sérsniðið
+hook: Krókur
+fill_width: Fylla Breidd
+add_field: Bæta við Reit
+role_name: Hlutverks Nafn
+branch: Grein
+leaf: Lauf
+edit_collection: Breyta Safni
+children: Börn
+show_all_items: Sýna Alla Hluti
+required: Nauðsynlegt
+create_role: Búa til Hlutverk
+create_user: Búa til Notanda
+message: Skilaboð
+create_webhook: Búa til Vefkrækju
+create_translation_string: Búa til Þýðingar Streng
+no_translation_string: Engir Þýðingar Strengir
 edit_translation_string: Breyta þýðingastreng
 invite_users: Bjóða notendum
 invite: Bjóða
+subject: Viðfangsefni
+inbox: Innhólf
+emails: Tölvupóstar
+primary: Aðal
+delete_folder: Eyða Möppu
+prefix: Forskeyti
+reset_bookmark: Endursetja Bókamerki
 update_bookmark: Uppfæra bókamerki
 delete_bookmark: Eyða bókamerki
+delete_personal_bookmark: Eyða Persónulegu Bókamerki
+delete_role_bookmark: Eyða Hlutverks Bókamerki
 delete_global_bookmark: Eyða altæku bókamerki
 logoutReason:
   SIGN_OUT: Skráð út
   SESSION_EXPIRED: Lota útrunnin
 public_label: Almennt
+not_allowed: Ekki Leyft
+directus_version: Directus Útgáfa
 os_type: Gerð stýrikerfis
 os_version: Útgáfa stýrikerfis
 os_uptime: Uppitími stýrikerfis
+os_totalmem: OS Minni
+all_access: Allur Aðgangur
+no_access: Enginn Aðgangur
+use_custom: Nota Sérsniðið
+field_standard: Staðlað
+field_file: Einstök Skrá
+field_files: Fjöldi Skráa
+field_translations: Þýðingar
+top: Toppur
+bottom: Botn
+hide_field: Fela Reit
+delete_field: Eyða Reit
+fields_and_layout: Reitir & Snið
+language: Tungumál
+language_placeholder: Veldu tungumál...
+camera: Myndavél
+show_zero: Sýna Núll
+validation: Staðfesting
+count: Talning
+min: Lágmark
+max: Hámark
+create_field: Búa til Reit
+hidden_field: Falinn Reitur
+key: Lykill
+alias: Samheiti
+date: Dagsetning
+float: Fleyting
+integer: Heiltala
+string: Strengur
+text: Texti
+time: Tími
+timestamp: Tímastimpill
+geometry.Point: Punktur
+add_link: Bæta við Hlekk
+custom_link: Sérsniðinn Hlekkur
+default_value: Sjálfgefið Gildi
+standard_field: Staðlaður Reitur
+single_file: Einstök Skrá
+multiple_files: Fjöldi Skráa
+next: Næst
+translations: Þýðingar
+no_translations: Engar Þýðingar
+left_to_right: Vinstri til Hægri
+right_to_left: Hægri til Vinstri
+note: Minnispunktur
+enter_a_value: Skráðu Gildi...
+length: Lengd
+updated_on: Uppfært Þann
+updated_by: Uppfært Af
+primary_key: Aðal Lykill
+dismiss: Hunsa
+copy_raw_value_success: Afritað
+settings_update_success: Stillingar uppfærðar
+title: Titill
+revision_delta_deleted: Eytt
+revision_delta_reverted: Snúið í fyrra horf
+updates_made: Uppfærslur Gerðar
+last_page: Síðasta Síða
+last_access: Síðasta Aðgengi
+submit: Senda inn
+move_to_folder: Flytja til Möppu
+move: Færa
+system: Kerfi
+today: Í dag
+yesterday: Í gær
+delete_comment: Eyða Athugasemd
+delete_share: Eyða Deilingu
+functions:
+  year: Ár
+  month: Mánuður
+  week: Vika
+  day: Dagur
+  weekday: Vikudagur
+  hour: Klukkustundir
+  minute: Mínútur
+  second: Sekúndur
+  count: Talning
+size: Stærð
+owner: Eigandi
+folder: Mappa
+open: Opna
+open_in_new_window: Opna í Nýjum Glugga
+foreground_color: Forgrunnur Litur
+background_color: Bakgrunnur Litur
+download_file: Niðurhala Skrá
+name: Nafn
+primary_key_field: Aðal Lykill Reitur
+type: Týpa
+save_and_create_new: Vista og Búa til Nýtt
+save_as_copy: Vista sem Afrit
+comments: Athugasemdir
+no_items: Engir hlutir
+disabled: Óvirkt
+information: Upplýsingar
+report_bug: Tilkynna Galla
+reset_interface: Endursetja Viðmót
+copy: Afrita
+copy_to: Afrita Til...
+users: Notendur
 activity: Virkni
+action: Aðgerð
+origin: Uppruni
+field_width: Reitur Breidd
+add_filter: Bæta við Síu
+upper_limit: Efri mörk...
+lower_limit: Neðri mörk...
+documentation: Skjalfesting
+sidebar: Hliðarvalmynd
+duration: Tímalengd
+sort: Flokka
+status: Staða
+remove: Fjarlægja
+edit: Breyta
+enabled: Virkt
+errors:
+  FORBIDDEN: Bannað
+  INVALID_CREDENTIALS: Rangt notendanafn eða lykilorð
+security: Öryggi
+create_bookmark: Búa til Bókamerki
+filter: Sía
+free: Frjálst
+rotate: Snúa
+all_users: Allir Notendur
+create: Búa til
+bold: Feitletrað
+flow_name: Nafn
+start_flow: Byrja Flæði
+stop_flow: Stoppa Flæði
+code: Kóði
+insights: Innsýnir
+visible: Sýnilegt
+no_data: Engin G0gn
+center_align: Miðju Jöfnun
+left_align: Vinstri Jöfnun
+right_align: Hægri Jöfnun
+image_url: Mynd Url
+quality: Gæði
+width: Breidd
+height: Hæð
+new_tab: Nýr Flipi
+current_tab: Núverandi Flipi
+save_image: Vista Mynd
+wysiwyg_options:
+  aligncenter: Jafna Miðju
+  alignleft: Jafna Vinstri
+  forecolor: Forgrunnur Litur
+  backcolor: Bakgrunnur Litur
+  bold: Feitletrað
+  italic: Skáletrað
+  codeblock: Kóði
+  unlink: Fjarlægja Hlekk
+  copy: Afrita
+  heading: Fyrirsögn
+  h1: Fyrirsögn 1
+  h2: Fyrirsögn 2
+  h3: Fyrirsögn 3
+  h4: Fyrirsögn 4
+  h5: Fyrirsögn 5
+  h6: Fyrirsögn 6
+  fontselect: Velja Stafagerð
+  fontsizeselect: Velja Stafastærð
+  indent: Draga inn
+  outdent: Draga út
+  undo: Afturkalla
+  redo: Endurgera
+  remove: Fjarlægja
+  selectall: Velja Allt
+  table: Tafla
+dropdown: Fellilisti
 choices: Val
+other: Annað...
+unknown_user: Óþekktur Notandi
+select: Velja...
+tree_view: Tré Sýn
+data: Gögn
+unsaved_changes: Óvistaðar Breytingar
+discard_changes: Henda Breytingum
+discard_all_changes: Henda Öllum Breytingum
 add_new: Bæta við nýjum
+create_new: Búa til Nýtt
+all: Allt
+none: Ekkert
+cancel: Hætta við
+content: Efni
+fields:
+  directus_activity:
+    origin: Uppruni
+  directus_collections:
+    icon: Íkon
+    note: Minnispunktur
+    color: Litur
+    hidden: Falið
+  directus_files:
+    title: Titill
+    description: Lýsing
+    location: Staðsetning
+    filesize: Skráarstærð
+    modified_on: Breytt Þann
+    created_on: Búið til Þann
+    created_by: Búið til Af
+    embed: Ívefja
+    folder: Mappa
+    width: Breidd
+    uploaded_on: Upphlaðið Þann
+    height: Hæð
+    duration: Tímalengd
+  directus_users:
+    first_name: Fornafn
+    last_name: Eftirnafn
+    email: Tölvupóstur
+    password: Lykilorð
+    avatar: Auðkennismynd
+    location: Staðsetning
+    title: Titill
+    description: Lýsing
+    tags: Merki
+    user_preferences: Notandi Stillingar
+    language: Tungumál
+    theme: Þema
+    status: Staða
+    status_draft: Drög
+    status_invited: Boðið
+    status_active: Virkt
+    role: Hlutverk
+    last_page: Síðasta Síða
+    last_access: Síðasta Aðgengi
+  directus_settings:
+    project_name: Verkefni Nafn
+  directus_shares:
+    name: Nafn
+    password: Lykilorð
+  directus_fields:
+    note: Minnispunktur
+  directus_roles:
+    name: Hlutverks Nafn
+    description: Lýsing
+  directus_webhooks:
+    name: Nafn
+    status: Staða
+field_options:
+  directus_settings:
+    security_divider_title: Öryggi
+  directus_activity:
+    login: Skrá inn
+    create: Búa til
+  directus_collections:
+    language: Tungumál
+    sort_divider: Flokka
+  directus_roles:
+    fields:
+      icon_name: Íkon
+      name_name: Nafn
+      name_placeholder: Skráðu titil...
+      link_name: Hlekkur
+  directus_users:
+    preferences_divider: Notandi Stillingar
+    status_dropdown_draft: Drög
+  directus_webhooks:
+    actions_create: Búa til
+    actions_update: Uppfæra
+    actions_delete: Eyða
+    actions_login: Skrá inn
+    headers:
+      header: Haus
+do_nothing: Gera Ekkert
+share_copy_link: Afrita Hlekk
+description: Lýsing
+email: Tölvupóstur
+password: Lykilorð
+table: Tafla
+list: Listi
+interfaces:
+  filter:
+    name: Sía
+    add_filter: Bæta við Síu
+    all: Allt
+  presentation-links:
+    primary: Aðal
+  input-code:
+    code: Kóði
+  select-color:
+    color: Litur
+  select-dropdown:
+    choices_value_placeholder: Skráðu Gildi...
+  file:
+    file: Skrá
+  files:
+    files: Skrár
+  select-icon:
+    icon: Íkon
+    search_for_icon: Leita að íkon...
+  file-image:
+    image: Mynd
+  input-rich-text-md:
+    edit: Breyta
+    preview: Forskoða
+    box: Blokk / Í línu
+  map:
+    map: Kort
+    zoom: Aðdráttur
+  presentation-notice:
+    notice: Tilkynning
+  system-folder:
+    folder: Mappa
+  list:
+    sort: Flokka
+  input-multiline:
+    textarea: Textasvæði
+  input-translated-string:
+    input-translated-string: Þýddir strengir
+    search_placeholder: Leita...
+  boolean:
+    color_on: Litur Virkt
+    color_off: Litur Óvirkt
+    label_default: Virkt
+  user:
+    user: Notandi
+    modes:
+      auto: Sjálfvirkt
+      dropdown: Fellilisti
+displays:
+  translations:
+    translations: Þýðingar
+  boolean:
+    icon_on: Íkon Virkt
+    icon_off: Íkon Óvirkt
+    color_on: Litur Virkt
+    color_off: Litur Óvirkt
+  collection:
+    collection: Safn
+  color:
+    color: Litur
+  datetime:
+    long: Langt
+    short: Stutt
+    relative: Hlutfallslegt
+    down: Niður
+    nearest: Næsta
+    up: Upp
+  file:
+    file: Skrá
+  filesize:
+    filesize: Skrá Stærð
+  formatted-value:
+    font: Letur
+    bold: Feitletrað
+    italic: Skáletrað
+    prefix: Forskeyti
+    color: Litur
+    background: Bakgrunnur
+    icon: Íkon
+    text: Texti
+  icon:
+    filled: Fyllt
+  image:
+    image: Mynd
+    circle: Hringur
+  labels:
+    choices_value_placeholder: Skráðu Gildi...
+  rating:
+    simple: Einfalt
+  user:
+    user: Notandi
+    avatar: Auðkennismynd
+    name: Nafn
+    both: Bæði
+layouts:
+  cards:
+    image_source: Mynd Uppruni
+    title: Titill
+  tabular:
+    tabular: Tafla
+    cozy: Notalegt
+  calendar:
+    calendar: Dagatal
+    optional: Valkvætt
+  map:
+    map: Kort
+    layers: Lög
+    find_location: Finna staðsetningu...
+  kanban:
+    name: Kanban
+    group_field: Hópa Sem
+    group_title: Hópur Titill
+    title: Spjald Titill
+    text: Spjald Texti
+    date: Spjald Dagsetning
+    user: Spjald Notandi
+    image: Spjald Mynd
+    crop: Sneyða
+    advanced: Háþróað
+    edit_group: Breyta Hóp
+    delete_group: Eyða Hóp
+    add_group: Bæta við Hóp
+    show: Sýna
+    no_group: Enginn hópur
+horizontal: Lárétt
+vertical: Lóðrétt
+x_axis: X-Ás
+y_axis: Y-Ás
+both: Bæði
+function: Föll
+half_circle: Hálf Hringur
+full_circle: Heill Hringur
+thin: Þunnt
+medium: Meðal
+broad: Breitt
+right: Hægri
+left: Vinstri
+donut: Kleinuhringur
+panels:
+  metric:
+    field: Reitur
+  time_series:
+    date_field: Dagsetning Reitur
+  label:
+    name: Merking
+  list:
+    name: Listi
+  barchart:
+    name: Stöplarit
+    horizontal: Lárétt
+  linechart:
+    name: Línurit
+    smooth: Slétt
+    straight: Beint
+  relational-variable:
+    multiple: Margfeldið
+triggers:
+  common:
+    response_body_all: Öll Gögn
+  webhook:
+    method: Aðferð
+    async: Ólínulegt
+operations:
+  condition:
+    name: Ástand
+  item-read:
+    name: Lesa Gögn
+  log:
+    message: Skilaboð
+  mail:
+    name: Senda Tölvupóst
+    to: Til
+    body: Líkami
+  notification:
+    name: Senda Tilkynningu
+    recipient: Notandi
+    message: Skilaboð
+  request:
+    url: URL
+    method: Aðferð
+    data: Gögn
+    headers: Hausar
+    header: Haus
+  sleep:
+    name: Svefn
+    milliseconds: Millisekúndur
+  trigger:
+    flows: Flæði
+    flow: Flæði
+    data: Gögn
+    serial: Raðnúmer
+    parallel: Samhliða

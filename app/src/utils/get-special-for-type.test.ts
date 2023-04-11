@@ -1,4 +1,4 @@
-import { TYPES } from '@directus/shared/constants';
+import { TYPES } from '@directus/constants';
 import { expect, test } from 'vitest';
 import { getSpecialForType } from './get-special-for-type';
 
