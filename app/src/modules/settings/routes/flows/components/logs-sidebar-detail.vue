@@ -80,7 +80,8 @@
 <script lang="ts" setup>
 import { useRevisions } from '@/composables/use-revisions';
 import { useExtensions } from '@/extensions';
-import { Action, FlowRaw } from '@directus/types';
+import type { FlowRaw } from '@directus/types';
+import { Action } from '@directus/constants';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
