@@ -6,10 +6,9 @@ export function verifyJWT(token: string, secret: string): Record<string, any> {
 	let payload;
 
 	try {
-		const { iat, iss, ...rest } = jwt.verify(token, secret, {
+		payload = jwt.verify(token, secret, {
 			issuer: 'directus',
 		}) as Record<string, any>;
-		payload = rest;
 	} catch (err) {
 		if (err instanceof jwt.TokenExpiredError) {
 			throw new TokenExpiredException();
