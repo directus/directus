@@ -8,7 +8,7 @@ import { EnumType } from 'json-to-graphql-query';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
-import path from 'path';
+import path from 'node:path';
 import request from 'supertest';
 
 describe('Logger Redact Tests', () => {
