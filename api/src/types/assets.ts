@@ -1,4 +1,4 @@
-import { ResizeOptions, Sharp } from 'sharp';
+import type { ResizeOptions, Sharp } from 'sharp';
 
 // List of allowed sharp methods to expose.
 //

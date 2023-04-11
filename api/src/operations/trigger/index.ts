@@ -1,6 +1,6 @@
-import { defineOperationApi, optionToObject } from '@directus/shared/utils';
-import { omit } from 'lodash';
-import { getFlowManager } from '../../flows';
+import { defineOperationApi, optionToObject } from '@directus/utils';
+import { omit } from 'lodash-es';
+import { getFlowManager } from '../../flows.js';
 
 type Options = {
 	flow: string;

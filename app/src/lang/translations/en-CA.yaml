@@ -266,6 +266,7 @@ o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
 invalid_item: Invalid Item
+modal: Modal
 next: Next
 field_name: Field Name
 translations: Translations
@@ -1418,7 +1419,6 @@ interfaces:
   system-folder:
     folder: Folder
     description: Select a folder
-    field_hint: Folder for uploaded files. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
   select-radio:
@@ -1430,7 +1430,6 @@ interfaces:
     edit_fields: Edit Fields
     add_label: '"Create New" Label'
     sort: Sort
-    field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
   slider:
     slider: Slider

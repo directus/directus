@@ -79,6 +79,8 @@ create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 message: ข้อความ
 create_webhook: สร้างเว็บฮุก
+create_translation_string: สร้างสตริงการแปล
+no_translation_string: ไม่มีสตริงการแปล
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว
@@ -254,6 +256,7 @@ o2m_relationship: ความสัมพันธ์แบบ One to Many
 m2m_relationship: ความสัมพันธ์แบบ Many to Many
 m2a_relationship: ความสัมพันธ์แบบ Many to Any
 invalid_item: ไอเท็มไม่ถูกต้อง
+modal: กล่อง
 next: ถัดไป
 field_name: ชื่อฟิลด์
 translations: การแปลภาษา
@@ -1239,7 +1242,6 @@ interfaces:
     edit_fields: แก้ไขฟิลด์
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
     sort: เรียง
-    field_name_placeholder: กรอกชื่อฟิลด์
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:
     slider: แถบเลื่อน

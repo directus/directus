@@ -1,15 +1,16 @@
-import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
+import knex from 'knex';
+import type { Knex } from 'knex';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
-import { WebhooksService } from '.';
-import { getMessenger } from '../messenger';
+import { WebhooksService } from './index.js';
+import { getMessenger } from '../messenger.js';
 
 vi.mock('../../src/database/index', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
 
 vi.mock('../messenger', () => {
-	return { getMessenger: vi.fn().mockReturnValue({ publish: vi.fn() }) };
+	return { getMessenger: vi.fn().mockReturnValue({ publish: vi.fn(), subscribe: vi.fn() }) };
 });
 
 describe('Integration Tests', () => {
@@ -17,8 +18,8 @@ describe('Integration Tests', () => {
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = knex({ client: MockClient });
-		tracker = getTracker();
+		db = knex.default({ client: MockClient });
+		tracker = createTracker(db);
 	});
 
 	beforeEach(() => {

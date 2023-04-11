@@ -245,6 +245,7 @@ float: Float - plávajúca čiarka
 integer: Celé čislo
 json: JSON
 xml: XML
+yaml: YAML
 string: Text
 text: Text
 time: Čas
@@ -785,10 +786,7 @@ label: Popis
 flows: Toky
 flow: Tok
 select_a_flow: Vyberte tok
-run_flow_on_current_collection: Spustiť tok na aktuálnej zbierke
-run_flow_on_current: Spustiť tok na aktuálnej položke
 run_flow_on_current_edited_confirm: Táto položka sa môže vykonaním tohoto toku zmeniť, naozaj to chcete vykonať?
-run_flow_on_selected: Najprv označte jednu alebo viac položiek | Spustiť tok na 1 označenej položke | Spustiť tok na {n} označených položkách
 run_flow_success: Tok "{flow}" prebehol úspešne
 trigger: Spúšťač
 trigger_options: Možnosti spúšťača
@@ -1626,7 +1624,6 @@ interfaces:
   system-folder:
     folder: Priečinok
     description: Vyberte priečinok
-    field_hint: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     root_name: Koreňový priečinok knižnice súborov
     system_default: Predvolené systémom
   select-radio:
@@ -1639,7 +1636,6 @@ interfaces:
     add_label: 'Nadpis "Vytvoriť nové"'
     sort: Zoradiť
     sort_placeholder: Ručne
-    field_name_placeholder: Zadajte názov poľa...
     field_note_placeholder: Zadajte poznámku poľa...
     incompatible_data: Aktuálne údaje nie sú kompatibilné s rozhraním opakovača a prepíšu sa pri pridaní položiek do opakovača
   slider:
@@ -2066,7 +2062,6 @@ operations:
     name: Odoslať oznámenie
     description: Pošle internú notifikáciu jednému alebo viacerým používateľom
     recipient: Používateľ
-    recipient_placeholder: Pridajte UUID používateľa a stlačte enter...
     message: Správa
   request:
     name: Webhook / URL požiadavka

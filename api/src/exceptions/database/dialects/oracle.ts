@@ -1,5 +1,5 @@
-import { ContainsNullValuesException } from '../contains-null-values';
-import { OracleError } from './types';
+import { ContainsNullValuesException } from '../contains-null-values.js';
+import type { OracleError } from './types.js';
 
 enum OracleErrorCodes {
 	'CONTAINS_NULL_VALUES' = 2296,
@@ -22,7 +22,7 @@ function containsNullValues(error: OracleError): OracleError | ContainsNullValue
 	if (!matches) return error;
 
 	const collection = matches[0].slice(1, -1);
-	const field = matches[1].slice(1, -1);
+	const field = matches[1]!.slice(1, -1);
 
 	return new ContainsNullValuesException(field, { collection, field });
 }

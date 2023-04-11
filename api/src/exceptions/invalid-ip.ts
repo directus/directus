@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 
 export class InvalidIPException extends BaseException {
 	constructor(message = 'Invalid IP address.') {

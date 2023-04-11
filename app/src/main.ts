@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 
+import { getVueComponentName } from '@/utils/get-vue-component-name';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import { version } from '../package.json';
@@ -34,6 +35,13 @@ async function init() {
 	app.use(router);
 	app.use(i18n);
 	app.use(createPinia());
+
+	app.config.errorHandler = (err, vm, info) => {
+		const source = getVueComponentName(vm);
+		console.warn(`[app-${source}-error] ${info}`);
+		console.warn(err);
+		return false;
+	};
 
 	registerDirectives(app);
 	registerComponents(app);
