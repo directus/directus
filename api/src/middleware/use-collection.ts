@@ -3,7 +3,7 @@
  * system collections
  */
 import type { RequestHandler } from 'express';
-import asyncHandler from '../utils/async-handler';
+import asyncHandler from '../utils/async-handler.js';
 
 const useCollection = (collection: string): RequestHandler =>
 	asyncHandler(async (req, _res, next) => {

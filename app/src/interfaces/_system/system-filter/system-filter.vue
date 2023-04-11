@@ -84,13 +84,13 @@
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { Filter, Type, FieldFunction } from '@directus/shared/types';
+import { Filter, Type, FieldFunction } from '@directus/types';
 import {
 	getFilterOperatorsForType,
 	getOutputTypeForFunction,
 	parseFilterFunctionPath,
 	parseJSON,
-} from '@directus/shared/utils';
+} from '@directus/utils';
 import { cloneDeep, get, isEmpty, set } from 'lodash';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

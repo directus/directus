@@ -1,18 +1,17 @@
 import { afterEach, expect, test, vi } from 'vitest';
 
-vi.mock('../../services', () => {
+vi.mock('../../services/notifications.js', () => {
 	const NotificationsService = vi.fn();
 	NotificationsService.prototype.createMany = vi.fn();
 	return { NotificationsService };
 });
 
-vi.mock('../../utils/get-accountability-for-role', () => ({
+vi.mock('../../utils/get-accountability-for-role.js', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
 
-import { NotificationsService } from '../../services';
-
-import config from './index';
+import { NotificationsService } from '../../services/notifications.js';
+import config from './index.js';
 
 const testId = '00000000-0000-0000-0000-000000000000';
 

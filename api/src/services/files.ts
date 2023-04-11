@@ -1,26 +1,25 @@
-import { toArray } from '@directus/shared/utils';
+import formatTitle from '@directus/format-title';
+import { toArray } from '@directus/utils';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
 import { parse as parseIcc } from 'icc';
-import { clone, pick } from 'lodash';
+import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
-import emitter from '../emitter';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions';
-import logger from '../logger';
-import { getAxios } from '../request/index';
-import { getStorage } from '../storage';
-import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
-import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
-import { ItemsService } from './items';
-
-// @ts-ignore
-import formatTitle from '@directus/format-title';
+import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import { getAxios } from '../request/index.js';
+import { getStorage } from '../storage/index.js';
+import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types/index.js';
+import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
+import { ItemsService } from './items.js';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -93,16 +92,16 @@ export class FilesService extends ItemsService {
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
+		if (SUPPORTED_IMAGE_METADATA_FORMATS.includes(payload.type)) {
 			const stream = await storage.location(data.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
-			payload.height = height ?? null;
-			payload.width = width ?? null;
-			payload.description = description ?? null;
-			payload.title = title ?? null;
-			payload.tags = tags ?? null;
-			payload.metadata = metadata ?? null;
+			payload.height ??= height ?? null;
+			payload.width ??= width ?? null;
+			payload.description ??= description ?? null;
+			payload.title ??= title ?? null;
+			payload.tags ??= tags ?? null;
+			payload.metadata ??= metadata ?? null;
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
