@@ -2,6 +2,7 @@
 	"name": "directus-monorepo",
 	"private": true,
 	"scripts": {
+		"build": "pnpm --recursive --filter !docs run build",
 		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
 		"lint": "eslint ."
 	},

@@ -45,6 +45,6 @@ runs:
     - name: Build
       if: inputs.build == 'true'
       shell: bash
-      run: pnpm run -r --workspace-concurrency=1 build
+      run: pnpm --recursive --workspace-concurrency=1 --filter '!docs' run build
       env:
         NODE_OPTIONS: --max_old_space_size=6144

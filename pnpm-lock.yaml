@@ -444,6 +444,9 @@ importers:
       '@types/stream-json':
         specifier: 1.7.3
         version: 1.7.3
+      '@types/supertest':
+        specifier: 2.0.12
+        version: 2.0.12
       '@types/uuid':
         specifier: 9.0.1
         version: 9.0.1
@@ -465,6 +468,9 @@ importers:
       knex-mock-client:
         specifier: 2.0.0
         version: 2.0.0(knex@2.4.2)
+      supertest:
+        specifier: 6.3.3
+        version: 6.3.3
       typescript:
         specifier: 4.9.5
         version: 4.9.5
