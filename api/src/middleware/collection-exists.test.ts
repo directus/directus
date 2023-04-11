@@ -1,9 +1,8 @@
-import { SchemaOverview } from '@directus/shared/types';
-import { Request, Response } from 'express';
+import type { SchemaOverview } from '@directus/types';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { ForbiddenException } from '../exceptions';
-
-import collectionExists from './collection-exists';
+import { ForbiddenException } from '../exceptions/forbidden.js';
+import collectionExists from './collection-exists.js';
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;

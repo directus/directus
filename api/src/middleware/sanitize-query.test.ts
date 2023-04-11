@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-
-import { validateQuery } from '../utils/validate-query';
-import sanitizeQuery from './sanitize-query';
+import { validateQuery } from '../utils/validate-query.js';
+import sanitizeQuery from './sanitize-query.js';
 
 vi.mock('../utils/validate-query', () => ({
 	validateQuery: vi.fn(),

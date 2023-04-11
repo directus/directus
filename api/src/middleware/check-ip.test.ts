@@ -1,14 +1,13 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import knex from 'knex';
 import { getTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, expect, test, vi } from 'vitest';
-import { InvalidIPException } from '../exceptions';
+import { InvalidIPException } from '../exceptions/index.js';
+import { checkIP } from './check-ip.js';
 
 vi.mock('../database', () => ({
-	default: vi.fn().mockReturnValue(knex({ client: MockClient })),
+	default: vi.fn().mockReturnValue(knex.default({ client: MockClient })),
 }));
-
-import { checkIP } from './check-ip';
 
 const table = 'directus_roles';
 const role = '00000000-0000-0000-0000-000000000000';

@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions';
-
-import { parseGraphQL } from './graphql';
+import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions/index.js';
+import { parseGraphQL } from './graphql.js';
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;

@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-
-import useCollection from './use-collection';
+import useCollection from './use-collection.js';
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;

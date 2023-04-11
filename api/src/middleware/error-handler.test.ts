@@ -1,16 +1,13 @@
-import { Request, Response } from 'express';
+import { BaseException } from '@directus/exceptions';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-
-import { BaseException } from '@directus/shared/exceptions';
-import { MethodNotAllowedException } from '../exceptions';
-
-import * as env from '../env';
+import emitter from '../emitter.js';
+import * as env from '../env.js';
+import { MethodNotAllowedException } from '../exceptions/index.js';
 
 vi.mock('../env', () => ({
 	default: {},
 }));
-
-import emitter from '../emitter';
 
 vi.mock('../emitter', () => ({
 	default: {

@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-
-import * as env from '../env';
+import * as env from '../env.js';
 
 vi.mock('../env', () => ({
 	default: {},

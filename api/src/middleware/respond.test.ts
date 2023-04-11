@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import * as env from '../env.js';
 
 const mockGetEnv = vi.fn();
 
@@ -7,8 +8,6 @@ vi.mock('../env', () => ({
 	default: {},
 	getEnv: mockGetEnv,
 }));
-
-import * as env from '../env';
 
 vi.mock('../cache', () => ({
 	getCache: vi.fn().mockReturnValue({ cache: vi.fn() }),

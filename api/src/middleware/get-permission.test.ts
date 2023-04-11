@@ -1,13 +1,12 @@
-import { Permission } from '@directus/shared/types';
-import { Request, Response } from 'express';
+import type { Permission } from '@directus/types';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { getPermissions as getPermissionsUtil } from '../utils/get-permissions';
+import { getPermissions as getPermissionsUtil } from '../utils/get-permissions.js';
+import getPermissions from './get-permissions.js';
 
 vi.mock('../utils/get-permissions', () => ({
 	getPermissions: vi.fn(),
 }));
-
-import getPermissions from './get-permissions';
 
 let mockRequest: Partial<Request>;
 let mockResponse: Partial<Response>;

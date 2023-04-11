@@ -1,5 +1,7 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import * as env from '../env.js';
+import { createRateLimiter } from '../rate-limiter.js';
 
 const mockGetEnv = vi.fn();
 
@@ -7,10 +9,6 @@ vi.mock('../env', () => ({
 	default: {},
 	getEnv: mockGetEnv,
 }));
-
-import * as env from '../env';
-
-import { createRateLimiter } from '../rate-limiter';
 
 vi.mock('../rate-limiter', () => ({
 	createRateLimiter: vi.fn().mockReturnValue({
