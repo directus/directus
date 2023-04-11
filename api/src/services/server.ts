@@ -1,23 +1,23 @@
+import type { Accountability, SchemaOverview } from '@directus/types';
+import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
+import { Readable } from 'node:stream';
 import os from 'os';
 import { performance } from 'perf_hooks';
-import type { Accountability, SchemaOverview } from '@directus/shared/types';
-import { toArray } from '@directus/shared/utils';
-import { Readable } from 'node:stream';
-// @ts-ignore
-import { version } from '../../package.json';
-import { getCache } from '../cache';
-import getDatabase, { hasDatabaseConnection } from '../database';
-import env from '../env';
-import logger from '../logger';
-import getMailer from '../mailer';
-import { rateLimiterGlobal } from '../middleware/rate-limiter-global';
-import { rateLimiter } from '../middleware/rate-limiter-ip';
-import { getStorage } from '../storage';
-import type { AbstractServiceOptions } from '../types';
-import { getOSInfo } from '../utils/get-os-info';
-import { SettingsService } from './settings';
+import { getCache } from '../cache.js';
+import getDatabase, { hasDatabaseConnection } from '../database/index.js';
+import env from '../env.js';
+import logger from '../logger.js';
+import getMailer from '../mailer.js';
+import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
+import { rateLimiter } from '../middleware/rate-limiter-ip.js';
+import { SERVER_ONLINE } from '../server.js';
+import { getStorage } from '../storage/index.js';
+import type { AbstractServiceOptions } from '../types/index.js';
+import { getOSInfo } from '../utils/get-os-info.js';
+import { version } from '../utils/package.js';
+import { SettingsService } from './settings.js';
 
 export class ServerService {
 	knex: Knex;
@@ -137,6 +137,10 @@ export class ServerService {
 			),
 		};
 
+		if (SERVER_ONLINE === false) {
+			data.status = 'error';
+		}
+
 		for (const [service, healthData] of Object.entries(data.checks)) {
 			for (const healthCheck of healthData) {
 				if (healthCheck.status === 'warn' && data.status === 'ok') {
@@ -185,20 +189,20 @@ export class ServerService {
 			const startTime = performance.now();
 
 			if (await hasDatabaseConnection()) {
-				checks[`${client}:responseTime`][0].status = 'ok';
+				checks[`${client}:responseTime`]![0]!.status = 'ok';
 			} else {
-				checks[`${client}:responseTime`][0].status = 'error';
-				checks[`${client}:responseTime`][0].output = `Can't connect to the database.`;
+				checks[`${client}:responseTime`]![0]!.status = 'error';
+				checks[`${client}:responseTime`]![0]!.output = `Can't connect to the database.`;
 			}
 
 			const endTime = performance.now();
-			checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+			checks[`${client}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 			if (
-				checks[`${client}:responseTime`][0].observedValue! > checks[`${client}:responseTime`][0].threshold! &&
-				checks[`${client}:responseTime`][0].status !== 'error'
+				checks[`${client}:responseTime`]![0]!.observedValue! > checks[`${client}:responseTime`]![0]!.threshold! &&
+				checks[`${client}:responseTime`]![0]!.status !== 'error'
 			) {
-				checks[`${client}:responseTime`][0].status = 'warn';
+				checks[`${client}:responseTime`]![0]!.status = 'warn';
 			}
 
 			checks[`${client}:connectionsAvailable`] = [
@@ -245,17 +249,17 @@ export class ServerService {
 				await cache!.set(`health-${checkID}`, true, 5);
 				await cache!.delete(`health-${checkID}`);
 			} catch (err: any) {
-				checks['cache:responseTime'][0].status = 'error';
-				checks['cache:responseTime'][0].output = err;
+				checks['cache:responseTime']![0]!.status = 'error';
+				checks['cache:responseTime']![0]!.output = err;
 			} finally {
 				const endTime = performance.now();
-				checks['cache:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks['cache:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['cache:responseTime'][0].observedValue > checks['cache:responseTime'][0].threshold! &&
-					checks['cache:responseTime'][0].status !== 'error'
+					checks['cache:responseTime']![0]!.observedValue > checks['cache:responseTime']![0]!.threshold! &&
+					checks['cache:responseTime']![0]!.status !== 'error'
 				) {
-					checks['cache:responseTime'][0].status = 'warn';
+					checks['cache:responseTime']![0]!.status = 'warn';
 				}
 			}
 
@@ -285,17 +289,17 @@ export class ServerService {
 				await rateLimiter.consume(`health-${checkID}`, 1);
 				await rateLimiter.delete(`health-${checkID}`);
 			} catch (err: any) {
-				checks['rateLimiter:responseTime'][0].status = 'error';
-				checks['rateLimiter:responseTime'][0].output = err;
+				checks['rateLimiter:responseTime']![0]!.status = 'error';
+				checks['rateLimiter:responseTime']![0]!.output = err;
 			} finally {
 				const endTime = performance.now();
-				checks['rateLimiter:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks['rateLimiter:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['rateLimiter:responseTime'][0].observedValue > checks['rateLimiter:responseTime'][0].threshold! &&
-					checks['rateLimiter:responseTime'][0].status !== 'error'
+					checks['rateLimiter:responseTime']![0]!.observedValue > checks['rateLimiter:responseTime']![0]!.threshold! &&
+					checks['rateLimiter:responseTime']![0]!.status !== 'error'
 				) {
-					checks['rateLimiter:responseTime'][0].status = 'warn';
+					checks['rateLimiter:responseTime']![0]!.status = 'warn';
 				}
 			}
 
@@ -327,18 +331,18 @@ export class ServerService {
 				await rateLimiterGlobal.consume(`health-${checkID}`, 1);
 				await rateLimiterGlobal.delete(`health-${checkID}`);
 			} catch (err: any) {
-				checks['rateLimiterGlobal:responseTime'][0].status = 'error';
-				checks['rateLimiterGlobal:responseTime'][0].output = err;
+				checks['rateLimiterGlobal:responseTime']![0]!.status = 'error';
+				checks['rateLimiterGlobal:responseTime']![0]!.output = err;
 			} finally {
 				const endTime = performance.now();
-				checks['rateLimiterGlobal:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks['rateLimiterGlobal:responseTime']![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['rateLimiterGlobal:responseTime'][0].observedValue >
-						checks['rateLimiterGlobal:responseTime'][0].threshold! &&
-					checks['rateLimiterGlobal:responseTime'][0].status !== 'error'
+					checks['rateLimiterGlobal:responseTime']![0]!.observedValue >
+						checks['rateLimiterGlobal:responseTime']![0]!.threshold! &&
+					checks['rateLimiterGlobal:responseTime']![0]!.status !== 'error'
 				) {
-					checks['rateLimiterGlobal:responseTime'][0].status = 'warn';
+					checks['rateLimiterGlobal:responseTime']![0]!.status = 'warn';
 				}
 			}
 
@@ -373,18 +377,18 @@ export class ServerService {
 						await disk.delete(`health-${checkID}`);
 					});
 				} catch (err: any) {
-					checks[`storage:${location}:responseTime`][0].status = 'error';
-					checks[`storage:${location}:responseTime`][0].output = err;
+					checks[`storage:${location}:responseTime`]![0]!.status = 'error';
+					checks[`storage:${location}:responseTime`]![0]!.output = err;
 				} finally {
 					const endTime = performance.now();
-					checks[`storage:${location}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+					checks[`storage:${location}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`][0].observedValue! >
-							checks[`storage:${location}:responseTime`][0].threshold! &&
-						checks[`storage:${location}:responseTime`][0].status !== 'error'
+						checks[`storage:${location}:responseTime`]![0]!.observedValue! >
+							checks[`storage:${location}:responseTime`]![0]!.threshold! &&
+						checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
 					) {
-						checks[`storage:${location}:responseTime`][0].status = 'warn';
+						checks[`storage:${location}:responseTime`]![0]!.status = 'warn';
 					}
 				}
 			}
@@ -407,8 +411,8 @@ export class ServerService {
 			try {
 				await mailer.verify();
 			} catch (err: any) {
-				checks['email:connection'][0].status = 'error';
-				checks['email:connection'][0].output = err;
+				checks['email:connection']![0]!.status = 'error';
+				checks['email:connection']![0]!.output = err;
 			}
 
 			return checks;

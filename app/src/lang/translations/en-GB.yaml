@@ -296,6 +296,7 @@ o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
 invalid_item: Invalid Item
+modal: Modal
 next: Next
 field_name: Field Name
 translations: Translations
@@ -787,10 +788,7 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
-run_flow_on_current_collection: Run flow on Current Collection
-run_flow_on_current: Run flow on Current Item
 run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
-run_flow_on_selected: Select One or More Items First | Run flow on 1 Selected Item | Run flow on {n} Selected Items
 run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
 trigger_options: Trigger Options
@@ -1630,6 +1628,7 @@ interfaces:
   system-folder:
     folder: Folder
     description: Select a folder
+    field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: File Library Root
     system_default: System Defaults
   select-radio:
@@ -1642,7 +1641,6 @@ interfaces:
     add_label: '"Create New" Label'
     sort: Sort
     sort_placeholder: Manual
-    field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
     incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
   slider:
@@ -2093,6 +2091,7 @@ operations:
     name: Send Notification
     description: Send an in-app notification to one or more users
     recipient: User
+    recipient_placeholder: Enter a text...
     message: Message
   request:
     name: Webhook / Request URL

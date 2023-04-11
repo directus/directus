@@ -295,6 +295,7 @@ o2m_relationship: En til mange relationer
 m2m_relationship: Mange til mange relationer
 m2a_relationship: Mange til ethvert forhold
 invalid_item: Ugyldigt element
+modal: Modal
 next: Næste
 field_name: Feltnavn
 translations: Oversættelser
@@ -782,10 +783,7 @@ icon_on: Ikon til
 icon_off: Ikon fra
 label: Etiket
 select_a_flow: Vælg et Flow
-run_flow_on_current_collection: Kør flow på aktuel samling
-run_flow_on_current: Kør flow på nuværende element
 run_flow_on_current_edited_confirm: Dette element kan blive opdateret af dette flow, er du sikker på, at du vil udføre det?
-run_flow_on_selected: Vælg et eller flere elementer først | Kør flow på et udvalgt element | Kør flow på {n} udvalgte elementer
 run_flow_success: Flow "{flow}" kørte med succes
 trigger: Udløser
 trigger_options: Udløserindstillinger
@@ -1626,7 +1624,6 @@ interfaces:
     add_label: '"Opret ny" etiket'
     sort: Sortér
     sort_placeholder: Manuel
-    field_name_placeholder: Indtast feltnavn...
     field_note_placeholder: Indtast felt note...
     incompatible_data: De aktuelle data er ikke kompatible med gentager-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til gentager
   slider:

@@ -1,20 +1,20 @@
-import { FailedValidationException } from '@directus/shared/exceptions';
-import type { Query } from '@directus/shared/types';
-import { getSimpleHash, toArray } from '@directus/shared/utils';
+import { FailedValidationException } from '@directus/exceptions';
+import type { Query } from '@directus/types';
+import { getSimpleHash, toArray } from '@directus/utils';
 import jwt from 'jsonwebtoken';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { performance } from 'perf_hooks';
-import getDatabase from '../database';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
-import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import isUrlAllowed from '../utils/is-url-allowed';
-import { stall } from '../utils/stall';
-import { Url } from '../utils/url';
-import { ItemsService } from './items';
-import { MailService } from './mail';
-import { SettingsService } from './settings';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
+import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import isUrlAllowed from '../utils/is-url-allowed.js';
+import { stall } from '../utils/stall.js';
+import { Url } from '../utils/url.js';
+import { ItemsService } from './items.js';
+import { MailService } from './mail/index.js';
+import { SettingsService } from './settings.js';
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -38,7 +38,7 @@ export class UsersService extends ItemsService {
 			throw new RecordNotUniqueException('email', {
 				collection: 'directus_users',
 				field: 'email',
-				invalid: duplicates[0],
+				invalid: duplicates[0]!,
 			});
 		}
 
@@ -139,7 +139,7 @@ export class UsersService extends ItemsService {
 	 */
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const result = await this.createMany([data], opts);
-		return result[0];
+		return result[0]!;
 	}
 
 	/**
@@ -180,8 +180,10 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
-	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
+	override async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
 		const keys: PrimaryKey[] = [];
 
@@ -287,7 +289,7 @@ export class UsersService extends ItemsService {
 	}
 
 	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 
@@ -398,7 +400,7 @@ export class UsersService extends ItemsService {
 		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
 		const acceptURL = url
 			? new Url(url).setQuery('token', token).toString()
-			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token);
+			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token).toString();
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({

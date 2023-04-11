@@ -87,7 +87,7 @@
 
 		<template #sidebar>
 			<role-info-sidebar-detail :role="item" />
-			<revisions-drawer-detail collection="directus_roles" :primary-key="primaryKey" />
+			<revisions-drawer-detail ref="revisionsDrawerDetailRef" collection="directus_roles" :primary-key="primaryKey" />
 		</template>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -149,6 +149,8 @@ export default defineComponent({
 		const serverStore = useServerStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
+
+		const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
 		const { edits, hasEdits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
@@ -218,6 +220,7 @@ export default defineComponent({
 			leaveTo,
 			discardAndLeave,
 			canInviteUsers,
+			revisionsDrawerDetailRef,
 		};
 
 		/**
@@ -230,6 +233,7 @@ export default defineComponent({
 		async function saveAndStay() {
 			await save();
 			await userStore.hydrate();
+			revisionsDrawerDetailRef.value?.refresh?.();
 		}
 
 		async function saveAndQuit() {

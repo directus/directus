@@ -25,7 +25,7 @@
 
 <script lang="ts" setup>
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';

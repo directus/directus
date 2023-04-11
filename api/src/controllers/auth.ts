@@ -1,4 +1,4 @@
-import type { Accountability } from '@directus/shared/types';
+import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import {
 	createLDAPAuthRouter,
@@ -6,16 +6,17 @@ import {
 	createOAuth2AuthRouter,
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
-} from '../auth/drivers';
-import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants';
-import env from '../env';
-import { InvalidPayloadException } from '../exceptions';
-import logger from '../logger';
-import { respond } from '../middleware/respond';
-import { AuthenticationService, UsersService } from '../services';
-import asyncHandler from '../utils/async-handler';
-import { getAuthProviders } from '../utils/get-auth-providers';
-import { getIPFromReq } from '../utils/get-ip-from-req';
+} from '../auth/drivers/index.js';
+import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import env from '../env.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import { respond } from '../middleware/respond.js';
+import { AuthenticationService } from '../services/authentication.js';
+import { UsersService } from '../services/users.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getAuthProviders } from '../utils/get-auth-providers.js';
+import { getIPFromReq } from '../utils/get-ip-from-req.js';
 
 const router = Router();
 
@@ -92,7 +93,7 @@ router.post(
 		} as Record<string, Record<string, any>>;
 
 		if (mode === 'json') {
-			payload['data']['refresh_token'] = refreshToken;
+			payload['data']!['refresh_token'] = refreshToken;
 		}
 
 		if (mode === 'cookie') {
@@ -148,7 +149,7 @@ router.post(
 
 router.post(
 	'/password/request',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.email !== 'string') {
 			throw new InvalidPayloadException(`"email" field is required.`);
 		}
@@ -183,7 +184,7 @@ router.post(
 
 router.post(
 	'/password/reset',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.token !== 'string') {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
@@ -212,7 +213,7 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (_req, res, next) => {
 		res.locals['payload'] = {
 			data: getAuthProviders(),
 			disableDefault: env['AUTH_DISABLE_DEFAULT'],

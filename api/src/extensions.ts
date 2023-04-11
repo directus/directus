@@ -3,8 +3,8 @@ import {
 	APP_SHARED_DEPS,
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import * as sharedExceptions from '@directus/shared/exceptions';
+} from '@directus/constants';
+import * as sharedExceptions from '@directus/exceptions';
 import type {
 	ActionHandler,
 	ApiExtension,
@@ -21,8 +21,8 @@ import type {
 	NestedExtensionType,
 	OperationApiConfig,
 	ScheduleHandler,
-} from '@directus/shared/types';
-import { isIn, isTypeIn, pluralize } from '@directus/shared/utils';
+} from '@directus/types';
+import { isIn, isTypeIn, pluralize } from '@directus/utils';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
@@ -31,30 +31,41 @@ import {
 	pathToRelativeUrl,
 	resolvePackage,
 	resolvePackageExtensions,
-} from '@directus/shared/utils/node';
-import alias from '@rollup/plugin-alias';
-import virtual from '@rollup/plugin-virtual';
+} from '@directus/utils/node';
+import aliasDefault from '@rollup/plugin-alias';
+import nodeResolveDefault from '@rollup/plugin-node-resolve';
+import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
-import fse from 'fs-extra';
 import globby from 'globby';
-import { clone, escapeRegExp } from 'lodash';
+import { clone, escapeRegExp } from 'lodash-es';
 import { schedule, validate } from 'node-cron';
+import { readdir } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rollup } from 'rollup';
-import getDatabase from './database';
-import emitter, { Emitter } from './emitter';
-import env from './env';
-import * as exceptions from './exceptions';
-import { getFlowManager } from './flows';
-import logger from './logger';
-import * as services from './services';
-import type { EventHandler } from './types';
-import { dynamicImport } from './utils/dynamic-import';
-import getModuleDefault from './utils/get-module-default';
-import { getSchema } from './utils/get-schema';
-import { JobQueue } from './utils/job-queue';
-import { Url } from './utils/url';
+import getDatabase from './database/index.js';
+import emitter, { Emitter } from './emitter.js';
+import env from './env.js';
+import * as exceptions from './exceptions/index.js';
+import { getFlowManager } from './flows.js';
+import logger from './logger.js';
+import * as services from './services/index.js';
+import type { EventHandler } from './types/index.js';
+import getModuleDefault from './utils/get-module-default.js';
+import { getSchema } from './utils/get-schema.js';
+import { JobQueue } from './utils/job-queue.js';
+import { Url } from './utils/url.js';
+
+// Workaround for https://github.com/rollup/plugins/issues/1329
+const virtual = virtualDefault as unknown as typeof virtualDefault.default;
+const alias = aliasDefault as unknown as typeof aliasDefault.default;
+const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
+
+const require = createRequire(import.meta.url);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -75,6 +86,7 @@ type BundleConfig = {
 };
 
 type AppExtensions = string | null;
+
 type ApiExtensions = { path: string }[];
 
 type Options = {
@@ -94,6 +106,7 @@ class ExtensionManager {
 	private extensions: Extension[] = [];
 
 	private appExtensions: AppExtensions = null;
+	private appExtensionChunks: Map<string, string>;
 	private apiExtensions: ApiExtensions = [];
 
 	private apiEmitter: Emitter;
@@ -112,6 +125,8 @@ class ExtensionManager {
 		this.endpointRouter = Router();
 
 		this.reloadQueue = new JobQueue();
+
+		this.appExtensionChunks = new Map();
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
@@ -217,6 +232,10 @@ class ExtensionManager {
 
 	public getAppExtensions(): string | null {
 		return this.appExtensions;
+	}
+
+	public getAppExtensionChunk(name: string): string | null {
+		return this.appExtensionChunks.get(name) ?? null;
 	}
 
 	public getEndpointRouter(): Router {
@@ -346,9 +365,15 @@ class ExtensionManager {
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports })],
+				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
 			const { output } = await bundle.generate({ format: 'es', compact: true });
+
+			for (const out of output) {
+				if (out.type === 'chunk') {
+					this.appExtensionChunks.set(out.fileName, out.code);
+				}
+			}
 
 			await bundle.close();
 
@@ -362,7 +387,7 @@ class ExtensionManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]): Promise<Record<string, string>> {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
+		const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
@@ -386,7 +411,7 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await dynamicImport(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = await import(`file://${hookPath}`);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -406,7 +431,7 @@ class ExtensionManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(`file://${endpointPath}`);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -439,8 +464,10 @@ class ExtensionManager {
 
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api);
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
+					`file://${operationPath}`
+				);
 
 				const config = getModuleDefault(operationInstance);
 
@@ -460,7 +487,7 @@ class ExtensionManager {
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-				const bundleInstances: BundleConfig | { default: BundleConfig } = require(bundlePath);
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(`file://${bundlePath}`);
 
 				const configs = getModuleDefault(bundleInstances);
 

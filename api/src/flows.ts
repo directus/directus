@@ -1,35 +1,35 @@
-import * as sharedExceptions from '@directus/shared/exceptions';
-import {
+import * as sharedExceptions from '@directus/exceptions';
+import type {
 	Accountability,
-	Action,
 	ActionHandler,
 	FilterHandler,
 	Flow,
 	Operation,
 	OperationHandler,
 	SchemaOverview,
-} from '@directus/shared/types';
-import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/shared/utils';
+} from '@directus/types';
+import { Action } from '@directus/constants';
+import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import fastRedact from 'fast-redact';
 import type { Knex } from 'knex';
-import { omit, pick } from 'lodash';
+import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
-import getDatabase from './database';
-import emitter from './emitter';
-import env from './env';
-import * as exceptions from './exceptions';
-import logger from './logger';
-import { getMessenger } from './messenger';
-import * as services from './services';
-import { FlowsService } from './services';
-import { ActivityService } from './services/activity';
-import { RevisionsService } from './services/revisions';
-import type { EventHandler } from './types';
-import { constructFlowTree } from './utils/construct-flow-tree';
-import { getSchema } from './utils/get-schema';
-import { JobQueue } from './utils/job-queue';
-import { mapValuesDeep } from './utils/map-values-deep';
+import getDatabase from './database/index.js';
+import emitter from './emitter.js';
+import env from './env.js';
+import * as exceptions from './exceptions/index.js';
+import logger from './logger.js';
+import { getMessenger } from './messenger.js';
+import { ActivityService } from './services/activity.js';
+import * as services from './services/index.js';
+import { FlowsService } from './services/flows.js';
+import { RevisionsService } from './services/revisions.js';
+import type { EventHandler } from './types/index.js';
+import { constructFlowTree } from './utils/construct-flow-tree.js';
+import { getSchema } from './utils/get-schema.js';
+import { JobQueue } from './utils/job-queue.js';
+import { mapValuesDeep } from './utils/map-values-deep.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -390,7 +390,7 @@ class FlowManager {
 			return { successor: null, status: 'unknown', data: null, options: null };
 		}
 
-		const handler = this.operations[operation.type];
+		const handler = this.operations[operation.type]!;
 
 		const options = applyOptionsData(operation.options, keyedData);
 

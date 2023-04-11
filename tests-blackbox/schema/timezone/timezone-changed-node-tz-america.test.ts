@@ -1,7 +1,8 @@
 import config, { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import request from 'supertest';
-import knex, { Knex } from 'knex';
+import knex from 'knex';
+import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
 import { spawn, ChildProcess } from 'child_process';
 import { awaitDirectusConnection } from '@utils/await-connection';

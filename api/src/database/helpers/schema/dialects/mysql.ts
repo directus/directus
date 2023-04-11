@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
-import { getDatabaseVersion } from '../../../../database';
-import { SchemaHelper } from '../types';
+import { getDatabaseVersion } from '../../../../database/index.js';
+import { SchemaHelper } from '../types.js';
 
 export class SchemaHelperMySQL extends SchemaHelper {
 	override applyMultiRelationalSort(
