@@ -1,0 +1,132 @@
+# This composer file is meant to spin up a copy of all supported database vendors and services used in tests.
+#
+# ONLY FOR TESTING. THIS IS NOT INTENDED FOR PRODUCTION USE.
+#
+# Credentials:
+#   Postgres:
+#     User:          postgres
+#     Password:      secret
+#
+#   MySQL:
+#     User:          root
+#     Password:      secret
+#
+#   MariaDB:
+#     User:          root
+#     Password:      secret
+#
+#   MS SQL:
+#     User:          sa
+#     Password:      Test@123
+#
+#   Oracle DB:
+#     User:          secretsysuser
+#     Password:      secretpassword
+#     Role:          SYSDEFAULT
+#     SID:           XE
+#
+#   CockroachDB:
+#     User:          root
+
+version: '3.1'
+services:
+  postgres:
+    image: postgis/postgis:13-3.1-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 6100:5432
+
+  postgres10:
+    image: postgis/postgis:10-3.1-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 6101:5432
+
+  mysql:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 6102:3306
+    cap_add:
+      - SYS_NICE
+
+  mysql5:
+    image: mysql:5
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 6103:3306
+
+  maria:
+    image: mariadb:10.7
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 6104:3306
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Test@123
+    ports:
+      - 6105:1433
+
+  oracle:
+    image: quillbuilduser/oracle-18-xe-micro-sq
+    ports:
+      - 6106:1521
+    environment:
+      - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
+      - ORACLE_ALLOW_REMOTE=true
+    shm_size: '1gb' # more like smh-size ammirite 🥁
+
+  cockroachdb:
+    image: cockroachdb/cockroach:latest-v21.1
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 6107:26257
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 6108:6379
+
+  auth-saml:
+    image: kristophjunge/test-saml-idp
+    ports:
+      - 8880:8080
+    environment:
+      - SIMPLESAMLPHP_SP_ENTITY_ID=saml-test
+      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://127.0.0.1:8080/auth/login/saml/acs
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  minio:
+    image: minio/minio:latest
+    command: server /data/minio/ --console-address :9001
+    ports:
+      - 8881:9000
+      - 8882:9001
+    environment:
+      MINIO_ROOT_USER: directus
+      MINIO_ROOT_PASSWORD: miniosecret
+
+  minio-mc:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c " /usr/bin/mc alias set directusminio http://minio:9000 directus miniosecret; /usr/bin/mc mb
+      directusminio/directus-blackbox-test; while true; do
+          sleep 3600;
+      done "

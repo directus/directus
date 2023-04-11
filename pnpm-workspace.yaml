@@ -1,4 +1,7 @@
 packages:
+  - directus
   - app
   - api
+  - docs
   - packages/*
+  - tests/*

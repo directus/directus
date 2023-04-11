@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Settings } from '@directus/shared/types';
+import { Settings } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import * as notifyUtil from '@/utils/notify';
 import * as unexpectedErrorUtil from '@/utils/unexpected-error';
