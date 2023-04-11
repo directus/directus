@@ -49,13 +49,16 @@ pnpm -r build
 ## 5. Create a `.env` file
 
 Create an `.env` file under the `api` folder using vars from the online
-[config help](https://docs.directus.io/self-hosted/config-options)
+[config help](https://docs.directus.io/self-hosted/config-options).
 
-::: tip Docker Database Connection
+::: tip Config Values
 
-If you are using the [docker-compose.yml](../../docker-compose.yml) for your database. You will need to add the
-[Database Configuration](https://docs.directus.io/self-hosted/config-options.html#database) values along with the `KEY`
-& `SECRET` from [Security](https://docs.directus.io/self-hosted/config-options.html#security) to the `.env` file.
+The `KEY`& `SECRET` config options from [Security](https://docs.directus.io/self-hosted/config-options.html#security)
+are mandatory.
+
+Also the [Database Configuration](https://docs.directus.io/self-hosted/config-options.html#database) must be specified.
+You might want to use the [docker-compose.yml](https://github.com/directus/directus/blob/main/docker-compose.yml) file
+to spin up a test database.
 
 :::
 
@@ -66,8 +69,8 @@ which will create the database (file) for you.
 
 ::: tip Admin Account
 
-Adding the `ADMIN_EMAIL` & `ADMIN_PASSWORD` to the `.env` before running the `bootstrap` command, will create the admin
-user you can use to login.
+Adding the `ADMIN_EMAIL` & `ADMIN_PASSWORD` to the `.env` file before running the `bootstrap` command, will populate the
+admin user with the provided credentials instead of random values.
 
 :::
 
