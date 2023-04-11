@@ -73,6 +73,8 @@ tags:
   - name: Roles
     description: Roles are groups of users that share permissions.
     x-collection: directus_roles
+  - name: Schema
+    description: Retrieve and update the schema of an instance.
   - name: Server
     description:
       Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and
@@ -205,6 +207,14 @@ paths:
   /roles/{id}:
     $ref: './paths/roles/role.yaml'
 
+  # Schema
+  /schema/snapshot:
+    $ref: './paths/schema/snapshot.yaml'
+  /schema/apply:
+    $ref: './paths/schema/apply.yaml'
+  /schema/diff:
+    $ref: './paths/schema/diff.yaml'
+
   # Server
   /server/info:
     $ref: './paths/server/info.yaml'
@@ -263,6 +273,8 @@ components:
       $ref: './components/preset.yaml'
     Collections:
       $ref: './components/collection.yaml'
+    Diff:
+      $ref: './components/diff.yaml'
     Fields:
       $ref: './components/field.yaml'
     Files:
@@ -283,6 +295,8 @@ components:
       $ref: './components/revision.yaml'
     Roles:
       $ref: './components/role.yaml'
+    Schema:
+      $ref: './components/schema.yaml'
     Settings:
       $ref: './components/setting.yaml'
     Users:
@@ -330,6 +344,8 @@ components:
       $ref: './parameters/fields.yaml'
     Mode:
       $ref: './parameters/mode.yaml'
+    Export:
+      $ref: './parameters/export.yaml'
   responses:
     NotFoundError:
       $ref: './responses/notFoundError.yaml'

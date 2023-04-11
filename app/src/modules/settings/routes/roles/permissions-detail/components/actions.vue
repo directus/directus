@@ -9,7 +9,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, ref } from 'vue';
-import { Permission } from '@directus/shared/types';
+import { Permission } from '@directus/types';
 import api from '@/api';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';

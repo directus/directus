@@ -1,31 +1,36 @@
-import { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { parseJSON, toArray } from '@directus/shared/utils';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
 import csv from 'csv-parser';
 import destroyStream from 'destroy';
-import { appendFile, createReadStream } from 'fs-extra';
+import { dump as toYAML } from 'js-yaml';
 import { parse as toXML } from 'js2xmlparser';
 import { Parser as CSVParser, transforms as CSVTransforms } from 'json2csv';
-import { Knex } from 'knex';
-import { set, transform } from 'lodash';
-import StreamArray from 'stream-json/streamers/StreamArray';
+import type { Knex } from 'knex';
+import { set, transform } from 'lodash-es';
+import { createReadStream } from 'node:fs';
+import { appendFile } from 'node:fs/promises';
+import type { Readable } from 'node:stream';
+import StreamArray from 'stream-json/streamers/StreamArray.js';
 import stripBomStream from 'strip-bom-stream';
 import { file as createTmpFile } from 'tmp-promise';
-import getDatabase from '../database';
-import env from '../env';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
 import {
 	ForbiddenException,
 	InvalidPayloadException,
 	ServiceUnavailableException,
 	UnsupportedMediaTypeException,
-} from '../exceptions';
-import logger from '../logger';
-import { AbstractServiceOptions, File } from '../types';
-import { getDateFormatted } from '../utils/get-date-formatted';
-import { FilesService } from './files';
-import { ItemsService } from './items';
-import { NotificationsService } from './notifications';
-import type { Readable } from 'node:stream';
+} from '../exceptions/index.js';
+import logger from '../logger.js';
+import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
+import { getDateFormatted } from '../utils/get-date-formatted.js';
+import { FilesService } from './files.js';
+import { ItemsService } from './items.js';
+import { NotificationsService } from './notifications.js';
+
+type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
 export class ImportService {
 	knex: Knex;
@@ -66,6 +71,7 @@ export class ImportService {
 
 	importJSON(collection: string, stream: Readable): Promise<void> {
 		const extractJSON = StreamArray.withParser();
+		const nestedActionEvents: ActionEventParams[] = [];
 
 		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
@@ -75,7 +81,7 @@ export class ImportService {
 			});
 
 			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value);
+				return await service.upsertOne(value, { bypassEmitAction: (params) => nestedActionEvents.push(params) });
 			});
 
 			return new Promise<void>((resolve, reject) => {
@@ -98,6 +104,10 @@ export class ImportService {
 
 				extractJSON.on('end', () => {
 					saveQueue.drain(() => {
+						for (const nestedActionEvent of nestedActionEvents) {
+							emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+						}
+
 						return resolve();
 					});
 				});
@@ -106,6 +116,8 @@ export class ImportService {
 	}
 
 	importCSV(collection: string, stream: Readable): Promise<void> {
+		const nestedActionEvents: ActionEventParams[] = [];
+
 		return this.knex.transaction((trx) => {
 			const service = new ItemsService(collection, {
 				knex: trx,
@@ -114,7 +126,7 @@ export class ImportService {
 			});
 
 			const saveQueue = queue(async (value: Record<string, unknown>) => {
-				return await service.upsertOne(value);
+				return await service.upsertOne(value, { bypassEmitAction: (action) => nestedActionEvents.push(action) });
 			});
 
 			return new Promise<void>((resolve, reject) => {
@@ -147,6 +159,10 @@ export class ImportService {
 					})
 					.on('end', () => {
 						saveQueue.drain(() => {
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
+
 							return resolve();
 						});
 					});
@@ -178,16 +194,17 @@ export class ExportService {
 	async exportToFile(
 		collection: string,
 		query: Partial<Query>,
-		format: 'xml' | 'csv' | 'json',
+		format: ExportFormat,
 		options?: {
 			file?: Partial<File>;
 		}
 	) {
 		try {
 			const mimeTypes = {
-				xml: 'text/xml',
 				csv: 'text/csv',
 				json: 'application/json',
+				xml: 'text/xml',
+				yaml: 'text/yaml',
 			};
 
 			const database = getDatabase();
@@ -208,26 +225,26 @@ export class ExportService {
 							count: ['*'],
 						},
 					})
-					.then((result) => Number(result?.[0]?.count ?? 0));
+					.then((result) => Number(result?.[0]?.['count'] ?? 0));
 
 				const count = query.limit ? Math.min(totalCount, query.limit) : totalCount;
 
 				const requestedLimit = query.limit ?? -1;
-				const batchesRequired = Math.ceil(count / env.EXPORT_BATCH_SIZE);
+				const batchesRequired = Math.ceil(count / env['EXPORT_BATCH_SIZE']);
 
 				let readCount = 0;
 
 				for (let batch = 0; batch < batchesRequired; batch++) {
-					let limit = env.EXPORT_BATCH_SIZE;
+					let limit = env['EXPORT_BATCH_SIZE'];
 
-					if (requestedLimit > 0 && env.EXPORT_BATCH_SIZE > requestedLimit - readCount) {
+					if (requestedLimit > 0 && env['EXPORT_BATCH_SIZE'] > requestedLimit - readCount) {
 						limit = requestedLimit - readCount;
 					}
 
 					const result = await service.readByQuery({
 						...query,
 						limit,
-						offset: batch * env.EXPORT_BATCH_SIZE,
+						offset: batch * env['EXPORT_BATCH_SIZE'],
 					});
 
 					readCount += result.length;
@@ -249,7 +266,7 @@ export class ExportService {
 				schema: this.schema,
 			});
 
-			const storage: string = toArray(env.STORAGE_LOCATIONS)[0];
+			const storage: string = toArray(env['STORAGE_LOCATIONS'])[0];
 
 			const title = `export-${collection}-${getDateFormatted()}`;
 			const filename = `${title}.${format}`;
@@ -304,7 +321,7 @@ export class ExportService {
 	 */
 	transform(
 		input: Record<string, any>[],
-		format: 'xml' | 'csv' | 'json',
+		format: ExportFormat,
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
@@ -352,6 +369,10 @@ export class ExportService {
 			}
 
 			return string;
+		}
+
+		if (format === 'yaml') {
+			return toYAML(input);
 		}
 
 		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });

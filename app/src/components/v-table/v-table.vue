@@ -92,7 +92,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, useSlots } from 'vue';
-import { ShowSelect } from '@directus/shared/types';
+import { ShowSelect } from '@directus/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
@@ -237,7 +237,7 @@ const internalItems = computed({
 });
 
 const allItemsSelected = computed<boolean>(() => {
-	return props.loading === false && props.modelValue.length === props.items.length;
+	return props.loading === false && props.items.length > 0 && props.modelValue.length === props.items.length;
 });
 
 const someItemsSelected = computed<boolean>(() => {
