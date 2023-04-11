@@ -40,7 +40,7 @@ This will scaffold a new blank extension for you to work on.
 
 :::tip
 
-The bundle extension type currently doesn't support the migration extension.
+The bundle extension type currently doesn't support the migration extension type.
 
 :::
 
