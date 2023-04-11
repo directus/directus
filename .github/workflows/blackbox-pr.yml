@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - api/**
-      - tests-blackbox/**
+      - tests/blackbox/**
       - packages/**
       - package.json
       - pnpm-lock.yaml
@@ -27,12 +27,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Prepare test env
-        uses: ./.github/actions/prepare-test-env
+      - name: Prepare
+        uses: ./.github/actions/prepare
 
       - name: Start services
         run:
-          docker compose -f tests-blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=sqlite3 pnpm run -w test:blackbox
+        run: TEST_DB=sqlite3 pnpm run test:blackbox

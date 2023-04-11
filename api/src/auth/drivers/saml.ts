@@ -16,12 +16,12 @@ import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { LocalAuthDriver } from './local.js';
 
-// tell samlify to use validator...
+// Register the samlify schema validator
 samlify.setSchemaValidator(validator);
 
 export class SAMLAuthDriver extends LocalAuthDriver {
-	idp: any;
-	sp: any;
+	sp: samlify.ServiceProviderInstance;
+	idp: samlify.IdentityProviderInstance;
 	usersService: UsersService;
 	config: Record<string, any>;
 
@@ -82,7 +82,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		}
 	}
 
-	// There's no local checks to be done when the user is authenticated in the IDP
+	// There's no local checks to be done when the user is authenticated in the IdP
 	override async login(_user: User): Promise<void> {
 		return;
 	}
@@ -103,7 +103,7 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/',
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
-			const { context: url } = await sp.createLoginRequest(idp, 'redirect');
+			const { context: url } = sp.createLoginRequest(idp, 'redirect');
 			const parsedUrl = new URL(url);
 
 			if (req.query['redirect']) {
@@ -118,7 +118,7 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/logout',
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
-			const { context } = await sp.createLogoutRequest(idp, 'redirect', req.body);
+			const { context } = sp.createLogoutRequest(idp, 'redirect', req.body);
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 

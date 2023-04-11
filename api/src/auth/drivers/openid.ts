@@ -132,7 +132,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			const codeChallenge = generators.codeChallenge(payload['codeVerifier']);
 			tokenSet = await client.callback(
 				this.redirectUrl,
-				{ code: payload['code'], state: payload['state'] },
+				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge }
 			);
 			userInfo = tokenSet.claims();
@@ -339,6 +339,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					code: req.query['code'],
 					codeVerifier: verifier,
 					state: req.query['state'],
+					iss: req.query['iss'],
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
