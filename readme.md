@@ -54,9 +54,6 @@ All security vulnerabilities should be reported in accordance with our
 Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core
 team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
 
-See [Running Locally](https://docs.directus.io/contributing/running-locally.html) to get a local development version up
-and running.
-
 <br />
 
 © 2004-2023, Monospace Inc
