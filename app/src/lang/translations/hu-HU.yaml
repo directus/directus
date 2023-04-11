@@ -1131,6 +1131,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Térképezés
     basemaps: Alaptérkép
     basemaps_raster: Raszter
