@@ -245,7 +245,6 @@ float: Flydende
 integer: Heltal
 json: JSON
 xml: XML
-yaml: YAML
 string: Streng
 text: Tekst
 time: Tid
@@ -296,6 +295,7 @@ o2m_relationship: En til mange relationer
 m2m_relationship: Mange til mange relationer
 m2a_relationship: Mange til ethvert forhold
 invalid_item: Ugyldigt element
+modal: Modal
 next: Næste
 field_name: Feltnavn
 translations: Oversættelser
@@ -783,10 +783,7 @@ icon_on: Ikon til
 icon_off: Ikon fra
 label: Etiket
 select_a_flow: Vælg et Flow
-run_flow_on_current_collection: Kør flow på aktuel samling
-run_flow_on_current: Kør flow på nuværende element
 run_flow_on_current_edited_confirm: Dette element kan blive opdateret af dette flow, er du sikker på, at du vil udføre det?
-run_flow_on_selected: Vælg et eller flere elementer først | Kør flow på et udvalgt element | Kør flow på {n} udvalgte elementer
 run_flow_success: Flow "{flow}" kørte med succes
 trigger: Udløser
 trigger_options: Udløserindstillinger
@@ -949,6 +946,7 @@ one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
 actions: Handlinger
 select: Vælg...
+layout: Sideopsætning
 tree_view: Træ visning
 changes_are_permanent: Ændringer er permanente
 preset_name_placeholder: Serverer som standard når tom...
@@ -1125,6 +1123,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Kortlægning
     basemaps: Grundkort
     basemaps_style: Mapbox stil
@@ -1599,6 +1598,7 @@ interfaces:
     unexpected_geometry: Forventede {expected}, fik {got}.
     fit_bounds: Tilpas visning til data
     native: Indbygget
+    geojson: GeoJSON
     lnglat: Længdegrad, breddegrad
     wkb: WKB
     click_to_select: Klik for at vælge {geometry}
@@ -1613,7 +1613,6 @@ interfaces:
   system-folder:
     folder: Mappe
     description: Vælg en mappe
-    field_hint: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     root_name: Fil Biblioteks Rod
     system_default: Systemstandarder
   select-radio:
@@ -1626,7 +1625,6 @@ interfaces:
     add_label: '"Opret ny" etiket'
     sort: Sortér
     sort_placeholder: Manuel
-    field_name_placeholder: Indtast feltnavn...
     field_note_placeholder: Indtast felt note...
     incompatible_data: De aktuelle data er ikke kompatible med gentager-grænsefladen og vil blive tilsidesat, når du tilføjer elementer til gentager
   slider:
@@ -1892,8 +1890,14 @@ layouts:
     default_template: Brug samling standard...
     no_compatible_fields: Ingen kompatible felter
   kanban:
+    title: Korttitel
+    title_placeholder: Valgfrit titelfelt...
+    image: Kortbillede
     crop: Beskær
     advanced: Avanceret
+    edit_group: Rediger gruppe
+    delete_group: Slet gruppe
+    add_group: Tilføj gruppe
     not_all_loaded: Kunne kun indlæse de første 1000 elementer.
 horizontal: Horisontal
 vertical: Lodret
@@ -2039,7 +2043,6 @@ operations:
     name: Send meddelelse
     description: Send en meddelelse i appen til en eller flere brugere
     recipient: Bruger
-    recipient_placeholder: Tilføj bruger-UUID og tryk enter...
     message: besked
   request:
     description: "Lav en anmodning til en URL"

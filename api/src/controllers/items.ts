@@ -1,11 +1,13 @@
 import express from 'express';
-import { ForbiddenException, RouteNotFoundException } from '../exceptions';
-import collectionExists from '../middleware/collection-exists';
-import { respond } from '../middleware/respond';
-import { validateBatch } from '../middleware/validate-batch';
-import { ItemsService, MetaService } from '../services';
-import { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
+import { ForbiddenException, RouteNotFoundException } from '../exceptions/index.js';
+import collectionExists from '../middleware/collection-exists.js';
+import { respond } from '../middleware/respond.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { ItemsService } from '../services/items.js';
+import { MetaService } from '../services/meta.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
@@ -13,7 +15,7 @@ router.post(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
@@ -37,10 +39,10 @@ router.post(
 		try {
 			if (Array.isArray(req.body)) {
 				const result = await service.readMany(savedKeys, req.sanitizedQuery);
-				res.locals.payload = { data: result || null };
+				res.locals['payload'] = { data: result || null };
 			} else {
-				const result = await service.readOne(savedKeys[0], req.sanitizedQuery);
-				res.locals.payload = { data: result || null };
+				const result = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
+				res.locals['payload'] = { data: result || null };
 			}
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -56,7 +58,7 @@ router.post(
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
-	if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+	if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 	const service = new ItemsService(req.collection, {
 		accountability: req.accountability,
@@ -80,7 +82,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
-	res.locals.payload = {
+	res.locals['payload'] = {
 		meta: meta,
 		data: result,
 	};
@@ -95,16 +97,16 @@ router.get(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const result = await service.readOne(req.params.pk, req.sanitizedQuery);
+		const result = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
-		res.locals.payload = {
+		res.locals['payload'] = {
 			data: result || null,
 		};
 
@@ -118,7 +120,7 @@ router.patch(
 	collectionExists,
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
-		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
@@ -129,7 +131,7 @@ router.patch(
 			await service.upsertSingleton(req.body);
 			const item = await service.readSingleton(req.sanitizedQuery);
 
-			res.locals.payload = { data: item || null };
+			res.locals['payload'] = { data: item || null };
 			return next();
 		}
 
@@ -140,12 +142,13 @@ router.patch(
 		} else if (req.body.keys) {
 			keys = await service.updateMany(req.body.keys, req.body.data);
 		} else {
-			keys = await service.updateByQuery(req.body.query, req.body.data);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			keys = await service.updateByQuery(sanitizedQuery, req.body.data);
 		}
 
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals.payload = { data: result };
+			res.locals['payload'] = { data: result };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -163,7 +166,7 @@ router.patch(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
@@ -174,11 +177,11 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const updatedPrimaryKey = await service.updateOne(req.params.pk, req.body);
+		const updatedPrimaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const result = await service.readOne(updatedPrimaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: result || null };
+			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -196,8 +199,8 @@ router.delete(
 	'/:collection',
 	collectionExists,
 	validateBatch('delete'),
-	asyncHandler(async (req, res, next) => {
-		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+	asyncHandler(async (req, _res, next) => {
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
@@ -209,7 +212,8 @@ router.delete(
 		} else if (req.body.keys) {
 			await service.deleteMany(req.body.keys);
 		} else {
-			await service.deleteByQuery(req.body.query);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			await service.deleteByQuery(sanitizedQuery);
 		}
 
 		return next();
@@ -220,15 +224,15 @@ router.delete(
 router.delete(
 	'/:collection/:pk',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
-		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+	asyncHandler(async (req, _res, next) => {
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params.pk);
+		await service.deleteOne(req.params['pk']!);
 		return next();
 	}),
 	respond
