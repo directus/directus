@@ -136,7 +136,8 @@ export class DriverCloudinary implements Driver {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
-                const parameters = {
+
+		const parameters = {
 			public_id: publicId,
 			type: 'upload',
 			api_key: this.apiKey,
