@@ -2,7 +2,7 @@
 	"name": "directus",
 	"version": "9.24.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
-  "type": "module",
+	"type": "module",
 	"keywords": [
 		"directus",
 		"realtime",
@@ -57,5 +57,8 @@
 	},
 	"dependencies": {
 		"@directus/api": "workspace:*"
+	},
+	"engines": {
+		"node": ">=18.0.0"
 	}
 }
