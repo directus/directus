@@ -8,9 +8,12 @@ import hash from 'object-hash';
 import path from 'path';
 import sharp from 'sharp';
 import validateUUID from 'uuid-validate';
+import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { ForbiddenException, IllegalAssetTransformation, RangeNotSatisfiableException } from '../exceptions/index.js';
+import { ForbiddenException } from '../exceptions/forbidden.js';
+import { IllegalAssetTransformation } from '../exceptions/illegal-asset-transformation.js';
+import { RangeNotSatisfiableException } from '../exceptions/range-not-satisfiable.js';
 import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
@@ -112,8 +115,7 @@ export class AssetsService {
 		const type = file.type;
 		const transforms = TransformationUtils.resolvePreset(transformation, file);
 
-		// We can only transform JPEG, PNG, and WebP
-		if (type && transforms.length > 0 && ['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].includes(type)) {
+		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 
 			const assetFilename =

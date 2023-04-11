@@ -1,16 +1,17 @@
 /* eslint-disable no-console */
 
+import axios from 'axios';
+import { spawn, spawnSync } from 'child_process';
+import { writeFileSync } from 'fs';
 import knex from 'knex';
 import { Listr } from 'listr2';
-import vendors from '../common/get-dbs-to-test';
-import config, { getUrl } from '../common/config';
-import global from './global';
-import { spawn, spawnSync } from 'child_process';
-import axios from 'axios';
-import { writeFileSync } from 'fs';
-import { awaitDatabaseConnection, awaitDirectusConnection } from '../utils/await-connection';
-import * as common from '../common';
 import { clone } from 'lodash';
+import path from 'node:path';
+import * as common from '../common';
+import config, { getUrl, paths } from '../common/config';
+import vendors from '../common/get-dbs-to-test';
+import { awaitDatabaseConnection, awaitDirectusConnection } from '../utils/await-connection';
+import global from './global';
 
 let started = false;
 
@@ -34,9 +35,12 @@ export default async (): Promise<void> => {
 								const database = knex(config.knexConfig[vendor]!);
 								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
 								if (vendor === 'sqlite3') {
-									writeFileSync('test.db', '');
+									writeFileSync(path.join(paths.cwd, 'test.db'), '');
 								}
-								const bootstrap = spawnSync('node', ['api/cli', 'bootstrap'], { env: config.envs[vendor] });
+								const bootstrap = spawnSync('node', [paths.cli, 'bootstrap'], {
+									cwd: paths.cwd,
+									env: config.envs[vendor],
+								});
 								if (bootstrap.stderr.length > 0) {
 									throw new Error(`Directus-${vendor} bootstrap failed: \n ${bootstrap.stderr.toString()}`);
 								}
@@ -45,7 +49,10 @@ export default async (): Promise<void> => {
 								await database.destroy();
 
 								if (!process.env.TEST_LOCAL) {
-									const server = spawn('node', ['api/cli', 'start'], { env: config.envs[vendor] });
+									const server = spawn('node', [paths.cli, 'start'], {
+										cwd: paths.cwd,
+										env: config.envs[vendor],
+									});
 									global.directus[vendor] = server;
 									let serverOutput = '';
 									server.stdout.setEncoding('utf8');
@@ -54,7 +61,7 @@ export default async (): Promise<void> => {
 									});
 									server.on('exit', (code) => {
 										if (process.env.TEST_SAVE_LOGS) {
-											writeFileSync(__dirname + `/../server-log-${vendor}.txt`, serverOutput);
+											writeFileSync(path.join(paths.cwd, `server-log-${vendor}.txt`), serverOutput);
 										}
 										if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 									});
@@ -66,7 +73,7 @@ export default async (): Promise<void> => {
 									const noCacheEnv = clone(config.envs[vendor]!);
 									noCacheEnv.CACHE_SCHEMA = 'false';
 									noCacheEnv.PORT = String(parseInt(noCacheEnv.PORT!) + 50);
-									const serverNoCache = spawn('node', ['api/cli', 'start'], { env: noCacheEnv });
+									const serverNoCache = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: noCacheEnv });
 									global.directusNoCache[vendor] = serverNoCache;
 									let serverNoCacheOutput = '';
 									serverNoCache.stdout.setEncoding('utf8');
