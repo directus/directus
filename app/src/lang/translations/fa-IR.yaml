@@ -1044,15 +1044,27 @@ directus_collection:
   directus_operations: عملیاتی که در اتوماسیون اجرا می شوند
   directus_panels: پنل‌های مجزا در داشبوردها
   directus_permissions: دسترسی به اجازه های این نقش
+  directus_presets: تنظیمات پیش‌فرض برای مجموعه و بوکمارک‌ها
+  directus_relations: پیکربندی رابطه و داده متا
+  directus_revisions: عکس های فوری داده برای همه فعالیت ها
   directus_roles: گروههای اجازه برای کاربران سیستم
+  directus_sessions: اطلاعات نشست کاربر
+  directus_settings: گزینه های پیکربندی پروژه
+  directus_shares: موارد به اشتراک گذاشته شده خارجی را ردیابی می کند
+  directus_users: کاربران سیستمی برای پلتفرم
+  directus_webhooks: پیکربندی برای درخواست های HTTP مبتنی بر رویداد
 fields:
   directus_activity:
+    item: کلید اصلی آیتم
     action: فعالیت
     collection: کالکشن یا مجموعه
     timestamp: فعالیت در تاریخ
     user: فعالیت توسط
     comment: نظر
+    user_agent: عامل کاربر
     origin: مبدا
+    ip: آدرس IP
+    revisions: نسخه
   directus_collections:
     collection: کالکشن یا مجموعه
     icon: آیکن
@@ -1061,7 +1073,14 @@ fields:
     display_template: نمایش الگو
     hidden: مخفی
     singleton: تک کالکشن یا Singleton
+    translations: ترجمه های نامگذاری مجموعه
+    archive_app_filter: بایگانی فیلتر برنامه
+    archive_value: مقدار آرشیو
+    unarchive_value: مقدار آرشیو نشده
     sort_field: فیلد مرتب سازی
+    accountability: مشاهده Log ها و فعالیت ها
+    archive_field: فیلد آرشیو
+    item_duplication_fields: فیلدهای تکراری
   directus_files:
     $thumbnail: تصویر کوچک
     title: عنوان
@@ -1072,6 +1091,7 @@ fields:
     filename_disk: نام فایل (برروی دیسک)
     filename_download: نام (دانلودی) فایل
     metadata: متادیتا
+    type: نوع فایل
     filesize: انداره فایل
     modified_by: ویرایش شده توسط
     modified_on: ویرایش شده در
@@ -1080,7 +1100,9 @@ fields:
     embed: درج
     uploaded_by: بارگذاری شده توسط
     folder: پوشه
+    width: عرض
     uploaded_on: بارگذاری شده در تاریخ
+    height: ارتفاع
     charset: مجموعه کاراکتر
     duration: مدت زمان
   directus_users:
@@ -1100,6 +1122,7 @@ fields:
     theme_light: تم روشن
     theme_dark: تم شبانه (تاریک)
     tfa_secret: احراز هویت دو عاملی
+    admin_options: تنظیمات ادمین
     status: وضعیت
     status_draft: پیش‌نویس
     status_invited: دعوت شده
@@ -1108,6 +1131,8 @@ fields:
     status_archived: بایگانی شده
     role: نقش
     token: رمز
+    provider: ارائه دهنده
+    external_identifier: شناسه خارجی
     last_page: صفحه آخر
     last_access: آخرین دسترسی
     email_notifications: اعلان های ایمیلی
@@ -1363,7 +1388,11 @@ sign_in: ورود
 sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
 template: قالب
+require_value_to_be_set: مقدار لازم برای تنظیم هنگام ایجاد
+translation: ترجمه
 translation_placeholder: وارد کردن ترجمه...
+value: مقدار
+view_project: مشاهده پروژه
 report_error: گزارش خطا
 start: آغاز
 table: جدول
@@ -1372,6 +1401,10 @@ search_filter: جستجوی فیلترها
 enable_search_filter: فعال کردن جستجو و فیلترها
 item_link: لینک مورد
 show_link_to_item: نمایش لینک در آیتم
+navigate_to_item: بازگشت به آیتم
+undo_removed_item: لغو حذف آیتم
+remove_item: حذف آیتم
+delete_item: پاک کردن آیتم
 interfaces:
   filter:
     name: فیلتر
@@ -1379,9 +1412,20 @@ interfaces:
     add_filter: افزودن فیلتر
     add_group: گروه و / یا
     add_value: افزودن مقدار
+    logic_type_and: و
+    logic_type_or: یا
     all: همه
     any: هرکدام
+    and: و
+    of_the_following: از موارد زیر
+    no_rules: هیچ قوانینی تنظیم نشده
+    change_value: برای تغییر مقدار کلیک کنید
+    placeholder: قوانین را به اینجا بکشید
+    add_key_placeholder: یک کلید اضافه کنید و دکمه Enter را فشار دهید..
+  fields:
+    name: فیلدها
   group-accordion:
+    name: آکوردئون
     description: نمایش زمینه ها یا گروه ها به عنوان بخش های آکاردئونی
     start: آغاز
     all_closed: همه بسته باشند
@@ -1445,11 +1489,30 @@ interfaces:
     select_a_collection: انتخاب یک کالکشن
   presentation-divider:
     divider: جدا کننده
+    title_placeholder: یک عنوان وارد نمائید یا خالی رها کنید
+    inline_title: عنوان درون خطی
+    inline_title_label: نمایش عنوان داخل خط
+    margin_top: حاشیه از بالا
+    margin_top_label: افزاریش حاشیه از بالا
   select-dropdown:
+    description: انتخاب از منوی آبشاری
+    choices_placeholder: افزودن یک انتخاب
     allow_other: اجازه به دیگری
+    allow_other_label: امکان دیگر مقدارها
+    allow_none: امکان None گذاشتن
+    allow_none_label: امکان انتخاب نشدن
+    choices_name_placeholder: عنوانی را وارد نمایید...
     choices_value_placeholder: یک مقدار را وارد کنید...
+    preview_threshold: آستانه پیشنمایش
+  select-multiple-dropdown:
+    select-multiple-dropdown: منوی آبشاری
+    description: انتخاب موارد بیشتر از یک منوی آبشاری
   file:
     file: فایل
+    description: انتخاب یا آپلود یک فایل
+  files:
+    files: فایل ها
+    description: انتخاب یا آپلود موارد بیشتر
   input-hash:
     hash: هش
   select-icon:
@@ -1458,6 +1521,9 @@ interfaces:
     image: عکس
     crop: تناسب با برش تصویر
     crop_label: برش تصویر در صورت نیاز
+  system-interface:
+    interface: رابط کاربری
+    description: انتخاب یک رابط موجود
   list-m2m:
     description: انتخاب چندین آیتم تقاطعی مرتبط
   select-dropdown-m2o:
@@ -1471,18 +1537,38 @@ interfaces:
     zoom: بزرگنمايی
   list-o2m:
     description: انتخاب چندین آیتم مرتبط
+    no_collection: گزینه مورد نظر یافت نشد.
   system-folder:
     folder: پوشه
+    description: یک پوشه انتخاب کنید
     root_name: پوشه اصلی مجموعه فایلها
+    system_default: پیش فرض سیستم
+  select-radio:
+    radio-buttons: دکمه رادیویی
+    description: یکی از چندین گزینه را انتخاب کنید
   list:
+    repeater: تکرار شونده
+    edit_fields: ویرایش فیلدها
     add_label: 'برچسب "ساخت مورد جدید"'
     sort: مرتب سازی
+    sort_placeholder: دستی
+  slider:
+    slider: اسلایدر
+    description: با استفاده از یک نوار لغزنده یک عدد را انتخاب کنید
+    always_show_value: همیشه مقدار را نمایش بده
   tags:
     tags: برچسب ها
     description: انتخاب یا افزودن برچسب ها
     whitespace: فضای خالی
     hyphen: جایگزینی با نشان اتصال
     underscore: جایگزینی با زیرین خط
+    remove: حذف فضای خالی
+    capitalization: حروف بزرگ
+    uppercase: تبدیل به حروف بزرگ
+    lowercase: تبدیل به حروف کوچک
+    alphabetize: الفبایی
+  input:
+    input: ورودی
   boolean:
     toggle: تغییر وضعیت
     label_default: فعال شده
