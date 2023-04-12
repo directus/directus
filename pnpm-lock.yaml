@@ -1388,6 +1388,9 @@ importers:
       '@types/uuid':
         specifier: 9.0.1
         version: 9.0.1
+      '@types/ws':
+        specifier: 8.5.4
+        version: 8.5.4
       autocannon:
         specifier: 7.10.0
         version: 7.10.0
@@ -1433,6 +1436,9 @@ importers:
       uuid:
         specifier: 9.0.0
         version: 9.0.0
+      ws:
+        specifier: 8.12.1
+        version: 8.12.1
 
 packages:
 
