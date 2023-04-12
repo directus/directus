@@ -981,7 +981,7 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 | Variable                                   | Description                  | Default Value |
 | ------------------------------------------ | ---------------------------- | ------------- |
-| `EMAIL_SES_CREDENTIALS__ACCESS_KEY_ID`     | Your AWS SES access key. ID. | --            |
+| `EMAIL_SES_CREDENTIALS__ACCESS_KEY_ID`     | Your AWS SES access key ID. | --            |
 | `EMAIL_SES_CREDENTIALS__SECRET_ACCESS_KEY` | Your AWS SES secret key.     | --            |
 | `EMAIL_SES_REGION`                         | Your AWS SES region.         | --            |
 
