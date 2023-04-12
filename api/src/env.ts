@@ -28,8 +28,8 @@ const allowedEnvironmentVars = [
 	'GRAPHQL_INTROSPECTION',
 	'MAX_BATCH_MUTATION',
 	'LOGGER_.+',
-	'MAX_QUERY_LIMIT',
-	'DEFAULT_QUERY_LIMIT',
+	'QUERY_LIMIT_MAX',
+	'QUERY_LIMIT_DEFAULT',
 	'ROBOTS_TXT',
 	// server
 	'SERVER_.+',
@@ -204,7 +204,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
-	DEFAULT_QUERY_LIMIT: 100,
+	QUERY_LIMIT_DEFAULT: 100,
 	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 

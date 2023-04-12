@@ -29,7 +29,7 @@ describe('limit', () => {
 
 describe('max limit', () => {
 	beforeEach(() => {
-		vi.stubEnv('MAX_QUERY_LIMIT', '100');
+		vi.stubEnv('QUERY_LIMIT_MAX', '100');
 		refreshEnv();
 	});
 
