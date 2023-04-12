@@ -12,7 +12,7 @@ import { useCollection } from '@directus/composables';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { computed, ComputedRef, Ref, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { Field, Query, Relation } from '@directus/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -41,7 +41,7 @@ type UsableItem = {
 export function useItem(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
-	query: Query = {}
+	query: Ref<Query> | Query = {}
 ): UsableItem {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
@@ -79,7 +79,7 @@ export function useItem(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey], refresh, { immediate: true });
+	watch([collection, primaryKey, query], refresh, { immediate: true });
 
 	return {
 		edits,
@@ -107,7 +107,7 @@ export function useItem(
 		error.value = null;
 
 		try {
-			const response = await api.get(itemEndpoint.value, { params: query });
+			const response = await api.get(itemEndpoint.value, { params: unref(query) });
 			setItemValueToResponse(response);
 		} catch (err: any) {
 			error.value = err;
