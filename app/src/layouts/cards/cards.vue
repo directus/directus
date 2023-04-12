@@ -234,7 +234,7 @@ export default defineComponent({
 		const pageSizes = computed(() => {
 			const sizes = ['25', '50', '100', '250', '500', '1000'];
 			if (info.queryLimit) {
-				return sizes.filter((size) => Number(size) < info.queryLimit!.max);
+				return sizes.filter((size) => Number(size) <= info.queryLimit!.max);
 			}
 			return sizes;
 		});
