@@ -216,7 +216,7 @@ export default defineComponent({
 				},
 			];
 			if (info.queryLimit) {
-				return sizes.filter(({ value }) => value < info.queryLimit!.max);
+				return sizes.filter(({ value }) => value <= info.queryLimit!.max);
 			}
 			return sizes;
 		});
