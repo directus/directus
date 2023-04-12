@@ -296,7 +296,12 @@ o2m_relationship: Relation Un à plusieurs
 m2m_relationship: Relation Plusieurs à plusieurs
 m2a_relationship: Relation Many-to-Any
 invalid_item: Élément invalide
+require_confirmation: Afficher une confirmation
+dialog: Fenêtre
 modal: Modal
+confirmation_dialog: Fenêtre de confirmation
+confirmation_description: Texte descriptif de la confirmation
+confirmation_input_fields: Champs à saisir pour la confirmation
 next: Suivant
 field_name: Nom du champ
 translations: Traductions
@@ -315,6 +320,7 @@ updated_on: Modifié le
 updated_by: Modifié par
 primary_key: Clef primaire
 foreign_key: Clé étrangère
+field_key: Identifiant du champ
 finish_setup: Terminer la configuration
 dismiss: Ignorer
 toggle_raw_editor: Activer/désactiver l'éditeur de texte brut
@@ -788,8 +794,15 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
+run_flow_confirm: Êtes-vous sûr(e) de vouloir exécuter ce flux ?
+run_flow_on_current_collection: Lancer ce flux sur la collection actuelle
+run_flow_on_current: Lancer le flux sur l'élément actuel
 run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
+run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur l'élément sélectionné | Exécuter le flux sur les {n} éléments sélectionnés
+run_flow: Lancer le flux
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
+field_name_placeholder: Saisir un nom de champ...
+field_key_placeholder: Saisir un identifiant de champ...
 trigger: Déclencheur
 trigger_options: Options de Déclenchement
 view_trigger: Voir le déclencheur
@@ -1425,6 +1438,7 @@ export_started: L'export a commencé
 export_started_copy: Votre export a commencé. Vous serez notifié quand il sera prêt à être téléchargé.
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
+disable_sort: Désactiver le tri
 template: Modèle
 require_value_to_be_set: Nécessite que la valeur soit définie lors de la création
 translation: Traduction
@@ -1588,6 +1602,9 @@ interfaces:
     many-to-one: Plusieurs à un
     description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage
+  collection-item-dropdown:
+    collection-item-dropdown: Liste déroulante des éléments de collection
+    description: Sélectionnez un élément dans une collection au format JSON
   input-rich-text-md:
     markdown: Éditeur Markdown
     description: Saisir et prévisualiser le markdown

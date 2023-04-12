@@ -296,7 +296,12 @@ o2m_relationship: 一对多关系
 m2m_relationship: 多对多关系
 m2a_relationship: 多对任何关系
 invalid_item: 无效条目
+require_confirmation: 需要确认
+dialog: 对话框
 modal: 模式
+confirmation_dialog: 确认对话框
+confirmation_description: 确认描述
+confirmation_input_fields: 确认输入字段
 next: 下一步
 field_name: 字段名
 translations: 翻译
@@ -788,8 +793,14 @@ label: 标签
 flows: 流程
 flow: 流程
 select_a_flow: 选择一个流程
+run_flow_confirm: 您确定要执行此流程吗？
+run_flow_on_current_collection: 在当前集合上运行流程
+run_flow_on_current: 在当前项目上运行流程
 run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
+run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上运行 | 在 {n} 个选定项目 上运行
+run_flow: 运行流程
 run_flow_success: 流程 "{flow}" 运行成功
+field_name_placeholder: 输入字段名称...
 trigger: 触发器
 trigger_options: 触发器选项
 view_trigger: 查看触发器
@@ -1588,6 +1599,9 @@ interfaces:
     many-to-one: 多对一
     description: 选择一个条目
     display_template: 显示模板
+  collection-item-dropdown:
+    collection-item-dropdown: 集合项下拉菜单
+    description: 从JSON格式的集合中选择一个项目
   input-rich-text-md:
     markdown: Markdown
     description: 输入并预览Markdown
@@ -1629,6 +1643,7 @@ interfaces:
   system-folder:
     folder: 文件夹
     description: 选择文件夹
+    field_hint: 默认文件夹，用于未指定文件夹的上传文件。不影响现有文件。
     root_name: 文件管理
     system_default: 系统默认
   select-radio:
@@ -2091,6 +2106,8 @@ operations:
     name: 发送通知
     description: 向一个或多个用户发送应用内通知
     recipient: 用户
+    recipient_placeholder: 输入一个UUID...
+    recipient_note: 添加用户UUID并按回车键...
     message: 消息
   request:
     name: 互联网钩子 / 请求 URL
