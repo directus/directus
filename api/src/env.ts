@@ -291,7 +291,7 @@ const defaults: Record<string, any> = {
 
 	GRAPHQL_INTROSPECTION: true,
 
-	WEBSOCKETS_ENABLED: true,
+	WEBSOCKETS_ENABLED: false,
 	WEBSOCKETS_REST_ENABLED: true,
 	WEBSOCKETS_REST_AUTH: 'handshake',
 	WEBSOCKETS_REST_AUTH_TIMEOUT: 10,
