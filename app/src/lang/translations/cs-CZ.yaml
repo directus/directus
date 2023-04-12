@@ -1101,7 +1101,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: Mapování
     basemaps: Základní mapy
     basemaps_raster: Rastr
