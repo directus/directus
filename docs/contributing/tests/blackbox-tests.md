@@ -1,6 +1,6 @@
 # Writing Blackbox Tests
 
-> The testing suite is located in `/tests-blackbox`. For details on running tests, please refer to
+> The testing suite is located in `/tests/blackbox`. For details on running tests, please refer to
 > [Running Tests](/contributing/tests/#running-blackbox-tests).
 
 Every API route should have a test to verify that it is working as intended. The tests are typescript files with names
@@ -192,7 +192,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 ## Set Sequential Flow
 
-Tests can be set to run sequentially in `tests-blackbox/setup/sequentialTests.js`. Sequential tests should be added to
+Tests can be set to run sequentially in `tests/blackbox/setup/sequentialTests.js`. Sequential tests should be added to
 `before` except those that changes the environment variables, which should be added to `after`. To speed up the testing
 of newly written tests, the test can be added to `only`, where only tests within this array will run.
 `seed-database.test.ts` and `common.test.ts` are compulsory for the common functions to be used.
