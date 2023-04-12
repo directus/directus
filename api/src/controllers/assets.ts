@@ -11,7 +11,7 @@ import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
-import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets.js';
+import { TransformationMethods, TransformationParams } from '../types/assets.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
@@ -139,11 +139,23 @@ router.get(
 			schema: req.schema,
 		});
 
-		const transformation: TransformationParams | TransformationPreset = res.locals['transformation'].key
-			? (res.locals['shortcuts'] as TransformationPreset[]).find(
+		const transformation: TransformationParams = res.locals['transformation'].key
+			? (res.locals['shortcuts'] as TransformationParams[]).find(
 					(transformation) => transformation['key'] === res.locals['transformation'].key
 			  )
 			: res.locals['transformation'];
+
+		if (transformation.format === 'auto' && req.headers.accept) {
+			let format: Exclude<TransformationParams['format'], 'auto'> = 'jpg';
+
+			if (req.headers.accept.includes('image/webp')) {
+				format = 'webp';
+			} else if (req.headers.accept.includes('image/avif')) {
+				format = 'avif';
+			}
+
+			transformation.format = format;
+		}
 
 		let range: Range | undefined = undefined;
 
