@@ -15,10 +15,14 @@ const loading = ref(false);
 const error = ref(null);
 const success = ref(false);
 
-const feedback = reactive({
-	id: null,
-	rating: null,
-	comments: null,
+const feedback = reactive<{
+	id?: string;
+	rating?: number;
+	comments?: string;
+}>({
+	id: undefined,
+	rating: undefined,
+	comments: undefined,
 });
 
 const prompts = [
@@ -49,9 +53,10 @@ const ratingOptions = [
 
 async function handleSubmission(rating?: number) {
 	loading.value = true;
+	if (rating) feedback.rating = rating;
 	const body = {
 		id: feedback.id,
-		rating: rating ?? feedback.rating,
+		rating: feedback.rating,
 		comments: feedback.comments,
 		title: props.title,
 		url: props.url,
@@ -98,14 +103,14 @@ async function handleSubmission(rating?: number) {
 					<p class="desc">This article is</p>
 					<div>
 						<span>{{ ratingOptions[feedback.rating - 1].label }}</span>
-						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = null">
+						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = undefined">
 							<span mi icon>close</span>
 						</button>
 					</div>
 				</div>
 				<p class="heading">{{ ratingOptions[feedback.rating - 1].message }}</p>
 				<textarea v-model="feedback.comments" autofocus class="input" />
-				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission">
+				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission()">
 					Send Us Your Feedback
 				</button>
 			</div>
