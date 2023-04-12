@@ -8,7 +8,7 @@
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
 			<div v-if="imageError || !src" class="image-error">
-				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
+				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
 					{{ t(`errors.${imageError}`) }}

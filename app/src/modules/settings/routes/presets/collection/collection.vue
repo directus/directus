@@ -24,7 +24,7 @@
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="bookmark_border" />
+					<v-icon name="bookmark" />
 				</v-button>
 			</template>
 
