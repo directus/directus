@@ -47,12 +47,7 @@
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ t('per_page') }}</span>
-					<v-select
-						:model-value="`${limit}`"
-						:items="['25', '50', '100', '250', '500', '1000']"
-						inline
-						@update:model-value="limitWritable = +$event"
-					/>
+					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -76,7 +71,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, watch, PropType, ref, inject, Ref } from 'vue';
+import { defineComponent, watch, PropType, ref, inject, Ref, computed } from 'vue';
 
 import Card from './components/card.vue';
 import CardsHeader from './components/header.vue';
@@ -84,6 +79,7 @@ import { Field, Item } from '@directus/types';
 import { useSync, useElementSize } from '@directus/composables';
 import { Collection } from '@/types/collections';
 import { Filter, ShowSelect } from '@directus/types';
+import { useServerStore } from '@/stores/server';
 
 export default defineComponent({
 	components: { Card, CardsHeader },
@@ -224,6 +220,7 @@ export default defineComponent({
 		const layoutElement = ref<HTMLElement>();
 
 		const { width } = useElementSize(layoutElement);
+		const { info } = useServerStore();
 
 		watch(
 			() => props.page,
@@ -234,7 +231,15 @@ export default defineComponent({
 			emit('update:width', width.value);
 		});
 
-		return { t, selectionWritable, limitWritable, sizeWritable, sortWritable, layoutElement };
+		const pageSizes = computed(() => {
+			const sizes = ['25', '50', '100', '250', '500', '1000'];
+			if (info.queryLimit) {
+				return sizes.filter((size) => Number(size) < info.queryLimit!.max);
+			}
+			return sizes;
+		});
+
+		return { t, selectionWritable, limitWritable, sizeWritable, sortWritable, layoutElement, pageSizes };
 	},
 });
 </script>

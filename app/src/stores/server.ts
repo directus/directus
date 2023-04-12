@@ -48,6 +48,10 @@ export type Info = {
 	flows?: {
 		execAllowedModules: string[];
 	};
+	queryLimit?: {
+		default: number;
+		max: number;
+	};
 };
 
 export type Auth = {
@@ -63,6 +67,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		os: undefined,
 		rateLimit: undefined,
 		flows: undefined,
+		queryLimit: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -93,6 +98,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.node = serverInfoResponse.data.data?.node;
 		info.os = serverInfoResponse.data.data?.os;
 		info.flows = serverInfoResponse.data.data?.flows;
+		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;

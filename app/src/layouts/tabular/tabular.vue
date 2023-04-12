@@ -140,7 +140,7 @@
 						<span>{{ t('per_page') }}</span>
 						<v-select
 							:model-value="`${limit}`"
-							:items="['25', '50', '100', '250', '500', ' 1000']"
+							:items="pageSizes"
 							inline
 							@update:model-value="limitWritable = +$event"
 						/>
@@ -184,6 +184,7 @@ import { useAliasFields } from '@/composables/use-alias-fields';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { HeaderRaw } from '@/components/v-table/types';
+import { useServerStore } from '@/stores/server';
 
 interface Props {
 	collection: string;
@@ -256,6 +257,15 @@ useShortcut(
 );
 const permissionsStore = usePermissionsStore();
 const userStore = useUserStore();
+const { info } = useServerStore();
+
+const pageSizes = computed(() => {
+	const sizes = ['25', '50', '100', '250', '500', ' 1000'];
+	if (info.queryLimit) {
+		return sizes.filter((size) => Number(size) < info.queryLimit!.max);
+	}
+	return sizes;
+});
 
 const showManualSort = computed(() => {
 	if (!props.sortField) return false;

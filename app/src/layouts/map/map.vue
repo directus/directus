@@ -63,29 +63,7 @@
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
 					<span>{{ t('limit') }}</span>
-					<v-select
-						:model-value="limit"
-						:items="[
-							{
-								text: n(100),
-								value: 100,
-							},
-							{
-								text: n(1000),
-								value: 1000,
-							},
-							{
-								text: n(10000),
-								value: 10000,
-							},
-							{
-								text: n(100000),
-								value: 100000,
-							},
-						]"
-						inline
-						@update:model-value="limitWritable = +$event"
-					/>
+					<v-select :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -94,11 +72,12 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 
 import MapComponent from './components/map.vue';
 import { useSync } from '@directus/composables';
 import { GeometryOptions, Item } from '@directus/types';
+import { useServerStore } from '@/stores/server';
 
 export default defineComponent({
 	components: { MapComponent },
@@ -216,7 +195,33 @@ export default defineComponent({
 		const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
 		const limitWritable = useSync(props, 'limit', emit);
 
-		return { t, n, cameraOptionsWritable, limitWritable };
+		const { info } = useServerStore();
+		const pageSizes = computed(() => {
+			const sizes = [
+				{
+					text: n(100),
+					value: 100,
+				},
+				{
+					text: n(1000),
+					value: 1000,
+				},
+				{
+					text: n(10000),
+					value: 10000,
+				},
+				{
+					text: n(100000),
+					value: 100000,
+				},
+			];
+			if (info.queryLimit) {
+				return sizes.filter(({ value }) => value < info.queryLimit!.max);
+			}
+			return sizes;
+		});
+
+		return { t, n, cameraOptionsWritable, limitWritable, pageSizes };
 	},
 });
 </script>
