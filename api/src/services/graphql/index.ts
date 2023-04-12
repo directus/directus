@@ -1,5 +1,6 @@
 import type { BaseException } from '@directus/exceptions';
-import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import { Action } from '@directus/constants';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
 import {
@@ -1720,10 +1721,10 @@ export class GraphQLService {
 	 */
 	formatError(error: BaseException | BaseException[]): GraphQLError {
 		if (Array.isArray(error)) {
-			error[0]!.extensions['code'] = error[0]!.code;
+			set(error[0]!, 'extensions.code', error[0]!.code);
 			return new GraphQLError(error[0]!.message, undefined, undefined, undefined, undefined, error[0]);
 		}
-		error.extensions['code'] = error.code;
+		set(error, 'extensions.code', error.code);
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
 

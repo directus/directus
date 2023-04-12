@@ -3,8 +3,8 @@ import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@direc
 import { addFieldFlag } from '@directus/utils';
 import type { Knex } from 'knex';
 import type { Table, SchemaInspector } from '@directus/schema';
-import { omit } from 'lodash-es';
 import { getCache } from '../cache.js';
+import { omit, chunk } from 'lodash-es';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { getHelpers, Helpers } from '../database/helpers/index.js';
@@ -585,8 +585,14 @@ export class CollectionsService {
 						.where({ collection: collectionKey });
 
 					if (revisionsToDelete.length > 0) {
-						const keys = revisionsToDelete.map((record) => record.id);
-						await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
+						const chunks = chunk(
+							revisionsToDelete.map((record) => record.id),
+							10000
+						);
+
+						for (const keys of chunks) {
+							await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
+						}
 					}
 
 					await trx('directus_revisions').delete().where('collection', '=', collectionKey);

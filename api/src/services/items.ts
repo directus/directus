@@ -1,4 +1,5 @@
-import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/types';
+import { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
+import { Action } from '@directus/constants';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
