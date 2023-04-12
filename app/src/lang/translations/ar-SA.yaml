@@ -841,6 +841,7 @@ create_dashboard: إنشاء لوحة تحكم
 dashboard_name: اسم لوحة التحكم
 no_data: لا توجد بيانات
 accountability: المساءلة
+details: التفاصيل
 full_screen: ملء الشاشة
 edit_panels: تحرير لوحة
 image_url: رابط الصورة
@@ -1524,6 +1525,7 @@ interfaces:
     custom_formats: تنسيقات مخصصة
     options_override: تجاوز الخيارات
   input-autocomplete-api:
+    trigger: المشغّل
     rate: معدل
   system-token:
     system-token: الرمز المميز
