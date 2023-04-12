@@ -9,8 +9,6 @@ on:
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - docs/**
 
 concurrency:
   group: check-${{ github.ref }}

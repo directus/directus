@@ -296,6 +296,12 @@ o2m_relationship: رابطه یک-به-چند
 m2m_relationship: رابطه چند-به-چند
 m2a_relationship: رابطه یک-به-هر-مجموعه-ای
 invalid_item: آیتمِ نامعتبر
+require_confirmation: در انتظار تأیید ایمیل ها
+dialog: گفتگو
+modal: مودال
+confirmation_dialog: تایید
+confirmation_description: تایید شرح
+confirmation_input_fields: تایید فیلد ورودی
 next: بعدی
 field_name: نام فیلد
 translations: ترجمه‌ها
@@ -314,6 +320,7 @@ updated_on: به روزرسانی شده در
 updated_by: به روزرسانی شده توسط
 primary_key: کلید اصلی
 foreign_key: کلید خارجی
+field_key: کلید API فیلد
 finish_setup: پایان راه‌اندازی
 dismiss: نادیده گرفتن
 toggle_raw_editor: تغییر به ویرایشگر Raw
@@ -495,6 +502,7 @@ disabled: غیرفعال شده
 information: اطلاعات
 report_bug: گزارش باگ
 request_feature: درخواست قابلیت جدید
+request_body: Request Body
 interface_not_found: 'رابط "{interface}" یافت نشد.'
 operation_not_found: 'عملیات "{operation}" یافت نشد.'
 reset_interface: بازنشانی رابط
@@ -505,13 +513,38 @@ item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
 file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
+user_count: 'No Users | One User | {count} Users'
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
+webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
+no_webhooks_copy: هنوز هیچ وب هوکی پیکربندی نشده است. با ایجاد یکی از زیر شروع کنید.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
+all_items: تمام موارد
+any: هرکدام
+csv: CSV
+no_collections: مجموعه ای وجود ندارد
+create_collection: ایجاد مجموعه
+no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
+no_collections_copy: شما هنوز هیچ مجموعه ای ندارید. لطفا با سرپرست سیستم خود تماس بگیرید.
 relationship_not_setup: این رابطه به درستی پیکربندی نشده است
+display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
+collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
+select_a_collection: انتخاب یک کالکشن
+select_a_field: انتخاب یک فیلد
+active: فعال
+move_to: انتقال به...
 copy: کپی
+copy_to: کپی در...
+no_other_dashboards_copy: شما هنوز داشبورد دیگری ندارید.
+inactive: غیر فعال
+users: کاربران
+activity: فعالیت های من
+activity_item: گزارش فعالیت ها
 action: فعالیت
+ip_address: آدرس IP
+user_agent: عامل کاربر
+origin: مبدا
 webhooks: هوک های تحت وب
 decimals: رقم اعشار
 value_decimals: مقدار اعشار
@@ -750,6 +783,31 @@ format_text: قالب بندی متن
 format_value: مقدار قالب
 abbreviate_value: مقدار اختصاری
 operator: اپراتور
+bold: توپُر
+toggle: تغییر وضعیت
+icon_on: آیکن روشن
+icon_off: آیکن خاموش
+label: برچسب
+flows: اتوماسیون ها
+flow: اتوماسیون
+select_a_flow: انتخاب یک اتوماسیون
+run_flow_confirm: آیا مطمئنید که می خواهید این اتصال را برقرار کنید؟
+run_flow_on_current_collection: اجرای اتوماسیون در مجموعه فعلی
+run_flow_on_current: اجرای اتوماسیون در مجموعه فعلی
+run_flow_on_current_edited_confirm: این مورد ممکن است توسط این اتوماسیون به‌ روزرسانی شود، آیا مطمئن هستید که می‌خواهید آن را اجرا کنید؟
+run_flow_on_selected: ابتدا یک یا چند مورد را انتخاب کنید | اجرای اتوماسیون بر روی 1 مورد انتخاب شده | اتوماسیون را روی {n} مورد انتخابی اجرا کنید
+run_flow: اجرای اتوماسیون
+run_flow_success: اتوماسیون "{flow}" با موفقیت اجرا شد
+field_name_placeholder: ورود نام فیلد...
+field_key_placeholder: ورود کلید فیلد...
+trigger: محرک
+trigger_options: گزینه های محرک
+view_trigger: مشاهده محرک
+create_trigger: ایجاد محرک
+trigger_setup: تنظیمات محرک
+change_trigger: تغییر محرک
+flow_delete_confirm: آیا مطمئن هستید که می‌خواهید فیلد {flow} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
+set_flow_active: تنظیم اتوماسیون به فعال
 set_flow_inactive: برگشت Flow به غیر‌فعال
 edit_flow: ویرایش Flow
 delete_flow: حذف Flow
@@ -980,16 +1038,33 @@ directus_collection:
   directus_fields: پیکربندی فیلد اضافی و ابرداده
   directus_files: فراداده برای همه Assets های فایل مدیریت شده
   directus_flows: اتوماسیون Flow
+  directus_folders: دایرکتوری های مجازی برای فایل ها فراهم می کند
+  directus_migrations: از چه نسخه ای از پایگاه داده استفاده می کنید
   directus_notifications: اعلانهای ارسالی به کاربر
+  directus_operations: عملیاتی که در اتوماسیون اجرا می شوند
+  directus_panels: پنل‌های مجزا در داشبوردها
   directus_permissions: دسترسی به اجازه های این نقش
+  directus_presets: تنظیمات پیش‌فرض برای مجموعه و بوکمارک‌ها
+  directus_relations: پیکربندی رابطه و داده متا
+  directus_revisions: عکس های فوری داده برای همه فعالیت ها
   directus_roles: گروههای اجازه برای کاربران سیستم
+  directus_sessions: اطلاعات نشست کاربر
+  directus_settings: گزینه های پیکربندی پروژه
+  directus_shares: موارد به اشتراک گذاشته شده خارجی را ردیابی می کند
+  directus_users: کاربران سیستمی برای پلتفرم
+  directus_webhooks: پیکربندی برای درخواست های HTTP مبتنی بر رویداد
 fields:
   directus_activity:
+    item: کلید اصلی آیتم
     action: فعالیت
     collection: کالکشن یا مجموعه
     timestamp: فعالیت در تاریخ
     user: فعالیت توسط
     comment: نظر
+    user_agent: عامل کاربر
+    origin: مبدا
+    ip: آدرس IP
+    revisions: نسخه
   directus_collections:
     collection: کالکشن یا مجموعه
     icon: آیکن
@@ -998,7 +1073,14 @@ fields:
     display_template: نمایش الگو
     hidden: مخفی
     singleton: تک کالکشن یا Singleton
+    translations: ترجمه های نامگذاری مجموعه
+    archive_app_filter: بایگانی فیلتر برنامه
+    archive_value: مقدار آرشیو
+    unarchive_value: مقدار آرشیو نشده
     sort_field: فیلد مرتب سازی
+    accountability: مشاهده Log ها و فعالیت ها
+    archive_field: فیلد آرشیو
+    item_duplication_fields: فیلدهای تکراری
   directus_files:
     $thumbnail: تصویر کوچک
     title: عنوان
@@ -1009,6 +1091,7 @@ fields:
     filename_disk: نام فایل (برروی دیسک)
     filename_download: نام (دانلودی) فایل
     metadata: متادیتا
+    type: نوع فایل
     filesize: انداره فایل
     modified_by: ویرایش شده توسط
     modified_on: ویرایش شده در
@@ -1017,7 +1100,9 @@ fields:
     embed: درج
     uploaded_by: بارگذاری شده توسط
     folder: پوشه
+    width: عرض
     uploaded_on: بارگذاری شده در تاریخ
+    height: ارتفاع
     charset: مجموعه کاراکتر
     duration: مدت زمان
   directus_users:
@@ -1037,6 +1122,7 @@ fields:
     theme_light: تم روشن
     theme_dark: تم شبانه (تاریک)
     tfa_secret: احراز هویت دو عاملی
+    admin_options: تنظیمات ادمین
     status: وضعیت
     status_draft: پیش‌نویس
     status_invited: دعوت شده
@@ -1044,10 +1130,27 @@ fields:
     status_suspended: تعلیق شده
     status_archived: بایگانی شده
     role: نقش
+    token: رمز
+    provider: ارائه دهنده
+    external_identifier: شناسه خارجی
     last_page: صفحه آخر
     last_access: آخرین دسترسی
     email_notifications: اعلان های ایمیلی
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    mapping: نقشه برداری
+    basemaps: Basemap
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
+    mapbox_key: Mapbox Access Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: انتساب
+    additional_transforms: تحولات اضافی
+    project_name: نام پروژه
     project_descriptor: درباره پروژه
     project_url: لینک پروژه
     project_color: رنگ پروژه
@@ -1130,7 +1233,12 @@ field_options:
     additional_transforms: تحولات اضافی
     transforms_note: نام متود شارپ و آرگومان های آن. برای اطلاعات بیشتر به https://sharp.pixelplumbing.com/api-constructor مراجعه کنید.
     mapbox_key: کلید دسترسی Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemap
     basemaps_name_placeholder: نام Basemap را وارد کنید...
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
     files_divider_title: فایلها و تصاویر کوچک
     overrides_divider_title: لغو برنامه
   directus_activity:
@@ -1139,14 +1247,30 @@ field_options:
     update: بروزرسانی
     delete: حذف
   directus_collections:
+    track_activity_revisions: مشاهده فعالیت ها و لاگ ها
+    only_track_activity: فقط مشاهده فعالیت ها
+    do_not_track_anything: هیچ چیز را پیگیری نکن
     collection_setup: راه اندازی مجموعه
     note_placeholder: توضیحات مربوط به این مجموعه...
+    hidden_label: در برنامه پنهان شود
     singleton: به عنوان یک شی واحد رفتار کند
     language: زبان
+    translation: ترجمه
+    translation_placeholder: وارد کردن ترجمه...
     collection_name: نام کالکشن
+    singular_unit: نام واحد
+    plural_unit: نام جمع
     archive_divider: بایگانی
+    archive_field_placeholder: یک فیلد را انتخاب کنید...
+    archive_app_filter: فیلتر بایگانی برنامه را فعال کنید
+    archive_value: مقدار تنظیم شده هنگام بایگانی...
+    unarchive_value: مقدار تنظیم شده هنگام حذف بایگانی...
     sort_divider: مرتب سازی
+    sort_field: یک فیلد را انتخاب کنید...
+    accountability_divider: مسئوليت
+    duplication_divider: تکراری
   directus_files:
+    title: یک عنوان منحصر به فرد
     description: توضیحات اختیاری...
     location: موقعیت اختیاری...
     storage_divider: نحوه نام گذاری فایل
@@ -1169,11 +1293,13 @@ field_options:
     dropdown_auto: انتخاب خودکار پوسته (توسط سیستم)
     dropdown_light: تم روشن
     dropdown_dark: تم شبانه (تاریک)
+    admin_divider: 'تنظیمات ادمین:'
     status_dropdown_draft: پیش‌نویس
     status_dropdown_invited: دعوت شده
     status_dropdown_active: فعال
     status_dropdown_suspended: تعلیق شده
     status_dropdown_archived: بایگانی شده
+    token: یک رمز دسترسی ایمن وارد کنید...
   directus_webhooks:
     status_options_active: فعال
     status_options_inactive: غیر فعال
@@ -1185,7 +1311,16 @@ field_options:
     actions_login: ورود به سیستم
     headers:
       header: سربرگ Header
+      value: مقدار
+      add: اضافه کردن Header
+no_value: بدون مقدار
+do_nothing: کاری انجام نشود
+save_current_user_id: ذخیره نقش کاربر فعلی
 save_current_user_role: ذخیره نقش کاربر فعلی
+save_current_datetime: ذخیره تاریخ و ساعت فعلی
+always_open: همیشه در
+start_open: هنگام باز کردن
+start_collapsed: هنگام بسته شدن
 comment: نظر
 shared_uses_left: برای امنیت بیشتر، این صفحه مشترک با تعداد محدودی بازدید پیکربندی شده است. در حال حاضر {n} بازدید باقی مانده است، پس از آن، صفحه دیگر قابل دسترسی نخواهد بود.
 share_access_page: دسترسی به صفحه Shared
@@ -1253,8 +1388,23 @@ sign_in: ورود
 sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
 template: قالب
+require_value_to_be_set: مقدار لازم برای تنظیم هنگام ایجاد
+translation: ترجمه
+translation_placeholder: وارد کردن ترجمه...
+value: مقدار
+view_project: مشاهده پروژه
+report_error: گزارش خطا
+start: آغاز
 table: جدول
 list: لیست
+search_filter: جستجوی فیلترها
+enable_search_filter: فعال کردن جستجو و فیلترها
+item_link: لینک مورد
+show_link_to_item: نمایش لینک در آیتم
+navigate_to_item: بازگشت به آیتم
+undo_removed_item: لغو حذف آیتم
+remove_item: حذف آیتم
+delete_item: پاک کردن آیتم
 interfaces:
   filter:
     name: فیلتر
@@ -1262,8 +1412,20 @@ interfaces:
     add_filter: افزودن فیلتر
     add_group: گروه و / یا
     add_value: افزودن مقدار
+    logic_type_and: و
+    logic_type_or: یا
     all: همه
+    any: هرکدام
+    and: و
+    of_the_following: از موارد زیر
+    no_rules: هیچ قوانینی تنظیم نشده
+    change_value: برای تغییر مقدار کلیک کنید
+    placeholder: قوانین را به اینجا بکشید
+    add_key_placeholder: یک کلید اضافه کنید و دکمه Enter را فشار دهید..
+  fields:
+    name: فیلدها
   group-accordion:
+    name: آکوردئون
     description: نمایش زمینه ها یا گروه ها به عنوان بخش های آکاردئونی
     start: آغاز
     all_closed: همه بسته باشند
@@ -1323,14 +1485,34 @@ interfaces:
     no_fields: بدون فیلد
   system-display-template:
     display-template: نمایش الگو
+    collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
     select_a_collection: انتخاب یک کالکشن
   presentation-divider:
     divider: جدا کننده
+    title_placeholder: یک عنوان وارد نمائید یا خالی رها کنید
+    inline_title: عنوان درون خطی
+    inline_title_label: نمایش عنوان داخل خط
+    margin_top: حاشیه از بالا
+    margin_top_label: افزاریش حاشیه از بالا
   select-dropdown:
+    description: انتخاب از منوی آبشاری
+    choices_placeholder: افزودن یک انتخاب
     allow_other: اجازه به دیگری
+    allow_other_label: امکان دیگر مقدارها
+    allow_none: امکان None گذاشتن
+    allow_none_label: امکان انتخاب نشدن
+    choices_name_placeholder: عنوانی را وارد نمایید...
     choices_value_placeholder: یک مقدار را وارد کنید...
+    preview_threshold: آستانه پیشنمایش
+  select-multiple-dropdown:
+    select-multiple-dropdown: منوی آبشاری
+    description: انتخاب موارد بیشتر از یک منوی آبشاری
   file:
     file: فایل
+    description: انتخاب یا آپلود یک فایل
+  files:
+    files: فایل ها
+    description: انتخاب یا آپلود موارد بیشتر
   input-hash:
     hash: هش
   select-icon:
@@ -1339,6 +1521,9 @@ interfaces:
     image: عکس
     crop: تناسب با برش تصویر
     crop_label: برش تصویر در صورت نیاز
+  system-interface:
+    interface: رابط کاربری
+    description: انتخاب یک رابط موجود
   list-m2m:
     description: انتخاب چندین آیتم تقاطعی مرتبط
   select-dropdown-m2o:
@@ -1352,19 +1537,40 @@ interfaces:
     zoom: بزرگنمايی
   list-o2m:
     description: انتخاب چندین آیتم مرتبط
+    no_collection: گزینه مورد نظر یافت نشد.
   system-folder:
     folder: پوشه
+    description: یک پوشه انتخاب کنید
     root_name: پوشه اصلی مجموعه فایلها
+    system_default: پیش فرض سیستم
+  select-radio:
+    radio-buttons: دکمه رادیویی
+    description: یکی از چندین گزینه را انتخاب کنید
   list:
+    repeater: تکرار شونده
+    edit_fields: ویرایش فیلدها
     add_label: 'برچسب "ساخت مورد جدید"'
     sort: مرتب سازی
+    sort_placeholder: دستی
+  slider:
+    slider: اسلایدر
+    description: با استفاده از یک نوار لغزنده یک عدد را انتخاب کنید
+    always_show_value: همیشه مقدار را نمایش بده
   tags:
     tags: برچسب ها
     description: انتخاب یا افزودن برچسب ها
     whitespace: فضای خالی
     hyphen: جایگزینی با نشان اتصال
     underscore: جایگزینی با زیرین خط
+    remove: حذف فضای خالی
+    capitalization: حروف بزرگ
+    uppercase: تبدیل به حروف بزرگ
+    lowercase: تبدیل به حروف کوچک
+    alphabetize: الفبایی
+  input:
+    input: ورودی
   boolean:
+    toggle: تغییر وضعیت
     label_default: فعال شده
   translations:
     display_template: نمایش الگو
@@ -1372,11 +1578,15 @@ interfaces:
     user: کاربر
     modes:
       dropdown: لیست کشویی
+  system-token:
+    system-token: رمز
 displays:
   translations:
     translations: ترجمه‌ها
   boolean:
     boolean: بولین
+    icon_on: آیکن روشن
+    icon_off: آیکن خاموش
   collection:
     collection: کالکشن یا مجموعه
     description: نمایش یک مجموعه
@@ -1566,4 +1776,6 @@ operations:
     data: داده Data
     header: سربرگ Header
   trigger:
+    flows: اتوماسیون ها
+    flow: اتوماسیون
     data: داده Data
