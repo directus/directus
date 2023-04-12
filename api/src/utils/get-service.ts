@@ -1,0 +1,69 @@
+import {
+	ActivityService,
+	DashboardsService,
+	FilesService,
+	FlowsService,
+	FoldersService,
+	ItemsService,
+	NotificationsService,
+	OperationsService,
+	PanelsService,
+	PermissionsService,
+	PresetsService,
+	RevisionsService,
+	RolesService,
+	SettingsService,
+	SharesService,
+	UsersService,
+	WebhooksService,
+} from '../index.js';
+import type { AbstractServiceOptions } from '../types/services.js';
+
+/**
+ * Select the correct service for the given collection. This allows the individual services to run
+ * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
+ */
+export function getService(collection: string, opts: AbstractServiceOptions): ItemsService {
+	switch (collection) {
+		case 'directus_activity':
+			return new ActivityService(opts);
+		// case 'directus_collections':
+		// 	return new CollectionsService(opts);
+		case 'directus_dashboards':
+			return new DashboardsService(opts);
+		// case 'directus_fields':
+		// 	return new FieldsService(opts);
+		case 'directus_files':
+			return new FilesService(opts);
+		case 'directus_flows':
+			return new FlowsService(opts);
+		case 'directus_folders':
+			return new FoldersService(opts);
+		case 'directus_notifications':
+			return new NotificationsService(opts);
+		case 'directus_operations':
+			return new OperationsService(opts);
+		case 'directus_panels':
+			return new PanelsService(opts);
+		case 'directus_permissions':
+			return new PermissionsService(opts);
+		case 'directus_presets':
+			return new PresetsService(opts);
+		// case 'directus_relations':
+		// 	return new RelationsService(opts);
+		case 'directus_revisions':
+			return new RevisionsService(opts);
+		case 'directus_roles':
+			return new RolesService(opts);
+		case 'directus_settings':
+			return new SettingsService(opts);
+		case 'directus_shares':
+			return new SharesService(opts);
+		case 'directus_users':
+			return new UsersService(opts);
+		case 'directus_webhooks':
+			return new WebhooksService(opts);
+		default:
+			return new ItemsService(collection, opts);
+	}
+}

@@ -1,11 +1,7 @@
-import type { WebSocketClient } from '../types';
+import type { WebSocketClient } from '../types.js';
 
-/**
- * Message utils
- */
-export const trimUpper = (str: string) => (str ?? '').trim().toUpperCase();
-
-export const fmtMessage = (type: string, data: Record<string, any> = {}, uid?: string) => {
+// a simple util for building a message object
+export const fmtMessage = (type: string, data: Record<string, any> = {}, uid?: string | number) => {
 	const message: Record<string, any> = { type, ...data };
 	if (uid !== undefined) {
 		message['uid'] = uid;
@@ -26,4 +22,9 @@ export const safeSend = async (client: WebSocketClient, data: string, delay = 10
 	}
 	client.send(data);
 	return true;
+};
+
+// an often used message type extractor function
+export const getMessageType = (message: any): string => {
+	return typeof message !== 'object' || Array.isArray(message) || message === null ? '' : String(message.type);
 };

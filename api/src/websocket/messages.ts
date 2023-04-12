@@ -1,18 +1,20 @@
-import { Item, Query } from '@directus/shared/types';
+import type { Item, Query } from '@directus/types';
 import { z } from 'zod';
+
+const zodStringOrNumber = z.union([z.string(), z.number()]);
 
 export const WebSocketMessage = z
 	.object({
 		type: z.string(),
-		uid: z.string().optional(),
+		uid: zodStringOrNumber.optional(),
 	})
 	.passthrough();
-export type WebSocketMessage = z.infer<typeof WebSocketMessage> & Record<string, any>; // { type: string; uid?: string } & Record<string, any>;
+export type WebSocketMessage = z.infer<typeof WebSocketMessage>;
 
-export const WebSocketResponse = z.union([
+export const WebSocketResponse = z.discriminatedUnion('status', [
 	WebSocketMessage.extend({
 		status: z.literal('ok'),
-	}).passthrough(),
+	}),
 	WebSocketMessage.extend({
 		status: z.literal('error'),
 		error: z
@@ -21,39 +23,45 @@ export const WebSocketResponse = z.union([
 				message: z.string(),
 			})
 			.passthrough(),
-	}).passthrough(),
+	}),
 ]);
 export type WebSocketResponse = z.infer<typeof WebSocketResponse>;
 
+export const ConnectionParams = z.object({ access_token: z.string().optional() });
+export type ConnectionParams = z.infer<typeof ConnectionParams>;
+
+export const BasicAuthMessage = z.union([
+	z.object({ email: z.string().email(), password: z.string() }),
+	z.object({ access_token: z.string() }),
+	z.object({ refresh_token: z.string() }),
+]);
+export type BasicAuthMessage = z.infer<typeof BasicAuthMessage>;
+
 export const WebSocketAuthMessage = WebSocketMessage.extend({
-	type: z.literal('AUTH'),
-}).and(
-	z.union([
-		z.object({ email: z.string(), password: z.string() }),
-		z.object({ access_token: z.string() }),
-		z.object({ refresh_token: z.string() }),
-	])
-);
+	type: z.literal('auth'),
+}).and(BasicAuthMessage);
 export type WebSocketAuthMessage = z.infer<typeof WebSocketAuthMessage>;
 
-export const WebSocketSubscribeMessage = z.union([
+export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 	WebSocketMessage.extend({
-		type: z.literal('SUBSCRIBE'),
+		type: z.literal('subscribe'),
 		collection: z.string(),
-		item: z.union([z.string(), z.number()]).optional(),
+		item: zodStringOrNumber.optional(),
 		query: z.custom<Query>().optional(),
 	}),
 	WebSocketMessage.extend({
-		type: z.literal('UNSUBSCRIBE'),
+		type: z.literal('unsubscribe'),
 	}),
 ]);
 export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage>;
 
 const ZodItem = z.custom<Partial<Item>>();
-const PartialItemsMessage = WebSocketMessage.extend({
-	type: z.literal('ITEMS'),
+const PartialItemsMessage = z.object({
+	uid: zodStringOrNumber.optional(),
+	type: z.literal('items'),
 	collection: z.string(),
 });
+
 export const WebSocketItemsMessage = z.union([
 	PartialItemsMessage.extend({
 		action: z.literal('create'),
@@ -62,35 +70,47 @@ export const WebSocketItemsMessage = z.union([
 	}),
 	PartialItemsMessage.extend({
 		action: z.literal('read'),
-		query: z.custom<Query>(),
+		ids: z.array(zodStringOrNumber).optional(),
+		id: zodStringOrNumber.optional(),
+		query: z.custom<Query>().optional(),
 	}),
-	z.union([
-		PartialItemsMessage.extend({
-			action: z.literal('update'),
-			data: z.array(ZodItem),
-			ids: z.array(z.union([z.string(), z.number()])),
-			query: z.custom<Query>().optional(),
-		}),
-		PartialItemsMessage.extend({
-			action: z.literal('update'),
-			data: ZodItem,
-			id: z.union([z.string(), z.number()]),
-			query: z.custom<Query>().optional(),
-		}),
-	]),
-	z.union([
-		PartialItemsMessage.extend({
-			action: z.literal('delete'),
-			ids: z.array(z.union([z.string(), z.number()])),
-		}),
-		PartialItemsMessage.extend({
-			action: z.literal('delete'),
-			id: z.union([z.string(), z.number()]),
-		}),
-		PartialItemsMessage.extend({
-			action: z.literal('delete'),
-			query: z.custom<Query>(),
-		}),
-	]),
+	PartialItemsMessage.extend({
+		action: z.literal('update'),
+		data: ZodItem,
+		ids: z.array(zodStringOrNumber).optional(),
+		id: zodStringOrNumber.optional(),
+		query: z.custom<Query>().optional(),
+	}),
+	PartialItemsMessage.extend({
+		action: z.literal('delete'),
+		ids: z.array(zodStringOrNumber).optional(),
+		id: zodStringOrNumber.optional(),
+		query: z.custom<Query>().optional(),
+	}),
 ]);
 export type WebSocketItemsMessage = z.infer<typeof WebSocketItemsMessage>;
+
+export const WebSocketEvent = z.discriminatedUnion('action', [
+	z.object({
+		action: z.literal('create'),
+		collection: z.string(),
+		payload: z.record(z.any()).optional(),
+		key: zodStringOrNumber,
+	}),
+	z.object({
+		action: z.literal('update'),
+		collection: z.string(),
+		payload: z.record(z.any()).optional(),
+		keys: z.array(zodStringOrNumber),
+	}),
+	z.object({
+		action: z.literal('delete'),
+		collection: z.string(),
+		payload: z.record(z.any()).optional(),
+		keys: z.array(zodStringOrNumber),
+	}),
+]);
+export type WebSocketEvent = z.infer<typeof WebSocketEvent>;
+
+export const AuthMode = z.union([z.literal('public'), z.literal('handshake'), z.literal('strict')]);
+export type AuthMode = z.infer<typeof AuthMode>;

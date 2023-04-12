@@ -1,7 +1,7 @@
 <template>
 	<v-list-group
 		v-if="isGroup && matchesSearch"
-		v-context-menu="'contextMenu'"
+		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
 		scope="content-navigation"
 		:value="collection.collection"
@@ -60,7 +60,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { Collection } from '@/types/collections';
-import { Preset } from '@directus/shared/types';
+import { Preset } from '@directus/types';
 import { useUserStore } from '@/stores/user';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
@@ -128,7 +128,7 @@ export default defineComponent({
 			}
 		});
 
-		const hasContextMenu = computed(() => isAdmin);
+		const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
 
 		return {
 			childCollections,

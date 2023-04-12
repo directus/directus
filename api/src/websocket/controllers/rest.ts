@@ -1,29 +1,22 @@
 import type WebSocket from 'ws';
 import type { Server as httpServer } from 'http';
-import type { AuthenticationState, WebSocketClient } from '../types';
-import env from '../../env';
-import SocketController from './base';
-import emitter from '../../emitter';
-import { refreshAccountability } from '../authenticate';
-import { handleWebsocketException, WebSocketException } from '../exceptions';
-import logger from '../../logger';
-import { trimUpper } from '../utils/message';
-import { WebSocketMessage } from '../messages';
+import type { AuthenticationState, WebSocketClient } from '../types.js';
+import env from '../../env.js';
+import SocketController from './base.js';
+import emitter from '../../emitter.js';
+import { refreshAccountability } from '../authenticate.js';
+import { handleWebSocketException, WebSocketException } from '../exceptions.js';
+import logger from '../../logger.js';
+import { WebSocketMessage } from '../messages.js';
+import { parseJSON } from '@directus/utils';
 
-export class WebsocketController extends SocketController {
+export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WS REST', env['WEBSOCKETS_REST_PATH'], {
-			mode: env['WEBSOCKETS_REST_AUTH'],
-			timeout: env['WEBSOCKETS_REST_AUTH_TIMEOUT'] * 10000,
-			verbose: true,
-		});
-		if ('WEBSOCKETS_REST_CONN_LIMIT' in env) {
-			this.maxConnections = Number(env['WEBSOCKETS_REST_CONN_LIMIT']);
-		}
+		super(httpServer, 'WEBSOCKETS_REST');
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
-		logger.info(`Websocket available at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+		logger.info(`WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
@@ -32,7 +25,7 @@ export class WebsocketController extends SocketController {
 				client.accountability = await refreshAccountability(client.accountability);
 				emitter.emitAction('websocket.message', { message, client });
 			} catch (error) {
-				handleWebsocketException(client, error);
+				handleWebSocketException(client, error, 'server');
 				return;
 			}
 		});
@@ -47,10 +40,9 @@ export class WebsocketController extends SocketController {
 	protected override parseMessage(data: string): WebSocketMessage {
 		let message: WebSocketMessage;
 		try {
-			message = JSON.parse(data);
-			message.type = trimUpper(message.type);
+			message = parseJSON(data);
 		} catch (err: any) {
-			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message!');
+			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
 		}
 		return message;
 	}

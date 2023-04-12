@@ -1,69 +1,70 @@
 import { EventEmitter, on } from 'events';
-import type { Query } from '@directus/shared/types';
-import { ItemsService } from '../items';
-import emitter from '../../emitter';
-import { getSchema } from '../../utils/get-schema';
-import type { GraphQLService } from './index';
+import { getMessenger } from '../../messenger.js';
+import type { GraphQLService } from './index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { ItemsService } from '../items.js';
+import type { Query } from '@directus/types';
 
-export const createPubSub = <TTopicPayload extends { [key: string]: unknown }>(emitter: EventEmitter) => {
-	return {
-		publish: <TTopic extends Extract<keyof TTopicPayload, string>>(topic: TTopic, payload: TTopicPayload[TTopic]) =>
-			void emitter.emit(topic as string, payload),
-		subscribe: async function* <TTopic extends Extract<keyof TTopicPayload, string>>(
-			topic: TTopic
-		): AsyncIterableIterator<TTopicPayload[TTopic]> {
-			const asyncIterator = on(emitter, topic);
-			for await (const [value] of asyncIterator) {
-				yield value;
-			}
-		},
-	};
-};
+const messages = createPubSub(new EventEmitter());
 
-export const messages = createPubSub(new EventEmitter());
-
-[
-	'items' /*, 'activity', 'collections', 'fields', 'folders', 'permissions',
-	'presets', 'relations', 'revisions', 'roles', 'settings', 'users', 'webhooks'*/,
-].forEach((collectionName) => {
-	emitter.onAction(collectionName + '.create', async ({ collection, key, payload }) => {
-		const eventName = `${collection}_created`.toUpperCase();
-		messages.publish(eventName, { collection, key, payload });
+export function bindPubSub() {
+	const messenger = getMessenger();
+	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
+		const eventName = `${message['collection']}_mutated`.toUpperCase();
+		messages.publish(eventName, message);
 	});
-	emitter.onAction(collectionName + '.update', async ({ collection, keys, payload }) => {
-		const eventName = `${collection}_updated`.toUpperCase();
-		messages.publish(eventName, { collection, keys, payload });
-	});
-	emitter.onAction(collectionName + '.delete', ({ collection, keys }) => {
-		const eventName = `${collection}_deleted`.toUpperCase();
-		messages.publish(eventName, { keys });
-	});
-});
+}
 
-export function createSubscriptionGenerator(
-	self: GraphQLService,
-	action: 'created' | 'updated' | 'deleted',
-	event: string,
-	name: string
-) {
+export function createSubscriptionGenerator(self: GraphQLService, event: string, name: string) {
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: any) {
 		const selections = request.fieldNodes[0]?.selectionSet?.selections || [];
 		const { fields } = self.getQuery({}, selections, {});
 		for await (const payload of messages.subscribe(event)) {
-			if (action === 'created') {
-				const { collection, key } = payload as any;
-				const s = new ItemsService(collection, { schema: await getSchema() });
-				yield { [name]: await s.readOne(key, { fields } as Query) };
+			const eventData = payload as Record<string, any>;
+			const schema = await getSchema();
+			if (eventData['action'] === 'create') {
+				const { collection, key } = eventData;
+				const service = new ItemsService(collection, { schema });
+				const data = await service.readOne(key, { fields } as Query);
+				yield { [name]: { ...data, event: 'create' } };
 			}
-			if (action === 'updated') {
-				const { collection, keys } = payload as any;
-				const s = new ItemsService(collection, { schema: await getSchema() });
-				yield { [name]: await s.readMany(keys, { fields } as Query) };
+			if (eventData['action'] === 'update') {
+				const { collection, keys } = eventData;
+				const service = new ItemsService(collection, { schema });
+				for (const key of keys) {
+					const data = await service.readOne(key, { fields } as Query);
+					yield { [name]: { ...data, event: 'update' } };
+				}
 			}
-			if (action === 'deleted') {
-				const { keys } = payload as any;
-				yield { [name]: keys };
+			if (eventData['action'] === 'delete') {
+				const { keys } = eventData;
+
+				for (const key of keys) {
+					const result: Record<string, any> = {};
+					if (fields) {
+						for (const field of fields) {
+							result[field] = null;
+						}
+					}
+					const pk = schema.collections[eventData['collection']]?.primary;
+					if (pk) result[pk] = key;
+					result['event'] = 'delete';
+					yield { [name]: result };
+				}
 			}
 		}
+	};
+}
+
+function createPubSub<P extends { [key: string]: unknown }>(emitter: EventEmitter) {
+	return {
+		publish: <T extends Extract<keyof P, string>>(event: T, payload: P[T]) =>
+			void emitter.emit(event as string, payload),
+		subscribe: async function* <T extends Extract<keyof P, string>>(event: T): AsyncIterableIterator<P[T]> {
+			const asyncIterator = on(emitter, event);
+			for await (const [value] of asyncIterator) {
+				yield value;
+			}
+		},
 	};
 }

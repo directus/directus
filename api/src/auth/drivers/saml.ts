@@ -1,26 +1,29 @@
 import * as validator from '@authenio/samlify-node-xmllint';
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
-import { getAuthProvider } from '../../auth';
-import { COOKIE_OPTIONS } from '../../constants';
-import env from '../../env';
-import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique';
-import logger from '../../logger';
-import { respond } from '../../middleware/respond';
-import { AuthenticationService, UsersService } from '../../services';
-import { AuthDriverOptions, User } from '../../types';
-import asyncHandler from '../../utils/async-handler';
-import { getConfigFromEnv } from '../../utils/get-config-from-env';
-import { LocalAuthDriver } from './local';
+import { getAuthProvider } from '../../auth.js';
+import { COOKIE_OPTIONS } from '../../constants.js';
+import getDatabase from '../../database/index.js';
+import emitter from '../../emitter.js';
+import env from '../../env.js';
+import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
+import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions/index.js';
+import logger from '../../logger.js';
+import { respond } from '../../middleware/respond.js';
+import { AuthenticationService } from '../../services/authentication.js';
+import { UsersService } from '../../services/users.js';
+import type { AuthDriverOptions, User } from '../../types/index.js';
+import asyncHandler from '../../utils/async-handler.js';
+import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
+import { LocalAuthDriver } from './local.js';
 
-// tell samlify to use validator...
+// Register the samlify schema validator
 samlify.setSchemaValidator(validator);
 
 export class SAMLAuthDriver extends LocalAuthDriver {
-	idp: any;
-	sp: any;
+	sp: samlify.ServiceProviderInstance;
+	idp: samlify.IdentityProviderInstance;
 	usersService: UsersService;
 	config: Record<string, any>;
 
@@ -30,8 +33,8 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		this.config = config;
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 
-		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_SP`));
-		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config.provider.toUpperCase()}_IDP`));
+		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_SP`));
+		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_IDP`));
 	}
 
 	async fetchUserID(identifier: string) {
@@ -44,7 +47,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		return user?.id;
 	}
 
-	async getUserID(payload: Record<string, any>) {
+	override async getUserID(payload: Record<string, any>) {
 		const { provider, emailKey, identifierKey, givenNameKey, familyNameKey, allowPublicRegistration } = this.config;
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
@@ -62,15 +65,26 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		const firstName = payload[givenNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];
 		const lastName = payload[familyNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];
 
+		const userPayload = {
+			provider,
+			first_name: firstName,
+			last_name: lastName,
+			email: email,
+			external_identifier: identifier.toLowerCase(),
+			role: this.config['defaultRoleId'],
+		};
+
+		// Run hook so the end user has the chance to augment the
+		// user that is about to be created
+		const updatedUserPayload = await emitter.emitFilter(
+			`auth.create`,
+			userPayload,
+			{ identifier: identifier.toLowerCase(), provider: this.config['provider'], providerPayload: { ...payload } },
+			{ database: getDatabase(), schema: this.schema, accountability: null }
+		);
+
 		try {
-			return await this.usersService.createOne({
-				provider,
-				first_name: firstName,
-				last_name: lastName,
-				email: email,
-				external_identifier: identifier.toLowerCase(),
-				role: this.config.defaultRoleId,
-			});
+			return await this.usersService.createOne(updatedUserPayload);
 		} catch (error) {
 			if (error instanceof RecordNotUniqueException) {
 				logger.warn(error, '[SAML] Failed to register user. User not unique');
@@ -81,8 +95,8 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		}
 	}
 
-	// There's no local checks to be done when the user is authenticated in the IDP
-	async login(_user: User): Promise<void> {
+	// There's no local checks to be done when the user is authenticated in the IdP
+	override async login(_user: User): Promise<void> {
 		return;
 	}
 }
@@ -102,11 +116,11 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/',
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
-			const { context: url } = await sp.createLoginRequest(idp, 'redirect');
+			const { context: url } = sp.createLoginRequest(idp, 'redirect');
 			const parsedUrl = new URL(url);
 
-			if (req.query.redirect) {
-				parsedUrl.searchParams.append('RelayState', req.query.redirect as string);
+			if (req.query['redirect']) {
+				parsedUrl.searchParams.append('RelayState', req.query['redirect'] as string);
 			}
 
 			return res.redirect(parsedUrl.toString());
@@ -117,16 +131,16 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/logout',
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
-			const { context } = await sp.createLogoutRequest(idp, 'redirect', req.body);
+			const { context } = sp.createLogoutRequest(idp, 'redirect', req.body);
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 
-			if (req.cookies[env.REFRESH_TOKEN_COOKIE_NAME]) {
-				const currentRefreshToken = req.cookies[env.REFRESH_TOKEN_COOKIE_NAME];
+			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']]) {
+				const currentRefreshToken = req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 				if (currentRefreshToken) {
 					await authService.logout(currentRefreshToken);
-					res.clearCookie(env.REFRESH_TOKEN_COOKIE_NAME, COOKIE_OPTIONS);
+					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'], COOKIE_OPTIONS);
 				}
 			}
 
@@ -147,7 +161,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
 				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
 
-				res.locals.payload = {
+				res.locals['payload'] = {
 					data: {
 						access_token: accessToken,
 						refresh_token: refreshToken,
@@ -156,7 +170,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, COOKIE_OPTIONS);
+					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], refreshToken, COOKIE_OPTIONS);
 					return res.redirect(relayState);
 				}
 

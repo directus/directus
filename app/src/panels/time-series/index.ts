@@ -1,7 +1,7 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { getGroups } from '@/utils/get-groups';
-import { Filter } from '@directus/shared/types';
-import { definePanel } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { definePanel } from '@directus/utils';
 import PanelTimeSeries from './panel-time-series.vue';
 
 export default definePanel({

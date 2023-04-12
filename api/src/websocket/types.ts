@@ -1,21 +1,22 @@
-import type { Accountability, Query } from '@directus/shared/types';
 import type { WebSocket } from 'ws';
 import type { IncomingMessage } from 'http';
 import type internal from 'stream';
+import type { Accountability, Query } from '@directus/types';
 
 export type AuthenticationState = {
 	accountability: Accountability | null;
-	expiresAt: number | null;
+	expires_at: number | null;
+	refresh_token?: string;
 };
 
-export type WebSocketClient = WebSocket & AuthenticationState & { uid: string };
+export type WebSocketClient = WebSocket &
+	AuthenticationState & { uid: string | number; auth_timer: NodeJS.Timer | null };
 export type UpgradeRequest = IncomingMessage & AuthenticationState;
 
 export type Subscription = {
-	uid?: string;
+	uid?: string | number;
 	query?: Query;
 	item?: string | number;
-	// events?: string | string[];
 	status?: boolean;
 	collection: string;
 	client: WebSocketClient;
@@ -38,9 +39,6 @@ export type UpgradeContext = {
 	head: Buffer;
 };
 
-export type ConnectionParams = {
-	email?: string;
-	password?: string;
-	access_token?: string;
-	refresh_token?: string;
+export type GraphQLSocket = {
+	client: WebSocketClient;
 };

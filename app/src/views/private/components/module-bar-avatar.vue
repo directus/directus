@@ -58,6 +58,7 @@ import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
 import { Ref, computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
 	setup() {
@@ -75,7 +76,7 @@ export default defineComponent({
 
 		const avatarURL = computed<string | null>(() => {
 			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-			return addTokenToURL(`/assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
+			return addTokenToURL(`${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 		});
 
 		const avatarError: Ref<null | Event> = ref(null);

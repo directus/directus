@@ -296,11 +296,17 @@ o2m_relationship: Relation Un à plusieurs
 m2m_relationship: Relation Plusieurs à plusieurs
 m2a_relationship: Relation Many-to-Any
 invalid_item: Élément invalide
+require_confirmation: Afficher une confirmation
+dialog: Fenêtre
+modal: Modal
+confirmation_dialog: Fenêtre de confirmation
+confirmation_description: Texte descriptif de la confirmation
+confirmation_input_fields: Champs à saisir pour la confirmation
 next: Suivant
 field_name: Nom du champ
 translations: Traductions
 no_translations: Aucune traduction
-left_to_right: Hello
+left_to_right: De gauche à droite
 right_to_left: De droite à gauche
 note: Description
 enter_a_value: Saisissez une valeur...
@@ -314,6 +320,7 @@ updated_on: Modifié le
 updated_by: Modifié par
 primary_key: Clef primaire
 foreign_key: Clé étrangère
+field_key: Identifiant du champ
 finish_setup: Terminer la configuration
 dismiss: Ignorer
 toggle_raw_editor: Activer/désactiver l'éditeur de texte brut
@@ -787,11 +794,15 @@ label: Étiquette
 flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
-run_flow_on_current_collection: Lancer le flux sur la collection actuelle
-run_flow_on_current: Exécuter le flux sur l'élément actuel
+run_flow_confirm: Êtes-vous sûr(e) de vouloir exécuter ce flux ?
+run_flow_on_current_collection: Lancer ce flux sur la collection actuelle
+run_flow_on_current: Lancer le flux sur l'élément actuel
 run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
-run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur 1 élément sélectionné | Exécuter le flux sur {n} éléments sélectionnés
+run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur l'élément sélectionné | Exécuter le flux sur les {n} éléments sélectionnés
+run_flow: Lancer le flux
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
+field_name_placeholder: Saisir un nom de champ...
+field_key_placeholder: Saisir un identifiant de champ...
 trigger: Déclencheur
 trigger_options: Options de Déclenchement
 view_trigger: Voir le déclencheur
@@ -1133,6 +1144,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Cartographie
     basemaps: Cartes de base
     basemaps_raster: Raster
@@ -1426,13 +1438,13 @@ export_started: L'export a commencé
 export_started_copy: Votre export a commencé. Vous serez notifié quand il sera prêt à être téléchargé.
 sort_asc: Tri croissant
 sort_desc: Tri décroissant
+disable_sort: Désactiver le tri
 template: Modèle
 require_value_to_be_set: Nécessite que la valeur soit définie lors de la création
 translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -1590,6 +1602,9 @@ interfaces:
     many-to-one: Plusieurs à un
     description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage
+  collection-item-dropdown:
+    collection-item-dropdown: Liste déroulante des éléments de collection
+    description: Sélectionnez un élément dans une collection au format JSON
   input-rich-text-md:
     markdown: Éditeur Markdown
     description: Saisir et prévisualiser le markdown
@@ -1631,7 +1646,7 @@ interfaces:
   system-folder:
     folder: Dossier
     description: Sélectionner un dossier
-    field_hint: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
+    field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
     system_default: Paramètres par défaut du système
   select-radio:
@@ -1644,7 +1659,6 @@ interfaces:
     add_label: 'Libellé "Créer Nouveau"'
     sort: Trier
     sort_placeholder: Manuel
-    field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
     incompatible_data: Les données actuelles ne sont pas compatibles avec l'interface répéteur et seront remplacées lors de l'ajout d'éléments dans le répéteur
   slider:
@@ -1738,7 +1752,7 @@ interfaces:
     name: Regroupement
     description: Rendre les champs comme une section pliable
     show_header: En-tête de groupe
-    header_icon: Icônes de l'en-tête 
+    header_icon: Icônes de l'en-tête
     header_color: Couleur d'en-tête
     start_open: Ouvert par défaut
     start_closed: Fermé par défaut
@@ -2095,7 +2109,8 @@ operations:
     name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs
     recipient: Utilisateur
-    recipient_placeholder: Ajouter un UUID utilisateur et appuyez sur entrée...
+    recipient_placeholder: Saisir un UUID...
+    recipient_note: Ajouter un UUID utilisateur et appuyez sur entrée...
     message: Message
   request:
     name: Webhook / URL de requête

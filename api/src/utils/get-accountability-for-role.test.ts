@@ -1,5 +1,5 @@
 import { expect, describe, test, vi } from 'vitest';
-import { getAccountabilityForRole } from './get-accountability-for-role';
+import { getAccountabilityForRole } from './get-accountability-for-role.js';
 
 vi.mock('./get-permissions', () => ({
 	getPermissions: vi.fn().mockReturnValue([]),
@@ -46,7 +46,7 @@ describe('getAccountabilityForRole', async () => {
 	});
 	test('get role from database', async () => {
 		const db = mockDatabase();
-		db.first.mockReturnValue({
+		db['first'].mockReturnValue({
 			admin_access: 'not true',
 			app_access: '1',
 		});
@@ -65,7 +65,7 @@ describe('getAccountabilityForRole', async () => {
 	});
 	test('database invalid role', async () => {
 		const db = mockDatabase();
-		db.first.mockReturnValue(false);
+		db['first'].mockReturnValue(false);
 		expect(() =>
 			getAccountabilityForRole('456-789', {
 				accountability: null,

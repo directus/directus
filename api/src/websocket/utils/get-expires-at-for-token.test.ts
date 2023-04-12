@@ -1,5 +1,5 @@
 import { expect, describe, test } from 'vitest';
-import { getExpiresAtForToken } from './get-expires-at-for-token';
+import { getExpiresAtForToken } from './get-expires-at-for-token.js';
 import jwt from 'jsonwebtoken';
 
 describe('getExpiresAtForToken', () => {
@@ -12,7 +12,7 @@ describe('getExpiresAtForToken', () => {
 		const result = getExpiresAtForToken(token);
 		expect(result).toBe(null);
 	});
-	test('Returns experes field for jwt with exp as number', () => {
+	test('Returns expiresAt field for jwt with exp as number', () => {
 		const now = Math.floor(Date.now() / 1000);
 		const token = jwt.sign({ payload: 'content' }, 'secret', { expiresIn: 42 });
 		const result = getExpiresAtForToken(token);

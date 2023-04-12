@@ -1,19 +1,20 @@
-import emitter from '../../emitter';
-import { fmtMessage, trimUpper } from '../utils/message';
-import type { WebSocketClient } from '../types';
-import { WebsocketController, getWebsocketController } from '../controllers';
-import type { ActionHandler } from '@directus/shared/types';
-import { WebSocketMessage } from '../messages';
-import env from '../../env';
+import emitter from '../../emitter.js';
+import { fmtMessage, getMessageType } from '../utils/message.js';
+import type { WebSocketClient } from '../types.js';
+import { WebSocketController, getWebSocketController } from '../controllers/index.js';
+import { WebSocketMessage } from '../messages.js';
+import env from '../../env.js';
+import { toBoolean } from '../../utils/to-boolean.js';
+import type { ActionHandler } from '@directus/types';
 
-const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_FREQUENCY']) * 1000;
+const HEARTBEAT_FREQUENCY = Number(env['WEBSOCKETS_HEARTBEAT_PERIOD']) * 1000;
 
 export class HeartbeatHandler {
 	private pulse: NodeJS.Timer | undefined;
-	private controller: WebsocketController;
+	private controller: WebSocketController;
 
-	constructor() {
-		this.controller = getWebsocketController();
+	constructor(controller?: WebSocketController) {
+		this.controller = controller ?? getWebSocketController();
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			try {
 				this.onMessage(client, WebSocketMessage.parse(message));
@@ -21,9 +22,11 @@ export class HeartbeatHandler {
 				/* ignore errors */
 			}
 		});
-		emitter.onAction('websocket.connect', () => this.checkClients());
-		emitter.onAction('websocket.error', () => this.checkClients());
-		emitter.onAction('websocket.close', () => this.checkClients());
+		if (toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) === true) {
+			emitter.onAction('websocket.connect', () => this.checkClients());
+			emitter.onAction('websocket.error', () => this.checkClients());
+			emitter.onAction('websocket.close', () => this.checkClients());
+		}
 	}
 	private checkClients() {
 		const hasClients = this.controller.clients.size > 0;
@@ -38,7 +41,7 @@ export class HeartbeatHandler {
 		}
 	}
 	onMessage(client: WebSocketClient, message: WebSocketMessage) {
-		if (trimUpper(message.type) !== 'PING') return;
+		if (getMessageType(message) !== 'ping') return;
 		// send pong message back as acknowledgement
 		const data = 'uid' in message ? { uid: message.uid } : {};
 		client.send(fmtMessage('pong', data));
@@ -47,7 +50,7 @@ export class HeartbeatHandler {
 		const pendingClients = new Set<WebSocketClient>(this.controller.clients);
 		const activeClients = new Set<WebSocketClient>();
 		const timeout = setTimeout(() => {
-			// close connections that havent responded
+			// close connections that haven't responded
 			for (const client of pendingClients) {
 				client.close();
 			}

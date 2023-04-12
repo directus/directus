@@ -1,19 +1,16 @@
-import { Accountability } from '@directus/shared/types';
 import { expect, describe, test, vi, Mock } from 'vitest';
-import { InvalidCredentialsException } from '../index';
-import { getAccountabilityForRole } from '../utils/get-accountability-for-role';
-import { getAccountabilityForToken } from '../utils/get-accountability-for-token';
-import {
-	authenticateConnection,
-	authenticateWithToken,
-	authenticationSuccess,
-	refreshAccountability,
-} from './authenticate';
-import { WebSocketAuthMessage } from './messages';
-import { getExpiresAtForToken } from './utils/get-expires-at-for-token';
+import { InvalidCredentialsException } from '../index.js';
+import { getAccountabilityForRole } from '../utils/get-accountability-for-role.js';
+import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
+import { authenticateConnection, authenticationSuccess, refreshAccountability } from './authenticate.js';
+import type { WebSocketAuthMessage } from './messages.js';
+import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
+import type { Accountability } from '@directus/types';
 
 vi.mock('../utils/get-accountability-for-token', () => ({
-	getAccountabilityForToken: vi.fn(),
+	getAccountabilityForToken: vi.fn().mockReturnValue({
+		role: null, // minimum viable accountability
+	} as Accountability),
 }));
 vi.mock('../utils/get-accountability-for-role', () => ({
 	getAccountabilityForRole: vi.fn(),
@@ -24,71 +21,39 @@ vi.mock('./utils/get-expires-at-for-token', () => ({
 vi.mock('../utils/get-schema');
 vi.mock('../services/authentication', () => ({
 	AuthenticationService: vi.fn(() => ({
-		login: vi.fn().mockReturnValue({ accessToken: '123', expires: 123456 }),
-		refresh: vi.fn().mockReturnValue({ accessToken: '456' }),
+		login: vi.fn().mockReturnValue({ accessToken: '123', refreshToken: 'refresh', expires: 123456 }),
+		refresh: vi.fn().mockReturnValue({ accessToken: '456', refreshToken: 'refresh' }),
 	})),
 }));
 vi.mock('../database');
 
-describe('authenticateWithToken', () => {
-	test('Provided expiry', async () => {
-		const TIMESTAMP = 987654321;
-		(getAccountabilityForToken as Mock).mockReturnValue({
-			role: null, // minimum viable accountability
-		} as Accountability);
-		(getExpiresAtForToken as Mock).mockReturnValue(123456789);
-
-		const result = await authenticateWithToken('token', TIMESTAMP);
-
-		expect(getAccountabilityForToken).toBeCalled();
-		expect(getExpiresAtForToken).not.toBeCalled();
-		expect(result).toStrictEqual({
-			accountability: { role: null },
-			expiresAt: TIMESTAMP,
-		});
-	});
-	test('Fetch expiry', async () => {
-		const TIMESTAMP = 123456789;
-		(getAccountabilityForToken as Mock).mockReturnValue({
-			role: null, // minimum viable accountability
-		} as Accountability);
-		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
-
-		const result = await authenticateWithToken('token');
-
-		expect(getAccountabilityForToken).toBeCalled();
-		expect(getExpiresAtForToken).toBeCalled();
-		expect(result).toStrictEqual({
-			accountability: { role: null },
-			expiresAt: TIMESTAMP,
-		});
-	});
-});
-
 describe('authenticateConnection', () => {
 	test('Success with email/password', async () => {
+		const TIMESTAMP = 123456789;
+		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
 		const result = await authenticateConnection({
-			type: 'AUTH',
+			type: 'auth',
 			email: 'email',
 			password: 'password',
 		} as WebSocketAuthMessage);
 		expect(result).toStrictEqual({
 			accountability: { role: null },
-			expiresAt: 123456,
+			expires_at: TIMESTAMP,
+			refresh_token: 'refresh',
 		});
 	});
 	test('Success with refresh_token', async () => {
 		const TIMESTAMP = 987654;
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
-
 		const result = await authenticateConnection({
-			type: 'AUTH',
+			type: 'auth',
 			refresh_token: 'refresh_token',
 		} as WebSocketAuthMessage);
 
 		expect(result).toStrictEqual({
 			accountability: { role: null },
-			expiresAt: TIMESTAMP,
+			expires_at: TIMESTAMP,
+			refresh_token: 'refresh',
 		});
 	});
 	test('Success with access_token', async () => {
@@ -96,13 +61,14 @@ describe('authenticateConnection', () => {
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
 
 		const result = await authenticateConnection({
-			type: 'AUTH',
+			type: 'auth',
 			access_token: 'access_token',
 		} as WebSocketAuthMessage);
 
 		expect(result).toStrictEqual({
 			accountability: { role: null },
-			expiresAt: TIMESTAMP,
+			expires_at: TIMESTAMP,
+			refresh_token: undefined,
 		});
 	});
 	test('Failure token expired', async () => {
@@ -111,18 +77,15 @@ describe('authenticateConnection', () => {
 		});
 		expect(() =>
 			authenticateConnection({
-				type: 'AUTH',
+				type: 'auth',
 				access_token: 'expired',
 			} as WebSocketAuthMessage)
 		).rejects.toThrow('Token expired.');
 	});
 	test('Failure authentication failed', async () => {
-		(getAccountabilityForToken as Mock).mockReturnValue({
-			role: null, // minimum viable accountability
-		} as Accountability);
 		expect(() =>
 			authenticateConnection({
-				type: 'AUTH',
+				type: 'auth',
 				access_token: '',
 			} as WebSocketAuthMessage)
 		).rejects.toThrow('Authentication failed.');

@@ -1,30 +1,32 @@
-import logger from '../../logger';
-import { getSchema } from '../../utils/get-schema';
-import { ItemsService } from '../../services/items';
-import type { WebSocketClient } from '../types';
-import { fmtMessage, trimUpper } from '../utils/message';
-import emitter from '../../emitter';
-import { MetaService } from '../../services';
-import { sanitizeQuery } from '../../utils/sanitize-query';
-import { handleWebsocketException, WebSocketException } from '../exceptions';
-import { WebSocketItemsMessage } from '../messages';
+import { getSchema } from '../../utils/get-schema.js';
+import { ItemsService, MetaService } from '../../services/index.js';
+import type { WebSocketClient } from '../types.js';
+import { fmtMessage, getMessageType } from '../utils/message.js';
+import emitter from '../../emitter.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { handleWebSocketException, WebSocketException } from '../exceptions.js';
+import { WebSocketItemsMessage } from '../messages.js';
 
 export class ItemsHandler {
 	constructor() {
 		emitter.onAction('websocket.message', ({ client, message }) => {
+			if (getMessageType(message) !== 'items') return;
 			try {
-				this.onMessage(client, WebSocketItemsMessage.parse(message));
+				const parsedMessage = WebSocketItemsMessage.parse(message);
+				this.onMessage(client, parsedMessage).catch((err) => {
+					// this catch is required because the async onMessage function is not awaited
+					handleWebSocketException(client, err, 'items');
+				});
 			} catch (err) {
-				handleWebsocketException(client, err, 'items');
+				handleWebSocketException(client, err, 'items');
 			}
 		});
 	}
 	async onMessage(client: WebSocketClient, message: WebSocketItemsMessage) {
-		if (trimUpper(message.type) !== 'ITEMS') return;
 		const uid = message.uid;
 		const accountability = client.accountability;
 		const schema = await getSchema();
-		if (!schema.collections[message.collection]) {
+		if (!schema.collections[message.collection] || message.collection.startsWith('directus_')) {
 			throw new WebSocketException(
 				'items',
 				'INVALID_COLLECTION',
@@ -32,6 +34,7 @@ export class ItemsHandler {
 				uid
 			);
 		}
+		const isSingleton = !!schema.collections[message.collection]?.singleton;
 		const service = new ItemsService(message.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
 		let result, meta;
@@ -46,41 +49,55 @@ export class ItemsHandler {
 			}
 		}
 		if (message.action === 'read') {
-			const query = sanitizeQuery(message.query, accountability);
-			result = await service.readByQuery(query);
+			const query = sanitizeQuery(message.query ?? {}, accountability);
+			if (message.id) {
+				result = await service.readOne(message.id, query);
+			} else if (message.ids) {
+				result = await service.readMany(message.ids, query);
+			} else if (isSingleton) {
+				result = await service.readSingleton(query);
+			} else {
+				result = await service.readByQuery(query);
+			}
 			meta = await metaService.getMetaForQuery(message.collection, query);
 		}
 		if (message.action === 'update') {
-			const query = sanitizeQuery(message?.query ?? {}, accountability);
-			if (Array.isArray(message.data) && 'ids' in message) {
+			const query = sanitizeQuery(message.query ?? {}, accountability);
+			if (message.id) {
+				const key = await service.updateOne(message.id, message.data);
+				result = await service.readOne(key);
+			} else if (message.ids) {
 				const keys = await service.updateMany(message.ids, message.data);
 				meta = await metaService.getMetaForQuery(message.collection, query);
 				result = await service.readMany(keys, query);
-			} else if ('id' in message) {
-				const key = await service.updateOne(message.id, message.data);
-				result = await service.readOne(key);
+			} else if (isSingleton) {
+				await service.upsertSingleton(message.data);
+				result = await service.readSingleton(query);
+			} else {
+				const keys = await service.updateByQuery(query, message.data);
+				meta = await metaService.getMetaForQuery(message.collection, query);
+				result = await service.readMany(keys, query);
 			}
 		}
 		if (message.action === 'delete') {
-			if ('ids' in message) {
-				await service.deleteMany(message.ids);
-				result = message.ids;
-			} else if ('id' in message) {
+			if (message.id) {
 				await service.deleteOne(message.id);
 				result = message.id;
-			} else if ('query' in message) {
+			} else if (message.ids) {
+				await service.deleteMany(message.ids);
+				result = message.ids;
+			} else if (message.query) {
 				const query = sanitizeQuery(message.query, accountability);
 				result = await service.deleteByQuery(query);
 			} else {
 				throw new WebSocketException(
 					'items',
 					'INVALID_PAYLOAD',
-					"Either 'ids' or 'id' is required for a DELETE request",
+					"Either 'ids', 'id' or 'query' is required for a DELETE request.",
 					uid
 				);
 			}
 		}
-		logger.debug(`[WS REST] ItemsHandler ${JSON.stringify(message)}`);
 		client.send(fmtMessage('items', { data: result, ...(meta ? { meta } : {}) }, uid));
 	}
 }

@@ -1,21 +1,7 @@
 import { expect, describe, test, vi } from 'vitest';
-import { trimUpper, fmtMessage, safeSend } from './message';
-import type { WebSocketClient } from '../types';
+import { fmtMessage, getMessageType, safeSend } from './message.js';
+import type { WebSocketClient } from '../types.js';
 
-describe('trimUpper util', () => {
-	test('Returns uppercase trimmed "TYPE"', () => {
-		expect(trimUpper('TYPE')).toBe('TYPE');
-	});
-	test('Returns uppercase trimmed "123@ !some"', () => {
-		expect(trimUpper('123@ !some')).toBe('123@ !SOME');
-	});
-	test('Returns uppercase trimmed "FalSe"', () => {
-		expect(trimUpper('FalSe')).toBe('FALSE');
-	});
-	test('Returns uppercase trimmed "  long with spaces"', () => {
-		expect(trimUpper('  long with spaces')).toBe('LONG WITH SPACES');
-	});
-});
 describe('fmtMessage util', () => {
 	test('Returns formatted message', () => {
 		const result = fmtMessage('test', { test: 'abc' });
@@ -63,5 +49,19 @@ describe('safeSend util', () => {
 		const result = await safeSend(fakeClient as unknown as WebSocketClient, 'a message');
 		expect(result).toBe(true);
 		expect(fakeClient.send).toBeCalledWith('a message');
+	});
+});
+
+describe('getMessageType util', () => {
+	test('Fails graceously', () => {
+		expect(getMessageType(null)).toBe('');
+		expect(getMessageType(undefined)).toBe('');
+		expect(getMessageType(false)).toBe('');
+		expect(getMessageType(123456)).toBe('');
+		expect(getMessageType([])).toBe('');
+	});
+	test('Get the type property', () => {
+		expect(getMessageType({ type: 'test' })).toBe('test');
+		expect(getMessageType({ type: 123 })).toBe('123');
 	});
 });

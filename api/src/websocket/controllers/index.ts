@@ -1,26 +1,27 @@
 import type { Server as httpServer } from 'http';
-import { ServiceUnavailableException } from '../../exceptions';
-import { GraphQLSubscriptionController } from './graphql';
-import { WebsocketController } from './rest';
-import env from '../../env';
+import { WebSocketController } from './rest.js';
+import { GraphQLSubscriptionController } from './graphql.js';
+import { toBoolean } from '../../utils/to-boolean.js';
+import env from '../../env.js';
+import { ServiceUnavailableException } from '../../index.js';
 
-let websocketController: WebsocketController | undefined;
+let websocketController: WebSocketController | undefined;
 let subscriptionController: GraphQLSubscriptionController | undefined;
 
-export function createWebsocketController(server: httpServer) {
-	if (env['WEBSOCKETS_REST_ENABLED']) {
-		websocketController = new WebsocketController(server);
+export function createWebSocketController(server: httpServer) {
+	if (toBoolean(env['WEBSOCKETS_REST_ENABLED'])) {
+		websocketController = new WebSocketController(server);
 	}
 }
 
-export function getWebsocketController() {
-	if (!env['WEBSOCKETS_ENABLED'] || !env['WEBSOCKETS_REST_ENABLED']) {
-		throw new ServiceUnavailableException('Websocket server is disabled', {
+export function getWebSocketController() {
+	if (!toBoolean(env['WEBSOCKETS_ENABLED']) || !toBoolean(env['WEBSOCKETS_REST_ENABLED'])) {
+		throw new ServiceUnavailableException('WebSocket server is disabled', {
 			service: 'get-websocket-controller',
 		});
 	}
 	if (!websocketController) {
-		throw new ServiceUnavailableException('Websocket server is not initialized', {
+		throw new ServiceUnavailableException('WebSocket server is not initialized', {
 			service: 'get-websocket-controller',
 		});
 	}
@@ -28,7 +29,7 @@ export function getWebsocketController() {
 }
 
 export function createSubscriptionController(server: httpServer) {
-	if (env['WEBSOCKETS_GRAPHQL_ENABLED']) {
+	if (toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])) {
 		subscriptionController = new GraphQLSubscriptionController(server);
 	}
 }
@@ -37,5 +38,5 @@ export function getSubscriptionController() {
 	return subscriptionController;
 }
 
-export * from './graphql';
-export * from './rest';
+export * from './graphql.js';
+export * from './rest.js';

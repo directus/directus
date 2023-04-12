@@ -1,14 +1,16 @@
-import { BaseException } from '@directus/shared/exceptions';
 import type { WebSocket } from 'ws';
-import logger from '../logger';
-import type { WebSocketResponse } from './messages';
-import type { WebSocketClient } from './types';
+import { fromZodError } from 'zod-validation-error';
+import { ZodError } from 'zod';
+import logger from '../logger.js';
+import type { WebSocketResponse } from './messages.js';
+import type { WebSocketClient } from './types.js';
+import { BaseException } from '@directus/exceptions';
 
 export class WebSocketException extends Error {
 	type: string;
 	code: string;
-	uid: string | undefined;
-	constructor(type: string, code: string, message: string, uid?: string) {
+	uid: string | number | undefined;
+	constructor(type: string, code: string, message: string, uid?: string | number) {
 		super(message);
 		this.type = type;
 		this.code = code;
@@ -31,12 +33,16 @@ export class WebSocketException extends Error {
 	toMessage(): string {
 		return JSON.stringify(this.toJSON());
 	}
-	static fromException(error: BaseException, type = 'unkown') {
+	static fromException(error: BaseException, type = 'unknown') {
 		return new WebSocketException(type, error.code, error.message);
+	}
+	static fromZodError(error: ZodError, type = 'unknown') {
+		const zError = fromZodError(error);
+		return new WebSocketException(type, 'INVALID_PAYLOAD', zError.message);
 	}
 }
 
-export function handleWebsocketException(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
+export function handleWebSocketException(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
 	if (error instanceof BaseException) {
 		client.send(WebSocketException.fromException(error, type).toMessage());
 		return;
@@ -45,6 +51,10 @@ export function handleWebsocketException(client: WebSocketClient | WebSocket, er
 		client.send(error.toMessage());
 		return;
 	}
+	if (error instanceof ZodError) {
+		client.send(WebSocketException.fromZodError(error, type).toMessage());
+		return;
+	}
 	// unhandled exceptions
-	logger.error('Unhandled exception' + JSON.stringify({ type, error }));
+	logger.error(`WebSocket unhandled exception ${JSON.stringify({ type, error })}`);
 }

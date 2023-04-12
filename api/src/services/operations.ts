@@ -1,14 +1,14 @@
-import { OperationRaw } from '@directus/shared/types';
-import { getFlowManager } from '../flows';
-import { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import { ItemsService } from './items';
+import type { OperationRaw } from '@directus/types';
+import { getFlowManager } from '../flows.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { ItemsService } from './items.js';
 
 export class OperationsService extends ItemsService<OperationRaw> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_operations', options);
 	}
 
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const flowManager = getFlowManager();
 
 		const result = await super.createOne(data, opts);
@@ -17,7 +17,7 @@ export class OperationsService extends ItemsService<OperationRaw> {
 		return result;
 	}
 
-	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const flowManager = getFlowManager();
 
 		const result = await super.createMany(data, opts);
@@ -26,7 +26,7 @@ export class OperationsService extends ItemsService<OperationRaw> {
 		return result;
 	}
 
-	async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const flowManager = getFlowManager();
 
 		const result = await super.updateBatch(data, opts);
@@ -35,7 +35,7 @@ export class OperationsService extends ItemsService<OperationRaw> {
 		return result;
 	}
 
-	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const flowManager = getFlowManager();
 
 		const result = await super.updateMany(keys, data, opts);
@@ -44,7 +44,7 @@ export class OperationsService extends ItemsService<OperationRaw> {
 		return result;
 	}
 
-	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const flowManager = getFlowManager();
 
 		const result = await super.deleteMany(keys, opts);

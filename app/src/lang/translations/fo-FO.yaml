@@ -162,7 +162,6 @@ interfaces:
   system-folder:
     folder: Faldari
     description: Vel ein faldara
-    field_hint: Faldari til uppsendum fílum. Ávirkar ikki galdandi fílum.
     root_name: Fílasavns Rót
     system_default: Grundkervi
   input-rich-text-html:

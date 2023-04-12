@@ -1,16 +1,16 @@
-import env from '../../env';
-import { HeartbeatHandler, ItemsHandler, SubscribeHandler, UsersHandler } from '../handlers';
+import { ItemsHandler } from './items.js';
+import { HeartbeatHandler } from './heartbeat.js';
+import { SubscribeHandler } from './subscribe.js';
+import { UsersHandler } from './users.js';
 
-export function startWebsocketHandlers() {
-	if (env['WEBSOCKETS_HEARTBEAT_ENABLED']) {
-		new HeartbeatHandler();
-	}
+export function startWebSocketHandlers() {
+	new HeartbeatHandler();
 	new ItemsHandler();
 	new SubscribeHandler();
 	new UsersHandler();
 }
 
-export * from './heartbeat';
-export * from './items';
-export * from './subscribe';
-export * from './users';
+export * from './heartbeat.js';
+export * from './items.js';
+export * from './subscribe.js';
+export * from './users.js';

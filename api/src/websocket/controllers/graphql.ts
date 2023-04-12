@@ -1,36 +1,30 @@
 import type { Server as httpServer } from 'http';
-import { makeServer, Server } from 'graphql-ws';
+import { makeServer, Server, MessageType, CloseCode } from 'graphql-ws';
 import type { WebSocket } from 'ws';
-import logger from '../../logger';
-import { getAccountabilityForToken } from '../../utils/get-accountability-for-token';
-import { getSchema } from '../../utils/get-schema';
-import { GraphQLService } from '../../services';
-import env from '../../env';
-import SocketController from './base';
-import type { AuthenticationState, ConnectionParams, UpgradeContext, WebSocketClient } from '../types';
-import { handleWebsocketException, WebSocketException } from '../exceptions';
-import { authenticateConnection, refreshAccountability } from '../authenticate';
-import { waitForAnyMessage } from '../utils/wait-for-message';
-import { WebSocketAuthMessage, WebSocketMessage } from '../messages';
+import logger from '../../logger.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { GraphQLService } from '../../services/index.js';
+import env from '../../env.js';
+import SocketController from './base.js';
+import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
+import { handleWebSocketException } from '../exceptions.js';
+import { authenticateConnection, refreshAccountability } from '../authenticate.js';
+import { ConnectionParams, WebSocketMessage } from '../messages.js';
+import { getMessageType } from '../utils/message.js';
+import { bindPubSub } from '../../services/graphql/subscription.js';
 
 export class GraphQLSubscriptionController extends SocketController {
-	gql: Server<ConnectionParams>;
+	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WS GraphQL', env['WEBSOCKETS_GRAPHQL_PATH'], {
-			mode: env['WEBSOCKETS_GRAPHQL_AUTH'].toLowerCase(),
-			timeout: env['WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT'] * 1000,
-			verbose: false,
-		});
-		if ('WEBSOCKETS_GRAPHQL_CONN_LIMIT' in env) {
-			this.maxConnections = Number(env['WEBSOCKETS_GRAPHQL_CONN_LIMIT']);
-		}
+		super(httpServer, 'WEBSOCKETS_GRAPHQL');
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
-		this.gql = makeServer<ConnectionParams>({
+		this.gql = makeServer<ConnectionParams, GraphQLSocket>({
 			schema: async (ctx) => {
-				const accountability = await getAccountabilityForToken(ctx.connectionParams?.access_token);
+				const accountability = ctx.extra.client.accountability;
 
+				// for now only the items will be watched in the MVP system events tbd
 				const service = new GraphQLService({
 					schema: await getSchema(),
 					scope: 'items',
@@ -40,12 +34,13 @@ export class GraphQLSubscriptionController extends SocketController {
 				return service.getSchema();
 			},
 		});
-		logger.info(`Subscriptions available at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+		bindPubSub();
+		logger.info(`GraphQL Subscriptions started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
 	private bindEvents(client: WebSocketClient) {
 		const closedHandler = this.gql.opened(
 			{
-				protocol: client.protocol, // will be validated
+				protocol: client.protocol,
 				send: (data) =>
 					new Promise((resolve, reject) => {
 						client.send(data, (err) => (err ? reject(err) : resolve()));
@@ -54,35 +49,54 @@ export class GraphQLSubscriptionController extends SocketController {
 				onMessage: (cb) => {
 					client.on('parsed-message', async (message: WebSocketMessage) => {
 						try {
-							client.accountability = await refreshAccountability(client.accountability);
+							if (getMessageType(message) === 'connection_init') {
+								const params = ConnectionParams.parse(message['payload']);
+								if (typeof params.access_token === 'string') {
+									const { accountability, expires_at } = await authenticateConnection({
+										access_token: params.access_token,
+									});
+									client.accountability = accountability;
+									client.expires_at = expires_at;
+								} else if (this.authentication.mode !== 'public') {
+									client.close(CloseCode.Forbidden, 'Forbidden');
+									return;
+								}
+							} else if (this.authentication.mode === 'handshake' && !client.accountability?.user) {
+								// the first message should authenticate successfully in this mode
+								client.close(CloseCode.Forbidden, 'Forbidden');
+								return;
+							} else {
+								client.accountability = await refreshAccountability(client.accountability);
+							}
 							await cb(JSON.stringify(message));
 						} catch (error) {
-							handleWebsocketException(client, error);
+							handleWebSocketException(client, error, MessageType.Error);
 						}
 					});
 				},
 			},
-			{}
+			{ client }
 		);
 
 		// notify server that the socket closed
 		client.once('close', (code, reason) => closedHandler(code, reason.toString()));
 	}
+	override setTokenExpireTimer(client: WebSocketClient) {
+		if (client.auth_timer !== null) {
+			clearTimeout(client.auth_timer);
+			client.auth_timer = null;
+		}
+		if (this.authentication.mode !== 'handshake') return;
+		client.auth_timer = setTimeout(() => {
+			if (!client.accountability?.user) {
+				client.close(CloseCode.Forbidden, 'Forbidden');
+			}
+		}, this.authentication.timeout);
+	}
 	protected override async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
-			try {
-				const msg: WebSocketMessage = await waitForAnyMessage(ws, this.authentication.timeout);
-				if (msg.type !== 'connection_init') throw new Error();
-
-				const state = await authenticateConnection(WebSocketAuthMessage.parse(msg['payload']));
-				this.server.emit('connection', ws, state);
-				ws.send(JSON.stringify({ type: 'connection_ack' }));
-				this.server.emit('message-parsed', msg);
-			} catch {
-				const error = new WebSocketException('auth', 'AUTH_FAILED', 'Authentication handshake failed.');
-				handleWebsocketException(ws, error, 'auth');
-				ws.close();
-			}
+			this.server.emit('connection', ws, { accountability: null, expires_at: null });
+			// actual enforcement is handled by the setTokenExpireTimer function
 		});
 	}
 }
