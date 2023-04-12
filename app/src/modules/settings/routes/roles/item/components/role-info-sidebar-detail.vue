@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="t('information')" close>
+	<sidebar-detail icon="info" :title="t('information')" close>
 		<template v-if="role">
 			<dl>
 				<div class="description-list">
@@ -7,7 +7,7 @@
 					<dd>{{ role.id }}</dd>
 					<v-icon
 						v-if="isCopySupported"
-						name="copy"
+						name="content_copy"
 						small
 						clickable
 						class="clipboard-icon"

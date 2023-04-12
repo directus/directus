@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="t('information')" close>
+	<sidebar-detail icon="info" :title="t('information')" close>
 		<dl>
 			<div>
 				<dt>{{ t('bookmarks') }}</dt>
