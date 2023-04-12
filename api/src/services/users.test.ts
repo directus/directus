@@ -115,8 +115,8 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			superCreateManySpy = vi.spyOn(ItemsService.prototype, 'createMany');
-			superUpdateManySpy = vi.spyOn(ItemsService.prototype, 'updateMany');
+			superCreateManySpy = vi.spyOn(ItemsService.prototype as any, 'createMany').mockImplementation(() => vi.fn());
+			superUpdateManySpy = vi.spyOn(ItemsService.prototype as any, 'updateMany').mockImplementation(() => vi.fn());
 
 			// "as any" are needed since these are private methods
 			checkUniqueEmailsSpy = vi
