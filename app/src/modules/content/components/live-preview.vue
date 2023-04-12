@@ -73,7 +73,6 @@ function toggleFullscreen() {
 const frameEl = ref<HTMLIFrameElement>();
 
 function refresh() {
-	console.log('refreshing');
 	if (!frameEl.value) return;
 
 	frameEl.value.src = frameEl.value.src;
