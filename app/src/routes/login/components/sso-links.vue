@@ -50,16 +50,18 @@ export default defineComponent({
 				ssoProviders.value = providers.value
 					.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
 					.map((provider: AuthProvider) => {
-						const link = new URL(window.location.origin);
-						link.pathname = `${getRootPath()}auth/login/${provider.name}`;
-						const redirect = new URL(window.location.href);
-						redirect.searchParams.set('continue', '');
-						link.searchParams.set('redirect', redirect.toString());
+						const ssoLoginLink = new URL(window.location.origin);
+						ssoLoginLink.pathname = `${getRootPath()}auth/login/${provider.name}`;
+
+						const redirectToLink = new URL(window.location.href);
+						redirectToLink.searchParams.set('continue', '');
+
+						ssoLoginLink.searchParams.set('redirect', redirectToLink.toString());
 
 						return {
 							name: provider.name,
 							label: provider.label || formatTitle(provider.name),
-							link: link.toString(),
+							link: ssoLoginLink.toString(),
 							icon: provider.icon ?? 'account_circle',
 						};
 					});
