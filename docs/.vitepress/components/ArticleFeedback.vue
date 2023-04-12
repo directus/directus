@@ -41,15 +41,19 @@ function getPrompt() {
 }
 
 const ratingOptions = [
-	{ label: 'Worst Doc Ever 🗑️', value: 1, message: 'Woof! 🤦‍♂️ Sorry about that. How do we fix it?' },
-	{ label: 'Not Helpful 😡', value: 2, message: '🧐 Help us do better. How can we improve this article?' },
-	{ label: 'Helpful 😃', value: 3, message: 'Nice! 👍  Anything we can improve upon?' },
 	{
 		label: 'Super Helpful 🤩',
 		value: 4,
 		message: `Awesome! The whole team is rejoicing in celebration! 🥳🎉🎊 Anything you'd like to say to them?`,
 	},
+	{ label: 'Helpful 😃', value: 3, message: 'Nice! 👍 Anything we can improve upon?' },
+	{ label: 'Not Helpful 😡', value: 2, message: '🧐 Help us do better. How can we improve this article?' },
+	{ label: 'Worst Doc Ever 🗑️', value: 1, message: 'Woof! 🤦‍♂️ Sorry about that. How do we fix it?' },
 ];
+
+function getRatingOption(rating: number) {
+	return ratingOptions.find((option) => option.value === rating);
+}
 
 async function handleSubmission(rating?: number) {
 	loading.value = true;
@@ -102,13 +106,13 @@ async function handleSubmission(rating?: number) {
 				<div>
 					<p class="desc">This article is</p>
 					<div>
-						<span>{{ ratingOptions[feedback.rating - 1].label }}</span>
+						<span>{{ getRatingOption(feedback.rating).label }}</span>
 						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = undefined">
 							<span mi icon>close</span>
 						</button>
 					</div>
 				</div>
-				<p class="heading">{{ ratingOptions[feedback.rating - 1].message }}</p>
+				<p class="heading">{{ getRatingOption(feedback.rating).message }}</p>
 				<textarea v-model="feedback.comments" autofocus class="input" />
 				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission()">
 					Send Us Your Feedback
