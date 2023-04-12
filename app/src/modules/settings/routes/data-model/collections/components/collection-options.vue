@@ -45,8 +45,8 @@
 				<v-card-title>
 					{{
 						collection.schema
-							? t('delete_collection_are_you_sure', { collection: collection.collection })
-							: t('delete_folder_are_you_sure', { folder: collection.collection })
+						? t('delete_collection_are_you_sure', { collection: collection.collection })
+						: t('delete_folder_are_you_sure', { folder: collection.collection })
 					}}
 				</v-card-title>
 				<v-card-text v-if="peerDependencies.length > 0">
