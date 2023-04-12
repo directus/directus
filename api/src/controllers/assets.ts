@@ -1,5 +1,6 @@
 import type { Range } from '@directus/storage';
 import { parseJSON } from '@directus/utils';
+import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
@@ -166,7 +167,8 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		res.attachment(req.params['filename'] ?? file.filename_download);
+		const filename = req.params['filename'] ?? file.filename_download;
+		res.attachment(filename);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
@@ -186,7 +188,7 @@ router.get(
 		}
 
 		if ('download' in req.query === false) {
-			res.removeHeader('Content-Disposition');
+			res.setHeader('Content-Disposition', contentDisposition(filename, { type: 'inline' }));
 		}
 
 		if (req.method.toLowerCase() === 'head') {
