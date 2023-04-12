@@ -80,7 +80,7 @@ import { defineComponent, ref, computed } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Share } from '@directus/shared/types';
+import { Share } from '@directus/types';
 import { useClipboard } from '@/composables/use-clipboard';
 
 import api from '@/api';

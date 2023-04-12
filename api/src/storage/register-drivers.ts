@@ -1,7 +1,5 @@
-import { getEnv } from '../env';
-import { getStorageDriver } from './get-storage-driver';
-
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import { getEnv } from '../env.js';
+import { getStorageDriver } from './get-storage-driver.js';
 import type { StorageManager } from '@directus/storage';
 
 export const registerDrivers = async (storage: StorageManager) => {

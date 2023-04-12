@@ -21,6 +21,7 @@
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				:small="smallHeader"
+				:shadow="headerShadow"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
@@ -68,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useElementSize, useSync } from '@directus/shared/composables';
+import { useElementSize, useSync } from '@directus/composables';
 import { useResize } from '@/composables/use-resize';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { useTitle } from '@/composables/use-title';
@@ -91,10 +92,16 @@ import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 interface Props {
 	title?: string | null;
 	smallHeader?: boolean;
+	headerShadow?: boolean;
 	splitView?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false, splitView: false });
+const props = withDefaults(defineProps<Props>(), {
+	title: null,
+	smallHeader: false,
+	splitView: false,
+	headerShadow: true,
+});
 
 const emit = defineEmits(['update:splitView']);
 
@@ -119,29 +126,29 @@ const { data } = useLocalStorage<{
 
 const navWidth = computed({
 	get() {
-		const val = data.value?.nav
-		return val && !Number.isNaN(val)? Number(val) : 220;
+		const val = data.value?.nav;
+		return val && !Number.isNaN(val) ? Number(val) : 220;
 	},
 	set(value) {
 		data.value = {
-			...data.value ?? {},
-			nav: value
-		}
+			...(data.value ?? {}),
+			nav: value,
+		};
 	},
-})
+});
 
 const mainWidth = computed({
 	get() {
-		const val = data.value?.main
-		return val && !Number.isNaN(val)? Number(val) : 590;
+		const val = data.value?.main;
+		return val && !Number.isNaN(val) ? Number(val) : 590;
 	},
 	set(value) {
 		data.value = {
-			...data.value ?? {},
-			main: value
-		}
+			...(data.value ?? {}),
+			main: value,
+		};
 	},
-})
+});
 
 const maxWithNav = computed(() => {
 	const useMainWidth = props.splitView ? mainWidth.value : 590;
@@ -174,35 +181,37 @@ const maxWithMain = computed(() => {
 const navResizeOptions = computed(() => {
 	return {
 		snapZones: [
-			{width: 20, snapPos: 220 },
+			{ width: 20, snapPos: 220 },
 			{
 				width: 100,
 				snapPos: maxWithNav.value,
 				onPointerUp: () => {
-					if(splitViewWritable.value === true)
-						splitViewWritable.value = false;
+					if (splitViewWritable.value === true) splitViewWritable.value = false;
 				},
-			}
+			},
 		],
-	}
-})
+	};
+});
 
 useResize(moduleNavEl, ref(220), maxWithNav, ref(220), navWidth, ref(true), navResizeOptions);
 
 const mainResizeOptions = computed(() => {
 	return {
-		snapZones: [{
-			width: 100,
-			snapPos: maxWithMain.value,
-			onPointerUp: () => {
-				splitViewWritable.value = false;
+		snapZones: [
+			{
+				width: 100,
+				snapPos: maxWithMain.value,
+				onPointerUp: () => {
+					splitViewWritable.value = false;
+				},
 			},
-		}, {
-			width: 20,
-			snapPos: maxWithMain.value / 2,
-		}]
-	}
-})
+			{
+				width: 20,
+				snapPos: maxWithMain.value / 2,
+			},
+		],
+	};
+});
 
 useResize(contentEl, ref(590), maxWithMain, ref(590), mainWidth, splitViewWritable, mainResizeOptions);
 
@@ -243,6 +252,7 @@ function openSidebar(event: PointerEvent) {
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
+	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 
 	display: flex;
 	width: 100%;

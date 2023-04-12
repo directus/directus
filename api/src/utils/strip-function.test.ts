@@ -1,6 +1,5 @@
 import { expect, test } from 'vitest';
-
-import { stripFunction } from './strip-function';
+import { stripFunction } from './strip-function.js';
 
 test.each([
 	{ field: 'year(date_created)', expected: 'date_created' },

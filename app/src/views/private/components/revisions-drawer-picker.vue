@@ -26,7 +26,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, watch, ref } from 'vue';
 import { Revision } from '@/types/revisions';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
 

@@ -1,7 +1,7 @@
-import { CookieOptions } from 'express';
-import env from './env';
-import { TransformationParams } from './types';
-import { getMilliseconds } from './utils/get-milliseconds';
+import type { CookieOptions } from 'express';
+import env from './env.js';
+import type { TransformationParams } from './types/index.js';
+import { getMilliseconds } from './utils/get-milliseconds.js';
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{
@@ -55,10 +55,25 @@ export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 export const COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
-	domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
-	maxAge: getMilliseconds(env.REFRESH_TOKEN_TTL),
-	secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
-	sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'],
+	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
+	secure: env['REFRESH_TOKEN_COOKIE_SECURE'] ?? false,
+	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 };
 
 export const OAS_REQUIRED_SCHEMAS = ['Diff', 'Schema', 'Query', 'x-metadata'];
+
+/** Formats from which transformation is supported */
+export const SUPPORTED_IMAGE_TRANSFORM_FORMATS = ['image/jpeg', 'image/png', 'image/webp', 'image/tiff', 'image/avif'];
+
+/** Formats where metadata extraction is supported */
+export const SUPPORTED_IMAGE_METADATA_FORMATS = [
+	'image/jpeg',
+	'image/png',
+	'image/webp',
+	'image/gif',
+	'image/tiff',
+	'image/avif',
+];
+
+export const REDACT_TEXT = '--redact--';
