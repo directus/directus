@@ -141,6 +141,9 @@ gtag('config', 'UA-24637628-7');
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
 		},
+		editLink: {
+			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
+		},
 	},
 });
 
@@ -499,6 +502,10 @@ function sidebar() {
 								{
 									text: 'Create Re-Usable Page Components',
 									link: '/use-cases/headless-cms/create-reusable-page-components-using-m2a',
+								},
+								{
+									text: 'Security Best Practices',
+									link: '/use-cases/headless-cms/security',
 								},
 							],
 						},

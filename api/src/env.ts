@@ -26,6 +26,7 @@ const allowedEnvironmentVars = [
 	'ROOT_REDIRECT',
 	'SERVE_APP',
 	'GRAPHQL_INTROSPECTION',
+	'MAX_BATCH_MUTATION',
 	'LOGGER_.+',
 	'ROBOTS_TXT',
 	// server
@@ -201,6 +202,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
+	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
 	DB_EXCLUDE_TABLES: 'spatial_ref_sys,sysdiagrams',
@@ -226,6 +228,7 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_COOKIE_NAME: 'directus_refresh_token',
 
 	LOGIN_STALL_TIME: 500,
+	SERVER_SHUTDOWN_TIMEOUT: 1000,
 
 	ROOT_REDIRECT: './admin',
 
@@ -310,6 +313,10 @@ const typeMap: Record<string, string> = {
 	FILE_METADATA_ALLOW_LIST: 'array',
 
 	GRAPHQL_INTROSPECTION: 'boolean',
+
+	MAX_BATCH_MUTATION: 'number',
+
+	SERVER_SHUTDOWN_TIMEOUT: 'number',
 };
 
 let env: Record<string, any> = {

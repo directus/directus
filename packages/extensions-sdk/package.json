@@ -32,9 +32,7 @@
 	"scripts": {
 		"build": "tsc --build",
 		"dev": "tsc --watch",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"test": "vitest --watch=false"
 	},
 	"dependencies": {
 		"@directus/composables": "workspace:*",

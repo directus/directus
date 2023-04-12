@@ -1,3 +1,4 @@
+import type { Column } from '@directus/schema';
 import type { Field, Relation } from '@directus/types';
 import { pick } from 'lodash-es';
 import type { Collection } from '../types/index.js';
@@ -48,6 +49,26 @@ export function sanitizeField(field: Field | undefined, sanitizeAllSchema = fals
 		  ];
 
 	return pick(field, pickedPaths);
+}
+
+export function sanitizeColumn(column: Column) {
+	return pick(column, [
+		'name',
+		'table',
+		'data_type',
+		'default_value',
+		'max_length',
+		'numeric_precision',
+		'numeric_scale',
+		'is_nullable',
+		'is_unique',
+		'is_primary_key',
+		'is_generated',
+		'generation_expression',
+		'has_auto_increment',
+		'foreign_key_table',
+		'foreign_key_column',
+	]);
 }
 
 /**
