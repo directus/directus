@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="t('file_details')" close>
+	<sidebar-detail icon="info" :title="t('file_details')" close>
 		<dl v-if="file">
 			<div v-if="file.type">
 				<dt>{{ t('type') }}</dt>

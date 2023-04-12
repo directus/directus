@@ -91,7 +91,8 @@ grained control:
 - **`height`** — The **height** of the thumbnail in pixels
 - **`quality`** — The optional **quality** of the thumbnail (`1` to `100`)
 - **`withoutEnlargement`** — Disable image up-scaling
-- **`format`** — What file format to return the thumbnail in. One of `jpg`, `png`, `webp`, `tiff`
+- **`format`** — What file format to return the thumbnail in. One of `auto`, `jpg`, `png`, `webp`, `tiff`
+  - `auto` — Will try to format it in `webp` or `avif` if the browser supports it, otherwise it will fallback to `jpg`.
 
 ### Advanced Transformations
 

@@ -4,6 +4,7 @@ import RenderTemplate from '@/views/private/components/render-template.vue';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import UserPopover from '@/views/private/components/user-popover.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { App } from 'vue';
@@ -145,6 +146,7 @@ export function registerComponents(app: App): void {
 	app.component('SidebarDetail', SidebarDetail);
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
+	app.component('DrawerCollection', DrawerCollection);
 	app.component('DrawerItem', DrawerItem);
 	app.component('DrawerBatch', DrawerBatch);
 }

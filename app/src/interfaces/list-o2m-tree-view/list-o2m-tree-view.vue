@@ -2,7 +2,9 @@
 	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
 		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
-
+	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ t('no_singleton_relations') }}
+	</v-notice>
 	<div v-else class="tree-view">
 		<nested-draggable
 			v-model="_value"

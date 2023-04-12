@@ -1,6 +1,7 @@
 import { defineOperationApi, isValidJSON } from '@directus/utils';
 import encodeUrl from 'encodeurl';
 import { getAxios } from '../../request/index.js';
+import { isAxiosError } from 'axios';
 
 type Options = {
 	url: string;
@@ -34,13 +35,17 @@ export default defineOperationApi<Options>({
 			});
 
 			return { status: result.status, statusText: result.statusText, headers: result.headers, data: result.data };
-		} catch (error: any) {
-			throw JSON.stringify({
-				status: error.response.status,
-				statusText: error.response.statusText,
-				headers: error.response.headers,
-				data: error.response.data,
-			});
+		} catch (error: unknown) {
+			if (isAxiosError(error)) {
+				throw JSON.stringify({
+					status: error.response?.status,
+					statusText: error.response?.statusText,
+					headers: error.response?.headers,
+					data: error.response?.data,
+				});
+			} else {
+				throw error;
+			}
 		}
 	},
 });
