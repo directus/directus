@@ -47,11 +47,15 @@ router.get(
 
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
+		let allowedParams = 1;
 		if (transformation['format'] === 'auto') {
-			transformation['format'] = getAutoFormat(req.headers.accept);
+			const autoFormat = getAutoFormat(req.headers.accept);
+			transformation['format'] = autoFormat;
+			res.locals['autoFormat'] = autoFormat;
+			allowedParams = 2;
 		}
 
-		if ('key' in transformation && Object.keys(transformation).length > 1) {
+		if ('key' in transformation && Object.keys(transformation).length > allowedParams) {
 			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
 		}
 
@@ -153,6 +157,12 @@ router.get(
 					(transformation) => transformation['key'] === res.locals['transformation'].key
 			  )
 			: res.locals['transformation'];
+
+		const existingFormat = transformation.transforms?.find((transform) => transform[0] === 'toFormat');
+
+		if (res.locals['autoFormat'] && !existingFormat) {
+			transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', res.locals['autoFormat']]];
+		}
 
 		let range: Range | undefined = undefined;
 
