@@ -5,7 +5,7 @@
 
 Every API route should have a test to verify that it is working as intended. The tests are typescript files with names
 ending with `.test.ts`. Tests can have accompanying seed files ending with `.seed.ts`. Seed files contain the database
-schema, typings and seed functions. Tests should be located in a relevant folder as listed below.
+schema, types and seed functions. Tests should be located in a relevant folder as listed below.
 
 ## Folder Structure
 
@@ -13,7 +13,7 @@ schema, typings and seed functions. Tests should be located in a relevant folder
 | :------------ | :------------------------------- | :---------- |
 | `/common`     | Core testing functions and tests | `@common/*` |
 | `/query`      | Tests for global query filter    | `@query/*`  |
-| `/middleware` | Tests for middlewares            | -           |
+| `/middleware` | Tests for middleware             | -           |
 | `/routes`     | Tests for the all API routes     | -           |
 | `/schema`     | Tests for specific schema types  | `@schema/*` |
 | `/setup`      | Migrations and setup scripts     | -           |
@@ -34,7 +34,7 @@ schema, typings and seed functions. Tests should be located in a relevant folder
 
 1. Seed file exports the following:
    - Table names
-   - Typings for the items
+   - Types for the items
    - `getTestsSchema()` for schema specifications.
    - `seedDBStructure()` which runs automatically.
    - `seedDBValues()` called in the test to seed values into the database.
@@ -146,7 +146,7 @@ export const seedDBValues = async (cachedSchema: CachedTestsSchema) => {
 ## Sample Test File
 
 1. Values are seeded into the database before the tests run.
-2. Tests within are prepopulated and run sequentially.
+2. Tests within are pre-populated and run sequentially.
 3. `seedDBStructure()` should clear the existing tables prior to recreating it.
 4. `seedDBValues()` should be updated to return values if required.
 

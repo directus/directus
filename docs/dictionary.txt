@@ -7,6 +7,7 @@
 (B|b)ackend
 (B|b)alancer
 (B|b)asemap
+(B|b)lackbox
 (B|b)ugfixes
 (C|)ancelling
 (C|c)ancelled
@@ -284,6 +285,7 @@ pre-defined
 pre-existing
 pre-formatted
 pre-installed
+pre-populated
 programmatically
 Programmatically
 ProgressEvent
@@ -336,6 +338,7 @@ superset
 Superset
 SVG
 TablePlus
+Teardown
 TinyMCE
 tfa
 TFA
