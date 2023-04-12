@@ -28,10 +28,7 @@
 		</template>
 
 		<div class="content" :class="width">
-			<template v-for="group in filteredIcons" :key="group.name">
-				<v-divider v-if="group.icons.length > 0">
-					{{ group.name }}
-				</v-divider>
+			<template v-for="(group, index) in filteredIcons" :key="group.name">
 				<div v-if="group.icons.length > 0" class="icons">
 					<v-icon
 						v-for="icon in group.icons"
@@ -42,6 +39,7 @@
 						@click="setIcon(icon)"
 					/>
 				</div>
+				<v-divider v-if="group.icons.length > 0 && index !== filteredIcons.length - 1" />
 			</template>
 		</div>
 	</v-menu>
