@@ -4,7 +4,7 @@ import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import type { Table, SchemaInspector } from '@directus/schema';
-import { omit } from 'lodash-es';
+import { omit, chunk } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -585,11 +585,13 @@ export class CollectionsService {
 						.where({ collection: collectionKey });
 
 					if (revisionsToDelete.length > 0) {
-						const keys = revisionsToDelete.map((record) => record.id);
-						for (let i = 0; i < keys.length; i += 10_000) {
-							await trx('directus_revisions')
-								.update({ parent: null })
-								.whereIn('parent', keys.slice(i, i + 10_000));
+						const chunks = chunk(
+							revisionsToDelete.map((record) => record.id),
+							10000
+						);
+
+						for (const keys of chunks) {
+							await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
 						}
 					}
 
