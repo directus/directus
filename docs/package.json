@@ -1,41 +1,21 @@
 {
 	"name": "docs",
 	"private": true,
-	"main": "dist/index.js",
-	"exports": {
-		".": "./dist/index.js",
-		"./package.json": "./package.json"
-	},
 	"scripts": {
 		"spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
-		"dev": "vitepress dev .",
-		"build": "vitepress build .",
-		"serve": "vitepress serve .",
+		"dev": "vitepress dev",
+		"build": "vitepress build",
+		"preview": "vitepress preview",
 		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
 	},
-	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"devDependencies": {
 		"@thumbsmith/url": "0.1.3",
-		"@vueuse/head": "1.0.25",
+		"@vueuse/head": "1.1.23",
 		"spellchecker-cli": "6.1.1",
-		"vitepress": "1.0.0-alpha.45",
+		"vitepress": "1.0.0-alpha.65",
 		"vue": "3.2.47"
-	},
-	"pnpm": {
-		"peerDependencyRules": {
-			"ignoreMissing": [
-				"@algolia/client-search",
-				"react",
-				"react-dom",
-				"@types/react"
-			]
-		}
 	},
 	"dependencies": {
 		"node-fetch": "^3.3.1"
-	},
-	"packageManager": "pnpm@8.1.0",
-	"engines": {
-		"pnpm": ">=8.1.0"
 	}
 }
