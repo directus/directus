@@ -11,7 +11,7 @@ import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
-import { merge, mergeWith } from 'lodash';
+import { mergeWith } from 'lodash';
 import { computed, ComputedRef, Ref, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { Field, Query, Relation } from '@directus/types';
