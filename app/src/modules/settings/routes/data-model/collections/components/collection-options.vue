@@ -45,8 +45,8 @@
 				<v-card-title>
 					{{
 						collection.schema
-						? t('delete_collection_are_you_sure', { collection: collection.collection })
-						: t('delete_folder_are_you_sure', { folder: collection.collection })
+							? t('delete_collection_are_you_sure', { collection: collection.collection })
+							: t('delete_folder_are_you_sure', { folder: collection.collection })
 					}}
 				</v-card-title>
 				<v-card-text v-if="peerDependencies.length > 0">
@@ -97,14 +97,14 @@ const { deleting, deleteActive, deleteCollection } = useDelete();
 
 const peerDependencies = computed(() => {
 	return relationsStore.relations
-		.filter(
-			(relation) => {
-				const isM2O = relation.meta?.one_collection === props.collection.collection
-				const isA2O = relation.meta?.one_allowed_collections?.length === 1 && relation.meta.one_allowed_collections.includes(props.collection.collection)
+		.filter((relation) => {
+			const isM2O = relation.meta?.one_collection === props.collection.collection;
+			const isA2O =
+				relation.meta?.one_allowed_collections?.length === 1 &&
+				relation.meta.one_allowed_collections.includes(props.collection.collection);
 
-				return (isM2O || isA2O) && relation.meta?.many_collection && relation.meta?.many_field
-			}
-		)
+			return (isM2O || isA2O) && relation.meta?.many_collection && relation.meta?.many_field;
+		})
 		.map((relation) => ({
 			collection: relation.meta?.many_collection,
 			field: relation.meta?.many_field,
