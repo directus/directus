@@ -141,8 +141,8 @@ router.get(
 
 		const transformation: TransformationParams | TransformationPreset = res.locals['transformation'].key
 			? (res.locals['shortcuts'] as TransformationPreset[]).find(
-					(transformation) => transformation['key'] === res.locals['transformation'].key
-			  )
+				(transformation) => transformation['key'] === res.locals['transformation'].key
+			)
 			: res.locals['transformation'];
 
 		let range: Range | undefined = undefined;
@@ -167,11 +167,13 @@ router.get(
 
 		const existingFormat = transformation.transforms?.find((transform) => transform[0] === 'toFormat');
 
-		if (req.headers.accept && !existingFormat && env['ASSETS_AUTO_FORMAT']) {
+		if (req.headers.accept && !existingFormat && req.query['format'] === 'auto') {
 			if (req.headers.accept.includes('image/webp')) {
 				transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', 'webp']];
 			} else if (req.headers.accept.includes('image/avif')) {
 				transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', 'avif']];
+			} else {
+				transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', 'jpg']];
 			}
 		}
 
