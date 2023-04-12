@@ -145,9 +145,7 @@ router.get(
 			  )
 			: res.locals['transformation'];
 
-		const isFormatAuto = req.query['format'] === 'auto' || transformation.format === 'auto';
-
-		if (req.headers.accept && isFormatAuto) {
+		if (req.headers.accept && transformation.format === 'auto') {
 			let format: 'jpg' | 'webp' | 'avif';
 
 			if (req.headers.accept.includes('image/webp')) {
