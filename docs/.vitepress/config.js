@@ -141,6 +141,9 @@ gtag('config', 'UA-24637628-7');
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
 		},
+		editLink: {
+			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
+		},
 	},
 });
 

@@ -1,4 +1,4 @@
-import { Action } from '@directus/types';
+import { Action } from '@directus/constants';
 import express from 'express';
 import Joi from 'joi';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
@@ -168,7 +168,7 @@ router.delete(
 
 		const item = await adminService.readOne(req.params['pk']!, { fields: ['action'] });
 
-		if (!item || item['action'] !== 'comment') {
+		if (!item || item['action'] !== Action.COMMENT) {
 			throw new ForbiddenException();
 		}
 

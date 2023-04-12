@@ -11,7 +11,7 @@
 
 		<ldap-form v-else-if="driver === 'ldap'" :provider="provider" />
 
-		<login-form v-else-if="driver === 'default' || driver === 'local'" :provider="provider" />
+		<login-form v-else-if="driver === DEFAULT_AUTH_DRIVER || driver === 'local'" :provider="provider" />
 
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
@@ -62,7 +62,7 @@ const providerSelect = computed({
 	},
 	set(value: string) {
 		provider.value = value;
-		driver.value = unref(auth).providers.find((provider) => provider.name === value)?.driver ?? 'default';
+		driver.value = unref(auth).providers.find((provider) => provider.name === value)?.driver ?? DEFAULT_AUTH_DRIVER;
 	},
 });
 

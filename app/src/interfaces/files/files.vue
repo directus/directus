@@ -135,7 +135,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import Draggable from 'vuedraggable';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { get, clamp, isEmpty, isNil, set } from 'lodash';
+import { get, clamp, isNil, set, isEmpty } from 'lodash';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { getFieldsFromTemplate } from '@directus/utils';
