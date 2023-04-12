@@ -1,10 +1,10 @@
-import type { Accountability, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import getDatabase from '../database';
-import { systemCollectionRows } from '../database/system-data/collections';
-import emitter from '../emitter';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import type { AbstractServiceOptions, PrimaryKey } from '../types';
+import getDatabase from '../database/index.js';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import emitter from '../emitter.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
 
 export class UtilsService {
 	knex: Knex;

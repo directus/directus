@@ -1,15 +1,15 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { format, parseISO, isValid } from 'date-fns';
-import { parseJSON, toArray } from '@directus/shared/utils';
-import { unflatten } from 'flat';
+import { parseJSON, toArray } from '@directus/utils';
+import flat from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
+import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash-es';
 import { v4 as uuid } from 'uuid';
 import { parse as wktToGeoJSON } from 'wellknown';
-import getDatabase from '../database';
-import { getHelpers, Helpers } from '../database/helpers';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import getDatabase from '../database/index.js';
+import { getHelpers, Helpers } from '../database/helpers/index.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -17,9 +17,9 @@ import type {
 	Item,
 	MutationOptions,
 	PrimaryKey,
-} from '../types';
-import { generateHash } from '../utils/generate-hash';
-import { ItemsService } from './items';
+} from '../types/index.js';
+import { generateHash } from '../utils/generate-hash.js';
+import { ItemsService } from './items.js';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -207,7 +207,7 @@ export class PayloadService {
 		const aggregateKeys = Object.keys(payload[0]!).filter((key) => key.includes('->'));
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				Object.assign(item, flat.unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
 				aggregateKeys.forEach((key) => delete item[key]);
 			}
 		}
@@ -444,6 +444,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 			} else {
@@ -452,6 +453,7 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					mutationTracker: opts?.mutationTracker,
 				});
 			}
 
@@ -523,6 +525,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 			} else {
@@ -531,6 +534,7 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					mutationTracker: opts?.mutationTracker,
 				});
 			}
 
@@ -638,6 +642,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					}))
 				);
 
@@ -665,6 +670,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				} else {
 					await itemsService.updateByQuery(
@@ -675,6 +681,7 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
 						}
 					);
 				}
@@ -723,6 +730,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 
@@ -741,6 +749,7 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								mutationTracker: opts?.mutationTracker,
 							}
 						);
 					}
@@ -769,6 +778,7 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
 						});
 					} else {
 						await itemsService.updateByQuery(
@@ -779,6 +789,7 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								mutationTracker: opts?.mutationTracker,
 							}
 						);
 					}

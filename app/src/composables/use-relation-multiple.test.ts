@@ -3,7 +3,7 @@ import { computed, defineComponent, h, toRefs } from 'vue';
 import { flushPromises, mount } from '@vue/test-utils';
 
 import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 import { RelationO2M } from './use-relation-o2m';
 import { cloneDeep } from 'lodash';
 

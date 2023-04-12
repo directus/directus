@@ -1,7 +1,7 @@
-import type { Accountability } from '@directus/shared/types';
-import { defineOperationApi, optionToString, toArray } from '@directus/shared/utils';
-import { NotificationsService } from '../../services';
-import { getAccountabilityForRole } from '../../utils/get-accountability-for-role';
+import type { Accountability } from '@directus/types';
+import { defineOperationApi, optionToString, toArray } from '@directus/utils';
+import { NotificationsService } from '../../services/notifications.js';
+import { getAccountabilityForRole } from '../../utils/get-accountability-for-role.js';
 
 type Options = {
 	recipient: string;

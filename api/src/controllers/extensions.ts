@@ -1,14 +1,14 @@
-import { EXTENSION_TYPES } from '@directus/shared/constants';
-import type { Plural } from '@directus/shared/types';
-import { depluralize, isIn } from '@directus/shared/utils';
+import { EXTENSION_TYPES } from '@directus/constants';
+import type { Plural } from '@directus/types';
+import { depluralize, isIn } from '@directus/utils';
 import { Router } from 'express';
-import env from '../env';
-import { RouteNotFoundException } from '../exceptions';
-import { getExtensionManager } from '../extensions';
-import { respond } from '../middleware/respond';
-import asyncHandler from '../utils/async-handler';
-import { getCacheControlHeader } from '../utils/get-cache-headers';
-import { getMilliseconds } from '../utils/get-milliseconds';
+import env from '../env.js';
+import { RouteNotFoundException } from '../exceptions/index.js';
+import { getExtensionManager } from '../extensions.js';
+import { respond } from '../middleware/respond.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getCacheControlHeader } from '../utils/get-cache-headers.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 const router = Router();
 
@@ -35,12 +35,20 @@ router.get(
 );
 
 router.get(
-	'/sources/index.js',
+	'/sources/:chunk',
 	asyncHandler(async (req, res) => {
+		const chunk = req.params['chunk'] as string;
 		const extensionManager = getExtensionManager();
 
-		const extensionSource = extensionManager.getAppExtensions();
-		if (extensionSource === null) {
+		let source: string | null;
+
+		if (chunk === 'index.js') {
+			source = extensionManager.getAppExtensions();
+		} else {
+			source = extensionManager.getAppExtensionChunk(chunk);
+		}
+
+		if (source === null) {
 			throw new RouteNotFoundException(req.path);
 		}
 
@@ -50,7 +58,7 @@ router.get(
 			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false)
 		);
 		res.setHeader('Vary', 'Origin, Cache-Control');
-		res.end(extensionSource);
+		res.end(source);
 	})
 );
 

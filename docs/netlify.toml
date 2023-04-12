@@ -1,0 +1,23 @@
+[build.environment]
+	NODE_VERSION = "18"
+
+[build]
+	publish = ".vitepress/dist"
+	command = "pnpm run build"
+
+[dev]
+	command = "pnpm run dev"
+	targetPort = 5173
+	autoLaunch = false
+	framework = "#custom"
+
+[[redirects]]
+	from = "/"
+	to = "/getting-started/introduction"
+	status = 301
+	force = true
+
+[[redirects]]
+	from = "/api/*"
+	to = "/.netlify/functions/:splat"
+	status = 200

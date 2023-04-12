@@ -1,4 +1,3 @@
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Driver } from '@directus/storage';
 
 export const _aliasMap: Record<string, string> = {

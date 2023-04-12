@@ -1,5 +1,5 @@
 import os from 'node:os';
-import { getEnv } from '../env';
+import { getEnv } from '../env.js';
 
 export const validateIP = async (ip: string, url: string) => {
 	const env = getEnv();

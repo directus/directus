@@ -1,8 +1,8 @@
 import api from '@/api';
 import { i18n } from '@/lang';
-import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/shared/types';
+import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
 import { Collection } from '@/types/collections';
-import { getCollectionType } from '@directus/shared/utils';
+import { getCollectionType } from '@directus/utils';
 import { notify } from '@/utils/notify';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
