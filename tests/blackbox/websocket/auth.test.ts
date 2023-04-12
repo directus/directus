@@ -1,4 +1,4 @@
-import config, { getUrl } from '@common/config';
+import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
 import { awaitDirectusConnection } from '@utils/await-connection';
@@ -31,7 +31,7 @@ describe('WebSocket Auth Tests', () => {
 			for (const vendor of vendors) {
 				databases.set(vendor, knex(config.knexConfig[vendor]!));
 
-				const server = spawn('node', ['api/cli', 'start'], { env: env[vendor] });
+				const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 				directusInstances[vendor] = server;
 
 				promises.push(awaitDirectusConnection(Number(env[vendor].PORT)));
