@@ -36,7 +36,7 @@ export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	},
 ];
 
-export const ASSET_TRANSFORM_QUERY_KEYS = [
+export const ASSET_TRANSFORM_QUERY_KEYS: Array<keyof TransformationParams> = [
 	'key',
 	'transforms',
 	'width',
