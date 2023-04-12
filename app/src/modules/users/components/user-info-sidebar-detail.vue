@@ -1,12 +1,12 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="t('information')" close>
+	<sidebar-detail icon="info" :title="t('information')" close>
 		<dl v-if="isNew === false && user">
 			<div v-if="user.id" class="description-list">
 				<dt>{{ t('key') }}</dt>
 				<dd>{{ user.id }}</dd>
 				<v-icon
 					v-if="isCopySupported"
-					name="copy"
+					name="content_copy"
 					small
 					clickable
 					class="clipboard-icon"

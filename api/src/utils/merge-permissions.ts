@@ -16,7 +16,11 @@ export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permiss
 	return Array.from(mergedPermissions);
 }
 
-export function mergePermission(strategy: 'and' | 'or', currentPerm: Permission, newPerm: Permission) {
+export function mergePermission(
+	strategy: 'and' | 'or',
+	currentPerm: Permission,
+	newPerm: Permission
+): Omit<Permission, 'id' | 'system'> {
 	const logicalKey = `_${strategy}` as keyof LogicalFilterOR | keyof LogicalFilterAND;
 
 	let permissions = currentPerm.permissions;

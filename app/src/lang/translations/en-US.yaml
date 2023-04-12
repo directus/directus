@@ -540,6 +540,7 @@ create_collection: Create Collection
 no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
 no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
 relationship_not_setup: The relationship hasn't been configured correctly
+no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: The display template option is misconfigured
 collection_field_not_setup: The collection field option is misconfigured
 select_a_collection: Select a Collection
@@ -678,6 +679,7 @@ one_filtered_item: '1 filtered item'
 delete_collection_are_you_sure: >-
   Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it. This action is permanent.
 delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
+delete_collection_peer_dependencies: The following fields will be deleted as well, as they are related to the current collection.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -1160,6 +1162,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Mapping
     basemaps: Basemaps
     basemaps_raster: Raster
@@ -1458,6 +1461,7 @@ export_started: Export Started
 export_started_copy: Your export has started. You'll be notified when it's ready to download.
 sort_asc: Sort Ascending
 sort_desc: Sort Descending
+disable_sort: Disable Sorting
 template: Template
 require_value_to_be_set: Require value to be set on creation
 translation: Translation

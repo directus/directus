@@ -34,7 +34,7 @@
 		</div>
 
 		<template #notice>
-			<v-icon name="lock_outlined" left />
+			<v-icon name="lock" left />
 			{{ t('not_authenticated') }}
 		</template>
 	</public-view>

@@ -17,7 +17,7 @@ COPY . .
 RUN pnpm install --recursive --offline --frozen-lockfile
 
 RUN : \
-	&& pnpm --recursive --workspace-concurrency=1 run build \
+	&& npm_config_workspace_concurrency=1 pnpm run build \
 	&& pnpm --filter directus deploy --prod dist \
 	&& cd dist \
 	&& pnpm pack \
@@ -49,6 +49,6 @@ COPY --from=builder --chown=node:node /directus/dist .
 USER node
 
 CMD : \
-	&& node /directus/dist/cli/run.js bootstrap \
-	&& node /directus/dist/cli/run.js start \
+	&& node /directus/cli.js bootstrap \
+	&& node /directus/cli.js start \
 	;
