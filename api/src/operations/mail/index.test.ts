@@ -1,10 +1,10 @@
 import knex from 'knex';
 import { MockClient } from 'knex-mock-client';
 import { beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
-import { MailService } from '../../services';
-import * as mdUtil from '../../utils/md';
+import { MailService } from '../../services/mail/index.js';
+import * as mdUtil from '../../utils/md.js';
 
-import config, { Options } from './index';
+import config, { Options } from './index.js';
 
 describe('Operations / Mail', () => {
 	let mockOperationContext: any;
@@ -14,7 +14,7 @@ describe('Operations / Mail', () => {
 	beforeEach(async () => {
 		mockOperationContext = {
 			accountability: null,
-			database: vi.mocked(knex({ client: MockClient })),
+			database: vi.mocked(knex.default({ client: MockClient })),
 			getSchema: vi.fn().mockResolvedValue({}),
 		};
 		mailServiceSendSpy = vi.spyOn(MailService.prototype, 'send').mockResolvedValue(true);
