@@ -2,8 +2,8 @@
 	NODE_VERSION = "18"
 
 [build]
-  publish = ".vitepress/dist"
-  command = "pnpm run build"
+	publish = ".vitepress/dist"
+	command = "pnpm run build"
 
 [dev]
 	command = "pnpm run dev"
@@ -12,12 +12,12 @@
 	framework = "#custom"
 
 [[redirects]]
-   from = "/"
-   to = "/getting-started/introduction"
-   status = 301
-   force = true
+	from = "/"
+	to = "/getting-started/introduction"
+	status = 301
+	force = true
 
 [[redirects]]
-   from = "/api/*"
-   to = "/.netlify/functions/:splat"
-   status = 200
+	from = "/api/*"
+	to = "/.netlify/functions/:splat"
+	status = 200
