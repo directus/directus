@@ -1,16 +1,16 @@
-import { Query, SchemaOverview } from '@directus/shared/types';
-import { Knex } from 'knex';
-import { applyFilter } from '../../../utils/apply-query';
-import { DatabaseHelper } from '../types';
+import type { Query, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { applyFilter } from '../../../utils/apply-query.js';
+import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
-	type?: string;
-	query?: Query;
-	originalCollectionName?: string;
+	type: string | undefined;
+	query: Query | undefined;
+	originalCollectionName: string | undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
-	constructor(protected knex: Knex, protected schema: SchemaOverview) {
+	constructor(knex: Knex, protected schema: SchemaOverview) {
 		super(knex);
 		this.schema = schema;
 	}
@@ -32,7 +32,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			(relation) => relation.related_collection === collectionName && relation?.meta?.one_field === column
 		);
 
-		const currentPrimary = this.schema.collections[collectionName].primary;
+		const currentPrimary = this.schema.collections[collectionName]!.primary;
 
 		if (!relation) {
 			throw new Error(`Field ${collectionName}.${column} isn't a nested relational collection`);

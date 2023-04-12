@@ -134,7 +134,6 @@
 	font-family: inherit !important;
 	line-height: inherit !important;
 	background-color: var(--background-page);
-	overflow: hidden;
 
 	&,
 	&.suggestions {
@@ -217,7 +216,7 @@
 }
 
 .mapboxgl-ctrl-select::after {
-	content: 'highlight_alt';
+	content: 'select';
 }
 
 .mapboxgl-ctrl-unselect::after {

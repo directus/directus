@@ -10,7 +10,11 @@
 		:search="search"
 		collection="directus_webhooks"
 	>
-		<private-view :title="t('webhooks')">
+		<private-view
+			:title="t('webhooks')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 			<template #title-outer:prepend>
@@ -56,7 +60,7 @@
 				</v-button>
 			</template>
 
-			<component :is="`layout-${layout}`" class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
@@ -79,7 +83,7 @@
 			</component>
 
 			<template #sidebar>
-				<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<sidebar-detail icon="info" :title="t('information')" close>
 					<div v-md="t('page_help_settings_webhooks_collection')" class="page-description" />
 				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
@@ -97,9 +101,10 @@ import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import { usePreset } from '@/composables/use-preset';
-import { useLayout } from '@directus/shared/composables';
+import { useLayout } from '@directus/composables';
 import api from '@/api';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { useExtension } from '@/composables/use-extension';
 
 type Item = {
 	[field: string]: any;
@@ -120,6 +125,8 @@ export default defineComponent({
 
 		const { layoutWrapper } = useLayout(layout);
 
+		const currentLayout = useExtension('layout', layout);
+
 		return {
 			t,
 			addNewLink,
@@ -136,6 +143,7 @@ export default defineComponent({
 			layout,
 			search,
 			clearFilters,
+			currentLayout,
 		};
 
 		async function refresh() {

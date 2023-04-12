@@ -7,13 +7,7 @@
 				<span class="field-name">{{ field.name }}</span>
 				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-				<v-icon
-					v-if="!active && validationMessage"
-					v-tooltip="validationMessage"
-					class="warning"
-					name="error_outline"
-					small
-				/>
+				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
 			</div>
 
 			<transition-expand>
@@ -42,8 +36,8 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
 import { merge, isNil } from 'lodash';
-import { Field } from '@directus/shared/types';
-import { ValidationError } from '@directus/shared/types';
+import { Field } from '@directus/types';
+import { ValidationError } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({

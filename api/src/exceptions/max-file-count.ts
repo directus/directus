@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/shared/exceptions';
+import { BaseException } from '@directus/exceptions';
 
 export class MaxFileCountExceededException extends BaseException {
 	constructor(message = 'Max file count exceeded.') {

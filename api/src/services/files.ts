@@ -1,31 +1,30 @@
-import { toArray } from '@directus/shared/utils';
+import formatTitle from '@directus/format-title';
+import { toArray } from '@directus/utils';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
 import { parse as parseIcc } from 'icc';
-import { clone, pick } from 'lodash';
+import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import path from 'path';
 import sharp from 'sharp';
 import url from 'url';
-import emitter from '../emitter';
-import env from '../env';
+import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
 import {
 	ForbiddenException,
 	InvalidPayloadException,
-	ServiceUnavailableException,
 	MaxFileSizeExceededException,
-} from '../exceptions';
-import logger from '../logger';
-import { getAxios } from '../request/index';
-import { getStorage } from '../storage';
-import { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types';
-import { parseIptc, parseXmp } from '../utils/parse-image-metadata';
-import { ItemsService } from './items';
-
-// @ts-ignore
-import formatTitle from '@directus/format-title';
+	ServiceUnavailableException,
+} from '../exceptions/index.js';
+import logger from '../logger.js';
+import { getAxios } from '../request/index.js';
+import { getStorage } from '../storage/index.js';
+import type { AbstractServiceOptions, File, Metadata, MutationOptions, PrimaryKey } from '../types/index.js';
+import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
+import { ItemsService } from './items.js';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -37,13 +36,24 @@ export class FilesService extends ItemsService {
 	 */
 	async uploadOne(
 		stream: Readable,
-		data: Partial<File> & { filename_download: string; storage: string },
+		data: Partial<File> & { storage: string },
 		primaryKey?: PrimaryKey,
 		opts?: MutationOptions
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
-		const payload = clone(data);
+		let existingFile = {};
+
+		if (primaryKey !== undefined) {
+			existingFile =
+				(await this.knex
+					.select('folder', 'filename_download')
+					.from('directus_files')
+					.where({ id: primaryKey })
+					.first()) ?? {};
+		}
+
+		const payload = { ...existingFile, ...clone(data) };
 
 		const disk = storage.location(payload.storage);
 
@@ -64,7 +74,7 @@ export class FilesService extends ItemsService {
 		}
 
 		const fileExtension =
-			path.extname(payload.filename_download) || (payload.type && '.' + extension(payload.type)) || '';
+			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
 		payload.filename_disk = primaryKey + (fileExtension || '');
 
@@ -80,7 +90,7 @@ export class FilesService extends ItemsService {
 			// Check if the file was truncated (if the stream ended early)
 			if (stream.truncated === true) {
 				throw new MaxFileSizeExceededException(
-					`${payload.filename_download} exceeds the maximum allowed file size of ${env.ASSETS_LIMIT_FILE_SIZE} bytes.`
+					`${payload.filename_download} exceeds the maximum allowed file size of ${env['ASSETS_LIMIT_FILE_SIZE']} bytes.`
 				);
 			}
 		} catch (err: any) {
@@ -126,16 +136,16 @@ export class FilesService extends ItemsService {
 		const { size } = await disk.stat(payload.filename_disk);
 		payload.filesize = size;
 
-		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
+		if (SUPPORTED_IMAGE_METADATA_FORMATS.includes(payload.type)) {
 			const stream = await storage.location(payload.storage).read(payload.filename_disk);
 			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
 
-			payload.height ??= height;
-			payload.width ??= width;
-			payload.description ??= description;
-			payload.title ??= title;
-			payload.tags ??= tags;
-			payload.metadata ??= metadata;
+			payload.height ??= height ?? null;
+			payload.width ??= width ?? null;
+			payload.description ??= description ?? null;
+			payload.title ??= title ?? null;
+			payload.tags ??= tags ?? null;
+			payload.metadata ??= metadata ?? null;
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
@@ -147,7 +157,7 @@ export class FilesService extends ItemsService {
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 
@@ -173,7 +183,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Extract metadata from a buffer's content
 	 */
-	async getMetadata(stream: Readable, allowList = env.FILE_METADATA_ALLOW_LIST): Promise<Metadata> {
+	async getMetadata(stream: Readable, allowList = env['FILE_METADATA_ALLOW_LIST']): Promise<Metadata> {
 		return new Promise((resolve, reject) => {
 			pipeline(
 				stream,
@@ -247,14 +257,14 @@ export class FilesService extends ItemsService {
 						}
 					}
 
-					if (fullMetadata?.iptc?.Caption && typeof fullMetadata.iptc.Caption === 'string') {
-						metadata.description = fullMetadata.iptc?.Caption;
+					if (fullMetadata?.iptc?.['Caption'] && typeof fullMetadata.iptc['Caption'] === 'string') {
+						metadata.description = fullMetadata.iptc?.['Caption'];
 					}
-					if (fullMetadata?.iptc?.Headline && typeof fullMetadata.iptc.Headline === 'string') {
-						metadata.title = fullMetadata.iptc.Headline;
+					if (fullMetadata?.iptc?.['Headline'] && typeof fullMetadata.iptc['Headline'] === 'string') {
+						metadata.title = fullMetadata.iptc['Headline'];
 					}
-					if (fullMetadata?.iptc?.Keywords) {
-						metadata.tags = fullMetadata.iptc.Keywords;
+					if (fullMetadata?.iptc?.['Keywords']) {
+						metadata.tags = fullMetadata.iptc['Keywords'];
 					}
 
 					if (allowList === '*' || allowList?.[0] === '*') {
@@ -310,7 +320,7 @@ export class FilesService extends ItemsService {
 
 		const payload = {
 			filename_download: filename,
-			storage: toArray(env.STORAGE_LOCATIONS)[0],
+			storage: toArray(env['STORAGE_LOCATIONS'])[0],
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
 			...(body || {}),
@@ -323,7 +333,7 @@ export class FilesService extends ItemsService {
 	 * Create a file (only applicable when it is not a multipart/data POST request)
 	 * Useful for associating metadata with existing file in storage
 	 */
-	async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data.type) {
 			throw new InvalidPayloadException(`"type" is required`);
 		}
@@ -335,7 +345,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete a file
 	 */
-	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
 		await this.deleteMany([key], opts);
 		return key;
 	}
@@ -343,7 +353,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete multiple files
 	 */
-	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
@@ -354,15 +364,15 @@ export class FilesService extends ItemsService {
 		await super.deleteMany(keys);
 
 		for (const file of files) {
-			const disk = storage.location(file.storage);
+			const disk = storage.location(file['storage']);
 
 			// Delete file + thumbnails
-			for await (const filepath of disk.list(file.id)) {
+			for await (const filepath of disk.list(file['id'])) {
 				await disk.delete(filepath);
 			}
 		}
 
-		if (this.cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
 			await this.cache.clear();
 		}
 

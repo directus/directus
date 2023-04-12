@@ -90,7 +90,7 @@ import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Preset } from '@directus/shared/types';
+import { Preset } from '@directus/types';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -128,7 +128,7 @@ function useEditBookmark() {
 	const editActive = ref(false);
 	const editValue = reactive({
 		name: props.bookmark.bookmark,
-		icon: props.bookmark?.icon ?? 'bookmark_outline',
+		icon: props.bookmark?.icon ?? 'bookmark',
 		color: props.bookmark?.color ?? null,
 	});
 	const editSaving = ref(false);
@@ -157,7 +157,7 @@ function useEditBookmark() {
 	function editCancel() {
 		editActive.value = false;
 		editValue.name = props.bookmark.bookmark;
-		editValue.icon = props.bookmark?.icon ?? 'bookmark_outline';
+		editValue.icon = props.bookmark?.icon ?? 'bookmark';
 		editValue.color = props.bookmark?.color ?? null;
 	}
 }

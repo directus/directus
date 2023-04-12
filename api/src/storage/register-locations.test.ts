@@ -1,5 +1,4 @@
-import { toArray } from '@directus/shared/utils';
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import { toArray } from '@directus/utils';
 import type { StorageManager } from '@directus/storage';
 import { randNumber, randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
@@ -8,7 +7,7 @@ import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { registerLocations } from './register-locations.js';
 
 vi.mock('../env.js');
-vi.mock('@directus/shared/utils');
+vi.mock('@directus/utils');
 vi.mock('../utils/get-config-from-env.js');
 
 let sample: {
@@ -35,14 +34,14 @@ beforeEach(() => {
 			driver: randWord(),
 		};
 
-		keys.forEach((key, index) => (sample.options[`STORAGE_${location.toUpperCase()}_`][key] = values[index]));
+		keys.forEach((key, index) => (sample.options[`STORAGE_${location.toUpperCase()}_`]![key] = values[index]!));
 	});
 
 	mockStorage = {
 		registerLocation: vi.fn(),
 	} as unknown as StorageManager;
 
-	vi.mocked(getConfigFromEnv).mockImplementation((name) => sample.options[name]);
+	vi.mocked(getConfigFromEnv).mockImplementation((name) => sample.options[name]!);
 	vi.mocked(getEnv).mockReturnValue({
 		STORAGE_LOCATIONS: sample.locations.join(', '),
 	});
@@ -72,7 +71,7 @@ test('Registers location with driver options for each location', async () => {
 
 	expect(mockStorage.registerLocation).toHaveBeenCalledTimes(sample.locations.length);
 	sample.locations.forEach((location) => {
-		const { driver, ...options } = sample.options[`STORAGE_${location.toUpperCase()}_`];
+		const { driver, ...options } = sample.options[`STORAGE_${location.toUpperCase()}_`]!;
 
 		expect(mockStorage.registerLocation).toHaveBeenCalledWith(location, {
 			driver,

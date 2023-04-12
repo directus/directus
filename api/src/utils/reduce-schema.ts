@@ -1,6 +1,5 @@
-import { uniq } from 'lodash';
-
-import { Permission, PermissionsAction, SchemaOverview } from '@directus/shared/types';
+import type { Permission, PermissionsAction, SchemaOverview } from '@directus/types';
+import { uniq } from 'lodash-es';
 
 /**
  * Reduces the schema based on the included permissions. The resulting object is the schema structure, but with only
@@ -28,7 +27,7 @@ export function reduceSchema(
 				}
 
 				if (permission.fields) {
-					acc[permission.collection] = uniq([...acc[permission.collection], ...permission.fields]);
+					acc[permission.collection] = uniq([...acc[permission.collection]!, ...permission.fields]);
 				}
 
 				return acc;
@@ -45,7 +44,7 @@ export function reduceSchema(
 
 		const fields: SchemaOverview['collections'][string]['fields'] = {};
 
-		for (const [fieldName, field] of Object.entries(schema.collections[collectionName].fields)) {
+		for (const [fieldName, field] of Object.entries(schema.collections[collectionName]!.fields)) {
 			if (
 				!allowedFieldsInCollection[collectionName]?.includes('*') &&
 				!allowedFieldsInCollection[collectionName]?.includes(fieldName)
@@ -87,7 +86,7 @@ export function reduceSchema(
 			relation.related_collection &&
 			(Object.keys(allowedFieldsInCollection).includes(relation.related_collection) === false ||
 				// Ignore legacy permissions with an empty fields array
-				allowedFieldsInCollection[relation.related_collection].length === 0)
+				allowedFieldsInCollection[relation.related_collection]?.length === 0)
 		) {
 			collectionsAllowed = false;
 		}
@@ -103,8 +102,8 @@ export function reduceSchema(
 
 		if (
 			!allowedFieldsInCollection[relation.collection] ||
-			(allowedFieldsInCollection[relation.collection].includes('*') === false &&
-				allowedFieldsInCollection[relation.collection].includes(relation.field) === false)
+			(allowedFieldsInCollection[relation.collection]?.includes('*') === false &&
+				allowedFieldsInCollection[relation.collection]?.includes(relation.field) === false)
 		) {
 			fieldsAllowed = false;
 		}
@@ -113,8 +112,8 @@ export function reduceSchema(
 			relation.related_collection &&
 			relation.meta?.one_field &&
 			(!allowedFieldsInCollection[relation.related_collection] ||
-				(allowedFieldsInCollection[relation.related_collection].includes('*') === false &&
-					allowedFieldsInCollection[relation.related_collection].includes(relation.meta?.one_field) === false))
+				(allowedFieldsInCollection[relation.related_collection]?.includes('*') === false &&
+					allowedFieldsInCollection[relation.related_collection]?.includes(relation.meta?.one_field) === false))
 		) {
 			fieldsAllowed = false;
 		}
