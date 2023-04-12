@@ -11,7 +11,12 @@ import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
-import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets.js';
+import {
+	TransformationMethods,
+	TransformationParams,
+	TransformationPreset,
+	TransformationPresetFormat,
+} from '../types/assets.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
@@ -41,6 +46,10 @@ router.get(
 		const assetSettings = savedAssetSettings || defaults;
 
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
+
+		if (transformation['format'] === 'auto') {
+			transformation['format'] = getAutoFormat(req.headers.accept);
+		}
 
 		if ('key' in transformation && Object.keys(transformation).length > 1) {
 			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
@@ -165,18 +174,6 @@ router.get(
 			}
 		}
 
-		const existingFormat = transformation.transforms?.find((transform) => transform[0] === 'toFormat');
-
-		if (req.headers.accept && !existingFormat && req.query['format'] === 'auto') {
-			if (req.headers.accept.includes('image/webp')) {
-				transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', 'webp']];
-			} else if (req.headers.accept.includes('image/avif')) {
-				transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', 'avif']];
-			} else {
-				transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', 'jpg']];
-			}
-		}
-
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
 		const filename = req.params['filename'] ?? file.filename_download;
@@ -246,5 +243,17 @@ router.get(
 		return undefined;
 	})
 );
+
+function getAutoFormat(accept?: string): TransformationPresetFormat['format'] {
+	if (accept) {
+		if (accept.includes('image/webp')) {
+			return 'webp';
+		}
+		if (accept.includes('image/avif')) {
+			return 'avif';
+		}
+	}
+	return 'jpg';
+}
 
 export default router;
