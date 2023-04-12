@@ -954,7 +954,6 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 | Variable                | Description          | Default Value |
 | ----------------------- | -------------------- | ------------- |
-| `EMAIL_SMTP_NAME`       | SMTP client hostname | --            |
 | `EMAIL_SMTP_HOST`       | SMTP server host     | --            |
 | `EMAIL_SMTP_PORT`       | SMTP server port     | --            |
 | `EMAIL_SMTP_USER`       | SMTP user            | --            |
@@ -962,6 +961,7 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_SMTP_POOL`       | Use SMTP pooling     | --            |
 | `EMAIL_SMTP_SECURE`     | Enable TLS           | --            |
 | `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS           | --            |
+| `EMAIL_SMTP_NAME`       | SMTP client hostname | --            |
 
 ### Mailgun (`mailgun`)
 
