@@ -9,11 +9,11 @@
 
 ## Running app unit tests
 
-Run `pnpm -F @directus/app test`.
+Run `pnpm --filter app test`.
 
 ## Running API unit tests
 
-Run `pnpm -F directus test`.
+Run `pnpm --filter api test`.
 
 ## Running blackbox tests
 
@@ -23,11 +23,13 @@ Run the following from the project's root directory.
 
 ```bash
 # Ensure that you are testing on the lastest codebase
-pnpm -r build
+pnpm build
+
 # Clean up in case you ran the tests before
 docker compose -f tests-blackbox/docker-compose.yml down -v
 # Start the necessary containers
 docker compose -f tests-blackbox/docker-compose.yml up -d --wait
+
 # Run the tests
 pnpm test:blackbox
 ```
@@ -51,10 +53,3 @@ TEST_DB=cockroachdb TEST_LOCAL=true pnpm test:blackbox
 
 This will use `localhost:8055` as the URL for every test. Note: make sure to connect your local Directus database
 instance to the test database container found in docker-compose in this folder.
-
-### Watching for (test) changes
-
-Use `pnpm run test:blackbox:watch` to enable Jest's `--watch` mode, especially useful in combination with the flags
-above.
-
-This _does not_ watch changes to Directus; it only watches changes to the tests.
