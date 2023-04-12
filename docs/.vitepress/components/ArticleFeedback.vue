@@ -47,11 +47,11 @@ const ratingOptions = [
 	},
 ];
 
-async function handleSubmission() {
+async function handleSubmission(rating?: number) {
 	loading.value = true;
 	const body = {
 		id: feedback.id,
-		rating: feedback.rating,
+		rating: rating ?? feedback.rating,
 		comments: feedback.comments,
 		title: props.title,
 		url: props.url,
@@ -88,15 +88,7 @@ async function handleSubmission() {
 					</div>
 				</div>
 				<div class="button-container">
-					<button
-						v-for="item in ratingOptions"
-						:key="item.value"
-						class="btn"
-						@click="
-							feedback.rating = item.value;
-							handleSubmission();
-						"
-					>
+					<button v-for="item in ratingOptions" :key="item.value" class="btn" @click="handleSubmission(item.value)">
 						<span>{{ item.label }}</span>
 					</button>
 				</div>
