@@ -147,7 +147,7 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
-	 * create url for inviting users
+	 * Create url for inviting users
 	 */
 	private inviteUrl(email: string, url: string | null): string {
 		const payload = { email, scope: 'invite' };
@@ -350,19 +350,19 @@ export class UsersService extends ItemsService {
 		});
 
 		for (const email of emails) {
-			// check if user is known
+			// Check if user is known
 			const user = await this.getUserByEmail(email);
 
 			// Create user first to verify uniqueness if unknown
 			if (isEmpty(user)) {
 				await this.createOne({ email, role, status: 'invited' }, opts);
 
-				// for known users update role if changed
+				// For known users update role if changed
 			} else if (user.status === 'invited' && user.role !== role) {
 				await this.updateOne(user.id, { role }, opts);
 			}
 
-			// send invite for new and already invited users
+			// Send invite for new and already invited users
 			if (isEmpty(user) || user.status === 'invited') {
 				const subjectLine = subject ?? "You've been invited";
 
