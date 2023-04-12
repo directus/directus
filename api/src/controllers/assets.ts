@@ -141,8 +141,8 @@ router.get(
 
 		const transformation: TransformationParams | TransformationPreset = res.locals['transformation'].key
 			? (res.locals['shortcuts'] as TransformationPreset[]).find(
-				(transformation) => transformation['key'] === res.locals['transformation'].key
-			)
+					(transformation) => transformation['key'] === res.locals['transformation'].key
+			  )
 			: res.locals['transformation'];
 
 		let range: Range | undefined = undefined;
