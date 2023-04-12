@@ -1,4 +1,4 @@
-import type { Query } from './query';
+import type { Query } from './query.js';
 
 type MessageType = 'SUBSCRIBE' | 'UNSUBSCRIBE' | 'PING' | 'PONG' | 'AUTH' | 'FOCUS' | 'BLUR';
 

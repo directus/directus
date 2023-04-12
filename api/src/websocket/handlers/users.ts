@@ -1,7 +1,7 @@
-import type { FocusMessage, WebSocketClient } from '../types';
-import emitter from '../../emitter';
-import { handleWebsocketException } from '../exceptions';
-import logger from '../../logger';
+import type { FocusMessage, WebSocketClient } from '../types.js';
+import emitter from '../../emitter.js';
+import logger from '../../logger.js';
+import { handleWebSocketException } from '../exceptions.js';
 
 type UserFocus = {
 	user: string;
@@ -28,7 +28,7 @@ export class UsersHandler {
 			try {
 				this.onMessage(client, message as FocusMessage);
 			} catch (error) {
-				handleWebsocketException(client, error, 'users');
+				handleWebSocketException(client, error, 'users');
 			}
 		});
 		emitter.onAction('websocket.auth.success', ({ client }) => {
