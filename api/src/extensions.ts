@@ -130,16 +130,16 @@ class ExtensionManager {
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
-		const prevOptions = this.options;
-
 		this.options = {
 			...defaultOptions,
 			...options,
 		};
 
-		if (!prevOptions.watch && this.options.watch) {
+		const wasWatcherInitialized = this.watcher !== null;
+
+		if (this.options.watch && !wasWatcherInitialized) {
 			this.initializeWatcher();
-		} else if (prevOptions.watch && !this.options.watch) {
+		} else if (!this.options.watch && wasWatcherInitialized) {
 			await this.closeWatcher();
 		}
 
@@ -153,7 +153,7 @@ class ExtensionManager {
 			}
 		}
 
-		if (!prevOptions.watch && this.options.watch) {
+		if (this.options.watch && !wasWatcherInitialized) {
 			this.updateWatchedExtensions(this.extensions);
 		}
 	}
@@ -293,33 +293,33 @@ class ExtensionManager {
 	}
 
 	private initializeWatcher(): void {
-		if (!this.watcher) {
-			logger.info('Watching extensions for changes...');
+		logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
-				const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
+		const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
+			const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
 
-				if (isIn(type, HYBRID_EXTENSION_TYPES)) {
-					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
-				} else {
-					return path.posix.join(typeDir, '*', 'index.js');
-				}
-			});
+			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
+				return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
+			} else {
+				return path.posix.join(typeDir, '*', 'index.js');
+			}
+		});
 
-			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
-				ignoreInitial: true,
-			});
+		this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
+			ignoreInitial: true,
+		});
 
-			this.watcher
-				.on('add', () => this.reload())
-				.on('change', () => this.reload())
-				.on('unlink', () => this.reload());
-		}
+		this.watcher
+			.on('add', () => this.reload())
+			.on('change', () => this.reload())
+			.on('unlink', () => this.reload());
 	}
 
 	private async closeWatcher(): Promise<void> {
 		if (this.watcher) {
 			await this.watcher.close();
+
+			this.watcher = null;
 		}
 	}
 
