@@ -129,6 +129,14 @@ const filterByFolder = computed(() => {
 	return { folder: { id: { _eq: props.folder } } } as Filter;
 });
 
+function validFiles(files: FileList) {
+	if (files.length === 0) return false;
+	for (const file of files) {
+		if (file.size === 0) return false;
+	}
+	return true;
+}
+
 function useUpload() {
 	const uploading = ref(false);
 	const progress = ref(0);
@@ -146,10 +154,12 @@ function useUpload() {
 		if (props.folder) {
 			folderPreset.folder = props.folder;
 		}
-
 		try {
-			numberOfFiles.value = files.length;
+			if (!validFiles(files)) {
+				throw new Error('An error has occurred while uploading the files.');
+			}
 
+			numberOfFiles.value = files.length;
 			if (props.multiple === true) {
 				const uploadedFiles = await uploadFiles(Array.from(files), {
 					onProgressChange: (percentage) => {

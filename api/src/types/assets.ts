@@ -11,6 +11,7 @@ export const TransformationMethods /*: readonly (keyof Sharp)[]*/ = [
 	'png',
 	'tiff',
 	'webp',
+	'avif',
 
 	// Resizing
 	// https://sharp.pixelplumbing.com/api-resize
@@ -75,7 +76,7 @@ export type TransformationPreset = TransformationPresetFormat &
 	TransformationParams & { key: string };
 
 export type TransformationPresetFormat = {
-	format?: 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff';
+	format?: 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif';
 	quality?: number;
 };
 
