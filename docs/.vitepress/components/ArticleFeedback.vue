@@ -105,7 +105,7 @@ async function handleSubmission(rating?: number) {
 				</div>
 				<p class="heading">{{ ratingOptions[feedback.rating - 1].message }}</p>
 				<textarea v-model="feedback.comments" autofocus class="input" />
-				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission()">
+				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission">
 					Send Us Your Feedback
 				</button>
 			</div>
