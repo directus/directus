@@ -13,9 +13,7 @@ import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
 import {
 	TransformationMethods,
-	TransformationParams,
-	TransformationPreset,
-	TransformationPresetFormat,
+	TransformationParams
 } from '../types/assets.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
@@ -47,15 +45,7 @@ router.get(
 
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
-		let allowedParams = 1;
-		if (transformation['format'] === 'auto') {
-			const autoFormat = getAutoFormat(req.headers.accept);
-			transformation['format'] = autoFormat;
-			res.locals['autoFormat'] = autoFormat;
-			allowedParams = 2;
-		}
-
-		if ('key' in transformation && Object.keys(transformation).length > allowedParams) {
+		if ('key' in transformation && Object.keys(transformation).length > 1) {
 			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
 		}
 
@@ -152,16 +142,26 @@ router.get(
 			schema: req.schema,
 		});
 
-		const transformation: TransformationParams | TransformationPreset = res.locals['transformation'].key
-			? (res.locals['shortcuts'] as TransformationPreset[]).find(
-					(transformation) => transformation['key'] === res.locals['transformation'].key
-			  )
+		const transformation: TransformationParams = res.locals['transformation'].key
+			? (res.locals['shortcuts'] as TransformationParams[]).find(
+				(transformation) => transformation['key'] === res.locals['transformation'].key
+			)
 			: res.locals['transformation'];
 
-		const existingFormat = transformation.transforms?.find((transform) => transform[0] === 'toFormat');
+		const isFormatAuto = req.query['format'] === 'auto' || transformation.format === 'auto';
 
-		if (res.locals['autoFormat'] && !existingFormat) {
-			transformation.transforms = [...(transformation.transforms ?? []), ['toFormat', res.locals['autoFormat']]];
+		if (req.headers.accept && isFormatAuto) {
+			let format: 'jpg' | 'webp' | 'avif';
+
+			if (req.headers.accept.includes('image/webp')) {
+				format = 'webp'
+			} else if (req.headers.accept.includes('image/avif')) {
+				format = 'avif'
+			} else {
+				format = 'jpg'
+			}
+
+			transformation.format = format
 		}
 
 		let range: Range | undefined = undefined;
@@ -253,17 +253,5 @@ router.get(
 		return undefined;
 	})
 );
-
-function getAutoFormat(accept?: string): TransformationPresetFormat['format'] {
-	if (accept) {
-		if (accept.includes('image/webp')) {
-			return 'webp';
-		}
-		if (accept.includes('image/avif')) {
-			return 'avif';
-		}
-	}
-	return 'jpg';
-}
 
 export default router;

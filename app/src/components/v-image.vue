@@ -43,7 +43,6 @@ async function loadImage() {
 		const res = await api.get(props.src, {
 			responseType: 'arraybuffer',
 			params: {
-				format: 'auto',
 				download: true,
 			},
 		});

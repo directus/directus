@@ -22,7 +22,6 @@ import type {
 	File,
 	Transformation,
 	TransformationParams,
-	TransformationPreset,
 } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
@@ -41,7 +40,7 @@ export class AssetsService {
 
 	async getAsset(
 		id: string,
-		transformation: TransformationParams | TransformationPreset,
+		transformation: TransformationParams,
 		range?: Range
 	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();

@@ -1,70 +1,35 @@
-import { isNil } from 'lodash-es';
 import type {
 	File,
 	Transformation,
 	TransformationParams,
-	TransformationPreset,
-	TransformationPresetFormat,
-	TransformationPresetResize,
 } from '../types/index.js';
 
-// Extract transforms from a preset
-export function resolvePreset(input: TransformationParams | TransformationPreset, file: File): Transformation[] {
-	// Do the format conversion last
-	return [extractResize(input), ...(input.transforms ?? []), extractToFormat(input, file)].filter(
-		(transform): transform is Transformation => transform !== undefined
-	);
-}
+export function resolvePreset(input: TransformationParams, file: File): Transformation[] {
 
-function extractOptions<T extends Record<string, any>>(
-	keys: (keyof T)[],
-	numberKeys: (keyof T)[] = [],
-	booleanKeys: (keyof T)[] = []
-) {
-	return function (input: TransformationParams | TransformationPreset): T {
-		return Object.entries(input).reduce(
-			(config, [key, value]) =>
-				keys.includes(key as any) && isNil(value) === false
-					? {
-							...config,
-							[key]: numberKeys.includes(key as any)
-								? +value!
-								: booleanKeys.includes(key as any)
-								? Boolean(value)
-								: value,
-					  }
-					: config,
-			{} as T
-		);
-	};
-}
+	const transforms = input.transforms ?? [];
 
-// Extract format transform from a preset
-function extractToFormat(input: TransformationParams | TransformationPreset, file: File): Transformation | undefined {
-	const options = extractOptions<TransformationPresetFormat>(['format', 'quality'], ['quality'])(input);
-	return Object.keys(options).length > 0
-		? [
-				'toFormat',
-				options.format || (file.type!.split('/')[1] as any),
-				{
-					quality: options.quality,
-				},
-		  ]
-		: undefined;
-}
+	if (input.format || input.quality)
+		transforms.push([
+			'toFormat',
+			input.format || (file.type!.split('/')[1] as any),
+			{
+				quality: input.quality ? Number(input.quality) : undefined,
+			},
+		]);
 
-function extractResize(input: TransformationParams | TransformationPreset): Transformation | undefined {
-	const resizable = ['width', 'height'].some((key) => key in input);
-	if (!resizable) return undefined;
 
-	return [
-		'resize',
-		extractOptions<TransformationPresetResize>(
-			['width', 'height', 'fit', 'withoutEnlargement'],
-			['width', 'height'],
-			['withoutEnlargement']
-		)(input),
-	];
+	if (input.width || input.height)
+		transforms.push([
+			'resize',
+			{
+				width: input.width ? Number(input.width) : undefined,
+				height: input.height ? Number(input.height) : undefined,
+				fit: input.fit,
+				withoutEnlargement: input.withoutEnlargement ? Boolean(input.withoutEnlargement) : undefined
+			}
+		]);
+
+	return transforms;
 }
 
 /**

@@ -6,26 +6,32 @@ import { getMilliseconds } from './utils/get-milliseconds.js';
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{
 		key: 'system-small-cover',
+		format: 'auto',
 		transforms: [['resize', { width: 64, height: 64, fit: 'cover' }]],
 	},
 	{
 		key: 'system-small-contain',
+		format: 'auto',
 		transforms: [['resize', { width: 64, fit: 'contain' }]],
 	},
 	{
 		key: 'system-medium-cover',
+		format: 'auto',
 		transforms: [['resize', { width: 300, height: 300, fit: 'cover' }]],
 	},
 	{
 		key: 'system-medium-contain',
+		format: 'auto',
 		transforms: [['resize', { width: 300, fit: 'contain' }]],
 	},
 	{
 		key: 'system-large-cover',
+		format: 'auto',
 		transforms: [['resize', { width: 800, height: 800, fit: 'cover' }]],
 	},
 	{
 		key: 'system-large-contain',
+		format: 'auto',
 		transforms: [['resize', { width: 800, fit: 'contain' }]],
 	},
 ];
