@@ -106,13 +106,13 @@ async function handleSubmission(rating?: number) {
 				<div>
 					<p class="desc">This article is</p>
 					<div>
-						<span>{{ getRatingOption(feedback.rating).label }}</span>
+						<span>{{ getRatingOption(feedback.rating)?.label }}</span>
 						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = undefined">
 							<span mi icon>close</span>
 						</button>
 					</div>
 				</div>
-				<p class="heading">{{ getRatingOption(feedback.rating).message }}</p>
+				<p class="heading">{{ getRatingOption(feedback.rating)?.message }}</p>
 				<textarea v-model="feedback.comments" autofocus class="input" />
 				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission()">
 					Send Us Your Feedback
