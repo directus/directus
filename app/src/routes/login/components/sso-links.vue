@@ -43,23 +43,26 @@ export default defineComponent({
 
 		const { providers } = toRefs(props);
 		const ssoProviders = ref<{ name: string; link: string; icon: string }[]>([]);
-		const redirectPageAfterOauthLogin = (): string => {
-			return window.location?.search?.split('?redirect=/')?.[1] || '';
-		};
+
 		watch(
 			providers,
 			() => {
 				ssoProviders.value = providers.value
 					.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
-					.map((provider: AuthProvider) => ({
-						name: provider.name,
-						label: provider.label || formatTitle(provider.name),
-						link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href.replace(
-							location.search,
-							''
-						)}?continue=${redirectPageAfterOauthLogin()}`,
-						icon: provider.icon ?? 'account_circle',
-					}));
+					.map((provider: AuthProvider) => {
+						const link = new URL(window.location.origin);
+						link.pathname = `${getRootPath()}auth/login/${provider.name}`;
+						const redirect = new URL(window.location.href);
+						redirect.searchParams.set('continue', '');
+						link.searchParams.set('redirect', redirect.toString());
+
+						return {
+							name: provider.name,
+							label: provider.label || formatTitle(provider.name),
+							link: link.toString(),
+							icon: provider.icon ?? 'account_circle',
+						};
+					});
 			},
 			{ immediate: true }
 		);
