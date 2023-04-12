@@ -1,7 +1,7 @@
 # Writing Blackbox Tests
 
 > The testing suite is located in `/tests/blackbox`. For details on running tests, please refer to
-> [Running Tests](/contributing/tests/#running-blackbox-tests).
+> [Running Tests](/contributing/tests#running-blackbox-tests).
 
 Every API route should have a test to verify that it is working as intended. The tests are typescript files with names
 ending with `.test.ts`. Tests can have accompanying seed files ending with `.seed.ts`. Seed files contain the database
