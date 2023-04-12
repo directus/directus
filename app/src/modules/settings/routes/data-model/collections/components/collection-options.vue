@@ -98,12 +98,12 @@ const { deleting, deleteActive, deleteCollection } = useDelete();
 const peerDependencies = computed(() => {
 	return relationsStore.relations
 		.filter((relation) => {
-			const isM2O = relation.meta?.one_collection === props.collection.collection;
-			const isA2O =
-				relation.meta?.one_allowed_collections?.length === 1 &&
-				relation.meta.one_allowed_collections.includes(props.collection.collection);
-
-			return (isM2O || isA2O) && relation.meta?.many_collection && relation.meta?.many_field;
+			// a2o relations are ignored on purpose, to be able to select other collections afterwards
+			return (
+				relation.meta?.one_collection === props.collection.collection &&
+				relation.meta?.many_collection &&
+				relation.meta?.many_field
+			);
 		})
 		.map((relation) => ({
 			collection: relation.meta?.many_collection,
