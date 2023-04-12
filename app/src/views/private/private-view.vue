@@ -415,7 +415,7 @@ function openSidebar(event: PointerEvent) {
 	&.splitView {
 		#main-content .content-wrapper {
 			display: flex;
-			max-height: calc(100% - var(--layout-offset-top));
+			height: calc(100% - var(--layout-offset-top));
 
 			main {
 				display: block;
@@ -427,6 +427,7 @@ function openSidebar(event: PointerEvent) {
 			#split-content {
 				flex-grow: 1;
 				overflow: auto;
+				height: 100%;
 			}
 		}
 	}
