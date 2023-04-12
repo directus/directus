@@ -1,6 +1,6 @@
-import { ExtensionRaw } from '@directus/shared/types';
-import { AbstractServiceOptions } from '../types/index';
-import { ItemsService } from '../services/items';
+import type { ExtensionRaw } from '@directus/types';
+import type { AbstractServiceOptions } from '../types/index.js';
+import { ItemsService } from '../services/items.js';
 
 export class ExtensionsService extends ItemsService<ExtensionRaw> {
 	constructor(options: AbstractServiceOptions) {

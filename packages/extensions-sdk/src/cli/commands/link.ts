@@ -1,7 +1,7 @@
-import path from 'path';
+import { ExtensionManifest } from '@directus/constants';
 import fs from 'fs-extra';
-import { log } from '../utils/logger';
-import { ExtensionManifest } from '@directus/shared/types';
+import path from 'path';
+import { log } from '../utils/logger.js';
 
 export default async function link(extensionsPath: string): Promise<void> {
 	const extensionPath = process.cwd();

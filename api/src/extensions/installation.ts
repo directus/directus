@@ -1,13 +1,12 @@
-import { EXTENSION_TYPES } from '@directus/shared/constants';
-import { ExtensionManager } from './extensions';
-import { ExtensionManifest } from '@directus/shared/types';
+import { EXTENSION_TYPES, ExtensionManifest } from '@directus/constants';
+import type { ExtensionManager } from './extensions.js';
 import path from 'path';
 import fse from 'fs-extra';
-import env from '../env';
+import env from '../env.js';
 import tar from 'tar';
-import { ExtensionsService } from './service';
-import getDatabase from '../database/index';
-import { getSchema } from '../utils/get-schema';
+import { ExtensionsService } from './service.js';
+import getDatabase from '../database/index.js';
+import { getSchema } from '../utils/get-schema.js';
 
 export class InstallationManager {
 	private extensionManager: ExtensionManager;
@@ -41,8 +40,8 @@ export class InstallationManager {
 			throw new Error(`The package "${name}" is not a valid extension.`);
 		}
 
-		const extensionFolder = path.join(env.EXTENSIONS_PATH, name.replace(/[/\\]/g, '_'));
-		const extensionFolderTemp = path.join(env.EXTENSIONS_PATH, name.replace(/[/\\]/g, '_') + '_temp');
+		const extensionFolder = path.join(env['EXTENSIONS_PATH'], name.replace(/[/\\]/g, '_'));
+		const extensionFolderTemp = path.join(env['EXTENSIONS_PATH'], name.replace(/[/\\]/g, '_') + '_temp');
 		const localTarPath = path.join(extensionFolderTemp, 'tar.tgz');
 
 		const tarFile = await axios.get(tarballUrl, {
@@ -81,7 +80,7 @@ export class InstallationManager {
 			throw new Error(`Extension "${name}" is not local.`);
 		}
 
-		await fse.remove(path.join(env.EXTENSIONS_PATH, name.replace(/[/\\]/g, '_')));
+		await fse.remove(path.join(env['EXTENSIONS_PATH'], name.replace(/[/\\]/g, '_')));
 	}
 
 	public async updateExtension(name: string, version?: string) {

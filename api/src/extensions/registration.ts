@@ -1,4 +1,4 @@
-import {
+import type {
 	ActionHandler,
 	ApiExtension,
 	BundleExtension,
@@ -10,32 +10,45 @@ import {
 	InitHandler,
 	OperationApiConfig,
 	ScheduleHandler,
-} from '@directus/shared/types';
-import { dynamicImport } from '../utils/dynamic-import';
-import getModuleDefault from '../utils/get-module-default';
-import { ExtensionManager } from './extensions';
+} from '@directus/types';
+import getModuleDefault from '../utils/get-module-default.js';
+import type { ExtensionManager } from './extensions.js';
 import path from 'path';
-import logger from '../logger';
+import logger from '../logger.js';
 import globby from 'globby';
-import { generateExtensionsEntrypoint, pathToRelativeUrl, resolvePackage } from '@directus/shared/utils/node';
-import emitter from '../emitter';
-import { getFlowManager } from '../flows';
-import { EventHandler } from '../types/events';
+import { generateExtensionsEntrypoint, pathToRelativeUrl, resolvePackage } from '@directus/utils/node';
+import emitter from '../emitter.js';
+import { getFlowManager } from '../flows.js';
+import type { EventHandler } from '../types/events.js';
 import { schedule, validate } from 'node-cron';
-import { getSchema } from '../utils/get-schema';
-import getDatabase from '../database/index';
-import env from '../env';
-import * as services from '../services/index';
-import * as exceptions from '../exceptions/index';
-import * as sharedExceptions from '@directus/shared/exceptions';
+import { getSchema } from '../utils/get-schema.js';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import * as services from '../services/index.js';
+import * as exceptions from '../exceptions/index.js';
+import * as sharedExceptions from '@directus/exceptions';
 import express, { Router } from 'express';
-import { APP_SHARED_DEPS } from '@directus/shared/constants';
+import { APP_SHARED_DEPS } from '@directus/constants';
 import { rollup } from 'rollup';
-import virtual from '@rollup/plugin-virtual';
-import alias from '@rollup/plugin-alias';
-import fse from 'fs-extra';
-import { escapeRegExp } from 'lodash';
-import { Url } from '../utils/url';
+
+import { escapeRegExp } from 'lodash-es';
+import { Url } from '../utils/url.js';
+
+import aliasDefault from '@rollup/plugin-alias';
+import nodeResolveDefault from '@rollup/plugin-node-resolve';
+import virtualDefault from '@rollup/plugin-virtual';
+
+import { readdir } from 'node:fs/promises';
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const virtual = virtualDefault as unknown as typeof virtualDefault.default;
+const alias = aliasDefault as unknown as typeof aliasDefault.default;
+const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
+
+const require = createRequire(import.meta.url);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 type BundleConfig = {
 	endpoints: { name: string; config: EndpointConfig }[];
@@ -50,10 +63,12 @@ export class RegistrationManager {
 	private apiExtensions: ApiExtensions = [];
 	private hookEvents: EventHandler[] = [];
 	public endpointRouter: Router;
+	private appExtensionChunks: Map<string, string>;
 
 	constructor(extensionManager: ExtensionManager) {
 		this.extensionManager = extensionManager;
 		this.endpointRouter = Router();
+		this.appExtensionChunks = new Map();
 	}
 
 	public async registerHooks(): Promise<void> {
@@ -63,7 +78,7 @@ export class RegistrationManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await dynamicImport(hookPath);
+				const hookInstance: HookConfig | { default: HookConfig } = await import(`file://${hookPath}`);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -85,7 +100,7 @@ export class RegistrationManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = require(endpointPath);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(`file://${endpointPath}`);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -118,8 +133,10 @@ export class RegistrationManager {
 
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
-				const operationPath = path.resolve(operation.path, operation.entrypoint.api);
-				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = require(operationPath);
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
+					`file://${operationPath}`
+				);
 
 				const config = getModuleDefault(operationInstance);
 
@@ -141,7 +158,7 @@ export class RegistrationManager {
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-				const bundleInstances: BundleConfig | { default: BundleConfig } = require(bundlePath);
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(`file://${bundlePath}`);
 
 				const configs = getModuleDefault(bundleInstances);
 
@@ -297,6 +314,10 @@ export class RegistrationManager {
 		this.apiExtensions = [];
 	}
 
+	public getAppExtensionChunk(name: string): string | null {
+		return this.appExtensionChunks.get(name) ?? null;
+	}
+
 	public async generateExtensionBundle(): Promise<string | null> {
 		const sharedDepsMapping = await this.getSharedDepsMapping(APP_SHARED_DEPS);
 		const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
@@ -311,9 +332,15 @@ export class RegistrationManager {
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
-				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports })],
+				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
 			const { output } = await bundle.generate({ format: 'es', compact: true });
+
+			for (const out of output) {
+				if (out.type === 'chunk') {
+					this.appExtensionChunks.set(out.fileName, out.code);
+				}
+			}
 
 			await bundle.close();
 
@@ -327,7 +354,7 @@ export class RegistrationManager {
 	}
 
 	private async getSharedDepsMapping(deps: string[]): Promise<Record<string, string>> {
-		const appDir = await fse.readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
+		const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
 		for (const dep of deps) {
@@ -335,7 +362,7 @@ export class RegistrationManager {
 			const depName = appDir.find((file) => depRegex.test(file));
 
 			if (depName) {
-				const depUrl = new Url(env.PUBLIC_URL).addPath('admin', 'assets', depName);
+				const depUrl = new Url(env['PUBLIC_URL']).addPath('admin', 'assets', depName);
 
 				depsMapping[dep] = depUrl.toString({ rootRelative: true });
 			} else {

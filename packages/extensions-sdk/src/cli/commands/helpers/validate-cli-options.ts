@@ -1,4 +1,4 @@
-import { JsonValue, SplitEntrypoint } from '@directus/shared/types';
+import type { JsonValue, SplitEntrypoint } from '@directus/types';
 
 function validateNonPrimitive(value: JsonValue | undefined): value is JsonValue[] | { [key: string]: JsonValue } {
 	if (
@@ -19,7 +19,7 @@ export function validateSplitEntrypointOption(option: JsonValue | undefined): op
 		return false;
 	}
 
-	if (!option.app || !option.api) {
+	if (!option['app'] || !option['api']) {
 		return false;
 	}
 
