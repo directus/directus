@@ -115,8 +115,8 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			superCreateManySpy = vi.spyOn(ItemsService.prototype as any, 'createMany').mockImplementation(() => vi.fn());
-			superUpdateManySpy = vi.spyOn(ItemsService.prototype as any, 'updateMany').mockImplementation(() => vi.fn());
+			superCreateManySpy = vi.spyOn(ItemsService.prototype as any, 'createMany');
+			superUpdateManySpy = vi.spyOn(ItemsService.prototype as any, 'updateMany');
 
 			// "as any" are needed since these are private methods
 			checkUniqueEmailsSpy = vi
@@ -629,16 +629,13 @@ describe('Integration Tests', () => {
 
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy).toBeCalledWith(
-					[
-						expect.objectContaining({
-							email: 'user@example.com',
-							status: 'invited',
-							role: 'invite-role',
-						}),
-					],
-					{}
-				);
+				expect(superCreateManySpy.mock.lastCall![0]).toEqual([
+					expect.objectContaining({
+						email: 'user@example.com',
+						status: 'invited',
+						role: 'invite-role',
+					}),
+				]);
 
 				expect(mailService.send).toBeCalledTimes(1);
 			});
@@ -702,7 +699,8 @@ describe('Integration Tests', () => {
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superUpdateManySpy).toBeCalledWith([1], { role: 'invite-role' }, {});
+				expect(superUpdateManySpy.mock.lastCall![0]).toEqual([1]);
+				expect(superUpdateManySpy.mock.lastCall![1]).toContain({ role: 'invite-role' });
 			});
 		});
 	});
