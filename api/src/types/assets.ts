@@ -73,4 +73,3 @@ export type TransformationParams = {
 	format?: 'auto' | 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif';
 	quality?: number;
 } & TransformationResize;
-

@@ -11,10 +11,7 @@ import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
-import {
-	TransformationMethods,
-	TransformationParams
-} from '../types/assets.js';
+import { TransformationMethods, TransformationParams } from '../types/assets.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
@@ -144,8 +141,8 @@ router.get(
 
 		const transformation: TransformationParams = res.locals['transformation'].key
 			? (res.locals['shortcuts'] as TransformationParams[]).find(
-				(transformation) => transformation['key'] === res.locals['transformation'].key
-			)
+					(transformation) => transformation['key'] === res.locals['transformation'].key
+			  )
 			: res.locals['transformation'];
 
 		const isFormatAuto = req.query['format'] === 'auto' || transformation.format === 'auto';
@@ -154,14 +151,14 @@ router.get(
 			let format: 'jpg' | 'webp' | 'avif';
 
 			if (req.headers.accept.includes('image/webp')) {
-				format = 'webp'
+				format = 'webp';
 			} else if (req.headers.accept.includes('image/avif')) {
-				format = 'avif'
+				format = 'avif';
 			} else {
-				format = 'jpg'
+				format = 'jpg';
 			}
 
-			transformation.format = format
+			transformation.format = format;
 		}
 
 		let range: Range | undefined = undefined;

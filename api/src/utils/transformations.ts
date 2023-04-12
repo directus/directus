@@ -1,11 +1,6 @@
-import type {
-	File,
-	Transformation,
-	TransformationParams,
-} from '../types/index.js';
+import type { File, Transformation, TransformationParams } from '../types/index.js';
 
 export function resolvePreset(input: TransformationParams, file: File): Transformation[] {
-
 	const transforms = input.transforms ?? [];
 
 	if (input.format || input.quality)
@@ -17,7 +12,6 @@ export function resolvePreset(input: TransformationParams, file: File): Transfor
 			},
 		]);
 
-
 	if (input.width || input.height)
 		transforms.push([
 			'resize',
@@ -25,8 +19,8 @@ export function resolvePreset(input: TransformationParams, file: File): Transfor
 				width: input.width ? Number(input.width) : undefined,
 				height: input.height ? Number(input.height) : undefined,
 				fit: input.fit,
-				withoutEnlargement: input.withoutEnlargement ? Boolean(input.withoutEnlargement) : undefined
-			}
+				withoutEnlargement: input.withoutEnlargement ? Boolean(input.withoutEnlargement) : undefined,
+			},
 		]);
 
 	return transforms;
