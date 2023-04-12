@@ -57,6 +57,18 @@
 		</template>
 
 		<template #actions>
+			<v-button
+				v-if="previewURL"
+				v-tooltip.bottom="t('split_view')"
+				rounded
+				icon
+				class="action-preview"
+				secondary
+				@click="toggleSplitView"
+			>
+				<v-icon :name="livePreviewMode === null ? 'vertical_split' : 'reorder'" outline />
+			</v-button>
+
 			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
@@ -175,7 +187,7 @@
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview v-if="previewURL && !saving" :previewSize="previewSize" :url="previewURL" />
+			<LivePreview v-if="previewURL" :url="previewURL" @new-window="livePreviewMode = 'popup'" />
 		</template>
 
 		<template #sidebar>
@@ -200,18 +212,13 @@
 					:has-edits="hasEdits"
 					@refresh="refresh"
 				/>
-				<preview-sidebar-detail
-					v-model:mode="livePreviewMode"
-					v-model:size="previewSize"
-					@reset-url="resetPreviewURL"
-				/>
 			</template>
 		</template>
 	</private-view>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, unref, toRefs, watch, onBeforeUnmount, onMounted } from 'vue';
+import { computed, ref, unref, toRefs, watch, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -223,7 +230,6 @@ import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
-import PreviewSidebarDetail from '@/views/private/components/preview-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
@@ -253,7 +259,6 @@ const form = ref<HTMLElement>();
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
-const previewSize = ref('full')
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
@@ -364,7 +369,7 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '')
+const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
 const { templateData: previewData } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
 
@@ -372,7 +377,7 @@ const previewURL = computed(() => {
 	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData);
 
 	return displayValue.value || null;
-})
+});
 
 const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
 
@@ -383,49 +388,59 @@ const splitView = computed({
 	set(value) {
 		livePreviewMode.value = value ? 'split' : null;
 	},
-})
+});
 
-let popupWindow: Window | null = null
+let popupWindow: Window | null = null;
 
-watch([livePreviewMode, previewURL], ([mode, url]) => {
-	if (mode !== 'popup' || !url) {
-		if (popupWindow) popupWindow.close();
-		return
+watch(
+	[livePreviewMode, previewURL],
+	([mode, url]) => {
+		if (mode !== 'popup' || !url) {
+			if (popupWindow) popupWindow.close();
+			return;
+		}
+		const targetUrl = window.location.href + (window.location.href.endsWith('/') ? 'preview' : '/preview');
+
+		popupWindow = window.open(
+			targetUrl,
+			'live-preview',
+			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes'
+		);
+
+		if (popupWindow) {
+			const timer = setInterval(() => {
+				if (!popupWindow?.closed) return;
+
+				clearInterval(timer);
+				popupWindow = null;
+
+				if (livePreviewMode.value === 'popup') livePreviewMode.value = null;
+			}, 1000);
+		}
+	},
+	{ immediate: true }
+);
+
+function toggleSplitView() {
+	if (livePreviewMode.value === null) {
+		livePreviewMode.value = 'split';
+	} else {
+		livePreviewMode.value = null;
 	}
-
-	previewSize.value = 'full';
-
-	popupWindow = window.open(
-		url,
-		'live-preview',
-		'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes'
-	);
-
-	if (popupWindow) {
-		const timer = setInterval(() => {
-			if (!popupWindow?.closed) return
-
-			clearInterval(timer);
-			popupWindow = null;
-
-			if(livePreviewMode.value === 'popup') livePreviewMode.value = null;
-		}, 1000);
-	}
-}, { immediate: true })
+}
 
 watch(saving, (newVal, oldVal) => {
-	if(newVal === true || oldVal === false || livePreviewMode.value !== 'popup' || !popupWindow) return
+	if (newVal === true || oldVal === false) return;
 
 	try {
-		popupWindow.location.reload();
-	} catch(error) {
-		
-	}
-})
+		(window as any).refreshLivePreview();
+		if (popupWindow) (popupWindow as any).refreshLivePreview();
+	} catch (error) {}
+});
 
 onBeforeUnmount(() => {
 	if (popupWindow) popupWindow.close();
-})
+});
 
 function navigateBack() {
 	const backState = router.options.history.state.back;

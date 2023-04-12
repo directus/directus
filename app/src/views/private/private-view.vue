@@ -20,7 +20,7 @@
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
-				:small="smallHeader"
+				:small="smallHeader || splitView"
 				:shadow="headerShadow"
 				show-sidebar-toggle
 				:title="title"
@@ -32,12 +32,15 @@
 				</template>
 			</header-bar>
 
-			<main>
-				<slot />
-			</main>
-		</div>
-		<div v-if="splitView" id="split-content">
-			<slot name="splitView" />
+			<div class="content-wrapper">
+				<main ref="mainEl">
+					<slot />
+				</main>
+
+				<div v-if="splitView" id="split-content">
+					<slot name="splitView" />
+				</div>
+			</div>
 		</div>
 		<aside
 			id="sidebar"
@@ -113,6 +116,7 @@ const { title } = toRefs(props);
 const splitViewWritable = useSync(props, 'splitView', emit);
 
 const contentEl = ref<HTMLElement>();
+const mainEl = ref<HTMLElement>();
 const sidebarEl = ref<Element>();
 const { width: windowWidth } = useWindowSize();
 const { width: sidebarWidth } = useElementSize(sidebarEl);
@@ -213,7 +217,7 @@ const mainResizeOptions = computed(() => {
 	};
 });
 
-useResize(contentEl, ref(590), maxWithMain, ref(590), mainWidth, splitViewWritable, mainResizeOptions);
+useResize(mainEl, ref(590), maxWithMain, ref(590), mainWidth, splitViewWritable, mainResizeOptions);
 
 const navOpen = ref(false);
 const userStore = useUserStore();
@@ -409,13 +413,21 @@ function openSidebar(event: PointerEvent) {
 	}
 
 	&.splitView {
-		#main-content {
-			flex-grow: 0;
-		}
+		#main-content .content-wrapper {
+			display: flex;
+			max-height: calc(100% - var(--layout-offset-top));
 
-		#split-content {
-			flex-grow: 1;
-			overflow: auto;
+			main {
+				display: block;
+				flex-grow: 0;
+				overflow: auto;
+				max-height: 100%;
+			}
+
+			#split-content {
+				flex-grow: 1;
+				overflow: auto;
+			}
 		}
 	}
 
