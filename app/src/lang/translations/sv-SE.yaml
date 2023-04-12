@@ -1073,7 +1073,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     basemaps_raster: Raster
     basemaps_tile: Raster TileJSON
     project_name: Projektnamn

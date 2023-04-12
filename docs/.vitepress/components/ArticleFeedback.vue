@@ -41,14 +41,14 @@ function getPrompt() {
 }
 
 const ratingOptions = [
+	{ label: 'Worst Doc Ever 🗑️', value: 1, message: 'Woof! 🤦‍♂️ Sorry about that. How do we fix it?' },
+	{ label: 'Not Helpful 😡', value: 2, message: '🧐 Help us do better. How can we improve this article?' },
+	{ label: 'Helpful 😃', value: 3, message: 'Nice! 👍 Anything we can improve upon?' },
 	{
 		label: 'Super Helpful 🤩',
 		value: 4,
 		message: `Awesome! The whole team is rejoicing in celebration! 🥳🎉🎊 Anything you'd like to say to them?`,
 	},
-	{ label: 'Helpful 😃', value: 3, message: 'Nice! 👍 Anything we can improve upon?' },
-	{ label: 'Not Helpful 😡', value: 2, message: '🧐 Help us do better. How can we improve this article?' },
-	{ label: 'Worst Doc Ever 🗑️', value: 1, message: 'Woof! 🤦‍♂️ Sorry about that. How do we fix it?' },
 ];
 
 function getRatingOption(rating: number) {

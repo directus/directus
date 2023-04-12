@@ -1094,7 +1094,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     basemaps: Pohjakartat
     basemaps_raster: Rasteri
     basemaps_style: Mapbox-tyyli
