@@ -21,9 +21,10 @@ import { computed, inject, ref, toRefs } from 'vue';
 import { render } from 'micromustache';
 import { omit } from 'lodash';
 import { useItem } from '@/composables/use-item';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
-import { Query } from '@directus/shared/types';
-import { useCollection } from '@directus/shared/composables';
+import { getFieldsFromTemplate } from '@directus/utils';
+import { Query } from '@directus/types';
+import { useCollection } from '@directus/composables';
+import { RELATIONAL_TYPES } from '@directus/constants';
 
 type Link = {
 	icon: string;
@@ -60,8 +61,6 @@ const query = computed(() => {
 
 const { item } = useItem(collection, primaryKey, query);
 const { fields } = useCollection(collection);
-
-const RELATIONAL_TYPES = ['file', 'files', 'm2o', 'o2m', 'm2m', 'm2a', 'presentation', 'translations', 'group'];
 
 const fullItem = computed(() => {
 	const itemValue = item.value ?? {};
