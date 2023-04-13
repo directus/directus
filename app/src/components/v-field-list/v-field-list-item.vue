@@ -3,7 +3,7 @@
 		v-if="field.children || supportedFunctions.length > 0"
 		:clickable="!field.disabled && (relationalFieldSelectable || !field.relatedCollection)"
 		:value="field.path"
-		@click="$emit('add', field.key)"
+		@click="$emit('add', [props.field.key])"
 	>
 		<template #activator>
 			<v-list-item-content>
@@ -17,7 +17,7 @@
 				:key="fn"
 				:disabled="field.disabled"
 				clickable
-				@click="$emit('add', `${fn}(${field.key})`)"
+				@click="$emit('add', [`${fn}(${field.key})`])"
 			>
 				<v-list-item-icon>
 					<v-icon name="auto_awesome" small color="var(--primary)" />
@@ -34,7 +34,7 @@
 		</div>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable @click="selectAllNestedFieldOnThisDepth">
+			<v-list-item clickable @click="addAllFieldsOnThisDepth">
 				{{ t('select_all') }}
 			</v-list-item>
 		</template>
@@ -49,11 +49,10 @@
 			:parent="field.field"
 			:allow-select-all="allowSelectAll"
 			@add="$emit('add', $event)"
-			@select-all="$emit('select-all', $event)"
 		/>
 	</v-list-group>
 
-	<v-list-item v-else :disabled="field.disabled" clickable @click="$emit('add', field.key)">
+	<v-list-item v-else :disabled="field.disabled" clickable @click="$emit('add', [field.key])">
 		<v-list-item-content>
 			<v-text-overflow :text="field.name || formatTitle(field.field)" :highlight="search" />
 		</v-list-item-content>
@@ -95,7 +94,7 @@ const props = withDefaults(defineProps<Props>(), {
 	parent: null,
 });
 
-const emit = defineEmits(['add', 'select-all']);
+const emit = defineEmits(['add']);
 
 const { t } = useI18n();
 
@@ -104,7 +103,7 @@ const supportedFunctions = computed(() => {
 	return getFunctionsForType(props.field.type);
 });
 
-function selectAllNestedFieldOnThisDepth() {
+function addAllFieldsOnThisDepth() {
 	if (!props.field.children) return;
 	const selectedFields = props.field.children.map((selectableField) => {
 		let res = `${props.field.field}.${selectableField.field}`;
@@ -113,7 +112,7 @@ function selectAllNestedFieldOnThisDepth() {
 		}
 		return res;
 	});
-	emit('select-all', selectedFields);
+	emit('add', selectedFields);
 }
 </script>
 

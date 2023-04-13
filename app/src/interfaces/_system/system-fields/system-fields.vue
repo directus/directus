@@ -32,8 +32,7 @@
 				:disabled-fields="value"
 				:collection="collectionName"
 				:allow-select-all="allowSelectAll"
-				@select-field="addField"
-				@select-all="addAllFields"
+				@add="addFields"
 			/>
 		</v-menu>
 	</template>
@@ -110,11 +109,7 @@ const fields = computed<(Field & { key: string })[]>({
 
 const { t } = useI18n();
 
-function addField(fieldKey: string) {
-	emit('input', [...(props.value ?? []), fieldKey]);
-}
-
-function addAllFields(fields: string[]) {
+function addFields(fields: string[]) {
 	const uniqueFields = new Set([...(props.value ?? []), ...fields]);
 	emit('input', Array.from(uniqueFields));
 }

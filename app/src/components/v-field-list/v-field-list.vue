@@ -25,8 +25,7 @@
 			:include-functions="includeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
 			:allow-select-all="allowSelectAll"
-			@add="$emit('select-field', $event)"
-			@select-all="$emit('select-all', $event)"
+			@add="$emit('add', $event)"
 		/>
 	</v-list>
 </template>
@@ -59,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
 	allowSelectAll: false,
 });
 
-const emit = defineEmits(['select-field', 'select-all']);
+const emit = defineEmits(['add']);
 
 const fieldsStore = useFieldsStore();
 
@@ -101,7 +100,7 @@ const treeList = computed(() => {
 
 function selectAllRootFields() {
 	const allFields = treeList.value.map((field) => field.field);
-	emit('select-all', unref(allFields));
+	emit('add', unref(allFields));
 }
 
 function filter(field: Field, parent?: FieldNode): boolean {
