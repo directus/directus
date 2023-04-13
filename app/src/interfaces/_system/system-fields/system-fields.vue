@@ -53,7 +53,7 @@ interface Props {
 	allowSelectAll?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { 
+const props = withDefaults(defineProps<Props>(), {
 	value: () => null,
 	allowSelectAll: false,
 });
@@ -115,7 +115,7 @@ function addField(fieldKey: string) {
 }
 
 function addAllFields(fields: string[]) {
-	const uniqueFields = new Set([...(props.value ?? []), ...fields]);	
+	const uniqueFields = new Set([...(props.value ?? []), ...fields]);
 	emit('input', Array.from(uniqueFields));
 }
 
