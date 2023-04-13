@@ -529,6 +529,7 @@ create_collection: Stwórz kolekcję
 no_collections_copy_admin: Nie masz jeszcze żadnych kolekcji. Kliknij poniższy przycisk, aby rozpocząć.
 no_collections_copy: Nie masz jeszcze żadnych kolekcji. Skontaktuj się z administratorem systemu.
 relationship_not_setup: Relacja nie została prawidłowo skonfigurowana
+no_singleton_relations: Relacje z Singletonami nie są obsługiwane
 display_template_not_setup: Opcja wyświetlania szablonu jest nieprawidłowo skonfigurowana
 collection_field_not_setup: Opcja pola kolekcji jest nieprawidłowo skonfigurowana
 select_a_collection: Wybierz kolekcje
@@ -667,6 +668,7 @@ one_filtered_item: '1 przefiltrowany element'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć kolekcję "{collection}"? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. To działanie jest nieodwracalne.
 delete_folder_are_you_sure: Czy na pewno chcesz usunąć folder "{folder}"? Zagnieżdżone foldery i kolekcje zostaną przeniesione do najwyższego poziomu.
+delete_collection_peer_dependencies: Następujące pola również zostaną usunięte, ponieważ są one związane z bieżącą kolekcją.
 collections_shown: Wyświetlane kolekcje
 visible_collections: Widoczne kolekcje
 hidden_collections: Ukryte kolekcje
