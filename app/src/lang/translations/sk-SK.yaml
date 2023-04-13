@@ -1128,7 +1128,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: TIFF
-    avif: AVIF
     mapping: Mapovanie
     basemaps: Podkladové mapy
     basemaps_raster: Raster

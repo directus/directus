@@ -1131,7 +1131,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Порада
-    avif: AVIF
     mapping: Зіставлення
     basemaps: Карта-схеми
     basemaps_raster: Растровий
