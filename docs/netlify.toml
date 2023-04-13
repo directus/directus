@@ -21,3 +21,8 @@
 	from = "/api/*"
 	to = "/.netlify/functions/:splat"
 	status = 200
+
+[[redirects]]
+	from = "/configuration/*"
+	to = "/app/:splat"
+	status = 301

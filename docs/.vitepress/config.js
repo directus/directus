@@ -183,7 +183,7 @@ function sidebar() {
 			],
 		},
 		{
-			text: 'App Guide',
+			text: 'Data Studio App',
 			collapsible: true,
 			collapsed: true,
 			items: [
@@ -243,18 +243,6 @@ function sidebar() {
 					link: '/app/import-export',
 					text: 'Import / Export',
 				},
-			],
-		},
-		{
-			text: 'Configuration',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				// {
-				// 	type: 'page',
-				// 	link: '/configuration/overview',
-				// 	title: 'Overview',
-				// },
 				{
 					link: '/configuration/project-settings',
 					text: 'Project Settings',
@@ -354,21 +342,6 @@ function sidebar() {
 					link: '/configuration/activity-log',
 					text: 'Activity Log',
 				},
-				// {
-				// 	link: '/configuration/security',
-				// 	text: 'Security*',
-				// 	type: 'page',
-				// },
-				// {
-				// 	link: '/configuration/localization',
-				// 	text: 'Localization*',
-				// 	type: 'page',
-				// },
-				// {
-				// 	link: '/configuration/faq',
-				// 	text: 'Frequently Asked Questions*',
-				// 	type: 'page',
-				// },
 			],
 		},
 		{
