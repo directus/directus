@@ -28,7 +28,7 @@ describe('WebSocket REST Tests', () => {
 							jsonQuery: {
 								id: true,
 								name: true,
-								// _event: true,
+								_event: true,
 							},
 							uid,
 						});
