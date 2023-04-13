@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage",
-	"version": "9.25.0",
+	"version": "9.25.1",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
