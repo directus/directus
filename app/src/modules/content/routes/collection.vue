@@ -42,17 +42,11 @@
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon
-								v-tooltip.right="t('create_bookmark')"
-								class="toggle"
-								clickable
-								name="bookmark_outline"
-								@click="on"
-							/>
+							<v-icon v-tooltip.right="t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
 						</template>
 					</bookmark-add>
 
-					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" />
+					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled />
 
 					<template v-else-if="bookmarkIsMine">
 						<v-icon
@@ -72,7 +66,7 @@
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon class="toggle" name="bookmark_outline" clickable @click="on" />
+							<v-icon class="toggle" name="bookmark" clickable @click="on" />
 						</template>
 					</bookmark-add>
 
@@ -233,7 +227,7 @@
 			/>
 
 			<template #sidebar>
-				<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<sidebar-detail icon="info" :title="t('information')" close>
 					<div
 						v-md="t('page_help_collections_collection', { collection: currentCollection.name })"
 						class="page-description"

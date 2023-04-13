@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { InvalidTokenException, ServiceUnavailableException, TokenExpiredException } from '../exceptions/index.js';
 import type { DirectusTokenPayload } from '../types/index.js';
 
-export function verifyAccessJWT(token: string, secret: string): DirectusTokenPayload {
+export function verifyJWT(token: string, secret: string): Record<string, any> {
 	let payload;
 
 	try {
@@ -19,7 +19,11 @@ export function verifyAccessJWT(token: string, secret: string): DirectusTokenPay
 		}
 	}
 
-	const { id, role, app_access, admin_access, share, share_scope } = payload;
+	return payload;
+}
+
+export function verifyAccessJWT(token: string, secret: string): DirectusTokenPayload {
+	const { id, role, app_access, admin_access, share, share_scope } = verifyJWT(token, secret);
 
 	if (role === undefined || app_access === undefined || admin_access === undefined) {
 		throw new InvalidTokenException('Invalid token payload.');
