@@ -16,6 +16,8 @@ RUN pnpm fetch
 COPY . .
 RUN pnpm install --recursive --offline --frozen-lockfile
 
+ARG DIRECTUS_VERSION
+
 RUN : \
 	&& npm_config_workspace_concurrency=1 pnpm run build \
 	&& pnpm --filter directus deploy --prod dist \

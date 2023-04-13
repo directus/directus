@@ -13,8 +13,9 @@ import {
 } from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
-import fs from 'fs';
+import { execSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 
@@ -23,6 +24,9 @@ const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	define: {
+		__DIRECTUS_VERSION__: JSON.stringify(getDirectusVersion()),
+	},
 	plugins: [
 		directusExtensions(),
 		vue(),
@@ -56,6 +60,20 @@ export default defineConfig({
 		setupFiles: ['src/__setup__/mock-globals.ts'],
 	},
 });
+
+function getDirectusVersion() {
+	try {
+		let version = process.env.DIRECTUS_VERSION;
+		if (!version && process.env.NODE_ENV !== 'production')
+			version = String(execSync('git describe --tags --abbrev=0', { stdio: 'pipe' }));
+		if (!version) throw new Error();
+		version = version.trim();
+		if (version.charAt(0) === 'v') version = version.substring(1);
+		return version;
+	} catch {
+		throw new Error('Could not determine the version of Directus');
+	}
+}
 
 function getExtensionsRealPaths() {
 	return fs.existsSync(EXTENSIONS_PATH)

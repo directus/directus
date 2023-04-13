@@ -31,6 +31,8 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
+        env:
+          DIRECTUS_VERSION: ${{ github.ref_name }}
         with:
           registry: https://registry.npmjs.org
 
@@ -92,6 +94,8 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          build-args: |
+            DIRECTUS_VERSION="${{ github.ref_name }}"
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
