@@ -1051,17 +1051,16 @@ export class GraphQLService {
 					});
 				}
 
-				const eventName = `${collection.collection}_mutated`.toUpperCase();
-				const subscriptionName = camelCase(eventName);
+				const eventName = `${collection.collection}_mutated`;
 				const subscriptionType = ReadCollectionTypes[collection.collection]?.clone(collection.collection + '_mutation');
 				if (subscriptionType) {
 					subscriptionType.addFields({
 						event: GraphQLString,
 					});
 					schemaComposer.Subscription.addFields({
-						[subscriptionName]: {
+						[eventName]: {
 							type: subscriptionType,
-							subscribe: createSubscriptionGenerator(self, eventName, subscriptionName),
+							subscribe: createSubscriptionGenerator(self, eventName),
 						},
 					} as any);
 				}

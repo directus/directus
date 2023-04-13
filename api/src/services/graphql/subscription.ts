@@ -10,12 +10,11 @@ const messages = createPubSub(new EventEmitter());
 export function bindPubSub() {
 	const messenger = getMessenger();
 	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
-		const eventName = `${message['collection']}_mutated`.toUpperCase();
-		messages.publish(eventName, message);
+		messages.publish(`${message['collection']}_mutated`, message);
 	});
 }
 
-export function createSubscriptionGenerator(self: GraphQLService, event: string, name: string) {
+export function createSubscriptionGenerator(self: GraphQLService, event: string) {
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: any) {
 		const selections = request.fieldNodes[0]?.selectionSet?.selections || [];
 		const { fields } = self.getQuery({}, selections, {});
@@ -26,14 +25,14 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string,
 				const { collection, key } = eventData;
 				const service = new ItemsService(collection, { schema });
 				const data = await service.readOne(key, { fields } as Query);
-				yield { [name]: { ...data, event: 'create' } };
+				yield { [event]: { ...data, event: 'create' } };
 			}
 			if (eventData['action'] === 'update') {
 				const { collection, keys } = eventData;
 				const service = new ItemsService(collection, { schema });
 				for (const key of keys) {
 					const data = await service.readOne(key, { fields } as Query);
-					yield { [name]: { ...data, event: 'update' } };
+					yield { [event]: { ...data, event: 'update' } };
 				}
 			}
 			if (eventData['action'] === 'delete') {
@@ -49,7 +48,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string,
 					const pk = schema.collections[eventData['collection']]?.primary;
 					if (pk) result[pk] = key;
 					result['event'] = 'delete';
-					yield { [name]: result };
+					yield { [event]: result };
 				}
 			}
 		}
