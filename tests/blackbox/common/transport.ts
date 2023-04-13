@@ -1,7 +1,15 @@
 import request, { Response } from 'supertest';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { WebSocket } from 'ws';
-import { WebSocketOptions, WebSocketResponse, WebSocketSubscriptionOptions, WebSocketUID } from './types';
+import { createClient } from 'graphql-ws';
+import {
+	WebSocketOptions,
+	WebSocketOptionsGql,
+	WebSocketResponse,
+	WebSocketSubscriptionOptions,
+	WebSocketSubscriptionOptionsGql,
+	WebSocketUID,
+} from './types';
 
 export function processGraphQLJson(jsonQuery: any) {
 	return jsonToGraphQLQuery(jsonQuery);
@@ -58,16 +66,16 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 					} else {
 						let stateName = '';
 						switch (state) {
-							case conn.CONNECTING:
+							case WebSocket.CONNECTING:
 								stateName = 'CONNECTING';
 								break;
-							case conn.OPEN:
+							case WebSocket.OPEN:
 								stateName = 'OPEN';
 								break;
-							case conn.CLOSING:
+							case WebSocket.CLOSING:
 								stateName = 'CLOSING';
 								break;
-							case conn.CLOSED:
+							case WebSocket.CLOSED:
 								stateName = 'CLOSED';
 								break;
 							default:
@@ -184,4 +192,169 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 	});
 
 	return { conn, rawMessages, waitForState, getMessages, sendMessage, subscribe };
+}
+
+export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
+	const defaults = { waitTimeout: 5000 };
+	const parsedHost = host.split('//').slice(1).join('/');
+	let conn: WebSocket | null;
+	let isConnReady = false;
+	const authParams = config?.auth
+		? 'access_token' in config.auth
+			? { access_token: config.auth.access_token }
+			: undefined
+		: undefined;
+	const client = createClient({
+		webSocketImpl: WebSocket,
+		connectionParams: authParams,
+		...config?.client,
+		disablePong: !config?.respondToPing,
+		url: `ws://${parsedHost}/${config?.path ?? 'graphql'}${config?.queryString ? `?${config.queryString}` : ''}`,
+		on: {
+			closed: () => {
+				conn = null;
+			},
+			opened: (socket) => {
+				config?.client?.on?.opened?.(socket);
+				conn = socket as WebSocket;
+				conn.on('message', (data) => {
+					const message: WebSocketResponse = JSON.parse(data.toString());
+
+					if (message.type === 'connection_ack') {
+						isConnReady = true;
+					}
+
+					if (config?.respondToPing !== false && message.type === 'ping') {
+						conn?.send(JSON.stringify({ type: 'pong' }));
+						return;
+					}
+				});
+			},
+		},
+	});
+	const messages: Record<string, any[]> = {};
+	const messagesDefault: any[] = [];
+	let readIndexDefault = 0;
+	const readIndexes: Record<WebSocketUID, number> = {};
+	const unsubscriptions: Record<string, () => void> = {};
+	let unsubscriptionDefault: () => void;
+	const waitForState = (
+		state: WebSocket['readyState'],
+		options?: {
+			waitTimeout?: number;
+		}
+	) => {
+		const startMs = Date.now();
+		const promise = () => {
+			return new Promise(function (resolve, reject) {
+				setTimeout(function () {
+					if (isConnReady && conn && conn.readyState === state) {
+						return resolve(true);
+					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
+						return promise().then(resolve, reject);
+					} else {
+						let stateName = '';
+						switch (state) {
+							case WebSocket.CONNECTING:
+								stateName = 'CONNECTING';
+								break;
+							case WebSocket.OPEN:
+								stateName = 'OPEN';
+								break;
+							case WebSocket.CLOSING:
+								stateName = 'CLOSING';
+								break;
+							case WebSocket.CLOSED:
+								stateName = 'CLOSED';
+								break;
+							default:
+								stateName = 'INVALID';
+								break;
+						}
+						conn?.terminate();
+						reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
+					}
+				}, 5);
+			});
+		};
+		return promise();
+	};
+	const getMessages = async (
+		messageCount: number,
+		options?: {
+			waitTimeout?: number;
+			targetState?: WebSocket['readyState'];
+			uid?: WebSocketUID;
+		}
+	): Promise<WebSocketResponse[] | undefined> => {
+		const targetMessages = options?.uid ? messages[options.uid] : messagesDefault;
+		const startMessageIndex = options?.uid ? readIndexes[options.uid] ?? 0 : readIndexDefault;
+		const endMessageIndex = startMessageIndex + messageCount;
+		if (options?.uid) {
+			readIndexes[String(options.uid)] = endMessageIndex;
+		} else {
+			readIndexDefault = endMessageIndex;
+		}
+		await waitForState(options?.targetState ?? WebSocket.OPEN);
+		const startMs = Date.now();
+		const promise = (): Promise<WebSocketResponse[] | undefined> => {
+			return new Promise(function (resolve, reject) {
+				setTimeout(function () {
+					if (targetMessages.length >= endMessageIndex) {
+						resolve(targetMessages.slice(startMessageIndex, endMessageIndex));
+					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
+						return promise().then(resolve, reject);
+					} else {
+						conn?.terminate();
+						reject(
+							new Error(
+								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
+									targetMessages.length - startMessageIndex
+								}/${messageCount})`
+							)
+						);
+					}
+				}, 5);
+			});
+		};
+		return promise();
+	};
+	const subscribe = async (options: WebSocketSubscriptionOptionsGql) => {
+		const targetMessages = options.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
+		const subscriptionKey = `${options.collection}_mutated`;
+		const onNext = (data: any) => {
+			targetMessages.push(data);
+		};
+		const unsubscribe = client.subscribe(
+			{
+				query: processGraphQLJson({ subscription: { [subscriptionKey]: options.jsonQuery } }),
+			},
+			{
+				next: onNext,
+				error: () => {
+					return;
+				},
+				complete: () => {
+					return;
+				},
+			}
+		);
+
+		if (options.uid) {
+			unsubscriptions[options.uid] = unsubscribe;
+		} else {
+			unsubscriptionDefault = unsubscribe;
+		}
+		await waitForState(WebSocket.OPEN);
+		return subscriptionKey;
+	};
+	const unsubscribe = (uid?: string) => {
+		if (uid) {
+			unsubscriptions[uid]?.();
+		} else if (unsubscriptionDefault) {
+			unsubscriptionDefault();
+		}
+	};
+
+	return { client, getMessages, subscribe, unsubscribe, waitForState };
 }

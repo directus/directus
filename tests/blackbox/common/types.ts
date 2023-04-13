@@ -1,5 +1,6 @@
 import { Query } from '@directus/types';
 import { ClientOptions } from 'ws';
+import { ClientOptions as ClientOptionsGql } from 'graphql-ws';
 
 export type PrimaryKeyType = 'integer' | 'uuid' | 'string';
 export type WebSocketAuthMethod = 'public' | 'handshake' | 'strict';
@@ -10,24 +11,19 @@ export type WebSocketResponse = {
 	uid?: WebSocketUID;
 	[field: string]: any;
 };
-export type WebSocketOptions = {
-	/**
-	 * Client options to be passed to ws
-	 */
-	client?: ClientOptions;
-
+export type WebSocketDefaultOptions = {
 	/**
 	 * Authenticate once websocket connection is opened
 	 */
 	auth?: { email: string; password: string } | { access_token: string } | { refresh_token: string };
 
 	/**
-	 * Path for the REST websocket
+	 * Path of endpoint
 	 */
 	path?: string;
 
 	/**
-	 * Query string for the REST websocket
+	 * Query string appended to URL
 	 */
 	queryString?: string;
 
@@ -40,6 +36,18 @@ export type WebSocketOptions = {
 	 * Timeout before erroring
 	 */
 	waitTimeout?: number;
+};
+export type WebSocketOptions = WebSocketDefaultOptions & {
+	/**
+	 * Client options to be passed to ws
+	 */
+	client?: ClientOptions;
+};
+export type WebSocketOptionsGql = WebSocketDefaultOptions & {
+	/**
+	 * Client options to be passed to graphql-ws
+	 */
+	client?: ClientOptionsGql;
 };
 export type WebSocketSubscriptionOptions = {
 	/**
@@ -56,6 +64,22 @@ export type WebSocketSubscriptionOptions = {
 	 * Query options
 	 */
 	query?: Query;
+
+	/**
+	 * Unique ID
+	 */
+	uid?: WebSocketUID;
+};
+export type WebSocketSubscriptionOptionsGql = {
+	/**
+	 * Collection to subscribe
+	 */
+	collection: string;
+
+	/**
+	 * GraphQL JSONQuery options
+	 */
+	jsonQuery: any;
 
 	/**
 	 * Unique ID
