@@ -72,12 +72,12 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { computed, defineComponent, PropType } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 import MapComponent from './components/map.vue';
 import { useSync } from '@directus/composables';
 import { GeometryOptions, Item } from '@directus/types';
-import { useServerStore } from '@/stores/server';
+import { usePageSize } from '@/composables/use-page-size';
 
 export default defineComponent({
 	components: { MapComponent },
@@ -195,31 +195,12 @@ export default defineComponent({
 		const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
 		const limitWritable = useSync(props, 'limit', emit);
 
-		const { info } = useServerStore();
-		const pageSizes = computed(() => {
-			const sizes = [
-				{
-					text: n(100),
-					value: 100,
-				},
-				{
-					text: n(1000),
-					value: 1000,
-				},
-				{
-					text: n(10000),
-					value: 10000,
-				},
-				{
-					text: n(100000),
-					value: 100000,
-				},
-			];
-			if (info.queryLimit) {
-				return sizes.filter(({ value }) => value <= info.queryLimit!.max);
-			}
-			return sizes;
-		});
+		const { sizes: pageSizes, selected: selectedSize } = usePageSize<{ text: string; value: number }>(
+			[100, 1000, 10000, 100000],
+			(value) => ({ text: n(value), value }),
+			props.limit
+		);
+		limitWritable.value = selectedSize;
 
 		return { t, n, cameraOptionsWritable, limitWritable, pageSizes };
 	},
