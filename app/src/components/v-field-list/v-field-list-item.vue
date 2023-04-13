@@ -84,7 +84,7 @@ interface Props {
 	includeFunctions?: boolean;
 	relationalFieldSelectable?: boolean;
 	allowSelectAll?: boolean;
-	parent?: string;
+	parent?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -92,6 +92,7 @@ const props = withDefaults(defineProps<Props>(), {
 	includeFunctions: false,
 	relationalFieldSelectable: true,
 	allowSelectAll: false,
+	parent: null,
 });
 
 const emit = defineEmits(['add', 'select-all']);
