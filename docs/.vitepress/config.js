@@ -375,11 +375,8 @@ function sidebar() {
 					],
 				},
 				{
-					text: 'Schema Migration',
-					items: [
-						{ text: 'Hoppscotch', link: '/guides/migration/hoppscotch' },
-						{ text: 'Node.js', link: '/guides/migration/node' },
-					],
+					link: '/guides/migration/index.html',
+					text: 'Schema Migration'
 				},
 			],
 		},
