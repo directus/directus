@@ -59,7 +59,7 @@
 		<template #actions>
 			<v-button
 				v-if="previewURL"
-				v-tooltip.bottom="t('split_view')"
+				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
 				rounded
 				icon
 				class="action-preview"

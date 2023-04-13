@@ -1,10 +1,25 @@
 <template>
 	<div class="live-preview" :class="{ fullscreen }">
 		<div class="header">
-			<v-button x-small rounded icon secondary v-tooltip.bottom="t('new_window')" @click="emit('new-window')">
+			<v-button
+				x-small
+				rounded
+				icon
+				secondary
+				v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
+				@click="emit('new-window')"
+			>
 				<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
 			</v-button>
-			<v-button x-small icon rounded secondary @click="refresh" size="small">
+			<v-button
+				x-small
+				icon
+				rounded
+				secondary
+				v-tooltip.bottom.end="t('live_preview.refresh')"
+				@click="refresh"
+				size="small"
+			>
 				<v-icon small name="refresh" />
 			</v-button>
 			<div class="spacer" />
@@ -13,7 +28,15 @@
 				<v-icon x-small name="close" />
 				<input class="width" v-model.number="height" />
 			</div>
-			<v-button x-small icon rounded :secondary="fullscreen" @click="toggleFullscreen" size="small">
+			<v-button
+				x-small
+				icon
+				rounded
+				:secondary="fullscreen"
+				v-tooltip.bottom.start="t('live_preview.change_size')"
+				@click="toggleFullscreen"
+				size="small"
+			>
 				<v-icon small name="devices" />
 			</v-button>
 		</div>

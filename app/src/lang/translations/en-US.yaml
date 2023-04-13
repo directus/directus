@@ -1354,17 +1354,12 @@ block: Block
 inline: Inline
 comment: Comment
 live_preview:
-  title: Live Preview
-  mode:
-    title: Mode
-    none: No
-    split: Split View
-    popup: New Window
-  size:
-    title: Display Size
-    phone: Phone
-    tablet: Tablet
-    responsive: Responsive
+  enable: Enable Live Preview
+  disable: Disable Live Preview
+  change_size: Change Display Dimensions
+  refresh: Refresh Preview
+  new_window: Open in New Window
+  close_window: Open in Split View
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
