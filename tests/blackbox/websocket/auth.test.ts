@@ -1,6 +1,7 @@
 import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
+import request from 'supertest';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
@@ -134,6 +135,54 @@ describe('WebSocket Auth Tests', () => {
 			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const { access_token } = (
+							await request(getUrl(vendor))
+								.post('/auth/login')
+								.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+						).body.data;
+
+						// Action
+						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+							path: pathREST,
+							auth: { access_token },
+						});
+						let error;
+
+						try {
+							switch (authMethod) {
+								case 'public':
+									await ws.waitForState(ws.conn.OPEN);
+									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+									await ws.waitForState(ws.conn.OPEN);
+									break;
+								case 'handshake':
+									await ws.waitForState(ws.conn.OPEN);
+									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+									await ws.waitForState(ws.conn.OPEN);
+									break;
+								case 'strict':
+									await ws.waitForState(ws.conn.CLOSED);
+									await sleep(authenticationTimeoutSeconds * 1000);
+									await ws.waitForState(ws.conn.CLOSED);
+									break;
+							}
+						} catch (err) {
+							error = err;
+						}
+						ws.conn.close();
+
+						// Assert
+						expect(error).toBeUndefined();
+					});
+				});
+			});
+		});
+
+		describe('connects with static access token authentication', () => {
+			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+				describe(common.USER[userKey].NAME, () => {
+					it.each(vendors)('%s', async (vendor) => {
 						// Action
 						const ws = common.createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
@@ -172,6 +221,54 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with access token in query string', () => {
+			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+				describe(common.USER[userKey].NAME, () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const { access_token } = (
+							await request(getUrl(vendor))
+								.post('/auth/login')
+								.send({ email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD })
+						).body.data;
+
+						// Action
+						const ws = common.createWebSocketConn(getUrl(vendor, env), {
+							path: pathREST,
+							queryString: `access_token=${access_token}`,
+						});
+						let error;
+
+						try {
+							switch (authMethod) {
+								case 'public':
+									await ws.waitForState(ws.conn.OPEN);
+									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+									await ws.waitForState(ws.conn.OPEN);
+									break;
+								case 'handshake':
+									await ws.waitForState(ws.conn.OPEN);
+									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+									await ws.waitForState(ws.conn.CLOSED);
+									break;
+								case 'strict':
+									await ws.waitForState(ws.conn.OPEN);
+									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+									await ws.waitForState(ws.conn.OPEN);
+									break;
+							}
+						} catch (err) {
+							error = err;
+						}
+						ws.conn.close();
+
+						// Assert
+						expect(error).toBeUndefined();
+					});
+				});
+			});
+		});
+
+		describe('connects with static access token in query string', () => {
 			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
