@@ -345,40 +345,40 @@ function sidebar() {
 			],
 		},
 		{
-			text: 'Cookbook',
+			text: 'Guides',
 			collapsible: true,
 			collapsed: true,
 			items: [
-				{ text: 'Personal Portfolio Using M2A', link: '/cookbook/data-models/personal-portfolio-using-m2a.md' },
-				{ text: 'Build a Content Hierarchy', link: '/cookbook/data-models/build-a-content-hierarchy' },
-				{ text: 'Content Approval Workflows', link: '/cookbook/permissions/basic-workflows' },
-				{ text: 'Flows For Loops', link: '/cookbook/flows/flows-for-loop' },
-				{ text: 'Slugify Text with Run Script', link: '/cookbook/flows/slugify-text-with-run-script' },
+				{ text: 'Personal Portfolio Using M2A', link: '/guides/data-models/personal-portfolio-using-m2a.md' },
+				{ text: 'Build a Content Hierarchy', link: '/guides/data-models/build-a-content-hierarchy' },
+				{ text: 'Content Approval Workflows', link: '/guides/permissions/basic-workflows' },
+				{ text: 'Using For Loops In Flows', link: '/guides/flows/flows-for-loop' },
+				{ text: 'Slugify Text with Run Script', link: '/guides/flows/slugify-text-with-run-script' },
 				{
 					text: 'Trigger Static Site Builds',
 					items: [
 						{
 							text: 'Netlify',
-							link: '/cookbook/flows/trigger-static-site-build-netlify',
+							link: '/guides/flows/trigger-static-site-build-netlify',
 						},
 						{
 							text: 'Vercel',
-							link: '/cookbook/flows/trigger-static-site-build-vercel',
+							link: '/guides/flows/trigger-static-site-build-vercel',
 						},
 					],
 				},
 				{
 					text: 'Scheduling Content',
 					items: [
-						{ text: 'Static Sites', link: '/cookbook/flows/scheduling-content-static-sites' },
-						{ text: 'Dynamic Sites', link: '/cookbook/flows/scheduling-content-dynamic-sites' },
+						{ text: 'Static Sites', link: '/guides/flows/scheduling-content-static-sites' },
+						{ text: 'Dynamic Sites', link: '/guides/flows/scheduling-content-dynamic-sites' },
 					],
 				},
 				{
 					text: 'Schema Migration',
 					items: [
-						{ text: 'Hoppscotch', link: '/cookbook/migration/hoppscotch' },
-						{ text: 'Node.js', link: '/cookbook/migration/node' },
+						{ text: 'Hoppscotch', link: '/guides/migration/hoppscotch' },
+						{ text: 'Node.js', link: '/guides/migration/node' },
 					],
 				},
 			],

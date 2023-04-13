@@ -26,3 +26,8 @@
 	from = "/configuration/*"
 	to = "/app/:splat"
 	status = 301
+
+[[redirects]]
+	from = "/cookbook/*"
+	to = "/guides/:splat"
+	status = 301
