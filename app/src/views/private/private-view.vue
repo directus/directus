@@ -21,7 +21,7 @@
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				:small="smallHeader || splitView"
-				:shadow="headerShadow"
+				:shadow="headerShadow || splitView"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
@@ -214,6 +214,7 @@ const mainResizeOptions = computed(() => {
 				snapPos: maxWithMain.value / 2,
 			},
 		],
+		alwaysShowHandle: true,
 	};
 });
 

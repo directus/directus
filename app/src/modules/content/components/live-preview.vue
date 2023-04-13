@@ -1,24 +1,16 @@
 <template>
-	<div class="live-preview">
+	<div class="live-preview" :class="{ fullscreen }">
 		<div class="header">
-			<v-button
-				v-if="inPopup !== true"
-				x-small
-				rounded
-				icon
-				secondary
-				v-tooltip.bottom="t('new_window')"
-				@click="emit('new-window')"
-			>
-				<v-icon small name="open_in_new" outline />
+			<v-button x-small rounded icon secondary v-tooltip.bottom="t('new_window')" @click="emit('new-window')">
+				<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
 			</v-button>
 			<v-button x-small icon rounded secondary @click="refresh" size="small">
 				<v-icon small name="refresh" />
 			</v-button>
 			<div class="spacer" />
-			<div v-if="!fullscreen">
+			<div class="dimensions" v-if="!fullscreen">
 				<input class="width" v-model.number="width" />
-				<v-icon small name="close" />
+				<v-icon x-small name="close" />
 				<input class="width" v-model.number="height" />
 			</div>
 			<v-button x-small icon rounded :secondary="fullscreen" @click="toggleFullscreen" size="small">
@@ -26,20 +18,23 @@
 			</v-button>
 		</div>
 		<div class="iframe-view">
-			<iframe
-				id="frame"
-				ref="frameEl"
-				:src="url"
-				frameborder="0"
-				:width="width || '100%'"
-				:height="height || '100%'"
-			></iframe>
+			<div
+				class="resize-handle"
+				ref="resizeHandle"
+				:style="{
+					width: width ? `${width}px` : '100%',
+					height: height ? `${height}px` : '100%',
+					resize: fullscreen ? 'none' : 'both',
+				}"
+			>
+				<iframe id="frame" ref="frameEl" width="100%" height="100%" :src="url" frameborder="0"></iframe>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 interface Props {
@@ -55,6 +50,8 @@ const { t } = useI18n();
 
 const width = ref<number>();
 const height = ref<number>();
+
+const resizeHandle = ref<HTMLDivElement>();
 
 const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
@@ -79,6 +76,17 @@ function refresh() {
 }
 
 (window as any).refreshLivePreview = refresh;
+
+onMounted(() => {
+	if (resizeHandle.value) {
+		new ResizeObserver(() => {
+			if ((width.value === undefined && height.value === undefined) || !resizeHandle.value) return;
+
+			width.value = resizeHandle.value.offsetWidth;
+			height.value = resizeHandle.value.offsetHeight;
+		}).observe(resizeHandle.value);
+	}
+});
 </script>
 
 <style>
@@ -107,6 +115,11 @@ function refresh() {
 			flex: 1;
 		}
 
+		.dimensions {
+			display: flex;
+			align-items: center;
+		}
+
 		input {
 			border: none;
 			width: 50px;
@@ -125,6 +138,16 @@ function refresh() {
 		position: relative;
 		display: grid;
 		place-items: center;
+		padding: 60px;
+	}
+
+	&.fullscreen .iframe-view {
+		padding: 0;
+	}
+
+	.resize-handle {
+		resize: both;
+		overflow: hidden;
 	}
 }
 </style>

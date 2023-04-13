@@ -195,7 +195,8 @@ export default defineComponent({
 		pointer-events: none;
 	}
 
-	&.collapsed.shadow {
+	&.collapsed.shadow,
+	&.small.shadow {
 		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 
 		.title-container {

@@ -1,9 +1,9 @@
 <template>
-	<LivePreview v-if="previewURL" :url="previewURL" inPopup />
+	<LivePreview v-if="previewURL" :url="previewURL" inPopup @new-window="closePopup" />
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, toRefs } from 'vue';
+import { computed, toRefs } from 'vue';
 import LivePreview from '../components/live-preview.vue';
 import { useCollection } from '@directus/composables';
 import { renderStringTemplate } from '@/utils/render-string-template';
@@ -30,5 +30,7 @@ const previewURL = computed(() => {
 	return displayValue.value || null;
 });
 
-onMounted;
+function closePopup() {
+	(window as any).close();
+}
 </script>

@@ -5,25 +5,35 @@
     .grab-bar {
         position: absolute;
         top: 0;
-        right: -2px;
+        right: 0;
         bottom: 0;
         width: 4px;
         z-index: 10;
         background-color: var(--primary);
         cursor: ew-resize;
         opacity: 0;
+        transform: translate(50%, 0);
         transition: opacity var(--fast) var(--transition);
         transition-delay: 0;
         user-select: none;
         touch-action: none;
     
-        &:hover,
-        &:active {
+        &:hover, &:active {
             opacity: 1;
         }
     
         &.active {
             transition-delay: var(--slow);
+        }
+
+        &.always-show {
+            opacity: 1;
+            width: 2px;
+            transition: width var(--fast) var(--transition);
+
+            &:hover, &:active {
+                width: 4px;
+            }
         }
     }
 }
