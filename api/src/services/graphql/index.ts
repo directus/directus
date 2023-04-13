@@ -1055,7 +1055,7 @@ export class GraphQLService {
 				const subscriptionType = ReadCollectionTypes[collection.collection]?.clone(collection.collection + '_mutation');
 				if (subscriptionType) {
 					subscriptionType.addFields({
-						event: GraphQLString,
+						_event: GraphQLString,
 					});
 					schemaComposer.Subscription.addFields({
 						[eventName]: {
