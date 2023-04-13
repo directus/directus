@@ -12,8 +12,11 @@
 		</v-list-item>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable @click="selectAllRootFields">
+			<v-list-item clickable @click="editAllFields('add')">
 				{{ t('select_all') }}
+			</v-list-item>
+			<v-list-item clickable @click="editAllFields('remove')">
+				{{ t('deselect_all') }}
 			</v-list-item>
 		</template>
 
@@ -26,6 +29,7 @@
 			:relational-field-selectable="relationalFieldSelectable"
 			:allow-select-all="allowSelectAll"
 			@add="$emit('add', $event)"
+			@remove="$emit('remove', $event)"
 		/>
 	</v-list>
 </template>
@@ -58,7 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
 	allowSelectAll: false,
 });
 
-const emit = defineEmits(['add']);
+const emit = defineEmits(['add', 'remove']);
 
 const fieldsStore = useFieldsStore();
 
@@ -98,9 +102,9 @@ const treeList = computed(() => {
 	}
 });
 
-function selectAllRootFields() {
+function editAllFields(operation: ('add' | 'remove')) {
 	const allFields = treeList.value.map((field) => field.field);
-	emit('add', unref(allFields));
+	emit(operation, unref(allFields));
 }
 
 function filter(field: Field, parent?: FieldNode): boolean {

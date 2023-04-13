@@ -34,8 +34,11 @@
 		</div>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable @click="addAllFieldsOnThisDepth">
+			<v-list-item clickable @click="editChildFields('add')">
 				{{ t('select_all') }}
+			</v-list-item>
+			<v-list-item clickable @click="editChildFields('remove')">
+				{{ t('deselect_all') }}
 			</v-list-item>
 		</template>
 
@@ -48,7 +51,6 @@
 			:relational-field-selectable="relationalFieldSelectable"
 			:parent="field.field"
 			:allow-select-all="allowSelectAll"
-			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
 
@@ -94,7 +96,7 @@ const props = withDefaults(defineProps<Props>(), {
 	parent: null,
 });
 
-const emit = defineEmits(['add']);
+const emit = defineEmits(['add', 'remove']);
 
 const { t } = useI18n();
 
@@ -103,7 +105,7 @@ const supportedFunctions = computed(() => {
 	return getFunctionsForType(props.field.type);
 });
 
-function addAllFieldsOnThisDepth() {
+function editChildFields(operation: 'add' | 'remove') {
 	if (!props.field.children) return;
 	const selectedFields = props.field.children.map((selectableField) => {
 		let res = `${props.field.field}.${selectableField.field}`;
@@ -112,7 +114,7 @@ function addAllFieldsOnThisDepth() {
 		}
 		return res;
 	});
-	emit('add', selectedFields);
+	emit(operation, selectedFields);
 }
 </script>
 

@@ -15,7 +15,7 @@
 						<v-icon name="drag_handle" class="drag-handle" left />
 						<div class="name">{{ field.displayName }}</div>
 						<div class="spacer" />
-						<v-icon name="close" clickable @click="removeField(field.key)" />
+						<v-icon name="close" clickable @click="removeFields([field.key])" />
 					</v-list-item>
 				</template>
 			</draggable>
@@ -33,6 +33,7 @@
 				:collection="collectionName"
 				:allow-select-all="allowSelectAll"
 				@add="addFields"
+				@remove="removeFields"
 			/>
 		</v-menu>
 	</template>
@@ -114,14 +115,13 @@ function addFields(fields: string[]) {
 	emit('input', Array.from(uniqueFields));
 }
 
-function removeField(fieldKey: string) {
-	const newArray = props.value?.filter((val) => val !== fieldKey);
-
-	if (!newArray || newArray.length === 0) {
-		emit('input', null);
+function removeFields(fieldKeys: string[]) {
+	const newFields = props.value?.filter((val) => !fieldKeys.includes(val));
+	let args = null;
+	if (newFields !== undefined && newFields?.length > 0) {
+		args = newFields;
 	}
-
-	emit('input', newArray);
+	emit('input', args);
 }
 </script>
 
