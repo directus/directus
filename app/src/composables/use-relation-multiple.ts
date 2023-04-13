@@ -206,22 +206,7 @@ export function useRelationMultiple(
 		function update(...items: DisplayItem[]) {
 			if (!relation.value) return;
 
-			const targetPKField =
-				relation.value.type === 'o2m'
-					? relation.value.relatedPrimaryKeyField.field
-					: relation.value.junctionPrimaryKeyField.field;
-
 			for (const item of items) {
-				const editsIndex =
-					item.$index ??
-					target.value.update.findIndex(
-						(edit: any) => typeof edit === 'object' && edit[targetPKField] === item[targetPKField]
-					);
-				if (item.$index === undefined && editsIndex !== -1) {
-					item.$index = editsIndex;
-					item.$type = 'updated';
-				}
-
 				if (item.$type === undefined || item.$index === undefined) {
 					target.value.update.push(cleanItem(item));
 				} else if (item.$type === 'created') {
