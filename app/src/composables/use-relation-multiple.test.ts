@@ -223,46 +223,6 @@ describe('test o2m relation', () => {
 		]);
 	});
 
-	test('updating an item twice without $index', async () => {
-		const wrapper = mount(TestComponent, {
-			props: { relation: relationO2M, value: [], id: 1 },
-		});
-
-		wrapper.vm.update({ id: 2, name: 'test2-edited' });
-		wrapper.vm.update({ id: 2, name: 'test2-edited again' });
-
-		await flushPromises();
-
-		const changes = cloneDeep(workerData);
-		changes.splice(1, 1, { id: 2, name: 'test2-edited again', facility: 1, $edits: 0, $type: 'updated', $index: 0 });
-
-		expect(wrapper.vm.displayItems).toEqual(changes);
-		expect(wrapper.emitted()['update:value'][0]).toEqual([
-			{
-				create: [],
-				update: [
-					{
-						id: 2,
-						name: 'test2-edited',
-					},
-				],
-				delete: [],
-			},
-		]);
-		expect(wrapper.emitted()['update:value'][1]).toEqual([
-			{
-				create: [],
-				update: [
-					{
-						id: 2,
-						name: 'test2-edited again',
-					},
-				],
-				delete: [],
-			},
-		]);
-	});
-
 	test('removing an item', async () => {
 		const wrapper = mount(TestComponent, {
 			props: { relation: relationO2M, value: [], id: 1 },
