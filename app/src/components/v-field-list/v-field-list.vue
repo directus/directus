@@ -11,6 +11,12 @@
 			</v-list-item-content>
 		</v-list-item>
 
+		<template v-if="allowSelectAll">
+			<v-list-item clickable @click="selectAllRootFields">
+				{{ t('select_all') }}
+			</v-list-item>
+		</template>
+
 		<v-field-list-item
 			v-for="fieldNode in treeList"
 			:key="fieldNode.field"
@@ -18,7 +24,9 @@
 			:search="search"
 			:include-functions="includeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
+			:allow-select-all="allowSelectAll"
 			@add="$emit('select-field', $event)"
+			@select-all="$emit('select-all', $event)"
 		/>
 	</v-list>
 </template>
@@ -26,7 +34,7 @@
 <script lang="ts" setup>
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { Field } from '@directus/types';
-import { computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
 import { debounce, isNil } from 'lodash';
@@ -39,6 +47,7 @@ interface Props {
 	includeFunctions?: boolean;
 	includeRelations?: boolean;
 	relationalFieldSelectable?: boolean;
+	allowSelectAll?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -47,9 +56,10 @@ const props = withDefaults(defineProps<Props>(), {
 	includeFunctions: false,
 	includeRelations: true,
 	relationalFieldSelectable: true,
+	allowSelectAll: false,
 });
 
-defineEmits(['select-field']);
+const emit = defineEmits(['select-field', 'select-all']);
 
 const fieldsStore = useFieldsStore();
 
@@ -88,6 +98,11 @@ const treeList = computed(() => {
 		};
 	}
 });
+
+function selectAllRootFields() {
+	const allFields = treeList.value.map((field) => field.field);
+	emit('select-all', unref(allFields));
+}
 
 function filter(field: Field, parent?: FieldNode): boolean {
 	if (

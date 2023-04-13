@@ -33,6 +33,12 @@
 			<v-divider v-if="field.children && field.children.length > 0" />
 		</div>
 
+		<template v-if="allowSelectAll">
+			<v-list-item clickable @click="selectAllNestedFieldOnThisDepth">
+				{{ t('select_all') }}
+			</v-list-item>
+		</template>
+
 		<v-field-list-item
 			v-for="childField in field.children"
 			:key="childField.key"
@@ -40,7 +46,10 @@
 			:search="search"
 			:include-functions="includeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
+			:parent="field.field"
+			:allow-select-all="allowSelectAll"
 			@add="$emit('add', $event)"
+			@select-all="$emit('select-all', $event)"
 		/>
 	</v-list-group>
 
@@ -74,15 +83,18 @@ interface Props {
 	search?: string;
 	includeFunctions?: boolean;
 	relationalFieldSelectable?: boolean;
+	allowSelectAll?: boolean;
+	parent?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	search: undefined,
 	includeFunctions: false,
 	relationalFieldSelectable: true,
+	allowSelectAll: false,
 });
 
-defineEmits(['add']);
+const emit = defineEmits(['add', 'select-all']);
 
 const { t } = useI18n();
 
@@ -90,6 +102,18 @@ const supportedFunctions = computed(() => {
 	if (!props.includeFunctions || props.field.group) return [];
 	return getFunctionsForType(props.field.type);
 });
+
+function selectAllNestedFieldOnThisDepth() {
+	if (!props.field.children) return;
+	const selectedFields = props.field.children.map((selectableField) => {
+		let res = `${props.field.field}.${selectableField.field}`;
+		if (props.parent) {
+			res = `${props.parent}.${res}`;
+		}
+		return res;
+	});
+	emit('select-all', selectedFields);
+}
 </script>
 
 <style lang="scss" scoped>
