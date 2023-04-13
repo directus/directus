@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-gcs",
-	"version": "9.24.0",
+	"version": "9.25.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",

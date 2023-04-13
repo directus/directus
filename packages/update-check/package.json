@@ -1,6 +1,6 @@
 {
 	"name": "@directus/update-check",
-	"version": "9.23.4",
+	"version": "9.25.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
