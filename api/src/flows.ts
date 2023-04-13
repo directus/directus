@@ -421,8 +421,12 @@ class FlowManager {
 			let data;
 
 			if (error instanceof Error) {
-				// If the error is instance of Error, use the message of it as the error data
-				data = { message: error.message };
+				// If the error is from a request or exec operation, use the message of it as the error data
+				if (operation.type == 'request' || operation.type == 'exec') {
+					data = { message: error.message };
+				} else {
+					data = error;
+				}
 			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data
 				data = isValidJSON(error) ? parseJSON(error) : error;
