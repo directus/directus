@@ -102,7 +102,7 @@ const treeList = computed(() => {
 	}
 });
 
-function editAllFields(operation: ('add' | 'remove')) {
+function editAllFields(operation: 'add' | 'remove') {
 	const allFields = treeList.value.map((field) => field.field);
 	emit(operation, unref(allFields));
 }
