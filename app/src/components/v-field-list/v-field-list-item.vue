@@ -3,7 +3,7 @@
 		v-if="field.children || supportedFunctions.length > 0"
 		:clickable="!field.disabled && (relationalFieldSelectable || !field.relatedCollection)"
 		:value="field.path"
-		@click="$emit('add', [props.field.key])"
+		@click="$emit('add', [field.key])"
 	>
 		<template #activator>
 			<v-list-item-content>
