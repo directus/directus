@@ -566,15 +566,19 @@ function getRollupOptions({
 			mode === 'browser' ? styles.default() : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser' }),
-			commonjs.default({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
-			json.default(),
-			replace.default({
+			// @ts-ignore
+			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
+			// @ts-ignore
+			json(),
+			// @ts-ignore
+			replace({
 				values: {
 					'process.env.NODE_ENV': JSON.stringify('production'),
 				},
 				preventAssignment: true,
 			}),
-			minify ? terser.default() : null,
+			// @ts-ignore
+			minify ? terser() : null,
 		],
 	};
 }
