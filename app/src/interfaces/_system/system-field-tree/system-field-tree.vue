@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!collectionField && !collection" type="warning">
+	<v-notice v-if="!collectionField && !collectionName" type="warning">
 		{{ t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="!chosenCollection" type="warning">
@@ -30,7 +30,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		collection: {
+		collectionName: {
 			type: String,
 			default: null,
 		},
@@ -57,7 +57,7 @@ export default defineComponent({
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
-		const chosenCollection = computed(() => values.value[props.collectionField] || props.collection);
+		const chosenCollection = computed(() => values.value[props.collectionField] || props.collectionName);
 
 		const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 

@@ -131,7 +131,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 							type: 'string',
 							meta: {
 								interface: 'system-language',
-								width: 'half',
+								width: 'full',
 								display: 'formatted-value',
 								required: true,
 								display_options: {
@@ -146,8 +146,8 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 							name: '$t:translation',
 							type: 'string',
 							meta: {
-								interface: 'input',
-								width: 'half',
+								interface: 'input-multiline',
+								width: 'full',
 								required: true,
 								options: {
 									placeholder: '$t:field_options.directus_collections.translation_placeholder',

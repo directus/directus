@@ -77,6 +77,7 @@ export default defineComponent({
 
 		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
 		let codemirror: CodeMirror.Editor | null;
+		let previousContent: string | null = null;
 
 		onMounted(async () => {
 			if (codemirrorEl.value) {
@@ -94,9 +95,13 @@ export default defineComponent({
 				await setLanguage();
 
 				codemirror.on('change', (cm, { origin }) => {
-					if (origin === 'setValue') return;
-
 					const content = cm.getValue();
+
+					// prevent duplicate emits with same content
+					if (content === previousContent) return;
+					previousContent = content;
+
+					if (origin === 'setValue') return;
 
 					if (props.type === 'json') {
 						if (content.length === 0) {

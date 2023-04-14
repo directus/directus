@@ -1,40 +1,55 @@
 import { getSimpleHash } from '@directus/utils';
 import { Query } from '@directus/types';
 import { computed, ComputedRef, Ref } from 'vue';
-import { merge } from 'lodash';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
-export type AliasField = {
+export type AliasFields = {
 	fieldName: string;
 	fieldAlias: string;
-	fullAlias: string;
+	fields: string[];
+	key: string;
 };
 
 type UsableAliasFields = {
-	aliasFields: ComputedRef<Record<string, AliasField> | null>;
+	aliasedFields: ComputedRef<Record<string, AliasFields>>;
 	aliasQuery: ComputedRef<Query['alias']>;
-	getAliasField: (key: string) => {
-		fieldName: string;
-		fieldAlias: string;
-		fullAlias: string;
-	};
+	aliasedKeys: ComputedRef<string[]>;
 };
 
-export function useAliasFields(fields: Ref<string[]>): UsableAliasFields {
-	const aliasFields = computed(() => {
-		if (!fields.value || fields.value.length === 0) return null;
+export function useAliasFields(fields: Ref<string[]>, collection: Ref<string | null>): UsableAliasFields {
+	const aliasedFields = computed(() => {
+		const aliasedFields: Record<string, AliasFields> = {};
 
-		const fieldsToAlias = fields.value.filter((field: string) => field.includes('.'));
-		if (fieldsToAlias.length === 0) return null;
+		if (!fields.value || fields.value.length === 0 || !collection.value) return aliasedFields;
 
-		return fieldsToAlias.reduce((acc, currentField) => {
-			const aliasField = getAliasField(currentField);
-			return merge(acc, { [currentField]: aliasField });
-		}, {} as Record<string, AliasField>);
+		for (const field of fields.value) {
+			const alias = getSimpleHash(field);
+			const fullFields = adjustFieldsForDisplays([field], collection.value).map((field) => {
+				if (field.includes('.')) {
+					return `${alias}.${field.split('.').slice(1).join('.')}`;
+				} else {
+					return field;
+				}
+			});
+
+			aliasedFields[alias] = {
+				key: field,
+				fieldName: field.split('.')[0],
+				fieldAlias: alias,
+				fields: fullFields,
+			};
+		}
+
+		return aliasedFields;
+	});
+
+	const aliasedKeys = computed(() => {
+		return Object.values(aliasedFields.value).map((field) => field.fieldAlias);
 	});
 
 	const aliasQuery = computed(() => {
-		if (!aliasFields.value) return null;
-		return Object.values(aliasFields.value).reduce(
+		if (!aliasedFields.value) return null;
+		return Object.values(aliasedFields.value).reduce(
 			(acc, value) => ({
 				...acc,
 				[value.fieldAlias]: value.fieldName,
@@ -43,16 +58,5 @@ export function useAliasFields(fields: Ref<string[]>): UsableAliasFields {
 		);
 	});
 
-	return { aliasFields, aliasQuery, getAliasField };
-
-	function getAliasField(key: string) {
-		// use simple hash to get a deterministic value as alias whenever it's used
-		const fieldAlias = getSimpleHash(key);
-
-		const parts = key.split('.');
-		const fieldName = parts[0];
-		const fullAlias = `${fieldAlias}.${parts.slice(1).join('.')}`;
-
-		return { fieldName, fieldAlias, fullAlias };
-	}
+	return { aliasedFields, aliasQuery, aliasedKeys };
 }

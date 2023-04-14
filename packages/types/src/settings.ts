@@ -22,7 +22,7 @@ export type SettingsStorageAssetPreset = {
 	height: number | null;
 	quality: number | null;
 	withoutEnlargement: boolean | null;
-	format: 'jpeg' | 'png' | 'webp' | 'tiff' | null;
+	format: 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif' | null;
 	transforms: any[] | null;
 };
 

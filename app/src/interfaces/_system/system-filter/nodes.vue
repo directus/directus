@@ -30,7 +30,8 @@
 								include-functions
 								:include-relations="includeRelations"
 								:relational-field-selectable="relationalFieldSelectable"
-								@select-field="updateField(index, $event)"
+								:allow-select-all="false"
+								@add="updateField(index, $event[0])"
 							/>
 						</v-menu>
 						<v-select

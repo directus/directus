@@ -44,7 +44,7 @@
 			<v-checkbox v-if="!isExisting" v-model="autoGenerateJunctionRelation" block :label="t('auto_fill')" />
 
 			<v-icon class="arrow" name="arrow_forward" />
-			<v-icon class="arrow" name="arrow_backward" />
+			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
 		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>

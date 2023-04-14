@@ -14,7 +14,7 @@ declare global {
 class CustomEnvironment extends NodeEnvironment {
 	constructor(config: any, context: any) {
 		super(config, context);
-		this.global.testFilePath = String(context.testPath).split('tests-blackbox')[1]!;
+		this.global.testFilePath = String(context.testPath).split('blackbox')[1]!;
 	}
 
 	async setup() {

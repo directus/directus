@@ -9,6 +9,7 @@ import {
 	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
+	resolvePackageExtensions,
 } from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
@@ -121,9 +122,10 @@ function directusExtensions() {
 	async function loadExtensions() {
 		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
 		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+		const localPackageExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
 		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
 
-		const extensions = [...packageExtensions, ...localExtensions];
+		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions];
 
 		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}

@@ -51,7 +51,7 @@
 			<router-view name="detail" :primary-key="primaryKey" />
 
 			<template #sidebar>
-				<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<sidebar-detail icon="info" :title="t('information')" close>
 					<div v-md="t('page_help_activity_collection')" class="page-description" />
 				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
