@@ -1,9 +1,9 @@
 import type { Server as httpServer } from 'http';
-import { WebSocketController } from './rest.js';
-import { GraphQLSubscriptionController } from './graphql.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import env from '../../env.js';
 import { ServiceUnavailableException } from '../../index.js';
+import { toBoolean } from '../../utils/to-boolean.js';
+import { GraphQLSubscriptionController } from './graphql.js';
+import { WebSocketController } from './rest.js';
 
 let websocketController: WebSocketController | undefined;
 let subscriptionController: GraphQLSubscriptionController | undefined;

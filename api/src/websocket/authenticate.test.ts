@@ -1,11 +1,11 @@
-import { expect, describe, test, vi, Mock } from 'vitest';
+import type { Accountability } from '@directus/types';
+import { Mock, describe, expect, test, vi } from 'vitest';
 import { InvalidCredentialsException } from '../index.js';
 import { getAccountabilityForRole } from '../utils/get-accountability-for-role.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { authenticateConnection, authenticationSuccess, refreshAccountability } from './authenticate.js';
 import type { WebSocketAuthMessage } from './messages.js';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
-import type { Accountability } from '@directus/types';
 
 vi.mock('../utils/get-accountability-for-token', () => ({
 	getAccountabilityForToken: vi.fn().mockReturnValue({

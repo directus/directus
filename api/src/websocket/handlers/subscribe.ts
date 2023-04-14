@@ -1,17 +1,17 @@
-import { getSchema } from '../../utils/get-schema.js';
-import type { Subscription, WebSocketClient } from '../types.js';
-import emitter from '../../emitter.js';
-import { fmtMessage, getMessageType } from '../utils/message.js';
-import { refreshAccountability } from '../authenticate.js';
-import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
-import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { handleWebSocketException, WebSocketException } from '../exceptions.js';
-import { WebSocketSubscribeMessage } from '../messages.js';
-import { getMessenger, Messenger } from '../../messenger.js';
-import type { WebSocketEvent } from '../messages.js';
-import { getService } from '../../utils/get-service.js';
-import { InvalidPayloadException } from '../../index.js';
 import type { Accountability, SchemaOverview } from '@directus/types';
+import emitter from '../../emitter.js';
+import { InvalidPayloadException } from '../../index.js';
+import { Messenger, getMessenger } from '../../messenger.js';
+import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
+import { getSchema } from '../../utils/get-schema.js';
+import { getService } from '../../utils/get-service.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { refreshAccountability } from '../authenticate.js';
+import { WebSocketException, handleWebSocketException } from '../exceptions.js';
+import type { WebSocketEvent } from '../messages.js';
+import { WebSocketSubscribeMessage } from '../messages.js';
+import type { Subscription, WebSocketClient } from '../types.js';
+import { fmtMessage, getMessageType } from '../utils/message.js';
 
 /**
  * Handler responsible for subscriptions

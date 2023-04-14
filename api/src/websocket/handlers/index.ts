@@ -1,5 +1,5 @@
-import { ItemsHandler } from './items.js';
 import { HeartbeatHandler } from './heartbeat.js';
+import { ItemsHandler } from './items.js';
 import { SubscribeHandler } from './subscribe.js';
 
 export function startWebSocketHandlers() {

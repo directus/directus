@@ -1,14 +1,14 @@
-import type WebSocket from 'ws';
-import type { Server as httpServer } from 'http';
-import type { AuthenticationState, WebSocketClient } from '../types.js';
-import env from '../../env.js';
-import SocketController from './base.js';
-import emitter from '../../emitter.js';
-import { refreshAccountability } from '../authenticate.js';
-import { handleWebSocketException, WebSocketException } from '../exceptions.js';
-import logger from '../../logger.js';
-import { WebSocketMessage } from '../messages.js';
 import { parseJSON } from '@directus/utils';
+import type { Server as httpServer } from 'http';
+import type WebSocket from 'ws';
+import emitter from '../../emitter.js';
+import env from '../../env.js';
+import logger from '../../logger.js';
+import { refreshAccountability } from '../authenticate.js';
+import { WebSocketException, handleWebSocketException } from '../exceptions.js';
+import { WebSocketMessage } from '../messages.js';
+import type { AuthenticationState, WebSocketClient } from '../types.js';
+import SocketController from './base.js';
 
 export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {
