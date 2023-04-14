@@ -36,9 +36,9 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, ref, computed, PropType } from 'vue';
-import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { fetchAll } from '@/utils/fetch-all';
 
 type FolderRaw = {
 	id: string;
@@ -121,14 +121,15 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/folders`, {
+				folders.value = await fetchAll<{
+					id: string;
+					name: string;
+					parent: string | null;
+				}>(`/folders`, {
 					params: {
-						limit: -1,
 						sort: 'name',
 					},
 				});
-
-				folders.value = response.data.data;
 			} catch (err: any) {
 				unexpectedError(err);
 			} finally {

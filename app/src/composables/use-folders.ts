@@ -1,4 +1,5 @@
 import api from '@/api';
+import { fetchAll } from '@/utils/fetch-all';
 import { ref, Ref } from 'vue';
 
 type FolderRaw = {
@@ -52,16 +53,16 @@ export function useFolders(): UsableFolders {
 		loading.value = true;
 
 		try {
-			const response = await api.get(`/folders`, {
+			const response = await fetchAll<Folder>(`/folders`, {
 				params: {
-					limit: -1,
 					sort: 'name',
 				},
 			});
 
-			folders.value = response.data.data;
-			nestedFolders.value = nestFolders(response.data.data);
+			folders.value = response;
+			nestedFolders.value = nestFolders(response as FolderRaw[]);
 		} catch (err: any) {
+			console.error(err);
 			error.value = err;
 		} finally {
 			loading.value = false;

@@ -3,6 +3,7 @@ import api from '@/api';
 import { defineStore } from 'pinia';
 import { useUserStore } from '@/stores/user';
 import { usePermissionsStore } from '@/stores/permissions';
+import { fetchAll } from '@/utils/fetch-all';
 
 export const useFlowsStore = defineStore({
 	id: 'flowsStore',
@@ -18,11 +19,9 @@ export const useFlowsStore = defineStore({
 				this.flows = [];
 			} else {
 				try {
-					const response = await api.get<any>('/flows', {
-						params: { limit: -1, fields: ['*', 'operations.*'] },
+					this.flows = await fetchAll('/flows', {
+						params: { fields: ['*', 'operations.*'] },
 					});
-
-					this.flows = response.data.data;
 				} catch {
 					this.flows = [];
 				}

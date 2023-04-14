@@ -66,6 +66,7 @@ import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
 import { Role } from '@directus/types';
+import { fetchAll } from '@/utils/fetch-all';
 
 type RoleItem = Partial<Role> & {
 	count?: number;
@@ -135,9 +136,8 @@ export default defineComponent({
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/roles`, {
+				const response = await fetchAll<any[]>(`/roles`, {
 					params: {
-						limit: -1,
 						fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
 						deep: {
 							users: {
@@ -159,7 +159,7 @@ export default defineComponent({
 						description: t('public_description'),
 						id: 'public',
 					},
-					...response.data.data.map((role: any) => {
+					...response.map((role: any) => {
 						return {
 							...translate(role),
 							count: role.users[0]?.count.id || 0,

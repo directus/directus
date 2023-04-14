@@ -66,7 +66,6 @@
 </template>
 
 <script setup lang="ts">
-import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
@@ -76,11 +75,11 @@ import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { toArray } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
+import { fetchAll } from '@/utils/fetch-all';
 
 const props = withDefaults(
 	defineProps<{
@@ -286,15 +285,15 @@ function useLanguages() {
 		loading.value = true;
 
 		try {
-			const response = await api.get<any>(`/items/${relationInfo.value.relatedCollection.collection}`, {
-				params: {
-					fields: Array.from(fields),
-					limit: -1,
-					sort: props.languageField ?? pkField,
-				},
-			});
-
-			languages.value = response.data.data ? toArray(response.data.data) : [];
+			languages.value = await fetchAll<Record<string, any>[]>(
+				`/items/${relationInfo.value.relatedCollection.collection}`,
+				{
+					params: {
+						fields: Array.from(fields),
+						sort: props.languageField ?? pkField,
+					},
+				}
+			);
 
 			if (!firstLang.value) {
 				const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;

@@ -73,6 +73,7 @@ import api from '@/api';
 import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { orderBy } from 'lodash';
+import { fetchAll } from '@/utils/fetch-all';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -145,7 +146,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const params: any = { filter: { role: {} }, limit: -1 };
+					const params: any = { filter: { role: {} } };
 
 					if (props.role === null) {
 						params.filter.role = { _null: true };
@@ -153,9 +154,7 @@ export default defineComponent({
 						params.filter.role = { _eq: props.role };
 					}
 
-					const response = await api.get('/permissions', { params });
-
-					permissions.value = response.data.data;
+					permissions.value = await fetchAll('/permissions', { params });
 				} catch (err: any) {
 					unexpectedError(err);
 				} finally {
