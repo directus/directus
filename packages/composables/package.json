@@ -22,8 +22,7 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
+		"dist"
 	],
 	"publishConfig": {
 		"access": "public"
