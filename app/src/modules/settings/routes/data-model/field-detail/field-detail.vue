@@ -75,7 +75,7 @@ export default defineComponent({
 	setup(props) {
 		const { collection } = toRefs(props);
 
-		const search = ref<string | null>(null);
+		const search = ref<string>('');
 
 		const isOpen = useDialogRoute();
 
