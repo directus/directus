@@ -31,3 +31,8 @@
 	from = "/cookbook/*"
 	to = "/guides/:splat"
 	status = 301
+
+[[redirects]]
+	from = "/guides/flows/trigger-static-site-build-*"
+	to = "/guides/headless-cms/trigger-static-builds/:splat"
+	status = 301

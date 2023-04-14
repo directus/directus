@@ -355,17 +355,8 @@ function sidebar() {
 				{ text: 'Using For Loops In Flows', link: '/guides/flows/flows-for-loop' },
 				{ text: 'Slugify Text with Run Script', link: '/guides/flows/slugify-text-with-run-script' },
 				{
+					link: '/guides/headless-cms/trigger-static-builds/index.html',
 					text: 'Trigger Static Site Builds',
-					items: [
-						{
-							text: 'Netlify',
-							link: '/guides/flows/trigger-static-site-build-netlify',
-						},
-						{
-							text: 'Vercel',
-							link: '/guides/flows/trigger-static-site-build-vercel',
-						},
-					],
 				},
 				{
 					text: 'Scheduling Content',

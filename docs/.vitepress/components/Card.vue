@@ -34,6 +34,7 @@ const headerType = 'h' + props.h
   display: grid;
   grid-template-columns: 44px auto;
   gap: 1.5em;
+  margin-top: 1em;
   margin-bottom: 1em;
 }
 .icon {
@@ -42,6 +43,7 @@ const headerType = 'h' + props.h
 img {
   border: none !important;
   width: auto;
+  border-radius: 0 !important;
 }
 .card:hover {
   text-decoration: none;
