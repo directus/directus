@@ -51,6 +51,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 
 		const dryRun = options?.dryRun === true;
 		const promptForChanges = !dryRun && options?.yes !== true;
+
 		if (dryRun || promptForChanges) {
 			let message = '';
 
@@ -86,6 +87,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 
 						for (const change of diff) {
 							const path = change.path!.slice(1).join('.');
+
 							if (change.kind === DiffKind.EDIT) {
 								message += `\n    - Set ${path} to ${change.rhs}`;
 							} else if (change.kind === DiffKind.DELETE) {

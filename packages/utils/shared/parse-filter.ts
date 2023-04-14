@@ -19,6 +19,7 @@ export function parseFilter(
 	context: ParseFilterContext = {}
 ): Filter | null {
 	let parsedFilter = parseFilterRecursive(filter, accountability, context);
+
 	if (parsedFilter) {
 		parsedFilter = shiftLogicalOperatorsUp(parsedFilter);
 	}

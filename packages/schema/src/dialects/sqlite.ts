@@ -226,6 +226,7 @@ export default class SQLite implements SchemaInspector {
 			`SELECT COUNT(*) AS ct FROM pragma_table_xinfo('${table}') WHERE name='${column}'`
 		);
 		const resultsVal = results[0]['ct'];
+
 		if (resultsVal !== 0) {
 			isColumn = true;
 		}

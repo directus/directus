@@ -170,9 +170,11 @@ export class FilesService extends ItemsService {
 						iptc?: Record<string, unknown>;
 						xmp?: Record<string, unknown>;
 					} = {};
+
 					if (sharpMetadata.exif) {
 						try {
 							const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
+
 							if (image) {
 								fullMetadata.ifd0 = image;
 							}

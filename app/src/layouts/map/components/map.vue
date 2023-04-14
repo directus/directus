@@ -101,6 +101,7 @@ export default defineComponent({
 			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 		});
 		let geocoderControl: MapboxGeocoder | undefined;
+
 		if (mapboxKey) {
 			const marker = document.createElement('div');
 			marker.className = 'mapboxgl-user-location-dot mapboxgl-search-location-dot';
@@ -147,6 +148,7 @@ export default defineComponent({
 				watch(() => style.value, updateStyle);
 				watch(() => props.bounds, fitBounds);
 				const activeLayers = ['__directus_polygons', '__directus_points', '__directus_lines'];
+
 				for (const layer of activeLayers) {
 					map.on('click', layer, onFeatureClick);
 					map.on('mousemove', layer, updatePopup);
@@ -186,6 +188,7 @@ export default defineComponent({
 
 		function fitBounds() {
 			const bbox = props.data.bbox;
+
 			if (map && bbox) {
 				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 100,
@@ -219,6 +222,7 @@ export default defineComponent({
 
 		function updateSource(newSource: GeoJSONSource) {
 			const layersId = new Set(map.getStyle().layers?.map(({ id }) => id));
+
 			for (const layer of props.layers) {
 				if (layersId.has(layer.id)) {
 					map.removeLayer(layer.id);
@@ -264,6 +268,7 @@ export default defineComponent({
 		function onFeatureClick(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
 			const replace = props.showSelect === 'multiple' ? false : !event.originalEvent.altKey;
+
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
 					emit('featureselect', { ids: [feature.id], replace });
@@ -280,6 +285,7 @@ export default defineComponent({
 
 			const previousId = hoveredFeature.value?.id;
 			const featureChanged = previousId !== feature?.id;
+
 			if (previousId && featureChanged) {
 				map.setFeatureState({ id: previousId, source: '__directus' }, { hovered: false });
 			}

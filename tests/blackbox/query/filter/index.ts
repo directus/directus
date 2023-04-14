@@ -202,6 +202,7 @@ function processValidation(
 	if (keys.length === 1) {
 		if (Array.isArray(data)) {
 			let found = false;
+
 			for (const item of data) {
 				try {
 					if (filter.validatorFunction(get(item, keys[0]), filter.value)) {
@@ -231,6 +232,7 @@ function processValidation(
 			}
 		} else {
 			let validationResult;
+
 			try {
 				validationResult = filter.validatorFunction(get(data, keys[0]), filter.value);
 			} catch (_err) {
@@ -250,6 +252,7 @@ function processValidation(
 
 		if (Array.isArray(data)) {
 			let found = false;
+
 			for (const item of data) {
 				if (processValidation(get(item, currentKey), keys.join('.'), filter, possibleValues, false)) {
 					found = true;

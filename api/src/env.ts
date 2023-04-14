@@ -440,6 +440,7 @@ function processValues(env: Record<string, any>) {
 		// If key ends with '_FILE', try to get the value from the file defined in this variable
 		// and store it in the variable with the same name but without '_FILE' at the end
 		let newKey: string | undefined;
+
 		if (key.length > 5 && key.endsWith('_FILE')) {
 			newKey = key.slice(0, -5);
 			if (allowedEnvironmentVars.some((pattern) => pattern.test(newKey as string))) {

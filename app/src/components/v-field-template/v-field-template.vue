@@ -146,6 +146,7 @@ function onSelect() {
 
 		for (let i = 0; i < contentEl.value.childNodes.length || !textSpan; i++) {
 			const child = contentEl.value.children[i];
+
 			if (child.classList.contains('text')) {
 				textSpan = child;
 			}

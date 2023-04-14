@@ -147,6 +147,7 @@ class ExtensionManager {
 			await this.load();
 
 			const loadedExtensions = this.getExtensionsList();
+
 			if (loadedExtensions.length > 0) {
 				logger.info(`Loaded extensions: ${loadedExtensions.map((ext) => ext.name).join(', ')}`);
 			}
@@ -178,6 +179,7 @@ class ExtensionManager {
 
 				const addedExtensions = added.map((extension) => extension.name);
 				const removedExtensions = removed.map((extension) => extension.name);
+
 				if (addedExtensions.length > 0) {
 					logger.info(`Added extensions: ${addedExtensions.join(', ')}`);
 				}
@@ -391,6 +393,7 @@ class ExtensionManager {
 		const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
+
 		for (const dep of deps) {
 			const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[0-9a-f]{8}\\.entry\\.js`);
 			const depName = appDir.find((file) => depRegex.test(file));
@@ -409,6 +412,7 @@ class ExtensionManager {
 
 	private async registerHooks(): Promise<void> {
 		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
+
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
@@ -563,6 +567,7 @@ class ExtensionManager {
 			},
 			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
 				const content = typeof code === 'function' ? code() : code;
+
 				if (content.trim().length === 0) {
 					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
 					return;

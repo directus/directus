@@ -60,6 +60,7 @@ export default defineLayout<LayoutOptions>({
 			const start = formatISO(calendar.value.view.activeStart);
 			const end = formatISO(calendar.value.view.activeEnd);
 			const startsHere = { [startDateField.value]: { _between: [start, end] } };
+
 			if (!endDateField.value) {
 				return startsHere;
 			}
@@ -295,6 +296,7 @@ export default defineLayout<LayoutOptions>({
 
 			if (endDateField.value) {
 				const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
+
 				if (allDay && isValid(date)) {
 					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
 					// expected result in the calendar

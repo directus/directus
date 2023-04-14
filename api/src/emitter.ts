@@ -35,6 +35,7 @@ export class Emitter {
 		}));
 
 		let updatedPayload = payload;
+
 		for (const { event, listeners } of eventListeners) {
 			for (const listener of listeners) {
 				const result = await listener(updatedPayload, { event, ...meta }, context);

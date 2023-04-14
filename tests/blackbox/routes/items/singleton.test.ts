@@ -182,6 +182,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					const updatedO2M = gqlResponsePre.body.data[localCollectionSingleton].o2m;
 					const newO2mItem: any = { name: o2mNameNew2 };
+
 					if (pkType === 'string') {
 						newO2mItem.id = SeedFunctions.generatePrimaryKeys(pkType, {
 							quantity: 1,

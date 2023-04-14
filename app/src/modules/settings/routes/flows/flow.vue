@@ -385,6 +385,7 @@ const parentPanels = computed(() => {
 
 	function connectedToTrigger(id: string) {
 		let parent = parents[id];
+
 		while (parent?.id !== '$trigger') {
 			if (parent === undefined) return false;
 			parent = parents[parent.id];
@@ -672,6 +673,7 @@ function arrowStop() {
 
 function isLoop(currentId: string, attachTo: string) {
 	let parent = currentId;
+
 	while (parent !== undefined) {
 		if (parent === attachTo) return true;
 		parent = parentPanels.value[parent]?.id ?? undefined;

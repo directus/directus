@@ -263,6 +263,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Setup
 					const artists = [];
 					const artistsCount = 50;
+
 					for (let i = 0; i < artistsCount; i++) {
 						artists.push(createArtist(pkType));
 					}
@@ -445,6 +446,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Setup
 					const artists = [];
 					const artistsCount = 5;
+
 					for (let i = 0; i < artistsCount; i++) {
 						artists.push(createArtist(pkType));
 					}
@@ -508,6 +510,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artists = [];
 					const artists2 = [];
 					const artistsCount = 10;
+
 					for (let i = 0; i < artistsCount; i++) {
 						artists.push(createArtist(pkType));
 						artists2.push(createArtist(pkType));

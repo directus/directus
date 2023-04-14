@@ -101,6 +101,7 @@ export default defineComponent({
 			// Alias uses the foreign key type
 			if (fieldInfo?.type === 'alias') {
 				const relations = relationsStore.getRelationsForField(props.collection, getField(props.field));
+
 				if (relations[0]) {
 					return fieldsStore.getField(relations[0].collection, relations[0].field);
 				}
@@ -144,6 +145,7 @@ export default defineComponent({
 				const fieldPath = getField(props.field);
 
 				const value = get(props.field, `${fieldPath}.${comparator.value}`);
+
 				if (['_in', '_nin'].includes(comparator.value)) {
 					return [...(value as string[]).filter((val) => val !== null && val !== ''), null];
 				} else {
@@ -180,6 +182,7 @@ export default defineComponent({
 		function setListValue(index: number, newVal: any) {
 			if (typeof newVal === 'string' && newVal.includes(',')) {
 				const parts = newVal.split(',');
+
 				for (let i = 0; i < parts.length; i++) {
 					setValueAt(index + i, parts[i]);
 				}

@@ -310,6 +310,7 @@ export default async function getASTFromQuery(
 
 			if (fieldKey === '*') {
 				const aliases = Object.keys(query.alias ?? {});
+
 				// Set to all fields in collection
 				if (allowedFields.includes('*')) {
 					fields.splice(index, 1, ...fieldsInCollection, ...aliases);

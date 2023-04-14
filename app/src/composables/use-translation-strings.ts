@@ -117,6 +117,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 				}));
 
 				const { currentUser } = useUserStore();
+
 				if (currentUser && 'language' in currentUser && currentUser.language) {
 					mergeTranslationStringsForLanguage(currentUser.language);
 				} else {

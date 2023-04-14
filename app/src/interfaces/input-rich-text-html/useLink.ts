@@ -110,6 +110,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		editor.value.fire('focus');
 
 		const link = linkSelection.value;
+
 		if (link.url === null) {
 			if (linkNode.value) {
 				editor.value.selection.setContent(linkNode.value.innerText);

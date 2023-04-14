@@ -59,6 +59,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			Issuer.discover(issuerUrl)
 				.then((issuer) => {
 					const supportedTypes = issuer.metadata['response_types_supported'] as string[] | undefined;
+
 					if (!supportedTypes?.includes('code')) {
 						reject(
 							new InvalidConfigException('OpenID provider does not support required code flow', {
@@ -249,6 +250,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			try {
 				const client = await this.client;
 				const tokenSet = await client.refresh(authData['refreshToken']);
+
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
 					await this.usersService.updateOne(user.id, {

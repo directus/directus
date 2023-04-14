@@ -122,6 +122,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 			afterEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				if (await db.schema.hasColumn(TEST_COLLECTION_NAME, TEST_FIELD_NAME)) {
 					await db.schema.alterTable(TEST_COLLECTION_NAME, (table) => {
 						table.dropColumn(TEST_FIELD_NAME);
@@ -223,6 +224,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 			beforeEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				if (!(await db.schema.hasColumn(TEST_COLLECTION_NAME, TEST_FIELD_NAME))) {
 					await db.schema.alterTable(TEST_COLLECTION_NAME, (table) => {
 						table.string(TEST_FIELD_NAME);
@@ -395,6 +397,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 			afterEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				if (!(await db.schema.hasColumn(TEST_COLLECTION_NAME, TEST_FIELD_NAME))) {
 					await db.schema.alterTable(TEST_COLLECTION_NAME, (table) => {
 						table.string(TEST_FIELD_NAME);

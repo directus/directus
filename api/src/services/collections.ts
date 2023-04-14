@@ -116,6 +116,7 @@ export class CollectionsService {
 
 						// Add flag for specific database type overrides
 						const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+
 						if (flagToAdd) {
 							addFieldFlag(field, flagToAdd);
 						}

@@ -339,6 +339,7 @@ function getCompareOptions(name: string) {
 		// Alias uses the foreign key type
 		if (type === 'alias') {
 			const relations = relationsStore.getRelationsForField(props.collection, name);
+
 			if (relations[0]) {
 				type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
 			}

@@ -226,6 +226,7 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 		});
 
 		const previousName = get(state, 'relations.m2o.related_collection');
+
 		if (state.items && state.items[previousName]) {
 			delete state.items[previousName];
 		}

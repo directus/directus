@@ -60,6 +60,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		loading.value = true;
 
 		let success = false;
+
 		try {
 			await api.post('/users/me/tfa/enable', { otp: otp.value, secret: secret.value });
 			success = true;

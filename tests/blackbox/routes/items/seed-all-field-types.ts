@@ -68,6 +68,7 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 
 		// Create items
 		let generatedStringIdCounter = 0;
+
 		for (const key of Object.keys(fieldSchema)) {
 			// Oracle does not have a time datatype
 			if (vendor === 'oracle' && fieldSchema[key].type === 'time') {
@@ -129,6 +130,7 @@ export const seedO2MAliasAllFieldTypesValues = async (
 		for (const aliasKey of possibleKeys) {
 			for (let i = 0; i < valuesQuantity; i++) {
 				const item: any = {};
+
 				if (pkType === 'string') {
 					item['id'] = SeedFunctions.generateValues.string({
 						quantity: 1,
