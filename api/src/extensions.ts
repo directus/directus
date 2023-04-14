@@ -181,6 +181,7 @@ class ExtensionManager {
 				if (addedExtensions.length > 0) {
 					logger.info(`Added extensions: ${addedExtensions.join(', ')}`);
 				}
+
 				if (removedExtensions.length > 0) {
 					logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
 				}
@@ -566,9 +567,11 @@ class ExtensionManager {
 					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
 					return;
 				}
+
 				if (position === 'head') {
 					this.hookEmbedsHead.push(content);
 				}
+
 				if (position === 'body') {
 					this.hookEmbedsBody.push(content);
 				}

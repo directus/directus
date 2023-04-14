@@ -43,6 +43,7 @@ function validateConfiguration() {
 		logger.error(`The IP based rate limiter needs to be enabled when using the global rate limiter.`);
 		process.exit(1);
 	}
+
 	const globalPointsPerSec =
 		Number(env['RATE_LIMITER_GLOBAL_POINTS']) / Math.max(Number(env['RATE_LIMITER_GLOBAL_DURATION']), 1);
 	const regularPointsPerSec = Number(env['RATE_LIMITER_POINTS']) / Math.max(Number(env['RATE_LIMITER_DURATION']), 1);

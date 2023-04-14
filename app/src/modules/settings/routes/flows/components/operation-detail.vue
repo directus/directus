@@ -177,6 +177,7 @@ const operationOptions = computed(() => {
 	} else if (typeof selectedOperation.value?.options === 'object') {
 		return selectedOperation.value.options;
 	}
+
 	return undefined;
 });
 

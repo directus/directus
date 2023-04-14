@@ -12,6 +12,7 @@ export async function awaitDatabaseConnection(database: Knex, checkSQL: string):
 			continue;
 		}
 	}
+
 	throw new Error(`Couldn't connect to DB`);
 }
 
@@ -25,5 +26,6 @@ export async function awaitDirectusConnection(port: number): Promise<void | null
 			continue;
 		}
 	}
+
 	throw new Error(`Couldn't connect to Directus`);
 }

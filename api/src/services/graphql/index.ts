@@ -208,6 +208,7 @@ export class GraphQLService {
 				if (collection.collection.startsWith('directus_') === false) return false;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) return false;
 			}
+
 			return true;
 		};
 
@@ -1334,6 +1335,7 @@ export class GraphQLService {
 				collection = collection.slice(0, -6);
 			}
 		}
+
 		if (args['id']) {
 			query.filter = {
 				_and: [
@@ -1723,6 +1725,7 @@ export class GraphQLService {
 			set(error[0]!, 'extensions.code', error[0]!.code);
 			return new GraphQLError(error[0]!.message, undefined, undefined, undefined, undefined, error[0]);
 		}
+
 		set(error, 'extensions.code', error.code);
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
@@ -2072,6 +2075,7 @@ export class GraphQLService {
 							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
+
 					return {
 						access_token: result['accessToken'],
 						expires: result['expires'],
@@ -2104,6 +2108,7 @@ export class GraphQLService {
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
+
 					const result = await authenticationService.refresh(currentRefreshToken);
 					if (args['mode'] === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
@@ -2114,6 +2119,7 @@ export class GraphQLService {
 							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
+
 					return {
 						access_token: result['accessToken'],
 						expires: result['expires'],
@@ -2145,6 +2151,7 @@ export class GraphQLService {
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
+
 					await authenticationService.logout(currentRefreshToken);
 					return true;
 				},
@@ -2258,6 +2265,7 @@ export class GraphQLService {
 					if (otpValid === false) {
 						throw new InvalidPayloadException(`"otp" is invalid`);
 					}
+
 					await service.disableTFA(this.accountability.user);
 					return true;
 				},
@@ -2788,6 +2796,7 @@ export class GraphQLService {
 
 							return await service.readOne(this.accountability.user, query);
 						}
+
 						return true;
 					},
 				},

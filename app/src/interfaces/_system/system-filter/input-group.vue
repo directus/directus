@@ -162,6 +162,7 @@ export default defineComponent({
 				} else {
 					value = newVal;
 				}
+
 				emit('update:field', fieldToFilter(fieldPath, comparator.value, value));
 			},
 		});

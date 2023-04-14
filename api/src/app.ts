@@ -219,6 +219,7 @@ export default async function createApp(): Promise<express.Application> {
 	if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 		app.use(rateLimiterGlobal);
 	}
+
 	if (env['RATE_LIMITER_ENABLED'] === true) {
 		app.use(rateLimiter);
 	}

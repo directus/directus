@@ -56,12 +56,14 @@ export default defineLayout<LayoutOptions>({
 			if (!calendar.value || !startDateField.value) {
 				return;
 			}
+
 			const start = formatISO(calendar.value.view.activeStart);
 			const end = formatISO(calendar.value.view.activeEnd);
 			const startsHere = { [startDateField.value]: { _between: [start, end] } };
 			if (!endDateField.value) {
 				return startsHere;
 			}
+
 			const endsHere = { [endDateField.value]: { _between: [start, end] } };
 			const startsBefore = { [startDateField.value]: { _lte: start } };
 			const endsAfter = { [endDateField.value]: { _gte: end } };
@@ -324,6 +326,7 @@ export default defineLayout<LayoutOptions>({
 			if (type === 'dateTime') {
 				return dateString.substring(0, 19);
 			}
+
 			return dateString;
 		}
 	},

@@ -176,18 +176,22 @@ export class FilesService extends ItemsService {
 							if (image) {
 								fullMetadata.ifd0 = image;
 							}
+
 							if (thumbnail) {
 								fullMetadata.ifd1 = thumbnail;
 							}
+
 							if (interoperability) {
 								fullMetadata.interop = interoperability;
 							}
+
 							Object.assign(fullMetadata, rest);
 						} catch (err) {
 							logger.warn(`Couldn't extract EXIF metadata from file`);
 							logger.warn(err);
 						}
 					}
+
 					if (sharpMetadata.icc) {
 						try {
 							fullMetadata.icc = parseIcc(sharpMetadata.icc);
@@ -196,6 +200,7 @@ export class FilesService extends ItemsService {
 							logger.warn(err);
 						}
 					}
+
 					if (sharpMetadata.iptc) {
 						try {
 							fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
@@ -204,6 +209,7 @@ export class FilesService extends ItemsService {
 							logger.warn(err);
 						}
 					}
+
 					if (sharpMetadata.xmp) {
 						try {
 							fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
@@ -216,9 +222,11 @@ export class FilesService extends ItemsService {
 					if (fullMetadata?.iptc?.['Caption'] && typeof fullMetadata.iptc['Caption'] === 'string') {
 						metadata.description = fullMetadata.iptc?.['Caption'];
 					}
+
 					if (fullMetadata?.iptc?.['Headline'] && typeof fullMetadata.iptc['Headline'] === 'string') {
 						metadata.title = fullMetadata.iptc['Headline'];
 					}
+
 					if (fullMetadata?.iptc?.['Keywords']) {
 						metadata.tags = fullMetadata.iptc['Keywords'];
 					}

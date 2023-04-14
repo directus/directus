@@ -121,6 +121,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 				) {
 					return userStore.currentUser.last_page || '/login';
 				}
+
 				return to.fullPath;
 			} else {
 				if (to.fullPath) {

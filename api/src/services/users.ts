@@ -256,6 +256,7 @@ export class UsersService extends ItemsService {
 						invalid: data['email'],
 					});
 				}
+
 				await this.checkUniqueEmails([data['email']], keys[0]);
 			}
 

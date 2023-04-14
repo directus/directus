@@ -270,6 +270,7 @@ function setContent() {
 				if (part.startsWith('{{') === false) {
 					return `<span class="text">${part}</span>`;
 				}
+
 				const fieldKey = part.replace(/({|})/g, '').trim();
 				const fieldPath = fieldKey.split('.');
 

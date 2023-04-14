@@ -75,6 +75,7 @@ export default defineComponent({
 			if (router.currentRoute.value.query.reason && !validReasons.includes(router.currentRoute.value.query.reason)) {
 				return translateAPIError(router.currentRoute.value.query.reason);
 			}
+
 			return null;
 		});
 

@@ -41,6 +41,7 @@ describe('should throw accurate error', () => {
 			},
 		};
 	};
+
 	const baseSnapshot = (partialSnapshot?: Partial<Snapshot>) => {
 		return {
 			hash: 'xyz',

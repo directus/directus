@@ -15,8 +15,10 @@ export const PrepareRequest = (vendor: string, requestOptions: RequestOptions) =
 	if (requestOptions.token) {
 		req.set('Authorization', `Bearer ${requestOptions.token}`);
 	}
+
 	if (requestOptions.body) {
 		req.send(requestOptions.body);
 	}
+
 	return req;
 };

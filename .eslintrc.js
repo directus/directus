@@ -5,6 +5,16 @@ const defaultRules = {
 	'no-debugger': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
 	// Enforce prettier formatting
 	'prettier/prettier': 'error',
+	'padding-line-between-statements': [
+		'error',
+		{
+			blankLine: 'always',
+			prev: ['block', 'block-like', 'cjs-export', 'class', 'export', 'import'],
+			next: '*',
+		},
+		{ blankLine: 'any', prev: ['export', 'import'], next: ['export', 'import'] },
+	],
+	'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
 };
 
 module.exports = {

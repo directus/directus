@@ -389,6 +389,7 @@ const parentPanels = computed(() => {
 			if (parent === undefined) return false;
 			parent = parents[parent.id];
 		}
+
 		return true;
 	}
 });
@@ -631,6 +632,7 @@ function arrowStop() {
 		arrowInfo.value = undefined;
 		return;
 	}
+
 	const nearPanel = getNearAttachment(arrowInfo.value?.pos);
 
 	if (nearPanel && isLoop(arrowInfo.value.id, nearPanel)) {
@@ -686,6 +688,7 @@ function getNearAttachment(pos: Vector2) {
 		);
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;
 	}
+
 	return undefined;
 }
 

@@ -177,12 +177,14 @@ export const useFieldDetailStore = defineStore({
 				) {
 					throw new Error('Field key cannot be the same as foreign key');
 				}
+
 				// Track fields used for M2M & M2A
 				if (this.collection === relation.related_collection && relation.meta?.one_field) {
 					aliasesFromRelation.push(`${relation.collection}:${relation.field}`);
 					aliasesFromRelation.push(`${this.collection}:${relation.meta.one_field}`);
 				}
 			}
+
 			// Duplicate field check for M2A
 			const addedFields = Object.values(this.fields)
 				.map((field) => (field && field.collection && field.field ? `${field.collection}:${field.field}` : null))

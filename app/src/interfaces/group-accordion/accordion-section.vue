@@ -109,6 +109,7 @@ export default defineComponent({
 			if (props.field.meta?.special?.includes('group')) {
 				fields.push(...getFieldsForGroup(props.field.meta?.field));
 			}
+
 			return fields;
 		});
 

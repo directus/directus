@@ -197,6 +197,7 @@ const fields = computed(() => {
 			if (field.field === props.circularField) {
 				set(field, 'meta.readonly', true);
 			}
+
 			return field;
 		});
 	} else {

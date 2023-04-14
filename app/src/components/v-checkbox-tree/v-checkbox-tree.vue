@@ -149,6 +149,7 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 				}
 			}
 		}
+
 		return result;
 	}
 
