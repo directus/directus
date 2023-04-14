@@ -70,7 +70,7 @@ export const useFieldsStore = defineStore({
 	}),
 	actions: {
 		async hydrate(options?: HydrateOptions) {
-			const fieldsResponse = await api.get<any>(`/fields`, { params: { limit: -1 } });
+			const fieldsResponse = await api.get<any>(`/fields`);
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 			this.fields = [...fields.map(this.parseField), fakeFilesField];
