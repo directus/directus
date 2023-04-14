@@ -44,9 +44,11 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 			source.tiles = expandUrl(basemap.url);
 			source.tileSize = basemap.tileSize || 512;
 		}
+
 		if (basemap.type == 'tile') {
 			source.url = basemap.url;
 		}
+
 		style.layers = [{ id: basemap.name, source: basemap.name, type: 'raster' }];
 		style.sources = { [basemap.name]: source };
 		return style;
@@ -64,8 +66,10 @@ function expandUrl(url: string): string[] {
 		for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
 			urls.push(url.replace(match[0], String.fromCharCode(charCode)));
 		}
+
 		return urls;
 	}
+
 	match = /\{(\d+)-(\d+)\}/.exec(url);
 	if (match) {
 		// number range
@@ -73,8 +77,10 @@ function expandUrl(url: string): string[] {
 		for (let i = parseInt(match[1], 10); i <= stop; i++) {
 			urls.push(url.replace(match[0], i.toString()));
 		}
+
 		return urls;
 	}
+
 	match = /\{(([a-z0-9]+)(,([a-z0-9]+))+)\}/.exec(url);
 	if (match) {
 		// csv
@@ -82,8 +88,10 @@ function expandUrl(url: string): string[] {
 		for (const subdomain of subdomains) {
 			urls.push(url.replace(match[0], subdomain));
 		}
+
 		return urls;
 	}
+
 	urls.push(url);
 	return urls;
 }

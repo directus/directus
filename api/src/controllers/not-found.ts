@@ -29,6 +29,7 @@ const notFound: RequestHandler = async (req, res, next) => {
 		if (hooksResult) {
 			return next();
 		}
+
 		next(new RouteNotFoundException(req.path));
 	} catch (err: any) {
 		next(err);

@@ -48,6 +48,7 @@ const size = computed(() => {
 		width = Math.max(width, (panel.x + PANEL_WIDTH) * 20);
 		height = Math.max(height, (panel.y + PANEL_HEIGHT) * 20);
 	}
+
 	if (props.arrowInfo) {
 		width = Math.max(width, props.arrowInfo.pos.x + 10);
 		height = Math.max(height, props.arrowInfo.pos.y + 10);
@@ -123,6 +124,7 @@ const arrows = computed(() => {
 	if (props.arrowInfo) {
 		arrows.push();
 	}
+
 	return arrows;
 
 	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
@@ -176,6 +178,7 @@ const arrows = computed(() => {
 				path += generateCorner(points[i - 1], points[i], points[i + 1]);
 			}
 		}
+
 		const arrowSize = 8;
 		const arrow = `M ${points.at(-1)} L ${points
 			.at(-1)
@@ -223,6 +226,7 @@ const arrows = computed(() => {
 		for (let i = min; i < max; i += step) {
 			points.push(i);
 		}
+
 		points.push(max);
 		return points;
 	}

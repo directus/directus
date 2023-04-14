@@ -313,6 +313,7 @@ async function getDBQuery(
 					orderByString += `?? ${sortRecord.order}`;
 					orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
 				}
+
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 			});
 

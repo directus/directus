@@ -85,6 +85,7 @@ const displayItem = computed(() => {
 		const user = useUserStore();
 		item = props.value.find((val) => val?.[langField]?.[langPkField] === user.currentUser?.language) ?? item;
 	}
+
 	return item ?? {};
 });
 

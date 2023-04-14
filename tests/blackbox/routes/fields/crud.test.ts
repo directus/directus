@@ -427,6 +427,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							} else {
 								expect(response.statusCode).toBe(403);
 							}
+
 							expect(response2.statusCode).toBe(403);
 						});
 					});
@@ -458,6 +459,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							} else {
 								expect(response.statusCode).toBe(403);
 							}
+
 							expect(response2.statusCode).toBe(403);
 						});
 					});

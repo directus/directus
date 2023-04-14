@@ -328,12 +328,15 @@ const query = computed<RelationQueryMultiple>(() => {
 	if (!relationInfo.value) {
 		return q;
 	}
+
 	if (searchFilter.value) {
 		q.filter = searchFilter.value;
 	}
+
 	if (search.value) {
 		q.search = search.value;
 	}
+
 	if (sort.value) {
 		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
 	}
@@ -388,6 +391,7 @@ watch(
 				if (!contentWidth[key]) {
 					contentWidth[key] = 5;
 				}
+
 				if (String(item[key]).length > contentWidth[key]) {
 					contentWidth[key] = String(item[key]).length;
 				}
@@ -457,6 +461,7 @@ function sortItems(items: DisplayItem[]) {
 		if (!isNil(junctionId)) {
 			changes[info.junctionPrimaryKeyField.field] = junctionId;
 		}
+
 		if (!isNil(relatedId)) {
 			set(changes, info.junctionField.field + '.' + info.relatedPrimaryKeyField.field, relatedId);
 		}

@@ -174,6 +174,7 @@ export default defineComponent({
 		function updateProjection() {
 			projection.value = !location.value ? null : map.project(location.value as any);
 		}
+
 		watch(location, updateProjection);
 
 		const controls = {
@@ -262,6 +263,7 @@ export default defineComponent({
 					location.value = null;
 				});
 			}
+
 			controls.geolocate.on('geolocate', (event: any) => {
 				const { longitude, latitude } = event.coords;
 				location.value = [longitude, latitude];
@@ -286,6 +288,7 @@ export default defineComponent({
 					map.on('mousemove', layer, updateTooltip);
 					map.on('mouseleave', layer, updateTooltip);
 				}
+
 				window.addEventListener('keydown', handleKeyDown);
 			});
 
@@ -314,6 +317,7 @@ export default defineComponent({
 					controls.draw.changeMode('simple_select');
 				}
 			}
+
 			if (props.disabled) {
 				controls.draw.changeMode('static');
 			}
@@ -356,6 +360,7 @@ export default defineComponent({
 			if (props.disabled) {
 				return options;
 			}
+
 			if (!type) {
 				options.controls.line_string = true;
 				options.controls.polygon = true;
@@ -374,9 +379,11 @@ export default defineComponent({
 			if (!a || !b) {
 				return true;
 			}
+
 			if (a.startsWith('Multi')) {
 				return a.replace('Multi', '') == b.replace('Multi', '');
 			}
+
 			return a == b;
 		}
 
@@ -387,16 +394,19 @@ export default defineComponent({
 				if (!initialValue) {
 					return;
 				}
+
 				if (!props.disabled && !isTypeCompatible(geometryType, initialValue!.type)) {
 					geometryParsingError.value = t('interfaces.map.unexpected_geometry', {
 						expected: geometryType,
 						got: initialValue!.type,
 					});
 				}
+
 				const flattened = flatten(initialValue);
 				for (const geometry of flattened) {
 					controls.draw.add(geometry);
 				}
+
 				currentGeometry = getCurrentGeometry();
 				currentGeometry!.bbox = getBBox(currentGeometry!);
 
@@ -431,6 +441,7 @@ export default defineComponent({
 			} else {
 				result = geometries[geometries.length - 1];
 			}
+
 			return result;
 		}
 

@@ -239,8 +239,10 @@ export class AuthorizationService {
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
+
 								return result;
 							}
+
 							// Filter value is not a filter, so we should skip it
 							return result;
 						}
@@ -352,6 +354,7 @@ export class AuthorizationService {
 						current[collection] = new Set([...current[collection]!, ...child[collection]!]);
 					}
 				}
+
 				return current;
 			}
 

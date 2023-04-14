@@ -176,9 +176,11 @@ function generateString(options: OptionsSeedGenerateString) {
 		if (options.startsWith) {
 			value = options.startsWith + value;
 		}
+
 		if (options.endsWith) {
 			value = value + options.endsWith;
 		}
+
 		values.push(value);
 	}
 

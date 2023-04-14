@@ -1256,6 +1256,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									if (i >= countCreate) {
 										state.country_id = createCountry(pkType);
 									}
+
 									statesID.push((await CreateItem(vendor, { collection: localCollectionStates, item: state })).id);
 
 									const state2: any = createState(pkType);
@@ -1263,6 +1264,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									if (i >= countCreate) {
 										state2.country_id = createCountry(pkType);
 									}
+
 									statesID2.push((await CreateItem(vendor, { collection: localCollectionStates, item: state2 })).id);
 								}
 
@@ -1342,6 +1344,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									if (i >= countCreate) {
 										state.country_id = createCountry(pkType);
 									}
+
 									statesID.push((await CreateItem(vendor, { collection: localCollectionStates, item: state })).id);
 
 									const state2: any = createState(pkType);
@@ -1349,6 +1352,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									if (i >= countCreate) {
 										state2.country_id = createCountry(pkType);
 									}
+
 									statesID2.push((await CreateItem(vendor, { collection: localCollectionStates, item: state2 })).id);
 								}
 

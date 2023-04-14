@@ -58,6 +58,7 @@ const _null = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue === undefined || inputValue === null) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -65,6 +66,7 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== undefined && inputValue !== null) {
 		return true;
 	}
+
 	return false;
 };
 

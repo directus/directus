@@ -183,6 +183,7 @@ const firstEditableFieldIndex = computed(() => {
 			return i;
 		}
 	}
+
 	return null;
 });
 
@@ -193,6 +194,7 @@ const firstVisibleFieldIndex = computed(() => {
 			return i;
 		}
 	}
+
 	return null;
 });
 
@@ -289,6 +291,7 @@ function useForm() {
 		if (props.collection) {
 			return fieldsStore.getFieldsForCollection(props.collection);
 		}
+
 		if (props.fields) {
 			return props.fields;
 		}

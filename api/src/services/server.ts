@@ -60,6 +60,7 @@ export class ServerService {
 			} else {
 				info['rateLimit'] = false;
 			}
+
 			if (env['RATE_LIMITER_GLOBAL_ENABLED']) {
 				info['rateLimitGlobal'] = {
 					points: env['RATE_LIMITER_GLOBAL_POINTS'],

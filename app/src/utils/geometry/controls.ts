@@ -10,22 +10,27 @@ export class ButtonControl {
 		this.element.onpointerdown = callback;
 		this.active = false;
 	}
+
 	click(...args: any[]): void {
 		this.callback(...args);
 	}
+
 	activate(yes: boolean): void {
 		this.element.classList[yes ? 'add' : 'remove']('active');
 		this.active = yes;
 	}
+
 	show(yes: boolean): void {
 		this.element.classList[yes ? 'remove' : 'add']('hidden');
 	}
+
 	onAdd(): HTMLElement {
 		this.groupElement = document.createElement('div');
 		this.groupElement.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
 		this.groupElement.appendChild(this.element);
 		return this.groupElement;
 	}
+
 	onRemove(): void {
 		this.element.remove();
 		this.groupElement?.remove();
@@ -111,6 +116,7 @@ export class BoxSelectControl {
 		if (event.key == 'Shift') {
 			this.activate(true);
 		}
+
 		if (event.key == 'Escape') {
 			this.reset();
 			this.activate(false);
@@ -134,6 +140,7 @@ export class BoxSelectControl {
 		if (!this.shiftPressed) {
 			return;
 		}
+
 		if (event.button === 0) {
 			this.selecting = true;
 			this.map!.dragPan.disable();
@@ -162,6 +169,7 @@ export class BoxSelectControl {
 		if (!this.active()) {
 			return;
 		}
+
 		const features = this.map!.queryRenderedFeatures([this.startPos!, this.lastPos!], {
 			layers: this.layers,
 		});

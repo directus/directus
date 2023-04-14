@@ -243,6 +243,7 @@ export function useItem(
 					for (const item of existingItems) {
 						updateExistingRelatedItems(updatedRelatedItems, item, relatedPrimaryKeyField, relation);
 					}
+
 					updatedRelatedItems.length = 0;
 
 					for (const item of existingItems) {
@@ -296,6 +297,7 @@ export function useItem(
 				});
 				existingItems = response.data.data;
 			}
+
 			return existingItems;
 		}
 
@@ -361,6 +363,7 @@ export function useItem(
 		} else {
 			unexpectedError(err);
 		}
+
 		throw err;
 	}
 
@@ -447,6 +450,7 @@ export function useItem(
 		) {
 			response.data.data = translate(response.data.data);
 		}
+
 		if (isBatch.value === false) {
 			item.value = response.data.data;
 		} else {

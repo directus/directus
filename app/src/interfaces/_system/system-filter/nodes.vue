@@ -274,6 +274,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 			} else {
 				update(null);
 			}
+
 			break;
 		default:
 			// avoid setting value as string 'true'/'false' when switching from null/empty operators
@@ -282,6 +283,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 			} else {
 				update(Array.isArray(value) ? value[0] : value);
 			}
+
 			break;
 	}
 

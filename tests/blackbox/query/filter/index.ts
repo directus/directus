@@ -212,12 +212,14 @@ function processValidation(
 					continue;
 				}
 			}
+
 			if (assert) {
 				if (data.length === 0) {
 					if (filter.emptyAllowedFunction(filter.value, possibleValues)) {
 						expect(true).toBe(true);
 						return false;
 					}
+
 					expect(found).toBe(true);
 					return false;
 				} else {
@@ -254,11 +256,13 @@ function processValidation(
 					break;
 				}
 			}
+
 			if (assert) {
 				if (filter.emptyAllowedFunction(filter.value, possibleValues)) {
 					expect(true).toBe(true);
 					return true;
 				}
+
 				expect(found).toBe(true);
 				return true;
 			} else {
