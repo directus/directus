@@ -160,6 +160,7 @@ export default defineComponent({
 
 		let parse: GeoJSONParser;
 		let serialize: GeoJSONSerializer;
+
 		try {
 			parse = getParser({ geometryFormat, geometryField: 'value' });
 			serialize = getSerializer({ geometryFormat, geometryField: 'value' });
@@ -171,6 +172,7 @@ export default defineComponent({
 
 		const location = ref<LngLatLike | null>();
 		const projection = ref<{ x: number; y: number } | null>();
+
 		function updateProjection() {
 			projection.value = !location.value ? null : map.project(location.value as any);
 		}
@@ -189,6 +191,7 @@ export default defineComponent({
 			}),
 			geocoder: undefined as MapboxGeocoder | undefined,
 		};
+
 		if (mapboxKey) {
 			controls.geocoder = new MapboxGeocoder({
 				accessToken: mapboxKey,
@@ -210,6 +213,7 @@ export default defineComponent({
 
 		const updateTooltipDebounce = debounce((event: any) => {
 			const feature = event.features?.[0];
+
 			if (feature && feature.properties!.active === 'false') {
 				tooltipMessage.value = t('interfaces.map.click_to_select', { geometry: feature.geometry.type });
 				tooltipVisible.value = true;
@@ -357,6 +361,7 @@ export default defineComponent({
 					static: StaticMode,
 				}),
 			} as any;
+
 			if (props.disabled) {
 				return options;
 			}
@@ -391,6 +396,7 @@ export default defineComponent({
 			try {
 				controls.draw.deleteAll();
 				const initialValue = parse(props);
+
 				if (!initialValue) {
 					return;
 				}
@@ -403,6 +409,7 @@ export default defineComponent({
 				}
 
 				const flattened = flatten(initialValue);
+
 				for (const geometry of flattened) {
 					controls.draw.add(geometry);
 				}
@@ -425,6 +432,7 @@ export default defineComponent({
 			const features = controls.draw.getAll().features;
 			const geometries = features.map((f) => f.geometry) as (SimpleGeometry | MultiGeometry)[];
 			let result: Geometry;
+
 			if (geometries.length == 0) {
 				return null;
 			} else if (!geometryType) {

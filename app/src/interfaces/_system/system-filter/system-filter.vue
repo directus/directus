@@ -188,6 +188,7 @@ function addNode(key: string) {
 			// Alias uses the foreign key type
 			if (type === 'alias') {
 				const relations = relationsStore.getRelationsForField(collection.value, key);
+
 				if (relations[0]) {
 					type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
 				}

@@ -223,6 +223,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		if (authData?.['refreshToken']) {
 			try {
 				const tokenSet = await this.client.refresh(authData['refreshToken']);
+
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
 					await this.usersService.updateOne(user.id, {

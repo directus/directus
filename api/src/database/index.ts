@@ -284,6 +284,7 @@ export async function validateDatabaseExtensions(): Promise<void> {
 	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	const geometrySupport = await helpers.st.supported();
+
 	if (!geometrySupport) {
 		switch (client) {
 			case 'postgres':
@@ -314,9 +315,11 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 			.whereNot({ COLLATION_NAME: collation });
 
 		let inconsistencies = '';
+
 		for (const table of tables) {
 			const tableColumns = columns.filter((column) => column.table_name === table.name);
 			const tableHasInvalidCollation = table.collation !== collation;
+
 			if (tableHasInvalidCollation || tableColumns.length > 0) {
 				inconsistencies += `\t\t- Table "${table.name}": "${table.collation}"\n`;
 

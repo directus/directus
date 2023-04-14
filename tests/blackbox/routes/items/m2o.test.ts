@@ -1301,6 +1301,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 + 1;
 								const states: any[] = [];
 								const states2: any[] = [];
+
 								for (let i = 0; i < count; i++) {
 									states.push(createState(pkType));
 									states[i].country_id = createCountry(pkType);

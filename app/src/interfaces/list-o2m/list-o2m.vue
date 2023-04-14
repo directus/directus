@@ -275,6 +275,7 @@ const fields = computed(() => {
 	if (!relationInfo.value) return [];
 
 	let displayFields: string[] = [];
+
 	if (props.layout === LAYOUTS.TABLE) {
 		displayFields = adjustFieldsForDisplays(props.fields, relationInfo.value.relatedCollection.collection);
 	} else {

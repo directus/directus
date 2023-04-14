@@ -186,6 +186,7 @@ router.get(
 		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
 
 		const unixTime = Date.parse(file.modified_on);
+
 		if (!Number.isNaN(unixTime)) {
 			const lastModifiedDate = new Date(unixTime);
 			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());

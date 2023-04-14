@@ -191,6 +191,7 @@ export function useItem(
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const relations = relationsStore.getRelationsForCollection(collection.value);
+
 		for (const relation of relations) {
 			const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
 			const existsJunctionRelated = relationsStore.relations.find((r) => {
@@ -320,6 +321,7 @@ export function useItem(
 		) {
 			if (item[relatedPrimaryKeyField!.field] === updatedItem[relatedPrimaryKeyField!.field]) {
 				const columns = fields.filter((s) => s.startsWith(relation.meta!.one_field!));
+
 				for (const col of columns) {
 					const colName = col.split('.')[1];
 					item[colName] = updatedItem[colName];

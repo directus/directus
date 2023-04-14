@@ -192,6 +192,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 	function hasEmptyRelation(panel: Pick<Panel, 'options' | 'type'>) {
 		const stringOptions = JSON.stringify(panel.options);
+
 		for (const relationVar of emptyRelations()) {
 			const fieldRegex = new RegExp(`{{\\s*?${escapeStringRegexp(relationVar)}\\s*?}}`);
 			if (fieldRegex.test(stringOptions)) return true;
@@ -340,6 +341,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		 * decide whether or not to reload the data
 		 */
 		let oldQuery;
+
 		if ('options' in panelEdits) {
 			// Edits not yet applied
 			const panel = unref(panelsWithEdits).find((panel) => panel.id === id);

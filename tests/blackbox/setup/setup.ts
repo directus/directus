@@ -42,6 +42,7 @@ export default async (): Promise<void> => {
 									cwd: paths.cwd,
 									env: config.envs[vendor],
 								});
+
 								if (bootstrap.stderr.length > 0) {
 									throw new Error(`Directus-${vendor} bootstrap failed: \n ${bootstrap.stderr.toString()}`);
 								}
@@ -110,6 +111,7 @@ export default async (): Promise<void> => {
 						title: 'Testing server connectivity and bootstrap tests flow',
 						task: async () => {
 							const totalTestsCount = Number(process.env.totalTestsCount);
+
 							if (isNaN(totalTestsCount)) {
 								throw new Error('Unable to read totalTestsCount');
 							}

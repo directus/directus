@@ -133,6 +133,7 @@ router.patch(
 
 		try {
 			const results: any = [];
+
 			for (const field of req.body) {
 				const updatedField = await service.readOne(req.params['collection']!, field.field);
 				results.push(updatedField);

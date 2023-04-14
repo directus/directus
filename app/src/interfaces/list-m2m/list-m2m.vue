@@ -278,6 +278,7 @@ const templateWithDefaults = computed(() => {
 		return relationInfo.value.junctionCollection.meta.display_template;
 
 	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
+
 	if (relatedDisplayTemplate) {
 		const regex = /({{.*?}})/g;
 		const parts = relatedDisplayTemplate.split(regex).filter((p) => p);

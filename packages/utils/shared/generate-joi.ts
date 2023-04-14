@@ -109,6 +109,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				compareValue === null || compareValue === '' || compareValue === true || compareValue === false
 					? NaN
 					: Number(compareValue);
+
 			if (isNaN(numericValue)) {
 				schema[key] = getAnySchema().equal(compareValue);
 			} else {
@@ -121,6 +122,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				compareValue === null || compareValue === '' || compareValue === true || compareValue === false
 					? NaN
 					: Number(compareValue);
+
 			if (isNaN(numericValue)) {
 				schema[key] = getAnySchema().not(compareValue);
 			} else {

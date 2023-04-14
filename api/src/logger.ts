@@ -16,6 +16,7 @@ const pinoOptions: LoggerOptions = {
 		censor: REDACT_TEXT,
 	},
 };
+
 export const httpLoggerOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
@@ -51,6 +52,7 @@ if (env['LOG_STYLE'] === 'raw') {
 		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
 		censor: (value, pathParts) => {
 			const path = pathParts.join('.');
+
 			if (path === 'res.headers') {
 				if ('set-cookie' in value) {
 					value['set-cookie'] = REDACT_TEXT;

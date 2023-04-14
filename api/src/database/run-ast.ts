@@ -266,6 +266,7 @@ async function getDBQuery(
 
 	if (queryCopy.sort) {
 		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true);
+
 		if (sortResult) {
 			sortRecords = sortResult.sortRecords;
 			hasMultiRelationalSort = sortResult.hasMultiRelationalSort;
@@ -300,6 +301,7 @@ async function getDBQuery(
 				}
 
 				const sortAlias = `sort_${generateAlias()}`;
+
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
 					const originalCollectionName = getCollectionFromAlias(alias!, aliasMap);

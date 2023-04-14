@@ -232,6 +232,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 
 			afterEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				for (const collection of collectionNames) {
 					await db.schema.dropTableIfExists(collection);
 					await db('directus_collections').del().where({ collection });

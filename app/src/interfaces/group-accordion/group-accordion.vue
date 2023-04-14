@@ -148,6 +148,7 @@ export default defineComponent({
 				() => props.fields,
 				() => {
 					const newVal = limitFields();
+
 					if (!isEqual(groupFields.value, newVal)) {
 						groupFields.value = newVal;
 					}

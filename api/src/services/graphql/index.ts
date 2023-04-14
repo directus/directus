@@ -2090,6 +2090,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
+
 					if (args['mode'] === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
 							httpOnly: true,
@@ -2129,11 +2130,13 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
 
 					const result = await authenticationService.refresh(currentRefreshToken);
+
 					if (args['mode'] === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
 							httpOnly: true,
@@ -2172,6 +2175,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
@@ -2286,6 +2290,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 					const otpValid = await service.verifyOTP(this.accountability.user, args['otp']);
+
 					if (otpValid === false) {
 						throw new InvalidPayloadException(`"otp" is invalid`);
 					}

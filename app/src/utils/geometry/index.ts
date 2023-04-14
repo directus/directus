@@ -47,6 +47,7 @@ export function getGeometryFormatForType(type: Type): GeometryFormat | undefined
 
 export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 	const { geometryFormat } = options;
+
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
@@ -62,6 +63,7 @@ export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 
 export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyGeometry {
 	const { geometryFormat } = options;
+
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':

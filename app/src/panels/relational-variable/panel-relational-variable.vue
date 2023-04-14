@@ -73,6 +73,7 @@ const value = computed({
 });
 
 const selectModalOpen = ref(false);
+
 function onSelection(data: (number | string)[]) {
 	selectModalOpen.value = false;
 	if (!Array.isArray(data) || data.length === 0) {
@@ -82,6 +83,7 @@ function onSelection(data: (number | string)[]) {
 
 	if (props.multiple) {
 		const items = Array.from(new Set(data.concat(value.value)));
+
 		if (items.length > props.limit) {
 			unexpectedError(new Error('More items selected than the allowed limit'));
 			value.value = items.slice(0, props.limit);

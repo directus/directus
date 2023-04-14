@@ -37,6 +37,7 @@ type RawColumn = {
 
 export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	let dataType = rawColumn.COLUMN_TYPE.replace(/\(.*?\)/, '');
+
 	if (rawColumn.COLUMN_TYPE.startsWith('tinyint(1)')) {
 		dataType = 'boolean';
 	}
@@ -116,6 +117,7 @@ export default class MySQL implements SchemaInspector {
 			}
 
 			let dataType = column.data_type.replace(/\(.*?\)/, '');
+
 			if (column.data_type.startsWith('tinyint(1)')) {
 				dataType = 'boolean';
 			}

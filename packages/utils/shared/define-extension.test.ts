@@ -14,12 +14,14 @@ import {
 } from './define-extension.js';
 
 const mockComponent = defineComponent({});
+
 const mockHandler = () => {
 	return '';
 };
 
 describe('define-extensions', () => {
 	const types = [] as readonly Type[];
+
 	const mockRecord = () => {
 		return { test: 'test' };
 	};

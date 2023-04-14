@@ -202,6 +202,7 @@ function useComputedValues() {
 		() => props.modelValue,
 		() => {
 			const newVal = getInternalValue();
+
 			if (!isEqual(internalValue.value, newVal)) {
 				internalValue.value = newVal;
 			}

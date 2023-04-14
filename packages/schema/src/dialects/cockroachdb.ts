@@ -60,6 +60,7 @@ export default class CockroachDB implements SchemaInspector {
 	constructor(knex: Knex) {
 		this.knex = knex;
 		const config = knex.client.config;
+
 		if (!config.searchPath) {
 			this.schema = 'public';
 			this.explodedSchema = [this.schema];

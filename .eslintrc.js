@@ -12,6 +12,11 @@ const defaultRules = {
 			prev: ['block', 'block-like', 'cjs-export', 'class', 'export', 'import'],
 			next: '*',
 		},
+		{
+			blankLine: 'always',
+			prev: ['const', 'let'],
+			next: ['block', 'block-like', 'cjs-export', 'class', 'export', 'import'],
+		},
 		{ blankLine: 'any', prev: ['export', 'import'], next: ['export', 'import'] },
 	],
 	'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],

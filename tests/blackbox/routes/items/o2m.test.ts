@@ -806,6 +806,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 							if (vendor === 'mysql5') {
 								let lastIndex = -1;
+
 								for (const item of response2.body.data.reverse()) {
 									const foundIndex = findIndex(response.body.data, { id: item.id });
 									if (foundIndex === -1) continue;
@@ -916,6 +917,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(parseInt(item.states[0].name.slice(-1)));
 
@@ -934,6 +936,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(parseInt(item.states[0].name.slice(-1)));
 
@@ -1234,6 +1237,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 							if (vendor === 'mysql5') {
 								let lastIndex = -1;
+
 								for (const item of response2.body.data.reverse()) {
 									const foundIndex = findIndex(response.body.data, { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1347,6 +1351,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.states[0].test_datetime_year.toString().slice(-1))
@@ -1367,6 +1372,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.states[0].test_datetime_func.year.toString().slice(-1))

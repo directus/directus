@@ -44,6 +44,7 @@ const endOffset = 13;
 const size = computed(() => {
 	let width = 0,
 		height = 0;
+
 	for (const panel of props.panels) {
 		width = Math.max(width, (panel.x + PANEL_WIDTH) * 20);
 		height = Math.max(height, (panel.y + PANEL_HEIGHT) * 20);
@@ -130,6 +131,7 @@ const arrows = computed(() => {
 	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
 		const x = (panel.x - 1) * 20 + offset.x;
 		const y = (panel.y - 1) * 20 + offset.y;
+
 		if (to) {
 			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x;
 			const toY = (to.y - 1) * 20 + ATTACHMENT_OFFSET.y;
@@ -213,6 +215,7 @@ const arrows = computed(() => {
 		}
 
 		let pointer = Math.floor(possiblePlaces.length / 2);
+
 		for (let i = 0; i < possiblePlaces.length; i++) {
 			pointer += i * (i % 2 == 0 ? -1 : 1);
 			if (possiblePlaces[pointer]) return min[axis] + pointer * 20;
@@ -223,6 +226,7 @@ const arrows = computed(() => {
 
 	function range(min: number, max: number, step: number) {
 		const points: number[] = [];
+
 		for (let i = min; i < max; i += step) {
 			points.push(i);
 		}

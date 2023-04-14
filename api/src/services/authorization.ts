@@ -251,6 +251,7 @@ export class AuthorizationService {
 							(result[collection] || (result[collection] = new Set())).add(filterKey);
 							// add virtual relation to the required permissions
 							const { relation } = getRelationInfo([], collection, filterKey);
+
 							if (relation?.collection && relation?.field) {
 								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
 							}

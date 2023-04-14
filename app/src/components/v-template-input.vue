@@ -102,6 +102,7 @@ function checkKeyDown(event: any) {
 		}
 	} else if (event.code === 'ArrowLeft' && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			event.preventDefault();
 
@@ -109,6 +110,7 @@ function checkKeyDown(event: any) {
 		}
 	} else if (event.code === 'ArrowRight' && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 			event.preventDefault();
 
@@ -116,6 +118,7 @@ function checkKeyDown(event: any) {
 		}
 	} else if (event.code === 'Backspace') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			event.preventDefault();
 
@@ -132,6 +135,7 @@ function checkKeyDown(event: any) {
 		}
 	} else if (event.code === 'Delete') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 			event.preventDefault();
 
@@ -153,6 +157,7 @@ function checkKeyUp(event: any) {
 
 	if ((event.code === 'ArrowUp' || event.code === 'ArrowDown') && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			position(input.value!, matchedPositions[checkCaretPos] + 1);
 		} else if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
@@ -165,6 +170,7 @@ function checkClick(event: any) {
 	const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
 
 	const checkCaretPos = matchedPositions.indexOf(caretPos);
+
 	if (checkCaretPos !== -1) {
 		if (checkCaretPos % 2 === 0) {
 			position(input.value!, caretPos - 1);

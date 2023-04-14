@@ -11,6 +11,7 @@ import { validateEnv } from '../utils/validate-env.js';
 const RATE_LIMITER_GLOBAL_KEY = 'global-rate-limit';
 
 let checkRateLimit: RequestHandler = (_req, _res, next) => next();
+
 export let rateLimiterGlobal: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
 
 if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
@@ -47,6 +48,7 @@ function validateConfiguration() {
 	const globalPointsPerSec =
 		Number(env['RATE_LIMITER_GLOBAL_POINTS']) / Math.max(Number(env['RATE_LIMITER_GLOBAL_DURATION']), 1);
 	const regularPointsPerSec = Number(env['RATE_LIMITER_POINTS']) / Math.max(Number(env['RATE_LIMITER_DURATION']), 1);
+
 	if (globalPointsPerSec <= regularPointsPerSec) {
 		logger.error(`The global rate limiter needs to allow more requests per second than the IP based rate limiter.`);
 		process.exit(1);

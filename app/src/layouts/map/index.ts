@@ -68,6 +68,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = geometryFieldData.value;
+
 			if (!field) {
 				return;
 			}
@@ -75,6 +76,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const geometryField = field.field;
 			const geometryFormat = getGeometryFormatForType(field.type);
 			const geometryType = field.type.split('.')[1] ?? field.meta?.options?.geometryType;
+
 			if (!geometryFormat) {
 				return;
 			}
@@ -239,6 +241,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		type ItemPopup = { item?: any; position?: { x: number; y: number } };
 		const itemPopup = ref<ItemPopup>({ item: null });
+
 		function updateItemPopup(update: Partial<ItemPopup>) {
 			if ('item' in update) {
 				const field = primaryKeyField.value?.field;

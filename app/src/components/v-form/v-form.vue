@@ -179,6 +179,7 @@ const { toggleRawField, rawActiveFields } = useRawEditor();
 const firstEditableFieldIndex = computed(() => {
 	for (let i = 0; i < fieldNames.value.length; i++) {
 		const field = fieldsMap.value[fieldNames.value[i]];
+
 		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
 			return i;
 		}
@@ -190,6 +191,7 @@ const firstEditableFieldIndex = computed(() => {
 const firstVisibleFieldIndex = computed(() => {
 	for (let i = 0; i < fieldNames.value.length; i++) {
 		const field = fieldsMap.value[fieldNames.value[i]];
+
 		if (field?.meta && !field.meta?.hidden) {
 			return i;
 		}
@@ -223,6 +225,7 @@ function useForm() {
 		() => props.fields,
 		() => {
 			const newVal = getFields();
+
 			if (!isEqual(fields.value, newVal)) {
 				fields.value = newVal;
 			}
@@ -278,6 +281,7 @@ function useForm() {
 
 		for (const field of fieldsInGroup) {
 			const meta = fieldsMap.value?.[field.field]?.meta;
+
 			if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
 				passed.push(meta!.field);
 				fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));

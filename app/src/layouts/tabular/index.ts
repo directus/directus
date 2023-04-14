@@ -348,6 +348,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				}
 
 				let sortString = newSort.by;
+
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}

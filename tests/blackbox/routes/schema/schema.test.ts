@@ -596,6 +596,7 @@ describe('Schema Snapshots', () => {
 					// Setup
 					const childrenIDs: Record<string, { id: any; m2o_id: any; o2m_id: any }> = {};
 					const tempRelationalField = 'temp_relational';
+
 					for (const pkType of PRIMARY_KEY_TYPES) {
 						const item = await common.CreateItem(vendor, {
 							collection: `${collectionAll}_${pkType}`,

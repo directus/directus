@@ -26,6 +26,7 @@ const notFound: RequestHandler = async (req, res, next) => {
 				accountability: req.accountability ?? null,
 			}
 		);
+
 		if (hooksResult) {
 			return next();
 		}
