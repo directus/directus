@@ -2,48 +2,48 @@
 	<div class="live-preview" :class="{ fullscreen }">
 		<div class="header">
 			<v-button
+				v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
 				x-small
 				rounded
 				icon
 				secondary
-				v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
 				@click="emit('new-window')"
 			>
 				<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
 			</v-button>
 			<v-button
+				v-tooltip.bottom.end="t('live_preview.refresh')"
 				x-small
 				icon
 				rounded
 				secondary
-				v-tooltip.bottom.end="t('live_preview.refresh')"
-				@click="refresh"
 				size="small"
+				@click="refresh"
 			>
 				<v-icon small name="refresh" />
 			</v-button>
 			<div class="spacer" />
-			<div class="dimensions" v-if="!fullscreen">
-				<input class="width" v-model.number="width" />
+			<div v-if="!fullscreen" class="dimensions">
+				<input v-model.number="width" class="width" />
 				<v-icon x-small name="close" />
-				<input class="width" v-model.number="height" />
+				<input v-model.number="height" class="width" />
 			</div>
 			<v-button
+				v-tooltip.bottom.start="t('live_preview.change_size')"
 				x-small
 				icon
 				rounded
 				:secondary="fullscreen"
-				v-tooltip.bottom.start="t('live_preview.change_size')"
-				@click="toggleFullscreen"
 				size="small"
+				@click="toggleFullscreen"
 			>
 				<v-icon small name="devices" />
 			</v-button>
 		</div>
 		<div class="iframe-view">
 			<div
-				class="resize-handle"
 				ref="resizeHandle"
+				class="resize-handle"
 				:style="{
 					width: width ? `${width}px` : '100%',
 					height: height ? `${height}px` : '100%',

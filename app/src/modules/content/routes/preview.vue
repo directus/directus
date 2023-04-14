@@ -1,5 +1,5 @@
 <template>
-	<LivePreview v-if="previewURL" :url="previewURL" inPopup @new-window="closePopup" />
+	<LivePreview v-if="previewURL" :url="previewURL" in-popup @new-window="closePopup" />
 </template>
 
 <script setup lang="ts">

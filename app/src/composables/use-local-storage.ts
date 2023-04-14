@@ -3,7 +3,10 @@ import { parseJSON } from '@directus/utils';
 
 type LocalStorageObjectType = string | number | boolean | object;
 
-export function useLocalStorage<T extends LocalStorageObjectType>(key: string, defaultValue: UnwrapRef<T> | null = null) {
+export function useLocalStorage<T extends LocalStorageObjectType>(
+	key: string,
+	defaultValue: UnwrapRef<T> | null = null
+) {
 	const internalKey = `directus-${key}`;
 	const data = ref<T | null>(null);
 

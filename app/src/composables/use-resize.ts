@@ -6,7 +6,7 @@ export type SnapZone = {
 	width: number;
 	onSnap?: () => void;
 	onPointerUp?: () => void;
-}
+};
 
 export function useResize(
 	target: Ref<HTMLElement | undefined>,
@@ -15,7 +15,7 @@ export function useResize(
 	defaultWidth: Ref<number>,
 	width: Ref<number> = ref(defaultWidth.value),
 	enabled: Ref<boolean> = ref(true),
-	options?: Ref<{ snapZones?: SnapZone[], alwaysShowHandle?: boolean }>
+	options?: Ref<{ snapZones?: SnapZone[]; alwaysShowHandle?: boolean }>
 ) {
 	let dragging = false;
 	let dragStartX = 0;
@@ -35,13 +35,16 @@ export function useResize(
 			{ immediate: true }
 		);
 
-		watch(() => options, (newOptions) => {
-			if (newOptions?.value.alwaysShowHandle) {
-				grabBar?.classList.add('always-show');
-			} else {
-				grabBar?.classList.remove('always-show');
+		watch(
+			() => options,
+			(newOptions) => {
+				if (newOptions?.value.alwaysShowHandle) {
+					grabBar?.classList.add('always-show');
+				} else {
+					grabBar?.classList.remove('always-show');
+				}
 			}
-		})
+		);
 	});
 
 	return { width };
@@ -59,8 +62,7 @@ export function useResize(
 		grabBar = document.createElement('div');
 		grabBar.classList.add('grab-bar');
 
-		if (options?.value.alwaysShowHandle)
-			grabBar.classList.add('always-show');
+		if (options?.value.alwaysShowHandle) grabBar.classList.add('always-show');
 
 		grabBar.onpointerenter = () => {
 			if (grabBar) grabBar.classList.add('active');
@@ -116,12 +118,11 @@ export function useResize(
 		animationFrameID = window.requestAnimationFrame(() => {
 			const newWidth = clamp(dragStartWidth + (event.pageX - dragStartX), minWidth.value, maxWidth.value);
 
-			const snapZones = options?.value.snapZones
+			const snapZones = options?.value.snapZones;
 
 			if (Array.isArray(snapZones)) {
 				for (const zone of snapZones) {
 					if (Math.abs(newWidth - zone.snapPos) < zone.width) {
-
 						target.value!.style.width = `${zone.snapPos}px`;
 						width.value = zone.snapPos;
 
@@ -140,7 +141,7 @@ export function useResize(
 		if (dragging === true) {
 			dragging = false;
 
-			const snapZones = options?.value.snapZones
+			const snapZones = options?.value.snapZones;
 
 			if (Array.isArray(snapZones)) {
 				for (const zone of snapZones) {

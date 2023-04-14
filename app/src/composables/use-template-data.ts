@@ -10,7 +10,11 @@ type UsableTemplateData = {
 	error: Ref<any>;
 };
 
-export function useTemplateData(collection: Ref<Collection | null>, primaryKey: Ref<string>, template?: Ref<string>): UsableTemplateData {
+export function useTemplateData(
+	collection: Ref<Collection | null>,
+	primaryKey: Ref<string>,
+	template?: Ref<string>
+): UsableTemplateData {
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
 	const error = ref<any>(null);
@@ -20,10 +24,7 @@ export function useTemplateData(collection: Ref<Collection | null>, primaryKey: 
 
 		if (!_template || !collection.value) return null;
 
-		return adjustFieldsForDisplays(
-			getFieldsFromTemplate(_template),
-			collection.value?.collection
-		);
+		return adjustFieldsForDisplays(getFieldsFromTemplate(_template), collection.value?.collection);
 	});
 
 	watch([collection, primaryKey], fetchTemplateValues, { immediate: true });
