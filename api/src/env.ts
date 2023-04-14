@@ -297,7 +297,7 @@ const defaults: Record<string, any> = {
 	PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY: 500,
 	PRESSURE_LIMITER_MAX_MEMORY_RSS: false,
 	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: false,
-	PRESSURE_LIMITER_RETRY_AFTER: '1',
+	PRESSURE_LIMITER_RETRY_AFTER: false,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
