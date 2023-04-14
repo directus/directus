@@ -349,18 +349,34 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
-				{ text: 'Personal Portfolio Using M2A', link: '/guides/data-models/personal-portfolio-using-m2a.md' },
-				{ text: 'Build a Content Hierarchy', link: '/guides/data-models/build-a-content-hierarchy' },
-				{ text: 'Content Approval Workflows', link: '/guides/permissions/basic-workflows' },
-				{ text: 'Using For Loops In Flows', link: '/guides/flows/flows-for-loop' },
-				{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
 				{
-					link: '/guides/headless-cms/trigger-static-builds/index.html',
-					text: 'Trigger Static Site Builds',
+					text: 'Flows',
+					items: [
+						{ text: 'For Loops In Flows', link: '/guides/flows/flows-for-loop' },
+						{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
+					]
 				},
 				{
-					link: '/guides/headless-cms/schedule-content/index.html',
-					text: 'Scheduling Future Content',
+					text: 'Headless CMS',
+					items: [
+						{ text: 'Content Approval Workflows', link: '/guides/headless-cms/approval-workflows' },
+						{
+							text: 'Re-Usable Page Components',
+							link: '/guides/headless-cms/reusable-components'
+						},
+						{
+							link: '/guides/headless-cms/schedule-content/index.html',
+							text: 'Scheduling Future Content',
+						},
+						{
+							link: '/guides/headless-cms/trigger-static-builds/index.html',
+							text: 'Trigger Static Site Builds',
+						},
+						{
+							text: 'Build a Static Website',
+							link: '/guides/headless-cms/build-static-website/index.html',
+						},
+					]
 				},
 				{
 					link: '/guides/migration/index.html',
@@ -385,26 +401,9 @@ function sidebar() {
 							link: '/use-cases/headless-cms/concepts',
 						},
 						{
-							text: 'Guides',
-							items: [
-								{
-									text: 'Build a Website With Next.js',
-									link: '/use-cases/headless-cms/build-website-next-13',
-								},
-								{
-									text: 'Build a Website With Nuxt.js',
-									link: '/use-cases/headless-cms/build-website-nuxt-3',
-								},
-								{
-									text: 'Create Re-Usable Page Components',
-									link: '/use-cases/headless-cms/create-reusable-page-components-using-m2a',
-								},
-								{
-									text: 'Security Best Practices',
-									link: '/use-cases/headless-cms/security',
-								},
-							],
-						},
+							text: 'Security Best Practices',
+							link: '/use-cases/headless-cms/security',
+						}
 					],
 				},
 			],

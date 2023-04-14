@@ -8,7 +8,7 @@ author_override:
 author: Bryant Gillespie
 ---
 
-# Scheduling Content for Static Sites
+# Schedule Future Content for Static Sites
 
 > {{ $frontmatter.description }}
 

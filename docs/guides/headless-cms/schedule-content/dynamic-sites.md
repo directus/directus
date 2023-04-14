@@ -8,7 +8,7 @@ author_override:
 author: Bryant Gillespie
 ---
 
-# Scheduling Content for Dynamic Sites
+# Schedule Future Content for Dynamic Sites
 
 > {{ $frontmatter.description }}
 
