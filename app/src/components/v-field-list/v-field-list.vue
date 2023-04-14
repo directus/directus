@@ -28,7 +28,6 @@
 			:relational-field-selectable="relationalFieldSelectable"
 			:allow-select-all="allowSelectAll"
 			@add="$emit('add', $event)"
-			@remove="$emit('remove', $event)"
 		/>
 	</v-list>
 </template>
@@ -61,7 +60,7 @@ const props = withDefaults(defineProps<Props>(), {
 	allowSelectAll: false,
 });
 
-const emit = defineEmits(['add', 'remove']);
+const emit = defineEmits(['add']);
 
 const fieldsStore = useFieldsStore();
 

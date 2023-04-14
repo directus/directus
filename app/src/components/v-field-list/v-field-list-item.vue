@@ -51,7 +51,6 @@
 			:parent="field.field"
 			:allow-select-all="allowSelectAll"
 			@add="$emit('add', $event)"
-			@remove="$emit('remove', $event)"
 		/>
 	</v-list-group>
 
@@ -97,7 +96,7 @@ const props = withDefaults(defineProps<Props>(), {
 	parent: null,
 });
 
-const emit = defineEmits(['add', 'remove']);
+const emit = defineEmits(['add']);
 
 const { t } = useI18n();
 
