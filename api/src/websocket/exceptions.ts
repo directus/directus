@@ -26,6 +26,7 @@ export class WebSocketException extends Error {
 				message: this.message,
 			},
 		};
+
 		if (this.uid !== undefined) {
 			message.uid = this.uid;
 		}

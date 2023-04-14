@@ -52,6 +52,7 @@ export class GraphQLSubscriptionController extends SocketController {
 						try {
 							if (getMessageType(message) === 'connection_init') {
 								const params = ConnectionParams.parse(message['payload']);
+
 								if (typeof params.access_token === 'string') {
 									const { accountability, expires_at } = await authenticateConnection({
 										access_token: params.access_token,

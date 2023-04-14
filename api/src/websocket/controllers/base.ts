@@ -68,6 +68,7 @@ export default abstract class SocketController {
 		const authTimeout = Number(env[`${configPrefix}_AUTH_TIMEOUT`]) * 1000;
 		const maxConnections =
 			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
+
 		if (!authMode.success) {
 			throw new InvalidConfigException(fromZodError(authMode.error, { prefix: `${configPrefix}_AUTH` }).message);
 		}
@@ -103,6 +104,7 @@ export default abstract class SocketController {
 		}
 
 		const context: UpgradeContext = { request, socket, head };
+
 		if (this.authentication.mode === 'strict') {
 			await this.handleStrictUpgrade(context, query);
 			return;
@@ -121,6 +123,7 @@ export default abstract class SocketController {
 
 	protected async handleStrictUpgrade({ request, socket, head }: UpgradeContext, query: ParsedUrlQuery) {
 		let accountability: Accountability | null, expires_at: number | null;
+
 		try {
 			const token = query['access_token'] as string;
 			accountability = await getAccountabilityForToken(token);
@@ -186,6 +189,7 @@ export default abstract class SocketController {
 			}
 
 			let message: WebSocketMessage;
+
 			try {
 				message = this.parseMessage(data.toString());
 			} catch (err: any) {
@@ -237,6 +241,7 @@ export default abstract class SocketController {
 
 	protected parseMessage(data: string): WebSocketMessage {
 		let message: WebSocketMessage;
+
 		try {
 			message = WebSocketMessage.parse(parseJSON(data));
 		} catch (err: any) {

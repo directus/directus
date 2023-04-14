@@ -18,9 +18,11 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: any) {
 		const selections = request.fieldNodes[0]?.selectionSet?.selections || [];
 		const { fields } = self.getQuery({}, selections, {});
+
 		for await (const payload of messages.subscribe(event)) {
 			const eventData = payload as Record<string, any>;
 			const schema = await getSchema();
+
 			if (eventData['action'] === 'create') {
 				const { collection, key } = eventData;
 				const service = new ItemsService(collection, { schema });
@@ -31,6 +33,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 			if (eventData['action'] === 'update') {
 				const { collection, keys } = eventData;
 				const service = new ItemsService(collection, { schema });
+
 				for (const key of keys) {
 					const data = await service.readOne(key, { fields } as Query);
 					yield { [event]: { ...data, _event: 'update' } };
@@ -42,6 +45,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 
 				for (const key of keys) {
 					const result: Record<string, any> = {};
+
 					if (fields) {
 						for (const field of fields) {
 							result[field] = null;
@@ -64,6 +68,7 @@ function createPubSub<P extends { [key: string]: unknown }>(emitter: EventEmitte
 			void emitter.emit(event as string, payload),
 		subscribe: async function* <T extends Extract<keyof P, string>>(event: T): AsyncIterableIterator<P[T]> {
 			const asyncIterator = on(emitter, event);
+
 			for await (const [value] of asyncIterator) {
 				yield value;
 			}

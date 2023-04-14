@@ -15,6 +15,7 @@ export async function authenticateConnection(
 	message: BasicAuthMessage & Record<string, any>
 ): Promise<AuthenticationState> {
 	let access_token: string | undefined, refresh_token: string | undefined;
+
 	try {
 		if ('email' in message && 'password' in message) {
 			const authenticationService = new AuthenticationService({ schema: await getSchema() });
@@ -64,6 +65,7 @@ export function authenticationSuccess(uid?: string | number, refresh_token?: str
 		type: 'auth',
 		status: 'ok',
 	};
+
 	if (uid !== undefined) {
 		message.uid = uid;
 	}

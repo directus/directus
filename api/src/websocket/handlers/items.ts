@@ -27,6 +27,7 @@ export class ItemsHandler {
 		const uid = message.uid;
 		const accountability = client.accountability;
 		const schema = await getSchema();
+
 		if (!schema.collections[message.collection] || message.collection.startsWith('directus_')) {
 			throw new WebSocketException(
 				'items',
@@ -40,8 +41,10 @@ export class ItemsHandler {
 		const service = new ItemsService(message.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
 		let result, meta;
+
 		if (message.action === 'create') {
 			const query = sanitizeQuery(message?.query ?? {}, accountability);
+
 			if (Array.isArray(message.data)) {
 				const keys = await service.createMany(message.data);
 				result = await service.readMany(keys, query);
@@ -53,6 +56,7 @@ export class ItemsHandler {
 
 		if (message.action === 'read') {
 			const query = sanitizeQuery(message.query ?? {}, accountability);
+
 			if (message.id) {
 				result = await service.readOne(message.id, query);
 			} else if (message.ids) {
@@ -68,6 +72,7 @@ export class ItemsHandler {
 
 		if (message.action === 'update') {
 			const query = sanitizeQuery(message.query ?? {}, accountability);
+
 			if (message.id) {
 				const key = await service.updateOne(message.id, message.data);
 				result = await service.readOne(key);

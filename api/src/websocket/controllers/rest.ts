@@ -41,6 +41,7 @@ export class WebSocketController extends SocketController {
 
 	protected override parseMessage(data: string): WebSocketMessage {
 		let message: WebSocketMessage;
+
 		try {
 			message = parseJSON(data);
 		} catch (err: any) {

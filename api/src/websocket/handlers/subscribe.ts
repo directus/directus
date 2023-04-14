@@ -62,6 +62,7 @@ export class SubscribeHandler {
 	 */
 	subscribe(subscription: Subscription) {
 		const { collection } = subscription;
+
 		if ('item' in subscription && ['directus_fields', 'directus_relations'].includes(collection)) {
 			throw new InvalidPayloadException(`Cannot subscribe to a specific item in the ${collection} collection.`);
 		}
@@ -80,12 +81,14 @@ export class SubscribeHandler {
 	unsubscribe(client: WebSocketClient, uid?: string | number) {
 		if (uid !== undefined) {
 			const subscription = this.getSubscription(uid);
+
 			if (subscription && subscription.client === client) {
 				this.subscriptions[subscription.collection]?.delete(subscription);
 			}
 		} else {
 			for (const key of Object.keys(this.subscriptions)) {
 				const subscriptions = Array.from(this.subscriptions[key] || []);
+
 				for (let i = subscriptions.length - 1; i >= 0; i--) {
 					const subscription = subscriptions[i];
 					if (!subscription) continue;
@@ -104,8 +107,10 @@ export class SubscribeHandler {
 		const subscriptions = this.subscriptions[event.collection];
 		if (!subscriptions || subscriptions.size === 0) return;
 		const schema = await getSchema();
+
 		for (const subscription of subscriptions) {
 			const { client } = subscription;
+
 			try {
 				client.accountability = await refreshAccountability(client.accountability);
 				const result =
@@ -131,6 +136,7 @@ export class SubscribeHandler {
 				const collection = String(message.collection!);
 				const accountability = client.accountability;
 				const schema = await getSchema();
+
 				if (!accountability?.admin && !schema.collections[collection]) {
 					throw new WebSocketException(
 						'subscribe',
@@ -144,6 +150,7 @@ export class SubscribeHandler {
 					client,
 					collection,
 				};
+
 				if ('query' in message) {
 					subscription.query = sanitizeQuery(message.query!, accountability);
 				}
@@ -228,6 +235,7 @@ export class SubscribeHandler {
 		}
 
 		const query = subscription.query ?? {};
+
 		if ('meta' in query) {
 			result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
 		}
@@ -241,6 +249,7 @@ export class SubscribeHandler {
 		event?: WebSocketEvent
 	) {
 		const service = new CollectionsService({ schema, accountability });
+
 		if (!event?.action) {
 			return await service.readByQuery();
 		} else if (event.action === 'create') {
@@ -258,6 +267,7 @@ export class SubscribeHandler {
 		event?: WebSocketEvent
 	) {
 		const service = new FieldsService({ schema, accountability });
+
 		if (!event?.action) {
 			return await service.readAll();
 		} else if (event.action === 'delete') {
@@ -275,6 +285,7 @@ export class SubscribeHandler {
 	) {
 		const query = subscription.query ?? {};
 		const service = getService(subscription.collection, { schema, accountability });
+
 		if (!event?.action) {
 			return await service.readByQuery(query);
 		} else if (event.action === 'create') {

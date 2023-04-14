@@ -31,6 +31,7 @@ export class HeartbeatHandler {
 
 	private checkClients() {
 		const hasClients = this.controller.clients.size > 0;
+
 		if (hasClients && !this.pulse) {
 			this.pulse = setInterval(() => {
 				this.pingClients();
@@ -59,6 +60,7 @@ export class HeartbeatHandler {
 				client.close();
 			}
 		}, HEARTBEAT_FREQUENCY);
+
 		const messageWatcher: ActionHandler = ({ client }) => {
 			// any message means this connection is still open
 			if (!activeClients.has(client)) {

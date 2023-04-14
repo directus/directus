@@ -1054,6 +1054,7 @@ export class GraphQLService {
 
 				const eventName = `${collection.collection}_mutated`;
 				const subscriptionType = ReadCollectionTypes[collection.collection]?.clone(collection.collection + '_mutation');
+
 				if (subscriptionType) {
 					subscriptionType.addFields({
 						_event: GraphQLString,

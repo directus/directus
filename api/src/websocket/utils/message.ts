@@ -3,6 +3,7 @@ import type { WebSocketClient } from '../types.js';
 // a simple util for building a message object
 export const fmtMessage = (type: string, data: Record<string, any> = {}, uid?: string | number) => {
 	const message: Record<string, any> = { type, ...data };
+
 	if (uid !== undefined) {
 		message['uid'] = uid;
 	}

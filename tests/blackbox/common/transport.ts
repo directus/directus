@@ -47,6 +47,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 	const messagesDefault: WebSocketResponse[] = [];
 	let readIndexDefault = 0;
 	const readIndexes: Record<WebSocketUID, number> = {};
+
 	const waitForState = (
 		state: WebSocket['readyState'],
 		options?: {
@@ -54,6 +55,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		}
 	) => {
 		const startMs = Date.now();
+
 		const promise = () => {
 			return new Promise(function (resolve, reject) {
 				setTimeout(function () {
@@ -66,6 +68,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 						return promise().then(resolve, reject);
 					} else {
 						let stateName = '';
+
 						switch (state) {
 							case WebSocket.CONNECTING:
 								stateName = 'CONNECTING';
@@ -105,6 +108,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
 		const startMessageIndex = options?.uid ? readIndexes[options.uid] ?? 0 : readIndexDefault;
 		const endMessageIndex = startMessageIndex + messageCount;
+
 		if (options?.uid) {
 			readIndexes[String(options.uid)] = endMessageIndex;
 		} else {
@@ -113,6 +117,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 
 		await waitForState(options?.targetState ?? WebSocket.OPEN);
 		const startMs = Date.now();
+
 		const promise = (): Promise<WebSocketResponse[] | undefined> => {
 			return new Promise(function (resolve, reject) {
 				setTimeout(function () {
@@ -161,6 +166,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		sendMessage({ type: 'subscribe', ...options });
 		let response;
 		let error;
+
 		try {
 			response = await getMessages(1, { uid: options.uid });
 		} catch (err) {
@@ -254,6 +260,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 	const readIndexes: Record<WebSocketUID, number> = {};
 	const unsubscriptions: Record<string, () => void> = {};
 	let unsubscriptionDefault: () => void;
+
 	const waitForState = (
 		state: WebSocket['readyState'],
 		options?: {
@@ -261,6 +268,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		}
 	) => {
 		const startMs = Date.now();
+
 		const promise = () => {
 			return new Promise(function (resolve, reject) {
 				setTimeout(function () {
@@ -270,6 +278,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 						return promise().then(resolve, reject);
 					} else {
 						let stateName = '';
+
 						switch (state) {
 							case WebSocket.CONNECTING:
 								stateName = 'CONNECTING';
@@ -309,6 +318,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
 		const startMessageIndex = options?.uid ? readIndexes[options.uid] ?? 0 : readIndexDefault;
 		const endMessageIndex = startMessageIndex + messageCount;
+
 		if (options?.uid) {
 			readIndexes[String(options.uid)] = endMessageIndex;
 		} else {
@@ -317,6 +327,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 
 		await waitForState(options?.targetState ?? WebSocket.OPEN);
 		const startMs = Date.now();
+
 		const promise = (): Promise<WebSocketResponse[] | undefined> => {
 			return new Promise(function (resolve, reject) {
 				setTimeout(function () {
@@ -352,6 +363,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 	const subscribe = async (options: WebSocketSubscriptionOptionsGql) => {
 		const targetMessages = options.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
 		const subscriptionKey = `${options.collection}_mutated`;
+
 		const onNext = (data: any) => {
 			targetMessages.push(data);
 		};

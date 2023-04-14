@@ -33,6 +33,7 @@ export const waitForMessageType = (client: WebSocket, type: string, timeout: num
 
 		function awaitMessage(event: RawData) {
 			let msg: WebSocketMessage;
+
 			try {
 				msg = WebSocketMessage.parse(parseJSON(event.toString()));
 			} catch {
