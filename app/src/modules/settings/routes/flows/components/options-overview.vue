@@ -11,7 +11,7 @@
 			<dd>{{ text }}</dd>
 			<v-icon
 				v-if="isCopySupported && copyable"
-				name="copy"
+				name="content_copy"
 				small
 				clickable
 				class="clipboard-icon"

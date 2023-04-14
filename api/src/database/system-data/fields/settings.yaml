@@ -252,6 +252,8 @@ fields:
             options:
               allowNone: true
               choices:
+                - value: 'auto'
+                  text: 'Auto'
                 - value: jpeg
                   text: JPEG
                 - value: png

@@ -108,9 +108,7 @@ export default defineComponent({
 .content {
 	padding: 8px;
 
-	.v-icon:hover {
-		color: var(--foreground-normal);
-	}
+	--v-icon-color-hover: var(--foreground-normal);
 
 	.v-icon.active {
 		color: var(--primary);
@@ -127,6 +125,7 @@ export default defineComponent({
 	display: grid;
 	grid-gap: 8px;
 	grid-template-columns: repeat(auto-fit, 24px);
+	justify-content: center;
 	padding: 20px 0;
 	color: var(--foreground-subdued);
 }

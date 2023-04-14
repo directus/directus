@@ -15,12 +15,12 @@ import type {
 	ExtensionManifest as TExtensionManifest,
 } from '@directus/types';
 import { isIn, isTypeIn } from '@directus/utils';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
+import commonjsDefault from '@rollup/plugin-commonjs';
+import jsonDefault from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import replace from '@rollup/plugin-replace';
-import terser from '@rollup/plugin-terser';
-import virtual from '@rollup/plugin-virtual';
+import replaceDefault from '@rollup/plugin-replace';
+import terserDefault from '@rollup/plugin-terser';
+import virtualDefault from '@rollup/plugin-virtual';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
@@ -33,9 +33,9 @@ import {
 	rollup,
 	watch as rollupWatch,
 } from 'rollup';
-import esbuild from 'rollup-plugin-esbuild';
-import styles from 'rollup-plugin-styles';
-import vue from 'rollup-plugin-vue';
+import esbuildDefault from 'rollup-plugin-esbuild';
+import stylesDefault from 'rollup-plugin-styles';
+import vueDefault from 'rollup-plugin-vue';
 import type { Language, RollupConfig, RollupMode } from '../types.js';
 import { getLanguageFromPath, isLanguage } from '../utils/languages.js';
 import { clear, log } from '../utils/logger.js';
@@ -43,6 +43,16 @@ import tryParseJson from '../utils/try-parse-json.js';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
 import loadConfig from './helpers/load-config.js';
 import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
+
+// Workaround for https://github.com/rollup/plugins/issues/1329
+const virtual = virtualDefault as unknown as typeof virtualDefault.default;
+const vue = vueDefault as unknown as typeof vueDefault.default;
+const esbuild = esbuildDefault as unknown as typeof esbuildDefault.default;
+const styles = stylesDefault as unknown as typeof stylesDefault.default;
+const commonjs = commonjsDefault as unknown as typeof commonjsDefault.default;
+const json = jsonDefault as unknown as typeof jsonDefault.default;
+const replace = replaceDefault as unknown as typeof replaceDefault.default;
+const terser = terserDefault as unknown as typeof terserDefault.default;
 
 type BuildOptions = {
 	type?: string;
@@ -560,21 +570,21 @@ function getRollupOptions({
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
-			typeof input !== 'string' ? virtual.default(input) : null,
-			mode === 'browser' ? (vue.default({ preprocessStyles: true }) as Plugin) : null,
-			languages.includes('typescript') ? esbuild.default({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
-			mode === 'browser' ? styles.default() : null,
+			typeof input !== 'string' ? virtual(input) : null,
+			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
+			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
+			mode === 'browser' ? styles() : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser' }),
-			commonjs.default({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
-			json.default(),
-			replace.default({
+			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
+			json(),
+			replace({
 				values: {
 					'process.env.NODE_ENV': JSON.stringify('production'),
 				},
 				preventAssignment: true,
 			}),
-			minify ? terser.default() : null,
+			minify ? terser() : null,
 		],
 	};
 }
