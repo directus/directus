@@ -26,10 +26,12 @@ function isGetItemsRequest(config: AxiosRequestConfig) {
 	if (!config.params) return false;
 	return Object.keys(config.params).includes('fields');
 }
+
 function isTotalCountRequest(config: AxiosRequestConfig) {
 	if (!config.params) return false;
 	return isEqual(Object.keys(config.params), ['aggregate']);
 }
+
 function isFilterCountRequest(config: AxiosRequestConfig) {
 	if (!config.params) return false;
 	return isEqual(Object.keys(config.params), ['filter', 'search', 'aggregate']);

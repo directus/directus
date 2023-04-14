@@ -318,6 +318,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
+
 			throw e;
 		}
 
@@ -347,6 +348,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				} else {
 					resolve();
 				}
+
 				client.destroy();
 			});
 		});
@@ -375,6 +377,7 @@ const handleError = (e: Error) => {
 	) {
 		return new InvalidCredentialsException();
 	}
+
 	return new ServiceUnavailableException('Service returned unexpected error', {
 		service: 'ldap',
 		message: e.message,

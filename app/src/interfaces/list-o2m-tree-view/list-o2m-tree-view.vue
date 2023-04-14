@@ -102,6 +102,7 @@ const itemsMoved = computed(() => {
 		if (typeof item === 'object') {
 			return item[pkField] as string | number;
 		}
+
 		return item;
 	});
 });

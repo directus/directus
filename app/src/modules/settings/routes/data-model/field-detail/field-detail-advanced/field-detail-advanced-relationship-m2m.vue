@@ -274,6 +274,7 @@ export default defineComponent({
 				const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
 				fields.push(...relations.map((field) => field.field));
 			}
+
 			return fields;
 		});
 

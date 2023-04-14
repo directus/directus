@@ -289,6 +289,7 @@ function useColor() {
 			alpha = alpha.padStart(2, '0');
 			return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
 		}
+
 		return null;
 	};
 
@@ -342,6 +343,7 @@ function useColor() {
 			if (newAlpha === null) {
 				return;
 			}
+
 			const newColor = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
 			setColor(Color(newColor).alpha(newAlpha / 100));
 		},

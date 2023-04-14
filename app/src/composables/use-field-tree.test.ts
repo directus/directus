@@ -4,6 +4,7 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import { ref, unref } from 'vue';
 
 import { cryptoStub } from '@/__utils__/crypto';
+
 vi.stubGlobal('crypto', cryptoStub);
 
 beforeEach(() => {

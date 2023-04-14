@@ -171,6 +171,7 @@ function checkClick(event: any) {
 		} else {
 			position(input.value!, caretPos + 1);
 		}
+
 		event.preventDefault();
 	}
 }

@@ -289,6 +289,7 @@ function pointerEnter() {
 	if (!props.editMode) return;
 	emit('show-hint', props.panel.id);
 }
+
 function pointerLeave() {
 	if (!props.editMode) return;
 	emit('hide-hint');

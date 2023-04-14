@@ -84,6 +84,7 @@ export default defineComponent({
 					displayValue.value = null;
 					return;
 				}
+
 				let timeFormat = props.includeSeconds ? 'date-fns_time' : 'date-fns_time_no_seconds';
 				if (props.use24) timeFormat = props.includeSeconds ? 'date-fns_time_24hour' : 'date-fns_time_no_seconds_24hour';
 				let format = `${t('date-fns_date')} ${t(timeFormat)}`;

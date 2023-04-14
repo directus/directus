@@ -223,6 +223,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				logger.warn(e, '[OpenID] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
+
 			throw e;
 		}
 

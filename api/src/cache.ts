@@ -10,6 +10,7 @@ import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
+
 const require = createRequire(import.meta.url);
 
 let cache: Keyv | null = null;

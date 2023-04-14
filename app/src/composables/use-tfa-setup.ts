@@ -75,6 +75,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		} finally {
 			loading.value = false;
 		}
+
 		return success;
 	}
 
@@ -94,6 +95,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		} finally {
 			loading.value = false;
 		}
+
 		return success;
 	}
 
@@ -112,6 +114,7 @@ export function useTFASetup(initialEnabled: boolean) {
 		} finally {
 			loading.value = false;
 		}
+
 		return success;
 	}
 }

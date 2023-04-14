@@ -238,6 +238,7 @@ function change(event: ChangeEvent) {
 				});
 				break;
 			}
+
 			default:
 				update({
 					...event.added.element,

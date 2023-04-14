@@ -297,6 +297,7 @@ export default defineComponent({
 				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 					field.meta.readonly = true;
 				}
+
 				return !fieldsDenyList.includes(field.field);
 			});
 		});

@@ -113,6 +113,7 @@ export default defineComponent({
 				placeholder: t('layouts.map.find_location'),
 			});
 		}
+
 		onMounted(() => {
 			setupMap();
 		});
@@ -135,6 +136,7 @@ export default defineComponent({
 			if (geocoderControl) {
 				map.addControl(geocoderControl as any, 'top-right');
 			}
+
 			map.addControl(attributionControl, 'bottom-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
@@ -150,6 +152,7 @@ export default defineComponent({
 					map.on('mousemove', layer, updatePopup);
 					map.on('mouseleave', layer, updatePopup);
 				}
+
 				map.on('move', updatePopupLocation);
 				map.on('click', '__directus_clusters', expandCluster);
 				map.on('mousemove', '__directus_clusters', hoverCluster);
@@ -221,14 +224,17 @@ export default defineComponent({
 					map.removeLayer(layer.id);
 				}
 			}
+
 			if (props.featureId) {
 				(newSource as any).promoteId = props.featureId;
 			} else {
 				(newSource as any).generateId = true;
 			}
+
 			if (map.getStyle().sources?.['__directus']) {
 				map.removeSource('__directus');
 			}
+
 			map.addSource('__directus', { ...newSource, data: props.data });
 			map.once('sourcedata', () => {
 				setTimeout(() => props.layers.forEach((layer) => map.addLayer(layer)));
@@ -277,6 +283,7 @@ export default defineComponent({
 			if (previousId && featureChanged) {
 				map.setFeatureState({ id: previousId, source: '__directus' }, { hovered: false });
 			}
+
 			if (feature && feature.properties) {
 				if (feature.geometry.type === 'Point') {
 					const { x, y } = map.project(feature.geometry.coordinates as LngLatLike);
@@ -286,6 +293,7 @@ export default defineComponent({
 					const { clientX: x, clientY: y } = event.originalEvent;
 					emit('updateitempopup', { position: { x, y } });
 				}
+
 				if (featureChanged) {
 					map.setFeatureState({ id: feature.id, source: '__directus' }, { hovered: true });
 					hoveredFeature.value = feature;

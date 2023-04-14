@@ -50,6 +50,7 @@ export default defineComponent({
 				style['color'] = props.value ? props.colorOn : props.colorOff;
 				style['--v-icon-color'] = props.value ? props.colorOn : props.colorOff;
 			}
+
 			return style;
 		});
 
