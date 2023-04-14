@@ -125,7 +125,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			download,
 			fieldsWithRelationalAliased,
 			aliasedFields,
-			aliasedKeys
+			aliasedKeys,
 		};
 
 		async function resetPresetAndRefresh() {
