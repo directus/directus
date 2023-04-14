@@ -189,7 +189,7 @@
 					<p class="type-label">{{ t('sort_field') }}</p>
 					<interface-system-field
 						:value="sortField"
-						:collection="collection"
+						:collection-name="collection"
 						allow-primary-key
 						@input="sortField = $event"
 					/>
@@ -222,6 +222,7 @@
 					<interface-system-fields
 						:value="exportSettings.fields"
 						:collection-name="collection"
+						allow-select-all
 						@input="exportSettings.fields = $event"
 					/>
 				</div>

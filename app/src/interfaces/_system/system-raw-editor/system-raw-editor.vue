@@ -40,6 +40,7 @@ const { width } = useWindowSize();
 
 const codemirrorEl = ref<HTMLTextAreaElement | null>();
 let codemirror: CodeMirror.Editor | null;
+let previousContent: string | null = null;
 
 const isMultiLine = computed(() => ['text', 'json'].includes(props.type));
 
@@ -84,8 +85,14 @@ onMounted(async () => {
 		}
 
 		codemirror.on('change', (doc, { origin }) => {
-			if (origin === 'setValue') return;
 			const content = doc.getValue();
+
+			// prevent duplicate emits with same content
+			if (content === previousContent) return;
+			previousContent = content;
+
+			if (origin === 'setValue') return;
+
 			if (typeof props.value === 'object') {
 				try {
 					emit('input', content !== '' ? parseJSON(content) : null);
