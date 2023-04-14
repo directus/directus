@@ -14,8 +14,8 @@ const headerType = 'h' + props.h
 </script>
 
 <template>
-  <component :is="tagType" :href="url" class="card">
-    <div class="icon">
+  <component :is="tagType" :href="url" class="card" :class="{'no-icon': !icon}">
+    <div class="icon" v-if="icon">
       <img v-if="icon" :src="icon" alt="">
     </div>
     <div class="text">
@@ -36,6 +36,9 @@ const headerType = 'h' + props.h
   gap: 1.5em;
   margin-top: 1em;
   margin-bottom: 1em;
+}
+.card.no-icon {
+  grid-template-columns: auto
 }
 .icon {
   width: 44px;

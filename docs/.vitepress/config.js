@@ -359,11 +359,8 @@ function sidebar() {
 					text: 'Trigger Static Site Builds',
 				},
 				{
-					text: 'Scheduling Content',
-					items: [
-						{ text: 'Static Sites', link: '/guides/flows/scheduling-content-static-sites' },
-						{ text: 'Dynamic Sites', link: '/guides/flows/scheduling-content-dynamic-sites' },
-					],
+					link: '/guides/headless-cms/schedule-content/index.html',
+					text: 'Scheduling Future Content',
 				},
 				{
 					link: '/guides/migration/index.html',
