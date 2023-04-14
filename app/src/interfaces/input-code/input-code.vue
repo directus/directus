@@ -166,6 +166,7 @@ export default defineComponent({
 
 						parser.parseError = (str: string, hash: any) => {
 							const loc = hash.loc;
+
 							found.push({
 								from: CodeMirror.Pos(loc.first_line - 1, loc.first_column),
 								to: CodeMirror.Pos(loc.last_line - 1, loc.last_column),
@@ -296,6 +297,7 @@ export default defineComponent({
 			async (altOptions) => {
 				if (!altOptions || altOptions.size === 0) return;
 				await getImports(altOptions);
+
 				for (const key in altOptions) {
 					codemirror?.setOption(key as any, altOptions[key]);
 				}

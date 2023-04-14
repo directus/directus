@@ -251,6 +251,7 @@ function useForm() {
 			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 		)
 	);
+
 	const fieldNames = computed(() => {
 		return fieldsInGroup.value.map((f) => f.field);
 	});
@@ -342,6 +343,7 @@ function apply(updates: { [field: string]: any }) {
 		const groupFields = getFieldsForGroup(props.group)
 			.filter((field) => !field.schema?.is_primary_key && !isDisabled(field))
 			.map((field) => field.field);
+
 		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pick(updates, updatableKeys)));
 	} else {
 		emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
@@ -366,6 +368,7 @@ function useBatch() {
 
 	function toggleBatchField(field: Field | undefined) {
 		if (!field) return;
+
 		if (batchActiveFields.value.includes(field.field)) {
 			batchActiveFields.value = batchActiveFields.value.filter((fieldKey) => fieldKey !== field.field);
 
@@ -390,6 +393,7 @@ function useRawEditor() {
 
 	function toggleRawField(field: Field | undefined) {
 		if (!field) return;
+
 		if (rawActiveFields.value.has(field.field)) {
 			rawActiveFields.value.delete(field.field);
 		} else {

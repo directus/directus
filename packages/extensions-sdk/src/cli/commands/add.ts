@@ -114,6 +114,7 @@ export default async function add(): Promise<void> {
 		];
 
 		const newExtensionOptions: ExtensionOptions = { ...extensionOptions, entries: newEntries };
+
 		const newExtensionManifest = {
 			...extensionManifest,
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
@@ -251,6 +252,7 @@ export default async function add(): Promise<void> {
 			host: extensionOptions.host,
 			hidden: extensionOptions.hidden,
 		};
+
 		const newExtensionManifest = {
 			...extensionManifest,
 			name: EXTENSION_NAME_REGEX.test(extensionName) ? extensionName : `directus-extension-${extensionName}`,

@@ -26,12 +26,14 @@ type UsableLink = {
 
 export default function useLink(editor: Ref<any>): UsableLink {
 	const linkDrawerOpen = ref(false);
+
 	const defaultLinkSelection = {
 		url: null,
 		displayText: null,
 		title: null,
 		newTab: true,
 	};
+
 	const linkSelection = ref<LinkSelection>(defaultLinkSelection);
 	const linkNode = ref<HTMLLinkElement | null>(null);
 	const currentSelectionNode = ref<HTMLElement | null>(null);

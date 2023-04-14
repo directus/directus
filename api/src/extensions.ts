@@ -171,6 +171,7 @@ class ExtensionManager {
 				const added = this.extensions.filter(
 					(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path)
 				);
+
 				const removed = prevExtensions.filter(
 					(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path)
 				);
@@ -356,6 +357,7 @@ class ExtensionManager {
 
 	private async generateExtensionBundle(): Promise<string | null> {
 		const sharedDepsMapping = await this.getSharedDepsMapping(APP_SHARED_DEPS);
+
 		const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
 			find: name,
 			replacement: path,
@@ -370,6 +372,7 @@ class ExtensionManager {
 				makeAbsoluteExternalsRelative: false,
 				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
+
 			const { output } = await bundle.generate({ format: 'es', compact: true });
 
 			for (const out of output) {
@@ -470,6 +473,7 @@ class ExtensionManager {
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
 					`file://${operationPath}`
 				);

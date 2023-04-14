@@ -38,6 +38,7 @@ export class AuthorizationService {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+
 		this.payloadService = new PayloadService('directus_permissions', {
 			knex: this.knex,
 			schema: this.schema,
@@ -236,6 +237,7 @@ export class AuthorizationService {
 											parentCollection,
 											parentField
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
@@ -306,6 +308,7 @@ export class AuthorizationService {
 
 								parentCollection =
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+
 								(result[parentCollection] || (result[parentCollection] = new Set())).add(filterKey);
 							}
 
@@ -324,6 +327,7 @@ export class AuthorizationService {
 														parentCollection,
 														filterKey
 													);
+
 													result = mergeRequiredFieldPermissions(result, requiredPermissions);
 												}
 											}
@@ -335,6 +339,7 @@ export class AuthorizationService {
 											parentCollection,
 											filterKey
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}

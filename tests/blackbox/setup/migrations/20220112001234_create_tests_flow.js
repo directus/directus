@@ -3,6 +3,7 @@ exports.up = async function (knex) {
 		table.increments('id').primary();
 		table.string('total_tests_count');
 	});
+
 	await knex.schema.createTable('tests_flow_completed', (table) => {
 		table.increments('id').primary();
 		table.string('test_file_path');

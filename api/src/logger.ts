@@ -33,6 +33,7 @@ if (env['LOG_STYLE'] !== 'raw') {
 			sync: true,
 		},
 	};
+
 	httpLoggerOptions.transport = {
 		target: 'pino-http-print',
 		options: {
@@ -85,6 +86,7 @@ if (loggerEnvConfig['levels']) {
 			};
 		},
 	};
+
 	httpLoggerOptions.formatters = {
 		level(label: string, number: any) {
 			return {

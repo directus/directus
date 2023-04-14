@@ -86,6 +86,7 @@ export const seedDBStructure = () => {
 
 export const seedDBValues = async () => {
 	let isSeeded = true;
+
 	await Promise.all(
 		vendors.map(async (vendor) => {
 			for (const pkType of PRIMARY_KEY_TYPES) {

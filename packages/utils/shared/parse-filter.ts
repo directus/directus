@@ -43,6 +43,7 @@ function shiftLogicalOperatorsUp(filter: any): any {
 	} else {
 		const childKey = Object.keys(filter[key])[0];
 		if (!childKey) return filter;
+
 		if (logicalFilterOperators.includes(childKey)) {
 			return {
 				[childKey]: toArray(filter[key][childKey]).map((childFilter) => {

@@ -8,6 +8,7 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 
 	for (const key of Object.keys(SeedFunctions.generateValues)) {
 		const field = `test_${key.toLowerCase()}`;
+
 		fieldSchema[field] = {
 			field: field,
 			type: key,
@@ -89,6 +90,7 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 							? String(fieldSchema[key].possibleValues[i])
 							: fieldSchema[key].possibleValues[i],
 					});
+
 					generatedStringIdCounter++;
 				}
 			} else {
@@ -136,6 +138,7 @@ export const seedO2MAliasAllFieldTypesValues = async (
 						quantity: 1,
 						seed: `id-${generatedStringIdCounter}`,
 					})[0];
+
 					generatedStringIdCounter++;
 				}
 
@@ -185,6 +188,7 @@ export const seedM2MAliasAllFieldTypesValues = async (
 		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['*'] });
 		const otherCollectionItems = await ReadItem(vendor, { collection: otherCollection, fields: ['*'] });
 		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
+
 		const newOtherCollectionKeys = otherCollectionItems
 			.map((i: any) => i.id)
 			.filter((i: any) => !otherPossibleKeys.includes(i));
@@ -219,6 +223,7 @@ export const seedM2AAliasAllFieldTypesValues = async (
 		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['id'] });
 		const otherCollectionItems = await ReadItem(vendor, { collection: relatedCollection, fields: ['id'] });
 		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
+
 		const newOtherCollectionKeys = otherCollectionItems
 			.map((i: any) => i.id)
 			.filter((i: any) => !otherPossibleKeys.includes(i));

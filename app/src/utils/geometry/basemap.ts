@@ -40,6 +40,7 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 		const style: Style = { ...baseStyle };
 		const source: RasterSource = { type: 'raster' };
 		if (basemap.attribution) source.attribution = basemap.attribution;
+
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);
 			source.tileSize = basemap.tileSize || 512;
@@ -73,6 +74,7 @@ function expandUrl(url: string): string[] {
 	}
 
 	match = /\{(\d+)-(\d+)\}/.exec(url);
+
 	if (match) {
 		// number range
 		const stop = parseInt(match[2], 10);
@@ -85,6 +87,7 @@ function expandUrl(url: string): string[] {
 	}
 
 	match = /\{(([a-z0-9]+)(,([a-z0-9]+))+)\}/.exec(url);
+
 	if (match) {
 		// csv
 		const subdomains = match[1].split(',');

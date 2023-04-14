@@ -116,6 +116,7 @@ export function useRelationMultiple(
 			const editsIndex = _value.value.update.findIndex(
 				(edit) => typeof edit === 'object' && edit[targetPKField] === item[targetPKField]
 			);
+
 			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
 
 			let updatedItem: Record<string, any> = cloneDeep(item);
@@ -157,6 +158,7 @@ export function useRelationMultiple(
 							edit[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field] ===
 							item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field]
 						);
+
 					case 'm2a': {
 						const itemCollection = item[relation.value.collectionField.field];
 						const editCollection = edit[relation.value.collectionField.field];
@@ -171,6 +173,7 @@ export function useRelationMultiple(
 					}
 				}
 			});
+
 			if (!fetchedItem) return edit;
 			return merge({}, fetchedItem, edit);
 		});
@@ -275,6 +278,7 @@ export function useRelationMultiple(
 								[info.relatedPrimaryKeyField.field]: item,
 							},
 						};
+
 					case 'm2a': {
 						if (!collection) throw new Error('You need to provide a collection on an m2a');
 
@@ -315,6 +319,7 @@ export function useRelationMultiple(
 				targetCollection = relation.value.junctionCollection.collection;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(relation.value.collectionField.field);
+
 				for (const collection of relation.value.allowedCollections) {
 					const pkField = relation.value.relationPrimaryKeyFields[collection.collection];
 					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField.field}`);
@@ -466,6 +471,7 @@ export function useRelationMultiple(
 					return item[relation.value.relatedPrimaryKeyField.field];
 				case 'm2m':
 					return item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field];
+
 				case 'm2a': {
 					const collection = item[relation.value.collectionField.field];
 					return item[relation.value.junctionPrimaryKeyField.field][
@@ -533,6 +539,7 @@ export function useRelationMultiple(
 					return acc;
 				}, [])
 			);
+
 			fields.add(relation.relatedPrimaryKeyField.field);
 
 			const relatedPKField = relation.relatedPrimaryKeyField.field;
@@ -606,6 +613,7 @@ export function useRelationMultiple(
 						[relation.junctionField.field]: item,
 					}))
 				);
+
 				return acc;
 			}, [] as Record<string, any>[]);
 		}

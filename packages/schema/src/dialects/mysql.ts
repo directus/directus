@@ -148,6 +148,7 @@ export default class MySQL implements SchemaInspector {
 				TABLE_TYPE: 'BASE TABLE',
 				TABLE_SCHEMA: this.knex.client.database(),
 			});
+
 		return records.map(({ TABLE_NAME }) => TABLE_NAME);
 	}
 
@@ -203,6 +204,7 @@ export default class MySQL implements SchemaInspector {
 				table_name: table,
 			})
 			.first();
+
 		return (result && result.count === 1) || false;
 	}
 
@@ -293,6 +295,7 @@ export default class MySQL implements SchemaInspector {
 				const first = records.findIndex((_column) => {
 					return column.name === _column.name && column.table === _column.table;
 				});
+
 				return first === index;
 			});
 	}
@@ -310,6 +313,7 @@ export default class MySQL implements SchemaInspector {
 				column_name: column,
 			})
 			.first();
+
 		return !!(result && result.count);
 	}
 

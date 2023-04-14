@@ -153,6 +153,7 @@ export default defineComponent({
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);
+
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
 			return basemap.value, getStyleFromBasemapSource(source);
@@ -258,11 +259,14 @@ export default defineComponent({
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
+
 			if (controls.geocoder) {
 				map.addControl(controls.geocoder as any, 'top-right');
+
 				controls.geocoder.on('result', (event: any) => {
 					location.value = event.result.center;
 				});
+
 				controls.geocoder.on('clear', () => {
 					location.value = null;
 				});
@@ -272,6 +276,7 @@ export default defineComponent({
 				const { longitude, latitude } = event.coords;
 				location.value = [longitude, latitude];
 			});
+
 			map.addControl(controls.attribution, 'bottom-left');
 			map.addControl(controls.navigation, 'top-left');
 			map.addControl(controls.geolocate, 'top-left');
@@ -287,6 +292,7 @@ export default defineComponent({
 				map.on('draw.modechange', handleDrawModeChange);
 				map.on('draw.selectionchange', handleSelectionChange);
 				map.on('move', updateProjection);
+
 				for (const layer of activeLayers) {
 					map.on('mousedown', layer, hideTooltip);
 					map.on('mousemove', layer, updateTooltip);
@@ -310,6 +316,7 @@ export default defineComponent({
 			if (!value) {
 				controls.draw.deleteAll();
 				currentGeometry = null;
+
 				if (geometryType) {
 					const snaked = snakeCase(geometryType.replace('Multi', ''));
 					const mode = `draw_${snaked}` as any;
@@ -343,6 +350,7 @@ export default defineComponent({
 		function fitDataBounds(options: CameraOptions & AnimationOptions) {
 			if (map && currentGeometry) {
 				const bbox = getBBox(currentGeometry);
+
 				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 80,
 					maxZoom: 8,
@@ -445,6 +453,7 @@ export default defineComponent({
 				const coordinates = geometries
 					.filter(({ type }) => `Multi${type}` == geometryType)
 					.map(({ coordinates }) => coordinates);
+
 				result = { type: geometryType, coordinates } as Geometry;
 			} else {
 				result = geometries[geometries.length - 1];
@@ -467,6 +476,7 @@ export default defineComponent({
 
 		function handleDrawUpdate() {
 			currentGeometry = getCurrentGeometry();
+
 			if (!currentGeometry) {
 				controls.draw.deleteAll();
 				emit('input', null);

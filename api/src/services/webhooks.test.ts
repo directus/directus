@@ -67,6 +67,7 @@ describe('Integration Tests', () => {
 					relations: [],
 				},
 			});
+
 			messengerPublishSpy = vi.spyOn(getMessenger(), 'publish');
 		});
 

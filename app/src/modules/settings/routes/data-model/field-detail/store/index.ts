@@ -115,6 +115,7 @@ export const useFieldDetailStore = defineStore({
 					this.loading = true;
 					const response = await api.get(`/fields/${collection}/${field}`);
 					const fetchedFieldMeta = response.data?.data?.meta;
+
 					this.$patch({
 						field: {
 							meta: {
@@ -169,6 +170,7 @@ export const useFieldDetailStore = defineStore({
 
 			for (const relation of Object.values(this.relations)) {
 				if (!relation || !relation.collection || !relation.field) continue;
+
 				if (
 					// Duplicate checks for O2M & M2O
 					(relation.collection === relation.related_collection && relation.field === relation.meta?.one_field) ||

@@ -86,6 +86,7 @@ function checkKeyDown(event: any) {
 					input.value!.innerText.substring(caretPos),
 				true
 			);
+
 			position(input.value!, caretPos + 1);
 		}
 	} else if (event.code === 'ArrowUp' && !event.shiftKey) {
@@ -123,6 +124,7 @@ function checkKeyDown(event: any) {
 			event.preventDefault();
 
 			const newCaretPos = matchedPositions[checkCaretPos - 1];
+
 			parseHTML(
 				(input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)).replaceAll(
 					String.fromCharCode(160),
@@ -130,6 +132,7 @@ function checkKeyDown(event: any) {
 				),
 				true
 			);
+
 			position(input.value!, newCaretPos);
 			emit('update:modelValue', input.value!.innerText);
 		}
@@ -146,6 +149,7 @@ function checkKeyDown(event: any) {
 				).replaceAll(String.fromCharCode(160), ' '),
 				true
 			);
+
 			position(input.value!, caretPos);
 			emit('update:modelValue', input.value!.innerText);
 		}
@@ -257,6 +261,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 			}
 
 			let searchString = replaceSpaceBefore + match + replaceSpaceAfter;
+
 			let replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
 				props.items[match.substring(props.triggerCharacter.length)]
 			}" contenteditable="false">${match}</mark>${addSpaceAfter}`;
@@ -280,6 +285,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	lastMatchIndex = 0;
+
 	for (const match of matches ?? []) {
 		let matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
 		matchedPositions.push(matchIndex, matchIndex + match.length);

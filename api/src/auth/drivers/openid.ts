@@ -55,6 +55,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = additionalConfig;
+
 		this.client = new Promise((resolve, reject) => {
 			Issuer.discover(issuerUrl)
 				.then((issuer) => {
@@ -133,11 +134,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		try {
 			const client = await this.client;
 			const codeChallenge = generators.codeChallenge(payload['codeVerifier']);
+
 			tokenSet = await client.callback(
 				this.redirectUrl,
 				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
 				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge }
 			);
+
 			userInfo = tokenSet.claims();
 
 			if (client.issuer.metadata['userinfo_endpoint']) {
@@ -297,6 +300,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OpenIDAuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
+
 			const token = jwt.sign(
 				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
 				env['SECRET'] as string,
@@ -365,6 +369,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`openid.${providerName}`);
+
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query['code'],
 					codeVerifier: verifier,

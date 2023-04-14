@@ -179,6 +179,7 @@ function useRaw() {
 	async function pasteRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
+
 		try {
 			internalValue.value = parseJSON(pastedValue);
 		} catch (e) {
@@ -194,6 +195,7 @@ function useRaw() {
 function useComputedValues() {
 	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
 	const internalValue = ref<any>(getInternalValue());
+
 	const isEdited = computed(
 		() => props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false
 	);

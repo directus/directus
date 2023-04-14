@@ -314,6 +314,7 @@ describe('#read', () => {
 		await driver.read(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
@@ -394,6 +395,7 @@ describe('#stat', () => {
 		await driver.stat(sample.path.input);
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+
 		expect(HeadObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,

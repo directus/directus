@@ -226,6 +226,7 @@ export default class CockroachDB implements SchemaInspector {
 			.select<{ tablename: string }[]>('tablename')
 			.from('pg_catalog.pg_tables')
 			.whereIn('schemaname', this.explodedSchema);
+
 		return records.map(({ tablename }) => tablename);
 	}
 
@@ -283,6 +284,7 @@ export default class CockroachDB implements SchemaInspector {
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
 			.andWhere({ table_name: table });
+
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
 		return record?.exists || false;
 	}
@@ -509,6 +511,7 @@ export default class CockroachDB implements SchemaInspector {
 				table_name: table,
 				column_name: column,
 			});
+
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
 		return record?.exists || false;
 	}

@@ -115,6 +115,7 @@ describe('/auth/login/saml', () => {
 					const samlLogin = await request(getUrl(vendor))
 						.get(`/auth/login/saml?redirect=${getUrl(vendor)}/admin/login?continue`)
 						.expect(302);
+
 					const samlRedirectUrl = String(samlLogin.headers.location).split('/simplesaml/');
 
 					const authResponse = await request(samlRedirectUrl[0])

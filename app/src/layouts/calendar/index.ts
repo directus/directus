@@ -85,14 +85,17 @@ export default defineLayout<LayoutOptions>({
 		const viewInfo = syncRefProperty(layoutOptions, 'viewInfo', undefined);
 
 		const startDateField = syncRefProperty(layoutOptions, 'startDateField', undefined);
+
 		const startDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === startDateField.value);
 		});
 
 		const endDateField = syncRefProperty(layoutOptions, 'endDateField', undefined);
+
 		const endDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
+
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
 		const queryFields = computed(() => {
