@@ -110,9 +110,15 @@ export default async function createApp(): Promise<express.Application> {
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
 	if (env['PRESSURE_LIMITER_ENABLED']) {
+		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
+
+		if (Number.isNaN(sampleInterval) === true || Number.isFinite(sampleInterval) === false) {
+			throw new Error(`Invalid value for PRESSURE_LIMITER_SAMPLE_INTERVAL environment variable`);
+		}
+
 		app.use(
 			handlePressure({
-				sampleInterval: env['PRESSURE_LIMITER_SAMPLE_INTERVAL'],
+				sampleInterval,
 				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'],
 				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'],
 				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'],
