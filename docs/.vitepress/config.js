@@ -353,7 +353,7 @@ function sidebar() {
 				{ text: 'Build a Content Hierarchy', link: '/guides/data-models/build-a-content-hierarchy' },
 				{ text: 'Content Approval Workflows', link: '/guides/permissions/basic-workflows' },
 				{ text: 'Using For Loops In Flows', link: '/guides/flows/flows-for-loop' },
-				{ text: 'Slugify Text with Run Script', link: '/guides/flows/slugify-text-with-run-script' },
+				{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
 				{
 					link: '/guides/headless-cms/trigger-static-builds/index.html',
 					text: 'Trigger Static Site Builds',
