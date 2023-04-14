@@ -48,6 +48,7 @@ test(`Checks against IPs of local networkInterfaces if IP deny list contains 0.0
 
 test(`Throws error if IP address matches resolved localhost IP`, async () => {
 	vi.mocked(getEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] });
+
 	vi.mocked(os.networkInterfaces).mockReturnValue({
 		fa0: undefined,
 		lo0: [

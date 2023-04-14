@@ -406,6 +406,7 @@ export default defineComponent({
 			});
 
 			const localCropping = ref(false);
+
 			const cropping = computed({
 				get() {
 					return localCropping.value;

@@ -69,6 +69,7 @@ const arrows = computed(() => {
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
 			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
+
 			arrows.push({
 				id: panel.id + '_resolve',
 				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
@@ -77,6 +78,7 @@ const arrows = computed(() => {
 			});
 		} else if (resolveChild) {
 			const { x, y, toX, toY } = getPoints(panel, RESOLVE_OFFSET, resolveChild);
+
 			arrows.push({
 				id: panel.id + '_resolve',
 				d: createLine(x, y, toX as number, toY as number),
@@ -85,6 +87,7 @@ const arrows = computed(() => {
 			});
 		} else if (props.editMode && !props.arrowInfo && (panel.id === '$trigger' || props.hoveredPanel === panel.id)) {
 			const { x: resolveX, y: resolveY } = getPoints(panel, RESOLVE_OFFSET);
+
 			arrows.push({
 				id: panel.id + '_resolve',
 				d: createLine(resolveX, resolveY, resolveX + 3 * 20, resolveY),
@@ -96,6 +99,7 @@ const arrows = computed(() => {
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'reject') {
 			const { x, y } = getPoints(panel, REJECT_OFFSET);
+
 			arrows.push({
 				id: panel.id + '_reject',
 				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
@@ -104,6 +108,7 @@ const arrows = computed(() => {
 			});
 		} else if (rejectChild) {
 			const { x, y, toX, toY } = getPoints(panel, REJECT_OFFSET, rejectChild);
+
 			arrows.push({
 				id: panel.id + '_reject',
 				d: createLine(x, y, toX as number, toY as number),
@@ -112,6 +117,7 @@ const arrows = computed(() => {
 			});
 		} else if (props.editMode && !props.arrowInfo && panel.id !== '$trigger' && props.hoveredPanel === panel.id) {
 			const { x: rejectX, y: rejectY } = getPoints(panel, REJECT_OFFSET);
+
 			arrows.push({
 				id: panel.id + '_reject',
 				d: createLine(rejectX, rejectY, rejectX + 3 * 20, rejectY),
@@ -182,6 +188,7 @@ const arrows = computed(() => {
 		}
 
 		const arrowSize = 8;
+
 		const arrow = `M ${points.at(-1)} L ${points
 			.at(-1)
 			?.clone()

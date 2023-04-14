@@ -15,6 +15,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	let migrationFiles = await fse.readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
+
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 

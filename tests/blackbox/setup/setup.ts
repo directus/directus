@@ -34,6 +34,7 @@ export default async (): Promise<void> => {
 							task: async () => {
 								const database = knex(config.knexConfig[vendor]!);
 								await awaitDatabaseConnection(database, config.knexConfig[vendor]!.waitTestSQL);
+
 								if (vendor === 'sqlite3') {
 									writeFileSync(path.join(paths.cwd, 'test.db'), '');
 								}
@@ -56,12 +57,15 @@ export default async (): Promise<void> => {
 										cwd: paths.cwd,
 										env: config.envs[vendor],
 									});
+
 									global.directus[vendor] = server;
 									let serverOutput = '';
 									server.stdout.setEncoding('utf8');
+
 									server.stdout.on('data', (data) => {
 										serverOutput += data.toString();
 									});
+
 									server.on('exit', (code) => {
 										if (process.env.TEST_SAVE_LOGS) {
 											writeFileSync(path.join(paths.cwd, `server-log-${vendor}.txt`), serverOutput);
@@ -69,6 +73,7 @@ export default async (): Promise<void> => {
 
 										if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 									});
+
 									// Give the server some time to start
 									await awaitDirectusConnection(Number(config.envs[vendor]!.PORT!));
 									server.on('exit', () => undefined);
@@ -81,9 +86,11 @@ export default async (): Promise<void> => {
 									global.directusNoCache[vendor] = serverNoCache;
 									let serverNoCacheOutput = '';
 									serverNoCache.stdout.setEncoding('utf8');
+
 									serverNoCache.stdout.on('data', (data) => {
 										serverNoCacheOutput += data.toString();
 									});
+
 									serverNoCache.on('exit', (code) => {
 										if (process.env.TEST_SAVE_LOGS) {
 											writeFileSync(__dirname + `/../server-log-${vendor}-no-cache.txt`, serverNoCacheOutput);
@@ -92,6 +99,7 @@ export default async (): Promise<void> => {
 										if (code !== null)
 											throw new Error(`Directus-${vendor}-no-cache server failed: \n ${serverNoCacheOutput}`);
 									});
+
 									// Give the server some time to start
 									await awaitDirectusConnection(Number(noCacheEnv.PORT!));
 									serverNoCache.on('exit', () => undefined);
@@ -119,6 +127,7 @@ export default async (): Promise<void> => {
 							for (const vendor of vendors) {
 								try {
 									const serverUrl = getUrl(vendor);
+
 									let response = await axios.get(
 										`${serverUrl}/items/tests_flow_data?access_token=${common.USER.TESTS_FLOW.TOKEN}`
 									);
@@ -130,6 +139,7 @@ export default async (): Promise<void> => {
 									const body = {
 										total_tests_count: totalTestsCount,
 									};
+
 									response = await axios.post(`${serverUrl}/items/tests_flow_data`, body, {
 										headers: {
 											Authorization: 'Bearer ' + common.USER.TESTS_FLOW.TOKEN,

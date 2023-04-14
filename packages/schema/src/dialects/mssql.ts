@@ -181,6 +181,7 @@ export default class MSSQL implements SchemaInspector {
 				TABLE_CATALOG: this.knex.client.database(),
 				TABLE_SCHEMA: this.schema,
 			});
+
 		return records.map(({ TABLE_NAME }) => TABLE_NAME);
 	}
 
@@ -234,6 +235,7 @@ export default class MSSQL implements SchemaInspector {
 				TABLE_SCHEMA: this.schema,
 			})
 			.first();
+
 		return (result && result.count === 1) || false;
 	}
 

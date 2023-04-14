@@ -82,29 +82,36 @@ export default defineComponent({
 		const { sidebarOpen, basemap } = toRefs(appStore);
 		const mapboxKey = settingsStore.settings?.mapbox_key;
 		const basemaps = getBasemapSources();
+
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
 			return getStyleFromBasemapSource(source);
 		});
 
 		const attributionControl = new AttributionControl();
+
 		const navigationControl = new NavigationControl({
 			showCompass: false,
 		});
+
 		const geolocateControl = new GeolocateControl();
+
 		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
 			emit('fitdata');
 		});
+
 		const boxSelectControl = new BoxSelectControl({
 			boxElementClass: 'map-selection-box',
 			selectButtonClass: 'mapboxgl-ctrl-select',
 			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 		});
+
 		let geocoderControl: MapboxGeocoder | undefined;
 
 		if (mapboxKey) {
 			const marker = document.createElement('div');
 			marker.className = 'mapboxgl-user-location-dot mapboxgl-search-location-dot';
+
 			geocoderControl = new MapboxGeocoder({
 				accessToken: mapboxKey,
 				collapsed: true,
@@ -118,6 +125,7 @@ export default defineComponent({
 		onMounted(() => {
 			setupMap();
 		});
+
 		onUnmounted(() => {
 			map.remove();
 		});
@@ -161,10 +169,12 @@ export default defineComponent({
 				map.on('mouseleave', '__directus_clusters', hoverCluster);
 				map.on('select.enable', () => (selectMode.value = true));
 				map.on('select.disable', () => (selectMode.value = false));
+
 				map.on('select.end', (event: MapLayerMouseEvent) => {
 					const ids = event.features?.map((f) => f.id);
 					emit('featureselect', { ids, replace: !event.alt });
 				});
+
 				map.on('moveend', () => {
 					emit('moveend', {
 						center: map.getCenter(),
@@ -174,6 +184,7 @@ export default defineComponent({
 						bbox: map.getBounds().toArray().flat(),
 					});
 				});
+
 				startWatchers();
 			});
 
@@ -183,6 +194,7 @@ export default defineComponent({
 					if (!opened) setTimeout(() => map.resize(), 300);
 				}
 			);
+
 			setTimeout(() => map.resize(), 300);
 		}
 
@@ -240,6 +252,7 @@ export default defineComponent({
 			}
 
 			map.addSource('__directus', { ...newSource, data: props.data });
+
 			map.once('sourcedata', () => {
 				setTimeout(() => props.layers.forEach((layer) => map.addLayer(layer)));
 			});
@@ -247,9 +260,11 @@ export default defineComponent({
 
 		function updateLayers(newLayers?: AnyLayer[], previousLayers?: AnyLayer[]) {
 			const currentMapLayersId = new Set(map.getStyle().layers?.map(({ id }) => id));
+
 			previousLayers?.forEach((layer) => {
 				if (currentMapLayersId.has(layer.id)) map.removeLayer(layer.id);
 			});
+
 			newLayers?.forEach((layer) => {
 				map.addLayer(layer);
 			});
@@ -260,6 +275,7 @@ export default defineComponent({
 				map.setFeatureState({ id, source: '__directus' }, { selected: false });
 				map.removeFeatureState({ id, source: '__directus' });
 			});
+
 			newSelection?.forEach((id) => {
 				map.setFeatureState({ id, source: '__directus' }, { selected: true });
 			});
@@ -324,10 +340,13 @@ export default defineComponent({
 			const features = map.queryRenderedFeatures(event.point, {
 				layers: ['__directus_clusters'],
 			});
+
 			const clusterId = features[0]?.properties?.cluster_id;
 			const source = map.getSource('__directus') as GeoJSONSource;
+
 			source.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
 				if (err) return;
+
 				map.flyTo({
 					center: (features[0].geometry as GeoJSON.Point).coordinates as LngLatLike,
 					zoom: zoom,

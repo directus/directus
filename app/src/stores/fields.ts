@@ -350,6 +350,7 @@ export const useFieldsStore = defineStore({
 			}
 
 			const relations = relationsStore.getRelationsForField(collection, field);
+
 			const relation = relations?.find((relation: Relation) => {
 				return relation.field === field || relation.meta?.one_field === field;
 			});

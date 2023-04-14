@@ -230,6 +230,7 @@ const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
 const fetchedFlow = ref<FlowRaw>();
+
 const flow = computed<FlowRaw | undefined>({
 	get() {
 		if (!fetchedFlow.value) return undefined;
@@ -261,6 +262,7 @@ async function loadCurrentFlow() {
 				fields: ['*', 'operations.*'],
 			},
 		});
+
 		fetchedFlow.value = response.data.data;
 	} catch (err: any) {
 		unexpectedError(err);
@@ -688,6 +690,7 @@ function getNearAttachment(pos: Vector2) {
 			(panel.x - 1) * 20 + ATTACHMENT_OFFSET.x,
 			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y
 		);
+
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;
 	}
 

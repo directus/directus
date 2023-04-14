@@ -271,6 +271,7 @@ export class FilesService extends ItemsService {
 
 		try {
 			const axios = await getAxios();
+
 			fileResponse = await axios.get<Readable>(encodeURL(importURL), {
 				responseType: 'stream',
 			});

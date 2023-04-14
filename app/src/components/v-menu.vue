@@ -242,6 +242,7 @@ function onClickOutsideMiddleware(e: Event) {
 
 function onContentClick(e: Event) {
 	e.stopPropagation();
+
 	if (e.target !== e.currentTarget) {
 		deactivate();
 	}
@@ -329,7 +330,9 @@ function usePopper(
 				modifiers: getModifiers(resolve),
 				strategy: 'fixed',
 			});
+
 			popperInstance.value.forceUpdate();
+
 			observer.observe(popper.value!, {
 				attributes: false,
 				childList: true,

@@ -58,6 +58,7 @@ export class PayloadService {
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
+
 			if (action === 'create' || action === 'update') {
 				return await generateHash(String(value));
 			}

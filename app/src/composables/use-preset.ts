@@ -56,11 +56,13 @@ export function usePreset(
 		busy.value = true;
 
 		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
+
 		localPreset.value = {
 			...localPreset.value,
 			id: updatedValues.id,
 			user: updatedValues.user,
 		};
+
 		bookmarkSaved.value = true;
 		busy.value = false;
 		return updatedValues;

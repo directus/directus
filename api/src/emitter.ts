@@ -29,6 +29,7 @@ export class Emitter {
 		context: EventContext
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
+
 		const eventListeners = events.map((event) => ({
 			event,
 			listeners: this.filterEmitter.listeners(event) as FilterHandler<T>[],

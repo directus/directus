@@ -133,6 +133,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				).join(', ')}.`,
 				'error'
 			);
+
 			process.exit(1);
 		}
 
@@ -146,6 +147,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				`Extension output file has to be specified using the ${chalk.blue('[-o, --output <file>]')} option.`,
 				'error'
 			);
+
 			process.exit(1);
 		}
 
@@ -160,6 +162,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
 
@@ -170,6 +173,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
 
@@ -192,6 +196,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
 
@@ -202,6 +207,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
 
@@ -335,6 +341,7 @@ async function buildHybridExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: inputApi,
@@ -343,6 +350,7 @@ async function buildHybridExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
 	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
 
@@ -453,6 +461,7 @@ async function buildBundleExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: { entry: entrypointApi },
@@ -461,6 +470,7 @@ async function buildBundleExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
 	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
 
@@ -543,6 +553,7 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 					}
 
 					break;
+
 				case 'ERROR': {
 					buildCount--;
 

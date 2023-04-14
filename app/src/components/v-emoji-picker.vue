@@ -14,6 +14,7 @@ const emojiPicker = new EmojiButton({
 	position: 'bottom',
 	emojisPerRow: 8,
 });
+
 const emit = defineEmits(['emoji-selected']);
 
 emojiPicker.on('emoji', (event) => {

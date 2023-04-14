@@ -244,6 +244,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const confirmDelete = ref(false);
 const editActive = ref(false);
+
 const fileSrc = computed(() => {
 	if (item.value && item.value.modified_on) {
 		return `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`;

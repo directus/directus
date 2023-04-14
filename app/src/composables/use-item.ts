@@ -194,6 +194,7 @@ export function useItem(
 
 		for (const relation of relations) {
 			const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
+
 			const existsJunctionRelated = relationsStore.relations.find((r) => {
 				return r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field;
 			});
@@ -296,6 +297,7 @@ export function useItem(
 						[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
 					},
 				});
+
 				existingItems = response.data.data;
 			}
 

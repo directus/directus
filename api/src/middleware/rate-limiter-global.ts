@@ -47,6 +47,7 @@ function validateConfiguration() {
 
 	const globalPointsPerSec =
 		Number(env['RATE_LIMITER_GLOBAL_POINTS']) / Math.max(Number(env['RATE_LIMITER_GLOBAL_DURATION']), 1);
+
 	const regularPointsPerSec = Number(env['RATE_LIMITER_POINTS']) / Math.max(Number(env['RATE_LIMITER_DURATION']), 1);
 
 	if (globalPointsPerSec <= regularPointsPerSec) {

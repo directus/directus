@@ -183,6 +183,7 @@ export default async function getASTFromQuery(
 								query: {},
 								relatedCollection: foundRelation.collection,
 							});
+
 							continue;
 						}
 					}

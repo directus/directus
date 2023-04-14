@@ -604,6 +604,7 @@ export default defineComponent({
 						icon: bookmark.icon,
 						color: bookmark.color,
 					});
+
 					router.push(`/content/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
@@ -628,6 +629,7 @@ export default defineComponent({
 				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === collection.value
 				);
+
 				return !!updatePermissions;
 			});
 
@@ -639,6 +641,7 @@ export default defineComponent({
 				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === collection.value
 				);
+
 				if (!updatePermissions) return false;
 				if (!updatePermissions.fields) return false;
 				if (updatePermissions.fields.includes('*')) return true;
@@ -652,6 +655,7 @@ export default defineComponent({
 				const deletePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === collection.value
 				);
+
 				return !!deletePermissions;
 			});
 
@@ -662,6 +666,7 @@ export default defineComponent({
 				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === collection.value
 				);
+
 				return !!createPermissions;
 			});
 

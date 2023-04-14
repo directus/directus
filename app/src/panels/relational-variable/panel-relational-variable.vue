@@ -60,6 +60,7 @@ const props = withDefaults(defineProps<Props>(), {});
 /*const emit = */ defineEmits(['input']);
 
 const insightsStore = useInsightsStore();
+
 const value = computed({
 	get() {
 		const val = insightsStore.getVariable(props.field);
@@ -76,6 +77,7 @@ const selectModalOpen = ref(false);
 
 function onSelection(data: (number | string)[]) {
 	selectModalOpen.value = false;
+
 	if (!Array.isArray(data) || data.length === 0) {
 		value.value = [];
 		return;
