@@ -1130,7 +1130,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     basemaps_style: Mapbox stijl
     mapbox_key: Toegangstoken Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....

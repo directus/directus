@@ -19,6 +19,7 @@ import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
 import * as exceptions from './exceptions/index.js';
+import { BaseException } from '@directus/exceptions';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -420,8 +421,9 @@ class FlowManager {
 		} catch (error) {
 			let data;
 
-			if (error instanceof Error) {
-				// If the error is instance of Error, use the message of it as the error data
+			if (error instanceof BaseException) {
+				data = { message: error.message, code: error.code, extensions: error.extensions, status: error.status };
+			} else if (error instanceof Error) {
 				data = { message: error.message };
 			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data
