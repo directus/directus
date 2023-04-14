@@ -1,5 +1,4 @@
 import { FlowRaw } from '@directus/types';
-import api from '@/api';
 import { defineStore } from 'pinia';
 import { useUserStore } from '@/stores/user';
 import { usePermissionsStore } from '@/stores/permissions';

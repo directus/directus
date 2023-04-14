@@ -59,8 +59,6 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
-
-import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';

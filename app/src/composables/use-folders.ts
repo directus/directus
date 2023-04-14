@@ -1,4 +1,3 @@
-import api from '@/api';
 import { fetchAll } from '@/utils/fetch-all';
 import { ref, Ref } from 'vue';
 
