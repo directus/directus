@@ -947,8 +947,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@rollup/plugin-commonjs':
-        specifier: 23.0.4
-        version: 23.0.4(rollup@3.19.1)
+        specifier: 24.1.0
+        version: 24.1.0(rollup@3.19.1)
       '@rollup/plugin-json':
         specifier: 6.0.0
         version: 6.0.0(rollup@3.19.1)
@@ -959,8 +959,8 @@ importers:
         specifier: 5.0.2
         version: 5.0.2(rollup@3.19.1)
       '@rollup/plugin-terser':
-        specifier: 0.4.0
-        version: 0.4.0(rollup@3.19.1)
+        specifier: 0.4.1
+        version: 0.4.1(rollup@3.19.1)
       '@rollup/plugin-virtual':
         specifier: 3.0.1
         version: 3.0.1(rollup@3.19.1)
@@ -5576,8 +5576,8 @@ packages:
       slash: 4.0.0
     dev: false
 
-  /@rollup/plugin-commonjs@23.0.4(rollup@3.19.1):
-    resolution: {integrity: sha512-bOPJeTZg56D2MCm+TT4psP8e8Jmf1Jsi7pFUMl8BN5kOADNzofNHe47+84WVCt7D095xPghC235/YKuNDEhczg==}
+  /@rollup/plugin-commonjs@24.1.0(rollup@3.19.1):
+    resolution: {integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0
@@ -5588,9 +5588,9 @@ packages:
       '@rollup/pluginutils': 5.0.2(rollup@3.19.1)
       commondir: 1.0.1
       estree-walker: 2.0.2
-      glob: 8.0.3
+      glob: 8.1.0
       is-reference: 1.2.1
-      magic-string: 0.26.7
+      magic-string: 0.27.0
       rollup: 3.19.1
     dev: false
 
@@ -5639,8 +5639,8 @@ packages:
       rollup: 3.19.1
     dev: false
 
-  /@rollup/plugin-terser@0.4.0(rollup@3.19.1):
-    resolution: {integrity: sha512-Ipcf3LPNerey1q9ZMjiaWHlNPEHNU/B5/uh9zXLltfEQ1lVSLLeZSgAtTPWGyw8Ip1guOeq+mDtdOlEj/wNxQw==}
+  /@rollup/plugin-terser@0.4.1(rollup@3.19.1):
+    resolution: {integrity: sha512-aKS32sw5a7hy+fEXVy+5T95aDIwjpGHCTv833HXVtyKMDoVS7pBr5K3L9hEQoNqbJFjfANPrNpIXlTQ7is00eA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.x || ^3.x
@@ -11268,17 +11268,6 @@ packages:
       once: 1.4.0
       path-is-absolute: 1.0.1
 
-  /glob@8.0.3:
-    resolution: {integrity: sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ==}
-    engines: {node: '>=12'}
-    dependencies:
-      fs.realpath: 1.0.0
-      inflight: 1.0.6
-      inherits: 2.0.4
-      minimatch: 5.1.2
-      once: 1.4.0
-    dev: false
-
   /glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
@@ -13279,13 +13268,6 @@ packages:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
     dependencies:
       sourcemap-codec: 1.4.8
-
-  /magic-string@0.26.7:
-    resolution: {integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==}
-    engines: {node: '>=12'}
-    dependencies:
-      sourcemap-codec: 1.4.8
-    dev: false
 
   /magic-string@0.27.0:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
