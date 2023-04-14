@@ -61,3 +61,8 @@
 	from = "/use-cases/headless-cms/create-reusable-page-components-using-m2a"
 	to = "/guides/headless-cms/reusable-components"
 	status = 301
+
+[[redirects]]
+	from = "/cloud/*"
+	to = "/"
+	status = 301

@@ -345,70 +345,6 @@ function sidebar() {
 			],
 		},
 		{
-			text: 'Guides',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{
-					text: 'Flows',
-					items: [
-						{ text: 'For Loops In Flows', link: '/guides/flows/flows-for-loop' },
-						{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
-					]
-				},
-				{
-					text: 'Headless CMS',
-					items: [
-						{ text: 'Content Approval Workflows', link: '/guides/headless-cms/approval-workflows' },
-						{
-							text: 'Re-Usable Page Components',
-							link: '/guides/headless-cms/reusable-components'
-						},
-						{
-							link: '/guides/headless-cms/schedule-content/index.html',
-							text: 'Scheduling Future Content',
-						},
-						{
-							link: '/guides/headless-cms/trigger-static-builds/index.html',
-							text: 'Trigger Static Site Builds',
-						},
-						{
-							text: 'Build a Static Website',
-							link: '/guides/headless-cms/build-static-website/index.html',
-						},
-					]
-				},
-				{
-					link: '/guides/migration/index.html',
-					text: 'Schema Migration'
-				},
-			],
-		},
-		{
-			text: 'Use Cases',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{
-					text: 'Headless CMS',
-					items: [
-						{
-							text: 'Introduction',
-							link: '/use-cases/headless-cms/introduction',
-						},
-						{
-							text: 'Concepts',
-							link: '/use-cases/headless-cms/concepts',
-						},
-						{
-							text: 'Security Best Practices',
-							link: '/use-cases/headless-cms/security',
-						}
-					],
-				},
-			],
-		},
-		{
 			text: 'API Reference',
 			collapsible: true,
 			collapsed: true,
@@ -532,6 +468,70 @@ function sidebar() {
 			],
 		},
 		{
+			text: 'Guides',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Flows',
+					items: [
+						{ text: 'For Loops In Flows', link: '/guides/flows/flows-for-loop' },
+						{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
+					]
+				},
+				{
+					text: 'Headless CMS',
+					items: [
+						{ text: 'Content Approval Workflows', link: '/guides/headless-cms/approval-workflows' },
+						{
+							text: 'Re-Usable Page Components',
+							link: '/guides/headless-cms/reusable-components'
+						},
+						{
+							link: '/guides/headless-cms/schedule-content/index.html',
+							text: 'Scheduling Future Content',
+						},
+						{
+							link: '/guides/headless-cms/trigger-static-builds/index.html',
+							text: 'Trigger Static Site Builds',
+						},
+						{
+							text: 'Build a Static Website',
+							link: '/guides/headless-cms/build-static-website/index.html',
+						},
+					]
+				},
+				{
+					link: '/guides/migration/index.html',
+					text: 'Schema Migration'
+				},
+			],
+		},
+		{
+			text: 'Use Cases',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Headless CMS',
+					items: [
+						{
+							text: 'Introduction',
+							link: '/use-cases/headless-cms/introduction',
+						},
+						{
+							text: 'Concepts',
+							link: '/use-cases/headless-cms/concepts',
+						},
+						{
+							text: 'Security Best Practices',
+							link: '/use-cases/headless-cms/security',
+						}
+					],
+				},
+			],
+		},
+		{
 			text: 'Extensions',
 			collapsible: true,
 			collapsed: true,
@@ -618,37 +618,6 @@ function sidebar() {
 				{
 					link: '/contributing/translations',
 					text: 'Translating the App',
-				},
-			],
-		},
-		{
-			text: 'Directus Cloud',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{
-					link: '/cloud/overview',
-					text: 'Overview',
-				},
-				{
-					link: '/cloud/accounts',
-					text: 'Accounts',
-				},
-				{
-					link: '/cloud/teams',
-					text: 'Teams',
-				},
-				{
-					link: '/cloud/projects',
-					text: 'Projects',
-				},
-				{
-					link: '/cloud/glossary',
-					text: 'Glossary',
-				},
-				{
-					link: '/cloud/exclusives',
-					text: 'Exclusives',
 				},
 			],
 		},
