@@ -44,6 +44,7 @@ export function validatePayload(
 				swallowErrors.push(...nestedErrors);
 				return false;
 			}
+
 			return true;
 		});
 

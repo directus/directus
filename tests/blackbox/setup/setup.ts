@@ -37,6 +37,7 @@ export default async (): Promise<void> => {
 								if (vendor === 'sqlite3') {
 									writeFileSync(path.join(paths.cwd, 'test.db'), '');
 								}
+
 								const bootstrap = spawnSync('node', [paths.cli, 'bootstrap'], {
 									cwd: paths.cwd,
 									env: config.envs[vendor],
@@ -44,6 +45,7 @@ export default async (): Promise<void> => {
 								if (bootstrap.stderr.length > 0) {
 									throw new Error(`Directus-${vendor} bootstrap failed: \n ${bootstrap.stderr.toString()}`);
 								}
+
 								await database.migrate.latest();
 								await database.seed.run();
 								await database.destroy();
@@ -63,6 +65,7 @@ export default async (): Promise<void> => {
 										if (process.env.TEST_SAVE_LOGS) {
 											writeFileSync(path.join(paths.cwd, `server-log-${vendor}.txt`), serverOutput);
 										}
+
 										if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 									});
 									// Give the server some time to start
@@ -84,6 +87,7 @@ export default async (): Promise<void> => {
 										if (process.env.TEST_SAVE_LOGS) {
 											writeFileSync(__dirname + `/../server-log-${vendor}-no-cache.txt`, serverNoCacheOutput);
 										}
+
 										if (code !== null)
 											throw new Error(`Directus-${vendor}-no-cache server failed: \n ${serverNoCacheOutput}`);
 									});
@@ -154,9 +158,11 @@ export default async (): Promise<void> => {
 			for (const server of Object.values(global.directus)) {
 				server?.kill();
 			}
+
 			for (const serverNoCache of Object.values(global.directusNoCache)) {
 				serverNoCache?.kill();
 			}
+
 			throw new Error(reason);
 		});
 

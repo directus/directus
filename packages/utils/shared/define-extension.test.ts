@@ -17,6 +17,7 @@ const mockComponent = defineComponent({});
 const mockHandler = () => {
 	return '';
 };
+
 describe('define-extensions', () => {
 	const types = [] as readonly Type[];
 	const mockRecord = () => {
@@ -59,6 +60,7 @@ describe('define-extensions', () => {
 	const hookHandler = () => {
 		return { test: (..._values: any[]) => undefined };
 	};
+
 	const endpointConfig = { id: '1', handler: mockHandler };
 
 	const operationAppConfig = {

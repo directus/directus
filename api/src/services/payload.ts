@@ -265,6 +265,7 @@ export class PayloadService {
 
 		return payloads;
 	}
+
 	/**
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
@@ -331,6 +332,7 @@ export class PayloadService {
 							if (!isValid(parsedDate)) {
 								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
 							}
+
 							payload[name] = parsedDate;
 						}
 
@@ -339,6 +341,7 @@ export class PayloadService {
 							if (!isValid(parsedDate)) {
 								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
 							}
+
 							payload[name] = parsedDate;
 						}
 

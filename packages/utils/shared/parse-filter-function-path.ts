@@ -20,5 +20,6 @@ export function parseFilterFunctionPath(path: string): string {
 			return `${preColumns}${columns}${functionName}(${field})`;
 		}
 	}
+
 	return path;
 }

@@ -274,6 +274,7 @@ export default defineComponent({
 				if (folder.value === null) {
 					return `/files`;
 				}
+
 				return `/files/folders/${folder.value.id}`;
 			});
 

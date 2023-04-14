@@ -86,6 +86,7 @@ export async function CreateUser(vendor: string, options: Partial<OptionsCreateU
 	if (!options.token) {
 		throw new Error('Missing required field: token');
 	}
+
 	if (!options.email) {
 		throw new Error('Missing required field: email');
 	}

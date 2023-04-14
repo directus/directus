@@ -16,6 +16,7 @@ export function useFilterFields<T extends string>(
 				if (filters[name](field) === false) continue;
 				acc[name].push(field);
 			}
+
 			return acc;
 		}, acc);
 	});

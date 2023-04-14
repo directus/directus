@@ -12,6 +12,7 @@ export const checkIP: RequestHandler = asyncHandler(async (req, _res, next) => {
 	} else {
 		query.whereNull('id');
 	}
+
 	const role = await query.first();
 
 	const ipAllowlist = (role?.ip_access || '').split(',').filter((ip: string) => ip);

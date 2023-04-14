@@ -79,6 +79,7 @@ function onSelection(data: (number | string)[]) {
 		value.value = [];
 		return;
 	}
+
 	if (props.multiple) {
 		const items = Array.from(new Set(data.concat(value.value)));
 		if (items.length > props.limit) {

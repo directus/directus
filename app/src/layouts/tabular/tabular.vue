@@ -295,6 +295,7 @@ function getDisplayValue(item: Item, key: string) {
 		} else {
 			result[key] = item[key];
 		}
+
 		return result;
 	}, {});
 

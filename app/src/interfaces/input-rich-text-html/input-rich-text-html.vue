@@ -328,6 +328,7 @@ export default defineComponent({
 				if (props.value !== value) {
 					contentUpdated();
 				}
+
 				return;
 			},
 		});

@@ -184,6 +184,7 @@ function useRaw() {
 		} catch (e) {
 			internalValue.value = pastedValue;
 		}
+
 		emitValue(internalValue.value);
 	}
 

@@ -106,6 +106,7 @@ export default defineComponent({
 				startOpenFolders.push(folderID);
 			}
 		}
+
 		const selectedFolder = computed(() => {
 			return folders.value.find((folder) => folder.id === props.modelValue) || {};
 		});

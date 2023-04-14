@@ -22,6 +22,7 @@ export function parseFilter(
 	if (parsedFilter) {
 		parsedFilter = shiftLogicalOperatorsUp(parsedFilter);
 	}
+
 	return parsedFilter;
 }
 
@@ -36,6 +37,7 @@ function shiftLogicalOperatorsUp(filter: any): any {
 		for (const childKey of Object.keys(filter[key])) {
 			filter[key][childKey] = shiftLogicalOperatorsUp(filter[key][childKey]);
 		}
+
 		return filter;
 	} else {
 		const childKey = Object.keys(filter[key])[0];

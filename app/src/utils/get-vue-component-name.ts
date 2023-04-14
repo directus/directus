@@ -15,5 +15,6 @@ export function getVueComponentName(vm: ComponentPublicInstance | null): string 
 		const match = file.match(/([^/\\]+)\.vue$/);
 		name = match && match[1];
 	}
+
 	return name ? kebabCase(name) : `component`;
 }

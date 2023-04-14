@@ -214,6 +214,7 @@ const selection = computed<(number | string)[]>(() => {
 	if (typeof props.value === 'object' && pkField in props.value) {
 		return [props.value[pkField]];
 	}
+
 	return [props.value];
 });
 

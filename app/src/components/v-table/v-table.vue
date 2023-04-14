@@ -331,6 +331,7 @@ function onSortChange(event: EndEvent) {
 
 	emit('manual-sort', { item, to });
 }
+
 function updateSort(newSort: Sort) {
 	emit('update:sort', newSort?.by ? newSort : null);
 }

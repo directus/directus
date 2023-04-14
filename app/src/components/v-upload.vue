@@ -134,6 +134,7 @@ function validFiles(files: FileList) {
 	for (const file of files) {
 		if (file.size === 0) return false;
 	}
+
 	return true;
 }
 
@@ -154,6 +155,7 @@ function useUpload() {
 		if (props.folder) {
 			folderPreset.folder = props.folder;
 		}
+
 		try {
 			if (!validFiles(files)) {
 				throw new Error('An error has occurred while uploading the files.');
