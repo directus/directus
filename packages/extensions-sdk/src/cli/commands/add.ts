@@ -284,6 +284,7 @@ function getLanguageFromEntries(entries: ExtensionOptionsBundleEntry[]): Languag
 				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
 				process.exit(1);
 			}
+
 			if (!isLanguage(languageApi)) {
 				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 				process.exit(1);

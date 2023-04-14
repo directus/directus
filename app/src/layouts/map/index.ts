@@ -71,12 +71,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (!field) {
 				return;
 			}
+
 			const geometryField = field.field;
 			const geometryFormat = getGeometryFormatForType(field.type);
 			const geometryType = field.type.split('.')[1] ?? field.meta?.options?.geometryType;
 			if (!geometryFormat) {
 				return;
 			}
+
 			return { geometryField, geometryFormat, geometryType } as GeometryOptions;
 		});
 
@@ -133,6 +135,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (isGeometryFieldNative.value) {
 				return;
 			}
+
 			if (geojson.value?.features.length) {
 				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
@@ -241,6 +244,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				const field = primaryKeyField.value?.field;
 				update.item = !field ? null : items.value.find((i) => i[field] === update.item) ?? null;
 			}
+
 			itemPopup.value = merge({}, itemPopup.value, update);
 		}
 

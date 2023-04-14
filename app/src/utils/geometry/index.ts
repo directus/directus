@@ -106,9 +106,11 @@ export function toGeoJSON(entries: any[], options: GeometryOptions): FeatureColl
 		const feature = { type: 'Feature', properties, geometry };
 		geojson.features.push(feature as Feature);
 	}
+
 	if (geojson.features.length == 0) {
 		delete geojson.bbox;
 	}
+
 	return geojson;
 }
 
@@ -117,9 +119,11 @@ export function flatten(geometry?: AnyGeometry): SimpleGeometry[] {
 	if (geometry.type == 'GeometryCollection') {
 		return geometry.geometries.flatMap(flatten);
 	}
+
 	if (geometry.type.startsWith('Multi')) {
 		const type = geometry.type.replace('Multi', '');
 		return (geometry.coordinates as any).map((coordinates: any) => ({ type, coordinates } as SimpleGeometry));
 	}
+
 	return [geometry as SimpleGeometry];
 }

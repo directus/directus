@@ -1053,6 +1053,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										lastIndex = foundIndex;
 									}
 								}
+
 								return;
 							}
 
@@ -1500,6 +1501,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										lastIndex = foundIndex;
 									}
 								}
+
 								return;
 							}
 

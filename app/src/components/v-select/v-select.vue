@@ -291,6 +291,7 @@ function useItems() {
 				if (item?.children) {
 					acc += countItems(item.children);
 				}
+
 				return acc + 1;
 			}, 0);
 

@@ -222,6 +222,7 @@ function useActiveState() {
 				},
 			};
 		}
+
 		isActive.value = true;
 	}
 

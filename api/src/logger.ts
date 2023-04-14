@@ -45,6 +45,7 @@ if (env['LOG_STYLE'] !== 'raw') {
 		},
 	};
 }
+
 if (env['LOG_STYLE'] === 'raw') {
 	httpLoggerOptions.redact = {
 		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
@@ -54,8 +55,10 @@ if (env['LOG_STYLE'] === 'raw') {
 				if ('set-cookie' in value) {
 					value['set-cookie'] = REDACT_TEXT;
 				}
+
 				return value;
 			}
+
 			return REDACT_TEXT;
 		},
 	};

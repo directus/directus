@@ -5,6 +5,7 @@ describe('deepMap', () => {
 	const mockIterator = (val: any, _key: string | number) => {
 		return `Test ${val}`;
 	};
+
 	it('returns an object mapped where values are the return of the iterator', () => {
 		const mockObject = { _and: [{ field: { _eq: 'field' } }] };
 		expect(deepMap(mockObject, mockIterator)).toStrictEqual({ _and: [{ field: { _eq: 'Test field' } }] });

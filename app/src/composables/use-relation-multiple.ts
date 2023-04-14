@@ -57,6 +57,7 @@ export function useRelationMultiple(
 				value.value = undefined;
 				return;
 			}
+
 			value.value = newValue;
 		},
 	});
@@ -187,6 +188,7 @@ export function useRelationMultiple(
 				const field = sortField.substring(1);
 				return get(b, field) - get(a, field);
 			}
+
 			return get(a, sortField) - get(b, sortField);
 		});
 	});
@@ -200,6 +202,7 @@ export function useRelationMultiple(
 			for (const item of items) {
 				target.value.create.push(cleanItem(item));
 			}
+
 			updateValue();
 		}
 
@@ -223,6 +226,7 @@ export function useRelationMultiple(
 					}
 				}
 			}
+
 			updateValue();
 		}
 
@@ -249,6 +253,7 @@ export function useRelationMultiple(
 					target.value.delete.splice(item.$index, 1);
 				}
 			}
+
 			updateValue();
 		}
 
@@ -314,6 +319,7 @@ export function useRelationMultiple(
 					const pkField = relation.value.relationPrimaryKeyFields[collection.collection];
 					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField.field}`);
 				}
+
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
@@ -691,6 +697,7 @@ export function useRelationMultiple(
 						$edits: item.$edits,
 					};
 			}
+
 			return {};
 		}
 

@@ -190,15 +190,18 @@ export default class Postgres implements SchemaInspector {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = { columns: {}, primary: <any>undefined };
 			}
+
 			if (['point', 'polygon'].includes(column.data_type)) {
 				column.data_type = 'unknown';
 			}
+
 			overview[column.table_name]!.columns[column.column_name] = column;
 		}
 
 		for (const { table_name, column_name } of primaryKeys) {
 			overview[table_name]!.primary = column_name;
 		}
+
 		for (const { table_name, column_name, data_type } of geometryColumns) {
 			overview[table_name]!.columns[column_name]!.data_type = data_type;
 		}

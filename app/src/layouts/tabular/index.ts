@@ -351,6 +351,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}
+
 				sort.value = [sortString];
 			}
 

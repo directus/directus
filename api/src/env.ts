@@ -11,6 +11,7 @@ import path from 'path';
 import { requireYAML } from './utils/require-yaml.js';
 
 import { createRequire } from 'node:module';
+
 const require = createRequire(import.meta.url);
 
 // keeping this here for now to prevent a circular import to constants.ts
@@ -405,6 +406,7 @@ function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | 
 		if (isEnvSyntaxPrefixPresent(item)) {
 			return getEnvironmentValueByType(item);
 		}
+
 		return item;
 	});
 }
@@ -446,6 +448,7 @@ function processValues(env: Record<string, any>) {
 						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
 					);
 				}
+
 				try {
 					value = fs.readFileSync(value, { encoding: 'utf8' });
 					key = newKey;
@@ -480,6 +483,7 @@ function processValues(env: Record<string, any>) {
 				case 'boolean':
 					env[key] = toBoolean(value);
 			}
+
 			continue;
 		}
 

@@ -188,6 +188,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							seed: `${localCollectionSingletonO2M}_update_o2m2`,
 						})[0];
 					}
+
 					updatedO2M.push(newO2mItem);
 					updatedO2M[0].name = o2mNameUpdated2;
 

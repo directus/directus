@@ -71,6 +71,7 @@ export default class SQLite implements SchemaInspector {
 				};
 			}
 		}
+
 		return overview;
 	}
 
@@ -228,6 +229,7 @@ export default class SQLite implements SchemaInspector {
 		if (resultsVal !== 0) {
 			isColumn = true;
 		}
+
 		return isColumn;
 	}
 

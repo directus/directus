@@ -106,6 +106,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								} else {
 									expect(gqlResponse.body.errors).toBeDefined();
 								}
+
 								break;
 							default:
 								if (pkType !== 'integer') {
@@ -113,6 +114,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								} else {
 									expect(gqlResponse.body.errors).toBeDefined();
 								}
+
 								break;
 						}
 					});
@@ -264,6 +266,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					for (let i = 0; i < artistsCount; i++) {
 						artists.push(createArtist(pkType));
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -483,6 +486,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							name: 'Johnny Cash',
 						});
 					}
+
 					expect(response.body.data.length).toBe(keys.length);
 
 					expect(gqlResponse.statusCode).toEqual(200);
@@ -491,6 +495,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							name: 'updated',
 						});
 					}
+
 					expect(gqlResponse.body.data[mutationKey].length).toBe(keys.length);
 				});
 			});
@@ -619,6 +624,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.company = artistCompany;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -667,12 +673,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = artistName;
 						artists1.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists1 });
 					for (let i = 0; i < count; i++) {
 						const artist = createArtist(pkType);
 						artist.company = artistCompany;
 						artists2.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists2 });
 
 					// Action
@@ -721,6 +729,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = artistName;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -776,6 +785,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = artistName;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -831,6 +841,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = `${i}-${artistName}`;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -930,6 +941,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = `${i}-${artistName}`;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -1049,6 +1061,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = `${i}-${artistName}`;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action

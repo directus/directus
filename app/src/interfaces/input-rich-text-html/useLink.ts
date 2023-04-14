@@ -115,8 +115,10 @@ export default function useLink(editor: Ref<any>): UsableLink {
 				editor.value.selection.setContent(linkNode.value.innerText);
 				closeLinkDrawer();
 			}
+
 			return;
 		}
+
 		const linkHtml = `<a href="${link.url}" ${link.title ? `title="${link.title}"` : ''} target="${
 			link.newTab ? '_blank' : '_self'
 		}" >${link.displayText || link.url}</a>`;
