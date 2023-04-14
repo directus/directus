@@ -12,7 +12,7 @@
 		</v-list-item>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable @click="addAll">
+			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
 				{{ t('select_all') }}
 			</v-list-item>
 
@@ -35,12 +35,12 @@
 
 <script lang="ts" setup>
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
+import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
-import { computed, ref, toRefs, watch, unref } from 'vue';
+import { debounce, isNil } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
-import { debounce, isNil } from 'lodash';
-import { useFieldsStore } from '@/stores/fields';
 
 interface Props {
 	collection: string;
@@ -79,6 +79,8 @@ watch(search, () => debouncedRefresh());
 
 const { t } = useI18n();
 
+const selectAllDisabled = computed(() => unref(treeList).every((field) => field.disabled === true));
+
 const treeList = computed(() => {
 	const list = treeListOriginal.value.map(setDisabled);
 
@@ -101,10 +103,10 @@ const treeList = computed(() => {
 	}
 });
 
-function addAll() {
-	const allFields = treeList.value.map((field) => field.field);
+const addAll = () => {
+	const allFields = unref(treeList).map((field) => field.field);
 	emit('add', unref(allFields));
-}
+};
 
 function filter(field: Field, parent?: FieldNode): boolean {
 	if (

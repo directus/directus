@@ -34,7 +34,7 @@
 		</div>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable @click="addAll">
+			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
 				{{ t('select_all') }}
 			</v-list-item>
 
@@ -50,6 +50,8 @@
 			:relational-field-selectable="relationalFieldSelectable"
 			:parent="field.field"
 			:allow-select-all="allowSelectAll"
+			@add="$emit('add', $event)"
+			@remove="$emit('remove', $event)"
 		/>
 	</v-list-group>
 
@@ -67,9 +69,9 @@ export default {
 </script>
 
 <script lang="ts" setup>
+import { FieldNode } from '@/composables/use-field-tree';
 import formatTitle from '@directus/format-title';
 import { getFunctionsForType } from '@directus/utils';
-import { FieldNode } from '@/composables/use-field-tree';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -104,7 +106,9 @@ const supportedFunctions = computed(() => {
 	return getFunctionsForType(props.field.type);
 });
 
-function addAll() {
+const selectAllDisabled = computed(() => props.field.children?.every((field: FieldInfo) => field.disabled === true));
+
+const addAll = () => {
 	if (!props.field.children) return;
 
 	const selectedFields = props.field.children.map((selectableField) => {
@@ -118,7 +122,7 @@ function addAll() {
 	});
 
 	emit('add', selectedFields);
-}
+};
 </script>
 
 <style lang="scss" scoped>
