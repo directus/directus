@@ -25,7 +25,7 @@ body:
         the bug.
     validations:
       required: true
-  - type: textarea
+  - type: input
     attributes:
       label: Directus Version
       placeholder: v9.x.x
