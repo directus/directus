@@ -28,11 +28,26 @@
 
         &.always-show {
             opacity: 1;
-            width: 2px;
-            transition: width var(--fast) var(--transition);
+            transition: background-color var(--fast) var(--transition);
+            background-color: transparent;
+        
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 1px;
+                bottom: 0;
+                left: 1px;
+                background-color: var(--background-inverted);
+                transition: background-color var(--fast) var(--transition);
+            }
 
             &:hover, &:active {
-                width: 4px;
+                background-color: var(--primary);
+
+                &::before {
+                    background-color: var(--primary);
+                }
             }
         }
     }

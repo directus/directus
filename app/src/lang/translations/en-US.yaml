@@ -1355,12 +1355,13 @@ block: Block
 inline: Inline
 comment: Comment
 live_preview:
-  enable: Enable Live Preview
-  disable: Disable Live Preview
+  enable: Enable Preview
+  disable: Disable Preview
   change_size: Change Display Dimensions
   refresh: Refresh Preview
   new_window: Open in New Window
   close_window: Open in Split View
+  toggle_3d: Toggle 3D
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left

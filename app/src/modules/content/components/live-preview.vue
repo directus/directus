@@ -11,22 +11,40 @@
 			>
 				<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
 			</v-button>
-			<v-button
-				v-tooltip.bottom.end="t('live_preview.refresh')"
-				x-small
-				icon
-				rounded
-				secondary
-				size="small"
-				@click="refresh"
-			>
+			<v-button v-tooltip.bottom.end="t('live_preview.refresh')" x-small icon rounded secondary @click="refresh">
 				<v-icon small name="refresh" />
 			</v-button>
+			<span class="url">
+				{{ url }}
+			</span>
 			<div class="spacer" />
-			<div v-if="!fullscreen" class="dimensions">
-				<input v-model.number="width" class="width" />
+			<div class="dimensions" :class="{ disabled: fullscreen }">
+				<input
+					:value="displayWidth"
+					@input="width = Number(($event as any).target.value)"
+					class="width"
+					:disabled="fullscreen"
+				/>
 				<v-icon x-small name="close" />
-				<input v-model.number="height" class="width" />
+				<input
+					:value="displayHeight"
+					@input="height = Number(($event as any).target.value)"
+					class="height"
+					:disabled="fullscreen"
+				/>
+				<v-select
+					v-model="zoom"
+					inline
+					:items="[
+						{ text: '200%', value: 2 },
+						{ text: '150%', value: 1.5 },
+						{ text: '100%', value: 1 },
+						{ text: '75%', value: 0.75 },
+						{ text: '50%', value: 0.5 },
+						{ text: '25%', value: 0.25 },
+					]"
+					:disabled="fullscreen"
+				/>
 			</div>
 			<v-button
 				v-tooltip.bottom.start="t('live_preview.change_size')"
@@ -34,13 +52,23 @@
 				icon
 				rounded
 				:secondary="fullscreen"
-				size="small"
 				@click="toggleFullscreen"
 			>
 				<v-icon small name="devices" />
 			</v-button>
+			<v-button
+				v-if="!fullscreen"
+				v-tooltip.bottom.start="t('live_preview.toggle_3d')"
+				x-small
+				icon
+				rounded
+				:secondary="!threeDimensional"
+				@click="threeDimensional = !threeDimensional"
+			>
+				<v-icon small name="view_in_ar" />
+			</v-button>
 		</div>
-		<div class="iframe-view">
+		<div class="iframe-view" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp">
 			<div
 				ref="resizeHandle"
 				class="resize-handle"
@@ -48,6 +76,9 @@
 					width: width ? `${width}px` : '100%',
 					height: height ? `${height}px` : '100%',
 					resize: fullscreen ? 'none' : 'both',
+					transform: `scale(${zoom}) ${
+						threeDimensional && !fullscreen ? `rotateX(${rotateX}deg) rotateY(${rotateY}deg)` : ''
+					}`,
 				}"
 			>
 				<iframe id="frame" ref="frameEl" width="100%" height="100%" :src="url" frameborder="0"></iframe>
@@ -71,8 +102,14 @@ const emit = defineEmits(['new-window']);
 
 const { t } = useI18n();
 
+const threeDimensional = ref<boolean>(false);
+const rotateX = ref<number>(0);
+const rotateY = ref<number>(0);
 const width = ref<number>();
 const height = ref<number>();
+const zoom = ref<number>(1);
+const displayWidth = ref<number>();
+const displayHeight = ref<number>();
 
 const resizeHandle = ref<HTMLDivElement>();
 
@@ -83,10 +120,11 @@ const fullscreen = computed(() => {
 function toggleFullscreen() {
 	if (fullscreen.value) {
 		width.value = 400;
-		height.value = 700;
+		height.value = 600;
 	} else {
 		width.value = undefined;
 		height.value = undefined;
+		zoom.value = 1;
 	}
 }
 
@@ -100,10 +138,49 @@ function refresh() {
 
 (window as any).refreshLivePreview = refresh;
 
+const startPos = { x: 0, y: 0 };
+let drag = false;
+
+function pointerDown(event: PointerEvent) {
+	if (event.target !== event.currentTarget) return;
+
+	startPos.x = event.clientX;
+	startPos.y = event.clientY;
+	drag = true;
+}
+
+let lastFrame = 0;
+
+function pointerMove(event: PointerEvent) {
+	if (!resizeHandle.value || !drag) return;
+
+	cancelAnimationFrame(lastFrame);
+
+	lastFrame = requestAnimationFrame(() => {
+		const diffX = event.clientX - startPos.x;
+		const diffY = event.clientY - startPos.y;
+
+		rotateY.value += diffX / 2;
+		rotateX.value -= diffY / 2;
+
+		startPos.x = event.clientX;
+		startPos.y = event.clientY;
+	});
+}
+
+function pointerUp() {
+	drag = false;
+}
+
 onMounted(() => {
 	if (resizeHandle.value) {
 		new ResizeObserver(() => {
-			if ((width.value === undefined && height.value === undefined) || !resizeHandle.value) return;
+			if (!resizeHandle.value) return;
+
+			displayWidth.value = resizeHandle.value.offsetWidth;
+			displayHeight.value = resizeHandle.value.offsetHeight;
+
+			if (width.value === undefined && height.value === undefined) return;
 
 			width.value = resizeHandle.value.offsetWidth;
 			height.value = resizeHandle.value.offsetHeight;
@@ -124,6 +201,10 @@ onMounted(() => {
 	height: 100%;
 
 	.header {
+		.v-button.secondary {
+			--v-button-background-color: var(--background-subdued);
+		}
+
 		width: 100%;
 		color: var(--foreground-inverted);
 		background-color: var(--background-inverted);
@@ -134,6 +215,13 @@ onMounted(() => {
 		gap: 8px;
 		padding: 0px 8px;
 
+		.url {
+			color: var(--foreground-subdued);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
 		.spacer {
 			flex: 1;
 		}
@@ -141,6 +229,9 @@ onMounted(() => {
 		.dimensions {
 			display: flex;
 			align-items: center;
+			&.disabled {
+				color: var(--foreground-subdued);
+			}
 		}
 
 		input {
@@ -162,15 +253,17 @@ onMounted(() => {
 		display: grid;
 		place-items: center;
 		padding: 60px;
+		perspective: 1000px;
+
+		.resize-handle {
+			resize: both;
+			overflow: hidden;
+			box-shadow: 0px 4px 12px -4px rgba(0, 0, 0, 0.2);
+		}
 	}
 
 	&.fullscreen .iframe-view {
 		padding: 0;
-	}
-
-	.resize-handle {
-		resize: both;
-		overflow: hidden;
 	}
 }
 </style>

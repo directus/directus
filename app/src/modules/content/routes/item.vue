@@ -63,7 +63,7 @@
 				rounded
 				icon
 				class="action-preview"
-				secondary
+				:secondary="livePreviewMode === null"
 				@click="toggleSplitView"
 			>
 				<v-icon :name="livePreviewMode === null ? 'visibility' : 'visibility_off'" outline />
