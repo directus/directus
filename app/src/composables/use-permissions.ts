@@ -61,6 +61,7 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 
 		// remove fields without read permissions so they don't show up in the DOM
 		const readableFields = permissionsStore.getPermissionsForUser(collection.value, 'read')?.fields;
+
 		if (readableFields && readableFields.includes('*') === false) {
 			fields = fields.filter((field) => readableFields.includes(field.field));
 		}

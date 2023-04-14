@@ -50,6 +50,7 @@ test('Throws error if response is not ok', async () => {
 		await isUpToDate(sample.name, sample.version);
 	} catch (err: any) {
 		expect(err).toBeInstanceOf(Error);
+
 		expect(err.message).toBe(
 			`Couldn't find latest version for package "${sample.name}": ${mockResponse.status} ${mockResponse.statusText}`
 		);

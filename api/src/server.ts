@@ -102,6 +102,7 @@ export async function createServer(): Promise<http.Server> {
 		if (env['NODE_ENV'] !== 'development') {
 			logger.info('Shutting down...');
 		}
+
 		SERVER_ONLINE = false;
 	}
 

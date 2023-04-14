@@ -8,8 +8,10 @@ describe('utils/flatten-field-groups', () => {
 			{ name: 'ID', field: 'id', collection: 'test', key: 'id', path: 'id', type: 'integer' },
 			{ name: 'Test Field', field: 'test', collection: 'test', key: 'test', path: 'test', type: 'string' },
 		];
+
 		expect(flattenFieldGroups(TreeWithoutGroups)).toEqual(TreeWithoutGroups);
 	});
+
 	it('Returns a tree without groups', () => {
 		const TreeWithGroups: FieldNode[] = [
 			{ name: 'ID', field: 'id', collection: 'test', key: 'id', path: 'id', type: 'integer' },
@@ -33,6 +35,7 @@ describe('utils/flatten-field-groups', () => {
 				],
 			},
 		];
+
 		const TreeWithoutGroups: FieldNode[] = [
 			{ name: 'ID', field: 'id', collection: 'test', key: 'id', path: 'id', type: 'integer' },
 			{
@@ -44,8 +47,10 @@ describe('utils/flatten-field-groups', () => {
 				type: 'string',
 			},
 		];
+
 		expect(flattenFieldGroups(TreeWithGroups)).toEqual(TreeWithoutGroups);
 	});
+
 	it('Returns a tree without deeply nested groups', () => {
 		const TreeWithNestedGroups: FieldNode[] = [
 			{ name: 'ID', field: 'id', collection: 'test', key: 'id', path: 'id', type: 'integer' },
@@ -99,6 +104,7 @@ describe('utils/flatten-field-groups', () => {
 				],
 			},
 		];
+
 		const TreeWithoutGroups: FieldNode[] = [
 			{ name: 'ID', field: 'id', collection: 'test', key: 'id', path: 'id', type: 'integer' },
 			{
@@ -118,6 +124,7 @@ describe('utils/flatten-field-groups', () => {
 				type: 'string',
 			},
 		];
+
 		expect(flattenFieldGroups(TreeWithNestedGroups)).toEqual(TreeWithoutGroups);
 	});
 });

@@ -35,6 +35,7 @@ describe('/auth', () => {
 
 							// Assert
 							expect(response.statusCode).toBe(200);
+
 							expect(response.body).toMatchObject({
 								data: {
 									access_token: expect.any(String),
@@ -44,6 +45,7 @@ describe('/auth', () => {
 							});
 
 							expect(gqlResponse.statusCode).toBe(200);
+
 							expect(gqlResponse.body).toMatchObject({
 								data: {
 									[mutationKey]: {
@@ -58,6 +60,7 @@ describe('/auth', () => {
 				});
 			});
 		});
+
 		describe('when incorrect credentials are provided', () => {
 			describe('returns code: UNAUTHORIZED for incorrect password', () => {
 				common.TEST_USERS.forEach((userKey) => {
@@ -115,6 +118,7 @@ describe('/auth', () => {
 					});
 				});
 			});
+
 			describe('returns code: UNAUTHORIZED for unregistered email', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
@@ -171,6 +175,7 @@ describe('/auth', () => {
 					});
 				});
 			});
+
 			describe('returns code: INVALID_CREDENTIALS for invalid email', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
@@ -227,6 +232,7 @@ describe('/auth', () => {
 					});
 				});
 			});
+
 			describe('returns message: "password is required" when no password is provided', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {

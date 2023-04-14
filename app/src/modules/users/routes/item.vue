@@ -297,6 +297,7 @@ export default defineComponent({
 				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 					field.meta.readonly = true;
 				}
+
 				return !fieldsDenyList.includes(field.field);
 			});
 		});
@@ -363,6 +364,7 @@ export default defineComponent({
 
 		function navigateBack() {
 			const backState = router.options.history.state.back;
+
 			if (typeof backState !== 'string' || !backState.startsWith('/login')) {
 				router.back();
 				return;

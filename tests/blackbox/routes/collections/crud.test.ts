@@ -50,12 +50,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 							if (userKey === common.USER.ADMIN.KEY) {
 								const responseData = JSON.parse(response.text);
 								const tableNames = responseData.data.map((collection: Collection) => collection.collection).sort();
+
 								const tableNames2 = gqlResponse.body.data['collections']
 									.map((collection: Collection) => collection.collection)
 									.sort();
 
 								expect(response.statusCode).toBe(200);
 								expect(responseData.data.length).toBeGreaterThanOrEqual(common.DEFAULT_DB_TABLES.length);
+
 								expect(
 									common.DEFAULT_DB_TABLES.every((name: string) => {
 										return tableNames.indexOf(name) !== -1;
@@ -63,9 +65,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 								).toEqual(true);
 
 								expect(gqlResponse.statusCode).toBe(200);
+
 								expect(gqlResponse.body.data['collections'].length).toBeGreaterThanOrEqual(
 									common.DEFAULT_DB_TABLES.length
 								);
+
 								expect(
 									common.DEFAULT_DB_TABLES.every((name: string) => {
 										return tableNames2.indexOf(name) !== -1;
@@ -74,9 +78,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 							} else if (userKey === common.USER.APP_ACCESS.KEY) {
 								const responseData = JSON.parse(response.text);
 								const tableNames = responseData.data.map((collection: Collection) => collection.collection).sort();
+
 								const tableNames2 = gqlResponse.body.data['collections']
 									.map((collection: Collection) => collection.collection)
 									.sort();
+
 								const appAccessPermissions = [
 									'directus_activity',
 									'directus_collections',
@@ -93,6 +99,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 
 								expect(response.statusCode).toBe(200);
 								expect(responseData.data.length).toBeGreaterThanOrEqual(appAccessPermissions.length);
+
 								expect(
 									appAccessPermissions.every((name: string) => {
 										return tableNames.indexOf(name) !== -1;
@@ -101,6 +108,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 
 								expect(gqlResponse.statusCode).toBe(200);
 								expect(gqlResponse.body.data['collections'].length).toBeGreaterThanOrEqual(appAccessPermissions.length);
+
 								expect(
 									appAccessPermissions.every((name: string) => {
 										return tableNames2.indexOf(name) !== -1;
@@ -141,6 +149,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 										meta: { hidden: true, readonly: true, interface: 'input', special: ['uuid'] },
 										schema: { is_primary_key: true, length: 36, has_auto_increment: false },
 									});
+
 									break;
 								case 'string':
 									fields.push({
@@ -149,6 +158,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 										meta: { hidden: false, readonly: false, interface: 'input' },
 										schema: { is_primary_key: true, length: 255, has_auto_increment: false },
 									});
+
 									break;
 								case 'integer':
 									fields.push({
@@ -157,6 +167,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 										meta: { hidden: true, interface: 'input', readonly: true },
 										schema: { is_primary_key: true, has_auto_increment: true },
 									});
+
 									break;
 							}
 
@@ -169,6 +180,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(200);
+
 								expect(response.body.data).toEqual({
 									collection: TEST_COLLECTION_NAME,
 									meta: expect.objectContaining({
@@ -178,6 +190,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 										name: TEST_COLLECTION_NAME,
 									}),
 								});
+
 								expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
 							} else {
 								expect(response.statusCode).toBe(403);
@@ -204,6 +217,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(200);
+
 								expect(response.body.data).toEqual({
 									collection: TEST_FOLDER_NAME,
 									meta: expect.objectContaining({
@@ -211,6 +225,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 									}),
 									schema: null,
 								});
+
 								expect(await db.schema.hasTable(TEST_FOLDER_NAME)).toBe(false);
 							} else {
 								expect(response.statusCode).toBe(403);
@@ -223,15 +238,18 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 
 		describe('PATCH /', () => {
 			let currentVendor = vendors[0];
+
 			const collectionNames = [
 				`test_collections_crud_batch_update_${pkType}`,
 				`test_collections_crud_batch_update2_${pkType}`,
 				`test_collections_crud_batch_update3_${pkType}`,
 			];
+
 			const newSortOrder = [3, 1, 2];
 
 			afterEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				for (const collection of collectionNames) {
 					await db.schema.dropTableIfExists(collection);
 					await db('directus_collections').del().where({ collection });
@@ -271,8 +289,10 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(200);
+
 								for (let i = 0; i < collectionNames.length; i++) {
 									const matchedIndex = findIndex(response.body.data, { collection: collectionNames[i] });
+
 									expect(response.body.data[matchedIndex]).toEqual({
 										collection: collectionNames[i],
 										meta: expect.objectContaining({
@@ -284,6 +304,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 											name: collectionNames[i],
 										}),
 									});
+
 									expect(await db.schema.hasTable(collectionNames[i])).toBe(true);
 								}
 							} else {
@@ -367,6 +388,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(204);
 								expect(response.body).toEqual({});
+
 								expect(await db('directus_collections').select().where({ collection: TEST_FOLDER_NAME })).toHaveLength(
 									0
 								);
@@ -405,6 +427,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 				// Assert
 				expect(response.statusCode).toBe(200);
 				expect(response.body.data.length).toBe(10);
+
 				for (const log of response.body.data) {
 					expect(log.value).toBe('1');
 				}

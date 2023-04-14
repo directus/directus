@@ -188,11 +188,13 @@ function addNode(key: string) {
 			// Alias uses the foreign key type
 			if (type === 'alias') {
 				const relations = relationsStore.getRelationsForField(collection.value, key);
+
 				if (relations[0]) {
 					type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
 				}
 			}
 		}
+
 		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });

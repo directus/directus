@@ -179,20 +179,24 @@ const { toggleRawField, rawActiveFields } = useRawEditor();
 const firstEditableFieldIndex = computed(() => {
 	for (let i = 0; i < fieldNames.value.length; i++) {
 		const field = fieldsMap.value[fieldNames.value[i]];
+
 		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
 			return i;
 		}
 	}
+
 	return null;
 });
 
 const firstVisibleFieldIndex = computed(() => {
 	for (let i = 0; i < fieldNames.value.length; i++) {
 		const field = fieldsMap.value[fieldNames.value[i]];
+
 		if (field?.meta && !field.meta?.hidden) {
 			return i;
 		}
 	}
+
 	return null;
 });
 
@@ -221,6 +225,7 @@ function useForm() {
 		() => props.fields,
 		() => {
 			const newVal = getFields();
+
 			if (!isEqual(fields.value, newVal)) {
 				fields.value = newVal;
 			}
@@ -246,6 +251,7 @@ function useForm() {
 			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 		)
 	);
+
 	const fieldNames = computed(() => {
 		return fieldsInGroup.value.map((f) => f.field);
 	});
@@ -276,6 +282,7 @@ function useForm() {
 
 		for (const field of fieldsInGroup) {
 			const meta = fieldsMap.value?.[field.field]?.meta;
+
 			if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
 				passed.push(meta!.field);
 				fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));
@@ -289,6 +296,7 @@ function useForm() {
 		if (props.collection) {
 			return fieldsStore.getFieldsForCollection(props.collection);
 		}
+
 		if (props.fields) {
 			return props.fields;
 		}
@@ -335,6 +343,7 @@ function apply(updates: { [field: string]: any }) {
 		const groupFields = getFieldsForGroup(props.group)
 			.filter((field) => !field.schema?.is_primary_key && !isDisabled(field))
 			.map((field) => field.field);
+
 		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pick(updates, updatableKeys)));
 	} else {
 		emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
@@ -359,6 +368,7 @@ function useBatch() {
 
 	function toggleBatchField(field: Field | undefined) {
 		if (!field) return;
+
 		if (batchActiveFields.value.includes(field.field)) {
 			batchActiveFields.value = batchActiveFields.value.filter((fieldKey) => fieldKey !== field.field);
 
@@ -383,6 +393,7 @@ function useRawEditor() {
 
 	function toggleRawField(field: Field | undefined) {
 		if (!field) return;
+
 		if (rawActiveFields.value.has(field.field)) {
 			rawActiveFields.value.delete(field.field);
 		} else {

@@ -80,6 +80,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 				...mediaSelection.value,
 				sourceUrl: newSource,
 			};
+
 			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, imageToken.value || getToken());
 		},
 	});
@@ -193,6 +194,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		} else {
 			editor.value.selection.setContent(embed.value);
 		}
+
 		editor.value.undoManager.add();
 		closeMediaDrawer();
 	}
@@ -202,6 +204,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		if (!url.includes(getPublicURL() + 'assets/')) {
 			return url;
 		}
+
 		try {
 			const parsedUrl = new URL(url);
 			const params = new URLSearchParams(parsedUrl.search);

@@ -11,6 +11,7 @@ import { useCollection } from './use-collection.js';
 const mockData = { id: 1 };
 const mockCountData = { count: 2 };
 const mockCountDistinctData = { countDistinct: { id: 3 } };
+
 const mockPrimaryKeyField: Field = {
 	collection: 'test_collection',
 	field: 'id',
@@ -19,6 +20,7 @@ const mockPrimaryKeyField: Field = {
 	schema: null,
 	meta: null,
 };
+
 const mockApiGet = vi.fn();
 const mockApiPost = vi.fn();
 
@@ -26,10 +28,12 @@ function isGetItemsRequest(config: AxiosRequestConfig) {
 	if (!config.params) return false;
 	return Object.keys(config.params).includes('fields');
 }
+
 function isTotalCountRequest(config: AxiosRequestConfig) {
 	if (!config.params) return false;
 	return isEqual(Object.keys(config.params), ['aggregate']);
 }
+
 function isFilterCountRequest(config: AxiosRequestConfig) {
 	if (!config.params) return false;
 	return isEqual(Object.keys(config.params), ['filter', 'search', 'aggregate']);
@@ -48,6 +52,7 @@ vi.mock('./use-system.js', () => ({
 		post: mockApiPost,
 	})),
 }));
+
 vi.mock('./use-collection.js');
 
 afterEach(() => {

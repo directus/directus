@@ -133,6 +133,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				).join(', ')}.`,
 				'error'
 			);
+
 			process.exit(1);
 		}
 
@@ -140,11 +141,13 @@ export default async function build(options: BuildOptions): Promise<void> {
 			log(`Extension entrypoint has to be specified using the ${chalk.blue('[-i, --input <file>]')} option.`, 'error');
 			process.exit(1);
 		}
+
 		if (!output) {
 			log(
 				`Extension output file has to be specified using the ${chalk.blue('[-o, --output <file>]')} option.`,
 				'error'
 			);
+
 			process.exit(1);
 		}
 
@@ -159,8 +162,10 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
+
 			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
 					`Output option needs to be of the format ${chalk.blue(
@@ -168,6 +173,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
 
@@ -190,8 +196,10 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
+
 			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
 					`Output option needs to be of the format ${chalk.blue(
@@ -199,6 +207,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
 
@@ -292,6 +301,7 @@ async function buildHybridExtension({
 		log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
 		process.exit(1);
 	}
+
 	if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
 		log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
 		process.exit(1);
@@ -301,6 +311,7 @@ async function buildHybridExtension({
 		log(`App output file can not be empty.`, 'error');
 		process.exit(1);
 	}
+
 	if (outputApi.length === 0) {
 		log(`API output file can not be empty.`, 'error');
 		process.exit(1);
@@ -313,6 +324,7 @@ async function buildHybridExtension({
 		log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
 		process.exit(1);
 	}
+
 	if (!isLanguage(languageApi)) {
 		log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 		process.exit(1);
@@ -329,6 +341,7 @@ async function buildHybridExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: inputApi,
@@ -337,6 +350,7 @@ async function buildHybridExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
 	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
 
@@ -371,6 +385,7 @@ async function buildBundleExtension({
 		log(`App output file can not be empty.`, 'error');
 		process.exit(1);
 	}
+
 	if (outputApi.length === 0) {
 		log(`API output file can not be empty.`, 'error');
 		process.exit(1);
@@ -388,6 +403,7 @@ async function buildBundleExtension({
 				log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
 				process.exit(1);
 			}
+
 			if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
 				log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
 				process.exit(1);
@@ -400,6 +416,7 @@ async function buildBundleExtension({
 				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
 				process.exit(1);
 			}
+
 			if (!isLanguage(languageApi)) {
 				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 				process.exit(1);
@@ -444,6 +461,7 @@ async function buildBundleExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: { entry: entrypointApi },
@@ -452,6 +470,7 @@ async function buildBundleExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
 	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
 
@@ -532,7 +551,9 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 						spinner.succeed(chalk.bold('Done'));
 						log(chalk.bold.green('Watching files for changes...'));
 					}
+
 					break;
+
 				case 'ERROR': {
 					buildCount--;
 
@@ -542,6 +563,7 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 					if (buildCount > 0) {
 						spinner.start();
 					}
+
 					break;
 				}
 			}

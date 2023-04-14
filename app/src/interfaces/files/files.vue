@@ -185,6 +185,7 @@ const templateWithDefaults = computed(() => {
 		return relationInfo.value.junctionCollection.meta?.display_template;
 
 	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
+
 	if (relatedDisplayTemplate) {
 		const regex = /({{.*?}})/g;
 		const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
@@ -263,6 +264,7 @@ function sortItems(items: DisplayItem[]) {
 		if (!isNil(junctionId)) {
 			changes[info.junctionPrimaryKeyField.field] = junctionId;
 		}
+
 		if (!isNil(relatedId)) {
 			set(changes, info.junctionField.field + '.' + info.relatedPrimaryKeyField.field, relatedId);
 		}
