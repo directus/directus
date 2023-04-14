@@ -15,7 +15,7 @@
 						<v-icon name="drag_handle" class="drag-handle" left />
 						<div class="name">{{ field.displayName }}</div>
 						<div class="spacer" />
-						<v-icon name="close" clickable @click="removeFields([field.key])" />
+						<v-icon name="close" clickable @click="removeField(field.key)" />
 					</v-list-item>
 				</template>
 			</draggable>
@@ -33,7 +33,6 @@
 				:collection="collectionName"
 				:allow-select-all="allowSelectAll"
 				@add="addFields"
-				@remove="removeFields"
 			/>
 		</v-menu>
 	</template>
@@ -110,19 +109,20 @@ const fields = computed<(Field & { key: string })[]>({
 
 const { t } = useI18n();
 
-function addFields(fields: string[]) {
+const addFields = (fields: string[]) => {
 	const uniqueFields = new Set([...(props.value ?? []), ...fields]);
 	emit('input', Array.from(uniqueFields));
-}
+};
 
-function removeFields(fieldKeys: string[]) {
-	const newFields = props.value?.filter((val) => !fieldKeys.includes(val));
-	let args = null;
-	if (newFields !== undefined && newFields?.length > 0) {
-		args = newFields;
+const removeField = (field: string) => {
+	const newFields = props.value?.filter((val) => val !== field);
+
+	if (!newFields || newFields.length === 0) {
+		emit('input', null);
 	}
-	emit('input', args);
-}
+
+	emit('input', newFields);
+};
 </script>
 
 <style lang="scss" scoped>
