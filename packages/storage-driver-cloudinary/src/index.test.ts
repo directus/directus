@@ -259,6 +259,7 @@ describe('#toFormUrlEncoded', () => {
 
 describe('#getFullSignature', () => {
 	let mockPayload: Record<string, string>;
+
 	let mockCreateHash: {
 		update: Mock;
 		digest: Mock;
@@ -337,6 +338,7 @@ describe('#getFullSignature', () => {
 describe('#getParameterSignature', () => {
 	let mockHash: string;
 	let result: string;
+
 	let mockCreateHash: {
 		update: Mock;
 		digest: Mock;
@@ -596,6 +598,7 @@ describe('#read', () => {
 
 describe('#stat', () => {
 	let mockResponse: { json: Mock; status: number };
+
 	let mockResponseBody: {
 		bytes: number;
 		created_at: string;
@@ -670,6 +673,7 @@ describe('#stat', () => {
 
 	test('Throws error when status is >400', async () => {
 		mockResponse.status = randNumber({ min: 400, max: 599 });
+
 		try {
 			await driver.stat(sample.path.input);
 		} catch (err: any) {
@@ -680,6 +684,7 @@ describe('#stat', () => {
 
 	test('Returns size/modified from bytes/created_at from Cloudinary', async () => {
 		const result = await driver.stat(sample.path.input);
+
 		expect(result).toStrictEqual({
 			size: sample.file.size,
 			modified: sample.file.modified,
@@ -711,6 +716,7 @@ describe('#exists', () => {
 
 describe('#move', () => {
 	let mockResponse: { json: Mock; status: number };
+
 	let mockResponseBody: {
 		error?: { message?: string };
 	};
@@ -878,6 +884,7 @@ describe('#write', () => {
 		await driver.write(sample.path.input, stream);
 
 		expect(driver['uploadChunk']).toHaveBeenCalledOnce();
+
 		expect(driver['uploadChunk']).toHaveBeenCalledWith({
 			resourceType: sample.resourceType,
 			blob: new Blob(chunks),
@@ -989,12 +996,15 @@ describe('#write', () => {
 
 describe('#uploadChunk', () => {
 	let mockResponse: { json: Mock; status: number };
+
 	let mockResponseBody: {
 		error?: { message?: string };
 	};
+
 	let mockFormData: {
 		set: Mock;
 	};
+
 	let input: Parameters<(typeof driver)['uploadChunk']>[0];
 
 	beforeEach(() => {
@@ -1063,6 +1073,7 @@ describe('#uploadChunk', () => {
 
 	test('Throws an error when the response statusCode is >=400', async () => {
 		mockResponse.status = randNumber({ min: 400, max: 599 });
+
 		try {
 			await driver['uploadChunk'](input);
 		} catch (err: any) {
@@ -1189,6 +1200,7 @@ describe('#list', () => {
 
 	test('Fetches search api results', async () => {
 		await driver.list(sample.path.input).next();
+
 		expect(fetch).toHaveBeenCalledWith(
 			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.publicId.input}*&next_cursor=`,
 			{
@@ -1226,6 +1238,7 @@ describe('#list', () => {
 		}
 
 		expect(fetch).toHaveBeenCalledTimes(2);
+
 		expect(fetch).toHaveBeenCalledWith(
 			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.publicId.input}*&next_cursor=${mockNextCursor}`,
 			{

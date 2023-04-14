@@ -492,9 +492,11 @@ export default defineComponent({
 
 			editor.on('init', function () {
 				editor.shortcuts.remove('meta+k');
+
 				editor.addShortcut('meta+k', 'Insert Link', () => {
 					editor.ui.registry.getAll().buttons.customlink.onAction();
 				});
+
 				setCount();
 			});
 

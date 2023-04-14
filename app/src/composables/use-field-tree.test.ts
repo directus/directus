@@ -23,6 +23,7 @@ import { Field, Relation } from '@directus/types';
 
 test('Returns tree list of same length', () => {
 	const fieldsStore = useFieldsStore();
+
 	fieldsStore.fields = [
 		{
 			collection: 'a',
@@ -82,6 +83,7 @@ test('Returns tree list of same length', () => {
 
 test('Returns tree list with injected field', () => {
 	const fieldsStore = useFieldsStore();
+
 	fieldsStore.fields = [
 		{
 			collection: 'a',
@@ -173,6 +175,7 @@ test('Returns tree list with injected field', () => {
 
 test('Returns tree list with filter', () => {
 	const fieldsStore = useFieldsStore();
+
 	fieldsStore.fields = [
 		{
 			collection: 'a',
@@ -221,6 +224,7 @@ test('Returns tree list with filter', () => {
 	const { treeList } = useFieldTree(ref('a'), undefined, filterIntegerFields);
 
 	expect(unref(treeList)).toHaveLength(1);
+
 	expect(unref(treeList)).toEqual([
 		{ name: 'ID', field: 'id', collection: 'a', relatedCollection: undefined, key: 'id', path: 'id', type: 'integer' },
 	]);
@@ -228,6 +232,7 @@ test('Returns tree list with filter', () => {
 
 test('Returns tree list with group', () => {
 	const fieldsStore = useFieldsStore();
+
 	fieldsStore.fields = [
 		{
 			collection: 'a',
@@ -313,6 +318,7 @@ test('Returns tree list with group', () => {
 
 test('Returns tree list for O2M', () => {
 	const fieldsStore = useFieldsStore();
+
 	fieldsStore.fields = [
 		{
 			collection: 'a',
@@ -402,6 +408,7 @@ test('Returns tree list for O2M', () => {
 	] as Field[];
 
 	const relationsStore = useRelationsStore();
+
 	relationsStore.relations = [
 		{
 			collection: 'b',
@@ -468,6 +475,7 @@ test('Returns tree list for O2M', () => {
 
 test('Returns tree list for M2O', () => {
 	const fieldsStore = useFieldsStore();
+
 	fieldsStore.fields = [
 		{
 			collection: 'a',
@@ -523,6 +531,7 @@ test('Returns tree list for M2O', () => {
 	] as Field[];
 
 	const relationsStore = useRelationsStore();
+
 	relationsStore.relations = [
 		{
 			collection: 'a',
@@ -572,6 +581,7 @@ test('Returns tree list for M2O', () => {
 
 test('Returns tree list for M2A with single related collection', () => {
 	const fieldsStore = useFieldsStore();
+
 	fieldsStore.fields = [
 		{
 			collection: 'a',
@@ -695,6 +705,7 @@ test('Returns tree list for M2A with single related collection', () => {
 	] as Field[];
 
 	const relationsStore = useRelationsStore();
+
 	relationsStore.relations = [
 		{
 			collection: 'a_m2a',
@@ -788,6 +799,7 @@ test('Returns tree list for M2A with single related collection', () => {
 
 test('Returns tree list for M2A with multiple related collections', () => {
 	const fieldsStore = useFieldsStore();
+
 	fieldsStore.fields = [
 		{
 			collection: 'a',
@@ -939,6 +951,7 @@ test('Returns tree list for M2A with multiple related collections', () => {
 	] as Field[];
 
 	const relationsStore = useRelationsStore();
+
 	relationsStore.relations = [
 		{
 			collection: 'a_m2a',

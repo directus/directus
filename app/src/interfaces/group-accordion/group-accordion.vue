@@ -121,9 +121,11 @@ export default defineComponent({
 			(newVal, oldVal) => {
 				if (!props.validationErrors) return;
 				if (isEqual(newVal, oldVal)) return;
+
 				const includedFieldsWithErrors = props.validationErrors.filter((validationError) =>
 					groupFields.value.find((rootField) => rootField.field === validationError.field)
 				);
+
 				if (includedFieldsWithErrors.length > 0) selection.value = [includedFieldsWithErrors[0].field];
 			}
 		);
@@ -154,6 +156,7 @@ export default defineComponent({
 					}
 				}
 			);
+
 			watch(
 				() => props.values,
 				(newVal) => {

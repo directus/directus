@@ -335,6 +335,7 @@ async function getDBQuery(
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
+
 					sortRecord.column = getColumn(knex, alias!, field!, false, schema, {
 						originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
 					}) as any;
@@ -498,6 +499,7 @@ function mergeWithParentItems(
 				if (a[column] === b[column]) return 0;
 				if (a[column] === null) return 1;
 				if (b[column] === null) return -1;
+
 				if (order === 'asc') {
 					return a[column] < b[column] ? -1 : 1;
 				} else {

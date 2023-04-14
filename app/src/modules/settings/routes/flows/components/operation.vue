@@ -236,6 +236,7 @@ const pointermove = (event: PointerEvent) => {
 	rafId = window.requestAnimationFrame(() => {
 		moving.value = true;
 		if (!down) return;
+
 		const arrowInfo: ArrowInfo =
 			down === 'parent'
 				? {

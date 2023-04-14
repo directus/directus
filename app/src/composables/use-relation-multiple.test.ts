@@ -129,6 +129,7 @@ describe('test o2m relation', () => {
 			...workerData,
 			{ name: 'test5', facility: 1, $type: 'created', $index: 0 },
 		]);
+
 		expect(wrapper.emitted()['update:value'][0]).toEqual([
 			{
 				create: [
@@ -166,6 +167,7 @@ describe('test o2m relation', () => {
 			...workerData,
 			{ name: 'test5 edited', facility: 2, $type: 'created', $index: 0 },
 		]);
+
 		expect(wrapper.emitted()['update:value'][1]).toEqual([
 			{
 				create: [
@@ -209,6 +211,7 @@ describe('test o2m relation', () => {
 		changes.splice(1, 1, { id: 2, name: 'test2-edited', facility: 1, $edits: 0, $type: 'updated', $index: 0 });
 
 		expect(wrapper.vm.displayItems).toEqual(changes);
+
 		expect(wrapper.emitted()['update:value'][0]).toEqual([
 			{
 				create: [],
@@ -255,6 +258,7 @@ describe('test o2m relation', () => {
 		changes.splice(0, 1, { id: 1, name: 'test', facility: 1, $type: 'deleted', $index: 0 });
 
 		expect(wrapper.vm.displayItems).toEqual(changes);
+
 		expect(wrapper.emitted()['update:value'][2]).toEqual([
 			{
 				create: [],

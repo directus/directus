@@ -443,6 +443,7 @@ function processValues(env: Record<string, any>) {
 
 		if (key.length > 5 && key.endsWith('_FILE')) {
 			newKey = key.slice(0, -5);
+
 			if (allowedEnvironmentVars.some((pattern) => pattern.test(newKey as string))) {
 				if (newKey in env && !(newKey in defaults && env[newKey] === defaults[newKey])) {
 					throw new Error(

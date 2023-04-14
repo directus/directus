@@ -115,6 +115,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 					}),
 					api.get('/panels', { params: { limit: -1, fields: ['*'], sort: ['dashboard'] } }),
 				]);
+
 				dashboards.value = dashboardsResponse.data.data;
 				panels.value = panelsResponse.data.data;
 			} catch {
@@ -174,9 +175,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			if (lastLoaded.length > MAX_CACHE_SIZE) {
 				const removed = lastLoaded.shift();
+
 				const removedPanels = unref(panels)
 					.filter((panel) => panel.dashboard === removed)
 					.map(({ id }) => id);
+
 				data.value = omit(data.value, ...removedPanels);
 			}
 		}
@@ -348,6 +351,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			if (panel) {
 				const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
+
 				oldQuery = panelType.query?.(
 					applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
 				);
@@ -374,9 +378,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			// This panel has the edits applied
 			const panel = unref(panelsWithEdits).find((panel) => panel.id === id)!;
 			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
+
 			const newQuery = panelType.query?.(
 				applyOptionsData(panelEdits.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
 			);
+
 			if (JSON.stringify(oldQuery) !== JSON.stringify(newQuery)) loadPanelData(panel);
 
 			// Clear relational variable cache if collection was changed
@@ -469,6 +475,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 		// Find all panels that are using this variable in their options
 		const regex = new RegExp(`{{\\s*?${escapeStringRegexp(field)}\\s*?}}`);
+
 		const needReload = unref(panelsWithEdits).filter((panel) => {
 			if (panel.id in unref(data) === false) return false;
 
@@ -478,12 +485,15 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
 			if (!panelType) return false;
+
 			const oldQuery = panelType.query?.(
 				applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
 			);
+
 			const newQuery = panelType.query?.(
 				applyOptionsData(panel.options ?? {}, unref(newVariables), panelType.skipUndefinedKeys)
 			);
+
 			return JSON.stringify(oldQuery) !== JSON.stringify(newQuery);
 		});
 

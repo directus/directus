@@ -41,6 +41,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
+
 		const displayValue = computed(() => {
 			if (!props.value) return null;
 

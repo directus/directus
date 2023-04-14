@@ -288,6 +288,7 @@ function setContent() {
 				}</button>`;
 			})
 			.join('');
+
 		contentEl.value.innerHTML = newInnerHTML;
 	}
 }

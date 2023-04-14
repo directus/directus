@@ -134,6 +134,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function fitDataBounds() {
 			shouldUpdateCamera.value = true;
+
 			if (isGeometryFieldNative.value) {
 				return;
 			}
@@ -180,6 +181,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					geojsonError.value = null;
 					geojson.value = toGeoJSON(items.value, geometryOptions.value);
 					geojsonLoading.value = false;
+
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
 					}

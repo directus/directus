@@ -171,6 +171,7 @@ const editImageEditor = ref(false);
 
 async function imageErrorHandler() {
 	if (!src.value) return;
+
 	try {
 		await api.get(src.value);
 	} catch (err: any) {

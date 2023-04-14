@@ -24,6 +24,7 @@ describe('/files', () => {
 
 					// Assert
 					expect(response.statusCode).toBe(200);
+
 					expect(response.body).toMatchObject({
 						data: {
 							title: payload.title,
@@ -33,6 +34,7 @@ describe('/files', () => {
 					});
 				});
 			});
+
 			describe('returns code: FAILED_VALIDATION when required property "storage" is not included', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
@@ -46,6 +48,7 @@ describe('/files', () => {
 
 					// Assert
 					expect(response.statusCode).toBe(400);
+
 					expect(response.body).toMatchObject({
 						errors: [
 							{

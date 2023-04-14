@@ -31,6 +31,7 @@ test('Ignores PK default value', () => {
 			name: 'ID',
 		},
 	]);
+
 	expect(values.value).toStrictEqual({});
 });
 
@@ -45,6 +46,7 @@ test('Ignores schemaless fields', () => {
 			name: 'Test',
 		},
 	]);
+
 	expect(values.value).toStrictEqual({});
 });
 
@@ -132,6 +134,7 @@ test('Parses default values', () => {
 			name: 'Test2',
 		},
 	]);
+
 	expect(values.value).toStrictEqual({
 		condition: 'test1',
 		test1: '---',

@@ -264,6 +264,7 @@ export async function validateMigrations(): Promise<boolean> {
 		migrationFiles.push(...customMigrationFiles);
 
 		const requiredVersions = migrationFiles.map((filePath) => filePath.split('-')[0]);
+
 		const completedVersions = (await database.select('version').from('directus_migrations')).map(
 			({ version }) => version
 		);

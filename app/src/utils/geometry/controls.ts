@@ -70,9 +70,11 @@ export class BoxSelectControl {
 		this.boxElement.className = options?.boxElementClass ?? 'selection-box';
 		this.groupElement = document.createElement('div');
 		this.groupElement.className = options?.groupElementClass ?? 'mapboxgl-ctrl mapboxgl-ctrl-group';
+
 		this.selectButton = new ButtonControl(options?.selectButtonClass ?? 'ctrl-select', () => {
 			this.activate(!this.shiftPressed);
 		});
+
 		this.groupElement.appendChild(this.selectButton.element);
 
 		this.onKeyDownHandler = this.onKeyDown.bind(this);
@@ -154,10 +156,12 @@ export class BoxSelectControl {
 
 	onMouseMove(event: MouseEvent): void {
 		this.lastPos = this.getMousePosition(event);
+
 		const minX = Math.min(this.startPos!.x, this.lastPos!.x),
 			maxX = Math.max(this.startPos!.x, this.lastPos!.x),
 			minY = Math.min(this.startPos!.y, this.lastPos!.y),
 			maxY = Math.max(this.startPos!.y, this.lastPos!.y);
+
 		const transform = `translate(${minX}px, ${minY}px)`;
 		const width = maxX - minX + 'px';
 		const height = maxY - minY + 'px';
@@ -166,6 +170,7 @@ export class BoxSelectControl {
 
 	onMouseUp(event: MouseEvent): void {
 		this.reset();
+
 		if (!this.active()) {
 			return;
 		}
@@ -173,6 +178,7 @@ export class BoxSelectControl {
 		const features = this.map!.queryRenderedFeatures([this.startPos!, this.lastPos!], {
 			layers: this.layers,
 		});
+
 		this.map!.fire('select.end', { features, alt: event.altKey });
 	}
 

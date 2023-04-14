@@ -116,9 +116,11 @@ export default defineComponent({
 
 			return { source, fileType };
 		});
+
 		const showThumbnail = computed(() => {
 			return imageInfo.value && imageInfo.value.fileType;
 		});
+
 		const selectionIcon = computed(() => {
 			if (!props.item) return 'radio_button_unchecked';
 

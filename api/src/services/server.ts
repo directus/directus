@@ -148,6 +148,7 @@ export class ServerService {
 					logger.warn(
 						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`
 					);
+
 					data.status = 'warn';
 					continue;
 				}
@@ -358,6 +359,7 @@ export class ServerService {
 			for (const location of toArray(env['STORAGE_LOCATIONS'])) {
 				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
+
 				checks[`storage:${location}:responseTime`] = [
 					{
 						status: 'ok',
@@ -373,6 +375,7 @@ export class ServerService {
 				try {
 					await disk.write(`health-${checkID}`, Readable.from(['check']));
 					const fileStream = await disk.read(`health-${checkID}`);
+
 					fileStream.on('data', async () => {
 						fileStream.destroy();
 						await disk.delete(`health-${checkID}`);

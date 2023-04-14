@@ -55,6 +55,7 @@ const processSchemaFields = (
 	parentField?: string
 ) => {
 	let filterOperatorList: ClientFilterOperator[] = [];
+
 	let targetSchema: {
 		filterOperatorList: any;
 		generateFilterForDataType: any;
@@ -145,6 +146,7 @@ const processSchemaFields = (
 
 					const schemaValues = get(vendorSchemaValues, `${vendor}.${collection}.${filterKey}`);
 					const possibleValues = Array.isArray(schemaValues) ? schemaValues : schema.possibleValues;
+
 					const generatedFilters = targetSchema.generateFilterForDataType(
 						filterOperator,
 						possibleValues

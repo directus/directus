@@ -317,6 +317,7 @@ export default defineComponent({
 		onBeforeRouteLeave(() => {
 			selection.value = [];
 		});
+
 		onBeforeRouteUpdate(() => {
 			selection.value = [];
 		});
@@ -494,6 +495,7 @@ export default defineComponent({
 				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === 'directus_files'
 				);
+
 				return !!updatePermissions;
 			});
 
@@ -504,6 +506,7 @@ export default defineComponent({
 				const deletePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === 'directus_files'
 				);
+
 				return !!deletePermissions;
 			});
 
@@ -514,6 +517,7 @@ export default defineComponent({
 				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === 'directus_files'
 				);
+
 				return !!createPermissions;
 			});
 
@@ -524,6 +528,7 @@ export default defineComponent({
 				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === 'directus_folders'
 				);
+
 				return !!createPermissions;
 			});
 

@@ -204,8 +204,10 @@ describe('get cache headers', () => {
 					return matchingKey ? (scenario.input.headers as any)?.[matchingKey] : undefined;
 				}),
 			} as Partial<Request>;
+
 			factoryEnv = scenario.input.env;
 			const { ttl, globalCacheSettings, personalized } = scenario.input;
+
 			expect(getCacheControlHeader(mockRequest as Request, ttl, globalCacheSettings, personalized)).toEqual(
 				scenario.output
 			);
