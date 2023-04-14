@@ -477,7 +477,7 @@ function sidebar() {
 					items: [
 						{ text: 'For Loops In Flows', link: '/guides/flows/flows-for-loop' },
 						{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
-					]
+					],
 				},
 				{
 					text: 'Headless CMS',
@@ -485,7 +485,7 @@ function sidebar() {
 						{ text: 'Content Approval Workflows', link: '/guides/headless-cms/approval-workflows' },
 						{
 							text: 'Re-Usable Page Components',
-							link: '/guides/headless-cms/reusable-components'
+							link: '/guides/headless-cms/reusable-components',
 						},
 						{
 							link: '/guides/headless-cms/schedule-content/index.html',
@@ -499,11 +499,11 @@ function sidebar() {
 							text: 'Build a Static Website',
 							link: '/guides/headless-cms/build-static-website/index.html',
 						},
-					]
+					],
 				},
 				{
 					link: '/guides/migration/index.html',
-					text: 'Schema Migration'
+					text: 'Schema Migration',
 				},
 			],
 		},
@@ -526,7 +526,7 @@ function sidebar() {
 						{
 							text: 'Security Best Practices',
 							link: '/use-cases/headless-cms/security',
-						}
+						},
 					],
 				},
 			],
