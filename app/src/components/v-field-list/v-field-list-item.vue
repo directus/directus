@@ -34,12 +34,11 @@
 		</div>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable @click="editChildFields('add')">
+			<v-list-item clickable @click="addAll">
 				{{ t('select_all') }}
 			</v-list-item>
-			<v-list-item clickable @click="editChildFields('remove')">
-				{{ t('deselect_all') }}
-			</v-list-item>
+
+			<v-divider />
 		</template>
 
 		<v-field-list-item
@@ -105,16 +104,20 @@ const supportedFunctions = computed(() => {
 	return getFunctionsForType(props.field.type);
 });
 
-function editChildFields(operation: 'add' | 'remove') {
+function addAll() {
 	if (!props.field.children) return;
+
 	const selectedFields = props.field.children.map((selectableField) => {
 		let res = `${props.field.field}.${selectableField.field}`;
+
 		if (props.parent) {
 			res = `${props.parent}.${res}`;
 		}
+
 		return res;
 	});
-	emit(operation, selectedFields);
+
+	emit('add', selectedFields);
 }
 </script>
 

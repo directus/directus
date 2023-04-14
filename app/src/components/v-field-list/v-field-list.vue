@@ -12,12 +12,11 @@
 		</v-list-item>
 
 		<template v-if="allowSelectAll">
-			<v-list-item clickable @click="editAllFields('add')">
+			<v-list-item clickable @click="addAll">
 				{{ t('select_all') }}
 			</v-list-item>
-			<v-list-item clickable @click="editAllFields('remove')">
-				{{ t('deselect_all') }}
-			</v-list-item>
+
+			<v-divider />
 		</template>
 
 		<v-field-list-item
@@ -102,9 +101,9 @@ const treeList = computed(() => {
 	}
 });
 
-function editAllFields(operation: 'add' | 'remove') {
+function addAll() {
 	const allFields = treeList.value.map((field) => field.field);
-	emit(operation, unref(allFields));
+	emit('add', unref(allFields));
 }
 
 function filter(field: Field, parent?: FieldNode): boolean {
