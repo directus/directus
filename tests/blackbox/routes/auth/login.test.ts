@@ -34,11 +34,13 @@ describe('/auth', () => {
 							});
 
 							const ws = createWebSocketConn(getUrl(vendor));
+
 							await ws.sendMessage({
 								type: 'auth',
 								email: common.USER[userKey].EMAIL,
 								password: common.USER[userKey].PASSWORD,
 							});
+
 							const wsMessages = await ws.getMessages(1);
 							ws.conn.close();
 
@@ -66,6 +68,7 @@ describe('/auth', () => {
 							});
 
 							expect(wsMessages?.length).toBe(1);
+
 							expect(wsMessages![0]).toEqual(
 								expect.objectContaining({
 									type: 'auth',
@@ -111,11 +114,13 @@ describe('/auth', () => {
 							});
 
 							const ws = createWebSocketConn(getUrl(vendor));
+
 							await ws.sendMessage({
 								type: 'auth',
 								email: common.USER[userKey].EMAIL,
 								password: common.USER[userKey].PASSWORD + 'typo',
 							});
+
 							const wsMessages = await ws.getMessages(1);
 							ws.conn.close();
 
@@ -143,6 +148,7 @@ describe('/auth', () => {
 							});
 
 							expect(wsMessages?.length).toBe(1);
+
 							expect(wsMessages![0]).toMatchObject({
 								type: 'auth',
 								status: 'error',
@@ -155,6 +161,7 @@ describe('/auth', () => {
 					});
 				});
 			});
+
 			describe('returns code: INVALID_CREDENTIALS for unregistered email', () => {
 				common.TEST_USERS.forEach((userKey) => {
 					describe(common.USER[userKey].NAME, () => {
@@ -186,11 +193,13 @@ describe('/auth', () => {
 							});
 
 							const ws = createWebSocketConn(getUrl(vendor));
+
 							await ws.sendMessage({
 								type: 'auth',
 								email: 'test@fake.com',
 								password: common.USER[userKey].PASSWORD,
 							});
+
 							const wsMessages = await ws.getMessages(1);
 							ws.conn.close();
 
@@ -218,6 +227,7 @@ describe('/auth', () => {
 							});
 
 							expect(wsMessages?.length).toBe(1);
+
 							expect(wsMessages![0]).toMatchObject({
 								type: 'auth',
 								status: 'error',
@@ -290,6 +300,7 @@ describe('/auth', () => {
 							});
 
 							expect(wsMessages?.length).toBe(1);
+
 							expect(wsMessages![0]).toMatchObject({
 								type: 'auth',
 								status: 'error',
@@ -360,6 +371,7 @@ describe('/auth', () => {
 							});
 
 							expect(wsMessages?.length).toBe(1);
+
 							expect(wsMessages![0]).toMatchObject({
 								type: 'auth',
 								status: 'error',

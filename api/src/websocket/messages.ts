@@ -56,6 +56,7 @@ export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage>;
 
 const ZodItem = z.custom<Partial<Item>>();
+
 const PartialItemsMessage = z.object({
 	uid: zodStringOrNumber.optional(),
 	type: z.literal('items'),

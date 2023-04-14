@@ -17,9 +17,11 @@ export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_GRAPHQL');
+
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
+
 		this.gql = makeServer<ConnectionParams, GraphQLSocket>({
 			schema: async (ctx) => {
 				const accountability = ctx.extra.client.accountability;
@@ -34,6 +36,7 @@ export class GraphQLSubscriptionController extends SocketController {
 				return service.getSchema();
 			},
 		});
+
 		bindPubSub();
 		logger.info(`GraphQL Subscriptions started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
@@ -57,6 +60,7 @@ export class GraphQLSubscriptionController extends SocketController {
 									const { accountability, expires_at } = await authenticateConnection({
 										access_token: params.access_token,
 									});
+
 									client.accountability = accountability;
 									client.expires_at = expires_at;
 								} else if (this.authentication.mode !== 'public') {
@@ -92,6 +96,7 @@ export class GraphQLSubscriptionController extends SocketController {
 		}
 
 		if (this.authentication.mode !== 'handshake') return;
+
 		client.auth_timer = setTimeout(() => {
 			if (!client.accountability?.user) {
 				client.close(CloseCode.Forbidden, 'Forbidden');

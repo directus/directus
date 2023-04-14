@@ -12,39 +12,48 @@ vi.mock('../utils/get-accountability-for-token', () => ({
 		role: null, // minimum viable accountability
 	} as Accountability),
 }));
+
 vi.mock('../utils/get-accountability-for-role', () => ({
 	getAccountabilityForRole: vi.fn(),
 }));
+
 vi.mock('./utils/get-expires-at-for-token', () => ({
 	getExpiresAtForToken: vi.fn(),
 }));
+
 vi.mock('../utils/get-schema');
+
 vi.mock('../services/authentication', () => ({
 	AuthenticationService: vi.fn(() => ({
 		login: vi.fn().mockReturnValue({ accessToken: '123', refreshToken: 'refresh', expires: 123456 }),
 		refresh: vi.fn().mockReturnValue({ accessToken: '456', refreshToken: 'refresh' }),
 	})),
 }));
+
 vi.mock('../database');
 
 describe('authenticateConnection', () => {
 	test('Success with email/password', async () => {
 		const TIMESTAMP = 123456789;
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
+
 		const result = await authenticateConnection({
 			type: 'auth',
 			email: 'email',
 			password: 'password',
 		} as WebSocketAuthMessage);
+
 		expect(result).toStrictEqual({
 			accountability: { role: null },
 			expires_at: TIMESTAMP,
 			refresh_token: 'refresh',
 		});
 	});
+
 	test('Success with refresh_token', async () => {
 		const TIMESTAMP = 987654;
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
+
 		const result = await authenticateConnection({
 			type: 'auth',
 			refresh_token: 'refresh_token',
@@ -56,6 +65,7 @@ describe('authenticateConnection', () => {
 			refresh_token: 'refresh',
 		});
 	});
+
 	test('Success with access_token', async () => {
 		const TIMESTAMP = 456987;
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
@@ -71,10 +81,12 @@ describe('authenticateConnection', () => {
 			refresh_token: undefined,
 		});
 	});
+
 	test('Failure token expired', async () => {
 		(getAccountabilityForToken as Mock).mockImplementation(() => {
 			throw new InvalidCredentialsException('Token expired.');
 		});
+
 		expect(() =>
 			authenticateConnection({
 				type: 'auth',
@@ -82,6 +94,7 @@ describe('authenticateConnection', () => {
 			} as WebSocketAuthMessage)
 		).rejects.toThrow('Token expired.');
 	});
+
 	test('Failure authentication failed', async () => {
 		expect(() =>
 			authenticateConnection({
@@ -115,6 +128,7 @@ describe('authenticationSuccess', () => {
 		const result = authenticationSuccess();
 		expect(result).toBe('{"type":"auth","status":"ok"}');
 	});
+
 	test('with uid', async () => {
 		const result = authenticationSuccess('123456');
 		expect(result).toBe('{"type":"auth","status":"ok","uid":"123456"}');

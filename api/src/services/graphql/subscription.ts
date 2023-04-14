@@ -9,6 +9,7 @@ const messages = createPubSub(new EventEmitter());
 
 export function bindPubSub() {
 	const messenger = getMessenger();
+
 	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
 		messages.publish(`${message['collection']}_mutated`, message);
 	});

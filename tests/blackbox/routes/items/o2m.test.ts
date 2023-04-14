@@ -1930,11 +1930,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const ws = common.createWebSocketConn(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
 							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
 							const wsGql = common.createWebSocketGql(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							const subscriptionKeyCountries = await wsGql.subscribe({
 								collection: localCollectionCountries,
 								jsonQuery: {
@@ -1944,6 +1947,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 								uid: localCollectionCountries,
 							});
+
 							const subscriptionKeyStates = await wsGql.subscribe({
 								collection: localCollectionStates,
 								jsonQuery: {
@@ -1962,6 +1966,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								.post(`/items/${localCollectionCountries}`)
 								.send(country)
 								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 							const wsMessagesCountries = await ws.getMessages(1, { uid: localCollectionCountries });
 							const wsMessagesStates = await ws.getMessages(1, { uid: localCollectionStates });
 							const wsGqlMessagesCountries = await wsGql.getMessages(1, { uid: localCollectionCountries });
@@ -1982,6 +1987,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									},
 								},
 							});
+
 							const wsMessagesGqlCountries = await ws.getMessages(1, { uid: localCollectionCountries });
 							const wsMessagesGqlStates = await ws.getMessages(1, { uid: localCollectionStates });
 							ws.conn.close();
@@ -2013,6 +2019,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										},
 									],
 								});
+
 								expect(messagesStates![0]).toMatchObject({
 									type: 'subscription',
 									event: 'create',
@@ -2042,6 +2049,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										},
 									},
 								});
+
 								expect(messagesStates![0]).toEqual({
 									data: {
 										[subscriptionKeyStates]: {
@@ -2086,11 +2094,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const ws = common.createWebSocketConn(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
 							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
 							const wsGql = common.createWebSocketGql(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await wsGql.subscribe({
 								collection: localCollectionCountries,
 								jsonQuery: {
@@ -2100,6 +2111,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 								uid: localCollectionCountries,
 							});
+
 							await wsGql.subscribe({
 								collection: localCollectionStates,
 								jsonQuery: {
@@ -2191,11 +2203,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const ws = common.createWebSocketConn(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
 							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
 							const wsGql = common.createWebSocketGql(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							const subscriptionKeyCountries = await wsGql.subscribe({
 								collection: localCollectionCountries,
 								jsonQuery: {
@@ -2205,6 +2220,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 								uid: localCollectionCountries,
 							});
+
 							const subscriptionKeyStates = await wsGql.subscribe({
 								collection: localCollectionStates,
 								jsonQuery: {
@@ -2223,6 +2239,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								.post(`/items/${localCollectionCountries}`)
 								.send(countries)
 								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 							const wsMessagesCountries = await ws.getMessages(count, { uid: localCollectionCountries });
 							const wsMessagesStates = await ws.getMessages(count, { uid: localCollectionStates });
 							const wsGqlMessagesCountries = await wsGql.getMessages(count, { uid: localCollectionCountries });
@@ -2240,6 +2257,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									},
 								},
 							});
+
 							const wsMessagesGqlCountries = await ws.getMessages(count, { uid: localCollectionCountries });
 							const wsMessagesGqlStates = await ws.getMessages(count, { uid: localCollectionStates });
 							ws.conn.close();
@@ -2272,6 +2290,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											},
 										],
 									});
+
 									expect(messagesStates![i]).toMatchObject({
 										type: 'subscription',
 										event: 'create',
@@ -2303,6 +2322,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											},
 										},
 									});
+
 									expect(messagesStates![i]).toEqual({
 										data: {
 											[subscriptionKeyStates]: {
@@ -2355,11 +2375,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const ws = common.createWebSocketConn(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
 							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
 							const wsGql = common.createWebSocketGql(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await wsGql.subscribe({
 								collection: localCollectionCountries,
 								jsonQuery: {
@@ -2369,6 +2392,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 								uid: localCollectionCountries,
 							});
+
 							await wsGql.subscribe({
 								collection: localCollectionStates,
 								jsonQuery: {
@@ -2508,11 +2532,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const ws = common.createWebSocketConn(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
 							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
 							const wsGql = common.createWebSocketGql(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							const subscriptionKeyCountries = await wsGql.subscribe({
 								collection: localCollectionCountries,
 								jsonQuery: {
@@ -2522,6 +2549,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 								uid: localCollectionCountries,
 							});
+
 							const subscriptionKeyStates = await wsGql.subscribe({
 								collection: localCollectionStates,
 								jsonQuery: {
@@ -2542,10 +2570,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 							const wsMessagesCountries = await ws.getMessages(count, { uid: localCollectionCountries });
+
 							const wsMessagesStates = await ws.getMessages(count * mutationRoundStates, {
 								uid: localCollectionStates,
 							});
+
 							const wsGqlMessagesCountries = await wsGql.getMessages(count, { uid: localCollectionCountries });
+
 							const wsGqlMessagesStates = await wsGql.getMessages(count * mutationRoundStatesGql, {
 								uid: localCollectionStates,
 							});
@@ -2562,15 +2593,20 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									},
 								},
 							});
+
 							const wsMessagesGqlCountries = await ws.getMessages(count, { uid: localCollectionCountries });
+
 							const wsMessagesGqlStates = await ws.getMessages(count * mutationRoundStatesGql, {
 								uid: localCollectionStates,
 							});
+
 							ws.conn.close();
 							const wsGqlMessagesGqlCountries = await wsGql.getMessages(count, { uid: localCollectionCountries });
+
 							const wsGqlMessagesGqlStates = await wsGql.getMessages(count * mutationRoundStatesGql, {
 								uid: localCollectionStates,
 							});
+
 							wsGql.client.dispose();
 
 							// Assert
@@ -2920,11 +2956,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const ws = common.createWebSocketConn(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
 							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
 							const wsGql = common.createWebSocketGql(getUrl(vendor), {
 								auth: { access_token: common.USER.ADMIN.TOKEN },
 							});
+
 							await wsGql.subscribe({
 								collection: localCollectionCountries,
 								jsonQuery: {
@@ -2934,6 +2973,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 								uid: localCollectionCountries,
 							});
+
 							await wsGql.subscribe({
 								collection: localCollectionStates,
 								jsonQuery: {

@@ -15,9 +15,11 @@ describe('WebSocket REST Tests', () => {
 				async (vendor) => {
 					// Setup
 					const uids = [undefined, 1, 'two'];
+
 					const wsGql = common.createWebSocketGql(getUrl(vendor), {
 						auth: { access_token: common.USER.ADMIN.TOKEN },
 					});
+
 					const messageList = [];
 					let subscriptionKey = '';
 
@@ -35,6 +37,7 @@ describe('WebSocket REST Tests', () => {
 					}
 
 					const insertedName = uuid();
+
 					const insertedId = (
 						await request(getUrl(vendor))
 							.post(`/items/${localCollectionFirst}`)
@@ -57,6 +60,7 @@ describe('WebSocket REST Tests', () => {
 					for (let i = 0; i < messageList.length; i++) {
 						const wsMessages = messageList[i];
 						expect(wsMessages?.length).toBe(1);
+
 						expect(wsMessages![0]).toEqual({
 							data: {
 								[subscriptionKey]: {

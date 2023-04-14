@@ -160,10 +160,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						collection: localCollectionArtists,
 						item: createArtist(pkType),
 					});
+
 					const body = { name: 'updated' };
 					const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
 					await ws.subscribe({ collection: localCollectionArtists });
 					const wsGql = common.createWebSocketGql(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
 						jsonQuery: {
@@ -224,6 +226,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						{ messages: wsMessagesGql, name: 'updated2' },
 					]) {
 						expect(messages?.length).toBe(1);
+
 						expect(messages![0]).toMatchObject({
 							type: 'subscription',
 							event: 'update',
@@ -242,6 +245,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						{ messages: wsGqlMessagesGql, name: 'updated2' },
 					]) {
 						expect(messages?.length).toBe(1);
+
 						expect(messages![0]).toEqual({
 							data: {
 								[subscriptionKey]: {
@@ -273,6 +277,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
 					await ws.subscribe({ collection: localCollectionArtists });
 					const wsGql = common.createWebSocketGql(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
 						jsonQuery: {
@@ -335,6 +340,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						{ messages: wsMessagesGql, id: insertedArtist2.id },
 					]) {
 						expect(messages?.length).toBe(1);
+
 						expect(messages![0]).toMatchObject({
 							type: 'subscription',
 							event: 'delete',
@@ -347,6 +353,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						{ messages: wsGqlMessagesGql, id: insertedArtist2.id },
 					]) {
 						expect(messages?.length).toBe(1);
+
 						expect(messages![0]).toEqual({
 							data: {
 								[subscriptionKey]: {
@@ -433,9 +440,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
 						await ws.subscribe({ collection: localCollectionArtists });
+
 						const wsGql = common.createWebSocketGql(getUrl(vendor), {
 							auth: { access_token: common.USER.ADMIN.TOKEN },
 						});
+
 						const subscriptionKey = await wsGql.subscribe({
 							collection: localCollectionArtists,
 							jsonQuery: {
@@ -484,6 +493,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							{ messages: wsMessagesGql, name: artist2.name },
 						]) {
 							expect(messages?.length).toBe(1);
+
 							expect(messages![0]).toMatchObject({
 								type: 'subscription',
 								event: 'create',
@@ -502,6 +512,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							{ messages: wsGqlMessagesGql, name: artist2.name },
 						]) {
 							expect(messages?.length).toBe(1);
+
 							expect(messages![0]).toEqual({
 								data: {
 									[subscriptionKey]: {
@@ -536,9 +547,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
 						await ws.subscribe({ collection: localCollectionArtists });
+
 						const wsGql = common.createWebSocketGql(getUrl(vendor), {
 							auth: { access_token: common.USER.ADMIN.TOKEN },
 						});
+
 						const subscriptionKey = await wsGql.subscribe({
 							collection: localCollectionArtists,
 							jsonQuery: {
@@ -683,6 +696,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
 					await ws.subscribe({ collection: localCollectionArtists });
 					const wsGql = common.createWebSocketGql(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
 						jsonQuery: {
@@ -748,6 +762,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						{ messages: wsMessagesGql, name: 'updated2' },
 					]) {
 						expect(messages?.length).toBe(1);
+
 						expect(messages![0]).toMatchObject({
 							type: 'subscription',
 							event: 'update',
@@ -805,6 +820,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const ws = common.createWebSocketConn(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
 					await ws.subscribe({ collection: localCollectionArtists });
 					const wsGql = common.createWebSocketGql(getUrl(vendor), { auth: { access_token: common.USER.ADMIN.TOKEN } });
+
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
 						jsonQuery: {
@@ -867,6 +883,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						{ messages: wsMessagesGql, ids: keys2.map((key) => String(key)) },
 					]) {
 						expect(messages?.length).toBe(1);
+
 						expect(messages![0]).toMatchObject({
 							type: 'subscription',
 							event: 'delete',

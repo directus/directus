@@ -15,6 +15,7 @@ export class HeartbeatHandler {
 
 	constructor(controller?: WebSocketController) {
 		this.controller = controller ?? getWebSocketController();
+
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			try {
 				this.onMessage(client, WebSocketMessage.parse(message));
@@ -22,6 +23,7 @@ export class HeartbeatHandler {
 				/* ignore errors */
 			}
 		});
+
 		if (toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) === true) {
 			emitter.onAction('websocket.connect', () => this.checkClients());
 			emitter.onAction('websocket.error', () => this.checkClients());
@@ -54,6 +56,7 @@ export class HeartbeatHandler {
 	pingClients() {
 		const pendingClients = new Set<WebSocketClient>(this.controller.clients);
 		const activeClients = new Set<WebSocketClient>();
+
 		const timeout = setTimeout(() => {
 			// close connections that haven't responded
 			for (const client of pendingClients) {
@@ -75,6 +78,7 @@ export class HeartbeatHandler {
 		};
 
 		emitter.onAction('websocket.message', messageWatcher);
+
 		// ping all the clients
 		for (const client of pendingClients) {
 			client.send(fmtMessage('ping'));

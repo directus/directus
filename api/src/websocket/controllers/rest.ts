@@ -13,9 +13,11 @@ import SocketController from './base.js';
 export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_REST');
+
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
+
 		logger.info(`WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
 
@@ -30,12 +32,15 @@ export class WebSocketController extends SocketController {
 				return;
 			}
 		});
+
 		client.on('error', (event: WebSocket.Event) => {
 			emitter.emitAction('websocket.error', { client, event });
 		});
+
 		client.on('close', (event: WebSocket.CloseEvent) => {
 			emitter.emitAction('websocket.close', { client, event });
 		});
+
 		emitter.emitAction('websocket.connect', { client });
 	}
 

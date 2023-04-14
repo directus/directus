@@ -1065,6 +1065,7 @@ export class GraphQLService {
 					subscriptionType.addFields({
 						_event: GraphQLString,
 					});
+
 					schemaComposer.Subscription.addFields({
 						[eventName]: {
 							type: subscriptionType,
@@ -1422,6 +1423,7 @@ export class GraphQLService {
 			accountability: this.accountability,
 			schema: this.schema,
 		});
+
 		const hasQuery = (query.fields || []).length > 0;
 
 		try {

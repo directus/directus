@@ -21,6 +21,7 @@ export function registerWebSocketEvents() {
 		'users',
 		'webhooks',
 	]);
+
 	registerFieldsHooks();
 	registerFilesHooks();
 	registerRelationsHooks();
@@ -35,12 +36,14 @@ function registerActionHooks(modules: string[]) {
 			key,
 			payload,
 		}));
+
 		registerAction(module + '.update', ({ keys, collection, payload = {} }) => ({
 			collection,
 			action: 'update',
 			keys,
 			payload,
 		}));
+
 		registerAction(module + '.delete', ({ keys, collection, payload = [] }) => ({
 			collection,
 			action: 'delete',
@@ -58,12 +61,14 @@ function registerFieldsHooks() {
 		key,
 		payload,
 	}));
+
 	registerAction('fields.update', ({ keys, payload = {} }) => ({
 		collection: 'directus_fields',
 		action: 'update',
 		keys,
 		payload,
 	}));
+
 	registerAction('fields.delete', ({ keys, payload = [] }) => ({
 		collection: 'directus_fields',
 		action: 'delete',
@@ -80,12 +85,14 @@ function registerFilesHooks() {
 		key,
 		payload,
 	}));
+
 	registerAction('files.update', ({ keys, collection, payload = {} }) => ({
 		collection,
 		action: 'update',
 		keys,
 		payload,
 	}));
+
 	registerAction('files.delete', ({ keys, collection, payload = [] }) => ({
 		collection,
 		action: 'delete',
@@ -102,12 +109,14 @@ function registerRelationsHooks() {
 		key,
 		payload: { ...payload, key },
 	}));
+
 	registerAction('relations.update', ({ keys, payload = {} }) => ({
 		collection: 'directus_relations',
 		action: 'update',
 		keys,
 		payload,
 	}));
+
 	registerAction('relations.delete', ({ collection, payload = [] }) => ({
 		collection: 'directus_relations',
 		action: 'delete',
@@ -123,6 +132,7 @@ function registerRelationsHooks() {
  */
 function registerAction(event: string, transform: (args: Record<string, any>) => WebSocketEvent) {
 	const messenger = getMessenger();
+
 	emitter.onAction(event, async (data: Record<string, any>) => {
 		// push the event through the Redis pub/sub
 		messenger.publish('websocket.event', transform(data) as Record<string, any>);

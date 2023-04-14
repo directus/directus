@@ -12,6 +12,7 @@ function mockDatabase() {
 		where: vi.fn(() => self),
 		first: vi.fn(),
 	};
+
 	return self;
 }
 
@@ -22,6 +23,7 @@ describe('getAccountabilityForRole', async () => {
 			schema: {} as any,
 			database: vi.fn() as any,
 		});
+
 		expect(result).toStrictEqual({
 			admin: false,
 			app: false,
@@ -30,12 +32,14 @@ describe('getAccountabilityForRole', async () => {
 			user: null,
 		});
 	});
+
 	test('system role', async () => {
 		const result = await getAccountabilityForRole('system', {
 			accountability: null,
 			schema: {} as any,
 			database: vi.fn() as any,
 		});
+
 		expect(result).toStrictEqual({
 			admin: true,
 			app: true,
@@ -44,17 +48,21 @@ describe('getAccountabilityForRole', async () => {
 			user: null,
 		});
 	});
+
 	test('get role from database', async () => {
 		const db = mockDatabase();
+
 		db['first'].mockReturnValue({
 			admin_access: 'not true',
 			app_access: '1',
 		});
+
 		const result = await getAccountabilityForRole('123-456', {
 			accountability: null,
 			schema: {} as any,
 			database: db as any,
 		});
+
 		expect(result).toStrictEqual({
 			admin: false,
 			app: true,
@@ -63,9 +71,11 @@ describe('getAccountabilityForRole', async () => {
 			user: null,
 		});
 	});
+
 	test('database invalid role', async () => {
 		const db = mockDatabase();
 		db['first'].mockReturnValue(false);
+
 		expect(() =>
 			getAccountabilityForRole('456-789', {
 				accountability: null,

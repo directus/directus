@@ -58,6 +58,7 @@ describe('WebSocket Auth Tests', () => {
 						const ws = common.createWebSocketConn(getUrl(vendor, env), {
 							path: pathREST,
 						});
+
 						let error;
 
 						try {
@@ -100,6 +101,7 @@ describe('WebSocket Auth Tests', () => {
 							path: pathREST,
 							auth: { email: common.USER[userKey].EMAIL, password: common.USER[userKey].PASSWORD },
 						});
+
 						let error;
 
 						try {
@@ -149,6 +151,7 @@ describe('WebSocket Auth Tests', () => {
 							path: pathREST,
 							auth: { access_token },
 						});
+
 						let error;
 
 						try {
@@ -191,6 +194,7 @@ describe('WebSocket Auth Tests', () => {
 							path: pathREST,
 							auth: { access_token: common.USER[userKey].TOKEN },
 						});
+
 						let error;
 
 						try {
@@ -240,6 +244,7 @@ describe('WebSocket Auth Tests', () => {
 							path: pathREST,
 							queryString: `access_token=${access_token}`,
 						});
+
 						let error;
 
 						try {
@@ -282,6 +287,7 @@ describe('WebSocket Auth Tests', () => {
 							path: pathREST,
 							queryString: `access_token=${common.USER[userKey].TOKEN}`,
 						});
+
 						let error;
 
 						try {
@@ -324,6 +330,7 @@ describe('WebSocket Auth Tests', () => {
 							path: pathREST,
 							respondToPing: false,
 						});
+
 						let wsMessages: common.WebSocketResponse[] | undefined;
 						let error;
 
@@ -338,11 +345,13 @@ describe('WebSocket Auth Tests', () => {
 						switch (authMethod) {
 							case 'public':
 								expect(wsMessages?.length).toBe(1);
+
 								expect(wsMessages![0]).toEqual(
 									expect.objectContaining({
 										type: 'pong',
 									})
 								);
+
 								break;
 							case 'handshake':
 							case 'strict':
@@ -364,6 +373,7 @@ describe('WebSocket Auth Tests', () => {
 							auth: { access_token: common.USER[userKey].TOKEN },
 							respondToPing: false,
 						});
+
 						let wsMessages: common.WebSocketResponse[] | undefined;
 						let error;
 
@@ -379,11 +389,13 @@ describe('WebSocket Auth Tests', () => {
 							case 'public':
 							case 'handshake':
 								expect(wsMessages?.length).toBe(1);
+
 								expect(wsMessages![0]).toEqual(
 									expect.objectContaining({
 										type: 'pong',
 									})
 								);
+
 								break;
 							case 'strict':
 								expect(error).toBeDefined();
@@ -404,6 +416,7 @@ describe('WebSocket Auth Tests', () => {
 							queryString: `access_token=${common.USER[userKey].TOKEN}`,
 							respondToPing: false,
 						});
+
 						let wsMessages: common.WebSocketResponse[] | undefined;
 						let error;
 
@@ -419,11 +432,13 @@ describe('WebSocket Auth Tests', () => {
 							case 'public':
 							case 'strict':
 								expect(wsMessages?.length).toBe(1);
+
 								expect(wsMessages![0]).toEqual(
 									expect.objectContaining({
 										type: 'pong',
 									})
 								);
+
 								break;
 							case 'handshake':
 								expect(error).toBeDefined();

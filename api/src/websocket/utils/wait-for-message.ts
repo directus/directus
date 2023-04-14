@@ -6,6 +6,7 @@ import { getMessageType } from './message.js';
 export const waitForAnyMessage = (client: WebSocket, timeout: number): Promise<Record<string, any>> => {
 	return new Promise((resolve, reject) => {
 		client.on('message', awaitMessage);
+
 		const timer = setTimeout(() => {
 			client.off('message', awaitMessage);
 			reject();
@@ -26,6 +27,7 @@ export const waitForAnyMessage = (client: WebSocket, timeout: number): Promise<R
 export const waitForMessageType = (client: WebSocket, type: string, timeout: number): Promise<WebSocketMessage> => {
 	return new Promise((resolve, reject) => {
 		client.on('message', awaitMessage);
+
 		const timer = setTimeout(() => {
 			client.off('message', awaitMessage);
 			reject();

@@ -7,11 +7,13 @@ describe('getExpiresAtForToken', () => {
 		const result = getExpiresAtForToken('not-a-jwt');
 		expect(result).toBe(null);
 	});
+
 	test('Returns null for jwt with no exp field', () => {
 		const token = jwt.sign({ payload: 'content' }, 'secret', { issuer: 'tim' });
 		const result = getExpiresAtForToken(token);
 		expect(result).toBe(null);
 	});
+
 	test('Returns expiresAt field for jwt with exp as number', () => {
 		const now = Math.floor(Date.now() / 1000);
 		const token = jwt.sign({ payload: 'content' }, 'secret', { expiresIn: 42 });

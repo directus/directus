@@ -66,6 +66,7 @@ export default abstract class SocketController {
 		const endpoint = String(env[`${configPrefix}_PATH`]);
 		const authMode = AuthMode.safeParse(String(env[`${configPrefix}_AUTH`]).toLowerCase());
 		const authTimeout = Number(env[`${configPrefix}_AUTH_TIMEOUT`]) * 1000;
+
 		const maxConnections =
 			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
 
@@ -96,6 +97,7 @@ export default abstract class SocketController {
 	protected async handleUpgrade(request: IncomingMessage, socket: internal.Duplex, head: Buffer) {
 		const { pathname, query } = parse(request.url!, true);
 		if (pathname !== this.endpoint) return;
+
 		if (this.clients.size >= this.maxConnections) {
 			logger.debug('WebSocket upgrade denied - max connections reached');
 			socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
@@ -177,11 +179,13 @@ export default abstract class SocketController {
 					await this.rateLimiter.consume(client.uid);
 				} catch (limit) {
 					const timeout = (limit as any)?.msBeforeNext ?? this.rateLimiter.msDuration;
+
 					const error = new WebSocketException(
 						'server',
 						'REQUESTS_EXCEEDED',
 						`Too many messages, retry after ${timeout}ms.`
 					);
+
 					handleWebSocketException(client, error, 'server');
 					logger.debug(`WebSocket#${client.uid} is rate limited`);
 					return;
@@ -211,8 +215,10 @@ export default abstract class SocketController {
 			logger.trace(`WebSocket#${client.uid} - ${JSON.stringify(message)}`);
 			ws.emit('parsed-message', message);
 		});
+
 		ws.on('error', () => {
 			logger.debug(`WebSocket#${client.uid} connection errored`);
+
 			if (client.auth_timer) {
 				clearTimeout(client.auth_timer);
 				client.auth_timer = null;
@@ -220,8 +226,10 @@ export default abstract class SocketController {
 
 			this.clients.delete(client);
 		});
+
 		ws.on('close', () => {
 			logger.debug(`WebSocket#${client.uid} connection closed`);
+
 			if (client.auth_timer) {
 				clearTimeout(client.auth_timer);
 				client.auth_timer = null;
@@ -229,7 +237,9 @@ export default abstract class SocketController {
 
 			this.clients.delete(client);
 		});
+
 		logger.debug(`WebSocket#${client.uid} connected`);
+
 		if (accountability) {
 			logger.trace(`WebSocket#${client.uid} authenticated as ${JSON.stringify(accountability)}`);
 		}
@@ -266,10 +276,12 @@ export default abstract class SocketController {
 
 			client.accountability = null;
 			client.expires_at = null;
+
 			const _error =
 				error instanceof WebSocketException
 					? error
 					: new WebSocketException('auth', 'AUTH_FAILED', 'Authentication failed.', message.uid);
+
 			handleWebSocketException(client, _error, 'auth');
 
 			if (this.authentication.mode !== 'public') {
@@ -294,9 +306,11 @@ export default abstract class SocketController {
 			client.accountability = null;
 			client.expires_at = null;
 			handleWebSocketException(client, new TokenExpiredException(), 'auth');
+
 			waitForMessageType(client, 'auth', this.authentication.timeout).catch((msg: WebSocketMessage) => {
 				const error = new WebSocketException('auth', 'AUTH_TIMEOUT', 'Authentication timed out.', msg?.uid);
 				handleWebSocketException(client, error, 'auth');
+
 				if (this.authentication.mode !== 'public') {
 					client.close();
 				}
@@ -307,6 +321,7 @@ export default abstract class SocketController {
 	checkClientTokens() {
 		this.authInterval = setInterval(() => {
 			if (this.clients.size === 0) return;
+
 			// check the clients and set shorter timeouts if needed
 			for (const client of this.clients) {
 				if (client.expires_at === null || client.auth_timer !== null) continue;
@@ -317,9 +332,11 @@ export default abstract class SocketController {
 
 	terminate() {
 		if (this.authInterval) clearInterval(this.authInterval);
+
 		this.clients.forEach((client) => {
 			if (client.auth_timer) clearTimeout(client.auth_timer);
 		});
+
 		this.server.clients.forEach((ws) => {
 			ws.terminate();
 		});

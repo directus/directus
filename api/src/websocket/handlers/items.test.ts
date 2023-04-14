@@ -12,13 +12,16 @@ vi.mock('../controllers', () => ({
 		clients: new Set(),
 	})),
 }));
+
 vi.mock('../../utils/get-schema', () => ({
 	getSchema: vi.fn(),
 }));
+
 vi.mock('../../services', () => ({
 	ItemsService: vi.fn(),
 	MetaService: vi.fn(),
 }));
+
 function mockClient() {
 	return {
 		on: vi.fn(),
@@ -31,11 +34,13 @@ function mockClient() {
 
 describe('WebSocket heartbeat handler', () => {
 	let handler: ItemsHandler;
+
 	beforeEach(() => {
 		vi.useFakeTimers();
 		// initialize handler
 		handler = new ItemsHandler();
 	});
+
 	afterEach(() => {
 		vi.useRealTimers();
 		emitter.offAll();
@@ -44,6 +49,7 @@ describe('WebSocket heartbeat handler', () => {
 
 	test('ignore other message types', async () => {
 		const spy = vi.spyOn(handler, 'onMessage');
+
 		// receive message
 		emitter.emitAction(
 			'websocket.message',
@@ -53,13 +59,16 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		// expect nothing
 		expect(spy).not.toBeCalled();
 	});
+
 	test('invalid collection should error', async () => {
 		(getSchema as Mock).mockImplementation(() => ({ collections: {} }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -68,20 +77,26 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
+
 		// expect error
 		expect(fakeClient.send).toBeCalledWith(
 			'{"type":"items","status":"error","error":{"code":"INVALID_COLLECTION","message":"The provided collection does not exists or is not accessible."}}'
 		);
 	});
+
 	test('create one item', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
+
 		const createOne = vi.fn(),
 			readOne = vi.fn();
+
 		(ItemsService as Mock).mockImplementation(() => ({ createOne, readOne }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -90,20 +105,25 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(createOne).toBeCalled();
 		expect(readOne).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});
+
 	test('create multiple items', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
+
 		const createMany = vi.fn(),
 			readMany = vi.fn();
+
 		(ItemsService as Mock).mockImplementation(() => ({ createMany, readMany }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -112,12 +132,14 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(createMany).toBeCalled();
 		expect(readMany).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});
+
 	test('read by query', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
@@ -127,6 +149,7 @@ describe('WebSocket heartbeat handler', () => {
 		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -135,20 +158,25 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(readByQuery).toBeCalled();
 		expect(getMetaForQuery).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});
+
 	test('update one item', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
+
 		const updateOne = vi.fn(),
 			readOne = vi.fn();
+
 		(ItemsService as Mock).mockImplementation(() => ({ updateOne, readOne }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -157,22 +185,27 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(updateOne).toBeCalled();
 		expect(readOne).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});
+
 	test('update multiple items', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
+
 		const updateMany = vi.fn(),
 			readMany = vi.fn();
+
 		(ItemsService as Mock).mockImplementation(() => ({ updateMany, readMany }));
 		const getMetaForQuery = vi.fn();
 		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -181,6 +214,7 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(updateMany).toBeCalled();
@@ -188,6 +222,7 @@ describe('WebSocket heartbeat handler', () => {
 		expect(readMany).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});
+
 	test('delete one item', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
@@ -195,6 +230,7 @@ describe('WebSocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ deleteOne }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -203,11 +239,13 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(deleteOne).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});
+
 	test('delete multiple items by id', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
@@ -215,6 +253,7 @@ describe('WebSocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ deleteMany }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -223,11 +262,13 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(deleteMany).toBeCalled();
 		expect(fakeClient.send).toBeCalled();
 	});
+
 	test('delete multiple items by query', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
@@ -235,6 +276,7 @@ describe('WebSocket heartbeat handler', () => {
 		(ItemsService as Mock).mockImplementation(() => ({ deleteByQuery }));
 		// receive message
 		const fakeClient = mockClient();
+
 		emitter.emitAction(
 			'websocket.message',
 			{
@@ -243,6 +285,7 @@ describe('WebSocket heartbeat handler', () => {
 			},
 			{} as EventContext
 		);
+
 		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
 		// expect service functions
 		expect(deleteByQuery).toBeCalled();

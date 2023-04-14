@@ -56,6 +56,7 @@ export async function refreshAccountability(
 		schema: await getSchema(),
 		database: getDatabase(),
 	});
+
 	result.user = accountability?.user || null;
 	return result;
 }

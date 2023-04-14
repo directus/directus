@@ -11,17 +11,21 @@ vi.mock('../controllers', () => ({
 		clients: new Set(),
 	})),
 }));
+
 vi.mock('../../env', async () => {
 	const actual = (await vi.importActual('../../env')) as { default: Record<string, any> };
+
 	const MOCK_ENV = {
 		...actual.default,
 		WEBSOCKETS_HEARTBEAT_PERIOD: 1,
 	};
+
 	return {
 		default: MOCK_ENV,
 		getEnv: () => MOCK_ENV,
 	};
 });
+
 function mockClient() {
 	return {
 		on: vi.fn(),
@@ -33,10 +37,12 @@ function mockClient() {
 
 describe('WebSocket heartbeat handler', () => {
 	let controller: WebSocketController;
+
 	beforeEach(() => {
 		vi.useFakeTimers();
 		controller = getWebSocketController();
 	});
+
 	afterEach(() => {
 		vi.useRealTimers();
 		vi.clearAllMocks();
@@ -47,10 +53,12 @@ describe('WebSocket heartbeat handler', () => {
 		new HeartbeatHandler(controller);
 		// connect fake client
 		const fakeClient = mockClient();
+
 		(fakeClient.send as Mock).mockImplementation(() => {
 			//respond with a message
 			emitter.emitAction('websocket.message', { client: fakeClient, message: { type: 'pong' } }, {} as EventContext);
 		});
+
 		controller.clients.add(fakeClient);
 		emitter.emitAction('websocket.connect', {}, {} as EventContext);
 		// wait for ping
@@ -62,6 +70,7 @@ describe('WebSocket heartbeat handler', () => {
 		// the connection should not have been closed
 		expect(fakeClient.close).not.toBeCalled();
 	});
+
 	test('connection should be closed', async () => {
 		// initialize handler
 		new HeartbeatHandler(controller);
@@ -74,6 +83,7 @@ describe('WebSocket heartbeat handler', () => {
 		// the connection should have been closed
 		expect(fakeClient.close).toBeCalled();
 	});
+
 	test('the server should pong if the client pings', async () => {
 		// initialize handler
 		new HeartbeatHandler(controller);

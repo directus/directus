@@ -9,11 +9,13 @@ vi.mock('../env', () => {
 		SECRET: 'super-secure-secret',
 		EXTENSIONS_PATH: './extensions',
 	};
+
 	return {
 		default: MOCK_ENV,
 		getEnv: () => MOCK_ENV,
 	};
 });
+
 vi.mock('../database', () => {
 	const self: Record<string, any> = {
 		select: vi.fn(() => self),
@@ -22,6 +24,7 @@ vi.mock('../database', () => {
 		where: vi.fn(() => self),
 		first: vi.fn(),
 	};
+
 	return { default: vi.fn(() => self) };
 });
 
@@ -31,6 +34,7 @@ describe('getAccountabilityForToken', async () => {
 		const result = await getAccountabilityForToken(token);
 		expect(result).toStrictEqual({ admin: false, app: false, role: '123-456-789', user: null });
 	});
+
 	test('full token payload', async () => {
 		const token = jwt.sign(
 			{
@@ -44,6 +48,7 @@ describe('getAccountabilityForToken', async () => {
 			env['SECRET'],
 			{ issuer: 'directus' }
 		);
+
 		const result = await getAccountabilityForToken(token);
 		expect(result.admin).toBe(true);
 		expect(result.app).toBe(true);
@@ -52,24 +57,30 @@ describe('getAccountabilityForToken', async () => {
 		expect(result.share_scope).toBe('share-scope');
 		expect(result.user).toBe('user-id');
 	});
+
 	test('throws token expired error', async () => {
 		const token = jwt.sign({ role: '123-456-789' }, env['SECRET'], { issuer: 'directus', expiresIn: -1 });
 		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token expired.');
 	});
+
 	test('throws token invalid error', async () => {
 		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret', { issuer: 'directus' });
 		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token invalid.');
 	});
+
 	test('find user in database', async () => {
 		const db = getDatabase();
+
 		vi.spyOn(db, 'first').mockReturnValue({
 			id: 'user-id',
 			role: 'role-id',
 			admin_access: false,
 			app_access: true,
 		} as any);
+
 		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret');
 		const result = await getAccountabilityForToken(token);
+
 		expect(result).toStrictEqual({
 			admin: false,
 			app: true,
@@ -77,6 +88,7 @@ describe('getAccountabilityForToken', async () => {
 			user: 'user-id',
 		});
 	});
+
 	test('no user found', async () => {
 		const db = getDatabase();
 		vi.spyOn(db, 'first').mockReturnValue(false as any);

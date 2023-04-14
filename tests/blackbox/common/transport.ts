@@ -38,10 +38,12 @@ export async function requestGraphQL(
 export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 	const defaults = { waitTimeout: 5000 };
 	const parsedHost = host.split('//').slice(1).join('/');
+
 	const conn = new WebSocket(
 		`ws://${parsedHost}/${config?.path ?? 'websocket'}${config?.queryString ? `?${config.queryString}` : ''}`,
 		config?.client
 	);
+
 	let connectionAuthCompleted = false;
 	const messages: Record<WebSocketUID, any[]> = {};
 	const messagesDefault: WebSocketResponse[] = [];
@@ -127,6 +129,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 						return promise().then(resolve, reject);
 					} else {
 						conn.close();
+
 						reject(
 							new Error(
 								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
@@ -221,11 +224,13 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 	const parsedHost = host.split('//').slice(1).join('/');
 	let conn: WebSocket | null;
 	let isConnReady = false;
+
 	const authParams = config?.auth
 		? 'access_token' in config.auth
 			? { access_token: config.auth.access_token }
 			: undefined
 		: undefined;
+
 	const client = createClient({
 		webSocketImpl: WebSocket,
 		connectionParams: authParams,
@@ -239,6 +244,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			opened: (socket) => {
 				config?.client?.on?.opened?.(socket);
 				conn = socket as WebSocket;
+
 				conn.on('message', (data) => {
 					const message: WebSocketResponse = JSON.parse(data.toString());
 
@@ -254,6 +260,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			},
 		},
 	});
+
 	const messages: Record<string, any[]> = {};
 	const messagesDefault: any[] = [];
 	let readIndexDefault = 0;
@@ -337,6 +344,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 						return promise().then(resolve, reject);
 					} else {
 						conn?.terminate();
+
 						reject(
 							new Error(
 								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${

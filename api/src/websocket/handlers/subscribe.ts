@@ -28,6 +28,7 @@ export class SubscribeHandler {
 		this.subscriptions = {};
 		this.messenger = getMessenger();
 		this.bindWebSocket();
+
 		// listen to the Redis pub/sub and dispatch
 		this.messenger.subscribe('websocket.event', (message: Record<string, any>) => {
 			try {
@@ -45,12 +46,14 @@ export class SubscribeHandler {
 		// listen to incoming messages on the connected websockets
 		emitter.onAction('websocket.message', ({ client, message }) => {
 			if (!['subscribe', 'unsubscribe'].includes(getMessageType(message))) return;
+
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
 				handleWebSocketException(client, error, 'subscribe');
 			}
 		});
+
 		// unsubscribe when a connection drops
 		emitter.onAction('websocket.error', ({ client }) => this.unsubscribe(client));
 		emitter.onAction('websocket.close', ({ client }) => this.unsubscribe(client));
@@ -92,6 +95,7 @@ export class SubscribeHandler {
 				for (let i = subscriptions.length - 1; i >= 0; i--) {
 					const subscription = subscriptions[i];
 					if (!subscription) continue;
+
 					if (subscription.client === client && (!uid || subscription.uid === uid)) {
 						this.subscriptions[key]?.delete(subscription);
 					}
@@ -113,6 +117,7 @@ export class SubscribeHandler {
 
 			try {
 				client.accountability = await refreshAccountability(client.accountability);
+
 				const result =
 					'item' in subscription
 						? await this.getSinglePayload(subscription, client.accountability, schema, event)
@@ -156,6 +161,7 @@ export class SubscribeHandler {
 				}
 
 				if ('item' in message) subscription.item = String(message.item);
+
 				if ('uid' in message) {
 					subscription.uid = String(message.uid);
 					// remove the subscription if it already exists
@@ -166,6 +172,7 @@ export class SubscribeHandler {
 					'item' in subscription
 						? await this.getSinglePayload(subscription, accountability, schema)
 						: await this.getMultiPayload(subscription, accountability, schema);
+
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);
 				// send an initial response
@@ -189,6 +196,7 @@ export class SubscribeHandler {
 		const metaService = new MetaService({ schema, accountability });
 		const query = subscription.query ?? {};
 		const id = subscription.item!;
+
 		const result: Record<string, any> = {
 			event: event?.action ?? 'init',
 		};
@@ -215,6 +223,7 @@ export class SubscribeHandler {
 		event?: WebSocketEvent
 	): Promise<Record<string, any>> {
 		const metaService = new MetaService({ schema, accountability });
+
 		const result: Record<string, any> = {
 			event: event?.action ?? 'init',
 		};
