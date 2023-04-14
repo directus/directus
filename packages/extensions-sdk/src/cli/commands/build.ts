@@ -15,11 +15,11 @@ import type {
 	ExtensionManifest as TExtensionManifest,
 } from '@directus/types';
 import { isIn, isTypeIn } from '@directus/utils';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
+import commonjsDefault from '@rollup/plugin-commonjs';
+import jsonDefault from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import replace from '@rollup/plugin-replace';
-import terser from '@rollup/plugin-terser';
+import replaceDefault from '@rollup/plugin-replace';
+import terserDefault from '@rollup/plugin-terser';
 import virtual from '@rollup/plugin-virtual';
 import chalk from 'chalk';
 import fse from 'fs-extra';
@@ -43,6 +43,12 @@ import tryParseJson from '../utils/try-parse-json.js';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
 import loadConfig from './helpers/load-config.js';
 import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
+
+// Workaround for https://github.com/rollup/plugins/issues/1329
+const commonjs = commonjsDefault as unknown as typeof commonjsDefault.default;
+const json = jsonDefault as unknown as typeof jsonDefault.default;
+const replace = replaceDefault as unknown as typeof replaceDefault.default;
+const terser = terserDefault as unknown as typeof terserDefault.default;
 
 type BuildOptions = {
 	type?: string;
@@ -566,18 +572,14 @@ function getRollupOptions({
 			mode === 'browser' ? styles.default() : null,
 			...plugins,
 			nodeResolve({ browser: mode === 'browser' }),
-			// @ts-ignore
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
-			// @ts-ignore
 			json(),
-			// @ts-ignore
 			replace({
 				values: {
 					'process.env.NODE_ENV': JSON.stringify('production'),
 				},
 				preventAssignment: true,
 			}),
-			// @ts-ignore
 			minify ? terser() : null,
 		],
 	};
