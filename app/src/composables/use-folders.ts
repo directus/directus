@@ -61,7 +61,6 @@ export function useFolders(): UsableFolders {
 			folders.value = response;
 			nestedFolders.value = nestFolders(response as FolderRaw[]);
 		} catch (err: any) {
-			console.error(err);
 			error.value = err;
 		} finally {
 			loading.value = false;
