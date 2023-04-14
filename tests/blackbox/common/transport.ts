@@ -43,7 +43,8 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		config?.client
 	);
 	let connectionAuthCompleted = false;
-	const rawMessages: WebSocketResponse[] = [];
+	const messages: Record<WebSocketUID, any[]> = {};
+	const messagesDefault: WebSocketResponse[] = [];
 	let readIndexDefault = 0;
 	const readIndexes: Record<WebSocketUID, number> = {};
 	const waitForState = (
@@ -98,6 +99,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			uid?: WebSocketUID;
 		}
 	): Promise<WebSocketResponse[] | undefined> => {
+		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
 		const startMessageIndex = options?.uid ? readIndexes[options.uid] ?? 0 : readIndexDefault;
 		const endMessageIndex = startMessageIndex + messageCount;
 		if (options?.uid) {
@@ -110,14 +112,8 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		const promise = (): Promise<WebSocketResponse[] | undefined> => {
 			return new Promise(function (resolve, reject) {
 				setTimeout(function () {
-					const filteredMessages = rawMessages.filter((message: WebSocketResponse) => {
-						if (!options?.uid && !message.uid) return true;
-						if (options?.uid && message.uid === String(options.uid)) {
-							return true;
-						}
-					});
-					if (filteredMessages.length >= endMessageIndex) {
-						resolve(filteredMessages.slice(startMessageIndex, endMessageIndex));
+					if (targetMessages.length >= endMessageIndex) {
+						resolve(targetMessages.slice(startMessageIndex, endMessageIndex));
 					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
 						return promise().then(resolve, reject);
 					} else {
@@ -125,7 +121,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 						reject(
 							new Error(
 								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
-									filteredMessages.length - startMessageIndex
+									targetMessages.length - startMessageIndex
 								}/${messageCount})`
 							)
 						);
@@ -134,6 +130,13 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			});
 		};
 		return promise();
+	};
+	const getMessageCount = (uid?: WebSocketUID) => {
+		if (uid) {
+			return messages[uid]?.length ?? 0;
+		} else {
+			return messagesDefault.length;
+		}
 	};
 	const sendMessage = async (
 		message: Record<string, any>,
@@ -146,6 +149,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		conn.send(JSON.stringify(message), options?.callback);
 	};
 	const subscribe = async (options: WebSocketSubscriptionOptions) => {
+		if (options.uid && !messages[options.uid]) messages[options.uid] = [];
 		sendMessage({ type: 'subscribe', ...options });
 		let response;
 		let error;
@@ -183,7 +187,8 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 				return;
 			}
 
-			rawMessages.push(message);
+			const targetMessages = message.uid ? messages[message.uid] ?? (messages[message.uid] = []) : messagesDefault;
+			targetMessages.push(message);
 		});
 	});
 
@@ -191,7 +196,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		return;
 	});
 
-	return { conn, rawMessages, waitForState, getMessages, sendMessage, subscribe };
+	return { conn, waitForState, getMessages, getMessageCount, sendMessage, subscribe };
 }
 
 export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
@@ -287,7 +292,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			uid?: WebSocketUID;
 		}
 	): Promise<WebSocketResponse[] | undefined> => {
-		const targetMessages = options?.uid ? messages[options.uid] : messagesDefault;
+		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
 		const startMessageIndex = options?.uid ? readIndexes[options.uid] ?? 0 : readIndexDefault;
 		const endMessageIndex = startMessageIndex + messageCount;
 		if (options?.uid) {
@@ -318,6 +323,13 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			});
 		};
 		return promise();
+	};
+	const getMessageCount = (uid?: WebSocketUID) => {
+		if (uid) {
+			return messages[uid]?.length ?? 0;
+		} else {
+			return messagesDefault.length;
+		}
 	};
 	const subscribe = async (options: WebSocketSubscriptionOptionsGql) => {
 		const targetMessages = options.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
@@ -356,5 +368,5 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		}
 	};
 
-	return { client, getMessages, subscribe, unsubscribe, waitForState };
+	return { client, getMessages, getMessageCount, subscribe, unsubscribe, waitForState };
 }
