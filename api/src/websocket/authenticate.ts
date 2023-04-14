@@ -22,15 +22,18 @@ export async function authenticateConnection(
 			access_token = accessToken;
 			refresh_token = refreshToken;
 		}
+
 		if ('refresh_token' in message) {
 			const authenticationService = new AuthenticationService({ schema: await getSchema() });
 			const { accessToken, refreshToken } = await authenticationService.refresh(message.refresh_token);
 			access_token = accessToken;
 			refresh_token = refreshToken;
 		}
+
 		if ('access_token' in message) {
 			access_token = message.access_token;
 		}
+
 		if (!access_token) throw new Error();
 		const accountability = await getAccountabilityForToken(access_token);
 		const expires_at = getExpiresAtForToken(access_token);
@@ -39,6 +42,7 @@ export async function authenticateConnection(
 		if (error instanceof InvalidCredentialsException && error.message === 'Token expired.') {
 			throw new WebSocketException('auth', 'TOKEN_EXPIRED', 'Token expired.', message['uid']);
 		}
+
 		throw new WebSocketException('auth', 'AUTH_FAILED', 'Authentication failed.', message['uid']);
 	}
 }
@@ -63,8 +67,10 @@ export function authenticationSuccess(uid?: string | number, refresh_token?: str
 	if (uid !== undefined) {
 		message.uid = uid;
 	}
+
 	if (refresh_token !== undefined) {
 		message['refresh_token'] = refresh_token;
 	}
+
 	return JSON.stringify(message);
 }

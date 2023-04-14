@@ -37,6 +37,7 @@ export class GraphQLSubscriptionController extends SocketController {
 		bindPubSub();
 		logger.info(`GraphQL Subscriptions started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
+
 	private bindEvents(client: WebSocketClient) {
 		const closedHandler = this.gql.opened(
 			{
@@ -68,6 +69,7 @@ export class GraphQLSubscriptionController extends SocketController {
 							} else {
 								client.accountability = await refreshAccountability(client.accountability);
 							}
+
 							await cb(JSON.stringify(message));
 						} catch (error) {
 							handleWebSocketException(client, error, MessageType.Error);
@@ -81,11 +83,13 @@ export class GraphQLSubscriptionController extends SocketController {
 		// notify server that the socket closed
 		client.once('close', (code, reason) => closedHandler(code, reason.toString()));
 	}
+
 	override setTokenExpireTimer(client: WebSocketClient) {
 		if (client.auth_timer !== null) {
 			clearTimeout(client.auth_timer);
 			client.auth_timer = null;
 		}
+
 		if (this.authentication.mode !== 'handshake') return;
 		client.auth_timer = setTimeout(() => {
 			if (!client.accountability?.user) {
@@ -93,6 +97,7 @@ export class GraphQLSubscriptionController extends SocketController {
 			}
 		}, this.authentication.timeout);
 	}
+
 	protected override async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.server.emit('connection', ws, { accountability: null, expires_at: null });

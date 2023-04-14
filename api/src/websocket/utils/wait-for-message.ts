@@ -38,6 +38,7 @@ export const waitForMessageType = (client: WebSocket, type: string, timeout: num
 			} catch {
 				return;
 			}
+
 			if (getMessageType(msg) === type) {
 				clearTimeout(timer);
 				client.off('message', awaitMessage);

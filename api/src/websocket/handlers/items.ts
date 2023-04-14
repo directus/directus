@@ -22,6 +22,7 @@ export class ItemsHandler {
 			}
 		});
 	}
+
 	async onMessage(client: WebSocketClient, message: WebSocketItemsMessage) {
 		const uid = message.uid;
 		const accountability = client.accountability;
@@ -34,6 +35,7 @@ export class ItemsHandler {
 				uid
 			);
 		}
+
 		const isSingleton = !!schema.collections[message.collection]?.singleton;
 		const service = new ItemsService(message.collection, { schema, accountability });
 		const metaService = new MetaService({ schema, accountability });
@@ -48,6 +50,7 @@ export class ItemsHandler {
 				result = await service.readOne(key, query);
 			}
 		}
+
 		if (message.action === 'read') {
 			const query = sanitizeQuery(message.query ?? {}, accountability);
 			if (message.id) {
@@ -59,8 +62,10 @@ export class ItemsHandler {
 			} else {
 				result = await service.readByQuery(query);
 			}
+
 			meta = await metaService.getMetaForQuery(message.collection, query);
 		}
+
 		if (message.action === 'update') {
 			const query = sanitizeQuery(message.query ?? {}, accountability);
 			if (message.id) {
@@ -79,6 +84,7 @@ export class ItemsHandler {
 				result = await service.readMany(keys, query);
 			}
 		}
+
 		if (message.action === 'delete') {
 			if (message.id) {
 				await service.deleteOne(message.id);
@@ -98,6 +104,7 @@ export class ItemsHandler {
 				);
 			}
 		}
+
 		client.send(fmtMessage('items', { data: result, ...(meta ? { meta } : {}) }, uid));
 	}
 }

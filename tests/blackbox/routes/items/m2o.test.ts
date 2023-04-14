@@ -1256,6 +1256,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										});
 									}
 								}
+
 								for (const { messagesCountries, messagesStates } of [
 									{ messagesCountries: wsGqlMessagesCountries, messagesStates: wsGqlMessagesStates },
 									{ messagesCountries: wsGqlMessagesGqlCountries, messagesStates: wsGqlMessagesGqlStates },
@@ -1535,6 +1536,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											],
 										});
 									}
+
 									for (let i = countCreate; i < count; i++) {
 										expect(messagesCountries![i]).toMatchObject({
 											type: 'subscription',
@@ -1559,6 +1561,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										});
 									}
 								}
+
 								for (const { messagesCountries, messagesStates } of [
 									{ messagesCountries: wsGqlMessagesCountries, messagesStates: wsGqlMessagesStates },
 									{ messagesCountries: wsGqlMessagesGqlCountries, messagesStates: wsGqlMessagesGqlStates },
@@ -1589,6 +1592,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											},
 										});
 									}
+
 									for (let i = countCreate; i < count; i++) {
 										expect(messagesCountries![i]).toEqual({
 											data: {
@@ -1869,6 +1873,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										]),
 									});
 								}
+
 								for (const { messagesCountries, messagesStates } of [
 									{ messagesCountries: wsGqlMessagesCountries, messagesStates: wsGqlMessagesStates },
 									{ messagesCountries: wsGqlMessagesGqlCountries, messagesStates: wsGqlMessagesGqlStates },

@@ -83,14 +83,17 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 								stateName = 'INVALID';
 								break;
 						}
+
 						conn.close();
 						reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
 					}
 				}, 5);
 			});
 		};
+
 		return promise();
 	};
+
 	const getMessages = async (
 		messageCount: number,
 		options?: {
@@ -107,6 +110,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		} else {
 			readIndexDefault = endMessageIndex;
 		}
+
 		await waitForState(options?.targetState ?? WebSocket.OPEN);
 		const startMs = Date.now();
 		const promise = (): Promise<WebSocketResponse[] | undefined> => {
@@ -129,8 +133,10 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 				}, 5);
 			});
 		};
+
 		return promise();
 	};
+
 	const getMessageCount = (uid?: WebSocketUID) => {
 		if (uid) {
 			return messages[uid]?.length ?? 0;
@@ -138,6 +144,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			return messagesDefault.length;
 		}
 	};
+
 	const sendMessage = async (
 		message: Record<string, any>,
 		options?: {
@@ -148,6 +155,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		await waitForState(WebSocket.OPEN);
 		conn.send(JSON.stringify(message), options?.callback);
 	};
+
 	const subscribe = async (options: WebSocketSubscriptionOptions) => {
 		if (options.uid && !messages[options.uid]) messages[options.uid] = [];
 		sendMessage({ type: 'subscribe', ...options });
@@ -158,9 +166,11 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		} catch (err) {
 			error = err;
 		}
+
 		if (error || !response || response[0].status === 'error') {
 			throw new Error(`Unable to subscribe to "${options.collection}"${options.uid ? ` for "${options.uid}"` : ''}`);
 		}
+
 		return response[0];
 	};
 
@@ -182,6 +192,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 				conn.send(JSON.stringify({ type: 'pong' }));
 				return;
 			}
+
 			if (config?.auth && !connectionAuthCompleted && message.type === 'auth') {
 				connectionAuthCompleted = true;
 				return;
@@ -276,14 +287,17 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 								stateName = 'INVALID';
 								break;
 						}
+
 						conn?.terminate();
 						reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
 					}
 				}, 5);
 			});
 		};
+
 		return promise();
 	};
+
 	const getMessages = async (
 		messageCount: number,
 		options?: {
@@ -300,6 +314,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		} else {
 			readIndexDefault = endMessageIndex;
 		}
+
 		await waitForState(options?.targetState ?? WebSocket.OPEN);
 		const startMs = Date.now();
 		const promise = (): Promise<WebSocketResponse[] | undefined> => {
@@ -322,8 +337,10 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 				}, 5);
 			});
 		};
+
 		return promise();
 	};
+
 	const getMessageCount = (uid?: WebSocketUID) => {
 		if (uid) {
 			return messages[uid]?.length ?? 0;
@@ -331,12 +348,14 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			return messagesDefault.length;
 		}
 	};
+
 	const subscribe = async (options: WebSocketSubscriptionOptionsGql) => {
 		const targetMessages = options.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
 		const subscriptionKey = `${options.collection}_mutated`;
 		const onNext = (data: any) => {
 			targetMessages.push(data);
 		};
+
 		const unsubscribe = client.subscribe(
 			{
 				query: processGraphQLJson({ subscription: { [subscriptionKey]: options.jsonQuery } }),
@@ -357,9 +376,11 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		} else {
 			unsubscriptionDefault = unsubscribe;
 		}
+
 		await waitForState(WebSocket.OPEN);
 		return subscriptionKey;
 	};
+
 	const unsubscribe = (uid?: string) => {
 		if (uid) {
 			unsubscriptions[uid]?.();

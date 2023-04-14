@@ -36,6 +36,7 @@ describe('WebSocket REST Tests', () => {
 					for (const uid of uids) {
 						messageList.push(await ws.getMessages(1, { uid }));
 					}
+
 					ws.conn.close();
 
 					// Assert

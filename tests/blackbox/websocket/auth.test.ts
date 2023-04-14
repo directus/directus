@@ -81,6 +81,7 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
 						ws.conn.close();
 
 						// Assert
@@ -122,6 +123,7 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
 						ws.conn.close();
 
 						// Assert
@@ -170,6 +172,7 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
 						ws.conn.close();
 
 						// Assert
@@ -211,6 +214,7 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
 						ws.conn.close();
 
 						// Assert
@@ -259,6 +263,7 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
 						ws.conn.close();
 
 						// Assert
@@ -300,6 +305,7 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
 						ws.conn.close();
 
 						// Assert

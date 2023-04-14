@@ -20,11 +20,13 @@ export function getWebSocketController() {
 			service: 'get-websocket-controller',
 		});
 	}
+
 	if (!websocketController) {
 		throw new ServiceUnavailableException('WebSocket server is not initialized', {
 			service: 'get-websocket-controller',
 		});
 	}
+
 	return websocketController;
 }
 

@@ -1971,6 +1971,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									],
 								});
 							}
+
 							for (const { messagesCountries, messagesStates } of [
 								{ messagesCountries: wsGqlMessagesCountries, messagesStates: wsGqlMessagesStates },
 								{ messagesCountries: wsGqlMessagesGqlCountries, messagesStates: wsGqlMessagesGqlStates },
@@ -2226,6 +2227,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									});
 								}
 							}
+
 							for (const { messagesCountries, messagesStates } of [
 								{ messagesCountries: wsGqlMessagesCountries, messagesStates: wsGqlMessagesStates },
 								{ messagesCountries: wsGqlMessagesGqlCountries, messagesStates: wsGqlMessagesGqlStates },
@@ -2545,6 +2547,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											],
 										});
 									}
+
 									for (
 										let j = countCreate + i * mutationRoundStates;
 										j < countCreate + countUpdate + i * mutationRoundStates;
@@ -2562,6 +2565,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											],
 										});
 									}
+
 									for (
 										let j = countCreate + countUpdate + i * mutationRoundStates;
 										j < countCreate + countUpdate + 1 + i * mutationRoundStates;
@@ -2615,6 +2619,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											],
 										});
 									}
+
 									for (
 										let j = countCreate + i * mutationRoundStatesGql;
 										j < countUpdate + countDelete + i * mutationRoundStatesGql;
@@ -2668,6 +2673,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											},
 										});
 									}
+
 									for (
 										let j = countCreate + i * mutationRoundStatesGql;
 										j < countCreate + countUpdate + i * mutationRoundStatesGql;
@@ -2686,6 +2692,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											},
 										});
 									}
+
 									for (
 										let j = countCreate + countUpdate + i * mutationRoundStatesGql;
 										j < countCreate + countUpdate + 1 + i * mutationRoundStatesGql;
@@ -2738,6 +2745,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 											},
 										});
 									}
+
 									for (
 										let j = countCreate + i * mutationRoundStatesGql;
 										j < countCreate + countUpdate + countDelete + i * mutationRoundStatesGql;

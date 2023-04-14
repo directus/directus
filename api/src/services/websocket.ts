@@ -15,6 +15,7 @@ export class WebSocketService {
 	on(event: 'connect' | 'message' | 'error' | 'close', callback: ActionHandler) {
 		emitter.onAction('websocket.' + event, callback);
 	}
+
 	off(event: 'connect' | 'message' | 'error' | 'close', callback: ActionHandler) {
 		emitter.offAction('websocket.' + event, callback);
 	}
@@ -26,6 +27,7 @@ export class WebSocketService {
 			client.send(typeof message === 'string' ? message : JSON.stringify(message));
 		});
 	}
+
 	clients(): Set<WebSocketClient> {
 		return this.controller.clients;
 	}

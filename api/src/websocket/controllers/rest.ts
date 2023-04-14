@@ -18,6 +18,7 @@ export class WebSocketController extends SocketController {
 		});
 		logger.info(`WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
 	}
+
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
 			try {
@@ -37,6 +38,7 @@ export class WebSocketController extends SocketController {
 		});
 		emitter.emitAction('websocket.connect', { client });
 	}
+
 	protected override parseMessage(data: string): WebSocketMessage {
 		let message: WebSocketMessage;
 		try {
@@ -44,6 +46,7 @@ export class WebSocketController extends SocketController {
 		} catch (err: any) {
 			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
 		}
+
 		return message;
 	}
 }

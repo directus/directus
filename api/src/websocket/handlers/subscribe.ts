@@ -37,6 +37,7 @@ export class SubscribeHandler {
 			}
 		});
 	}
+
 	/**
 	 * Hook into websocket client lifecycle events
 	 */
@@ -54,6 +55,7 @@ export class SubscribeHandler {
 		emitter.onAction('websocket.error', ({ client }) => this.unsubscribe(client));
 		emitter.onAction('websocket.close', ({ client }) => this.unsubscribe(client));
 	}
+
 	/**
 	 * Register a subscription
 	 * @param subscription
@@ -63,11 +65,14 @@ export class SubscribeHandler {
 		if ('item' in subscription && ['directus_fields', 'directus_relations'].includes(collection)) {
 			throw new InvalidPayloadException(`Cannot subscribe to a specific item in the ${collection} collection.`);
 		}
+
 		if (!this.subscriptions[collection]) {
 			this.subscriptions[collection] = new Set();
 		}
+
 		this.subscriptions[collection]?.add(subscription);
 	}
+
 	/**
 	 * Remove a subscription
 	 * @param subscription
@@ -91,6 +96,7 @@ export class SubscribeHandler {
 			}
 		}
 	}
+
 	/**
 	 * Dispatch event to subscriptions
 	 */
@@ -115,6 +121,7 @@ export class SubscribeHandler {
 			}
 		}
 	}
+
 	/**
 	 * Handle incoming (un)subscribe requests
 	 */
@@ -140,6 +147,7 @@ export class SubscribeHandler {
 				if ('query' in message) {
 					subscription.query = sanitizeQuery(message.query!, accountability);
 				}
+
 				if ('item' in message) subscription.item = String(message.item);
 				if ('uid' in message) {
 					subscription.uid = String(message.uid);
@@ -159,10 +167,12 @@ export class SubscribeHandler {
 				handleWebSocketException(client, err, 'subscribe');
 			}
 		}
+
 		if (getMessageType(message) === 'unsubscribe') {
 			this.unsubscribe(client, message.uid);
 		}
 	}
+
 	private async getSinglePayload(
 		subscription: Subscription,
 		accountability: Accountability | null,
@@ -187,8 +197,10 @@ export class SubscribeHandler {
 		if ('meta' in query) {
 			result['meta'] = await metaService.getMetaForQuery(subscription.collection, query);
 		}
+
 		return result;
 	}
+
 	private async getMultiPayload(
 		subscription: Subscription,
 		accountability: Accountability | null,
@@ -222,6 +234,7 @@ export class SubscribeHandler {
 
 		return result;
 	}
+
 	private async getCollectionPayload(
 		accountability: Accountability | null,
 		schema: SchemaOverview,
@@ -238,6 +251,7 @@ export class SubscribeHandler {
 			return await service.readMany(event.keys.map((key: any) => String(key)));
 		}
 	}
+
 	private async getFieldsPayload(
 		accountability: Accountability | null,
 		schema: SchemaOverview,
@@ -252,6 +266,7 @@ export class SubscribeHandler {
 			return await service.readOne(event.payload?.['collection'], event.payload?.['field']);
 		}
 	}
+
 	private async getItemsPayload(
 		subscription: Subscription,
 		accountability: Accountability | null,
@@ -270,6 +285,7 @@ export class SubscribeHandler {
 			return await service.readMany(event.keys, query);
 		}
 	}
+
 	private getSubscription(uid: string | number) {
 		for (const userSubscriptions of Object.values(this.subscriptions)) {
 			for (const subscription of userSubscriptions) {
@@ -278,6 +294,7 @@ export class SubscribeHandler {
 				}
 			}
 		}
+
 		return undefined;
 	}
 }

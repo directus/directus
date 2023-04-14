@@ -28,6 +28,7 @@ export class HeartbeatHandler {
 			emitter.onAction('websocket.close', () => this.checkClients());
 		}
 	}
+
 	private checkClients() {
 		const hasClients = this.controller.clients.size > 0;
 		if (hasClients && !this.pulse) {
@@ -35,17 +36,20 @@ export class HeartbeatHandler {
 				this.pingClients();
 			}, HEARTBEAT_FREQUENCY);
 		}
+
 		if (!hasClients && this.pulse) {
 			clearInterval(this.pulse);
 			this.pulse = undefined;
 		}
 	}
+
 	onMessage(client: WebSocketClient, message: WebSocketMessage) {
 		if (getMessageType(message) !== 'ping') return;
 		// send pong message back as acknowledgement
 		const data = 'uid' in message ? { uid: message.uid } : {};
 		client.send(fmtMessage('pong', data));
 	}
+
 	pingClients() {
 		const pendingClients = new Set<WebSocketClient>(this.controller.clients);
 		const activeClients = new Set<WebSocketClient>();
@@ -61,11 +65,13 @@ export class HeartbeatHandler {
 				pendingClients.delete(client);
 				activeClients.add(client);
 			}
+
 			if (pendingClients.size === 0) {
 				clearTimeout(timeout);
 				emitter.offAction('websocket.message', messageWatcher);
 			}
 		};
+
 		emitter.onAction('websocket.message', messageWatcher);
 		// ping all the clients
 		for (const client of pendingClients) {

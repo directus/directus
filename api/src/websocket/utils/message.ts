@@ -6,6 +6,7 @@ export const fmtMessage = (type: string, data: Record<string, any> = {}, uid?: s
 	if (uid !== undefined) {
 		message['uid'] = uid;
 	}
+
 	return JSON.stringify(message);
 };
 
@@ -20,6 +21,7 @@ export const safeSend = async (client: WebSocketClient, data: string, delay = 10
 			}, delay);
 		});
 	}
+
 	client.send(data);
 	return true;
 };

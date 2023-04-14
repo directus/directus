@@ -5,5 +5,6 @@ export function getExpiresAtForToken(token: string): number | null {
 	if (decoded && typeof decoded === 'object' && decoded.exp) {
 		return decoded.exp;
 	}
+
 	return null;
 }
