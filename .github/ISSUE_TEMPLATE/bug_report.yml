@@ -25,6 +25,12 @@ body:
         the bug.
     validations:
       required: true
+  - type: textarea
+    attributes:
+      label: Directus Version
+      placeholder: v9.x.x
+    validations:
+      required: true
   - type: dropdown
     id: deployment
     attributes:
