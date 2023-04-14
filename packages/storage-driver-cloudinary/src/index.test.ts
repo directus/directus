@@ -630,15 +630,40 @@ describe('#stat', () => {
 		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.inputFull);
 	});
 
-	test('Calls fetch with constructed URL and auth header', async () => {
+	test('Creates signature for body parameters', async () => {
 		await driver.stat(sample.path.input);
+
+		expect(driver['getFullSignature']).toHaveBeenCalledWith({
+			type: 'upload',
+			public_id: sample.publicId.input,
+			api_key: sample.config.apiKey,
+			timestamp: sample.timestamp,
+		});
+	});
+
+	test('Creates form url encoded body ', async () => {
+		await driver.stat(sample.path.input);
+
+		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
+			type: 'upload',
+			public_id: sample.publicId.input,
+			api_key: sample.config.apiKey,
+			timestamp: sample.timestamp,
+			signature: sample.fullSignature,
+		});
+	});
+
+	test('Fetches URL with url encoded body', async () => {
+		await driver.stat(sample.path.input);
+
 		expect(fetch).toHaveBeenCalledWith(
-			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/${sample.resourceType}/upload/${sample.publicId.input}`,
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/${sample.resourceType}/explicit`,
 			{
-				method: 'GET',
+				method: 'POST',
 				headers: {
-					Authorization: sample.basicAuth,
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 				},
+				body: sample.formUrlEncoded,
 			}
 		);
 	});

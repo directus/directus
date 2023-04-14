@@ -71,7 +71,8 @@ export default defineComponent({
 
 		async function hydrateAndLogin() {
 			await hydrate();
-			router.push(lastPage.value || `/content`);
+			const redirectQuery = router.currentRoute.value.query.redirect as string;
+			router.push(redirectQuery || lastPage.value || `/content`);
 		}
 	},
 });

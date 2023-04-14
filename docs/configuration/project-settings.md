@@ -117,7 +117,7 @@ following options to limit what transformations are possible.
   - **Height** — Sets the height of the image.
   - **Quality** — Adjusts the compression or quality of the image.
   - **Upscaling** — When enabled, images won't be upscaled.
-  - **Format** — Changes the output format to JPG, PNG, WebP, or TIFF.
+  - **Format** — Changes the output format.
   - **Additional Transformations** — Adds additional transformations using
     [Sharp](https://sharp.pixelplumbing.com/api-constructor).
 

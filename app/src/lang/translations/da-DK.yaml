@@ -1123,7 +1123,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: Kortlægning
     basemaps: Grundkort
     basemaps_style: Mapbox stil

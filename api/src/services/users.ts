@@ -2,7 +2,7 @@ import { FailedValidationException } from '@directus/exceptions';
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
 import jwt from 'jsonwebtoken';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
@@ -133,6 +133,30 @@ export class UsersService extends ItemsService {
 		if (otherAdminUsersCount === 0) {
 			throw new UnprocessableEntityException(`You can't change the active status of the last admin user.`);
 		}
+	}
+
+	/**
+	 * Get basic information of user identified by email
+	 */
+	private async getUserByEmail(email: string): Promise<{ id: string; role: string; status: string; password: string }> {
+		return await this.knex
+			.select('id', 'role', 'status', 'password')
+			.from('directus_users')
+			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
+			.first();
+	}
+
+	/**
+	 * Create url for inviting users
+	 */
+	private inviteUrl(email: string, url: string | null): string {
+		const payload = { email, scope: 'invite' };
+
+		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
+		inviteURL.setQuery('token', token);
+
+		return inviteURL.toString();
 	}
 
 	/**
@@ -326,26 +350,34 @@ export class UsersService extends ItemsService {
 		});
 
 		for (const email of emails) {
-			const payload = { email, scope: 'invite' };
-			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-			const subjectLine = subject ?? "You've been invited";
-			const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
-			inviteURL.setQuery('token', token);
+			// Check if user is known
+			const user = await this.getUserByEmail(email);
 
-			// Create user first to verify uniqueness
-			await this.createOne({ email, role, status: 'invited' }, opts);
+			// Create user first to verify uniqueness if unknown
+			if (isEmpty(user)) {
+				await this.createOne({ email, role, status: 'invited' }, opts);
 
-			await mailService.send({
-				to: email,
-				subject: subjectLine,
-				template: {
-					name: 'user-invitation',
-					data: {
-						url: inviteURL.toString(),
-						email,
+				// For known users update role if changed
+			} else if (user.status === 'invited' && user.role !== role) {
+				await this.updateOne(user.id, { role }, opts);
+			}
+
+			// Send invite for new and already invited users
+			if (isEmpty(user) || user.status === 'invited') {
+				const subjectLine = subject ?? "You've been invited";
+
+				await mailService.send({
+					to: email,
+					subject: subjectLine,
+					template: {
+						name: 'user-invitation',
+						data: {
+							url: this.inviteUrl(email, url),
+							email,
+						},
 					},
-				},
-			});
+				});
+			}
 		}
 	}
 
@@ -357,7 +389,7 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'invite') throw new ForbiddenException();
 
-		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'invited') {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
@@ -376,11 +408,7 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
-		const user = await this.knex
-			.select('status', 'password')
-			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
-			.first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
@@ -436,7 +464,7 @@ export class UsersService extends ItemsService {
 			opts.preMutationException = err;
 		}
 
-		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
 			throw new ForbiddenException();
