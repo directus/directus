@@ -25,7 +25,7 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="getDisplayValue(item, header.key)"
+					:value="getDisplayValue(item, header.key, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -180,7 +180,7 @@ import { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, inject, ref, Ref, watch, computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { get } from '@directus/utils';
-import { useAliasFields } from '@/composables/use-alias-fields';
+import { AliasFields } from '@/composables/use-alias-fields';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { HeaderRaw } from '@/components/v-table/types';
@@ -211,6 +211,8 @@ interface Props {
 	selectAll: () => void;
 	filterUser?: Filter;
 	search?: string;
+	aliasedFields: Record<string, AliasFields>;
+	aliasedKeys: string[];
 	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
 }
@@ -232,7 +234,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
 const { t } = useI18n();
-const { collection } = toRefs(props);
+const { collection, aliasedFields, aliasedKeys } = toRefs(props);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
@@ -275,20 +277,19 @@ const showManualSort = computed(() => {
 
 const fieldsWritable = useSync(props, 'fields', emit);
 
-const { aliasedFields, aliasedKeys } = useAliasFields(fieldsWritable, collection);
-
-function getDisplayValue(item: Item, key: string) {
-	const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
+function getDisplayValue(item: Item, key: string, fullKey: string) {
+	const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === fullKey);
 
 	if (!aliasInfo) return get(item, key);
 
-	const dealiasedItem = Object.keys(item).reduce<Item>((result, key) => {
-		if (aliasedKeys.value.includes(key)) {
-			if (key !== aliasInfo.fieldAlias) return result;
-			const name = aliasedFields.value[key].fieldName;
-			result[name] = item[key];
+	const dealiasedItem = Object.keys(item).reduce<Item>((result, itemKey) => {
+		if (aliasedKeys.value.includes(itemKey)) {
+			if (itemKey !== aliasInfo.fieldAlias) return result;
+			const name = aliasedFields.value[itemKey].fieldName;
+			result[name] = item[itemKey];
 		} else {
-			result[key] = item[key];
+			// Don't overwrite already dealiased keys
+			if (itemKey in result === false) result[itemKey] = item[itemKey];
 		}
 		return result;
 	}, {});

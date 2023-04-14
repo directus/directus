@@ -46,7 +46,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { sort, limit, page, fields } = useItemOptions();
 
-		const { aliasedFields, aliasQuery } = useAliasFields(fields, collection);
+		const { aliasedFields, aliasQuery, aliasedKeys } = useAliasFields(fields, collection);
 
 		const fieldsWithRelationalAliased = computed(() => {
 			return Object.values(aliasedFields.value).reduce<string[]>((acc, value) => {
@@ -124,6 +124,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			search,
 			download,
 			fieldsWithRelationalAliased,
+			aliasedFields,
+			aliasedKeys
 		};
 
 		async function resetPresetAndRefresh() {
@@ -234,7 +236,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							const arrayField = fieldsStore.getField(collection.value!, fieldParts.slice(0, -1).join('.'));
 
 							// Special case for translations to render the nested data in the translations display instead of the default display
-							if (types.at(-1) === 'o2m' && arrayField?.meta?.special?.includes('translations')) {
+							if (types.at(-1) === 'o2m' && arrayField?.meta?.display === 'translations') {
 								if (arrayField)
 									return {
 										text: field.name,
