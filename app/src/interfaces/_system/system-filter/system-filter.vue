@@ -46,7 +46,8 @@
 					include-functions
 					:include-relations="includeRelations"
 					:relational-field-selectable="relationalFieldSelectable"
-					@select-field="addNode($event)"
+					:allow-select-all="false"
+					@add="addNode($event[0])"
 				>
 					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
