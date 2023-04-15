@@ -228,14 +228,17 @@ function change(event: ChangeEvent) {
 			case 'created':
 				create(cleanItem(event.added.element));
 				break;
+
 			case 'updated': {
 				const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 				const exists = displayItems.value.find((item) => item[pkField] === event.added.element[pkField]);
+
 				// We have to make sure we remove the reverseJunctionField when we move it back to its initial position as otherwise it will be selected.
 				update({
 					...cleanItem(event.added.element),
 					[relationInfo.value.reverseJunctionField.field]: exists ? undefined : primaryKey.value,
 				});
+
 				break;
 			}
 

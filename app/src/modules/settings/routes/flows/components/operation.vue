@@ -223,6 +223,7 @@ function pointerdown(target: Target | 'parent') {
 	down = target;
 
 	const rect = document.getElementsByClassName('workspace').item(0)?.getBoundingClientRect();
+
 	if (rect) {
 		workspaceOffset = new Vector2(rect.left, rect.top);
 	}
@@ -235,6 +236,7 @@ const pointermove = (event: PointerEvent) => {
 	rafId = window.requestAnimationFrame(() => {
 		moving.value = true;
 		if (!down) return;
+
 		const arrowInfo: ArrowInfo =
 			down === 'parent'
 				? {

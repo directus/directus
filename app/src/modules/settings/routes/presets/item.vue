@@ -305,6 +305,7 @@ function useValues() {
 			layout_options: null,
 			filter: null,
 		};
+
 		if (isNew.value === true) return defaultValues;
 		if (preset.value === null) return defaultValues;
 

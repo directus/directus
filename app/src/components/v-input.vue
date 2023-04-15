@@ -151,6 +151,7 @@ const listeners = computed(() => ({
 	},
 	focus: (e: PointerEvent) => emit('focus', e),
 }));
+
 const attributes = computed(() => omit(attrs, ['class']));
 
 const classes = computed(() => [

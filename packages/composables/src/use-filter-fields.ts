@@ -7,6 +7,7 @@ export function useFilterFields<T extends string>(
 ): { fieldGroups: ComputedRef<Record<Extract<T, string>, Field[]>> } {
 	const fieldGroups = computed(() => {
 		const acc = {} as Record<Extract<T, string>, Field[]>;
+
 		for (const name in filters) {
 			acc[name] = [];
 		}

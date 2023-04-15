@@ -13,6 +13,7 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 
 	override constraintName(existingName: string): string {
 		const suffix = '_replaced';
+
 		// CockroachDB does not allow for dropping/creating constraints with the same
 		// name in a single transaction. reference issue #14873
 		if (existingName.endsWith(suffix)) {

@@ -181,6 +181,7 @@ class FlowManager {
 						);
 
 					events.forEach((event) => emitter.onFilter(event, handler));
+
 					this.triggerHandlers.push({
 						id: flow.id,
 						events: events.map((event) => ({ type: 'filter', name: event, handler })),
@@ -194,6 +195,7 @@ class FlowManager {
 						});
 
 					events.forEach((event) => emitter.onAction(event, handler));
+
 					this.triggerHandlers.push({
 						id: flow.id,
 						events: events.map((event) => ({ type: 'action', name: event, handler })),

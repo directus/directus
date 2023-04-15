@@ -22,6 +22,7 @@ test('should fail on invalid hash', () => {
 		hash: 'abc',
 		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], relations: [] },
 	} as SnapshotDiffWithHash;
+
 	const snapshot = { hash: 'xyz' } as SnapshotWithHash;
 
 	expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
@@ -56,6 +57,7 @@ describe('should throw accurate error', () => {
 		const diff = baseDiff({
 			collections: [{ collection: 'test', diff: [{ kind: 'N', rhs: {} as Collection }] }],
 		});
+
 		const snapshot = baseSnapshot({ collections: [{ collection: 'test' } as Collection] });
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
@@ -77,6 +79,7 @@ describe('should throw accurate error', () => {
 		const diff = baseDiff({
 			fields: [{ collection: 'test', field: 'test', diff: [{ kind: 'N', rhs: {} as SnapshotField }] }],
 		});
+
 		const snapshot = baseSnapshot({ fields: [{ collection: 'test', field: 'test' } as SnapshotField] });
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
@@ -105,6 +108,7 @@ describe('should throw accurate error', () => {
 				},
 			],
 		});
+
 		const snapshot = baseSnapshot({
 			relations: [{ collection: 'test', field: 'test', related_collection: 'relation' } as SnapshotRelation],
 		});
@@ -248,6 +252,7 @@ test('should not throw error for diffs with varying types of lhs/rhs', () => {
 			],
 		},
 	};
+
 	const snapshot = { hash: 'abc' } as SnapshotWithHash;
 
 	expect(() => validateApplyDiff(diff, snapshot)).not.toThrow();
@@ -289,6 +294,7 @@ test('should not throw error for relation diff with null related_collection (app
 			],
 		},
 	};
+
 	const snapshot = { hash: 'abc' } as SnapshotWithHash;
 
 	expect(() => validateApplyDiff(diff, snapshot)).not.toThrow();
@@ -299,6 +305,7 @@ test('should detect empty diff', () => {
 		hash: 'abc',
 		diff: { collections: [], fields: [], relations: [] },
 	};
+
 	const snapshot = {} as SnapshotWithHash;
 
 	expect(validateApplyDiff(diff, snapshot)).toBe(false);
@@ -309,6 +316,7 @@ test('should pass on valid diff', () => {
 		hash: 'abc',
 		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], relations: [] },
 	};
+
 	const snapshot = { hash: 'abc' } as SnapshotWithHash;
 
 	expect(validateApplyDiff(diff, snapshot)).toBe(true);

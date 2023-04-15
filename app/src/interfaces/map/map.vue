@@ -153,6 +153,7 @@ export default defineComponent({
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);
+
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
 			return basemap.value, getStyleFromBasemapSource(source);
@@ -160,6 +161,7 @@ export default defineComponent({
 
 		let parse: GeoJSONParser;
 		let serialize: GeoJSONSerializer;
+
 		try {
 			parse = getParser({ geometryFormat, geometryField: 'value' });
 			serialize = getSerializer({ geometryFormat, geometryField: 'value' });
@@ -171,6 +173,7 @@ export default defineComponent({
 
 		const location = ref<LngLatLike | null>();
 		const projection = ref<{ x: number; y: number } | null>();
+
 		function updateProjection() {
 			projection.value = !location.value ? null : map.project(location.value as any);
 		}
@@ -189,6 +192,7 @@ export default defineComponent({
 			}),
 			geocoder: undefined as MapboxGeocoder | undefined,
 		};
+
 		if (mapboxKey) {
 			controls.geocoder = new MapboxGeocoder({
 				accessToken: mapboxKey,
@@ -210,6 +214,7 @@ export default defineComponent({
 
 		const updateTooltipDebounce = debounce((event: any) => {
 			const feature = event.features?.[0];
+
 			if (feature && feature.properties!.active === 'false') {
 				tooltipMessage.value = t('interfaces.map.click_to_select', { geometry: feature.geometry.type });
 				tooltipVisible.value = true;
@@ -254,11 +259,14 @@ export default defineComponent({
 				...props.defaultView,
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
+
 			if (controls.geocoder) {
 				map.addControl(controls.geocoder as any, 'top-right');
+
 				controls.geocoder.on('result', (event: any) => {
 					location.value = event.result.center;
 				});
+
 				controls.geocoder.on('clear', () => {
 					location.value = null;
 				});
@@ -268,6 +276,7 @@ export default defineComponent({
 				const { longitude, latitude } = event.coords;
 				location.value = [longitude, latitude];
 			});
+
 			map.addControl(controls.attribution, 'bottom-left');
 			map.addControl(controls.navigation, 'top-left');
 			map.addControl(controls.geolocate, 'top-left');
@@ -283,6 +292,7 @@ export default defineComponent({
 				map.on('draw.modechange', handleDrawModeChange);
 				map.on('draw.selectionchange', handleSelectionChange);
 				map.on('move', updateProjection);
+
 				for (const layer of activeLayers) {
 					map.on('mousedown', layer, hideTooltip);
 					map.on('mousemove', layer, updateTooltip);
@@ -306,6 +316,7 @@ export default defineComponent({
 			if (!value) {
 				controls.draw.deleteAll();
 				currentGeometry = null;
+
 				if (geometryType) {
 					const snaked = snakeCase(geometryType.replace('Multi', ''));
 					const mode = `draw_${snaked}` as any;
@@ -339,6 +350,7 @@ export default defineComponent({
 		function fitDataBounds(options: CameraOptions & AnimationOptions) {
 			if (map && currentGeometry) {
 				const bbox = getBBox(currentGeometry);
+
 				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 80,
 					maxZoom: 8,
@@ -357,6 +369,7 @@ export default defineComponent({
 					static: StaticMode,
 				}),
 			} as any;
+
 			if (props.disabled) {
 				return options;
 			}
@@ -391,6 +404,7 @@ export default defineComponent({
 			try {
 				controls.draw.deleteAll();
 				const initialValue = parse(props);
+
 				if (!initialValue) {
 					return;
 				}
@@ -403,6 +417,7 @@ export default defineComponent({
 				}
 
 				const flattened = flatten(initialValue);
+
 				for (const geometry of flattened) {
 					controls.draw.add(geometry);
 				}
@@ -425,6 +440,7 @@ export default defineComponent({
 			const features = controls.draw.getAll().features;
 			const geometries = features.map((f) => f.geometry) as (SimpleGeometry | MultiGeometry)[];
 			let result: Geometry;
+
 			if (geometries.length == 0) {
 				return null;
 			} else if (!geometryType) {
@@ -437,6 +453,7 @@ export default defineComponent({
 				const coordinates = geometries
 					.filter(({ type }) => `Multi${type}` == geometryType)
 					.map(({ coordinates }) => coordinates);
+
 				result = { type: geometryType, coordinates } as Geometry;
 			} else {
 				result = geometries[geometries.length - 1];
@@ -459,6 +476,7 @@ export default defineComponent({
 
 		function handleDrawUpdate() {
 			currentGeometry = getCurrentGeometry();
+
 			if (!currentGeometry) {
 				controls.draw.deleteAll();
 				emit('input', null);

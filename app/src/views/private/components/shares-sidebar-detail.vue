@@ -205,6 +205,7 @@ export default defineComponent({
 						sort: 'name',
 					},
 				});
+
 				count.value = response.data.data.length;
 				shares.value = response.data.data;
 			} catch (error: any) {

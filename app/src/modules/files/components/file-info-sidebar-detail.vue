@@ -286,6 +286,7 @@ export default defineComponent({
 				if (!props.file) return null;
 				if (!props.file.folder) return;
 				loading.value = true;
+
 				try {
 					const response = await api.get(`/folders/${props.file.folder}`, {
 						params: {

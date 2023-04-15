@@ -259,6 +259,7 @@ useShortcut(
 	},
 	table
 );
+
 const permissionsStore = usePermissionsStore();
 const userStore = useUserStore();
 

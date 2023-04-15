@@ -70,6 +70,7 @@ export default defineComponent({
 
 		const loading = ref(false);
 		const folders = ref<FolderRaw[]>([]);
+
 		const tree = computed<Folder[]>(() => {
 			return folders.value
 				.filter((folder) => folder.parent === null)

@@ -38,14 +38,17 @@ export async function createCli(): Promise<Command> {
 
 	const dbCommand = program.command('database');
 	dbCommand.command('install').description('Install the database').action(dbInstall);
+
 	dbCommand
 		.command('migrate:latest')
 		.description('Upgrade the database')
 		.action(() => dbMigrate('latest'));
+
 	dbCommand
 		.command('migrate:up')
 		.description('Upgrade the database')
 		.action(() => dbMigrate('up'));
+
 	dbCommand
 		.command('migrate:down')
 		.description('Downgrade the database')
@@ -69,6 +72,7 @@ export async function createCli(): Promise<Command> {
 		.action(usersPasswd);
 
 	const rolesCommand = program.command('roles');
+
 	rolesCommand
 		.command('create')
 		.description('Create a new role')

@@ -40,6 +40,7 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 		const style: Style = { ...baseStyle };
 		const source: RasterSource = { type: 'raster' };
 		if (basemap.attribution) source.attribution = basemap.attribution;
+
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);
 			source.tileSize = basemap.tileSize || 512;
@@ -58,11 +59,13 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 function expandUrl(url: string): string[] {
 	const urls = [];
 	let match = /\{([a-z])-([a-z])\}/.exec(url);
+
 	if (match) {
 		// char range
 		const startCharCode = match[1].charCodeAt(0);
 		const stopCharCode = match[2].charCodeAt(0);
 		let charCode;
+
 		for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
 			urls.push(url.replace(match[0], String.fromCharCode(charCode)));
 		}
@@ -71,9 +74,11 @@ function expandUrl(url: string): string[] {
 	}
 
 	match = /\{(\d+)-(\d+)\}/.exec(url);
+
 	if (match) {
 		// number range
 		const stop = parseInt(match[2], 10);
+
 		for (let i = parseInt(match[1], 10); i <= stop; i++) {
 			urls.push(url.replace(match[0], i.toString()));
 		}
@@ -82,9 +87,11 @@ function expandUrl(url: string): string[] {
 	}
 
 	match = /\{(([a-z0-9]+)(,([a-z0-9]+))+)\}/.exec(url);
+
 	if (match) {
 		// csv
 		const subdomains = match[1].split(',');
+
 		for (const subdomain of subdomains) {
 			urls.push(url.replace(match[0], subdomain));
 		}

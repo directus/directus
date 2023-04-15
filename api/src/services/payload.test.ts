@@ -32,6 +32,7 @@ describe('Integration Tests', () => {
 					knex: db,
 					schema: { collections: {}, relations: [] },
 				});
+
 				helpers = getHelpers(db);
 			});
 
@@ -219,6 +220,7 @@ describe('Integration Tests', () => {
 						],
 						'read'
 					);
+
 					expect(result).toMatchObject([
 						{
 							[dateFieldId]: '2022-01-10',

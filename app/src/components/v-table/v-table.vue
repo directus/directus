@@ -298,6 +298,7 @@ function getSelectedState(item: Item) {
 	const selectedKeys = props.selectionUseKeys
 		? props.modelValue
 		: props.modelValue.map((item: any) => item[props.itemKey]);
+
 	return selectedKeys.includes(item[props.itemKey]);
 }
 

@@ -13,8 +13,10 @@ export function shouldSkipCache(req: Request): boolean {
 
 	// Always skip cache for requests coming from the data studio based on Referer header
 	const referer = req.get('Referer');
+
 	if (referer) {
 		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+
 		if (adminUrl.isRootRelative()) {
 			const refererUrl = new Url(referer);
 			if (refererUrl.path.join('/').startsWith(adminUrl.path.join('/'))) return true;

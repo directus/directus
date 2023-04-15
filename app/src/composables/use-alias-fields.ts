@@ -24,6 +24,7 @@ export function useAliasFields(fields: Ref<string[]>, collection: Ref<string | n
 
 		for (const field of fields.value) {
 			const alias = getSimpleHash(field);
+
 			const fullFields = adjustFieldsForDisplays([field], collection.value).map((field) => {
 				if (field.includes('.')) {
 					return `${alias}.${field.split('.').slice(1).join('.')}`;

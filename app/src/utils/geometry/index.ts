@@ -25,9 +25,11 @@ export function expandBBox(bbox: BBox, coord: Coordinate): BBox {
 
 export function getBBox(object: AnyGeometry): BBox {
 	let bbox: BBox = [Infinity, Infinity, -Infinity, -Infinity];
+
 	coordEach(object as AllGeoJSON, (coord) => {
 		bbox = expandBBox(bbox, coord as Coordinate);
 	});
+
 	return bbox;
 }
 
@@ -47,6 +49,7 @@ export function getGeometryFormatForType(type: Type): GeometryFormat | undefined
 
 export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 	const { geometryFormat } = options;
+
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
@@ -62,6 +65,7 @@ export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 
 export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyGeometry {
 	const { geometryFormat } = options;
+
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
@@ -116,6 +120,7 @@ export function toGeoJSON(entries: any[], options: GeometryOptions): FeatureColl
 
 export function flatten(geometry?: AnyGeometry): SimpleGeometry[] {
 	if (!geometry) return [];
+
 	if (geometry.type == 'GeometryCollection') {
 		return geometry.geometries.flatMap(flatten);
 	}
