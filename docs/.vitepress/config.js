@@ -244,102 +244,102 @@ function sidebar() {
 					text: 'Import / Export',
 				},
 				{
-					link: '/configuration/project-settings',
+					link: '/app/project-settings',
 					text: 'Project Settings',
 				},
 				{
-					link: '/configuration/data-model',
+					link: '/app/data-model',
 					text: 'Data Model',
 					items: [
 						{
-							link: '/configuration/data-model/collections',
+							link: '/app/data-model/collections',
 							text: 'Collections',
 						},
 						{
-							link: '/configuration/data-model/fields',
+							link: '/app/data-model/fields',
 							text: 'Fields',
 							collapsible: true,
 							collapsed: true,
 							items: [
 								{
-									link: '/configuration/data-model/fields/text-numbers',
+									link: '/app/data-model/fields/text-numbers',
 									text: 'Text & Numbers',
 								},
 								{
-									link: '/configuration/data-model/fields/selection',
+									link: '/app/data-model/fields/selection',
 									text: 'Selection',
 								},
 								{
-									link: '/configuration/data-model/fields/relational',
+									link: '/app/data-model/fields/relational',
 									text: 'Relational',
 								},
 								{
-									link: '/configuration/data-model/fields/presentation',
+									link: '/app/data-model/fields/presentation',
 									text: 'Presentation',
 								},
 								{
-									link: '/configuration/data-model/fields/groups',
+									link: '/app/data-model/fields/groups',
 									text: 'Groups',
 								},
 								{
-									link: '/configuration/data-model/fields/other',
+									link: '/app/data-model/fields/other',
 									text: 'Other',
 								},
 							],
 						},
 						{
-							link: '/configuration/data-model/relationships',
+							link: '/app/data-model/relationships',
 							text: 'Relationships',
 						},
 					],
 				},
 				{
-					link: '/configuration/users-roles-permissions',
+					link: '/app/users-roles-permissions',
 					text: 'Users, Roles & Permissions',
 					items: [
 						{
-							link: '/configuration/users-roles-permissions/users',
+							link: '/app/users-roles-permissions/users',
 							text: 'Users',
 						},
 						{
-							link: '/configuration/users-roles-permissions/roles',
+							link: '/app/users-roles-permissions/roles',
 							text: 'Roles',
 						},
 						{
-							link: '/configuration/users-roles-permissions/permissions',
+							link: '/app/users-roles-permissions/permissions',
 							text: 'Permissions',
 						},
 					],
 				},
 				{
-					link: '/configuration/presets-bookmarks',
+					link: '/app/presets-bookmarks',
 					text: 'Presets & Bookmarks',
 				},
 				{
-					link: '/configuration/translation-strings',
+					link: '/app/translation-strings',
 					text: 'Translation Strings',
 				},
 				{
-					link: '/configuration/webhooks',
+					link: '/app/webhooks',
 					text: 'Webhooks',
 				},
 				{
-					link: '/configuration/flows',
+					link: '/app/flows',
 					text: 'Flows',
 					collapsible: false,
 					items: [
 						{
-							link: '/configuration/flows/triggers',
+							link: '/app/flows/triggers',
 							text: 'Triggers',
 						},
 						{
-							link: '/configuration/flows/operations',
+							link: '/app/flows/operations',
 							text: 'Operations',
 						},
 					],
 				},
 				{
-					link: '/configuration/activity-log',
+					link: '/app/activity-log',
 					text: 'Activity Log',
 				},
 			],
