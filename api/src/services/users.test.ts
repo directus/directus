@@ -122,12 +122,15 @@ describe('Integration Tests', () => {
 			checkUniqueEmailsSpy = vi
 				.spyOn(UsersService.prototype as any, 'checkUniqueEmails')
 				.mockImplementation(() => vi.fn());
+
 			checkPasswordPolicySpy = vi
 				.spyOn(UsersService.prototype as any, 'checkPasswordPolicy')
 				.mockResolvedValue(() => vi.fn());
+
 			checkRemainingAdminExistenceSpy = vi
 				.spyOn(UsersService.prototype as any, 'checkRemainingAdminExistence')
 				.mockResolvedValue(() => vi.fn());
+
 			checkRemainingActiveAdminSpy = vi
 				.spyOn(UsersService.prototype as any, 'checkRemainingActiveAdmin')
 				.mockResolvedValue(() => vi.fn());
@@ -255,9 +258,11 @@ describe('Integration Tests', () => {
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
 						`You can't change the "${field}" value manually.`
 					);
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
@@ -370,9 +375,11 @@ describe('Integration Tests', () => {
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
 						`You can't change the "${field}" value manually.`
 					);
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
@@ -505,9 +512,11 @@ describe('Integration Tests', () => {
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
 						`You can't change the "${field}" value manually.`
 					);
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);

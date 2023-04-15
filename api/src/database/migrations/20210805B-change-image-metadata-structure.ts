@@ -29,17 +29,21 @@ export async function up(knex: Knex): Promise<void> {
 				newMetadata.ifd0 = newMetadata.image;
 				delete newMetadata.image;
 			}
+
 			if (newMetadata.thumbnail) {
 				newMetadata.ifd1 = newMetadata.thumbnail;
 				delete newMetadata.thumbnail;
 			}
+
 			if (newMetadata.interoperability) {
 				newMetadata.interop = newMetadata.interoperability;
 				delete newMetadata.interoperability;
 			}
+
 			if (prevMetadata.icc) {
 				newMetadata.icc = prevMetadata.icc;
 			}
+
 			if (prevMetadata.iptc) {
 				newMetadata.iptc = prevMetadata.iptc;
 			}
@@ -70,18 +74,22 @@ export async function down(knex: Knex): Promise<void> {
 				newMetadata.exif['image'] = newMetadata.exif['ifd0'];
 				delete newMetadata.exif['ifd0'];
 			}
+
 			if (newMetadata.exif['ifd1']) {
 				newMetadata.exif['thumbnail'] = newMetadata.exif['ifd1'];
 				delete newMetadata.exif['ifd1'];
 			}
+
 			if (newMetadata.exif['interop']) {
 				newMetadata.exif['interoperability'] = newMetadata.exif['interop'];
 				delete newMetadata.exif['interop'];
 			}
+
 			if (newMetadata.exif['icc']) {
 				newMetadata.icc = newMetadata.exif['icc'];
 				delete newMetadata.exif['icc'];
 			}
+
 			if (newMetadata.exif['iptc']) {
 				newMetadata.iptc = newMetadata.exif['iptc'];
 				delete newMetadata.exif['iptc'];

@@ -83,6 +83,7 @@ export default defineComponent({
 			if (props.softLength) return 100 - (props.value.length / +props.softLength) * 100;
 			return 100;
 		});
+
 		return {
 			charsRemaining,
 			percentageRemaining,

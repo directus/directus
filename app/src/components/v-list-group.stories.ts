@@ -1,4 +1,5 @@
 import VListGroup from './v-list-group.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -31,6 +32,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	open: true,
 };

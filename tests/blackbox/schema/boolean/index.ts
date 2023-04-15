@@ -83,6 +83,7 @@ const _eq = (inputValue: any, possibleValues: any): boolean => {
 	} else if (inputValue === false || inputValue === 0 || inputValue === '0') {
 		return possibleValues === false;
 	}
+
 	return false;
 };
 
@@ -90,6 +91,7 @@ const _neq = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue !== possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -97,6 +99,7 @@ const _null = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue === undefined || inputValue === null) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -104,6 +107,7 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== undefined && inputValue !== null) {
 		return true;
 	}
+
 	return false;
 };
 

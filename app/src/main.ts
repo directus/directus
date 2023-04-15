@@ -19,6 +19,7 @@ async function init() {
 	const version = __DIRECTUS_VERSION__;
 
 	console.log(DIRECTUS_LOGO);
+
 	console.info(
 		`Hey! Interested in helping build this open-source data management platform?\nIf so, join our growing team of contributors at: https://directus.chat`
 	);

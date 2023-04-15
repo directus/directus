@@ -244,6 +244,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const confirmDelete = ref(false);
 const editActive = ref(false);
+
 const fileSrc = computed(() => {
 	if (item.value && item.value.modified_on) {
 		return `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`;
@@ -290,6 +291,7 @@ const fieldsFiltered = computed(() => {
 
 function navigateBack() {
 	const backState = router.options.history.state.back;
+
 	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
 		router.back();
 		return;

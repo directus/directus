@@ -29,12 +29,14 @@ export class Emitter {
 		context: EventContext
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
+
 		const eventListeners = events.map((event) => ({
 			event,
 			listeners: this.filterEmitter.listeners(event) as FilterHandler<T>[],
 		}));
 
 		let updatedPayload = payload;
+
 		for (const { event, listeners } of eventListeners) {
 			for (const listener of listeners) {
 				const result = await listener(updatedPayload, { event, ...meta }, context);
