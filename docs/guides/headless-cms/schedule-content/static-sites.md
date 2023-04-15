@@ -49,7 +49,7 @@ If your site fetches content at runtime or at the time of a page request, please
 <!-- Todo -->
 <!-- Need access to upload videos first -->
 
-## How To Guide
+## How-To Guide
 
 :::tip Requirements
 
