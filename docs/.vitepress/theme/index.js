@@ -15,6 +15,6 @@ export default {
 		DefaultTheme.enhanceApp(ctx);
 		const head = createHead();
 		ctx.app.use(head);
-		ctx.app.component('Card', Card)
+		ctx.app.component('Card', Card);
 	},
 };

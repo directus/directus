@@ -3,8 +3,8 @@ const props = defineProps({
 	title: { type: String, required: true },
 	h: { type: String, required: false, default: '2' },
 	text: { type: String, required: true },
-	icon: { type: String, required: false },
-	url: { type: String, required: false },
+	icon: { type: String, required: false, default: null },
+	url: { type: String, required: false, default: null },
 });
 
 const tagType = props.url ? 'a' : 'div';
@@ -13,7 +13,7 @@ const headerType = 'h' + props.h;
 
 <template>
 	<component :is="tagType" :href="url" class="card" :class="{ 'no-icon': !icon }">
-		<div class="icon" v-if="icon">
+		<div v-if="icon" class="icon">
 			<img v-if="icon" :src="icon" alt="" />
 		</div>
 		<div class="text">
