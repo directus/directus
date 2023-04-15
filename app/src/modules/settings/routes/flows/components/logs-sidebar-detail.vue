@@ -1,6 +1,8 @@
 <template>
 	<sidebar-detail :title="t('logs')" icon="fact_check" :badge="revisionsCount">
-		<div v-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
+		<v-skeleton-loader v-if="loading" type="input-tall" />
+
+		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
 
 		<v-detail
 			v-for="group in revisionsByDate"
@@ -103,7 +105,7 @@ const usedTrigger = computed(() => {
 	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
 });
 
-const { revisionsByDate, revisionsCount } = useRevisions(
+const { revisionsByDate, revisionsCount, loading } = useRevisions(
 	ref('directus_flows'),
 	computed(() => unref(flow).id),
 	{
