@@ -601,19 +601,23 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						]) {
 							expect(messages?.length).toBe(artistsCount);
 
-							for (let i = 0; i < artistsCount; i++) {
-								expect(messages![i]).toMatchObject({
-									type: 'subscription',
-									event: 'create',
-									payload: [
-										{
-											id: expect.anything(),
-											name: list[i].name,
-											company: null,
-										},
-									],
-								});
-							}
+							expect(messages).toEqual(
+								expect.arrayContaining(
+									list.map(({ name }) => {
+										return {
+											type: 'subscription',
+											event: 'create',
+											payload: [
+												{
+													id: expect.anything(),
+													name,
+													company: null,
+												},
+											],
+										};
+									})
+								)
+							);
 						}
 
 						for (const { messages, list } of [
