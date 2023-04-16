@@ -1,7 +1,7 @@
 import vendors from '@common/get-dbs-to-test';
 import { CreateCollection, CreateField, DeleteCollection, PRIMARY_KEY_TYPES } from '@common/index';
 
-export const collectionFirst = 'test_ws_rest_first';
+export const collectionFirst = 'test_ws_general_first';
 
 export type First = {
 	id?: number | string;

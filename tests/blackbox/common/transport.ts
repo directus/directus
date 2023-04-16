@@ -183,6 +183,10 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		return response[0];
 	};
 
+	const unsubscribe = async (uid?: WebSocketUID) => {
+		await sendMessage({ type: 'unsubscribe', uid });
+	};
+
 	conn.on('open', () => {
 		if (config?.auth) {
 			if ('email' in config.auth) {
@@ -216,7 +220,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		return;
 	});
 
-	return { conn, waitForState, getMessages, getMessageCount, sendMessage, subscribe };
+	return { conn, waitForState, getMessages, getMessageCount, sendMessage, subscribe, unsubscribe };
 }
 
 export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
@@ -401,7 +405,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		return subscriptionKey;
 	};
 
-	const unsubscribe = (uid?: string) => {
+	const unsubscribe = (uid?: WebSocketUID) => {
 		if (uid) {
 			unsubscriptions[uid]?.();
 		} else if (unsubscriptionDefault) {
