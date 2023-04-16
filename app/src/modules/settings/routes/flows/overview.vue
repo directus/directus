@@ -27,7 +27,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_flows_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
@@ -245,6 +245,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 		await api.patch(`/flows/${id}`, {
 			status: value === 'active' ? 'inactive' : 'active',
 		});
+
 		await flowsStore.hydrate();
 	} catch (error) {
 		unexpectedError(error as Error);

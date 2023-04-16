@@ -1142,7 +1142,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: 映射
     basemaps: 底图
     basemaps_raster: 栅格化

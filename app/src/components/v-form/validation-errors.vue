@@ -27,7 +27,7 @@
 									: t(`validationError.${validationError.type}`, validationError)
 							"
 							small
-							name="help_outline"
+							name="help"
 						/>
 					</template>
 					<template v-else>

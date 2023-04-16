@@ -26,6 +26,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -47,18 +48,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							filter: JSON.stringify({ hash_field: { _null: true } }),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _nnull: true } }),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response3 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _null: true } }),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response4 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
@@ -87,18 +91,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							filter: JSON.stringify({ hash_field: { _contains: 'a' } }),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _eq: 'b' } }),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response3 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
 							filter: JSON.stringify({ hash_field: { _starts_with: 'c' } }),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response4 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
@@ -125,6 +132,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
 						.query({
@@ -133,6 +141,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response3 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
@@ -141,6 +150,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response4 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
@@ -173,6 +183,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response2 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionFirst}`)
 						.query({
@@ -181,6 +192,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response3 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({
@@ -189,6 +201,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							}),
 						})
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 					const response4 = await request(getUrl(vendor))
 						.get(`/items/${localCollectionSecond}`)
 						.query({

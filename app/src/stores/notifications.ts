@@ -117,6 +117,7 @@ export const useNotificationsStore = defineStore({
 						...updates,
 					};
 				}
+
 				return notification;
 			}
 		},

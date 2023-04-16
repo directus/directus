@@ -79,6 +79,7 @@ export default defineComponent({
 			if (!props.value || !folders.value) {
 				return t('interfaces.system-folder.root_name');
 			}
+
 			const folder = folders.value.find((folder) => folder.id === props.value);
 			return folder
 				? folderParentPath(folder as Folder, folders.value)

@@ -8,7 +8,7 @@
 
 		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
 			<div v-if="imageError || !src" class="image-error">
-				<v-icon large :name="imageError === 'UNKNOWN' ? 'error_outline' : 'info_outline'" />
+				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
 				<span class="message">
 					{{ t(`errors.${imageError}`) }}
@@ -143,6 +143,7 @@ const src = computed(() => {
 	if (image.value.type.includes('svg')) {
 		return '/assets/' + image.value.id;
 	}
+
 	if (image.value.type.includes('image')) {
 		const fit = props.crop ? 'cover' : 'contain';
 		const url = `/assets/${image.value.id}?key=system-large-${fit}&cache-buster=${image.value.modified_on}`;
@@ -170,6 +171,7 @@ const editImageEditor = ref(false);
 
 async function imageErrorHandler() {
 	if (!src.value) return;
+
 	try {
 		await api.get(src.value);
 	} catch (err: any) {

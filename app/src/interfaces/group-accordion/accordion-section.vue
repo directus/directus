@@ -7,13 +7,7 @@
 				<span class="field-name">{{ field.name }}</span>
 				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
 				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
-				<v-icon
-					v-if="!active && validationMessage"
-					v-tooltip="validationMessage"
-					class="warning"
-					name="error_outline"
-					small
-				/>
+				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
 			</div>
 
 			<transition-expand>
@@ -112,9 +106,11 @@ export default defineComponent({
 
 		const fieldsInSection = computed(() => {
 			let fields: Field[] = [merge({}, props.field, { hideLabel: true })];
+
 			if (props.field.meta?.special?.includes('group')) {
 				fields.push(...getFieldsForGroup(props.field.meta?.field));
 			}
+
 			return fields;
 		});
 

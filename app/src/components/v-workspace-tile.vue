@@ -306,6 +306,7 @@ function useDragDrop() {
 
 	function onPointerUp() {
 		dragging.value = false;
+
 		if (
 			props.editMode === false ||
 			props.draggable === false ||
