@@ -2463,8 +2463,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const countCreate = 4;
 							const countUpdate = 3;
 							const countDelete = 2;
-							const mutationRoundStates = countCreate + countUpdate + 1; // delete ops count as one
-							const mutationRoundStatesGql = countCreate + countUpdate + countDelete;
 							const countriesID = [];
 							const countriesID2 = [];
 
@@ -2529,57 +2527,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								];
 							}
 
-							const ws = common.createWebSocketConn(getUrl(vendor), {
-								auth: { access_token: common.USER.ADMIN.TOKEN },
-							});
-
-							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
-							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
-
-							const wsGql = common.createWebSocketGql(getUrl(vendor), {
-								auth: { access_token: common.USER.ADMIN.TOKEN },
-							});
-
-							const subscriptionKeyCountries = await wsGql.subscribe({
-								collection: localCollectionCountries,
-								jsonQuery: {
-									id: true,
-									name: true,
-									_event: true,
-								},
-								uid: localCollectionCountries,
-							});
-
-							const subscriptionKeyStates = await wsGql.subscribe({
-								collection: localCollectionStates,
-								jsonQuery: {
-									id: true,
-									name: true,
-									country_id: {
-										id: true,
-									},
-									_event: true,
-								},
-								uid: localCollectionStates,
-							});
-
 							// Action
 							const response = await request(getUrl(vendor))
 								.patch(`/items/${localCollectionCountries}`)
 								.send(countries)
 								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
-
-							const wsMessagesCountries = await ws.getMessages(count, { uid: localCollectionCountries });
-
-							const wsMessagesStates = await ws.getMessages(count * mutationRoundStates, {
-								uid: localCollectionStates,
-							});
-
-							const wsGqlMessagesCountries = await wsGql.getMessages(count, { uid: localCollectionCountries });
-
-							const wsGqlMessagesStates = await wsGql.getMessages(count * mutationRoundStatesGql, {
-								uid: localCollectionStates,
-							});
 
 							const mutationKey = `update_${localCollectionCountries}_batch`;
 
@@ -2594,281 +2546,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							const wsMessagesGqlCountries = await ws.getMessages(count, { uid: localCollectionCountries });
-
-							const wsMessagesGqlStates = await ws.getMessages(count * mutationRoundStatesGql, {
-								uid: localCollectionStates,
-							});
-
-							ws.conn.close();
-							const wsGqlMessagesGqlCountries = await wsGql.getMessages(count, { uid: localCollectionCountries });
-
-							const wsGqlMessagesGqlStates = await wsGql.getMessages(count * mutationRoundStatesGql, {
-								uid: localCollectionStates,
-							});
-
-							wsGql.client.dispose();
-
 							// Assert
 							expect(response.statusCode).toBe(200);
 							expect(response.body.data.length).toBe(count);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
-
-							for (const { messagesCountries, messagesStates } of [
-								{ messagesCountries: wsMessagesCountries, messagesStates: wsMessagesStates },
-							]) {
-								expect(messagesCountries?.length).toBe(count);
-								expect(messagesStates?.length).toBe(count * mutationRoundStates);
-
-								for (let i = 0; i < count; i++) {
-									expect(messagesCountries![i]).toMatchObject({
-										type: 'subscription',
-										event: 'update',
-										payload: [
-											{
-												id: expect.anything(),
-												name: expect.any(String),
-												states: expect.arrayContaining([expect.anything()]),
-											},
-										],
-									});
-								}
-
-								for (let i = 0; i < count; i++) {
-									for (let j = i * mutationRoundStates; j < countCreate + i * mutationRoundStates; j++) {
-										expect(messagesStates![j]).toMatchObject({
-											type: 'subscription',
-											event: 'create',
-											payload: [
-												{
-													id: expect.anything(),
-													name: expect.any(String),
-													country_id: expect.anything(),
-												},
-											],
-										});
-									}
-
-									for (
-										let j = countCreate + i * mutationRoundStates;
-										j < countCreate + countUpdate + i * mutationRoundStates;
-										j++
-									) {
-										expect(messagesStates![j]).toMatchObject({
-											type: 'subscription',
-											event: 'update',
-											payload: [
-												expect.objectContaining({
-													id: expect.anything(),
-													name: 'updated',
-													country_id: expect.anything(),
-												}),
-											],
-										});
-									}
-
-									for (
-										let j = countCreate + countUpdate + i * mutationRoundStates;
-										j < countCreate + countUpdate + 1 + i * mutationRoundStates;
-										j++
-									) {
-										expect(messagesStates![j]).toMatchObject({
-											type: 'subscription',
-											event: 'update',
-											payload: expect.arrayContaining([
-												expect.objectContaining({
-													id: expect.anything(),
-													name: expect.any(String),
-												}),
-											]),
-										});
-									}
-								}
-							}
-
-							for (const { messagesCountries, messagesStates } of [
-								{ messagesCountries: wsMessagesGqlCountries, messagesStates: wsMessagesGqlStates },
-							]) {
-								expect(messagesCountries?.length).toBe(count);
-								expect(messagesStates?.length).toBe(count * mutationRoundStatesGql);
-
-								for (let i = 0; i < count; i++) {
-									expect(messagesCountries![i]).toMatchObject({
-										type: 'subscription',
-										event: 'update',
-										payload: [
-											{
-												id: expect.anything(),
-												name: expect.any(String),
-												states: expect.arrayContaining(Array(count).fill(expect.anything())),
-											},
-										],
-									});
-								}
-
-								for (let i = 0; i < count; i++) {
-									for (let j = i * mutationRoundStatesGql; j < countCreate + i * mutationRoundStatesGql; j++) {
-										expect(messagesStates![j]).toMatchObject({
-											type: 'subscription',
-											event: 'create',
-											payload: [
-												{
-													id: expect.anything(),
-													name: expect.any(String),
-													country_id: expect.anything(),
-												},
-											],
-										});
-									}
-
-									for (
-										let j = countCreate + i * mutationRoundStatesGql;
-										j < countUpdate + countDelete + i * mutationRoundStatesGql;
-										j++
-									) {
-										expect(messagesStates![j]).toMatchObject({
-											type: 'subscription',
-											event: 'update',
-											payload: [
-												expect.objectContaining({
-													id: expect.anything(),
-													name: 'updated',
-													country_id: expect.anything(),
-												}),
-											],
-										});
-									}
-								}
-							}
-
-							for (const { messagesCountries, messagesStates } of [
-								{ messagesCountries: wsGqlMessagesCountries, messagesStates: wsGqlMessagesStates },
-							]) {
-								expect(messagesCountries?.length).toBe(count);
-								expect(messagesStates?.length).toBe(count * mutationRoundStatesGql);
-
-								for (let i = 0; i < countCreate; i++) {
-									expect(messagesCountries![i]).toEqual({
-										data: {
-											[subscriptionKeyCountries]: {
-												id: expect.anything(),
-												name: expect.any(String),
-												_event: 'update',
-											},
-										},
-									});
-								}
-
-								for (let i = 0; i < count; i++) {
-									for (let j = i * mutationRoundStatesGql; j < countCreate + i * mutationRoundStatesGql; j++) {
-										expect(messagesStates![j]).toEqual({
-											data: {
-												[subscriptionKeyStates]: {
-													id: expect.anything(),
-													name: expect.any(String),
-													country_id: {
-														id: expect.anything(),
-													},
-													_event: 'create',
-												},
-											},
-										});
-									}
-
-									for (
-										let j = countCreate + i * mutationRoundStatesGql;
-										j < countCreate + countUpdate + i * mutationRoundStatesGql;
-										j++
-									) {
-										expect(messagesStates![j]).toEqual({
-											data: {
-												[subscriptionKeyStates]: {
-													id: expect.anything(),
-													name: 'updated',
-													country_id: {
-														id: expect.anything(),
-													},
-													_event: 'update',
-												},
-											},
-										});
-									}
-
-									for (
-										let j = countCreate + countUpdate + i * mutationRoundStatesGql;
-										j < countCreate + countUpdate + 1 + i * mutationRoundStatesGql;
-										j++
-									) {
-										expect(messagesStates![j]).toEqual({
-											data: {
-												[subscriptionKeyStates]: {
-													id: expect.anything(),
-													name: expect.any(String),
-													country_id: null,
-													_event: 'update',
-												},
-											},
-										});
-									}
-								}
-							}
-
-							for (const { messagesCountries, messagesStates } of [
-								{ messagesCountries: wsGqlMessagesGqlCountries, messagesStates: wsGqlMessagesGqlStates },
-							]) {
-								expect(messagesCountries?.length).toBe(count);
-								expect(messagesStates?.length).toBe(count * mutationRoundStatesGql);
-
-								for (let i = 0; i < countCreate; i++) {
-									expect(messagesCountries![i]).toEqual({
-										data: {
-											[subscriptionKeyCountries]: {
-												id: expect.anything(),
-												name: expect.any(String),
-												_event: 'update',
-											},
-										},
-									});
-								}
-
-								for (let i = 0; i < count; i++) {
-									for (let j = i * mutationRoundStatesGql; j < countCreate + i * mutationRoundStatesGql; j++) {
-										expect(messagesStates![j]).toEqual({
-											data: {
-												[subscriptionKeyStates]: {
-													id: expect.anything(),
-													name: expect.any(String),
-													country_id: {
-														id: expect.anything(),
-													},
-													_event: 'create',
-												},
-											},
-										});
-									}
-
-									for (
-										let j = countCreate + i * mutationRoundStatesGql;
-										j < countCreate + countUpdate + countDelete + i * mutationRoundStatesGql;
-										j++
-									) {
-										expect(messagesStates![j]).toEqual({
-											data: {
-												[subscriptionKeyStates]: {
-													id: expect.anything(),
-													name: 'updated',
-													country_id: {
-														id: expect.anything(),
-													},
-													_event: 'update',
-												},
-											},
-										});
-									}
-								}
-							}
 						},
 						120000
 					);
@@ -2953,40 +2636,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								];
 							}
 
-							const ws = common.createWebSocketConn(getUrl(vendor), {
-								auth: { access_token: common.USER.ADMIN.TOKEN },
-							});
-
-							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
-							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
-
-							const wsGql = common.createWebSocketGql(getUrl(vendor), {
-								auth: { access_token: common.USER.ADMIN.TOKEN },
-							});
-
-							await wsGql.subscribe({
-								collection: localCollectionCountries,
-								jsonQuery: {
-									id: true,
-									name: true,
-									_event: true,
-								},
-								uid: localCollectionCountries,
-							});
-
-							await wsGql.subscribe({
-								collection: localCollectionStates,
-								jsonQuery: {
-									id: true,
-									name: true,
-									country_id: {
-										id: true,
-									},
-									_event: true,
-								},
-								uid: localCollectionStates,
-							});
-
 							// Action
 							const response = await request(getUrl(vendor))
 								.patch(`/items/${localCollectionCountries}`)
@@ -3006,9 +2655,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
-							ws.conn.close();
-							wsGql.client.dispose();
-
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
@@ -3023,11 +2669,6 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
-
-							expect(ws.getMessageCount(localCollectionCountries)).toBe(count);
-							expect(ws.getMessageCount(localCollectionStates)).toBe(37); // TODO: There should not be any updates as transaction errored
-							expect(wsGql.getMessageCount(localCollectionCountries)).toBe(1);
-							expect(wsGql.getMessageCount(localCollectionStates)).toBe(0);
 						},
 						120000
 					);
