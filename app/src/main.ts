@@ -3,7 +3,6 @@
 import { getVueComponentName } from '@/utils/get-vue-component-name';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
-import { version } from '../package.json';
 import App from './app.vue';
 import { registerComponents } from './components/register';
 import { DIRECTUS_LOGO } from './constants';
@@ -17,6 +16,8 @@ import { loadExtensions, registerExtensions } from './extensions';
 init();
 
 async function init() {
+	const version = __DIRECTUS_VERSION__;
+
 	console.log(DIRECTUS_LOGO);
 
 	console.info(
