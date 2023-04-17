@@ -4,6 +4,7 @@ import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { ItemsService } from '../items.js';
 import type { Query } from '@directus/types';
+import type { GraphQLResolveInfo } from 'graphql';
 
 const messages = createPubSub(new EventEmitter());
 
@@ -16,7 +17,7 @@ export function bindPubSub() {
 }
 
 export function createSubscriptionGenerator(self: GraphQLService, event: string) {
-	return async function* (_x: unknown, _y: unknown, _z: unknown, request: any) {
+	return async function* (_x: unknown, _y: unknown, _z: unknown, request: GraphQLResolveInfo) {
 		const selections = request.fieldNodes[0]?.selectionSet?.selections || [];
 		const { fields } = self.getQuery({}, selections, {});
 
