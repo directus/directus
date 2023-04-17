@@ -4,7 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import type { Config } from '../../types.js';
 
-const CONFIG_FILE_NAMES = ['extension.config.js', 'extension.config.mjs', 'extension.config.cjs'];
+export const CONFIG_FILE_NAMES = ['extension.config.js', 'extension.config.mjs', 'extension.config.cjs'];
 
 // This is needed to work around Typescript always transpiling import() to require() for CommonJS targets.
 const _import = new Function('url', 'return import(url)');
