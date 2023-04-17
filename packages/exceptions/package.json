@@ -17,17 +17,13 @@
 	"license": "GPL-3.0",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js"
-		},
+		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
-		"!**/*.d.ts.map"
+		"!**/*.test.{js,d.ts}"
 	],
 	"publishConfig": {
 		"access": "public"

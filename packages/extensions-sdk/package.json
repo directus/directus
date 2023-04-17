@@ -15,22 +15,18 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"author": "Nicola Krumschmidt",
 	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js"
-		},
+		".": "./dist/index.js",
 		"./cli": "./dist/cli/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"bin": {
 		"directus-extension": "cli.js"
 	},
 	"files": [
 		"dist",
 		"templates",
-		"!**/*.d.ts.map"
+		"!**/*.test.{js,d.ts}"
 	],
 	"scripts": {
 		"build": "tsc --build",

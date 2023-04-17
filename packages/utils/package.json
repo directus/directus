@@ -32,10 +32,9 @@
 		"./package.json": "./package.json"
 	},
 	"main": "dist/shared/index.js",
-	"types": "dist/shared/index.d.ts",
 	"files": [
 		"dist",
-		"!**/*.d.ts.map"
+		"!**/*.test.{js,d.ts}"
 	],
 	"publishConfig": {
 		"access": "public"
