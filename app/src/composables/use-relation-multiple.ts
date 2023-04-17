@@ -4,7 +4,7 @@ import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter, Item } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
+import { getEndpoint, toArray } from '@directus/utils';
 import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
 import { computed, ref, Ref, unref, watch } from 'vue';
 
@@ -179,7 +179,7 @@ export function useRelationMultiple(
 
 		items.push(...fullSelectedOnPage, ...newItems);
 
-		const sortField = previewQuery.value.sort?.[0] ?? relation.value.sortField;
+		const sortField = (previewQuery.value.sort ?? toArray(relation.value.sortField))[0];
 
 		if ((previewQuery.value.limit > 0 && totalItemCount.value > previewQuery.value.limit) || !sortField) return items;
 
