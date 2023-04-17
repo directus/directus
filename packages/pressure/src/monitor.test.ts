@@ -14,6 +14,7 @@ vi.mock('node:process');
 let monitor: PressureMonitor;
 let mockIntervalHistogram: IntervalHistogram;
 let mockTimer: NodeJS.Timeout;
+
 let sample: {
 	config: Required<PressureMonitorOptions>;
 	rss: number;
@@ -162,6 +163,7 @@ describe('#updateEventLoopsUsage', () => {
 		vi.spyOn(performance, 'eventLoopUtilization').mockReturnValue({
 			utilization: sample.eventLoopUtilization,
 		} as EventLoopUtilization);
+
 		monitor['updateEventLoopUsage']();
 	});
 
