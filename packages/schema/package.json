@@ -26,17 +26,19 @@
 	"license": "GPL-3.0",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
-		".": "./dist/index.js",
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
 		"./package.json": "./package.json",
 		"./types/overview": {
 			"types": "./dist/types/overview.d.ts",
 			"default": "./dist/types/overview.js"
 		}
 	},
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"files": [
-		"dist"
+		"dist",
+		"!**/*.d.ts.map"
 	],
 	"scripts": {
 		"build": "tsc --build",

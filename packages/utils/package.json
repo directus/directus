@@ -31,10 +31,9 @@
 		},
 		"./package.json": "./package.json"
 	},
-	"main": "dist/shared/index.js",
 	"files": [
 		"dist",
-		"!**/*.d.ts?(.map)"
+		"!**/*.d.ts.map"
 	],
 	"publishConfig": {
 		"access": "public"

@@ -15,10 +15,12 @@
 	"license": "GPL-3.0",
 	"author": "Nils Twelker",
 	"exports": {
-		".": "./index.js",
+		".": {
+			"types": "./index.d.ts",
+			"import": "./index.js"
+		},
 		"./package.json": "./package.json"
 	},
-	"main": "index.js",
 	"files": [
 		"dist",
 		"index.d.ts",
