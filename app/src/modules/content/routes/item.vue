@@ -399,6 +399,7 @@ watch(
 			if (popupWindow) popupWindow.close();
 			return;
 		}
+
 		const targetUrl = window.location.href + (window.location.href.endsWith('/') ? 'preview' : '/preview');
 
 		popupWindow = window.open(
@@ -435,7 +436,9 @@ watch(saving, (newVal, oldVal) => {
 	try {
 		(window as any).refreshLivePreview();
 		if (popupWindow) (popupWindow as any).refreshLivePreview();
-	} catch (error) {}
+	} catch (error) {
+		// noop
+	}
 });
 
 onBeforeUnmount(() => {

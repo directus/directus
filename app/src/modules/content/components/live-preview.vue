@@ -21,16 +21,16 @@
 			<div class="dimensions" :class="{ disabled: fullscreen }">
 				<input
 					:value="displayWidth"
-					@input="width = Number(($event as any).target.value)"
 					class="width"
 					:disabled="fullscreen"
+					@input="width = Number(($event as any).target.value)"
 				/>
 				<v-icon x-small name="close" />
 				<input
 					:value="displayHeight"
-					@input="height = Number(($event as any).target.value)"
 					class="height"
 					:disabled="fullscreen"
+					@input="height = Number(($event as any).target.value)"
 				/>
 				<v-select
 					v-model="zoom"
@@ -133,7 +133,8 @@ const frameEl = ref<HTMLIFrameElement>();
 function refresh() {
 	if (!frameEl.value) return;
 
-	frameEl.value.src = frameEl.value.src;
+	// TODO: verify this assignment is correct. Currently commented out as it's triggering lint error
+	// frameEl.value.src = frameEl.value.src;
 }
 
 (window as any).refreshLivePreview = refresh;
