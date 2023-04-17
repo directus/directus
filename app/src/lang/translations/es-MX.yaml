@@ -531,6 +531,7 @@ create_collection: Crear colección
 no_collections_copy_admin: Aún no tiene alguna Colección. Haga clic en el botón para empezar.
 no_collections_copy: Aún no tiene alguna Colección. Por favor contacte al administrador del sistema.
 relationship_not_setup: La relación no se ha configurado correctamente
+no_singleton_relations: No se admiten las relaciones con Singletons
 display_template_not_setup: La opción de plantilla de Presentación está mal configurada
 collection_field_not_setup: La opción del campo de colección está mal configurada
 select_a_collection: Seleccionar una Colección
@@ -799,6 +800,7 @@ run_flow_confirm: '¿Estás seguro que deseas ejecutar este flujo?'
 run_flow_on_current_collection: Ejecutar flujo en la colección actual
 run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento puede ser actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
+run_flow_on_selected: Seleccione uno o más elementos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} elementos seleccionados
 run_flow: Ejecutar flujo
 run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 field_name_placeholder: Ingresa el nombre del campo...
@@ -1445,6 +1447,7 @@ translation: Traducción
 translation_placeholder: Ingresa una traducción...
 value: Valor
 view_project: Ver proyecto
+weeks: { }
 report_error: Reportar Error
 start: Iniciar
 table: Tabla
@@ -1602,6 +1605,9 @@ interfaces:
     many-to-one: Muchos a Uno
     description: Seleccionar un elemento único relacionado
     display_template: Plantilla de Presentación
+  collection-item-dropdown:
+    collection-item-dropdown: Menú desplegable de elementos de la colección
+    description: Selecciona un elemento de una colección en formato JSON
   input-rich-text-md:
     markdown: Markdown
     description: Ingresar y previsualizar markdown
@@ -1643,6 +1649,7 @@ interfaces:
   system-folder:
     folder: Carpeta
     description: Seleccione una carpeta
+    field_hint: Carpeta predeterminada para los archivos subidos sin una carpeta especificada. No afecta a los archivos existentes.
     root_name: Raíz de la Biblioteca de Archivos
     system_default: Valores por defecto del sistema
   select-radio:
@@ -1999,6 +2006,8 @@ panels:
     select_collection: Debe seleccionar una colección.
   linechart:
     name: Gráficos de línea
+    description: Gráfico de líneas para comparar el cambio de un campo
+    disabled_grouping: Desactivado cuando se selecciona la agrupación.
     disabled_no_grouping: Deshabilitado cuando no se selecciona ninguna agrupación.
     show_marker: Mostrar marcador de información sobre herramientas
     curve_type: Tipo de curva
@@ -2010,6 +2019,7 @@ panels:
     description: Medidor para los valores de seguimiento
   piechart:
     name: Gráfico de Pie o Donut
+    description: Gráfico circular que muestra las proporciones de los grupos en una columna
   variable:
     name: Variable global
     description: Establecer un valor global para el uso en los filtros de otros Paneles
