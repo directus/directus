@@ -1,47 +1,36 @@
-import jwt from 'jsonwebtoken';
 import getDatabase from '../database/index.js';
 import type { Accountability } from '@directus/types';
-import type { DirectusTokenPayload } from '../types/auth.js';
 import isDirectusJWT from './is-directus-jwt.js';
 import { InvalidCredentialsException } from '../index.js';
 import env from '../env.js';
+import { verifyAccessJWT } from './jwt.js';
 
-const { JsonWebTokenError, TokenExpiredError } = jwt;
+const emptyAccountability: Accountability = {
+	user: null,
+	role: null,
+	admin: false,
+	app: false,
+};
 
-export async function getAccountabilityForToken(token?: string | null): Promise<Accountability> {
-	const database = getDatabase();
-
-	const accountability: Accountability = {
-		user: null,
-		role: null,
-		admin: false,
-		app: false,
-	};
-
+export async function getAccountabilityForToken(
+	token?: string | null,
+	accountability: Accountability = emptyAccountability
+): Promise<Accountability> {
 	if (token) {
 		if (isDirectusJWT(token)) {
-			let payload: DirectusTokenPayload;
+			const payload = verifyAccessJWT(token, env['SECRET'] as string);
 
-			try {
-				payload = jwt.verify(token, env['SECRET'] as string, { issuer: 'directus' }) as DirectusTokenPayload;
-			} catch (err: any) {
-				if (err instanceof TokenExpiredError) {
-					throw new InvalidCredentialsException('Token expired.');
-				} else if (err instanceof JsonWebTokenError) {
-					throw new InvalidCredentialsException('Token invalid.');
-				} else {
-					throw err;
-				}
-			}
+			accountability.role = payload.role;
+			accountability.admin = payload.admin_access === true || payload.admin_access == 1;
+			accountability.app = payload.app_access === true || payload.app_access == 1;
 
 			if (payload.share) accountability.share = payload.share;
 			if (payload.share_scope) accountability.share_scope = payload.share_scope;
 			if (payload.id) accountability.user = payload.id;
-			accountability.role = payload.role;
-			accountability.admin = payload.admin_access === true || payload.admin_access == 1;
-			accountability.app = payload.app_access === true || payload.app_access == 1;
 		} else {
 			// Try finding the user with the provided token
+			const database = getDatabase();
+
 			const user = await database
 				.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
 				.from('directus_users')
