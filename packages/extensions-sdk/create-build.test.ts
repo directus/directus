@@ -68,6 +68,6 @@ test.each(
 			}
 		}
 	},
-	// bump up timeout duration as the build process can take slightly longer to complete
+	// Bump up timeout duration as the build process can take slightly longer to complete
 	20000
 );
