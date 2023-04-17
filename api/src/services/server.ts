@@ -18,6 +18,7 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getOSInfo } from '../utils/get-os-info.js';
 import { version } from '../utils/package.js';
 import { SettingsService } from './settings.js';
+import { toBoolean } from '../utils/to-boolean.js';
 
 export class ServerService {
 	knex: Knex;
@@ -96,24 +97,26 @@ export class ServerService {
 		}
 
 		if (this.accountability?.user) {
-			if (env['WEBSOCKETS_ENABLED']) {
+			if (toBoolean(env['WEBSOCKETS_ENABLED'])) {
 				info['websocket'] = {};
 
-				info['websocket'].rest = env['WEBSOCKETS_REST_ENABLED']
+				info['websocket'].rest = toBoolean(env['WEBSOCKETS_REST_ENABLED'])
 					? {
 							authentication: env['WEBSOCKETS_REST_AUTH'],
 							path: env['WEBSOCKETS_REST_PATH'],
 					  }
 					: false;
 
-				info['websocket'].graphql = env['WEBSOCKETS_GRAPHQL_ENABLED']
+				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
 					? {
 							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
 							path: env['WEBSOCKETS_GRAPHQL_PATH'],
 					  }
 					: false;
 
-				info['websocket'].heartbeat = env['WEBSOCKETS_HEARTBEAT_ENABLED'] ? env['WEBSOCKETS_HEARTBEAT_PERIOD'] : false;
+				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
+					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
+					: false;
 			} else {
 				info['websocket'] = false;
 			}
