@@ -7,7 +7,7 @@ author_override:
 author: Eron Powell
 ---
 
-# Slugify Text
+# Slugify Text With Flows
 
 > {{ $frontmatter.description }}
 
