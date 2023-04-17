@@ -35,8 +35,7 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.test.{js,d.ts}"
+		"dist"
 	],
 	"scripts": {
 		"build": "tsc --build",
