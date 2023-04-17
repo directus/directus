@@ -30,7 +30,7 @@ function getConfigFileContent(configFileName: string) {
 	}
 }
 
-// test one extension from each of app/api/hybrid extensions, and each config file names
+// Test one extension from each of app/api/hybrid extensions, and each config file names
 test.each(
 	['interface', 'endpoint', 'operation'].map((extensionType, index) => {
 		return { extensionType, configFileName: CONFIG_FILE_NAMES[index] };
@@ -53,7 +53,7 @@ test.each(
 				expect(fse.pathExistsSync(resolve(testExtensionPath, 'src', `index.${languageToShort(language)}`))).toBe(true);
 			}
 
-			// add dummy config file to verify they are loaded properly when building the extension
+			// Add dummy config file to verify they are loaded properly when building the extension
 			await fse.outputFile(resolve(testExtensionPath, configFileName), getConfigFileContent(configFileName));
 			expect(fse.pathExistsSync(resolve(testExtensionPath, configFileName))).toBe(true);
 
