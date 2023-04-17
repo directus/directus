@@ -21,6 +21,8 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"main": "index.js",
+	"types": "index.d.ts",
 	"files": [
 		"dist",
 		"index.d.ts",

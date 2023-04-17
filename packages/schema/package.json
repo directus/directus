@@ -36,6 +36,8 @@
 			"default": "./dist/types/overview.js"
 		}
 	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
 		"!**/*.d.ts.map"
