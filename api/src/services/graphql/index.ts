@@ -82,6 +82,7 @@ import { addPathToValidationError } from './utils/add-path-to-validation-error.j
 import processError from './utils/process-error.js';
 import { createSubscriptionGenerator } from './subscription.js';
 import { getService } from '../../utils/get-service.js';
+import { toBoolean } from '../../utils/to-boolean.js';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -1882,13 +1883,13 @@ export class GraphQLService {
 						},
 					}),
 				},
-				websocket: env['WEBSOCKETS_ENABLED']
+				websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
 					? {
 							type: new GraphQLObjectType({
 								name: 'server_info_websocket',
 								fields: {
 									rest: {
-										type: env['WEBSOCKETS_REST_ENABLED']
+										type: toBoolean(env['WEBSOCKETS_REST_ENABLED'])
 											? new GraphQLObjectType({
 													name: 'server_info_websocket_rest',
 													fields: {
@@ -1908,7 +1909,7 @@ export class GraphQLService {
 											: GraphQLBoolean,
 									},
 									graphql: {
-										type: env['WEBSOCKETS_GRAPHQL_ENABLED']
+										type: toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
 											? new GraphQLObjectType({
 													name: 'server_info_websocket_graphql',
 													fields: {
@@ -1928,7 +1929,7 @@ export class GraphQLService {
 											: GraphQLBoolean,
 									},
 									heartbeat: {
-										type: env['WEBSOCKETS_HEARTBEAT_ENABLED'] ? GraphQLInt : GraphQLBoolean,
+										type: toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) ? GraphQLInt : GraphQLBoolean,
 									},
 								},
 							}),
