@@ -67,5 +67,7 @@ test.each(
 				expect(fse.pathExistsSync(resolve(testExtensionPath, 'dist', 'index.js'))).toBe(true);
 			}
 		}
-	}
+	},
+	// bump up timeout duration as the build process can take slightly longer to complete
+	20000
 );
