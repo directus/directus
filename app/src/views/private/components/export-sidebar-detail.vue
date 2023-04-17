@@ -189,7 +189,7 @@
 					<p class="type-label">{{ t('sort_field') }}</p>
 					<interface-system-field
 						:value="sortField"
-						:collection="collection"
+						:collection-name="collection"
 						allow-primary-key
 						@input="sortField = $event"
 					/>
@@ -222,6 +222,7 @@
 					<interface-system-fields
 						:value="exportSettings.fields"
 						:collection-name="collection"
+						allow-select-all
 						@input="exportSettings.fields = $event"
 					/>
 				</div>
@@ -374,6 +375,7 @@ const getItemCount = debounce(async () => {
 				if (response.data.data?.[0]?.count) {
 					return Number(response.data.data[0].count);
 				}
+
 				if (response.data.data?.[0]?.countDistinct) {
 					return Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
 				}

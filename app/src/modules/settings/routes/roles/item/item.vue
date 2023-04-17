@@ -193,6 +193,7 @@ export default defineComponent({
 			const usersCreatePermission = permissionsStore.permissions.find(
 				(permission) => permission.collection === 'directus_users' && permission.action === 'create'
 			);
+
 			const rolesReadPermission = permissionsStore.permissions.find(
 				(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
 			);

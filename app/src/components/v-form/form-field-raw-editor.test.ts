@@ -23,12 +23,14 @@ test('should render', () => {
 		},
 		global,
 	});
+
 	expect(wrapper.html()).toMatchSnapshot();
 });
 
 // test if there is a value
 test('submitting', async () => {
 	expect(formFieldRawEditor).toBeTruthy();
+
 	const wrapper = mount(formFieldRawEditor, {
 		props: {
 			showModal: true,
@@ -38,6 +40,7 @@ test('submitting', async () => {
 		},
 		global,
 	});
+
 	const button = wrapper.findAll('v-button').at(1);
 	await button!.trigger('click');
 	await wrapper.vm.$nextTick();
@@ -54,6 +57,7 @@ it('should cancel with keydown', async () => {
 		},
 		global,
 	});
+
 	await wrapper.trigger('esc');
 	await wrapper.vm.$nextTick();
 	expect(wrapper.emitted().cancel.length).toBe(1);
@@ -69,6 +73,7 @@ it('should cancel with the cancel button', async () => {
 		},
 		global,
 	});
+
 	const button = wrapper.findAll('v-button').at(0);
 	await button!.trigger('click');
 	await wrapper.vm.$nextTick();

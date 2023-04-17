@@ -30,7 +30,8 @@
 								include-functions
 								:include-relations="includeRelations"
 								:relational-field-selectable="relationalFieldSelectable"
-								@select-field="updateField(index, $event)"
+								:allow-select-all="false"
+								@add="updateField(index, $event[0])"
 							/>
 						</v-menu>
 						<v-select
@@ -273,6 +274,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 			} else {
 				update(null);
 			}
+
 			break;
 		default:
 			// avoid setting value as string 'true'/'false' when switching from null/empty operators
@@ -281,6 +283,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 			} else {
 				update(Array.isArray(value) ? value[0] : value);
 			}
+
 			break;
 	}
 
@@ -336,6 +339,7 @@ function getCompareOptions(name: string) {
 		// Alias uses the foreign key type
 		if (type === 'alias') {
 			const relations = relationsStore.getRelationsForField(props.collection, name);
+
 			if (relations[0]) {
 				type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
 			}

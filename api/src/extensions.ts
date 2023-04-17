@@ -147,6 +147,7 @@ class ExtensionManager {
 			await this.load();
 
 			const loadedExtensions = this.getExtensionsList();
+
 			if (loadedExtensions.length > 0) {
 				logger.info(`Loaded extensions: ${loadedExtensions.map((ext) => ext.name).join(', ')}`);
 			}
@@ -170,6 +171,7 @@ class ExtensionManager {
 				const added = this.extensions.filter(
 					(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path)
 				);
+
 				const removed = prevExtensions.filter(
 					(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path)
 				);
@@ -178,9 +180,11 @@ class ExtensionManager {
 
 				const addedExtensions = added.map((extension) => extension.name);
 				const removedExtensions = removed.map((extension) => extension.name);
+
 				if (addedExtensions.length > 0) {
 					logger.info(`Added extensions: ${addedExtensions.join(', ')}`);
 				}
+
 				if (removedExtensions.length > 0) {
 					logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
 				}
@@ -353,6 +357,7 @@ class ExtensionManager {
 
 	private async generateExtensionBundle(): Promise<string | null> {
 		const sharedDepsMapping = await this.getSharedDepsMapping(APP_SHARED_DEPS);
+
 		const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
 			find: name,
 			replacement: path,
@@ -367,6 +372,7 @@ class ExtensionManager {
 				makeAbsoluteExternalsRelative: false,
 				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
+
 			const { output } = await bundle.generate({ format: 'es', compact: true });
 
 			for (const out of output) {
@@ -390,6 +396,7 @@ class ExtensionManager {
 		const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
+
 		for (const dep of deps) {
 			const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[0-9a-f]{8}\\.entry\\.js`);
 			const depName = appDir.find((file) => depRegex.test(file));
@@ -408,6 +415,7 @@ class ExtensionManager {
 
 	private async registerHooks(): Promise<void> {
 		const hooks = this.extensions.filter((extension): extension is ApiExtension => extension.type === 'hook');
+
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
@@ -465,6 +473,7 @@ class ExtensionManager {
 		for (const operation of [...internalOperations, ...operations]) {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
 					`file://${operationPath}`
 				);
@@ -562,13 +571,16 @@ class ExtensionManager {
 			},
 			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
 				const content = typeof code === 'function' ? code() : code;
+
 				if (content.trim().length === 0) {
 					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
 					return;
 				}
+
 				if (position === 'head') {
 					this.hookEmbedsHead.push(content);
 				}
+
 				if (position === 'body') {
 					this.hookEmbedsBody.push(content);
 				}

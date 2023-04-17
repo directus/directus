@@ -30,6 +30,7 @@ export function getConfigFromEnv(
 			const path = key
 				.split('__')
 				.map((key, index) => (index === 0 ? transform(transform(key.slice(prefix.length))) : transform(key)));
+
 			set(config, path.join('.'), value);
 		} else {
 			config[transform(key.slice(prefix.length))] = value;

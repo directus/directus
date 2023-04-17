@@ -70,6 +70,7 @@ export default defineComponent({
 			if (error.value) {
 				return translateAPIError(error.value);
 			}
+
 			return null;
 		});
 
