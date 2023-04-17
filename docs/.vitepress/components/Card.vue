@@ -27,6 +27,7 @@ const headerType = 'h' + props.h;
 .card {
 	border: 1px solid var(--vp-c-divider);
 	border-radius: 8px;
+	transition: border-color 0.25s, background-color 0.25s;
 	padding: 1.5rem;
 	color: inherit;
 	display: grid;
@@ -35,8 +36,16 @@ const headerType = 'h' + props.h;
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
+
+.card p {
+	color: var(--vp-c-gray);
+}
 .card.no-icon {
 	grid-template-columns: auto;
+}
+
+.card:hover {
+	border-color: var(--vp-c-brand);
 }
 .icon {
 	width: 44px;
