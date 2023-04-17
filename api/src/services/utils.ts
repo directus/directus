@@ -61,6 +61,7 @@ export class UtilsService {
 
 			for (const row of rowsWithoutSortValue) {
 				lastSortValue++;
+
 				await this.knex(collection)
 					.update({ [sortField]: lastSortValue })
 					.where({ [primaryKeyField]: row[primaryKeyField] });
@@ -93,6 +94,7 @@ export class UtilsService {
 			.from(collection)
 			.where({ [primaryKeyField]: to })
 			.first();
+
 		const targetSortValue = targetSortValueResponse[sortField];
 
 		const sourceSortValueResponse = await this.knex
@@ -100,6 +102,7 @@ export class UtilsService {
 			.from(collection)
 			.where({ [primaryKeyField]: item })
 			.first();
+
 		const sourceSortValue = sourceSortValueResponse[sortField];
 
 		// Set the target item to the new sort value

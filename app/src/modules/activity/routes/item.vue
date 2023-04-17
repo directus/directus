@@ -121,6 +121,7 @@ export default defineComponent({
 				});
 
 				item.value = response.data.data;
+
 				if (item.value) {
 					if (te(`field_options.directus_activity.${item.value.action}`))
 						item.value.action_translated = t(`field_options.directus_activity.${item.value.action}`);

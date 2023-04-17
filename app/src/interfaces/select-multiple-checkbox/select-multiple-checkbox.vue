@@ -123,6 +123,7 @@ export default defineComponent({
 			if (showAll.value || hideChoices.value === false) {
 				return props.choices;
 			}
+
 			return props.choices.slice(0, props.itemsShown);
 		});
 

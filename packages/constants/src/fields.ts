@@ -54,4 +54,16 @@ export const LOCAL_TYPES = [
 	'group',
 ] as const;
 
+export const RELATIONAL_TYPES = [
+	'file',
+	'files',
+	'm2o',
+	'o2m',
+	'm2m',
+	'm2a',
+	'presentation',
+	'translations',
+	'group',
+] as const;
+
 export const FUNCTIONS = ['year', 'month', 'week', 'day', 'weekday', 'hour', 'minute', 'second', 'count'] as const;

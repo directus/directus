@@ -118,6 +118,7 @@ export function updateJunctionRelated(updates: StateUpdates, _state: State, { ge
 	const fieldsStore = useFieldsStore();
 
 	const relatedCollection = getCurrent('relations.m2o.related_collection');
+
 	const relatedCollectionPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.field ?? 'id';
 
@@ -226,6 +227,7 @@ export function generateCollections(updates: StateUpdates, state: State, { getCu
 		});
 
 		const previousName = get(state, 'relations.m2o.related_collection');
+
 		if (state.items && state.items[previousName]) {
 			delete state.items[previousName];
 		}
@@ -288,8 +290,10 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 	const junctionCurrent = getCurrent('relations.o2m.field');
 	const junctionRelated = getCurrent('relations.m2o.field');
 	const relatedCollection = getCurrent('relations.m2o.related_collection');
+
 	const relatedPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection) ?? getCurrent('collections.related.fields[0]');
+
 	const sort = getCurrent('relations.o2m.sort_field');
 
 	if (junctionCollection && junctionCurrent && fieldExists(junctionCollection, junctionCurrent) === false) {
@@ -341,6 +345,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	const fieldsStore = useFieldsStore();
 
 	const currentCollection = state.collection!;
+
 	const currentCollectionPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
 
@@ -352,6 +357,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(updates, 'relations.m2o.related_collection', getCurrent('relations.m2o.related_collection') ?? 'languages');
 
 	const languagesCollection = getCurrent('relations.m2o.related_collection');
+
 	const languagesCollectionPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(languagesCollection)?.field ?? 'id';
 

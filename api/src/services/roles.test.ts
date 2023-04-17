@@ -51,6 +51,7 @@ describe('Integration Tests', () => {
 
 	beforeEach(() => {
 		tracker.on.any('directus_roles').response({});
+
 		tracker.on
 			.select(/"directus_roles"."id" from "directus_roles" order by "directus_roles"."id" asc limit .*/)
 			.response([]);
@@ -73,6 +74,7 @@ describe('Integration Tests', () => {
 					knex: db,
 					schema: testSchema,
 				});
+
 				superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne');
 			});
 
@@ -89,6 +91,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [userId1, userId2],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 
@@ -101,7 +104,9 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [userId1],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
+
 							tracker.on
 								.select('select "id" from "directus_users" where "role" = ?')
 								.responseOnce([{ id: userId1 }, { id: userId2 }]);
@@ -115,6 +120,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -134,6 +140,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -150,9 +157,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -164,6 +173,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [{ id: userId1 }, { id: userId2 }],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 
@@ -176,7 +186,9 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [{ id: userId1 }],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
+
 							tracker.on
 								.select('select "id" from "directus_users" where "role" = ?')
 								.responseOnce([{ id: userId1 }, { id: userId2 }]);
@@ -190,6 +202,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -209,6 +222,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -225,9 +239,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -243,6 +259,7 @@ describe('Integration Tests', () => {
 									delete: [],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 
@@ -259,6 +276,7 @@ describe('Integration Tests', () => {
 									delete: [],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -276,10 +294,13 @@ describe('Integration Tests', () => {
 									delete: [userId2],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
+
 							tracker.on
 								.select('select "id" from "directus_users" where "role" = ?')
 								.responseOnce([{ id: userId1 }, { id: userId2 }]);
+
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
 
 							const result = await service.updateOne(adminRoleId, data);
@@ -295,6 +316,7 @@ describe('Integration Tests', () => {
 									delete: [userId1],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -318,6 +340,7 @@ describe('Integration Tests', () => {
 									delete: [userId1],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -334,9 +357,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -352,6 +377,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [userId1, userId2],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -371,6 +397,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [userId1, userId2],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -387,9 +414,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -399,10 +428,13 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [userId1],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
+
 							tracker.on
 								.select('select "id" from "directus_users" where "role" = ?')
 								.responseOnce([{ id: userId1 }, { id: userId2 }]);
+
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
 
 							const result = await service.updateOne(adminRoleId, data);
@@ -414,6 +446,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -433,6 +466,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -449,9 +483,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -463,6 +499,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [{ id: userId1 }, { id: userId2 }],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -482,6 +519,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [{ id: userId1 }, { id: userId2 }],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -498,9 +536,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -510,10 +550,13 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [{ id: userId1 }],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
+
 							tracker.on
 								.select('select "id" from "directus_users" where "role" = ?')
 								.responseOnce([{ id: userId1 }, { id: userId2 }]);
+
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
 
 							const result = await service.updateOne(adminRoleId, data);
@@ -525,6 +568,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -544,6 +588,7 @@ describe('Integration Tests', () => {
 							const data: Record<string, any> = {
 								users: [],
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -560,9 +605,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -578,6 +625,7 @@ describe('Integration Tests', () => {
 									delete: [],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -595,6 +643,7 @@ describe('Integration Tests', () => {
 									delete: [],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -618,6 +667,7 @@ describe('Integration Tests', () => {
 									delete: [],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -634,9 +684,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -650,10 +702,13 @@ describe('Integration Tests', () => {
 									delete: [userId2],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
+
 							tracker.on
 								.select('select "id" from "directus_users" where "role" = ?')
 								.responseOnce([{ id: userId1 }, { id: userId2 }]);
+
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
 
 							const result = await service.updateOne(adminRoleId, data);
@@ -669,6 +724,7 @@ describe('Integration Tests', () => {
 									delete: [userId1],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 1 });
@@ -692,6 +748,7 @@ describe('Integration Tests', () => {
 									delete: [userId1],
 								},
 							};
+
 							tracker.on.select('select "admin_access" from "directus_roles"').responseOnce({ admin_access });
 							tracker.on.select('select "id" from "directus_users" where "role" = ?').responseOnce([{ id: userId1 }]);
 							tracker.on.select('select count(*) as "count" from "directus_users"').responseOnce({ count: 0 });
@@ -708,9 +765,11 @@ describe('Integration Tests', () => {
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
 								`You can't remove the last admin user from the admin role.`
 							);
+
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
 								UnprocessableEntityException
 							);
@@ -769,6 +828,7 @@ describe('Integration Tests', () => {
 			checkForOtherAdminRolesSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminRoles')
 				.mockResolvedValueOnce(true);
+
 			checkForOtherAdminUsersSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminUsers')
 				.mockResolvedValueOnce(true);
@@ -829,6 +889,7 @@ describe('Integration Tests', () => {
 				await service.updateBatch([{ id: 1 }]);
 				expect(checkForOtherAdminRolesSpy).not.toBeCalled();
 			});
+
 			it('should checkForOtherAdminRoles once', async () => {
 				await service.updateBatch([{ id: 1, admin_access: false }]);
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
