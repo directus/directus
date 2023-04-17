@@ -245,6 +245,7 @@ float: Flotante
 integer: Entero
 json: JSON
 xml: XML
+yaml: YAML
 string: Cadena de texto
 text: Texto
 time: Hora
