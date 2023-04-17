@@ -1072,7 +1072,7 @@ export class GraphQLService {
 							type: subscriptionType,
 							subscribe: createSubscriptionGenerator(self, eventName),
 						},
-					} as any);
+					});
 				}
 			}
 
