@@ -54,12 +54,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							if (userKey === common.USER.ADMIN.KEY) {
 								const responseData = JSON.parse(response.text);
 								const tableNames = sortedUniq(responseData.data.map((field: FieldRaw) => field.collection));
+
 								const tableNames2 = sortedUniq(
 									gqlResponse.body.data['fields'].map((field: FieldRaw) => field.collection)
 								);
 
 								expect(response.statusCode).toBe(200);
 								expect(tableNames.length).toBeGreaterThanOrEqual(common.DEFAULT_DB_TABLES.length);
+
 								expect(
 									common.DEFAULT_DB_TABLES.every((name: string) => {
 										return tableNames.indexOf(name) !== -1;
@@ -68,6 +70,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 								expect(gqlResponse.statusCode).toBe(200);
 								expect(tableNames2.length).toBeGreaterThanOrEqual(common.DEFAULT_DB_TABLES.length);
+
 								expect(
 									common.DEFAULT_DB_TABLES.every((name: string) => {
 										return tableNames2.indexOf(name) !== -1;
@@ -76,9 +79,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							} else if (userKey === common.USER.APP_ACCESS.KEY) {
 								const responseData = JSON.parse(response.text);
 								const tableNames = sortedUniq(responseData.data.map((field: FieldRaw) => field.collection));
+
 								const tableNames2 = sortedUniq(
 									gqlResponse.body.data['fields'].map((field: FieldRaw) => field.collection)
 								);
+
 								const appAccessPermissions = [
 									'directus_activity',
 									'directus_collections',
@@ -95,6 +100,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 								expect(response.statusCode).toBe(200);
 								expect(tableNames.length).toBeGreaterThanOrEqual(appAccessPermissions.length);
+
 								expect(
 									appAccessPermissions.every((name: string) => {
 										return tableNames.indexOf(name) !== -1;
@@ -103,6 +109,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 								expect(gqlResponse.statusCode).toBe(200);
 								expect(tableNames2.length).toBeGreaterThanOrEqual(appAccessPermissions.length);
+
 								expect(
 									appAccessPermissions.every((name: string) => {
 										return tableNames2.indexOf(name) !== -1;
@@ -122,6 +129,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 			afterEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				if (await db.schema.hasColumn(TEST_COLLECTION_NAME, TEST_FIELD_NAME)) {
 					await db.schema.alterTable(TEST_COLLECTION_NAME, (table) => {
 						table.dropColumn(TEST_FIELD_NAME);
@@ -152,6 +160,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(200);
+
 								expect(response.body.data).toEqual({
 									collection: TEST_COLLECTION_NAME,
 									field: TEST_FIELD_NAME,
@@ -165,6 +174,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 									}),
 									type: 'string',
 								});
+
 								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, TEST_FIELD_NAME)).toBe(true);
 							} else {
 								expect(response.statusCode).toBe(403);
@@ -196,6 +206,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(200);
+
 								expect(response.body.data).toEqual({
 									collection: TEST_COLLECTION_NAME,
 									field: TEST_ALIAS_FIELD_NAME,
@@ -208,6 +219,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 									schema: null,
 									type: 'alias',
 								});
+
 								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, TEST_ALIAS_FIELD_NAME)).toBe(false);
 							} else {
 								expect(response.statusCode).toBe(403);
@@ -223,6 +235,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 			beforeEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				if (!(await db.schema.hasColumn(TEST_COLLECTION_NAME, TEST_FIELD_NAME))) {
 					await db.schema.alterTable(TEST_COLLECTION_NAME, (table) => {
 						table.string(TEST_FIELD_NAME);
@@ -232,9 +245,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 			afterEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				await db('directus_fields')
 					.update({ note: null })
 					.where({ collection: TEST_COLLECTION_NAME, field: TEST_FIELD_NAME });
+
 				await db('directus_fields')
 					.update({ note: null })
 					.where({ collection: TEST_COLLECTION_NAME, field: TEST_ALIAS_FIELD_NAME });
@@ -256,6 +271,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(200);
+
 								expect(response.body.data).toEqual({
 									collection: TEST_COLLECTION_NAME,
 									field: TEST_FIELD_NAME,
@@ -298,6 +314,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(200);
+
 								expect(response.body.data).toEqual({
 									collection: TEST_COLLECTION_NAME,
 									field: TEST_ALIAS_FIELD_NAME,
@@ -323,9 +340,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 			afterEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				await db('directus_fields')
 					.update({ note: null })
 					.where({ collection: TEST_COLLECTION_NAME, field: TEST_FIELD_NAME });
+
 				await db('directus_fields')
 					.update({ note: null })
 					.where({ collection: TEST_COLLECTION_NAME, field: TEST_ALIAS_FIELD_NAME });
@@ -354,6 +373,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							// Assert
 							if (userKey === common.USER.ADMIN.KEY) {
 								expect(response.statusCode).toBe(200);
+
 								expect(response.body.data).toEqual([
 									{
 										collection: TEST_COLLECTION_NAME,
@@ -395,6 +415,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 			afterEach(async () => {
 				const db = databases.get(currentVendor)!;
+
 				if (!(await db.schema.hasColumn(TEST_COLLECTION_NAME, TEST_FIELD_NAME))) {
 					await db.schema.alterTable(TEST_COLLECTION_NAME, (table) => {
 						table.string(TEST_FIELD_NAME);
@@ -427,6 +448,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							} else {
 								expect(response.statusCode).toBe(403);
 							}
+
 							expect(response2.statusCode).toBe(403);
 						});
 					});
@@ -458,6 +480,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							} else {
 								expect(response.statusCode).toBe(403);
 							}
+
 							expect(response2.statusCode).toBe(403);
 						});
 					});
@@ -482,6 +505,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 				// Assert
 				expect(response.statusCode).toBe(200);
 				expect(response.body.data.length).toBe(4);
+
 				for (const log of response.body.data) {
 					expect(log.value).toBe('1');
 				}

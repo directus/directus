@@ -150,6 +150,7 @@ export default defineComponent({
 						).toLowerCase()}`
 					);
 				}
+
 				return acc;
 			}, [] as string[]);
 

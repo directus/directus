@@ -166,6 +166,7 @@ export default defineComponent({
 
 						parser.parseError = (str: string, hash: any) => {
 							const loc = hash.loc;
+
 							found.push({
 								from: CodeMirror.Pos(loc.first_line - 1, loc.first_column),
 								to: CodeMirror.Pos(loc.last_line - 1, loc.last_column),
@@ -180,6 +181,7 @@ export default defineComponent({
 								// Do nothing
 							}
 						}
+
 						return found;
 					});
 				} else if (lang === 'plaintext') {
@@ -203,15 +205,19 @@ export default defineComponent({
 					// @ts-ignore - @types/codemirror is missing this export
 					imports.push(import('codemirror/addon/selection/mark-selection.js'));
 				}
+
 				if (optionsObj.highlightSelectionMatches) {
 					imports.push(import('codemirror/addon/search/match-highlighter.js'));
 				}
+
 				if (optionsObj.autoRefresh) {
 					imports.push(import('codemirror/addon/display/autorefresh.js'));
 				}
+
 				if (optionsObj.matchBrackets) {
 					imports.push(import('codemirror/addon/edit/matchbrackets.js'));
 				}
+
 				if (optionsObj.hintOptions || optionsObj.showHint) {
 					imports.push(import('codemirror/addon/hint/show-hint.js'));
 					// @ts-ignore - @types/codemirror is missing this export
@@ -219,6 +225,7 @@ export default defineComponent({
 					// @ts-ignore - @types/codemirror is missing this export
 					imports.push(import('codemirror/addon/hint/javascript-hint.js'));
 				}
+
 				await Promise.all(imports);
 			}
 		}
@@ -227,6 +234,7 @@ export default defineComponent({
 			if (codemirror) {
 				return codemirror.lineCount();
 			}
+
 			return 0;
 		});
 
@@ -289,6 +297,7 @@ export default defineComponent({
 			async (altOptions) => {
 				if (!altOptions || altOptions.size === 0) return;
 				await getImports(altOptions);
+
 				for (const key in altOptions) {
 					codemirror?.setOption(key as any, altOptions[key]);
 				}

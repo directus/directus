@@ -1,4 +1,5 @@
 import VDivider from './v-divider.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -15,4 +16,5 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {};

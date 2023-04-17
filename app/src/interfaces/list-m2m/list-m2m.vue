@@ -278,6 +278,7 @@ const templateWithDefaults = computed(() => {
 		return relationInfo.value.junctionCollection.meta.display_template;
 
 	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
+
 	if (relatedDisplayTemplate) {
 		const regex = /({{.*?}})/g;
 		const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
@@ -328,12 +329,15 @@ const query = computed<RelationQueryMultiple>(() => {
 	if (!relationInfo.value) {
 		return q;
 	}
+
 	if (searchFilter.value) {
 		q.filter = searchFilter.value;
 	}
+
 	if (search.value) {
 		q.search = search.value;
 	}
+
 	if (sort.value) {
 		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
 	}
@@ -383,11 +387,13 @@ watch(
 		const junctionCollection = relationInfo.value.junctionCollection.collection;
 
 		const contentWidth: Record<string, number> = {};
+
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
 			props.fields.forEach((key) => {
 				if (!contentWidth[key]) {
 					contentWidth[key] = 5;
 				}
+
 				if (String(item[key]).length > contentWidth[key]) {
 					contentWidth[key] = String(item[key]).length;
 				}
@@ -457,6 +463,7 @@ function sortItems(items: DisplayItem[]) {
 		if (!isNil(junctionId)) {
 			changes[info.junctionPrimaryKeyField.field] = junctionId;
 		}
+
 		if (!isNil(relatedId)) {
 			set(changes, info.junctionField.field + '.' + info.relatedPrimaryKeyField.field, relatedId);
 		}
@@ -537,6 +544,7 @@ function deleteItem(item: DisplayItem) {
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
+
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
@@ -587,6 +595,7 @@ function getLinkForItem(item: DisplayItem) {
 			relationInfo.value.junctionField.field,
 			relationInfo.value.relatedPrimaryKeyField.field,
 		]);
+
 		return `/content/${relationInfo.value.relatedCollection.collection}/${encodeURIComponent(primaryKey)}`;
 	}
 

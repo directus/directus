@@ -31,6 +31,7 @@ const knexConfig = {
 };
 
 const allowedLogLevels = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
+
 const logLevel = process.env.TEST_SAVE_LOGS
 	? allowedLogLevels.includes(process.env.TEST_SAVE_LOGS)
 		? process.env.TEST_SAVE_LOGS

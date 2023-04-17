@@ -15,6 +15,7 @@ export function getDefaultValuesFromFields(fields: Field[] | Ref<Field[]>): Comp
 			) {
 				acc[field.field] = field.schema.default_value;
 			}
+
 			return acc;
 		}, {} as Record<string, any>);
 	});

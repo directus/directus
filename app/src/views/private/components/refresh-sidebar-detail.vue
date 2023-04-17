@@ -41,6 +41,7 @@ export default defineComponent({
 				if (activeInterval.value !== null) {
 					clearInterval(activeInterval.value);
 				}
+
 				if (newInterval !== null && newInterval > 0) {
 					activeInterval.value = setInterval(() => {
 						emit('refresh');

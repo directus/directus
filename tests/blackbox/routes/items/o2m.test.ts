@@ -87,6 +87,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						collection: localCollectionCountries,
 						item: createCountry(pkType),
 					});
+
 					const state = createState(pkType);
 					state.country_id = insertedCountry.id;
 					const insertedState = await CreateItem(vendor, { collection: localCollectionStates, item: state });
@@ -118,6 +119,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toMatchObject({ states: [insertedState.id] });
 
 					expect(gqlResponse.statusCode).toEqual(200);
+
 					expect(gqlResponse.body.data).toMatchObject({
 						[localCollectionCountries]: [{ states: [{ id: String(insertedState.id) }] }],
 					});
@@ -132,6 +134,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Setup
 						const country = createCountry(pkType);
 						country.name = 'country-o2m-top-' + uuid();
+
 						const insertedCountry = await CreateItem(vendor, {
 							collection: localCollectionCountries,
 							item: country,
@@ -191,9 +194,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionCountries][0]).toMatchObject({
 							id: String(insertedCountry.id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
@@ -204,10 +209,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Setup
 						const country = createCountry(pkType);
 						country.name = 'country-o2m-' + uuid();
+
 						const insertedCountry = await CreateItem(vendor, {
 							collection: localCollectionCountries,
 							item: country,
 						});
+
 						const state = createState(pkType);
 						state.name = 'state-o2m-' + uuid();
 						state.country_id = insertedCountry.id;
@@ -263,9 +270,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionCountries].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionCountries][0]).toMatchObject({
 							id: String(insertedCountry.id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
@@ -637,6 +646,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
 								gqlResponse2.body.data[localCollectionCountries].reverse()
 							);
@@ -702,11 +712,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
@@ -716,14 +728,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
 								gqlResponse2.body.data[localCollectionCountries]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.name.slice(-1));
@@ -742,10 +757,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const country = createCountry(pkType);
 								country.name = 'country-o2m-sort-' + uuid();
+
 								const insertedCountry = await CreateItem(vendor, {
 									collection: localCollectionCountries,
 									item: country,
 								});
+
 								const state = createState(pkType);
 								state.name = 'state-o2m-sort-' + val;
 								state.country_id = insertedCountry.id;
@@ -806,6 +823,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 							if (vendor === 'mysql5') {
 								let lastIndex = -1;
+
 								for (const item of response2.body.data.reverse()) {
 									const foundIndex = findIndex(response.body.data, { id: item.id });
 									if (foundIndex === -1) continue;
@@ -818,6 +836,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								lastIndex = -1;
+
 								for (const item of gqlResponse2.body.data[localCollectionCountries].reverse()) {
 									const foundIndex = findIndex(gqlResponse.body.data[localCollectionCountries], { id: item.id });
 									if (foundIndex === -1) continue;
@@ -828,12 +847,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										lastIndex = foundIndex;
 									}
 								}
+
 								return;
 							}
 
 							expect(response.body.data.length).toBe(5);
 							expect(response.body.data).toEqual(response2.body.data.reverse());
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+
 							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
 								gqlResponse2.body.data[localCollectionCountries].reverse()
 							);
@@ -915,6 +936,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(parseInt(item.states[0].name.slice(-1)));
 
@@ -933,6 +955,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(parseInt(item.states[0].name.slice(-1)));
 
@@ -949,11 +972,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.states[0].name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.states[0].name.slice(-1));
@@ -961,14 +986,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
+
 							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
 								gqlResponse2.body.data[localCollectionCountries]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.states[0].name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.states[0].name.slice(-1));
@@ -990,9 +1018,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const country = createCountry(pkType);
 								country.name = 'country-o2m-top-sort-fn-' + uuid();
+
 								country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
 									.slice(0, 19);
+
 								countries.push(country);
 							}
 
@@ -1055,6 +1085,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
 								gqlResponse2.body.data[localCollectionCountries].reverse()
 							);
@@ -1126,11 +1157,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
@@ -1140,14 +1173,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
 								gqlResponse2.body.data[localCollectionCountries]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
@@ -1166,15 +1202,19 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const country = createCountry(pkType);
 								country.name = 'country-o2m-sort-fn-' + uuid();
+
 								const insertedCountry = await CreateItem(vendor, {
 									collection: localCollectionCountries,
 									item: country,
 								});
+
 								const state = createState(pkType);
 								state.name = 'state-o2m-sort-fn-' + uuid();
+
 								state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
 									.slice(0, 19);
+
 								state.country_id = insertedCountry.id;
 								await CreateItem(vendor, { collection: localCollectionStates, item: state });
 							}
@@ -1233,6 +1273,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 							if (vendor === 'mysql5') {
 								let lastIndex = -1;
+
 								for (const item of response2.body.data.reverse()) {
 									const foundIndex = findIndex(response.body.data, { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1245,6 +1286,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								lastIndex = -1;
+
 								for (const item of gqlResponse2.body.data[localCollectionCountries].reverse()) {
 									const foundIndex = findIndex(gqlResponse.body.data[localCollectionCountries], { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1255,12 +1297,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										lastIndex = foundIndex;
 									}
 								}
+
 								return;
 							}
 
 							expect(response.body.data.length).toBe(5);
 							expect(response.body.data).toEqual(response2.body.data.reverse());
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(5);
+
 							expect(gqlResponse.body.data[localCollectionCountries]).toEqual(
 								gqlResponse2.body.data[localCollectionCountries].reverse()
 							);
@@ -1345,6 +1389,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.states[0].test_datetime_year.toString().slice(-1))
@@ -1365,6 +1410,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.states[0].test_datetime_func.year.toString().slice(-1))
@@ -1383,11 +1429,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.states[0].test_datetime_year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.states[0].test_datetime_year.toString().slice(-1));
@@ -1395,14 +1443,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionCountries].length).toBe(expectedLength);
+
 							expect(gqlResponse.body.data[localCollectionCountries]).not.toEqual(
 								gqlResponse2.body.data[localCollectionCountries]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.states[0].test_datetime_func.year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionCountries].map((item: any) => {
 									return parseInt(item.states[0].test_datetime_func.year.toString().slice(-1));
@@ -1713,6 +1764,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const country = createCountry(pkType);
 					const states = [];
 					const expectedResultAsc = Array.from(Array(count).keys()).slice(offset, offset + limit);
+
 					const expectedResultDesc = Array.from(Array(count).keys())
 						.sort((v) => -v)
 						.slice(offset, offset + limit);
@@ -1816,6 +1868,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(responseAsc.statusCode).toBe(200);
 					expect(responseAsc.body.data.length).toBe(1);
 					expect(responseAsc.body.data[0].states.length).toBe(limit);
+
 					expect(responseAsc.body.data[0].states.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(
 						expectedResultAsc
 					);
@@ -1823,6 +1876,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponseAsc.statusCode).toBe(200);
 					expect(gqlResponseAsc.body.data[localCollectionCountries].length).toEqual(1);
 					expect(gqlResponseAsc.body.data[localCollectionCountries][0].states.length).toEqual(limit);
+
 					expect(
 						gqlResponseAsc.body.data[localCollectionCountries][0].states.map((v: any) => parseInt(v.name.split('-')[0]))
 					).toEqual(expectedResultAsc);
@@ -1830,6 +1884,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(responseDesc.statusCode).toBe(200);
 					expect(responseDesc.body.data.length).toBe(1);
 					expect(responseDesc.body.data[0].states.length).toBe(limit);
+
 					expect(responseDesc.body.data[0].states.map((v: any) => parseInt(v.name.split('-')[0]))).toEqual(
 						expectedResultAsc
 					);
@@ -1837,6 +1892,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponseDesc.statusCode).toBe(200);
 					expect(gqlResponseDesc.body.data[localCollectionCountries].length).toEqual(1);
 					expect(gqlResponseDesc.body.data[localCollectionCountries][0].states.length).toEqual(limit);
+
 					expect(
 						gqlResponseDesc.body.data[localCollectionCountries][0].states.map((v: any) =>
 							parseInt(v.name.split('-')[0])
@@ -1952,12 +2008,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -1980,11 +2038,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								countries.push(createCountry(pkType));
+
 								countries[i].states = Array(countNested)
 									.fill(0)
 									.map(() => createState(pkType));
 
 								countries2.push(createCountry(pkType));
+
 								countries2[i].states = Array(countNested)
 									.fill(0)
 									.map(() => createState(pkType));
@@ -2038,11 +2098,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								countries.push(createCountry(pkType));
+
 								countries[i].states = Array(countNested)
 									.fill(0)
 									.map(() => createState(pkType));
 
 								countries2.push(createCountry(pkType));
+
 								countries2[i].states = Array(countNested)
 									.fill(0)
 									.map(() => createState(pkType));
@@ -2070,12 +2132,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -2100,17 +2164,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								const country: any = createCountry(pkType);
+
 								country.states = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => createState(pkType));
+
 								countriesID.push(
 									(await CreateItem(vendor, { collection: localCollectionCountries, item: country })).id
 								);
 
 								const country2: any = createCountry(pkType);
+
 								country2.states = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => createState(pkType));
+
 								countriesID2.push(
 									(await CreateItem(vendor, { collection: localCollectionCountries, item: country2 })).id
 								);
@@ -2130,6 +2198,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const country of countries) {
 								const states = country.states;
+
 								country.states = {
 									create: Array(countCreate)
 										.fill(0)
@@ -2198,17 +2267,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								const country: any = createCountry(pkType);
+
 								country.states = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => createState(pkType));
+
 								countriesID.push(
 									(await CreateItem(vendor, { collection: localCollectionCountries, item: country })).id
 								);
 
 								const country2: any = createCountry(pkType);
+
 								country2.states = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => createState(pkType));
+
 								countriesID2.push(
 									(await CreateItem(vendor, { collection: localCollectionCountries, item: country2 })).id
 								);
@@ -2228,6 +2301,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const country of countries) {
 								const states = country.states;
+
 								country.states = {
 									create: Array(countCreate)
 										.fill(0)
@@ -2268,12 +2342,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
