@@ -72,6 +72,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const ingredient = createIngredient(pkType);
+
 					const insertedIngredient = await CreateItem(vendor, {
 						collection: localCollectionIngredients,
 						item: {
@@ -115,12 +116,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
+
 		describe('GET /:collection', () => {
 			describe(`retrieves a food using the $FOLLOW filter`, () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const ingredient = createIngredient(pkType);
 					const food = createFood(pkType);
+
 					const insertedIngredient = await CreateItem(vendor, {
 						collection: localCollectionIngredients,
 						item: {
@@ -157,6 +160,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Setup
 						const ingredient = createIngredient(pkType);
 						ingredient.name = 'ingredient-m2m-top-' + uuid();
+
 						const insertedIngredient = await CreateItem(vendor, {
 							collection: localCollectionIngredients,
 							item: ingredient,
@@ -216,9 +220,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionIngredients][0]).toMatchObject({
 							id: String(insertedIngredient.id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
@@ -231,6 +237,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						food.name = 'food-m2m-' + uuid();
 						const ingredient = createIngredient(pkType);
 						ingredient.name = 'ingredient-m2m-' + uuid();
+
 						const insertedIngredient = await CreateItem(vendor, {
 							collection: localCollectionIngredients,
 							item: {
@@ -311,9 +318,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionIngredients][0]).toMatchObject({
 							id: String(insertedIngredient.id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
@@ -326,6 +335,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Setup
 						const ingredient = createIngredient(pkType);
 						ingredient.name = 'ingredient-m2m-top-fn-' + uuid();
+
 						const insertedIngredient = await CreateItem(vendor, {
 							collection: localCollectionIngredients,
 							item: {
@@ -340,6 +350,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						const ingredient2 = createIngredient(pkType);
 						ingredient2.name = 'ingredient-m2m-top-fn-' + uuid();
+
 						const insertedIngredient2 = await CreateItem(vendor, {
 							collection: localCollectionIngredients,
 							item: {
@@ -424,15 +435,19 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionIngredients][0]).toMatchObject({
 							id: String(insertedIngredient.id),
 						});
+
 						expect(gqlResponse.body.data[localCollectionIngredients][0].foods.length).toBe(1);
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse2.body.data[localCollectionIngredients].length).toBe(1);
+
 						expect(gqlResponse2.body.data[localCollectionIngredients][0]).toMatchObject({
 							id: String(insertedIngredient2.id),
 						});
+
 						expect(gqlResponse2.body.data[localCollectionIngredients][0].foods.length).toBe(2);
 					});
 				});
@@ -449,6 +464,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							food.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
 							const ingredient = createIngredient(pkType);
 							ingredient.name = 'ingredient-m2m-fn-' + uuid();
+
 							const insertedIngredient = await CreateItem(vendor, {
 								collection: localCollectionIngredients,
 								item: {
@@ -573,11 +589,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionIngredients][0]).toMatchObject({
 							id: String(retrievedIngredients[0][0].id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse2.body.data[localCollectionIngredients].length).toBe(1);
+
 						expect(gqlResponse2.body.data[localCollectionIngredients][0]).toMatchObject({
 							id: String(retrievedIngredients[1][0].id),
 						});
@@ -658,6 +677,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
 								gqlResponse2.body.data[localCollectionIngredients].reverse()
 							);
@@ -725,11 +745,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
@@ -739,14 +761,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
 								gqlResponse2.body.data[localCollectionIngredients]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.name.slice(-1));
@@ -767,6 +792,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								food.name = 'food-m2m-sort-' + val;
 								const ingredient = createIngredient(pkType);
 								ingredient.name = 'ingredient-m2m-sort-' + uuid();
+
 								await CreateItem(vendor, {
 									collection: localCollectionIngredients,
 									item: {
@@ -835,6 +861,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 							if (vendor === 'mysql5') {
 								let lastIndex = -1;
+
 								for (const item of response2.body.data.reverse()) {
 									const foundIndex = findIndex(response.body.data, { id: item.id });
 									if (foundIndex === -1) continue;
@@ -847,6 +874,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								lastIndex = -1;
+
 								for (const item of gqlResponse2.body.data[localCollectionIngredients].reverse()) {
 									const foundIndex = findIndex(gqlResponse.body.data[localCollectionIngredients], { id: item.id });
 									if (foundIndex === -1) continue;
@@ -865,6 +893,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data).toEqual(response2.body.data.reverse());
 
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(5);
+
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
 								gqlResponse2.body.data[localCollectionIngredients].reverse()
 							);
@@ -951,6 +980,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1))
@@ -971,6 +1001,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1))
@@ -989,11 +1020,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
@@ -1001,14 +1034,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(expectedLength);
+
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
 								gqlResponse2.body.data[localCollectionIngredients]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].name.slice(-1));
@@ -1030,9 +1066,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const ingredient = createIngredient(pkType);
 								ingredient.name = 'ingredient-m2m-top-sort-fn-' + uuid();
+
 								ingredient.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
 									.slice(0, 19);
+
 								ingredients.push(ingredient);
 							}
 
@@ -1095,6 +1133,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
 								gqlResponse2.body.data[localCollectionIngredients].reverse()
 							);
@@ -1166,11 +1205,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
@@ -1180,14 +1221,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
 								gqlResponse2.body.data[localCollectionIngredients]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
@@ -1209,6 +1253,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								food.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`))).toISOString().slice(0, 19);
 								const ingredient = createIngredient(pkType);
 								ingredient.name = 'ingredient-m2m-sort-fn-' + uuid();
+
 								await CreateItem(vendor, {
 									collection: localCollectionIngredients,
 									item: {
@@ -1277,6 +1322,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 							if (vendor === 'mysql5') {
 								let lastIndex = -1;
+
 								for (const item of response2.body.data.reverse()) {
 									const foundIndex = findIndex(response.body.data, { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1289,6 +1335,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								lastIndex = -1;
+
 								for (const item of gqlResponse2.body.data[localCollectionIngredients].reverse()) {
 									const foundIndex = findIndex(gqlResponse.body.data[localCollectionIngredients], { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1307,6 +1354,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data).toEqual(response2.body.data.reverse());
 
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(5);
+
 							expect(gqlResponse.body.data[localCollectionIngredients]).toEqual(
 								gqlResponse2.body.data[localCollectionIngredients].reverse()
 							);
@@ -1397,6 +1445,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1))
@@ -1417,6 +1466,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_func.year.toString().slice(-1))
@@ -1435,11 +1485,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.foods[0][`${localCollectionFoods}_id`].test_datetime_year.toString().slice(-1));
@@ -1447,9 +1499,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionIngredients].length).toBe(expectedLength);
+
 							expect(gqlResponse.body.data[localCollectionIngredients]).not.toEqual(
 								gqlResponse2.body.data[localCollectionIngredients]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(
@@ -1457,6 +1511,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									);
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionIngredients].map((item: any) => {
 									return parseInt(
@@ -1508,6 +1563,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const food = createFood(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -1553,6 +1609,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
+
 					expect(response.body.data).toEqual(
 						expect.objectContaining({
 							ingredients: expect.arrayContaining([
@@ -1572,6 +1629,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
+
 					expect(gqlResponse.body.data).toEqual(
 						expect.objectContaining({
 							[localCollectionFoods]: expect.arrayContaining([
@@ -1600,6 +1658,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const food = createFood(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -1660,6 +1719,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const food = createFood(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -1697,6 +1757,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
+
 					expect(response.body.data).toEqual(
 						expect.objectContaining({
 							ingredients: expect.arrayContaining([
@@ -1722,6 +1783,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Setup
 					const food = createFood(pkType);
 					const ingredient = createIngredient(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -1770,6 +1832,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const food = createFood(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -1835,6 +1898,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
+
 					expect(response.body.data).toEqual(
 						expect.objectContaining({
 							ingredients: expect.arrayContaining([
@@ -1854,6 +1918,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
+
 					expect(gqlResponse.body.data).toEqual(
 						expect.objectContaining({
 							[localCollectionFoods]: expect.arrayContaining([
@@ -1883,6 +1948,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Setup
 					const food = createFood(pkType);
 					const ingredient = createIngredient(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -1965,6 +2031,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const food = createFood(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -2014,6 +2081,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
+
 					expect(response.body.data).toEqual(
 						expect.objectContaining({
 							ingredients: expect.arrayContaining([
@@ -2033,6 +2101,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					);
 
 					expect(gqlResponse.statusCode).toEqual(200);
+
 					expect(gqlResponse.body.data).toEqual(
 						expect.objectContaining({
 							[localCollectionFoods]: expect.arrayContaining([
@@ -2061,6 +2130,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const food = createFood(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -2123,6 +2193,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const food = createFood(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -2150,6 +2221,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
+
 					expect(response.body.data).toEqual(
 						expect.objectContaining({
 							ingredients: expect.arrayContaining([
@@ -2174,6 +2246,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const food = createFood(pkType);
+
 					const insertedFood = await CreateItem(vendor, {
 						collection: localCollectionFoods,
 						item: {
@@ -2326,12 +2399,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -2354,6 +2429,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								foods.push(createFood(pkType));
+
 								foods[i].ingredients = Array(countNested)
 									.fill(0)
 									.map(() => {
@@ -2361,6 +2437,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									});
 
 								foods2.push(createFood(pkType));
+
 								foods2[i].ingredients = Array(countNested)
 									.fill(0)
 									.map(() => {
@@ -2415,6 +2492,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								foods.push(createFood(pkType));
+
 								foods[i].ingredients = Array(countNested)
 									.fill(0)
 									.map(() => {
@@ -2422,6 +2500,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									});
 
 								foods2.push(createFood(pkType));
+
 								foods2[i].ingredients = Array(countNested)
 									.fill(0)
 									.map(() => {
@@ -2451,12 +2530,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -2481,19 +2562,23 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								const food: any = createFood(pkType);
+
 								food.ingredients = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => {
 										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
 									});
+
 								foodsID.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food })).id);
 
 								const food2: any = createFood(pkType);
+
 								food2.ingredients = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => {
 										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
 									});
+
 								foodsID2.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food2 })).id);
 							}
 
@@ -2521,6 +2606,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const food of foods) {
 								const ingredients = food.ingredients;
+
 								food.ingredients = {
 									create: Array(countCreate)
 										.fill(0)
@@ -2593,19 +2679,23 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (let i = 0; i < count; i++) {
 								const food: any = createFood(pkType);
+
 								food.ingredients = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => {
 										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
 									});
+
 								foodsID.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food })).id);
 
 								const food2: any = createFood(pkType);
+
 								food2.ingredients = Array(countUpdate + countDelete)
 									.fill(0)
 									.map(() => {
 										return { [`${localCollectionIngredients}_id`]: createIngredient(pkType) };
 									});
+
 								foodsID2.push((await CreateItem(vendor, { collection: localCollectionFoods, item: food2 })).id);
 							}
 
@@ -2633,6 +2723,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const food of foods) {
 								const ingredients = food.ingredients;
+
 								food.ingredients = {
 									create: Array(countCreate)
 										.fill(0)
@@ -2677,12 +2768,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);

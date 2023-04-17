@@ -337,6 +337,7 @@ const cancelChanges = (force = false) => {
 
 const copyPanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
 const copyPanelID = ref<string | null>();
+
 const copyPanel = () => {
 	insightsStore.stagePanelDuplicate(unref(copyPanelID)!, { dashboard: unref(copyPanelTo) });
 	copyPanelID.value = null;

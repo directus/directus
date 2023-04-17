@@ -80,6 +80,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 				...mediaSelection.value,
 				sourceUrl: newSource,
 			};
+
 			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, imageToken.value || getToken());
 		},
 	});

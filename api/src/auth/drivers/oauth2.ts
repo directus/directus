@@ -121,6 +121,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: generators.codeChallenge(payload['codeVerifier']) }
 			);
+
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
 		} catch (e) {
 			throw handleError(e);
@@ -223,6 +224,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		if (authData?.['refreshToken']) {
 			try {
 				const tokenSet = await this.client.refresh(authData['refreshToken']);
+
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
 					await this.usersService.updateOne(user.id, {
@@ -269,6 +271,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
+
 			const token = jwt.sign(
 				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
 				env['SECRET'] as string,
@@ -296,6 +299,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		},
 		respond
 	);
+
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
@@ -336,6 +340,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
+
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query['code'],
 					codeVerifier: verifier,

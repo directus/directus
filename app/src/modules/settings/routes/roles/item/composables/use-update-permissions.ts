@@ -110,6 +110,7 @@ export default function useUpdatePermissions(
 		await Promise.all(
 			ACTIONS.map(async (action) => {
 				const permission = getPermission(action);
+
 				if (permission) {
 					try {
 						await api.patch(`/permissions/${permission.id}`, {

@@ -69,6 +69,7 @@ export default defineComponent({
 
 				if (theme) {
 					document.body.classList.add(theme);
+
 					document
 						.querySelector('head meta[name="theme-color"]')
 						?.setAttribute('content', theme === 'light' ? '#ffffff' : '#263238');

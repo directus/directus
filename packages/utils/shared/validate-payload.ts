@@ -40,6 +40,7 @@ export function validatePayload(
 
 		const pass = subValidation.some((subObj: Record<string, any>) => {
 			const nestedErrors = validatePayload(subObj, payload, options);
+
 			if (nestedErrors.length > 0) {
 				swallowErrors.push(...nestedErrors);
 				return false;

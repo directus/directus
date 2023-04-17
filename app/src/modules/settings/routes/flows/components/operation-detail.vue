@@ -183,6 +183,7 @@ const operationOptions = computed(() => {
 
 function saveOperation() {
 	saving.value = true;
+
 	emit('save', {
 		flow: props.primaryKey,
 		name: operationName.value || generatedName.value,

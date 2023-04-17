@@ -89,6 +89,7 @@ export default defineComponent({
 						fields: ['id', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
 					},
 				});
+
 				data.value = response.data.data;
 			} catch (err: any) {
 				error.value = err;

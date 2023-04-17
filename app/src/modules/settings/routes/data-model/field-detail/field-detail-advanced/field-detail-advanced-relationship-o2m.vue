@@ -144,6 +144,7 @@ export default defineComponent({
 
 		const unsortableJunctionFields = computed(() => {
 			let fields = [];
+
 			if (relatedCollection.value) {
 				const relations = relationsStore.getRelationsForCollection(relatedCollection.value);
 				fields.push(...relations.map((field) => field.field));

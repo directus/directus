@@ -196,6 +196,7 @@ export default defineComponent({
 			'interface',
 			computed(() => props.field.meta?.interface ?? null)
 		);
+
 		const interfaceName = computed(() => inter.value?.name ?? null);
 
 		const hidden = computed(() => props.field.meta?.hidden === true);
@@ -259,11 +260,13 @@ export default defineComponent({
 			const duplicateActive = ref(false);
 			const duplicateName = ref(props.field.field + '_copy');
 			const duplicating = ref(false);
+
 			const collections = computed(() =>
 				collectionsStore.collections
 					.map(({ collection }) => collection)
 					.filter((collection) => collection.startsWith('directus_') === false)
 			);
+
 			const duplicateTo = ref(props.field.collection);
 
 			return {

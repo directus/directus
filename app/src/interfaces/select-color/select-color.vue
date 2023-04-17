@@ -286,6 +286,7 @@ function useColor() {
 			let alpha = Math.round(255 * color.value.alpha())
 				.toString(16)
 				.toUpperCase();
+
 			alpha = alpha.padStart(2, '0');
 			return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
 		}

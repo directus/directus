@@ -275,6 +275,7 @@ const fields = computed(() => {
 	if (!relationInfo.value) return [];
 
 	let displayFields: string[] = [];
+
 	if (props.layout === LAYOUTS.TABLE) {
 		displayFields = adjustFieldsForDisplays(props.fields, relationInfo.value.relatedCollection.collection);
 	} else {
@@ -361,6 +362,7 @@ watch(
 		const relatedCollection = relationInfo.value.relatedCollection.collection;
 
 		const contentWidth: Record<string, number> = {};
+
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
 			props.fields.forEach((key) => {
 				if (!contentWidth[key]) {
@@ -504,6 +506,7 @@ function deleteItem(item: DisplayItem) {
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
+
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],

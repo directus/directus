@@ -52,6 +52,7 @@ export function setTypeForInterface(updates: StateUpdates, state: State) {
  */
 export function setSpecialForLocalType(updates: StateUpdates) {
 	const localType = updates?.localType;
+
 	switch (localType) {
 		case 'o2m':
 		case 'm2m':

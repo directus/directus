@@ -27,6 +27,7 @@ beforeEach(async () => {
 			component: h('div', 'empty'),
 		},
 	]);
+
 	router.push('/');
 	await router.isReady();
 

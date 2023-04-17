@@ -343,12 +343,14 @@ export const useFieldsStore = defineStore({
 		getRelationalField(collection: string, fields: string) {
 			const relationsStore = useRelationsStore();
 			const [field, ...path] = fields.split('.');
+
 			if (field.includes(':')) {
 				const [_, collection] = field.split(':');
 				return this.getField(collection, path.join('.'));
 			}
 
 			const relations = relationsStore.getRelationsForField(collection, field);
+
 			const relation = relations?.find((relation: Relation) => {
 				return relation.field === field || relation.meta?.one_field === field;
 			});

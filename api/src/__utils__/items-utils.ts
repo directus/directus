@@ -1,6 +1,7 @@
 // dynamically adds fields to the sql strings as the schema grows
 export const sqlFieldFormatter = (schema: Record<string, any>, table: string) => {
 	const fields = [];
+
 	// Exclude alias fields, unable to selected in DB
 	for (const field of Object.keys(schema['collections'][table].fields)) {
 		if (schema['collections'][table].fields[field].type !== 'alias') {
@@ -20,6 +21,7 @@ export const sqlFieldFormatter = (schema: Record<string, any>, table: string) =>
 
 export const sqlFieldList = (schema: Record<string, any>, table: string) => {
 	const fields = [];
+
 	// Exclude alias fields, unable to selected in DB
 	for (const field of Object.keys(schema['collections'][table].fields)) {
 		if (schema['collections'][table].fields[field].type !== 'alias') {

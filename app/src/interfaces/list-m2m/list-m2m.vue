@@ -278,6 +278,7 @@ const templateWithDefaults = computed(() => {
 		return relationInfo.value.junctionCollection.meta.display_template;
 
 	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
+
 	if (relatedDisplayTemplate) {
 		const regex = /({{.*?}})/g;
 		const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
@@ -386,6 +387,7 @@ watch(
 		const junctionCollection = relationInfo.value.junctionCollection.collection;
 
 		const contentWidth: Record<string, number> = {};
+
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
 			props.fields.forEach((key) => {
 				if (!contentWidth[key]) {
@@ -542,6 +544,7 @@ function deleteItem(item: DisplayItem) {
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
+
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
@@ -592,6 +595,7 @@ function getLinkForItem(item: DisplayItem) {
 			relationInfo.value.junctionField.field,
 			relationInfo.value.relatedPrimaryKeyField.field,
 		]);
+
 		return `/content/${relationInfo.value.relatedCollection.collection}/${encodeURIComponent(primaryKey)}`;
 	}
 

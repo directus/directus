@@ -7,11 +7,13 @@ import * as common from '@common/index';
 
 const assetsDirectory = [__dirname, '..', '..', 'assets'];
 const storages = ['local', 'minio'];
+
 const imageFile = {
 	name: 'directus.png',
 	type: 'image/png',
 	filesize: '7136',
 };
+
 const imageFilePath = path.join(...assetsDirectory, imageFile.name);
 
 describe('/assets', () => {

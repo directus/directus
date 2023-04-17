@@ -70,6 +70,7 @@ export default defineComponent({
 			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
 
 			const recommendedList = recommended.map((key: any) => displayItems.find((item) => item.value === key));
+
 			if (recommendedList !== undefined) {
 				recommendedItems.push(...recommendedList.filter((i: any) => i));
 			}
@@ -79,6 +80,7 @@ export default defineComponent({
 			}
 
 			const displayList = displayItems.filter((item) => recommended.includes(item.value as string) === false);
+
 			if (displayList !== undefined) {
 				recommendedItems.push(...displayList.filter((i) => i));
 			}

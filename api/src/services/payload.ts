@@ -58,6 +58,7 @@ export class PayloadService {
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
+
 			if (action === 'create' || action === 'update') {
 				return await generateHash(String(value));
 			}
@@ -205,6 +206,7 @@ export class PayloadService {
 
 	processAggregates(payload: Partial<Item>[]) {
 		const aggregateKeys = Object.keys(payload[0]!).filter((key) => key.includes('->'));
+
 		if (aggregateKeys.length) {
 			for (const item of payload) {
 				Object.assign(item, flat.unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
@@ -329,6 +331,7 @@ export class PayloadService {
 					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
 							const parsedDate = parseISO(value);
+
 							if (!isValid(parsedDate)) {
 								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
 							}
@@ -338,6 +341,7 @@ export class PayloadService {
 
 						if (dateColumn.type === 'dateTime') {
 							const parsedDate = parseISO(value);
+
 							if (!isValid(parsedDate)) {
 								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
 							}
@@ -595,8 +599,10 @@ export class PayloadService {
 
 			// Nested array of individual items
 			const field = payload[relation.meta!.one_field!];
+
 			if (!field || Array.isArray(field)) {
 				const updates = field || []; // treat falsey values as removing all children
+
 				for (let i = 0; i < updates.length; i++) {
 					const relatedRecord = updates[i];
 

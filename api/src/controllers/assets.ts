@@ -29,6 +29,7 @@ router.get(
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
 		const database = getDatabase();
+
 		const savedAssetSettings = await database
 			.select('storage_asset_presets', 'storage_asset_transform')
 			.from('directus_settings')
@@ -81,6 +82,7 @@ router.get(
 		}
 
 		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation['key']!);
+
 		const allKeys: string[] = [
 			...systemKeys,
 			...(assetSettings.storage_asset_presets || []).map(
@@ -186,6 +188,7 @@ router.get(
 		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
 
 		const unixTime = Date.parse(file.modified_on);
+
 		if (!Number.isNaN(unixTime)) {
 			const lastModifiedDate = new Date(unixTime);
 			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());
