@@ -16,7 +16,7 @@ vi.mock('../env', () => {
 	};
 });
 
-vi.mock('../database', () => {
+vi.mock('../database/index', () => {
 	const self: Record<string, any> = {
 		select: vi.fn(() => self),
 		from: vi.fn(() => self),
@@ -30,7 +30,10 @@ vi.mock('../database', () => {
 
 describe('getAccountabilityForToken', async () => {
 	test('minimal token payload', async () => {
-		const token = jwt.sign({ role: '123-456-789' }, env['SECRET'], { issuer: 'directus' });
+		const token = jwt.sign({ role: '123-456-789', app_access: false, admin_access: false }, env['SECRET'], {
+			issuer: 'directus',
+		});
+
 		const result = await getAccountabilityForToken(token);
 		expect(result).toStrictEqual({ admin: false, app: false, role: '123-456-789', user: null });
 	});
@@ -82,10 +85,12 @@ describe('getAccountabilityForToken', async () => {
 		const result = await getAccountabilityForToken(token);
 
 		expect(result).toStrictEqual({
+			user: 'user-id',
+			role: 'role-id',
 			admin: false,
 			app: true,
-			role: 'role-id',
-			user: 'user-id',
+			share: 'share-id',
+			share_scope: 'share-scope',
 		});
 	});
 
