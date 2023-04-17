@@ -14,4 +14,4 @@ body:
   - type: textarea
     attributes:
       label: Suggestions
-      description: Please detail exactly what and why you think would be a good addition to the docs.
+      description: Please detail exactly what you think would be a good addition to the docs.
