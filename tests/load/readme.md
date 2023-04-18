@@ -1,8 +1,8 @@
-This package contains load tests for the api server.
+This package contains load tests for the API server.
 
 ## Running the tests
 
-To run the tests, you need to have a running api server and (k6)[https://github.com/grafana/k6] installed.
+To run the tests, you need to have a running API server and (k6)[https://github.com/grafana/k6] installed.
 
 To run a test use the following command:
 
