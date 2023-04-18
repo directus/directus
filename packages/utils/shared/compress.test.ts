@@ -37,9 +37,11 @@ const geoJSON = {
 };
 
 const dateString = '2022-02-14T01:02:11.000Z';
+
 const dateInput = {
 	date_created: new Date(dateString),
 };
+
 const dateOutput = {
 	date_created: dateString,
 };

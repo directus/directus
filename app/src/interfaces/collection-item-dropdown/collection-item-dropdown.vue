@@ -95,6 +95,7 @@ const displayTemplate = computed(() => {
 
 	return displayTemplate || `{{ ${primaryKey.value || ''} }}`;
 });
+
 const requiredFields = computed(() => {
 	if (!displayTemplate.value || !unref(selectedCollection)) return [];
 	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), unref(selectedCollection));

@@ -259,6 +259,7 @@ useShortcut(
 	},
 	table
 );
+
 const permissionsStore = usePermissionsStore();
 const userStore = useUserStore();
 
@@ -295,6 +296,7 @@ function getDisplayValue(item: Item, key: string) {
 		} else {
 			result[key] = item[key];
 		}
+
 		return result;
 	}, {});
 

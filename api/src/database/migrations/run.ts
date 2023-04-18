@@ -15,6 +15,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	let migrationFiles = await fse.readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
+
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
@@ -29,6 +30,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	].sort((a, b) => (a.version! > b.version! ? 1 : -1));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));
+
 	if (migrations.length > migrationKeys.size) {
 		throw new Error('Migration keys collide! Please ensure that every migration uses a unique key.');
 	}

@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const { active } = toRefs(props);
+
 const { active: isActive, toggle } = useGroupable({
 	value: props.value,
 	group: props.scope,

@@ -218,6 +218,7 @@ router.get(
 			data: getAuthProviders(),
 			disableDefault: env['AUTH_DISABLE_DEFAULT'],
 		};
+
 		return next();
 	}),
 	respond

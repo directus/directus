@@ -25,7 +25,7 @@ project.
 This is useful if you make changes to a data model in a development project and need to apply them to a production
 project, or to move from a self-hosted project to Directus Cloud.
 
-## How To Guide
+## How-To Guide
 
 ::: tip Permissions
 

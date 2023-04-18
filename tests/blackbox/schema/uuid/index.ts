@@ -140,6 +140,7 @@ const _null = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue === undefined || inputValue === null) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -147,6 +148,7 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== undefined && inputValue !== null) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -160,6 +162,7 @@ const _in = (inputValue: any, possibleValues: any): boolean => {
 			}
 		}
 	}
+
 	return false;
 };
 
@@ -173,6 +176,7 @@ const _nin = (inputValue: any, possibleValues: any): boolean => {
 			}
 		}
 	}
+
 	return true;
 };
 
@@ -200,6 +204,7 @@ const empty_null = (_inputValue: any, possibleValues: any): boolean => {
 				return false;
 			}
 		}
+
 		return true;
 	} else {
 		return possibleValues !== null;

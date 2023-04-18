@@ -81,6 +81,7 @@ export default defineComponent({
 			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
 
 			const recommendedList = recommended.map((key) => interfaceItems.find((item) => item.value === key));
+
 			if (recommendedList !== undefined) {
 				recommendedItems.push(...recommendedList.filter((i) => i));
 			}
@@ -90,6 +91,7 @@ export default defineComponent({
 			}
 
 			const interfaceList = interfaceItems.filter((item) => recommended.includes(item.value as string) === false);
+
 			if (interfaceList !== undefined) {
 				recommendedItems.push(...interfaceList.filter((i) => i));
 			}

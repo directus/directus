@@ -15,6 +15,7 @@ describe('moveInArray', () => {
 	it('moves the item to the left to the specified index', () => {
 		expect(moveInArray(testArray, 5, -3)).toStrictEqual([1, 2, 3, 6, 4, 5]);
 	});
+
 	it('returns the original array when passed the same toIndex and fromIndex', () => {
 		expect(moveInArray(testArray, 0, 0)).toStrictEqual(testArray);
 	});

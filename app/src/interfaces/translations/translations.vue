@@ -161,12 +161,14 @@ const firstItem = computed(() => {
 
 	return getItemEdits(item);
 });
+
 const secondItem = computed(() => {
 	const item = getItemWithLang(displayItems.value, secondLang.value);
 	if (item === undefined) return undefined;
 
 	return getItemEdits(item);
 });
+
 const firstItemInitial = computed(() => getItemWithLang(fetchedItems.value, firstLang.value));
 const secondItemInitial = computed(() => getItemWithLang(fetchedItems.value, secondLang.value));
 
