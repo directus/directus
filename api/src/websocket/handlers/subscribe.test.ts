@@ -23,6 +23,8 @@ vi.mock('../../services', () => ({
 	MetaService: vi.fn(),
 }));
 
+vi.mock('../../database/index');
+
 function mockClient() {
 	return {
 		on: vi.fn(),
