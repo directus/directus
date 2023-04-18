@@ -141,6 +141,8 @@ router.get(
 			schema: req.schema,
 		});
 
+		const vary = ['Origin', 'Cache-Control'];
+
 		const transformation: TransformationParams = res.locals['transformation'].key
 			? (res.locals['shortcuts'] as TransformationParams[]).find(
 					(transformation) => transformation['key'] === res.locals['transformation'].key
@@ -157,6 +159,7 @@ router.get(
 			}
 
 			transformation.format = format;
+			vary.push('Accept');
 		}
 
 		let range: Range | undefined = undefined;
@@ -186,6 +189,7 @@ router.get(
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
+		res.setHeader('Vary', vary.join(', '));
 
 		const unixTime = Date.parse(file.modified_on);
 
