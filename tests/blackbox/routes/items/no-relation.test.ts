@@ -786,17 +786,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					]) {
 						expect(messages?.length).toBe(artistsCount);
 
-						for (let i = 0; i < artistsCount; i++) {
-							expect(messages![i]).toEqual({
-								data: {
-									[subscriptionKey]: {
-										id: String(keys[i]),
-										name,
-										_event: 'update',
-									},
-								},
-							});
-						}
+						expect(messages).toEqual(
+							expect.arrayContaining(
+								keys.map((id) => {
+									return {
+										data: {
+											[subscriptionKey]: {
+												id: String(id),
+												name,
+												_event: 'update',
+											},
+										},
+									};
+								})
+							)
+						);
 					}
 				});
 			});
