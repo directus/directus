@@ -9,11 +9,13 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	const query: Query = {};
 
 	const env = getEnv();
+
 	const hasMaxLimit =
 		'QUERY_LIMIT_MAX' in env &&
 		Number(env['QUERY_LIMIT_MAX']) >= 0 &&
 		!Number.isNaN(Number(env['QUERY_LIMIT_MAX'])) &&
 		Number.isFinite(Number(env['QUERY_LIMIT_MAX']));
+
 	if (rawQuery['limit'] !== undefined) {
 		const limit = sanitizeLimit(rawQuery['limit']);
 

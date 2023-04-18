@@ -269,6 +269,7 @@ const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	(value) => String(value),
 	props.limit
 );
+
 limitWritable.value = selectedSize;
 
 const showManualSort = computed(() => {

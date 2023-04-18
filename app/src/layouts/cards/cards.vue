@@ -235,6 +235,7 @@ export default defineComponent({
 			(value) => String(value),
 			props.limit
 		);
+
 		limitWritable.value = selectedSize;
 
 		return { t, selectionWritable, limitWritable, sizeWritable, sortWritable, layoutElement, pageSizes };

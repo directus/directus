@@ -114,9 +114,9 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 					fetchAll<any>('/dashboards', { params: { fields: ['*'], sort: ['name'] } }),
 					fetchAll<any>('/panels', { params: { fields: ['*'], sort: ['dashboard'] } }),
 				]);
+
 				dashboards.value = dashboardsResponse;
 				panels.value = panelsResponse;
-
 			} catch {
 				dashboards.value = [];
 				panels.value = [];

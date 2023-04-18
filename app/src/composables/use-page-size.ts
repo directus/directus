@@ -12,6 +12,7 @@ export function usePageSize<T = any>(
 		if (info.queryLimit === undefined) return availableSizes.map(mapCallback);
 
 		const sizes = availableSizes.filter((size) => size <= info.queryLimit!.max);
+
 		if (sizes.length === 0) {
 			sizes.push(info.queryLimit!.max);
 		}

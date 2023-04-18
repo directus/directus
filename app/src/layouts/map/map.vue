@@ -200,6 +200,7 @@ export default defineComponent({
 			(value) => ({ text: n(value), value }),
 			props.limit
 		);
+
 		limitWritable.value = selectedSize;
 
 		return { t, n, cameraOptionsWritable, limitWritable, pageSizes };
