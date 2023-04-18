@@ -31,7 +31,7 @@ describe('/assets', () => {
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/assets/${insertResponse.body.data.id}`)
+							.get(`/assets/${insertResponse.body.data.id}?format=auto`)
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 						// Assert
@@ -58,7 +58,7 @@ describe('/assets', () => {
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.get(`/assets/${insertResponse.body.data.id}`)
+							.get(`/assets/${insertResponse.body.data.id}?format=auto`)
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 							.set('Accept', requestHeaderAccept);
 
