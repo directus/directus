@@ -102,6 +102,8 @@ export class SubscribeHandler {
 				}
 			}
 		}
+
+		client.send(fmtMessage('subscription', { event: 'unsubscribe' }, uid));
 	}
 
 	/**
