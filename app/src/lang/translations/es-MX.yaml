@@ -2134,7 +2134,7 @@ operations:
     name: Transformar payload
     description: Alterar la payload JSON del flujo
   trigger:
-    name: Activar flujo
+    name: Disparar flujo
     description: Pasar estos datos a otro flujo
     flows: Flujos
     flow: Flujo
