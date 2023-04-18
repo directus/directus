@@ -1110,7 +1110,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: 地圖
     basemaps: 基礎地圖
     basemaps_raster: Raster

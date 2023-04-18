@@ -49,15 +49,22 @@ export default defineComponent({
 			() => {
 				ssoProviders.value = providers.value
 					.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
-					.map((provider: AuthProvider) => ({
-						name: provider.name,
-						label: provider.label || formatTitle(provider.name),
-						link: `${getRootPath()}auth/login/${provider.name}?redirect=${window.location.href.replace(
-							location.search,
-							''
-						)}?continue`,
-						icon: provider.icon ?? 'account_circle',
-					}));
+					.map((provider: AuthProvider) => {
+						const ssoLoginLink = new URL(window.location.origin);
+						ssoLoginLink.pathname = `${getRootPath()}auth/login/${provider.name}`;
+
+						const redirectToLink = new URL(window.location.href);
+						redirectToLink.searchParams.set('continue', '');
+
+						ssoLoginLink.searchParams.set('redirect', redirectToLink.toString());
+
+						return {
+							name: provider.name,
+							label: provider.label || formatTitle(provider.name),
+							link: ssoLoginLink.toString(),
+							icon: provider.icon ?? 'account_circle',
+						};
+					});
 			},
 			{ immediate: true }
 		);
@@ -68,6 +75,7 @@ export default defineComponent({
 			if (router.currentRoute.value.query.reason && !validReasons.includes(router.currentRoute.value.query.reason)) {
 				return translateAPIError(router.currentRoute.value.query.reason);
 			}
+
 			return null;
 		});
 

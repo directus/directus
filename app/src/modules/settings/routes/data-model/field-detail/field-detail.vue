@@ -131,6 +131,7 @@ export default defineComponent({
 				unexpectedError(err);
 				return;
 			}
+
 			router.push(`/settings/data-model/${props.collection}`);
 			fieldDetail.$reset();
 		}

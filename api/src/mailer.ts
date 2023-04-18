@@ -4,6 +4,7 @@ import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 import { createRequire } from 'node:module';
+
 const require = createRequire(import.meta.url);
 
 let transporter: Transporter;
@@ -53,6 +54,7 @@ export default function getMailer(): Transporter {
 		} as Record<string, unknown>);
 	} else if (transportName === 'mailgun') {
 		const mg = require('nodemailer-mailgun-transport');
+
 		transporter = nodemailer.createTransport(
 			mg({
 				auth: {
@@ -64,6 +66,7 @@ export default function getMailer(): Transporter {
 		);
 	} else if (transportName === 'sendgrid') {
 		const sg = require('nodemailer-sendgrid');
+
 		transporter = nodemailer.createTransport(
 			sg({
 				apiKey: env['EMAIL_SENDGRID_API_KEY'],

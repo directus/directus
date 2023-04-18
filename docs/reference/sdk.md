@@ -80,9 +80,9 @@ async function start() {
 	// GET DATA
 
 	// After authentication, we can fetch data from any collections that the user has permissions to.
-	const publicData = await directus.items('some_private_collection').readByQuery({ sort: ['id'] });
+	const privateData = await directus.items('some_private_collection').readByQuery({ sort: ['id'] });
 
-	console.log(publicData.data);
+	console.log(privateData.data);
 }
 
 start();

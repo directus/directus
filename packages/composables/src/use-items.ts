@@ -63,6 +63,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 		total: null,
 		filter: null,
 	};
+
 	let loadingTimeout: NodeJS.Timeout | null = null;
 
 	const fetchItems = throttle(getItems, 500);
@@ -250,6 +251,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const count = primaryKeyField.value
 				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
 				: Number(response.data.data[0].count);
+
 			existingRequests.total = null;
 
 			totalCount.value = count;
@@ -287,6 +289,7 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 			const count = primaryKeyField.value
 				? Number(response.data.data[0].countDistinct[primaryKeyField.value.field])
 				: Number(response.data.data[0].count);
+
 			existingRequests.filter = null;
 
 			itemCount.value = count;

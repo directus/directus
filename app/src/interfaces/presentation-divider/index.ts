@@ -10,6 +10,7 @@ export default defineInterface({
 	component: InterfacePresentationDivider,
 	hideLabel: true,
 	hideLoader: true,
+	autoKey: true,
 	types: ['alias'],
 	localTypes: ['presentation'],
 	group: 'presentation',

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "9.24.0",
+	"version": "9.25.1",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project browser/tsconfig.json && tsc --project node/tsconfig.json && tsc --project shared/tsconfig.json",
@@ -34,7 +34,7 @@
 	"main": "dist/shared/index.js",
 	"files": [
 		"dist",
-		"!**/*.d.ts?(.map)"
+		"!**/*.test.{js,d.ts}"
 	],
 	"publishConfig": {
 		"access": "public"

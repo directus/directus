@@ -129,6 +129,7 @@ export const useFieldsStore = defineStore({
 				if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
 					field.name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 				}
+
 				if (field.meta?.note) field.meta.note = translateLiteral(field.meta.note);
 				if (field.meta?.options) field.meta.options = translate(field.meta.options);
 				if (field.meta?.display_options) field.meta.display_options = translate(field.meta.display_options);
@@ -262,6 +263,7 @@ export const useFieldsStore = defineStore({
 				) {
 					return false;
 				}
+
 				return true;
 			});
 
@@ -341,12 +343,14 @@ export const useFieldsStore = defineStore({
 		getRelationalField(collection: string, fields: string) {
 			const relationsStore = useRelationsStore();
 			const [field, ...path] = fields.split('.');
+
 			if (field.includes(':')) {
 				const [_, collection] = field.split(':');
 				return this.getField(collection, path.join('.'));
 			}
 
 			const relations = relationsStore.getRelationsForField(collection, field);
+
 			const relation = relations?.find((relation: Relation) => {
 				return relation.field === field || relation.meta?.one_field === field;
 			});

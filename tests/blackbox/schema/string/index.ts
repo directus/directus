@@ -145,6 +145,7 @@ const _contains = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue.includes(possibleValues)) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -152,6 +153,7 @@ const _ncontains = (inputValue: any, possibleValues: any): boolean => {
 	if (!inputValue.includes(possibleValues)) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -159,6 +161,7 @@ const _icontains = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue.toLowerCase().includes(possibleValues.toLowerCase())) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -166,6 +169,7 @@ const _nicontains = (inputValue: any, possibleValues: any): boolean => {
 	if (!inputValue.toLowerCase().includes(possibleValues.toLowerCase())) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -173,6 +177,7 @@ const _starts_with = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue.startsWith(possibleValues)) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -180,6 +185,7 @@ const _nstarts_with = (inputValue: any, possibleValues: any): boolean => {
 	if (!inputValue.startsWith(possibleValues)) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -187,6 +193,7 @@ const _ends_with = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue.endsWith(possibleValues)) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -194,6 +201,7 @@ const _nends_with = (inputValue: any, possibleValues: any): boolean => {
 	if (!inputValue.endsWith(possibleValues)) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -201,6 +209,7 @@ const _eq = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue === possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -208,6 +217,7 @@ const _neq = (inputValue: any, possibleValues: any): boolean => {
 	if (inputValue !== possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -215,6 +225,7 @@ const _empty = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue === '') {
 		return true;
 	}
+
 	return _null(inputValue, _possibleValues);
 };
 
@@ -222,6 +233,7 @@ const _nempty = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== '') {
 		return true;
 	}
+
 	return _nnull(inputValue, _possibleValues);
 };
 
@@ -229,6 +241,7 @@ const _null = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue === undefined || inputValue === null) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -236,6 +249,7 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== undefined && inputValue !== null) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -243,6 +257,7 @@ const _in = (inputValue: any, possibleValues: any): boolean => {
 	if (possibleValues.includes(inputValue)) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -250,6 +265,7 @@ const _nin = (inputValue: any, possibleValues: any): boolean => {
 	if (!possibleValues.includes(inputValue)) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -279,6 +295,7 @@ const empty_empty = (_inputValue: any, possibleValues: any): boolean => {
 				return false;
 			}
 		}
+
 		return true;
 	} else {
 		return possibleValues !== '';
@@ -292,6 +309,7 @@ const empty_null = (_inputValue: any, possibleValues: any): boolean => {
 				return false;
 			}
 		}
+
 		return true;
 	} else {
 		return possibleValues !== null;
