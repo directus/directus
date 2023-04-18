@@ -474,9 +474,7 @@ export function useRelationMultiple(
 
 				case 'm2a': {
 					const collection = item[relation.value.collectionField.field];
-					return item[relation.value.junctionPrimaryKeyField.field][
-						relation.value.relationPrimaryKeyFields[collection].field
-					];
+					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection].field];
 				}
 			}
 		}
