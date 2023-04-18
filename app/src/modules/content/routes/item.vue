@@ -383,6 +383,8 @@ const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-previ
 
 const splitView = computed({
 	get() {
+		if (!collectionInfo.value?.meta?.preview_url) return false;
+
 		return livePreviewMode.value === 'split';
 	},
 	set(value) {
