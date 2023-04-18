@@ -20,7 +20,7 @@
 			{{ t('authenticated') }}
 		</template>
 		<template v-else #notice>
-			<v-icon name="lock_outlined" left />
+			<v-icon name="lock" left />
 			{{
 				logoutReason && te(`logoutReason.${logoutReason}`) ? t(`logoutReason.${logoutReason}`) : t('not_authenticated')
 			}}

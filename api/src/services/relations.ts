@@ -34,6 +34,7 @@ export class RelationsService {
 		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
+
 		this.relationsItemService = new ItemsService('directus_relations', {
 			knex: this.knex,
 			schema: this.schema,
@@ -87,6 +88,7 @@ export class RelationsService {
 			});
 
 			if (!permissions || !permissions.fields) throw new ForbiddenException();
+
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
 				if (allowedFields.includes(field) === false) throw new ForbiddenException();
@@ -115,6 +117,7 @@ export class RelationsService {
 			(foreignKey) => foreignKey.column === field
 		);
 		const stitched = stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
+
 		const results = await this.filterForbidden(stitched);
 
 		if (results.length === 0) {
@@ -191,6 +194,7 @@ export class RelationsService {
 						this.alterType(table, relation);
 
 						const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
+
 						const builder = table
 							.foreign(relation.field!, constraintName)
 							.references(
@@ -517,6 +521,7 @@ export class RelationsService {
 	 */
 	private alterType(table: Knex.TableBuilder, relation: Partial<Relation>) {
 		const m2oFieldDBType = this.schema.collections[relation.collection!]!.fields[relation.field!]!.dbType;
+
 		const relatedFieldDBType =
 			this.schema.collections[relation.related_collection!]!.fields[
 				this.schema.collections[relation.related_collection!]!.primary

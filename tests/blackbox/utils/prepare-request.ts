@@ -12,11 +12,14 @@ export type RequestOptions = {
 
 export const PrepareRequest = (vendor: string, requestOptions: RequestOptions) => {
 	const req = request(getUrl(vendor))[requestOptions.method](requestOptions.path);
+
 	if (requestOptions.token) {
 		req.set('Authorization', `Bearer ${requestOptions.token}`);
 	}
+
 	if (requestOptions.body) {
 		req.send(requestOptions.body);
 	}
+
 	return req;
 };

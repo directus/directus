@@ -439,6 +439,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			if (relationType === 'm2o') {
 				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.related_collection);
+
 				const relatedPrimaryKeyField = fields.find(
 					(field) => field.collection === relation.related_collection && field.schema?.is_primary_key
 				);
@@ -455,6 +456,7 @@ class OASSpecsService implements SpecificationSubService {
 				];
 			} else if (relationType === 'o2m') {
 				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.collection);
+
 				const relatedPrimaryKeyField = fields.find(
 					(field) => field.collection === relation.collection && field.schema?.is_primary_key
 				);
@@ -462,6 +464,7 @@ class OASSpecsService implements SpecificationSubService {
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
 
 				propertyObject.type = 'array';
+
 				propertyObject.items = {
 					oneOf: [
 						{
@@ -476,6 +479,7 @@ class OASSpecsService implements SpecificationSubService {
 				const relatedTags = tags.filter((tag) => relation.meta!.one_allowed_collections!.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';
+
 				propertyObject.items = {
 					oneOf: [
 						{

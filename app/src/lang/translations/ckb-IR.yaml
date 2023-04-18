@@ -1130,7 +1130,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: نەخشەکێشان
     basemaps: نەخشەی بنەڕەتی
     basemaps_raster: Raster

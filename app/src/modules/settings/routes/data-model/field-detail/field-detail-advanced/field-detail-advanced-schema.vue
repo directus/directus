@@ -361,6 +361,7 @@ export default defineComponent({
 						},
 					];
 				}
+
 				return [];
 			});
 

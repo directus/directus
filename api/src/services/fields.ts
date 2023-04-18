@@ -197,6 +197,7 @@ export class FieldsService {
 			});
 
 			if (!permissions || !permissions.fields) throw new ForbiddenException();
+
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
 				if (allowedFields.includes(field) === false) throw new ForbiddenException();
@@ -269,6 +270,7 @@ export class FieldsService {
 
 			// Add flag for specific database type overrides
 			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+
 			if (flagToAdd) {
 				addFieldFlag(field, flagToAdd);
 			}

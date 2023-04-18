@@ -11,6 +11,7 @@ import { validateEnv } from '../utils/validate-env.js';
 let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 export let rateLimiter: RateLimiterRedis | RateLimiterMemory;
 
+
 if (env['RATE_LIMITER_ENABLED'] === true) {
 	validateEnv(['RATE_LIMITER_STORE', 'RATE_LIMITER_DURATION', 'RATE_LIMITER_POINTS']);
 

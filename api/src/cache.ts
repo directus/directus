@@ -14,6 +14,7 @@ let systemCache: CacheService | null = null;
 let localSchemaCache: CacheService | null = null;
 let sharedSchemaCache: CacheService | null = null;
 let lockCache: CacheService | null = null;
+
 let messengerSubscribed = false;
 
 const messenger = getMessenger();
