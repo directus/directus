@@ -182,9 +182,11 @@ function closeDrawer() {
 
 async function saveTranslationString() {
 	if (!values.value) return;
+
 	if (initialValues.value.key && initialValues.value.key !== values.value.key) {
 		await removeTranslation(initialValues.value.key);
 	}
+
 	await upsertTranslation(values.value);
 	closeDrawer();
 }

@@ -34,6 +34,7 @@ const upsertHandler = asyncHandler(async (req, res, next) => {
 
 	try {
 		let savedKeys: PrimaryKey[] = [];
+
 		const existingKeys: PrimaryKey[] = (
 			await service.readByQuery({
 				fields: ['id'],
@@ -85,6 +86,7 @@ router.delete(
 				},
 			},
 		});
+
 		return next();
 	}),
 	respond

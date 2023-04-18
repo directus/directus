@@ -129,9 +129,11 @@ const translations = computed(() => {
 	// console.log(translationKeys.value);
 	const keys = translationKeys.value ?? [];
 	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
+
 	if (filteredKeys.length > 100) {
 		return filteredKeys.slice(0, 100);
 	}
+
 	return filteredKeys;
 });
 

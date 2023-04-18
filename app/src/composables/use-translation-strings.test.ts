@@ -45,6 +45,7 @@ describe('Use Translation Strings', () => {
 		translationStrings.value = [{ key: 'test', value: 'test', language: 'nl-NL' }];
 		// check the formatted results
 		expect(translationKeys.value).toStrictEqual(['test']);
+
 		expect(displayTranslationStrings.value).toStrictEqual([
 			{
 				key: 'test',
@@ -57,8 +58,10 @@ describe('Use Translation Strings', () => {
 			},
 		]);
 	});
+
 	test('Same keys should get merged', async () => {
 		const { translationStrings, displayTranslationStrings } = useTranslationStrings();
+
 		translationStrings.value = [
 			{ key: 'test', value: 'test', language: 'nl-NL' },
 			{ key: 'test', value: 'test', language: 'en-GB' },
@@ -80,15 +83,18 @@ describe('Use Translation Strings', () => {
 			},
 		]);
 	});
+
 	test('Translation keys should be sorted alphabetically', async () => {
 		const { translationKeys, translationStrings } = useTranslationStrings();
 		translationStrings.value = TEST_TRANSLATIONS;
 
 		expect(translationKeys.value).toStrictEqual(['abc', 'zyx']);
 	});
+
 	test('Add a new translation to the list', async () => {
 		const { translationKeys, translationStrings, upsertTranslation } = useTranslationStrings();
 		translationStrings.value = [];
+
 		await upsertTranslation({
 			key: 'test',
 			translations: [
@@ -102,13 +108,16 @@ describe('Use Translation Strings', () => {
 				},
 			],
 		});
+
 		expect(translationKeys.value).toStrictEqual(['test']);
 		expect(translationStrings.value.length).toEqual(2);
+
 		expect(translationStrings.value).toStrictEqual([
 			{ key: 'test', language: 'nl-NL', value: 'test' },
 			{ key: 'test', language: 'en-GB', value: 'test' },
 		]);
 	});
+
 	test('Remove translation from the list', async () => {
 		const { translationKeys, translationStrings, removeTranslation } = useTranslationStrings();
 		translationStrings.value = TEST_TRANSLATIONS;
@@ -118,9 +127,11 @@ describe('Use Translation Strings', () => {
 		await removeTranslation('abc');
 		expect(translationStrings.value.length).toBe(0);
 	});
+
 	test('Update a translation in the list', async () => {
 		const { translationStrings, upsertTranslation } = useTranslationStrings();
 		translationStrings.value = TEST_TRANSLATIONS;
+
 		await upsertTranslation({
 			key: 'zyx',
 			translations: [
@@ -130,16 +141,20 @@ describe('Use Translation Strings', () => {
 				},
 			],
 		});
+
 		expect(translationStrings.value.length).toBe(2);
+
 		expect(translationStrings.value).toStrictEqual([
 			{ key: 'abc', value: 'test', language: 'nl-NL' },
 			{ key: 'zyx', value: 'test3', language: 'nl-NL' },
 		]);
 	});
+
 	test('Rename the key of a translation in the list', async () => {
 		const { translationKeys, translationStrings, upsertTranslation, removeTranslation } = useTranslationStrings();
 		translationStrings.value = TEST_TRANSLATIONS;
 		await removeTranslation('abc');
+
 		await upsertTranslation({
 			key: 'def',
 			translations: [
@@ -149,8 +164,10 @@ describe('Use Translation Strings', () => {
 				},
 			],
 		});
+
 		expect(translationKeys.value).toStrictEqual(['def', 'zyx']);
 		expect(translationStrings.value.length).toBe(2);
+
 		expect(translationStrings.value).toStrictEqual([
 			{ key: 'zyx', value: 'test2', language: 'nl-NL' },
 			{ key: 'def', value: 'test4', language: 'nl-NL' },

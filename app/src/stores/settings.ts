@@ -43,6 +43,7 @@ export const useSettingsStore = defineStore({
 					],
 				},
 			});
+
 			this.settings = response.data.data;
 		},
 

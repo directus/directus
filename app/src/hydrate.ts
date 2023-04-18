@@ -69,6 +69,7 @@ export async function hydrate(): Promise<void> {
 
 		let lang = 'en-US';
 		if (serverStore.info?.project?.default_language) lang = serverStore.info.project.default_language;
+
 		if (userStore.currentUser && 'language' in userStore.currentUser && userStore.currentUser?.language) {
 			lang = userStore.currentUser?.language;
 		}
@@ -81,6 +82,7 @@ export async function hydrate(): Promise<void> {
 
 			await onHydrateExtensions();
 		}
+
 		await setLanguage(lang);
 
 		appStore.basemap = getBasemapSources()[0].name;
