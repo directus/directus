@@ -149,15 +149,13 @@ router.get(
 			  )
 			: res.locals['transformation'];
 
-		if (transformation.format === 'auto') {
-			let format: Exclude<TransformationParams['format'], 'auto'>;
+		if (transformation.format === 'auto' && req.headers.accept) {
+			let format: Exclude<TransformationParams['format'], 'auto'> = 'jpg';
 
-			if (req.headers.accept?.includes('image/avif')) {
-				format = 'avif';
-			} else if (req.headers.accept?.includes('image/webp')) {
+			if (req.headers.accept.includes('image/webp')) {
 				format = 'webp';
-			} else {
-				format = 'jpg';
+			} else if (req.headers.accept.includes('image/avif')) {
+				format = 'avif';
 			}
 
 			transformation.format = format;
