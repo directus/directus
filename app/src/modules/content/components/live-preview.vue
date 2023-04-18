@@ -15,7 +15,7 @@
 				<v-icon small name="refresh" />
 			</v-button>
 			<span class="url">
-				{{ url }}
+				<v-text-overflow :text="url" />
 			</span>
 			<div class="spacer" />
 			<div class="dimensions" :class="{ disabled: fullscreen }">
