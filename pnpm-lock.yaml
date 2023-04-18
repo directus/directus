@@ -1416,6 +1416,8 @@ importers:
         specifier: 9.0.0
         version: 9.0.0
 
+  tests/load: {}
+
 packages:
 
   /@algolia/autocomplete-core@1.7.4:

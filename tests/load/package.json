@@ -1,13 +1,8 @@
 {
-  "name": "load-tester",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "A Utility to test the performance of the Directus api",
-  "main": "index.js",
-  "scripts": {
-    "test": "k6 run ./cache-test.js"
-  },
-  "keywords": [],
-  "author": "Nils Twelker",
-  "license": "ISC"
+	"name": "tests-load",
+	"private": true,
+	"scripts": {
+		"test": "k6 run ./cache-test.js"
+	},
+	"version": "1.0.0"
 }
