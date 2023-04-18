@@ -5,17 +5,19 @@ import { InvalidCredentialsException } from '../index.js';
 import env from '../env.js';
 import { verifyAccessJWT } from './jwt.js';
 
-const emptyAccountability: Accountability = {
-	user: null,
-	role: null,
-	admin: false,
-	app: false,
-};
-
 export async function getAccountabilityForToken(
 	token?: string | null,
-	accountability: Accountability = emptyAccountability
+	accountability?: Accountability
 ): Promise<Accountability> {
+	if (!accountability) {
+		accountability = {
+			user: null,
+			role: null,
+			admin: false,
+			app: false,
+		};
+	}
+
 	if (token) {
 		if (isDirectusJWT(token)) {
 			const payload = verifyAccessJWT(token, env['SECRET'] as string);
