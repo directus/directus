@@ -89,8 +89,6 @@ describe('getAccountabilityForToken', async () => {
 			role: 'role-id',
 			admin: false,
 			app: true,
-			share: 'share-id',
-			share_scope: 'share-scope',
 		});
 	});
 
