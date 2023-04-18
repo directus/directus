@@ -185,6 +185,18 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 
 	const unsubscribe = async (uid?: WebSocketUID) => {
 		await sendMessage({ type: 'unsubscribe', uid });
+		let response;
+		let error;
+
+		try {
+			response = await getMessages(1, { uid });
+		} catch (err) {
+			error = err;
+		}
+
+		if (error || !response || response[0].status === 'error') {
+			throw new Error(`Unable to unsubscribe"${uid ? ` to "${uid}"` : ''}`);
+		}
 	};
 
 	conn.on('open', () => {
