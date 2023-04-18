@@ -9,7 +9,14 @@
 			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />
-			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
+			<v-icon
+				v-if="field.meta?.required === true"
+				class="required"
+				:class="{ 'has-badge': badge }"
+				sup
+				name="star"
+				filled
+			/>
 			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 			<v-icon
 				v-if="!disabled && rawEditorEnabled"

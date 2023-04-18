@@ -5,7 +5,7 @@
 				<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 				<v-icon class="icon" :class="{ active }" name="expand_more" />
 				<span class="field-name">{{ field.name }}</span>
-				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" />
+				<v-icon v-if="field.meta?.required === true" class="required" sup name="star" filled />
 				<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 				<v-icon v-if="!active && validationMessage" v-tooltip="validationMessage" class="warning" name="error" small />
 			</div>
