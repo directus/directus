@@ -55,6 +55,7 @@ export default defineComponent({
 			value: props.title,
 			group: 'sidebar-detail',
 		});
+
 		const appStore = useAppStore();
 		const { sidebarOpen } = toRefs(appStore);
 		return { active, toggle, sidebarOpen };

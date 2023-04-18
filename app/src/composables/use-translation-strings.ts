@@ -181,6 +181,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 					return result;
 				}, {} as Record<string, string>);
 			i18n.global.mergeLocaleMessage(language, localeMessages);
+
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {

@@ -195,6 +195,7 @@ export default async function createApp(): Promise<express.Application> {
 
 		// Set the App's base path according to the APIs public URL
 		const html = await readFile(adminPath, 'utf8');
+
 		const htmlWithVars = html
 			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
 			.replace(/<embed-head \/>/, embeds.head)
@@ -220,6 +221,7 @@ export default async function createApp(): Promise<express.Application> {
 	if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 		app.use(rateLimiterGlobal);
 	}
+
 	if (env['RATE_LIMITER_ENABLED'] === true) {
 		app.use(rateLimiter);
 	}

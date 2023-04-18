@@ -952,16 +952,16 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 ### SMTP (`smtp`)
 
-| Variable                | Description      | Default Value |
-| ----------------------- | ---------------- | ------------- |
-| `EMAIL_SMTP_NAME`       | SMTP Hostname    | --            |
-| `EMAIL_SMTP_HOST`       | SMTP Host        | --            |
-| `EMAIL_SMTP_PORT`       | SMTP Port        | --            |
-| `EMAIL_SMTP_USER`       | SMTP User        | --            |
-| `EMAIL_SMTP_PASSWORD`   | SMTP Password    | --            |
-| `EMAIL_SMTP_POOL`       | Use SMTP pooling | --            |
-| `EMAIL_SMTP_SECURE`     | Enable TLS       | --            |
-| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS       | --            |
+| Variable                | Description          | Default Value |
+| ----------------------- | -------------------- | ------------- |
+| `EMAIL_SMTP_HOST`       | SMTP server host     | --            |
+| `EMAIL_SMTP_PORT`       | SMTP server port     | --            |
+| `EMAIL_SMTP_USER`       | SMTP user            | --            |
+| `EMAIL_SMTP_PASSWORD`   | SMTP password        | --            |
+| `EMAIL_SMTP_POOL`       | Use SMTP pooling     | --            |
+| `EMAIL_SMTP_SECURE`     | Enable TLS           | --            |
+| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS           | --            |
+| `EMAIL_SMTP_NAME`       | SMTP client hostname | --            |
 
 ### Mailgun (`mailgun`)
 
@@ -981,7 +981,7 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 | Variable                                   | Description                  | Default Value |
 | ------------------------------------------ | ---------------------------- | ------------- |
-| `EMAIL_SES_CREDENTIALS__ACCESS_KEY_ID`     | Your AWS SES access key. ID. | --            |
+| `EMAIL_SES_CREDENTIALS__ACCESS_KEY_ID`     | Your AWS SES access key ID. | --            |
 | `EMAIL_SES_CREDENTIALS__SECRET_ACCESS_KEY` | Your AWS SES secret key.     | --            |
 | `EMAIL_SES_REGION`                         | Your AWS SES region.         | --            |
 

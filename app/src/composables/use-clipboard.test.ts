@@ -85,6 +85,7 @@ describe('useClipboard', () => {
 			value: { writeText: vi.fn().mockImplementation(() => Promise.reject()) },
 			configurable: true,
 		});
+
 		const copyValue = 'test';
 
 		const wrapper = mount(testComponent, { global });

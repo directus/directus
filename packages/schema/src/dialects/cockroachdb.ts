@@ -47,6 +47,8 @@ export function parseDefaultValue(value: string | null) {
 
 	value = value.split('::')[0] ?? null;
 
+	if (value?.trim().toLowerCase() === 'null') return null;
+
 	return stripQuotes(value);
 }
 
@@ -58,6 +60,7 @@ export default class CockroachDB implements SchemaInspector {
 	constructor(knex: Knex) {
 		this.knex = knex;
 		const config = knex.client.config;
+
 		if (!config.searchPath) {
 			this.schema = 'public';
 			this.explodedSchema = [this.schema];
@@ -193,15 +196,18 @@ export default class CockroachDB implements SchemaInspector {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = { columns: {}, primary: <any>undefined };
 			}
+
 			if (['point', 'polygon'].includes(column.data_type)) {
 				column.data_type = 'unknown';
 			}
+
 			overview[column.table_name]!.columns[column.column_name] = column;
 		}
 
 		for (const { table_name, column_name } of primaryKeys) {
 			overview[table_name]!.primary = column_name;
 		}
+
 		for (const { table_name, column_name, data_type } of geometryColumns) {
 			overview[table_name]!.columns[column_name]!.data_type = data_type;
 		}
@@ -220,6 +226,7 @@ export default class CockroachDB implements SchemaInspector {
 			.select<{ tablename: string }[]>('tablename')
 			.from('pg_catalog.pg_tables')
 			.whereIn('schemaname', this.explodedSchema);
+
 		return records.map(({ tablename }) => tablename);
 	}
 
@@ -277,6 +284,7 @@ export default class CockroachDB implements SchemaInspector {
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
 			.andWhere({ table_name: table });
+
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
 		return record?.exists || false;
 	}
@@ -503,6 +511,7 @@ export default class CockroachDB implements SchemaInspector {
 				table_name: table,
 				column_name: column,
 			});
+
 		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
 		return record?.exists || false;
 	}

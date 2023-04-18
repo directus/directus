@@ -21,6 +21,7 @@ import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from 
 import getDefaultValue from '../utils/get-default-value.js';
 import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
+import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { RelationsService } from './relations.js';
 
 export class FieldsService {
@@ -195,6 +196,7 @@ export class FieldsService {
 			});
 
 			if (!permissions || !permissions.fields) throw new ForbiddenException();
+
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
 				if (allowedFields.includes(field) === false) throw new ForbiddenException();
@@ -267,6 +269,7 @@ export class FieldsService {
 
 			// Add flag for specific database type overrides
 			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+
 			if (flagToAdd) {
 				addFieldFlag(field, flagToAdd);
 			}
@@ -395,7 +398,7 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
-				if (!isEqual(existingColumn, hookAdjustedField.schema)) {
+				if (!isEqual(sanitizeColumn(existingColumn), hookAdjustedField.schema)) {
 					try {
 						await this.knex.schema.alterTable(collection, (table) => {
 							if (!hookAdjustedField.schema) return;

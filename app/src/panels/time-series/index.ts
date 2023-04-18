@@ -53,6 +53,7 @@ export default definePanel({
 
 		function getParsedOptionsFilter(filter: string | undefined) {
 			if (!filter) return {};
+
 			try {
 				return JSON.parse(filter);
 			} catch {

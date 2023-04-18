@@ -45,6 +45,7 @@ describe('useShortcut', () => {
 		for (const key of keys) {
 			await wrapper.trigger('keydown', { key });
 		}
+
 		await wrapper.trigger('keyup', { key: keys[0] });
 
 		expect(shortcutHandler).toHaveBeenCalledOnce();

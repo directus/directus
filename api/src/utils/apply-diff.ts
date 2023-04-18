@@ -20,6 +20,7 @@ import {
 	SnapshotField,
 } from '../types/index.js';
 import { getSchema } from './get-schema.js';
+import { getHelpers } from '../database/helpers/index.js';
 
 type CollectionDelta = {
 	collection: string;
@@ -32,14 +33,18 @@ export async function applyDiff(
 	options?: { database?: Knex; schema?: SchemaOverview }
 ): Promise<void> {
 	const database = options?.database ?? getDatabase();
+	const helpers = getHelpers(database);
 	const schema = options?.schema ?? (await getSchema({ database, bypassCache: true }));
 
 	const nestedActionEvents: ActionEventParams[] = [];
+
 	const mutationOptions: MutationOptions = {
 		autoPurgeSystemCache: false,
 		bypassEmitAction: (params) => nestedActionEvents.push(params),
 		bypassLimits: true,
 	};
+
+	const runPostColumnChange = await helpers.schema.preColumnChange();
 
 	await database.transaction(async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
@@ -115,6 +120,7 @@ export async function applyDiff(
 								logger.error(
 									`Failed to delete collection "${collection}" due to relation "${relation.collection}.${relation.field}"`
 								);
+
 								throw err;
 							}
 						}
@@ -149,6 +155,7 @@ export async function applyDiff(
 
 			// Check if parent collection already exists in schema
 			const parentExists = currentSnapshot.collections.find((c) => c.collection === groupName) !== undefined;
+
 			// If this is a new collection and the parent collection doesn't exist in current schema ->
 			// Check if the parent collection will be created as part of applying this snapshot ->
 			// If yes -> this collection will be created recursively
@@ -161,6 +168,7 @@ export async function applyDiff(
 				snapshotDiff.collections.filter(
 					({ collection, diff }) => diff[0]?.kind === DiffKind.NEW && collection === groupName
 				).length > 0;
+
 			// Has group, but parent is not new, parent is also not being created in this snapshot apply
 			if (parentExists && !parentWillBeCreatedInThisApply) return true;
 
@@ -226,6 +234,7 @@ export async function applyDiff(
 							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentField));
+
 						await fieldsService.updateField(collection, newValues, mutationOptions);
 					} catch (err) {
 						logger.error(`Failed to update field "${collection}.${field}"`);
@@ -282,6 +291,7 @@ export async function applyDiff(
 							deepDiff.applyChange(acc, undefined, currentDiff);
 							return acc;
 						}, cloneDeep(currentRelation));
+
 						await relationsService.updateOne(collection, field, newValues, mutationOptions);
 					} catch (err) {
 						logger.error(`Failed to update relation "${collection}.${field}"`);
@@ -300,6 +310,10 @@ export async function applyDiff(
 			}
 		}
 	});
+
+	if (runPostColumnChange) {
+		await helpers.schema.postColumnChange();
+	}
 
 	await clearSystemCache();
 

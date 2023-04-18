@@ -131,7 +131,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 							type: 'string',
 							meta: {
 								interface: 'system-language',
-								width: 'half',
+								width: 'full',
 								display: 'formatted-value',
 								display_options: {
 									font: 'monospace',
