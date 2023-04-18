@@ -128,6 +128,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		let keys: PrimaryKey | PrimaryKey[] = [];
 
 		if (req.is('multipart/form-data')) {

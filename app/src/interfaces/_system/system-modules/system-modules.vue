@@ -169,6 +169,7 @@ export default defineComponent({
 					if (fieldValue === null || fieldValue === undefined || fieldValue === '') return true;
 				}
 			}
+
 			return false;
 		});
 

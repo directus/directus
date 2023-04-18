@@ -78,6 +78,7 @@ export default defineComponent({
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);
+
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
 			return getStyleFromBasemapSource(source);
@@ -90,6 +91,7 @@ export default defineComponent({
 				...(defaultView.value || {}),
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
+
 			map.on('moveend', () => {
 				defaultView.value = {
 					center: map.getCenter(),
@@ -99,6 +101,7 @@ export default defineComponent({
 				};
 			});
 		});
+
 		onUnmounted(() => {
 			map.remove();
 		});

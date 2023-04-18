@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "9.24.0",
+	"version": "9.25.1",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"type": "module",
@@ -24,9 +24,7 @@
 		"build-storybook": "storybook build",
 		"dev": "vite --clearScreen false",
 		"storybook": "storybook dev -p 6006",
-		"test": "vitest run",
-		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest"
+		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
 		"@babel/core": "7.21.3",

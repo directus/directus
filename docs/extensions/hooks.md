@@ -331,7 +331,7 @@ import '@sentry/tracing';
 export default defineHook(({ init }, { env }) => {
     const { SENTRY_DSN } = env;
     Sentry.init({
-        dns: SENTRY_DSN
+        dsn: SENTRY_DSN
     });
     
     init('routes.before', ({ app }) => {

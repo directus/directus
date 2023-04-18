@@ -19,7 +19,7 @@
 					v-if="!active && validationMessages!.length > 0"
 					v-tooltip="validationMessages!.join('\n')"
 					class="warning"
-					name="error_outline"
+					name="error"
 					small
 				/>
 				<v-icon class="expand-icon" name="expand_more" />
@@ -150,6 +150,7 @@ export default defineComponent({
 						).toLowerCase()}`
 					);
 				}
+
 				return acc;
 			}, [] as string[]);
 

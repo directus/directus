@@ -4,7 +4,7 @@ import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import type { Table, SchemaInspector } from '@directus/schema';
-import { omit } from 'lodash-es';
+import { omit, chunk } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -116,6 +116,7 @@ export class CollectionsService {
 
 						// Add flag for specific database type overrides
 						const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+
 						if (flagToAdd) {
 							addFieldFlag(field, flagToAdd);
 						}
@@ -140,6 +141,7 @@ export class CollectionsService {
 					});
 
 					const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
+
 					await fieldItemsService.createMany(fieldPayloads, {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
@@ -212,6 +214,7 @@ export class CollectionsService {
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
 					});
+
 					collectionNames.push(name);
 				}
 
@@ -455,6 +458,7 @@ export class CollectionsService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					});
+
 					collectionKeys.push(payload[collectionKey]);
 				}
 			});
@@ -585,8 +589,14 @@ export class CollectionsService {
 						.where({ collection: collectionKey });
 
 					if (revisionsToDelete.length > 0) {
-						const keys = revisionsToDelete.map((record) => record.id);
-						await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
+						const chunks = chunk(
+							revisionsToDelete.map((record) => record.id),
+							10000
+						);
+
+						for (const keys of chunks) {
+							await trx('directus_revisions').update({ parent: null }).whereIn('parent', keys);
+						}
 					}
 
 					await trx('directus_revisions').delete().where('collection', '=', collectionKey);
@@ -629,6 +639,7 @@ export class CollectionsService {
 						const newAllowedCollections = relation
 							.meta!.one_allowed_collections!.filter((collection) => collectionKey !== collection)
 							.join(',');
+
 						await trx('directus_relations')
 							.update({ one_allowed_collections: newAllowedCollections })
 							.where({ id: relation.meta!.id });
