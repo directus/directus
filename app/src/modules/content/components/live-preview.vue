@@ -133,8 +133,9 @@ const frameEl = ref<HTMLIFrameElement>();
 function refresh() {
 	if (!frameEl.value) return;
 
-	// TODO: verify this assignment is correct. Currently commented out as it's triggering lint error
-	// frameEl.value.src = frameEl.value.src;
+	// this is technically a self-assignment, but it works to refresh the iframe
+	const newSrc = frameEl.value.src;
+	frameEl.value.src = newSrc;
 }
 
 (window as any).refreshLivePreview = refresh;
