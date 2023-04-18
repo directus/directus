@@ -135,6 +135,7 @@ const customFilter = computed(() => {
 const { t } = useI18n();
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
+
 const value = computed({
 	get: () => props.value ?? null,
 	set: (value) => {
@@ -214,6 +215,7 @@ const selection = computed<(number | string)[]>(() => {
 	if (typeof props.value === 'object' && pkField in props.value) {
 		return [props.value[pkField]];
 	}
+
 	return [props.value];
 });
 

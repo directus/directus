@@ -96,6 +96,7 @@ describe('Operations / Item Read', () => {
 
 	test('should emit events for readOne when true', async () => {
 		const key = 1;
+
 		await config.handler(
 			{ collection: testCollection, key, emitEvents: true } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -106,6 +107,7 @@ describe('Operations / Item Read', () => {
 
 	test.each([undefined, false])('should not emit events for readOne when %s', async (emitEvents) => {
 		const key = 1;
+
 		await config.handler(
 			{ collection: testCollection, key, emitEvents } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -127,6 +129,7 @@ describe('Operations / Item Read', () => {
 
 	test('should emit events for readMany when true', async () => {
 		const keys = [1, 2, 3];
+
 		await config.handler(
 			{ collection: testCollection, key: keys, emitEvents: true } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -137,6 +140,7 @@ describe('Operations / Item Read', () => {
 
 	test.each([undefined, false])('should not emit events for readMany when %s', async (emitEvents) => {
 		const keys = [1, 2, 3];
+
 		await config.handler(
 			{ collection: testCollection, key: keys, emitEvents } as any,
 			{ accountability: testAccountability, getSchema } as any

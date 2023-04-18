@@ -34,6 +34,7 @@ export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loadi
 					fields: ['id', 'name', 'icon', 'admin_access'],
 				},
 			});
+
 			roles.value = rolesResponse.data.data;
 		} catch (error: any) {
 			unexpectedError(error);

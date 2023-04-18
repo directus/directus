@@ -177,11 +177,13 @@ const operationOptions = computed(() => {
 	} else if (typeof selectedOperation.value?.options === 'object') {
 		return selectedOperation.value.options;
 	}
+
 	return undefined;
 });
 
 function saveOperation() {
 	saving.value = true;
+
 	emit('save', {
 		flow: props.primaryKey,
 		name: operationName.value || generatedName.value,

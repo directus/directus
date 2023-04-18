@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { defineProps, ref, reactive } from 'vue';
+import { ref, reactive } from 'vue';
+
 const props = defineProps({
 	title: {
 		type: String,
@@ -15,10 +16,14 @@ const loading = ref(false);
 const error = ref(null);
 const success = ref(false);
 
-const feedback = reactive({
-	id: null,
-	rating: null,
-	comments: null,
+const feedback = reactive<{
+	id?: string;
+	rating?: number;
+	comments?: string;
+}>({
+	id: undefined,
+	rating: undefined,
+	comments: undefined,
 });
 
 const prompts = [
@@ -39,7 +44,7 @@ function getPrompt() {
 const ratingOptions = [
 	{ label: 'Worst Doc Ever 🗑️', value: 1, message: 'Woof! 🤦‍♂️ Sorry about that. How do we fix it?' },
 	{ label: 'Not Helpful 😡', value: 2, message: '🧐 Help us do better. How can we improve this article?' },
-	{ label: 'Helpful 😃', value: 3, message: 'Nice! 👍  Anything we can improve upon?' },
+	{ label: 'Helpful 😃', value: 3, message: 'Nice! 👍 Anything we can improve upon?' },
 	{
 		label: 'Super Helpful 🤩',
 		value: 4,
@@ -47,8 +52,13 @@ const ratingOptions = [
 	},
 ];
 
-async function handleSubmission() {
+function getRatingOption(rating: number) {
+	return ratingOptions.find((option) => option.value === rating);
+}
+
+async function handleSubmission(rating?: number) {
 	loading.value = true;
+	if (rating) feedback.rating = rating;
 	const body = {
 		id: feedback.id,
 		rating: feedback.rating,
@@ -69,9 +79,9 @@ async function handleSubmission() {
 		if (data.comments) {
 			success.value = true;
 		}
-	} catch (error) {
-		error.value = error;
-		console.error(error);
+	} catch (err) {
+		error.value = err;
+		console.error(err);
 	} finally {
 		loading.value = false;
 	}
@@ -88,15 +98,7 @@ async function handleSubmission() {
 					</div>
 				</div>
 				<div class="button-container">
-					<button
-						class="btn"
-						v-for="item in ratingOptions"
-						:key="item.value"
-						@click="
-							feedback.rating = item.value;
-							handleSubmission();
-						"
-					>
+					<button v-for="item in ratingOptions" :key="item.value" class="btn" @click="handleSubmission(item.value)">
 						<span>{{ item.label }}</span>
 					</button>
 				</div>
@@ -105,15 +107,15 @@ async function handleSubmission() {
 				<div>
 					<p class="desc">This article is</p>
 					<div>
-						<span>{{ ratingOptions[feedback.rating - 1].label }}</span>
-						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = null">
+						<span>{{ getRatingOption(feedback.rating)?.label }}</span>
+						<button style="margin-left: 0.5rem" class="btn" @click="feedback.rating = undefined">
 							<span mi icon>close</span>
 						</button>
 					</div>
 				</div>
-				<p class="heading">{{ ratingOptions[feedback.rating - 1].message }}</p>
+				<p class="heading">{{ getRatingOption(feedback.rating)?.message }}</p>
 				<textarea v-model="feedback.comments" autofocus class="input" />
-				<button class="btn btn-primary" @click="handleSubmission()" :disabled="!feedback.comments">
+				<button class="btn btn-primary" :disabled="!feedback.comments" @click="handleSubmission()">
 					Send Us Your Feedback
 				</button>
 			</div>

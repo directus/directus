@@ -44,10 +44,12 @@ const endOffset = 13;
 const size = computed(() => {
 	let width = 0,
 		height = 0;
+
 	for (const panel of props.panels) {
 		width = Math.max(width, (panel.x + PANEL_WIDTH) * 20);
 		height = Math.max(height, (panel.y + PANEL_HEIGHT) * 20);
 	}
+
 	if (props.arrowInfo) {
 		width = Math.max(width, props.arrowInfo.pos.x + 10);
 		height = Math.max(height, props.arrowInfo.pos.y + 10);
@@ -67,6 +69,7 @@ const arrows = computed(() => {
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'resolve') {
 			const { x, y } = getPoints(panel, RESOLVE_OFFSET);
+
 			arrows.push({
 				id: panel.id + '_resolve',
 				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
@@ -75,6 +78,7 @@ const arrows = computed(() => {
 			});
 		} else if (resolveChild) {
 			const { x, y, toX, toY } = getPoints(panel, RESOLVE_OFFSET, resolveChild);
+
 			arrows.push({
 				id: panel.id + '_resolve',
 				d: createLine(x, y, toX as number, toY as number),
@@ -83,6 +87,7 @@ const arrows = computed(() => {
 			});
 		} else if (props.editMode && !props.arrowInfo && (panel.id === '$trigger' || props.hoveredPanel === panel.id)) {
 			const { x: resolveX, y: resolveY } = getPoints(panel, RESOLVE_OFFSET);
+
 			arrows.push({
 				id: panel.id + '_resolve',
 				d: createLine(resolveX, resolveY, resolveX + 3 * 20, resolveY),
@@ -94,6 +99,7 @@ const arrows = computed(() => {
 
 		if (props.arrowInfo?.id === panel.id && props.arrowInfo?.type === 'reject') {
 			const { x, y } = getPoints(panel, REJECT_OFFSET);
+
 			arrows.push({
 				id: panel.id + '_reject',
 				d: createLine(x, y, props.arrowInfo.pos.x, props.arrowInfo.pos.y),
@@ -102,6 +108,7 @@ const arrows = computed(() => {
 			});
 		} else if (rejectChild) {
 			const { x, y, toX, toY } = getPoints(panel, REJECT_OFFSET, rejectChild);
+
 			arrows.push({
 				id: panel.id + '_reject',
 				d: createLine(x, y, toX as number, toY as number),
@@ -110,6 +117,7 @@ const arrows = computed(() => {
 			});
 		} else if (props.editMode && !props.arrowInfo && panel.id !== '$trigger' && props.hoveredPanel === panel.id) {
 			const { x: rejectX, y: rejectY } = getPoints(panel, REJECT_OFFSET);
+
 			arrows.push({
 				id: panel.id + '_reject',
 				d: createLine(rejectX, rejectY, rejectX + 3 * 20, rejectY),
@@ -123,11 +131,13 @@ const arrows = computed(() => {
 	if (props.arrowInfo) {
 		arrows.push();
 	}
+
 	return arrows;
 
 	function getPoints(panel: Record<string, any>, offset: Vector2, to?: Record<string, any>) {
 		const x = (panel.x - 1) * 20 + offset.x;
 		const y = (panel.y - 1) * 20 + offset.y;
+
 		if (to) {
 			const toX = (to.x - 1) * 20 + ATTACHMENT_OFFSET.x;
 			const toY = (to.y - 1) * 20 + ATTACHMENT_OFFSET.y;
@@ -176,7 +186,9 @@ const arrows = computed(() => {
 				path += generateCorner(points[i - 1], points[i], points[i + 1]);
 			}
 		}
+
 		const arrowSize = 8;
+
 		const arrow = `M ${points.at(-1)} L ${points
 			.at(-1)
 			?.clone()
@@ -210,6 +222,7 @@ const arrows = computed(() => {
 		}
 
 		let pointer = Math.floor(possiblePlaces.length / 2);
+
 		for (let i = 0; i < possiblePlaces.length; i++) {
 			pointer += i * (i % 2 == 0 ? -1 : 1);
 			if (possiblePlaces[pointer]) return min[axis] + pointer * 20;
@@ -220,9 +233,11 @@ const arrows = computed(() => {
 
 	function range(min: number, max: number, step: number) {
 		const points: number[] = [];
+
 		for (let i = min; i < max; i += step) {
 			points.push(i);
 		}
+
 		points.push(max);
 		return points;
 	}

@@ -36,10 +36,12 @@ exports.getReversedTestIndex = function (testFilePath) {
 			return index;
 		}
 	}
+
 	for (let index = 0; index < this.list.after.length; index++) {
 		if (testFilePath.includes(this.list.after[index].testFilePath)) {
 			return 0 - this.list.after.length + index;
 		}
 	}
+
 	return this.list.before.length;
 };
