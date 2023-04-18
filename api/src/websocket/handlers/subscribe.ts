@@ -183,8 +183,13 @@ export class SubscribeHandler {
 		}
 
 		if (getMessageType(message) === 'unsubscribe') {
-			this.unsubscribe(client, message.uid);
-			client.send(fmtMessage('subscription', { event: 'unsubscribe' }, message.uid));
+			try {
+				this.unsubscribe(client, message.uid);
+
+				client.send(fmtMessage('subscription', { event: 'unsubscribe' }, message.uid));
+			} catch (err) {
+				handleWebSocketException(client, err, 'unsubscribe');
+			}
 		}
 	}
 
