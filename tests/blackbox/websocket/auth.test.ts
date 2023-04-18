@@ -51,7 +51,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects without authentication', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
@@ -93,7 +93,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with email authentication', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
@@ -136,7 +136,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with access token authentication', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
@@ -186,7 +186,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with static access token authentication', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
@@ -229,7 +229,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with access token in query string', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
@@ -279,7 +279,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('connects with static access token in query string', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
@@ -322,7 +322,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('pings without authentication', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
@@ -340,6 +340,8 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
+						ws.conn.close();
 
 						// Assert
 						switch (authMethod) {
@@ -364,7 +366,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('pings with access token authentication', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
@@ -383,6 +385,8 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
+						ws.conn.close();
 
 						// Assert
 						switch (authMethod) {
@@ -407,7 +411,7 @@ describe('WebSocket Auth Tests', () => {
 		});
 
 		describe('pings with access token in query string', () => {
-			common.TEST_USERS.slice(0, 1).forEach((userKey) => {
+			common.TEST_USERS.forEach((userKey) => {
 				describe(common.USER[userKey].NAME, () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
@@ -426,6 +430,8 @@ describe('WebSocket Auth Tests', () => {
 						} catch (err) {
 							error = err;
 						}
+
+						ws.conn.close();
 
 						// Assert
 						switch (authMethod) {
