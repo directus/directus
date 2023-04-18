@@ -297,6 +297,7 @@ m2m_relationship: Relacja wiele do wielu
 m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
 require_confirmation: Wymagaj potwierdzenia
+dialog: Dialog
 modal: Okno
 confirmation_dialog: Okno potwierdzenia
 confirmation_description: Opis potwierdzenia
@@ -323,6 +324,7 @@ field_key: Klucz pola
 finish_setup: Zakończ konfigurację
 dismiss: Anuluj
 toggle_raw_editor: Przełącz edytor
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Wartość surowa
 copy_raw_value: Kopiuj wartość surową
 copy_raw_value_success: Skopiowano
@@ -1144,6 +1146,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Wskazówka
+    avif: AVIF
     mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
@@ -1444,6 +1447,7 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 table: Tabela
@@ -1561,6 +1565,7 @@ interfaces:
     allow_none_label: Zezwól na brak zaznaczenia
     choices_name_placeholder: Wprowadź nazwę...
     choices_value_placeholder: Wprowadź wartość...
+    preview_threshold: Próg podglądu
   select-multiple-dropdown:
     select-multiple-dropdown: Rozwijanie menu listy (Wielokrotnego wyboru)
     description: Wybierz wiele wartości z listy rozwijanej
@@ -1765,6 +1770,7 @@ interfaces:
     remove_token: Usuń token
   system-raw-editor:
     system-raw-editor: Edycja bezpośrednia
+    description: Zezwalaj na wprowadzanie wartości szablonów surowych lub muszlowych
 displays:
   translations:
     translations: Tłumaczenia
@@ -2119,6 +2125,7 @@ operations:
     headers: Nagłówki
     header: Nagłówek
     header_placeholder: Autoryzacja...
+    value_placeholder: Berer eyJbGciOi...
   sleep:
     name: Uśpienie
     description: Poczekaj określoną liczbę milisekund
@@ -2132,6 +2139,8 @@ operations:
     flows: Przepływy
     flow: Przepływ
     data: Dane
+    iteration_mode: Tryb iteracji
+    iteration_mode_note: Tryb powtarzania nad tablicami.
     serial: Seryjny
     parallel: Równoległy
     batch: Partia
