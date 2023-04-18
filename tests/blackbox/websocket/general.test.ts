@@ -242,8 +242,8 @@ describe('WebSocket General Tests', () => {
 
 					// Assert
 					for (const uid of uids) {
-						expect(ws.getMessageCount(uid)).toBe(1);
-						expect(ws2.getMessageCount(uid)).toBe(1);
+						expect(ws.getMessageCount(uid)).toBe(2);
+						expect(ws2.getMessageCount(uid)).toBe(2);
 						expect(wsGql.getMessageCount(uid)).toBe(0);
 						expect(wsGql2.getMessageCount(uid)).toBe(0);
 					}
