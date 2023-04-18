@@ -36,7 +36,7 @@ describe('/assets', () => {
 
 						// Assert
 						expect(response.statusCode).toBe(200);
-						expect(response.headers['content-type']).toBe('image/jpg'); // Expect fallback to jpg as default
+						expect(response.headers['content-type']).toBe('image/jpeg'); // Expect fallback to jpg as default
 					});
 				});
 			});
@@ -45,7 +45,7 @@ describe('/assets', () => {
 				{ requestHeaderAccept: 'image/avif,image/webp,image/*,*/*;q=0.8', responseHeaderContentType: 'image/avif' },
 				{ requestHeaderAccept: 'image/avif', responseHeaderContentType: 'image/avif' },
 				{ requestHeaderAccept: 'image/webp', responseHeaderContentType: 'image/webp' },
-				{ requestHeaderAccept: '*/*', responseHeaderContentType: 'image/jpg' },
+				{ requestHeaderAccept: '*/*', responseHeaderContentType: 'image/jpeg' },
 			])('with "$requestHeaderAccept" Accept request header', ({ requestHeaderAccept, responseHeaderContentType }) => {
 				describe.each(storages)('Storage: %s', (storage) => {
 					it.each(vendors)('%s', async (vendor) => {
