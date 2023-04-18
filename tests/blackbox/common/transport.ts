@@ -90,7 +90,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 						}
 
 						conn.close();
-						reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
+						return reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
 					}
 				}, 5);
 			});
@@ -130,7 +130,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 					} else {
 						conn.close();
 
-						reject(
+						return reject(
 							new Error(
 								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
 									targetMessages.length - startMessageIndex
@@ -309,7 +309,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 						}
 
 						conn?.terminate();
-						reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
+						return reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
 					}
 				}, 5);
 			});
@@ -349,7 +349,7 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 					} else {
 						conn?.terminate();
 
-						reject(
+						return reject(
 							new Error(
 								`Missing message${options?.uid ? ` for "${String(options.uid)}"` : ''} (received ${
 									targetMessages.length - startMessageIndex
