@@ -46,6 +46,7 @@ export class MemoryCache extends CacheService {
 	async setHash(key: string, value: Record<string, any>, ttl?: number | undefined): Promise<void> {
 		return await this.set(key, { ...value, '#full': 'true' }, ttl);
 	}
+
 	async getHash(key: string): Promise<Record<string, any> | null> {
 		const value = await this.get(key);
 
@@ -68,6 +69,7 @@ export class MemoryCache extends CacheService {
 
 		await this.set(key, localValue, ttl);
 	}
+
 	async getHashField(key: string, field: string): Promise<any | null> {
 		const value = await this.get(key);
 
@@ -87,6 +89,7 @@ export class MemoryCache extends CacheService {
 		for (const field of fields) {
 			delete localValue[field];
 		}
+
 		delete localValue['#full'];
 
 		await this.set(key, localValue);

@@ -116,6 +116,7 @@ export class RelationsService {
 		const schemaRow = (await this.schemaInspector.foreignKeys(collection)).find(
 			(foreignKey) => foreignKey.column === field
 		);
+
 		const stitched = stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
 
 		const results = await this.filterForbidden(stitched);

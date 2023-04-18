@@ -19,6 +19,7 @@ describe('stitchRelations', () => {
 				one_deselect_action: 'nullify',
 			},
 		];
+
 		const schemaRows: ForeignKey[] = [
 			{
 				table: 'collection_a',
@@ -30,8 +31,10 @@ describe('stitchRelations', () => {
 				on_delete: null,
 			},
 		];
+
 		const result = stitchRelations(metaRows, schemaRows);
 		expect(result.length).toBe(1);
+
 		expect(result[0]).toStrictEqual({
 			collection: 'collection_a',
 			field: 'a_field',
@@ -59,6 +62,7 @@ describe('stitchRelations', () => {
 			},
 		});
 	});
+
 	test('Should not merge schema and meta based on table', () => {
 		const metaRows: RelationMeta[] = [
 			{
@@ -74,6 +78,7 @@ describe('stitchRelations', () => {
 				one_deselect_action: 'nullify',
 			},
 		];
+
 		const schemaRows: ForeignKey[] = [
 			{
 				table: 'collection_c',
@@ -85,8 +90,10 @@ describe('stitchRelations', () => {
 				on_delete: null,
 			},
 		];
+
 		const result = stitchRelations(metaRows, schemaRows);
 		expect(result.length).toBe(2);
+
 		expect(result).toStrictEqual([
 			{
 				collection: 'collection_c',
@@ -123,6 +130,7 @@ describe('stitchRelations', () => {
 			},
 		]);
 	});
+
 	test('Should not merge schema and meta based on field', () => {
 		const metaRows: RelationMeta[] = [
 			{
@@ -138,6 +146,7 @@ describe('stitchRelations', () => {
 				one_deselect_action: 'nullify',
 			},
 		];
+
 		const schemaRows: ForeignKey[] = [
 			{
 				table: 'collection_a',
@@ -149,8 +158,10 @@ describe('stitchRelations', () => {
 				on_delete: null,
 			},
 		];
+
 		const result = stitchRelations(metaRows, schemaRows);
 		expect(result.length).toBe(2);
+
 		expect(result).toStrictEqual([
 			{
 				collection: 'collection_a',
@@ -187,6 +198,7 @@ describe('stitchRelations', () => {
 			},
 		]);
 	});
+
 	test('Should not merge schema and meta based on related table', () => {
 		const metaRows: RelationMeta[] = [
 			{
@@ -202,6 +214,7 @@ describe('stitchRelations', () => {
 				one_deselect_action: 'nullify',
 			},
 		];
+
 		const schemaRows: ForeignKey[] = [
 			{
 				table: 'collection_a',
@@ -213,8 +226,10 @@ describe('stitchRelations', () => {
 				on_delete: null,
 			},
 		];
+
 		const result = stitchRelations(metaRows, schemaRows);
 		expect(result.length).toBe(2);
+
 		expect(result).toStrictEqual([
 			{
 				collection: 'collection_a',

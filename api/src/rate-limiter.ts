@@ -37,6 +37,7 @@ function getMemoryConfig(configPrefix: string, overrides?: IRateLimiterOptionsOv
 
 	return config;
 }
+
 function getRedisConfig(configPrefix: string, overrides?: IRateLimiterOptionsOverrides): IRateLimiterStoreOptions {
 	const config: any = merge(
 		{},

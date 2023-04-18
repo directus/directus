@@ -31,9 +31,11 @@ export class RedisCache extends CacheService {
 
 		return await decompress(parse(value));
 	}
+
 	async keys(pattern?: string | undefined): Promise<string[]> {
 		return new Promise((resolve) => {
 			const keys: string[] = [];
+
 			const stream = this.client.scanStream({
 				match: this.addPrefix(pattern || '*'),
 			});
@@ -43,11 +45,13 @@ export class RedisCache extends CacheService {
 					keys.push(resultKeys[i]);
 				}
 			});
+
 			stream.on('end', () => {
 				resolve(keys);
 			});
 		});
 	}
+
 	async set(key: string, value: any, ttl: number | undefined = this.ttl): Promise<void> {
 		if (await this.isLocked()) return;
 
@@ -56,9 +60,11 @@ export class RedisCache extends CacheService {
 		await this.client.set(_key, stringify(await compress(value)));
 		if (ttl !== undefined) await this.client.expire(_key, ttl);
 	}
+
 	async clear(): Promise<void> {
 		await this.client.flushall();
 	}
+
 	async delete(key: string): Promise<void> {
 		await this.client.del(this.addPrefix(key));
 	}
@@ -102,6 +108,7 @@ export class RedisCache extends CacheService {
 		await this.client.hset(_key, field, stringify(await compress(value)));
 		if (ttl !== undefined) await this.client.expire(_key, ttl);
 	}
+
 	async getHashField(key: string, field: string): Promise<any | null> {
 		const value = await this.client.hget(this.addPrefix(key), field);
 
