@@ -138,23 +138,23 @@ export function useResize(
 	}
 
 	function onPointerUp() {
-		if (dragging === true) {
-			dragging = false;
+		if (!dragging) return;
 
-			const snapZones = options?.value.snapZones;
+		dragging = false;
 
-			if (Array.isArray(snapZones)) {
-				for (const zone of snapZones) {
-					if (Math.abs(width.value - zone.snapPos) < zone.width) {
-						if (zone.onPointerUp) zone.onPointerUp();
-						break;
-					}
+		const snapZones = options?.value.snapZones;
+
+		if (Array.isArray(snapZones)) {
+			for (const zone of snapZones) {
+				if (Math.abs(width.value - zone.snapPos) < zone.width) {
+					if (zone.onPointerUp) zone.onPointerUp();
+					break;
 				}
 			}
+		}
 
-			if (animationFrameID) {
-				window.cancelAnimationFrame(animationFrameID);
-			}
+		if (animationFrameID) {
+			window.cancelAnimationFrame(animationFrameID);
 		}
 	}
 }
