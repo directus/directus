@@ -1,11 +1,45 @@
 import { test, expect, vi, describe } from 'vitest';
-import { computed, defineComponent, h, toRefs } from 'vue';
+import { computed, defineComponent, h, toRefs, ref } from 'vue';
 import { flushPromises, mount } from '@vue/test-utils';
 
 import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { useSync } from '@directus/composables';
 import { RelationO2M } from './use-relation-o2m';
 import { cloneDeep } from 'lodash';
+import { RelationM2A } from './use-relation-m2a';
+
+vi.mock('@/api', () => {
+	return {
+		default: {
+			get: (path: string, { params }: { params: Record<string, any> }) => {
+				if (path === '/items/worker' && params?.aggregate?.count === 'id') {
+					return Promise.resolve({
+						data: {
+							data: [{ count: { id: workerData.length } }],
+						},
+					});
+				} else if (path === '/items/worker') {
+					return Promise.resolve({
+						data: {
+							data: workerData,
+						},
+					});
+				} else if (path === '/items/article_m2a' && params?.aggregate?.count === 'id') {
+					return Promise.resolve({
+						data: {
+							data: [{ count: { id: m2aData.length } }],
+						},
+					});
+				} else {
+					return Promise.resolve({
+						data: {
+							data: m2aData,
+						},
+					});
+				}
+			},
+		},
+	};
+});
 
 vi.mock('@/utils/unexpected-error', () => {
 	return {
@@ -60,8 +94,8 @@ const workerData: Record<string, any>[] = [
 const TestComponent = defineComponent({
 	props: ['value', 'relation', 'id'], // eslint-disable-line  vue/require-prop-types
 	emits: ['update:value'],
-	setup(props, { emit }) {
-		const value = useSync(props, 'value', emit);
+	setup(props) {
+		const value = ref(props.value);
 		const { relation, id } = toRefs(props);
 
 		const query = computed<RelationQueryMultiple>(() => {
@@ -74,7 +108,7 @@ const TestComponent = defineComponent({
 			return q;
 		});
 
-		return useRelationMultiple(value, query, relation, id);
+		return { value, ...useRelationMultiple(value, query, relation, id) };
 	},
 	render: () => h('div'),
 });
@@ -91,27 +125,6 @@ Facility                 Worker
  */
 
 describe('test o2m relation', () => {
-	vi.mock('@/api', () => {
-		return {
-			default: {
-				get: (path: string, { params }: { params: Record<string, any> }) => {
-					if (path === '/items/worker' && params?.aggregate?.count === 'id') {
-						return Promise.resolve({
-							data: {
-								data: [{ count: { id: workerData.length } }],
-							},
-						});
-					}
-
-					return Promise.resolve({
-						data: {
-							data: workerData,
-						},
-					});
-				},
-			},
-		};
-	});
 
 	test('creating an item', async () => {
 		const wrapper = mount(TestComponent, {
@@ -130,18 +143,16 @@ describe('test o2m relation', () => {
 			{ name: 'test5', facility: 1, $type: 'created', $index: 0 },
 		]);
 
-		expect(wrapper.emitted()['update:value'][0]).toEqual([
-			{
-				create: [
-					{
-						name: 'test5',
-						facility: 1,
-					},
-				],
-				update: [],
-				delete: [],
-			},
-		]);
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{
+					name: 'test5',
+					facility: 1,
+				},
+			],
+			update: [],
+			delete: [],
+		});
 	});
 
 	test('editing a created item', async () => {
@@ -168,18 +179,16 @@ describe('test o2m relation', () => {
 			{ name: 'test5 edited', facility: 2, $type: 'created', $index: 0 },
 		]);
 
-		expect(wrapper.emitted()['update:value'][1]).toEqual([
-			{
-				create: [
-					{
-						name: 'test5 edited',
-						facility: 2,
-					},
-				],
-				update: [],
-				delete: [],
-			},
-		]);
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{
+					name: 'test5 edited',
+					facility: 2,
+				},
+			],
+			update: [],
+			delete: [],
+		});
 	});
 
 	test('removing a created item', async () => {
@@ -195,7 +204,7 @@ describe('test o2m relation', () => {
 
 		expect(wrapper.vm.displayItems).toEqual(workerData);
 
-		expect(wrapper.emitted()['update:value'][1]).toEqual([undefined]);
+		expect(wrapper.vm.value).toEqual(undefined);
 	});
 
 	test('updating an item', async () => {
@@ -212,7 +221,7 @@ describe('test o2m relation', () => {
 
 		expect(wrapper.vm.displayItems).toEqual(changes);
 
-		expect(wrapper.emitted()['update:value'][0]).toEqual([
+		expect(wrapper.vm.value).toEqual(
 			{
 				create: [],
 				update: [
@@ -223,7 +232,7 @@ describe('test o2m relation', () => {
 				],
 				delete: [],
 			},
-		]);
+		);
 	});
 
 	test('removing an item', async () => {
@@ -239,7 +248,7 @@ describe('test o2m relation', () => {
 		changes.splice(1, 1, { id: 2, name: 'test2', facility: 1, $type: 'deleted', $index: 0 });
 
 		expect(wrapper.vm.displayItems).toEqual(changes);
-		expect(wrapper.emitted()['update:value'][0]).toEqual([{ create: [], update: [], delete: [2] }]);
+		expect(wrapper.vm.value).toEqual({ create: [], update: [], delete: [2] });
 	});
 
 	test('removing an edited item', async () => {
@@ -259,18 +268,16 @@ describe('test o2m relation', () => {
 
 		expect(wrapper.vm.displayItems).toEqual(changes);
 
-		expect(wrapper.emitted()['update:value'][2]).toEqual([
-			{
-				create: [],
-				update: [
-					{
-						id: 2,
-						name: 'test2-edited',
-					},
-				],
-				delete: [1, 2],
-			},
-		]);
+		expect(wrapper.vm.value).toEqual({
+			create: [],
+			update: [
+				{
+					id: 2,
+					name: 'test2-edited',
+				},
+			],
+			delete: [1, 2],
+		});
 	});
 
 	test('get item edits', async () => {
@@ -288,5 +295,222 @@ describe('test o2m relation', () => {
 			$type: 'updated',
 			$index: 0,
 		});
+	});
+});
+
+
+
+
+const relationM2A: RelationM2A = {
+	allowedCollections: [
+		{
+			name: 'Text',
+			collection: 'text',
+			icon: 'user',
+			meta: null,
+			schema: null,
+			type: 'table',
+		},
+		{
+			name: 'Code',
+			collection: 'code',
+			icon: 'user',
+			meta: null,
+			schema: null,
+			type: 'table',
+		}
+	],
+	collectionField: {
+		name: 'Collection',
+		collection: 'article_m2a',
+		field: 'collection',
+		type: 'string',
+		meta: null,
+		schema: null,
+	},
+	junction: {
+		collection: 'article_m2a',
+		field: 'article_id',
+		related_collection: 'article',
+		meta: {
+			id: 1,
+			junction_field: 'item',
+			many_collection: 'article_m2a',
+			many_field: 'article_id',
+			one_allowed_collections: null,
+			one_collection: 'article',
+			one_collection_field: null,
+			one_deselect_action: 'nullify',
+			one_field: "content",
+			sort_field: 'sort',
+		},
+		schema: null,
+	},
+	relation: {
+		collection: 'article_m2a',
+		field: 'item',
+		related_collection: null,
+		meta: {
+			id: 2,
+			junction_field: 'many_id',
+			many_collection: 'article_m2a',
+			many_field: 'item',
+			one_allowed_collections: ['text', 'code'],
+			one_collection: null,
+			one_collection_field: 'collection',
+			one_deselect_action: 'nullify',
+			one_field: null,
+			sort_field: null,
+		},
+		schema: null,
+	},
+	junctionCollection: {
+		collection: 'article_m2a',
+		name: 'Article M2A',
+		icon: 'import_export',
+		type: 'table',
+		schema: null,
+		meta: null
+	},
+	junctionField: {
+		collection: 'article_m2a',
+		field: 'item',
+		type: 'string',
+		name: 'Item',
+		meta: null,
+		schema: null,
+	},
+	junctionPrimaryKeyField: {
+		collection: 'article_m2a',
+		field: 'id',
+		type: 'integer',
+		name: 'ID',
+		meta: null,
+		schema: null,
+	},
+	relationPrimaryKeyFields: {
+		text: {
+			collection: 'text',
+			field: 'id',
+			type: 'integer',
+			name: 'ID',
+			meta: null,
+			schema: null,
+		},
+		code: {
+			collection: 'code',
+			field: 'id',
+			type: 'integer',
+			name: 'ID',
+			meta: null,
+			schema: null,
+		}
+	},
+	reverseJunctionField: {
+		collection: 'article_m2a',
+		field: 'article_id',
+		type: 'integer',
+		name: 'Article ID',
+		meta: null,
+		schema: null,
+	},
+	sortField: 'sort',
+	type: 'm2a',
+};
+
+const m2aData: Record<string, any>[] = [
+	{ id: 1, article_id: 1, item: { id: 1 }, collection: 'text', sort: 1 },
+	{ id: 2, article_id: 1, item: { id: 2 }, collection: 'text', sort: 2 },
+	{ id: 3, article_id: 1, item: { id: 1 }, collection: 'code', sort: 3 }
+];
+
+const TestComponentM2A = defineComponent({
+	props: ['value', 'relation', 'id'], // eslint-disable-line  vue/require-prop-types
+	emits: ['update:value'],
+	setup(props) {
+		const value = ref(props.value)
+		const { relation, id } = toRefs(props);
+
+		const query = computed<RelationQueryMultiple>(() => {
+			const q: RelationQueryMultiple = {
+				limit: 15,
+				page: 1,
+				fields: ['id'],
+			};
+
+			return q;
+		});
+
+		return { value, ...useRelationMultiple(value, query, relation, id) };
+	},
+	render: () => h('div'),
+});
+
+/*
+Article           Many|Any: article_m2a                    ┌─Text
+┌─────────┐       ┌────────────────────────────────┐       │ ┌─────────┐ 
+│id       ├───┐   │id: junctionPKField             │    ┌──┼─┤id       │
+│content  │   └──►│article_id: reverseJunctionField│    │  │ │text     │
+└─────────┘       │item: junctionField             │◄───┤  │ └─────────┘
+				  │sort: sortField                 │    │  │
+				  │collection: collectionField     │◄───┼──┤
+				  └────────────────────────────────┘    │  │
+														│  └─Code
+				AllowedCollection: [Text,Code]		    │    ┌─────────┐
+				relatedPKFields: {Text: id,Code: id}    └────┤id       │
+															 │code     │
+															 └─────────┘
+*/
+
+
+
+describe('test m2a relation', () => {
+	test('sorting an item', async () => {
+		const wrapper = mount(TestComponentM2A, {
+			props: {
+				relation: relationM2A, value: [], id: 1
+			},
+		})
+
+		wrapper.vm.update(
+			{ id: 1, item: { id: 1 }, collection: 'text', sort: 2 },
+			{ id: 2, item: { id: 2 }, collection: 'text', sort: 3 },
+			{ id: 3, item: { id: 1 }, collection: 'code', sort: 1 }
+		);
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toEqual([
+			{
+				id: 3,
+				article_id: 1,
+				item: { id: 1 },
+				collection: 'code',
+				sort: 1,
+				'$type': 'updated',
+				'$index': 2,
+				'$edits': 2
+			},
+			{
+				id: 1,
+				article_id: 1,
+				item: { id: 1 },
+				collection: 'text',
+				sort: 2,
+				'$type': 'updated',
+				'$index': 0,
+				'$edits': 0
+			},
+			{
+				id: 2,
+				article_id: 1,
+				item: { id: 2 },
+				collection: 'text',
+				sort: 3,
+				'$type': 'updated',
+				'$index': 1,
+				'$edits': 1
+			}
+		]);
 	});
 });
