@@ -91,8 +91,6 @@ export default async function createApp(): Promise<express.Application> {
 		logger.warn(`Database migrations have not all been run`);
 	}
 
-	await flushCaches();
-
 	await registerAuthProviders();
 
 	const extensionManager = getExtensionManager();
