@@ -29,7 +29,7 @@
 					<v-icon name="search" outline />
 				</template>
 				<template #append>
-					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
+					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = undefined" />
 				</template>
 			</v-input>
 		</template>
@@ -75,7 +75,7 @@ export default defineComponent({
 	setup(props) {
 		const { collection } = toRefs(props);
 
-		const search = ref<string | null>(null);
+		const search = ref<string | undefined>(undefined);
 
 		const isOpen = useDialogRoute();
 
