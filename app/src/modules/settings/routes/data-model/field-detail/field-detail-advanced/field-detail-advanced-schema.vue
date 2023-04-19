@@ -4,7 +4,7 @@
 			<div class="field">
 				<div class="label type-label">
 					{{ t('key') }}
-					<v-icon class="required" sup name="star" />
+					<v-icon class="required" sup name="star" filled />
 				</div>
 
 				<v-input
@@ -23,7 +23,7 @@
 			<div class="field half">
 				<div class="label type-label">
 					{{ t('type') }}
-					<v-icon class="required" sup name="star" />
+					<v-icon class="required" sup name="star" filled />
 				</div>
 				<v-input v-if="isAlias" :model-value="t('alias')" disabled />
 				<v-select

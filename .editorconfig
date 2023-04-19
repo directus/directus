@@ -7,12 +7,5 @@ charset = utf-8
 indent_style = tab
 trim_trailing_whitespace = true
 
-[{package.json,*.yml,*.yaml}]
+[*.{yml,yaml}]
 indent_style = space
-indent_size = 2
-
-[Dockerfile]
-indent_style = tab
-
-[Makefile]
-indent_style = tab

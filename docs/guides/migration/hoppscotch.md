@@ -28,7 +28,7 @@ project, or to move from a self-hosted project to Directus Cloud.
 [Hoppscotch](https://hoppscotch.io/) is an open source API explorer. It is used in this recipe to make requests to your
 Directus project's API without writing code.
 
-## How To Guide
+## How-To Guide
 
 ::: tip Permissions
 
