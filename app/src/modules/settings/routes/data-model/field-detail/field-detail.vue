@@ -83,7 +83,6 @@ watch(
 
 		fieldDetail.startEditing(collection.value, field.value, type.value);
 	},
-
 	{ immediate: true }
 );
 
