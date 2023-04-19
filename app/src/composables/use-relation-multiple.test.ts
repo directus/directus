@@ -90,11 +90,12 @@ const workerData: Record<string, any>[] = [
 	{ id: 4, name: 'test4', facility: 1 },
 ];
 
+// eslint-disable-next-line vue/one-component-per-file
 const TestComponent = defineComponent({
-	props: ['value', 'relation', 'id'], // eslint-disable-line  vue/require-prop-types
+	props: ['value', 'relation', 'id'], // eslint-disable-line vue/require-prop-types
 	emits: ['update:value'],
 	setup(props) {
-		const value = ref(props.value);
+		const valueRef = ref(props.value);
 		const { relation, id } = toRefs(props);
 
 		const query = computed<RelationQueryMultiple>(() => {
@@ -107,7 +108,7 @@ const TestComponent = defineComponent({
 			return q;
 		});
 
-		return { value, ...useRelationMultiple(value, query, relation, id) };
+		return { ...useRelationMultiple(valueRef, query, relation, id) };
 	},
 	render: () => h('div'),
 });
@@ -417,11 +418,12 @@ const m2aData: Record<string, any>[] = [
 	{ id: 3, article_id: 1, item: { id: 1 }, collection: 'code', sort: 3 },
 ];
 
+// eslint-disable-next-line vue/one-component-per-file
 const TestComponentM2A = defineComponent({
-	props: ['value', 'relation', 'id'], // eslint-disable-line  vue/require-prop-types
+	props: ['value', 'relation', 'id'], // eslint-disable-line vue/require-prop-types
 	emits: ['update:value'],
 	setup(props) {
-		const value = ref(props.value);
+		const valueRef = ref(props.value);
 		const { relation, id } = toRefs(props);
 
 		const query = computed<RelationQueryMultiple>(() => {
@@ -434,7 +436,7 @@ const TestComponentM2A = defineComponent({
 			return q;
 		});
 
-		return { value, ...useRelationMultiple(value, query, relation, id) };
+		return { ...useRelationMultiple(valueRef, query, relation, id) };
 	},
 	render: () => h('div'),
 });
@@ -445,14 +447,14 @@ Article           Many|Any: article_m2a                    ┌─Text
 │id       ├───┐   │id: junctionPKField             │    ┌──┼─┤id       │
 │content  │   └──►│article_id: reverseJunctionField│    │  │ │text     │
 └─────────┘       │item: junctionField             │◄───┤  │ └─────────┘
-				  │sort: sortField                 │    │  │
-				  │collection: collectionField     │◄───┼──┤
-				  └────────────────────────────────┘    │  │
-														│  └─Code
-				AllowedCollection: [Text,Code]		    │    ┌─────────┐
-				relatedPKFields: {Text: id,Code: id}    └────┤id       │
-															 │code     │
-															 └─────────┘
+				      │sort: sortField                 │    │  │
+				      │collection: collectionField     │◄───┼──┤
+				      └────────────────────────────────┘    │  │
+														              │  └─Code
+				AllowedCollection: [Text,Code]		        │    ┌─────────┐
+				relatedPKFields: {Text: id,Code: id}        └────┤id       │
+															                │code     │
+															                └─────────┘
 */
 
 describe('test m2a relation', () => {
