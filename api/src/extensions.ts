@@ -296,11 +296,15 @@ class ExtensionManager {
 
 		const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
 			const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
+			const fileExts = ['js', 'mjs', 'cjs'];
 
 			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
-				return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
+				return [
+					path.posix.join(typeDir, '*', `app.{${fileExts.join()}}`),
+					path.posix.join(typeDir, '*', `api.{${fileExts.join()}}`),
+				];
 			} else {
-				return path.posix.join(typeDir, '*', 'index.js');
+				return path.posix.join(typeDir, '*', `index.{${fileExts.join()}}`);
 			}
 		});
 
