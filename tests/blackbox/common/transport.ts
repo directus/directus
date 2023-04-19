@@ -109,13 +109,15 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		}
 	): Promise<WebSocketResponse[] | undefined> => {
 		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
+		let startMessageIndex: number;
 
-		const startMessageIndex =
-			options?.startIndex !== undefined
-				? options.startIndex
-				: options?.uid
-				? readIndexes[options.uid] ?? 0
-				: readIndexDefault;
+		if (options?.startIndex) {
+			startMessageIndex = options.startIndex;
+		} else if (options?.uid) {
+			startMessageIndex = readIndexes[options.uid] ?? 0;
+		} else {
+			startMessageIndex = readIndexDefault;
+		}
 
 		const endMessageIndex = startMessageIndex + messageCount;
 
@@ -348,13 +350,15 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 		}
 	): Promise<WebSocketResponse[] | undefined> => {
 		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
+		let startMessageIndex: number;
 
-		const startMessageIndex =
-			options?.startIndex !== undefined
-				? options.startIndex
-				: options?.uid
-				? readIndexes[options.uid] ?? 0
-				: readIndexDefault;
+		if (options?.startIndex) {
+			startMessageIndex = options.startIndex;
+		} else if (options?.uid) {
+			startMessageIndex = readIndexes[options.uid] ?? 0;
+		} else {
+			startMessageIndex = readIndexDefault;
+		}
 
 		const endMessageIndex = startMessageIndex + messageCount;
 
