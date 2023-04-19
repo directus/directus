@@ -117,7 +117,7 @@ export default defineComponent({
 			return groupsWithInterfaces.filter((group) => group.interfaces.length > 0);
 
 			function filterInterfacesByGroup(group: string) {
-				const filteredInterfaces = interfacesSorted.value.filter((inter) => inter.group === group);
+				const filteredInterfaces = interfacesSorted.value.filter((inter) => (inter.group ?? 'other') === group);
 				if (!search.value) return filteredInterfaces;
 				const searchValue = search.value!.toLowerCase();
 				return filteredInterfaces.filter(
