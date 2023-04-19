@@ -72,6 +72,7 @@ export function validateSnapshot(snapshot: Snapshot, force = false) {
 	}
 
 	const currentVendor = getDatabaseClient();
+
 	if (snapshot.vendor !== currentVendor) {
 		throw new InvalidPayloadException(
 			`Provided snapshot's vendor ${snapshot.vendor} does not match the current instance's vendor ${currentVendor}. You can bypass this check by passing the "force" query parameter.`

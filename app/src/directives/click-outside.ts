@@ -81,6 +81,7 @@ export function processValue(bindingValue: BindingValue['value']): DirectiveConf
 
 	if (isFunction) {
 		const binding = bindingValue as Handler;
+
 		value = {
 			handler: binding,
 			middleware: () => true,

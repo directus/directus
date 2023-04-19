@@ -140,6 +140,7 @@ export class ImportService {
 							} else {
 								try {
 									const parsedJson = parseJSON(value);
+
 									if (typeof parsedJson === 'number') {
 										set(result, key, value);
 									} else {
@@ -357,6 +358,7 @@ export class ExportService {
 
 		if (format === 'csv') {
 			if (input.length === 0) return '';
+
 			const parser = new CSVParser({
 				transforms: [CSVTransforms.flatten({ separator: '.' })],
 				header: options?.includeHeader !== false,

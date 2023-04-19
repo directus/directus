@@ -40,6 +40,7 @@ export default async function create(type: string, name: string, options: Create
 			).join(', ')}.`,
 			'error'
 		);
+
 		process.exit(1);
 	}
 
@@ -124,6 +125,7 @@ async function createLocalExtension({
 			).join(', ')}.`,
 			'error'
 		);
+
 		process.exit(1);
 	}
 
@@ -133,6 +135,7 @@ async function createLocalExtension({
 	await copyTemplate(type, targetPath, 'src', language);
 
 	const host = `^${getSdkVersion()}`;
+
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {
 				type,
@@ -146,6 +149,7 @@ async function createLocalExtension({
 				source: `src/index.${languageToShort(language)}`,
 				host,
 		  };
+
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type, language));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });

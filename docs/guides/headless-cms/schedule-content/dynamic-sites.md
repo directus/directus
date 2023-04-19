@@ -8,7 +8,7 @@ author_override:
 author: Bryant Gillespie
 ---
 
-# Scheduling Content for Dynamic Sites
+# Schedule Future Content for Dynamic Sites
 
 > {{ $frontmatter.description }}
 
@@ -40,7 +40,7 @@ If your site is statically generated and your content fetched at build time, ple
 <!-- Todo -->
 <!-- Need access to upload videos first -->
 
-## How To Guide
+## How-To Guide
 
 :::tip Requirements
 
