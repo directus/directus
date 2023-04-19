@@ -83,9 +83,9 @@ export class SubscribeHandler {
 	 */
 	unsubscribe(client: WebSocketClient, uid?: string | number) {
 		if (uid !== undefined) {
-			const subscription = this.getSubscription(uid);
+			const subscription = this.getSubscription(client, String(uid));
 
-			if (subscription && subscription.client === client) {
+			if (subscription) {
 				this.subscriptions[subscription.collection]?.delete(subscription);
 			}
 		} else {
@@ -312,10 +312,10 @@ export class SubscribeHandler {
 		}
 	}
 
-	private getSubscription(uid: string | number) {
+	private getSubscription(client: WebSocketClient, uid: string | number) {
 		for (const userSubscriptions of Object.values(this.subscriptions)) {
 			for (const subscription of userSubscriptions) {
-				if (subscription.uid === uid) {
+				if (subscription.client === client && subscription.uid === uid) {
 					return subscription;
 				}
 			}
