@@ -505,6 +505,15 @@ function sidebar() {
 					link: '/guides/migration/index.html',
 					text: 'Schema Migration',
 				},
+				{
+					text: 'WebSockets',
+					items: [
+						{ text: 'Getting Started', link: '/guides/websockets/getting-started/index.html' },
+						{ text: 'Authentication', link: '/guides/websockets/authentication' },
+						{ text: 'Subscriptions', link: '/guides/websockets/subscriptions/index.html' },
+						{ text: 'Build a Multi-User Chat', link: '/guides/websockets/chat/index.html' },
+					]
+				},
 			],
 		},
 		{
