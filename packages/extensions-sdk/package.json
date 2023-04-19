@@ -20,14 +20,13 @@
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"bin": {
 		"directus-extension": "cli.js"
 	},
 	"files": [
 		"dist",
 		"templates",
-		"!**/*.d.ts.map"
+		"!**/*.test.{js,d.ts}"
 	],
 	"scripts": {
 		"build": "tsc --build",

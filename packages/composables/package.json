@@ -22,7 +22,8 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist"
+		"dist",
+		"!**/*.test.{js,d.ts}"
 	],
 	"publishConfig": {
 		"access": "public"
