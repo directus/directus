@@ -57,7 +57,7 @@ export default defineComponent({
 		},
 		search: {
 			type: String,
-			required: true,
+			default: null,
 		},
 	},
 	emits: ['save', 'toggleAdvanced'],
