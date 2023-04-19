@@ -68,7 +68,7 @@ const props = withDefaults(
 
 const { collection, field, type } = toRefs(props);
 
-const search = ref<string | null>('');
+const search = ref<string | null>(null);
 
 const isOpen = useDialogRoute();
 
