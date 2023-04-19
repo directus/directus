@@ -56,19 +56,8 @@
 			>
 				<v-icon small name="devices" />
 			</v-button>
-			<v-button
-				v-if="!fullscreen"
-				v-tooltip.bottom.start="t('live_preview.toggle_3d')"
-				x-small
-				icon
-				rounded
-				:secondary="!threeDimensional"
-				@click="threeDimensional = !threeDimensional"
-			>
-				<v-icon small name="view_in_ar" />
-			</v-button>
 		</div>
-		<div class="iframe-view" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerUp">
+		<div class="iframe-view">
 			<div
 				ref="resizeHandle"
 				class="resize-handle"
@@ -76,9 +65,7 @@
 					width: width ? `${width}px` : '100%',
 					height: height ? `${height}px` : '100%',
 					resize: fullscreen ? 'none' : 'both',
-					transform: `scale(${zoom}) ${
-						threeDimensional && !fullscreen ? `rotateX(${rotateX}deg) rotateY(${rotateY}deg)` : ''
-					}`,
+					transform: `scale(${zoom}) ${!fullscreen ? `rotateX(${rotateX}deg) rotateY(${rotateY}deg)` : ''}`,
 				}"
 			>
 				<iframe id="frame" ref="frameEl" width="100%" height="100%" :src="url" frameborder="0"></iframe>
@@ -102,7 +89,6 @@ const emit = defineEmits(['new-window']);
 
 const { t } = useI18n();
 
-const threeDimensional = ref<boolean>(false);
 const rotateX = ref<number>(0);
 const rotateY = ref<number>(0);
 const width = ref<number>();
@@ -139,40 +125,6 @@ function refresh() {
 }
 
 (window as any).refreshLivePreview = refresh;
-
-const startPos = { x: 0, y: 0 };
-let drag = false;
-
-function pointerDown(event: PointerEvent) {
-	if (event.target !== event.currentTarget) return;
-
-	startPos.x = event.clientX;
-	startPos.y = event.clientY;
-	drag = true;
-}
-
-let lastFrame = 0;
-
-function pointerMove(event: PointerEvent) {
-	if (!resizeHandle.value || !drag) return;
-
-	cancelAnimationFrame(lastFrame);
-
-	lastFrame = requestAnimationFrame(() => {
-		const diffX = event.clientX - startPos.x;
-		const diffY = event.clientY - startPos.y;
-
-		rotateY.value += diffX / 2;
-		rotateX.value -= diffY / 2;
-
-		startPos.x = event.clientX;
-		startPos.y = event.clientY;
-	});
-}
-
-function pointerUp() {
-	drag = false;
-}
 
 onMounted(() => {
 	if (resizeHandle.value) {
