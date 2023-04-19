@@ -19,7 +19,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-	text: '',
+	text: undefined,
 	highlight: undefined,
 	placement: 'top',
 });
