@@ -25,7 +25,7 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="getDisplayValue(item, header.key, header.value)"
+					:value="getDisplayValue(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -282,8 +282,8 @@ const showManualSort = computed(() => {
 
 const fieldsWritable = useSync(props, 'fields', emit);
 
-function getDisplayValue(item: Item, key: string, fullKey: string) {
-	const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === fullKey);
+function getDisplayValue(item: Item, key: string) {
+	const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
 
 	if (!aliasInfo) return get(item, key);
 

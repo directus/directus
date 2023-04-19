@@ -221,50 +221,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					return activeFields.value.map((field) => {
 						let description: string | null = null;
 
-						const fieldParts = field.key.split('.');
-
-						if (fieldParts.length > 1) {
-							const fieldNames = fieldParts.map((fieldKey, index) => {
-								const pathPrefix = fieldParts.slice(0, index);
-								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
-								return field?.name ?? fieldKey;
-							});
-
-							description = fieldNames.join(' -> ');
-
-							const types = relationsStore.getRelationTypes(collection.value!, field.key);
-							const arrayField = fieldsStore.getField(collection.value!, fieldParts.slice(0, -1).join('.'));
-
-							// Special case for translations to render the nested data in the translations display instead of the default display
-							if (types.at(-1) === 'o2m' && arrayField?.meta?.display === 'translations') {
-								if (arrayField)
-									return {
-										text: field.name,
-										value: field.key,
-										key: fieldParts.slice(0, -1).join('.'),
-										description,
-										width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
-										align: layoutOptions.value?.align?.[field.key] || 'left',
-										field: {
-											display: 'translations',
-											displayOptions: {
-												template: `{{${fieldParts.at(-1)}}}`,
-											},
-											interface: arrayField.meta?.interface,
-											interfaceOptions: arrayField.meta?.options,
-											type: arrayField.type,
-											field: arrayField.field,
-											collection: arrayField.collection,
-										},
-										sortable: ['json', 'alias', 'presentation', 'translations'].includes(arrayField.type) === false,
-									} as HeaderRaw;
-							}
-						}
-
 						return {
 							text: field.name,
 							value: field.key,
-							key: field.key,
 							description,
 							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
