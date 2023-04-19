@@ -83,9 +83,9 @@ img {
 		grid-template-columns: auto;
 		gap: 0;
 	}
-	.vp-doc h2,
-	.vp-doc h3 {
-		margin-top: 1em;
+
+	img {
+		margin-bottom: 1em;
 	}
 }
 </style>
