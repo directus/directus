@@ -1,11 +1,10 @@
-import { test, expect, vi, describe } from 'vitest';
-import { computed, defineComponent, h, toRefs, ref } from 'vue';
-import { flushPromises, mount } from '@vue/test-utils';
-
 import { RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
-import { RelationO2M } from './use-relation-o2m';
+import { flushPromises, mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
+import { describe, expect, test, vi } from 'vitest';
+import { computed, defineComponent, h, ref, toRefs } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
+import { RelationO2M } from './use-relation-o2m';
 
 vi.mock('@/api', () => {
 	return {
@@ -125,7 +124,6 @@ Facility                 Worker
  */
 
 describe('test o2m relation', () => {
-
 	test('creating an item', async () => {
 		const wrapper = mount(TestComponent, {
 			props: { relation: relationO2M, value: [], id: 1 },
@@ -221,18 +219,16 @@ describe('test o2m relation', () => {
 
 		expect(wrapper.vm.displayItems).toEqual(changes);
 
-		expect(wrapper.vm.value).toEqual(
-			{
-				create: [],
-				update: [
-					{
-						id: 2,
-						name: 'test2-edited',
-					},
-				],
-				delete: [],
-			},
-		);
+		expect(wrapper.vm.value).toEqual({
+			create: [],
+			update: [
+				{
+					id: 2,
+					name: 'test2-edited',
+				},
+			],
+			delete: [],
+		});
 	});
 
 	test('removing an item', async () => {
@@ -298,9 +294,6 @@ describe('test o2m relation', () => {
 	});
 });
 
-
-
-
 const relationM2A: RelationM2A = {
 	allowedCollections: [
 		{
@@ -318,7 +311,7 @@ const relationM2A: RelationM2A = {
 			meta: null,
 			schema: null,
 			type: 'table',
-		}
+		},
 	],
 	collectionField: {
 		name: 'Collection',
@@ -341,7 +334,7 @@ const relationM2A: RelationM2A = {
 			one_collection: 'article',
 			one_collection_field: null,
 			one_deselect_action: 'nullify',
-			one_field: "content",
+			one_field: 'content',
 			sort_field: 'sort',
 		},
 		schema: null,
@@ -370,7 +363,7 @@ const relationM2A: RelationM2A = {
 		icon: 'import_export',
 		type: 'table',
 		schema: null,
-		meta: null
+		meta: null,
 	},
 	junctionField: {
 		collection: 'article_m2a',
@@ -404,7 +397,7 @@ const relationM2A: RelationM2A = {
 			name: 'ID',
 			meta: null,
 			schema: null,
-		}
+		},
 	},
 	reverseJunctionField: {
 		collection: 'article_m2a',
@@ -421,14 +414,14 @@ const relationM2A: RelationM2A = {
 const m2aData: Record<string, any>[] = [
 	{ id: 1, article_id: 1, item: { id: 1 }, collection: 'text', sort: 1 },
 	{ id: 2, article_id: 1, item: { id: 2 }, collection: 'text', sort: 2 },
-	{ id: 3, article_id: 1, item: { id: 1 }, collection: 'code', sort: 3 }
+	{ id: 3, article_id: 1, item: { id: 1 }, collection: 'code', sort: 3 },
 ];
 
 const TestComponentM2A = defineComponent({
 	props: ['value', 'relation', 'id'], // eslint-disable-line  vue/require-prop-types
 	emits: ['update:value'],
 	setup(props) {
-		const value = ref(props.value)
+		const value = ref(props.value);
 		const { relation, id } = toRefs(props);
 
 		const query = computed<RelationQueryMultiple>(() => {
@@ -448,7 +441,7 @@ const TestComponentM2A = defineComponent({
 
 /*
 Article           Many|Any: article_m2a                    ┌─Text
-┌─────────┐       ┌────────────────────────────────┐       │ ┌─────────┐ 
+┌─────────┐       ┌────────────────────────────────┐       │ ┌─────────┐
 │id       ├───┐   │id: junctionPKField             │    ┌──┼─┤id       │
 │content  │   └──►│article_id: reverseJunctionField│    │  │ │text     │
 └─────────┘       │item: junctionField             │◄───┤  │ └─────────┘
@@ -462,15 +455,15 @@ Article           Many|Any: article_m2a                    ┌─Text
 															 └─────────┘
 */
 
-
-
 describe('test m2a relation', () => {
 	test('sorting an item', async () => {
 		const wrapper = mount(TestComponentM2A, {
 			props: {
-				relation: relationM2A, value: [], id: 1
+				relation: relationM2A,
+				value: [],
+				id: 1,
 			},
-		})
+		});
 
 		wrapper.vm.update(
 			{ id: 1, item: { id: 1 }, collection: 'text', sort: 2 },
@@ -487,9 +480,9 @@ describe('test m2a relation', () => {
 				item: { id: 1 },
 				collection: 'code',
 				sort: 1,
-				'$type': 'updated',
-				'$index': 2,
-				'$edits': 2
+				$type: 'updated',
+				$index: 2,
+				$edits: 2,
 			},
 			{
 				id: 1,
@@ -497,9 +490,9 @@ describe('test m2a relation', () => {
 				item: { id: 1 },
 				collection: 'text',
 				sort: 2,
-				'$type': 'updated',
-				'$index': 0,
-				'$edits': 0
+				$type: 'updated',
+				$index: 0,
+				$edits: 0,
 			},
 			{
 				id: 2,
@@ -507,10 +500,10 @@ describe('test m2a relation', () => {
 				item: { id: 2 },
 				collection: 'text',
 				sort: 3,
-				'$type': 'updated',
-				'$index': 1,
-				'$edits': 1
-			}
+				$type: 'updated',
+				$index: 1,
+				$edits: 1,
+			},
 		]);
 	});
 });
