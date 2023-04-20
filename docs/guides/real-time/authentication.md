@@ -80,7 +80,7 @@ Once initially authenticated, all 3 authentication are available.
 
 GraphQL puts more responsibility on the client for handling the re-authentication flow and has no supported way for us to implement it without breaking compatibility with existing clients. Because of this, you may only use an `access_token` for authentication at this time. 
 
-When a token expires, the connection will be closed with a `Forbidden` message, signalling to the client to refresh their `access_token` and reconnect.
+When a token expires, the connection will be closed with a `Forbidden` message, signaling to the client to refresh their `access_token` and reconnect.
 
 ### Public Mode
 

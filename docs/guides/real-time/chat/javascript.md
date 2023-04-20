@@ -13,7 +13,7 @@ Create a new Role called `Users`, and create a new user with this role. Make not
 
 Within the `Users` role, give Create and Read access to the `Messages` collection, and Read access to the `Directus Users` system collection. 
 
-### Create a HTML Boilerplate
+### Create an HTML Boilerplate
 
 Create an `index.html` file and open it in your code editor:
 
@@ -180,7 +180,7 @@ if (data.type == 'subscription' && data.event == 'create') {
 
 *Refresh your browser, login, and submit a new message. The result should be shown on the page. Open a second browser and navigate to your index.html file, login and submit a message there and both pages should immediately update*
 
-![Webpage showing the login form, new message form, and one message shown. The message reads “Kevin: This is brilliant!”](https://cdn.directus.io/docs/v9/guides/websockets/chat-webpage.webp)
+![Web page showing the login form, new message form, and one message shown. The message reads “Kevin: This is brilliant!”](https://cdn.directus.io/docs/v9/guides/websockets/chat-webpage.webp)
 
 ## Display Historical Messages
 
