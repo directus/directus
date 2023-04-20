@@ -1,4 +1,4 @@
-## Real-Time Subscriptions
+# Real-Time Subscriptions
 
 WebSocket and GraphQL subscriptions allows for real-time notification of item creations, edits, and deletions in a collection. 
 
