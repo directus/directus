@@ -11,8 +11,17 @@
 			>
 				<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
 			</v-button>
-			<v-button v-tooltip.bottom.end="t('live_preview.refresh')" x-small icon rounded secondary @click="refresh">
-				<v-icon small name="refresh" />
+			<v-button
+				v-tooltip.bottom.end="t('live_preview.refresh')"
+				x-small
+				icon
+				rounded
+				secondary
+				:disabled="isRefreshing"
+				@click="refresh"
+			>
+				<v-progress-circular v-if="isRefreshing" indeterminate x-small />
+				<v-icon v-else small name="refresh" />
 			</v-button>
 			<span class="url">
 				<v-text-overflow :text="url" placement="bottom" />
@@ -68,7 +77,15 @@
 					transform: `scale(${zoom}) ${!fullscreen ? `rotateX(${rotateX}deg) rotateY(${rotateY}deg)` : ''}`,
 				}"
 			>
-				<iframe id="frame" ref="frameEl" width="100%" height="100%" :src="url" frameborder="0"></iframe>
+				<iframe
+					id="frame"
+					ref="frameEl"
+					width="100%"
+					height="100%"
+					:src="url"
+					frameborder="0"
+					@load="onIframeLoad"
+				></iframe>
 			</div>
 		</div>
 	</div>
@@ -96,6 +113,7 @@ const height = ref<number>();
 const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
+const isRefreshing = ref<boolean>(false);
 
 const resizeHandle = ref<HTMLDivElement>();
 
@@ -122,6 +140,11 @@ function refresh() {
 	// this is technically a self-assignment, but it works to refresh the iframe
 	const newSrc = frameEl.value.src;
 	frameEl.value.src = newSrc;
+	isRefreshing.value = true;
+}
+
+function onIframeLoad() {
+	isRefreshing.value = false;
 }
 
 (window as any).refreshLivePreview = refresh;
