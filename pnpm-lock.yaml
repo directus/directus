@@ -911,17 +911,17 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.29.3
-        version: 0.29.3(vitest@0.29.3)
+        specifier: 0.30.1
+        version: 0.30.1(vitest@0.30.1)
       joi:
-        specifier: 17.8.4
-        version: 17.8.4
+        specifier: 17.9.1
+        version: 17.9.1
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.0.4
+        version: 5.0.4
       vitest:
-        specifier: 0.29.3
-        version: 0.29.3
+        specifier: 0.30.1
+        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/extensions-sdk:
     dependencies:
@@ -13188,6 +13188,7 @@ packages:
       '@sideway/address': 4.1.4
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+    dev: false
 
   /joi@17.9.1:
     resolution: {integrity: sha512-FariIi9j6QODKATGBrEX7HZcja8Bsh3rfdGYy/Sb65sGlZWK/QWesU1ghk7aJWDj95knjXlQfSmzFSPPkLVsfw==}
@@ -13197,7 +13198,6 @@ packages:
       '@sideway/address': 4.1.4
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
-    dev: false
 
   /jose@4.11.1:
     resolution: {integrity: sha512-YRv4Tk/Wlug8qicwqFNFVEZSdbROCHRAC6qu/i0dyNKr5JQdoa2pIGoS04lLO/jXQX7Z9omoNewYIVIxqZBd9Q==}
