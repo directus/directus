@@ -896,8 +896,8 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 8.2.5
-        version: 8.2.5
+        specifier: 9.1.5
+        version: 9.1.5
 
   packages/exceptions:
     devDependencies:
