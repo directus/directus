@@ -274,7 +274,9 @@ This guide covers authentication, item creation, and subscription using WebSocke
         }))
       }
       if (data.type == 'subscription' && data.event == 'init') {
-        console.log('subscription started')
+        for (const message of data.payload) { 
+          addMessageToList(message) 
+        } 
       }
       if (data.type == 'subscription' && data.event == 'create') {
         addMessageToList(data.payload[0])
