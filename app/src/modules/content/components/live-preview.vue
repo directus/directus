@@ -45,12 +45,12 @@
 					v-model="zoom"
 					inline
 					:items="[
-						{ text: '200%', value: 2 },
-						{ text: '150%', value: 1.5 },
-						{ text: '100%', value: 1 },
-						{ text: '75%', value: 0.75 },
-						{ text: '50%', value: 0.5 },
 						{ text: '25%', value: 0.25 },
+						{ text: '50%', value: 0.5 },
+						{ text: '75%', value: 0.75 },
+						{ text: '100%', value: 1 },
+						{ text: '150%', value: 1.5 },
+						{ text: '200%', value: 2 },
 					]"
 					:disabled="fullscreen"
 				/>
