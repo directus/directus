@@ -67,15 +67,15 @@ export function renderDisplayStringTemplate(
 		set(fieldsUsed, key, fieldsStore.getField(collection, key));
 	}
 
-	const { aliasFields } = useAliasFields(ref(fields));
+	const { aliasedFields } = useAliasFields(ref(fields), ref(collection));
 
 	const parsedItem: Record<string, any> = {};
 
 	for (const key of fields) {
 		const value =
-			!aliasFields.value?.[key] || get(item, key) !== undefined
+			!aliasedFields.value?.[key] || get(item, key) !== undefined
 				? get(item, key)
-				: get(item, aliasFields.value[key].fullAlias);
+				: get(item, aliasedFields.value[key].key);
 
 		const display = useExtension(
 			'display',

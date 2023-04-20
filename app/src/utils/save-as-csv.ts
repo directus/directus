@@ -19,7 +19,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 		fieldsUsed[key] = fieldsStore.getField(collection, key);
 	}
 
-	const { aliasFields } = useAliasFields(ref(fields));
+	const { aliasedFields } = useAliasFields(ref(fields), ref(collection));
 
 	const parsedItems = [];
 
@@ -44,9 +44,9 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 			}
 
 			const value =
-				!aliasFields.value?.[key] || item[key] !== undefined
+				!aliasedFields.value?.[key] || item[key] !== undefined
 					? get(item, key)
-					: get(item, aliasFields.value[key].fullAlias);
+					: get(item, aliasedFields.value[key].key);
 
 			const display = useExtension(
 				'display',
