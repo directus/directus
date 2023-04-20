@@ -76,6 +76,28 @@ describe('Operations / Mail', () => {
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
 	});
 
+	test('pass custom data with template when type is template, custom template was selected and data is included', async () => {
+		const options: Options = {
+			to: 'test@example.com',
+			subject: 'Test',
+			type: 'template',
+			template: 'custom',
+			data: { key: 'value' },
+		};
+
+		await config.handler(options, mockOperationContext);
+
+		expect(mailServiceSendSpy).toHaveBeenCalledWith(
+			expect.objectContaining({
+				to: options.to,
+				subject: options.subject,
+				template: { name: 'custom', data: { key: 'value' } },
+			})
+		);
+
+		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
+	});
+
 	test('use body as is when type is wysiwyg', async () => {
 		const options: Options = {
 			to: 'test@example.com',
