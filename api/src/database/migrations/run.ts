@@ -5,6 +5,7 @@ import { orderBy } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
+import { flushCaches } from '../../cache.js';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
@@ -77,6 +78,8 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		await up(database);
 		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
+
+		await flushCaches(true);
 	}
 
 	async function down() {
@@ -100,11 +103,16 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		await down(database);
 		await database('directus_migrations').delete().where({ version: migration.version });
+
+		await flushCaches(true);
 	}
 
 	async function latest() {
+		let needsCacheFlush = false;
+
 		for (const migration of migrations) {
 			if (migration.completed === false) {
+				needsCacheFlush = true;
 				const { up } = await import(`file://${migration.file}`);
 
 				if (log) {
@@ -114,6 +122,10 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 				await up(database);
 				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');
 			}
+		}
+
+		if (needsCacheFlush) {
+			await flushCaches(true);
 		}
 	}
 }

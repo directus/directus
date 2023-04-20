@@ -225,7 +225,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		width: string;
-		layout: LAYOUTS;
+		layout?: LAYOUTS;
 		tableSpacing?: 'compact' | 'cozy' | 'comfortable';
 		fields?: Array<string>;
 		template?: string | null;
