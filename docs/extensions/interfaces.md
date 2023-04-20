@@ -43,7 +43,7 @@ export default {
 - `localTypes` — An array of local types. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2m`, `m2a`,
   `presentation`, `translations` and `group`. Defaults to `standard`.
 - `group` — The group this interface is shown at when creating a field. Accepts `standard`, `selection`, `relational`,
-  `presentation`, `group` or `other`.
+  `presentation`, `group` or `other`. Defaults to `other`.
 - `relational` — A boolean that indicates if this interface is a relational interface.
 - `recommendedDisplays` — An array of display names which are recommended to be used with this interface.
 
@@ -95,7 +95,7 @@ component, it should be emitted to the Directus App by using the `input` emit.
 #### Available Emits
 
 - `input` — Update the value of the field.
-- `setFieldValue` - Used to set the value of other fields. 
+- `setFieldValue` - Used to set the value of other fields.
 
 Other than this simple API to communicate with the Directus App, the interface component is a blank canvas, allowing you
 to create anything you need.
