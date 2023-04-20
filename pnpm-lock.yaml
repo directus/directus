@@ -1237,8 +1237,8 @@ importers:
         specifier: 8.11.0
         version: 8.11.0
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.0.4
+        version: 5.0.4
       vue:
         specifier: 3.2.47
         version: 3.2.47
