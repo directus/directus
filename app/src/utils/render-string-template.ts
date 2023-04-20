@@ -73,7 +73,7 @@ export function renderDisplayStringTemplate(
 
 	for (const key of fields) {
 		const value =
-			!aliasedFields.value?.[key] || get(item, key) !== undefined
+			!aliasedFields.value?.[key]?.fields[0] || get(item, key) !== undefined
 				? get(item, key)
 				: get(item, aliasedFields.value[key].fields[0]);
 

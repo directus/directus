@@ -44,7 +44,7 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 			}
 
 			const value =
-				!aliasedFields.value?.[key] || item[key] !== undefined
+				!aliasedFields.value?.[key]?.fields[0] || item[key] !== undefined
 					? get(item, key)
 					: get(item, aliasedFields.value[key].fields[0]);
 
