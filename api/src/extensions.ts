@@ -294,9 +294,20 @@ class ExtensionManager {
 	private initializeWatcher(): void {
 		logger.info('Watching extensions for changes...');
 
-		const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
-			const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
-			const fileExts = ['js', 'mjs', 'cjs'];
+		const extensionsPath = pathToRelativeUrl(env['EXTENSIONS_PATH']);
+		const fileExts = ['js', 'mjs', 'cjs'];
+
+		const rootExtensionDirs = path.posix.join(extensionsPath, '{directus-extension-*,@directus/extension-*}');
+
+		const rootExtensionPaths = [
+			path.posix.join(rootExtensionDirs, '**', `app.{${fileExts.join()}}`),
+			path.posix.join(rootExtensionDirs, '**', `api.{${fileExts.join()}}`),
+			path.posix.join(rootExtensionDirs, '**', `index.{${fileExts.join()}}`),
+			path.posix.join(rootExtensionDirs, '**', 'package.json'),
+		];
+
+		const nestedExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
+			const typeDir = path.posix.join(extensionsPath, pluralize(type));
 
 			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
 				return [
@@ -308,7 +319,7 @@ class ExtensionManager {
 			}
 		});
 
-		this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
+		this.watcher = chokidar.watch([path.resolve('package.json'), ...nestedExtensionPaths, ...rootExtensionPaths], {
 			ignoreInitial: true,
 		});
 
