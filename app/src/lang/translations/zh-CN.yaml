@@ -668,6 +668,7 @@ one_filtered_item: '1 个已过滤条目'
 delete_collection_are_you_sure: >-
   您确定要删除 "{collection}" 数据模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
 delete_folder_are_you_sure: 您确定要删除 "{folder}" 文件夹吗？嵌套文件夹和数据模型将被移动到最上层。
+delete_collection_peer_dependencies: 以下字段也将被删除，因为它们与当前集合相关。
 collections_shown: 展开模型
 visible_collections: 显示模型
 hidden_collections: 隐藏模型
@@ -1435,6 +1436,7 @@ export_started: 导出已开始
 export_started_copy: 您的导出已经开始。当准备下载时，您会收到通知。
 sort_asc: 升序
 sort_desc: 降序
+disable_sort: 禁用排序
 template: 模板
 require_value_to_be_set: 创建时需要设置值
 translation: 翻译
