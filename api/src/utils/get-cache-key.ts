@@ -5,7 +5,7 @@ import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables.j
 import { version } from './package.js';
 
 export function getCacheKey(req: Request): string {
-	const path = url.parse(req.originalUrl).pathname;
+	const path = url.parse(req.originalUrl).path;
 	const isGraphQl = path?.startsWith('/graphql');
 
 	const info = {
