@@ -52,8 +52,11 @@
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
 				show-resize
 				@click:row="editRow"
+				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
