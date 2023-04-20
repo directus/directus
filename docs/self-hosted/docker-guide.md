@@ -163,7 +163,7 @@ started you will be on the latest version (or the version you specified).
 ### Adding packages to use in Flows scripts
 
 If you need third-party packages in a script of one of your flows, the recommended way is to create a new Docker image
-extending from the offical image and installing the packages there.
+extending from the official image and installing the packages there.
 
 First create a file called `Dockerfile` with a content like this:
 
