@@ -42,7 +42,6 @@
 					@input="height = Number(($event as any).target.value)"
 				/>
 				<v-select
-					v-if="!fullscreen"
 					v-model="zoom"
 					inline
 					:items="[
