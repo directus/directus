@@ -1064,8 +1064,8 @@ importers:
   packages/storage-driver-azure:
     dependencies:
       '@azure/storage-blob':
-        specifier: 12.13.0
-        version: 12.13.0
+        specifier: 12.14.0
+        version: 12.14.0
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
@@ -1080,14 +1080,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.29.3
-        version: 0.29.3(vitest@0.29.3)
+        specifier: 0.30.1
+        version: 0.30.1(vitest@0.30.1)
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.0.4
+        version: 5.0.4
       vitest:
-        specifier: 0.29.3
-        version: 0.29.3
+        specifier: 0.30.1
+        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -3431,8 +3431,8 @@ packages:
       jsonwebtoken: 8.5.1
       uuid: 8.3.2
 
-  /@azure/storage-blob@12.13.0:
-    resolution: {integrity: sha512-t3Q2lvBMJucgTjQcP5+hvEJMAsJSk0qmAnjDLie2td017IiduZbbC9BOcFfmwzR6y6cJdZOuewLCNFmEx9IrXA==}
+  /@azure/storage-blob@12.14.0:
+    resolution: {integrity: sha512-g8GNUDpMisGXzBeD+sKphhH5yLwesB4JkHr1U6be/X3F+cAMcyGLPD1P89g2M7wbEtUJWoikry1rlr83nNRBzg==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@azure/abort-controller': 1.1.0
