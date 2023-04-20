@@ -67,15 +67,10 @@ export function renderDisplayStringTemplate(
 		set(fieldsUsed, key, fieldsStore.getField(collection, key));
 	}
 
-	const { aliasedFields } = useAliasFields(ref(fields), ref(collection));
-
 	const parsedItem: Record<string, any> = {};
 
 	for (const key of fields) {
-		const value =
-			!aliasedFields.value?.[key]?.fields[0] || get(item, key) !== undefined
-				? get(item, key)
-				: get(item, aliasedFields.value[key].fields[0]);
+		const value = get(item, key);
 
 		const display = useExtension(
 			'display',
@@ -88,10 +83,10 @@ export function renderDisplayStringTemplate(
 				key,
 				display.value?.handler
 					? display.value.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
-							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
-							field: fieldsUsed[key] ?? undefined,
-							collection: collection,
-					  })
+						interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
+						field: fieldsUsed[key] ?? undefined,
+						collection: collection,
+					})
 					: value
 			);
 		} else {
