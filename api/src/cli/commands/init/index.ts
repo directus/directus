@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import execa from 'execa';
+import { execa } from 'execa';
 import inquirer from 'inquirer';
 import Joi from 'joi';
 import type { Knex } from 'knex';

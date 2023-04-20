@@ -2,7 +2,7 @@ import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
-import { parse as parseIcc } from 'icc';
+import { IccProfile, parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
@@ -166,7 +166,7 @@ export class FilesService extends ItemsService {
 						exif?: Record<string, unknown>;
 						gps?: Record<string, unknown>;
 						interop?: Record<string, unknown>;
-						icc?: Record<string, unknown>;
+						icc?: IccProfile;
 						iptc?: Record<string, unknown>;
 						xmp?: Record<string, unknown>;
 					} = {};
