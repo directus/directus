@@ -884,8 +884,8 @@ importers:
         specifier: 0.0.6
         version: 0.0.6
       typescript:
-        specifier: 4.9.5
-        version: 4.9.5
+        specifier: 5.0.4
+        version: 5.0.4
 
   packages/create-directus-extension:
     dependencies:
