@@ -17,6 +17,7 @@ describe('Operations / Mail', () => {
 			database: vi.mocked(knex.default({ client: MockClient })),
 			getSchema: vi.fn().mockResolvedValue({}),
 		};
+
 		mailServiceSendSpy = vi.spyOn(MailService.prototype, 'send').mockResolvedValue(true);
 		mdSpy = vi.spyOn(mdUtil, 'md');
 	});
@@ -33,6 +34,7 @@ describe('Operations / Mail', () => {
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(
 			expect.objectContaining({ to: options.to, subject: options.subject, template: { name: 'base', data: {} } })
 		);
+
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
 	});
 
@@ -49,6 +51,7 @@ describe('Operations / Mail', () => {
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(
 			expect.objectContaining({ to: options.to, subject: options.subject, template: { name: 'custom', data: {} } })
 		);
+
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
 	});
 
@@ -69,6 +72,7 @@ describe('Operations / Mail', () => {
 				template: { name: 'base', data: { key: 'value' } },
 			})
 		);
+
 		expect(mailServiceSendSpy).toHaveBeenCalledWith(expect.not.objectContaining({ html: expect.any(String) }));
 	});
 
@@ -89,6 +93,7 @@ describe('Operations / Mail', () => {
 				html: options.body,
 			})
 		);
+
 		expect(mdSpy).not.toHaveBeenCalled();
 	});
 
@@ -109,6 +114,7 @@ describe('Operations / Mail', () => {
 				html: '<p>test body</p>\n',
 			})
 		);
+
 		expect(mdSpy).toHaveBeenCalled();
 	});
 });
