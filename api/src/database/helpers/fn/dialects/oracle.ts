@@ -5,6 +5,7 @@ const parseLocaltime = (columnType?: string) => {
 	if (columnType === 'timestamp') {
 		return ` AT TIME ZONE 'UTC'`;
 	}
+
 	return '';
 };
 

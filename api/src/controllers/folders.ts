@@ -57,6 +57,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
+
 	const metaService = new MetaService({
 		accountability: req.accountability,
 		schema: req.schema,
@@ -88,6 +89,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
 		res.locals['payload'] = { data: record || null };

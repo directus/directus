@@ -39,7 +39,7 @@ existing content changes.
 <!-- Todo -->
 <!-- Need access to upload videos first -->
 
-## How To Guide
+## How-To Guide
 
 :::tip Requirements
 

@@ -44,6 +44,7 @@ test('Should show fallback component when there is an error', async () => {
 		},
 		render: () => h('div', 'test'),
 	});
+
 	const fallbackComponent = defineComponent({ render: () => h('div', 'fallback') });
 
 	const wrapper = mount(VErrorBoundary, {

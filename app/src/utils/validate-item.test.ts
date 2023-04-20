@@ -52,6 +52,7 @@ beforeEach(() => {
 				if (field === 'role') {
 					return [{ some: 'relation' }];
 				}
+
 				return [];
 			},
 		})

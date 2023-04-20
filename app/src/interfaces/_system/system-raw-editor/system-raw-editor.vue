@@ -74,6 +74,7 @@ onMounted(async () => {
 				if (typedNewLine) return cancel();
 
 				const pastedNewLine = origin === 'paste' && typeof text === 'object' && text.length > 1;
+
 				if (pastedNewLine) {
 					const newText = text.join(' ');
 					if (!update) return;

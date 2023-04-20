@@ -4,9 +4,9 @@ import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter, Item } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { clamp, cloneDeep, get, isEqual, merge, toArray } from 'lodash';
-import { computed, ref, Ref, unref, watch } from 'vue';
+import { getEndpoint, toArray } from '@directus/utils';
+import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
+import { Ref, computed, ref, unref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -57,6 +57,7 @@ export function useRelationMultiple(
 				value.value = undefined;
 				return;
 			}
+
 			value.value = newValue;
 		},
 	});
@@ -115,6 +116,7 @@ export function useRelationMultiple(
 			const editsIndex = _value.value.update.findIndex(
 				(edit) => typeof edit === 'object' && edit[targetPKField] === item[targetPKField]
 			);
+
 			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
 
 			let updatedItem: Record<string, any> = cloneDeep(item);
@@ -156,6 +158,7 @@ export function useRelationMultiple(
 							edit[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field] ===
 							item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field]
 						);
+
 					case 'm2a': {
 						const itemCollection = item[relation.value.collectionField.field];
 						const editCollection = edit[relation.value.collectionField.field];
@@ -170,6 +173,7 @@ export function useRelationMultiple(
 					}
 				}
 			});
+
 			if (!fetchedItem) return edit;
 			return merge({}, fetchedItem, edit);
 		});
@@ -187,6 +191,7 @@ export function useRelationMultiple(
 				const field = sortField.substring(1);
 				return get(b, field) - get(a, field);
 			}
+
 			return get(a, sortField) - get(b, sortField);
 		});
 	});
@@ -200,6 +205,7 @@ export function useRelationMultiple(
 			for (const item of items) {
 				target.value.create.push(cleanItem(item));
 			}
+
 			updateValue();
 		}
 
@@ -223,6 +229,7 @@ export function useRelationMultiple(
 					}
 				}
 			}
+
 			updateValue();
 		}
 
@@ -249,6 +256,7 @@ export function useRelationMultiple(
 					target.value.delete.splice(item.$index, 1);
 				}
 			}
+
 			updateValue();
 		}
 
@@ -270,6 +278,7 @@ export function useRelationMultiple(
 								[info.relatedPrimaryKeyField.field]: item,
 							},
 						};
+
 					case 'm2a': {
 						if (!collection) throw new Error('You need to provide a collection on an m2a');
 
@@ -310,10 +319,12 @@ export function useRelationMultiple(
 				targetCollection = relation.value.junctionCollection.collection;
 				fields.add(relation.value.junctionPrimaryKeyField.field);
 				fields.add(relation.value.collectionField.field);
+
 				for (const collection of relation.value.allowedCollections) {
 					const pkField = relation.value.relationPrimaryKeyFields[collection.collection];
 					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField.field}`);
 				}
+
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
@@ -333,6 +344,7 @@ export function useRelationMultiple(
 
 			if (itemId.value !== '+') {
 				const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
+
 				if (previewQuery.value.filter) {
 					filter._and.push(previewQuery.value.filter);
 				}
@@ -404,6 +416,7 @@ export function useRelationMultiple(
 		}
 
 		const filter: Filter = { _and: [{ [reverseJunctionField]: itemId.value } as Filter] };
+
 		if (previewQuery.value.filter) {
 			filter._and.push(previewQuery.value.filter);
 		}
@@ -458,11 +471,10 @@ export function useRelationMultiple(
 					return item[relation.value.relatedPrimaryKeyField.field];
 				case 'm2m':
 					return item[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field];
+
 				case 'm2a': {
 					const collection = item[relation.value.collectionField.field];
-					return item[relation.value.junctionPrimaryKeyField.field][
-						relation.value.relationPrimaryKeyFields[collection].field
-					];
+					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection].field];
 				}
 			}
 		}
@@ -525,6 +537,7 @@ export function useRelationMultiple(
 					return acc;
 				}, [])
 			);
+
 			fields.add(relation.relatedPrimaryKeyField.field);
 
 			const relatedPKField = relation.relatedPrimaryKeyField.field;
@@ -598,6 +611,7 @@ export function useRelationMultiple(
 						[relation.junctionField.field]: item,
 					}))
 				);
+
 				return acc;
 			}, [] as Record<string, any>[]);
 		}
@@ -691,6 +705,7 @@ export function useRelationMultiple(
 						$edits: item.$edits,
 					};
 			}
+
 			return {};
 		}
 

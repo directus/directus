@@ -7,14 +7,18 @@ export abstract class DateHelper extends DatabaseHelper {
 		if (date instanceof Date) {
 			return date.toISOString();
 		}
+
 		return date;
 	}
+
 	readTimestampString(date: string): string {
 		return date;
 	}
+
 	writeTimestamp(date: string): Date {
 		return parseISO(date);
 	}
+
 	fieldFlagForField(_fieldType: string): string {
 		return '';
 	}

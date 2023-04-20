@@ -1,4 +1,5 @@
 import VTextOverflow from './v-text-overflow.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -15,6 +16,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	text: 'This text should not wrap to a new line!',
 };
