@@ -45,7 +45,7 @@
 		"knex": "2.4.2"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
+		"@directus/tsconfig": "0.0.7",
 		"typescript": "5.0.4"
 	},
 	"publishConfig": {

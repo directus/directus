@@ -165,7 +165,7 @@
 		"wellknown": "0.5.0"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
+		"@directus/tsconfig": "0.0.7",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
 		"@types/async": "3.2.18",

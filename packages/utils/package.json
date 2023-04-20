@@ -51,7 +51,7 @@
 		"vue": "3.2.47"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
+		"@directus/tsconfig": "0.0.7",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
 		"@types/fs-extra": "11.0.1",
