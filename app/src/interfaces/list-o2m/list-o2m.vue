@@ -57,7 +57,7 @@
 				:row-height="tableRowHeight"
 				show-resize
 				@click:row="editRow"
-				@manual-sort="tableSortChange"
+				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
@@ -423,6 +423,7 @@ function getDeselectTooltip(item: DisplayItem) {
 }
 
 function sortItems(items: DisplayItem[]) {
+	console.log(items);
 	const info = relationInfo.value;
 	const sortField = info?.sortField;
 	if (!info || !sortField) return;
