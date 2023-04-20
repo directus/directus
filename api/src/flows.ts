@@ -68,6 +68,7 @@ class FlowManager {
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
+	private webhookFlowPreventCaches: Record<string, boolean> = {};
 
 	private reloadQueue: JobQueue;
 
@@ -121,7 +122,11 @@ class FlowManager {
 		return handler(data, context);
 	}
 
-	public async runWebhookFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+	public async runWebhookFlow(
+		id: string,
+		data: unknown,
+		context: Record<string, unknown>
+	): Promise<{ result: unknown; preventCache: boolean | undefined }> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
 			throw new exceptions.ForbiddenException();
@@ -129,7 +134,7 @@ class FlowManager {
 
 		const handler = this.webhookFlowHandlers[id];
 
-		return handler(data, context);
+		return { result: await handler(data, context), preventCache: this.webhookFlowPreventCaches[id] };
 	}
 
 	private async load(): Promise<void> {
@@ -235,6 +240,7 @@ class FlowManager {
 				flow.options['return'] = flow.options['return'] ?? '$last';
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
+				this.webhookFlowPreventCaches[`${method}-${flow.id}`] = !!flow.options['preventCache'];
 			} else if (flow.trigger === 'manual') {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
@@ -293,6 +299,7 @@ class FlowManager {
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
+		this.webhookFlowPreventCaches = {};
 
 		this.isLoaded = false;
 	}
