@@ -86,6 +86,12 @@ describe('get cache key', () => {
 		expect(getCacheKey(params as unknown as Request)).toEqual(key);
 	});
 
+	test.each(cases)('should create a different cache key for %s having a query string', (_, params: any, key) => {
+		expect(getCacheKey({ ...params, originalUrl: `${params.originalUrl}?test` } as unknown as Request)).not.toEqual(
+			key
+		);
+	});
+
 	test('should create a unique key for each request', () => {
 		const keys = cases.map(([, params]) => getCacheKey(params as unknown as Request));
 		const hasDuplicate = keys.some((key) => keys.indexOf(key) !== keys.lastIndexOf(key));
