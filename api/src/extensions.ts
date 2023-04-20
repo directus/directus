@@ -37,7 +37,6 @@ import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
-import globby from 'globby';
 import { clone, escapeRegExp } from 'lodash-es';
 import { schedule, validate } from 'node-cron';
 import { readdir } from 'node:fs/promises';
@@ -130,16 +129,16 @@ class ExtensionManager {
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
-		const prevOptions = this.options;
-
 		this.options = {
 			...defaultOptions,
 			...options,
 		};
 
-		if (!prevOptions.watch && this.options.watch) {
+		const wasWatcherInitialized = this.watcher !== null;
+
+		if (this.options.watch && !wasWatcherInitialized) {
 			this.initializeWatcher();
-		} else if (prevOptions.watch && !this.options.watch) {
+		} else if (!this.options.watch && wasWatcherInitialized) {
 			await this.closeWatcher();
 		}
 
@@ -153,7 +152,7 @@ class ExtensionManager {
 			}
 		}
 
-		if (!prevOptions.watch && this.options.watch) {
+		if (this.options.watch && !wasWatcherInitialized) {
 			this.updateWatchedExtensions(this.extensions);
 		}
 	}
@@ -293,33 +292,37 @@ class ExtensionManager {
 	}
 
 	private initializeWatcher(): void {
-		if (!this.watcher) {
-			logger.info('Watching extensions for changes...');
+		logger.info('Watching extensions for changes...');
 
-			const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
-				const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
+		const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
+			const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
+			const fileExts = ['js', 'mjs', 'cjs'];
 
-				if (isIn(type, HYBRID_EXTENSION_TYPES)) {
-					return [path.posix.join(typeDir, '*', 'app.js'), path.posix.join(typeDir, '*', 'api.js')];
-				} else {
-					return path.posix.join(typeDir, '*', 'index.js');
-				}
-			});
+			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
+				return [
+					path.posix.join(typeDir, '*', `app.{${fileExts.join()}}`),
+					path.posix.join(typeDir, '*', `api.{${fileExts.join()}}`),
+				];
+			} else {
+				return path.posix.join(typeDir, '*', `index.{${fileExts.join()}}`);
+			}
+		});
 
-			this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
-				ignoreInitial: true,
-			});
+		this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
+			ignoreInitial: true,
+		});
 
-			this.watcher
-				.on('add', () => this.reload())
-				.on('change', () => this.reload())
-				.on('unlink', () => this.reload());
-		}
+		this.watcher
+			.on('add', () => this.reload())
+			.on('change', () => this.reload())
+			.on('unlink', () => this.reload());
 	}
 
 	private async closeWatcher(): Promise<void> {
 		if (this.watcher) {
 			await this.watcher.close();
+
+			this.watcher = null;
 		}
 	}
 
@@ -419,7 +422,10 @@ class ExtensionManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await import(`file://${hookPath}`);
+
+				const hookInstance: HookConfig | { default: HookConfig } = await import(
+					`./${pathToRelativeUrl(hookPath, __dirname)}?t=${Date.now()}`
+				);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -439,7 +445,10 @@ class ExtensionManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(`file://${endpointPath}`);
+
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
+					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
+				);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -454,28 +463,28 @@ class ExtensionManager {
 	}
 
 	private async registerOperations(): Promise<void> {
-		const internalPaths = await globby(path.posix.join(pathToRelativeUrl(__dirname), 'operations/*/index.(js|ts)'));
+		const internalOperations = await readdir(path.join(__dirname, 'operations'));
 
-		const internalOperations = internalPaths.map((internalPath) => {
-			const dirs = internalPath.split(path.sep);
+		for (const operation of internalOperations) {
+			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
+				`./operations/${operation}/index.js`
+			);
 
-			return {
-				name: dirs[dirs.length - 2],
-				path: dirs.slice(0, -1).join(path.sep),
-				entrypoint: { api: dirs[dirs.length - 1] },
-			};
-		});
+			const config = getModuleDefault(operationInstance);
+
+			this.registerOperation(config);
+		}
 
 		const operations = this.extensions.filter(
 			(extension): extension is HybridExtension => extension.type === 'operation'
 		);
 
-		for (const operation of [...internalOperations, ...operations]) {
+		for (const operation of operations) {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-					`file://${operationPath}`
+					`./${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
 				);
 
 				const config = getModuleDefault(operationInstance);
@@ -496,7 +505,10 @@ class ExtensionManager {
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(`file://${bundlePath}`);
+
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
+					`./${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
+				);
 
 				const configs = getModuleDefault(bundleInstances);
 

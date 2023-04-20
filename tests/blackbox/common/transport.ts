@@ -105,10 +105,20 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 			waitTimeout?: number;
 			targetState?: WebSocket['readyState'];
 			uid?: WebSocketUID;
+			startIndex?: number;
 		}
 	): Promise<WebSocketResponse[] | undefined> => {
 		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
-		const startMessageIndex = options?.uid ? readIndexes[options.uid] ?? 0 : readIndexDefault;
+		let startMessageIndex: number;
+
+		if (options?.startIndex) {
+			startMessageIndex = options.startIndex;
+		} else if (options?.uid) {
+			startMessageIndex = readIndexes[options.uid] ?? 0;
+		} else {
+			startMessageIndex = readIndexDefault;
+		}
+
 		const endMessageIndex = startMessageIndex + messageCount;
 
 		if (options?.uid) {
@@ -195,7 +205,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		}
 
 		if (error || !response || response[0].status === 'error') {
-			throw new Error(`Unable to unsubscribe"${uid ? ` to "${uid}"` : ''}`);
+			throw new Error(`Unable to unsubscribe${uid ? ` to "${uid}"` : ''}`);
 		}
 	};
 
@@ -336,10 +346,20 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			waitTimeout?: number;
 			targetState?: WebSocket['readyState'];
 			uid?: WebSocketUID;
+			startIndex?: number;
 		}
 	): Promise<WebSocketResponse[] | undefined> => {
 		const targetMessages = options?.uid ? messages[options.uid] ?? (messages[options.uid] = []) : messagesDefault;
-		const startMessageIndex = options?.uid ? readIndexes[options.uid] ?? 0 : readIndexDefault;
+		let startMessageIndex: number;
+
+		if (options?.startIndex) {
+			startMessageIndex = options.startIndex;
+		} else if (options?.uid) {
+			startMessageIndex = readIndexes[options.uid] ?? 0;
+		} else {
+			startMessageIndex = readIndexDefault;
+		}
+
 		const endMessageIndex = startMessageIndex + messageCount;
 
 		if (options?.uid) {

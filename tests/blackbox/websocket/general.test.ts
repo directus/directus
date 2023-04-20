@@ -24,8 +24,6 @@ describe('WebSocket General Tests', () => {
 			env1[vendor].MESSENGER_STORE = 'redis';
 			env1[vendor].MESSENGER_NAMESPACE = `directus-ws-${vendor}`;
 			env1[vendor].MESSENGER_REDIS = `redis://localhost:6108/4`;
-			env1[vendor].WEBSOCKETS_REST_AUTH_TIMEOUT = '180';
-			env1[vendor].WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT = '180';
 
 			const env2 = cloneDeep(env1);
 			env2[vendor].CACHE_NAMESPACE = env1[vendor].CACHE_NAMESPACE + '2';
