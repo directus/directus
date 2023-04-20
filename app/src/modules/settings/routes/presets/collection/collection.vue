@@ -24,7 +24,7 @@
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="bookmark_border" />
+					<v-icon name="bookmark" />
 				</v-button>
 			</template>
 
@@ -280,6 +280,7 @@ export default defineComponent({
 				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === collection.value
 				);
+
 				return !!updatePermissions;
 			});
 
@@ -290,6 +291,7 @@ export default defineComponent({
 				const deletePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === collection.value
 				);
+
 				return !!deletePermissions;
 			});
 
@@ -300,6 +302,7 @@ export default defineComponent({
 				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === collection.value
 				);
+
 				return !!createPermissions;
 			});
 

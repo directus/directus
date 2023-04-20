@@ -175,7 +175,7 @@
 		</v-dialog>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
 			<revisions-drawer-detail
@@ -367,6 +367,7 @@ const disabledOptions = computed(() => {
 
 function navigateBack() {
 	const backState = router.options.history.state.back;
+
 	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
 		router.back();
 		return;

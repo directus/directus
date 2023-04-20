@@ -8,16 +8,19 @@ describe('validatePayload', () => {
 		const mockPayload = { field: 'field' };
 		expect(validatePayload(mockFilter, mockPayload)).toStrictEqual([]);
 	});
+
 	it('returns an array of 1 when there errors with an _and operator', () => {
 		const mockFilter = { _and: [{ field: { _eq: 'field' } }] } as Filter;
 		const mockPayload = { field: 'test' };
 		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(1);
 	});
+
 	it('returns an array of 1 when there errors with an _or operator', () => {
 		const mockFilter = { _or: [{ field: { _eq: 'field' } }] } as Filter;
 		const mockPayload = { field: 'test' };
 		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(1);
 	});
+
 	it('returns an array of 1 when there errors with an _or containing _and operators', () => {
 		const mockFilter = {
 			_or: [
@@ -65,6 +68,7 @@ describe('validatePayload', () => {
 			})
 		).toHaveLength(0);
 	});
+
 	it('returns an empty array when there is no error for filter field that does not exist in payload ', () => {
 		const mockFilter = { field: { _eq: 'field' } } as Filter;
 		// intentionally empty payload to simulate "field" was never included in payload
@@ -72,6 +76,7 @@ describe('validatePayload', () => {
 
 		expect(validatePayload(mockFilter, mockPayload)).toHaveLength(0);
 	});
+
 	it('returns an array of 1 when there is required error for filter field that does not exist in payload and requireAll option flag is true', () => {
 		const mockFilter = { field: { _eq: 'field' } } as Filter;
 		// intentionally empty payload to simulate "field" was never included in payload

@@ -110,6 +110,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 		try {
 			const settingsStore = useSettingsStore();
 			await settingsStore.updateSettings({ translation_strings: payload }, false);
+
 			if (settingsStore.settings?.translation_strings) {
 				translationStrings.value = settingsStore.settings.translation_strings.map((p: TranslationStringRaw) => ({
 					key: p.key,
@@ -117,6 +118,7 @@ export function useTranslationStrings(): UsableTranslationStrings {
 				}));
 
 				const { currentUser } = useUserStore();
+
 				if (currentUser && 'language' in currentUser && currentUser.language) {
 					mergeTranslationStringsForLanguage(currentUser.language);
 				} else {
@@ -132,12 +134,14 @@ export function useTranslationStrings(): UsableTranslationStrings {
 
 	function mergeTranslationStringsForLanguage(lang: Language) {
 		if (!translationStrings?.value) return;
+
 		const localeMessages: Record<string, any> = translationStrings.value.reduce((acc, cur) => {
 			if (!cur.key || !cur.translations) return acc;
 			const translationForCurrentLang = cur.translations.find((t) => t.language === lang);
 			if (!translationForCurrentLang || !translationForCurrentLang.translation) return acc;
 			return { ...acc, [cur.key]: getLiteralInterpolatedTranslation(translationForCurrentLang.translation, true) };
 		}, {});
+
 		i18n.global.mergeLocaleMessage(lang, localeMessages);
 	}
 

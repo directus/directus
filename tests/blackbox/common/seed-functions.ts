@@ -173,12 +173,15 @@ function generateString(options: OptionsSeedGenerateString) {
 
 	for (let i = 0; i < options.quantity; i++) {
 		let value = uuid(String((options.seed ?? 'default') + i), SEED_UUID_NAMESPACE).replace(/-/g, '');
+
 		if (options.startsWith) {
 			value = options.startsWith + value;
 		}
+
 		if (options.endsWith) {
 			value = value + options.endsWith;
 		}
+
 		values.push(value);
 	}
 

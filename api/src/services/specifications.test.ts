@@ -150,9 +150,11 @@ describe('Integration Tests', () => {
 								},
 							},
 						]);
+
 						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();
+
 						expect(spec.components?.schemas).toMatchInlineSnapshot(`
 							{
 							  "Diff": {
@@ -421,6 +423,7 @@ describe('Integration Tests', () => {
 								},
 							},
 						]);
+
 						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();

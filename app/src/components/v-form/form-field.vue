@@ -63,7 +63,7 @@
 		<small v-if="validationError" class="validation-error selectable">
 			<template v-if="field.meta?.validation_message">
 				{{ field.meta?.validation_message }}
-				<v-icon v-tooltip="validationMessage" small right name="help_outline" />
+				<v-icon v-tooltip="validationMessage" small right name="help" />
 			</template>
 			<template v-else>{{ validationPrefix }}{{ validationMessage }}</template>
 		</small>
@@ -179,11 +179,13 @@ function useRaw() {
 	async function pasteRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
+
 		try {
 			internalValue.value = parseJSON(pastedValue);
 		} catch (e) {
 			internalValue.value = pastedValue;
 		}
+
 		emitValue(internalValue.value);
 	}
 
@@ -193,6 +195,7 @@ function useRaw() {
 function useComputedValues() {
 	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
 	const internalValue = ref<any>(getInternalValue());
+
 	const isEdited = computed(
 		() => props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false
 	);
@@ -201,6 +204,7 @@ function useComputedValues() {
 		() => props.modelValue,
 		() => {
 			const newVal = getInternalValue();
+
 			if (!isEqual(internalValue.value, newVal)) {
 				internalValue.value = newVal;
 			}

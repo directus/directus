@@ -40,6 +40,7 @@ class CustomEnvironment extends NodeEnvironment {
 						Authorization: `Bearer ${common.USER.TESTS_FLOW.TOKEN}`,
 					},
 				});
+
 				const completedCount = Number(response.data.data[0].count.id);
 
 				if (testIndex >= 0) {

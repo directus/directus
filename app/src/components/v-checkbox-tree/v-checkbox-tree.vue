@@ -142,13 +142,16 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 
 		if (item[props.itemChildren]) {
 			const children = item[props.itemChildren];
+
 			if (Array.isArray(children) && children.length > 0) {
 				const nestedResult = children.flatMap((child) => selectedChoices(child));
+
 				if (nestedResult.length > 0) {
 					result.push(...nestedResult, itemValue);
 				}
 			}
 		}
+
 		return result;
 	}
 

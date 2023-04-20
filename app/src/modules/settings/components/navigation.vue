@@ -28,10 +28,11 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { version } from 'directus/package.json';
 
 export default defineComponent({
 	setup() {
+		const version = __DIRECTUS_VERSION__;
+
 		const { t } = useI18n();
 
 		const navItems = [
@@ -51,7 +52,7 @@ export default defineComponent({
 				to: `/settings/roles`,
 			},
 			{
-				icon: 'bookmark_border',
+				icon: 'bookmark',
 				name: t('settings_presets'),
 				to: `/settings/presets`,
 			},

@@ -37,10 +37,12 @@ test('no headers configured', async () => {
 
 test('headers array is converted to object', async () => {
 	const body = 'body';
+
 	const headers = [
 		{ header: 'header1', value: 'value1' },
 		{ header: 'header2', value: 'value2' },
 	];
+
 	await config.handler({ url, method, body, headers }, {} as any);
 
 	expect(axiosDefault).toHaveBeenCalledWith(

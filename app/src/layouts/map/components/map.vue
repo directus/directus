@@ -82,28 +82,36 @@ export default defineComponent({
 		const { sidebarOpen, basemap } = toRefs(appStore);
 		const mapboxKey = settingsStore.settings?.mapbox_key;
 		const basemaps = getBasemapSources();
+
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name === basemap.value) ?? basemaps[0];
 			return getStyleFromBasemapSource(source);
 		});
 
 		const attributionControl = new AttributionControl();
+
 		const navigationControl = new NavigationControl({
 			showCompass: false,
 		});
+
 		const geolocateControl = new GeolocateControl();
+
 		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', () => {
 			emit('fitdata');
 		});
+
 		const boxSelectControl = new BoxSelectControl({
 			boxElementClass: 'map-selection-box',
 			selectButtonClass: 'mapboxgl-ctrl-select',
 			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 		});
+
 		let geocoderControl: MapboxGeocoder | undefined;
+
 		if (mapboxKey) {
 			const marker = document.createElement('div');
 			marker.className = 'mapboxgl-user-location-dot mapboxgl-search-location-dot';
+
 			geocoderControl = new MapboxGeocoder({
 				accessToken: mapboxKey,
 				collapsed: true,
@@ -113,9 +121,11 @@ export default defineComponent({
 				placeholder: t('layouts.map.find_location'),
 			});
 		}
+
 		onMounted(() => {
 			setupMap();
 		});
+
 		onUnmounted(() => {
 			map.remove();
 		});
@@ -135,6 +145,7 @@ export default defineComponent({
 			if (geocoderControl) {
 				map.addControl(geocoderControl as any, 'top-right');
 			}
+
 			map.addControl(attributionControl, 'bottom-left');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
@@ -145,21 +156,25 @@ export default defineComponent({
 				watch(() => style.value, updateStyle);
 				watch(() => props.bounds, fitBounds);
 				const activeLayers = ['__directus_polygons', '__directus_points', '__directus_lines'];
+
 				for (const layer of activeLayers) {
 					map.on('click', layer, onFeatureClick);
 					map.on('mousemove', layer, updatePopup);
 					map.on('mouseleave', layer, updatePopup);
 				}
+
 				map.on('move', updatePopupLocation);
 				map.on('click', '__directus_clusters', expandCluster);
 				map.on('mousemove', '__directus_clusters', hoverCluster);
 				map.on('mouseleave', '__directus_clusters', hoverCluster);
 				map.on('select.enable', () => (selectMode.value = true));
 				map.on('select.disable', () => (selectMode.value = false));
+
 				map.on('select.end', (event: MapLayerMouseEvent) => {
 					const ids = event.features?.map((f) => f.id);
 					emit('featureselect', { ids, replace: !event.alt });
 				});
+
 				map.on('moveend', () => {
 					emit('moveend', {
 						center: map.getCenter(),
@@ -169,6 +184,7 @@ export default defineComponent({
 						bbox: map.getBounds().toArray().flat(),
 					});
 				});
+
 				startWatchers();
 			});
 
@@ -178,11 +194,13 @@ export default defineComponent({
 					if (!opened) setTimeout(() => map.resize(), 300);
 				}
 			);
+
 			setTimeout(() => map.resize(), 300);
 		}
 
 		function fitBounds() {
 			const bbox = props.data.bbox;
+
 			if (map && bbox) {
 				map.fitBounds(bbox as LngLatBoundsLike, {
 					padding: 100,
@@ -216,20 +234,25 @@ export default defineComponent({
 
 		function updateSource(newSource: GeoJSONSource) {
 			const layersId = new Set(map.getStyle().layers?.map(({ id }) => id));
+
 			for (const layer of props.layers) {
 				if (layersId.has(layer.id)) {
 					map.removeLayer(layer.id);
 				}
 			}
+
 			if (props.featureId) {
 				(newSource as any).promoteId = props.featureId;
 			} else {
 				(newSource as any).generateId = true;
 			}
+
 			if (map.getStyle().sources?.['__directus']) {
 				map.removeSource('__directus');
 			}
+
 			map.addSource('__directus', { ...newSource, data: props.data });
+
 			map.once('sourcedata', () => {
 				setTimeout(() => props.layers.forEach((layer) => map.addLayer(layer)));
 			});
@@ -237,9 +260,11 @@ export default defineComponent({
 
 		function updateLayers(newLayers?: AnyLayer[], previousLayers?: AnyLayer[]) {
 			const currentMapLayersId = new Set(map.getStyle().layers?.map(({ id }) => id));
+
 			previousLayers?.forEach((layer) => {
 				if (currentMapLayersId.has(layer.id)) map.removeLayer(layer.id);
 			});
+
 			newLayers?.forEach((layer) => {
 				map.addLayer(layer);
 			});
@@ -250,6 +275,7 @@ export default defineComponent({
 				map.setFeatureState({ id, source: '__directus' }, { selected: false });
 				map.removeFeatureState({ id, source: '__directus' });
 			});
+
 			newSelection?.forEach((id) => {
 				map.setFeatureState({ id, source: '__directus' }, { selected: true });
 			});
@@ -258,6 +284,7 @@ export default defineComponent({
 		function onFeatureClick(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
 			const replace = props.showSelect === 'multiple' ? false : !event.originalEvent.altKey;
+
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
 					emit('featureselect', { ids: [feature.id], replace });
@@ -274,9 +301,11 @@ export default defineComponent({
 
 			const previousId = hoveredFeature.value?.id;
 			const featureChanged = previousId !== feature?.id;
+
 			if (previousId && featureChanged) {
 				map.setFeatureState({ id: previousId, source: '__directus' }, { hovered: false });
 			}
+
 			if (feature && feature.properties) {
 				if (feature.geometry.type === 'Point') {
 					const { x, y } = map.project(feature.geometry.coordinates as LngLatLike);
@@ -286,6 +315,7 @@ export default defineComponent({
 					const { clientX: x, clientY: y } = event.originalEvent;
 					emit('updateitempopup', { position: { x, y } });
 				}
+
 				if (featureChanged) {
 					map.setFeatureState({ id: feature.id, source: '__directus' }, { hovered: true });
 					hoveredFeature.value = feature;
@@ -310,10 +340,13 @@ export default defineComponent({
 			const features = map.queryRenderedFeatures(event.point, {
 				layers: ['__directus_clusters'],
 			});
+
 			const clusterId = features[0]?.properties?.cluster_id;
 			const source = map.getSource('__directus') as GeoJSONSource;
+
 			source.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
 				if (err) return;
+
 				map.flyTo({
 					center: (features[0].geometry as GeoJSON.Point).coordinates as LngLatLike,
 					zoom: zoom,

@@ -3,6 +3,7 @@ import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 
 import { cryptoStub } from '@/__utils__/crypto';
+
 vi.stubGlobal('crypto', cryptoStub);
 
 import { useFieldsStore } from '@/stores/fields';

@@ -73,6 +73,7 @@ watch(
 			displayValue.value = relativeFormat(newValue);
 		} else {
 			let format;
+
 			if (props.format === 'long') {
 				format = `${t('date-fns_date')} ${t('date-fns_time')}`;
 				if (props.type === 'date') format = String(t('date-fns_date'));

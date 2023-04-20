@@ -1131,7 +1131,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: Zuordnung
     basemaps: Basiskarte
     basemaps_raster: Raster

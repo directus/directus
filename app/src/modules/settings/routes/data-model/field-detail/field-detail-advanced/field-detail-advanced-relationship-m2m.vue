@@ -44,7 +44,7 @@
 			<v-checkbox v-if="!isExisting" v-model="autoGenerateJunctionRelation" block :label="t('auto_fill')" />
 
 			<v-icon class="arrow" name="arrow_forward" />
-			<v-icon class="arrow" name="arrow_backward" />
+			<v-icon class="arrow" name="arrow_back" />
 		</div>
 
 		<v-divider v-if="!isExisting" large :inline-title="false">{{ t('corresponding_field') }}</v-divider>
@@ -270,10 +270,12 @@ export default defineComponent({
 
 		const unsortableJunctionFields = computed(() => {
 			let fields = [];
+
 			if (junctionCollection.value) {
 				const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
 				fields.push(...relations.map((field) => field.field));
 			}
+
 			return fields;
 		});
 

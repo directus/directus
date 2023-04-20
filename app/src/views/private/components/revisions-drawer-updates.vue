@@ -73,6 +73,7 @@ export default defineComponent({
 					if (isEqual(currentValue, previousValue)) {
 						if (field?.meta?.special && field.meta.special.includes('conceal')) {
 							updated = true;
+
 							changes = [
 								{
 									updated: true,
