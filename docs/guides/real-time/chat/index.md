@@ -4,5 +4,5 @@
   title="JavaScript"
   h="2"
   text="Build a multi-user chat application with vanilla JavaScript."
-  url="/guides/websockets/chat/javascript"
+  url="/guides/real-time/chat/javascript"
   icon="/icons/js.svg" />

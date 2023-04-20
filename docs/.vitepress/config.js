@@ -506,12 +506,12 @@ function sidebar() {
 					text: 'Schema Migration',
 				},
 				{
-					text: 'WebSockets',
+					text: 'Real-Time',
 					items: [
-						{ text: 'Getting Started', link: '/guides/websockets/getting-started/index.html' },
-						{ text: 'Authentication', link: '/guides/websockets/authentication' },
-						{ text: 'Subscriptions', link: '/guides/websockets/subscriptions/index.html' },
-						{ text: 'Build a Multi-User Chat', link: '/guides/websockets/chat/index.html' },
+						{ text: 'Getting Started', link: '/guides/real-time/getting-started/index.html' },
+						{ text: 'Authentication', link: '/guides/real-time/authentication' },
+						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
+						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
 					]
 				},
 			],

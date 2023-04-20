@@ -1,8 +1,8 @@
-# Subscriptions With The WebSockets REST Interface
+# Subscriptions With WebSockets
 
 WebSocket subscriptions allows for real-time notification of item creations, edits, and deletions in a collection. 
 
-This guide assumes you already know [how to establish, authenticate, and send messages](/guides/websockets/getting-started/rest) over a WebSocket connection.
+This guide assumes you already know [how to establish, authenticate, and send messages](/guides/real-time/getting-started/websockets) over a WebSocket connection.
 
 ## Subscribe To Changes In A Collection
 
@@ -56,9 +56,9 @@ If you only want to return specific fields on subscription events, add the `quer
 
 Refer to the [Fields Query Parameter](/reference/query.html#fields) docs for more information on specifying what data should be returned.
 
-## Having Multiple Subscriptions
+## Using UIDs
 
-You can have multiple ongoing subscriptions at a time. When doing so, it is highly recommended to add an additional `uid` property to your subscription, which will be included in related item change events.
+You can have multiple ongoing CRUD operations and subscriptions at a time. When doing so, it is highly recommended to add an additional `uid` property to your request, which will be included in related item change events.
 
 ```json
 {

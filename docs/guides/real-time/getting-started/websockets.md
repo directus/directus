@@ -1,8 +1,8 @@
-# Getting Started With The WebSockets REST Interface
+# Getting Started With WebSockets
 
 You can connect to a Directus project using a WebSocket interface and get updates on data held in a collection in real-time.
 
-This guide will show you how to get started with WebSockets using our REST interface and JavaScript. WebSockets are language-agnostic, so you can apply the same set of steps in your stack of choice.
+This guide will show you how to get started with Directus' WebSockets interface and JavaScript. WebSockets are language-agnostic, so you can apply the same set of steps in your stack of choice.
 
 ## Before You Begin
 
@@ -35,26 +35,26 @@ Make sure to replace `your-directus-url` and `your-access-token` with your proje
 At the bottom of your `<script>`, add the following code to establish a new WebSocket connection:
 
 ```js
-const socket = new WebSocket(url)
+const connection = new WebSocket(url)
 ```
 
-To add some feedback, add the following event handlers below your `socket` variable:
+To add some feedback, add the following event handlers below your `connection` variable:
 
 ```js
-socket.onopen = function() {
+connection.onopen = function() {
   console.log({ event: 'onopen' })
 }
 
-socket.onmessage = function(message) {
+connection.onmessage = function(message) {
   const { data } = JSON.parse(message)
   console.log({ event: 'onmessage', data })
 }
 
-socket.onclose = function() {
+connection.onclose = function() {
   console.log({ event: 'onclose' })
 }
     
-socket.onerror = function(error) {
+connection.onerror = function(error) {
   console.log({ event: 'onerror', error })
 }
 ```
@@ -62,14 +62,14 @@ socket.onerror = function(error) {
 Open `index.html` in your browser and open the Developer Tools. You should see the `onopen` event logged in the console.
 
 ## Authenticate Your Connection
-Once a connection is opened, and after a short period, you will see a message sent over the socket with an authentication failure. 
+Once a connection is opened, and after a short period, you will see a message sent over the connection with an authentication failure. 
 
 As soon as the connection is opened, send your first message, which must include authentication details:
 
 ```js
-socket.onopen = function() {
+connection.onopen = function() {
   console.log({ event: 'onopen' })
-  socket.send(JSON.stringify({ // [!code ++]
+  connection.send(JSON.stringify({ // [!code ++]
     type: 'auth', // [!code ++]
     access_token // [!code ++]
   })) // [!code ++]
@@ -78,14 +78,14 @@ socket.onopen = function() {
 
 You should immediately receive a message in return to confirm. The connection is now authenticated and will remain open, ready to send and receive data.
 
-[Learn more about WebSocket authentication here.](/guides/websockets/authentication)
+[Learn more about WebSocket authentication here.](/guides/real-time/authentication)
 
 ## Create Item
-At the bottom of your `<script>`, create a new function that sends a message over the socket with a `create` action:
+At the bottom of your `<script>`, create a new function that sends a message over the connection with a `create` action:
 
 ```js
 function createItem(text, user) {
-  socket.send(JSON.stringify({
+  connection.send(JSON.stringify({
     type: 'items',
     collection: 'messages',
     action: 'create',
@@ -108,11 +108,11 @@ Every time you create an item, you will receive a message in response with the n
 
 
 ## Get Latest Item
-You can use your socket to perform all CRUD actions by using `type: ‘items’` in the payload and including the respective `action`. Create a new function for reading the latest message: 
+You can use your connection to perform all CRUD actions by using `type: 'items'` in the payload and including the respective `action`. Create a new function for reading the latest message: 
 
 ```js
 function readLatestItem() {
-  socket.send(JSON.stringify({
+  connection.send(JSON.stringify({
     type: 'items',
     collection: 'messages',
     action: 'read',
@@ -121,16 +121,16 @@ function readLatestItem() {
 }
 ```
 
-Send the message over the socket by entering `readLatestItem()` your browser console. You will receive a message with the result of your query on the collection. 
+Send the message over the connection by entering `readLatestItem()` your browser console. You will receive a message with the result of your query on the collection. 
 
 ## Subscribe To Changes
-After subscribing to collections over your socket, you will receive new messages whenever items in the collection are created, updated, or deleted. 
+After subscribing to collections over your connection, you will receive new messages whenever items in the collection are created, updated, or deleted. 
 
 Create a new function for subscribing to updates, and then run it from your browser console: 
 
 ```js
 function subscribe() {
-  socket.send(JSON.stringify({
+  connection.send(JSON.stringify({
     type: 'subscribe',
     collection: 'messages',
     query: { fields: ['*'] }
@@ -151,9 +151,10 @@ On Directus Cloud, this feature is enabled. If you are self-hosting, you can alt
 You may wish to exclude these messages from your application logic.
 
 ## In Summary
-In this guide, you have successfully created a new WebSocket connection, authenticated yourself, and performed CRUD operations over the socket. You have also created your first subscription. 
 
-<!-- Learn more about subscriptions with Directus’ WebSockets REST Interface. -->
+In this guide, you have successfully created a new WebSocket connection, authenticated yourself, and performed CRUD operations over the connection. You have also created your first subscription. 
+
+[Learn more about subscriptions with WebSockets with Directus.](/guides/real-time/subscriptions/websockets)
 
 ## Full Code Sample
 ```html
@@ -165,31 +166,31 @@ In this guide, you have successfully created a new WebSocket connection, authent
       const access_token = 'your-access-token';
 		 const collection = 'messages';
 
-      const socket = new WebSocket(url)
+      const connection = new WebSocket(url)
 
-      socket.onopen = function() {
+      connection.onopen = function() {
         console.log({ event: 'onopen' })
-        socket.send(JSON.stringify({
+        connection.send(JSON.stringify({
           type: 'auth',
           access_token
         }))
       }
 
-      socket.onmessage = function(message) {
+      connection.onmessage = function(message) {
         const data = JSON.parse(message.data)
         console.log({ event: 'onmessage', data })
       }
 
-      socket.onclose = function() {
+      connection.onclose = function() {
         console.log({ event: 'onclose' })
       }
           
-      socket.onerror = function(error) {
+      connection.onerror = function(error) {
         console.log({ event: 'onerror', error })
       }
 
       function createItem(text, user) {
-        socket.send(JSON.stringify({
+        connection.send(JSON.stringify({
           type: 'items',
           collection: 'messages',
           action: 'create',
@@ -198,7 +199,7 @@ In this guide, you have successfully created a new WebSocket connection, authent
       }
 
       function readLatestItem() {
-        socket.send(JSON.stringify({
+        connection.send(JSON.stringify({
           type: 'items',
           collection: 'messages',
           action: 'read',
@@ -207,7 +208,7 @@ In this guide, you have successfully created a new WebSocket connection, authent
       }
 
       function subscribe() {
-        socket.send(JSON.stringify({
+        connection.send(JSON.stringify({
           type: 'subscribe',
           collection: 'messages',
           query: {

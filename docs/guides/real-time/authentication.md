@@ -1,4 +1,4 @@
-# WebSocket Authentication
+# WebSocket & GraphQL Authentication
 
 Authentication is an important part of establishing your persistent connection with a Directus project. 
 
@@ -8,8 +8,8 @@ There are three authentication modes in Directus.
 
 | Mode | Description |
 |---|---|
-| **public** | No socket authentication is required. |
-| **handshake** | No socket authentication required to connect. First message must be an authentication request sent before the timeout. |
+| **public** | No authentication is required. |
+| **handshake** | No authentication required to connect. First message must be an authentication request sent before the timeout. |
 | **strict** | Authentication is required as a URL parameter on the initial connection. |
 
 ### Changing Authentication Modes
@@ -22,9 +22,9 @@ By default, the `handshake` authentication mode is used. If self-hosting your pr
 
 ### Public Mode
 
-You do not need to authenticate if using a public authentication mode. 
+You do not need to authenticate if using a public authentication mode, but you are limited to the public role only. 
 
-However, you can only perform operations that are available to your public role. If you need access to non-public data, you should follow the flow for the `handshake` authentication mode.
+If you want to change your role, follow the flow for the `handshake` authentication mode.
 
 ### Handshake Mode
 
@@ -74,7 +74,7 @@ When the client receives an auth expired error, a new authentication request is 
 
 When initially opening your connection, add a `access_token` query parameter to your request.
 
-This mode does not allow you to use refresh tokens, so you must use a static access token. 
+Once initially authenticated, all 3 authentication are available.
 
 ## GraphQL Authentication Flow
 
@@ -117,4 +117,4 @@ const client = createClient({
 
 ## Rate Limiter / Messenger
 
-WebSockets use the same globally-set configuration for the rate limiter and messenger.
+WebSockets and GraphQL Subscriptions use the same globally-set configuration for the rate limiter and messenger.

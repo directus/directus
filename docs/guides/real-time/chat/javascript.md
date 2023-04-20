@@ -50,10 +50,10 @@ Inside of the `<script>`, create a `url` variable being sure to replace `your-di
 
 ```js
 const url = 'wss://your-directus-url/websocket'
-let socket
+let connection
 ```
 
-The `socket` variable will later contain a WebSocket instance.
+The `connection` variable will later contain a WebSocket instance.
 
 Finally, create event listeners which are triggered on the form submissions:
 
@@ -79,14 +79,14 @@ const password = event.target.elements.password.value
 Create a new WebSocket, which will immediately attempt connection:
 
 ```js
-socket = new WebSocket(url)
+connection = new WebSocket(url)
 ```
 
-On connection, you must [send an authentication message before the timeout](/guides/websockets/authentication). Add an event handler for the socket’s `open` event:
+On connection, you must [send an authentication message before the timeout](/guides/real-time/authentication). Add an event handler for the connection's `open` event:
 
 ```js
-socket.onopen = function() {
-  socket.send(JSON.stringify({ 
+connection.onopen = function() {
+  connection.send(JSON.stringify({ 
     type: 'auth', 
     email, 
     password 
@@ -96,10 +96,10 @@ socket.onopen = function() {
 
 ## Subscribe To Messages
 
-In a WebSocket connection, all data sent from the server will trigger the socket’s `message` event. Underneath the `socket.onopen` function, add the following:
+In a WebSocket connection, all data sent from the server will trigger the connection’s `message` event. Underneath the `connection.onopen` function, add the following:
 
 ```js
-socket.onmessage = function(message) {
+connection.onmessage = function(message) {
   receiveMessage(message)
 }
 ```
@@ -115,8 +115,8 @@ function receiveMessage(message) {
 As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the `Messages` collection. Add this inside of the `receiveMessage` function:
 
 ```js
-if(data.type == 'auth' && data.status == 'ok') {
-  socket.send(JSON.stringify({ 
+if (data.type == 'auth' && data.status == 'ok') {
+  connection.send(JSON.stringify({ 
     type: 'subscribe', 
     collection: 'messages', 
     query: { 
@@ -127,10 +127,10 @@ if(data.type == 'auth' && data.status == 'ok') {
 }
 ```
 
-When a subscription	is started, a message will be sent to confirm. Add this inside of the `receiveMessage` function:
+When a subscription is started, a message will be sent to confirm. Add this inside of the `receiveMessage` function:
 
 ```js
-if(data.type == 'subscription' && data.event == 'init') {
+if (data.type == 'subscription' && data.event == 'init') {
   console.log('subscription started')
 }
 ```
@@ -144,7 +144,7 @@ Within the `#new` form submit event handler, send a new message to create the it
 document.querySelector('#new').onsubmit = function(event) {
   event.preventDefault()
   const text = event.target.elements.text.value // [!code ++]
-  socket.send(JSON.stringify({ // [!code ++]
+  connection.send(JSON.stringify({ // [!code ++]
     type: 'items', // [!code ++]
     collection: 'messages', // [!code ++]
     action: 'create', // [!code ++]
@@ -173,7 +173,7 @@ function addMessageToList(message) {
 In your `receiveMessage` function, listen for new `create` events on the `Messages` collection:
 
 ```js
-if(data.type == 'subscription' && data.event == 'create') {
+if (data.type == 'subscription' && data.event == 'create') {
   addMessageToList(data.payload[0])
 }
 ```
@@ -187,9 +187,9 @@ if(data.type == 'subscription' && data.event == 'create') {
 Replace the `console.log()` you created when the subscription is initialized:
 
 ```js
-if(data.type == 'subscription' && data.event == 'init') {
+if (data.type == 'subscription' && data.event == 'init') {
   console.log('subscription started') // [!code --]
-  for(let message of data.payload) { // [!code ++]
+  for (const message of data.payload) { // [!code ++]
     addMessageToList(message) // [!code ++]
   } // [!code ++]
 }
@@ -198,6 +198,7 @@ if(data.type == 'subscription' && data.event == 'init') {
 Refresh your browser, login, and you should see the existing messages shown in your browser.
 
 ## Next Steps
+
 This guide covers authentication, item creation, and subscription using WebSockets. You may consider:
 
 1. Hiding the login form and only showing the new message form once authenticated. 
@@ -229,21 +230,21 @@ This guide covers authentication, item creation, and subscription using WebSocke
 
   <script>
     const url = 'wss://your-directus-url/websocket'
-    let socket
+    let connection
 
     document.querySelector('#login').onsubmit = function(event) {
       event.preventDefault()
       const email = event.target.elements.email.value
       const password = event.target.elements.password.value
-      socket = new WebSocket(url)
-      socket.onopen = function() {
-        socket.send(JSON.stringify({ 
+      connection = new WebSocket(url)
+      connection.onopen = function() {
+        connection.send(JSON.stringify({ 
           type: 'auth', 
           email, 
           password 
         }))
       }
-      socket.onmessage = function(message) {
+      connection.onmessage = function(message) {
         receiveMessage(message)
       }
     }
@@ -251,7 +252,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
     document.querySelector('#new').onsubmit = function(event) {
       event.preventDefault()
       const text = event.target.elements.text.value
-      socket.send(JSON.stringify({
+      connection.send(JSON.stringify({
         type: 'items',
         collection: 'messages',
         action: 'create',
@@ -262,8 +263,8 @@ This guide covers authentication, item creation, and subscription using WebSocke
 
     function receiveMessage(message) {
       const data = JSON.parse(message.data)
-      if(data.type == 'auth' && data.status == 'ok') {
-        socket.send(JSON.stringify({ 
+      if (data.type == 'auth' && data.status == 'ok') {
+        connection.send(JSON.stringify({ 
           type: 'subscribe', 
           collection: 'messages', 
           query: { 
@@ -272,10 +273,10 @@ This guide covers authentication, item creation, and subscription using WebSocke
           } 
         }))
       }
-      if(data.type == 'subscription' && data.event == 'init') {
+      if (data.type == 'subscription' && data.event == 'init') {
         console.log('subscription started')
       }
-      if(data.type == 'subscription' && data.event == 'create') {
+      if (data.type == 'subscription' && data.event == 'create') {
         addMessageToList(data.payload[0])
       }
     }
