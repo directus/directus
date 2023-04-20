@@ -2,7 +2,8 @@
 	"extends": "@directus/tsconfig/node18-esm.json",
 	"compilerOptions": {
 		"outDir": "dist",
-		"lib": ["es2022", "DOM"]
+		"lib": ["es2022", "DOM"],
+		"ignoreDeprecations": "5.0"
 	},
 	"include": ["src"]
 }
