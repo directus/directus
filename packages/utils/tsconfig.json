@@ -1,7 +1,8 @@
 {
 	"extends": "@directus/tsconfig/node18-esm.json",
 	"compilerOptions": {
-		"outDir": "dist"
+		"outDir": "dist",
+		"ignoreDeprecations": "5.0"
 	},
 	"references": [
 		{ "path": "./browser/tsconfig.json" },
