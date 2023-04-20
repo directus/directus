@@ -5,6 +5,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 import { omit } from 'lodash';
+import { getAcceptValues } from '@directus/utils/browser';
 import api from '@/api';
 
 interface Props {
@@ -42,10 +43,15 @@ watch(
 
 async function loadImage() {
 	try {
+		const accept = getAcceptValues('image');
+
 		const res = await api.get(props.src, {
 			responseType: 'arraybuffer',
 			params: {
 				download: true,
+			},
+			headers: {
+				Accept: accept,
 			},
 		});
 

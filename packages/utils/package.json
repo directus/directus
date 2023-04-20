@@ -42,6 +42,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/storage": "workspace:*",
+		"bowser": "^2.11.0",
 		"date-fns": "2.29.3",
 		"fs-extra": "11.1.0",
 		"joi": "17.8.4",

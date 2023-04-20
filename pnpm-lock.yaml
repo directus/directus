@@ -1288,6 +1288,9 @@ importers:
       '@directus/storage':
         specifier: workspace:*
         version: link:../storage
+      bowser:
+        specifier: ^2.11.0
+        version: 2.11.0
       date-fns:
         specifier: 2.29.3
         version: 2.29.3
