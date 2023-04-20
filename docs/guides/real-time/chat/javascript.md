@@ -9,9 +9,7 @@ You will need a Directus project. If you don’t already have one, the easiest w
 
 Create a new collection called `Messages`, with `date_created` and `user_created` fields enabled in the *Optional System Fields* pane on collection creation. Create a text field called `text`.
 
-Create a new Role called `Users`, and create a new user with this role. Make note of the password you set.
-
-Within the `Users` role, give Create and Read access to the `Messages` collection, and Read access to the `Directus Users` system collection. 
+Create a new Role called `Users`, and give Create and Read access to the `Messages` collection, and Read access to the `Directus Users` system collection. Create a new user with this role. Make note of the password you set.
 
 ### Create an HTML Boilerplate
 
