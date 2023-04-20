@@ -27,20 +27,34 @@ export function useTemplateData(
 		return adjustFieldsForDisplays(getFieldsFromTemplate(_template), collection.value?.collection);
 	});
 
+	const isSingleton = computed(() => !!collection.value?.meta?.singleton);
+
 	watch([collection, primaryKey], fetchTemplateValues, { immediate: true });
 
 	return { templateData, loading, error };
 
 	async function fetchTemplateValues() {
-		if (!primaryKey.value || primaryKey.value === '+' || fields.value === null || !collection.value) return;
+		if (
+			(!primaryKey.value && !isSingleton.value) ||
+			primaryKey.value === '+' ||
+			fields.value === null ||
+			!collection.value
+		)
+			return;
 
 		loading.value = true;
 
 		const baseEndpoint = getEndpoint(collection.value.collection);
 
-		const endpoint = collection.value.collection.startsWith('directus_')
-			? `${baseEndpoint}/${primaryKey.value}`
-			: `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}`;
+		let endpoint: string;
+
+		if (isSingleton.value) {
+			endpoint = baseEndpoint;
+		} else {
+			endpoint = collection.value.collection.startsWith('directus_')
+				? `${baseEndpoint}/${primaryKey.value}`
+				: `${baseEndpoint}/${encodeURIComponent(primaryKey.value)}`;
+		}
 
 		try {
 			const result = await api.get(endpoint, {
