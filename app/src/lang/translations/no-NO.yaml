@@ -129,7 +129,6 @@ archive_confirm_count: >-
   Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse {count} elementene?
 reset_system_permissions_to: 'Tilbakestill systemtillatelser til:'
 reset_system_permissions_copy: Denne handlingen vil overskrive eventuelle egendefinerte rettigheter du kan ha brukt på systemkolleksjonene. Er du sikker?
-the_following_are_minimum_permissions: Følgende minimumstilganger kreves når "Applikasjons-tilgang" er aktivert. Du kan utvide tillatelsene ut over dette, men ikke nedenfor.
 app_access_minimum: App Minimumstilgang
 recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér

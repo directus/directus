@@ -131,7 +131,6 @@ archive_confirm_count: >-
   No hay elementos seleccionados | ¿Estás seguro que quieres archivar este elemento? | ¿Estás seguro que quieres archivar estos {count} elementos?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que hayas aplicado a las colecciones del sistema. ¿Estás seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a la aplicación" está habilitado. Puedes extender permisos más allá de esto, pero no más abajo.
 app_access_minimum: Acceso mínimo a la aplicación
 recommended_defaults: Valores por defecto recomendados
 unarchive: Desarchivar
@@ -1447,7 +1446,6 @@ translation: Traducción
 translation_placeholder: Ingresa una traducción...
 value: Valor
 view_project: Ver proyecto
-weeks: { }
 report_error: Reportar Error
 start: Iniciar
 table: Tabla
