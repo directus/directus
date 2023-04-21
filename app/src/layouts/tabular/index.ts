@@ -1,12 +1,13 @@
 import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
-import { useFieldsStore } from '@/stores/fields';
 import { useAliasFields } from '@/composables/use-alias-fields';
+import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { Field } from '@directus/types';
 import { defineLayout } from '@directus/utils';
@@ -17,7 +18,6 @@ import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
-import { useRelationsStore } from '@/stores/relations';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -220,7 +220,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => {
-						let description: string | null = null;
+						const description: string | null = null;
 
 						return {
 							text: field.name,
