@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | Seçilen {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinlerin üstüne yazacaktır. Emin misiniz?
-the_following_are_minimum_permissions: Homm
 app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Varsayılanlar
 unarchive: Arşivden Çıkar
