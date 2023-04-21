@@ -3,15 +3,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted, useAttrs, watch } from 'vue';
-import { omit } from 'lodash';
 import api from '@/api';
+import { omit } from 'lodash';
+import { computed, onMounted, onUnmounted, ref, useAttrs, watch } from 'vue';
 
-interface Props {
+const props = defineProps<{
 	src: string;
-}
+}>();
 
-const props = defineProps<Props>();
 const emit = defineEmits(['error']);
 const attrs = useAttrs();
 
