@@ -32,12 +32,12 @@
 </template>
 
 <script lang="ts" setup>
+import api, { RequestError } from '@/api';
+import { translateAPIError } from '@/lang';
+import { jwtPayload } from '@/utils/jwt-payload';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { computed, ref } from 'vue';
-import { translateAPIError } from '@/lang';
-import api, { RequestError } from '@/api';
-import { jwtPayload } from '@/utils/jwt-payload';
 
 const { t } = useI18n();
 
