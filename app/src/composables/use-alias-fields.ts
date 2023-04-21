@@ -1,6 +1,6 @@
 import { get, getSimpleHash } from '@directus/utils';
 import { Query } from '@directus/types';
-import { computed, ComputedRef, Ref } from 'vue';
+import { computed, ComputedRef, Ref, unref } from 'vue';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 export type AliasFields = {
@@ -22,27 +22,35 @@ type UsableAliasFields = {
 	aliasedKeys: ComputedRef<string[]>;
 	getFromAliasedItem: <K, T extends Record<string, K>>(item: T, key: string) => K | undefined;
 };
-
-export function useAliasFields(fields: Ref<string[]>, collection: Ref<string | null>): UsableAliasFields {
+/**
+ * Generates aliases for field collisions when fetching the data for each display.
+ * @param fields This list of fields to be aliased
+ * @param collection The collection the fields belong to
+ * @returns Info about the display fields and if the original fields were aliased
+ */
+export function useAliasFields(fields: Ref<string[]> | string[], collection: Ref<string | null> | string | null): UsableAliasFields {
 	const aliasedFields = computed(() => {
 		const aliasedFields: Record<string, AliasFields> = {};
 
-		if (!fields.value || fields.value.length === 0 || !collection.value) return aliasedFields;
+		const _fields = unref(fields);
+		const _collection = unref(collection);
 
-		const fieldNameCount = fields.value.reduce<Record<string, number>>((acc, field) => {
+		if (!_fields || _fields.length === 0 || !_collection) return aliasedFields;
+
+		const fieldNameCount = _fields.reduce<Record<string, number>>((acc, field) => {
 			const fieldName = field.split('.')[0];
 			acc[fieldName] = (acc[fieldName] || 0) + 1;
 			return acc
 		}, {});
 
-		for (const field of fields.value) {
+		for (const field of _fields) {
 			const fieldName = field.split('.')[0];
 
 			if (fieldNameCount[fieldName] > 1 === false) {
 				aliasedFields[field] = {
 					key: field,
 					fieldName,
-					fields: adjustFieldsForDisplays([field], collection.value),
+					fields: adjustFieldsForDisplays([field], _collection),
 					aliased: false
 				};
 			} else {
@@ -52,8 +60,12 @@ export function useAliasFields(fields: Ref<string[]>, collection: Ref<string | n
 					key: field,
 					fieldName,
 					fieldAlias: alias,
-					fields: adjustFieldsForDisplays([field], collection.value).map((displayField) => {
-						return `${alias}.${displayField.split('.').slice(1).join('.')}`;
+					fields: adjustFieldsForDisplays([field], _collection).map((displayField) => {
+						if (displayField.includes('.')) {
+							return `${alias}.${displayField.split('.').slice(1).join('.')}`
+						} else {
+							return alias
+						}
 					}),
 					aliased: true
 				};
@@ -85,6 +97,12 @@ export function useAliasFields(fields: Ref<string[]>, collection: Ref<string | n
 		);
 	});
 
+	/**
+	 * Returns the value of the given key from the given item, taking into account aliased fields
+	 * @param item The item to get the value from
+	 * @param key The key to get the value for without any alias
+	 * @returns The value of the given key from the given item
+	 */
 	function getFromAliasedItem<K, T extends Record<string, K>>(item: T, key: string): K | undefined {
 
 		const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
@@ -94,7 +112,6 @@ export function useAliasFields(fields: Ref<string[]>, collection: Ref<string | n
 		if (key.includes('.') === false) return get(item, aliasInfo.fieldAlias);
 
 		return get(item, `${aliasInfo.fieldAlias}.${key.split('.').slice(1).join('.')}`);
-
 	}
 
 	return { aliasedFields, aliasQuery, aliasedKeys, getFromAliasedItem };
