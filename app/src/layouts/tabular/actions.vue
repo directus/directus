@@ -7,15 +7,10 @@
 </template>
 
 <script lang="ts" setup>
-withDefaults(
-	defineProps<{
-		itemCount?: number;
-		showingCount: string;
-	}>(),
-	{
-		itemCount: null,
-	}
-);
+defineProps<{
+	itemCount?: number;
+	showingCount: string;
+}>();
 </script>
 
 <script lang="ts">
