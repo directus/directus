@@ -16,15 +16,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { ref, onMounted } from 'vue';
-
 import api from '@/api';
-import { hydrate } from '@/hydrate';
-import { useRouter } from 'vue-router';
-import { userName } from '@/utils/user-name';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { logout } from '@/auth';
+import { hydrate } from '@/hydrate';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { userName } from '@/utils/user-name';
+import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 const { t } = useI18n();
 
