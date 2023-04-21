@@ -1,5 +1,6 @@
 import cookieParser from 'cookie-parser';
-import express, { Request, RequestHandler, Response } from 'express';
+import type { Request, RequestHandler, Response } from 'express';
+import express from 'express';
 import type { ServerResponse } from 'http';
 import { merge } from 'lodash-es';
 import { readFile } from 'node:fs/promises';

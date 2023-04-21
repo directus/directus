@@ -1,5 +1,6 @@
 import type { Knex } from 'knex';
-import { FnHelper, FnHelperOptions } from '../types.js';
+import type { FnHelperOptions } from '../types.js';
+import { FnHelper } from '../types.js';
 
 const parseLocaltime = (columnType?: string) => {
 	if (columnType === 'timestamp') {
