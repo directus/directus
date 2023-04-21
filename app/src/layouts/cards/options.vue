@@ -47,29 +47,18 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 
-import { Field } from '@directus/types';
 import { useSync } from '@directus/composables';
+import { Field } from '@directus/types';
 
-const props = withDefaults(
-	defineProps<{
-		collection: string;
-		icon: string;
-		fileFields: Field[];
-		imageSource?: string | null;
-		title?: string;
-		subtitle?: string;
-		imageFit: string;
-	}>(),
-	{
-		collection: null,
-		icon: null,
-		fileFields: null,
-		imageSource: null,
-		title: null,
-		subtitle: null,
-		imageFit: null,
-	}
-);
+const props = defineProps<{
+	collection?: string;
+	icon?: string;
+	fileFields?: Field[];
+	imageSource?: string | null;
+	title?: string;
+	subtitle?: string;
+	imageFit?: string;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:icon', icon: string): void;
