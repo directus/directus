@@ -46,55 +46,53 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
 
 import { Field } from '@directus/types';
 import { useSync } from '@directus/composables';
 
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		icon: string;
+		fileFields: Field[];
+		imageSource?: string;
+		title?: string;
+		subtitle?: string;
+		imageFit: string;
+	}>(),
+	{
+		collection: null,
+		icon: null,
+		fileFields: null,
+		imageSource: null,
+		title: null,
+		subtitle: null,
+		imageFit: null,
+	}
+);
+
+const emit = defineEmits<{
+	(e: 'update:icon', icon: string): void;
+	(e: 'update:imageSource', imageSource: string): void;
+	(e: 'update:title', title: string): void;
+	(e: 'update:subtitle', subtitle: string): void;
+	(e: 'update:imageFit', imageFit: string): void;
+}>();
+
+const { t } = useI18n();
+
+const iconWritable = useSync(props, 'icon', emit);
+const imageSourceWritable = useSync(props, 'imageSource', emit);
+const titleWritable = useSync(props, 'title', emit);
+const subtitleWritable = useSync(props, 'subtitle', emit);
+const imageFitWritable = useSync(props, 'imageFit', emit);
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
 export default defineComponent({
 	inheritAttrs: false,
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		icon: {
-			type: String,
-			required: true,
-		},
-		fileFields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-		imageSource: {
-			type: String,
-			default: null,
-		},
-		title: {
-			type: String,
-			default: null,
-		},
-		subtitle: {
-			type: String,
-			default: null,
-		},
-		imageFit: {
-			type: String,
-			required: true,
-		},
-	},
-	emits: ['update:icon', 'update:imageSource', 'update:title', 'update:subtitle', 'update:imageFit'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const iconWritable = useSync(props, 'icon', emit);
-		const imageSourceWritable = useSync(props, 'imageSource', emit);
-		const titleWritable = useSync(props, 'title', emit);
-		const subtitleWritable = useSync(props, 'subtitle', emit);
-		const imageFitWritable = useSync(props, 'imageFit', emit);
-
-		return { t, iconWritable, imageSourceWritable, titleWritable, subtitleWritable, imageFitWritable };
-	},
 });
 </script>
 
