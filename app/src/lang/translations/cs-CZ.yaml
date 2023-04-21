@@ -1957,6 +1957,8 @@ operations:
     to: Komu
     to_placeholder: Přidejte e-mailové adresy a stiskněte Enter...
     body: Tělo
+    template: Šablona
+    data: Údaje
   notification:
     name: Odeslat oznámení
     recipient: Uživatel
