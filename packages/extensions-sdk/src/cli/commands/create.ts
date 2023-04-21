@@ -16,7 +16,7 @@ import type {
 } from '@directus/types';
 import { isIn } from '@directus/utils';
 import chalk from 'chalk';
-import execa from 'execa';
+import { execa } from 'execa';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';

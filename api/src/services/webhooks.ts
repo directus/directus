@@ -1,4 +1,5 @@
-import { getMessenger, Messenger } from '../messenger.js';
+import type { Messenger } from '../messenger.js';
+import { getMessenger } from '../messenger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey, Webhook } from '../types/index.js';
 import { ItemsService } from './items.js';
 

@@ -1,6 +1,7 @@
 import { parseJSON } from '@directus/utils';
 import Busboy from 'busboy';
-import express, { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
+import express from 'express';
 import { load as loadYaml } from 'js-yaml';
 import { InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions/index.js';
 import logger from '../logger.js';

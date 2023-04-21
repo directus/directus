@@ -1,5 +1,6 @@
 import { isNil } from 'lodash-es';
-import { isRef, onMounted, onUnmounted, Ref, ref } from 'vue';
+import type { Ref } from 'vue';
+import { isRef, onMounted, onUnmounted, ref } from 'vue';
 
 declare global {
 	interface Window {

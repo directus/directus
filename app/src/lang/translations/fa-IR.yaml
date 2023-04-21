@@ -131,7 +131,6 @@ archive_confirm_count: >-
   هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید این {count} مورد را بایگانی کنید؟
 reset_system_permissions_to: 'بازنشانی مجوزهای سیستم به:'
 reset_system_permissions_copy: این عمل، مجوزهای سفارشی که ممکن است برای مجموعه‌های سیستمی اعمال کرده باشید را بازنویسی می کند. مطمئن هستید؟
-the_following_are_minimum_permissions: موارد زیر، حداقل مجوزهای مورد نیاز جهت دسترسی به برنامه است. شما می توانید مجوزهای بیشتری را در این قسمت در نظر بگیرید اما نه کمتر از حداقل مجوز مورد نیاز.
 app_access_minimum: حداقل مجوزها برای دسترسی به برنامه
 recommended_defaults: پیش‌فرض‌های مورد تأیید
 unarchive: خارج کردن از بایگانی
@@ -1321,7 +1320,19 @@ save_current_datetime: ذخیره تاریخ و ساعت فعلی
 always_open: همیشه در
 start_open: هنگام باز کردن
 start_collapsed: هنگام بسته شدن
+block: بلوک
+inline: درون خطی
 comment: نظر
+shares: اشتراک‌گذاری
+no_shares: هیچ اشتراک گذاری برای نمایش نیست
+new_share: اشتراک گذاری جدید
+expired: منقضی شده
+upcoming: به زودی
+share: اشتراک‌گذاری
+share_item: اشتراک گذاری مورد
+shared_with_you: موردی با شما به اشتراک گذاشته شد
+shared_enter_passcode: برای ادامه رمز خود را وارد نمائید
+shared_leave_blank_for_unlimited: (خالی به معنی بدون محدودیت.)
 shared_uses_left: برای امنیت بیشتر، این صفحه مشترک با تعداد محدودی بازدید پیکربندی شده است. در حال حاضر {n} بازدید باقی مانده است، پس از آن، صفحه دیگر قابل دسترسی نخواهد بود.
 share_access_page: دسترسی به صفحه Shared
 share_access_not_found: این صفحه به اشتراک گذاشته شده وجود ندارد یا قبلاً از حداکثر تعداد مجاز استفاده فراتر رفته است.
@@ -1372,6 +1383,7 @@ colors:
   black: سیاه
   gray: خاکستری
   white: سفید
+junction_collection: مجموعه اتصالات
 latency: تأخیر
 login: ورود به سیستم
 my_activity: فعالیت های من
@@ -1382,11 +1394,26 @@ otp: رمز عبور یکبار مصرف
 password: رمز عبور
 permissions: دسترسي ها
 relationship: رابطه ها
+reset: بازنشانی
 reset_password: بازنشانی رمز عبور
+revisions: تجدید نظرها
+no_revisions: هنوز هیچ تجدیدنظری وجود ندارد
+no_logs: هنوز گزارشی نیست
+revert: بازگشت
 save: ذخیره
+schema: اسکیما
+search: جُستجو
+select_existing: انتخاب مورد موجود
+select_field_type: انتخاب نوع فیلد
+select_interface: رابط شبکه را انتخاب کنید
+settings: تنظیمات
 sign_in: ورود
 sign_out: خروج از سیستم
 sign_out_confirm: آیا اطمینان دارید که می‌خواهید خارج شوید؟
+something_went_wrong: مشکلی پیش آمد.
+sort_direction: جهت مرتب سازی
+export_location: برون‌برد مکان‌ها
+export_started: برون بری آغاز شد
 template: قالب
 require_value_to_be_set: مقدار لازم برای تنظیم هنگام ایجاد
 translation: ترجمه
