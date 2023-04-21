@@ -15,10 +15,9 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
+<script lang="ts" setup>
+import { computed, ref } from 'vue';
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { useElementSize } from '@directus/composables';
 
 type File = {
 	id: string;
@@ -26,33 +25,28 @@ type File = {
 	title: string;
 };
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Object as PropType<File>,
-			default: null,
-		},
-	},
-	setup(props) {
-		const previewEl = ref<Element>();
-		const imgError = ref(false);
+const props = withDefaults(
+	defineProps<{
+		value?: File | null;
+	}>(),
+	{
+		value: null,
+	}
+);
 
-		const fileExtension = computed(() => {
-			if (!props.value) return null;
-			return readableMimeType(props.value.type, true);
-		});
+const previewEl = ref<Element>();
+const imgError = ref(false);
 
-		const imageThumbnail = computed(() => {
-			if (!props.value) return null;
-			if (props.value.type?.includes('svg')) return '/assets/' + props.value.id;
-			if (props.value.type?.includes('image') === false) return null;
-			return `/assets/${props.value.id}?key=system-small-cover`;
-		});
+const fileExtension = computed(() => {
+	if (!props.value) return null;
+	return readableMimeType(props.value.type, true);
+});
 
-		const { height } = useElementSize(previewEl);
-
-		return { fileExtension, imageThumbnail, previewEl, height, imgError };
-	},
+const imageThumbnail = computed(() => {
+	if (!props.value) return null;
+	if (props.value.type?.includes('svg')) return '/assets/' + props.value.id;
+	if (props.value.type?.includes('image') === false) return null;
+	return `/assets/${props.value.id}?key=system-small-cover`;
 });
 </script>
 
