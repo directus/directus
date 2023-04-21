@@ -34,11 +34,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import { useServerStore } from '@/stores/server';
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
 import { getRootPath } from '@/utils/get-root-path';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 withDefaults(
 	defineProps<{
@@ -46,7 +46,7 @@ withDefaults(
 		inline?: boolean;
 	}>(),
 	{
-		title: null,
+		title: undefined,
 		inline: false,
 	}
 );
