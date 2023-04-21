@@ -1284,6 +1284,8 @@ panels:
 operations:
   log:
     message: Poruka
+  mail:
+    template: Šablon
   notification:
     recipient: Korisnik
     message: Poruka
