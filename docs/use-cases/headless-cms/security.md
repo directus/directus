@@ -126,15 +126,15 @@ But when it’s time to go to production and add all your different users, we re
 ::: warning Use Different Project Names Between Environments
 
 The project name is used in two-factor authentication for identification. Remember to set a different project name to
-differentiate between environments to prevent the Authenticator application from overriding the token for a different
+differentiate between environments to prevent the authenticator application from overriding the token for a different
 environment.
 
 For example:
 
-| Environment | Project Name |
-| ----------- | ------------ |
-| Production  | Directus     |
-| Staging     | Directus UAT |
-| Development | Directus Dev |
+| Environment | Project Name     |
+| ----------- | ---------------- |
+| Production  | Directus         |
+| Staging     | Directus Staging |
+| Development | Directus Dev     |
 
 :::
