@@ -2087,6 +2087,8 @@ operations:
     to: 에게
     to_placeholder: 이메일 주소를 추가하고 엔터를 누르세요...
     body: 몸
+    template: 템플릿
+    data: 데이터
   notification:
     name: 알림 보내기
     description: 한 명 이상의 사용자에게 인앱 알림 보내기
