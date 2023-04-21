@@ -1794,6 +1794,9 @@ operations:
     payload: ظرفیت یا Payload
   log:
     message: پیام
+  mail:
+    template: قالب
+    data: داده Data
   notification:
     recipient: کاربر
     message: پیام
