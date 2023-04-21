@@ -23,15 +23,10 @@ import { format } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		revision: Revision;
-		last?: boolean;
-	}>(),
-	{
-		last: false,
-	}
-);
+const props = defineProps<{
+	revision: Revision;
+	last?: boolean;
+}>();
 
 defineEmits<{
 	(e: 'click'): void;

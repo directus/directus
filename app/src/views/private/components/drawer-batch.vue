@@ -24,23 +24,23 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { computed, ref, toRefs } from 'vue';
 import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		active?: boolean;
 		collection: string;
-		edits?: Record<string, any>;
 		primaryKeys: (number | string)[];
+		active?: boolean;
+		edits?: Record<string, any>;
 	}>(),
 	{
-		active: false,
+		edits: undefined,
 	}
 );
 

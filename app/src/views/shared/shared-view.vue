@@ -47,7 +47,6 @@ withDefaults(
 	}>(),
 	{
 		title: undefined,
-		inline: false,
 	}
 );
 
