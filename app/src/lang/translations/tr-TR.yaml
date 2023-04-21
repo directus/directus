@@ -296,6 +296,7 @@ o2m_relationship: Birden Çoka İlişki
 m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bire İlişki
 invalid_item: Geçersiz Öğe
+require_confirmation: Doğrulama Gerekiyor
 modal: Açılır Pencere
 next: Sonraki
 field_name: Alan Adı
@@ -788,6 +789,7 @@ label: Etiket
 flows: Akışlar
 flow: Akış
 select_a_flow: Bir Akış Seç
+run_flow_confirm: Bu komut dosyasını çalıştırmak istediğinize emin misiniz?
 run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
 run_flow_success: Akış "{flow}" çalıştırma başarılı
 trigger: Tetikleme
@@ -1945,8 +1947,17 @@ show_x_only: Yalnızca X eksenini göster
 show_y_only: Yalnızca Y eksenini göster
 show_data_label: Veri etiketini göster
 both: İkisi de
+function: İşlev
 half_circle: Yarım Daire
+full_circle: Tam Daire
 stroke_width: Fırça Genişliği
+rounded_stroke: Yuvarlak Kontur
+thin: İnce
+medium: Orta
+broad: Kalın
+show_labels: Etiketleri Göster
+right: Sağ
+left: Sol
 panels:
   metric:
     name: Metrik
@@ -2083,3 +2094,4 @@ operations:
     flows: Akışlar
     flow: Akış
     data: Veri
+    serial: Seri No
