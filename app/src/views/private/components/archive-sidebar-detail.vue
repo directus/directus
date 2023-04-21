@@ -16,23 +16,20 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { computed, watch, ref } from 'vue';
 
-const props = withDefaults(
-	defineProps<{
-		collection?: string;
-		archive?: string;
-	}>(),
-	{ collection: null, archive: null }
-);
+const props = defineProps<{
+	collection?: string;
+	archive?: string;
+}>();
 
 const { t } = useI18n();
 
 const router = useRouter();
 
-const selectedItem = ref<string | null>(props.archive);
+const selectedItem = ref<string | undefined>(props.archive);
 
 const items = [
 	{
@@ -43,15 +40,15 @@ const items = [
 	{ text: t('show_all_items'), value: 'all' },
 ];
 
-const active = computed(() => selectedItem.value !== null);
+const active = computed(() => !!unref(selectedItem));
 
 watch(selectedItem, () => {
-	const url = new URL(router.currentRoute.value.fullPath, window.location.origin);
+	const url = new URL(unref(router.currentRoute).fullPath, window.location.origin);
 
 	url.searchParams.delete('archived');
 	url.searchParams.delete('all');
 
-	if (selectedItem.value !== null) {
+	if (unref(selectedItem)) {
 		url.searchParams.set(selectedItem.value!, '');
 	}
 
