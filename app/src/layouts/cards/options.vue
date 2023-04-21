@@ -44,7 +44,7 @@
 	</v-detail>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 
 import { Field } from '@directus/types';
@@ -55,7 +55,7 @@ const props = withDefaults(
 		collection: string;
 		icon: string;
 		fileFields: Field[];
-		imageSource?: string;
+		imageSource?: string | null;
 		title?: string;
 		subtitle?: string;
 		imageFit: string;
