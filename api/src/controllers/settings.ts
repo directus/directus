@@ -16,6 +16,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const records = await service.readSingleton(req.sanitizedQuery);
 		res.locals['payload'] = { data: records || null };
 		return next();
@@ -30,6 +31,7 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.upsertSingleton(req.body);
 
 		try {

@@ -96,6 +96,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			}
 		}
 	}
+
 	for (const diffField of applyDiff.diff.fields) {
 		const field = `${diffField.collection}.${diffField.field}`;
 
@@ -121,6 +122,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			}
 		}
 	}
+
 	for (const diffRelation of applyDiff.diff.relations) {
 		let relation = `${diffRelation.collection}.${diffRelation.field}`;
 		if (diffRelation.related_collection) relation += `-> ${diffRelation.related_collection}`;

@@ -80,6 +80,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.sort(req.collection, req.body);
 
 		return res.status(200).end();
@@ -93,6 +94,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.revert(req.params['revision']!);
 		next();
 	}),

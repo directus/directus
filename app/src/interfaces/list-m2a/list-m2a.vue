@@ -277,15 +277,18 @@ function sortItems(items: DisplayItem[]) {
 		if (!isNil(junctionId)) {
 			changes[info.junctionPrimaryKeyField.field] = junctionId;
 		}
+
 		if (!isNil(collection)) {
 			changes[info.collectionField.field] = collection;
 		}
+
 		if (!isNil(relatedId)) {
 			set(changes, info.junctionField.field + '.' + pkField, relatedId);
 		}
 
 		return changes;
 	});
+
 	update(...sortedItems);
 }
 
@@ -301,10 +304,12 @@ function createItem(collection: string) {
 
 	currentlyEditing.value = null;
 	relatedPrimaryKey.value = null;
+
 	editsAtStart.value = {
 		[relationInfo.value.collectionField.field]: collection,
 		[relationInfo.value.junctionField.field]: {},
 	};
+
 	newItem = true;
 	editModalActive.value = true;
 }
@@ -314,10 +319,12 @@ function editItem(item: DisplayItem) {
 
 	const relationPkField =
 		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]].field;
+
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	newItem = false;
+
 	editsAtStart.value = {
 		...getItemEdits(item),
 		[relationInfo.value.collectionField.field]: item[relationInfo.value.collectionField.field],

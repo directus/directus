@@ -1,6 +1,6 @@
 {
 	"name": "@directus/exceptions",
-	"version": "9.25.1",
+	"version": "9.25.2",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
@@ -23,7 +23,7 @@
 	"main": "dist/index.js",
 	"files": [
 		"dist",
-		"!**/*.d.ts?(.map)"
+		"!**/*.test.{js,d.ts}"
 	],
 	"publishConfig": {
 		"access": "public"

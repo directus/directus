@@ -39,6 +39,7 @@ describe('schema', () => {
 
 	for (let i = 0; i < 24; i++) {
 		const hour = i < 10 ? '0' + i : String(i);
+
 		sampleDates.push(
 			{
 				date: `2022-01-05`,
@@ -76,9 +77,11 @@ describe('schema', () => {
 
 			let serverOutput = '';
 			server.stdout.on('data', (data) => (serverOutput += data.toString()));
+
 			server.on('exit', (code) => {
 				if (code !== null) throw new Error(`Directus-${vendor} server failed: \n ${serverOutput}`);
 			});
+
 			promises.push(awaitDirectusConnection(newServerPort));
 		}
 
@@ -126,34 +129,45 @@ describe('schema', () => {
 						expect(responseObj.date).toBe(newDateString.substring(0, 10));
 						expect(responseObj.time).toBe(sampleDates[index]!.time);
 						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
+
 						const dateCreated = new Date(responseObj.date_created);
+
 						expect(dateCreated.toISOString()).toBe(
 							validateDateDifference(currentTimestamp, dateCreated, 400000).toISOString()
 						);
+
 						continue;
 					} else if (vendor === 'oracle') {
 						expect(responseObj.date).toBe(sampleDates[index]!.date);
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
+
 						const dateCreated = new Date(responseObj.date_created);
+
 						expect(dateCreated.toISOString()).toBe(
 							validateDateDifference(currentTimestamp, dateCreated, 400000).toISOString()
 						);
+
 						continue;
 					}
 
 					expect(responseObj.date).toBe(sampleDates[index]!.date);
 					expect(responseObj.time).toBe(sampleDates[index]!.time);
 					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
 						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 					);
+
 					const dateCreated = new Date(responseObj.date_created);
+
 					expect(dateCreated.toISOString()).toBe(
 						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
 					);
@@ -186,34 +200,45 @@ describe('schema', () => {
 						expect(responseObj.date).toBe(newDateString.substring(0, 10));
 						expect(responseObj.time).toBe(sampleDates[index]!.time);
 						expect(responseObj.datetime).toBe(newDateTimeString.substring(0, 19));
+
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
+
 						const dateCreated = new Date(responseObj.date_created);
+
 						expect(dateCreated.toISOString()).toBe(
 							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
 						);
+
 						continue;
 					} else if (vendor === 'oracle') {
 						expect(responseObj.date).toBe(sampleDates[index]!.date);
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
+
 						const dateCreated = new Date(responseObj.date_created);
+
 						expect(dateCreated.toISOString()).toBe(
 							validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
 						);
+
 						continue;
 					}
 
 					expect(responseObj.date).toBe(sampleDates[index]!.date);
 					expect(responseObj.time).toBe(sampleDates[index]!.time);
 					expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+
 					expect(responseObj.timestamp.substring(0, 19)).toBe(
 						new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 					);
+
 					const dateCreated = new Date(responseObj.date_created);
+
 					expect(dateCreated.toISOString()).toBe(
 						validateDateDifference(currentTimestamp, dateCreated, 200000).toISOString()
 					);
@@ -258,10 +283,13 @@ describe('schema', () => {
 						if (vendor === 'oracle') {
 							expect(responseObj.date).toBe(sampleDates[index]!.date);
 							expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+
 							expect(responseObj.timestamp.substring(0, 19)).toBe(
 								new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 							);
+
 							const dateCreated = new Date(responseObj.date_created);
+
 							expect(dateCreated.toISOString()).toBe(
 								validateDateDifference(
 									insertionStartTimestamp,
@@ -269,6 +297,7 @@ describe('schema', () => {
 									insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime()
 								).toISOString()
 							);
+
 							expect(responseObj.date_updated).toBeNull();
 							continue;
 						}
@@ -276,10 +305,13 @@ describe('schema', () => {
 						expect(responseObj.date).toBe(sampleDates[index]!.date);
 						expect(responseObj.time).toBe(sampleDates[index]!.time);
 						expect(responseObj.datetime).toBe(sampleDates[index]!.datetime);
+
 						expect(responseObj.timestamp.substring(0, 19)).toBe(
 							new Date(sampleDates[index]!.timestamp).toISOString().substring(0, 19)
 						);
+
 						const dateCreated = new Date(responseObj.date_created);
+
 						expect(dateCreated.toISOString()).toBe(
 							validateDateDifference(
 								insertionStartTimestamp,
@@ -287,6 +319,7 @@ describe('schema', () => {
 								insertionEndTimestamp.getTime() - insertionStartTimestamp.getTime() + 1000
 							).toISOString()
 						);
+
 						expect(responseObj.date_updated).toBeNull();
 					}
 				},
@@ -333,6 +366,7 @@ describe('schema', () => {
 				const dateCreated = new Date(responseObj.date_created);
 				const dateUpdated = new Date(responseObj.date_updated);
 				expect(dateUpdated.toISOString()).not.toBe(dateCreated.toISOString());
+
 				expect(dateUpdated.toISOString()).toBe(
 					validateDateDifference(
 						updateStartTimestamp,

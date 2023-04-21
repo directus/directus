@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "9.25.1",
+	"version": "9.25.2",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"type": "module",
@@ -20,14 +20,13 @@
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"bin": {
 		"directus-extension": "cli.js"
 	},
 	"files": [
 		"dist",
 		"templates",
-		"!**/*.d.ts.map"
+		"!**/*.test.{js,d.ts}"
 	],
 	"scripts": {
 		"build": "tsc --build",
@@ -39,11 +38,11 @@
 		"@directus/constants": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@rollup/plugin-commonjs": "23.0.4",
+		"@rollup/plugin-commonjs": "24.1.0",
 		"@rollup/plugin-json": "6.0.0",
 		"@rollup/plugin-node-resolve": "15.0.1",
 		"@rollup/plugin-replace": "5.0.2",
-		"@rollup/plugin-terser": "0.4.0",
+		"@rollup/plugin-terser": "0.4.1",
 		"@rollup/plugin-virtual": "3.0.1",
 		"@vue/compiler-sfc": "3.2.47",
 		"chalk": "4.1.2",

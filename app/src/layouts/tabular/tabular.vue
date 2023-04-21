@@ -119,7 +119,12 @@
 						/>
 					</template>
 
-					<v-field-list :collection="collection" :disabled-fields="fields" @select-field="addField" />
+					<v-field-list
+						:collection="collection"
+						:disabled-fields="fields"
+						:allow-select-all="false"
+						@add="addField($event[0])"
+					/>
 				</v-menu>
 			</template>
 
@@ -253,6 +258,7 @@ useShortcut(
 	},
 	table
 );
+
 const permissionsStore = usePermissionsStore();
 const userStore = useUserStore();
 

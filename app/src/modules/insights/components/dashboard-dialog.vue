@@ -96,6 +96,7 @@ export default defineComponent({
 					await insightsStore.hydrate();
 					router.push(`/insights/${response.data.data.id}`);
 				}
+
 				emit('update:modelValue', false);
 			} catch (err: any) {
 				unexpectedError(err);

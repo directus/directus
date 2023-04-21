@@ -55,6 +55,7 @@ const processSchemaFields = (
 	parentField?: string
 ) => {
 	let filterOperatorList: ClientFilterOperator[] = [];
+
 	let targetSchema: {
 		filterOperatorList: any;
 		generateFilterForDataType: any;
@@ -145,6 +146,7 @@ const processSchemaFields = (
 
 					const schemaValues = get(vendorSchemaValues, `${vendor}.${collection}.${filterKey}`);
 					const possibleValues = Array.isArray(schemaValues) ? schemaValues : schema.possibleValues;
+
 					const generatedFilters = targetSchema.generateFilterForDataType(
 						filterOperator,
 						possibleValues
@@ -202,6 +204,7 @@ function processValidation(
 	if (keys.length === 1) {
 		if (Array.isArray(data)) {
 			let found = false;
+
 			for (const item of data) {
 				try {
 					if (filter.validatorFunction(get(item, keys[0]), filter.value)) {
@@ -212,12 +215,14 @@ function processValidation(
 					continue;
 				}
 			}
+
 			if (assert) {
 				if (data.length === 0) {
 					if (filter.emptyAllowedFunction(filter.value, possibleValues)) {
 						expect(true).toBe(true);
 						return false;
 					}
+
 					expect(found).toBe(true);
 					return false;
 				} else {
@@ -229,6 +234,7 @@ function processValidation(
 			}
 		} else {
 			let validationResult;
+
 			try {
 				validationResult = filter.validatorFunction(get(data, keys[0]), filter.value);
 			} catch (_err) {
@@ -248,17 +254,20 @@ function processValidation(
 
 		if (Array.isArray(data)) {
 			let found = false;
+
 			for (const item of data) {
 				if (processValidation(get(item, currentKey), keys.join('.'), filter, possibleValues, false)) {
 					found = true;
 					break;
 				}
 			}
+
 			if (assert) {
 				if (filter.emptyAllowedFunction(filter.value, possibleValues)) {
 					expect(true).toBe(true);
 					return true;
 				}
+
 				expect(found).toBe(true);
 				return true;
 			} else {

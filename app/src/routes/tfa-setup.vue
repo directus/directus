@@ -94,6 +94,7 @@ export default defineComponent({
 
 		async function enable() {
 			await enableTFA();
+
 			if (error.value === null) {
 				const redirectQuery = router.currentRoute.value.query.redirect as string;
 				router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');

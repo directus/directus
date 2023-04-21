@@ -157,6 +157,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
 			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
+
 			const fieldsDefaultValue = computed(() => {
 				return fieldsInCollection.value
 					.filter((field: Field) => !field.meta?.hidden)
@@ -348,9 +349,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				}
 
 				let sortString = newSort.by;
+
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}
+
 				sort.value = [sortString];
 			}
 
