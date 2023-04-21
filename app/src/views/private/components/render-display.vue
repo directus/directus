@@ -23,25 +23,16 @@
 import { useExtension } from '@/composables/use-extension';
 import { toRefs } from 'vue';
 
-const props = withDefaults(
-	defineProps<{
-		display?: string;
-		options?: Record<string, unknown>;
-		interface?: string;
-		interfaceOptions?: Record<string, unknown>;
-		value?: string | number | boolean | Record<string, unknown> | Array<unknown>;
-		type: string;
-		collection: string;
-		field: string;
-	}>(),
-	{
-		display: null,
-		options: null,
-		interface: null,
-		interfaceOptions: null,
-		value: null,
-	}
-);
+const props = defineProps<{
+	display: string | null;
+	options?: Record<string, unknown>;
+	interface?: string;
+	interfaceOptions?: Record<string, unknown>;
+	value?: string | number | boolean | Record<string, unknown> | unknown[];
+	type: string;
+	collection: string;
+	field: string;
+}>();
 
 const { display } = toRefs(props);
 
