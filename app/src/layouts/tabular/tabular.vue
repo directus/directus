@@ -178,16 +178,16 @@ export default {
 </script>
 
 <script lang="ts" setup>
+import { HeaderRaw } from '@/components/v-table/types';
+import { useAliasFields } from '@/composables/use-alias-fields';
 import { useShortcut } from '@/composables/use-shortcut';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, inject, ref, Ref, watch, computed, toRefs } from 'vue';
+import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useAliasFields } from '@/composables/use-alias-fields';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { HeaderRaw } from '@/components/v-table/types';
 
 interface Props {
 	collection: string;

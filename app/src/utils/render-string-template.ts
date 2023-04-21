@@ -1,11 +1,11 @@
+import { useAliasFields } from '@/composables/use-alias-fields';
+import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { get, getFieldsFromTemplate } from '@directus/utils';
-import { render, renderFn } from 'micromustache';
-import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { set } from 'lodash';
-import { useExtension } from '@/composables/use-extension';
-import { useAliasFields } from '@/composables/use-alias-fields';
+import { render, renderFn } from 'micromustache';
+import { ComputedRef, Ref, computed, unref } from 'vue';
 
 type StringTemplate = {
 	fieldsInTemplate: ComputedRef<string[]>;
@@ -85,10 +85,10 @@ export function renderDisplayStringTemplate(
 				key,
 				display.value?.handler
 					? display.value.handler(value, fieldsUsed[key]?.meta?.display_options ?? {}, {
-						interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
-						field: fieldsUsed[key] ?? undefined,
-						collection: collection,
-					})
+							interfaceOptions: fieldsUsed[key]?.meta?.options ?? {},
+							field: fieldsUsed[key] ?? undefined,
+							collection: collection,
+					  })
 					: value
 			);
 		} else {
