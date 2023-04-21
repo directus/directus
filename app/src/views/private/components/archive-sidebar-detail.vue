@@ -15,58 +15,47 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { computed, defineComponent, watch, ref } from 'vue';
+import { computed, watch, ref } from 'vue';
 
-export default defineComponent({
-	props: {
-		collection: {
-			type: String,
-			default: null,
-		},
-		archive: {
-			type: String,
-			default: null,
-		},
+const props = withDefaults(
+	defineProps<{
+		collection?: string;
+		archive?: string;
+	}>(),
+	{ collection: null, archive: null }
+);
+
+const { t } = useI18n();
+
+const router = useRouter();
+
+const selectedItem = ref<string | null>(props.archive);
+
+const items = [
+	{
+		text: t('show_active_items'),
+		value: null,
 	},
-	setup(props) {
-		const { t } = useI18n();
+	{ text: t('show_archived_items'), value: 'archived' },
+	{ text: t('show_all_items'), value: 'all' },
+];
 
-		const router = useRouter();
+const active = computed(() => selectedItem.value !== null);
 
-		const selectedItem = ref<string | null>(props.archive);
+watch(selectedItem, () => {
+	const url = new URL(router.currentRoute.value.fullPath, window.location.origin);
 
-		const items = [
-			{
-				text: t('show_active_items'),
-				value: null,
-			},
-			{ text: t('show_archived_items'), value: 'archived' },
-			{ text: t('show_all_items'), value: 'all' },
-		];
+	url.searchParams.delete('archived');
+	url.searchParams.delete('all');
 
-		const active = computed(() => selectedItem.value !== null);
+	if (selectedItem.value !== null) {
+		url.searchParams.set(selectedItem.value!, '');
+	}
 
-		watch(
-			() => selectedItem.value,
-			() => {
-				const url = new URL(router.currentRoute.value.fullPath, window.location.origin);
-
-				url.searchParams.delete('archived');
-				url.searchParams.delete('all');
-
-				if (selectedItem.value !== null) {
-					url.searchParams.set(selectedItem.value, '');
-				}
-
-				router.push(url.pathname + url.search);
-			}
-		);
-
-		return { t, active, selectedItem, items };
-	},
+	router.push(url.pathname + url.search);
 });
 </script>
 
