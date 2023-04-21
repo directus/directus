@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
 reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
 app_access_minimum: Mínimo acceso a App
 recommended_defaults: Valores predeterminados recomendados
 unarchive: Desarchivar

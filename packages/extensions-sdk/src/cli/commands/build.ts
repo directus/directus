@@ -25,14 +25,8 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import {
-	Plugin,
-	RollupError,
-	RollupOptions,
-	OutputOptions as RollupOutputOptions,
-	rollup,
-	watch as rollupWatch,
-} from 'rollup';
+import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
+import { rollup, watch as rollupWatch } from 'rollup';
 import esbuildDefault from 'rollup-plugin-esbuild';
 import stylesDefault from 'rollup-plugin-styles';
 import vueDefault from 'rollup-plugin-vue';
