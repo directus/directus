@@ -89,7 +89,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 								break;
 						}
 
-						conn.close();
+						conn.terminate();
 						return reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
 					}
 				}, 5);
@@ -138,7 +138,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
 						return promise().then(resolve, reject);
 					} else {
-						conn.close();
+						conn.terminate();
 
 						return reject(
 							new Error(
