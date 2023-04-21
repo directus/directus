@@ -36,19 +36,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
 import { reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-withDefaults(
-	defineProps<{
-		modelValue?: boolean;
-		saving?: boolean;
-	}>(),
-	{
-		modelValue: false,
-		saving: false,
-	}
-);
+defineProps<{
+	modelValue?: boolean;
+	saving?: boolean;
+}>();
 
 const emit = defineEmits<{
 	(e: 'save', value: { name: string | null; icon: string | null; color: string | null }): void;
