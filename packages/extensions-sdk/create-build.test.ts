@@ -1,5 +1,5 @@
 import { EXTENSION_LANGUAGES } from '@directus/constants';
-import execa from 'execa';
+import { execa } from 'execa';
 import fse from 'fs-extra';
 import { resolve } from 'node:path';
 import { afterAll, expect, test } from 'vitest';
