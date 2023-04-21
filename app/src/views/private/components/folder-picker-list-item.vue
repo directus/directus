@@ -45,7 +45,7 @@ type Folder = {
 
 defineProps<{
 	folder: Folder;
-	currentFolder?: string;
+	currentFolder: string | null;
 	clickHandler?: (folderId: string) => void;
 	disabled?: boolean;
 	disabledFolders?: string[];
