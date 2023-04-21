@@ -151,19 +151,19 @@ function onIframeLoad() {
 (window as any).refreshLivePreview = refresh;
 
 onMounted(() => {
-	if (resizeHandle.value) {
-		new ResizeObserver(() => {
-			if (!resizeHandle.value) return;
+	if (!resizeHandle.value) return;
 
-			displayWidth.value = resizeHandle.value.offsetWidth;
-			displayHeight.value = resizeHandle.value.offsetHeight;
+	new ResizeObserver(() => {
+		if (!resizeHandle.value) return;
 
-			if (width.value === undefined && height.value === undefined) return;
+		displayWidth.value = resizeHandle.value.offsetWidth;
+		displayHeight.value = resizeHandle.value.offsetHeight;
 
-			width.value = resizeHandle.value.offsetWidth;
-			height.value = resizeHandle.value.offsetHeight;
-		}).observe(resizeHandle.value);
-	}
+		if (width.value === undefined && height.value === undefined) return;
+
+		width.value = resizeHandle.value.offsetWidth;
+		height.value = resizeHandle.value.offsetHeight;
+	}).observe(resizeHandle.value);
 });
 </script>
 
