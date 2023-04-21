@@ -7,13 +7,13 @@
 </template>
 
 <script lang="ts" setup>
-import { toRefs } from 'vue';
 import { useCollection } from '@directus/composables';
+import { toRefs } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string | null;
-		icon?: boolean;
+		value: string | null;
+		icon: boolean;
 	}>(),
 	{
 		value: null,
@@ -21,6 +21,6 @@ const props = withDefaults(
 	}
 );
 
-const { value: collection } = toRefs(props);
+const collection = toRefs(props).value;
 const { info } = useCollection(collection);
 </script>

@@ -6,13 +6,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import Color from 'color';
 import { isHex } from '@/utils/is-hex';
+import { cssVar } from '@directus/utils/browser';
+import Color from 'color';
+import { computed } from 'vue';
 
 const props = defineProps({
 	value: {
-		type: String as () => string | null,
+		type: String,
 		default: null,
 	},
 	defaultColor: {
@@ -23,14 +24,17 @@ const props = defineProps({
 });
 
 const styles = computed(() => {
-	const defaultColor = props.defaultColor?.startsWith('var(') ? getVar(props.defaultColor) : props.defaultColor;
-	const value = props.value?.startsWith('var(') ? getVar(props.value) : props.value;
+	const defaultColor = props.defaultColor?.startsWith('var(')
+		? cssVar(props.defaultColor.slice(4, -1))
+		: props.defaultColor;
+
+	const value = props.value?.startsWith('var(') ? cssVar(props.value.slice(4, -1)) : props.value;
 
 	const style: Record<string, any> = { 'background-color': defaultColor };
 
 	if (value !== null) style['background-color'] = value;
 
-	const pageColorString = getVar('var(--background-page)');
+	const pageColorString = cssVar('--background-page');
 
 	const pageColorRGB = Color(pageColorString);
 	const colorRGB = value === null ? Color(defaultColor) : Color(value);
@@ -39,10 +43,6 @@ const styles = computed(() => {
 
 	return style;
 });
-
-function getVar(cssVar: string) {
-	return getComputedStyle(document.body).getPropertyValue(cssVar.slice(4, -1)).trim();
-}
 </script>
 
 <style lang="scss" scoped>

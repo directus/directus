@@ -3,7 +3,7 @@
 		v-if="imageThumbnail && !imgError"
 		:src="imageThumbnail"
 		:class="{ 'is-svg': value && value.type?.includes('svg') }"
-		:alt="value.title"
+		:alt="value?.title"
 		@error="imgError = true"
 	/>
 	<div v-else ref="previewEl" class="preview">
@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { computed, ref } from 'vue';
 
 type File = {
 	id: string;
@@ -27,7 +27,7 @@ type File = {
 
 const props = withDefaults(
 	defineProps<{
-		value?: File | null;
+		value: File | null;
 	}>(),
 	{
 		value: null,

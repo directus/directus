@@ -13,20 +13,20 @@ import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
-		value?: boolean;
-		labelOn?: string | null;
-		labelOff?: string | null;
-		iconOn?: string | null;
-		iconOff?: string | null;
-		colorOn?: string | null;
-		colorOff?: string | null;
+		value: boolean;
+		labelOn: string | null;
+		labelOff: string | null;
+		iconOn: string | null;
+		iconOff: string | null;
+		colorOn: string;
+		colorOff: string;
 	}>(),
 	{
-		value: null,
+		value: false,
 		labelOn: null,
 		labelOff: null,
-		iconOn: 'check',
-		iconOff: 'close',
+		iconOn: null,
+		iconOff: null,
 		colorOn: 'var(--primary)',
 		colorOff: 'var(--foreground-subdued)',
 	}
