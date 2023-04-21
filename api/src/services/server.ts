@@ -60,6 +60,7 @@ export class ServerService {
 			} else {
 				info['rateLimit'] = false;
 			}
+
 			if (env['RATE_LIMITER_GLOBAL_ENABLED']) {
 				info['rateLimitGlobal'] = {
 					points: env['RATE_LIMITER_GLOBAL_POINTS'],
@@ -147,6 +148,7 @@ export class ServerService {
 					logger.warn(
 						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`
 					);
+
 					data.status = 'warn';
 					continue;
 				}
@@ -199,7 +201,8 @@ export class ServerService {
 			checks[`${client}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 			if (
-				checks[`${client}:responseTime`]![0]!.observedValue! > checks[`${client}:responseTime`]![0]!.threshold! &&
+				Number(checks[`${client}:responseTime`]![0]!.observedValue!) >
+					checks[`${client}:responseTime`]![0]!.threshold! &&
 				checks[`${client}:responseTime`]![0]!.status !== 'error'
 			) {
 				checks[`${client}:responseTime`]![0]!.status = 'warn';
@@ -357,6 +360,7 @@ export class ServerService {
 			for (const location of toArray(env['STORAGE_LOCATIONS'])) {
 				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
+
 				checks[`storage:${location}:responseTime`] = [
 					{
 						status: 'ok',
@@ -372,6 +376,7 @@ export class ServerService {
 				try {
 					await disk.write(`health-${checkID}`, Readable.from(['check']));
 					const fileStream = await disk.read(`health-${checkID}`);
+
 					fileStream.on('data', async () => {
 						fileStream.destroy();
 						await disk.delete(`health-${checkID}`);
@@ -384,7 +389,7 @@ export class ServerService {
 					checks[`storage:${location}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`]![0]!.observedValue! >
+						Number(checks[`storage:${location}:responseTime`]![0]!.observedValue!) >
 							checks[`storage:${location}:responseTime`]![0]!.threshold! &&
 						checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
 					) {

@@ -298,6 +298,7 @@ function getSelectedState(item: Item) {
 	const selectedKeys = props.selectionUseKeys
 		? props.modelValue
 		: props.modelValue.map((item: any) => item[props.itemKey]);
+
 	return selectedKeys.includes(item[props.itemKey]);
 }
 
@@ -331,6 +332,7 @@ function onSortChange(event: EndEvent) {
 
 	emit('manual-sort', { item, to });
 }
+
 function updateSort(newSort: Sort) {
 	emit('update:sort', newSort?.by ? newSort : null);
 }

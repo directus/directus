@@ -81,6 +81,7 @@ describe('parseField action', () => {
 				],
 			},
 		});
+
 		fieldsStore.fields = [mockFieldWithTranslations].map(fieldsStore.parseField);
 		expect(fieldsStore.fields[0].name).toEqual('Name en-US');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(true);
@@ -95,6 +96,7 @@ describe('parseField action', () => {
 				],
 			},
 		});
+
 		fieldsStore.fields = [mockFieldWithoutTranslations].map(fieldsStore.parseField);
 		expect(fieldsStore.fields[0].name).toEqual('Name');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(false);
@@ -113,6 +115,7 @@ describe('parseField action', () => {
 				],
 			},
 		});
+
 		fieldsStore.fields = [mockFieldWithTranslations].map(fieldsStore.parseField);
 		expect(fieldsStore.fields[0].name).toEqual('name en-US');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(true);
@@ -122,6 +125,7 @@ describe('parseField action', () => {
 				translations: null,
 			},
 		});
+
 		fieldsStore.fields = [mockFieldWithoutTranslations].map(fieldsStore.parseField);
 		expect(fieldsStore.fields[0].name).toEqual('Name');
 		expect(i18n.global.te(`fields.${mockField.collection}.${mockField.field}`)).toBe(false);

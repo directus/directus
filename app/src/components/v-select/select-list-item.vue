@@ -51,6 +51,7 @@ const isActive = computed(() => {
 		if (!Array.isArray(props.modelValue) || !props.item.value) {
 			return false;
 		}
+
 		return props.modelValue.includes(props.item.value);
 	} else {
 		return props.modelValue === props.item.value;

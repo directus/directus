@@ -1,4 +1,5 @@
 import VItemGroup from './v-item-group.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -16,6 +17,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	modelValue: ['item1'],
 };

@@ -25,6 +25,7 @@ export class Vector2 {
 			this.x *= val;
 			this.y *= val;
 		}
+
 		return this;
 	}
 
@@ -62,6 +63,7 @@ export class Vector2 {
 	static from(vector: { x: number; y: number }) {
 		return new Vector2(vector.x, vector.y);
 	}
+
 	static fromMany(...vectors: { x: number; y: number }[]) {
 		return vectors.map(Vector2.from);
 	}

@@ -1,6 +1,7 @@
-import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema, DateSchema } from 'joi';
-import { escapeRegExp, merge } from 'lodash-es';
 import type { FieldFilter } from '@directus/types';
+import type { AnySchema, StringSchema as BaseStringSchema, DateSchema, NumberSchema } from 'joi';
+import BaseJoi from 'joi';
+import { escapeRegExp, merge } from 'lodash-es';
 
 export interface StringSchema extends BaseStringSchema {
 	contains(substring: string): this;
@@ -31,6 +32,7 @@ export const Joi: typeof BaseJoi = BaseJoi.extend({
 				if (value.includes(substring) === false) {
 					return helpers.error('string.contains', { substring });
 				}
+
 				return value;
 			},
 		},
@@ -108,6 +110,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				compareValue === null || compareValue === '' || compareValue === true || compareValue === false
 					? NaN
 					: Number(compareValue);
+
 			if (isNaN(numericValue)) {
 				schema[key] = getAnySchema().equal(compareValue);
 			} else {
@@ -120,6 +123,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				compareValue === null || compareValue === '' || compareValue === true || compareValue === false
 					? NaN
 					: Number(compareValue);
+
 			if (isNaN(numericValue)) {
 				schema[key] = getAnySchema().not(compareValue);
 			} else {
@@ -203,6 +207,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 		if (operator === '_gt') {
 			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+
 			schema[key] = isDate
 				? getDateSchema().greater(compareValue as string | Date)
 				: getNumberSchema().greater(Number(compareValue));
@@ -210,6 +215,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 		if (operator === '_gte') {
 			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+
 			schema[key] = isDate
 				? getDateSchema().min(compareValue as string | Date)
 				: getNumberSchema().min(Number(compareValue));
@@ -217,6 +223,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 		if (operator === '_lt') {
 			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+
 			schema[key] = isDate
 				? getDateSchema().less(compareValue as string | Date)
 				: getNumberSchema().less(Number(compareValue));
@@ -224,6 +231,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 		if (operator === '_lte') {
 			const isDate = compareValue instanceof Date || Number.isNaN(Number(compareValue));
+
 			schema[key] = isDate
 				? getDateSchema().max(compareValue as string | Date)
 				: getNumberSchema().max(Number(compareValue));
@@ -285,6 +293,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			} else {
 				const wrapped =
 					typeof compareValue === 'string' ? compareValue.startsWith('/') && compareValue.endsWith('/') : false;
+
 				schema[key] = getStringSchema().regex(new RegExp(wrapped ? (compareValue as any).slice(1, -1) : compareValue));
 			}
 		}

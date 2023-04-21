@@ -261,6 +261,7 @@ useShortcut(
 	},
 	table
 );
+
 const permissionsStore = usePermissionsStore();
 const userStore = useUserStore();
 
@@ -296,6 +297,7 @@ function getDisplayValue(item: Item, key: string) {
 			// Don't overwrite already dealiased keys
 			if (itemKey in result === false) result[itemKey] = item[itemKey];
 		}
+
 		return result;
 	}, {});
 

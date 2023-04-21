@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Nevybrány žádné položky | Jste si jisti, že chcete archivovat tuto položku? | Jste si jisti, že chcete archivovat tyto {count} položky?
 reset_system_permissions_to: 'Resetovat systémová oprávnění na:'
 reset_system_permissions_copy: Tato akce přepíše libovolná vlastní oprávnění, která jste možná použili na kolekce systému. Jste si jisti?
-the_following_are_minimum_permissions: Následující oprávnění jsou vyžadována v případě, že je povolen "Přístup k aplikaci". Můžete rozšířit oprávnění nad tuto úroveň, ale ne níže.
 app_access_minimum: Minimální přístup k aplikaci
 recommended_defaults: Doporučené výchozí hodnoty
 unarchive: Vyjmout z archivu

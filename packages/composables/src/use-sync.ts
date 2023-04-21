@@ -1,4 +1,5 @@
-import { computed, Ref } from 'vue';
+import type { Ref } from 'vue';
+import { computed } from 'vue';
 
 export function useSync<T, K extends keyof T & string, E extends (event: `update:${K}`, ...args: any[]) => void>(
 	props: T,
