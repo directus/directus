@@ -18,7 +18,7 @@ import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		value: unknown[];
+		value: string[] | null;
 		disabled?: boolean;
 		includeSystem?: boolean;
 		includeSingleton?: boolean;
