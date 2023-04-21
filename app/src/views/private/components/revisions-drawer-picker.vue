@@ -75,7 +75,7 @@ watch(
 );
 
 const selectedOption = computed(() => {
-	return options.value?.find((option) => option.value === internalCurrent.value);
+	return options.value.find((option) => option.value === internalCurrent.value);
 });
 
 async function getFormattedDate(revision: Revision) {
