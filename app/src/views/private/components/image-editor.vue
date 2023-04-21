@@ -85,7 +85,7 @@
 							<v-list-item-icon><v-icon name="crop_square" /></v-list-item-icon>
 							<v-list-item-content>{{ t('square') }}</v-list-item-content>
 						</v-list-item>
-						<v-list-item clickable :active="aspectRatio === NaN" @click="aspectRatio = NaN">
+						<v-list-item clickable :active="Number.isNaN(aspectRatio)" @click="aspectRatio = NaN">
 							<v-list-item-icon><v-icon name="crop_free" /></v-list-item-icon>
 							<v-list-item-content>{{ t('free') }}</v-list-item-content>
 						</v-list-item>
