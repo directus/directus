@@ -55,10 +55,10 @@ import { addTokenToURL } from '@/api';
 import { useAppStore } from '@/stores/app';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { getRootPath } from '@/utils/get-root-path';
 import { storeToRefs } from 'pinia';
 import { Ref, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getRootPath } from '@/utils/get-root-path';
 
 const { t } = useI18n();
 
