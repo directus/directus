@@ -131,7 +131,6 @@ archive_confirm_count: >-
   未選擇任何項目 | 是否確定要封存此項目？ | 是否確定要封存這 {count} 個項目？
 reset_system_permissions_to: '重設系統權限至:'
 reset_system_permissions_copy: 此動作會取代你先前自設的系統權限。你確定?
-the_following_are_minimum_permissions: 當啟用管理介面權限時，您至少需要開啟以下這些權限。
 app_access_minimum: 管理介面最低需求
 recommended_defaults: 建議值
 unarchive: 取消封存
