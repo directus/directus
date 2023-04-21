@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Brak zaznaczonych elementów | Czy na pewno chcesz zarchiwizować ten element? | Czy na pewno chcesz zarchiwizować te {count} elementy?
 reset_system_permissions_to: 'Resetuj uprawnienia systemowe:'
 reset_system_permissions_copy: Ta akcja nadpisze wszelkie uprawnienia niestandardowe, które mogły być zastosowane do kolekcji systemowych. Czy jesteś pewien?
-the_following_are_minimum_permissions: Poniższe uprawnienia są wymagane, gdy "Dostęp do aplikacji" jest włączony.
 app_access_minimum: Minimalny dostęp do aplikacji
 recommended_defaults: Zalecane ustawienia domyślne
 unarchive: Przywróć z archiwum
@@ -1447,7 +1446,6 @@ translation: Tłumaczenia
 translation_placeholder: Wprowadź tłumaczenie...
 value: Wartość
 view_project: Zobacz projekt
-weeks: { }
 report_error: Zgłoś błąd
 start: Rozpocznij
 table: Tabela
