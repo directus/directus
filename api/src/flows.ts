@@ -240,7 +240,10 @@ class FlowManager {
 				flow.options['return'] = flow.options['return'] ?? '$last';
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
-				this.webhookFlowPreventCaches[`${method}-${flow.id}`] = !!flow.options['preventCache'];
+
+				if (method === 'GET') {
+					this.webhookFlowPreventCaches[`${method}-${flow.id}`] = flow.options['preventCache'];
+				}
 			} else if (flow.trigger === 'manual') {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
