@@ -53,7 +53,7 @@ const props = withDefaults(
 	defineProps<{
 		modelValue: string | null;
 		collection: string;
-		filter: Filter | null;
+		filter?: Filter | null;
 	}>(),
 	{
 		modelValue: null,
