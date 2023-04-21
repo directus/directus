@@ -17,11 +17,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
 import { Revision } from '@/types/revisions';
-import { format } from 'date-fns';
 import { userName } from '@/utils/user-name';
+import { format } from 'date-fns';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
