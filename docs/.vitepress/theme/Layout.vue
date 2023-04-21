@@ -1,6 +1,6 @@
 <script setup>
 import getImageUrl from '@thumbsmith/url';
-import { useHead } from '@vueuse/head';
+import { useHead } from '@unhead/vue';
 import { useData } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import { computed, unref } from 'vue';
