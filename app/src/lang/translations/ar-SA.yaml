@@ -245,6 +245,7 @@ float: عشري
 integer: رقم صحيح
 json: JSON
 xml: XML
+yaml: YAML
 string: نص
 text: نص
 time: الوقت
