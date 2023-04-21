@@ -75,6 +75,7 @@
 					height: height ? `${height}px` : '100%',
 					resize: fullscreen ? 'none' : 'both',
 					transform: `scale(${zoom}) ${!fullscreen ? `rotateX(${rotateX}deg) rotateY(${rotateY}deg)` : ''}`,
+					'transform-origin': zoom >= 1 ? 'top left' : 'center center',
 				}"
 			>
 				<iframe
@@ -150,19 +151,19 @@ function onIframeLoad() {
 (window as any).refreshLivePreview = refresh;
 
 onMounted(() => {
-	if (!resizeHandle.value) return;
+	if (resizeHandle.value) {
+		new ResizeObserver(() => {
+			if (!resizeHandle.value) return;
 
-	new ResizeObserver(() => {
-		if (!resizeHandle.value) return;
+			displayWidth.value = resizeHandle.value.offsetWidth;
+			displayHeight.value = resizeHandle.value.offsetHeight;
 
-		displayWidth.value = resizeHandle.value.offsetWidth;
-		displayHeight.value = resizeHandle.value.offsetHeight;
+			if (width.value === undefined && height.value === undefined) return;
 
-		if (width.value === undefined && height.value === undefined) return;
-
-		width.value = resizeHandle.value.offsetWidth;
-		height.value = resizeHandle.value.offsetHeight;
-	}).observe(resizeHandle.value);
+			width.value = resizeHandle.value.offsetWidth;
+			height.value = resizeHandle.value.offsetHeight;
+		}).observe(resizeHandle.value);
+	}
 });
 </script>
 
