@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { ref, computed, watch, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
-import { login } from '@/auth';
 import { RequestError } from '@/api';
+import { login } from '@/auth';
 import { translateAPIError } from '@/lang';
 import { useUserStore } from '@/stores/user';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 type Credentials = {
 	identifier: string;
