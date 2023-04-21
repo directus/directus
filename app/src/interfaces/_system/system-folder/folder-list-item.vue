@@ -46,7 +46,7 @@ type Folder = {
 withDefaults(
 	defineProps<{
 		folder: Folder;
-		currentFolder?: string;
+		currentFolder: string | null;
 		disabled?: boolean;
 		disabledFolders?: string[];
 	}>(),
