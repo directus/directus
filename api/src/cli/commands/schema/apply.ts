@@ -6,11 +6,12 @@ import { load as loadYaml } from 'js-yaml';
 import path from 'path';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import logger from '../../../logger.js';
-import { DiffKind, Snapshot } from '../../../types/index.js';
+import type { Snapshot } from '../../../types/index.js';
+import { DiffKind } from '../../../types/index.js';
 import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
 import { applySnapshot } from '../../../utils/apply-snapshot.js';
-import { getSnapshot } from '../../../utils/get-snapshot.js';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);

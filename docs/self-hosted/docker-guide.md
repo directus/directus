@@ -7,8 +7,8 @@ readTime: 3 min read
 
 ::: info Non-Docker Guides
 
-We only publish and maintain self hosting guides using Docker as this removes many
-environment-specific configuration problems. If you can't or don't want to use Docker, we also publish an
+We only publish and maintain self hosting guides using Docker as this removes many environment-specific configuration
+problems. If you can't or don't want to use Docker, we also publish an
 [npm package](https://www.npmjs.com/package/directus) without guides.
 
 :::
@@ -162,26 +162,48 @@ started you will be on the latest version (or the version you specified).
 
 ### Adding packages to use in Flows scripts
 
-If you need third-party packages in a script of one of your flows, you can add these lines in the `directus` service of your `docker-compose.yml` file :
-```yaml
-    command: >
-      sh -c "
-        npm install moment uuid
-        npx directus bootstrap && npx directus start
-      "
+If you need third-party packages in a script of one of your flows, the recommended way is to create a new Docker image
+extending from the official image and installing the packages there.
+
+First create a file called `Dockerfile` with a content like this:
+
+```Dockerfile
+FROM directus/directus:9.25.2
+
+USER root
+RUN corepack enable \
+  && corepack prepare pnpm@8.3.1 --activate
+
+USER node
+RUN pnpm install moment uuid
+```
+
+Then build the image based on that file:
+
+```bash
+docker build -t my-custom-directus-image .
+```
+
+And update the image reference in the `docker-compose.yml` file:
+
+```diff
+-    image: directus/directus:latest
++    image: my-custom-directus-image:latest
 ```
 
 :::tip Don't forget to provide `FLOWS_EXEC_ALLOWED_MODULES` variable
 
-In your `docker-compose.yml` file, you will need to add :
+In your `docker-compose.yml` file, you will need to add:
+
 ```diff
     environment:
 +     FLOWS_EXEC_ALLOWED_MODULES=array:moment,uuid
 ```
-For more information, please see the config section on [Flows](https://docs.directus.io/self-hosted/config-options.html#flows)
+
+For more information, please see the config section on
+[Flows](https://docs.directus.io/self-hosted/config-options.html#flows)
 
 :::
-
 
 ## Supported Databases
 
