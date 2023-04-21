@@ -38,36 +38,27 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { toRefs } from 'vue';
-
 import { useAppStore } from '@/stores/app';
 import { getBasemapSources } from '@/utils/geometry/basemap';
-import { GeometryOptions, Item } from '@directus/types';
 import { useSync } from '@directus/composables';
+import { GeometryOptions, Item } from '@directus/types';
+import { toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		collection: string;
-		geometryFields: Item[];
-		geometryField?: string;
-		geometryOptions?: GeometryOptions;
-		clusterData?: boolean;
-		displayTemplate?: string;
-	}>(),
-	{
-		geometryField: undefined,
-		geometryOptions: undefined,
-		clusterData: undefined,
-		displayTemplate: undefined,
-	}
-);
+const props = defineProps<{
+	collection: string;
+	geometryFields: Item[];
+	geometryField?: string;
+	geometryOptions?: GeometryOptions;
+	clusterData?: boolean;
+	displayTemplate?: string;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:geometryField', geometryField: string): void;
 	(e: 'update:clusterData', clusterData: boolean): void;
 	(e: 'update:displayTemplate', displayTemplate: string): void;
-}>;
+}>();
 
 const { t } = useI18n();
 
