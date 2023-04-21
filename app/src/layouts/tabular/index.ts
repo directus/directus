@@ -1,7 +1,6 @@
 import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useFieldsStore } from '@/stores/fields';
-import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
@@ -34,7 +33,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const router = useRouter();
 
 		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
