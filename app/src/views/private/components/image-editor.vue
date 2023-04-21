@@ -125,15 +125,14 @@
 
 <script lang="ts" setup>
 import api, { addTokenToURL } from '@/api';
-import { computed, nextTick, reactive, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
 import { useSettingsStore } from '@/stores/settings';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import Cropper from 'cropperjs';
 import throttle from 'lodash/throttle';
 import { nanoid } from 'nanoid/non-secure';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type Image = {
 	type: string;
@@ -143,15 +142,10 @@ type Image = {
 	height: number;
 };
 
-const props = withDefaults(
-	defineProps<{
-		id: string;
-		modelValue?: boolean;
-	}>(),
-	{
-		modelValue: undefined,
-	}
-);
+const props = defineProps<{
+	id: string;
+	modelValue?: boolean;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
