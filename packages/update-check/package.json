@@ -30,7 +30,7 @@
 	},
 	"dependencies": {
 		"semver": "7.5.0",
-		"undici": "5.21.2"
+		"undici": "5.22.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",

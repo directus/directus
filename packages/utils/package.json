@@ -56,7 +56,7 @@
 		"@ngneat/falso": "6.4.0",
 		"@types/fs-extra": "11.0.1",
 		"@types/lodash-es": "4.17.7",
-		"@types/node": "18.15.12",
+		"@types/node": "18.15.13",
 		"@types/tmp": "0.2.3",
 		"@vitest/coverage-c8": "0.30.1",
 		"concurrently": "8.0.1",
