@@ -37,7 +37,7 @@
 					<slot />
 				</main>
 
-				<div v-if="splitView" id="split-content">
+				<div v-if="splitView" id="split-content" :class="{ 'is-dragging': isDraggingSplitView }">
 					<slot name="splitView" />
 				</div>
 			</div>
@@ -218,7 +218,15 @@ const mainResizeOptions = computed(() => {
 	};
 });
 
-useResize(mainEl, ref(590), maxWithMain, ref(590), mainWidth, splitViewWritable, mainResizeOptions);
+const { dragging: isDraggingSplitView } = useResize(
+	mainEl,
+	ref(590),
+	maxWithMain,
+	ref(590),
+	mainWidth,
+	splitViewWritable,
+	mainResizeOptions
+);
 
 const navOpen = ref(false);
 const userStore = useUserStore();
@@ -429,6 +437,10 @@ function openSidebar(event: PointerEvent) {
 				flex-grow: 1;
 				overflow: auto;
 				height: 100%;
+
+				&.is-dragging {
+					pointer-events: none;
+				}
 			}
 		}
 	}

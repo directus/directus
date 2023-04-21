@@ -17,7 +17,7 @@ export function useResize(
 	enabled: Ref<boolean> = ref(true),
 	options?: Ref<{ snapZones?: SnapZone[]; alwaysShowHandle?: boolean }>
 ) {
-	let dragging = false;
+	const dragging = ref(false);
 	let dragStartX = 0;
 	let dragStartWidth = 0;
 	let animationFrameID: number | null = null;
@@ -47,7 +47,7 @@ export function useResize(
 		);
 	});
 
-	return { width };
+	return { width, dragging };
 
 	function enable() {
 		if (!target.value) return;
@@ -107,13 +107,13 @@ export function useResize(
 	}
 
 	function onPointerDown(event: PointerEvent) {
-		dragging = true;
+		dragging.value = true;
 		dragStartX = event.pageX;
 		dragStartWidth = target.value!.offsetWidth;
 	}
 
 	function onPointerMove(event: PointerEvent) {
-		if (!dragging) return;
+		if (!dragging.value) return;
 
 		animationFrameID = window.requestAnimationFrame(() => {
 			const newWidth = clamp(dragStartWidth + (event.pageX - dragStartX), minWidth.value, maxWidth.value);
@@ -138,9 +138,9 @@ export function useResize(
 	}
 
 	function onPointerUp() {
-		if (!dragging) return;
+		if (!dragging.value) return;
 
-		dragging = false;
+		dragging.value = false;
 
 		const snapZones = options?.value.snapZones;
 
