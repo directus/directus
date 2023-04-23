@@ -18,38 +18,27 @@
 	</v-list-item>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, defineComponent, PropType } from 'vue';
+<script setup lang="ts">
 import { useUserStore } from '@/stores/user';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { BasicRole } from '../composables/use-navigation';
 
-export default defineComponent({
-	props: {
-		role: {
-			type: Object as PropType<BasicRole>,
-			required: true,
-		},
-		lastAdmin: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	role: BasicRole;
+	lastAdmin: boolean;
+}>();
 
-		const { isAdmin } = useUserStore();
+const { t } = useI18n();
 
-		const settingLink = computed(() => {
-			return props.role.id !== 'public' && props.lastAdmin
-				? {
-						name: 'settings-roles-item',
-						params: { primaryKey: props.role.id, lastAdminRoleId: props.role.id },
-				  }
-				: `/settings/roles/${props.role.id}`;
-		});
+const { isAdmin } = useUserStore();
 
-		return { t, isAdmin, settingLink };
-	},
+const settingLink = computed(() => {
+	return props.role.id !== 'public' && props.lastAdmin
+		? {
+				name: 'settings-roles-item',
+				params: { primaryKey: props.role.id, lastAdminRoleId: props.role.id },
+		  }
+		: `/settings/roles/${props.role.id}`;
 });
 </script>
