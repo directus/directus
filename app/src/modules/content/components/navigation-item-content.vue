@@ -5,27 +5,17 @@
 	<v-list-item-content><v-text-overflow :text="name" :highlight="search" /></v-list-item-content>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	props: {
-		icon: {
-			type: String,
-			default: 'label',
-		},
-		color: {
-			type: String,
-			default: 'var(--foreground-normal)',
-		},
-		name: {
-			type: String,
-			required: true,
-		},
-		search: {
-			type: String,
-			default: null,
-		},
-	},
-});
+<script setup lang="ts">
+withDefaults(
+	defineProps<{
+		name: string;
+		search?: string;
+		icon?: string;
+		color?: string;
+	}>(),
+	{
+		icon: 'label',
+		color: 'var(--foreground-normal)',
+	}
+);
 </script>
