@@ -50,11 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { format } from 'date-fns';
 import { isAllowed } from '@/utils/is-allowed';
 import { Share } from '@directus/types';
+import { format } from 'date-fns';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	share: Share;
@@ -67,7 +67,7 @@ defineEmits<{
 	(e: 'delete'): void;
 }>();
 
-const { t, d } = useI18n();
+const { t } = useI18n();
 
 const editAllowed = computed(() => {
 	return isAllowed('directus_shares', 'update', props.share);
@@ -97,8 +97,6 @@ const status = computed(() => {
 const formattedTime = computed(() => {
 	return format(new Date(props.share.date_created), String(t('date-fns_date_short')));
 });
-
-const confirmDelete = ref<string | null>(null);
 </script>
 
 <style lang="scss" scoped>
