@@ -9,28 +9,16 @@
 	/>
 </template>
 
-<script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+<script setup lang="ts">
 import { useItem } from '@/composables/use-item';
+import { toRefs } from 'vue';
 
-export default defineComponent({
-	id: 'ShareItem',
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		primaryKey: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { collection, primaryKey } = toRefs(props);
+const props = defineProps<{
+	collection: string;
+	primaryKey: string;
+}>();
 
-		const { edits, item, loading } = useItem(collection, primaryKey);
+const { collection, primaryKey } = toRefs(props);
 
-		return { edits, item, loading };
-	},
-});
+const { edits, item, loading } = useItem(collection, primaryKey);
 </script>
