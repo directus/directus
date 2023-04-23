@@ -1451,7 +1451,7 @@ interfaces:
     placeholder: قوانین را به اینجا بکشید
     add_key_placeholder: یک کلید اضافه کنید و دکمه Enter را فشار دهید..
   fields:
-    name: فیلدها
+    name: کادرها
   group-accordion:
     name: آکوردئون
     description: نمایش زمینه ها یا گروه ها به عنوان بخش های آکاردئونی
@@ -1459,19 +1459,19 @@ interfaces:
     all_closed: همه بسته باشند
     first_opened: اولی باز باشد
     all_opened: همه باز باشند
-    accordion_mode: آکاردئونی
+    accordion_mode: حالت آکاردئون
     max_one_section_open: حداکثر 1 بخش باز باشد
   presentation-links:
     presentation-links: دکمه لینک ها
     links: لینک‌ ها
     description: دکمه های لینک قابل تنظیم برای راه اندازی URL های پویا
-    style: Style
+    style: استایل
     primary: اصلی
-    link: لینک‌ ها
+    link: لینک‌‌ها
     button: دکمه‌‌ها
     error: امکان انجام این کار نیست
   select-multiple-checkbox:
-    checkboxes: جعبه انتخاب
+    checkboxes: کادر انتخابی
     description: بین چند گزینه از طریق جعبه انتخاب
     allow_other: اجازه به دیگری
     show_more: 'نمایش {count} بیشتر'
