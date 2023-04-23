@@ -7,6 +7,12 @@
 	</div>
 </template>
 
+<script lang="ts">
+export default {
+	inheritAttrs: false,
+};
+</script>
+
 <script setup lang="ts">
 import { onMounted, onUnmounted, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -38,13 +44,6 @@ onUnmounted(() => {
 });
 
 const atLimit = computed(() => props.itemCount === 10000);
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-	inheritAttrs: false,
-});
 </script>
 
 <style lang="scss" scoped>
