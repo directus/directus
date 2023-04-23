@@ -1,6 +1,6 @@
 <template>
 	<component
-		:is="isSingleton ? 'item-route' : 'collection-route'"
+		:is="isSingleton ? ItemRoute : CollectionRoute"
 		:collection="collection"
 		:bookmark="bookmark"
 		:archive="archive"
@@ -8,56 +8,38 @@
 	/>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, watch } from 'vue';
+<script setup lang="ts">
+import { computed, watch } from 'vue';
 import CollectionRoute from './collection.vue';
 import ItemRoute from './item.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRoute } from 'vue-router';
 import { useLocalStorage } from '@/composables/use-local-storage';
 
-export default defineComponent({
-	components: {
-		CollectionRoute,
-		ItemRoute,
-	},
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		bookmark: {
-			type: String,
-			default: null,
-		},
-		archive: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const route = useRoute();
+const props = defineProps<{
+	collection: string;
+	bookmark?: string;
+	archive?: string;
+}>();
 
-		const { data } = useLocalStorage('last-accessed-collection');
+const route = useRoute();
 
-		const collectionsStore = useCollectionsStore();
+const { data } = useLocalStorage('last-accessed-collection');
 
-		const isSingleton = computed(() => {
-			const collectionInfo = collectionsStore.getCollection(props.collection);
-			return !!collectionInfo?.meta?.singleton === true;
-		});
+const collectionsStore = useCollectionsStore();
 
-		watch(
-			() => route.params,
-			(newParams) => {
-				if (newParams.collection && data.value !== newParams.collection) {
-					data.value = newParams.collection;
-				}
-			},
-			{ immediate: true }
-		);
-
-		return { isSingleton };
-	},
+const isSingleton = computed(() => {
+	const collectionInfo = collectionsStore.getCollection(props.collection);
+	return !!collectionInfo?.meta?.singleton === true;
 });
+
+watch(
+	() => route.params,
+	(newParams) => {
+		if (newParams.collection && data.value !== newParams.collection) {
+			data.value = newParams.collection;
+		}
+	},
+	{ immediate: true }
+);
 </script>
