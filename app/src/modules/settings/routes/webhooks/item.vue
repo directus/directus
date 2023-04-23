@@ -88,135 +88,87 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs, ref } from 'vue';
-
-import SettingsNavigation from '../../components/navigation.vue';
-import { useRouter } from 'vue-router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
-import { useItem } from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options.vue';
-import { useShortcut } from '@/composables/use-shortcut';
+<script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItem } from '@/composables/use-item';
+import { useShortcut } from '@/composables/use-shortcut';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
 
-export default defineComponent({
-	name: 'WebhooksItem',
-	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
-	props: {
-		primaryKey: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	primaryKey: string;
+}>();
 
-		const router = useRouter();
+const { t } = useI18n();
 
-		const { primaryKey } = toRefs(props);
+const router = useRouter();
 
-		const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const { primaryKey } = toRefs(props);
 
-		const {
-			isNew,
-			edits,
-			hasEdits,
-			item,
-			saving,
-			loading,
-			error,
-			save,
-			remove,
-			deleting,
-			saveAsCopy,
-			isBatch,
-			validationErrors,
-		} = useItem(ref('directus_webhooks'), primaryKey);
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-		const confirmDelete = ref(false);
+const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, isBatch, validationErrors } =
+	useItem(ref('directus_webhooks'), primaryKey);
 
-		const title = computed(() => {
-			if (loading.value) return t('loading');
-			if (isNew.value) return t('creating_webhook');
-			return item.value?.name;
-		});
+const confirmDelete = ref(false);
 
-		useShortcut('meta+s', () => {
-			if (hasEdits.value) saveAndStay();
-		});
-
-		useShortcut('meta+shift+s', () => {
-			if (hasEdits.value) saveAndAddNew();
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-		return {
-			t,
-			item,
-			loading,
-			error,
-			isNew,
-			edits,
-			hasEdits,
-			saving,
-			saveAndQuit,
-			deleteAndQuit,
-			confirmDelete,
-			deleting,
-			saveAndStay,
-			saveAndAddNew,
-			saveAsCopyAndNavigate,
-			discardAndStay,
-			isBatch,
-			title,
-			validationErrors,
-			confirmLeave,
-			leaveTo,
-			discardAndLeave,
-			revisionsDrawerDetailRef,
-		};
-
-		async function saveAndQuit() {
-			await save();
-			router.push(`/settings/webhooks`);
-		}
-
-		async function saveAndStay() {
-			await save();
-			revisionsDrawerDetailRef.value?.refresh?.();
-		}
-
-		async function saveAndAddNew() {
-			await save();
-			router.push(`/settings/webhooks/+`);
-		}
-
-		async function saveAsCopyAndNavigate() {
-			const newPrimaryKey = await saveAsCopy();
-			if (newPrimaryKey) router.push(`/settings/webhooks/${newPrimaryKey}`);
-		}
-
-		async function deleteAndQuit() {
-			await remove();
-			edits.value = {};
-			router.replace(`/settings/webhooks`);
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-
-		function discardAndStay() {
-			edits.value = {};
-			confirmLeave.value = false;
-		}
-	},
+const title = computed(() => {
+	if (loading.value) return t('loading');
+	if (isNew.value) return t('creating_webhook');
+	return item.value?.name;
 });
+
+useShortcut('meta+s', () => {
+	if (hasEdits.value) saveAndStay();
+});
+
+useShortcut('meta+shift+s', () => {
+	if (hasEdits.value) saveAndAddNew();
+});
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+async function saveAndQuit() {
+	await save();
+	router.push(`/settings/webhooks`);
+}
+
+async function saveAndStay() {
+	await save();
+	revisionsDrawerDetailRef.value?.refresh?.();
+}
+
+async function saveAndAddNew() {
+	await save();
+	router.push(`/settings/webhooks/+`);
+}
+
+async function saveAsCopyAndNavigate() {
+	const newPrimaryKey = await saveAsCopy();
+	if (newPrimaryKey) router.push(`/settings/webhooks/${newPrimaryKey}`);
+}
+
+async function deleteAndQuit() {
+	await remove();
+	edits.value = {};
+	router.replace(`/settings/webhooks`);
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
+}
 </script>
 
 <style lang="scss" scoped>
