@@ -99,116 +99,77 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs, ref } from 'vue';
-import SettingsNavigation from '../../../components/navigation.vue';
-import { useCollection } from '@directus/composables';
-import FieldsManagement from './components/fields-management.vue';
-
+<script setup lang="ts">
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useRouter } from 'vue-router';
+import { useShortcut } from '@/composables/use-shortcut';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useShortcut } from '@/composables/use-shortcut';
-import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useCollection } from '@directus/composables';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../../components/navigation.vue';
+import FieldsManagement from './components/fields-management.vue';
 
-export default defineComponent({
-	components: { SettingsNavigation, FieldsManagement },
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
+const props = defineProps<{
+	collection: string;
+	// Field detail modal only
+	field?: string;
+	type?: string;
+}>();
 
-		// Field detail modal only
-		field: {
-			type: String,
-			default: null,
-		},
-		type: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const router = useRouter();
+const router = useRouter();
 
-		const { collection } = toRefs(props);
-		const { info: collectionInfo, fields } = useCollection(collection);
-		const collectionsStore = useCollectionsStore();
-		const fieldsStore = useFieldsStore();
+const { collection } = toRefs(props);
+const { info: collectionInfo } = useCollection(collection);
+const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
 
-		const { isNew, edits, item, saving, loading, error, save, remove, deleting, saveAsCopy, isBatch } = useItem(
-			ref('directus_collections'),
-			collection
-		);
+const { edits, item, saving, loading, save, remove, deleting, isBatch } = useItem(
+	ref('directus_collections'),
+	collection
+);
 
-		const hasEdits = computed<boolean>(() => {
-			if (!edits.value.meta) return false;
-			return Object.keys(edits.value.meta).length > 0;
-		});
-
-		useShortcut('meta+s', () => {
-			if (hasEdits.value) saveAndStay();
-		});
-
-		const confirmDelete = ref(false);
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-		return {
-			t,
-			collectionInfo,
-			fields,
-			confirmDelete,
-			isNew,
-			edits,
-			item,
-			saving,
-			loading,
-			error,
-			save,
-			remove,
-			deleting,
-			saveAsCopy,
-			isBatch,
-			deleteAndQuit,
-			saveAndQuit,
-			hasEdits,
-			confirmLeave,
-			leaveTo,
-			discardAndLeave,
-		};
-
-		async function deleteAndQuit() {
-			await remove();
-			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-			edits.value = {};
-			router.replace(`/settings/data-model`);
-		}
-
-		async function saveAndStay() {
-			await save();
-			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-		}
-
-		async function saveAndQuit() {
-			await save();
-			await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
-			router.push(`/settings/data-model`);
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-	},
+const hasEdits = computed<boolean>(() => {
+	if (!edits.value.meta) return false;
+	return Object.keys(edits.value.meta).length > 0;
 });
+
+useShortcut('meta+s', () => {
+	if (hasEdits.value) saveAndStay();
+});
+
+const confirmDelete = ref(false);
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+async function deleteAndQuit() {
+	await remove();
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	edits.value = {};
+	router.replace(`/settings/data-model`);
+}
+
+async function saveAndStay() {
+	await save();
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+}
+
+async function saveAndQuit() {
+	await save();
+	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
+	router.push(`/settings/data-model`);
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
 </script>
 
 <style lang="scss" scoped>
