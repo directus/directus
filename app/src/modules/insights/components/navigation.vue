@@ -13,31 +13,23 @@
 	</v-list>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+<script setup lang="ts">
 import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	name: 'InsightsNavigation',
-	emits: ['create'],
-	setup() {
-		const { t } = useI18n();
-		const insightsStore = useInsightsStore();
+defineEmits(['create']);
 
-		const createDialogActive = ref(false);
+const { t } = useI18n();
+const insightsStore = useInsightsStore();
 
-		const navItems = computed(() =>
-			insightsStore.dashboards.map((dashboard: Dashboard) => ({
-				icon: dashboard.icon,
-				color: dashboard.color,
-				name: dashboard.name,
-				to: `/insights/${dashboard.id}`,
-			}))
-		);
-
-		return { navItems, createDialogActive, t };
-	},
-});
+const navItems = computed(() =>
+	insightsStore.dashboards.map((dashboard: Dashboard) => ({
+		icon: dashboard.icon,
+		color: dashboard.color,
+		name: dashboard.name,
+		to: `/insights/${dashboard.id}`,
+	}))
+);
 </script>
