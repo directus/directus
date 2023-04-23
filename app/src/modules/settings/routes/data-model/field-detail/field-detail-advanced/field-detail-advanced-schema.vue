@@ -132,18 +132,17 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
-import { GEOMETRY_TYPES } from '@directus/constants';
+<script setup lang="ts">
 import { translate } from '@/utils/translate-object-values';
 import { Type } from '@directus/types';
-import { TranslateResult } from 'vue-i18n';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { TranslateResult, useI18n } from 'vue-i18n';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
 type FieldTypeOption = { value: Type; text: TranslateResult | string; children?: FieldTypeOption[] };
-export const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
+
+const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	{
 		text: '$t:string',
 		value: 'string',
@@ -239,250 +238,216 @@ export const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	},
 ];
 
-export default defineComponent({
-	setup() {
-		const fieldDetailStore = useFieldDetailStore();
+const fieldDetailStore = useFieldDetailStore();
 
-		const { localType, relations, editing } = storeToRefs(fieldDetailStore);
+const { localType, relations, editing } = storeToRefs(fieldDetailStore);
 
-		const isExisting = computed(() => editing.value !== '+');
+const isExisting = computed(() => editing.value !== '+');
 
-		const type = syncFieldDetailStoreProperty('field.type');
-		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
-		const field = syncFieldDetailStoreProperty('field.field');
-		const special = syncFieldDetailStoreProperty('field.meta.special');
-		const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
-		const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
-		const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
-		const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
-		const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
+const type = syncFieldDetailStoreProperty('field.type');
+const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
+const field = syncFieldDetailStoreProperty('field.field');
+const special = syncFieldDetailStoreProperty('field.meta.special');
+const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
+const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
+const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
+const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
+const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
 
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const typesWithLabels = computed(() => translate(fieldTypes));
+const typesWithLabels = computed(() => translate(fieldTypes));
 
-		const typeDisabled = computed(() => localType.value !== 'standard');
+const typeDisabled = computed(() => localType.value !== 'standard');
 
-		const typePlaceholder = computed(() => {
-			if (localType.value === 'm2o') {
-				return t('determined_by_relationship');
+const typePlaceholder = computed(() => {
+	if (localType.value === 'm2o') {
+		return t('determined_by_relationship');
+	}
+
+	return t('choose_a_type');
+});
+
+const { onCreateOptions, onCreateValue } = useOnCreate();
+const { onUpdateOptions, onUpdateValue } = useOnUpdate();
+
+const hasCreateUpdateTriggers = computed(() => {
+	return ['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(type.value) && localType.value !== 'file';
+});
+
+const isAlias = computed(() => {
+	return !fieldDetailStore.field.schema;
+});
+
+const isPrimaryKey = computed(() => {
+	return fieldDetailStore.field.schema?.is_primary_key === true;
+});
+
+const isGenerated = computed(() => {
+	return fieldDetailStore.field.schema?.is_generated;
+});
+
+function useOnCreate() {
+	const onCreateSpecials = ['uuid', 'user-created', 'role-created', 'date-created'];
+
+	const onCreateOptions = computed(() => {
+		if (type.value === 'uuid') {
+			const options = [
+				{
+					text: t('do_nothing'),
+					value: null,
+				},
+				{
+					text: t('generate_and_save_uuid'),
+					value: 'uuid',
+				},
+				{
+					text: t('save_current_user_id'),
+					value: 'user-created',
+				},
+				{
+					text: t('save_current_user_role'),
+					value: 'role-created',
+				},
+			];
+
+			if (localType.value === 'm2o' && relations.value.m2o?.related_collection === 'directus_users') {
+				return options.filter(({ value }) => [null, 'user-created'].includes(value));
 			}
 
-			return t('choose_a_type');
-		});
+			if (localType.value === 'm2o' && relations.value.m2o?.related_collection === 'directus_roles') {
+				return options.filter(({ value }) => [null, 'role-created'].includes(value));
+			}
 
-		const { onCreateOptions, onCreateValue } = useOnCreate();
-		const { onUpdateOptions, onUpdateValue } = useOnUpdate();
-
-		const hasCreateUpdateTriggers = computed(() => {
-			return ['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(type.value) && localType.value !== 'file';
-		});
-
-		const isAlias = computed(() => {
-			return !fieldDetailStore.field.schema;
-		});
-
-		const isPrimaryKey = computed(() => {
-			return fieldDetailStore.field.schema?.is_primary_key === true;
-		});
-
-		const isGenerated = computed(() => {
-			return fieldDetailStore.field.schema?.is_generated;
-		});
-
-		return {
-			t,
-			typesWithLabels,
-			GEOMETRY_TYPES,
-			typeDisabled,
-			typePlaceholder,
-			defaultValue,
-			onCreateOptions,
-			onCreateValue,
-			onUpdateOptions,
-			onUpdateValue,
-			hasCreateUpdateTriggers,
-			field,
-			isAlias,
-			type,
-			maxLength,
-			numericPrecision,
-			numericScale,
-			special,
-			nullable,
-			unique,
-			isPrimaryKey,
-			isExisting,
-			isGenerated,
-		};
-
-		function useOnCreate() {
-			const onCreateSpecials = ['uuid', 'user-created', 'role-created', 'date-created'];
-
-			const onCreateOptions = computed(() => {
-				if (type.value === 'uuid') {
-					const options = [
-						{
-							text: t('do_nothing'),
-							value: null,
-						},
-						{
-							text: t('generate_and_save_uuid'),
-							value: 'uuid',
-						},
-						{
-							text: t('save_current_user_id'),
-							value: 'user-created',
-						},
-						{
-							text: t('save_current_user_role'),
-							value: 'role-created',
-						},
-					];
-
-					if (localType.value === 'm2o' && relations.value.m2o?.related_collection === 'directus_users') {
-						return options.filter(({ value }) => [null, 'user-created'].includes(value));
-					}
-
-					if (localType.value === 'm2o' && relations.value.m2o?.related_collection === 'directus_roles') {
-						return options.filter(({ value }) => [null, 'role-created'].includes(value));
-					}
-
-					return options;
-				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(type.value!)) {
-					return [
-						{
-							text: t('do_nothing'),
-							value: null,
-						},
-						{
-							text: t('save_current_datetime'),
-							value: 'date-created',
-						},
-					];
-				}
-
-				return [];
-			});
-
-			const onCreateValue = computed({
-				get() {
-					const specials = special.value ?? [];
-
-					for (const special of onCreateSpecials) {
-						if (specials.includes(special)) {
-							return special;
-						}
-					}
-
-					return null;
+			return options;
+		} else if (['date', 'time', 'dateTime', 'timestamp'].includes(type.value!)) {
+			return [
+				{
+					text: t('do_nothing'),
+					value: null,
 				},
-				set(newOption: string | null) {
-					// In case of previously persisted empty string
-					if (typeof special.value === 'string') {
-						special.value = [];
-					}
-
-					special.value = (special.value ?? []).filter(
-						(special: string) => onCreateSpecials.includes(special) === false
-					);
-
-					if (newOption) {
-						special.value = [...(special.value ?? []), newOption];
-					}
-
-					// Prevent empty array saved as empty string
-					if (special.value && special.value.length === 0) {
-						special.value = null;
-					}
+				{
+					text: t('save_current_datetime'),
+					value: 'date-created',
 				},
-			});
-
-			return { onCreateSpecials, onCreateOptions, onCreateValue };
+			];
 		}
 
-		function useOnUpdate() {
-			const onUpdateSpecials = ['user-updated', 'role-updated', 'date-updated'];
+		return [];
+	});
 
-			const onUpdateOptions = computed(() => {
-				if (type.value === 'uuid') {
-					const options = [
-						{
-							text: t('do_nothing'),
-							value: null,
-						},
-						{
-							text: t('save_current_user_id'),
-							value: 'user-updated',
-						},
-						{
-							text: t('save_current_user_role'),
-							value: 'role-updated',
-						},
-					];
+	const onCreateValue = computed({
+		get() {
+			const specials = special.value ?? [];
 
-					if (localType.value === 'm2o' && relations.value.m2o?.related_collection === 'directus_users') {
-						return options.filter(({ value }) => [null, 'user-updated'].includes(value));
-					}
-
-					if (localType.value === 'm2o' && relations.value.m2o?.related_collection === 'directus_roles') {
-						return options.filter(({ value }) => [null, 'role-updated'].includes(value));
-					}
-
-					return options;
-				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(type.value!)) {
-					return [
-						{
-							text: t('do_nothing'),
-							value: null,
-						},
-						{
-							text: t('save_current_datetime'),
-							value: 'date-updated',
-						},
-					];
+			for (const special of onCreateSpecials) {
+				if (specials.includes(special)) {
+					return special;
 				}
+			}
 
-				return [];
-			});
+			return null;
+		},
+		set(newOption: string | null) {
+			// In case of previously persisted empty string
+			if (typeof special.value === 'string') {
+				special.value = [];
+			}
 
-			const onUpdateValue = computed({
-				get() {
-					const specials = special.value ?? [];
+			special.value = (special.value ?? []).filter((special: string) => onCreateSpecials.includes(special) === false);
 
-					for (const special of onUpdateSpecials) {
-						if (specials.includes(special)) {
-							return special;
-						}
-					}
+			if (newOption) {
+				special.value = [...(special.value ?? []), newOption];
+			}
 
-					return null;
+			// Prevent empty array saved as empty string
+			if (special.value && special.value.length === 0) {
+				special.value = null;
+			}
+		},
+	});
+
+	return { onCreateSpecials, onCreateOptions, onCreateValue };
+}
+
+function useOnUpdate() {
+	const onUpdateSpecials = ['user-updated', 'role-updated', 'date-updated'];
+
+	const onUpdateOptions = computed(() => {
+		if (type.value === 'uuid') {
+			const options = [
+				{
+					text: t('do_nothing'),
+					value: null,
 				},
-				set(newOption: string | null) {
-					// In case of previously persisted empty string
-					if (typeof special.value === 'string') {
-						special.value = [];
-					}
-
-					special.value = (special.value ?? []).filter(
-						(special: string) => onUpdateSpecials.includes(special) === false
-					);
-
-					if (newOption) {
-						special.value = [...(special.value ?? []), newOption];
-					}
-
-					// Prevent empty array saved as empty string
-					if (special.value && special.value.length === 0) {
-						special.value = null;
-					}
+				{
+					text: t('save_current_user_id'),
+					value: 'user-updated',
 				},
-			});
+				{
+					text: t('save_current_user_role'),
+					value: 'role-updated',
+				},
+			];
 
-			return { onUpdateSpecials, onUpdateOptions, onUpdateValue };
+			if (localType.value === 'm2o' && relations.value.m2o?.related_collection === 'directus_users') {
+				return options.filter(({ value }) => [null, 'user-updated'].includes(value));
+			}
+
+			if (localType.value === 'm2o' && relations.value.m2o?.related_collection === 'directus_roles') {
+				return options.filter(({ value }) => [null, 'role-updated'].includes(value));
+			}
+
+			return options;
+		} else if (['date', 'time', 'dateTime', 'timestamp'].includes(type.value!)) {
+			return [
+				{
+					text: t('do_nothing'),
+					value: null,
+				},
+				{
+					text: t('save_current_datetime'),
+					value: 'date-updated',
+				},
+			];
 		}
-	},
-});
+
+		return [];
+	});
+
+	const onUpdateValue = computed({
+		get() {
+			const specials = special.value ?? [];
+
+			for (const special of onUpdateSpecials) {
+				if (specials.includes(special)) {
+					return special;
+				}
+			}
+
+			return null;
+		},
+		set(newOption: string | null) {
+			// In case of previously persisted empty string
+			if (typeof special.value === 'string') {
+				special.value = [];
+			}
+
+			special.value = (special.value ?? []).filter((special: string) => onUpdateSpecials.includes(special) === false);
+
+			if (newOption) {
+				special.value = [...(special.value ?? []), newOption];
+			}
+
+			// Prevent empty array saved as empty string
+			if (special.value && special.value.length === 0) {
+				special.value = null;
+			}
+		},
+	});
+
+	return { onUpdateSpecials, onUpdateOptions, onUpdateValue };
+}
 </script>
 
 <style lang="scss" scoped>
