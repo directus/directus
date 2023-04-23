@@ -126,20 +126,19 @@
 	</v-drawer>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { cloneDeep } from 'lodash';
-import { defineComponent, ref, reactive, watch } from 'vue';
+<script setup lang="ts">
 import api from '@/api';
-import { Field, Relation } from '@directus/types';
-import { useFieldsStore } from '@/stores/fields';
+import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
-import { useDialogRoute } from '@/composables/use-dialog-route';
-import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { DeepPartial } from '@directus/types';
+import { DeepPartial, Field, Relation } from '@directus/types';
+import { cloneDeep } from 'lodash';
+import { reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 const defaultSystemFields = {
 	status: {
@@ -186,329 +185,311 @@ const defaultSystemFields = {
 	},
 };
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const router = useRouter();
+const router = useRouter();
 
-		const collectionsStore = useCollectionsStore();
-		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
+const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 
-		const isOpen = useDialogRoute();
+const isOpen = useDialogRoute();
 
-		const currentTab = ref(['collection_setup']);
+const currentTab = ref(['collection_setup']);
 
-		const collectionName = ref(null);
-		const singleton = ref(false);
-		const primaryKeyFieldName = ref('id');
-		const primaryKeyFieldType = ref<'auto_int' | 'auto_big_int' | 'uuid' | 'manual'>('auto_int');
+const collectionName = ref(null);
+const singleton = ref(false);
+const primaryKeyFieldName = ref('id');
+const primaryKeyFieldType = ref<'auto_int' | 'auto_big_int' | 'uuid' | 'manual'>('auto_int');
 
-		const sortField = ref<string>();
+const sortField = ref<string>();
 
-		const archiveField = ref<string>();
-		const archiveValue = ref<string>();
-		const unarchiveValue = ref<string>();
+const archiveField = ref<string>();
+const archiveValue = ref<string>();
+const unarchiveValue = ref<string>();
 
-		const systemFields = reactive(cloneDeep(defaultSystemFields));
+const systemFields = reactive(cloneDeep(defaultSystemFields));
 
-		const saving = ref(false);
+const saving = ref(false);
 
-		watch(() => singleton.value, setOptionsForSingleton);
+watch(() => singleton.value, setOptionsForSingleton);
 
+function setOptionsForSingleton() {
+	systemFields.sort = { ...defaultSystemFields.sort };
+	systemFields.sort.inputDisabled = singleton.value;
+}
+
+async function save() {
+	saving.value = true;
+
+	try {
+		await api.post(`/collections`, {
+			collection: collectionName.value,
+			fields: [getPrimaryKeyField(), ...getSystemFields()],
+			schema: {},
+			meta: {
+				sort_field: sortField.value,
+				archive_field: archiveField.value,
+				archive_value: archiveValue.value,
+				unarchive_value: unarchiveValue.value,
+				singleton: singleton.value,
+			},
+		});
+
+		const storeHydrations: Promise<void>[] = [];
+
+		const relations = getSystemRelations();
+
+		if (relations.length > 0) {
+			const requests = relations.map((relation) => api.post('/relations', relation));
+			await Promise.all(requests);
+			storeHydrations.push(relationsStore.hydrate());
+		}
+
+		storeHydrations.push(collectionsStore.hydrate(), fieldsStore.hydrate());
+		await Promise.all(storeHydrations);
+
+		notify({
+			title: t('collection_created'),
+		});
+
+		router.replace(`/settings/data-model/${collectionName.value}`);
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		saving.value = false;
+	}
+}
+
+function getPrimaryKeyField() {
+	if (primaryKeyFieldType.value === 'uuid') {
 		return {
-			t,
-			router,
-			isOpen,
-			currentTab,
-			save,
-			systemFields,
-			primaryKeyFieldName,
-			primaryKeyFieldType,
-			collectionName,
-			saving,
-			singleton,
+			field: primaryKeyFieldName.value,
+			type: 'uuid',
+			meta: {
+				hidden: true,
+				readonly: true,
+				interface: 'input',
+				special: ['uuid'],
+			},
+			schema: {
+				is_primary_key: true,
+				length: 36,
+				has_auto_increment: false,
+			},
 		};
+	} else if (primaryKeyFieldType.value === 'manual') {
+		return {
+			field: primaryKeyFieldName.value,
+			type: 'string',
+			meta: {
+				interface: 'input',
+				readonly: false,
+				hidden: false,
+			},
+			schema: {
+				is_primary_key: true,
+				length: 255,
+				has_auto_increment: false,
+			},
+		};
+	} else {
+		return {
+			field: primaryKeyFieldName.value,
+			type: primaryKeyFieldType.value === 'auto_big_int' ? 'bigInteger' : 'integer',
+			meta: {
+				hidden: true,
+				interface: 'input',
+				readonly: true,
+			},
+			schema: {
+				is_primary_key: true,
+				has_auto_increment: true,
+			},
+		};
+	}
+}
 
-		function setOptionsForSingleton() {
-			systemFields.sort = { ...defaultSystemFields.sort };
-			systemFields.sort.inputDisabled = singleton.value;
-		}
+function getSystemFields() {
+	const fields: DeepPartial<Field>[] = [];
 
-		async function save() {
-			saving.value = true;
-
-			try {
-				await api.post(`/collections`, {
-					collection: collectionName.value,
-					fields: [getPrimaryKeyField(), ...getSystemFields()],
-					schema: {},
-					meta: {
-						sort_field: sortField.value,
-						archive_field: archiveField.value,
-						archive_value: archiveValue.value,
-						unarchive_value: unarchiveValue.value,
-						singleton: singleton.value,
-					},
-				});
-
-				const storeHydrations: Promise<void>[] = [];
-
-				const relations = getSystemRelations();
-
-				if (relations.length > 0) {
-					const requests = relations.map((relation) => api.post('/relations', relation));
-					await Promise.all(requests);
-					storeHydrations.push(relationsStore.hydrate());
-				}
-
-				storeHydrations.push(collectionsStore.hydrate(), fieldsStore.hydrate());
-				await Promise.all(storeHydrations);
-
-				notify({
-					title: t('collection_created'),
-				});
-
-				router.replace(`/settings/data-model/${collectionName.value}`);
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				saving.value = false;
-			}
-		}
-
-		function getPrimaryKeyField() {
-			if (primaryKeyFieldType.value === 'uuid') {
-				return {
-					field: primaryKeyFieldName.value,
-					type: 'uuid',
-					meta: {
-						hidden: true,
-						readonly: true,
-						interface: 'input',
-						special: ['uuid'],
-					},
-					schema: {
-						is_primary_key: true,
-						length: 36,
-						has_auto_increment: false,
-					},
-				};
-			} else if (primaryKeyFieldType.value === 'manual') {
-				return {
-					field: primaryKeyFieldName.value,
-					type: 'string',
-					meta: {
-						interface: 'input',
-						readonly: false,
-						hidden: false,
-					},
-					schema: {
-						is_primary_key: true,
-						length: 255,
-						has_auto_increment: false,
-					},
-				};
-			} else {
-				return {
-					field: primaryKeyFieldName.value,
-					type: primaryKeyFieldType.value === 'auto_big_int' ? 'bigInteger' : 'integer',
-					meta: {
-						hidden: true,
-						interface: 'input',
-						readonly: true,
-					},
-					schema: {
-						is_primary_key: true,
-						has_auto_increment: true,
-					},
-				};
-			}
-		}
-
-		function getSystemFields() {
-			const fields: DeepPartial<Field>[] = [];
-
-			// Status
-			if (systemFields.status.enabled === true) {
-				fields.push({
-					field: systemFields.status.name,
-					type: 'string',
-					meta: {
-						width: 'full',
-						options: {
-							choices: [
-								{
-									text: '$t:published',
-									value: 'published',
-								},
-								{
-									text: '$t:draft',
-									value: 'draft',
-								},
-								{
-									text: '$t:archived',
-									value: 'archived',
-								},
-							],
+	// Status
+	if (systemFields.status.enabled === true) {
+		fields.push({
+			field: systemFields.status.name,
+			type: 'string',
+			meta: {
+				width: 'full',
+				options: {
+					choices: [
+						{
+							text: '$t:published',
+							value: 'published',
 						},
-						interface: 'select-dropdown',
-						display: 'labels',
-						display_options: {
-							showAsDot: true,
-							choices: [
-								{
-									text: '$t:published',
-									value: 'published',
-									foreground: '#FFFFFF',
-									background: 'var(--primary)',
-								},
-								{
-									text: '$t:draft',
-									value: 'draft',
-									foreground: '#18222F',
-									background: '#D3DAE4',
-								},
-								{
-									text: '$t:archived',
-									value: 'archived',
-									foreground: '#FFFFFF',
-									background: 'var(--warning)',
-								},
-							],
+						{
+							text: '$t:draft',
+							value: 'draft',
 						},
-					},
-					schema: {
-						default_value: 'draft',
-						is_nullable: false,
-					},
-				});
-
-				archiveField.value = systemFields.status.name;
-				archiveValue.value = 'archived';
-				unarchiveValue.value = 'draft';
-			}
-
-			// Sort
-			if (systemFields.sort.enabled === true) {
-				fields.push({
-					field: systemFields.sort.name,
-					type: 'integer',
-					meta: {
-						interface: 'input',
-						hidden: true,
-					},
-					schema: {},
-				});
-
-				sortField.value = systemFields.sort.name;
-			}
-
-			if (systemFields.userCreated.enabled === true) {
-				fields.push({
-					field: systemFields.userCreated.name,
-					type: 'uuid',
-					meta: {
-						special: ['user-created'],
-						interface: 'select-dropdown-m2o',
-						options: {
-							template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
+						{
+							text: '$t:archived',
+							value: 'archived',
 						},
-						display: 'user',
-						readonly: true,
-						hidden: true,
-						width: 'half',
-					},
-					schema: {},
-				});
-			}
-
-			if (systemFields.dateCreated.enabled === true) {
-				fields.push({
-					field: systemFields.dateCreated.name,
-					type: 'timestamp',
-					meta: {
-						special: ['date-created'],
-						interface: 'datetime',
-						readonly: true,
-						hidden: true,
-						width: 'half',
-						display: 'datetime',
-						display_options: {
-							relative: true,
+					],
+				},
+				interface: 'select-dropdown',
+				display: 'labels',
+				display_options: {
+					showAsDot: true,
+					choices: [
+						{
+							text: '$t:published',
+							value: 'published',
+							foreground: '#FFFFFF',
+							background: 'var(--primary)',
 						},
-					},
-					schema: {},
-				});
-			}
-
-			if (systemFields.userUpdated.enabled === true) {
-				fields.push({
-					field: systemFields.userUpdated.name,
-					type: 'uuid',
-					meta: {
-						special: ['user-updated'],
-						interface: 'select-dropdown-m2o',
-						options: {
-							template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
+						{
+							text: '$t:draft',
+							value: 'draft',
+							foreground: '#18222F',
+							background: '#D3DAE4',
 						},
-						display: 'user',
-						readonly: true,
-						hidden: true,
-						width: 'half',
-					},
-					schema: {},
-				});
-			}
-
-			if (systemFields.dateUpdated.enabled === true) {
-				fields.push({
-					field: systemFields.dateUpdated.name,
-					type: 'timestamp',
-					meta: {
-						special: ['date-updated'],
-						interface: 'datetime',
-						readonly: true,
-						hidden: true,
-						width: 'half',
-						display: 'datetime',
-						display_options: {
-							relative: true,
+						{
+							text: '$t:archived',
+							value: 'archived',
+							foreground: '#FFFFFF',
+							background: 'var(--warning)',
 						},
-					},
-					schema: {},
-				});
-			}
+					],
+				},
+			},
+			schema: {
+				default_value: 'draft',
+				is_nullable: false,
+			},
+		});
 
-			return fields;
-		}
+		archiveField.value = systemFields.status.name;
+		archiveValue.value = 'archived';
+		unarchiveValue.value = 'draft';
+	}
 
-		function getSystemRelations() {
-			const relations: Partial<Relation>[] = [];
+	// Sort
+	if (systemFields.sort.enabled === true) {
+		fields.push({
+			field: systemFields.sort.name,
+			type: 'integer',
+			meta: {
+				interface: 'input',
+				hidden: true,
+			},
+			schema: {},
+		});
 
-			if (systemFields.userCreated.enabled === true) {
-				relations.push({
-					collection: collectionName.value!,
-					field: systemFields.userCreated.name,
-					related_collection: 'directus_users',
-					schema: {},
-				});
-			}
+		sortField.value = systemFields.sort.name;
+	}
 
-			if (systemFields.userUpdated.enabled === true) {
-				relations.push({
-					collection: collectionName.value!,
-					field: systemFields.userUpdated.name,
-					related_collection: 'directus_users',
-					schema: {},
-				});
-			}
+	if (systemFields.userCreated.enabled === true) {
+		fields.push({
+			field: systemFields.userCreated.name,
+			type: 'uuid',
+			meta: {
+				special: ['user-created'],
+				interface: 'select-dropdown-m2o',
+				options: {
+					template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
+				},
+				display: 'user',
+				readonly: true,
+				hidden: true,
+				width: 'half',
+			},
+			schema: {},
+		});
+	}
 
-			return relations;
-		}
-	},
-});
+	if (systemFields.dateCreated.enabled === true) {
+		fields.push({
+			field: systemFields.dateCreated.name,
+			type: 'timestamp',
+			meta: {
+				special: ['date-created'],
+				interface: 'datetime',
+				readonly: true,
+				hidden: true,
+				width: 'half',
+				display: 'datetime',
+				display_options: {
+					relative: true,
+				},
+			},
+			schema: {},
+		});
+	}
+
+	if (systemFields.userUpdated.enabled === true) {
+		fields.push({
+			field: systemFields.userUpdated.name,
+			type: 'uuid',
+			meta: {
+				special: ['user-updated'],
+				interface: 'select-dropdown-m2o',
+				options: {
+					template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
+				},
+				display: 'user',
+				readonly: true,
+				hidden: true,
+				width: 'half',
+			},
+			schema: {},
+		});
+	}
+
+	if (systemFields.dateUpdated.enabled === true) {
+		fields.push({
+			field: systemFields.dateUpdated.name,
+			type: 'timestamp',
+			meta: {
+				special: ['date-updated'],
+				interface: 'datetime',
+				readonly: true,
+				hidden: true,
+				width: 'half',
+				display: 'datetime',
+				display_options: {
+					relative: true,
+				},
+			},
+			schema: {},
+		});
+	}
+
+	return fields;
+}
+
+function getSystemRelations() {
+	const relations: Partial<Relation>[] = [];
+
+	if (systemFields.userCreated.enabled === true) {
+		relations.push({
+			collection: collectionName.value!,
+			field: systemFields.userCreated.name,
+			related_collection: 'directus_users',
+			schema: {},
+		});
+	}
+
+	if (systemFields.userUpdated.enabled === true) {
+		relations.push({
+			collection: collectionName.value!,
+			field: systemFields.userUpdated.name,
+			related_collection: 'directus_users',
+			schema: {},
+		});
+	}
+
+	return relations;
+}
 </script>
 
 <style lang="scss" scoped>
