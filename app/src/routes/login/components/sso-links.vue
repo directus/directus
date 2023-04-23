@@ -19,68 +19,62 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed, watch, toRefs, PropType } from 'vue';
-import { useRouter } from 'vue-router';
-import { AuthProvider } from '@/types/login';
+<script setup lang="ts">
 import { AUTH_SSO_DRIVERS } from '@/constants';
 import { translateAPIError } from '@/lang';
+import { AuthProvider } from '@/types/login';
 import { getRootPath } from '@/utils/get-root-path';
 import formatTitle from '@directus/format-title';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
-export default defineComponent({
-	props: {
-		providers: {
-			type: Array as PropType<AuthProvider[]>,
-			default: () => [],
-		},
+const props = defineProps<{
+	providers: AuthProvider[];
+}>();
+
+const { t } = useI18n();
+
+const route = useRoute();
+
+const { providers } = toRefs(props);
+const ssoProviders = ref<{ name: string; label: string; link: string; icon: string }[]>([]);
+
+watch(
+	providers,
+	() => {
+		ssoProviders.value = providers.value
+			.filter((provider) => AUTH_SSO_DRIVERS.includes(provider.driver))
+			.map((provider) => {
+				const ssoLoginLink = new URL(window.location.origin);
+				ssoLoginLink.pathname = `${getRootPath()}auth/login/${provider.name}`;
+
+				const redirectToLink = new URL(window.location.href);
+				redirectToLink.searchParams.set('continue', '');
+
+				ssoLoginLink.searchParams.set('redirect', redirectToLink.toString());
+
+				return {
+					name: provider.name,
+					label: provider.label || formatTitle(provider.name),
+					link: ssoLoginLink.toString(),
+					icon: provider.icon ?? 'account_circle',
+				};
+			});
 	},
-	setup(props) {
-		const { t } = useI18n();
+	{ immediate: true }
+);
 
-		const router = useRouter();
+const errorFormatted = computed(() => {
+	const validReasons = ['SIGN_OUT', 'SESSION_EXPIRED'];
 
-		const { providers } = toRefs(props);
-		const ssoProviders = ref<{ name: string; link: string; icon: string }[]>([]);
+	const reason = Array.isArray(route.query.reason) ? route.query.reason[0] : route.query.reason;
 
-		watch(
-			providers,
-			() => {
-				ssoProviders.value = providers.value
-					.filter((provider: AuthProvider) => AUTH_SSO_DRIVERS.includes(provider.driver))
-					.map((provider: AuthProvider) => {
-						const ssoLoginLink = new URL(window.location.origin);
-						ssoLoginLink.pathname = `${getRootPath()}auth/login/${provider.name}`;
+	if (reason && !validReasons.includes(reason)) {
+		return translateAPIError(reason);
+	}
 
-						const redirectToLink = new URL(window.location.href);
-						redirectToLink.searchParams.set('continue', '');
-
-						ssoLoginLink.searchParams.set('redirect', redirectToLink.toString());
-
-						return {
-							name: provider.name,
-							label: provider.label || formatTitle(provider.name),
-							link: ssoLoginLink.toString(),
-							icon: provider.icon ?? 'account_circle',
-						};
-					});
-			},
-			{ immediate: true }
-		);
-
-		const errorFormatted = computed(() => {
-			const validReasons = ['SIGN_OUT', 'SESSION_EXPIRED'];
-
-			if (router.currentRoute.value.query.reason && !validReasons.includes(router.currentRoute.value.query.reason)) {
-				return translateAPIError(router.currentRoute.value.query.reason);
-			}
-
-			return null;
-		});
-
-		return { t, ssoProviders, errorFormatted };
-	},
+	return null;
 });
 </script>
 
