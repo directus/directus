@@ -12,18 +12,11 @@
 	</private-view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
 import SettingsNavigation from '../components/navigation.vue';
 
-export default defineComponent({
-	components: { SettingsNavigation },
-	setup() {
-		const { t } = useI18n();
-		return { t };
-	},
-});
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>
