@@ -13,48 +13,38 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
-import { Permission, Role } from '@directus/types';
+<script setup lang="ts">
 import { useSync } from '@directus/composables';
+import { Permission, Role } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		permission: {
-			type: Object as PropType<Permission>,
-			required: true,
-		},
-		role: {
-			type: Object as PropType<Role>,
-			default: null,
-		},
-	},
-	emits: ['update:permission'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = defineProps<{
+	permission: Permission;
+	role?: Role;
+}>();
 
-		const permissionSync = useSync(props, 'permission', emit);
+const emit = defineEmits(['update:permission']);
 
-		const fields = computed(() => [
-			{
-				field: 'validation',
-				name: t('rule'),
-				type: 'json',
-				meta: {
-					interface: 'system-filter',
-					options: {
-						collectionName: permissionSync.value.collection,
-						includeValidation: true,
-						includeRelations: false,
-					},
-				},
+const { t } = useI18n();
+
+const permissionSync = useSync(props, 'permission', emit);
+
+const fields = computed(() => [
+	{
+		field: 'validation',
+		name: t('rule'),
+		type: 'json',
+		meta: {
+			interface: 'system-filter',
+			options: {
+				collectionName: permissionSync.value.collection,
+				includeValidation: true,
+				includeRelations: false,
 			},
-		]);
-
-		return { t, permissionSync, fields };
+		},
 	},
-});
+]);
 </script>
 
 <style lang="scss" scoped>
