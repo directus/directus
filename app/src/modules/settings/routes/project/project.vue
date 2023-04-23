@@ -40,76 +40,58 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, computed } from 'vue';
-import SettingsNavigation from '../../components/navigation.vue';
-import { useCollection } from '@directus/composables';
-import { useSettingsStore } from '@/stores/settings';
-import { useServerStore } from '@/stores/server';
-import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
-import { clone } from 'lodash';
-import { useShortcut } from '@/composables/use-shortcut';
+<script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useShortcut } from '@/composables/use-shortcut';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { useCollection } from '@directus/composables';
+import { clone } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import SettingsNavigation from '../../components/navigation.vue';
+import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 
-export default defineComponent({
-	components: { SettingsNavigation, ProjectInfoSidebarDetail },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const router = useRouter();
+const router = useRouter();
 
-		const settingsStore = useSettingsStore();
-		const serverStore = useServerStore();
+const settingsStore = useSettingsStore();
+const serverStore = useServerStore();
 
-		const { fields } = useCollection('directus_settings');
+const { fields } = useCollection('directus_settings');
 
-		const initialValues = ref(clone(settingsStore.settings));
+const initialValues = ref(clone(settingsStore.settings));
 
-		const edits = ref<{ [key: string]: any } | null>(null);
+const edits = ref<{ [key: string]: any } | null>(null);
 
-		const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
+const hasEdits = computed(() => edits.value !== null && Object.keys(edits.value).length > 0);
 
-		const saving = ref(false);
+const saving = ref(false);
 
-		useShortcut('meta+s', () => {
-			if (hasEdits.value) save();
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-		return {
-			t,
-			fields,
-			initialValues,
-			edits,
-			hasEdits,
-			saving,
-			confirmLeave,
-			leaveTo,
-			save,
-			discardAndLeave,
-		};
-
-		async function save() {
-			if (edits.value === null) return;
-			saving.value = true;
-			await settingsStore.updateSettings(edits.value);
-			await serverStore.hydrate({ isLanguageUpdated: 'default_language' in edits.value });
-			edits.value = null;
-			saving.value = false;
-			initialValues.value = clone(settingsStore.settings);
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-	},
+useShortcut('meta+s', () => {
+	if (hasEdits.value) save();
 });
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+async function save() {
+	if (edits.value === null) return;
+	saving.value = true;
+	await settingsStore.updateSettings(edits.value);
+	await serverStore.hydrate({ isLanguageUpdated: 'default_language' in edits.value });
+	edits.value = null;
+	saving.value = false;
+	initialValues.value = clone(settingsStore.settings);
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
 </script>
 
 <style lang="scss" scoped>
