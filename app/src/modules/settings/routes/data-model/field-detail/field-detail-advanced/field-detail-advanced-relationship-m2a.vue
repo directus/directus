@@ -153,91 +153,67 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
-import { storeToRefs } from 'pinia';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { useFieldsStore } from '@/stores/fields';
+<script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { orderBy } from 'lodash';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
-export default defineComponent({
-	components: { RelatedCollectionSelect, RelatedFieldSelect },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const fieldDetailStore = useFieldDetailStore();
-		const collectionsStore = useCollectionsStore();
-		const relationsStore = useRelationsStore();
-		const fieldsStore = useFieldsStore();
+const fieldDetailStore = useFieldDetailStore();
+const collectionsStore = useCollectionsStore();
+const relationsStore = useRelationsStore();
+const fieldsStore = useFieldsStore();
 
-		const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+const { collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
 
-		const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
-		const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-		const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
-		const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
-		const oneCollectionField = syncFieldDetailStoreProperty('relations.m2o.meta.one_collection_field');
-		const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
-		const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
-		const onDelete = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
-		const onDeselect = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
+const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
+const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
+const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
+const oneCollectionField = syncFieldDetailStoreProperty('relations.m2o.meta.one_collection_field');
+const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
+const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
+const onDelete = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
+const onDeselect = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
 
-		const isExisting = computed(() => editing.value !== '+');
-		const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
+const isExisting = computed(() => editing.value !== '+');
+const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
 
-		const availableCollections = computed(() => {
-			return orderBy(
-				[
-					...collectionsStore.databaseCollections,
-					{
-						divider: true,
-					},
-					{
-						name: t('system'),
-						selectable: false,
-						children: collectionsStore.crudSafeSystemCollections,
-					},
-				],
-				['collection'],
-				['asc']
-			);
-		});
+const availableCollections = computed(() => {
+	return orderBy(
+		[
+			...collectionsStore.databaseCollections,
+			{
+				divider: true,
+			},
+			{
+				name: t('system'),
+				selectable: false,
+				children: collectionsStore.crudSafeSystemCollections,
+			},
+		],
+		['collection'],
+		['asc']
+	);
+});
 
-		const unsortableJunctionFields = computed(() => {
-			let fields = ['item', 'collection'];
+const unsortableJunctionFields = computed(() => {
+	let fields = ['item', 'collection'];
 
-			if (junctionCollection.value) {
-				const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
-				fields.push(...relations.map((field) => field.field));
-			}
+	if (junctionCollection.value) {
+		const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
+		fields.push(...relations.map((field) => field.field));
+	}
 
-			return fields;
-		});
-
-		return {
-			t,
-			availableCollections,
-			generationInfo,
-			collection,
-			isExisting,
-			autoGenerateJunctionRelation,
-			junctionCollection,
-			oneAllowedCollections,
-			currentPrimaryKey,
-			junctionFieldCurrent,
-			junctionFieldRelated,
-			oneCollectionField,
-			sortField,
-			onDelete,
-			onDeselect,
-			unsortableJunctionFields,
-		};
-	},
+	return fields;
 });
 </script>
 
