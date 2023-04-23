@@ -1414,6 +1414,7 @@ something_went_wrong: مشکلی پیش آمد.
 sort_direction: جهت مرتب سازی
 export_location: برون‌برد مکان‌ها
 export_started: برون بری آغاز شد
+sort_desc: مرتب‌سازی نزولی
 template: قالب
 require_value_to_be_set: مقدار لازم برای تنظیم هنگام ایجاد
 translation: ترجمه
@@ -1473,6 +1474,7 @@ interfaces:
     checkboxes: جعبه انتخاب
     description: بین چند گزینه از طریق جعبه انتخاب
     allow_other: اجازه به دیگری
+    show_more: 'نمایش {count} بیشتر'
     items_shown: آیتمهای نشان داده شده
   select-multiple-checkbox-tree:
     description: بین چند گزینه از طریق جعبه انتخاب تودرتو
@@ -1551,12 +1553,17 @@ interfaces:
   system-interface:
     interface: رابط کاربری
     description: انتخاب یک رابط موجود
+  system-interface-options:
+    interface-options: تنظیمات رابط
   list-m2m:
+    many-to-many: چندتا به چندتا
     description: انتخاب چندین آیتم تقاطعی مرتبط
   select-dropdown-m2o:
+    many-to-one: چندتا به یکی
     description: انتخاب یک آیتم مرتبط
     display_template: نمایش الگو
   input-rich-text-md:
+    markdown: مارک‌داون
     edit: ویرایش
   map:
     map: نقشه
