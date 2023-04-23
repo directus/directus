@@ -11,21 +11,15 @@
 	</v-button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useFieldDetailStore } from '../store';
+<script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+import { useFieldDetailStore } from '../store';
 
-export default defineComponent({
-	emits: ['save'],
-	setup() {
-		const fieldDetailStore = useFieldDetailStore();
-		const { saving, readyToSave } = storeToRefs(fieldDetailStore);
+defineEmits(['save']);
 
-		const { t } = useI18n();
+const fieldDetailStore = useFieldDetailStore();
+const { saving, readyToSave } = storeToRefs(fieldDetailStore);
 
-		return { saving, t, readyToSave };
-	},
-});
+const { t } = useI18n();
 </script>
