@@ -90,7 +90,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, ref, useSlots } from 'vue';
 import { ShowSelect } from '@directus/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';

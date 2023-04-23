@@ -32,7 +32,7 @@
 	</v-list>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';

@@ -67,7 +67,7 @@
 	</template>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { FieldFilter } from '@directus/types';

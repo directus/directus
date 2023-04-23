@@ -15,7 +15,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
 

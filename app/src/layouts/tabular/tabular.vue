@@ -177,7 +177,7 @@ export default {
 };
 </script>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useShortcut } from '@/composables/use-shortcut';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';

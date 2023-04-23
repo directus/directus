@@ -46,7 +46,7 @@
 	</v-drawer>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, computed, watch, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';

@@ -8,7 +8,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed } from 'vue';
 import LatencyIndicator from './latency-indicator.vue';
 import { useServerStore } from '@/stores/server';

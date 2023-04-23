@@ -40,7 +40,7 @@
 	</v-dialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, watch } from 'vue';
 import { unexpectedError } from '@/utils/unexpected-error';

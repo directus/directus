@@ -4,7 +4,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';

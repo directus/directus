@@ -33,7 +33,7 @@
 	<render-template v-else :template="internalTemplate" :item="value" :collection="relatedCollection" />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { useCollection } from '@directus/composables';

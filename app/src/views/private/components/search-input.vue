@@ -42,7 +42,7 @@
 	</v-badge>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, inject, Ref } from 'vue';
 import { Filter } from '@directus/types';

@@ -29,7 +29,7 @@
 	</v-menu>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';

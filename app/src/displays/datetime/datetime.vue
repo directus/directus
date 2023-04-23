@@ -2,7 +2,7 @@
 	<span class="datetime">{{ displayValue }}</span>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
 import { localizedFormat } from '@/utils/localized-format';

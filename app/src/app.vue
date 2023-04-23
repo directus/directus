@@ -20,7 +20,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
 import { useAppStore } from '@/stores/app';
 import { useServerStore } from '@/stores/server';
