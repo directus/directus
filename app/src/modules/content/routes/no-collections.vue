@@ -32,28 +32,17 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
-import ContentNavigation from '../components/navigation.vue';
+<script setup lang="ts">
 import { useUserStore } from '@/stores/user';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import ContentNavigation from '../components/navigation.vue';
 
-export default defineComponent({
-	name: 'ContentOverview',
-	components: {
-		ContentNavigation,
-	},
-	props: {},
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const userStore = useUserStore();
+const userStore = useUserStore();
 
-		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
-
-		return { t, isAdmin };
-	},
-});
+const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 </script>
 
 <style lang="scss" scoped>
