@@ -198,110 +198,82 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
-import { storeToRefs } from 'pinia';
-import RelatedCollectionSelect from '../shared/related-collection-select.vue';
-import RelatedFieldSelect from '../shared/related-field-select.vue';
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RelatedCollectionSelect from '../shared/related-collection-select.vue';
+import RelatedFieldSelect from '../shared/related-field-select.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
-export default defineComponent({
-	components: { RelatedCollectionSelect, RelatedFieldSelect },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const fieldDetailStore = useFieldDetailStore();
-		const relationsStore = useRelationsStore();
-		const fieldsStore = useFieldsStore();
+const fieldDetailStore = useFieldDetailStore();
+const relationsStore = useRelationsStore();
+const fieldsStore = useFieldsStore();
 
-		const { collection, editing, generationInfo, localType } = storeToRefs(fieldDetailStore);
+const { collection, editing, generationInfo, localType } = storeToRefs(fieldDetailStore);
 
-		const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
-		const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-		const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
-		const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
-		const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-		const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
-		const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
-		const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
-		const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
-		const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
-		const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
+const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
+const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
+const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
+const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
+const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
+const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
+const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
+const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
+const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
 
-		const isExisting = computed(() => editing.value !== '+');
+const isExisting = computed(() => editing.value !== '+');
 
-		const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
+const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
 
-		const relatedPrimaryKey = computed(
-			() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
-		);
+const relatedPrimaryKey = computed(
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+);
 
-		const hasCorresponding = computed({
-			get() {
-				return !!correspondingField.value;
-			},
-			set(enabled: boolean) {
-				if (enabled) {
-					correspondingField.value = {
-						field: collection.value,
-						collection: relatedCollection.value,
-						type: 'alias',
-						meta: {
-							special: ['m2m'],
-							interface: 'list-m2m',
-						},
-					};
-				} else {
-					correspondingField.value = null;
-				}
-			},
-		});
-
-		const correspondingLabel = computed(() => {
-			if (junctionCollection.value) {
-				return t('add_m2m_to_collection', { collection: relatedCollection.value });
-			}
-
-			return t('add_field_related');
-		});
-
-		const unsortableJunctionFields = computed(() => {
-			let fields = [];
-
-			if (junctionCollection.value) {
-				const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
-				fields.push(...relations.map((field) => field.field));
-			}
-
-			return fields;
-		});
-
-		return {
-			t,
-			autoGenerateJunctionRelation,
-			collection,
-			localType,
-			isExisting,
-			junctionCollection,
-			junctionFieldCurrent,
-			relatedCollection,
-			sortField,
-			currentPrimaryKey,
-			junctionFieldRelated,
-			relatedPrimaryKey,
-			onDeleteCurrent,
-			onDeleteRelated,
-			deselectAction,
-			hasCorresponding,
-			correspondingLabel,
-			correspondingFieldKey,
-			generationInfo,
-			unsortableJunctionFields,
-		};
+const hasCorresponding = computed({
+	get() {
+		return !!correspondingField.value;
 	},
+	set(enabled: boolean) {
+		if (enabled) {
+			correspondingField.value = {
+				field: collection.value,
+				collection: relatedCollection.value,
+				type: 'alias',
+				meta: {
+					special: ['m2m'],
+					interface: 'list-m2m',
+				},
+			};
+		} else {
+			correspondingField.value = null;
+		}
+	},
+});
+
+const correspondingLabel = computed(() => {
+	if (junctionCollection.value) {
+		return t('add_m2m_to_collection', { collection: relatedCollection.value });
+	}
+
+	return t('add_field_related');
+});
+
+const unsortableJunctionFields = computed(() => {
+	let fields = [];
+
+	if (junctionCollection.value) {
+		const relations = relationsStore.getRelationsForCollection(junctionCollection.value);
+		fields.push(...relations.map((field) => field.field));
+	}
+
+	return fields;
 });
 </script>
 
