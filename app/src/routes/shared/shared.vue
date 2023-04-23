@@ -39,161 +39,139 @@
 	</shared-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
-import { defineComponent, computed, ref } from 'vue';
-import { useAppStore } from '@/stores/app';
+<script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { login, logout } from '@/auth';
-import { Share } from '@directus/types';
-import ShareItem from './components/share-item.vue';
 import { hydrate } from '@/hydrate';
+import { useAppStore } from '@/stores/app';
 import { useCollection } from '@directus/composables';
+import { Share } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
+import ShareItem from './components/share-item.vue';
 
 type ShareInfo = Pick<
 	Share,
 	'id' | 'collection' | 'item' | 'password' | 'date_start' | 'date_end' | 'max_uses' | 'times_used'
 >;
 
-export default defineComponent({
-	components: { ShareItem },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const appStore = useAppStore();
-		const authenticated = computed(() => appStore.authenticated);
+const appStore = useAppStore();
+const authenticated = computed(() => appStore.authenticated);
 
-		const loading = ref(true);
-		const authenticating = ref(false);
+const loading = ref(true);
+const authenticating = ref(false);
 
-		const notFound = ref(false);
+const notFound = ref(false);
 
-		const error = ref<RequestError | null>(null);
+const error = ref<RequestError | null>(null);
 
-		const router = useRouter();
-		const route = useRoute();
+const router = useRouter();
+const route = useRoute();
 
-		const shareId = route.params.id as string;
-		const share = ref<ShareInfo>();
+const shareId = route.params.id as string;
+const share = ref<ShareInfo>();
 
-		const usesLeft = ref<number | null>(null);
+const usesLeft = ref<number | null>(null);
 
-		const usesLeftNoticeType = computed(() => {
-			if (!usesLeft.value) return 'info';
-			if (usesLeft.value < 3) return 'warning';
-			return 'info';
-		});
-
-		const password = ref<string>();
-		const passwordWrong = ref(false);
-
-		getShareInformation(shareId);
-
-		const { info } = useCollection(computed(() => share.value?.collection ?? null));
-		const collectionName = computed(() => info.value?.name);
-
-		const title = computed(() => {
-			if (notFound.value) return t('share_access_not_found_title');
-			if (collectionName.value) return t('viewing_in', { collection: collectionName.value });
-			return t('share_access_page');
-		});
-
-		return {
-			t,
-			share,
-			error,
-			title,
-			loading,
-			notFound,
-			password,
-			authenticate,
-			authenticated,
-			authenticating,
-			usesLeft,
-			usesLeftNoticeType,
-			collectionName,
-			passwordWrong,
-		};
-
-		async function getShareInformation(shareId: string) {
-			loading.value = true;
-
-			try {
-				const response = await api.get(`/shares/info/${shareId}`);
-				share.value = response.data.data;
-
-				if (!share.value) {
-					notFound.value = true;
-					loading.value = false;
-					return;
-				}
-
-				const { max_uses, times_used } = share.value;
-
-				if (max_uses) {
-					usesLeft.value = max_uses - times_used;
-				}
-
-				await handleAuth();
-			} catch (err: any) {
-				if (err.response?.status === 404 || err.response?.status === 403) {
-					notFound.value = true;
-				} else {
-					error.value = err;
-				}
-			} finally {
-				loading.value = false;
-			}
-		}
-
-		async function handleAuth() {
-			if (appStore.authenticated) {
-				const currentUser = await api.get('/users/me', { params: { fields: ['id'] } });
-
-				if (currentUser.data.data?.share) {
-					if (currentUser.data.data.share !== shareId) {
-						await logout({ navigate: false });
-					} else {
-						await hydrate();
-					}
-				}
-
-				// Logged in as regular user
-				if (currentUser.data.data?.id && !currentUser.data.data?.share) {
-					router.replace(`/content/${share.value!.collection}/${share.value!.item}`);
-					return;
-				}
-			}
-
-			if (!share.value?.password && !share.value?.max_uses) {
-				if (appStore.authenticated) {
-					await hydrate();
-				} else {
-					await authenticate();
-				}
-			}
-		}
-
-		async function authenticate() {
-			authenticating.value = true;
-
-			try {
-				const credentials = { share: shareId, password: password.value };
-				await login({ share: true, credentials });
-			} catch (err: any) {
-				if (err?.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_CREDENTIALS') {
-					passwordWrong.value = true;
-					return;
-				}
-
-				error.value = err;
-			} finally {
-				authenticating.value = false;
-			}
-		}
-	},
+const usesLeftNoticeType = computed(() => {
+	if (!usesLeft.value) return 'info';
+	if (usesLeft.value < 3) return 'warning';
+	return 'info';
 });
+
+const password = ref<string>();
+const passwordWrong = ref(false);
+
+getShareInformation(shareId);
+
+const { info } = useCollection(computed(() => share.value?.collection ?? null));
+const collectionName = computed(() => info.value?.name);
+
+const title = computed(() => {
+	if (notFound.value) return t('share_access_not_found_title');
+	if (collectionName.value) return t('viewing_in', { collection: collectionName.value });
+	return t('share_access_page');
+});
+
+async function getShareInformation(shareId: string) {
+	loading.value = true;
+
+	try {
+		const response = await api.get(`/shares/info/${shareId}`);
+		share.value = response.data.data;
+
+		if (!share.value) {
+			notFound.value = true;
+			loading.value = false;
+			return;
+		}
+
+		const { max_uses, times_used } = share.value;
+
+		if (max_uses) {
+			usesLeft.value = max_uses - times_used;
+		}
+
+		await handleAuth();
+	} catch (err: any) {
+		if (err.response?.status === 404 || err.response?.status === 403) {
+			notFound.value = true;
+		} else {
+			error.value = err;
+		}
+	} finally {
+		loading.value = false;
+	}
+}
+
+async function handleAuth() {
+	if (appStore.authenticated) {
+		const currentUser = await api.get('/users/me', { params: { fields: ['id'] } });
+
+		if (currentUser.data.data?.share) {
+			if (currentUser.data.data.share !== shareId) {
+				await logout({ navigate: false });
+			} else {
+				await hydrate();
+			}
+		}
+
+		// Logged in as regular user
+		if (currentUser.data.data?.id && !currentUser.data.data?.share) {
+			router.replace(`/content/${share.value!.collection}/${share.value!.item}`);
+			return;
+		}
+	}
+
+	if (!share.value?.password && !share.value?.max_uses) {
+		if (appStore.authenticated) {
+			await hydrate();
+		} else {
+			await authenticate();
+		}
+	}
+}
+
+async function authenticate() {
+	authenticating.value = true;
+
+	try {
+		const credentials = { share: shareId, password: password.value };
+		await login({ share: true, credentials });
+	} catch (err: any) {
+		if (err?.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_CREDENTIALS') {
+			passwordWrong.value = true;
+			return;
+		}
+
+		error.value = err;
+	} finally {
+		authenticating.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
