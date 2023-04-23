@@ -100,8 +100,8 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
 import { useInsightsStore } from '@/stores/insights';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useI18n } from 'vue-i18n';
@@ -112,101 +112,78 @@ import InsightsNavigation from '../components/navigation.vue';
 import DashboardDialog from '../components/dashboard-dialog.vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { md } from '@/utils/md';
 
-export default defineComponent({
-	name: 'InsightsOverview',
-	components: { InsightsNavigation, DashboardDialog },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const insightsStore = useInsightsStore();
-		const permissionsStore = usePermissionsStore();
+const insightsStore = useInsightsStore();
+const permissionsStore = usePermissionsStore();
 
-		const confirmDelete = ref<string | null>(null);
-		const deletingDashboard = ref(false);
-		const editDashboard = ref<Dashboard | null>(null);
+const confirmDelete = ref<string | null>(null);
+const deletingDashboard = ref(false);
+const editDashboard = ref<Dashboard | null>(null);
 
-		const createDialogActive = ref(false);
+const createDialogActive = ref(false);
 
-		const createAllowed = computed<boolean>(() => {
-			return permissionsStore.hasPermission('directus_dashboards', 'create');
-		});
-
-		const updateAllowed = computed<boolean>(() => {
-			return permissionsStore.hasPermission('directus_dashboards', 'update');
-		});
-
-		const deleteAllowed = computed<boolean>(() => {
-			return permissionsStore.hasPermission('directus_dashboards', 'delete');
-		});
-
-		const tableHeaders = ref<Header[]>([
-			{
-				text: '',
-				value: 'icon',
-				width: 42,
-				sortable: false,
-				align: 'left',
-				description: null,
-			},
-			{
-				text: t('name'),
-				value: 'name',
-				width: 240,
-				sortable: true,
-				align: 'left',
-				description: null,
-			},
-			{
-				text: t('note'),
-				value: 'note',
-				width: 360,
-				sortable: false,
-				align: 'left',
-				description: null,
-			},
-		]);
-
-		const dashboards = computed(() => insightsStore.dashboards);
-
-		return {
-			dashboards,
-			createAllowed,
-			updateAllowed,
-			deleteAllowed,
-			tableHeaders,
-			navigateToDashboard,
-			createDialogActive,
-			confirmDelete,
-			deletingDashboard,
-			deleteDashboard,
-			editDashboard,
-			t,
-			md,
-		};
-
-		function navigateToDashboard({ item: dashboard }: { item: Dashboard }) {
-			router.push(`/insights/${dashboard.id}`);
-		}
-
-		async function deleteDashboard() {
-			if (!confirmDelete.value) return;
-
-			deletingDashboard.value = true;
-
-			try {
-				await api.delete(`/dashboards/${confirmDelete.value}`);
-				await insightsStore.hydrate();
-				confirmDelete.value = null;
-			} catch (err) {
-				unexpectedError(err);
-			} finally {
-				deletingDashboard.value = false;
-			}
-		}
-	},
+const createAllowed = computed<boolean>(() => {
+	return permissionsStore.hasPermission('directus_dashboards', 'create');
 });
+
+const updateAllowed = computed<boolean>(() => {
+	return permissionsStore.hasPermission('directus_dashboards', 'update');
+});
+
+const deleteAllowed = computed<boolean>(() => {
+	return permissionsStore.hasPermission('directus_dashboards', 'delete');
+});
+
+const tableHeaders = ref<Header[]>([
+	{
+		text: '',
+		value: 'icon',
+		width: 42,
+		sortable: false,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('name'),
+		value: 'name',
+		width: 240,
+		sortable: true,
+		align: 'left',
+		description: null,
+	},
+	{
+		text: t('note'),
+		value: 'note',
+		width: 360,
+		sortable: false,
+		align: 'left',
+		description: null,
+	},
+]);
+
+const dashboards = computed(() => insightsStore.dashboards);
+
+function navigateToDashboard({ item: dashboard }: { item: Dashboard }) {
+	router.push(`/insights/${dashboard.id}`);
+}
+
+async function deleteDashboard() {
+	if (!confirmDelete.value) return;
+
+	deletingDashboard.value = true;
+
+	try {
+		await api.delete(`/dashboards/${confirmDelete.value}`);
+		await insightsStore.hydrate();
+		confirmDelete.value = null;
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		deletingDashboard.value = false;
+	}
+}
 </script>
 
 <style scoped>
