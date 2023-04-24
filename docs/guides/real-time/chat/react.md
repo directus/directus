@@ -322,3 +322,102 @@ This guide covers authentication, item creation, and subscription using WebSocke
 2. Handling reconnection logic if the client disconnects or a refresh token is needed.
 3. Locking down permissions so users can only see user first names.
 4. Allow for editing and deletion of messages by the author or by an admin.
+
+## Full Code Sample
+
+```js
+import { useState, useRef } from 'react';
+
+const url = 'wss://your-directus-url/websocket';
+
+export default function App() {
+	const [formValue, setFormValue] = useState({ email: '', password: '' });
+	const [newMessage, setNewMessage] = useState('');
+	const [messageHistory, setMessageHistory] = useState([]);
+
+	const connectionRef = useRef(null);
+
+	const authenticate = (opts) => {
+		const { email, password } = opts;
+		connectionRef.current.send(JSON.stringify({ type: 'auth', email, password }));
+	};
+
+	const loginSubmit = (event) => {
+		event.preventDefault();
+		connectionRef.current = new WebSocket(url);
+		connectionRef.current.onopen = () => authenticate(formValue);
+		connectionRef.current.onmessage = (message) => receiveMessage(message);
+	};
+
+	const receiveMessage = (message) => {
+		const data = JSON.parse(message.data);
+		if (data.type == 'auth' && data.status == 'ok') {
+			connectionRef.current.send(
+				JSON.stringify({
+					type: 'subscribe',
+					collection: 'messages',
+					query: {
+						fields: ['*', 'user_created.first_name'],
+						sort: 'date_created',
+					},
+				})
+			);
+		}
+		if (data.type === 'subscription' && data.event === 'init') {
+			for (const message of data.payload) {
+				setMessageHistory((history) => [...history, message]);
+			}
+		}
+		if (data.type === 'subscription' && data.event === 'create') {
+			setMessageHistory((history) => [...history, data.payload[0]]);
+		}
+	};
+
+	const messageSubmit = (event) => {
+		event.preventDefault();
+		connectionRef.current.send(
+			JSON.stringify({
+				type: 'items',
+				collection: 'messages',
+				action: 'create',
+				data: { text: newMessage },
+			})
+		);
+		setNewMessage('');
+	};
+
+	const handleLoginChange = (event) => {
+		setFormValue({ ...formValue, [event.target.name]: event.target.value });
+	};
+
+	const handleMessageChange = (event) => {
+		setNewMessage(event.target.value);
+	};
+
+	return (
+		<div className="App">
+			<form onSubmit={loginSubmit}>
+				<label htmlFor="email">Email</label>
+				<input type="email" id="email" name="email" value={formValue.email} onChange={handleLoginChange} />
+				<label htmlFor="password">Password</label>
+				<input type="password" id="password" name="password" value={formValue.password} onChange={handleLoginChange} />
+				<button type="submit">Submit</button>
+			</form>
+
+			<ol>
+				{messageHistory.map((message) => (
+					<li key={message.id}>
+						{message.user_created.first_name}: {message.text}
+					</li>
+				))}
+			</ol>
+
+			<form onSubmit={messageSubmit}>
+				<label htmlFor="message">Message</label>
+				<input type="text" id="message" name="message" value={newMessage} onChange={handleMessageChange} />
+				<button type="submit">Submit</button>
+			</form>
+		</div>
+	);
+}
+```
