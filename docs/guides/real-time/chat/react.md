@@ -45,3 +45,18 @@ function App() {
 
 The first form will handle user login, the second will handle new message submissions while the empty `<ol>` will be
 populated with messages we will create shortly.
+
+### Initialize Connection
+
+Create a `url` variable and be sure to replace `your-directus-url` with your project’s URL:
+
+```js
+const url = 'wss://your-directus-url/websocket';
+```
+
+Now, create a variable called `connectionRef` that has an initial null value. The `connectionRef` will later contain a
+WebSocket instance.
+
+```js
+const connectionRef = useRef(null);
+```
