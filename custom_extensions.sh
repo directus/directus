@@ -54,9 +54,9 @@ cp -r ./directus-custom-extensions-release/m2o-link-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/favorite-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/atomic-counters/* ${DIRECTUS_ENDPOINTS}/atomic-counters
 cp -r ./directus-custom-extensions-release/b64-upload ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/collect-hook ${DIRECTUS_HOOKS}
+cp -r ./directus-custom-extensions-release/collection-builder ${DIRECTUS_HOOKS}
 cp -r ./directus-custom-extensions-release/count-alias ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/salary-ranges ${DIRECTUS_INTERFACES}
 
 
-cp -r ./directus-custom-extensions-release/collect-hook/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
+#cp -r ./directus-custom-extensions-release/collection-builder/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
