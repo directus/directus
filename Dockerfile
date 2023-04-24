@@ -66,13 +66,13 @@ RUN : \
 	&& mkdir -p database extensions uploads \
 	;
 
-# RUN chmod +x ./custom_extensions.sh
-# RUN chmod +x ./payment_extensions.sh
-# RUN chmod +x ./chat_extensions.sh
-# RUN chmod +x ./leads_extensions.sh
-# RUN chmod +x ./crawless_colab_extensions.sh
+RUN chmod +x ./custom_extensions.sh
+RUN chmod +x ./payment_extensions.sh
+RUN chmod +x ./chat_extensions.sh
+RUN chmod +x ./leads_extensions.sh
+RUN chmod +x ./crawless_colab_extensions.sh
 
-# RUN ./custom_extensions.sh
+RUN ./custom_extensions.sh
 
 RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
 RUN if [[ -z "$CHAT_EXTENSION" ]] ; then echo "Chat extension disabled" ; else ./chat_extensions.sh ; fi
