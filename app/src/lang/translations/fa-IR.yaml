@@ -131,6 +131,7 @@ archive_confirm_count: >-
   هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید این {count} مورد را بایگانی کنید؟
 reset_system_permissions_to: 'بازنشانی مجوزهای سیستم به:'
 reset_system_permissions_copy: این عمل، مجوزهای سفارشی که ممکن است برای مجموعه‌های سیستمی اعمال کرده باشید را بازنویسی می کند. مطمئن هستید؟
+the_following_are_minimum_permissions: The following minimum permissions are automatically applied when "App Access" is enabled. You can grant additional permissions if needed, but you cannot reduce permissions below this level.
 app_access_minimum: حداقل مجوزها برای دسترسی به برنامه
 recommended_defaults: پیش‌فرض‌های مورد تأیید
 unarchive: خارج کردن از بایگانی
@@ -323,6 +324,7 @@ field_key: کلید API فیلد
 finish_setup: پایان راه‌اندازی
 dismiss: نادیده گرفتن
 toggle_raw_editor: تغییر به ویرایشگر Raw
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: مقدار خام
 copy_raw_value: کپی مقدار خام
 copy_raw_value_success: کپی شد
@@ -465,6 +467,8 @@ download_file: دانلود فایل
 open_file_in_tab: فایل را در تب جدید باز کنید
 start_export: شروع برون بری
 not_available_for_local_downloads: برای دانلودهای محلی در دسترس نیست
+exporting_all_items_in_collection: Exporting all {total} items within {collection}.
+exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
 exporting_no_items_to_export: موردی برای برون بری وجود ندارد پیکربندی برون بری را در زیر تنظیم کنید.
 exporting_download_hint: پس از تکمیل، این فایل {format} به طور خودکار در دستگاه شما دانلود می شود.
 exporting_batch_hint: این برون بری به صورت دسته‌ای پردازش می‌شود و پس از تکمیل، فایل {format} در کتابخانه فایل ذخیره می‌شود.
@@ -501,7 +505,7 @@ disabled: غیرفعال شده
 information: اطلاعات
 report_bug: گزارش باگ
 request_feature: درخواست قابلیت جدید
-request_body: Request Body
+request_body: درخواست به body
 interface_not_found: 'رابط "{interface}" یافت نشد.'
 operation_not_found: 'عملیات "{operation}" یافت نشد.'
 reset_interface: بازنشانی رابط
@@ -527,6 +531,7 @@ create_collection: ایجاد مجموعه
 no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
 no_collections_copy: شما هنوز هیچ مجموعه ای ندارید. لطفا با سرپرست سیستم خود تماس بگیرید.
 relationship_not_setup: این رابطه به درستی پیکربندی نشده است
+no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
 collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
 select_a_collection: انتخاب یک کالکشن
@@ -665,6 +670,7 @@ one_filtered_item: '۱ آیتم فیلتر شده'
 delete_collection_are_you_sure: >-
   آیا مطمئن هستید که می خواهید مجموعه "{collection}" را حذف کنید؟ با این کار مجموعه و همه موارد موجود در آن حذف می شود. این عمل دائمی است.
 delete_folder_are_you_sure: آیا مطمئن هستید که می خواهید پوشه "{folder}" را حذف کنید؟ پوشه ها و مجموعه های تو در تو به بالاترین سطح منتقل می شوند.
+delete_collection_peer_dependencies: The following fields will be deleted as well, as they are related to the current collection.
 collections_shown: مجموعه های نشان داده شده
 visible_collections: مجموعه های هویدا
 hidden_collections: مجموعه های پنهان
@@ -1140,6 +1146,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: نقشه برداری
     basemaps: Basemap
     basemaps_raster: Raster
@@ -1148,6 +1155,8 @@ fields:
     mapbox_key: کلید دسترسی Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: انتساب
+    attribution_placeholder: '© OpenStreetMap contributors'
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: تحولات اضافی
     project_name: نام پروژه
     project_descriptor: درباره پروژه
@@ -1215,6 +1224,7 @@ field_options:
   directus_settings:
     project_name_placeholder: پروژه من...
     project_color_note: نماد برگه ورود
+    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: یک پیام کوتاه و عمومی که از قالب بندی علامت گذاری پشتیبانی می کند...
     security_divider_title: امنیت
     auth_password_policy:
@@ -1312,8 +1322,10 @@ field_options:
       header: سربرگ Header
       value: مقدار
       add: اضافه کردن Header
+no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: بدون مقدار
 do_nothing: کاری انجام نشود
+generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: ذخیره نقش کاربر فعلی
 save_current_user_role: ذخیره نقش کاربر فعلی
 save_current_datetime: ذخیره تاریخ و ساعت فعلی
@@ -1324,6 +1336,8 @@ block: بلوک
 inline: درون خطی
 comment: نظر
 shares: اشتراک‌گذاری
+unlimited_usage: Unlimited usage
+uses_left: No uses left | 1 use left | {n} uses left
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
 expired: منقضی شده
@@ -1333,6 +1347,8 @@ share_item: اشتراک گذاری مورد
 shared_with_you: موردی با شما به اشتراک گذاشته شد
 shared_enter_passcode: برای ادامه رمز خود را وارد نمائید
 shared_leave_blank_for_unlimited: (خالی به معنی بدون محدودیت.)
+shared_times_remaining: This link can only be used {n} times
+shared_last_remaining: This link can only be used once
 shared_uses_left: برای امنیت بیشتر، این صفحه مشترک با تعداد محدودی بازدید پیکربندی شده است. در حال حاضر {n} بازدید باقی مانده است، پس از آن، صفحه دیگر قابل دسترسی نخواهد بود.
 share_access_page: دسترسی به صفحه Shared
 share_access_not_found: این صفحه به اشتراک گذاشته شده وجود ندارد یا قبلاً از حداکثر تعداد مجاز استفاده فراتر رفته است.
@@ -1346,8 +1362,13 @@ relational_triggers: رابطه محرک ها یا Triggers
 referential_action_field_label_m2o: در حال حذف {collection}...
 referential_action_field_label_o2m: در حال لغو {collection}
 referential_action_no_action: جلوگیری از حذف
+referential_action_cascade: Delete the {collection} item (cascade)
+referential_action_set_null: Nullify the {field} field
+referential_action_set_default: Set {field} to its default value
 choose_action: انتخاب فعالیت
 continue_label: ادامه
+continue_as: >-
+  {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: 'نقشِ {role}'
 creating_webhook: ساخت وب هوک
 default_label: پیش‌فرض
@@ -1363,10 +1384,12 @@ limit: محدوده
 email: ایمیل
 embed: درج
 fallback_icon: آیکن بازگشتی
+field: Field | Fields
 file: فایل
 file_library: مجموعه فایلها
 forgot_password: فراموشی رمز عبور
 hidden: مخفی
+hidden_in_group: Hidden in {group}
 icon: آیکن
 info: اطلاعات
 normal: عادی
@@ -1414,7 +1437,10 @@ something_went_wrong: مشکلی پیش آمد.
 sort_direction: جهت مرتب سازی
 export_location: برون‌برد مکان‌ها
 export_started: برون بری آغاز شد
+export_started_copy: Your export has started. You'll be notified when it's ready to download.
+sort_asc: Sort Ascending
 sort_desc: مرتب‌سازی نزولی
+disable_sort: Disable Sorting
 template: پوسته
 require_value_to_be_set: مقدار لازم برای تنظیم هنگام ایجاد
 translation: ترجمه
@@ -1477,6 +1503,7 @@ interfaces:
     show_more: 'نمایش {count} بیشتر'
     items_shown: آیتمهای نشان داده شده
   select-multiple-checkbox-tree:
+    name: Checkboxes (Tree)
     description: بین چند گزینه از طریق جعبه انتخاب تودرتو
     value_combining: ترکیب مقدار
     value_combining_note: زمانی که انتخاب‌های تودرتو انجام می‌شوند، مقداری را کنترل می‌کند.
@@ -1484,7 +1511,9 @@ interfaces:
     show_selected: نمایش موارد انتخاب شده
   input-code:
     code: کد
+    description: Write or share code snippets
     line_number: شمارۀ سطرها
+    line_wrapping: Line Wrapping
     placeholder: کد را اینجا وارد کنید...
   system-collection:
     collection: کالکشن یا مجموعه
@@ -1514,10 +1543,13 @@ interfaces:
     no_fields: بدون فیلد
   system-display-template:
     display-template: نمایش الگو
+    description: Mix static text and dynamic field values
+    collection_field: Collection field
     collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
     select_a_collection: انتخاب یک کالکشن
   presentation-divider:
     divider: جدا کننده
+    description: Label and divide fields into sections
     title_placeholder: یک عنوان وارد نمائید یا خالی رها کنید
     inline_title: عنوان درون خطی
     inline_title_label: نمایش عنوان داخل خط
@@ -1544,37 +1576,71 @@ interfaces:
     description: انتخاب یا آپلود موارد بیشتر
   input-hash:
     hash: هش
+    description: Enter a value to be hashed
+    masked: Masked
+    masked_label: Hide the true values
   select-icon:
     icon: آیکن
     description: انتخاب آیکن از منوی آبشاری
     search_for_icon: جستجو برای آیکون ها...
   file-image:
     image: عکس
+    description: Select or upload an image
     crop: تناسب با برش تصویر
     crop_label: برش تصویر در صورت نیاز
   system-interface:
     interface: رابط کاربری
     description: انتخاب یک رابط موجود
+    placeholder: Select an interface...
   system-interface-options:
     interface-options: تنظیمات رابط
+    description: A modal for selecting options of an interface
   list-m2m:
     many-to-many: چندتا به چندتا
     description: انتخاب چندین آیتم تقاطعی مرتبط
+    columns_configure_notice: You can configure the columns after creating this field.
+    display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: چندتا به یکی
     description: انتخاب یک آیتم مرتبط
     display_template: نمایش الگو
+  collection-item-dropdown:
+    collection-item-dropdown: Collection Item Dropdown
+    description: Select an item from a collection in JSON format
   input-rich-text-md:
     markdown: مارک‌داون
+    description: Enter and preview markdown
     edit: ویرایش
     preview: پيش نمايش
+    editorFont: Editor Font
+    previewFont: Preview Font
     customSyntax: بلوک‌های سفارشی
+    customSyntax_label: Add custom syntax types
+    customSyntax_add: Add custom syntax
+    box: Block / Inline
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
   map:
     map: نقشه
     description: یک موقعیت را روی نقشه انتخاب کنید
     zoom: بزرگنمايی
+    geometry_type: Geometry Type
+    geometry_format: Geometry Format
+    default_view: Default View
+    invalid_options: Invalid options
+    invalid_format: Invalid format ({format})
+    unexpected_geometry: Expected {expected}, got {got}.
+    fit_bounds: Fit view to data
+    native: Native
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Click to select {geometry}
   presentation-notice:
     notice: اطلاعیه
+    description: Display a short notice
+    text: Enter notice content here...
   list-o2m:
     one-to-many: یک به چند
     description: انتخاب چندین آیتم مرتبط
@@ -1582,6 +1648,7 @@ interfaces:
   system-folder:
     folder: پوشه
     description: یک پوشه انتخاب کنید
+    field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: پوشه اصلی مجموعه فایلها
     system_default: پیش فرض سیستم
   select-radio:
@@ -1589,10 +1656,13 @@ interfaces:
     description: یکی از چندین گزینه را انتخاب کنید
   list:
     repeater: تکرار شونده
+    description: Create multiple entries of the same structure
     edit_fields: ویرایش فیلدها
     add_label: 'برچسب "ساخت مورد جدید"'
     sort: مرتب سازی
     sort_placeholder: دستی
+    field_note_placeholder: Enter field note...
+    incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
   slider:
     slider: اسلایدر
     description: با استفاده از یک نوار لغزنده یک عدد را انتخاب کنید
@@ -1607,55 +1677,125 @@ interfaces:
     capitalization: حروف بزرگ
     uppercase: تبدیل به حروف بزرگ
     lowercase: تبدیل به حروف کوچک
+    auto_formatter: Use Title Auto-Formatter
     alphabetize: الفبایی
+    alphabetize_label: Force Alphabetical Order
+    add_tags: Add a tag and press Enter...
   input:
     input: ورودی
+    description: Manually enter a value
+    trim: Trim
+    trim_label: Trim the start and end
+    mask: Masked
+    mask_label: Hide the real value
+    clear: Cleared Value
+    clear_label: Save as empty string
+    minimum_value: Minimum Value
     maximum_value: حداکثر مقدار
+    step_interval: Step Interval
+    slug: Slugify
+    slug_label: Make entered value URL safe
   input-multiline:
     textarea: کادر متنی
+    description: Enter multiline plain-text
   input-translated-string:
     input-translated-string: رشته‌های ترجمه شده
+    description: Select or add translation string
     search_placeholder: جست‌وجو...
+    new_translation_string: New Translation String
   boolean:
     toggle: تغییر وضعیت
+    description: Switch between on and off
+    color_on: Color On
+    color_off: Color Off
+    label_placeholder: Enter a label...
     label_default: فعال شده
   translations:
     display_template: نمایش الگو
     no_collection: بدون مجموعه
+    toggle_split_view: Toggle Split View
     enable: فعال سازی
+    user_language: Use Current User Language
     default_language: زبان پیش‎فرض
+    language_field: Language Indicator Field
+    language_direction_field: Language Direction Field
+  list-o2m-tree-view:
+    description: Tree view for nested recursive one-to-many items
+    recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: کاربر
+    description: Select an existing directus user
+    select_mode: Select Mode
     modes:
+      auto: Auto
       dropdown: لیست کشویی
+      modal: مودال
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: A rich-text editor writing HTML content
     toolbar: نوار ابزار
     custom_formats: نوع سفارشی
+    options_override: Options Override
+    folder_note: Folder for uploaded files. Does not affect existing files.
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: A search typeahead for external API values.
+    results_path: Results Path
+    value_path: Value Path
+    text_path: Text Path
+    trigger: Trigger
+    rate: امتیاز
+  group-raw:
+    name: Raw Group
+    description: Render the fields as-is
   group-detail:
+    name: Detail Group
+    description: Render the fields as a collapsable section
+    show_header: Show Group Header
     header_icon: آیکن سربرگ
     header_color: رنگ هدر
+    start_open: Start Open
+    start_closed: Start Closed
   system-token:
     system-token: توکن
+    description: Manage static access token
+    placeholder: Click "Generate Token" to create a new static access token
+    value_securely_saved: Value Securely Saved
+    generate: Generate Token
     regenerate: بازسازی توکن
+    generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
     remove_token: حذف توکن
   system-raw-editor:
     system-raw-editor: ویرایشگر Raw
+    description: Allow entering of raw or mustache templating values
 displays:
   translations:
     translations: ترجمه‌ها
+    description: Preview translations
     enable: فعال سازی
+    user_language: Use Current User Language
     default_language: زبان پیش‎فرض
+    language_field: Language Indicator Field
   boolean:
     boolean: بولین
+    description: Display on and off states
+    label_on: Label On
+    label_on_placeholder: Enter an on label...
+    label_off: Label Off
+    label_off_placeholder: Enter an off label...
     icon_on: آیکن روشن
     icon_off: آیکن خاموش
+    color_on: Color On
+    color_off: Color Off
   collection:
     collection: کالکشن یا مجموعه
     description: نمایش یک مجموعه
     icon_label: نماد مجموعه را نشان دهید
   color:
     color: رنگ
-    description: نمایش یک نقطه رنگی
+    description: نمایش یک نسخه قالب بندی شده از متن
     default_color: رنگ پیش فرض
   datetime:
     datetime: تاریخ و زمان
@@ -1698,6 +1838,9 @@ displays:
     border: حاشیه
     border_label: نمایش حاشیه
     text: متن
+  formatted-json-value:
+    formatted-json-value: Formatted JSON value
+    description: Display a formatted version of the object
   icon:
     icon: آیکن
     description: نمایش یک آیکن
@@ -1717,17 +1860,25 @@ displays:
     show_as_dot: نمایش به عنوان نقطه
     choices_value_placeholder: یک مقدار را وارد کنید...
     choices_text_placeholder: ورود یک نوشته...
+  mime-type:
+    mime-type: MIME Type
+    description: Show the MIME-Type of a file
+    extension_only: Extension Only
+    extension_only_label: Only show the file extension
   rating:
     rating: رتبه بندی
+    description: Visualize a number as stars relative to the max-value
     simple: ساده
     simple_label: نمایش ستاره ها در قالبی ساده
+  raw:
+    raw: Raw Value
   related-values:
     related-values: مقادیر مرتبط
     description: نمایش مقادیر مرتبط
     display_template_configure_notice: پس از ایجاد این فیلد می توانید قالب نمایش را پیکربندی کنید
   user:
     user: کاربر
-    description: نمایش یک کاربر از پنل
+    description: Send an in-app notification to one or more users
     avatar: آواتار
     name: نام
     both: هردو
