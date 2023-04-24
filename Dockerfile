@@ -88,6 +88,9 @@ ENV \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
+RUN mkdir ~/.npm-global
+RUN npm config set prefix ${NPM_CONFIG_PREFIX}
+
 RUN npm install -g pnpm --prefix ${NPM_CONFIG_PREFIX}
 RUN pnpm install
 RUN pnpm -r build
