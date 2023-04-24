@@ -121,8 +121,8 @@ RUN export CI_API_V4_URL=${CI_API_V4_URL}
 # Not sure why we have this folder here
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
-COPY ./start_up.sh /directus/api
-RUN chmod +x /directus/api/start_up.sh
+#COPY ./start_up.sh /directus/api
+#RUN chmod +x /directus/api/start_up.sh
 
 COPY --from=builder --chown=node:node /directus/dist .
 
