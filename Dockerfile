@@ -69,6 +69,8 @@ RUN : \
 ####################################################################################################
 ## Create Production Image
 
+FROM node:18-alpine AS runtime
+
 USER node
 
 WORKDIR /directus
