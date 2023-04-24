@@ -8,7 +8,7 @@ import {
 	AllGeoJSON,
 	GeoJSONParser,
 	SimpleGeometry,
-} from '@directus/shared/types';
+} from '@directus/types';
 import { BBox, Point, Feature, FeatureCollection } from 'geojson';
 import { coordEach } from '@turf/meta';
 import { i18n } from '@/lang';
@@ -25,9 +25,11 @@ export function expandBBox(bbox: BBox, coord: Coordinate): BBox {
 
 export function getBBox(object: AnyGeometry): BBox {
 	let bbox: BBox = [Infinity, Infinity, -Infinity, -Infinity];
+
 	coordEach(object as AllGeoJSON, (coord) => {
 		bbox = expandBBox(bbox, coord as Coordinate);
 	});
+
 	return bbox;
 }
 
@@ -47,6 +49,7 @@ export function getGeometryFormatForType(type: Type): GeometryFormat | undefined
 
 export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 	const { geometryFormat } = options;
+
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
@@ -62,6 +65,7 @@ export function getSerializer(options: GeometryOptions): GeoJSONSerializer {
 
 export function getGeometryParser(options: GeometryOptions): (geom: any) => AnyGeometry {
 	const { geometryFormat } = options;
+
 	switch (geometryFormat) {
 		case 'native':
 		case 'geojson':
@@ -106,20 +110,25 @@ export function toGeoJSON(entries: any[], options: GeometryOptions): FeatureColl
 		const feature = { type: 'Feature', properties, geometry };
 		geojson.features.push(feature as Feature);
 	}
+
 	if (geojson.features.length == 0) {
 		delete geojson.bbox;
 	}
+
 	return geojson;
 }
 
 export function flatten(geometry?: AnyGeometry): SimpleGeometry[] {
 	if (!geometry) return [];
+
 	if (geometry.type == 'GeometryCollection') {
 		return geometry.geometries.flatMap(flatten);
 	}
+
 	if (geometry.type.startsWith('Multi')) {
 		const type = geometry.type.replace('Multi', '');
 		return (geometry.coordinates as any).map((coordinates: any) => ({ type, coordinates } as SimpleGeometry));
 	}
+
 	return [geometry as SimpleGeometry];
 }

@@ -7,11 +7,11 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useElementSize } from '@directus/shared/composables';
+import { useElementSize } from '@directus/composables';
 
 interface Props {
 	/** The text that should be displayed */
-	text: string | number | boolean | Record<string, any> | Array<any>;
+	text?: string | number | boolean | Record<string, any> | Array<any>;
 	/** What parts of the text should be highlighted */
 	highlight?: string;
 	/** The placement of the tooltip */
@@ -19,6 +19,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
+	text: undefined,
 	highlight: undefined,
 	placement: 'top',
 });

@@ -1,6 +1,6 @@
-import { parseJSON } from '@directus/shared/utils';
-import { Knex } from 'knex';
-import logger from '../../logger';
+import { parseJSON } from '@directus/utils';
+import type { Knex } from 'knex';
+import logger from '../../logger.js';
 
 export async function up(knex: Knex): Promise<void> {
 	const dividerGroups = await knex.select('*').from('directus_fields').where('interface', '=', 'group-divider');

@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useUserStore } from '@/stores/user';
-import { Preset } from '@directus/shared/types';
+import { Preset } from '@directus/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
@@ -15,7 +15,7 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout_query: null,
 	layout_options: null,
 	refresh_interval: null,
-	icon: 'bookmark_outline',
+	icon: 'bookmark',
 	color: null,
 };
 

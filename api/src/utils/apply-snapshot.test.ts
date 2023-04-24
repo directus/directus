@@ -1,18 +1,19 @@
-import knex, { Knex } from 'knex';
-import { getTracker, MockClient, Tracker } from 'knex-mock-client';
-import { snapshotApplyTestSchema } from '../__utils__/schemas';
-
-import { CollectionsService, FieldsService } from '../services';
-import { applySnapshot } from './apply-snapshot';
-import * as getSchema from './get-schema';
+import type { Knex } from 'knex';
+import knex from 'knex';
+import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import type { MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
 import {
 	snapshotBeforeCreateCollection,
+	snapshotBeforeDeleteCollection,
 	snapshotCreateCollection,
 	snapshotCreateCollectionNotNested,
-	snapshotBeforeDeleteCollection,
-} from '../__utils__/snapshots';
-import { Snapshot, SnapshotField } from '../types';
-import { describe, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
+} from '../__utils__/snapshots.js';
+import { CollectionsService, FieldsService } from '../services/index.js';
+import type { Snapshot, SnapshotField } from '../types/index.js';
+import { applySnapshot } from './apply-snapshot.js';
+import * as getSchema from './get-schema.js';
 
 class Client_PG extends MockClient {}
 
@@ -23,11 +24,12 @@ describe('applySnapshot', () => {
 	const mutationOptions = {
 		autoPurgeSystemCache: false,
 		bypassEmitAction: expect.any(Function),
+		bypassLimits: true,
 	};
 
 	beforeEach(() => {
-		db = vi.mocked(knex({ client: Client_PG }));
-		tracker = getTracker();
+		db = vi.mocked(knex.default({ client: Client_PG }));
+		tracker = createTracker(db);
 	});
 
 	afterEach(() => {

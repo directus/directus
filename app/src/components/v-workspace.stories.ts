@@ -1,4 +1,5 @@
 import VWorkspace from './v-workspace.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -15,7 +16,9 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
+	editMode: false,
 	tiles: [
 		{
 			id: '1',

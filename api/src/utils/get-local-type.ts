@@ -1,4 +1,4 @@
-import { FieldMeta, Type } from '@directus/shared/types';
+import type { FieldMeta, Type } from '@directus/types';
 
 const localTypeMap: Record<string, Type | 'unknown'> = {
 	// Shared
@@ -114,7 +114,7 @@ export default function getLocalType(
 	if (!column) return 'alias';
 
 	const dataType = column.data_type.toLowerCase();
-	const type = localTypeMap[dataType.split('(')[0]];
+	const type = localTypeMap[dataType.split('(')[0]!];
 
 	const special = field?.special;
 
@@ -125,6 +125,7 @@ export default function getLocalType(
 		if (special.includes('uuid') || special.includes('file')) return 'uuid';
 		if (special.includes('cast-timestamp')) return 'timestamp';
 		if (special.includes('cast-datetime')) return 'dateTime';
+
 		if (type?.startsWith('geometry')) {
 			return (special[0] as Type) || 'geometry';
 		}

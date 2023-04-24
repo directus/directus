@@ -2,7 +2,8 @@
 
 ARG NODE_VERSION=18-alpine
 
-FROM node:${NODE_VERSION}
+# FROM node:${NODE_VERSION}
+FROM node:18-alpine AS builder
 
 ARG GITLAB_PIPELINE_TOKEN
 ARG CI_API_V4_URL
@@ -37,12 +38,52 @@ RUN apk update
 RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl wget
 RUN apk add nano
 
+# syntax=docker/dockerfile:1.4
+
+####################################################################################################
+## Build Packages
+
 WORKDIR /directus
 
-COPY . .
+ENV NODE_OPTIONS=--max-old-space-size=8192
 
-RUN apk add --update python3 make g++\
-   && rm -rf /var/cache/apk/*
+COPY package.json .
+RUN corepack enable && corepack prepare
+
+COPY pnpm-lock.yaml .
+RUN pnpm fetch
+COPY . .
+RUN pnpm install --recursive --offline --frozen-lockfile
+
+RUN : \
+	&& npm_config_workspace_concurrency=1 pnpm run build \
+	&& pnpm --filter directus deploy --prod dist \
+	&& cd dist \
+	&& pnpm pack \
+	&& tar -zxvf *.tgz package/package.json \
+	&& mv package/package.json package.json \
+	&& rm -r *.tgz package \
+	&& mkdir -p database extensions uploads \
+	;
+
+####################################################################################################
+## Create Production Image
+
+FROM node:18-alpine AS runtime
+
+USER node
+
+WORKDIR /directus
+
+EXPOSE 8055
+
+ENV \
+	DB_CLIENT="sqlite3" \
+	DB_FILENAME="/directus/database/database.sqlite" \
+	EXTENSIONS_PATH="/directus/extensions" \
+	STORAGE_LOCAL_ROOT="/directus/uploads" \
+	NODE_ENV="production" \
+	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
 RUN npm install -g pnpm
 RUN pnpm install
@@ -70,10 +111,12 @@ RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 COPY ./start_up.sh /directus/api
 RUN chmod +x /directus/api/start_up.sh
 
-WORKDIR /directus/api
+COPY --from=builder --chown=node:node /directus/dist .
 
 RUN mkdir -p ./uploads
 RUN mkdir -p ./snapshots
 
-CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
-EXPOSE 8055/tcp
+CMD : \
+	&& node /directus/cli.js bootstrap \
+	&& node /directus/cli.js start \
+	;

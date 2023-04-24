@@ -1,13 +1,14 @@
-import { Knex } from 'knex';
-import SchemaInspector from 'knex-schema-inspector';
-import logger from '../../logger';
-import { RelationMeta } from '@directus/shared/types';
-import { getDefaultIndexName } from '../../utils/get-default-index-name';
+import type { RelationMeta } from '@directus/types';
+import type { Knex } from 'knex';
+import { createInspector } from '@directus/schema';
+import logger from '../../logger.js';
+import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
 
 export async function up(knex: Knex): Promise<void> {
-	const inspector = SchemaInspector(knex);
+	const inspector = createInspector(knex);
 
 	const foreignKeys = await inspector.foreignKeys();
+
 	const relations = await knex
 		.select<RelationMeta[]>('id', 'many_collection', 'many_field', 'one_collection')
 		.from('directus_relations');
@@ -16,6 +17,7 @@ export async function up(knex: Knex): Promise<void> {
 		const exists = !!foreignKeys.find(
 			(fk) => fk.table === relation?.many_collection && fk.column === relation?.many_field
 		);
+
 		return exists === false;
 	});
 
@@ -43,6 +45,7 @@ export async function up(knex: Knex): Promise<void> {
 			logger.warn(
 				`Illegal relationship ${constraint.many_collection}.${constraint.many_field}<->${constraint.one_collection} encountered. Many field equals collections primary key.`
 			);
+
 			corruptedRelations.push(constraint.id);
 			continue;
 		}
@@ -101,6 +104,7 @@ export async function up(knex: Knex): Promise<void> {
 				}
 
 				const indexName = getDefaultIndexName('foreign', constraint.many_collection, constraint.many_field);
+
 				const builder = table
 					.foreign(constraint.many_field, indexName)
 					.references(relatedPrimaryKeyField)
@@ -115,6 +119,7 @@ export async function up(knex: Knex): Promise<void> {
 			logger.warn(
 				`Couldn't add foreign key constraint for ${constraint.many_collection}.${constraint.many_field}<->${constraint.one_collection}`
 			);
+
 			logger.warn(err);
 		}
 	}
@@ -144,6 +149,7 @@ export async function down(knex: Knex): Promise<void> {
 			logger.warn(
 				`Couldn't drop foreign key constraint for ${relation.many_collection}.${relation.many_field}<->${relation.one_collection}`
 			);
+
 			logger.warn(err);
 		}
 	}

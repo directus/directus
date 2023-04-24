@@ -1,0 +1,68 @@
+[build.environment]
+	NODE_VERSION = "18"
+
+[build]
+	publish = ".vitepress/dist"
+	command = "pnpm run build"
+
+[dev]
+	command = "pnpm run dev"
+	targetPort = 5173
+	autoLaunch = false
+	framework = "#custom"
+
+[[redirects]]
+	from = "/"
+	to = "/getting-started/introduction"
+	status = 301
+	force = true
+
+[[redirects]]
+	from = "/api/*"
+	to = "/.netlify/functions/:splat"
+	status = 200
+
+[[redirects]]
+	from = "/configuration/*"
+	to = "/app/:splat"
+	status = 301
+
+[[redirects]]
+	from = "/cookbook/*"
+	to = "/guides/:splat"
+	status = 301
+
+[[redirects]]
+	from = "/guides/flows/trigger-static-site-build-*"
+	to = "/guides/headless-cms/trigger-static-builds/:splat"
+	status = 301
+
+[[redirects]]
+	from = "/guides/data-models/personal-portfolio-using-m2a"
+	to = "/"
+	status = 301
+
+[[redirects]]
+	from = "/guides/data-models/build-a-content-hierarchy"
+	to = "/"
+	status = 301
+
+[[redirects]]
+	from = "/guides/permissions/basic-workflows"
+	to = "/guides/headless-cms/approval-workflows"
+	status = 301
+
+[[redirects]]
+	from = "/use-cases/headless-cms/build-website-*"
+	to = "/guides/headless-cms/build-static-website/:splat"
+	status = 301
+	
+[[redirects]]
+	from = "/use-cases/headless-cms/create-reusable-page-components-using-m2a"
+	to = "/guides/headless-cms/reusable-components"
+	status = 301
+
+[[redirects]]
+	from = "/cloud/*"
+	to = "/"
+	status = 301

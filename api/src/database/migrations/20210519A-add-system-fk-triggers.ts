@@ -1,6 +1,6 @@
-import { Knex } from 'knex';
-import logger from '../../logger';
-import SchemaInspector from 'knex-schema-inspector';
+import type { Knex } from 'knex';
+import { createInspector } from '@directus/schema';
+import logger from '../../logger.js';
 
 /**
  * Things to keep in mind:
@@ -81,14 +81,14 @@ const updates = [
 ];
 
 export async function up(knex: Knex): Promise<void> {
-	const inspector = SchemaInspector(knex);
+	const inspector = createInspector(knex);
 
 	const foreignKeys = await inspector.foreignKeys();
 
 	for (const update of updates) {
 		for (const constraint of update.constraints) {
 			const existingForeignKey = foreignKeys.find(
-				(fk) =>
+				(fk: any) =>
 					fk.table === update.table &&
 					fk.column === constraint.column &&
 					fk.foreign_key_table === constraint.references.split('.')[0] &&
@@ -118,6 +118,7 @@ export async function up(knex: Knex): Promise<void> {
 					logger.warn(
 						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
 					);
+
 					logger.warn(err);
 				}
 			}
@@ -160,6 +161,7 @@ export async function down(knex: Knex): Promise<void> {
 					logger.warn(
 						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
 					);
+
 					logger.warn(err);
 				}
 			}

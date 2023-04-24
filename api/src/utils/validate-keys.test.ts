@@ -1,7 +1,7 @@
-import { validateKeys } from '../../src/utils/validate-keys';
-import { SchemaOverview } from '@directus/shared/types';
+import type { SchemaOverview } from '@directus/types';
 import { v4 as uuid } from 'uuid';
 import { describe, expect, it } from 'vitest';
+import { validateKeys } from '../../src/utils/validate-keys.js';
 
 const schema: SchemaOverview = {
 	collections: {
@@ -92,6 +92,7 @@ describe('validate keys', () => {
 			expect(() =>
 				validateKeys(schema, 'pk_uuid', 'id', [uuid(), 'fakeuuid-62d9-434d-a7c7-878c8376782e', uuid()])
 			).toThrowError();
+
 			expect(() => validateKeys(schema, 'pk_uuid', 'id', [uuid(), 'invalid', uuid()])).toThrowError();
 			expect(() => validateKeys(schema, 'pk_uuid', 'id', [uuid(), NaN, uuid()])).toThrowError();
 			expect(() => validateKeys(schema, 'pk_uuid', 'id', [uuid(), 111, uuid()])).toThrowError();

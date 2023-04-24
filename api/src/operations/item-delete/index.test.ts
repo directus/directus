@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-import { ItemsService } from '../../services';
-import config from './index';
+import { ItemsService } from '../../services/items.js';
+import config from './index.js';
 
-vi.mock('../../services', () => {
+vi.mock('../../services/items.js', () => {
 	const ItemsService = vi.fn();
 	ItemsService.prototype.deleteByQuery = vi.fn();
 	ItemsService.prototype.deleteOne = vi.fn();
@@ -13,7 +13,7 @@ vi.mock('../../services', () => {
 
 const getSchema = vi.fn().mockResolvedValue({});
 
-vi.mock('../../utils/get-accountability-for-role', () => ({
+vi.mock('../../utils/get-accountability-for-role.js', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
 
@@ -96,6 +96,7 @@ describe('Operations / Item Delete', () => {
 
 	test('should emit events for deleteOne when true', async () => {
 		const key = 1;
+
 		await config.handler(
 			{ collection: testCollection, key, emitEvents: true } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -106,6 +107,7 @@ describe('Operations / Item Delete', () => {
 
 	test.each([undefined, false])('should not emit events for deleteOne when %s', async (emitEvents) => {
 		const key = 1;
+
 		await config.handler(
 			{ collection: testCollection, key, emitEvents } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -127,6 +129,7 @@ describe('Operations / Item Delete', () => {
 
 	test('should emit events for deleteMany when true', async () => {
 		const keys = [1, 2, 3];
+
 		await config.handler(
 			{ collection: testCollection, key: keys, emitEvents: true } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -137,6 +140,7 @@ describe('Operations / Item Delete', () => {
 
 	test.each([undefined, false])('should not emit events for deleteMany when %s', async (emitEvents) => {
 		const keys = [1, 2, 3];
+
 		await config.handler(
 			{ collection: testCollection, key: keys, emitEvents } as any,
 			{ accountability: testAccountability, getSchema } as any

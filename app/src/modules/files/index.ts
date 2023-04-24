@@ -1,4 +1,4 @@
-import { defineModule } from '@directus/shared/utils';
+import { defineModule } from '@directus/utils';
 import AddNew from './routes/add-new.vue';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
@@ -76,6 +76,7 @@ export default defineModule({
 		const permission = permissions.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'read'
 		);
+
 		return !!permission;
 	},
 });

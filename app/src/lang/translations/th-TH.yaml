@@ -79,6 +79,8 @@ create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 message: ข้อความ
 create_webhook: สร้างเว็บฮุก
+create_translation_string: สร้างสตริงการแปล
+no_translation_string: ไม่มีสตริงการแปล
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว
@@ -117,7 +119,6 @@ archive_confirm_count: >-
   ไม่มีไอเท็มที่ถูกเลือก | คุณแน่ใจว่าต้องการจัดเก็บไอเท็มเหล่านี้? | คุณแน่ใจว่าต้องการจัดเก็บไอเท็มจำนวน {count} ไอเท็ม?
 reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
 reset_system_permissions_copy: สิทธิ์การเข้าถึงคอลเลกชั่นที่เคยกำหนดไว้แล้วจะถูกบันทึกทับ ยังแน่ใจที่จะทำอยู่หรือไม่?
-the_following_are_minimum_permissions: นี่คือสิทธิ์ขั้นพื้นฐานเมื่อเปิดการใช้งานในระดับ "App Access" คุณสามารถเพิ่มเติมสิทธิ์ต่างๆ หลังจากนี้ แต่ยังไม่ใช่ตอนนี้
 app_access_minimum: เข้าถึงแอปได้ขั้นต่ำ
 recommended_defaults: ค่าตั้งต้นที่แนะนำ
 unarchive: ยกเลิกการเก็บ
@@ -254,6 +255,7 @@ o2m_relationship: ความสัมพันธ์แบบ One to Many
 m2m_relationship: ความสัมพันธ์แบบ Many to Many
 m2a_relationship: ความสัมพันธ์แบบ Many to Any
 invalid_item: ไอเท็มไม่ถูกต้อง
+modal: กล่อง
 next: ถัดไป
 field_name: ชื่อฟิลด์
 translations: การแปลภาษา
@@ -1239,7 +1241,6 @@ interfaces:
     edit_fields: แก้ไขฟิลด์
     add_label: 'ป้ายกำกับ "สร้างใหม่"'
     sort: เรียง
-    field_name_placeholder: กรอกชื่อฟิลด์
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:
     slider: แถบเลื่อน

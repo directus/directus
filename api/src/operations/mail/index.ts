@@ -1,26 +1,34 @@
-import { defineOperationApi } from '@directus/shared/utils';
-import { MailService } from '../../services';
-import { md } from '../../utils/md';
+import { defineOperationApi } from '@directus/utils';
+import type { EmailOptions } from '../../services/mail/index.js';
+import { MailService } from '../../services/mail/index.js';
+import { md } from '../../utils/md.js';
 
-type Options = {
-	body: string;
+export type Options = {
+	body?: string;
+	template?: string;
+	data?: Record<string, any>;
 	to: string;
-	type: 'wysiwyg' | 'markdown';
+	type: 'wysiwyg' | 'markdown' | 'template';
 	subject: string;
 };
 
 export default defineOperationApi<Options>({
 	id: 'mail',
 
-	handler: async ({ body, to, type, subject }, { accountability, database, getSchema }) => {
+	handler: async ({ body, template, data, to, type, subject }, { accountability, database, getSchema }) => {
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
-		// If 'body' is of type object/undefined (happens when body consists solely of a placeholder)
-		// convert it to JSON string
+		const mailObject: EmailOptions = { to, subject };
 		const safeBody = typeof body !== 'string' ? JSON.stringify(body) : body;
-		await mailService.send({
-			html: type === 'wysiwyg' ? safeBody : md(safeBody),
-			to,
-			subject,
-		});
+
+		if (type === 'template') {
+			mailObject.template = {
+				name: template || 'base',
+				data: data || {},
+			};
+		} else {
+			mailObject.html = type === 'wysiwyg' ? safeBody : md(safeBody);
+		}
+
+		await mailService.send(mailObject);
 	},
 });

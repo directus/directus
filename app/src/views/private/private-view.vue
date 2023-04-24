@@ -30,6 +30,7 @@
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				:small="smallHeader"
+				:shadow="headerShadow"
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
@@ -74,7 +75,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useElementSize } from '@directus/shared/composables';
+import { useElementSize } from '@directus/composables';
 import { useEventListener } from '@/composables/use-event-listener';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { useTitle } from '@/composables/use-title';
@@ -98,9 +99,10 @@ import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 interface Props {
 	title?: string | null;
 	smallHeader?: boolean;
+	headerShadow?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false });
+const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false, headerShadow: true });
 
 const { t } = useI18n();
 
@@ -113,8 +115,10 @@ const { width: contentWidth } = useElementSize(contentEl);
 const { width: sidebarWidth } = useElementSize(sidebarEl);
 
 const moduleNavEl = ref<HTMLElement>();
+
 const { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp } =
 	useModuleNavResize();
+
 useEventListener(window, 'pointermove', onPointerMove);
 useEventListener(window, 'pointerup', onPointerUp);
 
@@ -222,6 +226,7 @@ function useModuleNavResize() {
 	function onPointerUp() {
 		if (dragging.value === true) {
 			dragging.value = false;
+
 			if (rafId.value) {
 				window.cancelAnimationFrame(rafId.value);
 			}
@@ -240,6 +245,7 @@ function openSidebar(event: PointerEvent) {
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
+	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 
 	display: flex;
 	width: 100%;

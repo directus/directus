@@ -92,7 +92,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, useSlots } from 'vue';
-import { ShowSelect } from '@directus/shared/types';
+import { ShowSelect } from '@directus/types';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
@@ -298,6 +298,7 @@ function getSelectedState(item: Item) {
 	const selectedKeys = props.selectionUseKeys
 		? props.modelValue
 		: props.modelValue.map((item: any) => item[props.itemKey]);
+
 	return selectedKeys.includes(item[props.itemKey]);
 }
 
@@ -331,6 +332,7 @@ function onSortChange(event: EndEvent) {
 
 	emit('manual-sort', { item, to });
 }
+
 function updateSort(newSort: Sort) {
 	emit('update:sort', newSort?.by ? newSort : null);
 }

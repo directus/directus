@@ -19,8 +19,8 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, defineComponent, PropType, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
-import { GEOMETRY_TYPES } from '@directus/shared/constants';
-import { Field, GeometryType, GeometryOptions } from '@directus/shared/types';
+import { GEOMETRY_TYPES } from '@directus/constants';
+import { Field, GeometryType, GeometryOptions } from '@directus/types';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, CameraOptions } from 'maplibre-gl';
@@ -78,6 +78,7 @@ export default defineComponent({
 		const basemaps = getBasemapSources();
 		const appStore = useAppStore();
 		const { basemap } = toRefs(appStore);
+
 		const style = computed(() => {
 			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
 			return getStyleFromBasemapSource(source);
@@ -90,6 +91,7 @@ export default defineComponent({
 				...(defaultView.value || {}),
 				...(mapboxKey ? { accessToken: mapboxKey } : {}),
 			});
+
 			map.on('moveend', () => {
 				defaultView.value = {
 					center: map.getCenter(),
@@ -99,6 +101,7 @@ export default defineComponent({
 				};
 			});
 		});
+
 		onUnmounted(() => {
 			map.remove();
 		});

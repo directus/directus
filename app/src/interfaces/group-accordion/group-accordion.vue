@@ -25,9 +25,9 @@
 </template>
 
 <script lang="ts">
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { defineComponent, PropType, ref, watch } from 'vue';
-import { ValidationError } from '@directus/shared/types';
+import { ValidationError } from '@directus/types';
 import AccordionSection from './accordion-section.vue';
 import { isEqual } from 'lodash';
 
@@ -121,9 +121,11 @@ export default defineComponent({
 			(newVal, oldVal) => {
 				if (!props.validationErrors) return;
 				if (isEqual(newVal, oldVal)) return;
+
 				const includedFieldsWithErrors = props.validationErrors.filter((validationError) =>
 					groupFields.value.find((rootField) => rootField.field === validationError.field)
 				);
+
 				if (includedFieldsWithErrors.length > 0) selection.value = [includedFieldsWithErrors[0].field];
 			}
 		);
@@ -148,11 +150,13 @@ export default defineComponent({
 				() => props.fields,
 				() => {
 					const newVal = limitFields();
+
 					if (!isEqual(groupFields.value, newVal)) {
 						groupFields.value = newVal;
 					}
 				}
 			);
+
 			watch(
 				() => props.values,
 				(newVal) => {

@@ -2,6 +2,9 @@
 	<v-notice v-if="!relationInfo" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
+	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ t('no_singleton_relations') }}
+	</v-notice>
 	<div v-else class="one-to-many">
 		<div :class="{ bordered: layout === LAYOUTS.TABLE }">
 			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
@@ -47,10 +50,13 @@
 				v-model:headers="headers"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
 				:items="displayItems"
 				:row-height="tableRowHeight"
 				show-resize
 				@click:row="editRow"
+				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
@@ -193,8 +199,8 @@
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
 import { parseFilter } from '@/utils/parse-filter';
-import { Filter } from '@directus/shared/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -219,7 +225,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		width: string;
-		layout: LAYOUTS;
+		layout?: LAYOUTS;
 		tableSpacing?: 'compact' | 'cozy' | 'comfortable';
 		fields?: Array<string>;
 		template?: string | null;
@@ -272,6 +278,7 @@ const fields = computed(() => {
 	if (!relationInfo.value) return [];
 
 	let displayFields: string[] = [];
+
 	if (props.layout === LAYOUTS.TABLE) {
 		displayFields = adjustFieldsForDisplays(props.fields, relationInfo.value.relatedCollection.collection);
 	} else {
@@ -300,12 +307,15 @@ const query = computed<RelationQueryMultiple>(() => {
 	if (!relationInfo.value) {
 		return q;
 	}
+
 	if (searchFilter.value) {
 		q.filter = searchFilter.value;
 	}
+
 	if (search.value) {
 		q.search = search.value;
 	}
+
 	if (sort.value) {
 		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
 	}
@@ -355,11 +365,13 @@ watch(
 		const relatedCollection = relationInfo.value.relatedCollection.collection;
 
 		const contentWidth: Record<string, number> = {};
+
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
 			props.fields.forEach((key) => {
 				if (!contentWidth[key]) {
 					contentWidth[key] = 5;
 				}
+
 				if (String(item[key]).length > contentWidth[key]) {
 					contentWidth[key] = String(item[key]).length;
 				}
@@ -474,8 +486,6 @@ function editRow({ item }: { item: DisplayItem }) {
 }
 
 function stageEdits(item: Record<string, any>) {
-	if (isEmpty(item)) return;
-
 	if (newItem) {
 		create(item);
 	} else {
@@ -499,6 +509,7 @@ function deleteItem(item: DisplayItem) {
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
+
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],

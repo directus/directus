@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
 reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
-the_following_are_minimum_permissions: Acestea sunt permisiunile minim necesare pentru activarea opțiunii "Acces aplicații". Puteți extinde aceste permisiuni, dar nu le puteți restrânge.
 app_access_minimum: Minimul necesar pt. acces aplicație
 recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
@@ -295,6 +294,7 @@ o2m_relationship: Relație unu la mai multe (O2M)
 m2m_relationship: Relație mai multe la mai multe (M2M)
 m2a_relationship: Relație mai multe la oricare (M2A)
 invalid_item: Element invalid
+modal: Modal
 next: Urmatorul
 field_name: Nume câmp
 translations: Traduceri
@@ -1503,7 +1503,6 @@ interfaces:
   system-folder:
     folder: Dosar
     description: Selectați un dosar
-    field_hint: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     root_name: Rădăcina bibliotecii de fișiere
     system_default: Setări implicite ale sistemului
   select-radio:
@@ -1515,7 +1514,6 @@ interfaces:
     edit_fields: Editare câmpuri
     add_label: 'Eticheta „Creează nou”'
     sort: Sortează
-    field_name_placeholder: Introduceți numele câmpului...
     field_note_placeholder: Introduceți nota câmpului...
     incompatible_data: Datele curente nu sunt compatibile cu interfața de repetare și vor fi suprascrise atunci când se adaugă elemente la repetator
   slider:

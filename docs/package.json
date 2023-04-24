@@ -1,0 +1,21 @@
+{
+	"name": "docs",
+	"private": true,
+	"scripts": {
+		"spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
+		"dev": "vitepress dev",
+		"build": "vitepress build",
+		"preview": "vitepress preview",
+		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
+	},
+	"devDependencies": {
+		"@thumbsmith/url": "0.1.3",
+		"@unhead/vue": "1.1.26",
+		"spellchecker-cli": "6.1.1",
+		"vitepress": "1.0.0-alpha.73",
+		"vue": "3.2.47"
+	},
+	"dependencies": {
+		"node-fetch": "3.3.1"
+	}
+}

@@ -1,5 +1,5 @@
-import { FailedValidationException } from '@directus/shared/exceptions';
-import {
+import { FailedValidationException } from '@directus/exceptions';
+import type {
 	Accountability,
 	Aggregate,
 	Filter,
@@ -7,13 +7,14 @@ import {
 	PermissionsAction,
 	Query,
 	SchemaOverview,
-} from '@directus/shared/types';
-import { validatePayload } from '@directus/shared/utils';
-import { Knex } from 'knex';
-import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
-import getDatabase from '../database';
-import { ForbiddenException } from '../exceptions';
-import {
+} from '@directus/types';
+import { validatePayload } from '@directus/utils';
+import type { Knex } from 'knex';
+import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
+import { GENERATE_SPECIAL } from '../constants.js';
+import getDatabase from '../database/index.js';
+import { ForbiddenException } from '../exceptions/index.js';
+import type {
 	AbstractServiceOptions,
 	AST,
 	FieldNode,
@@ -21,12 +22,11 @@ import {
 	Item,
 	NestedCollectionNode,
 	PrimaryKey,
-} from '../types';
-import { stripFunction } from '../utils/strip-function';
-import { ItemsService } from './items';
-import { PayloadService } from './payload';
-import { getRelationInfo } from '../utils/get-relation-info';
-import { GENERATE_SPECIAL } from '../constants';
+} from '../types/index.js';
+import { getRelationInfo } from '../utils/get-relation-info.js';
+import { stripFunction } from '../utils/strip-function.js';
+import { ItemsService } from './items.js';
+import { PayloadService } from './payload.js';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -38,6 +38,7 @@ export class AuthorizationService {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+
 		this.payloadService = new PayloadService('directus_permissions', {
 			knex: this.knex,
 			schema: this.schema,
@@ -172,7 +173,7 @@ export class AuthorizationService {
 							extractRequiredFieldPermissions(collection, ast.query?.[collection]?.filter ?? {})
 						);
 
-						for (const child of ast.children[collection]) {
+						for (const child of ast.children[collection]!) {
 							const childPermissions = validateFilterPermissions(child, schema, action, accountability);
 
 							if (Object.keys(childPermissions).length > 0) {
@@ -236,11 +237,14 @@ export class AuthorizationService {
 											parentCollection,
 											parentField
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
+
 								return result;
 							}
+
 							// Filter value is not a filter, so we should skip it
 							return result;
 						}
@@ -249,6 +253,7 @@ export class AuthorizationService {
 							(result[collection] || (result[collection] = new Set())).add(filterKey);
 							// add virtual relation to the required permissions
 							const { relation } = getRelationInfo([], collection, filterKey);
+
 							if (relation?.collection && relation?.field) {
 								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
 							}
@@ -259,10 +264,10 @@ export class AuthorizationService {
 
 							if (collection) {
 								// Add the `item` field to the required permissions
-								(result[collection] || (result[collection] = new Set())).add(field);
+								(result[collection] || (result[collection] = new Set())).add(field!);
 
 								// Add the `collection` field to the required permissions
-								result[collection].add('collection');
+								result[collection]!.add('collection');
 							} else {
 								const relation = schema.relations.find((relation) => {
 									return (
@@ -278,14 +283,14 @@ export class AuthorizationService {
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
 
 								// Add the `item` field to the required permissions
-								(result[relatedCollectionName] || (result[relatedCollectionName] = new Set())).add(field);
+								(result[relatedCollectionName] || (result[relatedCollectionName] = new Set())).add(field!);
 
 								// Add the `collection` field to the required permissions
-								result[relatedCollectionName].add('collection');
+								result[relatedCollectionName]!.add('collection');
 							}
 
 							// Continue to parse the filter for nested `collection` afresh
-							const requiredPermissions = extractRequiredFieldPermissions(collectionScope, filterValue);
+							const requiredPermissions = extractRequiredFieldPermissions(collectionScope!, filterValue);
 							result = mergeRequiredFieldPermissions(result, requiredPermissions);
 						} else {
 							if (collection) {
@@ -303,6 +308,7 @@ export class AuthorizationService {
 
 								parentCollection =
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+
 								(result[parentCollection] || (result[parentCollection] = new Set())).add(filterKey);
 							}
 
@@ -321,6 +327,7 @@ export class AuthorizationService {
 														parentCollection,
 														filterKey
 													);
+
 													result = mergeRequiredFieldPermissions(result, requiredPermissions);
 												}
 											}
@@ -332,6 +339,7 @@ export class AuthorizationService {
 											parentCollection,
 											filterKey
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
@@ -347,11 +355,12 @@ export class AuthorizationService {
 			function mergeRequiredFieldPermissions(current: Record<string, Set<string>>, child: Record<string, Set<string>>) {
 				for (const collection of Object.keys(child)) {
 					if (!current[collection]) {
-						current[collection] = child[collection];
+						current[collection] = child[collection]!;
 					} else {
-						current[collection] = new Set([...current[collection], ...child[collection]]);
+						current[collection] = new Set([...current[collection]!, ...child[collection]!]);
 					}
 				}
+
 				return current;
 			}
 
@@ -382,8 +391,8 @@ export class AuthorizationService {
 						}
 
 						allowedFields = permission?.fields
-							? [...permission.fields, schema.collections[collection].primary]
-							: [schema.collections[collection].primary];
+							? [...permission.fields, schema.collections[collection]!.primary]
+							: [schema.collections[collection]!.primary];
 					} else if (!permission || !permission.fields) {
 						throw new ForbiddenException();
 					} else {
@@ -392,15 +401,15 @@ export class AuthorizationService {
 
 					if (allowedFields.includes('*')) continue;
 					// Allow legacy permissions with an empty fields array, where id can be accessed
-					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection].primary);
+					if (allowedFields.length === 0) allowedFields.push(schema.collections[collection]!.primary);
 
-					for (const field of requiredPermissions[collection]) {
+					for (const field of requiredPermissions[collection]!) {
 						if (field.startsWith('$FOLLOW')) continue;
 						const fieldName = stripFunction(field);
 						let originalFieldName = fieldName;
 
 						if (collection === rootCollection && aliasMap?.[fieldName]) {
-							originalFieldName = aliasMap[fieldName];
+							originalFieldName = aliasMap[fieldName]!;
 						}
 
 						if (!allowedFields.includes(originalFieldName)) {
@@ -424,7 +433,7 @@ export class AuthorizationService {
 					const collections = Object.keys(ast.children);
 
 					for (const collection of collections) {
-						updateFilterQuery(collection, ast.query[collection]);
+						updateFilterQuery(collection, ast.query[collection]!);
 					}
 
 					for (const [collection, children] of Object.entries(ast.children)) {
@@ -510,7 +519,7 @@ export class AuthorizationService {
 
 		const payloadWithPresets = merge({}, preset, payload);
 
-		const fieldValidationRules = Object.values(this.schema.collections[collection].fields)
+		const fieldValidationRules = Object.values(this.schema.collections[collection]!.fields)
 			.map((field) => field.validation)
 			.filter((v) => v) as Filter[];
 
@@ -521,7 +530,7 @@ export class AuthorizationService {
 
 		const requiredColumns: SchemaOverview['collections'][string]['fields'][string][] = [];
 
-		for (const field of Object.values(this.schema.collections[collection].fields)) {
+		for (const field of Object.values(this.schema.collections[collection]!.fields)) {
 			const specials = field?.special ?? [];
 
 			const hasGenerateSpecial = GENERATE_SPECIAL.some((name) => specials.includes(name));

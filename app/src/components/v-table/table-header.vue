@@ -100,13 +100,13 @@
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { computed, ref, useSlots } from 'vue';
-import { ShowSelect } from '@directus/shared/types';
+import { ShowSelect } from '@directus/types';
 import { useEventListener } from '@/composables/use-event-listener';
 import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';
 import Draggable from 'vuedraggable';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { useSync } from '@directus/shared/composables';
+import { useSync } from '@directus/composables';
 
 interface Props {
 	headers: Header[];
@@ -180,7 +180,8 @@ function getClassesForHeader(header: Header) {
 }
 
 function getTooltipForSortIcon(header: Header) {
-	return props.sort.by === header.value && props.sort.desc === false ? 'sort_desc' : 'sort_asc';
+	if (props.sort.by === null || props.sort.by !== header.value) return 'sort_asc';
+	return props.sort.desc === false ? 'sort_desc' : 'disable_sort';
 }
 
 function changeSort(header: Header) {
@@ -232,6 +233,7 @@ function onMouseMove(event: PointerEvent) {
 	if (resizing.value === true) {
 		const newWidth = resizeStartWidth.value + (event.pageX - resizeStartX.value);
 		const currentHeaders = clone(props.headers);
+
 		const newHeaders = currentHeaders.map((existing: Header) => {
 			if (existing.value === resizeHeader.value?.value) {
 				return {
@@ -242,6 +244,7 @@ function onMouseMove(event: PointerEvent) {
 
 			return existing;
 		});
+
 		emit('update:headers', newHeaders);
 	}
 }
@@ -327,6 +330,7 @@ function toggleManualSort() {
 			color: var(--foreground-subdued);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
+			transform: scaleY(-1);
 		}
 
 		&:hover .action-icon {

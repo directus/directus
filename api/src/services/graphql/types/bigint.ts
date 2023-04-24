@@ -6,6 +6,7 @@ export const GraphQLBigInt = new GraphQLScalarType({
 	serialize(value) {
 		if (!value) return value;
 		if (typeof value === 'string') return value;
+
 		if (typeof value !== 'number') {
 			throw new Error('Value must be a Number');
 		}

@@ -43,7 +43,7 @@
 		display: flex;
 		justify-content: center;
 		font-size: 24px;
-		font-family: 'Material Icons Outline', sans-serif;
+		font-family: 'Material Symbols', sans-serif;
 		font-style: normal;
 		font-variant: normal;
 		text-rendering: auto;
@@ -134,7 +134,6 @@
 	font-family: inherit !important;
 	line-height: inherit !important;
 	background-color: var(--background-page);
-	overflow: hidden;
 
 	&,
 	&.suggestions {
@@ -217,7 +216,7 @@
 }
 
 .mapboxgl-ctrl-select::after {
-	content: 'highlight_alt';
+	content: 'select';
 }
 
 .mapboxgl-ctrl-unselect::after {

@@ -2,13 +2,13 @@ import { afterEach, expect, test, vi } from 'vitest';
 
 const loggerInfo = vi.fn();
 
-vi.mock('../../logger', () => ({
+vi.doMock('../../logger', () => ({
 	default: {
 		info: loggerInfo,
 	},
 }));
 
-import config from './index';
+const { default: config } = await import('./index.js');
 
 afterEach(() => {
 	vi.clearAllMocks();

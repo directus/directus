@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - docs/**
   pull_request:
     branches:
       - main
@@ -40,7 +42,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Tests
-        run: pnpm -r test
+        run: pnpm test
 
   analyze:
     name: CodeQL Analysis

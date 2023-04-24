@@ -1,10 +1,10 @@
-import { ForbiddenException, UnprocessableEntityException } from '../exceptions';
-import { AbstractServiceOptions, MutationOptions, PrimaryKey, Alterations, Item } from '../types';
-import { Query } from '@directus/shared/types';
-import { ItemsService } from './items';
-import { PermissionsService } from './permissions';
-import { PresetsService } from './presets';
-import { UsersService } from './users';
+import type { Query } from '@directus/types';
+import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
+import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { ItemsService } from './items.js';
+import { PermissionsService } from './permissions.js';
+import { PresetsService } from './presets.js';
+import { UsersService } from './users.js';
 
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -33,14 +33,15 @@ export class RolesService extends ItemsService {
 		let userKeys: PrimaryKey[] = [];
 
 		if (Array.isArray(users)) {
-			userKeys = users.map((user) => (typeof user === 'string' ? user : user.id)).filter((id) => id);
+			userKeys = users.map((user) => (typeof user === 'string' ? user : user['id'])).filter((id) => id);
 		} else {
-			userKeys = users.update.map((user) => user.id).filter((id) => id);
+			userKeys = users.update.map((user) => user['id']).filter((id) => id);
 		}
 
 		const usersThatWereInRoleBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
 			(user) => user.id
 		);
+
 		const usersThatAreRemoved = usersThatWereInRoleBefore.filter((id) =>
 			Array.isArray(users) ? userKeys.includes(id) === false : users.delete.includes(id) === true
 		);
@@ -69,10 +70,10 @@ export class RolesService extends ItemsService {
 		return;
 	}
 
-	async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async updateOne(key: PrimaryKey, data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey> {
 		try {
 			if ('users' in data) {
-				await this.checkForOtherAdminUsers(key, data.users);
+				await this.checkForOtherAdminUsers(key, data['users']);
 			}
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationException = err;
@@ -81,11 +82,11 @@ export class RolesService extends ItemsService {
 		return super.updateOne(key, data, opts);
 	}
 
-	async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
+	override async updateBatch(data: Record<string, any>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
 		const keys = data.map((item) => item[primaryKeyField]);
-		const setsToNoAdmin = data.some((item) => item.admin_access === false);
+		const setsToNoAdmin = data.some((item) => item['admin_access'] === false);
 
 		try {
 			if (setsToNoAdmin) {
@@ -98,9 +99,13 @@ export class RolesService extends ItemsService {
 		return super.updateBatch(data, opts);
 	}
 
-	async updateMany(keys: PrimaryKey[], data: Record<string, any>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Record<string, any>,
+		opts?: MutationOptions
+	): Promise<PrimaryKey[]> {
 		try {
-			if ('admin_access' in data && data.admin_access === false) {
+			if ('admin_access' in data && data['admin_access'] === false) {
 				await this.checkForOtherAdminRoles(keys);
 			}
 		} catch (err: any) {
@@ -110,12 +115,12 @@ export class RolesService extends ItemsService {
 		return super.updateMany(keys, data, opts);
 	}
 
-	async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
+	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
 		await this.deleteMany([key]);
 		return key;
 	}
 
-	async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const opts: MutationOptions = {};
 
 		try {
@@ -155,14 +160,14 @@ export class RolesService extends ItemsService {
 				{
 					filter: { role: { _in: keys } },
 				},
-				opts
+				{ ...opts, bypassLimits: true }
 			);
 
 			await presetsService.deleteByQuery(
 				{
 					filter: { role: { _in: keys } },
 				},
-				opts
+				{ ...opts, bypassLimits: true }
 			);
 
 			await usersService.updateByQuery(
@@ -173,7 +178,7 @@ export class RolesService extends ItemsService {
 					status: 'suspended',
 					role: null,
 				},
-				opts
+				{ ...opts, bypassLimits: true }
 			);
 
 			await itemsService.deleteMany(keys, opts);
@@ -182,7 +187,7 @@ export class RolesService extends ItemsService {
 		return keys;
 	}
 
-	deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		return super.deleteByQuery(query, opts);
 	}
 }

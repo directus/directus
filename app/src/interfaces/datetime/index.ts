@@ -1,4 +1,4 @@
-import { defineInterface } from '@directus/shared/utils';
+import { defineInterface } from '@directus/utils';
 import InterfaceDateTime from './datetime.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -15,6 +15,7 @@ export default defineInterface({
 			if (field.meta?.options) {
 				field.meta.options = {};
 			}
+
 			return [];
 		}
 

@@ -32,7 +32,7 @@
 <script lang="ts">
 import api from '@/api';
 import { userName } from '@/utils/user-name';
-import { User } from '@directus/shared/types';
+import { User } from '@directus/types';
 import { computed, defineComponent, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -59,6 +59,7 @@ export default defineComponent({
 			if (data.value.avatar?.id) {
 				return `/assets/${data.value.avatar.id}?key=system-medium-cover`;
 			}
+
 			return null;
 		});
 
@@ -88,6 +89,7 @@ export default defineComponent({
 						fields: ['id', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
 					},
 				});
+
 				data.value = response.data.data;
 			} catch (err: any) {
 				error.value = err;

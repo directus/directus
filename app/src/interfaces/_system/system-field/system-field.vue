@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!collectionField && !collection" type="warning">
+	<v-notice v-if="!collectionField && !collectionName" type="warning">
 		{{ t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="selectItems.length === 0" type="warning">
@@ -20,7 +20,7 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, computed, inject, ref, PropType, watch } from 'vue';
 import { useFieldsStore } from '@/stores/fields';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 
 export default defineComponent({
 	props: {
@@ -28,7 +28,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		collection: {
+		collectionName: {
 			type: String,
 			default: null,
 		},
@@ -69,10 +69,10 @@ export default defineComponent({
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
-		const collection = computed(() => values.value[props.collectionField] || props.collection);
+		const collection = computed(() => values.value[props.collectionField] || props.collectionName);
 
 		const fields = computed(() => {
-			if (!props.collectionField && !props.collection) return [];
+			if (!props.collectionField && !props.collectionName) return [];
 			return fieldsStore.getFieldsForCollection(collection.value);
 		});
 

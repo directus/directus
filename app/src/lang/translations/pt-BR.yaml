@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Nenhum Item Selecionado | Você tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
 reset_system_permissions_to: 'Redefinir Permissões do Sistema Para:'
 reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você possa ter aplicado às coleções do sistema. Você tem certeza?
-the_following_are_minimum_permissions: As permissões seguintes são as mínimas necessárias quando o "Acesso ao App" estiver habilitado. Você pode estender as permissões além disso, mas não abaixo.
 app_access_minimum: Acesso Mínimo ao App
 recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
@@ -295,6 +294,7 @@ o2m_relationship: Relacionamento Um-pra-Muitos
 m2m_relationship: Relacionamento Muitos-pra-Muitos
 m2a_relationship: Relacionamento Muitos-pra-Qualquer
 invalid_item: Item inválido
+modal: Modal
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
@@ -786,10 +786,7 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
-run_flow_on_current_collection: Executar fluxo na coleção atual
-run_flow_on_current: Executar fluxo no Item Atual
 run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
-run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow_success: Fluxo "{flow}" executado com sucesso
 trigger: Acionar
 trigger_options: Opções de ativação
@@ -1629,7 +1626,6 @@ interfaces:
   system-folder:
     folder: Pasta
     description: Selecionar uma pasta
-    field_hint: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:
@@ -1642,7 +1638,6 @@ interfaces:
     add_label: 'Texto de "Criar Novo"'
     sort: Ordenar
     sort_placeholder: Manual
-    field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira a nota de campo...
     incompatible_data: Os dados atuais não são compatíveis com a interface de repetição e serão substituídos ao adicionar novos itens
   slider:
