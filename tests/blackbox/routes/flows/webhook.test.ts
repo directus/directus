@@ -4,7 +4,8 @@ import * as common from '@common/index';
 import request from 'supertest';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
-import knex, { Knex } from 'knex';
+import knex from 'knex';
+import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
 import { sleep } from '@utils/sleep';
 
@@ -56,7 +57,7 @@ describe('/flows', () => {
 				color: null,
 				description: null,
 				status: 'active',
-				accountability: 'all',
+				accountability: null,
 				trigger: 'webhook',
 				options: {},
 			};
@@ -83,7 +84,11 @@ describe('/flows', () => {
 					.post('/flows')
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 					.query({ fields: ['id'] })
-					.send({ ...payloadFlowCreate, name: 'webhook flow cacheEnabled', options: { cacheEnabled: false } })
+					.send({
+						...payloadFlowCreate,
+						name: 'webhook flow cacheEnabled set to false',
+						options: { cacheEnabled: false },
+					})
 			).body.data.id;
 
 			await request(getUrl(vendor, env))
