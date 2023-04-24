@@ -13,7 +13,7 @@ ARG LEAD_EXTENSION
 ARG COLAB_EXTENSION
 
 ENV NPM_CONFIG_PREFIX=~/.npm-global
-ENV PATH=$PATH:~/.npm-global/bin
+ENV PATH="$HOME/.npm-global/bin:$PATH"
 
 # Required to run OracleDB
 # Technically not required for the others, but I'd rather have 1 image that works for all, instead of building n images
@@ -88,7 +88,7 @@ ENV \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
-RUN npm install -g pnpm --prefix ~/.npm-global
+RUN npm install -g pnpm --prefix ${NPM_CONFIG_PREFIX}
 RUN pnpm install
 RUN pnpm -r build
 
