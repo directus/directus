@@ -69,8 +69,6 @@ RUN : \
 ####################################################################################################
 ## Create Production Image
 
-FROM node:18-alpine AS runtime
-
 USER node
 
 WORKDIR /directus
@@ -84,10 +82,6 @@ ENV \
 	STORAGE_LOCAL_ROOT="/directus/uploads" \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
-
-RUN npm install -g pnpm
-RUN pnpm install
-RUN pnpm -r build
 
 RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
 RUN export CI_API_V4_URL=${CI_API_V4_URL}
