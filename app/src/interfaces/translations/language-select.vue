@@ -9,7 +9,7 @@
 			</button>
 		</template>
 
-		<v-list>
+		<v-list v-if="items">
 			<v-list-item v-for="(item, index) in items" :key="index" @click="$emit('update:modelValue', item.value)">
 				<div class="start">
 					<div class="dot" :class="{ show: item.edited }"></div>
