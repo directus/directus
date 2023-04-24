@@ -28,58 +28,44 @@
 </template>
 
 <script lang="ts">
+export default {
+	inheritAttrs: false,
+};
+</script>
+
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
 import { Field } from '@directus/types';
 import { useSync } from '@directus/composables';
 import { localizedFormat } from '@/utils/localized-format';
 import { add, startOfWeek } from 'date-fns';
 
-export default defineComponent({
-	inheritAttrs: false,
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		template: {
-			type: String,
-			default: null,
-		},
-		dateFields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-		startDateField: {
-			type: String,
-			default: null,
-		},
-		endDateField: {
-			type: String,
-			default: null,
-		},
-		firstDay: {
-			type: Number,
-			default: 0,
-		},
-	},
-	emits: ['update:template', 'update:startDateField', 'update:endDateField', 'update:firstDay'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		dateFields: Field[];
+		template?: string;
+		startDateField?: string;
+		endDateField?: string;
+		firstDay?: number;
+	}>(),
+	{
+		firstDay: 0,
+	}
+);
 
-		const templateWritable = useSync(props, 'template', emit);
-		const startDateFieldWritable = useSync(props, 'startDateField', emit);
-		const endDateFieldWritable = useSync(props, 'endDateField', emit);
-		const firstDayWritable = useSync(props, 'firstDay', emit);
+const emit = defineEmits(['update:template', 'update:startDateField', 'update:endDateField', 'update:firstDay']);
+const { t } = useI18n();
 
-		const firstDayOfWeekForDate = startOfWeek(new Date());
+const templateWritable = useSync(props, 'template', emit);
+const startDateFieldWritable = useSync(props, 'startDateField', emit);
+const endDateFieldWritable = useSync(props, 'endDateField', emit);
+const firstDayWritable = useSync(props, 'firstDay', emit);
 
-		const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].map((_, i) => ({
-			text: localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
-			value: i,
-		}));
+const firstDayOfWeekForDate = startOfWeek(new Date());
 
-		return { t, templateWritable, startDateFieldWritable, endDateFieldWritable, firstDayWritable, firstDayOptions };
-	},
-});
+const firstDayOptions: { text: string; value: number }[] = [...Array(7).keys()].map((_, i) => ({
+	text: localizedFormat(add(firstDayOfWeekForDate, { days: i }), 'EEEE'),
+	value: i,
+}));
 </script>
