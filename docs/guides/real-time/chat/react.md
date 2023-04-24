@@ -145,3 +145,76 @@ const authenticate = (opts) => {
 	connectionRef.current.send(JSON.stringify({ type: 'auth', email, password }));
 };
 ```
+
+### Subscribe to messages
+
+In a WebSocket connection, all data sent from the server will trigger the connection’s `message` event. Inside
+`loginSubmit`, add an event handler:
+
+```js
+const loginSubmit = (event) => {
+	connectionRef.current = new WebSocket(url);
+	connectionRef.current.onopen = () => authenticate(formValue);
+	connectionRef.current.onmessage = (message) => receiveMessage(message); // [!code ++]
+};
+```
+
+Then, create a new `receiveMessage` method:
+
+```js
+const receiveMessage = (message) => {
+	const data = JSON.parse(message.data);
+};
+```
+
+As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the
+`Messages` collection. Add this inside of the `receiveMessage` method:
+
+```js
+const receiveMessage = (message) => {
+	const data = JSON.parse(message.data);
+	if (data.type === 'auth' && data.status === 'ok') {
+		// [!code ++]
+		connectionRef.current.send(
+			// [!code ++]
+			JSON.stringify({
+				// [!code ++]
+				type: 'subscribe', // [!code ++]
+				collection: 'messages', // [!code ++]
+				query: {
+					// [!code ++]
+					fields: ['*', 'user_created.first_name'], // [!code ++]
+					sort: 'date_created', // [!code ++]
+				}, // [!code ++]
+			}) // [!code ++]
+		); // [!code ++]
+	} // [!code ++]
+};
+```
+
+When a subscription is started, a message will be sent to confirm. Add this inside of the `receiveMessage` method:
+
+```js
+const receiveMessage = (message) => {
+	const data = JSON.parse(message.data);
+	if (data.type === 'auth' && data.status === 'ok') {
+		connectionRef.current.send(
+			JSON.stringify({
+				type: 'subscribe',
+				collection: 'messages',
+				query: {
+					fields: ['*', 'user_created.first_name'],
+					sort: 'date_created',
+				},
+			})
+		);
+	}
+	if (data.type === 'subscription' && data.event === 'init') {
+		// [!code ++]
+		console.log('subscription started'); // [!code ++]
+	} // [!code ++]
+};
+```
+
+Open your browser, enter your user’s email and password, and hit submit. Check the browser console. You should see
+“subscription started”
