@@ -1565,6 +1565,8 @@ interfaces:
   input-rich-text-md:
     markdown: مارک‌داون
     edit: ویرایش
+    preview: پيش نمايش
+    customSyntax: بلوک‌های سفارشی
   map:
     map: نقشه
     description: یک موقعیت را روی نقشه انتخاب کنید
