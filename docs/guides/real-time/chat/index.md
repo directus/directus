@@ -13,3 +13,10 @@
   text="Build a multi-user chat application with Vue.js."
   url="/guides/real-time/chat/vue"
   icon="/icons/vue.svg" />
+
+<Card
+  title="React.js"
+  h="2"
+  text="Build a multi-user chat application with React.js."
+  url="/guides/real-time/chat/react"
+  icon="/icons/react.svg" />
