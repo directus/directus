@@ -10,6 +10,8 @@ DIRECTUS_HOOKS="${DIRECTUS_EXTENSIONS}/hooks"
 
 #DIRECTUS_DIR="/tmp"
 
+mkdir -p ${DIRECTUS_EXTENSIONS}/migrations
+
 # Install https://github.com/utomic-media/directus-extension-field-actions
 mkdir -p ${DIRECTUS_DISPLAYS}/fields-action
 wget -O ${DIRECTUS_DISPLAYS}/fields-action/index.js https://github.com/utomic-media/directus-extension-field-actions/releases/download/1.2.0/display-index.js
@@ -22,8 +24,8 @@ mkdir -p ${DIRECTUS_MODULES}
 #unzip -d ${DIRECTUS_MODULES}/ /tmp/global-search.zip
 
 # Install https://github.com/u12206050/directus-extension-api-viewer-module
-#mkdir -p ${DIRECTUS_MODULES}/api-viewer
-#wget -O ${DIRECTUS_MODULES}/api-viewer/index.js https://github.com/u12206050/directus-extension-api-viewer-module/releases/download/1.1.1/index.js
+mkdir -p ${DIRECTUS_MODULES}/api-viewer
+wget -O ${DIRECTUS_MODULES}/api-viewer/index.js https://github.com/u12206050/directus-extension-api-viewer-module/releases/download/1.1.1/index.js
 
 # Install https://github.com/dimitrov-adrian/directus-extension-masked-interface
 mkdir -p ${DIRECTUS_INTERFACES}/fields-masked
@@ -51,4 +53,10 @@ cp -r ./directus-custom-extensions-release/filtered-count ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/m2o-link-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/favorite-display ${DIRECTUS_DISPLAYS}
 cp -r ./directus-custom-extensions-release/atomic-counters/* ${DIRECTUS_ENDPOINTS}/atomic-counters
-cp -r ./directus-custom-extensions-release/b64-upload ${DIRECTUS_HOOKS}/
+cp -r ./directus-custom-extensions-release/b64-upload ${DIRECTUS_HOOKS}
+cp -r ./directus-custom-extensions-release/collect-hook ${DIRECTUS_HOOKS}
+cp -r ./directus-custom-extensions-release/count-alias ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/salary-ranges ${DIRECTUS_INTERFACES}
+
+
+cp -r ./directus-custom-extensions-release/collect-hook/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
