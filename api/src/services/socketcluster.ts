@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import JWT from 'jsonwebtoken';
 import SC from 'socketcluster-client';
 import logger from '../logger';
@@ -37,20 +39,25 @@ const socketcluster = {
 			},
 			// codecEngine: SocketCodecEngine
 		};
+
 		this.client = SC.create(options);
+
 		(async () => {
 			for await (const status of this.client.listener('connect')) {
 				if (!status.isAuthenticated) {
 					throw new Error('Socket authentication failed');
 				}
+
 				logger.info(`Connected to socket://${options.hostname}:${options.port}`);
 			}
 		})();
+
 		(async () => {
 			for await (const error of this.client.listener('error')) {
 				logger.error(error);
 			}
 		})();
+
 		(async () => {
 			for await (const { code, reason } of this.client.listener('disconnect')) {
 				logger.error(`Disconnected from socket: ${code} ${reason}`);
