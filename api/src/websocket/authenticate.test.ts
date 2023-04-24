@@ -1,5 +1,6 @@
 import type { Accountability } from '@directus/types';
-import { Mock, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
+import type { Mock } from 'vitest';
 import { InvalidCredentialsException } from '../index.js';
 import { getAccountabilityForRole } from '../utils/get-accountability-for-role.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';

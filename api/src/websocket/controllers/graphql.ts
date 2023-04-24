@@ -1,4 +1,5 @@
-import { CloseCode, MessageType, Server, makeServer } from 'graphql-ws';
+import { CloseCode, MessageType, makeServer } from 'graphql-ws';
+import type { Server } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
 import type { WebSocket } from 'ws';
 import env from '../../env.js';
