@@ -85,7 +85,7 @@ ENV \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
-RUN chown -R `whoami` ~/.npm
+RUN #chown -R `whoami` ~/.npm
 RUN chown -R `whoami` /usr/local/lib/node_modules
 RUN npm install -g pnpm
 RUN pnpm install
