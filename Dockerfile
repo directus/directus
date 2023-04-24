@@ -50,10 +50,10 @@ ENV NODE_OPTIONS=--max-old-space-size=8192
 COPY package.json .
 RUN corepack enable && corepack prepare
 
-# COPY pnpm-lock.yaml .
+COPY pnpm-lock.yaml .
 RUN pnpm fetch
 COPY . .
-RUN pnpm install --recursive --offline
+RUN pnpm install --recursive --offline --frozen-lockfile
 
 RUN : \
 	&& npm_config_workspace_concurrency=1 pnpm run build \
@@ -65,7 +65,6 @@ RUN : \
 	&& rm -r *.tgz package \
 	&& mkdir -p database extensions uploads \
 	;
-
 
 RUN chmod +x ./custom_extensions.sh
 RUN chmod +x ./payment_extensions.sh
