@@ -17,6 +17,8 @@ declare global {
 
 			accountability?: Accountability;
 			singleton?: boolean;
+
+			socketcluster?: object;
 		}
 	}
 }

@@ -50,6 +50,9 @@ import extractToken from './middleware/extract-token';
 import rateLimiter from './middleware/rate-limiter';
 import sanitizeQuery from './middleware/sanitize-query';
 import schema from './middleware/schema';
+import socketcluster from './middleware/socketcluster';
+
+import socketclusterService from './services/socketcluster';
 
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
@@ -230,6 +233,8 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(getPermissions);
 
+	app.use(socketcluster);
+
 	await emitter.emitInit('middlewares.after', { app });
 
 	await emitter.emitInit('routes.before', { app });
@@ -280,6 +285,8 @@ export default async function createApp(): Promise<express.Application> {
 	track('serverStarted');
 
 	await emitter.emitInit('app.after', { app });
+
+	await socketclusterService.connect();
 
 	return app;
 }

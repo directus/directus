@@ -228,6 +228,43 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							});
 
 							description = fieldNames.join(' -> ');
+
+							// const types = relationsStore.getRelationTypes(collection.value!, field.key);
+
+							// if (types.at(-1) === 'o2m') {
+							// 	const arrayField = fieldsStore.getField(collection.value!, fieldParts.slice(0, -1).join('.'));
+							// 	let display;
+							// 	let displayOptions;
+
+							// 	if (arrayField?.meta?.display) {
+							// 		display = arrayField.meta.display;
+							// 		displayOptions = arrayField.meta.display_options;
+							// 	} else {
+							// 		display = 'related-values';
+							// 		displayOptions = {
+							// 			template: `{{${fieldParts.at(-1)}}}`,
+							// 		};
+							// 	}
+
+							// 	if (arrayField)
+							// 		return {
+							// 			text: field.name,
+							// 			value: arrayField.field,
+							// 			description,
+							// 			width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
+							// 			align: layoutOptions.value?.align?.[field.key] || 'left',
+							// 			field: {
+							// 				display,
+							// 				displayOptions,
+							// 				interface: arrayField.meta?.interface,
+							// 				interfaceOptions: arrayField.meta?.options,
+							// 				type: arrayField.type,
+							// 				field: arrayField.field,
+							// 				collection: arrayField.collection,
+							// 			},
+							// 			sortable: ['json', 'alias', 'presentation', 'translations'].includes(arrayField.type) === false,
+							// 		} as HeaderRaw;
+							// }
 						}
 
 						return {
