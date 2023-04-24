@@ -57,13 +57,13 @@ import { useSync } from '@directus/composables';
 import { Field } from '@directus/types';
 
 const props = defineProps<{
-	collection?: string;
-	icon?: string;
-	fileFields?: Field[];
+	collection: string;
+	icon: string;
+	fileFields: Field[];
+	imageFit: string;
 	imageSource?: string | null;
 	title?: string;
 	subtitle?: string;
-	imageFit?: string;
 }>();
 
 const emit = defineEmits<{
