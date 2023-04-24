@@ -43,7 +43,7 @@ const socketcluster = {
 				if (!status.isAuthenticated) {
 					throw new Error('Socket authentication failed');
 				}
-				logger.trace(`Connected to socket://${options.hostname}:${options.port}`);
+				logger.info(`Connected to socket://${options.hostname}:${options.port}`);
 			}
 		})();
 		(async () => {
