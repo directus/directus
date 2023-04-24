@@ -6,25 +6,19 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	props: {
-		color: {
-			type: String,
-			default: 'normal',
-		},
-		icon: {
-			type: String,
-			default: 'info',
-		},
-		text: {
-			type: String,
-			default: 'No text configured...',
-		},
-	},
-});
+<script setup lang="ts">
+withDefaults(
+	defineProps<{
+		color?: string;
+		icon?: string;
+		text?: string;
+	}>(),
+	{
+		color: 'normal',
+		icon: 'info',
+		text: 'No text configured...',
+	}
+);
 </script>
 
 <style lang="scss" scoped>
