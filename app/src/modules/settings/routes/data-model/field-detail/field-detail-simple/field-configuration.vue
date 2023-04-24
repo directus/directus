@@ -61,113 +61,86 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store/';
-import { storeToRefs } from 'pinia';
-import ExtensionOptions from '../shared/extension-options.vue';
-import RelationshipConfiguration from './relationship-configuration.vue';
-import { useExtensions } from '@/extensions';
+<script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import { useExtensions } from '@/extensions';
 import { nanoid } from 'nanoid/non-secure';
+import { storeToRefs } from 'pinia';
+import { computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import ExtensionOptions from '../shared/extension-options.vue';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
+import RelationshipConfiguration from './relationship-configuration.vue';
 
-export default defineComponent({
-	components: { ExtensionOptions, RelationshipConfiguration },
-	props: {
-		row: {
-			type: Number,
-			default: null,
-		},
+defineProps<{
+	row?: number;
+}>();
+
+defineEmits(['save', 'toggleAdvanced']);
+
+const fieldDetailStore = useFieldDetailStore();
+
+const { readyToSave, saving, localType } = storeToRefs(fieldDetailStore);
+
+const { t } = useI18n();
+
+const key = syncFieldDetailStoreProperty('field.field');
+const type = syncFieldDetailStoreProperty('field.type');
+const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
+const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
+const required = syncFieldDetailStoreProperty('field.meta.required', false);
+
+const chosenInterfaceConfig = useExtension('interface', chosenInterface);
+
+const typeOptions = computed(() => {
+	if (!chosenInterfaceConfig.value) return [];
+
+	return chosenInterfaceConfig.value.types.map((type) => ({
+		text: t(type),
+		value: type,
+	}));
+});
+
+const typeDisabled = computed(() => typeOptions.value.length === 1 || localType.value !== 'standard');
+
+const { interfaces } = useExtensions();
+
+const interfaceIdsToInterface = computed(() => Object.fromEntries(interfaces.value.map((inter) => [inter.id, inter])));
+
+const customOptionsFields = computed(() => {
+	if (typeof chosenInterfaceConfig.value?.options === 'function') {
+		return chosenInterfaceConfig.value?.options(fieldDetailStore);
+	}
+
+	return null;
+});
+
+watch(
+	chosenInterface,
+	(newVal, oldVal) => {
+		if (!newVal) return;
+
+		if (interfaceIdsToInterface.value[newVal].autoKey) {
+			const simplifiedId = newVal.includes('-') ? newVal.split('-')[1] : newVal;
+			key.value = `${simplifiedId}-${nanoid(6).toLowerCase()}`;
+		} else if (oldVal && interfaceIdsToInterface.value[oldVal].autoKey) {
+			key.value = null;
+		}
 	},
-	emits: ['save', 'toggleAdvanced'],
-	setup() {
-		const fieldDetailStore = useFieldDetailStore();
+	{ immediate: true }
+);
 
-		const { readyToSave, saving, localType } = storeToRefs(fieldDetailStore);
-
-		const { t } = useI18n();
-
-		const key = syncFieldDetailStoreProperty('field.field');
-		const type = syncFieldDetailStoreProperty('field.type');
-		const defaultValue = syncFieldDetailStoreProperty('field.schema.default_value');
-		const chosenInterface = syncFieldDetailStoreProperty('field.meta.interface');
-		const required = syncFieldDetailStoreProperty('field.meta.required', false);
-		const note = syncFieldDetailStoreProperty('field.meta.note');
-
-		const chosenInterfaceConfig = useExtension('interface', chosenInterface);
-
-		const typeOptions = computed(() => {
-			if (!chosenInterfaceConfig.value) return [];
-
-			return chosenInterfaceConfig.value.types.map((type) => ({
-				text: t(type),
-				value: type,
-			}));
+const options = computed({
+	get() {
+		return fieldDetailStore.field.meta?.options ?? {};
+	},
+	set(newOptions: Record<string, any>) {
+		fieldDetailStore.$patch((state) => {
+			state.field.meta = {
+				...(state.field.meta ?? {}),
+				options: newOptions,
+			};
 		});
-
-		const typeDisabled = computed(() => typeOptions.value.length === 1 || localType.value !== 'standard');
-
-		const { interfaces } = useExtensions();
-
-		const interfaceIdsToInterface = computed(() =>
-			Object.fromEntries(interfaces.value.map((inter) => [inter.id, inter]))
-		);
-
-		const customOptionsFields = computed(() => {
-			if (typeof chosenInterfaceConfig.value?.options === 'function') {
-				return chosenInterfaceConfig.value?.options(fieldDetailStore);
-			}
-
-			return null;
-		});
-
-		watch(
-			chosenInterface,
-			(newVal, oldVal) => {
-				if (!newVal) return;
-
-				if (interfaceIdsToInterface.value[newVal].autoKey) {
-					const simplifiedId = newVal.includes('-') ? newVal.split('-')[1] : newVal;
-					key.value = `${simplifiedId}-${nanoid(6).toLowerCase()}`;
-				} else if (oldVal && interfaceIdsToInterface.value[oldVal].autoKey) {
-					key.value = null;
-				}
-			},
-			{ immediate: true }
-		);
-
-		const options = computed({
-			get() {
-				return fieldDetailStore.field.meta?.options ?? {};
-			},
-			set(newOptions: Record<string, any>) {
-				fieldDetailStore.$patch((state) => {
-					state.field.meta = {
-						...(state.field.meta ?? {}),
-						options: newOptions,
-					};
-				});
-			},
-		});
-
-		return {
-			key,
-			t,
-			type,
-			typeDisabled,
-			typeOptions,
-			defaultValue,
-			chosenInterface,
-			chosenInterfaceConfig,
-			required,
-			note,
-			readyToSave,
-			saving,
-			localType,
-			customOptionsFields,
-			options,
-		};
 	},
 });
 </script>
