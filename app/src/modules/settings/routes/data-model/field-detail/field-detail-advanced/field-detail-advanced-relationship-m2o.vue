@@ -70,106 +70,86 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
+import { computed } from 'vue';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import { useFieldsStore } from '@/stores/fields';
 
-export default defineComponent({
-	components: { RelatedCollectionSelect },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const fieldDetailStore = useFieldDetailStore();
-		const fieldsStore = useFieldsStore();
+const fieldDetailStore = useFieldDetailStore();
+const fieldsStore = useFieldsStore();
 
-		const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-		const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
-		const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
-		const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
+const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
+const correspondingFieldKey = syncFieldDetailStoreProperty('fields.corresponding.field');
+const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
 
-		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
 
-		const isExisting = computed(() => editing.value !== '+');
+const isExisting = computed(() => editing.value !== '+');
 
-		const relatedPrimaryKey = computed(
-			() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
-		);
+const relatedPrimaryKey = computed(
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+);
 
-		const currentField = computed(() => field.value.field);
+const currentField = computed(() => field.value.field);
 
-		const hasCorresponding = computed({
-			get() {
-				return !!correspondingField.value;
-			},
-			set(enabled: boolean) {
-				if (enabled) {
-					correspondingField.value = {
-						field: collection.value,
-						collection: relatedCollection.value,
-						type: 'alias',
-						meta: {
-							special: ['o2m'],
-							interface: 'list-o2m',
-						},
-					};
-				} else {
-					correspondingField.value = null;
-				}
-			},
-		});
-
-		const correspondingLabel = computed(() => {
-			if (relatedCollection.value) {
-				return t('add_o2m_to_collection', { collection: relatedCollection.value });
-			}
-
-			return t('add_field_related');
-		});
-
-		const onDeleteOptions = computed(() =>
-			[
-				{
-					text: t('referential_action_set_null', { field: currentField.value }),
-					value: 'SET NULL',
+const hasCorresponding = computed({
+	get() {
+		return !!correspondingField.value;
+	},
+	set(enabled: boolean) {
+		if (enabled) {
+			correspondingField.value = {
+				field: collection.value,
+				collection: relatedCollection.value,
+				type: 'alias',
+				meta: {
+					special: ['o2m'],
+					interface: 'list-o2m',
 				},
-				{
-					text: t('referential_action_set_default', { field: currentField.value }),
-					value: 'SET DEFAULT',
-				},
-				{
-					text: t('referential_action_cascade', {
-						collection: collection.value,
-						field: currentField.value,
-					}),
-					value: 'CASCADE',
-				},
-				{
-					text: t('referential_action_no_action', { field: currentField.value }),
-					value: 'NO ACTION',
-				},
-			].filter((o) => !(o.value === 'SET NULL' && field.value.schema?.is_nullable === false))
-		);
-
-		return {
-			t,
-			collection,
-			relatedCollection,
-			isExisting,
-			relatedPrimaryKey,
-			currentField,
-			hasCorresponding,
-			correspondingLabel,
-			correspondingFieldKey,
-			generationInfo,
-			onDeleteRelated,
-			onDeleteOptions,
-		};
+			};
+		} else {
+			correspondingField.value = null;
+		}
 	},
 });
+
+const correspondingLabel = computed(() => {
+	if (relatedCollection.value) {
+		return t('add_o2m_to_collection', { collection: relatedCollection.value });
+	}
+
+	return t('add_field_related');
+});
+
+const onDeleteOptions = computed(() =>
+	[
+		{
+			text: t('referential_action_set_null', { field: currentField.value }),
+			value: 'SET NULL',
+		},
+		{
+			text: t('referential_action_set_default', { field: currentField.value }),
+			value: 'SET DEFAULT',
+		},
+		{
+			text: t('referential_action_cascade', {
+				collection: collection.value,
+				field: currentField.value,
+			}),
+			value: 'CASCADE',
+		},
+		{
+			text: t('referential_action_no_action', { field: currentField.value }),
+			value: 'NO ACTION',
+		},
+	].filter((o) => !(o.value === 'SET NULL' && field.value.schema?.is_nullable === false))
+);
 </script>
 
 <style lang="scss" scoped>
