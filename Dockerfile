@@ -85,7 +85,7 @@ ENV \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
-RUN npm install -g pnpm
+RUN sudo npm install -g pnpm
 RUN pnpm install
 RUN pnpm -r build
 
