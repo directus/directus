@@ -66,6 +66,8 @@ RUN : \
 	&& mkdir -p database extensions uploads \
 	;
 
+USER root
+
 RUN chmod +x ./custom_extensions.sh
 RUN chmod +x ./payment_extensions.sh
 RUN chmod +x ./chat_extensions.sh
