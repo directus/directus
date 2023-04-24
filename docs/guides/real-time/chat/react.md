@@ -296,3 +296,20 @@ _Refresh your browser, login, and submit a new message. The result should be sho
 and navigate to your index.html file, login and submit a message there and both pages should immediately update_
 
 ![Web page showing the login form, new message form, and one message shown. The message reads “Kevin: This is brilliant!”](https://cdn.directus.io/docs/v9/guides/websockets/chat-webpage.webp)
+
+## Display Historical Messages
+
+Replace the `console.log()` you created when the subscription is initialized:
+
+```js
+if (data.type === 'subscription' && data.event === 'init') {
+	console.log('subscription started'); // [!code --]
+
+	for (const message of data.payload) {
+		// [!code ++]
+		setMessageHistory((history) => [...history, message]); // [!code ++]
+	} // [!code ++]
+}
+```
+
+Refresh your browser, login, and you should see the existing messages shown in your browser.
