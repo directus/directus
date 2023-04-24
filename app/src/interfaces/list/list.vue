@@ -302,7 +302,7 @@ function closeDrawer() {
 }
 
 .drag-handle {
-	cursor: grap;
+	cursor: grab;
 }
 
 .drawer-item-content {
