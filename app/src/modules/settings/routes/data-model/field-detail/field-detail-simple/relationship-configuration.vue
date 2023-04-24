@@ -67,53 +67,44 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+<script setup lang="ts">
+import { useCollectionsStore } from '@/stores/collections';
 import { LOCAL_TYPES } from '@directus/constants';
-import { syncFieldDetailStoreProperty } from '../store';
+import { orderBy } from 'lodash';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
-import { orderBy } from 'lodash';
-import { useCollectionsStore } from '@/stores/collections';
+import { syncFieldDetailStoreProperty } from '../store';
 
-export default defineComponent({
-	components: { RelatedCollectionSelect, RelatedFieldSelect },
-	props: {
-		localType: {
-			type: String as PropType<(typeof LOCAL_TYPES)[number]>,
-			required: true,
-		},
-	},
-	setup() {
-		const collectionsStore = useCollectionsStore();
+defineProps<{
+	localType: (typeof LOCAL_TYPES)[number];
+}>();
 
-		const { t } = useI18n();
-		const relatedCollectionM2O = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-		const o2mCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-		const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
-		const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
+const collectionsStore = useCollectionsStore();
 
-		const availableCollections = computed(() => {
-			return orderBy(
-				[
-					...collectionsStore.databaseCollections,
-					{
-						divider: true,
-					},
-					{
-						name: t('system'),
-						selectable: false,
-						children: collectionsStore.crudSafeSystemCollections,
-					},
-				],
-				['collection'],
-				['asc']
-			);
-		});
+const { t } = useI18n();
+const relatedCollectionM2O = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const o2mCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const o2mField = syncFieldDetailStoreProperty('relations.o2m.field');
+const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.one_allowed_collections', []);
 
-		return { availableCollections, oneAllowedCollections, relatedCollectionM2O, o2mCollection, o2mField, t };
-	},
+const availableCollections = computed(() => {
+	return orderBy(
+		[
+			...collectionsStore.databaseCollections,
+			{
+				divider: true,
+			},
+			{
+				name: t('system'),
+				selectable: false,
+				children: collectionsStore.crudSafeSystemCollections,
+			},
+		],
+		['collection'],
+		['asc']
+	);
 });
 </script>
 
