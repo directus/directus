@@ -126,7 +126,7 @@ const props = withDefaults(
 	defineProps<{
 		folder: Folder;
 		currentFolder?: string;
-		clickHandler: () => void;
+		clickHandler?: () => void;
 	}>(),
 	{
 		clickHandler: () => undefined,
