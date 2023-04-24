@@ -188,6 +188,11 @@ import { useSync } from '@directus/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { get } from '@directus/utils';
+import { AliasFields } from '@/composables/use-alias-fields';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { HeaderRaw } from '@/components/v-table/types';
 
 interface Props {
 	collection: string;
@@ -215,6 +220,8 @@ interface Props {
 	selectAll: () => void;
 	filterUser?: Filter;
 	search?: string;
+	aliasedFields: Record<string, AliasFields>;
+	aliasedKeys: string[];
 	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
 }
@@ -236,7 +243,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
 const { t } = useI18n();
-const { collection } = toRefs(props);
+const { collection, aliasedFields, aliasedKeys } = toRefs(props);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);

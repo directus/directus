@@ -131,7 +131,6 @@ archive_confirm_count: >-
   선택한 항목 없음 | 이 항목을 보관하시겠습니까? | 이 {Count}개의 항목을 보관하시겠습니까?
 reset_system_permissions_to: '시스템 권한 초기화 :'
 reset_system_permissions_copy: 시스템 데이터 목록에 대한 권한 설정값이 모두 초기화됩니다. 그래도 진행하시겠습니까?
-the_following_are_minimum_permissions: 다음은 '앱 액세스'가 활성화된 경우 필요한 최소 권한입니다. 이 이상으로 권한을 확장할 수 있지만 그 이하로는 확장할 수 없습니다.
 app_access_minimum: 최소 앱 액세스
 recommended_defaults: 권장 기본값
 unarchive: 보관 해제(사용)

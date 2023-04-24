@@ -1,6 +1,7 @@
 import type { Field, RawField } from '@directus/types';
 import type { Knex } from 'knex';
-import { GeoJSONGeometry, stringify as geojsonToWKT } from 'wellknown';
+import type { GeoJSONGeometry } from 'wellknown';
+import { stringify as geojsonToWKT } from 'wellknown';
 import { DatabaseHelper } from '../types.js';
 
 export abstract class GeometryHelper extends DatabaseHelper {
