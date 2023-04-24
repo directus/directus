@@ -151,6 +151,10 @@ body.dark .tox .tox-toolbar__overflow {
 	background: var(--border-normal);
 }
 
+.tox .tox-tbtn--bespoke {
+	background: inherit;
+}
+
 .tox .tox-tbtn + .tox .tox-tbtn {
 	margin-left: 2px;
 }
