@@ -12,9 +12,6 @@ ARG CHAT_EXTENSION
 ARG LEAD_EXTENSION
 ARG COLAB_EXTENSION
 
-ENV NPM_CONFIG_PREFIX=~/.npm-global
-ENV PATH="$HOME/.npm-global/bin:$PATH"
-
 # Required to run OracleDB
 # Technically not required for the others, but I'd rather have 1 image that works for all, instead of building n images
 # per test
@@ -88,10 +85,9 @@ ENV \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
-RUN mkdir ~/.npm-global
-RUN npm config set prefix ${NPM_CONFIG_PREFIX}
-
-RUN npm install -g pnpm --prefix ${NPM_CONFIG_PREFIX}
+RUN chown -R `whoami` ~/.npm
+RUN chown -R `whoami` /usr/local/lib/node_modules
+RUN npm install -g pnpm
 RUN pnpm install
 RUN pnpm -r build
 
