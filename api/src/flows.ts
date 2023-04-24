@@ -68,7 +68,7 @@ class FlowManager {
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
-	private webhookFlowPreventCaches: Record<string, boolean> = {};
+	private webhookFlowCacheEnabled: Record<string, boolean> = {};
 
 	private reloadQueue: JobQueue;
 
@@ -126,7 +126,7 @@ class FlowManager {
 		id: string,
 		data: unknown,
 		context: Record<string, unknown>
-	): Promise<{ result: unknown; preventCache: boolean | undefined }> {
+	): Promise<{ result: unknown; cacheEnabled: boolean }> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
 			throw new exceptions.ForbiddenException();
@@ -134,7 +134,7 @@ class FlowManager {
 
 		const handler = this.webhookFlowHandlers[id];
 
-		return { result: await handler(data, context), preventCache: this.webhookFlowPreventCaches[id] };
+		return { result: await handler(data, context), cacheEnabled: !!this.webhookFlowCacheEnabled[id] };
 	}
 
 	private async load(): Promise<void> {
@@ -242,7 +242,9 @@ class FlowManager {
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
 
 				if (method === 'GET') {
-					this.webhookFlowPreventCaches[`${method}-${flow.id}`] = flow.options['preventCache'];
+					this.webhookFlowCacheEnabled[`${method}-${flow.id}`] = flow.options['cacheEnabled'] !== false;
+				} else {
+					this.webhookFlowCacheEnabled[`${method}-${flow.id}`] = true;
 				}
 			} else if (flow.trigger === 'manual') {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
@@ -302,7 +304,7 @@ class FlowManager {
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
-		this.webhookFlowPreventCaches = {};
+		this.webhookFlowCacheEnabled = {};
 
 		this.isLoaded = false;
 	}

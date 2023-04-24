@@ -18,7 +18,7 @@ router.use(useCollection('directus_flows'));
 const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 	const flowManager = getFlowManager();
 
-	const { result, preventCache } = await flowManager.runWebhookFlow(
+	const { result, cacheEnabled } = await flowManager.runWebhookFlow(
 		`${req.method}-${req.params['pk']}`,
 		{
 			path: req.path,
@@ -33,7 +33,7 @@ const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 		}
 	);
 
-	if (preventCache) {
+	if (!cacheEnabled) {
 		res.locals['cache'] = false;
 	}
 

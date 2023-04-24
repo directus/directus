@@ -78,12 +78,12 @@ describe('/flows', () => {
 					.send(payloadFlowCreate)
 			).body.data.id;
 
-			const flowPreventCacheId = (
+			const flowCacheDisabledId = (
 				await request(getUrl(vendor, env))
 					.post('/flows')
 					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 					.query({ fields: ['id'] })
-					.send({ ...payloadFlowCreate, name: 'webhook flow preventCache', options: { preventCache: true } })
+					.send({ ...payloadFlowCreate, name: 'webhook flow cacheEnabled', options: { cacheEnabled: false } })
 			).body.data.id;
 
 			await request(getUrl(vendor, env))
@@ -92,27 +92,27 @@ describe('/flows', () => {
 				.send({ operation: { ...payloadOperationCreate, flow: flowId } });
 
 			await request(getUrl(vendor, env))
-				.patch(`/flows/${flowPreventCacheId}`)
+				.patch(`/flows/${flowCacheDisabledId}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-				.send({ operation: { ...payloadOperationCreate, flow: flowPreventCacheId } });
+				.send({ operation: { ...payloadOperationCreate, flow: flowCacheDisabledId } });
 
 			// Action
 			const response = await request(getUrl(vendor, env)).get(`/flows/trigger/${flowId}`);
-			const responsePreventCache = await request(getUrl(vendor, env)).get(`/flows/trigger/${flowPreventCacheId}`);
+			const responseCacheDisabled = await request(getUrl(vendor, env)).get(`/flows/trigger/${flowCacheDisabledId}`);
 
 			await sleep(100);
 
 			const response2 = await request(getUrl(vendor, env)).get(`/flows/trigger/${flowId}`);
-			const responsePreventCache2 = await request(getUrl(vendor, env)).get(`/flows/trigger/${flowPreventCacheId}`);
+			const responseCacheDisabled2 = await request(getUrl(vendor, env)).get(`/flows/trigger/${flowCacheDisabledId}`);
 
 			// Assert
 			expect(response.body).toEqual(expect.objectContaining({ epoch: expect.any(Number) }));
-			expect(responsePreventCache.body).toEqual(expect.objectContaining({ epoch: expect.any(Number) }));
+			expect(responseCacheDisabled.body).toEqual(expect.objectContaining({ epoch: expect.any(Number) }));
 			expect(response2.body).toEqual(expect.objectContaining({ epoch: expect.any(Number) }));
-			expect(responsePreventCache2.body).toEqual(expect.objectContaining({ epoch: expect.any(Number) }));
+			expect(responseCacheDisabled2.body).toEqual(expect.objectContaining({ epoch: expect.any(Number) }));
 
 			expect(response.body).toEqual(response2.body);
-			expect(responsePreventCache.body).not.toEqual(responsePreventCache2.body);
+			expect(responseCacheDisabled.body).not.toEqual(responseCacheDisabled2.body);
 		});
 	});
 });

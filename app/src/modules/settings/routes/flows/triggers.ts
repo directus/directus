@@ -256,8 +256,8 @@ export function getTriggers() {
 					},
 				},
 				{
-					field: 'preventCache',
-					name: '$t:operations.trigger.prevent_cache',
+					field: 'cacheEnabled',
+					name: '$t:operations.trigger.cache',
 					type: 'boolean',
 					meta: {
 						width: 'half',
@@ -265,7 +265,7 @@ export function getTriggers() {
 						interface: 'toggle',
 					},
 					schema: {
-						default_value: false,
+						default_value: true,
 					},
 				},
 			],

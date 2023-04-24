@@ -2170,4 +2170,4 @@ operations:
     parallel: Parallel
     batch: Batch
     batch_size: Batch Size
-    prevent_cache: Prevent Cache
+    cache: Cache
