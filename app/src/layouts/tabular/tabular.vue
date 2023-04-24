@@ -188,11 +188,7 @@ import { useSync } from '@directus/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { get } from '@directus/utils';
 import { AliasFields } from '@/composables/use-alias-fields';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { HeaderRaw } from '@/components/v-table/types';
 
 interface Props {
 	collection: string;
