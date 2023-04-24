@@ -66,11 +66,11 @@ RUN : \
 	&& mkdir -p database extensions uploads \
 	;
 
-RUN chmod +x ./custom_extensions.sh
-RUN chmod +x ./payment_extensions.sh
-RUN chmod +x ./chat_extensions.sh
-RUN chmod +x ./leads_extensions.sh
-RUN chmod +x ./crawless_colab_extensions.sh
+# RUN chmod +x ./custom_extensions.sh
+# RUN chmod +x ./payment_extensions.sh
+# RUN chmod +x ./chat_extensions.sh
+# RUN chmod +x ./leads_extensions.sh
+# RUN chmod +x ./crawless_colab_extensions.sh
 
 # RUN ./custom_extensions.sh
 
