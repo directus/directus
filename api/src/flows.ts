@@ -134,7 +134,7 @@ class FlowManager {
 
 		const handler = this.webhookFlowHandlers[id];
 
-		return { result: await handler(data, context), cacheEnabled: !!this.webhookFlowCacheEnabled[id] };
+		return { result: await handler(data, context), cacheEnabled: this.webhookFlowCacheEnabled[id] !== false };
 	}
 
 	private async load(): Promise<void> {
@@ -242,9 +242,7 @@ class FlowManager {
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
 
 				if (method === 'GET') {
-					this.webhookFlowCacheEnabled[`${method}-${flow.id}`] = flow.options['cacheEnabled'] !== false;
-				} else {
-					this.webhookFlowCacheEnabled[`${method}-${flow.id}`] = true;
+					this.webhookFlowCacheEnabled[`${method}-${flow.id}`] = flow.options['cacheEnabled'];
 				}
 			} else if (flow.trigger === 'manual') {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
