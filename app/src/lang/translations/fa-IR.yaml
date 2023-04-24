@@ -1546,6 +1546,8 @@ interfaces:
     hash: هش
   select-icon:
     icon: آیکن
+    description: انتخاب آیکن از منوی آبشاری
+    search_for_icon: جستجو برای آیکون ها...
   file-image:
     image: عکس
     crop: تناسب با برش تصویر
