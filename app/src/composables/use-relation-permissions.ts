@@ -25,10 +25,12 @@ export function useRelationPermissionsO2M(info: Ref<RelationO2M | undefined>) {
 	const relatedPerms = computed(() => getPermsForCollection(info.value?.relatedCollection.collection));
 	const createAllowed = computed(() => relatedPerms.value?.create);
 	const updateAllowed = computed(() => relatedPerms.value?.update);
+
 	const deleteAllowed = computed(() => {
 		if (info.value?.relation.meta?.one_deselect_action === 'delete') {
 			return relatedPerms.value?.delete;
 		}
+
 		return relatedPerms.value?.update;
 	});
 
@@ -47,10 +49,12 @@ export function useRelationPermissionsM2M(info: Ref<RelationM2M | undefined>) {
 	const createAllowed = computed(() => junctionPerms.value.create && relatedPerms.value.create);
 	const selectAllowed = computed(() => junctionPerms.value.create);
 	const updateAllowed = computed(() => junctionPerms.value.update && relatedPerms.value.update);
+
 	const deleteAllowed = computed(() => {
 		if (info.value?.junction.meta?.one_deselect_action === 'delete') {
 			return junctionPerms.value.delete;
 		}
+
 		return junctionPerms.value.update;
 	});
 
@@ -71,6 +75,7 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 		for (const collection of info.value?.allowedCollections ?? []) {
 			perms[collection.collection] = getPermsForCollection(collection.collection);
 		}
+
 		return perms;
 	});
 
@@ -96,6 +101,7 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 				Object.entries(relatedPerms.value).map(([key, value]) => [key, value.delete && junctionPerms.value.delete])
 			);
 		}
+
 		return Object.fromEntries(
 			Object.entries(relatedPerms.value).map(([key, value]) => [key, value.update && junctionPerms.value.update])
 		);

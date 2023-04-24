@@ -231,6 +231,7 @@ const {
 	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
+
 const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissionsM2M(relationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));

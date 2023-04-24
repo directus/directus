@@ -63,6 +63,7 @@ const relationO2M = ref({
 } as RelationO2M);
 
 test('useRelationPermissionsO2M as admin', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsO2M(relationO2M);
@@ -90,6 +91,7 @@ test('useRelationPermissionsO2M as admin', () => {
 });
 
 test('useRelationPermissionsO2M with no permissions', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsO2M(relationO2M);
@@ -117,6 +119,7 @@ test('useRelationPermissionsO2M with no permissions', () => {
 });
 
 test('useRelationPermissionsO2M with update permissions', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsO2M(relationO2M);
@@ -151,6 +154,7 @@ const relationM2O = ref({
 } as RelationM2O);
 
 test('useRelationPermissionsM2O as admin', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2O(relationM2O);
@@ -177,6 +181,7 @@ test('useRelationPermissionsM2O as admin', () => {
 });
 
 test('useRelationPermissionsM2O with no permissions', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2O(relationM2O);
@@ -203,6 +208,7 @@ test('useRelationPermissionsM2O with no permissions', () => {
 });
 
 test('useRelationPermissionsM2O with update permissions', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2O(relationM2O);
@@ -243,6 +249,7 @@ const relationM2M = ref({
 } as RelationM2M);
 
 test('useRelationPermissionsM2M as admin', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2M(relationM2M);
@@ -271,6 +278,7 @@ test('useRelationPermissionsM2M as admin', () => {
 });
 
 test('useRelationPermissionsM2M with no permissions', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2M(relationM2M);
@@ -299,6 +307,7 @@ test('useRelationPermissionsM2M with no permissions', () => {
 });
 
 test('useRelationPermissionsM2M with update permissions', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2M(relationM2M);
@@ -339,6 +348,7 @@ const relationM2A = ref({
 } as RelationM2A);
 
 test('useRelationPermissionsM2A as admin', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2A(relationM2A);
@@ -367,6 +377,7 @@ test('useRelationPermissionsM2A as admin', () => {
 });
 
 test('useRelationPermissionsM2A with no permissions', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2A(relationM2A);
@@ -395,6 +406,7 @@ test('useRelationPermissionsM2A with no permissions', () => {
 });
 
 test('useRelationPermissionsM2A with update permissions', () => {
+	// eslint-disable-next-line vue/one-component-per-file
 	const TestComponent = defineComponent({
 		setup() {
 			return useRelationPermissionsM2A(relationM2A);

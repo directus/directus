@@ -326,6 +326,7 @@ const updateAllowed = computed(() => junctionPerms.value.update);
 const firstItemNew = computed(
 	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
 );
+
 const secondItemNew = computed(
 	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
 );
@@ -334,6 +335,7 @@ const firstChangesAllowed = computed(() => {
 	if (firstItemNew.value) {
 		return updateAllowed.value;
 	}
+
 	return createAllowed.value;
 });
 
@@ -341,6 +343,7 @@ const secondChangesAllowed = computed(() => {
 	if (secondItemNew.value) {
 		return updateAllowed.value;
 	}
+
 	return createAllowed.value;
 });
 
@@ -367,6 +370,7 @@ const firstFields = computed(() => {
 			return field;
 		});
 	}
+
 	return fieldsWithPerms;
 });
 
@@ -393,6 +397,7 @@ const secondFields = computed(() => {
 			return field;
 		});
 	}
+
 	return fieldsWithPerms;
 });
 </script>
