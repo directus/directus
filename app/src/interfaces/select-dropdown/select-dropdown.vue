@@ -30,8 +30,8 @@ type Option = {
 
 withDefaults(
 	defineProps<{
-		disabled?: boolean;
 		value?: string | number;
+		disabled?: boolean;
 		choices?: Option[];
 		icon?: string;
 		allowNone?: boolean;
