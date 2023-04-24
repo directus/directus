@@ -1,12 +1,12 @@
-import { createTerminus, TerminusOptions } from '@godaddy/terminus';
+import { isUpToDate } from '@directus/update-check';
+import type { TerminusOptions } from '@godaddy/terminus';
+import { createTerminus } from '@godaddy/terminus';
 import type { Request } from 'express';
 import * as http from 'http';
 import * as https from 'https';
 import { once } from 'lodash-es';
 import qs from 'qs';
-import { isUpToDate } from '@directus/update-check';
 import url from 'url';
-import * as pkg from './utils/package.js';
 import createApp from './app.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
@@ -21,6 +21,7 @@ import {
 } from './websocket/controllers/index.js';
 import { startWebSocketHandlers } from './websocket/handlers/index.js';
 import { toBoolean } from './utils/to-boolean.js';
+import * as pkg from './utils/package.js';
 
 export let SERVER_ONLINE = true;
 
