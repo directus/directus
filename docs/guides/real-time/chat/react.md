@@ -60,3 +60,30 @@ WebSocket instance.
 ```js
 const connectionRef = useRef(null);
 ```
+
+## Set Up Form Submission Methods
+
+Create the methods for form submissions:
+
+```js
+const loginSubmit = () => {
+	//do something here
+};
+
+const messageSubmit = () => {
+	//do something here
+};
+```
+
+Ensure to call the `event.preventDefault()` in these methods to prevent the browser from refreshing the page upon
+submission of the form.
+
+```js
+const loginSubmit = (event) => {
+	event.preventDefault(); // [!code ++]
+};
+
+const messageSubmit = (event) => {
+	event.preventDefault(); // [!code ++]
+};
+```
