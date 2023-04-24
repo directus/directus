@@ -50,10 +50,13 @@
 				v-model:headers="headers"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
 				:items="displayItems"
 				:row-height="tableRowHeight"
 				show-resize
 				@click:row="editRow"
+				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
@@ -222,7 +225,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		width: string;
-		layout: LAYOUTS;
+		layout?: LAYOUTS;
 		tableSpacing?: 'compact' | 'cozy' | 'comfortable';
 		fields?: Array<string>;
 		template?: string | null;

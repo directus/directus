@@ -1,9 +1,8 @@
-import knex from 'knex';
 import type { Knex } from 'knex';
+import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
-import { CollectionsService, FieldsService } from '../services/index.js';
-import type { Snapshot, SnapshotField } from '../types/index.js';
+import type { MockedFunction } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { snapshotApplyTestSchema } from '../__utils__/schemas.js';
 import {
 	snapshotBeforeCreateCollection,
@@ -11,6 +10,8 @@ import {
 	snapshotCreateCollection,
 	snapshotCreateCollectionNotNested,
 } from '../__utils__/snapshots.js';
+import { CollectionsService, FieldsService } from '../services/index.js';
+import type { Snapshot, SnapshotField } from '../types/index.js';
 import { applySnapshot } from './apply-snapshot.js';
 import * as getSchema from './get-schema.js';
 

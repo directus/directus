@@ -1,23 +1,23 @@
 export {
-	defineInterface,
+	useApi,
+	useCollection,
+	useExtensions,
+	useFilterFields,
+	useItems,
+	useLayout,
+	useStores,
+	useSync,
+} from '@directus/composables';
+export {
 	defineDisplay,
+	defineEndpoint,
+	defineHook,
+	defineInterface,
 	defineLayout,
 	defineModule,
-	definePanel,
-	defineHook,
-	defineEndpoint,
-	defineOperationApp,
 	defineOperationApi,
+	defineOperationApp,
+	definePanel,
 	getFieldsFromTemplate,
 	getRelationType,
 } from '@directus/utils';
-export {
-	useStores,
-	useApi,
-	useExtensions,
-	useSync,
-	useCollection,
-	useItems,
-	useLayout,
-	useFilterFields,
-} from '@directus/composables';

@@ -154,14 +154,9 @@ const props = withDefaults(
 const { t } = useI18n();
 const emit = defineEmits(['update:modelValue']);
 
-const value = computed<ChangesItem>({
+const value = computed<ChangesItem | any[]>({
 	get() {
-		if (props.modelValue === undefined)
-			return {
-				create: [],
-				update: [],
-				delete: [],
-			};
+		if (props.modelValue === undefined) return [];
 		return props.modelValue as ChangesItem;
 	},
 	set: (val) => {

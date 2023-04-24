@@ -4,9 +4,9 @@ import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Filter, Item } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
-import { clamp, cloneDeep, get, isEqual, merge, toArray } from 'lodash';
-import { computed, ref, Ref, unref, watch } from 'vue';
+import { getEndpoint, toArray } from '@directus/utils';
+import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
+import { Ref, computed, ref, unref, watch } from 'vue';
 
 export type RelationQueryMultiple = {
 	page: number;
@@ -474,9 +474,7 @@ export function useRelationMultiple(
 
 				case 'm2a': {
 					const collection = item[relation.value.collectionField.field];
-					return item[relation.value.junctionPrimaryKeyField.field][
-						relation.value.relationPrimaryKeyFields[collection].field
-					];
+					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection].field];
 				}
 			}
 		}

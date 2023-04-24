@@ -68,7 +68,7 @@
 						<div class="label-inner">
 							<span class="name">
 								{{ field.field }}
-								<v-icon v-if="field.meta?.required === true" name="star" class="required" sup />
+								<v-icon v-if="field.meta?.required === true" name="star" class="required" sup filled />
 							</span>
 							<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
 							<span v-else class="interface">{{ t('db_only_click_to_configure') }}</span>

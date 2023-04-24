@@ -1,12 +1,12 @@
 import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
-import { useFieldsStore } from '@/stores/fields';
 import { useAliasFields } from '@/composables/use-alias-fields';
+import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { Field } from '@directus/types';
 import { defineLayout } from '@directus/utils';
@@ -17,7 +17,6 @@ import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
 import { LayoutOptions, LayoutQuery } from './types';
-import { useRelationsStore } from '@/stores/relations';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'tabular',
@@ -34,7 +33,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const router = useRouter();
 
 		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -46,7 +44,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { sort, limit, page, fields } = useItemOptions();
 
-		const { aliasedFields, aliasQuery } = useAliasFields(fields, collection);
+		const { aliasedFields, aliasQuery, aliasedKeys } = useAliasFields(fields, collection);
 
 		const fieldsWithRelationalAliased = computed(() => {
 			return Object.values(aliasedFields.value).reduce<string[]>((acc, value) => {
@@ -124,6 +122,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			search,
 			download,
 			fieldsWithRelationalAliased,
+			aliasedFields,
+			aliasedKeys,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -218,52 +218,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => {
-						let description: string | null = null;
-
-						const fieldParts = field.key.split('.');
-
-						if (fieldParts.length > 1) {
-							const fieldNames = fieldParts.map((fieldKey, index) => {
-								const pathPrefix = fieldParts.slice(0, index);
-								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
-								return field?.name ?? fieldKey;
-							});
-
-							description = fieldNames.join(' -> ');
-
-							const types = relationsStore.getRelationTypes(collection.value!, field.key);
-							const arrayField = fieldsStore.getField(collection.value!, fieldParts.slice(0, -1).join('.'));
-
-							// Special case for translations to render the nested data in the translations display instead of the default display
-							if (types.at(-1) === 'o2m' && arrayField?.meta?.special?.includes('translations')) {
-								if (arrayField)
-									return {
-										text: field.name,
-										value: field.key,
-										key: fieldParts.slice(0, -1).join('.'),
-										description,
-										width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
-										align: layoutOptions.value?.align?.[field.key] || 'left',
-										field: {
-											display: 'translations',
-											displayOptions: {
-												template: `{{${fieldParts.at(-1)}}}`,
-											},
-											interface: arrayField.meta?.interface,
-											interfaceOptions: arrayField.meta?.options,
-											type: arrayField.type,
-											field: arrayField.field,
-											collection: arrayField.collection,
-										},
-										sortable: ['json', 'alias', 'presentation', 'translations'].includes(arrayField.type) === false,
-									} as HeaderRaw;
-							}
-						}
+						const description: string | null = null;
 
 						return {
 							text: field.name,
 							value: field.key,
-							key: field.key,
 							description,
 							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
