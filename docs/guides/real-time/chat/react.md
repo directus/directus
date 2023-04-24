@@ -111,8 +111,9 @@ Then, connect these values to the form input fields:
 	<label htmlFor="email">Email</label>
 	<input type="email" id="email" /> // [!code --]
 	<input type="email" id="email" name="email" value={formValue.email} onChange={handleLoginChange} /> // [!code ++]
+  
 	<label htmlFor="password">Password</label>
-	<input type="password" id="password" /> // [!code --]
+	<input type="password" id="password" /> // [!code --] // [!code ++]
 	<input type="password" id="password" name="password" value={formValue.password} onChange={handleLoginChange} /> // [!code
 	++]
 	<button type="submit">Submit</button>
@@ -170,31 +171,27 @@ const receiveMessage = (message) => {
 As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the
 `Messages` collection. Add this inside of the `receiveMessage` method:
 
-```js
+```js {3-14}
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
 	if (data.type === 'auth' && data.status === 'ok') {
-		// [!code ++]
 		connectionRef.current.send(
-			// [!code ++]
 			JSON.stringify({
-				// [!code ++]
-				type: 'subscribe', // [!code ++]
-				collection: 'messages', // [!code ++]
+				type: 'subscribe',
+				collection: 'messages',
 				query: {
-					// [!code ++]
-					fields: ['*', 'user_created.first_name'], // [!code ++]
-					sort: 'date_created', // [!code ++]
-				}, // [!code ++]
-			}) // [!code ++]
-		); // [!code ++]
-	} // [!code ++]
+					fields: ['*', 'user_created.first_name'],
+					sort: 'date_created',
+				},
+			})
+		);
+	}
 };
 ```
 
 When a subscription is started, a message will be sent to confirm. Add this inside of the `receiveMessage` method:
 
-```js
+```js {15-17}
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
 	if (data.type === 'auth' && data.status === 'ok') {
@@ -210,9 +207,8 @@ const receiveMessage = (message) => {
 		);
 	}
 	if (data.type === 'subscription' && data.event === 'init') {
-		// [!code ++]
-		console.log('subscription started'); // [!code ++]
-	} // [!code ++]
+		console.log('subscription started');
+	}
 };
 ```
 
