@@ -87,3 +87,61 @@ const messageSubmit = (event) => {
 	event.preventDefault(); // [!code ++]
 };
 ```
+
+## Establish WebSocket Connection
+
+First, create a piece of state to hold the `email` and `password` values of the login form:
+
+```js
+const [formValue, setFormValue] = useState({ email: '', password: '' });
+```
+
+Set up a `handleLoginChange` method that updates the value of the login input field as the user types.
+
+```js
+const handleLoginChange = (event) => {
+	setFormValue({ ...formValue, [event.target.name]: event.target.value });
+};
+```
+
+Then, connect these values to the form input fields:
+
+```js
+<form onSubmit={loginSubmit}>
+	<label htmlFor="email">Email</label>
+	<input type="email" id="email" /> // [!code --]
+	<input type="email" id="email" name="email" value={formValue.email} onChange={handleLoginChange} /> // [!code ++]
+	<label htmlFor="password">Password</label>
+	<input type="password" id="password" /> // [!code --]
+	<input type="password" id="password" name="password" value={formValue.password} onChange={handleLoginChange} /> // [!code
+	++]
+	<button type="submit">Submit</button>
+</form>
+```
+
+Within the `loginSubmit` method, create a new WebSocket, which will immediately attempt connection:
+
+```js
+const loginSubmit = (event) => {
+	connectionRef.current = new WebSocket(url); // [!code ++]
+};
+```
+
+On connection, you must [send an authentication message before the timeout](/guides/real-time/authentication). Add an
+event handler for the connection's `open` event:
+
+```js
+const loginSubmit = (event) => {
+	connectionRef.current = new WebSocket(url);
+	connectionRef.current.onopen = () => authenticate(formValue); // [!code ++]
+};
+```
+
+Then, create a new `authenticate` method:
+
+```js
+const authenticate = (opts) => {
+	const { email, password } = opts;
+	connectionRef.current.send(JSON.stringify({ type: 'auth', email, password }));
+};
+```
