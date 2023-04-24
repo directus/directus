@@ -78,7 +78,6 @@
 <script setup lang="ts">
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
-import { usePermissionsStore } from '@/stores/permissions';
 import { useCollectionsStore } from '@/stores/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
@@ -90,6 +89,7 @@ import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -171,6 +171,7 @@ const query = computed<RelationQuerySingle>(() => ({
 }));
 
 const { update, remove, displayItem, loading } = useRelationSingle(value, query, relationInfo);
+const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const currentPrimaryKey = computed<string | number>(() => {
 	if (!displayItem.value || !props.value || !relationInfo.value) return '+';
@@ -228,18 +229,6 @@ function onSelection(selection: (number | string)[]) {
 
 	selectModalActive.value = false;
 }
-
-const { hasPermission } = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-	return hasPermission(relationInfo.value.relatedCollection.collection, 'create');
-});
-
-const updateAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-	return hasPermission(relationInfo.value.relatedCollection.collection, 'update');
-});
 </script>
 
 <style lang="scss" scoped>
