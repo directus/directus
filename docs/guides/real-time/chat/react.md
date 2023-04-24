@@ -313,3 +313,12 @@ if (data.type === 'subscription' && data.event === 'init') {
 ```
 
 Refresh your browser, login, and you should see the existing messages shown in your browser.
+
+## Next Steps
+
+This guide covers authentication, item creation, and subscription using WebSockets. You may consider:
+
+1. Hiding the login form and only showing the new message form once authenticated.
+2. Handling reconnection logic if the client disconnects or a refresh token is needed.
+3. Locking down permissions so users can only see user first names.
+4. Allow for editing and deletion of messages by the author or by an admin.
