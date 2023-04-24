@@ -88,6 +88,8 @@ ENV \
 RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
 RUN export CI_API_V4_URL=${CI_API_V4_URL}
 
+RUN COPY ./*_extensions.sh .
+
 RUN chmod +x ./custom_extensions.sh
 RUN chmod +x ./payment_extensions.sh
 RUN chmod +x ./chat_extensions.sh
