@@ -36,15 +36,10 @@ import api from '@/api';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-const props = withDefaults(
-	defineProps<{
-		parent?: string;
-		disabled?: boolean;
-	}>(),
-	{
-		disabled: false,
-	}
-);
+const props = defineProps<{
+	parent?: string;
+	disabled?: boolean;
+}>();
 
 const { t } = useI18n();
 

@@ -142,7 +142,6 @@ const props = withDefaults(
 	}>(),
 	{
 		file: () => ({}),
-		isNew: false,
 	}
 );
 

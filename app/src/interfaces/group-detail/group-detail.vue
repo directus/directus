@@ -71,10 +71,7 @@ const props = withDefaults(
 		direction?: string;
 	}>(),
 	{
-		disabled: false,
-		batchMode: false,
 		batchActiveFields: () => [],
-		loading: false,
 		validationErrors: () => [],
 		start: 'open',
 	}

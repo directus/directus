@@ -69,16 +69,11 @@ import NavigationBookmark from './navigation-bookmark.vue';
 import { useI18n } from 'vue-i18n';
 import { orderBy } from 'lodash';
 
-const props = withDefaults(
-	defineProps<{
-		collection: Collection;
-		showHidden?: boolean;
-		search?: string;
-	}>(),
-	{
-		showHidden: false,
-	}
-);
+const props = defineProps<{
+	collection: Collection;
+	showHidden?: boolean;
+	search?: string;
+}>();
 
 const { t } = useI18n();
 
