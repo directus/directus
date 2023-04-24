@@ -218,3 +218,53 @@ const receiveMessage = (message) => {
 
 Open your browser, enter your user’s email and password, and hit submit. Check the browser console. You should see
 “subscription started”
+
+## Create New Messages
+
+First, set up two pieces of state to hold messages: one to keep track of new messages and another to store an array of
+previous message history.
+
+```js
+const [newMessage, setNewMessage] = useState('');
+const [messageHistory, setMessageHistory] = useState([]);
+```
+
+Create a `handleMessageChange` method that updates the value of the message input field as the user types.
+
+```js
+const handleMessageChange = (event) => {
+	setNewMessage(event.target.value);
+};
+```
+
+Then, connect these values to the form input fields:
+
+```js
+<form onSubmit={messageSubmit}>
+	<label htmlFor="message">Message</label>
+	<input type="text" id="message" /> // [!code --]
+	<input type="text" id="message" name="message" value={newMessage} onChange={handleMessageChange} /> // [!code ++]
+	<button type="submit">Submit</button>
+</form>
+```
+
+Within the `messageSubmit` method, send a new message to create the item in your Directus collection:
+
+```js
+const messageSubmit = (event) => {
+	connectionRef.current.send(
+		JSON.stringify({
+			type: 'items',
+			collection: 'messages',
+			action: 'create',
+			data: { text: newMessage },
+		})
+	);
+	setNewMessage('');
+};
+```
+
+_Refresh your browser, login, and submit a new message. Check the `Messages` collection in your Directus project and you
+should see a new item._
+
+![Directus Data Studio Content Module showing the Messages collection with one item in it. Visible is the text, User, and Date Created.](https://cdn.directus.io/docs/v9/guides/websockets/chat-collection.webp)
