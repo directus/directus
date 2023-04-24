@@ -268,3 +268,31 @@ _Refresh your browser, login, and submit a new message. Check the `Messages` col
 should see a new item._
 
 ![Directus Data Studio Content Module showing the Messages collection with one item in it. Visible is the text, User, and Date Created.](https://cdn.directus.io/docs/v9/guides/websockets/chat-collection.webp)
+
+## Display New Messages
+
+In your `receiveMessage` function, listen for new `create` events on the `Messages` collection, and add them to
+`messageHistory`:
+
+```js
+if (data.type === 'subscription' && data.event === 'create') {
+	setMessageHistory((history) => [...history, data.payload[0]]);
+}
+```
+
+Update your `<ol>` to display items in the array by mapping over `messageHistory`
+
+```js
+<ol>
+	{messageHistory.map((message) => (
+		<li key={message.id}>
+			{message.user_created.first_name}: {message.text}
+		</li>
+	))}
+</ol>
+```
+
+_Refresh your browser, login, and submit a new message. The result should be shown on the page. Open a second browser
+and navigate to your index.html file, login and submit a message there and both pages should immediately update_
+
+![Web page showing the login form, new message form, and one message shown. The message reads “Kevin: This is brilliant!”](https://cdn.directus.io/docs/v9/guides/websockets/chat-webpage.webp)
