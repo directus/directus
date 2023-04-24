@@ -70,7 +70,7 @@
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, computed, ref } from 'vue';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { i18n } from '@/lang';
 import { isEqual } from 'lodash';
 import { hideDragImage } from '@/utils/hide-drag-image';

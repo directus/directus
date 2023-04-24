@@ -3,8 +3,8 @@ import SC from 'socketcluster-client';
 import logger from '../logger';
 
 function genToken() {
-	return JWT.sign({ type: 'service' }, process.env.JWT_SECRET, {
-		expiresIn: process.env.JWT_EXPIRY,
+	return JWT.sign({ type: 'service' }, process.env.SECRET, {
+		expiresIn: '1 year',
 	});
 }
 
