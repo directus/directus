@@ -66,8 +66,24 @@ RUN : \
 	&& mkdir -p database extensions uploads \
 	;
 
+
+RUN chmod +x ./custom_extensions.sh
+RUN chmod +x ./payment_extensions.sh
+RUN chmod +x ./chat_extensions.sh
+RUN chmod +x ./leads_extensions.sh
+RUN chmod +x ./crawless_colab_extensions.sh
+
+RUN ./custom_extensions.sh
+
+RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
+RUN if [[ -z "$CHAT_EXTENSION" ]] ; then echo "Chat extension disabled" ; else ./chat_extensions.sh ; fi
+RUN if [[ -z "$LEAD_EXTENSION" ]] ; then echo "Lead extension disabled" ; else ./chat_extensions.sh ; fi
+RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else ./crawless_colab_extensions.sh ; fi
+
 ####################################################################################################
 ## Create Production Image
+
+FROM node:18-alpine AS runtime
 
 USER node
 
@@ -86,24 +102,27 @@ ENV \
 RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
 RUN export CI_API_V4_URL=${CI_API_V4_URL}
 
-RUN chmod +x ./custom_extensions.sh
-RUN chmod +x ./payment_extensions.sh
-RUN chmod +x ./chat_extensions.sh
-RUN chmod +x ./leads_extensions.sh
-RUN chmod +x ./crawless_colab_extensions.sh
-
-RUN ./custom_extensions.sh
-
-RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
-RUN if [[ -z "$CHAT_EXTENSION" ]] ; then echo "Chat extension disabled" ; else ./chat_extensions.sh ; fi
-RUN if [[ -z "$LEAD_EXTENSION" ]] ; then echo "Lead extension disabled" ; else ./chat_extensions.sh ; fi
-RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else ./crawless_colab_extensions.sh ; fi
+#COPY ./*_extensions.sh .
+#RUN ls -la ./*_extensions.sh
+#
+#RUN chmod +x ./custom_extensions.sh
+#RUN chmod +x ./payment_extensions.sh
+#RUN chmod +x ./chat_extensions.sh
+#RUN chmod +x ./leads_extensions.sh
+#RUN chmod +x ./crawless_colab_extensions.sh
+#
+#RUN ./custom_extensions.sh
+#
+#RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
+#RUN if [[ -z "$CHAT_EXTENSION" ]] ; then echo "Chat extension disabled" ; else ./chat_extensions.sh ; fi
+#RUN if [[ -z "$LEAD_EXTENSION" ]] ; then echo "Lead extension disabled" ; else ./chat_extensions.sh ; fi
+#RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else ./crawless_colab_extensions.sh ; fi
 
 # Not sure why we have this folder here
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
-COPY ./start_up.sh /directus/api
-RUN chmod +x /directus/api/start_up.sh
+#COPY ./start_up.sh /directus/api
+#RUN chmod +x /directus/api/start_up.sh
 
 COPY --from=builder --chown=node:node /directus/dist .
 
