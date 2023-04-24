@@ -53,7 +53,7 @@ RUN corepack enable && corepack prepare
 COPY pnpm-lock.yaml .
 RUN pnpm fetch
 COPY . .
-RUN pnpm install --recursive --offline --frozen-lockfile
+RUN pnpm install --recursive --offline --no-frozen-lockfile
 
 RUN : \
 	&& npm_config_workspace_concurrency=1 pnpm run build \
