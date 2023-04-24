@@ -9,9 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import { Filter } from '@directus/shared/types';
-import { abbreviateNumber } from '@directus/shared/utils';
-import { cssVar } from '@directus/shared/utils/browser';
+import { Filter } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
+import { cssVar } from '@directus/utils/browser';
 import { isNil } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -97,6 +97,7 @@ const color = computed(() => {
 		if (typeof metric.value === 'string') {
 			const value = metric.value;
 			const compareValue = format.value ?? '';
+
 			switch (format.operator || '>=') {
 				case '=':
 					return value === compareValue;
@@ -106,6 +107,7 @@ const color = computed(() => {
 		} else {
 			const value = Number(metric.value);
 			const compareValue = Number(format.value ?? 0);
+
 			switch (format.operator || '>=') {
 				case '=':
 					return value === compareValue;

@@ -1,26 +1,27 @@
-import { Accountability, Action, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
+import { Action } from '@directus/constants';
 import jwt from 'jsonwebtoken';
-import { Knex } from 'knex';
-import { clone, cloneDeep } from 'lodash';
+import type { Knex } from 'knex';
+import { clone, cloneDeep } from 'lodash-es';
 import { performance } from 'perf_hooks';
-import { getAuthProvider } from '../auth';
-import { DEFAULT_AUTH_PROVIDER } from '../constants';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import env from '../env';
+import { getAuthProvider } from '../auth.js';
+import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
 import {
 	InvalidCredentialsException,
 	InvalidOTPException,
 	InvalidProviderException,
 	UserSuspendedException,
-} from '../exceptions';
-import { createRateLimiter } from '../rate-limiter';
-import { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types';
-import { getMilliseconds } from '../utils/get-milliseconds';
-import { stall } from '../utils/stall';
-import { ActivityService } from './activity';
-import { SettingsService } from './settings';
-import { TFAService } from './tfa';
+} from '../exceptions/index.js';
+import { createRateLimiter } from '../rate-limiter.js';
+import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { stall } from '../utils/stall.js';
+import { ActivityService } from './activity.js';
+import { SettingsService } from './settings.js';
+import { TFAService } from './tfa.js';
 
 const loginAttemptsLimiter = createRateLimiter('RATE_LIMITER', { duration: 0 });
 
@@ -50,7 +51,7 @@ export class AuthenticationService {
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
 
-		const STALL_TIME = env.LOGIN_STALL_TIME;
+		const STALL_TIME = env['LOGIN_STALL_TIME'];
 		const timeStart = performance.now();
 
 		const provider = getAuthProvider(providerName);
@@ -203,13 +204,13 @@ export class AuthenticationService {
 			}
 		);
 
-		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
+		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
 		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions').insert({
 			token: refreshToken,
@@ -247,13 +248,15 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken,
-			expires: getMilliseconds(env.ACCESS_TOKEN_TTL),
+			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
 			id: user.id,
 		};
 	}
 
 	async refresh(refreshToken: string): Promise<Record<string, any>> {
 		const { nanoid } = await import('nanoid');
+		const STALL_TIME = env['LOGIN_STALL_TIME'];
+		const timeStart = performance.now();
 
 		if (!refreshToken) {
 			throw new InvalidCredentialsException();
@@ -303,6 +306,18 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
+		if (record.user_id && record.user_status !== 'active') {
+			await this.knex('directus_sessions').where({ token: refreshToken }).del();
+
+			if (record.user_status === 'suspended') {
+				await stall(STALL_TIME, timeStart);
+				throw new UserSuspendedException();
+			} else {
+				await stall(STALL_TIME, timeStart);
+				throw new InvalidCredentialsException();
+			}
+		}
+
 		if (record.user_id) {
 			const provider = getAuthProvider(record.user_provider);
 
@@ -332,10 +347,12 @@ export class AuthenticationService {
 		if (record.share_id) {
 			tokenPayload.share = record.share_id;
 			tokenPayload.role = record.share_role;
+
 			tokenPayload.share_scope = {
 				collection: record.share_collection,
 				item: record.share_item,
 			};
+
 			tokenPayload.app_access = false;
 			tokenPayload.admin_access = false;
 
@@ -358,13 +375,13 @@ export class AuthenticationService {
 			}
 		);
 
-		const accessToken = jwt.sign(customClaims, env.SECRET as string, {
-			expiresIn: env.ACCESS_TOKEN_TTL,
+		const accessToken = jwt.sign(customClaims, env['SECRET'] as string, {
+			expiresIn: env['ACCESS_TOKEN_TTL'],
 			issuer: 'directus',
 		});
 
 		const newRefreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env.REFRESH_TOKEN_TTL, 0));
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
 
 		await this.knex('directus_sessions')
 			.update({
@@ -380,7 +397,7 @@ export class AuthenticationService {
 		return {
 			accessToken,
 			refreshToken: newRefreshToken,
-			expires: getMilliseconds(env.ACCESS_TOKEN_TTL),
+			expires: getMilliseconds(env['ACCESS_TOKEN_TTL']),
 			id: record.user_id,
 		};
 	}

@@ -1,31 +1,31 @@
-import path from 'path';
-import chalk from 'chalk';
-import fse from 'fs-extra';
-import execa from 'execa';
-import ora from 'ora';
 import {
-	EXTENSION_PKG_KEY,
-	EXTENSION_LANGUAGES,
-	HYBRID_EXTENSION_TYPES,
-	EXTENSION_NAME_REGEX,
-	EXTENSION_TYPES,
 	BUNDLE_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import { isIn } from '@directus/shared/utils';
-import {
+	EXTENSION_LANGUAGES,
+	EXTENSION_NAME_REGEX,
+	EXTENSION_PKG_KEY,
+	EXTENSION_TYPES,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/constants';
+import type {
 	ApiExtensionType,
 	AppExtensionType,
 	BundleExtensionType,
 	ExtensionOptions,
 	ExtensionType,
 	HybridExtensionType,
-} from '@directus/shared/types';
-import { log } from '../utils/logger';
-import { isLanguage, languageToShort } from '../utils/languages';
-import getSdkVersion from '../utils/get-sdk-version';
-import getExtensionDevDeps from './helpers/get-extension-dev-deps';
-import copyTemplate from './helpers/copy-template';
-import getPackageManager from '../utils/get-package-manager';
+} from '@directus/types';
+import { isIn } from '@directus/utils';
+import chalk from 'chalk';
+import { execa } from 'execa';
+import fse from 'fs-extra';
+import ora from 'ora';
+import path from 'path';
+import getPackageManager from '../utils/get-package-manager.js';
+import getSdkVersion from '../utils/get-sdk-version.js';
+import { isLanguage, languageToShort } from '../utils/languages.js';
+import { log } from '../utils/logger.js';
+import copyTemplate from './helpers/copy-template.js';
+import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
 type CreateOptions = { language?: string };
 
@@ -40,6 +40,7 @@ export default async function create(type: string, name: string, options: Create
 			).join(', ')}.`,
 			'error'
 		);
+
 		process.exit(1);
 	}
 
@@ -124,6 +125,7 @@ async function createLocalExtension({
 			).join(', ')}.`,
 			'error'
 		);
+
 		process.exit(1);
 	}
 
@@ -133,6 +135,7 @@ async function createLocalExtension({
 	await copyTemplate(type, targetPath, 'src', language);
 
 	const host = `^${getSdkVersion()}`;
+
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {
 				type,
@@ -146,6 +149,7 @@ async function createLocalExtension({
 				source: `src/index.${languageToShort(language)}`,
 				host,
 		  };
+
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type, language));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
@@ -176,7 +180,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 	};
 
 	if (options.type === 'bundle') {
-		packageManifest.scripts['add'] = 'directus-extension add';
+		packageManifest['scripts']['add'] = 'directus-extension add';
 	}
 
 	return packageManifest;

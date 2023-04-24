@@ -1,17 +1,22 @@
 import Joi from 'joi';
-import { InvalidPayloadException } from '../index';
-import { DiffKind, SnapshotDiffWithHash, SnapshotWithHash } from '../types/snapshot';
+import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
+import type { SnapshotDiffWithHash, SnapshotWithHash } from '../types/snapshot.js';
+import { DiffKind } from '../types/snapshot.js';
 
 const deepDiffSchema = Joi.object({
 	kind: Joi.string()
 		.valid(...Object.values(DiffKind))
 		.required(),
-	path: Joi.array().items(Joi.string()),
-	lhs: Joi.object().when('kind', { is: [DiffKind.DELETE, DiffKind.EDIT], then: Joi.required() }),
-	rhs: Joi.object().when('kind', { is: [DiffKind.NEW, DiffKind.EDIT], then: Joi.required() }),
+	path: Joi.array().items(Joi.alternatives().try(Joi.string(), Joi.number())),
+	lhs: Joi.any().when('kind', { is: [DiffKind.NEW, DiffKind.ARRAY], then: Joi.optional(), otherwise: Joi.required() }),
+	rhs: Joi.any().when('kind', {
+		is: [DiffKind.DELETE, DiffKind.ARRAY],
+		then: Joi.optional(),
+		otherwise: Joi.required(),
+	}),
 	index: Joi.number().when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
-	item: Joi.link('/').when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
-});
+	item: Joi.link('#deepdiff').when('kind', { is: DiffKind.ARRAY, then: Joi.required() }),
+}).id('deepdiff');
 
 const applyJoiSchema = Joi.object({
 	hash: Joi.string().required(),
@@ -92,6 +97,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			}
 		}
 	}
+
 	for (const diffField of applyDiff.diff.fields) {
 		const field = `${diffField.collection}.${diffField.field}`;
 
@@ -117,6 +123,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			}
 		}
 	}
+
 	for (const diffRelation of applyDiff.diff.relations) {
 		let relation = `${diffRelation.collection}.${diffRelation.field}`;
 		if (diffRelation.related_collection) relation += `-> ${diffRelation.related_collection}`;

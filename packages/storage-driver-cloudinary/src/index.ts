@@ -136,12 +136,29 @@ export class DriverCloudinary implements Driver {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
-		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/resources/${resourceType}/upload/${publicId}`;
+
+		const parameters = {
+			public_id: publicId,
+			type: 'upload',
+			api_key: this.apiKey,
+			timestamp: this.getTimestamp(),
+		};
+
+		const signature = this.getFullSignature(parameters);
+
+		const body = this.toFormUrlEncoded({
+			...parameters,
+			signature,
+		});
+
+		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/explicit`;
+
 		const response = await fetch(url, {
-			method: 'GET',
+			method: 'POST',
 			headers: {
-				Authorization: this.getBasicAuth(),
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
 			},
+			body,
 		});
 
 		if (response.status >= 400) {

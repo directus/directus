@@ -1,6 +1,6 @@
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
-import { defineDisplay } from '@directus/shared/utils';
+import { defineDisplay } from '@directus/utils';
 import { parse, parseISO } from 'date-fns';
 import { i18n } from '@/lang';
 import DisplayDateTime from './datetime.vue';
@@ -51,6 +51,7 @@ export default defineDisplay({
 	},
 	options: ({ field }) => {
 		const options = field.meta?.display_options || {};
+
 		const fields = [
 			{
 				field: 'relative',

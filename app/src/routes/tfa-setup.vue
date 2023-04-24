@@ -34,7 +34,7 @@
 		</div>
 
 		<template #notice>
-			<v-icon name="lock_outlined" left />
+			<v-icon name="lock" left />
 			{{ t('not_authenticated') }}
 		</template>
 	</public-view>
@@ -47,7 +47,7 @@ import { useTFASetup } from '@/composables/use-tfa-setup';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
 import { router } from '@/router';
-import { User } from '@directus/shared/types';
+import { User } from '@directus/types';
 
 export default defineComponent({
 	setup() {
@@ -94,6 +94,7 @@ export default defineComponent({
 
 		async function enable() {
 			await enableTFA();
+
 			if (error.value === null) {
 				const redirectQuery = router.currentRoute.value.query.redirect as string;
 				router.push(redirectQuery || (userStore.currentUser as User)?.last_page || '/login');

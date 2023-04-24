@@ -1,13 +1,11 @@
 {
 	"name": "@directus/utils",
-	"version": "9.23.1",
+	"version": "9.25.2",
 	"type": "module",
 	"scripts": {
-		"build": "tsc --build",
-		"dev": "tsc --watch",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"build": "tsc --project browser/tsconfig.json && tsc --project node/tsconfig.json && tsc --project shared/tsconfig.json",
+		"dev": "concurrently \"tsc --watch --project browser/tsconfig.json\" \"tsc --watch --project node/tsconfig.json\" \"tsc --watch --project shared/tsconfig.json\"",
+		"test": "vitest --watch=false"
 	},
 	"description": "Utilities shared between the Directus packages",
 	"repository": {
@@ -20,32 +18,49 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js"
+			"types": "./dist/shared/index.d.ts",
+			"import": "./dist/shared/index.js"
 		},
 		"./node": {
 			"types": "./dist/node/index.d.ts",
 			"import": "./dist/node/index.js"
 		},
+		"./browser": {
+			"types": "./dist/browser/index.d.ts",
+			"import": "./dist/browser/index.js"
+		},
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.js",
+	"main": "dist/shared/index.js",
 	"files": [
 		"dist",
-		"!**/*.d.ts?(.map)"
+		"!**/*.test.{js,d.ts}"
 	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"dependencies": {
-		"@directus/shared": "workspace:*",
-		"@directus/storage": "workspace:*"
+		"@directus/constants": "workspace:*",
+		"@directus/storage": "workspace:*",
+		"date-fns": "2.29.3",
+		"fs-extra": "11.1.1",
+		"joi": "17.9.1",
+		"lodash-es": "4.17.21",
+		"micromustache": "8.0.3",
+		"tmp": "0.2.1",
+		"vue": "3.2.47"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
+		"@directus/tsconfig": "0.0.7",
+		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
-		"@vitest/coverage-c8": "0.29.3",
-		"typescript": "4.9.5",
-		"vitest": "0.29.3"
+		"@types/fs-extra": "11.0.1",
+		"@types/lodash-es": "4.17.7",
+		"@types/node": "18.15.13",
+		"@types/tmp": "0.2.3",
+		"@vitest/coverage-c8": "0.30.1",
+		"concurrently": "8.0.1",
+		"typescript": "5.0.4",
+		"vitest": "0.30.1"
 	}
 }

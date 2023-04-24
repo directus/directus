@@ -80,7 +80,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_insights_dashboard')" class="page-description" />
 			</sidebar-detail>
 
@@ -210,7 +210,7 @@ import { useInsightsStore } from '@/stores/insights';
 import { usePermissionsStore } from '@/stores/permissions';
 import { pointOnLine } from '@/utils/point-on-line';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
-import { applyOptionsData } from '@directus/shared/utils';
+import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -337,6 +337,7 @@ const cancelChanges = (force = false) => {
 
 const copyPanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.id !== props.primaryKey)?.id);
 const copyPanelID = ref<string | null>();
+
 const copyPanel = () => {
 	insightsStore.stagePanelDuplicate(unref(copyPanelID)!, { dashboard: unref(copyPanelTo) });
 	copyPanelID.value = null;

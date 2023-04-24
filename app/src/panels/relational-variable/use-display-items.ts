@@ -2,8 +2,8 @@ import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/shared/utils';
-import { useApi } from '@directus/shared/composables';
+import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { useApi } from '@directus/composables';
 import { computed, Ref, ref, watch } from 'vue';
 
 export default function useDisplayItems(collection: Ref<string>, template: Ref<string>, ids: Ref<(string | number)[]>) {
@@ -15,6 +15,7 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 	const displayItems = ref([]);
 
 	const primaryKey = computed(() => fieldStore.getPrimaryKeyFieldForCollection(collection.value)?.field ?? '');
+
 	const displayTemplate = computed(() => {
 		if (template.value) return template.value;
 
@@ -22,6 +23,7 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 
 		return displayTemplate || `{{ ${primaryKey.value || 'id'} }}`;
 	});
+
 	const requiredFields = computed(() => {
 		if (!displayTemplate.value || !collection.value) return [];
 		return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), collection.value);

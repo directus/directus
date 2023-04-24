@@ -1,7 +1,12 @@
-import { knex, Knex } from 'knex';
+import knex from 'knex';
+import type { Knex } from 'knex';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
-import { Driver } from '../../types';
+import type { Driver } from '../../types/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export type Credentials = {
 	filename?: string;
@@ -14,7 +19,7 @@ export type Credentials = {
 	options__encrypt?: boolean;
 };
 export default function createDBConnection(client: Driver, credentials: Credentials): Knex<any, unknown[]> {
-	let connection: Knex.Config['connection'] = {};
+	let connection: any = {};
 
 	if (client === 'sqlite3') {
 		const { filename } = credentials;
@@ -35,13 +40,14 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 
 		if (client === 'pg' || client === 'cockroachdb') {
 			const { ssl } = credentials as Credentials;
-			connection['ssl'] = ssl;
+			connection.ssl = ssl;
 		}
 
 		if (client === 'mssql') {
 			const { options__encrypt } = credentials as Credentials;
 
-			(connection as Knex.MsSqlConnectionConfig)['options'] = {
+			connection = {
+				...connection,
 				encrypt: options__encrypt,
 			};
 		}
@@ -72,6 +78,6 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 		};
 	}
 
-	const db = knex(knexConfig);
+	const db = knex.default(knexConfig);
 	return db;
 }

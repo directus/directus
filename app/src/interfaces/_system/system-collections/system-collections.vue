@@ -43,6 +43,7 @@ export default defineComponent({
 
 		const collections = computed(() => {
 			let collections = collectionsStore.collections;
+
 			if (!props.includeSingleton) {
 				collections = collections.filter((collection) => collection?.meta?.singleton === false);
 			}

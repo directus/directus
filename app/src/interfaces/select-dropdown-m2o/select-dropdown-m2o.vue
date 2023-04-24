@@ -2,6 +2,9 @@
 	<v-notice v-if="!relationInfo" type="warning">
 		{{ t('relationship_not_setup') }}
 	</v-notice>
+	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ t('no_singleton_relations') }}
+	</v-notice>
 	<v-notice v-else-if="!displayTemplate" type="warning">
 		{{ t('display_template_not_setup') }}
 	</v-notice>
@@ -81,8 +84,8 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/shared/types';
-import { deepMap, getFieldsFromTemplate } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
@@ -132,6 +135,7 @@ const customFilter = computed(() => {
 const { t } = useI18n();
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
+
 const value = computed({
 	get: () => props.value ?? null,
 	set: (value) => {
@@ -211,6 +215,7 @@ const selection = computed<(number | string)[]>(() => {
 	if (typeof props.value === 'object' && pkField in props.value) {
 		return [props.value[pkField]];
 	}
+
 	return [props.value];
 });
 

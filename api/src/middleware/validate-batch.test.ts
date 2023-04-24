@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import { validateBatch } from './validate-batch';
+import { validateBatch } from './validate-batch.js';
 import '../../src/types/express.d.ts';
-import { InvalidPayloadException } from '../exceptions';
-import { FailedValidationException } from '@directus/shared/exceptions';
+import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
+import { FailedValidationException } from '@directus/exceptions';
 import { vi, beforeEach, test, expect } from 'vitest';
 
 let mockRequest: Partial<Request & { token?: string }>;
@@ -55,6 +55,7 @@ test(`Short circuits on Array body in update/delete use`, async () => {
 
 test(`Sets sanitizedQuery based on body.query in read operations`, async () => {
 	mockRequest.method = 'SEARCH';
+
 	mockRequest.body = {
 		query: {
 			sort: 'id',
@@ -70,6 +71,7 @@ test(`Sets sanitizedQuery based on body.query in read operations`, async () => {
 
 test(`Doesn't allow both query and keys in a batch delete`, async () => {
 	mockRequest.method = 'DELETE';
+
 	mockRequest.body = {
 		keys: [1, 2, 3],
 		query: { filter: {} },
@@ -83,6 +85,7 @@ test(`Doesn't allow both query and keys in a batch delete`, async () => {
 
 test(`Requires 'data' on batch update`, async () => {
 	mockRequest.method = 'PATCH';
+
 	mockRequest.body = {
 		keys: [1, 2, 3],
 		query: { filter: {} },

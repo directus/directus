@@ -1,0 +1,48 @@
+{
+	"name": "@directus/composables",
+	"version": "9.25.2",
+	"type": "module",
+	"scripts": {
+		"build": "tsc --build",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
+	},
+	"description": "Shared Vue composables for Directus use",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/composables"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "GPL-3.0",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist",
+		"!**/*.test.{js,d.ts}"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "0.0.7",
+		"@directus/types": "workspace:*",
+		"@types/lodash-es": "4.17.7",
+		"@vitest/coverage-c8": "0.30.1",
+		"@vue/test-utils": "2.3.2",
+		"axios": "1.3.6",
+		"typescript": "5.0.4",
+		"vitest": "0.30.1"
+	},
+	"dependencies": {
+		"@directus/constants": "workspace:*",
+		"@directus/utils": "workspace:*",
+		"lodash-es": "4.17.21",
+		"nanoid": "4.0.2",
+		"vue": "3.2.47"
+	}
+}

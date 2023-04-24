@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useSizeClass } from '@directus/shared/composables';
+import { useSizeClass } from '@directus/composables';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { camelCase, upperFirst } from 'lodash';
 
@@ -106,23 +106,28 @@ body {
 
 	i {
 		display: block;
+		font-family: 'Material Symbols';
 		font-weight: normal;
 		font-size: var(--v-icon-size);
-		font-family: 'Material Icons Outline';
 		font-style: normal;
 		line-height: 1;
 		letter-spacing: normal;
-		white-space: nowrap;
 		text-transform: none;
+		white-space: nowrap;
 		word-wrap: normal;
+		direction: ltr;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
 		font-feature-settings: 'liga';
+		font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 
 		&::after {
 			content: attr(data-icon);
 		}
 
 		&.filled {
-			font-family: 'Material Icons';
+			font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 		}
 	}
 

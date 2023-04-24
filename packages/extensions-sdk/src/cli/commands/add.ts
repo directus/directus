@@ -1,31 +1,32 @@
-import path from 'path';
-import chalk from 'chalk';
-import fse from 'fs-extra';
-import inquirer from 'inquirer';
-import { log } from '../utils/logger';
-import {
-	ExtensionManifest,
-	ExtensionOptions,
-	ExtensionOptionsBundleEntry,
-	NestedExtensionType,
-} from '@directus/shared/types';
-import { isIn, isTypeIn } from '@directus/shared/utils';
-import { pathToRelativeUrl } from '@directus/shared/utils/node';
 import {
 	EXTENSION_LANGUAGES,
 	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
+	ExtensionManifest,
 	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import { getLanguageFromPath, isLanguage, languageToShort } from '../utils/languages';
-import { Language } from '../types';
-import getExtensionDevDeps from './helpers/get-extension-dev-deps';
-import execa from 'execa';
+} from '@directus/constants';
+import type {
+	ExtensionOptions,
+	ExtensionOptionsBundleEntry,
+	NestedExtensionType,
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/types';
+import { isIn, isTypeIn } from '@directus/utils';
+import { pathToRelativeUrl } from '@directus/utils/node';
+import chalk from 'chalk';
+import { execa } from 'execa';
+import fse from 'fs-extra';
+import inquirer from 'inquirer';
 import ora from 'ora';
-import copyTemplate from './helpers/copy-template';
-import detectJsonIndent from '../utils/detect-json-indent';
-import getPackageManager from '../utils/get-package-manager';
+import path from 'path';
+import type { Language } from '../types.js';
+import detectJsonIndent from '../utils/detect-json-indent.js';
+import getPackageManager from '../utils/get-package-manager.js';
+import { getLanguageFromPath, isLanguage, languageToShort } from '../utils/languages.js';
+import { log } from '../utils/logger.js';
+import copyTemplate from './helpers/copy-template.js';
+import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
 export default async function add(): Promise<void> {
 	const extensionPath = process.cwd();
@@ -36,7 +37,7 @@ export default async function add(): Promise<void> {
 		process.exit(1);
 	}
 
-	let extensionManifest: ExtensionManifest;
+	let extensionManifest: TExtensionManifest;
 	let indent: string | null = null;
 
 	try {
@@ -113,6 +114,7 @@ export default async function add(): Promise<void> {
 		];
 
 		const newExtensionOptions: ExtensionOptions = { ...extensionOptions, entries: newEntries };
+
 		const newExtensionManifest = {
 			...extensionManifest,
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
@@ -250,6 +252,7 @@ export default async function add(): Promise<void> {
 			host: extensionOptions.host,
 			hidden: extensionOptions.hidden,
 		};
+
 		const newExtensionManifest = {
 			...extensionManifest,
 			name: EXTENSION_NAME_REGEX.test(extensionName) ? extensionName : `directus-extension-${extensionName}`,
@@ -283,6 +286,7 @@ function getLanguageFromEntries(entries: ExtensionOptionsBundleEntry[]): Languag
 				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
 				process.exit(1);
 			}
+
 			if (!isLanguage(languageApi)) {
 				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 				process.exit(1);

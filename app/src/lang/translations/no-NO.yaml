@@ -86,6 +86,8 @@ no_translation_string_copy: Det finnes ingen oversettelsestekst ennå.
 translation_string_key_placeholder: Oversettelse tekst nøkkel...
 translation_string_translations_placeholder: Legg til ny oversettelse
 edit_translation_string: Rediger oversettelsestekst
+delete_translation_string_copy: >-
+  Er du sikker på at du har lyst til å slette oversettelsesstrenga "{key}"? Handlingen kan ikke angres.
 invite_users: Invitere brukere
 invite: Inviter
 email_already_invited: E-postadressen "{email}" er allerede invitert
@@ -106,6 +108,8 @@ update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
 delete_bookmark_copy: >-
   Er du sikker på at du vil slette "{bookmark}"? Handlingen kan ikke angres.
+delete_personal_bookmark: Slett personlig bokmerke
+delete_global_bookmark: Slett global bokmerke
 logoutReason:
   SIGN_OUT: Utlogget
   SESSION_EXPIRED: Økt utløpt
@@ -125,12 +129,12 @@ archive_confirm_count: >-
   Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse {count} elementene?
 reset_system_permissions_to: 'Tilbakestill systemtillatelser til:'
 reset_system_permissions_copy: Denne handlingen vil overskrive eventuelle egendefinerte rettigheter du kan ha brukt på systemkolleksjonene. Er du sikker?
-the_following_are_minimum_permissions: Følgende minimumstilganger kreves når "Applikasjons-tilgang" er aktivert. Du kan utvide tillatelsene ut over dette, men ikke nedenfor.
 app_access_minimum: App Minimumstilgang
 recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
+validation_errors_notice: 'Følgende felt har ugyldige verdier:'
 validationError:
   eq: Verdien må være {valid}
   neq: Verdien kan ikke være {invalid}
@@ -152,6 +156,7 @@ validationError:
 all_access: All tilgang
 no_access: Ingen tilgang
 use_custom: Bruk egendefinert
+nullable: Nullbar
 allow_null_value: Tillat NULL verdi
 allow_multiple: Tillat flere
 allow_multiple_to_be_open: Tillat at flere kan åpnes
@@ -198,6 +203,7 @@ admins_have_all_permissions: Administratorer har alle rettigheter
 camera: Kamera
 show_zero: Vis null
 continue_in_advanced_field_creation_mode: Opprett i avansert feltopprettingsmodus
+validation: Godkjenning
 sum: Sum
 avg: Gjennomsnitt
 count: Antall
@@ -228,6 +234,7 @@ float: Flyttall
 integer: Heltall
 json: JSON
 xml: XML
+yaml: YAML
 string: Tekststreng
 text: Tekst
 time: Tid
@@ -288,14 +295,20 @@ foreign_key: Fremmednøkkel
 finish_setup: Fullfør oppsett
 dismiss: Lukk
 raw_value: Rå verdi
+copy_raw_value: Kopier råverdi
 copy_raw_value_success: Kopiert
+copy_raw_value_fail: Det gikk ikke å kopiere
 paste_raw_value: Lim inn råverdi
 paste_raw_value_success: Limt
+paste_raw_value_fail: Det gikk ikke å lime inn
+view_raw_value: Vis råverdi
 edit_raw_value: Rediger råverdi
 enter_raw_value: Legg inn råverdi...
 clear_value: Tøm innhold
 clear_changes: Fjern endringer
+clear_items: Tøm varer
 reset_to_default: Tilbakestill til standard
+undo_changes: Angre endringer
 notifications: Varsler
 show_all_activity: Vis all aktivitet
 page_not_found: Side ikke funnet
@@ -325,6 +338,10 @@ this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
 languages_collection: Språkkolleksjon
+import_data_button: Start import
+import_data_indeterminate: Importerer data...
+import_data_success: Importeringen fra {filename} var vellykket
+import_data_error: Denne filens datastruktur samsvarer ikke med samlingen.
 label_import: Importer
 label_export: Eksporter
 import_export: Importer / Eksporter
@@ -395,6 +412,7 @@ folder: Mappe
 zoom: Zoom
 download: Last ned
 open: Åpen
+open_in_new_window: Åpne i nytt vindu
 background_color: Bakgrunnsfarge
 upload_from_device: Last opp fil fra enhet
 choose_from_library: Velg fil fra bibliotek
@@ -420,6 +438,8 @@ creating_items: Oppretter elementer
 selecting_items: Velg elementer
 allow_duplicates: Tillat duplikater
 comments: Kommentarer
+no_comments: Ingen kommentarer ennå
+click_to_expand: Klikk for å utvide
 select_item: Velg element
 no_items: Ingen elementer
 search_items: Søk etter elementer...
@@ -467,6 +487,7 @@ activity_item: Aktivitetselement
 action: Handling
 ip_address: IP-addresse
 user_agent: Brukeragent
+origin: Opprinnelse
 webhooks: Webhooks
 decimals: Desimaler
 value_decimals: Verdi desimaler
@@ -500,6 +521,8 @@ select_an_item: Velg et element...
 edit: Rediger
 enabled: Aktivert
 disable_tfa: Deaktiver 2FA
+admin_disable_tfa_text: Er du sikkert på at du har lyst til å deaktivere to-faktor autentisering for denne brukeren?
+tfa_setup: Sett opp to-faktor autentisering
 tfa_scan_code: Skann koden i autentiseringsappen for å fullføre oppsettet av 2FA
 enter_otp_to_disable_tfa: Angi OTP for å deaktivere 2FA
 create_account: Opprett konto
@@ -514,6 +537,10 @@ errors:
   INVALID_OTP: Feil engangspassord
   INVALID_PAYLOAD: Invalid payload
   INVALID_QUERY: Ugyldig spørring
+  INVALID_CONFIG: Ugyldig konfigurasjon
+  INVALID_TOKEN: Ugyldig nøkkel
+  INVALID_IP: IP-addressen er ikke tillatt
+  INVALID_USER: Brukerautentisering mislyktes
   ITEM_LIMIT_REACHED: Elementgrense er nådd
   ITEM_NOT_FOUND: Element ikke funnet
   ROUTE_NOT_FOUND: Ikke funnet
@@ -524,12 +551,25 @@ errors:
   INTERNAL_SERVER_ERROR: Uventet feil
   NOT_NULL_VIOLATION: Verdien kan ikke være null
   ILLEGAL_ASSET_TRANSFORMATION: Bildekilden er for stor til å forhåndsvise
+  VALUE_TOO_LONG: Verdien er for lang
+  VALUE_OUT_OF_RANGE: Verdien er utenfor gyldig område
+  INVALID_FOREIGN_KEY: Ugyldig fremmednøkkel
   UNKNOWN: Uventet feil
+  SERVICE_UNAVAILABLE: Tjenesten er ikke tilgjengelig
+  UNSUPPORTED_MEDIA_TYPE: Filtypen støttes ikke
+  TOKEN_EXPIRED: Nøkkelen har utgått
+  METHOD_NOT_ALLOWED: Metode ikke tillatt
+  REQUESTS_EXCEEDED: Maks antall forespørsler nådd
 security: Sikkerhet
 value_hashed: Sikker verdi Hastet
 bookmark_name: Bokmerkenavn...
 create_bookmark: Lag bokmerke
 edit_bookmark: Rediger bokmerke
+edit_personal_bookmark: Rediger personlig bokmerke
+edit_role_bookmark: Rediger rollebokmerke
+edit_global_bookmark: Rediger globalt bokmerke
+cannot_edit_role_bookmarks: Kan ikke redigere rollebokmerker
+cannot_edit_global_bookmarks: Kan ikke redigere globale bokmerker
 bookmarks: Bokmerke
 presets: Forhåndsinnstillinger
 unexpected_error: Uventet feil
@@ -537,6 +577,7 @@ unexpected_error_copy: En uventet feil oppstod, vennligst forsøk igjen.
 copy_details: Kopier detaljer
 no_app_access: Ingen app-tilgang
 no_app_access_copy: Denne brukeren har ikke tillatelse til å bruke admin appen.
+password_reset_sent: Hvis du har en konto, har vi sent deg en sikker lenke for å tilbakestille passordet ditt
 password_reset_successful: Passord tilbakestilt
 back: Tilbake
 filter: Filter
@@ -554,6 +595,8 @@ update_collection_success: Oppdatert samling
 delete_collection_success: Slettet samling
 make_collection_visible: Gjør samlingen synlig
 make_collection_hidden: Gjør samlingen skjult
+make_folder_visible: Gjør mappen synlig
+make_folder_hidden: Skjul mappe
 goto_collection_content: Vis innhold
 start_end_of_count_items: '{start}–{end} av {count} artikler'
 start_end_of_count_filtered_items: '{start}–{end} av {count} filtrerte artikler'
@@ -561,6 +604,12 @@ one_item: '1 element'
 one_filtered_item: '1 filtrert element'
 collections_shown: Samlinger vises
 visible_collections: Synlige samlinger
+hidden_collections: Skjulte samlinger
+show_hidden_collections: Vis skjulte samlinger
+hide_hidden_collections: Skjul skjulte samlinger
+monospace: Fastbredde
+color: Farge
+circle: Sirkel
 empty_item: Tomt element
 operators:
   lt: Mindre enn
@@ -573,7 +622,14 @@ operators:
 loading: Laster...
 item: Element
 items: Elementer
+upload_file_indeterminate: Laster opp fil...
+upload_file_success: Fil lastet opp
+upload_files_indeterminate: 'Laster opp filer {done}/{total}'
+upload_files_success: '{count} filer lastet opp'
+rows: Rader
+columns: Kolonner
 value_unique: Verdien må være unik
+all_activity: All aktivitet
 create_item: Opprette element
 no_results: Ingen treff
 create: Opprett
@@ -608,11 +664,13 @@ fields:
     collection: Kolleksjon
     comment: Kommenter
     user_agent: Brukeragent
+    origin: Opprinnelse
     ip: IP-addresse
   directus_collections:
     collection: Kolleksjon
     icon: Ikon
     note: Notat
+    color: Farge
     hidden: Skjult
     sort_field: Sorter felt
   directus_files:
@@ -730,6 +788,8 @@ interfaces:
     collection: Kolleksjon
   system-collections:
     collections: Kolleksjoner
+  select-color:
+    color: Farge
   system-fields:
     select_a_collection: Velg en Kolleksjon
   system-display-template:
@@ -766,6 +826,8 @@ displays:
     boolean: Sann/usann
   collection:
     collection: Kolleksjon
+  color:
+    color: Farge
   datetime:
     format: Format
     suffix: Suffiks
@@ -773,12 +835,16 @@ displays:
     file: Fil
   formatted-value:
     format: Format
+    font_monospace: Fastbredde
     prefix: Prefiks
     suffix: Suffiks
+    color: Farge
     icon: Ikon
     text: Tekst
   icon:
     icon: Ikon
+  image:
+    circle: Sirkel
   labels:
     choices_value_placeholder: Legg inn verdi...
   user:

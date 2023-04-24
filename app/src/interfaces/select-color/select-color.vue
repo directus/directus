@@ -159,7 +159,7 @@
 <script lang="ts" setup>
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
-import { cssVar } from '@directus/shared/utils/browser';
+import { cssVar } from '@directus/utils/browser';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { i18n } from '@/lang';
@@ -286,9 +286,11 @@ function useColor() {
 			let alpha = Math.round(255 * color.value.alpha())
 				.toString(16)
 				.toUpperCase();
+
 			alpha = alpha.padStart(2, '0');
 			return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
 		}
+
 		return null;
 	};
 
@@ -342,6 +344,7 @@ function useColor() {
 			if (newAlpha === null) {
 				return;
 			}
+
 			const newColor = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
 			setColor(Color(newColor).alpha(newAlpha / 100));
 		},

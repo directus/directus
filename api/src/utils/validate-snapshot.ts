@@ -1,10 +1,11 @@
-import { version as currentDirectusVersion } from '../../package.json';
-import { InvalidPayloadException } from '../exceptions';
-import { getDatabaseClient } from '../database';
+import { TYPES } from '@directus/constants';
 import Joi from 'joi';
-import { TYPES } from '@directus/shared/constants';
-import { ALIAS_TYPES } from '../constants';
-import { DatabaseClients, Snapshot } from '../types';
+import { ALIAS_TYPES } from '../constants.js';
+import { getDatabaseClient } from '../database/index.js';
+import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
+import type { Snapshot } from '../types/index.js';
+import { DatabaseClients } from '../types/index.js';
+import { version as currentDirectusVersion } from './package.js';
 
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number().valid(1).required(),
@@ -72,6 +73,7 @@ export function validateSnapshot(snapshot: Snapshot, force = false) {
 	}
 
 	const currentVendor = getDatabaseClient();
+
 	if (snapshot.vendor !== currentVendor) {
 		throw new InvalidPayloadException(
 			`Provided snapshot's vendor ${snapshot.vendor} does not match the current instance's vendor ${currentVendor}. You can bypass this check by passing the "force" query parameter.`

@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Nevybrány žádné položky | Jste si jisti, že chcete archivovat tuto položku? | Jste si jisti, že chcete archivovat tyto {count} položky?
 reset_system_permissions_to: 'Resetovat systémová oprávnění na:'
 reset_system_permissions_copy: Tato akce přepíše libovolná vlastní oprávnění, která jste možná použili na kolekce systému. Jste si jisti?
-the_following_are_minimum_permissions: Následující oprávnění jsou vyžadována v případě, že je povolen "Přístup k aplikaci". Můžete rozšířit oprávnění nad tuto úroveň, ale ne níže.
 app_access_minimum: Minimální přístup k aplikaci
 recommended_defaults: Doporučené výchozí hodnoty
 unarchive: Vyjmout z archivu
@@ -292,6 +291,7 @@ o2m_relationship: Vztah 1:N
 m2m_relationship: Vztah N:N
 m2a_relationship: Vztah N:cokoliv
 invalid_item: Neplatná položka
+modal: Modál
 next: Další
 field_name: Název pole
 translations: Překlady
@@ -762,7 +762,6 @@ label: Popisek
 flows: Toky
 flow: Tok
 select_a_flow: Vybrat tok
-run_flow_on_current: Spustit tok na aktuální položku
 run_flow_success: Tok "{flow}" proběhl úspěšně
 trigger: Spouštěč
 trigger_options: Možnosti spouštěče
@@ -1585,7 +1584,6 @@ interfaces:
   system-folder:
     folder: Složka
     description: Vyberte složku
-    field_hint: Složka pro nahrané soubory. Nemá vliv na existující soubory.
     root_name: Kořenový adresář knihovny souborů
     system_default: Výchozí nastavení systému
   select-radio:
@@ -1598,7 +1596,6 @@ interfaces:
     add_label: 'Štítek "Vytvořit nový"'
     sort: Seřadit
     sort_placeholder: Manuálně
-    field_name_placeholder: Zadejte název pole...
     field_note_placeholder: Zadejte poznámku k poli...
     incompatible_data: Aktuální data nejsou kompatibilní s rozhraním opakovače a budou přepsána při přidávání položek do opakovače
   slider:

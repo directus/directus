@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Permission, Collection } from '@directus/shared/types';
+import { Permission, Collection } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { inject, ref, Ref } from 'vue';
 
@@ -110,6 +110,7 @@ export default function useUpdatePermissions(
 		await Promise.all(
 			ACTIONS.map(async (action) => {
 				const permission = getPermission(action);
+
 				if (permission) {
 					try {
 						await api.patch(`/permissions/${permission.id}`, {

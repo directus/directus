@@ -94,7 +94,7 @@
 		<router-view name="add" />
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_datamodel_collections')" class="page-description" />
 			</sidebar-detail>
 		</template>

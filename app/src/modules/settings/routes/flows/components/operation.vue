@@ -140,7 +140,7 @@
 <script lang="ts" setup>
 import { useExtensions } from '@/extensions';
 import { Vector2 } from '@/utils/vector2';
-import { FlowRaw } from '@directus/shared/types';
+import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ATTACHMENT_OFFSET, REJECT_OFFSET, RESOLVE_OFFSET } from '../constants';
@@ -223,6 +223,7 @@ function pointerdown(target: Target | 'parent') {
 	down = target;
 
 	const rect = document.getElementsByClassName('workspace').item(0)?.getBoundingClientRect();
+
 	if (rect) {
 		workspaceOffset = new Vector2(rect.left, rect.top);
 	}
@@ -235,6 +236,7 @@ const pointermove = (event: PointerEvent) => {
 	rafId = window.requestAnimationFrame(() => {
 		moving.value = true;
 		if (!down) return;
+
 		const arrowInfo: ArrowInfo =
 			down === 'parent'
 				? {
@@ -289,6 +291,7 @@ function pointerEnter() {
 	if (!props.editMode) return;
 	emit('show-hint', props.panel.id);
 }
+
 function pointerLeave() {
 	if (!props.editMode) return;
 	emit('hide-hint');

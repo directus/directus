@@ -11,7 +11,7 @@
 			<dd>{{ text }}</dd>
 			<v-icon
 				v-if="isCopySupported && copyable"
-				name="copy"
+				name="content_copy"
 				small
 				clickable
 				class="clipboard-icon"
@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { translate } from '@/utils/translate-object-values';
-import { FlowRaw } from '@directus/shared/types';
+import { FlowRaw } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 
 defineProps<{

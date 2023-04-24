@@ -1,14 +1,20 @@
-import { Accountability } from '@directus/shared/types';
-import { Knex } from 'knex';
-import getDatabase from '../database';
-import { ForbiddenException } from '../exceptions';
-import { AbstractServiceOptions, Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from '../types';
-import { applyDiff } from '../utils/apply-diff';
-import { getSnapshot } from '../utils/get-snapshot';
-import { getSnapshotDiff } from '../utils/get-snapshot-diff';
-import { getVersionedHash } from '../utils/get-versioned-hash';
-import { validateApplyDiff } from '../utils/validate-diff';
-import { validateSnapshot } from '../utils/validate-snapshot';
+import type { Accountability } from '@directus/types';
+import type { Knex } from 'knex';
+import getDatabase from '../database/index.js';
+import { ForbiddenException } from '../exceptions/index.js';
+import type {
+	AbstractServiceOptions,
+	Snapshot,
+	SnapshotDiff,
+	SnapshotDiffWithHash,
+	SnapshotWithHash,
+} from '../types/index.js';
+import { applyDiff } from '../utils/apply-diff.js';
+import { getSnapshot } from '../utils/get-snapshot.js';
+import { getSnapshotDiff } from '../utils/get-snapshot-diff.js';
+import { getVersionedHash } from '../utils/get-versioned-hash.js';
+import { validateApplyDiff } from '../utils/validate-diff.js';
+import { validateSnapshot } from '../utils/validate-snapshot.js';
 
 export class SchemaService {
 	knex: Knex;

@@ -15,10 +15,10 @@ beforeEach(() => {
 import { useUserStore } from '@/stores/user';
 import { usePermissionsStore } from '@/stores/permissions';
 import { usePermissions } from './use-permissions';
-import { useCollection } from '@directus/shared/composables';
-import { Field } from '@directus/shared/types';
+import { useCollection } from '@directus/composables';
+import { Field } from '@directus/types';
 
-vi.mock('@directus/shared/composables');
+vi.mock('@directus/composables');
 
 const mockUser = {
 	id: '00000000-0000-0000-0000-000000000000',
@@ -27,6 +27,7 @@ const mockUser = {
 		id: '00000000-0000-0000-0000-000000000000',
 	},
 };
+
 const mockReadPermissions = {
 	role: '00000000-0000-0000-0000-000000000000',
 	permissions: {
@@ -49,6 +50,7 @@ const mockReadPermissions = {
 	collection: 'test',
 	action: 'read',
 };
+
 const mockFields: Field[] = [
 	{
 		collection: 'test',
@@ -116,6 +118,7 @@ describe('usePermissions', () => {
 
 		const { fields } = usePermissions(ref('test'), ref(null), ref(false));
 		expect(fields.value.length).toBeGreaterThan(0);
+
 		for (const field of fields.value) {
 			expect(mockReadPermissions.fields.includes(field.field)).toBe(true);
 		}

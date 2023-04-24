@@ -19,7 +19,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />
 			</sidebar-detail>
 		</template>
@@ -65,7 +65,7 @@ import { Header as TableHeader } from '@/components/v-table/types';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { translate } from '@/utils/translate-object-values';
-import { Role } from '@directus/shared/types';
+import { Role } from '@directus/types';
 
 type RoleItem = Partial<Role> & {
 	count?: number;

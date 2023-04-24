@@ -1,4 +1,4 @@
-import { getConfigFromEnv } from '../../src/utils/get-config-from-env';
+import { getConfigFromEnv } from '../../src/utils/get-config-from-env.js';
 import { describe, test, expect, vi } from 'vitest';
 
 vi.mock('../../src/env', () => {
@@ -8,6 +8,7 @@ vi.mock('../../src/env', () => {
 		CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
 		CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
 	};
+
 	return {
 		default: MOCK_ENV,
 		getEnv: () => MOCK_ENV,

@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - api/**
-      - tests-blackbox/**
+      - tests/blackbox/**
       - packages/**
       - package.json
       - pnpm-lock.yaml
@@ -43,12 +43,6 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Reinstall production dependencies only
-        run: pnpm install --prod
-
-      - name: Reinstall dev dependencies for workspace root
-        run: pnpm install --workspace-root --dev
-
       - name: Install Oracle client
         if: matrix.vendor == 'oracle'
         run: |
@@ -61,13 +55,14 @@ jobs:
 
       - name: Start services (SQLite)
         if: matrix.vendor == 'sqlite3'
-        run: docker compose -f tests-blackbox/docker-compose.yml up auth-saml minio minio-mc -d --quiet-pull --wait
+        run:
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Start services (other vendors)
         if: matrix.vendor != 'sqlite3'
         run:
-          docker compose -f tests-blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml minio minio-mc -d
+          docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} auth-saml redis minio minio-mc -d
           --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=${{ matrix.vendor }} pnpm run -w test:blackbox
+        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox

@@ -56,7 +56,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_flows_item')" class="page-description" />
 			</sidebar-detail>
 
@@ -182,7 +182,7 @@
 </template>
 
 <script setup lang="ts">
-import { FlowRaw, OperationRaw } from '@directus/shared/types';
+import { FlowRaw, OperationRaw } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 
 import { computed, ref, watch } from 'vue';
@@ -230,6 +230,7 @@ const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
 const fetchedFlow = ref<FlowRaw>();
+
 const flow = computed<FlowRaw | undefined>({
 	get() {
 		if (!fetchedFlow.value) return undefined;
@@ -261,6 +262,7 @@ async function loadCurrentFlow() {
 				fields: ['*', 'operations.*'],
 			},
 		});
+
 		fetchedFlow.value = response.data.data;
 	} catch (err: any) {
 		unexpectedError(err);
@@ -385,10 +387,12 @@ const parentPanels = computed(() => {
 
 	function connectedToTrigger(id: string) {
 		let parent = parents[id];
+
 		while (parent?.id !== '$trigger') {
 			if (parent === undefined) return false;
 			parent = parents[parent.id];
 		}
+
 		return true;
 	}
 });
@@ -491,6 +495,9 @@ async function saveChanges() {
 
 			await api.patch(`/flows/${props.primaryKey}`, changes);
 		}
+
+		await flowsStore.hydrate();
+		await loadCurrentFlow();
 
 		stagedPanels.value = [];
 		panelsToBeDeleted.value = [];
@@ -628,6 +635,7 @@ function arrowStop() {
 		arrowInfo.value = undefined;
 		return;
 	}
+
 	const nearPanel = getNearAttachment(arrowInfo.value?.pos);
 
 	if (nearPanel && isLoop(arrowInfo.value.id, nearPanel)) {
@@ -667,6 +675,7 @@ function arrowStop() {
 
 function isLoop(currentId: string, attachTo: string) {
 	let parent = currentId;
+
 	while (parent !== undefined) {
 		if (parent === attachTo) return true;
 		parent = parentPanels.value[parent]?.id ?? undefined;
@@ -681,8 +690,10 @@ function getNearAttachment(pos: Vector2) {
 			(panel.x - 1) * 20 + ATTACHMENT_OFFSET.x,
 			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y
 		);
+
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;
 	}
+
 	return undefined;
 }
 

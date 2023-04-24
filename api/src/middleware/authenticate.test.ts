@@ -1,19 +1,21 @@
+import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import getDatabase from '../database';
-import emitter from '../emitter';
-import env from '../env';
-import { InvalidCredentialsException } from '../exceptions';
-import { handler } from './authenticate';
+import type { Knex } from 'knex';
+import { afterEach, expect, test, vi } from 'vitest';
 import '../../src/types/express.d.ts';
-import { vi, afterEach, test, expect } from 'vitest';
-import { Request, Response } from 'express';
-import { Knex } from 'knex';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import env from '../env.js';
+import { InvalidCredentialsException } from '../exceptions/invalid-credentials.js';
+import { handler } from './authenticate.js';
 
 vi.mock('../../src/database');
+
 vi.mock('../../src/env', () => {
 	const MOCK_ENV = {
 		SECRET: 'test',
 	};
+
 	return {
 		default: MOCK_ENV,
 		getEnv: () => MOCK_ENV,
@@ -29,6 +31,7 @@ test('Short-circuits when authenticate filter is used', async () => {
 		ip: '127.0.0.1',
 		get: vi.fn(),
 	} as unknown as Request;
+
 	const res = {} as Response;
 	const next = vi.fn();
 
@@ -56,6 +59,7 @@ test('Uses default public accountability when no token is given', async () => {
 			}
 		}),
 	} as unknown as Request;
+
 	const res = {} as Response;
 	const next = vi.fn();
 
@@ -80,10 +84,12 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	const userID = '3fac3c02-607f-4438-8d6e-6b8b25109b52';
 	const roleID = '38269fc6-6eb6-475a-93cb-479d97f73039';
 	const share = 'ca0ad005-f4ad-4bfe-b428-419ee8784790';
+
 	const shareScope = {
 		collection: 'articles',
 		item: 15,
 	};
+
 	const appAccess = true;
 	const adminAccess = false;
 
@@ -96,7 +102,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env.SECRET,
+		env['SECRET'],
 		{ issuer: 'directus' }
 	);
 
@@ -114,6 +120,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 		}),
 		token,
 	} as unknown as Request;
+
 	const res = {} as Response;
 	const next = vi.fn();
 
@@ -145,7 +152,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env.SECRET,
+		env['SECRET'],
 		{ issuer: 'directus' }
 	);
 
@@ -189,6 +196,7 @@ test('Throws InvalidCredentialsException when static token is used, but user doe
 		}),
 		token: 'static-token',
 	} as unknown as Request;
+
 	const res = {} as Response;
 	const next = vi.fn();
 
@@ -211,6 +219,7 @@ test('Sets accountability to user information when static token is used', async 
 		}),
 		token: 'static-token',
 	} as unknown as Request;
+
 	const res = {} as Response;
 	const next = vi.fn();
 

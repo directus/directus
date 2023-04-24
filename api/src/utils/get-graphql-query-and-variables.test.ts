@@ -1,7 +1,7 @@
-import { Request } from 'express';
+import type { Request } from 'express';
 import { expect, test } from 'vitest';
 
-import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables';
+import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables.js';
 
 const query = `
 	query getProduct($id: ID!) {
@@ -10,6 +10,7 @@ const query = `
 		}
 	}
 `;
+
 const variables = JSON.stringify({ id: 1 });
 const additionalProperty = 'test';
 

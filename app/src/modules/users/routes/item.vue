@@ -201,8 +201,8 @@ import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { useCollection } from '@directus/shared/composables';
-import { Field } from '@directus/shared/types';
+import { useCollection } from '@directus/composables';
+import { Field } from '@directus/types';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -297,6 +297,7 @@ export default defineComponent({
 				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
 					field.meta.readonly = true;
 				}
+
 				return !fieldsDenyList.includes(field.field);
 			});
 		});
@@ -363,6 +364,7 @@ export default defineComponent({
 
 		function navigateBack() {
 			const backState = router.options.history.state.back;
+
 			if (typeof backState !== 'string' || !backState.startsWith('/login')) {
 				router.back();
 				return;
@@ -397,6 +399,7 @@ export default defineComponent({
 			try {
 				const savedItem: Record<string, any> = await save();
 				await setLang(savedItem);
+				await refreshCurrentUser();
 
 				revisionsDrawerDetail.value?.refresh?.();
 

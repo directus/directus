@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail icon="info_outline" :title="t('file_details')" close>
+	<sidebar-detail icon="info" :title="t('file_details')" close>
 		<dl v-if="file">
 			<div v-if="file.type">
 				<dt>{{ t('type') }}</dt>
@@ -274,6 +274,7 @@ export default defineComponent({
 				if (folder.value === null) {
 					return `/files`;
 				}
+
 				return `/files/folders/${folder.value.id}`;
 			});
 
@@ -285,6 +286,7 @@ export default defineComponent({
 				if (!props.file) return null;
 				if (!props.file.folder) return;
 				loading.value = true;
+
 				try {
 					const response = await api.get(`/folders/${props.file.folder}`, {
 						params: {

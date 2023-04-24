@@ -76,7 +76,7 @@ import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { toArray } from '@directus/shared/utils';
+import { toArray } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -161,12 +161,14 @@ const firstItem = computed(() => {
 
 	return getItemEdits(item);
 });
+
 const secondItem = computed(() => {
 	const item = getItemWithLang(displayItems.value, secondLang.value);
 	if (item === undefined) return undefined;
 
 	return getItemEdits(item);
 });
+
 const firstItemInitial = computed(() => getItemWithLang(fetchedItems.value, firstLang.value));
 const secondItemInitial = computed(() => getItemWithLang(fetchedItems.value, secondLang.value));
 
