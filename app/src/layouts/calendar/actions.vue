@@ -7,21 +7,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
+export default {
 	inheritAttrs: false,
-	props: {
-		itemCount: {
-			type: Number,
-			default: null,
-		},
-		showingCount: {
-			type: String,
-			default: null,
-		},
-	},
-});
+};
+</script>
+
+<script setup lang="ts">
+defineProps<{
+	itemCount?: number;
+	showingCount?: string;
+}>();
 </script>
 
 <style lang="scss" scoped>
