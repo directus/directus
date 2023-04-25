@@ -99,7 +99,6 @@ import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import api from '@/api';
 import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Filter } from '@directus/types';
 
 interface Props {
 	multiple?: boolean;
