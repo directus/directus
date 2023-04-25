@@ -37,6 +37,8 @@ RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 #COPY ./start_up.sh /directus/api
 #RUN #chmod +x /directus/api/start_up.sh
 
+USER node
+
 WORKDIR /directus
 
 EXPOSE 8055/tcp
