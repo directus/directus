@@ -1,13 +1,13 @@
 // @ts-nocheck
 
-import { RequestHandler } from 'express';
-import asyncHandler from '../utils/async-handler';
-import socketclusterService from '../services/socketcluster';
+// import { RequestHandler } from 'express';
+// import asyncHandler from '../utils/async-handler';
+// import socketclusterService from '../services/socketcluster';
 
-const socketcluster: RequestHandler = asyncHandler(async (req, res, next) => {
-	req.socketcluster = socketclusterService;
+// const socketcluster: RequestHandler = asyncHandler(async (req, res, next) => {
+// 	req.socketcluster = socketclusterService;
 
-	return next();
-});
+// 	return next();
+// });
 
-export default socketcluster;
+// export default socketcluster;
