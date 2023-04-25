@@ -15,7 +15,7 @@ COPY . .
 
 RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
 RUN export CI_API_V4_URL=${CI_API_V4_URL}
-
+USER root
 RUN chmod +x ./custom_extensions.sh
 RUN chmod +x ./payment_extensions.sh
 RUN chmod +x ./chat_extensions.sh
@@ -32,8 +32,8 @@ RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else
 # Not sure why we have this folder here
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
-COPY ./start_up.sh /directus/api
-RUN chmod +x /directus/api/start_up.sh
+#COPY ./start_up.sh /directus/api
+RUN #chmod +x /directus/api/start_up.sh
 
 WORKDIR /directus/api
 
