@@ -23,7 +23,7 @@
 			@cancel="cancel"
 		>
 			<template #sidebar>
-				<files-navigation :click-handler="onFolderChange" :current-folder="currentFolder" />
+				<files-navigation :click-handler="onFolderChange" :current-folder="currentFolder" reset-open-folders />
 			</template>
 
 			<template #navigation>

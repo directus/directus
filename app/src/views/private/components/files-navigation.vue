@@ -16,7 +16,7 @@
 					exact
 					disable-groupable-parent
 					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
-					@click="onClick({ special: '' })"
+					@click="onClick({})"
 				>
 					<template #activator>
 						<v-list-item-icon>
@@ -63,78 +63,78 @@
 	</v-list>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { PropType, defineComponent, ref, watch } from 'vue';
+import { onUnmounted, ref, watch } from 'vue';
 import { useFolders, Folder } from '@/composables/use-folders';
 import NavigationFolder from './files-navigation-folder.vue';
 import { isEqual } from 'lodash';
-import { useRouter } from 'vue-router';
 
-export default defineComponent({
-	components: { NavigationFolder },
-	props: {
-		clickHandler: {
-			type: Function as PropType<(target: { special?: string; folder?: string }) => void>,
-			default: null,
-		},
-		currentFolder: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	clickHandler: (target: { special?: string; folder?: string }) => void;
+	currentFolder?: string;
+	resetOpenFolders?: boolean;
+}>();
 
-		const currentSpecial = ref();
+const { t } = useI18n();
 
-		const { nestedFolders, folders, error, loading, openFolders } = useFolders();
+const currentSpecial = ref();
 
-		setOpenFolders();
+const { nestedFolders, folders, loading, openFolders, resetOpenFolders } = useFolders();
+const prevOpenFolders = ref();
 
-		watch(() => props.currentFolder, setOpenFolders);
+watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
 
-		return { t, folders, nestedFolders, error, loading, openFolders, onClick, currentSpecial };
-
-		function onClick(target: { special?: string; folder?: string }) {
-			currentSpecial.value = target.special;
-			props.clickHandler(target);
-		}
-
-		function setOpenFolders() {
-			if (!folders.value) return [];
-			if (!openFolders?.value) return [];
-
-			const shouldBeOpen: string[] = [];
-			const folder = folders.value.find((folder: Folder) => folder.id === props.currentFolder);
-
-			if (folder && folder.parent) parseFolder(folder.parent);
-
-			const newOpenFolders = [...openFolders.value];
-
-			for (const folderID of shouldBeOpen) {
-				if (newOpenFolders.includes(folderID) === false) {
-					newOpenFolders.push(folderID);
-				}
-			}
-
-			if (newOpenFolders.length !== 1 && isEqual(newOpenFolders, openFolders.value) === false) {
-				openFolders.value = newOpenFolders;
-			}
-
-			function parseFolder(id: string) {
-				if (!folders.value) return;
-				shouldBeOpen.push(id);
-
-				const folder = folders.value.find((folder: Folder) => folder.id === id);
-
-				if (folder && folder.parent) {
-					parseFolder(folder.parent);
-				}
-			}
-		}
-	},
+onUnmounted(() => {
+	if (props.resetOpenFolders) {
+		openFolders.value = prevOpenFolders.value;
+	}
 });
+
+function onClick(target: { special?: string; folder?: string }) {
+	currentSpecial.value = target.special;
+	props.clickHandler(target);
+}
+
+function setOpenFolders() {
+	if (loading.value) return;
+
+	if (props.resetOpenFolders && !prevOpenFolders.value) {
+		prevOpenFolders.value = openFolders.value;
+		resetOpenFolders();
+	}
+
+	if (!folders.value) return;
+	if (!openFolders?.value) return;
+
+	const shouldBeOpen: string[] = [];
+	const folder = folders.value.find((folder: Folder) => folder.id === props.currentFolder);
+
+	if (folder && folder.parent) parseFolder(folder.parent);
+
+	const newOpenFolders = [...openFolders.value];
+
+	for (const folderID of shouldBeOpen) {
+		if (newOpenFolders.includes(folderID) === false) {
+			newOpenFolders.push(folderID);
+		}
+	}
+
+	if (newOpenFolders.length !== 1 && isEqual(newOpenFolders, openFolders.value) === false) {
+		openFolders.value = newOpenFolders;
+	}
+
+	function parseFolder(id: string) {
+		if (!folders.value) return;
+		shouldBeOpen.push(id);
+
+		const folder = folders.value.find((folder: Folder) => folder.id === id);
+
+		if (folder && folder.parent) {
+			parseFolder(folder.parent);
+		}
+	}
+}
 </script>
 
 <style lang="scss" scoped>

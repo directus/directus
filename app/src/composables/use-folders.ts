@@ -1,5 +1,5 @@
 import api from '@/api';
-import { ref, Ref } from 'vue';
+import { isRef, ref, Ref } from 'vue';
 
 type FolderRaw = {
 	id: string;
@@ -21,7 +21,10 @@ type UsableFolders = {
 	error: Ref<any>;
 	fetchFolders: () => Promise<void>;
 	openFolders: Ref<string[] | null>;
+	resetOpenFolders: () => void;
 };
+
+const intitialOpenFolders = ['root'];
 
 let loading: Ref<boolean> | null = null;
 let folders: Ref<Folder[] | null> | null = null;
@@ -35,13 +38,13 @@ export function useFolders(): UsableFolders {
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
-	if (openFolders === null) openFolders = ref(['root']);
+	if (openFolders === null) openFolders = ref(intitialOpenFolders);
 
 	if (folders.value === null && loading.value === false) {
 		fetchFolders();
 	}
 
-	return { loading, folders, nestedFolders, error, fetchFolders, openFolders };
+	return { loading, folders, nestedFolders, error, fetchFolders, openFolders, resetOpenFolders };
 
 	async function fetchFolders() {
 		if (loading === null) return;
@@ -65,6 +68,12 @@ export function useFolders(): UsableFolders {
 			error.value = err;
 		} finally {
 			loading.value = false;
+		}
+	}
+
+	function resetOpenFolders() {
+		if (isRef(openFolders)) {
+			openFolders.value = intitialOpenFolders;
 		}
 	}
 }
