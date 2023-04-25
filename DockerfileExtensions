@@ -37,9 +37,15 @@ RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 #COPY ./start_up.sh /directus/api
 #RUN #chmod +x /directus/api/start_up.sh
 
-WORKDIR /directus/api
+WORKDIR /directus
+
+EXPOSE 8055/tcp
 
 RUN ls -la
 
-CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
-EXPOSE 8055/tcp
+CMD : \
+	&& node /directus/cli.js bootstrap \
+	&& node /directus/cli.js start \
+	;
+#CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
+
