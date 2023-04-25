@@ -56,11 +56,11 @@ RUN chmod +x ./chat_extensions.sh
 RUN chmod +x ./leads_extensions.sh
 RUN chmod +x ./crawless_colab_extensions.sh
 
-RUN if [[ "$CUSTOM_EXTENSION" != "1" ]] ; then echo "Custom extension disabled" ; else ./custom_extensions.sh ; fi
-RUN if [[ "$PAYMENT_EXTENSION" != "1" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
-RUN if [[ "$CHAT_EXTENSION" != "1"]] ; then echo "Chat extension disabled" ; else ./chat_extensions.sh ; fi
-RUN if [[ "$LEAD_EXTENSION" != "1" ]] ; then echo "Lead extension disabled" ; else ./chat_extensions.sh ; fi
-RUN if [[ "$COLAB_EXTENSION" != "1"]] ; then echo "Colab extension disabled" ; else ./crawless_colab_extensions.sh ; fi
+RUN if [ "$CUSTOM_EXTENSION" != "1" ] ; then echo "Custom extension disabled" ; else ./custom_extensions.sh ; fi
+RUN if [ "$PAYMENT_EXTENSION" != "1" ] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
+RUN if [ "$CHAT_EXTENSION" != "1"] ; then echo "Chat extension disabled" ; else ./chat_extensions.sh ; fi
+RUN if [ "$LEAD_EXTENSION" != "1" ] ; then echo "Lead extension disabled" ; else ./chat_extensions.sh ; fi
+RUN if [ "$COLAB_EXTENSION" != "1"] ; then echo "Colab extension disabled" ; else ./crawless_colab_extensions.sh ; fi
 
 ####################################################################################################
 ## Create Production Image
