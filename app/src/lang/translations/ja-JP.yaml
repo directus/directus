@@ -94,39 +94,87 @@ email_already_invited: このメールアドレス ({email}) は招待済みで�
 subject: 件名
 inbox: 受信トレイ
 emails: メールアドレス
+connection_excellent: 優れた接続
+connection_good: 良好な接続
+connection_fair: まずまずの接続
+connection_poor: 弱い接続
+primary: プライマリ
 rename_folder: フォルダ名の変更
 delete_folder: フォルダーの削除
+prefix: 接頭辞
+suffix: 接尾辞
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
 delete_bookmark_copy: >-
   "{bookmark}" ブックマークを削除してもよろしいですか？この操作は元に戻せません。
+delete_personal_bookmark: 個人のブックマークを削除
+delete_role_bookmark: ブックマークを削除
+delete_global_bookmark: グローバルブックマークを削除
 logoutReason:
   SIGN_OUT: ログアウト
   SESSION_EXPIRED: セッションが期限切れです
+public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
 not_allowed: 許可されていない
 directus_version: Directus Version
+node_version: Node バージョン
+node_uptime: Node 稼働時間
 os_type: OS 種類
 os_version: OSバージョン
 os_uptime: OS 稼働時間
 os_totalmem: OS メモリ
 archive: アーカイブ
 archive_confirm: この項目をアーカイブしてよろしいですか？
+archive_confirm_count: >-
+  アイテムが選択されていません|このアイテムを削除してもよろしいですか? | {count} 件のアイテムを削除してもよろしいですか?
+reset_system_permissions_to: 'システム権限のリセット:'
+reset_system_permissions_copy: このアクションはシステム接続に適用された可能性のあるカスタム権限を上書きします。よろしいですか？
+the_following_are_minimum_permissions: '「Appアクセス」を有効にすると、ミニマム権限が自動的に設定されます。権限設定は後から追加できますが、ミニマム権限より減らすことはできません。'
+app_access_minimum: Appアクセスの最小値
 recommended_defaults: 推奨されるデフォルト値
 unarchive: アーカイブから戻す
+unarchive_confirm: この項目をアーカイブしてよろしいですか？
+validation_errors_notice: '無効な値があります:'
 validationError:
   eq: 値は {valid} でなければなりません
   neq: 値は {invalid} にすることはできません
   in: 値は {valid} のいずれかでなければなりません
+  nin: いづれか {invalid} の値にすることはできません
+  contains: 値は {substring} を含む必要があります
+  ncontains: 値は {substring} を含むことはできません
+  gt: 値は {valid} より大きい必要があります
+  gte: 値は {valid} 以上の必要があります
+  lt: 値は {valid} より小さい必要があります
+  lte: 値は {valid} 以下の必要があります
+  empty: 値は空白にできません
+  nempty: 値は空白にできません
+  null: 値は null の必要があります
+  nnull: 値は Null 値にできません
   required: 必須項目です
   unique: 他と重複しない値である必要があります
+  regex: 値のフォーマットが正しくありません
+all_access: すべてのアクセス
 no_access: アクセスなし
 use_custom: カスタムを使う
+nullable: Null 値を許容
+allow_null_value: Null 値を許容する
+allow_multiple: 複数を許可する
+allow_multiple_to_be_open: 複数開くことを許可する
+enter_value_to_replace_nulls: このフィールド内に Null値 を置き換える新しい値を入力してください。
 field_standard: 標準
+field_presentation: エイリアス
 field_file: 1つのファイル
 field_files: 複数のファイル
+field_m2o: M2O 関係
+field_m2a: M2A 関係
+field_o2m: O2M 関係
+field_m2m: M2M 関係
 field_translations: 翻訳
+field_group: フィールドグループ
+item_permissions: 項目の権限
+field_permissions: フィールドの権限
+field_validation: フィールドの検証
 delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
 language: 言語
@@ -156,33 +204,73 @@ time: 時刻
 timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
+geometry.LineString: 単一線分
+geometry.Polygon: ポリゴン
+geometry.MultiPoint: マルチポイント
+not_available_for_type: このタイプでは利用できません
+create_translations: 翻訳を作成
 auto_refresh: 自動更新
 refresh_interval: 更新間隔
+no_refresh: 更新しない
+refresh_interval_seconds: リフレッシュすぐに | 毎秒 | 毎 {seconds} 秒ごと
+refresh_interval_minutes: 毎分 | {minutes} 分ごと
 auto_generate: 自動生成
+this_will_auto_setup_fields_relations: 自動的にすべての必須フィールドとリレーションを設定します。
 click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
 click_to_manage_translated_fields: >-
   翻訳されたフィールドはまだありません。ここをクリックして作成してください。| 翻訳されたフィールドが1つあります。 ここをクリックして管理します。| {count} 項が翻訳されています。ここをクリックして管理します。
 fields_group: フィールドグループ
 no_collections_found: コレクションが見つかりません
+new_data_alert: '以下をデータモデル内に作成します：'
+search_collection: コレクションを検索...
+search_field: フィールドを検索...
 new_field: '新規フィールド'
 new_collection: '新しいコレクション'
+add_m2o_to_collection: '「{collection}」にM2Oを追加'
+add_o2m_to_collection: '「{collection}」にO2Mを追加'
+add_m2m_to_collection: '「{collection}」にM2Mを追加'
+choose_a_type: タイプを選択...
+determined_by_relationship: 関係に基づく決定
 add_note: ユーザーに有益な注釈を追加...
+add_link: リンクを追加
+custom_link: カスタムリンク
 default_value: 初期値
+standard_field: 標準フィールド
 single_file: 1つのファイル
 multiple_files: 複数のファイル
+m2o_relationship: 多対一のリレーションシップ
+o2m_relationship: 一対多のリレーションシップ
+m2m_relationship: 多対多のリレーションシップ
+m2a_relationship: 多対多のリレーションシップ
+invalid_item: 無効なアイテム
+require_confirmation: 確認が必要
+dialog: ダイアログ
+modal: モーダル
+confirmation_dialog: 確認ダイアログ
+confirmation_description: 確認の説明
+confirmation_input_fields: 入力確認用フィールド
 next: 次
 field_name: 項目名
 translations: 翻訳
 no_translations: 翻訳なし
+left_to_right: 左から右
+right_to_left: 右から左
 note: 備考
 enter_a_value: 値を入力...
+enter_a_placeholder: プレースホルダを入力...
 length: 長さ
+soft_length: 緩い制限
+precision_scale: 精度とスケール
 readonly: 読取り専用
 unique: 単一
 updated_on: 更新日時
 updated_by: 最後に更新したユーザー
 primary_key: プライマリーキー
+foreign_key: 外部キー
+field_key: フィールドキー
+finish_setup: 設定終了
+dismiss: とりやめる
 raw_value: 値を加工しない
 notifications: 通知
 page_not_found: ページが見つかりませんでした
@@ -313,6 +401,7 @@ errors:
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
+  NOT_NULL_VIOLATION: 値は Null 値にできません
   UNKNOWN: 予期しないエラーが発生しました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
@@ -569,6 +658,8 @@ table: テーブル
 interfaces:
   filter:
     all: すべて
+  presentation-links:
+    primary: プライマリ
   system-collections:
     collections: コレクション
   select-color:
@@ -606,6 +697,7 @@ displays:
     color: 色
   datetime:
     format: 書式
+    suffix: 接尾辞
   file:
     file: ファイル
   filesize:
@@ -613,6 +705,8 @@ displays:
   formatted-value:
     format: 書式
     font: フォント
+    prefix: 接頭辞
+    suffix: 接尾辞
     color: 色
     icon: アイコン
     text: テキスト
