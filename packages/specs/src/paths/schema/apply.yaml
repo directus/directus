@@ -13,6 +13,13 @@ post:
           properties:
             data:
               $ref: '../../openapi.yaml#/components/schemas/Diff'
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            file:
+              type: string
+              format: binary
   responses:
     '204':
       description: Successful request
