@@ -56,11 +56,10 @@
 			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<drawer-collection
-					collection="directus_files"
+				<drawer-files
 					:active="activeDialog === 'choose'"
 					:multiple="multiple"
-					:filter="filterByFolder"
+					:folder="folder"
 					@update:active="activeDialog = null"
 					@input="setSelection"
 				/>
@@ -96,7 +95,7 @@ import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 import { uploadFiles } from '@/utils/upload-files';
 import { uploadFile } from '@/utils/upload-file';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import api from '@/api';
 import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -133,11 +132,6 @@ const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
-
-const filterByFolder = computed(() => {
-	if (!props.folder) return undefined;
-	return { folder: { id: { _eq: props.folder } } } as Filter;
-});
 
 function validFiles(files: FileList) {
 	if (files.length === 0) return false;
