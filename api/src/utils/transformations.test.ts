@@ -1,7 +1,7 @@
 import { expect, test, describe } from 'vitest';
-import { resolvePreset } from './transformations.js';
+import { maybeExtractFormat, resolvePreset } from './transformations.js';
 import type { File } from '../types/files.js';
-import type { TransformationParams } from '../types/assets.js';
+import type { Transformation, TransformationParams } from '../types/assets.js';
 
 const inputFile: File = {
 	id: '43a15f67-84a7-4e07-880d-e46a9f33c542',
@@ -109,5 +109,26 @@ describe('resolvePreset', () => {
 				},
 			],
 		]);
+	});
+});
+
+describe('maybeExtractFormat', () => {
+	test('get last format', () => {
+		const inputTransformations: Transformation[] = [
+			['toFormat', 'jpg', { quality: 80 }],
+			['toFormat', 'webp', { quality: 80 }],
+		];
+
+		const output = maybeExtractFormat(inputTransformations);
+
+		expect(output).toBe('webp');
+	});
+
+	test('get undefined', () => {
+		const inputTransformations: Transformation[] = [];
+
+		const output = maybeExtractFormat(inputTransformations);
+
+		expect(output).toBe(undefined);
 	});
 });
