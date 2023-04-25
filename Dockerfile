@@ -12,6 +12,9 @@ ARG CHAT_EXTENSION
 ARG LEAD_EXTENSION
 ARG COLAB_EXTENSION
 
+RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
+RUN export CI_API_V4_URL=${CI_API_V4_URL}
+
 RUN apk update
 RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl wget
 RUN apk add nano
@@ -83,9 +86,6 @@ ENV \
 	STORAGE_LOCAL_ROOT="/directus/uploads" \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
-
-RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
-RUN export CI_API_V4_URL=${CI_API_V4_URL}
 
 # Not sure why we have this folder here
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
