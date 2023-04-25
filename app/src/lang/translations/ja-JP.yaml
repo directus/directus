@@ -91,6 +91,7 @@ delete_translation_string_copy: >-
 invite_users: ユーザーを招待
 invite: 招待する
 email_already_invited: このメールアドレス ({email}) は招待済みです
+subject: 件名
 inbox: 受信トレイ
 emails: メールアドレス
 rename_folder: フォルダ名の変更
