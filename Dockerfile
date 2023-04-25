@@ -55,7 +55,16 @@ RUN ls -al /directus/dist
 
 FROM node:18-alpine AS runtime
 
+ARG GITLAB_PIPELINE_TOKEN
+ARG CI_API_V4_URL
+ARG PAYMENT_EXTENSION
+ARG CHAT_EXTENSION
+ARG LEAD_EXTENSION
+ARG COLAB_EXTENSION
 ARG CUSTOM_EXTENSION
+
+RUN export GITLAB_PIPELINE_TOKEN=${GITLAB_PIPELINE_TOKEN}
+RUN export CI_API_V4_URL=${CI_API_V4_URL}
 
 RUN apk update
 RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl wget
