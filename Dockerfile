@@ -48,6 +48,17 @@ RUN : \
 	&& mkdir -p database extensions uploads \
 	;
 
+####################################################################################################
+## Create Production Image
+
+RUN ls -al /directus/dist
+
+FROM node:18-alpine AS runtime
+
+RUN apk update
+RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl wget
+RUN apk add nano
+
 USER root
 
 RUN chmod +x ./custom_extensions.sh
@@ -61,17 +72,6 @@ RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; 
 RUN if [[ -z "$CHAT_EXTENSION" ]] ; then echo "Chat extension disabled" ; else ./chat_extensions.sh ; fi
 RUN if [[ -z "$LEAD_EXTENSION" ]] ; then echo "Lead extension disabled" ; else ./leads_extensions.sh ; fi
 RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else ./crawless_colab_extensions.sh ; fi
-
-####################################################################################################
-## Create Production Image
-
-RUN ls -al /directus/dist
-
-FROM node:18-alpine AS runtime
-
-RUN apk update
-RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl wget
-RUN apk add nano
 
 USER node
 
