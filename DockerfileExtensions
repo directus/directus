@@ -35,9 +35,11 @@ RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
 #COPY ./start_up.sh /directus/api
-RUN #chmod +x /directus/api/start_up.sh
+#RUN #chmod +x /directus/api/start_up.sh
 
 WORKDIR /directus/api
+
+RUN ls -la
 
 CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
 EXPOSE 8055/tcp
