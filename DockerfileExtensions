@@ -34,9 +34,6 @@ RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else
 # Not sure why we have this folder here
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
-#COPY ./start_up.sh /directus/api
-#RUN #chmod +x /directus/api/start_up.sh
-
 USER node
 
 WORKDIR /directus
@@ -46,8 +43,6 @@ EXPOSE 8055/tcp
 RUN ls -la
 
 CMD : \
-	&& node /directus/cli.js bootstrap \
-	&& node /directus/cli.js start \
+	&& node --trace-warnings /directus/cli.js bootstrap \
+	&& node --trace-warnings /directus/cli.js start \
 	;
-#CMD ["sh", "-c", "node ./cli.js bootstrap && node ./dist/start.js;"]
-

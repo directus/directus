@@ -113,6 +113,6 @@ RUN mkdir -p ./uploads
 RUN mkdir -p ./snapshots
 
 CMD : \
-	&& node /directus/cli.js bootstrap \
-	&& node /directus/cli.js start \
+	&& node --trace-warnings /directus/cli.js bootstrap \
+	&& node --trace-warnings /directus/cli.js start \
 	;
