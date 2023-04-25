@@ -111,11 +111,10 @@
 			</v-card>
 		</v-dialog>
 
-		<drawer-collection
+		<drawer-files
 			v-if="activeDialog === 'choose'"
-			collection="directus_files"
+			:folder="folder"
 			:active="activeDialog === 'choose'"
-			:filter="filterByFolder"
 			@update:active="activeDialog = null"
 			@input="setSelection"
 		/>
@@ -153,7 +152,7 @@ import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
@@ -201,11 +200,6 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 const { t } = useI18n();
 
 const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
-
-const filterByFolder = computed(() => {
-	if (!props.folder) return undefined;
-	return { folder: { id: { _eq: props.folder } } } as Filter;
-});
 
 const fileExtension = computed(() => {
 	if (file.value === null) return null;

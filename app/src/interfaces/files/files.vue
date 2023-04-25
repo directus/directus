@@ -102,10 +102,11 @@
 			</template>
 		</drawer-item>
 
-		<drawer-collection
+		<drawer-files
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
+			:folder="folder"
 			:selection="selectedPrimaryKeys"
 			:filter="customFilter"
 			multiple
@@ -132,7 +133,7 @@ import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/compo
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';

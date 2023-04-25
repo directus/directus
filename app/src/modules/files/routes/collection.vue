@@ -116,7 +116,7 @@
 			</template>
 
 			<template #navigation>
-				<files-navigation :current-folder="folder" />
+				<files-navigation :click-handler="onFolderChange" :current-folder="folder" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
@@ -201,19 +201,18 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
+import { getFolderFilter } from '@/utils/get-folder-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { subDays } from 'date-fns';
 import { PropType, computed, defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
-import FilesNavigation from '../components/navigation.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 
 type Item = {
 	[field: string]: any;
@@ -232,11 +231,11 @@ export default defineComponent({
 	props: {
 		folder: {
 			type: String,
-			default: null,
+			default: undefined,
 		},
 		special: {
 			type: String as PropType<'all' | 'recent' | 'mine'>,
-			default: null,
+			default: undefined,
 		},
 	},
 	setup(props) {
@@ -262,49 +261,7 @@ export default defineComponent({
 		const { breadcrumb, title } = useBreadcrumb();
 
 		const folderTypeFilter = computed(() => {
-			const filterParsed: Filter = {
-				_and: [
-					{
-						type: {
-							_nnull: true,
-						},
-					},
-				],
-			};
-
-			if (props.special === null) {
-				if (props.folder !== null) {
-					filterParsed._and.push({
-						folder: {
-							_eq: props.folder,
-						},
-					});
-				} else {
-					filterParsed._and.push({
-						folder: {
-							_null: true,
-						},
-					});
-				}
-			}
-
-			if (props.special === 'mine' && userStore.currentUser) {
-				filterParsed._and.push({
-					uploaded_by: {
-						_eq: userStore.currentUser.id,
-					},
-				});
-			}
-
-			if (props.special === 'recent') {
-				filterParsed._and.push({
-					uploaded_on: {
-						_gt: subDays(new Date(), 5).toISOString(),
-					},
-				});
-			}
-
-			return filterParsed;
+			return getFolderFilter(props.special, props.folder, userStore?.currentUser?.id);
 		});
 
 		const { layoutWrapper } = useLayout(layout);
@@ -367,7 +324,19 @@ export default defineComponent({
 			filter,
 			mergeFilters,
 			currentLayout,
+			onFolderChange,
 		};
+
+		function onFolderChange(target: { special?: string; folder?: string }) {
+			const path = ['files'];
+			if (target.folder) path.push('folders', target.folder);
+
+			if (target.special) {
+				path.push(target.special);
+			}
+
+			router.push(`/${path.join('/')}`);
+		}
 
 		function useBatch() {
 			const confirmDelete = ref(false);

@@ -5,6 +5,7 @@ import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import UserPopover from '@/views/private/components/user-popover.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { App } from 'vue';
@@ -48,6 +49,7 @@ import VListItemContent from './v-list-item-content.vue';
 import VListItemHint from './v-list-item-hint.vue';
 import VListItemIcon from './v-list-item-icon.vue';
 import VMenu from './v-menu.vue';
+import VNav from './v-nav.vue';
 import VNotice from './v-notice.vue';
 import VOverlay from './v-overlay.vue';
 import VPagination from './v-pagination.vue';
@@ -110,6 +112,7 @@ export function registerComponents(app: App): void {
 	app.component('VListItem', VListItem);
 	app.component('VList', VList);
 	app.component('VMenu', VMenu);
+	app.component('VNav', VNav);
 	app.component('VDrawer', VDrawer);
 	app.component('VNotice', VNotice);
 	app.component('VOverlay', VOverlay);
@@ -147,6 +150,7 @@ export function registerComponents(app: App): void {
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
 	app.component('DrawerCollection', DrawerCollection);
+	app.component('DrawerFiles', DrawerFiles);
 	app.component('DrawerItem', DrawerItem);
 	app.component('DrawerBatch', DrawerBatch);
 }

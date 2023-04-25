@@ -9,13 +9,14 @@
 		<div class="folders">
 			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
 				<v-list-group
-					to="/files"
-					:active="currentFolder === null"
+					clickable
+					:active="!currentFolder && !currentSpecial"
 					value="root"
 					scope="files-navigation"
 					exact
 					disable-groupable-parent
 					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
+					@click="onClick({ special: '' })"
 				>
 					<template #activator>
 						<v-list-item-icon>
@@ -29,6 +30,7 @@
 					<navigation-folder
 						v-for="folder in nestedFolders"
 						:key="folder.id"
+						:click-handler="onClick"
 						:folder="folder"
 						:current-folder="currentFolder"
 					/>
@@ -38,21 +40,21 @@
 
 		<v-divider />
 
-		<v-list-item to="/files/all">
+		<v-list-item clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
 			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('all_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/mine">
+		<v-list-item clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('my_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/recent">
+		<v-list-item clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
 			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('recent_files')" />
@@ -63,14 +65,19 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, watch } from 'vue';
+import { PropType, defineComponent, ref, watch } from 'vue';
 import { useFolders, Folder } from '@/composables/use-folders';
-import NavigationFolder from './navigation-folder.vue';
+import NavigationFolder from './files-navigation-folder.vue';
 import { isEqual } from 'lodash';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
 	components: { NavigationFolder },
 	props: {
+		clickHandler: {
+			type: Function as PropType<(target: { special?: string; folder?: string }) => void>,
+			default: null,
+		},
 		currentFolder: {
 			type: String,
 			default: null,
@@ -79,13 +86,20 @@ export default defineComponent({
 	setup(props) {
 		const { t } = useI18n();
 
+		const currentSpecial = ref();
+
 		const { nestedFolders, folders, error, loading, openFolders } = useFolders();
 
 		setOpenFolders();
 
 		watch(() => props.currentFolder, setOpenFolders);
 
-		return { t, folders, nestedFolders, error, loading, openFolders };
+		return { t, folders, nestedFolders, error, loading, openFolders, onClick, currentSpecial };
+
+		function onClick(target: { special?: string; folder?: string }) {
+			currentSpecial.value = target.special;
+			props.clickHandler(target);
+		}
 
 		function setOpenFolders() {
 			if (!folders.value) return [];
