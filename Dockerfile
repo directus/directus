@@ -92,6 +92,7 @@ RUN if [[ -z "$CHAT_EXTENSION" ]] ; then echo "Chat extension disabled" ; else .
 RUN if [[ -z "$LEAD_EXTENSION" ]] ; then echo "Lead extension disabled" ; else ./leads_extensions.sh ; fi
 RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else ./crawless_colab_extensions.sh ; fi
 
+RUN chown -R node:node /directus
 
 USER node
 
