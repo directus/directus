@@ -1781,6 +1781,8 @@ operations:
     to: सम्म
     to_placeholder: इ-मेल ठेगानाहरू थप्नुहोस् र इन्टर थिच्नुहोस्...
     body: शरीर
+    template: टेम्प्लेट
+    data: डाटा
   notification:
     name: सूचना पठाउनुहोस्
     description: एक वा धेरै प्रयोगकर्ताहरूलाई इन-एप सूचना पठाउनुहोस्

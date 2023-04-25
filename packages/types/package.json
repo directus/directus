@@ -1,6 +1,6 @@
 {
 	"name": "@directus/types",
-	"version": "9.25.2",
+	"version": "9.26.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",

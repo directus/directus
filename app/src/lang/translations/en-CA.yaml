@@ -1690,6 +1690,9 @@ triggers:
   webhook:
     method: Method
 operations:
+  mail:
+    template: Template
+    data: Data
   notification:
     recipient: User
   request:

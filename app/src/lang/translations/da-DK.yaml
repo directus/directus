@@ -2037,6 +2037,8 @@ operations:
     description: Send en mail til en eller flere personer
     to: Til
     to_placeholder: Tilføj e-mail-adresser og tryk på enter...
+    template: Skabelon
+    data: Data
   notification:
     name: Send meddelelse
     description: Send en meddelelse i appen til en eller flere brugere

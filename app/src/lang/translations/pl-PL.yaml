@@ -2108,6 +2108,8 @@ operations:
     to: Do
     to_placeholder: Dodaj adresy e-mail i naciśnij enter...
     body: Treść
+    template: Szablon
+    data: Dane
   notification:
     name: Wyślij powiadomienie
     description: Wyślij powiadomienie w aplikacji do jednego lub więcej użytkowników
