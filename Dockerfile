@@ -62,6 +62,8 @@ RUN if [[ -z "$COLAB_EXTENSION" ]] ; then echo "Colab extension disabled" ; else
 ####################################################################################################
 ## Create Production Image
 
+RUN ls -al /directus/dist
+
 FROM node:18-alpine AS runtime
 
 RUN apk update
