@@ -1,6 +1,6 @@
 stages:
-  - crawless-directus-tests
-  - crawless-directus-api2
+#  - crawless-directus-tests
+#  - crawless-directus-api2
   - crawless-directus
 
 variables:
