@@ -55,6 +55,8 @@ RUN ls -al /directus/dist
 
 FROM node:18-alpine AS runtime
 
+ARG CUSTOM_EXTENSION
+
 RUN apk update
 RUN apk --no-cache add --virtual builds-deps build-base python3 openssh-client bash git openssh curl wget
 RUN apk add nano
