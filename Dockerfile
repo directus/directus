@@ -77,6 +77,7 @@ ENV \
 RUN rm -rf /directus/api/extensions/modules/__MACOSX || true
 
 COPY --from=builder --chown=node:node /directus/dist .
+COPY ./*_extensions.sh .
 
 USER root
 
