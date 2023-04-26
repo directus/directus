@@ -365,11 +365,11 @@ function getFilename(junctionRow: Record<string, any>) {
 }
 
 const customFilter = computed(() => {
+	if (!relationInfo.value) return;
+
 	const filter: Filter = {
 		_and: [],
 	};
-
-	if (!relationInfo.value) return filter;
 
 	const reverseRelation = `$FOLLOW(${relationInfo.value.junctionCollection.collection},${relationInfo.value.junctionField.field})`;
 

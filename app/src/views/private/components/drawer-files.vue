@@ -49,7 +49,7 @@
 			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="layoutFilter" :collection="collection" />
+				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
 
 				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
 					<v-icon name="check" />
@@ -178,6 +178,7 @@ export default defineComponent({
 			mergeFilters,
 			folderTypeFilter,
 			layoutFilter,
+			presetFilter,
 			currentLayout,
 			currentFolder,
 			onFolderChange,
