@@ -68,7 +68,6 @@ class FlowManager {
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
 	private webhookFlowHandlers: Record<string, any> = {};
-	private webhookFlowCacheEnabled: Record<string, boolean> = {};
 
 	private reloadQueue: JobQueue;
 
@@ -134,7 +133,7 @@ class FlowManager {
 
 		const handler = this.webhookFlowHandlers[id];
 
-		return { result: await handler(data, context), cacheEnabled: this.webhookFlowCacheEnabled[id] !== false };
+		return handler(data, context);
 	}
 
 	private async load(): Promise<void> {
@@ -225,25 +224,27 @@ class FlowManager {
 
 				this.operationFlowHandlers[flow.id] = handler;
 			} else if (flow.trigger === 'webhook') {
-				const handler = (data: unknown, context: Record<string, unknown>) => {
+				const method = flow.options?.['method'] ?? 'GET';
+
+				const handler = async (data: unknown, context: Record<string, unknown>) => {
+					let cacheEnabled = true;
+
+					if (method === 'GET') {
+						cacheEnabled = flow.options['cacheEnabled'] !== false;
+					}
+
 					if (flow.options['async']) {
 						this.executeFlow(flow, data, context);
-						return undefined;
+						return { result: undefined, cacheEnabled };
 					} else {
-						return this.executeFlow(flow, data, context);
+						return { result: await this.executeFlow(flow, data, context), cacheEnabled };
 					}
 				};
-
-				const method = flow.options?.['method'] ?? 'GET';
 
 				// Default return to $last for webhooks
 				flow.options['return'] = flow.options['return'] ?? '$last';
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
-
-				if (method === 'GET') {
-					this.webhookFlowCacheEnabled[`${method}-${flow.id}`] = flow.options['cacheEnabled'];
-				}
 			} else if (flow.trigger === 'manual') {
 				const handler = (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
@@ -302,7 +303,6 @@ class FlowManager {
 		this.triggerHandlers = [];
 		this.operationFlowHandlers = {};
 		this.webhookFlowHandlers = {};
-		this.webhookFlowCacheEnabled = {};
 
 		this.isLoaded = false;
 	}
