@@ -1,16 +1,21 @@
-import { FUNCTIONS } from '@directus/constants';
+import { Action, FUNCTIONS } from '@directus/constants';
 import type { BaseException } from '@directus/exceptions';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
-import { Action } from '@directus/constants';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
-import {
+import type {
 	ArgumentNode,
-	execute,
 	ExecutionResult,
 	FieldNode,
 	FormattedExecutionResult,
 	FragmentDefinitionNode,
+	GraphQLNullableType,
+	GraphQLResolveInfo,
+	InlineFragmentNode,
+	SelectionNode,
+	ValueNode,
+} from 'graphql';
+import {
 	GraphQLBoolean,
 	GraphQLEnumType,
 	GraphQLError,
@@ -19,32 +24,24 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
-	GraphQLNullableType,
 	GraphQLObjectType,
-	GraphQLResolveInfo,
 	GraphQLScalarType,
 	GraphQLSchema,
 	GraphQLString,
 	GraphQLUnionType,
-	InlineFragmentNode,
 	NoSchemaIntrospectionCustomRule,
-	SelectionNode,
+	execute,
 	specifiedRules,
 	validate,
-	ValueNode,
 } from 'graphql';
-import {
-	GraphQLJSON,
-	InputTypeComposer,
+import type {
 	InputTypeComposerFieldConfigMapDefinition,
-	ObjectTypeComposer,
 	ObjectTypeComposerFieldConfigAsObjectDefinition,
 	ObjectTypeComposerFieldConfigDefinition,
 	ObjectTypeComposerFieldConfigMapDefinition,
 	ResolverDefinition,
-	SchemaComposer,
-	toInputObjectType,
 } from 'graphql-compose';
+import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';

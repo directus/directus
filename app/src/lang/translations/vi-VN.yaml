@@ -121,7 +121,6 @@ archive_confirm_count: >-
   Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
 reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống cho:'
 reset_system_permissions_copy: Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn không?
-the_following_are_minimum_permissions: Đây là những quyền hạn tối thiểu cần có khi "App Access" được kích hoạt. Bạn có thể mở rộng các quyền bổ sung, nhưng không được phép thấp hơn những quyền này.
 app_access_minimum: Quyền truy cập Ứng dụng Tối thiểu
 recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
@@ -1125,6 +1124,9 @@ triggers:
 operations:
   log:
     message: Tin nhắn
+  mail:
+    template: Mẫu
+    data: Dữ liệu
   notification:
     recipient: Người dùng
     message: Tin nhắn
