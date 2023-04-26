@@ -239,7 +239,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
 const { t } = useI18n();
-const { collection, aliasedFields, aliasedKeys } = toRefs(props);
+const { collection } = toRefs(props);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
