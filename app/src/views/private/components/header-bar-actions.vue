@@ -1,5 +1,5 @@
 <template>
-	<div class="actions" :class="{ active, mobile: forceMobile }">
+	<div class="actions" :class="{ active }">
 		<v-button class="expand" icon rounded secondary outlined @click="active = !active">
 			<v-icon name="arrow_left" />
 		</v-button>
@@ -31,10 +31,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		forceMobile: {
-			type: Boolean,
-			default: false,
-		},
 	},
 	emits: ['toggle:sidebar'],
 	setup() {
@@ -63,7 +59,7 @@ export default defineComponent({
 }
 
 @media (min-width: 960px) {
-	.actions:not(.mobile) .expand {
+	.actions .expand {
 		display: none;
 	}
 }
@@ -87,7 +83,7 @@ export default defineComponent({
 }
 
 @media (min-width: 960px) {
-	.actions:not(.mobile) .action-buttons .sidebar-toggle {
+	.actions .action-buttons .sidebar-toggle {
 		display: none !important;
 	}
 }
@@ -113,7 +109,7 @@ export default defineComponent({
 }
 
 @media (min-width: 960px) {
-	.actions:not(.mobile) .action-buttons > :deep(*:not(.sidebar-toggle)) {
+	.actions .action-buttons > :deep(*:not(.sidebar-toggle)) {
 		display: inherit !important;
 	}
 }

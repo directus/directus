@@ -30,7 +30,6 @@
 						primary-action-icon="close"
 						:small="smallHeader"
 						:shadow="headerShadow"
-						:force-mobile="mobileHeader"
 						@primary="$emit('cancel')"
 					>
 						<template #title><slot name="title" /></template>
@@ -85,7 +84,6 @@ interface Props {
 	cancelable?: boolean;
 	headerShadow?: boolean;
 	smallHeader?: boolean;
-	mobileHeader?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {

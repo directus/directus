@@ -28,9 +28,12 @@ export default defineComponent({
 .item-count {
 	position: relative;
 	display: none;
-	margin: 0 8px;
+	margin-right: 8px;
 	color: var(--foreground-subdued);
 	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	flex-shrink: 2;
 
 	@media (min-width: 600px) {
 		display: inline;

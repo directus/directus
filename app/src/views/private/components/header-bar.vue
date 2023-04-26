@@ -1,14 +1,5 @@
 <template>
-	<header
-		ref="headerEl"
-		class="header-bar"
-		:class="{
-			'vertically-collapsed': verticallyCollapsed,
-			mobile: forceMobile,
-			small,
-			shadow,
-		}"
-	>
+	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
@@ -17,7 +8,7 @@
 			<slot name="title-outer:prepend" />
 		</div>
 
-		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
+		<div class="title-container">
 			<div class="headline">
 				<slot name="headline" />
 			</div>
@@ -37,11 +28,7 @@
 
 		<slot name="actions:prepend" />
 
-		<header-bar-actions
-			:show-sidebar-toggle="showSidebarToggle"
-			:force-mobile="forceMobile"
-			@toggle:sidebar="$emit('toggle:sidebar')"
-		>
+		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
 			<slot name="actions" />
 		</header-bar-actions>
 
@@ -72,10 +59,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		forceMobile: {
-			type: Boolean,
-			default: false,
-		},
 		shadow: {
 			type: Boolean,
 			default: true,
@@ -85,11 +68,11 @@ export default defineComponent({
 	setup() {
 		const headerEl = ref<Element>();
 
-		const verticallyCollapsed = ref(false);
+		const collapsed = ref(false);
 
 		const observer = new IntersectionObserver(
 			([e]) => {
-				verticallyCollapsed.value = e.boundingClientRect.y === -1;
+				collapsed.value = e.boundingClientRect.y === -1;
 			},
 			{ threshold: [1] }
 		);
@@ -102,7 +85,7 @@ export default defineComponent({
 			observer.disconnect();
 		});
 
-		return { headerEl, verticallyCollapsed };
+		return { headerEl, collapsed };
 	},
 });
 </script>
@@ -132,9 +115,7 @@ export default defineComponent({
 
 	.title-outer-prepend {
 		display: none;
-	}
 
-	&:not(.mobile) .title-outer-prepend {
 		@media (min-width: 960px) {
 			display: block;
 		}
@@ -144,24 +125,13 @@ export default defineComponent({
 		position: relative;
 		display: flex;
 		align-items: center;
-		width: 100%;
 		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
-		margin-left: 16px;
+		margin: 0 16px;
 		overflow: hidden;
 
 		@media (min-width: 600px) {
 			max-width: 70%;
-		}
-
-		&.full {
-			margin-right: 12px;
-			padding-right: 0;
-
-			@media (min-width: 600px) {
-				margin-right: 20px;
-				padding-right: 20px;
-			}
 		}
 
 		.headline {
@@ -214,7 +184,7 @@ export default defineComponent({
 		pointer-events: none;
 	}
 
-	&.vertically-collapsed.shadow {
+	&.collapsed.shadow {
 		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 
 		.title-container {

@@ -17,7 +17,6 @@
 			v-model="internalActive"
 			:title="t('select_item')"
 			:small-header="currentLayout?.smallHeader"
-			mobile-header
 			:header-shadow="currentLayout?.headerShadow"
 			sidebar-resizeable
 			:sidebar-label="t('folders')"
