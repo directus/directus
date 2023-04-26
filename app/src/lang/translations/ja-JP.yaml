@@ -180,10 +180,38 @@ field_validation: フィールドの検証
 field_presets: フィールド プリセット
 permissions_for_role: '{role} ロールのアイテム は{action} ことができます'
 fields_for_role: '{role} ロールのフィールド は{action} ことができます'
+validation_for_role: 'フィールド {action} は、 {role} ロールに準じます'
+presentation_and_aliases: エイリアス
+revision_post_create: 作成時の見え方はこの通りです
+revision_post_update: 更新後の見え方はこの通りです
+changes_made: このリビジョンによる具体的な変更点です
+no_relational_data: リレーショナルデータはここへ含まれません
+junction_field_location: ジャンクションフィールドのロケーション
+top: 上部
+bottom: 下部
+hide_field: 項目を非表示
+hide_field_on_detail: 詳細項目を非表示
+show_field_on_detail: 詳細項目を表示
 delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
+field_create_success: '作成フィールド: "{field}"'
+field_update_success: '更新されたフィールド: "{field}"'
+duplicate_where_to: このフィールドをどこに複製しますか？
 language: 言語
+language_placeholder: 言語を選択...
+aggregate_function: 集計機能
+aggregate_precision: 集計精度
+group_aggregation: グループ集計
+group_precision: グループ精度
+global: グローバル
+admins_have_all_permissions: 管理者はすべての権限を持っています
 camera: カメラ
+show_zero: ゼロを表示
+create_in_advanced_field_creation_mode: アドバンスドモードでフィールドを作成
+continue_in_advanced_field_creation_mode: アドバンスドフィールド作成モードで続ける
+validation: バリデーション
+sum: 合計
+avg: 平均
 min: 最小
 max: 最大
 exposure: 露出度
@@ -192,23 +220,34 @@ iso: ISO
 focal_length: レンズ焦点距離
 schema_setup_key: この項目はデータベースの列名及びAPIキーとして使用されます
 create_field: 新規項目の追加
+creating_new_field: '新規フィールド ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: 設定のリセット
+hidden_field: 項目を非表示
 hidden_on_detail: 詳細に表示しない
 disabled_editing_value: 項目の編集を無効にする
 key: キー
+alias: エイリアス
 boolean: 真偽値
 date: 日付
+date_range: 期間
 datetime: DateTime
 dateTime: DateTime
+precision: 精度
 decimal: Decimal
 float: Float
 integer: 整数
 json: JSON
+xml: XML
+yaml: YAML
 string: 文字列
 text: テキスト
 time: 時刻
 timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
+geometry: 国や地域 (全て)
+geometry.Point: ポイント
 geometry.LineString: 単一線分
 geometry.Polygon: ポリゴン
 geometry.MultiPoint: マルチポイント
@@ -277,6 +316,8 @@ field_key: フィールドキー
 finish_setup: 設定終了
 dismiss: とりやめる
 raw_value: 値を加工しない
+copy_raw_value_success: コピー
+copy_raw_value_fail: コピー失敗
 notifications: 通知
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
@@ -301,12 +342,27 @@ a_unique_column_name: 重複しない名前をつけてください
 submit: 送信
 move_to_folder: フォルダに移動
 move: 移動
+system: システム
+interface_label: インターフェイス
 today: 今日
 yesterday: 昨日
 delete_comment: コメントの削除
+delete_share: 共有を削除
 functions:
   year: 年
   month: 月
+  week: 週
+  day: 日
+  weekday: 平日
+  hour: 時
+  minute: 分
+  second: 秒
+  count: 回数
+date-fns_time: 'a h:mm:ss'
+date-fns_time_no_seconds: 'a hh:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_time_short: 'h:mma'
 minutes: 分
 hours: 時間
 month: 月
@@ -325,18 +381,25 @@ months:
   october: 10月
   november: 11月
   december: 12月
+drag_mode: ドラッグモード
 cancel_crop: トリミングをキャンセル
+original: オリジナル
 url: URL
 import_label: インポート
 file_details: ファイルの詳細
 size: サイズ
+created: 作成
 modified: 修正されました
+checksum: チェックサム
 owner: 所有者
 edited_by: '編集者:'
 folder: フォルダ
+zoom: 拡大
 download: ダウンロード
 open: 開く
 open_in_new_window: 新しいウィンドウで開く
+open_folder: '「{folder}」フォルダを開く'
+foreground_color: 前景色
 background_color: 背景色
 upload_from_device: デバイスからファイルをアップロード
 choose_from_library: ライブラリから選択
@@ -346,6 +409,15 @@ replace_from_library: ライブラリからファイルを置き換え
 replace_from_url: URLからファイルを置き換え
 no_file_selected: ファイルが選択されていません
 download_file: ファイルをダウンロード
+open_file_in_tab: 新規タブで開く
+start_export: エクスポートを開始
+not_available_for_local_downloads: ローカルダウンロードはできません
+exporting_all_items_in_collection: '{collection} 内のすべての{total} アイテムをエクスポート中'
+exporting_limited_items_in_collection: '{collection} 内のすべての{total} アイテムから{limit} をエクスポート中'
+exporting_no_items_to_export: エクスポートするアイテムがありません。エクスポートの設定を見直して下さい。
+exporting_download_hint: 完了すると、自動的にこの {format} ファイルがデバイスへダウンロードされます。
+exporting_batch_hint: このエクスポートのバッチ処理が完了すると、 {format} ファイルはファイルライブラリへ保存されます。
+exporting_batch_hint_forced: アイテム数が多いため、このエクスポートはバッチ処理の必要があります。 完了すると、 {format} ファイルがファイルライブラリへ保存されます。
 name: 名前
 primary_key_field: プライマリーキー
 type: タイプ
@@ -361,8 +433,17 @@ save_and_create_new: 保存して新規作成
 save_and_stay: 保存してページに留まる
 save_as_copy: 複製として保存
 add_existing: 既存を追加
+creating_items: アイテムの作成
+enable_create_button: 作成ボタンを有効化
+selecting_items: アイテムの選択
+enable_select_button: 選択ボタンを有効化
+allow_duplicates: 重複を許可
 comments: コメント
+no_comments: コメントがありません
+click_to_expand: クリックして展開
+select_item: アイテムの選択
 no_items: アイテムがありません
+search_items: アイテムを検索...
 disabled: 無効
 information: インフォメーション
 report_bug: 不具合の報告
@@ -476,6 +557,7 @@ wysiwyg_options:
   aligncenter: 中央揃え
   alignjustify: 両端揃え
   alignleft: 左揃え
+  forecolor: 前景色
   backcolor: 背景色
   hr: 水平線
   copy: コピー
@@ -681,6 +763,8 @@ interfaces:
     hash: ハッシュ値
   select-icon:
     icon: アイコン
+  map:
+    zoom: 拡大
   system-folder:
     folder: フォルダ
   list:
