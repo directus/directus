@@ -22,7 +22,7 @@
 			:sidebar-label="t('folders')"
 			@cancel="cancel"
 		>
-			<template #sidebar>
+			<template v-if="!folder" #sidebar>
 				<files-navigation
 					:click-handler="onFolderChange"
 					:current-folder="currentFolder"
