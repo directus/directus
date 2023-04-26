@@ -138,5 +138,6 @@
 	},
 	"dependencies": {
 		"@directus/composables": "workspace:*"
-	}
+	},
+	"license": "BUSL-1.1"
 }

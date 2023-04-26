@@ -32,7 +32,7 @@
 		"directory": "api"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0-only",
+	"license": "BUSL-1.1",
 	"author": {
 		"name": "Monospace Inc",
 		"email": "info@monospace.io",
