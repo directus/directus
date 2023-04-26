@@ -100,9 +100,9 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 router.post(
 	'/apply',
 	asyncHandler(schemaMultipartHandler),
-	asyncHandler(async (req, _res, next) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
-		const diff: SnapshotDiffWithHash = _res.locals['upload'];
+		const diff: SnapshotDiffWithHash = res.locals['upload'];
 		await service.apply(diff);
 		return next();
 	}),
