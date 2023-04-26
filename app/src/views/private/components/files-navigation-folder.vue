@@ -2,7 +2,7 @@
 	<div>
 		<v-list-item
 			v-if="folder.children === undefined"
-			v-context-menu="'contextMenu'"
+			v-context-menu="!actionsDisabled ? 'contextMenu' : null"
 			clickable
 			:active="currentFolder === folder.id"
 			@click="clickHandler({ folder: folder.id })"
@@ -15,7 +15,7 @@
 
 		<v-list-group
 			v-else
-			v-context-menu="'contextMenu'"
+			v-context-menu="!actionsDisabled ? 'contextMenu' : null"
 			clickable
 			:active="currentFolder === folder.id"
 			:value="folder.id"
@@ -139,6 +139,10 @@ export default defineComponent({
 		clickHandler: {
 			type: Function,
 			required: true,
+		},
+		actionsDisabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {

@@ -17,13 +17,19 @@
 			v-model="internalActive"
 			:title="t('select_item')"
 			:small-header="currentLayout?.smallHeader"
+			mobile-header
 			:header-shadow="currentLayout?.headerShadow"
 			sidebar-resizeable
 			:sidebar-label="t('folders')"
 			@cancel="cancel"
 		>
 			<template #sidebar>
-				<files-navigation :click-handler="onFolderChange" :current-folder="currentFolder" reset-open-folders />
+				<files-navigation
+					:click-handler="onFolderChange"
+					:current-folder="currentFolder"
+					reset-open-folders
+					actions-disabled
+				/>
 			</template>
 
 			<template #navigation>

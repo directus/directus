@@ -33,6 +33,7 @@
 						:click-handler="onClick"
 						:folder="folder"
 						:current-folder="currentFolder"
+						:actions-disabled="actionsDisabled"
 					/>
 				</v-list-group>
 			</v-item-group>
@@ -74,6 +75,7 @@ const props = defineProps<{
 	clickHandler: (target: { special?: string; folder?: string }) => void;
 	currentFolder?: string;
 	resetOpenFolders?: boolean;
+	actionsDisabled?: boolean;
 }>();
 
 const { t } = useI18n();

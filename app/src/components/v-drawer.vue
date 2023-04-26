@@ -30,6 +30,7 @@
 						primary-action-icon="close"
 						:small="smallHeader"
 						:shadow="headerShadow"
+						:force-mobile="mobileHeader"
 						@primary="$emit('cancel')"
 					>
 						<template #title><slot name="title" /></template>
@@ -84,6 +85,7 @@ interface Props {
 	cancelable?: boolean;
 	headerShadow?: boolean;
 	smallHeader?: boolean;
+	mobileHeader?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -138,9 +140,14 @@ body {
 	background-color: var(--background-page);
 
 	.cancel {
+		display: none;
 		position: absolute;
 		top: 32px;
 		left: -76px;
+
+		@media (min-width: 960px) {
+			display: inline-flex;
+		}
 	}
 
 	.spacer {
@@ -218,6 +225,8 @@ body {
 }
 
 .mobile-sidebar {
+	position: relative;
+	z-index: 2;
 	margin: var(--content-padding);
 
 	nav {

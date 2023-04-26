@@ -1,5 +1,14 @@
 <template>
-	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
+	<header
+		ref="headerEl"
+		class="header-bar"
+		:class="{
+			'vertically-collapsed': verticallyCollapsed,
+			mobile: forceMobile,
+			small,
+			shadow,
+		}"
+	>
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
@@ -28,7 +37,11 @@
 
 		<slot name="actions:prepend" />
 
-		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
+		<header-bar-actions
+			:show-sidebar-toggle="showSidebarToggle"
+			:force-mobile="forceMobile"
+			@toggle:sidebar="$emit('toggle:sidebar')"
+		>
 			<slot name="actions" />
 		</header-bar-actions>
 
@@ -59,6 +72,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		forceMobile: {
+			type: Boolean,
+			default: false,
+		},
 		shadow: {
 			type: Boolean,
 			default: true,
@@ -68,11 +85,11 @@ export default defineComponent({
 	setup() {
 		const headerEl = ref<Element>();
 
-		const collapsed = ref(false);
+		const verticallyCollapsed = ref(false);
 
 		const observer = new IntersectionObserver(
 			([e]) => {
-				collapsed.value = e.boundingClientRect.y === -1;
+				verticallyCollapsed.value = e.boundingClientRect.y === -1;
 			},
 			{ threshold: [1] }
 		);
@@ -85,7 +102,7 @@ export default defineComponent({
 			observer.disconnect();
 		});
 
-		return { headerEl, collapsed };
+		return { headerEl, verticallyCollapsed };
 	},
 });
 </script>
@@ -115,7 +132,9 @@ export default defineComponent({
 
 	.title-outer-prepend {
 		display: none;
+	}
 
+	&:not(.mobile) .title-outer-prepend {
 		@media (min-width: 960px) {
 			display: block;
 		}
@@ -195,7 +214,7 @@ export default defineComponent({
 		pointer-events: none;
 	}
 
-	&.collapsed.shadow {
+	&.vertically-collapsed.shadow {
 		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
 
 		.title-container {
