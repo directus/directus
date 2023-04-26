@@ -85,5 +85,5 @@ help ensure Directus stays free, please consider becoming a sponsor.
 
 ## License
 
-Directus is released under the [GPLv3 license](./license). Monospace Inc owns all Directus trademarks, logos, and
+Directus is released under the [BSL 1.1 license](./license). Monospace Inc owns all Directus trademarks, logos, and
 intellectual property on behalf of our project's community. Copyright © 2004-2020, Monospace Inc.
