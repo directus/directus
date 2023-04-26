@@ -33,7 +33,6 @@ export default defineComponent({
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	flex-shrink: 2;
 
 	@media (min-width: 600px) {
 		display: inline;
