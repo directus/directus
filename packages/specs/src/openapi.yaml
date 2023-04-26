@@ -7,7 +7,7 @@ info:
   license:
     name: BUSL-1.1
     url: 'https://directus.io/bsl'
-  version: 10.0.0
+  version: '10'
 externalDocs:
   description: Directus Docs
   url: 'https://docs.directus.io'
