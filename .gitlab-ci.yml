@@ -84,8 +84,8 @@ docker_api2_build:
     - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg
       GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg CUSTOM_EXTENSION=1 --build-arg CHAT_EXTENSION=1 --build-arg COLAB_EXTENSION=1 -f DockerfileExtensions .
     - docker push $IMAGE_NAME:$IMAGE_TAG
-    - doctl kubernetes cluster kubeconfig save k8s-stage-fra1
-    - kubectl rollout restart deployment crawless-api-directus-directus-next -n default
+#    - doctl kubernetes cluster kubeconfig save k8s-stage-fra1
+#    - kubectl rollout restart deployment crawless-api-directus-directus-next -n default
   tags:
     - crawless
   only:
