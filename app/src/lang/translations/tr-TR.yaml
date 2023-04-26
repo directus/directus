@@ -2067,6 +2067,8 @@ operations:
     description: Bir veya daha fazla kişiye e-posta gönderin
     to_placeholder: E-posta adreslerini ekleyin ve enter tuşuna basın...
     body: Gövde
+    template: Şablon
+    data: Veri
   notification:
     name: Bildirim Gönder
     description: Bir veya daha fazla kullanıcıya uygulama içi bildirim gönderin

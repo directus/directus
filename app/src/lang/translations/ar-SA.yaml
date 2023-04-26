@@ -1652,6 +1652,8 @@ operations:
     to: إلى
     to_placeholder: إضافة عناوين البريد الإلكتروني واضغط على إدخال...
     body: النص
+    template: قالب
+    data: البيانات
   notification:
     name: إرسال إشعار
     description: إرسال إشعار داخل التطبيق إلى واحد أو أكثر من المستخدمين

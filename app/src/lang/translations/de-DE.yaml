@@ -2084,6 +2084,8 @@ operations:
     to: An
     to_placeholder: E-Mail-Adressen hinzufügen und Enter drücken...
     body: Inhalt
+    template: Vorlage
+    data: Daten
   notification:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden

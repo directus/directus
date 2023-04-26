@@ -1474,6 +1474,9 @@ triggers:
 operations:
   log:
     message: ข้อความ
+  mail:
+    template: แม่แบบ
+    data: ข้อมูล
   notification:
     recipient: ผู้ใช้
     message: ข้อความ
