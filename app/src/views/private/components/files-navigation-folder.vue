@@ -38,6 +38,7 @@
 				:folder="childFolder"
 				:current-folder="currentFolder"
 				:click-handler="clickHandler"
+				:actions-disabled="actionsDisabled"
 			/>
 		</v-list-group>
 
