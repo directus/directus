@@ -48,7 +48,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	const busboy = Busboy({ headers });
 
 	let isFileIncluded = false;
-	let upload: Snapshot | SnapshotDiffWithHash | null = null;
+	let upload: any | null = null;
 
 	busboy.on('file', async (_, fileStream, { mimeType }) => {
 		if (isFileIncluded) return next(new InvalidPayloadException(`More than one file was included in the body`));
@@ -69,7 +69,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 				}
 			} else {
 				try {
-					upload = (await loadYaml(uploadedString)) as Snapshot;
+					upload = await loadYaml(uploadedString);
 				} catch (err: any) {
 					logger.warn(err);
 					throw new InvalidPayloadException('The provided YAML is invalid.');
