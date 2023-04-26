@@ -82,15 +82,20 @@ In consideration of the right to use this License’s text and the “Business
 Source License” name and trademark, Licensor covenants to MariaDB, and to all
 other recipients of the licensed work to be provided by Licensor:
 
-To specify as the Change License the GPL Version 2.0 or any later version, or
-a license that is compatible with GPL Version 2.0 or a later version, where
-“compatible” means that software provided under the Change License can be
-included in a program with software provided under GPL Version 2.0 or a later
-version. Licensor may specify additional Change Licenses without limitation. 
-To either: (a) specify an additional grant of rights to use that does not impose
-any additional restriction on the right granted in this License, as the
-Additional Use Grant; or (b) insert the text “None” to specify a Change Date.
-Not to modify this License in any other way.
+1. To specify as the Change License the GPL Version 2.0 or any later version,
+   or a license that is compatible with GPL Version 2.0 or a later version,
+   where “compatible” means that software provided under the Change License can
+   be included in a program with software provided under GPL Version 2.0 or a
+   later version. Licensor may specify additional Change Licenses without
+   limitation.
+
+2. To either: (a) specify an additional grant of rights to use that does not
+   impose any additional restriction on the right granted in this License, as
+   the Additional Use Grant; or (b) insert the text “None”.
+
+3. To specify a Change Date.
+
+4. Not to modify this License in any other way.
 
 Notice
 
