@@ -40,7 +40,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	const { cleanItem, getPage, localDelete, getItemEdits, isEmpty } = useUtil();
+	const { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty } = useUtil();
 
 	const _value = computed<ChangesItem>({
 		get() {
@@ -672,7 +672,7 @@ export function useRelationMultiple(
 			return false;
 		}
 
-		function localDelete(item: DisplayItem) {
+		function isLocalItem(item: DisplayItem) {
 			return item.$type !== undefined && (item.$type !== 'updated' || isItemSelected(item));
 		}
 
@@ -709,7 +709,7 @@ export function useRelationMultiple(
 			return {};
 		}
 
-		return { cleanItem, getPage, localDelete, getItemEdits, isEmpty };
+		return { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty };
 	}
 
 	return {
@@ -726,7 +726,7 @@ export function useRelationMultiple(
 		useActions,
 		cleanItem,
 		isItemSelected,
-		localDelete,
+		isLocalItem,
 		getItemEdits,
 	};
 }

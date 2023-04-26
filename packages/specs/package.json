@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "9.25.2",
+	"version": "10.0.0",
 	"description": "OpenAPI Specification of the Directus API",
 	"homepage": "https://directus.io",
 	"type": "module",
@@ -12,7 +12,7 @@
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/specs"
 	},
-	"license": "GPL-3.0",
+	"license": "BUSL-1.1",
 	"author": "Nils Twelker",
 	"exports": {
 		".": "./index.js",

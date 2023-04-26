@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "9.25.2",
+	"version": "10.0.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project browser/tsconfig.json && tsc --project node/tsconfig.json && tsc --project shared/tsconfig.json",
@@ -14,7 +14,7 @@
 		"directory": "packages/utils"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": {

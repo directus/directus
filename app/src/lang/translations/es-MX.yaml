@@ -2106,6 +2106,8 @@ operations:
     to: A
     to_placeholder: Añade una dirección de email y presiona enter...
     body: Cuerpo
+    template: Plantilla
+    data: Datos
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
