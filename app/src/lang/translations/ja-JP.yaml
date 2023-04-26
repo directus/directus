@@ -448,6 +448,8 @@ disabled: 無効
 information: インフォメーション
 report_bug: 不具合の報告
 request_feature: 機能リクエスト
+interface_not_found: 'インターフェイス "{interface}" が見つかりません'
+operation_not_found: 'オペレーション "{operation}" が見つかりません'
 reset_display: 表示をリセット
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
 file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
@@ -476,26 +478,67 @@ remove: 削除
 toggle_manual_sorting: 手動ソートを有効にする
 bookmark_doesnt_exist: ブックマークは存在しません
 bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。
+select_an_item: アイテムを選択
+edit: 編集
+enabled: 有効化
+disable_tfa: 2要素認証を無効化
+admin_disable_tfa_text: このユーザーの2要素認証を無効にしてよろしいですか？
+tfa_setup: 2要素認証を設定
+tfa_scan_code: 認証アプリのコードをスキャンして2要素認証の設定を完了します
+enter_otp_to_disable_tfa: 2要素認証の無効化にOTP（ワンタイムパスワード）を入力
+create_account: アカウントを作成
+account_created_successfully: アカウントの作成に成功しました
+auto_fill: 自動入力
 errors:
   COLLECTION_NOT_FOUND: "コレクションが存在しません"
+  FIELD_NOT_FOUND: フィールドが見つかりません
   FORBIDDEN: アクセス禁止
   INVALID_CREDENTIALS: ユーザー名またはパスワードが間違っています
   INVALID_OTP: ワンタイムパスワードが間違っています
+  INVALID_PROVIDER: ユーザーは別の認証プロバイダに属しています
   INVALID_QUERY: 無効なクエリー
+  INVALID_IP: IPアドレスが許可されていません
+  INVALID_USER: ユーザー認証に失敗しました
   ITEM_LIMIT_REACHED: アイテムの上限に達しました
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
   NOT_NULL_VIOLATION: 値は Null 値にできません
+  ILLEGAL_ASSET_TRANSFORMATION: 画像ソースが大きすぎるためプレビューできません
+  VALUE_TOO_LONG: 値が長すぎます
+  VALUE_OUT_OF_RANGE: 値が範囲外です
+  INVALID_FOREIGN_KEY: 無効な外部キー
   UNKNOWN: 予期しないエラーが発生しました
+  SERVICE_UNAVAILABLE: サービスは利用できません
+  UNSUPPORTED_MEDIA_TYPE: サポート外のメディア種別
+  TOKEN_EXPIRED: トークンが期限切れです
+  RANGE_NOT_SATISFIABLE: 無効な範囲
+  METHOD_NOT_ALLOWED: 許可されていないメソッド
+  REQUESTS_EXCEEDED: リクエストの上限に達しました
+security: セキュリティ
+value_hashed: 値が安全にハッシュされました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
+edit_personal_bookmark: 個人のブックマークを編集
+edit_role_bookmark: ロールブックマークを編集
+edit_global_bookmark: グローバルブックマークを編集
+cannot_edit_role_bookmarks: ロールブックマークを編集できません
+cannot_edit_global_bookmarks: グローバルブックマークを編集できません
 bookmarks: ブックマーク
 presets: プリセット
 unexpected_error: 予期しないエラーが発生しました
+unexpected_error_copy: 予期せぬエラーが発生しました。しばらくたってからもう一度お試しください。
+copy_details: 詳細をコピー
+no_app_access: アプリにアクセスできません
+no_app_access_copy: このユーザーは管理者用アプリを使用できません
+password_reset_sent: アカウントをお持ちの場合は、パスワードをリセットするための安全なリンクを送信しました。
+password_reset_successful: パスワードをリセットしました
 back: 戻る
+filter: 絞り込み
+edit_image: 画像を編集
+editing_image: 画像を編集
 rotate: 回転
 all_users: すべてのユーザー
 goto_collection_content: コンテンツを表示
@@ -506,13 +549,28 @@ font: フォント
 color: 色
 advanced_filter: 高度なフィルタ
 operators:
+  neq: 等しくない
   lt: より少ない
   gt: より大きい
   lte: より少ないまたは等しい
   gte: より大きいまたは等しい
+  in: のひとつ
+  nin: のひとつではない
+  null: Null です
+  nnull: Null でない
   contains: 含む
   ncontains: 含まない
+  icontains: 含む (無関係)
+  starts_with: 前方一致
+  nstarts_with: 前方一致でない
+  ends_with: 後方一致
+  nends_with: 後方一致でない
+  between: 間である
+  nbetween: 間でない
   empty: 空
+  nempty: 空でない
+  all: 含まれるキー
+  has: 含まれるいくつかのキー
 loading: 読み込み中...
 upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
 upload_files_success: '{count} 個のファイルがアップロードされました'
@@ -671,6 +729,8 @@ fields:
     value: 値
     collections: コレクション
 field_options:
+  directus_settings:
+    security_divider_title: セキュリティ
   directus_activity:
     create: 作成
     update: 更新
@@ -744,6 +804,7 @@ value: 値
 table: テーブル
 interfaces:
   filter:
+    name: 絞り込み
     all: すべて
   presentation-links:
     primary: プライマリ
@@ -763,6 +824,8 @@ interfaces:
     hash: ハッシュ値
   select-icon:
     icon: アイコン
+  input-rich-text-md:
+    edit: 編集
   map:
     zoom: 拡大
   system-folder:
@@ -771,6 +834,8 @@ interfaces:
     sort: 並べ替え
   tags:
     tags: タグ
+  boolean:
+    label_default: 有効化
   translations:
     no_collection: コレクションがありません
   user:
