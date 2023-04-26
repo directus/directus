@@ -65,14 +65,14 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 					upload = parseJSON(uploadedString);
 				} catch (err: any) {
 					logger.warn(err);
-					throw new InvalidPayloadException('Invalid JSON schema snapshot');
+					throw new InvalidPayloadException('The provided JSON is invalid.');
 				}
 			} else {
 				try {
 					upload = (await loadYaml(uploadedString)) as Snapshot;
 				} catch (err: any) {
 					logger.warn(err);
-					throw new InvalidPayloadException('Invalid YAML schema snapshot');
+					throw new InvalidPayloadException('The provided YAML is invalid.');
 				}
 			}
 
