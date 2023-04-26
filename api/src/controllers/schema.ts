@@ -98,18 +98,6 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 };
 
 router.post(
-	'/apply',
-	asyncHandler(schemaMultipartHandler),
-	asyncHandler(async (req, res, next) => {
-		const service = new SchemaService({ accountability: req.accountability });
-		const diff: SnapshotDiffWithHash = res.locals['upload'];
-		await service.apply(diff);
-		return next();
-	}),
-	respond
-);
-
-router.post(
 	'/diff',
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
@@ -121,6 +109,18 @@ router.post(
 
 		const currentSnapshotHash = getVersionedHash(currentSnapshot);
 		res.locals['payload'] = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/apply',
+	asyncHandler(schemaMultipartHandler),
+	asyncHandler(async (req, res, next) => {
+		const service = new SchemaService({ accountability: req.accountability });
+		const diff: SnapshotDiffWithHash = res.locals['upload'];
+		await service.apply(diff);
 		return next();
 	}),
 	respond
