@@ -66,13 +66,9 @@ const connectionRef = useRef(null);
 Create the methods for form submissions:
 
 ```js
-const loginSubmit = () => {
-	//do something here
-};
+const loginSubmit = () => {};
 
-const messageSubmit = () => {
-	//do something here
-};
+const messageSubmit = () => {};
 ```
 
 Ensure to call the `event.preventDefault()` in these methods to prevent the browser from refreshing the page upon
@@ -111,7 +107,6 @@ Then, connect these values to the form input fields:
 	<label htmlFor="email">Email</label>
 	<input type="email" id="email" /> // [!code --]
 	<input type="email" id="email" name="email" value={formValue.email} onChange={handleLoginChange} /> // [!code ++]
-  
 	<label htmlFor="password">Password</label>
 	<input type="password" id="password" /> // [!code --] // [!code ++]
 	<input type="password" id="password" name="password" value={formValue.password} onChange={handleLoginChange} /> // [!code
@@ -171,21 +166,21 @@ const receiveMessage = (message) => {
 As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the
 `Messages` collection. Add this inside of the `receiveMessage` method:
 
-```js {3-14}
+```js
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
-	if (data.type === 'auth' && data.status === 'ok') {
-		connectionRef.current.send(
-			JSON.stringify({
-				type: 'subscribe',
-				collection: 'messages',
-				query: {
-					fields: ['*', 'user_created.first_name'],
-					sort: 'date_created',
-				},
-			})
-		);
-	}
+	if (data.type === 'auth' && data.status === 'ok') { // [!code ++]
+		connectionRef.current.send( // [!code ++]
+			JSON.stringify({ // [!code ++]
+				type: 'subscribe', // [!code ++]
+				collection: 'messages', // [!code ++]
+				query: { // [!code ++]
+					fields: ['*', 'user_created.first_name'], // [!code ++]
+					sort: 'date_created', // [!code ++]
+				}, // [!code ++]
+			})// [!code ++]
+		); // [!code ++]
+	} // [!code ++]
 };
 ```
 
@@ -206,9 +201,9 @@ const receiveMessage = (message) => {
 			})
 		);
 	}
-	if (data.type === 'subscription' && data.event === 'init') {
-		console.log('subscription started');
-	}
+	if (data.type === 'subscription' && data.event === 'init') { // [!code ++]
+		console.log('subscription started'); // [!code ++]
+	} // [!code ++]
 };
 ```
 
@@ -217,8 +212,7 @@ Open your browser, enter your user’s email and password, and hit submit. Check
 
 ## Create New Messages
 
-First, set up two pieces of state to hold messages: one to keep track of new messages and another to store an array of
-previous message history.
+At the top of your component, set up two pieces of state to hold messages: one to keep track of new messages and another to store an array of previous message history.
 
 ```js
 const [newMessage, setNewMessage] = useState('');
@@ -302,7 +296,6 @@ if (data.type === 'subscription' && data.event === 'init') {
 	console.log('subscription started'); // [!code --]
 
 	for (const message of data.payload) {
-		// [!code ++]
 		setMessageHistory((history) => [...history, message]); // [!code ++]
 	} // [!code ++]
 }
