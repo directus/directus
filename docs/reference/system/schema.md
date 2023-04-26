@@ -359,7 +359,7 @@ n/a
 
 ## Apply Schema Difference
 
-Update the instance's schema by passing the diff previously retrieved via `/schema/diff` endpoint in the request body.
+Update the instance's schema by passing the diff previously retrieved via `/schema/diff` endpoint in the request body - either as raw JSON or as a `multipart/form-data` file upload.
 This endpoint is only available to admin users.
 
 ### Query Parameters
