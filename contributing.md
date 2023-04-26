@@ -3,7 +3,7 @@
 Heya! Welcome to Directus, and thank you for taking the time to contribute back to Open Source Software! ❤️ We want
 everybody to be able to contribute to Directus, no matter your background or expertise. In order to facilitate that,
 we've put together a couple tips and tricks below. Our team truly appreciates every single contributor, community
-member, GitHub star, pull-request, bug report, and feature request. Keeping Directus completely free and open-source is
+member, GitHub star, pull-request, bug report, and feature request. Keeping Directus completely open-source is
 our way of saying: **Thank you!**
 
 > We're here to help!
