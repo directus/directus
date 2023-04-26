@@ -373,7 +373,7 @@ describe('Schema Snapshots', () => {
 
 					const response = await request(getUrl(vendor))
 						.post('/schema/apply')
-						.attach('file', Buffer.from(responseDiff.body.data))
+						.attach('file', Buffer.from(JSON.stringify(responseDiff.body.data)))
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
