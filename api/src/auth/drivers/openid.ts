@@ -185,7 +185,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{},
+				{ auth_data: userPayload.auth_data },
 				{
 					identifier,
 					provider: this.config['provider'],
