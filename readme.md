@@ -6,14 +6,14 @@
 
 Directus is a real-time API and App dashboard for managing SQL database content.
 
-- **Free & open-source.** No artificial limitations, vendor lock-in, or hidden paywalls.
+- **Open Source.** No artificial limitations, vendor lock-in, or hidden paywalls.
 - **REST & GraphQL API.** Instantly layers a blazingly fast Node.js API on top of any SQL database.
-- **Manage pure SQL.** Works with new or existing SQL databases, no migration required.
-- **Choose your database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
+- **Manage Pure SQL.** Works with new or existing SQL databases, no migration required.
+- **Choose your Database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
 - **On-Prem or Cloud.** Run locally, install on-premises, or use our
   [self-service Cloud service](https://directus.io/pricing).
-- **Completely extensible.** Built to white-label, it is easy to customize our modular platform.
-- **A modern dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
+- **Completely Extensible.** Built to white-label, it is easy to customize our modular platform.
+- **A Modern Dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
 **[Learn more about Directus](https://directus.io)** • **[Documentation](https://docs.directus.io)**
 
@@ -51,9 +51,9 @@ Please read our [Contributing Guide](./contributing.md) before submitting Pull R
 All security vulnerabilities should be reported in accordance with our
 [Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
 
-Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core
+Directus is a premium open-source ([BSL 1.1](./license)) project, made possible with support from our passionate core
 team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
 
 <br />
 
-© 2004-2023, Monospace Inc
+© 2004-2023, Monospace, Inc.
