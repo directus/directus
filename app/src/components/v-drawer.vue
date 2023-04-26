@@ -21,7 +21,9 @@
 				<v-overlay v-if="$slots.sidebar" absolute />
 
 				<v-nav v-if="$slots.sidebar" class="sidebar" :resizeable="sidebarResizeable" :max-width="sidebarMaxWidth">
-					<slot name="sidebar" />
+					<div class="sidebar-content">
+						<slot name="sidebar" />
+					</div>
 				</v-nav>
 
 				<main ref="mainEl" class="main">
@@ -182,13 +184,18 @@ body {
 
 			@media (min-width: 960px) {
 				position: relative;
-				z-index: 6;
 				display: block;
 				flex-shrink: 0;
 				width: 220px;
 				height: 100%;
 				height: auto;
 				background-color: var(--background-normal);
+			}
+
+			.sidebar-content {
+				height: 100%;
+				overflow-x: hidden;
+				overflow-y: auto;
 			}
 		}
 

@@ -112,6 +112,7 @@ function onPointerUp() {
 	transition-delay: 0;
 	user-select: none;
 	touch-action: none;
+	z-index: 6;
 
 	&:hover,
 	&:active {
