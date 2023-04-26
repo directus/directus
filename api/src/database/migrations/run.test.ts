@@ -1,8 +1,9 @@
-import knex from 'knex';
 import type { Knex } from 'knex';
+import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import type { MockedFunction } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import run from './run.js';
-import { describe, beforeAll, afterEach, it, expect, MockedFunction, vi } from 'vitest';
 
 describe('run', () => {
 	let db: MockedFunction<Knex>;

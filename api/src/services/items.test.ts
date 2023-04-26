@@ -1,14 +1,15 @@
 import type { CollectionsOverview, NestedDeepQuery } from '@directus/types';
-import knex from 'knex';
 import type { Knex } from 'knex';
-import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import knex from 'knex';
+import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash-es';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
+import type { MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getDatabaseClient } from '../../src/database/index.js';
 import { ItemsService } from '../../src/services/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };

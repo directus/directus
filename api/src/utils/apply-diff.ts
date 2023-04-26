@@ -4,23 +4,23 @@ import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
 import { cloneDeep, merge, set } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import logger from '../logger.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
-import {
+import type {
 	ActionEventParams,
 	Collection,
-	DiffKind,
 	MutationOptions,
 	Snapshot,
 	SnapshotDiff,
 	SnapshotField,
 } from '../types/index.js';
+import { DiffKind } from '../types/index.js';
 import { getSchema } from './get-schema.js';
-import { getHelpers } from '../database/helpers/index.js';
 
 type CollectionDelta = {
 	collection: string;

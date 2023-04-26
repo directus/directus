@@ -119,7 +119,6 @@ archive_confirm_count: >-
   ไม่มีไอเท็มที่ถูกเลือก | คุณแน่ใจว่าต้องการจัดเก็บไอเท็มเหล่านี้? | คุณแน่ใจว่าต้องการจัดเก็บไอเท็มจำนวน {count} ไอเท็ม?
 reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
 reset_system_permissions_copy: สิทธิ์การเข้าถึงคอลเลกชั่นที่เคยกำหนดไว้แล้วจะถูกบันทึกทับ ยังแน่ใจที่จะทำอยู่หรือไม่?
-the_following_are_minimum_permissions: นี่คือสิทธิ์ขั้นพื้นฐานเมื่อเปิดการใช้งานในระดับ "App Access" คุณสามารถเพิ่มเติมสิทธิ์ต่างๆ หลังจากนี้ แต่ยังไม่ใช่ตอนนี้
 app_access_minimum: เข้าถึงแอปได้ขั้นต่ำ
 recommended_defaults: ค่าตั้งต้นที่แนะนำ
 unarchive: ยกเลิกการเก็บ
@@ -1475,6 +1474,9 @@ triggers:
 operations:
   log:
     message: ข้อความ
+  mail:
+    template: แม่แบบ
+    data: ข้อมูล
   notification:
     recipient: ผู้ใช้
     message: ข้อความ

@@ -294,8 +294,10 @@ class ExtensionManager {
 	private initializeWatcher(): void {
 		logger.info('Watching extensions for changes...');
 
-		const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
-			const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
+		const extensionDirUrl = pathToRelativeUrl(env['EXTENSIONS_PATH']);
+
+		const localExtensionUrls = NESTED_EXTENSION_TYPES.flatMap((type) => {
+			const typeDir = path.posix.join(extensionDirUrl, pluralize(type));
 			const fileExts = ['js', 'mjs', 'cjs'];
 
 			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
@@ -308,9 +310,12 @@ class ExtensionManager {
 			}
 		});
 
-		this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
-			ignoreInitial: true,
-		});
+		this.watcher = chokidar.watch(
+			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json'), ...localExtensionUrls],
+			{
+				ignoreInitial: true,
+			}
+		);
 
 		this.watcher
 			.on('add', () => this.reload())
@@ -330,7 +335,7 @@ class ExtensionManager {
 		if (this.watcher) {
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
 				extensions
-					.filter((extension) => !extension.local)
+					.filter((extension) => !extension.local || extension.type === 'bundle')
 					.flatMap((extension) =>
 						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
