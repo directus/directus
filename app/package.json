@@ -10,6 +10,7 @@
 		"directory": "app"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.html",
@@ -138,6 +139,5 @@
 	},
 	"dependencies": {
 		"@directus/composables": "workspace:*"
-	},
-	"license": "BUSL-1.1"
+	}
 }
