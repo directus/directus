@@ -116,6 +116,7 @@ logoutReason:
   SESSION_EXPIRED: セッションが期限切れです
 public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
+admin_description: App/APIへアクセス制限の無い初期管理者のロール
 not_allowed: 許可されていない
 directus_version: Directus Version
 node_version: Node バージョン
@@ -135,6 +136,7 @@ app_access_minimum: Appアクセスの最小値
 recommended_defaults: 推奨されるデフォルト値
 unarchive: アーカイブから戻す
 unarchive_confirm: この項目をアーカイブしてよろしいですか？
+nested_files_folders_will_be_moved: ネスト（入れ子）になっているファイルやフォルダーは、1階層上に移動します。
 validation_errors_notice: '無効な値があります:'
 validationError:
   eq: 値は {valid} でなければなりません
@@ -175,6 +177,9 @@ field_group: フィールドグループ
 item_permissions: 項目の権限
 field_permissions: フィールドの権限
 field_validation: フィールドの検証
+field_presets: フィールド プリセット
+permissions_for_role: '{role} ロールのアイテム は{action} ことができます'
+fields_for_role: '{role} ロールのフィールド は{action} ことができます'
 delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
 language: 言語
