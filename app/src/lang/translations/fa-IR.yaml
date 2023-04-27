@@ -1801,13 +1801,18 @@ displays:
     datetime: تاریخ و زمان
     description: نمایش مقادیر مربوط به زمان
     format: فرمت
+    format_note: >-
+      فرمت سفارش پذیرنده __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ می‌باشد
     long: بلند
     short: کوتاه
     relative: پیوسته
+    relative_label: 'نمایش زمان نسبی، برای نمونه: 5 دقیقه پیش'
     suffix: پسوند
     suffix_label: نمایش نشانگر نسبی
+    suffix_note: از واژه‌هایی مانند "در" و "پیش" استفاده می کند
     strict: سخت گیرانه
     strict_label: استفاده از واحدهای مطلق
+    strict_note: واژه‌هایی مانند "تقریباً"، "بیش از"، "کمتر از" را حذف می‌کند
     round: گرد
     round_note: یک تابع گِرد را برای استفاده انتخاب کنید
     down: پایین
@@ -1825,6 +1830,7 @@ displays:
     format: فرمت
     format_label: فرمت خودکار
     font: فونت
+    font_sans_serif: بدون دندانه
     font_serif: فونت Serif
     font_monospace: فونت Monospace
     bold: توپُر
@@ -1901,23 +1907,44 @@ layouts:
     spacing: فاصله‌گذاری
     comfortable: راحت
     compact: جمع و جور
+    cozy: راحت
   calendar:
     calendar: تقویم
+    start_date_field: کادر تاریخ شروع
+    end_date_field: کادر تاریخ اتمام
     optional: اختیاری
+    first_day: اولین روز هفته
   map:
     map: نقشه
+    basemap: نقشه اصلی
     layers: لایه‌ها
     cluster_options: تنظیمات کلاسترینگ
+    cluster: دسته‌بندی داده‌‌های نزدیک
+    cluster_radius: شعاع دسته‌بندی
     cluster_minpoints: حداقل اندازه کلاستر
+    cluster_maxzoom: حداکثر همگرایی جهت دسته‌بندی
     field: کادر میدان جغرافیایی
+    invalid_geometry: رسم هندسی اشتباه
     find_location: پیدا کردن موفعیت...
+    default_template: در حال استفاده مجموعه پیشفرض...
+    no_compatible_fields: کادرهای سازگار وجود ندارد
   kanban:
+    name: تابلوی راهنما
     group_field: گروه‌بندی بر اساس
+    group_field_placeholder: کادر جهت گروه‌بندی بر اساس...
     group_title: عنوان گروه
     group_title_placeholder: کادر برای عناوین گروه...
+    title: عنوان تابلو
     title_placeholder: کادر عنوان اختیاری...
+    text: متن تابلو
     text_placeholder: کادر متن اختیاری...
+    date: تاریخ تابلو
     date_placeholder: کادر تاریخ اختیاری...
+    tags: برچسب‌های تابلو
+    tags_placeholder: کادر برچسب‌های اختیاری...
+    user: تابلو کاربر
+    user_placeholder: کادر اختیاری کاربر...
+    image: تصویر تابلو
     image_placeholder: کادر تصویر اختیاری...
     crop: برش
     advanced: پیشرفته
@@ -1933,6 +1960,7 @@ horizontal: افقی
 vertical: عمودی
 x_axis: محور افقی
 y_axis: محور عمودی
+y_axis_function: تابع Y-Axis
 show_x_only: نمایش در محور افقی
 show_y_only: نمایش در محور عمودی
 show_data_label: نمایش داده برچسب
@@ -1949,6 +1977,7 @@ broad: گسترده
 show_labels: نمایش برچسب
 right: راست
 left: چپ
+donut: بخش‌بندی
 panels:
   metric:
     name: معیار
@@ -1959,6 +1988,8 @@ panels:
     description: نمودار خطی را بر اساس مقادیر در طول زمان ارائه دهید
     date_field: فیلد تاریخ
     value_field: مقدار فیلد
+    fill_type: نوع انباشت
+    curve_type: نوع منحنی
   label:
     name: برچسب
     description: نمایش چند نوشته
@@ -1982,6 +2013,7 @@ panels:
     step_line: خط مرحله ای
   meter:
     name: متر
+    description: شمارنده برای ردیابی مقادیر
   piechart:
     name: نمودار پای یا دونات
     description: نمودار دایره ای که نسبت گروه ها را روی یک ستون نشان می دهد
@@ -1997,13 +2029,25 @@ triggers:
   common:
     response_body: متن پاسخ
     response_body_all: همه داده‌ها
+    response_body_last: داده‌های آخرین عملیات
+  event:
+    name: هوک رویداد
   webhook:
     name: وب‌هوک
+    description: روی درخواست های ورودی HTTP اجرا می‌شود
     method: شیوه یا متود
+    async: ناهمگام
+  operation:
+    name: جریان دیگر
+    description: کارگذاری شده توسط جریان دیگر جهت زنجیره سازی
+    preview: اجرا شده توسط عملگری در یک جریان دیگر
   schedule:
+    name: زمان‌بندی (CRON)
+    description: در مقاطع منظم زمانی فعال می شود
     cron: بازه زمانی
   manual:
     name: دستی
+    description: در اجراهای دستی روی مجموعه‌های انتخاب شده اجرا می‌شود
     collection_only: فقط برگه مجموعه‌
     collection_page: برگه مجموعه
     require_selection: نیاز به انتخاب دارد
@@ -2075,9 +2119,11 @@ operations:
     value_placeholder: شامل eyJhbGciOi...
   sleep:
     name: وقفه
+    description: بر اساس عدد مقابل به میلی‌ثانیه صبر کنید
     milliseconds: میلی‌ثانیه
   transform:
     name: انتقال بار
+    description: تغییر حامل JSON جریان
   trigger:
     name: راه‌اندازی جریان
     description: انتقال این داده به یک جریان دیگر
