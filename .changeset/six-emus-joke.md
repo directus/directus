@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Add crosslink to data model settings for relational fields
+Added a shortcut link in settings for relational fields in the data model
