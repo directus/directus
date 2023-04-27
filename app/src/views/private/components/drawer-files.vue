@@ -24,8 +24,9 @@
 		>
 			<template v-if="!folder" #sidebar>
 				<files-navigation
-					:click-handler="onFolderChange"
+					:custom-target-handler="onFolderChange"
 					:current-folder="currentFolder"
+					:current-special="currentSpecial"
 					reset-open-folders
 					actions-disabled
 				/>
@@ -122,6 +123,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const currentFolder = ref<string | undefined>(props.folder);
+		const currentSpecial = ref<string | undefined>();
 
 		const { info: collectionInfo } = useCollection(collection);
 		const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = usePreset(collection, ref(null), true);
@@ -146,7 +148,7 @@ export default defineComponent({
 
 		const { layoutWrapper } = useLayout(layout);
 
-		const folderTypeFilter = ref(getFolderFilter(undefined, props.folder));
+		const folderTypeFilter = ref(getFolderFilter(currentSpecial.value, currentFolder.value));
 
 		const layoutFilter = computed({
 			get() {
@@ -180,10 +182,12 @@ export default defineComponent({
 			presetFilter,
 			currentLayout,
 			currentFolder,
+			currentSpecial,
 			onFolderChange,
 		};
 
 		function onFolderChange(target: { special?: string; folder?: string }) {
+			currentSpecial.value = target.special;
 			currentFolder.value = target.folder;
 			folderTypeFilter.value = getFolderFilter(target.special, target.folder, userStore?.currentUser?.id);
 		}

@@ -70,17 +70,22 @@ import { onUnmounted, ref, watch } from 'vue';
 import { useFolders, Folder } from '@/composables/use-folders';
 import NavigationFolder from './files-navigation-folder.vue';
 import { isEqual } from 'lodash';
+import { useRouter } from 'vue-router';
+
+type Special = 'all' | 'mine' | 'recent';
+type Target = { special?: Special; folder?: string };
+
+const router = useRouter();
 
 const props = defineProps<{
-	clickHandler: (target: { special?: string; folder?: string }) => void;
 	currentFolder?: string;
+	currentSpecial?: Special;
+	customTargetHandler?: (target: Target) => void;
 	resetOpenFolders?: boolean;
 	actionsDisabled?: boolean;
 }>();
 
 const { t } = useI18n();
-
-const currentSpecial = ref();
 
 const { nestedFolders, folders, loading, openFolders, resetOpenFolders } = useFolders();
 const prevOpenFolders = ref();
@@ -93,9 +98,19 @@ onUnmounted(() => {
 	}
 });
 
-function onClick(target: { special?: string; folder?: string }) {
-	currentSpecial.value = target.special;
-	props.clickHandler(target);
+function onClick(target: Target) {
+	if (props.customTargetHandler) {
+		props.customTargetHandler(target);
+	} else {
+		const path = ['files'];
+		if (target.folder) path.push('folders', target.folder);
+
+		if (target.special) {
+			path.push(target.special);
+		}
+
+		router.push(`/${path.join('/')}`);
+	}
 }
 
 function setOpenFolders() {

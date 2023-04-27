@@ -116,7 +116,7 @@
 			</template>
 
 			<template #navigation>
-				<files-navigation :click-handler="onFolderChange" :current-folder="folder" />
+				<files-navigation :current-folder="folder" :current-special="special" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
@@ -324,19 +324,7 @@ export default defineComponent({
 			filter,
 			mergeFilters,
 			currentLayout,
-			onFolderChange,
 		};
-
-		function onFolderChange(target: { special?: string; folder?: string }) {
-			const path = ['files'];
-			if (target.folder) path.push('folders', target.folder);
-
-			if (target.special) {
-				path.push(target.special);
-			}
-
-			router.push(`/${path.join('/')}`);
-		}
 
 		function useBatch() {
 			const confirmDelete = ref(false);
