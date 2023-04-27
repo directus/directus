@@ -1,6 +1,6 @@
 <template>
 	<transition name="fade">
-		<span v-if="itemCount" class="item-count" :title="showingCount">
+		<span v-if="itemCount" class="item-count">
 			{{ showingCount }}
 		</span>
 	</transition>
@@ -28,11 +28,9 @@ export default defineComponent({
 .item-count {
 	position: relative;
 	display: none;
-	margin-right: 8px;
+	margin: 0 8px;
 	color: var(--foreground-subdued);
 	white-space: nowrap;
-	text-overflow: ellipsis;
-	overflow: hidden;
 
 	@media (min-width: 600px) {
 		display: inline;

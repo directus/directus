@@ -8,7 +8,7 @@
 			<slot name="title-outer:prepend" />
 		</div>
 
-		<div class="title-container">
+		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
 			<div class="headline">
 				<slot name="headline" />
 			</div>
@@ -125,13 +125,23 @@ export default defineComponent({
 		position: relative;
 		display: flex;
 		align-items: center;
+		width: 100%;
 		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
-		margin: 0 16px;
+		margin-left: 16px;
 		overflow: hidden;
 
 		@media (min-width: 600px) {
 			max-width: 70%;
+		}
+
+		&.full {
+			margin-right: 12px;
+			padding-right: 0;
+			@media (min-width: 600px) {
+				margin-right: 20px;
+				padding-right: 20px;
+			}
 		}
 
 		.headline {
