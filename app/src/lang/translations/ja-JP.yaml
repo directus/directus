@@ -321,6 +321,7 @@ copy_raw_value_fail: コピー失敗
 notifications: 通知
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
+display: ディスプレイ
 title: タイトル
 revision_delta_other: 履歴
 private_user: 非公開ユーザー
