@@ -131,7 +131,7 @@ archive_confirm_count: >-
   هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید این {count} مورد را بایگانی کنید؟
 reset_system_permissions_to: 'بازنشانی مجوزهای سیستم به:'
 reset_system_permissions_copy: این عمل، مجوزهای سفارشی که ممکن است برای مجموعه‌های سیستمی اعمال کرده باشید را بازنویسی می کند. مطمئن هستید؟
-the_following_are_minimum_permissions: The following minimum permissions are automatically applied when "App Access" is enabled. You can grant additional permissions if needed, but you cannot reduce permissions below this level.
+the_following_are_minimum_permissions: هنگامی‌که «دسترسی به برنامه» فعال باشد، حداقل مجوزهای زیر به‌طور خودکار اعمال می‌شوند. در صورت نیاز می‌توانید مجوزهای اضافی بدهید، اما نمی‌توانید مجوزها را کمتر از این سطح کاهش دهید.
 app_access_minimum: حداقل مجوزها برای دسترسی به برنامه
 recommended_defaults: پیش‌فرض‌های مورد تأیید
 unarchive: خارج کردن از بایگانی
@@ -1832,13 +1832,16 @@ displays:
     italic: ایتالیک
     italic_label: از سبک کج استفاده کنید
     prefix: پيشوند
+    prefix_label: متن ابتدایی
     suffix: پسوند
+    suffix_label: متن انتهایی
     color: رنگ
     background: پس زمینه
     icon: آیکن
     border: حاشیه
     border_label: نمایش حاشیه
     text: متن
+    text_placeholder: نادیده گرفتن مقدار اختیاری...
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
@@ -1906,11 +1909,26 @@ layouts:
     layers: لایه‌ها
     cluster_options: تنظیمات کلاسترینگ
     cluster_minpoints: حداقل اندازه کلاستر
+    field: کادر میدان جغرافیایی
     find_location: پیدا کردن موفعیت...
   kanban:
+    group_field: گروه‌بندی بر اساس
+    group_title: عنوان گروه
+    group_title_placeholder: کادر برای عناوین گروه...
+    title_placeholder: کادر عنوان اختیاری...
+    text_placeholder: کادر متن اختیاری...
+    date_placeholder: کادر تاریخ اختیاری...
+    image_placeholder: کادر تصویر اختیاری...
     crop: برش
     advanced: پیشرفته
+    edit_group: ویرایش گروه
+    delete_group: حذف گروه
+    add_group: افزودن گروه
+    add_group_placeholder: یک عنوان تازه برای گروه وارد کنید...
+    show_ungrouped: نمایش گروه‌بندی نشده
     show: نمایش
+    no_group: بدون گروه
+    not_all_loaded: فقط می‌توان 1000 مورد اول را بارگیری کرد.
 horizontal: افقی
 vertical: عمودی
 x_axis: محور افقی
@@ -1920,6 +1938,7 @@ show_y_only: نمایش در محور عمودی
 show_data_label: نمایش داده برچسب
 both: هردو
 show_axis_labels: نمایش برچسب های محوری
+function: تابع
 half_circle: چرخه نصف
 full_circle: چرخه کامل
 stroke_width: خط عرضی
@@ -1932,6 +1951,7 @@ right: راست
 left: چپ
 panels:
   metric:
+    name: معیار
     description: یک مقدار را بر اساس یک پرس و جو نشان دهید
     field: فیلد
   time_series:
@@ -1993,8 +2013,11 @@ operations:
   item-create:
     name: ایجاد داده
     payload: ظرفیت یا Payload
+    emit_events: انتشار رویدادها
   item-delete:
     name: پاک کردن داده
+    description: حذف موارد از پایگاه‌داده
+    emit_events: انتشار رویدادها
     key: ID ها
     query: کوئری
   item-read:
@@ -2002,6 +2025,7 @@ operations:
     description: خواندن آیتم‌ها از پایگاه داده
     key: ID ها
     query: کوئری
+    emit_events: انتشار رویدادها
   item-update:
     name: Trigger Flow
     description: این داده ها را به Flow دیگری منتقل کنید
@@ -2015,14 +2039,30 @@ operations:
     template: پوسته
     data: داده Data
   notification:
+    name: فرستادن اعلان
+    description: فرستادن اعلان درون برنامه‌ای برای یک یا چند کاربر
     recipient: کاربر
+    recipient_placeholder: یک UUID وارد کنید...
     message: پیام
   request:
+    name: وب‌هوک / درخواست URL
+    description: "ساخت یک درخواست به URL"
     url: URL
+    url_placeholder: https://example.com/example
     method: شیوه یا متود
     data: داده Data
+    headers: هدرها (Headers)
     header: سربرگ
+    header_placeholder: احراز هویت...
+  sleep:
+    name: وقفه
   trigger:
+    name: راه‌اندازی Flow
     flows: اتوماسیون‌ها
     flow: اتوماسیون
     data: داده Data
+    iteration_mode: حالت تکرار
+    iteration_mode_note: حالتی برای تکرار در آرایه‌ها.
+    serial: سریال
+    batch: دسته
+    batch_size: اندازه دسته
