@@ -219,6 +219,7 @@ export default defineComponent({
 		const showRelatedCollectionLink = computed(
 			() =>
 				relatedCollectionInfo.value !== null &&
+				props.field.collection !== relatedCollectionInfo.value.relatedCollection &&
 				['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(localType.value as string)
 		);
 
