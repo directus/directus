@@ -296,12 +296,12 @@ o2m_relationship: رابطه یک-به-چند
 m2m_relationship: رابطه چند-به-چند
 m2a_relationship: رابطه یک-به-هر-مجموعه-ای
 invalid_item: آیتمِ نامعتبر
-require_confirmation: در انتظار تأیید ایمیل ها
+require_confirmation: نیاز به تأیید رایانامه
 dialog: گفتگو
 modal: مودال
 confirmation_dialog: تایید
 confirmation_description: تایید شرح
-confirmation_input_fields: تایید فیلد ورودی
+confirmation_input_fields: کادر ورودی تأیید
 next: بعدی
 field_name: نام فیلد
 translations: ترجمه‌ها
@@ -320,7 +320,7 @@ updated_on: به روزرسانی شده در
 updated_by: به روزرسانی شده توسط
 primary_key: کلید اصلی
 foreign_key: کلید خارجی
-field_key: کلید API فیلد
+field_key: کلید کادر
 finish_setup: پایان راه‌اندازی
 dismiss: نادیده گرفتن
 toggle_raw_editor: تغییر به ویرایشگر Raw
@@ -467,8 +467,8 @@ download_file: دانلود فایل
 open_file_in_tab: فایل را در تب جدید باز کنید
 start_export: شروع برون بری
 not_available_for_local_downloads: برای دانلودهای محلی در دسترس نیست
-exporting_all_items_in_collection: Exporting all {total} items within {collection}.
-exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
+exporting_all_items_in_collection: برون‌بری {total} مورد از {collection}.
+exporting_limited_items_in_collection: برون بری حداقل {limit} از مجموع {total} مورد از {collection}.
 exporting_no_items_to_export: موردی برای برون بری وجود ندارد پیکربندی برون بری را در زیر تنظیم کنید.
 exporting_download_hint: پس از تکمیل، این فایل {format} به طور خودکار در دستگاه شما دانلود می شود.
 exporting_batch_hint: این برون بری به صورت دسته‌ای پردازش می‌شود و پس از تکمیل، فایل {format} در کتابخانه فایل ذخیره می‌شود.
@@ -516,37 +516,37 @@ item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
 file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
-user_count: 'No Users | One User | {count} Users'
+user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
-webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-no_webhooks_copy: هنوز هیچ وب هوکی پیکربندی نشده است. با ایجاد یکی از زیر شروع کنید.
+webhooks_count: 'هیچ وب‌هوک | یک وب‌هوک | {count} وب‌هوک'
+no_webhooks_copy: تاکنون هیچ وب‌هوکی پیکربندی نشده | جهت شروع یکی به پایین اضافه کنید.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
-all_items: تمام موارد
+all_items: همۀ موارد
 any: هرکدام
 csv: CSV
 no_collections: مجموعه ای وجود ندارد
-create_collection: ایجاد مجموعه
+create_collection: ساخت مجموعه
 no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
 no_collections_copy: شما هنوز هیچ مجموعه ای ندارید. لطفا با سرپرست سیستم خود تماس بگیرید.
 relationship_not_setup: این رابطه به درستی پیکربندی نشده است
 no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
 collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
-select_a_collection: انتخاب یک کالکشن
-select_a_field: انتخاب یک فیلد
+select_a_collection: انتخاب یک مجموعه
+select_a_field: انتخاب یک کادر
 active: فعال
 move_to: انتقال به...
 copy: کپی
-copy_to: رونوشت در...
+copy_to: رونوشت به...
 no_other_dashboards_copy: شما هنوز داشبورد دیگری ندارید.
-inactive: غیر فعال
+inactive: غیرفعال
 users: کاربران
 activity: فعالیت‌ها
-activity_item: مورد فعالیت
+activity_item: گزارش فعالیت‌ها
 action: فعالیت
-ip_address: آدرس IP
+ip_address: نشانی IP
 user_agent: عامل کاربر
 origin: مبدأ
 webhooks: وب‌هوک‌ها
@@ -583,7 +583,7 @@ edit: ویرایش
 enabled: فعال شده
 disable_tfa: غیرفعالسازی احراز هویت دو عاملی
 admin_disable_tfa_text: آیا مطمئن هستید که می‌خواهید رمز دو مرحله ای را برای این کاربر غیرفعال کنید؟
-tfa_setup: تنظیمات 2FA
+tfa_setup: پیکربندی 2FA
 tfa_scan_code: کد را در نرم افزار احراز هویت خود، برای اتمام تنظیمات احراز هویت دو عاملی، اسکن کنید
 enter_otp_to_disable_tfa: پسورد یکبار مصرف خود را برای غیرفعالسازی احراز هویت دو عاملیِ خود، وارد کنید
 create_account: ساخت حساب کاربری
@@ -617,7 +617,7 @@ errors:
   VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
   INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
   UNKNOWN: خطای غیر منتظره
-  GRAPHQL_VALIDATION_EXCEPTION: استثنا اعتبار سنجی GraphQL
+  GRAPHQL_VALIDATION_EXCEPTION: استثناء اعتبار سنجی GraphQL
   SERVICE_UNAVAILABLE: سرویس در دسترس نیست
   UNSUPPORTED_MEDIA_TYPE: رسانه پشتیبانی نشده
   UNEXPECTED_RESPONSE: پاسخ غیر منتظره
@@ -787,22 +787,22 @@ select_fields: انتخاب فیلدها
 format_text: قالب بندی متن
 format_value: مقدار قالب
 abbreviate_value: مقدار اختصاری
-operator: اپراتور
+operator: عملگر
 bold: توپُر
 toggle: تغییر وضعیت
 icon_on: آیکن روشن
 icon_off: آیکن خاموش
-label: برچسب
-flows: اتوماسیون‌ها
-flow: اتوماسیون
-select_a_flow: انتخاب یک اتوماسیون
-run_flow_confirm: آیا مطمئنید که می خواهید این اتصال را برقرار کنید؟
-run_flow_on_current_collection: اجرای اتوماسیون در مجموعه فعلی
-run_flow_on_current: اجرای اتوماسیون در مجموعه فعلی
-run_flow_on_current_edited_confirm: این مورد ممکن است توسط این اتوماسیون به‌ روزرسانی شود، آیا مطمئن هستید که می‌خواهید آن را اجرا کنید؟
-run_flow_on_selected: ابتدا یک یا چند مورد را انتخاب کنید | اجرای اتوماسیون بر روی 1 مورد انتخاب شده | اتوماسیون را روی {n} مورد انتخابی اجرا کنید
-run_flow: اجرای اتوماسیون
-run_flow_success: اتوماسیون "{flow}" با موفقیت اجرا شد
+label: عنوان
+flows: جریان‌ها
+flow: جریان
+select_a_flow: انتخاب یک جریان
+run_flow_confirm: آیا از اجرای این جریان اطمینان دارید؟
+run_flow_on_current_collection: اجرای جریان در مجموعه فعلی
+run_flow_on_current: اجرای جریان در مجموعه فعلی
+run_flow_on_current_edited_confirm: این مورد ممکن است توسط این جریان به‌روزرسانی شود، آیا از اجرای آن اطمینان دارید؟
+run_flow_on_selected: ابتدا یک یا چند مورد را انتخاب کنید | اجرای جریان روی 1 مورد انتخاب شده | اجرای {n} مورد روی جریان
+run_flow: اجرای جریان
+run_flow_success: جریان"{flow}" با موفقیت اجرا شد
 field_name_placeholder: ورود نام فیلد...
 field_key_placeholder: ورود کلید فیلد...
 trigger: راه‌انداز
@@ -811,32 +811,32 @@ view_trigger: مشاهده محرک
 create_trigger: ایجاد راه‌انداز
 trigger_setup: نصب راه‌انداز
 change_trigger: تغییر راه‌انداز
-flow_delete_confirm: آیا مطمئن هستید که می‌خواهید فیلد {flow} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
-set_flow_active: تنظیم اتوماسیون به فعال
-set_flow_inactive: برگشت Flow به غیر‌فعال
-edit_flow: ویرایش Flow
-delete_flow: پاک‌کردن Flow
-no_other_flows_copy: هنوز هیچ Flow تنظیم نشده است.
-no_flows: بدون Flows
-no_flows_copy: هنوز هیچ Flow تنظیم نشده است.
-create_flow: ایجاد Flow
-creating_new_flow: ساخت Flow جدید
-updating_flow: ویرایش Flow
-flow_setup: تنظیم Flow
+flow_delete_confirm: آیا از پاک کردن جریان {flow} اطمینان دارید؟ این رویداد غیرقابل بازگردانی است.
+set_flow_active: تنظیم جریان به فعال
+set_flow_inactive: بازگردانی جریان به غیرفعال
+edit_flow: ویرایش جریان
+delete_flow: حذف جریان
+no_other_flows_copy: شما هنوز هیچ جریان دیگری ندارید.
+no_flows: بدون جریان
+no_flows_copy: شما هنوز هیچ جریانی ندارید.
+create_flow: ساخت جریان
+creating_new_flow: ساخت جریان تازه
+updating_flow: در حال به‌روزرسانی جریان
+flow_setup: پیکربندی جریان
 flow_name: نام
-flow_tracking: مشاهده Log ها و فعالیت ها
-flow_tracking_all: مشاهده فعالیت ها و لاگ ها
-flow_tracking_activity: فقط مشاهده فعالیت ها
+flow_tracking: پیگرد رخدادها و فعالیت‌ها
+flow_tracking_all: پیگرد فعالیت و رخدادها
+flow_tracking_activity: فقط پیگرد فعالیت‌ها
 flow_tracking_null: هیچ چیز را پیگیری نکن
-start_flow: شروع Flow
-stop_flow: توقف Flow
+start_flow: شروع جریان
+stop_flow: توقف جریان
 create_operation: ساخت اپراتور
 edit_operation: ویرایش اپراتور
 code: کد
 operation_options: تنظیمات اپراتور
 operation_name: نام اپراتور...
 operation_key: شناسه مرجع...
-operation_key_unique_error: کلیدهای عملیاتی منحصر به فرد Flow
+operation_key_unique_error: کلیدهای عملیاتی باید در یک جریان منحصر به فرد باشند
 operation_handle_resolve: 'تصمیم: برای افزودن کلیک کنید یا برای مسیریابی مجدد بکشید'
 operation_handle_reject: 'رد کردن: برای افزودن کلیک کنید یا برای مسیریابی مجدد بکشید'
 insights: بینش های داده ای
@@ -860,7 +860,7 @@ no_dashboards_copy: هنوز هیچ پیشخوانی ندارید.
 create_dashboard: ایجاد پیشخوان جدید
 dashboard_name: نام پیشخوان
 no_data: داده‌ای موجود نیست
-no_data_in_flow: هیچ داده ای در این Flow تولید یا به آن دسترسی پیدا نکرد
+no_data_in_flow: هیچ داده ای در این جریان تولید یا به آن دسترسی پیدا نکرد
 accountability: مسئوليت
 payload: ظرفیت یا Payload
 details: جزئیات
@@ -1012,8 +1012,8 @@ page_help_settings_presets_item: >-
   **جزئیات از پیش تعیین شده** - فرمی برای مدیریت بوکمارک ها و از پیش تنظیم های مجموعه پیش فرض.
 page_help_settings_webhooks_collection: '**مرور Webhooks** - فهرستی از تمام وبک هوک های داخل پروژه.'
 page_help_settings_webhooks_item: '** جزئیات وب هوک ** - فرمی برای ایجاد و مدیریت وب هوک های پروژه.'
-page_help_settings_flows_collection: '**مرور Flows** - همه Flows های داخل پروژه را فهرست می کند.'
-page_help_settings_flows_item: '**جزئیات Flow ** - فضای کاری برای مدیریت یک یا چند عملیات.'
+page_help_settings_flows_collection: '**مرور جریان‌ها** - همه جریان‌های داخل پروژه را فهرست می کند.'
+page_help_settings_flows_item: '**جزئیات جریان** - محیط کاری برای مدیریت یک یا چند عملیات.'
 page_help_settings_translation_strings_collection: '**مرور رشته‌های ترجمه** - همه رشته‌های ترجمه را در پروژه فهرست می‌کند.'
 page_help_users_collection: '**دایرکتوری کاربر** - لیست تمامی کاربران سیستم در این پروژه.'
 page_help_users_item: >-
@@ -1042,11 +1042,11 @@ directus_collection:
   directus_dashboards: داشبوردهای درون ماژول Insights
   directus_fields: پیکربندی فیلد اضافی و ابرداده
   directus_files: فراداده برای همه Assets های فایل مدیریت شده
-  directus_flows: اتوماسیون Flow
+  directus_flows: خودکارسازی جریان‌ها
   directus_folders: دایرکتوری های مجازی برای فایل ها فراهم می کند
   directus_migrations: از چه نسخه ای از پایگاه داده استفاده می کنید
   directus_notifications: اعلانهای ارسالی به کاربر
-  directus_operations: عملیاتی که در اتوماسیون اجرا می شوند
+  directus_operations: عملیاتی که در جریان‌ها اجرا می شوند
   directus_panels: پنل‌های مجزا در داشبوردها
   directus_permissions: دسترسی به اجازه های این نقش
   directus_presets: تنظیمات پیش‌فرض برای مجموعه و بوکمارک‌ها
@@ -1188,8 +1188,8 @@ fields:
     password: رمز عبور
     date_start: تاریخ شروع
     date_end: تاریخ پایان
-    max_uses: حداکثر استفاده
-    times_used: زمان استفاده شده
+    max_uses: حدأکثر استفاده
+    times_used: بار استفاده شده
   directus_fields:
     collection: نام مجموعه
     icon: آیکن مجموعه
@@ -1536,7 +1536,7 @@ interfaces:
     description: تاریخ و زمان را وارد نمایید
     include_seconds: درج ثانیه ها
     set_to_now: تنظیم به اکنون
-    use_24: از قالب 24 ساعته استفاده کنید
+    use_24: استفاده از قالب 24 ساعته
     placeholder: انتخاب یک تاریخ و زمان...
   system-fields:
     select_a_collection: انتخاب یک کالکشن
@@ -1665,7 +1665,7 @@ interfaces:
     incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
   slider:
     slider: اسلایدر
-    description: با استفاده از یک نوار لغزنده یک عدد را انتخاب کنید
+    description: یک عدد را با استفاده از نوار متحرک انتخاب کنید
     always_show_value: همیشه مقدار را نمایش بده
   tags:
     tags: برچسب ها
@@ -1768,7 +1768,7 @@ interfaces:
     generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
     remove_token: حذف توکن
   system-raw-editor:
-    system-raw-editor: ویرایشگر Raw
+    system-raw-editor: ویرایشگر خام
     description: Allow entering of raw or mustache templating values
 displays:
   translations:
@@ -1807,7 +1807,7 @@ displays:
     suffix: پسوند
     suffix_label: نمایش نشانگر نسبی
     strict: سخت گیرانه
-    strict_label: از واحدهای سخت گیرانه استفاده کنید
+    strict_label: استفاده از واحدهای مطلق
     round: گرد
     round_note: یک تابع گِرد را برای استفاده انتخاب کنید
     down: پایین
@@ -1828,9 +1828,9 @@ displays:
     font_serif: فونت Serif
     font_monospace: فونت Monospace
     bold: توپُر
-    bold_label: از سبک توپُر استفاده کنید
+    bold_label: استفاده از سبک توپُر
     italic: ایتالیک
-    italic_label: از سبک کج استفاده کنید
+    italic_label: استفاده از سبک خمیده
     prefix: پيشوند
     prefix_label: متن ابتدایی
     suffix: پسوند
@@ -2004,14 +2004,23 @@ triggers:
     cron: بازه زمانی
   manual:
     name: دستی
+    collection_only: فقط برگه مجموعه‌
+    collection_page: برگه مجموعه
+    require_selection: نیاز به انتخاب دارد
+a_flow_uuid: یک جریان را جهت راه‌اندازی انتخاب کنید...
+any_string_or_json: Json یا هر رشته‌ای...
+item_payload_placeholder: این JSON برای به‌روزرسانی مقادیر فیلد به‌کارگیری می‌شود...
 operations:
   condition:
     name: شرط
+    description: مسیریابی یک جریان بر اساس منطق If / Else
   exec:
     name: خواندن داده
     description: خواندن داده از پایگاه داده
+    modules: 'می‌توان از **ماژول‌های Node** مقابل به‌کارگیری کرد:'
   item-create:
     name: ایجاد داده
+    description: ساخت موارد در پایگاه‌داده
     payload: ظرفیت یا Payload
     emit_events: انتشار رویدادها
   item-delete:
@@ -2027,15 +2036,23 @@ operations:
     query: کوئری
     emit_events: انتشار رویدادها
   item-update:
-    name: Trigger Flow
-    description: این داده ها را به Flow دیگری منتقل کنید
+    name: به‌روزرسانی داده
+    description: به‌روزرسانی موارد در پایگاه‌داده
     emit_events: انتشار رویدادها
     key: ID ها
     payload: ظرفیت یا Payload
     query: کوئری
   log:
+    name: ذخیره رخداد در کنسول
+    description: خروجی چیزی به کنسول
     message: پیام
+    message_placeholder: یک پیام جهت نمایش در کنسول وارد کنید...
   mail:
+    name: فرستادن رایانامه
+    description: فرستادن رایانامه به یک یا چند نفر
+    to: به
+    to_placeholder: نشانی‌های رایانامه را وارد کرده و اینتر بزنید...
+    body: متن
     template: پوسته
     data: داده Data
   notification:
@@ -2043,6 +2060,7 @@ operations:
     description: فرستادن اعلان درون برنامه‌ای برای یک یا چند کاربر
     recipient: کاربر
     recipient_placeholder: یک UUID وارد کنید...
+    recipient_note: UUID کاربر را وارد و اینتر بزنید...
     message: پیام
   request:
     name: وب‌هوک / درخواست URL
@@ -2054,15 +2072,21 @@ operations:
     headers: هدرها (Headers)
     header: سربرگ
     header_placeholder: احراز هویت...
+    value_placeholder: شامل eyJhbGciOi...
   sleep:
     name: وقفه
+    milliseconds: میلی‌ثانیه
+  transform:
+    name: انتقال بار
   trigger:
-    name: راه‌اندازی Flow
-    flows: اتوماسیون‌ها
-    flow: اتوماسیون
+    name: راه‌اندازی جریان
+    description: انتقال این داده به یک جریان دیگر
+    flows: جریان‌ها
+    flow: جریان
     data: داده Data
     iteration_mode: حالت تکرار
     iteration_mode_note: حالتی برای تکرار در آرایه‌ها.
     serial: سریال
+    parallel: موازی
     batch: دسته
     batch_size: اندازه دسته
