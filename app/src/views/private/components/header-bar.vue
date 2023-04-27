@@ -16,7 +16,9 @@
 			<div class="title">
 				<slot name="title">
 					<slot name="title:prepend" />
-					<h1 class="type-title" :title="title">{{ title }}</h1>
+					<h1 class="type-title">
+						<v-text-overflow :text="title" placement="bottom">{{ title }}</v-text-overflow>
+					</h1>
 					<slot name="title:append" />
 				</slot>
 			</div>
