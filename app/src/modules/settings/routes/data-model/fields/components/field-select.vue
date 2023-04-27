@@ -153,7 +153,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed } from 'vue';
+import { defineComponent, PropType, ref, computed, unref } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRouter } from 'vue-router';
@@ -218,9 +218,9 @@ export default defineComponent({
 
 		const showRelatedCollectionLink = computed(
 			() =>
-				relatedCollectionInfo.value !== null &&
-				props.field.collection !== relatedCollectionInfo.value.relatedCollection &&
-				['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(localType.value as string)
+				unref(relatedCollectionInfo) !== null &&
+				props.field.collection !== unref(relatedCollectionInfo).relatedCollection &&
+				['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string)
 		);
 
 		return {
