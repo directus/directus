@@ -83,6 +83,7 @@ import { mergeFilters } from '@directus/utils';
 import { PropType, computed, defineComponent, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Filter } from '@directus/types';
+import { Special } from '@/types/folders';
 
 export default defineComponent({
 	components: { SearchInput, FilesNavigation },
@@ -123,7 +124,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const currentFolder = ref<string | undefined>(props.folder);
-		const currentSpecial = ref<string | undefined>();
+		const currentSpecial = ref<Special | undefined>();
 
 		const { info: collectionInfo } = useCollection(collection);
 		const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = usePreset(collection, ref(null), true);
@@ -171,7 +172,7 @@ export default defineComponent({
 			onFolderChange,
 		};
 
-		function onFolderChange(target: { special?: string; folder?: string }) {
+		function onFolderChange(target: { special?: Special; folder?: string }) {
 			currentSpecial.value = target.special;
 			currentFolder.value = target.folder;
 			folderTypeFilter.value = getFolderFilter(target.special, target.folder, userStore?.currentUser?.id);

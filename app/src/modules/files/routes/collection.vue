@@ -213,6 +213,7 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
+import { Special } from '@/types/folders';
 
 type Item = {
 	[field: string]: any;
@@ -234,7 +235,7 @@ export default defineComponent({
 			default: undefined,
 		},
 		special: {
-			type: String as PropType<'all' | 'recent' | 'mine'>,
+			type: String as PropType<Special>,
 			default: undefined,
 		},
 	},

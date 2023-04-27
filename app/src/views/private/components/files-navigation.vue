@@ -71,8 +71,8 @@ import { useFolders, Folder } from '@/composables/use-folders';
 import NavigationFolder from './files-navigation-folder.vue';
 import { isEqual } from 'lodash';
 import { useRouter } from 'vue-router';
+import { Special } from '@/types/folders';
 
-type Special = 'all' | 'mine' | 'recent';
 type Target = { special?: Special; folder?: string };
 
 const router = useRouter();
