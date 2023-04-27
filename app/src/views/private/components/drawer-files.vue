@@ -5,9 +5,9 @@
 		v-model:selection="layoutSelection"
 		v-model:layout-options="localOptions"
 		v-model:layout-query="localQuery"
-		:filter="mergeFilters(layoutFilter, folderTypeFilter)"
-		:filter-user="layoutFilter"
-		:filter-system="folderTypeFilter"
+		:filter="mergeFilters(mergeFilters(folderTypeFilter, filter), presetFilter)"
+		:filter-user="presetFilter"
+		:filter-system="mergeFilters(folderTypeFilter, filter)"
 		:search="search"
 		:collection="collection"
 		select-mode
@@ -150,20 +150,6 @@ export default defineComponent({
 
 		const folderTypeFilter = ref(getFolderFilter(currentSpecial.value, currentFolder.value));
 
-		const layoutFilter = computed({
-			get() {
-				if (!props.filter) return presetFilter.value;
-				if (!presetFilter.value) return props.filter;
-
-				return {
-					_and: [props.filter, presetFilter.value],
-				};
-			},
-			set(newFilter: Filter | null) {
-				presetFilter.value = newFilter;
-			},
-		});
-
 		return {
 			t,
 			save,
@@ -178,7 +164,6 @@ export default defineComponent({
 			search,
 			mergeFilters,
 			folderTypeFilter,
-			layoutFilter,
 			presetFilter,
 			currentLayout,
 			currentFolder,
