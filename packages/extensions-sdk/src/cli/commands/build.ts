@@ -30,12 +30,13 @@ import { rollup, watch as rollupWatch } from 'rollup';
 import esbuildDefault from 'rollup-plugin-esbuild';
 import stylesDefault from 'rollup-plugin-styles';
 import vueDefault from 'rollup-plugin-vue';
-import type { RollupConfig, RollupMode } from '../types.js';
+import type { Format, RollupConfig, RollupMode } from '../types.js';
 import { clear, log } from '../utils/logger.js';
 import tryParseJson from '../utils/try-parse-json.js';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
 import loadConfig from './helpers/load-config.js';
 import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
+import { getFileExt } from '../utils/file.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -80,11 +81,14 @@ export default async function build(options: BuildOptions): Promise<void> {
 
 		const extensionOptions = extensionManifest[EXTENSION_PKG_KEY];
 
+		const format = extensionManifest.type === 'module' ? 'esm' : 'cjs';
+
 		if (extensionOptions.type === 'bundle') {
 			await buildBundleExtension({
 				entries: extensionOptions.entries,
 				outputApp: extensionOptions.path.app,
 				outputApi: extensionOptions.path.api,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -95,6 +99,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				inputApi: extensionOptions.source.api,
 				outputApp: extensionOptions.path.app,
 				outputApi: extensionOptions.path.api,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -104,6 +109,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				type: extensionOptions.type,
 				input: extensionOptions.source,
 				output: extensionOptions.path,
+				format,
 				watch,
 				sourcemap,
 				minify,
@@ -174,6 +180,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				entries: entries.data,
 				outputApp: splitOutput.app,
 				outputApi: splitOutput.api,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -209,6 +216,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				inputApi: splitInput.api,
 				outputApp: splitOutput.app,
 				outputApi: splitOutput.api,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -218,6 +226,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				type,
 				input,
 				output,
+				format: 'esm',
 				watch,
 				sourcemap,
 				minify,
@@ -230,6 +239,7 @@ async function buildAppOrApiExtension({
 	type,
 	input,
 	output,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -237,6 +247,7 @@ async function buildAppOrApiExtension({
 	type: AppExtensionType | ApiExtensionType;
 	input: string;
 	output: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -257,7 +268,7 @@ async function buildAppOrApiExtension({
 	const mode = isIn(type, APP_EXTENSION_TYPES) ? 'browser' : 'node';
 
 	const rollupOptions = getRollupOptions({ mode, input, sourcemap, minify, plugins });
-	const rollupOutputOptions = getRollupOutputOptions({ mode, output, sourcemap });
+	const rollupOutputOptions = getRollupOutputOptions({ mode, output, format, sourcemap });
 
 	if (watch) {
 		await watchExtension({ rollupOptions, rollupOutputOptions });
@@ -271,6 +282,7 @@ async function buildHybridExtension({
 	inputApi,
 	outputApp,
 	outputApi,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -279,6 +291,7 @@ async function buildHybridExtension({
 	inputApi: string;
 	outputApp: string;
 	outputApi: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -322,8 +335,8 @@ async function buildHybridExtension({
 		plugins,
 	});
 
-	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
-	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
+	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
+	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
 
 	const rollupOptionsAll = [
 		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
@@ -341,6 +354,7 @@ async function buildBundleExtension({
 	entries,
 	outputApp,
 	outputApi,
+	format,
 	watch,
 	sourcemap,
 	minify,
@@ -348,6 +362,7 @@ async function buildBundleExtension({
 	entries: ExtensionOptionsBundleEntry[];
 	outputApp: string;
 	outputApi: string;
+	format: Format;
 	watch: boolean;
 	sourcemap: boolean;
 	minify: boolean;
@@ -384,8 +399,8 @@ async function buildBundleExtension({
 		plugins,
 	});
 
-	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
-	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
+	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
+	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
 
 	const rollupOptionsAll = [
 		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
@@ -523,15 +538,19 @@ function getRollupOptions({
 function getRollupOutputOptions({
 	mode,
 	output,
+	format,
 	sourcemap,
 }: {
 	mode: RollupMode;
 	output: string;
+	format: Format;
 	sourcemap: boolean;
 }): RollupOutputOptions {
+	const fileExtension = getFileExt(output);
+
 	return {
 		file: output,
-		format: mode === 'browser' ? 'es' : 'cjs',
+		format: mode === 'browser' || fileExtension === 'mjs' ? 'esm' : fileExtension === 'cjs' ? 'cjs' : format,
 		exports: 'auto',
 		inlineDynamicImports: true,
 		sourcemap,

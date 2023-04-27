@@ -10,3 +10,5 @@ export type Config = {
 
 export type RollupConfig = { rollupOptions: RollupOptions; rollupOutputOptions: RollupOutputOptions };
 export type RollupMode = 'browser' | 'node';
+
+export type Format = 'esm' | 'cjs';
