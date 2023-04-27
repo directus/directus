@@ -1803,6 +1803,7 @@ displays:
     format: فرمت
     long: بلند
     short: کوتاه
+    relative: پیوسته
     suffix: پسوند
     suffix_label: نمایش نشانگر نسبی
     strict: سخت گیرانه
