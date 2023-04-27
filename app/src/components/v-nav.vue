@@ -88,12 +88,12 @@ function onPointerMove(event: PointerEvent) {
 }
 
 function onPointerUp() {
-	if (dragging.value === true) {
-		dragging.value = false;
+	if (!dragging.value) return;
 
-		if (rafId.value) {
-			window.cancelAnimationFrame(rafId.value);
-		}
+	dragging.value = false;
+
+	if (rafId.value) {
+		window.cancelAnimationFrame(rafId.value);
 	}
 }
 </script>
