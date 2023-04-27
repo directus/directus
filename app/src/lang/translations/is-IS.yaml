@@ -84,6 +84,7 @@ os_type: Gerð stýrikerfis
 os_version: Útgáfa stýrikerfis
 os_uptime: Uppitími stýrikerfis
 os_totalmem: OS Minni
+archive: Geymsla
 all_access: Allur Aðgangur
 no_access: Enginn Aðgangur
 use_custom: Nota Sérsniðið
@@ -116,6 +117,9 @@ text: Texti
 time: Tími
 timestamp: Tímastimpill
 geometry.Point: Punktur
+auto_refresh: Sjálfkrafa Endurhlaða
+search_collection: Leit Safn...
+search_field: Leit Reitur...
 add_link: Bæta við Hlekk
 custom_link: Sérsniðinn Hlekkur
 default_value: Sjálfgefið Gildi
@@ -140,6 +144,7 @@ title: Titill
 revision_delta_deleted: Eytt
 revision_delta_reverted: Snúið í fyrra horf
 updates_made: Uppfærslur Gerðar
+import_export: Flytja inn/út
 last_page: Síðasta Síða
 last_access: Síðasta Aðgengi
 submit: Senda inn
@@ -160,6 +165,7 @@ functions:
   minute: Mínútur
   second: Sekúndur
   count: Talning
+select_all: Velja Allt
 size: Stærð
 owner: Eigandi
 folder: Mappa
@@ -175,6 +181,7 @@ save_and_create_new: Vista og Búa til Nýtt
 save_as_copy: Vista sem Afrit
 comments: Athugasemdir
 no_items: Engir hlutir
+search_items: Leita að hlutum...
 disabled: Óvirkt
 information: Upplýsingar
 report_bug: Tilkynna Galla
@@ -189,6 +196,7 @@ field_width: Reitur Breidd
 add_filter: Bæta við Síu
 upper_limit: Efri mörk...
 lower_limit: Neðri mörk...
+user_directory: Notendur Safn
 documentation: Skjalfesting
 sidebar: Hliðarvalmynd
 duration: Tímalengd
@@ -253,6 +261,7 @@ wysiwyg_options:
   table: Tafla
 dropdown: Fellilisti
 choices: Val
+deselect_all: Afvelja Allt
 other: Annað...
 unknown_user: Óþekktur Notandi
 select: Velja...
@@ -330,6 +339,7 @@ field_options:
     create: Búa til
   directus_collections:
     language: Tungumál
+    archive_divider: Geymsla
     sort_divider: Flokka
   directus_roles:
     fields:
@@ -340,7 +350,10 @@ field_options:
   directus_users:
     preferences_divider: Notandi Stillingar
     status_dropdown_draft: Drög
+    status_dropdown_active: Virkt
   directus_webhooks:
+    status_options_active: Virkt
+    status_options_inactive: Óvirkt
     actions_create: Búa til
     actions_update: Uppfæra
     actions_delete: Eyða
@@ -351,7 +364,10 @@ do_nothing: Gera Ekkert
 share_copy_link: Afrita Hlekk
 description: Lýsing
 email: Tölvupóstur
+file_library: Skjöl Safn
 password: Lykilorð
+search: Leita
+settings: Stillingar
 table: Tafla
 list: Listi
 interfaces:
@@ -361,11 +377,17 @@ interfaces:
     all: Allt
   presentation-links:
     primary: Aðal
+  select-multiple-checkbox:
+    allow_other: Leyfa Annað
+  select-multiple-checkbox-tree:
+    show_all: Sýna Allt
   input-code:
     code: Kóði
   select-color:
     color: Litur
   select-dropdown:
+    allow_other: Leyfa Annað
+    allow_none: Leyfa Ekkert
     choices_value_placeholder: Skráðu Gildi...
   file:
     file: Skrá
