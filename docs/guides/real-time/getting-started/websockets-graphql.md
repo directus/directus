@@ -42,3 +42,16 @@ function App() {
 ```
 
 The empty `<ul>` will be populated with messages we will create shortly.
+
+## Install the Required Packages
+
+The first step in using WebSockets with GraphQL is to install the `graphql-ws` library. This library makes it easy to
+establish a WebSocket connection with a GraphQL server.
+
+You also want to install `@apollo/client` to handle GraphQL queries, mutations and subscriptions on the client side.
+
+In your React project, run the following command:
+
+```js
+npm install graphql-ws @apollo/client
+```
