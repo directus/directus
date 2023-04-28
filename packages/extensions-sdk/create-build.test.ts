@@ -19,10 +19,10 @@ afterAll(async () => {
 
 function getConfigFileContent(configFileName: string) {
 	switch (configFileName) {
+		case 'extension.config.js':
 		case 'extension.config.mjs':
 			return `export default { plugins: [] };`;
 		case 'extension.config.cjs':
-		case 'extension.config.js':
 			return `module.exports = { plugins: [] };`;
 		default:
 			return '';
