@@ -120,3 +120,76 @@ const { loading, error, data } = useQuery(GET_MESSAGES);
 
 const [addMessage] = useMutation(ADD_MESSAGE);
 ```
+
+## Subscribe To Changes
+
+After subscribing to collections over your connection, you will real-data changes in your messages collection:
+
+```js
+useEffect(() => {
+	return client.subscribe(
+		{
+			query: `
+        subscription {
+          messages_mutated {
+            id,
+            text
+            user
+            _event
+          }
+        }`,
+		},
+		{
+			next: ({ data }) => {
+				console.log(data);
+			},
+			error: (err) => {
+				console.log(err);
+			},
+			complete: () => {},
+		}
+	);
+}, []);
+```
+
+At the moment, you are subscribed to the messages collection and can only retrieve all messages in real-time. However,
+you may also desire to subscribe to `create`, `update`, and `delete` events.
+
+To accomplish this, replace the `console.log` in the `next` field with:
+
+```js
+useEffect(() => {
+	return client.subscribe(
+		{
+			query: `
+        subscription {
+          messages_mutated {
+            id,
+            text
+            user
+            _event
+          }
+        }`,
+		},
+		{
+			next: ({ data }) => {
+        console.log(data)  // [!code --]
+				const { text, user, id, _event } = data?.messages_mutated || {};  // [!code ++]
+				if (_event === 'create') { // [!code ++]
+					setMessageData((messages) => [...messages, { id, user, text }]); // [!code ++]
+				} else if (_event === 'delete') { // [!code ++]
+					setMessageData((messages) => messages.filter((m) => m.id !== id)); // [!code ++]
+				} else if (_event === 'update') { // [!code ++]
+					setMessageData((messages) => // [!code ++]
+						messages.map((message) => (message.id === id ? { ...message, text, user } :  // [!code ++]message))
+					); // [!code ++]
+				} // [!code ++]
+			},
+			error: (err) => {
+				console.log(err);
+			},
+			complete: () => {},
+		}
+	);
+}, []);
+```
