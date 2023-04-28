@@ -246,3 +246,110 @@ In this guide, you have successfully established a connection and authenticated.
 subscription.
 
 [Learn more about subscriptions with WebSockets with Directus.](/guides/real-time/subscriptions/websockets)
+
+## Full Code Sample
+
+```js
+import { gql, useQuery, useMutation } from '@apollo/client';
+import { createClient } from 'graphql-ws';
+import { useEffect, useState } from 'react';
+
+const client = createClient({
+	url: 'ws://your-directus-url/graphql',
+	keepAlive: 30000,
+	connectionParams: async () => {
+		return { access_token: 'MY_TOKEN' };
+	},
+});
+
+const GET_MESSAGES = gql`
+	query {
+		messages {
+			id
+			text
+			user
+		}
+	}
+`;
+
+const ADD_MESSAGE = gql`
+	mutation AddMessage($text: String!, $user: String!) {
+		create_messages_item(data: { text: $text, user: $user }) {
+			id
+			text
+			user
+		}
+	}
+`;
+
+const App = () => {
+	const { loading, error, data } = useQuery(GET_MESSAGES);
+
+	const [addMessage] = useMutation(ADD_MESSAGE);
+
+	const [messageData, setMessageData] = useState([]);
+
+	useEffect(() => {
+		if (!data) return;
+		setMessageData((message) => [...message, ...data.messages]);
+	}, [data]);
+
+	const handleClick = () => {
+		addMessage({ variables: { text: 'Hello World!', user: 'Ben' } });
+	};
+
+	useEffect(() => {
+		return client.subscribe(
+			{
+				query: `
+        subscription {
+          messages_mutated {
+            id,
+            text
+            user
+            _event
+          }
+        }`,
+			},
+			{
+				next: ({ data }) => {
+					const { text, user, id, _event } = data?.messages_mutated || {};
+					if (_event === 'create') {
+						setMessageData((messages) => [...messages, { id, user, text }]);
+					} else if (_event === 'delete') {
+						setMessageData((messages) => messages.filter((m) => m.id !== id));
+					} else if (_event === 'update') {
+						setMessageData((messages) =>
+							messages.map((message) => (message.id === id ? { ...message, text, user } : message))
+						);
+					}
+				},
+				error: (err) => {
+					console.log(err);
+				},
+				complete: () => {},
+			}
+		);
+	}, []);
+
+	if (loading) return <p>Loading...</p>;
+	if (error) return <p>An error occured :(</p>;
+
+	return (
+		<div>
+			<button onClick={handleClick}>Hey</button>
+			<ul>
+				{messageData.map((message) => (
+					<li key={message.id}>
+						<p>
+							{message.user} says {message.text}
+						</p>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+};
+
+export default App;
+```
