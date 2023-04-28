@@ -238,3 +238,11 @@ Within the `<ul/>` created earlier, map over `messageData` and render it:
 
 Now, whenever you click the button, a new message with its corresponding text and user will be displayed. Also, any
 updates made in the collection should automatically reflect in the UI.
+
+
+## In Summary
+
+In this guide, you have successfully established a connection and authenticated. You've also created your first
+subscription.
+
+[Learn more about subscriptions with WebSockets with Directus.](/guides/real-time/subscriptions/websockets)
