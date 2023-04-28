@@ -1,12 +1,13 @@
-import { toArray } from '@directus/shared/utils';
-import { merge } from 'lodash';
-import pino, { LoggerOptions } from 'pino';
+import { toArray } from '@directus/utils';
+import { merge } from 'lodash-es';
+import { pino } from 'pino';
+import type { LoggerOptions } from 'pino';
 import type { Request, RequestHandler } from 'express';
-import pinoHTTP, { stdSerializers } from 'pino-http';
+import { pinoHttp, stdSerializers } from 'pino-http';
 import { URL } from 'url';
-import env from './env';
-import { REDACT_TEXT } from './constants';
-import { getConfigFromEnv } from './utils/get-config-from-env';
+import env from './env.js';
+import { REDACT_TEXT } from './constants.js';
+import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 const pinoOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
@@ -15,6 +16,7 @@ const pinoOptions: LoggerOptions = {
 		censor: REDACT_TEXT,
 	},
 };
+
 export const httpLoggerOptions: LoggerOptions = {
 	level: env['LOG_LEVEL'] || 'info',
 	redact: {
@@ -31,6 +33,7 @@ if (env['LOG_STYLE'] !== 'raw') {
 			sync: true,
 		},
 	};
+
 	httpLoggerOptions.transport = {
 		target: 'pino-http-print',
 		options: {
@@ -44,17 +47,21 @@ if (env['LOG_STYLE'] !== 'raw') {
 		},
 	};
 }
+
 if (env['LOG_STYLE'] === 'raw') {
 	httpLoggerOptions.redact = {
 		paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
 		censor: (value, pathParts) => {
 			const path = pathParts.join('.');
+
 			if (path === 'res.headers') {
 				if ('set-cookie' in value) {
 					value['set-cookie'] = REDACT_TEXT;
 				}
+
 				return value;
 			}
+
 			return REDACT_TEXT;
 		},
 	};
@@ -79,6 +86,7 @@ if (loggerEnvConfig['levels']) {
 			};
 		},
 	};
+
 	httpLoggerOptions.formatters = {
 		level(label: string, number: any) {
 			return {
@@ -95,7 +103,7 @@ const logger = pino(merge(pinoOptions, loggerEnvConfig));
 
 const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
 
-export const expressLogger = pinoHTTP({
+export const expressLogger = pinoHttp({
 	logger: pino(merge(httpLoggerOptions, loggerEnvConfig)),
 	...httpLoggerEnvConfig,
 	serializers: {

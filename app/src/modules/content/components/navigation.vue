@@ -73,6 +73,7 @@ export default defineComponent({
 
 		const dense = computed(() => collectionsStore.visibleCollections.length > 5);
 		const showSearch = computed(() => collectionsStore.visibleCollections.length > 20);
+
 		const hasHiddenCollections = computed(
 			() => collectionsStore.allCollections.length > collectionsStore.visibleCollections.length
 		);

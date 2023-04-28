@@ -1,5 +1,4 @@
-import { toArray } from '@directus/shared/utils';
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
+import { toArray } from '@directus/utils';
 import type { StorageManager } from '@directus/storage';
 import { randNumber, randWord } from '@ngneat/falso';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
@@ -8,7 +7,7 @@ import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { registerLocations } from './register-locations.js';
 
 vi.mock('../env.js');
-vi.mock('@directus/shared/utils');
+vi.mock('@directus/utils');
 vi.mock('../utils/get-config-from-env.js');
 
 let sample: {
@@ -19,6 +18,7 @@ let sample: {
 	};
 	locations: string[];
 };
+
 let mockStorage: StorageManager;
 
 beforeEach(() => {
@@ -43,9 +43,11 @@ beforeEach(() => {
 	} as unknown as StorageManager;
 
 	vi.mocked(getConfigFromEnv).mockImplementation((name) => sample.options[name]!);
+
 	vi.mocked(getEnv).mockReturnValue({
 		STORAGE_LOCATIONS: sample.locations.join(', '),
 	});
+
 	vi.mocked(toArray).mockReturnValue(sample.locations);
 });
 
@@ -62,6 +64,7 @@ test('Gets config for each location', async () => {
 	await registerLocations(mockStorage);
 
 	expect(getConfigFromEnv).toHaveBeenCalledTimes(sample.locations.length);
+
 	sample.locations.forEach((location) =>
 		expect(getConfigFromEnv).toHaveBeenCalledWith(`STORAGE_${location.toUpperCase()}_`)
 	);
@@ -71,6 +74,7 @@ test('Registers location with driver options for each location', async () => {
 	await registerLocations(mockStorage);
 
 	expect(mockStorage.registerLocation).toHaveBeenCalledTimes(sample.locations.length);
+
 	sample.locations.forEach((location) => {
 		const { driver, ...options } = sample.options[`STORAGE_${location.toUpperCase()}_`]!;
 

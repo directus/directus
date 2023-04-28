@@ -130,7 +130,6 @@ archive_confirm_count: >-
   Kohteita ei ole valittu | Oletko varma, että haluat arkistoida tämän kohteen? | Oletko varma, että haluat arkistoida nämä {count} kohdetta?
 reset_system_permissions_to: 'Palauta järjestelmän käyttöoikeudet:'
 reset_system_permissions_copy: Tämä toiminto korvaa kaikki mukautetut käyttöoikeudet, joita olet saattanut soveltaa järjestelmäkokoelmiin. Oletko varma?
-the_following_are_minimum_permissions: Seuraavat ovat vähimmäiskäyttöoikeudet vaaditaan kun "Sovelluspääsy" on käytössä. Voit laajentaa käyttöoikeuksia tästä korkeammaksi, mutta et matalammaksi.
 app_access_minimum: Sovelluspääsy vähintään
 recommended_defaults: Suositellut oletukset
 unarchive: Palauta arkistosta
@@ -294,6 +293,7 @@ o2m_relationship: Yksi moneen (O2M) -suhde
 m2m_relationship: Moni moneen (M2M) -suhde
 m2a_relationship: Moni mihin tahansa (M2A) -suhde
 invalid_item: Virheellinen kohde
+modal: Modaali
 next: Seuraava
 field_name: Kentän nimi
 translations: Käännökset
@@ -780,10 +780,7 @@ label: Tunniste
 flows: Toiminnot
 flow: Vuo
 select_a_flow: Valitse Vuo
-run_flow_on_current_collection: Aja Vuo nykyiselle kokoelmalle
-run_flow_on_current: Aja Vuo nykyiselle kohteelle
 run_flow_on_current_edited_confirm: Tämä kohde voidaan päivittää tällä Vuolla, oletko varma, että haluat suorittaa Vuon?
-run_flow_on_selected: Valitse yksi tai useampi kohde ensin | Aja Vuo 1 valitulle kohteelle | Aja Vuo {n} valitulle kohteelle
 run_flow_success: Vuon "{flow}" suoritus onnistui
 trigger: Laukaisija
 trigger_options: Liipaisun asetukset
@@ -1509,7 +1506,6 @@ interfaces:
     edit_fields: Muokkaa kenttiä
     add_label: '"Luo uusi"-tunniste'
     sort: Järjestä
-    field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
     slider: Liukusäädin
@@ -1765,6 +1761,9 @@ operations:
     payload: Tietosisältö
   log:
     message: Viesti
+  mail:
+    template: Pohja
+    data: Tiedot
   notification:
     recipient: Käyttäjänimi
     message: Viesti

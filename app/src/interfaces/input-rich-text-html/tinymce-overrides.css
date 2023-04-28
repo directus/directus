@@ -31,7 +31,7 @@
 	margin-top: 4px;
 	color: var(--foreground-normal);
 	font-size: 24px;
-	font-family: 'Material Icons';
+	font-family: 'Material Symbols';
 	content: 'format_bold';
 	font-feature-settings: 'liga';
 }
@@ -45,7 +45,7 @@
 	margin-top: 4px;
 	color: var(--foreground-normal);
 	font-size: 24px;
-	font-family: 'Material Icons';
+	font-family: 'Material Symbols';
 	content: 'format_italic';
 	font-feature-settings: 'liga';
 }
@@ -59,7 +59,7 @@
 	margin-top: 4px;
 	color: var(--foreground-normal);
 	font-size: 24px;
-	font-family: 'Material Icons';
+	font-family: 'Material Symbols';
 	content: 'format_underlined';
 	font-feature-settings: 'liga';
 }
@@ -73,7 +73,7 @@
 	margin-top: 4px;
 	color: var(--foreground-normal);
 	font-size: 24px;
-	font-family: 'Material Icons';
+	font-family: 'Material Symbols';
 	content: 'insert_link';
 	font-feature-settings: 'liga';
 }
@@ -149,6 +149,10 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-split-button:focus {
 	color: var(--foreground-normal);
 	background: var(--border-normal);
+}
+
+.tox .tox-tbtn--bespoke {
+	background: inherit;
 }
 
 .tox .tox-tbtn + .tox .tox-tbtn {
@@ -403,6 +407,11 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog-wrap__backdrop .tox-rgba-preview {
 	visibility: hidden;
+}
+
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+	padding: 0;
+	box-shadow: none;
 }
 
 @media screen and (max-width: 767px) {

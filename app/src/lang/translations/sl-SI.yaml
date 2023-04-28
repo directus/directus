@@ -73,7 +73,6 @@ archive_confirm_count: >-
   Ni izbranih zapisov | Ste prepričani, da želite arhivirati ta zapis? | Ste prepričani, da želite arhivirati {count} zapisov?
 reset_system_permissions_to: 'Ponastavi sistemska dovoljenja na:'
 reset_system_permissions_copy: To dejanje bo prepisalo dovoljenja na sistemski zbirki. Ste prepričani?
-the_following_are_minimum_permissions: Naslednje so minimalna potrebna dovoljenja, ko je omogočen Aplikacijski dostop. Ta dovoljanje lahko razširitev, ne morete pa jih zmanjšati.
 app_access_minimum: Minimum za aplikacijski dostop
 recommended_defaults: Priporočene privzete vrednosti
 unarchive: Dearhiviraj
@@ -196,6 +195,7 @@ o2m_relationship: Ena-na-več povezava
 m2m_relationship: Več-na-več povezava
 m2a_relationship: Več-na-karkoli povezava
 invalid_item: Neveljaven zapis
+modal: Modalno
 next: Naslednje
 field_name: Ime polja
 translations: Prevodi
@@ -1170,7 +1170,6 @@ interfaces:
     edit_fields: Uredi polja
     add_label: 'Oznaka za "Ustvari novo"'
     sort: Razvrsti
-    field_name_placeholder: Vnesite ime polja ...
     field_note_placeholder: Vnesite opis polja ...
   slider:
     slider: Drsnik
@@ -1389,6 +1388,9 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  mail:
+    template: Predloga
+    data: Podatki
   notification:
     recipient: Uporabnik
   request:

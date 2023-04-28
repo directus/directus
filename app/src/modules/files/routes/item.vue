@@ -196,7 +196,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -244,6 +244,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const confirmDelete = ref(false);
 const editActive = ref(false);
+
 const fileSrc = computed(() => {
 	if (item.value && item.value.modified_on) {
 		return `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`;
@@ -290,6 +291,7 @@ const fieldsFiltered = computed(() => {
 
 function navigateBack() {
 	const backState = router.options.history.state.back;
+
 	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
 		router.back();
 		return;

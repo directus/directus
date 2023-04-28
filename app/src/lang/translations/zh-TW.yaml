@@ -131,7 +131,6 @@ archive_confirm_count: >-
   未選擇任何項目 | 是否確定要封存此項目？ | 是否確定要封存這 {count} 個項目？
 reset_system_permissions_to: '重設系統權限至:'
 reset_system_permissions_copy: 此動作會取代你先前自設的系統權限。你確定?
-the_following_are_minimum_permissions: 當啟用管理介面權限時，您至少需要開啟以下這些權限。
 app_access_minimum: 管理介面最低需求
 recommended_defaults: 建議值
 unarchive: 取消封存
@@ -294,6 +293,7 @@ o2m_relationship: 一對多關聯
 m2m_relationship: 多對多關聯
 m2a_relationship: 多對Any關係
 invalid_item: 無效項目
+modal: 對話框
 next: 下一個
 field_name: 欄位名稱
 translations: 翻譯
@@ -776,7 +776,6 @@ label: 標籤
 flows: 流程
 flow: 流程
 select_a_flow: 選擇流程
-run_flow_on_current: 在目前項目上執行流程
 run_flow_on_current_edited_confirm: 有些項目可能會被這個工作流程更新，是否確定要執行？
 run_flow_success: 流程 {flow} 執行完畢
 trigger: 觸發條件
@@ -1618,7 +1617,6 @@ interfaces:
     add_label: '「新增」標籤'
     sort: 排序
     sort_placeholder: 手動
-    field_name_placeholder: 輸入欄位名稱...
     field_note_placeholder: 輸入欄位備註...
     incompatible_data: 目前的資料與重複器不相容，在將資料加入重複器時將會被覆寫
   slider:
@@ -2014,6 +2012,8 @@ operations:
     to: 收件人
     to_placeholder: 輸入電子郵件信箱並按下Enter...
     body: 郵件內文
+    template: 模板
+    data: 資料
   notification:
     name: 發送通知
     description: 發送管理介面通知給其他使用者

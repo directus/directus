@@ -1,15 +1,16 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/shared/types';
-import { format, parseISO, isValid } from 'date-fns';
-import { parseJSON, toArray } from '@directus/shared/utils';
-import { unflatten } from 'flat';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import { parseJSON, toArray } from '@directus/utils';
+import { format, isValid, parseISO } from 'date-fns';
+import flat from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash';
+import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash-es';
 import { v4 as uuid } from 'uuid';
 import { parse as wktToGeoJSON } from 'wellknown';
-import getDatabase from '../database';
-import { getHelpers, Helpers } from '../database/helpers';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
+import getDatabase from '../database/index.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -17,9 +18,9 @@ import type {
 	Item,
 	MutationOptions,
 	PrimaryKey,
-} from '../types';
-import { generateHash } from '../utils/generate-hash';
-import { ItemsService } from './items';
+} from '../types/index.js';
+import { generateHash } from '../utils/generate-hash.js';
+import { ItemsService } from './items.js';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -58,6 +59,7 @@ export class PayloadService {
 	public transformers: Transformers = {
 		async hash({ action, value }) {
 			if (!value) return;
+
 			if (action === 'create' || action === 'update') {
 				return await generateHash(String(value));
 			}
@@ -205,9 +207,10 @@ export class PayloadService {
 
 	processAggregates(payload: Partial<Item>[]) {
 		const aggregateKeys = Object.keys(payload[0]!).filter((key) => key.includes('->'));
+
 		if (aggregateKeys.length) {
 			for (const item of payload) {
-				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
+				Object.assign(item, flat.unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
 				aggregateKeys.forEach((key) => delete item[key]);
 			}
 		}
@@ -265,6 +268,7 @@ export class PayloadService {
 
 		return payloads;
 	}
+
 	/**
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
@@ -328,17 +332,21 @@ export class PayloadService {
 					if (value instanceof Date === false && typeof value === 'string') {
 						if (dateColumn.type === 'date') {
 							const parsedDate = parseISO(value);
+
 							if (!isValid(parsedDate)) {
 								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
 							}
+
 							payload[name] = parsedDate;
 						}
 
 						if (dateColumn.type === 'dateTime') {
 							const parsedDate = parseISO(value);
+
 							if (!isValid(parsedDate)) {
 								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
 							}
+
 							payload[name] = parsedDate;
 						}
 
@@ -444,6 +452,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 			} else {
@@ -452,6 +461,7 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					mutationTracker: opts?.mutationTracker,
 				});
 			}
 
@@ -523,6 +533,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 			} else {
@@ -531,6 +542,7 @@ export class PayloadService {
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					emitEvents: opts?.emitEvents,
+					mutationTracker: opts?.mutationTracker,
 				});
 			}
 
@@ -588,8 +600,10 @@ export class PayloadService {
 
 			// Nested array of individual items
 			const field = payload[relation.meta!.one_field!];
+
 			if (!field || Array.isArray(field)) {
 				const updates = field || []; // treat falsey values as removing all children
+
 				for (let i = 0; i < updates.length; i++) {
 					const relatedRecord = updates[i];
 
@@ -638,6 +652,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					}))
 				);
 
@@ -665,6 +680,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				} else {
 					await itemsService.updateByQuery(
@@ -675,6 +691,7 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
 						}
 					);
 				}
@@ -723,6 +740,7 @@ export class PayloadService {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
 					});
 				}
 
@@ -741,6 +759,7 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								mutationTracker: opts?.mutationTracker,
 							}
 						);
 					}
@@ -769,6 +788,7 @@ export class PayloadService {
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
 						});
 					} else {
 						await itemsService.updateByQuery(
@@ -779,6 +799,7 @@ export class PayloadService {
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
+								mutationTracker: opts?.mutationTracker,
 							}
 						);
 					}

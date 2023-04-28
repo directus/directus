@@ -1,6 +1,6 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Role } from '@directus/shared/types';
+import { Role } from '@directus/types';
 import { ref, Ref } from 'vue';
 
 let roles: Ref<BasicRole[] | null> | null = null;
@@ -34,6 +34,7 @@ export default function useNavigation(): { roles: Ref<BasicRole[] | null>; loadi
 					fields: ['id', 'name', 'icon', 'admin_access'],
 				},
 			});
+
 			roles.value = rolesResponse.data.data;
 		} catch (error: any) {
 			unexpectedError(error);

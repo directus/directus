@@ -1,6 +1,6 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { LocalType, Relation } from '@directus/shared/types';
+import { LocalType, Relation } from '@directus/types';
 
 export function getLocalTypeForField(collection: string, field: string): LocalType | null {
 	const fieldsStore = useFieldsStore();
@@ -34,6 +34,7 @@ export function getLocalTypeForField(collection: string, field: string): LocalTy
 		if ((fieldInfo.meta?.special || []).includes('translations')) {
 			return 'translations';
 		}
+
 		if ((fieldInfo.meta?.special || []).includes('m2a')) {
 			return 'm2a';
 		}

@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import request from 'supertest';
 import { describe, expect, test, vi } from 'vitest';
-
-import createApp from './app';
+import createApp from './app.js';
 
 vi.mock('./database', () => ({
 	default: vi.fn(),
@@ -15,6 +14,7 @@ vi.mock('./database', () => ({
 
 vi.mock('./env', async () => {
 	const actual = (await vi.importActual('./env')) as { default: Record<string, any> };
+
 	const MOCK_ENV = {
 		...actual.default,
 		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
@@ -171,9 +171,11 @@ describe('createApp', async () => {
 			const testRoute = '/custom-endpoint-to-test';
 			const testResponse = { key: 'value' };
 			const mockRouter = Router();
+
 			mockRouter.use(testRoute, (_, res) => {
 				res.json(testResponse);
 			});
+
 			mockGetEndpointRouter.mockReturnValueOnce(mockRouter);
 
 			const app = await createApp();

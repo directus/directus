@@ -23,7 +23,7 @@
 					<div class="field half">
 						<div class="type-label">
 							{{ t('flow_name') }}
-							<v-icon v-tooltip="t('required')" class="required" name="star" sup />
+							<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
 						</div>
 						<v-input v-model="values.name" autofocus :placeholder="t('flow_name')" />
 					</div>
@@ -122,7 +122,7 @@
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { TriggerType } from '@directus/shared/types';
+import { TriggerType } from '@directus/types';
 import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from './triggers';

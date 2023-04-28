@@ -24,7 +24,7 @@
 					<div class="field half">
 						<div class="type-label">
 							{{ t('name') }}
-							<v-icon v-tooltip="t('required')" class="required" name="star" sup />
+							<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
 						</div>
 						<v-input
 							v-model="collectionName"
@@ -131,7 +131,7 @@ import { useI18n } from 'vue-i18n';
 import { cloneDeep } from 'lodash';
 import { defineComponent, ref, reactive, watch } from 'vue';
 import api from '@/api';
-import { Field, Relation } from '@directus/shared/types';
+import { Field, Relation } from '@directus/types';
 import { useFieldsStore } from '@/stores/fields';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
@@ -139,7 +139,7 @@ import { notify } from '@/utils/notify';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { DeepPartial } from '@directus/shared/types';
+import { DeepPartial } from '@directus/types';
 
 const defaultSystemFields = {
 	status: {

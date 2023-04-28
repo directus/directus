@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
-import { getDateFormatted } from './get-date-formatted';
+import { getDateFormatted } from './get-date-formatted.js';
 
 beforeEach(() => {
 	vi.useFakeTimers();

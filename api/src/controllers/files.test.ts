@@ -2,8 +2,8 @@ import type { Request, Response } from 'express';
 import FormData from 'form-data';
 import { PassThrough } from 'stream';
 import { describe, expect, it, vi } from 'vitest';
-import { InvalidPayloadException } from '../exceptions/invalid-payload';
-import { multipartHandler } from './files';
+import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
+import { multipartHandler } from './files.js';
 
 vi.mock('../../src/database');
 
@@ -28,6 +28,7 @@ describe('multipartHandler', () => {
 			params: {},
 			pipe: (input: NodeJS.WritableStream) => stream.pipe(input),
 		} as unknown as Request;
+
 		const res = {} as Response;
 
 		const stream = new PassThrough();
@@ -56,6 +57,7 @@ describe('multipartHandler', () => {
 			params: {},
 			pipe: (input: NodeJS.WritableStream) => stream.pipe(input),
 		} as unknown as Request;
+
 		const res = {} as Response;
 
 		const stream = new PassThrough();

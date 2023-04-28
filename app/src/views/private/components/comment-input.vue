@@ -72,7 +72,7 @@ import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import { User } from '@directus/shared/types';
+import { User } from '@directus/types';
 import axios, { CancelTokenSource } from 'axios';
 import { cloneDeep, throttle } from 'lodash';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
@@ -213,6 +213,7 @@ function cancel() {
 function saveCursorPosition() {
 	if (document.getSelection) {
 		const selection = document.getSelection();
+
 		if (selection) {
 			lastCaretOffset = selection.anchorOffset;
 

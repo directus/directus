@@ -1,7 +1,8 @@
 {
 	"name": "@directus/schema",
-	"version": "9.23.4",
+	"version": "10.0.0",
 	"description": "Utility for extracting information about existing DB schema",
+	"type": "module",
 	"keywords": [
 		"sql",
 		"knex",
@@ -22,7 +23,7 @@
 		"directory": "packages/schema"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
@@ -33,20 +34,19 @@
 		}
 	},
 	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"files": [
 		"dist"
 	],
 	"scripts": {
 		"build": "tsc --build",
-		"dev": "pnpm build -w --preserveWatchOutput --incremental"
+		"dev": "tsc --watch"
 	},
 	"dependencies": {
-		"knex": "2.4.2",
-		"knex-schema-inspector": "3.0.1"
+		"knex": "2.4.2"
 	},
 	"devDependencies": {
-		"typescript": "4.9.5"
+		"@directus/tsconfig": "0.0.7",
+		"typescript": "5.0.4"
 	},
 	"publishConfig": {
 		"access": "public"

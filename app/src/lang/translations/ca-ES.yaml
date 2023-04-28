@@ -131,7 +131,6 @@ archive_confirm_count: >-
   No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count} elements?
 reset_system_permissions_to: 'Restableix els permisos del sistema a:'
 reset_system_permissions_copy: Aquesta acció rescriurà qualsevol permís personalitzat que hagis aplicat a les col·leccions del sistema. Estàs sgur?
-the_following_are_minimum_permissions: Els següents són els mínims permisos requerits quan l'"Accés a l'aplicació" està habilitat. Pots estendre els permisos a partir d'aquí, però no els de més abaix.
 app_access_minimum: Accés a l'aplicació mínim
 recommended_defaults: Predeterminats recomanats
 unarchive: Desarxiva
@@ -294,6 +293,7 @@ o2m_relationship: Relació Un a molts
 m2m_relationship: Relació Molts a molts
 m2a_relationship: Relació Molts a qualsevol
 invalid_item: Element invàlid
+modal: Modal
 next: Següent
 field_name: Nom del camp
 translations: Traduccions
@@ -1531,7 +1531,6 @@ interfaces:
     edit_fields: Edita els camps
     add_label: 'Etiqueta "Crea nou"'
     sort: Ordre
-    field_name_placeholder: Introdueix nou camp...
     field_note_placeholder: Introdueix una nota sobre el camp...
   slider:
     slider: Lliscador
@@ -1758,6 +1757,9 @@ operations:
     payload: Càrrega
   log:
     message: Missatge
+  mail:
+    template: Plantilla
+    data: Dades
   notification:
     recipient: Usuari
     message: Missatge

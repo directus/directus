@@ -1,5 +1,6 @@
 <template>
 	<v-notice v-if="!relationInfo" type="warning">{{ t('relationship_not_setup') }}</v-notice>
+	<v-notice v-else-if="allowedCollections.length === 0" type="warning">{{ t('no_singleton_relations') }}</v-notice>
 	<div v-else class="m2a-builder">
 		<template v-if="loading">
 			<v-skeleton-loader
@@ -38,7 +39,7 @@
 						/>
 						<div class="spacer" />
 						<v-icon
-							v-if="!disabled"
+							v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
 							class="clear-icon"
 							:name="getDeselectIcon(element)"
 							@click.stop="deleteItem(element)"
@@ -61,7 +62,7 @@
 		</v-list>
 
 		<div class="actions">
-			<v-menu v-if="enableCreate" :disabled="disabled" show-arrow>
+			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
 						{{ t('create_new') }}
@@ -71,7 +72,7 @@
 
 				<v-list>
 					<v-list-item
-						v-for="availableCollection of relationInfo.allowedCollections"
+						v-for="availableCollection of allowedCollections"
 						:key="availableCollection.collection"
 						clickable
 						@click="createItem(availableCollection.collection)"
@@ -84,7 +85,7 @@
 				</v-list>
 			</v-menu>
 
-			<v-menu v-if="enableSelect" :disabled="disabled" show-arrow>
+			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button class="existing" :disabled="disabled" @click="toggle">
 						{{ t('add_existing') }}
@@ -94,7 +95,7 @@
 
 				<v-list>
 					<v-list-item
-						v-for="availableCollection of relationInfo.allowedCollections"
+						v-for="availableCollection of allowedCollections"
 						:key="availableCollection.collection"
 						clickable
 						@click="selectingFrom = availableCollection.collection"
@@ -122,7 +123,9 @@
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled"
+			:disabled="
+				disabled || (editingCollection !== null && !updateAllowed[editingCollection] && currentlyEditing !== null)
+			"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -137,13 +140,14 @@
 <script setup lang="ts">
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useRelationPermissionsM2A } from '@/composables/use-relation-permissions';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/shared/types';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { Filter } from '@directus/types';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -183,11 +187,16 @@ const value = computed({
 	},
 });
 
+const allowedCollections = computed(() => {
+	if (!relationInfo.value) return [];
+	return relationInfo.value.allowedCollections.filter((collection) => collection.meta?.singleton !== true);
+});
+
 const templates = computed(() => {
 	if (!relationInfo.value) return {};
 	const templates: Record<string, string> = {};
 
-	for (const collection of relationInfo.value.allowedCollections) {
+	for (const collection of allowedCollections.value) {
 		const primaryKeyField = relationInfo.value.relationPrimaryKeyFields[collection.collection];
 		templates[collection.collection] = collection.meta?.display_template || `{{${primaryKeyField?.field}}}`;
 	}
@@ -199,7 +208,7 @@ const fields = computed(() => {
 	if (!relationInfo.value) return [];
 	const fields: string[] = [];
 
-	for (const collection of relationInfo.value.allowedCollections) {
+	for (const collection of allowedCollections.value) {
 		const displayFields: string[] = adjustFieldsForDisplays(
 			getFieldsFromTemplate(templates.value[collection.collection]),
 			collection.collection
@@ -233,19 +242,15 @@ const {
 	loading,
 	selected,
 	isItemSelected,
-	localDelete,
+	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
-);
-
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
@@ -271,21 +276,25 @@ function sortItems(items: DisplayItem[]) {
 		if (!isNil(junctionId)) {
 			changes[info.junctionPrimaryKeyField.field] = junctionId;
 		}
+
 		if (!isNil(collection)) {
 			changes[info.collectionField.field] = collection;
 		}
+
 		if (!isNil(relatedId)) {
 			set(changes, info.junctionField.field + '.' + pkField, relatedId);
 		}
 
 		return changes;
 	});
+
 	update(...sortedItems);
 }
 
 const editModalActive = ref(false);
 const currentlyEditing = ref<string | number | null>(null);
 const relatedPrimaryKey = ref<string | number | null>(null);
+const editingCollection = ref<string | null>(null);
 const selectingFrom = ref<string | null>(null);
 const editsAtStart = ref<Record<string, any>>({});
 let newItem = false;
@@ -295,10 +304,12 @@ function createItem(collection: string) {
 
 	currentlyEditing.value = null;
 	relatedPrimaryKey.value = null;
+
 	editsAtStart.value = {
 		[relationInfo.value.collectionField.field]: collection,
 		[relationInfo.value.junctionField.field]: {},
 	};
+
 	newItem = true;
 	editModalActive.value = true;
 }
@@ -308,20 +319,24 @@ function editItem(item: DisplayItem) {
 
 	const relationPkField =
 		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]].field;
+
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	newItem = false;
+
 	editsAtStart.value = {
 		...getItemEdits(item),
 		[relationInfo.value.collectionField.field]: item[relationInfo.value.collectionField.field],
 	};
 
 	editModalActive.value = true;
+	editingCollection.value = item[relationInfo.value.collectionField.field];
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = null;
 		relatedPrimaryKey.value = null;
+		editingCollection.value = null;
 	} else {
 		if (!relationPkField) return;
 		currentlyEditing.value = get(item, [junctionPkField], null);
@@ -354,7 +369,7 @@ function hasAllowedCollection(item: DisplayItem) {
 	const info = relationInfo.value;
 	if (!info) return false;
 	return (
-		info.allowedCollections.findIndex(
+		allowedCollections.value.findIndex(
 			(coll) => relationInfo && coll.collection === item[info.collectionField.field]
 		) !== -1
 	);
@@ -364,7 +379,7 @@ function getCollectionName(item: DisplayItem) {
 	const info = relationInfo.value;
 	if (!info) return false;
 
-	const collection = info.allowedCollections.find((coll) => coll.collection === item[info.collectionField.field]);
+	const collection = allowedCollections.value.find((coll) => coll.collection === item[info.collectionField.field]);
 	if (te(`collection_names_singular.${collection?.collection}`))
 		return t(`collection_names_singular.${collection?.collection}`);
 	if (te(`collection_names_plural.${collection?.collection}`))
@@ -421,6 +436,25 @@ const customFilter = computed(() => {
 
 	return filter;
 });
+
+const { createAllowed, deleteAllowed, selectAllowed, updateAllowed } = useRelationPermissionsM2A(relationInfo);
+
+const createCollections = computed(() => {
+	const info = relationInfo.value;
+	if (!info) return [];
+
+	return info.allowedCollections.filter((collection) => {
+		return createAllowed.value[collection.collection];
+	});
+});
+
+const allowDrag = computed(
+	() =>
+		totalItemCount.value <= limit.value &&
+		relationInfo.value?.sortField !== undefined &&
+		!props.disabled &&
+		updateAllowed.value
+);
 </script>
 
 <style lang="scss" scoped>

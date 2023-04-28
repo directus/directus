@@ -4,44 +4,49 @@ import {
 	APP_SHARED_DEPS,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
-	HYBRID_EXTENSION_TYPES,
-} from '@directus/shared/constants';
-import {
-	ApiExtensionType,
-	AppExtensionType,
 	ExtensionManifest,
 	ExtensionOptionsBundleEntries,
+	HYBRID_EXTENSION_TYPES,
+} from '@directus/constants';
+import type {
+	ApiExtensionType,
+	AppExtensionType,
 	ExtensionOptionsBundleEntry,
-} from '@directus/shared/types';
-import { isIn, isTypeIn } from '@directus/shared/utils';
-import commonjs from '@rollup/plugin-commonjs';
-import json from '@rollup/plugin-json';
+	ExtensionManifest as TExtensionManifest,
+} from '@directus/types';
+import { isIn, isTypeIn } from '@directus/utils';
+import commonjsDefault from '@rollup/plugin-commonjs';
+import jsonDefault from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import replace from '@rollup/plugin-replace';
-import terser from '@rollup/plugin-terser';
-import virtual from '@rollup/plugin-virtual';
+import replaceDefault from '@rollup/plugin-replace';
+import terserDefault from '@rollup/plugin-terser';
+import virtualDefault from '@rollup/plugin-virtual';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import {
-	OutputOptions as RollupOutputOptions,
-	Plugin,
-	rollup,
-	RollupError,
-	RollupOptions,
-	watch as rollupWatch,
-} from 'rollup';
-import esbuild from 'rollup-plugin-esbuild';
-import styles from 'rollup-plugin-styles';
-import vue from 'rollup-plugin-vue';
-import { Language, RollupConfig, RollupMode } from '../types';
-import { getLanguageFromPath, isLanguage } from '../utils/languages';
-import { clear, log } from '../utils/logger';
-import tryParseJson from '../utils/try-parse-json';
-import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint';
-import loadConfig from './helpers/load-config';
-import { validateSplitEntrypointOption } from './helpers/validate-cli-options';
+import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
+import { rollup, watch as rollupWatch } from 'rollup';
+import esbuildDefault from 'rollup-plugin-esbuild';
+import stylesDefault from 'rollup-plugin-styles';
+import vueDefault from 'rollup-plugin-vue';
+import type { Language, RollupConfig, RollupMode } from '../types.js';
+import { getLanguageFromPath, isLanguage } from '../utils/languages.js';
+import { clear, log } from '../utils/logger.js';
+import tryParseJson from '../utils/try-parse-json.js';
+import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
+import loadConfig from './helpers/load-config.js';
+import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
+
+// Workaround for https://github.com/rollup/plugins/issues/1329
+const virtual = virtualDefault as unknown as typeof virtualDefault.default;
+const vue = vueDefault as unknown as typeof vueDefault.default;
+const esbuild = esbuildDefault as unknown as typeof esbuildDefault.default;
+const styles = stylesDefault as unknown as typeof stylesDefault.default;
+const commonjs = commonjsDefault as unknown as typeof commonjsDefault.default;
+const json = jsonDefault as unknown as typeof jsonDefault.default;
+const replace = replaceDefault as unknown as typeof replaceDefault.default;
+const terser = terserDefault as unknown as typeof terserDefault.default;
 
 type BuildOptions = {
 	type?: string;
@@ -65,7 +70,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 			process.exit(1);
 		}
 
-		let extensionManifest: ExtensionManifest;
+		let extensionManifest: TExtensionManifest;
 
 		try {
 			extensionManifest = ExtensionManifest.parse(await fse.readJSON(packagePath));
@@ -122,6 +127,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 				).join(', ')}.`,
 				'error'
 			);
+
 			process.exit(1);
 		}
 
@@ -129,11 +135,13 @@ export default async function build(options: BuildOptions): Promise<void> {
 			log(`Extension entrypoint has to be specified using the ${chalk.blue('[-i, --input <file>]')} option.`, 'error');
 			process.exit(1);
 		}
+
 		if (!output) {
 			log(
 				`Extension output file has to be specified using the ${chalk.blue('[-o, --output <file>]')} option.`,
 				'error'
 			);
+
 			process.exit(1);
 		}
 
@@ -148,8 +156,10 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
+
 			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
 					`Output option needs to be of the format ${chalk.blue(
@@ -157,6 +167,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
 
@@ -179,8 +190,10 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
+
 			if (!validateSplitEntrypointOption(splitOutput)) {
 				log(
 					`Output option needs to be of the format ${chalk.blue(
@@ -188,6 +201,7 @@ export default async function build(options: BuildOptions): Promise<void> {
 					)}.`,
 					'error'
 				);
+
 				process.exit(1);
 			}
 
@@ -281,6 +295,7 @@ async function buildHybridExtension({
 		log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
 		process.exit(1);
 	}
+
 	if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
 		log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
 		process.exit(1);
@@ -290,6 +305,7 @@ async function buildHybridExtension({
 		log(`App output file can not be empty.`, 'error');
 		process.exit(1);
 	}
+
 	if (outputApi.length === 0) {
 		log(`API output file can not be empty.`, 'error');
 		process.exit(1);
@@ -302,6 +318,7 @@ async function buildHybridExtension({
 		log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
 		process.exit(1);
 	}
+
 	if (!isLanguage(languageApi)) {
 		log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 		process.exit(1);
@@ -318,6 +335,7 @@ async function buildHybridExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: inputApi,
@@ -326,6 +344,7 @@ async function buildHybridExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
 	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
 
@@ -360,6 +379,7 @@ async function buildBundleExtension({
 		log(`App output file can not be empty.`, 'error');
 		process.exit(1);
 	}
+
 	if (outputApi.length === 0) {
 		log(`API output file can not be empty.`, 'error');
 		process.exit(1);
@@ -377,6 +397,7 @@ async function buildBundleExtension({
 				log(`App entrypoint ${chalk.bold(inputApp)} does not exist.`, 'error');
 				process.exit(1);
 			}
+
 			if (!(await fse.pathExists(inputApi)) || !(await fse.stat(inputApi)).isFile()) {
 				log(`API entrypoint ${chalk.bold(inputApi)} does not exist.`, 'error');
 				process.exit(1);
@@ -389,6 +410,7 @@ async function buildBundleExtension({
 				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
 				process.exit(1);
 			}
+
 			if (!isLanguage(languageApi)) {
 				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 				process.exit(1);
@@ -433,6 +455,7 @@ async function buildBundleExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: { entry: entrypointApi },
@@ -441,6 +464,7 @@ async function buildBundleExtension({
 		minify,
 		plugins,
 	});
+
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, sourcemap });
 	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, sourcemap });
 
@@ -521,7 +545,9 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 						spinner.succeed(chalk.bold('Done'));
 						log(chalk.bold.green('Watching files for changes...'));
 					}
+
 					break;
+
 				case 'ERROR': {
 					buildCount--;
 
@@ -531,6 +557,7 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 					if (buildCount > 0) {
 						spinner.start();
 					}
+
 					break;
 				}
 			}

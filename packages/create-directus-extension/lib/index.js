@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 'use strict';
 
-const inquirer = require('inquirer');
-const { EXTENSION_LANGUAGES, EXTENSION_TYPES, BUNDLE_EXTENSION_TYPES } = require('@directus/shared/constants');
-const { create } = require('@directus/extensions-sdk/cli');
+import inquirer from 'inquirer';
+import { EXTENSION_LANGUAGES, EXTENSION_TYPES, BUNDLE_EXTENSION_TYPES } from '@directus/constants';
+import { create } from '@directus/extensions-sdk/cli';
 
 run();
 

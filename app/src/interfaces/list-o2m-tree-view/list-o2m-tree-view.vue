@@ -2,7 +2,9 @@
 	<v-notice v-if="!relationInfo || collection !== relationInfo?.relatedCollection.collection" type="warning">
 		{{ t('interfaces.list-o2m-tree-view.recursive_only') }}
 	</v-notice>
-
+	<v-notice v-else-if="relationInfo.relatedCollection.meta?.singleton" type="warning">
+		{{ t('no_singleton_relations') }}
+	</v-notice>
 	<div v-else class="tree-view">
 		<nested-draggable
 			v-model="_value"
@@ -25,12 +27,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, computed, inject, toRefs } from 'vue';
-import { getFieldsFromTemplate } from '@directus/shared/utils';
+import { getFieldsFromTemplate } from '@directus/utils';
 import NestedDraggable from './nested-draggable.vue';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { render } from 'micromustache';
-import { deepMap } from '@directus/shared/utils';
+import { deepMap } from '@directus/utils';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
 import { ChangesItem } from '@/composables/use-relation-multiple';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
@@ -100,6 +102,7 @@ const itemsMoved = computed(() => {
 		if (typeof item === 'object') {
 			return item[pkField] as string | number;
 		}
+
 		return item;
 	});
 });

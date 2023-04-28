@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { Panel } from '@directus/shared/types';
+import { Panel } from '@directus/types';
 import { computed, ref, reactive, StyleValue } from 'vue';
 import { throttle } from 'lodash';
 import { useI18n } from 'vue-i18n';
@@ -306,6 +306,7 @@ function useDragDrop() {
 
 	function onPointerUp() {
 		dragging.value = false;
+
 		if (
 			props.editMode === false ||
 			props.draggable === false ||

@@ -1,5 +1,5 @@
-import type { Relation, RelationMeta } from '@directus/shared/types';
-import { getRelationType } from './get-relation-type';
+import type { Relation, RelationMeta } from '@directus/types';
+import { getRelationType } from './get-relation-type.js';
 
 type RelationInfo = {
 	relation: Relation | null;
@@ -10,6 +10,7 @@ function checkImplicitRelation(field: string) {
 	if (field.startsWith('$FOLLOW(') && field.endsWith(')')) {
 		return field.slice(8, -1).split(',');
 	}
+
 	return null;
 }
 

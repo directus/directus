@@ -1,14 +1,18 @@
-import type { Role } from '@directus/shared/types';
+import type { Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { ForbiddenException, InvalidCredentialsException, InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, RolesService, TFAService, UsersService } from '../services';
-import type { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
-import { sanitizeQuery } from '../utils/sanitize-query';
+import { ForbiddenException, InvalidCredentialsException, InvalidPayloadException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { AuthenticationService } from '../services/authentication.js';
+import { MetaService } from '../services/meta.js';
+import { RolesService } from '../services/roles.js';
+import { TFAService } from '../services/tfa.js';
+import { UsersService } from '../services/users.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
@@ -86,6 +90,7 @@ router.get(
 					app_access: false,
 				},
 			};
+
 			res.locals['payload'] = { data: user };
 			return next();
 		}
@@ -120,6 +125,7 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		if (req.path.endsWith('me')) return next();
+
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -289,6 +295,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.inviteUser(req.body.email, req.body.role, req.body.invite_url || null);
 		return next();
 	}),
@@ -305,10 +312,12 @@ router.post(
 	asyncHandler(async (req, _res, next) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
+
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.acceptInvite(req.body.token, req.body.password);
 		return next();
 	}),
@@ -335,6 +344,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await authService.verifyPassword(req.accountability.user, req.body.password);
 
 		const { url, secret } = await service.generateTFA(req.accountability.user);
@@ -365,6 +375,7 @@ router.post(
 			const rolesService = new RolesService({
 				schema: req.schema,
 			});
+
 			const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
 			if (role && role.enforce_tfa) {
@@ -419,6 +430,7 @@ router.post(
 			const rolesService = new RolesService({
 				schema: req.schema,
 			});
+
 			const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
 			if (role && role.enforce_tfa) {

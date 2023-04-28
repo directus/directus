@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 
-import config from './index';
+import config from './index.js';
 
 describe('Operations / Condition', () => {
 	test('returns null when condition passes', () => {
@@ -9,6 +9,7 @@ describe('Operations / Condition', () => {
 				_eq: true,
 			},
 		};
+
 		const data = {
 			status: true,
 		};
@@ -22,6 +23,7 @@ describe('Operations / Condition', () => {
 				_eq: true,
 			},
 		};
+
 		const data = {
 			status: false,
 		};
@@ -42,6 +44,7 @@ describe('Operations / Condition', () => {
 				_eq: true,
 			},
 		};
+
 		const data = {};
 
 		expect.assertions(2); // ensure catch block is reached

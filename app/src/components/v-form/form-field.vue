@@ -63,7 +63,7 @@
 		<small v-if="validationError" class="validation-error selectable">
 			<template v-if="field.meta?.validation_message">
 				{{ field.meta?.validation_message }}
-				<v-icon v-tooltip="validationMessage" small right name="help_outline" />
+				<v-icon v-tooltip="validationMessage" small right name="help" />
 			</template>
 			<template v-else>{{ validationPrefix }}{{ validationMessage }}</template>
 		</small>
@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { Field, ValidationError } from '@directus/shared/types';
+import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -81,7 +81,7 @@ import FormFieldMenu from './form-field-menu.vue';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { useClipboard } from '@/composables/use-clipboard';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 
 interface Props {
 	field: Field;
@@ -179,11 +179,13 @@ function useRaw() {
 	async function pasteRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
+
 		try {
 			internalValue.value = parseJSON(pastedValue);
 		} catch (e) {
 			internalValue.value = pastedValue;
 		}
+
 		emitValue(internalValue.value);
 	}
 
@@ -193,6 +195,7 @@ function useRaw() {
 function useComputedValues() {
 	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
 	const internalValue = ref<any>(getInternalValue());
+
 	const isEdited = computed(
 		() => props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false
 	);
@@ -201,6 +204,7 @@ function useComputedValues() {
 		() => props.modelValue,
 		() => {
 			const newVal = getInternalValue();
+
 			if (!isEqual(internalValue.value, newVal)) {
 				internalValue.value = newVal;
 			}

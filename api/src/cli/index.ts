@@ -1,21 +1,20 @@
 import { Command, Option } from 'commander';
-import { startServer } from '../server';
-import emitter from '../emitter';
-import { getExtensionManager } from '../extensions';
-import bootstrap from './commands/bootstrap';
-import count from './commands/count';
-import dbInstall from './commands/database/install';
-import dbMigrate from './commands/database/migrate';
-import init from './commands/init';
-import keyGenerate from './commands/security/key';
-import secretGenerate from './commands/security/secret';
-import rolesCreate from './commands/roles/create';
-import usersCreate from './commands/users/create';
-import usersPasswd from './commands/users/passwd';
-import { snapshot } from './commands/schema/snapshot';
-import { apply } from './commands/schema/apply';
-
-const pkg = require('../../package.json');
+import emitter from '../emitter.js';
+import { getExtensionManager } from '../extensions.js';
+import { startServer } from '../server.js';
+import bootstrap from './commands/bootstrap/index.js';
+import count from './commands/count/index.js';
+import dbInstall from './commands/database/install.js';
+import dbMigrate from './commands/database/migrate.js';
+import init from './commands/init/index.js';
+import rolesCreate from './commands/roles/create.js';
+import { apply } from './commands/schema/apply.js';
+import { snapshot } from './commands/schema/snapshot.js';
+import keyGenerate from './commands/security/key.js';
+import secretGenerate from './commands/security/secret.js';
+import usersCreate from './commands/users/create.js';
+import usersPasswd from './commands/users/passwd.js';
+import * as pkg from '../utils/package.js';
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();
@@ -39,14 +38,17 @@ export async function createCli(): Promise<Command> {
 
 	const dbCommand = program.command('database');
 	dbCommand.command('install').description('Install the database').action(dbInstall);
+
 	dbCommand
 		.command('migrate:latest')
 		.description('Upgrade the database')
 		.action(() => dbMigrate('latest'));
+
 	dbCommand
 		.command('migrate:up')
 		.description('Upgrade the database')
 		.action(() => dbMigrate('up'));
+
 	dbCommand
 		.command('migrate:down')
 		.description('Downgrade the database')
@@ -70,6 +72,7 @@ export async function createCli(): Promise<Command> {
 		.action(usersPasswd);
 
 	const rolesCommand = program.command('roles');
+
 	rolesCommand
 		.command('create')
 		.description('Create a new role')

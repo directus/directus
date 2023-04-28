@@ -1,8 +1,11 @@
-import knex, { Knex } from 'knex';
+import type { Knex } from 'knex';
+import knex from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
-import { PayloadService } from '../../src/services';
-import { getHelpers, Helpers } from '../../src/database/helpers';
-import { describe, beforeAll, afterEach, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
+import type { MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Helpers } from '../../src/database/helpers/index.js';
+import { getHelpers } from '../../src/database/helpers/index.js';
+import { PayloadService } from '../../src/services/index.js';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -13,7 +16,7 @@ describe('Integration Tests', () => {
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = vi.mocked(knex({ client: MockClient }));
+		db = vi.mocked(knex.default({ client: MockClient }));
 		tracker = createTracker(db);
 	});
 
@@ -31,6 +34,7 @@ describe('Integration Tests', () => {
 					knex: db,
 					schema: { collections: {}, relations: [] },
 				});
+
 				helpers = getHelpers(db);
 			});
 
@@ -218,6 +222,7 @@ describe('Integration Tests', () => {
 						],
 						'read'
 					);
+
 					expect(result).toMatchObject([
 						{
 							[dateFieldId]: '2022-01-10',

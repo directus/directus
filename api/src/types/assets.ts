@@ -11,6 +11,7 @@ export const TransformationMethods /*: readonly (keyof Sharp)[]*/ = [
 	'png',
 	'tiff',
 	'webp',
+	'avif',
 
 	// Resizing
 	// https://sharp.pixelplumbing.com/api-resize
@@ -64,21 +65,11 @@ export type TransformationMap = {
 
 export type Transformation = TransformationMap[keyof TransformationMap];
 
+export type TransformationResize = Pick<ResizeOptions, 'width' | 'height' | 'fit' | 'withoutEnlargement'>;
+
 export type TransformationParams = {
 	key?: string;
 	transforms?: Transformation[];
-};
-
-// Transformation preset is defined in the admin UI.
-export type TransformationPreset = TransformationPresetFormat &
-	TransformationPresetResize &
-	TransformationParams & { key: string };
-
-export type TransformationPresetFormat = {
-	format?: 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff';
+	format?: 'auto' | 'jpg' | 'jpeg' | 'png' | 'webp' | 'tiff' | 'avif';
 	quality?: number;
-};
-
-export type TransformationPresetResize = Pick<ResizeOptions, 'width' | 'height' | 'fit' | 'withoutEnlargement'>;
-
-// @NOTE Keys used in TransformationParams should match ASSET_GENERATION_QUERY_KEYS in constants.ts
+} & TransformationResize;

@@ -3,25 +3,30 @@ import {
 	APP_OR_HYBRID_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	NESTED_EXTENSION_TYPES,
-} from '@directus/shared/constants';
+} from '@directus/constants';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
-} from '@directus/shared/utils/node';
+	resolvePackageExtensions,
+} from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
-import fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
+import { version } from '../directus/package.json';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	define: {
+		__DIRECTUS_VERSION__: JSON.stringify(version),
+	},
 	plugins: [
 		directusExtensions(),
 		vue(),
@@ -121,9 +126,10 @@ function directusExtensions() {
 	async function loadExtensions() {
 		await ensureExtensionDirs(EXTENSIONS_PATH, NESTED_EXTENSION_TYPES);
 		const packageExtensions = await getPackageExtensions(API_PATH, APP_OR_HYBRID_EXTENSION_PACKAGE_TYPES);
+		const localPackageExtensions = await resolvePackageExtensions(EXTENSIONS_PATH);
 		const localExtensions = await getLocalExtensions(EXTENSIONS_PATH, APP_OR_HYBRID_EXTENSION_TYPES);
 
-		const extensions = [...packageExtensions, ...localExtensions];
+		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions];
 
 		extensionsEntrypoint = generateExtensionsEntrypoint(extensions);
 	}

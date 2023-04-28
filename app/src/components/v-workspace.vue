@@ -40,9 +40,9 @@
 
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue';
-import { useElementSize } from '@directus/shared/composables';
+import { useElementSize } from '@directus/composables';
 import { AppTile } from './v-workspace-tile.vue';
-import { cssVar } from '@directus/shared/utils/browser';
+import { cssVar } from '@directus/utils/browser';
 
 interface Props {
 	/** What tiles to render inside the workspace */

@@ -1,8 +1,10 @@
-import knex, { Knex } from 'knex';
+import type { Knex } from 'knex';
+import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
-import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services';
-import type { Collection } from '../types';
+import type { MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services/index.js';
+import type { Collection } from '../types/index.js';
 
 class Client_PG extends MockClient {}
 
@@ -11,7 +13,7 @@ describe('Integration Tests', () => {
 	let tracker: Tracker;
 
 	beforeAll(async () => {
-		db = vi.mocked(knex({ client: Client_PG }));
+		db = vi.mocked(knex.default({ client: Client_PG }));
 		tracker = createTracker(db);
 	});
 
@@ -149,9 +151,11 @@ describe('Integration Tests', () => {
 								},
 							},
 						]);
+
 						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();
+
 						expect(spec.components?.schemas).toMatchInlineSnapshot(`
 							{
 							  "Diff": {
@@ -420,6 +424,7 @@ describe('Integration Tests', () => {
 								},
 							},
 						]);
+
 						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();

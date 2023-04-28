@@ -8,7 +8,8 @@ WORKDIR /directus
 
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
-RUN corepack enable && corepack prepare pnpm@8.0.0 --activate
+COPY package.json .
+RUN corepack enable && corepack prepare
 
 COPY pnpm-lock.yaml .
 RUN pnpm fetch
@@ -16,7 +17,7 @@ COPY . .
 RUN pnpm install --recursive --offline --frozen-lockfile
 
 RUN : \
-	&& pnpm --recursive --workspace-concurrency=1 run build \
+	&& npm_config_workspace_concurrency=1 pnpm run build \
 	&& pnpm --filter directus deploy --prod dist \
 	&& cd dist \
 	&& pnpm pack \
@@ -30,6 +31,8 @@ RUN : \
 ## Create Production Image
 
 FROM node:18-alpine AS runtime
+
+USER node
 
 WORKDIR /directus
 
@@ -45,9 +48,7 @@ ENV \
 
 COPY --from=builder --chown=node:node /directus/dist .
 
-USER node
-
 CMD : \
-	&& node /directus/dist/cli/run.js bootstrap \
-	&& node /directus/dist/cli/run.js start \
+	&& node /directus/cli.js bootstrap \
+	&& node /directus/cli.js start \
 	;

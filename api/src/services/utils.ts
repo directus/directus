@@ -1,10 +1,10 @@
-import type { Accountability, SchemaOverview } from '@directus/shared/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import getDatabase from '../database';
-import { systemCollectionRows } from '../database/system-data/collections';
-import emitter from '../emitter';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import type { AbstractServiceOptions, PrimaryKey } from '../types';
+import getDatabase from '../database/index.js';
+import { systemCollectionRows } from '../database/system-data/collections/index.js';
+import emitter from '../emitter.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
 
 export class UtilsService {
 	knex: Knex;
@@ -61,6 +61,7 @@ export class UtilsService {
 
 			for (const row of rowsWithoutSortValue) {
 				lastSortValue++;
+
 				await this.knex(collection)
 					.update({ [sortField]: lastSortValue })
 					.where({ [primaryKeyField]: row[primaryKeyField] });
@@ -93,6 +94,7 @@ export class UtilsService {
 			.from(collection)
 			.where({ [primaryKeyField]: to })
 			.first();
+
 		const targetSortValue = targetSortValueResponse[sortField];
 
 		const sourceSortValueResponse = await this.knex
@@ -100,6 +102,7 @@ export class UtilsService {
 			.from(collection)
 			.where({ [primaryKeyField]: item })
 			.first();
+
 		const sourceSortValue = sourceSortValueResponse[sortField];
 
 		// Set the target item to the new sort value

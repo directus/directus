@@ -130,7 +130,6 @@ archive_confirm_count: >-
   Nema odabranih stavki | Da li ste sigurni da želite da arhivirate ovu stavku? | Da li ste sigurni da želite da arhivirate ovih {count} stavki?
 reset_system_permissions_to: 'Poništi Sistemske Dozvole na:'
 reset_system_permissions_copy: Ova operacija će prepisati sve prilagođene dozvole koje ste primjenili na sistemske kolekcije. Da li ste sigurni?
-the_following_are_minimum_permissions: Sljedeće su minimalne dozvole koje su potrebne kada je omogućen "Pristup Aplikaciji". Možete proširiti dozvole i izvan ovoga, ali ne i ispod.
 app_access_minimum: Minimalan pristup aplikaciji
 recommended_defaults: Preporučene postavke
 unarchive: Vrati iz arhive
@@ -250,6 +249,7 @@ o2m_relationship: One to Many Relacija
 m2m_relationship: Many to Many Relacija
 m2a_relationship: Many to Any Relacija
 invalid_item: Nevažeća Stavka
+modal: Modalni
 next: Sljedeća
 field_name: Naziv Polja
 translations: Prevodi
@@ -1087,7 +1087,6 @@ interfaces:
     edit_fields: Izmijeni Polja
     add_label: '"Napravi Novi" Labela'
     sort: Sortiranje
-    field_name_placeholder: Unesi ime polja...
     field_note_placeholder: Unesi napomenu polja...
   slider:
     slider: Slajder
@@ -1285,6 +1284,8 @@ panels:
 operations:
   log:
     message: Poruka
+  mail:
+    template: Šablon
   notification:
     recipient: Korisnik
     message: Poruka

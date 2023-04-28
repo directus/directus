@@ -1,7 +1,7 @@
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
-import { Filter, Preset } from '@directus/shared/types';
+import { Filter, Preset } from '@directus/types';
 import { assign, debounce, isEqual } from 'lodash';
 import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 
@@ -56,11 +56,13 @@ export function usePreset(
 		busy.value = true;
 
 		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
+
 		localPreset.value = {
 			...localPreset.value,
 			id: updatedValues.id,
 			user: updatedValues.user,
 		};
+
 		bookmarkSaved.value = true;
 		busy.value = false;
 		return updatedValues;

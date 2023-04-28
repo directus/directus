@@ -79,6 +79,7 @@ delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
 create_translation_string: Tạo Các Bản Dịch
 no_translation_string: Không có bản dịch
+no_translation_string_copy: Không có bản dịch nào.
 translation_string_translations_placeholder: Thêm bản dịch mới
 invite_users: Mời Người dùng
 invite: Mời
@@ -120,7 +121,6 @@ archive_confirm_count: >-
   Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
 reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống cho:'
 reset_system_permissions_copy: Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn không?
-the_following_are_minimum_permissions: Đây là những quyền hạn tối thiểu cần có khi "App Access" được kích hoạt. Bạn có thể mở rộng các quyền bổ sung, nhưng không được phép thấp hơn những quyền này.
 app_access_minimum: Quyền truy cập Ứng dụng Tối thiểu
 recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
@@ -283,8 +283,10 @@ dismiss: Bỏ qua
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Dữ liệu thực tế
 copy_raw_value_success: Đã sao chép
+paste_raw_value: Dán dữ liệu thô
 paste_raw_value_success: Dán
 paste_raw_value_fail: Dán thất bại
+view_raw_value: Hiện dữ liệu thô
 edit_raw_value: Thay đổi dữ liệu thực tế
 enter_raw_value: Nhập vào giá trị thực tế...
 clear_value: Xoá giá trị
@@ -1122,6 +1124,9 @@ triggers:
 operations:
   log:
     message: Tin nhắn
+  mail:
+    template: Mẫu
+    data: Dữ liệu
   notification:
     recipient: Người dùng
     message: Tin nhắn

@@ -1,16 +1,17 @@
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
 import chalk from 'chalk';
 import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
 import path from 'path';
-import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database';
-import logger from '../../../logger';
-import { DiffKind, Snapshot } from '../../../types';
-import { isNestedMetaUpdate } from '../../../utils/apply-diff';
-import { applySnapshot } from '../../../utils/apply-snapshot';
-import { getSnapshot } from '../../../utils/get-snapshot';
-import { getSnapshotDiff } from '../../../utils/get-snapshot-diff';
+import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
+import logger from '../../../logger.js';
+import type { Snapshot } from '../../../types/index.js';
+import { DiffKind } from '../../../types/index.js';
+import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
+import { applySnapshot } from '../../../utils/apply-snapshot.js';
+import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
+import { getSnapshot } from '../../../utils/get-snapshot.js';
 
 export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
 	const filename = path.resolve(process.cwd(), snapshotPath);
@@ -51,6 +52,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 
 		const dryRun = options?.dryRun === true;
 		const promptForChanges = !dryRun && options?.yes !== true;
+
 		if (dryRun || promptForChanges) {
 			let message = '';
 
@@ -86,6 +88,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 
 						for (const change of diff) {
 							const path = change.path!.slice(1).join('.');
+
 							if (change.kind === DiffKind.EDIT) {
 								message += `\n    - Set ${path} to ${change.rhs}`;
 							} else if (change.kind === DiffKind.DELETE) {
@@ -135,6 +138,7 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 			}
 
 			message = 'The following changes will be applied:\n\n' + chalk.black(message);
+
 			if (dryRun) {
 				logger.info(message);
 				process.exit(0);

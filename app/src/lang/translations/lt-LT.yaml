@@ -62,7 +62,6 @@ archive_confirm_count: >-
   Nėra pasirinktų elementų | Ar tikrai norite archyvuoti šį elementą? | Ar tikrai norite archyvuoti {count} elementus?
 reset_system_permissions_to: 'Atstatyti sisteminius leidimus į:'
 reset_system_permissions_copy: Šis veiksmas perrašys visus pasirinktinus leidimus, kuriuos galėjote pritaikyti sistemos rinkiniams. Ar jūs įsitikinę?
-the_following_are_minimum_permissions: Toliau pateikiami minimalūs leidimai, kurių reikia, kai įgalinta „Prieiga prie aplikacijos“. Leidimus galite išplėsti, bet ne sumažinti.
 app_access_minimum: Aplikacijos prieigos minimumas
 recommended_defaults: Rekomenduojami "Pagal nutylėjimą"
 unarchive: Išarchyvuoti
@@ -182,6 +181,7 @@ m2o_relationship: Daug su vienu sąrašis
 o2m_relationship: Vienas su daug sąryšis
 m2m_relationship: Daug su daug sąryšis
 m2a_relationship: Daug su bet kiek sąryšis
+modal: Dialogas
 next: Tęsti
 field_name: Lauko pavadinimas
 translations: Vertimai
@@ -984,6 +984,8 @@ panels:
   label:
     name: Žyma
 operations:
+  mail:
+    template: Šablonas
   notification:
     recipient: Vartotojas
   request:

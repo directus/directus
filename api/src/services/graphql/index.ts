@@ -1,15 +1,21 @@
-import { FUNCTIONS } from '@directus/shared/constants';
-import type { BaseException } from '@directus/shared/exceptions';
-import { Accountability, Action, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/shared/types';
-import { parseFilterFunctionPath } from '@directus/shared/utils';
+import { Action, FUNCTIONS } from '@directus/constants';
+import type { BaseException } from '@directus/exceptions';
+import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
-import {
+import type {
 	ArgumentNode,
-	execute,
 	ExecutionResult,
 	FieldNode,
 	FormattedExecutionResult,
 	FragmentDefinitionNode,
+	GraphQLNullableType,
+	GraphQLResolveInfo,
+	InlineFragmentNode,
+	SelectionNode,
+	ValueNode,
+} from 'graphql';
+import {
 	GraphQLBoolean,
 	GraphQLEnumType,
 	GraphQLError,
@@ -18,78 +24,70 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
-	GraphQLNullableType,
 	GraphQLObjectType,
-	GraphQLResolveInfo,
 	GraphQLScalarType,
 	GraphQLSchema,
 	GraphQLString,
 	GraphQLUnionType,
-	InlineFragmentNode,
 	NoSchemaIntrospectionCustomRule,
-	SelectionNode,
+	execute,
 	specifiedRules,
 	validate,
-	ValueNode,
 } from 'graphql';
-import {
-	GraphQLJSON,
-	InputTypeComposer,
+import type {
 	InputTypeComposerFieldConfigMapDefinition,
-	ObjectTypeComposer,
 	ObjectTypeComposerFieldConfigAsObjectDefinition,
 	ObjectTypeComposerFieldConfigDefinition,
 	ObjectTypeComposerFieldConfigMapDefinition,
 	ResolverDefinition,
-	SchemaComposer,
-	toInputObjectType,
 } from 'graphql-compose';
+import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
-import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash';
-import { clearSystemCache, getCache } from '../../cache';
-import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants';
-import getDatabase from '../../database';
-import env from '../../env';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions';
-import { getExtensionManager } from '../../extensions';
-import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types';
-import { generateHash } from '../../utils/generate-hash';
-import { getGraphQLType } from '../../utils/get-graphql-type';
-import { getMilliseconds } from '../../utils/get-milliseconds';
-import { reduceSchema } from '../../utils/reduce-schema';
-import { sanitizeQuery } from '../../utils/sanitize-query';
-import { validateQuery } from '../../utils/validate-query';
-import { ActivityService } from '../activity';
-import { AuthenticationService } from '../authentication';
-import { CollectionsService } from '../collections';
-import { FieldsService } from '../fields';
-import { FilesService } from '../files';
-import { FlowsService } from '../flows';
-import { FoldersService } from '../folders';
-import { ItemsService } from '../items';
-import { NotificationsService } from '../notifications';
-import { OperationsService } from '../operations';
-import { PermissionsService } from '../permissions';
-import { PresetsService } from '../presets';
-import { RelationsService } from '../relations';
-import { RevisionsService } from '../revisions';
-import { RolesService } from '../roles';
-import { ServerService } from '../server';
-import { SettingsService } from '../settings';
-import { SharesService } from '../shares';
-import { SpecificationService } from '../specifications';
-import { TFAService } from '../tfa';
-import { UsersService } from '../users';
-import { UtilsService } from '../utils';
-import { WebhooksService } from '../webhooks';
-import { GraphQLBigInt } from './types/bigint';
-import { GraphQLDate } from './types/date';
-import { GraphQLGeoJSON } from './types/geojson';
-import { GraphQLHash } from './types/hash';
-import { GraphQLStringOrFloat } from './types/string-or-float';
-import { GraphQLVoid } from './types/void';
-import { addPathToValidationError } from './utils/add-path-to-validation-error';
-import processError from './utils/process-error';
+import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
+import { clearSystemCache, getCache } from '../../cache.js';
+import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
+import getDatabase from '../../database/index.js';
+import env from '../../env.js';
+import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions/index.js';
+import { getExtensionManager } from '../../extensions.js';
+import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
+import { generateHash } from '../../utils/generate-hash.js';
+import { getGraphQLType } from '../../utils/get-graphql-type.js';
+import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { reduceSchema } from '../../utils/reduce-schema.js';
+import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { validateQuery } from '../../utils/validate-query.js';
+import { ActivityService } from '../activity.js';
+import { AuthenticationService } from '../authentication.js';
+import { CollectionsService } from '../collections.js';
+import { FieldsService } from '../fields.js';
+import { FilesService } from '../files.js';
+import { FlowsService } from '../flows.js';
+import { FoldersService } from '../folders.js';
+import { ItemsService } from '../items.js';
+import { NotificationsService } from '../notifications.js';
+import { OperationsService } from '../operations.js';
+import { PermissionsService } from '../permissions.js';
+import { PresetsService } from '../presets.js';
+import { RelationsService } from '../relations.js';
+import { RevisionsService } from '../revisions.js';
+import { RolesService } from '../roles.js';
+import { ServerService } from '../server.js';
+import { SettingsService } from '../settings.js';
+import { SharesService } from '../shares.js';
+import { SpecificationService } from '../specifications.js';
+import { TFAService } from '../tfa.js';
+import { UsersService } from '../users.js';
+import { UtilsService } from '../utils.js';
+import { WebhooksService } from '../webhooks.js';
+import { GraphQLBigInt } from './types/bigint.js';
+import { GraphQLDate } from './types/date.js';
+import { GraphQLGeoJSON } from './types/geojson.js';
+import { GraphQLHash } from './types/hash.js';
+import { GraphQLStringOrFloat } from './types/string-or-float.js';
+import { GraphQLVoid } from './types/void.js';
+import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
+import processError from './utils/process-error.js';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -203,10 +201,12 @@ export class GraphQLService {
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
 			if (this.scope === 'items' && collection.collection.startsWith('directus_') === true) return false;
+
 			if (this.scope === 'system') {
 				if (collection.collection.startsWith('directus_') === false) return false;
 				if (SYSTEM_DENY_LIST.includes(collection.collection)) return false;
 			}
+
 			return true;
 		};
 
@@ -237,6 +237,7 @@ export class GraphQLService {
 						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection]!.getResolver(
 							`${collection.collection}_by_id`
 						);
+
 						acc[`${collectionName}_aggregated`] = ReadCollectionTypes[collection.collection]!.getResolver(
 							`${collection.collection}_aggregated`
 						);
@@ -262,12 +263,15 @@ export class GraphQLService {
 					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
+
 						acc[`create_${collectionName}_items`] = CreateCollectionTypes[collection.collection]!.getResolver(
 							`create_${collection.collection}_items`
 						);
+
 						acc[`create_${collectionName}_item`] = CreateCollectionTypes[collection.collection]!.getResolver(
 							`create_${collection.collection}_item`
 						);
+
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>)
 			);
@@ -891,6 +895,7 @@ export class GraphQLService {
 									type: GraphQLFloat,
 									description: field.note,
 								};
+
 								break;
 							default:
 								break;
@@ -1113,6 +1118,7 @@ export class GraphQLService {
 					}
 				} else if (relation.meta?.one_allowed_collections) {
 					ReadableCollectionFilterTypes[relation.collection]?.removeField('item');
+
 					for (const collection of relation.meta.one_allowed_collections) {
 						ReadableCollectionFilterTypes[relation.collection]?.addFields({
 							[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
@@ -1333,6 +1339,7 @@ export class GraphQLService {
 				collection = collection.slice(0, -6);
 			}
 		}
+
 		if (args['id']) {
 			query.filter = {
 				_and: [
@@ -1719,10 +1726,11 @@ export class GraphQLService {
 	 */
 	formatError(error: BaseException | BaseException[]): GraphQLError {
 		if (Array.isArray(error)) {
-			error[0]!.extensions['code'] = error[0]!.code;
+			set(error[0]!, 'extensions.code', error[0]!.code);
 			return new GraphQLError(error[0]!.message, undefined, undefined, undefined, undefined, error[0]);
 		}
-		error.extensions['code'] = error.code;
+
+		set(error, 'extensions.code', error.code);
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
 
@@ -1843,15 +1851,61 @@ export class GraphQLService {
 		const ServerInfo = schemaComposer.createObjectTC({
 			name: 'server_info',
 			fields: {
-				project_name: { type: GraphQLString },
-				project_logo: { type: GraphQLString },
-				project_color: { type: GraphQLString },
-				project_foreground: { type: GraphQLString },
-				project_background: { type: GraphQLString },
-				project_note: { type: GraphQLString },
-				custom_css: { type: GraphQLString },
+				project: {
+					type: new GraphQLObjectType({
+						name: 'server_info_project',
+						fields: {
+							project_name: { type: GraphQLString },
+							project_descriptor: { type: GraphQLString },
+							project_logo: { type: GraphQLString },
+							project_color: { type: GraphQLString },
+							default_language: { type: GraphQLString },
+							public_foreground: { type: GraphQLString },
+							public_background: { type: GraphQLString },
+							public_note: { type: GraphQLString },
+							custom_css: { type: GraphQLString },
+						},
+					}),
+				},
 			},
 		});
+
+		if (this.accountability?.user) {
+			ServerInfo.addFields({
+				rateLimit: env['RATE_LIMITER_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit_global',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
+					: GraphQLBoolean,
+				flows: {
+					type: new GraphQLObjectType({
+						name: 'server_info_flows',
+						fields: {
+							execAllowedModules: {
+								type: new GraphQLList(GraphQLString),
+							},
+						},
+					}),
+				},
+			});
+		}
 
 		if (this.accountability?.admin === true) {
 			ServerInfo.addFields({
@@ -1947,6 +2001,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						scope: args['scope'] ?? 'items',
 					});
+
 					return service.getSchema('sdl');
 				},
 			},
@@ -1961,6 +2016,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+
 					return await service.serverInfo();
 				},
 			},
@@ -1971,6 +2027,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+
 					return await service.health();
 				},
 			},
@@ -2015,7 +2072,9 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
+
 					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
+
 					if (args['mode'] === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
 							httpOnly: true,
@@ -2025,6 +2084,7 @@ export class GraphQLService {
 							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
+
 					return {
 						access_token: result['accessToken'],
 						expires: result['expires'],
@@ -2053,11 +2113,15 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
+
 					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
+
 					const result = await authenticationService.refresh(currentRefreshToken);
+
 					if (args['mode'] === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {
 							httpOnly: true,
@@ -2067,6 +2131,7 @@ export class GraphQLService {
 							sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
 						});
 					}
+
 					return {
 						access_token: result['accessToken'],
 						expires: result['expires'],
@@ -2094,10 +2159,13 @@ export class GraphQLService {
 						accountability: accountability,
 						schema: this.schema,
 					});
+
 					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
+
 					if (!currentRefreshToken) {
 						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 					}
+
 					await authenticationService.logout(currentRefreshToken);
 					return true;
 				},
@@ -2166,14 +2234,17 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
+
 					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+
 					const authService = new AuthenticationService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+
 					await authService.verifyPassword(this.accountability.user, args['password']);
 					const { url, secret } = await service.generateTFA(this.accountability.user);
 					return { secret, otpauth_url: url };
@@ -2187,6 +2258,7 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
+
 					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
@@ -2203,16 +2275,35 @@ export class GraphQLService {
 				},
 				resolve: async (_, args) => {
 					if (!this.accountability?.user) return null;
+
 					const service = new TFAService({
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+
 					const otpValid = await service.verifyOTP(this.accountability.user, args['otp']);
+
 					if (otpValid === false) {
 						throw new InvalidPayloadException(`"otp" is invalid`);
 					}
+
 					await service.disableTFA(this.accountability.user);
 					return true;
+				},
+			},
+			utils_random_string: {
+				type: GraphQLString,
+				args: {
+					length: GraphQLInt,
+				},
+				resolve: async (_, args) => {
+					const { nanoid } = await import('nanoid');
+
+					if (args['length'] && Number(args['length']) > 500) {
+						throw new InvalidPayloadException(`"length" can't be more than 500 characters`);
+					}
+
+					return nanoid(args['length'] ? Number(args['length']) : 32);
 				},
 			},
 			utils_hash_generate: {
@@ -2246,6 +2337,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+
 					const { item, to } = args;
 					await service.sort(args['collection'], { item, to });
 					return true;
@@ -2261,6 +2353,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+
 					await service.revert(args['revision']);
 					return true;
 				},
@@ -2291,6 +2384,7 @@ export class GraphQLService {
 						accountability: this.accountability,
 						schema: this.schema,
 					});
+
 					await service.acceptInvite(args['token'], args['password']);
 					return true;
 				},
@@ -2399,6 +2493,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						return await service.readAll();
 					},
 				},
@@ -2427,6 +2522,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						return await service.readOne(args['collection'], args['field']);
 					},
 				},
@@ -2500,6 +2596,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						return await service.readOne(args['collection'], args['field']);
 					},
 				},
@@ -2524,6 +2621,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						const collectionKey = await collectionsService.createOne(args['data']);
 						return await collectionsService.readOne(collectionKey);
 					},
@@ -2541,6 +2639,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						const collectionKey = await collectionsService.updateOne(args['collection'], args['data']);
 						return await collectionsService.readOne(collectionKey);
 					},
@@ -2560,6 +2659,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						await collectionsService.deleteOne(args['collection']);
 						return { collection: args['collection'] };
 					},
@@ -2578,6 +2678,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						await service.createField(args['collection'], args['data']);
 						return await service.readOne(args['collection'], args['data'].field);
 					},
@@ -2594,10 +2695,12 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						await service.updateField(args['collection'], {
 							...args['data'],
 							field: args['field'],
 						});
+
 						return await service.readOne(args['collection'], args['data'].field);
 					},
 				},
@@ -2618,6 +2721,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						await service.deleteField(args['collection'], args['field']);
 						const { collection, field } = args;
 						return { collection, field };
@@ -2675,6 +2779,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						await relationsService.deleteOne(args['collection'], args['field']);
 						return { collection: args['collection'], field: args['field'] };
 					},
@@ -2689,10 +2794,12 @@ export class GraphQLService {
 					resolve: async (_, args, __, info) => {
 						if (!this.accountability?.user) return null;
 						const service = new UsersService({ schema: this.schema, accountability: this.accountability });
+
 						const selections = this.replaceFragmentsInSelections(
 							info.fieldNodes[0]?.selectionSet?.selections,
 							info.fragments
 						);
+
 						const query = this.getQuery(args, selections || [], info.variableValues);
 
 						return await service.readOne(this.accountability.user, query);
@@ -2710,6 +2817,7 @@ export class GraphQLService {
 					},
 					resolve: async (_, args, __, info) => {
 						if (!this.accountability?.user) return null;
+
 						const service = new UsersService({
 							schema: this.schema,
 							accountability: this.accountability,
@@ -2722,10 +2830,12 @@ export class GraphQLService {
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
+
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
 							return await service.readOne(this.accountability.user, query);
 						}
+
 						return true;
 					},
 				},
@@ -2761,6 +2871,7 @@ export class GraphQLService {
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
+
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
 							return await service.readOne(primaryKey, query);
@@ -2785,6 +2896,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						const primaryKey = await service.updateOne(args['id'], { comment: args['comment'] });
 
 						if ('directus_activity' in ReadCollectionTypes) {
@@ -2792,6 +2904,7 @@ export class GraphQLService {
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
+
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
 							return await service.readOne(primaryKey, query);
@@ -2815,6 +2928,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						await service.deleteOne(args['id']);
 						return { id: args['id'] };
 					},
@@ -2837,6 +2951,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						const primaryKey = await service.importOne(args['url'], args['data']);
 
 						if ('directus_files' in ReadCollectionTypes) {
@@ -2844,6 +2959,7 @@ export class GraphQLService {
 								info.fieldNodes[0]?.selectionSet?.selections,
 								info.fragments
 							);
+
 							const query = this.getQuery(args, selections || [], info.variableValues);
 							return await service.readOne(primaryKey, query);
 						}
@@ -2868,6 +2984,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
+
 						await service.inviteUser(args['email'], args['role'], args['invite_url'] || null);
 						return true;
 					},

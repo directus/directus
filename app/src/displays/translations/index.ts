@@ -3,7 +3,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
-import { defineDisplay, getFieldsFromTemplate } from '@directus/shared/utils';
+import { defineDisplay, getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
 import DisplayTranslations from './translations.vue';
 import { useExtension } from '@/composables/use-extension';
@@ -147,7 +147,7 @@ export default defineDisplay({
 				name: '$t:displays.translations.user_language',
 				type: 'string',
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',

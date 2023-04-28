@@ -1,5 +1,5 @@
 import api from '@/api';
-import { defineModule } from '@directus/shared/utils';
+import { defineModule } from '@directus/utils';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
@@ -199,6 +199,7 @@ export default defineModule({
 					async beforeEnter(to) {
 						const { flows } = useFlowsStore();
 						const existingFlow = flows.find((flow) => flow.id === to.params.primaryKey);
+
 						if (!existingFlow) {
 							return {
 								name: 'settings-not-found',

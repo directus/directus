@@ -1,20 +1,21 @@
-import { FailedValidationException } from '@directus/shared/exceptions';
-import type { Query } from '@directus/shared/types';
-import { getSimpleHash, toArray } from '@directus/shared/utils';
+import { FailedValidationException } from '@directus/exceptions';
+import type { Query } from '@directus/types';
+import { getSimpleHash, toArray } from '@directus/utils';
 import jwt from 'jsonwebtoken';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
-import getDatabase from '../database';
-import env from '../env';
-import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
-import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types';
-import isUrlAllowed from '../utils/is-url-allowed';
-import { stall } from '../utils/stall';
-import { Url } from '../utils/url';
-import { ItemsService } from './items';
-import { MailService } from './mail';
-import { SettingsService } from './settings';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
+import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import isUrlAllowed from '../utils/is-url-allowed.js';
+import { verifyJWT } from '../utils/jwt.js';
+import { stall } from '../utils/stall.js';
+import { Url } from '../utils/url.js';
+import { ItemsService } from './items.js';
+import { MailService } from './mail/index.js';
+import { SettingsService } from './settings.js';
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -135,6 +136,30 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Get basic information of user identified by email
+	 */
+	private async getUserByEmail(email: string): Promise<{ id: string; role: string; status: string; password: string }> {
+		return await this.knex
+			.select('id', 'role', 'status', 'password')
+			.from('directus_users')
+			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
+			.first();
+	}
+
+	/**
+	 * Create url for inviting users
+	 */
+	private inviteUrl(email: string, url: string | null): string {
+		const payload = { email, scope: 'invite' };
+
+		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
+		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
+		inviteURL.setQuery('token', token);
+
+		return inviteURL.toString();
+	}
+
+	/**
 	 * Create a new user
 	 */
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -180,7 +205,9 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
-	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 
 		const keys: PrimaryKey[] = [];
@@ -229,6 +256,7 @@ export class UsersService extends ItemsService {
 						invalid: data['email'],
 					});
 				}
+
 				await this.checkUniqueEmails([data['email']], keys[0]);
 			}
 
@@ -317,44 +345,53 @@ export class UsersService extends ItemsService {
 		}
 
 		const emails = toArray(email);
+
 		const mailService = new MailService({
 			schema: this.schema,
 			accountability: this.accountability,
 		});
 
 		for (const email of emails) {
-			const payload = { email, scope: 'invite' };
-			const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-			const subjectLine = subject ?? "You've been invited";
-			const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL']).addPath('admin', 'accept-invite');
-			inviteURL.setQuery('token', token);
+			// Check if user is known
+			const user = await this.getUserByEmail(email);
 
-			// Create user first to verify uniqueness
-			await this.createOne({ email, role, status: 'invited' }, opts);
+			// Create user first to verify uniqueness if unknown
+			if (isEmpty(user)) {
+				await this.createOne({ email, role, status: 'invited' }, opts);
 
-			await mailService.send({
-				to: email,
-				subject: subjectLine,
-				template: {
-					name: 'user-invitation',
-					data: {
-						url: inviteURL.toString(),
-						email,
+				// For known users update role if changed
+			} else if (user.status === 'invited' && user.role !== role) {
+				await this.updateOne(user.id, { role }, opts);
+			}
+
+			// Send invite for new and already invited users
+			if (isEmpty(user) || user.status === 'invited') {
+				const subjectLine = subject ?? "You've been invited";
+
+				await mailService.send({
+					to: email,
+					subject: subjectLine,
+					template: {
+						name: 'user-invitation',
+						data: {
+							url: this.inviteUrl(email, url),
+							email,
+						},
 					},
-				},
-			});
+				});
+			}
 		}
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
-		const { email, scope } = jwt.verify(token, env['SECRET'] as string, { issuer: 'directus' }) as {
+		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
 			email: string;
 			scope: string;
 		};
 
 		if (scope !== 'invite') throw new ForbiddenException();
 
-		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'invited') {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
@@ -373,11 +410,7 @@ export class UsersService extends ItemsService {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
 
-		const user = await this.knex
-			.select('status', 'password')
-			.from('directus_users')
-			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
-			.first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
@@ -396,9 +429,11 @@ export class UsersService extends ItemsService {
 
 		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
+
 		const acceptURL = url
 			? new Url(url).setQuery('token', token).toString()
-			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token);
+			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token).toString();
+
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({
@@ -433,7 +468,7 @@ export class UsersService extends ItemsService {
 			opts.preMutationException = err;
 		}
 
-		const user = await this.knex.select('id', 'status', 'password').from('directus_users').where({ email }).first();
+		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
 			throw new ForbiddenException();

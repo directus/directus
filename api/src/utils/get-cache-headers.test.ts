@@ -1,6 +1,6 @@
 import type { Request } from 'express';
 import { describe, expect, vi, test } from 'vitest';
-import { getCacheControlHeader } from './get-cache-headers';
+import { getCacheControlHeader } from './get-cache-headers.js';
 
 let factoryEnv: { [k: string]: any } = {};
 
@@ -204,8 +204,10 @@ describe('get cache headers', () => {
 					return matchingKey ? (scenario.input.headers as any)?.[matchingKey] : undefined;
 				}),
 			} as Partial<Request>;
+
 			factoryEnv = scenario.input.env;
 			const { ttl, globalCacheSettings, personalized } = scenario.input;
+
 			expect(getCacheControlHeader(mockRequest as Request, ttl, globalCacheSettings, personalized)).toEqual(
 				scenario.output
 			);

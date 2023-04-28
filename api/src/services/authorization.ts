@@ -1,4 +1,4 @@
-import { FailedValidationException } from '@directus/shared/exceptions';
+import { FailedValidationException } from '@directus/exceptions';
 import type {
 	Accountability,
 	Aggregate,
@@ -7,13 +7,13 @@ import type {
 	PermissionsAction,
 	Query,
 	SchemaOverview,
-} from '@directus/shared/types';
-import { validatePayload } from '@directus/shared/utils';
+} from '@directus/types';
+import { validatePayload } from '@directus/utils';
 import type { Knex } from 'knex';
-import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash';
-import { GENERATE_SPECIAL } from '../constants';
-import getDatabase from '../database';
-import { ForbiddenException } from '../exceptions';
+import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
+import { GENERATE_SPECIAL } from '../constants.js';
+import getDatabase from '../database/index.js';
+import { ForbiddenException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	AST,
@@ -22,11 +22,11 @@ import type {
 	Item,
 	NestedCollectionNode,
 	PrimaryKey,
-} from '../types';
-import { getRelationInfo } from '../utils/get-relation-info';
-import { stripFunction } from '../utils/strip-function';
-import { ItemsService } from './items';
-import { PayloadService } from './payload';
+} from '../types/index.js';
+import { getRelationInfo } from '../utils/get-relation-info.js';
+import { stripFunction } from '../utils/strip-function.js';
+import { ItemsService } from './items.js';
+import { PayloadService } from './payload.js';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -38,6 +38,7 @@ export class AuthorizationService {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+
 		this.payloadService = new PayloadService('directus_permissions', {
 			knex: this.knex,
 			schema: this.schema,
@@ -236,11 +237,14 @@ export class AuthorizationService {
 											parentCollection,
 											parentField
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
+
 								return result;
 							}
+
 							// Filter value is not a filter, so we should skip it
 							return result;
 						}
@@ -249,6 +253,7 @@ export class AuthorizationService {
 							(result[collection] || (result[collection] = new Set())).add(filterKey);
 							// add virtual relation to the required permissions
 							const { relation } = getRelationInfo([], collection, filterKey);
+
 							if (relation?.collection && relation?.field) {
 								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
 							}
@@ -303,6 +308,7 @@ export class AuthorizationService {
 
 								parentCollection =
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+
 								(result[parentCollection] || (result[parentCollection] = new Set())).add(filterKey);
 							}
 
@@ -321,6 +327,7 @@ export class AuthorizationService {
 														parentCollection,
 														filterKey
 													);
+
 													result = mergeRequiredFieldPermissions(result, requiredPermissions);
 												}
 											}
@@ -332,6 +339,7 @@ export class AuthorizationService {
 											parentCollection,
 											filterKey
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
@@ -352,6 +360,7 @@ export class AuthorizationService {
 						current[collection] = new Set([...current[collection]!, ...child[collection]!]);
 					}
 				}
+
 				return current;
 			}
 

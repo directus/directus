@@ -50,7 +50,7 @@
 import { ref, computed, watch, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
-import { Field, DeepPartial } from '@directus/shared/types';
+import { Field, DeepPartial } from '@directus/types';
 import { useTranslationStrings, TranslationString } from '@/composables/use-translation-strings';
 
 interface Props {
@@ -131,7 +131,7 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 							type: 'string',
 							meta: {
 								interface: 'system-language',
-								width: 'half',
+								width: 'full',
 								display: 'formatted-value',
 								required: true,
 								display_options: {
@@ -146,8 +146,8 @@ const fields = computed<DeepPartial<Field>[]>(() => {
 							name: '$t:translation',
 							type: 'string',
 							meta: {
-								interface: 'input',
-								width: 'half',
+								interface: 'input-multiline',
+								width: 'full',
 								required: true,
 								options: {
 									placeholder: '$t:field_options.directus_collections.translation_placeholder',
@@ -184,6 +184,7 @@ function closeDialog() {
 
 async function saveNewTranslationString() {
 	const newTranslationStrings = translationStrings.value ? [...translationStrings.value, values.value] : [values.value];
+
 	try {
 		await update(newTranslationStrings);
 		emit('savedKey', values.value.key);
@@ -197,6 +198,7 @@ async function deleteCurrentTranslationString() {
 	const newTranslationStrings = translationStrings.value
 		? translationStrings.value.filter((val) => val.key !== values.value.key)
 		: [];
+
 	try {
 		await update(newTranslationStrings);
 		confirmDelete.value = false;

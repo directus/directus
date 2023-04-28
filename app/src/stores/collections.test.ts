@@ -3,7 +3,7 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
 
 import { i18n } from '@/lang';
-import { Collection } from '@directus/shared/types';
+import { Collection } from '@directus/types';
 import { merge } from 'lodash';
 import { useCollectionsStore } from './collections';
 
@@ -35,6 +35,7 @@ test('parseField action should translate field name when translations are added 
 			],
 		},
 	});
+
 	collectionsStore.collections = [mockCollectionWithTranslations].map(collectionsStore.prepareCollectionForApp);
 	expect(collectionsStore.collections[0].name).toEqual('Collection A en-US');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(true);
@@ -49,6 +50,7 @@ test('parseField action should translate field name when translations are added 
 			],
 		},
 	});
+
 	collectionsStore.collections = [mockCollectionWithMissingTranslations].map(collectionsStore.prepareCollectionForApp);
 	expect(collectionsStore.collections[0].name).toEqual('A');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(false);
@@ -67,6 +69,7 @@ test('parseField action should translate field name when all translations are re
 			],
 		},
 	});
+
 	collectionsStore.collections = [mockCollectionWithTranslations].map(collectionsStore.prepareCollectionForApp);
 	expect(collectionsStore.collections[0].name).toEqual('Collection A en-US');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(true);
@@ -76,6 +79,7 @@ test('parseField action should translate field name when all translations are re
 			translations: null,
 		},
 	});
+
 	collectionsStore.collections = [mockCollectionWithoutTranslations].map(collectionsStore.prepareCollectionForApp);
 	expect(collectionsStore.collections[0].name).toEqual('A');
 	expect(i18n.global.te(`collection_names.${mockCollection.collection}`)).toBe(false);

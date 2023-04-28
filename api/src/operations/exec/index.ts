@@ -1,6 +1,7 @@
-import { defineOperationApi, toArray } from '@directus/shared/utils';
-import { NodeVM, NodeVMOptions, VMScript } from 'vm2';
+import { defineOperationApi, toArray } from '@directus/utils';
 import { isBuiltin } from 'node:module';
+import type { NodeVMOptions } from 'vm2';
+import { NodeVM, VMScript } from 'vm2';
 
 type Options = {
 	code: string;

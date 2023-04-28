@@ -13,14 +13,18 @@
 		:collection="collection"
 		:clear-filters="clearFilters"
 	>
-		<private-view :title="t('settings_presets')" :small-header="currentLayout?.smallHeader">
+		<private-view
+			:title="t('settings_presets')"
+			:small-header="currentLayout?.smallHeader"
+			:header-shadow="currentLayout?.headerShadow"
+		>
 			<template #headline>
 				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 			</template>
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="bookmark_border" />
+					<v-icon name="bookmark" />
 				</v-button>
 			</template>
 
@@ -87,7 +91,7 @@
 				<settings-navigation />
 			</template>
 
-			<component :is="`layout-${layout || 'tabular'}`" class="layout" v-bind="layoutState">
+			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_presets')" icon="bookmark" center>
 						{{ t('no_presets_copy') }}
@@ -147,7 +151,7 @@ import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 
-import { useCollection, useLayout } from '@directus/shared/composables';
+import { useCollection, useLayout } from '@directus/composables';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -276,6 +280,7 @@ export default defineComponent({
 				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === collection.value
 				);
+
 				return !!updatePermissions;
 			});
 
@@ -286,6 +291,7 @@ export default defineComponent({
 				const deletePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === collection.value
 				);
+
 				return !!deletePermissions;
 			});
 
@@ -296,6 +302,7 @@ export default defineComponent({
 				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === collection.value
 				);
+
 				return !!createPermissions;
 			});
 
@@ -316,9 +323,5 @@ export default defineComponent({
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
 	--v-button-color-hover: var(--white) !important;
-}
-
-.layout {
-	--layout-offset-top: 64px;
 }
 </style>

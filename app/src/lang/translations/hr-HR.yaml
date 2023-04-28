@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Nema odabranih stavki | Jeste li sigurni da želite arhivirati ovu stavku? | Jeste li sigurni da želite arhivirati ovih {count} stavki?
 reset_system_permissions_to: 'Resetirajte dopuštenja sustava na:'
 reset_system_permissions_copy: Ova će radnja prebrisati sva prilagođena dopuštenja koja ste možda primijenili na zbirke sustava. Jesi li sigurni?
-the_following_are_minimum_permissions: Sljedeće su minimalne dozvole potrebne kada je omogućen "Pristup aplikaciji". Dozvole možete proširiti izvan ovog, ali ne ispod.
 app_access_minimum: Minimum za pristup aplikaciji
 recommended_defaults: Preporučene zadane postavke
 unarchive: Poništi arhiviranje
@@ -294,6 +293,7 @@ o2m_relationship: One to Many odnos
 m2m_relationship: Many to Manu odnos
 m2a_relationship: Many to Any odnos
 invalid_item: Nevažeća stavka
+modal: Modal
 next: Nastavi
 field_name: Naziv polja
 translations: Prijevodi
@@ -780,7 +780,6 @@ label: Oznaka
 flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
-run_flow_on_current: Pokreni tok na trenutnoj stavci
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
@@ -1632,7 +1631,6 @@ interfaces:
     add_label: '"Stvori novo" oznaka'
     sort: Sortiraj
     sort_placeholder: Ručno
-    field_name_placeholder: Unesite naziv polja...
     field_note_placeholder: Unesite napomenu o polju...
     incompatible_data: Trenutačni podaci nisu kompatibilni sa sučeljem repetitora i bit će nadjačani prilikom dodavanja stavki u repetitor
   slider:
@@ -2023,6 +2021,8 @@ operations:
     to: Za
     to_placeholder: Dodajte adrese e-pošte i pritisnite enter...
     body: Sadržaj
+    template: Predložak
+    data: Podaci
   notification:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika

@@ -63,7 +63,6 @@ archive_confirm_count: >-
   N'eus elfenn ebet dibabet | Sur oc'h e fell deoc'h diellañ an elfenn-mañ ? | Sur oc'h e fell deoc'h diellañ {count} an elfennoù-mañ ?
 reset_system_permissions_to: 'Adderaouiñ an aotreoù sistem:'
 reset_system_permissions_copy: Flastret e vo an holl aotreoù personelaet ho pefe implijet gant dastumadegoù ar sistem. Sur oc'h ?
-the_following_are_minimum_permissions: Setu an aotreoù izek pa z'eo aktivet "Mont e-barzh an arload". Muioc'h a aotreoù e c'heller reiñ met ne c'heller ket strishaat anezho.
 app_access_minimum: Aotre izek ret evit mont e-barzh an arload
 recommended_defaults: Talvoudoù dre ziouer aliet
 unarchive: Adsevel
@@ -183,6 +182,7 @@ o2m_relationship: Darempred One-to-Many
 m2m_relationship: Darempred Many-to-Many
 m2a_relationship: Darempred Many-to-Any
 invalid_item: Elfenn direizh
+modal: Model
 next: Da-heul
 field_name: Anv ar vaezienn
 translations: Troidigezhioù
@@ -1011,7 +1011,6 @@ interfaces:
     edit_fields: Aozañ ar maeziennoù
     add_label: 'Skridennad "Krouiñ unan Nevez"'
     sort: Rummañ
-    field_name_placeholder: Bizskrivit anv ar vaezienn...
     field_note_placeholder: Bizskrivit notenn ar vaezienn...
   slider:
     slider: Reti
@@ -1205,5 +1204,7 @@ panels:
   label:
     name: Tikedenn
 operations:
+  mail:
+    template: Patrom
   notification:
     recipient: Implijer
