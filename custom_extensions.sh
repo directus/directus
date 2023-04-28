@@ -59,4 +59,4 @@ cp -r ./directus-custom-extensions-release/count-alias ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/salary-ranges ${DIRECTUS_INTERFACES}
 
 
-#cp -r ./directus-custom-extensions-release/collection-builder/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
+cp -r ./directus-custom-extensions-release/collection-builder/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
