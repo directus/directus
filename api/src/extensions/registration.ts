@@ -121,11 +121,11 @@ export class RegistrationManager {
 	}
 
 	public async registerOperations(): Promise<void> {
-		const internalOperations = await readdir(path.join(__dirname, 'operations'));
+		const internalOperations = await readdir(path.join(__dirname, '../', 'operations'));
 
 		for (const operation of internalOperations) {
 			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-				`./operations/${operation}/index.js`
+				`../operations/${operation}/index.js`
 			);
 
 			const config = getModuleDefault(operationInstance);

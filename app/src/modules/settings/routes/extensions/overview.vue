@@ -59,7 +59,7 @@
 import api from '@/api';
 import { useExtensionsStore } from '@/stores/extensions';
 import formatTitle from '@directus/format-title';
-import { ExtensionInfo } from '@directus/shared/types';
+import { ExtensionInfo } from '@directus/types';
 import { isEqual } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
