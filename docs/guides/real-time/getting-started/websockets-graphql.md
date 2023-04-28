@@ -77,3 +77,35 @@ This immediately creates a connection and ensures that only authorized clients c
 data updates.
 
 [Learn more about WebSocket authentication here.](/guides/real-time/authentication)
+
+## Create Mutation to Add Messages
+
+Create a mutation `ADD_MESSAGE` that sends messages to the messages collection:
+
+```js
+const ADD_MESSAGE = gql`
+	mutation AddMessage($text: String!, $user: String!) {
+		create_messages_item(data: { text: $text, user: $user }) {
+			id
+			text
+			user
+		}
+	}
+`;
+```
+
+## Set up Query to Get Messages
+
+Compose a query `GET_MESSAGES` to retrieve messages from the messages collection:
+
+```js
+const GET_MESSAGES = gql`
+	query {
+		messages {
+			id
+			text
+			user
+		}
+	}
+`;
+```
