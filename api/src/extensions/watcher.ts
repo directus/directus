@@ -17,7 +17,6 @@ export class WatcherManager {
 	}
 
 	public initializeWatcher(): void {
-
 		logger.info('Watching extensions for changes...');
 
 		const extensionDirUrl = pathToRelativeUrl(env['EXTENSIONS_PATH']);
@@ -46,7 +45,6 @@ export class WatcherManager {
 			.on('add', () => this.extensionManager.reload())
 			.on('change', () => this.extensionManager.reload())
 			.on('unlink', () => this.extensionManager.reload());
-
 	}
 
 	public async closeWatcher(): Promise<void> {
@@ -64,9 +62,9 @@ export class WatcherManager {
 					.flatMap((extension) =>
 						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [
-								path.resolve(extension.path, extension.entrypoint.app),
-								path.resolve(extension.path, extension.entrypoint.api),
-							]
+									path.resolve(extension.path, extension.entrypoint.app),
+									path.resolve(extension.path, extension.entrypoint.api),
+							  ]
 							: path.resolve(extension.path, extension.entrypoint)
 					);
 

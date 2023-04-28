@@ -985,8 +985,8 @@ export class GraphQLService {
 					type: collection.singleton
 						? ReadCollectionTypes[collection.collection]!
 						: new GraphQLNonNull(
-							new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
-						),
+								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
+						  ),
 					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 						const result = await self.resolveQuery(info);
 						context['data'] = result;
@@ -1149,8 +1149,8 @@ export class GraphQLService {
 						name: `create_${collection.collection}_items`,
 						type: collectionIsReadable
 							? new GraphQLNonNull(
-								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
-							)
+									new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
+							  )
 							: GraphQLBoolean,
 						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 							await self.resolveMutation(args, info),
@@ -1220,8 +1220,8 @@ export class GraphQLService {
 							name: `update_${collection.collection}_batch`,
 							type: collectionIsReadable
 								? new GraphQLNonNull(
-									new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
-								)
+										new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
+								  )
 								: GraphQLBoolean,
 							args: {
 								...(collectionIsReadable
@@ -1241,8 +1241,8 @@ export class GraphQLService {
 							name: `update_${collection.collection}_items`,
 							type: collectionIsReadable
 								? new GraphQLNonNull(
-									new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
-								)
+										new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
+								  )
 								: GraphQLBoolean,
 							args: {
 								...(collectionIsReadable
@@ -1874,25 +1874,25 @@ export class GraphQLService {
 			ServerInfo.addFields({
 				rateLimit: env['RATE_LIMITER_ENABLED']
 					? {
-						type: new GraphQLObjectType({
-							name: 'server_info_rate_limit',
-							fields: {
-								points: { type: GraphQLInt },
-								duration: { type: GraphQLInt },
-							},
-						}),
-					}
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
 					: GraphQLBoolean,
 				rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
 					? {
-						type: new GraphQLObjectType({
-							name: 'server_info_rate_limit_global',
-							fields: {
-								points: { type: GraphQLInt },
-								duration: { type: GraphQLInt },
-							},
-						}),
-					}
+							type: new GraphQLObjectType({
+								name: 'server_info_rate_limit_global',
+								fields: {
+									points: { type: GraphQLInt },
+									duration: { type: GraphQLInt },
+								},
+							}),
+					  }
 					: GraphQLBoolean,
 				flows: {
 					type: new GraphQLObjectType({

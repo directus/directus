@@ -70,6 +70,7 @@ const { t } = useI18n();
 const extensionsStore = useExtensionsStore();
 
 const edits = ref<Record<string, ExtensionInfo>>({});
+
 const extensions = computed(() => {
 	return extensionsStore.extensions.map((extension) => {
 		if (edits.value[extension.name]) {

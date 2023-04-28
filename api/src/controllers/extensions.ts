@@ -13,7 +13,7 @@ const router = Router();
 
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (_req, res, next) => {
 		const extensionManager = getExtensionManager();
 
 		const extensions = extensionManager.getDisplayExtensions();

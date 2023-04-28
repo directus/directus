@@ -44,6 +44,7 @@ const defaultOptions: Options = {
 	schedule: true,
 	watch: env['EXTENSIONS_AUTO_RELOAD'] && env['NODE_ENV'] !== 'development',
 };
+
 export class ExtensionManager {
 	private isLoaded = false;
 	public options: Options;
@@ -97,6 +98,7 @@ export class ExtensionManager {
 						.map((ext) => ext.name)
 						.join(', ')}`
 				);
+
 				logger.info(
 					`Disabled extensions: ${this.extensions
 						.filter((ext) => ext.enabled === false)
@@ -125,6 +127,7 @@ export class ExtensionManager {
 					const added = this.extensions.filter(
 						(extension) => !prevExtensions.some((prevExtension) => extension.path === prevExtension.path)
 					);
+
 					const removed = prevExtensions.filter(
 						(prevExtension) => !this.extensions.some((extension) => prevExtension.path === extension.path)
 					);
@@ -133,9 +136,11 @@ export class ExtensionManager {
 
 					const addedExtensions = added.map((extension) => extension.name);
 					const removedExtensions = removed.map((extension) => extension.name);
+
 					if (addedExtensions.length > 0) {
 						logger.info(`Added extensions: ${addedExtensions.join(', ')}`);
 					}
+
 					if (removedExtensions.length > 0) {
 						logger.info(`Removed extensions: ${removedExtensions.join(', ')}`);
 					}
@@ -154,6 +159,7 @@ export class ExtensionManager {
 
 	public getDisplayExtension(name: string | undefined): ExtensionInfo | undefined {
 		const extension = this.extensions.find((extension) => extension.name === name);
+
 		if (!extension) {
 			return undefined;
 		}

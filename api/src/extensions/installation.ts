@@ -48,7 +48,9 @@ export class InstallationManager {
 			responseEncoding: 'binary',
 			responseType: 'arraybuffer',
 		});
+
 		await fse.createFile(localTarPath);
+
 		await fse.writeFile(localTarPath, tarFile.data, {
 			encoding: 'binary',
 		});

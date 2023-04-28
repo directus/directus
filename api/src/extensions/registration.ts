@@ -74,6 +74,7 @@ export class RegistrationManager {
 		const hooks = this.extensionManager
 			.getEnabledExtensions()
 			.filter((extension) => extension.type === 'hook') as ApiExtension[];
+
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
@@ -102,6 +103,7 @@ export class RegistrationManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+
 				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
 					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
 				);
@@ -138,6 +140,7 @@ export class RegistrationManager {
 		for (const operation of operations) {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
 					`./${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
 				);
@@ -162,6 +165,7 @@ export class RegistrationManager {
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
+
 				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
 					`./${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
 				);
@@ -239,13 +243,16 @@ export class RegistrationManager {
 			},
 			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
 				const content = typeof code === 'function' ? code() : code;
+
 				if (content.trim().length === 0) {
 					logger.warn(`Couldn't register embed hook. Provided code is empty!`);
 					return;
 				}
+
 				if (position === 'head') {
 					this.extensionManager.hookEmbedsHead.push(content);
 				}
+
 				if (position === 'body') {
 					this.extensionManager.hookEmbedsBody.push(content);
 				}
@@ -326,6 +333,7 @@ export class RegistrationManager {
 
 	public async generateExtensionBundle(): Promise<string | null> {
 		const sharedDepsMapping = await this.getSharedDepsMapping(APP_SHARED_DEPS);
+
 		const internalImports = Object.entries(sharedDepsMapping).map(([name, path]) => ({
 			find: name,
 			replacement: path,
@@ -340,6 +348,7 @@ export class RegistrationManager {
 				makeAbsoluteExternalsRelative: false,
 				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
+
 			const { output } = await bundle.generate({ format: 'es', compact: true });
 
 			for (const out of output) {
@@ -363,6 +372,7 @@ export class RegistrationManager {
 		const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
 
 		const depsMapping: Record<string, string> = {};
+
 		for (const dep of deps) {
 			const depRegex = new RegExp(`${escapeRegExp(dep.replace(/\//g, '_'))}\\.[0-9a-f]{8}\\.entry\\.js`);
 			const depName = appDir.find((file) => depRegex.test(file));
