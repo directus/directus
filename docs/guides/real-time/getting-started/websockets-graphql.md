@@ -193,3 +193,29 @@ useEffect(() => {
 	);
 }, []);
 ```
+
+## Create Helper Functions
+
+To store the message data, create a piece of state underneath the hooks:
+
+```js
+const [messageData, setMessageData] = useState([]);
+```
+
+Next, assign the message data coming from the messages collection to `setMessageData`:
+
+```jsx
+useEffect(() => {
+	if (!data) return;
+	setMessageData((message) => [...message, ...data.messages]);
+}, [data]);
+```
+
+Finally, set up the `handleClick` method for the button such that when the button is clicked, a new message is sent to
+the collection and shows up in real time on the UI.
+
+```js
+const handleClick = () => {
+	addMessage({ variables: { text: 'Hello World!', user: 'Ben' } });
+};
+```
