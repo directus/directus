@@ -50,27 +50,28 @@
 
 <script lang="ts" setup>
 import Navigation from '../components/navigation.vue';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { DisplayConfig, ExtensionOptionsContext, Field } from '@directus/shared/types';
+import { DisplayConfig, ExtensionOptionsContext, Field } from '@directus/types';
 import formatTitle from '@directus/format-title';
-import { getDisplay } from '@/displays';
 import { getDefaultValue, typeToString } from '../utils/getDefaultValue';
 import { merge } from 'lodash';
 import { getFieldDefaults } from '../utils/getFieldDefaults';
 import { getComponent } from '../utils/getComponent';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
+import { useExtension } from '@/composables/use-extension';
 
 interface Props {
 	id: string;
 }
 
 const props = defineProps<Props>();
+const { id } = toRefs(props);
 
 const { t } = useI18n();
 
-const displayInfo = computed(() => getDisplay(props.id));
+const displayInfo = useExtension('display', id);
 
 const bindings = ref<Record<string, any>>({});
 const loaded = ref(false);
@@ -81,8 +82,8 @@ watch(
 	displayInfo,
 	(value) => {
 		load();
-		updateDefaults(value);
-		updateField(value);
+		updateDefaults(value ?? undefined);
+		updateField(value ?? undefined);
 	},
 	{ immediate: true }
 );
@@ -199,6 +200,7 @@ function save() {
 
 function load() {
 	const savedItem = localStorage.getItem(`display-${props.id}`);
+
 	if (savedItem) {
 		const saved = JSON.parse(savedItem);
 		bindings.value = saved.binding;
@@ -208,7 +210,7 @@ function load() {
 
 function clear() {
 	localStorage.removeItem(`display-${props.id}`);
-	updateDefaults(displayInfo.value);
+	updateDefaults(displayInfo.value ?? undefined);
 	fieldOptions.value = defaultFieldOptions;
 }
 </script>

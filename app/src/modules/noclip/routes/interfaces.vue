@@ -84,10 +84,9 @@
 
 <script lang="ts" setup>
 import Navigation from '../components/navigation.vue';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getInterface } from '@/interfaces';
-import { ExtensionOptionsContext, Field, InterfaceConfig } from '@directus/shared/types';
+import { ExtensionOptionsContext, Field, InterfaceConfig } from '@directus/types';
 import formatTitle from '@directus/format-title';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { merge, padStart } from 'lodash';
@@ -96,6 +95,7 @@ import { getDefaultValue, typeToString } from '../utils/getDefaultValue';
 import { getComponent } from '../utils/getComponent';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import { useExtension } from '@/composables/use-extension';
 
 interface Props {
 	id: string;
@@ -108,10 +108,11 @@ interface EmittedInfo {
 }
 
 const props = defineProps<Props>();
+const { id } = toRefs(props);
 
 const { t } = useI18n();
 
-const interfaceInfo = computed(() => getInterface(props.id));
+const interfaceInfo = useExtension('interface', id);
 
 const bindings = ref<Record<string, any>>({});
 const loaded = ref(false);
@@ -125,9 +126,9 @@ watch(
 	interfaceInfo,
 	(value) => {
 		load();
-		updateDefaults(value);
-		updateField(value);
-		updateListeners(value);
+		updateDefaults(value ?? undefined);
+		updateField(value ?? undefined);
+		updateListeners(value ?? undefined);
 	},
 	{ immediate: true }
 );
@@ -208,6 +209,7 @@ async function updateListeners(value?: InterfaceConfig) {
 				bindings.value.value = value;
 			}
 		};
+
 		return acc;
 	}, {});
 }
@@ -273,6 +275,7 @@ function save() {
 
 function load() {
 	const savedItem = localStorage.getItem(`interface-${props.id}`);
+
 	if (savedItem) {
 		const saved = JSON.parse(savedItem);
 		bindings.value = saved.binding;
@@ -282,7 +285,7 @@ function load() {
 
 function clear() {
 	localStorage.removeItem(`interface-${props.id}`);
-	updateDefaults(interfaceInfo.value);
+	updateDefaults(interfaceInfo.value ?? undefined);
 	fieldOptions.value = defaultFieldOptions;
 }
 </script>

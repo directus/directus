@@ -67,26 +67,29 @@
 
 <script lang="ts" setup>
 import Navigation from '../components/navigation.vue';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { DeepPartial, Field, PanelConfig } from '@directus/shared/types';
+import { DeepPartial, Field, PanelConfig } from '@directus/types';
 import { getFieldDefaults } from '../utils/getFieldDefaults';
-import { getPanel } from '@/panels';
+import { getInternalPanels } from '@/panels';
 import VWorkspace from '@/components/v-workspace.vue';
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import { getOptions } from '../utils/getOptions';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
+import { useExtension } from '@/composables/use-extension';
 
 interface Props {
 	id: string;
 }
 
 const props = defineProps<Props>();
+const { id } = toRefs(props);
 
 const { t } = useI18n();
 const now = new Date();
 
-const panelInfo = computed(() => getPanel(props.id));
+const panelInfo = useExtension('panel', id);
+
 const zoomToFit = ref(false);
 const editMode = ref(false);
 const bindings = ref<Record<string, any>>({});
@@ -115,8 +118,8 @@ watch(
 		loaded.value = false;
 		load();
 		updateTile();
-		await updateDefaults(value);
-		await updateField(value);
+		await updateDefaults(value ?? undefined);
+		await updateField(value ?? undefined);
 		if (value) loaded.value = true;
 	},
 	{ immediate: true }
@@ -183,6 +186,7 @@ function save() {
 
 function load() {
 	const savedItem = localStorage.getItem(`panel-${props.id}`);
+
 	if (savedItem) {
 		const saved = JSON.parse(savedItem);
 		bindings.value = saved.binding;
@@ -192,7 +196,7 @@ function load() {
 
 function clear() {
 	localStorage.removeItem(`panel-${props.id}`);
-	updateDefaults(panelInfo.value);
+	updateDefaults(panelInfo.value ?? undefined);
 	updateTile();
 }
 

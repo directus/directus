@@ -56,19 +56,15 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
 import { useRouter } from 'vue-router';
 import { computed } from 'vue';
-import { getPanels } from '@/panels';
+import { useExtensions } from '@/extensions';
 
 const { currentRoute } = useRouter();
 
 const { t } = useI18n();
 
-const { interfaces } = getInterfaces();
-const { displays } = getDisplays();
-const { panels } = getPanels();
+const { displays, interfaces, panels } = useExtensions();
 
 const interfaceItems = interfaces.value
 	.filter((component) => component.system !== true)

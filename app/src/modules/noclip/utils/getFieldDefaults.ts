@@ -1,4 +1,4 @@
-import { DeepPartial, Field } from '@directus/shared/types';
+import { DeepPartial, Field } from '@directus/types';
 
 type FieldWithDefault = Field & {
 	default: any;
@@ -380,6 +380,7 @@ export function getFieldDefaults(
 						},
 					]),
 				};
+
 			case 'time-series': {
 				const now = new Date();
 				now.setMonth(now.getMonth() + 1);
@@ -400,6 +401,7 @@ export function getFieldDefaults(
 							timestamp_minute: now.getMinutes(),
 						},
 					});
+
 					now.setMinutes(now.getMinutes() - 15);
 				}
 
@@ -413,6 +415,7 @@ export function getFieldDefaults(
 					data: def(data),
 				};
 			}
+
 			case 'variable':
 				return {
 					field: def('my_key'),

@@ -61,7 +61,8 @@ const relativeFormat = (value: Date) => {
 	}
 };
 
-watch([localValue, props],
+watch(
+	[localValue, props],
 	async ([newValue]) => {
 		if (newValue === null) {
 			displayValue.value = null;

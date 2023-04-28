@@ -1,4 +1,4 @@
-import { defineModule } from '@directus/shared/utils';
+import { defineModule } from '@directus/utils';
 import Dashboard from './routes/dashboard.vue';
 import Interfaces from './routes/interfaces.vue';
 import Displays from './routes/displays.vue';

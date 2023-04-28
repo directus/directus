@@ -22,9 +22,7 @@
 import Navigation from '../components/navigation.vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getInterfaces } from '@/interfaces';
-import { getPanels } from '@/panels';
-import { getDisplays } from '@/displays';
+import { useExtensions } from '@/extensions';
 
 const { t } = useI18n();
 
@@ -32,9 +30,11 @@ const title = computed(() => {
 	return t('dashboard');
 });
 
-const interfaceCount = computed(() => getInterfaces().interfaces.value.length);
-const displayCount = computed(() => getDisplays().displays.value.length);
-const panelCount = computed(() => getPanels().panels.value.length);
+const { displays, interfaces, panels } = useExtensions();
+
+const interfaceCount = computed(() => interfaces.value.length);
+const displayCount = computed(() => displays.value.length);
+const panelCount = computed(() => panels.value.length);
 </script>
 
 <style lang="scss" scoped>
