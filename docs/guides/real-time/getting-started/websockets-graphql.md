@@ -55,3 +55,25 @@ In your React project, run the following command:
 ```js
 npm install graphql-ws @apollo/client
 ```
+
+## Authenticate Your Connection
+
+Establish a WebSocket connection between the client and server using `createClient` from `graphql-ws`. To authenticate,
+enter both `your-directus-url` and the `token` generated earlier.
+
+```js
+import { createClient } from 'graphql-ws';
+
+const client = createClient({
+	url: 'ws://your-directus-url/graphql', // [!code ++]
+	keepAlive: 30000,
+	connectionParams: async () => {
+		return { access_token: 'MY_TOKEN' }; // [!code ++]
+	},
+});
+```
+
+This immediately creates a connection and ensures that only authorized clients can access the resources and real-time
+data updates.
+
+[Learn more about WebSocket authentication here.](/guides/real-time/authentication)
