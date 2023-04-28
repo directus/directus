@@ -6,20 +6,20 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+<script lang="ts" setup>
 import { useCollection } from '@directus/composables';
+import { toRefs } from 'vue';
 
 interface Props {
-	value?: string
-	icon?: boolean
+	value?: string;
+	icon?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	value: undefined,
-	icon: false
+	icon: false,
 });
 
-const {value} = toRefs(props);
+const { value } = toRefs(props);
 const { info } = useCollection(value);
 </script>

@@ -5,6 +5,7 @@ import { orderBy } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
+import { flushCaches } from '../../cache.js';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
@@ -15,6 +16,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	let migrationFiles = await fse.readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
+
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
@@ -29,6 +31,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	].sort((a, b) => (a.version! > b.version! ? 1 : -1));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));
+
 	if (migrations.length > migrationKeys.size) {
 		throw new Error('Migration keys collide! Please ensure that every migration uses a unique key.');
 	}
@@ -75,6 +78,8 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		await up(database);
 		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
+
+		await flushCaches(true);
 	}
 
 	async function down() {
@@ -98,11 +103,16 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		await down(database);
 		await database('directus_migrations').delete().where({ version: migration.version });
+
+		await flushCaches(true);
 	}
 
 	async function latest() {
+		let needsCacheFlush = false;
+
 		for (const migration of migrations) {
 			if (migration.completed === false) {
+				needsCacheFlush = true;
 				const { up } = await import(`file://${migration.file}`);
 
 				if (log) {
@@ -112,6 +122,10 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 				await up(database);
 				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');
 			}
+		}
+
+		if (needsCacheFlush) {
+			await flushCaches(true);
 		}
 	}
 }

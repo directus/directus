@@ -8,7 +8,7 @@ author_override:
 author: Bryant Gillespie
 ---
 
-# Security in Headless CMS
+# Security Best Practices For Headless CMS Projects
 
 > {{ $frontmatter.description }}
 

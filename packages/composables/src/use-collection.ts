@@ -1,5 +1,6 @@
 import type { AppCollection, Field } from '@directus/types';
-import { ComputedRef, Ref, computed, ref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useStores } from './use-system.js';
 
 export type UsableCollection = {
@@ -37,7 +38,7 @@ export function useCollection(collectionKey: string | Ref<string | null>): Usabl
 		const defaults: Record<string, any> = {};
 
 		for (const field of fields.value) {
-			if (field.schema?.default_value) {
+			if (field.schema !== null && 'default_value' in field.schema) {
 				defaults[field.field] = field.schema.default_value;
 			}
 		}

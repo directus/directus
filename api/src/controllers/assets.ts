@@ -1,5 +1,6 @@
 import type { Range } from '@directus/storage';
 import { parseJSON } from '@directus/utils';
+import contentDisposition from 'content-disposition';
 import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
@@ -10,7 +11,8 @@ import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
-import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets.js';
+import type { TransformationParams } from '../types/assets.js';
+import { TransformationMethods } from '../types/assets.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
@@ -28,6 +30,7 @@ router.get(
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
 		const database = getDatabase();
+
 		const savedAssetSettings = await database
 			.select('storage_asset_presets', 'storage_asset_transform')
 			.from('directus_settings')
@@ -80,6 +83,7 @@ router.get(
 		}
 
 		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation['key']!);
+
 		const allKeys: string[] = [
 			...systemKeys,
 			...(assetSettings.storage_asset_presets || []).map(
@@ -138,11 +142,28 @@ router.get(
 			schema: req.schema,
 		});
 
-		const transformation: TransformationParams | TransformationPreset = res.locals['transformation'].key
-			? (res.locals['shortcuts'] as TransformationPreset[]).find(
+		const vary = ['Origin', 'Cache-Control'];
+
+		const transformation: TransformationParams = res.locals['transformation'].key
+			? (res.locals['shortcuts'] as TransformationParams[]).find(
 					(transformation) => transformation['key'] === res.locals['transformation'].key
 			  )
 			: res.locals['transformation'];
+
+		if (transformation.format === 'auto') {
+			let format: Exclude<TransformationParams['format'], 'auto'>;
+
+			if (req.headers.accept?.includes('image/avif')) {
+				format = 'avif';
+			} else if (req.headers.accept?.includes('image/webp')) {
+				format = 'webp';
+			} else {
+				format = 'jpg';
+			}
+
+			transformation.format = format;
+			vary.push('Accept');
+		}
 
 		let range: Range | undefined = undefined;
 
@@ -166,12 +187,15 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		res.attachment(req.params['filename'] ?? file.filename_download);
+		const filename = req.params['filename'] ?? file.filename_download;
+		res.attachment(filename);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
 		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
+		res.setHeader('Vary', vary.join(', '));
 
 		const unixTime = Date.parse(file.modified_on);
+
 		if (!Number.isNaN(unixTime)) {
 			const lastModifiedDate = new Date(unixTime);
 			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());
@@ -186,7 +210,7 @@ router.get(
 		}
 
 		if ('download' in req.query === false) {
-			res.removeHeader('Content-Disposition');
+			res.setHeader('Content-Disposition', contentDisposition(filename, { type: 'inline' }));
 		}
 
 		if (req.method.toLowerCase() === 'head') {

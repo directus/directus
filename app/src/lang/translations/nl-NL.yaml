@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items wilt archiveren?
 reset_system_permissions_to: 'Systeemrechten resetten naar:'
 reset_system_permissions_copy: Deze actie overschrijft alle rechten die u heeft toegepast op de systeemcollecties. Weet u het zeker?
-the_following_are_minimum_permissions: De volgende permissies zijn de minimale permissies wanneer "App Access" is ingeschakeld. U kunt permissies toevoegen vanaf dit punt, maar niet verminderen.
 app_access_minimum: Minimale apptoegang
 recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
@@ -296,7 +295,12 @@ o2m_relationship: One-to-Many Relatie
 m2m_relationship: Many-to-Many Relatie
 m2a_relationship: Many-to-Any Relatie
 invalid_item: Ongeldig item
+require_confirmation: Bevestiging Vragen
+dialog: Dialoog
 modal: Modal
+confirmation_dialog: Bevestigings dialoog
+confirmation_description: Bevestig beschrijving
+confirmation_input_fields: Bevestiging invoervelden
 next: Volgende
 field_name: Veldnaam
 translations: Vertalingen
@@ -315,6 +319,7 @@ updated_on: Bijgewerkt op
 updated_by: Bijgewerkt door
 primary_key: Primary Key
 foreign_key: Foreign Key
+field_key: Field Key
 finish_setup: Setup voltooien
 dismiss: Negeren
 toggle_raw_editor: Schakel Onbewerkte Bewerker
@@ -788,6 +793,8 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Selecteer een Flow
+run_flow_confirm: Ben je zeker dat u deze flow wilt uitvoeren?
+run_flow_on_current_collection: Voer flow uit op Huidige Collectie
 run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
 run_flow_success: Flow "{flow}" is succesvol uitgevoerd
 trigger: Trigger
@@ -1723,6 +1730,8 @@ operations:
     message: Bericht
   mail:
     to: Aan
+    template: Sjabloon
+    data: Data
   notification:
     recipient: Gebruiker
     message: Bericht

@@ -1,5 +1,6 @@
 import cookieParser from 'cookie-parser';
-import express, { Request, RequestHandler, Response } from 'express';
+import type { Request, RequestHandler, Response } from 'express';
+import express from 'express';
 import type { ServerResponse } from 'http';
 import { merge } from 'lodash-es';
 import { readFile } from 'node:fs/promises';
@@ -7,7 +8,6 @@ import { createRequire } from 'node:module';
 import path from 'path';
 import qs from 'qs';
 import { registerAuthProviders } from './auth.js';
-import { flushCaches } from './cache.js';
 import activityRouter from './controllers/activity.js';
 import assetsRouter from './controllers/assets.js';
 import authRouter from './controllers/auth.js';
@@ -90,8 +90,6 @@ export default async function createApp(): Promise<express.Application> {
 	if ((await validateMigrations()) === false) {
 		logger.warn(`Database migrations have not all been run`);
 	}
-
-	await flushCaches();
 
 	await registerAuthProviders();
 
@@ -194,6 +192,7 @@ export default async function createApp(): Promise<express.Application> {
 
 		// Set the App's base path according to the APIs public URL
 		const html = await readFile(adminPath, 'utf8');
+
 		const htmlWithVars = html
 			.replace(/<base \/>/, `<base href="${adminUrl.toString({ rootRelative: true })}/" />`)
 			.replace(/<embed-head \/>/, embeds.head)
@@ -219,6 +218,7 @@ export default async function createApp(): Promise<express.Application> {
 	if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 		app.use(rateLimiterGlobal);
 	}
+
 	if (env['RATE_LIMITER_ENABLED'] === true) {
 		app.use(rateLimiter);
 	}

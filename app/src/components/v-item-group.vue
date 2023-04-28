@@ -32,6 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['update:modelValue']);
 
 const { modelValue: selection, multiple, max, mandatory } = toRefs(props);
+
 useGroupableParent(
 	{
 		selection: selection,

@@ -1,4 +1,5 @@
-import { Accountability, Action, PermissionsAction, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
+import { Action } from '@directus/constants';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
@@ -59,6 +60,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return {
 			trackMutations(count: number) {
 				mutationCount += count;
+
 				if (mutationCount > maxCount) {
 					throw new InvalidPayloadException(`Exceeded max batch mutation limit of ${maxCount}.`);
 				}
@@ -91,6 +93,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(1);
 		}
@@ -100,6 +103,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
+
 		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
@@ -158,6 +162,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
 			} = await payloadService.processM2O(payloadWithPresets, opts);
+
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
@@ -323,6 +328,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
 				});
+
 				primaryKeys.push(primaryKey);
 			}
 
@@ -537,6 +543,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
 		}
@@ -548,6 +555,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
+
 		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
@@ -609,6 +617,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
 			} = await payloadService.processM2O(payloadWithPresets, opts);
+
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
@@ -637,6 +646,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					key,
 					opts
 				);
+
 				childrenRevisions.push(...revisions);
 				nestedActionEvents.push(...nestedActionEventsO2M);
 			}
@@ -834,6 +844,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
+
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
 		}

@@ -26,16 +26,14 @@
 </template>
 
 <script lang="ts">
+import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
-import { version } from '../../../../package.json';
-import { useProjectInfo } from '../composables/use-project-info';
 
 export default defineComponent({
 	setup() {
-		const { t } = useI18n();
+		const version = __DIRECTUS_VERSION__;
 
-		const { parsedInfo } = useProjectInfo();
+		const { t } = useI18n();
 
 		const navItems = [
 			{
@@ -54,7 +52,7 @@ export default defineComponent({
 				to: `/settings/roles`,
 			},
 			{
-				icon: 'bookmark_border',
+				icon: 'bookmark',
 				name: t('settings_presets'),
 				to: `/settings/presets`,
 			},
@@ -76,23 +74,16 @@ export default defineComponent({
 		];
 
 		const externalItems = computed(() => {
-			const bugReportParams = new URLSearchParams({
-				template: 'bug_report.yml',
-				'directus-version': parsedInfo.value?.directus.version ?? '',
-				'node-version': parsedInfo.value?.node.version ?? '',
-				'operating-system': `${parsedInfo.value?.os.type ?? ''} ${parsedInfo.value?.os.version ?? ''}`,
-			});
-
 			return [
 				{
 					icon: 'bug_report',
 					name: t('report_bug'),
-					href: `https://github.com/directus/directus/issues/new?${bugReportParams.toString()}`,
+					href: 'https://github.com/directus/directus/issues/new?template=bug_report.yml',
 				},
 				{
 					icon: 'new_releases',
 					name: t('request_feature'),
-					href: 'https://github.com/directus/directus/discussions/new',
+					href: 'https://github.com/directus/directus/discussions/new?category=feature-requests',
 				},
 			];
 		});

@@ -69,6 +69,7 @@ import { nanoid } from 'nanoid';
 import { Field, DeepPartial } from '@directus/types';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
+import { translate } from '@/utils/translate-object-values';
 
 type PreviewExtra = {
 	to: string;
@@ -169,6 +170,7 @@ export default defineComponent({
 					if (fieldValue === null || fieldValue === undefined || fieldValue === '') return true;
 				}
 			}
+
 			return false;
 		});
 
@@ -199,7 +201,7 @@ export default defineComponent({
 							...part,
 							to: part.url,
 							icon: part.icon,
-							name: part.name,
+							name: translate(part.name),
 						};
 					}
 

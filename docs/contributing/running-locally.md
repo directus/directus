@@ -16,19 +16,14 @@ readTime: 4 min read
 You will need to have [the latest version of Node](https://nodejs.org/en/download/current) to _build_ a Development
 version of Directus.
 
-You can use the JavaScript tool manager [volta](https://volta.sh) to automatically install the current node and npm
-versions.
-
-You will also need to have the package manager [pnpm](https://pnpm.io) installed. You can install pnpm using the
-following command: `npm install -g pnpm`.
+You will also need to have the package manager [pnpm](https://pnpm.io) installed.
 
 :::
 
 ## 1. Fork the Directus repository
 
 Go to the [repository](https://github.com/directus/directus) and fork it to your GitHub account. A fork is your copy of
-the Directus repository. Forking the repository allows you to freely experiment with changes without affecting the
-original project.
+the Directus repository which allows you to freely experiment with changes without affecting the original project.
 
 ## 2. Clone from your repository
 
@@ -46,24 +41,41 @@ git checkout -b YOUR-BRANCH-NAME
 
 ```bash
 pnpm install
-pnpm -r build
+pnpm build
 ```
 
 ## 5. Create a `.env` file
 
 Create an `.env` file under the `api` folder using vars from the online
-[config help](https://docs.directus.io/self-hosted/config-options)
+[config help](https://docs.directus.io/self-hosted/config-options).
+
+::: tip Config Values
+
+The `KEY`& `SECRET` config options from [Security](https://docs.directus.io/self-hosted/config-options.html#security)
+are mandatory.
+
+Also the [Database Configuration](https://docs.directus.io/self-hosted/config-options.html#database) must be specified.
+You might want to use the [docker-compose.yml](https://github.com/directus/directus/blob/main/docker-compose.yml) file
+to spin up a test database.
+
+:::
 
 ## 6. Initialize the database
 
 For this step, you'll need to already have a SQL database up-and-running, except if you're using the SQLite driver,
 which will create the database (file) for you.
 
+::: tip Admin Account
+
+Adding the `ADMIN_EMAIL` & `ADMIN_PASSWORD` to the `.env` file before running the `bootstrap` command, will populate the
+admin user with the provided credentials instead of random values.
+
+:::
+
 To start the initialization run the following command:
 
 ```bash
-# Run the command in the 'api' context (to ensure the database file is created in the right directory)
-pnpm --dir api cli bootstrap
+pnpm --filter api cli bootstrap
 ```
 
 This will set-up the required tables for Directus and make sure all the migrations have run.
@@ -73,7 +85,7 @@ This will set-up the required tables for Directus and make sure all the migratio
 You can run all packages in development with the following command:
 
 ```bash
-pnpm -r dev
+pnpm --recursive dev
 ```
 
 ::: warning Race Conditions
@@ -90,7 +102,7 @@ names and list of scripts in their related `package.json`.
 Example of running the API only:
 
 ```bash
-pnpm --filter directus dev
+pnpm --filter api dev
 ```
 
 If you want to work on multiple packages at once, you should create a new instance of your terminal for each package.
@@ -109,14 +121,14 @@ Example of running both the API and App at the same time:
   <td>
 
 ```bash
-pnpm --filter directus dev
+pnpm --filter api dev
 ```
 
   </td>
   <td>
 
 ```bash
-pnpm --filter @directus/app dev
+pnpm --filter app dev
 ```
 
   </td>
@@ -151,16 +163,16 @@ Install [Docker](https://docs.docker.com/get-docker) and ensure that the service
 
 ```bash
 # Ensure that you are testing on the lastest codebase
-pnpm -r build
+pnpm build
 
 # Run the unit tests
-pnpm -r test
+pnpm test
 
 # Clean up in case you ran the blackbox tests before
-docker compose -f tests-blackbox/docker-compose.yml down -v
+docker compose -f tests/blackbox/docker-compose.yml down -v
 
 # Start the necessary containers for the blackbox tests
-docker compose -f tests-blackbox/docker-compose.yml up -d --wait
+docker compose -f tests/blackbox/docker-compose.yml up -d --wait
 
 # Run the blackbox tests
 pnpm test:blackbox

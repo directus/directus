@@ -1,19 +1,21 @@
+import type { ForeignKey, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import type { ForeignKey, SchemaInspector } from '@directus/schema';
 import { clearSystemCache, getCache } from '../cache.js';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { getHelpers, Helpers } from '../database/helpers/index.js';
 import { systemRelationRows } from '../database/system-data/relations/index.js';
 import emitter from '../emitter.js';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
-import { ItemsService, QueryOptions } from './items.js';
+import type { QueryOptions } from './items.js';
+import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';
 
 export class RelationsService {
@@ -32,6 +34,7 @@ export class RelationsService {
 		this.schemaInspector = options.knex ? createInspector(options.knex) : getSchemaInspector();
 		this.schema = options.schema;
 		this.accountability = options.accountability || null;
+
 		this.relationsItemService = new ItemsService('directus_relations', {
 			knex: this.knex,
 			schema: this.schema,
@@ -85,6 +88,7 @@ export class RelationsService {
 			});
 
 			if (!permissions || !permissions.fields) throw new ForbiddenException();
+
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
 				if (allowedFields.includes(field) === false) throw new ForbiddenException();
@@ -112,6 +116,7 @@ export class RelationsService {
 		const schemaRow = (await this.schemaInspector.foreignKeys(collection)).find(
 			(foreignKey) => foreignKey.column === field
 		);
+
 		const stitched = this.stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
 		const results = await this.filterForbidden(stitched);
 
@@ -189,6 +194,7 @@ export class RelationsService {
 						this.alterType(table, relation);
 
 						const constraintName: string = getDefaultIndexName('foreign', relation.collection!, relation.field!);
+
 						const builder = table
 							.foreign(relation.field!, constraintName)
 							.references(
@@ -558,6 +564,7 @@ export class RelationsService {
 	 */
 	private alterType(table: Knex.TableBuilder, relation: Partial<Relation>) {
 		const m2oFieldDBType = this.schema.collections[relation.collection!]!.fields[relation.field!]!.dbType;
+
 		const relatedFieldDBType =
 			this.schema.collections[relation.related_collection!]!.fields[
 				this.schema.collections[relation.related_collection!]!.primary

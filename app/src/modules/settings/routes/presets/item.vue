@@ -94,7 +94,7 @@
 			</div>
 
 			<template #sidebar>
-				<sidebar-detail icon="info_outline" :title="t('information')" close>
+				<sidebar-detail icon="info" :title="t('information')" close>
 					<div v-md="t('page_help_settings_presets_item')" class="page-description" />
 				</sidebar-detail>
 
@@ -305,6 +305,7 @@ function useValues() {
 			layout_options: null,
 			filter: null,
 		};
+
 		if (isNew.value === true) return defaultValues;
 		if (preset.value === null) return defaultValues;
 
@@ -509,7 +510,7 @@ function useForm() {
 				width: 'half',
 			},
 			schema: {
-				default_value: 'bookmark_outline',
+				default_value: 'bookmark',
 			},
 		},
 		{

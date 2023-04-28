@@ -495,6 +495,7 @@ describe('#list', () => {
 		await driver.list().next();
 
 		expect(driver['fullPath']).toHaveBeenCalledWith('');
+
 		expect(mockListBlobsFlat).toHaveBeenCalledWith({
 			prefix: '',
 		});
@@ -504,6 +505,7 @@ describe('#list', () => {
 		await driver.list(sample.path.input).next();
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+
 		expect(mockListBlobsFlat).toHaveBeenCalledWith({
 			prefix: sample.path.inputFull,
 		});

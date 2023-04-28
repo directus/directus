@@ -38,6 +38,12 @@ Entries in a bundle are located within a `src` directory in the bundle.
 
 This will scaffold a new blank extension for you to work on.
 
+:::tip
+
+The bundle extension type currently doesn't support the migration extension type.
+
+:::
+
 ### Add Existing
 
 1. Move your extension directory within your bundle's `src` directory.

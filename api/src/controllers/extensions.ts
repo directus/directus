@@ -35,22 +35,32 @@ router.get(
 );
 
 router.get(
-	'/sources/index.js',
+	'/sources/:chunk',
 	asyncHandler(async (req, res) => {
+		const chunk = req.params['chunk'] as string;
 		const extensionManager = getExtensionManager();
 
-		const extensionSource = extensionManager.getAppExtensions();
-		if (extensionSource === null) {
+		let source: string | null;
+
+		if (chunk === 'index.js') {
+			source = extensionManager.getAppExtensions();
+		} else {
+			source = extensionManager.getAppExtensionChunk(chunk);
+		}
+
+		if (source === null) {
 			throw new RouteNotFoundException(req.path);
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
+
 		res.setHeader(
 			'Cache-Control',
 			getCacheControlHeader(req, getMilliseconds(env['EXTENSIONS_CACHE_TTL']), false, false)
 		);
+
 		res.setHeader('Vary', 'Origin, Cache-Control');
-		res.end(extensionSource);
+		res.end(source);
 	})
 );
 

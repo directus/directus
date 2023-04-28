@@ -6,6 +6,7 @@ describe('isValidJSON', () => {
 		const result = isValidJSON(`{"name": "Directus"}`);
 		expect(result).toEqual(true);
 	});
+
 	it('returns false if JSON is invalid', () => {
 		const result = isValidJSON(`{"name: Directus"}`);
 		expect(result).toEqual(false);

@@ -269,6 +269,7 @@ export default defineComponent({
 							},
 						});
 					}
+
 					if (newParent) {
 						router.replace(`/files/folders/${newParent}`);
 					} else {

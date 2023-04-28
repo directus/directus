@@ -15,8 +15,9 @@ import { clone, isPlainObject } from 'lodash-es';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
 import { InvalidQueryException } from '../exceptions/invalid-query.js';
+import type { AliasMap } from './get-column-path.js';
+import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
-import { AliasMap, getColumnPath } from './get-column-path.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { stripFunction } from './strip-function.js';
 
@@ -165,6 +166,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 					`${aliasedParentCollection}.${relation.field}`,
 					`${alias}.${schema.collections[relation.related_collection!]!.primary}`
 				);
+
 				aliasMap[aliasKey]!.collection = relation.related_collection!;
 			} else if (relationType === 'a2o') {
 				const pathScope = pathParts[0]!.split(':')[1];
@@ -187,6 +189,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 							)
 						);
 				});
+
 				aliasMap[aliasKey]!.collection = pathScope;
 			} else if (relationType === 'o2a') {
 				rootQuery.leftJoin({ [alias]: relation.collection }, (joinClause) => {
@@ -201,6 +204,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 							)
 						);
 				});
+
 				aliasMap[aliasKey]!.collection = relation.collection;
 
 				hasMultiRelational = true;
@@ -210,6 +214,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 					`${aliasedParentCollection}.${schema.collections[relation.related_collection!]!.primary}`,
 					`${alias}.${relation.field}`
 				);
+
 				aliasMap[aliasKey]!.collection = relation.collection;
 
 				hasMultiRelational = true;
@@ -295,6 +300,7 @@ export function applySort(
 			relations,
 			schema,
 		});
+
 		const [alias, field] = columnPath.split('.');
 
 		if (!hasMultiRelationalSort) {

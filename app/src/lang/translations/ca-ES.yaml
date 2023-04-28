@@ -131,7 +131,6 @@ archive_confirm_count: >-
   No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count} elements?
 reset_system_permissions_to: 'Restableix els permisos del sistema a:'
 reset_system_permissions_copy: Aquesta acció rescriurà qualsevol permís personalitzat que hagis aplicat a les col·leccions del sistema. Estàs sgur?
-the_following_are_minimum_permissions: Els següents són els mínims permisos requerits quan l'"Accés a l'aplicació" està habilitat. Pots estendre els permisos a partir d'aquí, però no els de més abaix.
 app_access_minimum: Accés a l'aplicació mínim
 recommended_defaults: Predeterminats recomanats
 unarchive: Desarxiva
@@ -1758,6 +1757,9 @@ operations:
     payload: Càrrega
   log:
     message: Missatge
+  mail:
+    template: Plantilla
+    data: Dades
   notification:
     recipient: Usuari
     message: Missatge
