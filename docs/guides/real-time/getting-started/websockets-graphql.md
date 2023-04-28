@@ -219,3 +219,22 @@ const handleClick = () => {
 	addMessage({ variables: { text: 'Hello World!', user: 'Ben' } });
 };
 ```
+
+## Display the Messages
+
+Within the `<ul/>` created earlier, map over `messageData` and render it:
+
+```js
+<ul>
+	{messageData.map((message) => ( // [!code ++]
+		<li key={message.id}> // [!code ++]
+			<p> // [!code ++]
+				{message.user} says {message.text} // [!code ++]
+			</p> // [!code ++]
+		</li> // [!code ++]
+	))} // [!code ++]
+</ul>
+```
+
+Now, whenever you click the button, a new message with its corresponding text and user will be displayed. Also, any
+updates made in the collection should automatically reflect in the UI.
