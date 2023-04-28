@@ -83,7 +83,7 @@ to your specific needs. This can be done by creating a `extension.config.js` fil
 with the following content:
 
 ```js
-module.exports = {
+export default {
 	plugins: [],
 };
 ```
