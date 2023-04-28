@@ -591,7 +591,7 @@ function getRollupOptions({
 			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
 			mode === 'browser' ? styles() : null,
 			...plugins,
-			nodeResolve({ browser: mode === 'browser' }),
+			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
 			replace({
