@@ -57,6 +57,7 @@ export default defineComponent({
 			const collectionExists = !!collectionsStore.collections.find(
 				(collection) => collection.collection === collectionName
 			);
+
 			if (collectionExists === false) return null;
 			return collectionName;
 		});

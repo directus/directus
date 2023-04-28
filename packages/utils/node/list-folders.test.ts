@@ -1,5 +1,6 @@
 import path from 'path';
-import { DirResult, dirSync } from 'tmp';
+import type { DirResult } from 'tmp';
+import { dirSync } from 'tmp';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { listFolders } from './list-folders.js';
 

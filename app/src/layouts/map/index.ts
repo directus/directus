@@ -68,15 +68,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const geometryOptions = computed<GeometryOptions | undefined>(() => {
 			const field = geometryFieldData.value;
+
 			if (!field) {
 				return;
 			}
+
 			const geometryField = field.field;
 			const geometryFormat = getGeometryFormatForType(field.type);
 			const geometryType = field.type.split('.')[1] ?? field.meta?.options?.geometryType;
+
 			if (!geometryFormat) {
 				return;
 			}
+
 			return { geometryField, geometryFormat, geometryType } as GeometryOptions;
 		});
 
@@ -130,9 +134,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function fitDataBounds() {
 			shouldUpdateCamera.value = true;
+
 			if (isGeometryFieldNative.value) {
 				return;
 			}
+
 			if (geojson.value?.features.length) {
 				geojsonBounds.value = cloneDeep(geojson.value.bbox);
 			}
@@ -175,6 +181,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					geojsonError.value = null;
 					geojson.value = toGeoJSON(items.value, geometryOptions.value);
 					geojsonLoading.value = false;
+
 					if (!cameraOptions.value || shouldUpdateCamera.value) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
@@ -236,11 +243,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		type ItemPopup = { item?: any; position?: { x: number; y: number } };
 		const itemPopup = ref<ItemPopup>({ item: null });
+
 		function updateItemPopup(update: Partial<ItemPopup>) {
 			if ('item' in update) {
 				const field = primaryKeyField.value?.field;
 				update.item = !field ? null : items.value.find((i) => i[field] === update.item) ?? null;
 			}
+
 			itemPopup.value = merge({}, itemPopup.value, update);
 		}
 

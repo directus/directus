@@ -1,6 +1,7 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Field, Relation, Type } from '@directus/types';
-import { Options, SchemaHelper } from '../types.js';
+import type { Options } from '../types.js';
+import { SchemaHelper } from '../types.js';
 
 export class SchemaHelperOracle extends SchemaHelper {
 	override async changeToType(

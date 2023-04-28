@@ -74,16 +74,16 @@ export class ExtensionManager {
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {
-		const prevOptions = this.options;
-
 		this.options = {
 			...defaultOptions,
 			...options,
 		};
 
-		if (!prevOptions.watch && this.options.watch) {
+		const wasWatcherInitialized = this.watcher !== null;
+
+		if (this.options.watch && !wasWatcherInitialized) {
 			this.watcher.initializeWatcher();
-		} else if (prevOptions.watch && !this.options.watch) {
+		} else if (!this.options.watch && wasWatcherInitialized) {
 			await this.watcher.closeWatcher();
 		}
 
@@ -106,7 +106,7 @@ export class ExtensionManager {
 			}
 		}
 
-		if (!prevOptions.watch && this.options.watch) {
+		if (this.options.watch && !wasWatcherInitialized) {
 			this.watcher.updateWatchedExtensions(this.extensions);
 		}
 	}

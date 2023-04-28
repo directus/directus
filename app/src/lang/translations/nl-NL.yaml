@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items wilt archiveren?
 reset_system_permissions_to: 'Systeemrechten resetten naar:'
 reset_system_permissions_copy: Deze actie overschrijft alle rechten die u heeft toegepast op de systeemcollecties. Weet u het zeker?
-the_following_are_minimum_permissions: De volgende permissies zijn de minimale permissies wanneer "App Access" is ingeschakeld. U kunt permissies toevoegen vanaf dit punt, maar niet verminderen.
 app_access_minimum: Minimale apptoegang
 recommended_defaults: Aanbevolen standaardinstellingen
 unarchive: Terugzetten
@@ -1731,6 +1730,8 @@ operations:
     message: Bericht
   mail:
     to: Aan
+    template: Sjabloon
+    data: Data
   notification:
     recipient: Gebruiker
     message: Bericht

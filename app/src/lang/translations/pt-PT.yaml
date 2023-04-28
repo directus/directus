@@ -128,7 +128,6 @@ archive_confirm_count: >-
   Nenhum documento selecionado | Tem a certeza que pretende arquivar este documento? | Tem a certeza que pretende arquivar {count} documentos?
 reset_system_permissions_to: 'Restaurar permissões do sistema para:'
 reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que tenha aplicado às coleções do sistema. Tem certeza que pretende continuar?
-the_following_are_minimum_permissions: As permissões mínimas seguintes são necessárias para quando o "Acesso à App" está ativo. É permitido acrescentar permissões, mas não reduzir.
 app_access_minimum: Permissões mínimas para Acesso à App
 recommended_defaults: Predefinições recomendadas
 unarchive: Desarquivar

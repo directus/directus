@@ -4,6 +4,7 @@ import processError from './process-error.js';
 
 describe('GraphQL processError util', () => {
 	const sampleError = new GraphQLError('An error message', { path: ['test_collection'] });
+
 	const redactedError = {
 		message: 'An unexpected error occurred.',
 		locations: undefined,

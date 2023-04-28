@@ -1,7 +1,8 @@
-import knex from 'knex';
 import type { Knex } from 'knex';
+import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
+import type { MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CollectionsService, FieldsService, RelationsService, SpecificationService } from '../../src/services/index.js';
 import type { Collection } from '../types/index.js';
 
@@ -150,9 +151,11 @@ describe('Integration Tests', () => {
 								},
 							},
 						]);
+
 						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();
+
 						expect(spec.components?.schemas).toMatchInlineSnapshot(`
 							{
 							  "Diff": {
@@ -421,6 +424,7 @@ describe('Integration Tests', () => {
 								},
 							},
 						]);
+
 						vi.spyOn(RelationsService.prototype, 'readAll').mockResolvedValue([]);
 
 						const spec = await service.oas.generate();

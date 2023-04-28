@@ -15,7 +15,6 @@ import getModuleDefault from '../utils/get-module-default.js';
 import type { ExtensionManager } from './extensions.js';
 import path from 'path';
 import logger from '../logger.js';
-import globby from 'globby';
 import { generateExtensionsEntrypoint, pathToRelativeUrl, resolvePackage } from '@directus/utils/node';
 import emitter from '../emitter.js';
 import { getFlowManager } from '../flows.js';
@@ -78,7 +77,10 @@ export class RegistrationManager {
 		for (const hook of hooks) {
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
-				const hookInstance: HookConfig | { default: HookConfig } = await import(`file://${hookPath}`);
+
+				const hookInstance: HookConfig | { default: HookConfig } = await import(
+					`./${pathToRelativeUrl(hookPath, __dirname)}?t=${Date.now()}`
+				);
 
 				const config = getModuleDefault(hookInstance);
 
@@ -100,7 +102,9 @@ export class RegistrationManager {
 		for (const endpoint of endpoints) {
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(`file://${endpointPath}`);
+				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
+					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
+				);
 
 				const config = getModuleDefault(endpointInstance);
 
@@ -115,27 +119,27 @@ export class RegistrationManager {
 	}
 
 	public async registerOperations(): Promise<void> {
-		const internalPaths = await globby(path.posix.join(pathToRelativeUrl(__dirname), 'operations/*/index.(js|ts)'));
+		const internalOperations = await readdir(path.join(__dirname, 'operations'));
 
-		const internalOperations = internalPaths.map((internalPath) => {
-			const dirs = internalPath.split(path.sep);
+		for (const operation of internalOperations) {
+			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
+				`./operations/${operation}/index.js`
+			);
 
-			return {
-				name: dirs[dirs.length - 2],
-				path: dirs.slice(0, -1).join(path.sep),
-				entrypoint: { api: dirs[dirs.length - 1] },
-			};
-		});
+			const config = getModuleDefault(operationInstance);
+
+			this.registerOperation(config);
+		}
 
 		const operations = this.extensionManager
 			.getEnabledExtensions()
 			.filter((extension) => extension.type === 'operation') as HybridExtension[];
 
-		for (const operation of [...internalOperations, ...operations]) {
+		for (const operation of operations) {
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 				const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-					`file://${operationPath}`
+					`./${pathToRelativeUrl(operationPath, __dirname)}?t=${Date.now()}`
 				);
 
 				const config = getModuleDefault(operationInstance);
@@ -158,7 +162,9 @@ export class RegistrationManager {
 		for (const bundle of bundles) {
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
-				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(`file://${bundlePath}`);
+				const bundleInstances: BundleConfig | { default: BundleConfig } = await import(
+					`./${pathToRelativeUrl(bundlePath, __dirname)}?t=${Date.now()}`
+				);
 
 				const configs = getModuleDefault(bundleInstances);
 

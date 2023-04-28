@@ -70,35 +70,3 @@ npx directus schema apply ./path/to/snapshot.yaml
 
 Take notice here - to comply with this flow, `migrations` directory **must not contain** tasks that modify the contents
 of your Directus, because schema is not yet created when you run `migrate:latest`.
-
-One way of running the contents migrations is to defer them after the schema is applied. Let's assume you store your
-migrations in `.custom-migrations` directory:
-
-```sh
-1 npx directus database install
-2 npx directus database migrate:latest
-3 npx directus schema apply ./path/to/snapshot.yaml
-4 mv .custom-migrations/* migrations/
-5 npx directus database migrate:latest
-```
-
-You need to install the database and run Directus migrations to prepare the Directus internals:
-
-```sh
-1 npx directus database install
-2 npx directus database migrate:latest
-```
-
-Then, you can apply your schema:
-
-```sh
-3 npx directus schema apply ./path/to/snapshot.yaml
-```
-
-When the schema is ready, you can push your migrations to Directus `migrations` directory, and run `migrate:latest`
-again. Only your `.custom-migrations` will be applied in the process:
-
-```sh
-4 mv .custom-migrations/* migrations/
-5 npx directus database migrate:latest
-```

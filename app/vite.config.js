@@ -14,16 +14,20 @@ import {
 } from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
-import fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
+import { version } from '../directus/package.json';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	define: {
+		__DIRECTUS_VERSION__: JSON.stringify(version),
+	},
 	plugins: [
 		directusExtensions(),
 		vue(),
@@ -128,7 +132,7 @@ function directusExtensions() {
 
 		const types = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES];
 
-		const extensions = [...packageExtensions, ...localExtensions, ...localPackageExtensions].filter((extension) =>
+		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter((extension) =>
 			types.includes(extension.type)
 		);
 

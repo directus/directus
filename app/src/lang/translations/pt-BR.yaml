@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Nenhum Item Selecionado | Você tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
 reset_system_permissions_to: 'Redefinir Permissões do Sistema Para:'
 reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você possa ter aplicado às coleções do sistema. Você tem certeza?
-the_following_are_minimum_permissions: As permissões seguintes são as mínimas necessárias quando o "Acesso ao App" estiver habilitado. Você pode estender as permissões além disso, mas não abaixo.
 app_access_minimum: Acesso Mínimo ao App
 recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
@@ -1918,6 +1917,9 @@ operations:
     payload: Payload
   log:
     message: Mensagem
+  mail:
+    template: Template
+    data: Dados
   notification:
     recipient: Usuário
     message: Mensagem

@@ -154,14 +154,9 @@ const props = withDefaults(
 const { t } = useI18n();
 const emit = defineEmits(['update:modelValue']);
 
-const value = computed<ChangesItem>({
+const value = computed<ChangesItem | any[]>({
 	get() {
-		if (props.modelValue === undefined)
-			return {
-				create: [],
-				update: [],
-				delete: [],
-			};
+		if (props.modelValue === undefined) return [];
 		return props.modelValue as ChangesItem;
 	},
 	set: (val) => {
@@ -183,7 +178,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { displayItems, create, update, remove, select, cleanItem, localDelete, getItemEdits } = useRelationMultiple(
+const { displayItems, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -192,7 +187,7 @@ const { displayItems, create, update, remove, select, cleanItem, localDelete, ge
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
@@ -228,16 +223,20 @@ function change(event: ChangeEvent) {
 			case 'created':
 				create(cleanItem(event.added.element));
 				break;
+
 			case 'updated': {
 				const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 				const exists = displayItems.value.find((item) => item[pkField] === event.added.element[pkField]);
+
 				// We have to make sure we remove the reverseJunctionField when we move it back to its initial position as otherwise it will be selected.
 				update({
 					...cleanItem(event.added.element),
 					[relationInfo.value.reverseJunctionField.field]: exists ? undefined : primaryKey.value,
 				});
+
 				break;
 			}
+
 			default:
 				update({
 					...event.added.element,

@@ -14,11 +14,14 @@ import {
 } from './define-extension.js';
 
 const mockComponent = defineComponent({});
+
 const mockHandler = () => {
 	return '';
 };
+
 describe('define-extensions', () => {
 	const types = [] as readonly Type[];
+
 	const mockRecord = () => {
 		return { test: 'test' };
 	};
@@ -31,7 +34,9 @@ describe('define-extensions', () => {
 		types: types,
 		options: null,
 	};
+
 	const displayConfig = { id: '1', name: 'test', icon: 'icon', component: mockComponent, types: types, options: null };
+
 	const layoutConfig = {
 		id: '1',
 		name: 'test',
@@ -40,12 +45,14 @@ describe('define-extensions', () => {
 		slots: { options: mockComponent, sidebar: mockComponent, actions: mockComponent },
 		setup: mockRecord,
 	};
+
 	const moduleConfig = {
 		id: '1',
 		name: 'test',
 		icon: 'icon',
 		routes: [],
 	};
+
 	const panelConfig = {
 		id: '1',
 		name: 'test',
@@ -59,6 +66,7 @@ describe('define-extensions', () => {
 	const hookHandler = () => {
 		return { test: (..._values: any[]) => undefined };
 	};
+
 	const endpointConfig = { id: '1', handler: mockHandler };
 
 	const operationAppConfig = {
@@ -68,6 +76,7 @@ describe('define-extensions', () => {
 		overview: null,
 		options: null,
 	};
+
 	const operationApiConfig = {
 		id: '1',
 		handler: mockHandler,

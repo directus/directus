@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa {count} objekt?
 reset_system_permissions_to: 'Återställ systemrättigheter till:'
 reset_system_permissions_copy: Den här åtgärden kommer att skriva över alla anpassade behörigheter som du kan ha tillämpat på systemkollektionerna. Är du säker?
-the_following_are_minimum_permissions: Följande är minimirättigheter som krävs när "App Access" är aktiverat. Du kan utöka behörigheterna utöver detta, men inte nedan.
 app_access_minimum: Minsta tillgång till applikationen
 recommended_defaults: Rekommenderade standardvärden
 unarchive: Ångra arkivering
@@ -1747,6 +1746,8 @@ operations:
   mail:
     name: Skicka e-post
     to: Till
+    template: Mall
+    data: Data
   notification:
     recipient: Användare
     message: Meddelande

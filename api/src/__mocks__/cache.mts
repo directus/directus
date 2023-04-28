@@ -1,5 +1,10 @@
+import type { Mock } from 'vitest';
 import { vi } from 'vitest';
-export const getCache = vi.fn().mockReturnValue({ cache: undefined, systemCache: undefined, lockCache: undefined });
-export const flushCaches = vi.fn();
-export const clearSystemCache = vi.fn();
-export const setSystemCache = vi.fn();
+
+export const getCache: Mock = vi
+	.fn()
+	.mockReturnValue({ cache: undefined, systemCache: undefined, lockCache: undefined });
+
+export const flushCaches: Mock = vi.fn();
+export const clearSystemCache: Mock = vi.fn();
+export const setSystemCache: Mock = vi.fn();

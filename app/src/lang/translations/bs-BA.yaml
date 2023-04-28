@@ -129,7 +129,6 @@ archive_confirm_count: >-
   Nema odabranih stavki | Jeste li sigurni da želite arhivirati ovu stavku? | Jeste li sigurni da želite arhivirati ovih {count} stavki?
 reset_system_permissions_to: 'Resetujte dopuštenje sistema na:'
 reset_system_permissions_copy: Ova će akcija prebrisati sva prilagođene dozvole koja ste možda primijenili na kolekcije sistema. Jesi li sigurni?
-the_following_are_minimum_permissions: Sljedeće su minimalne dozvole potrebne kada je omogućen "Pristup aplikaciji". Dozvole možete proširiti izvan ovog, ali ne ispod.
 app_access_minimum: Minimum za pristup aplikaciji
 recommended_defaults: Preporučene zadane postavke
 unarchive: Poništi arhiviranje
@@ -1944,6 +1943,8 @@ operations:
     to: Za
     to_placeholder: Dodajte adrese e-pošte i pritisnite enter...
     body: Sadržaj
+    template: Predložak
+    data: Podaci
   notification:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika

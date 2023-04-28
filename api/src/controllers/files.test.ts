@@ -28,6 +28,7 @@ describe('multipartHandler', () => {
 			params: {},
 			pipe: (input: NodeJS.WritableStream) => stream.pipe(input),
 		} as unknown as Request;
+
 		const res = {} as Response;
 
 		const stream = new PassThrough();
@@ -56,6 +57,7 @@ describe('multipartHandler', () => {
 			params: {},
 			pipe: (input: NodeJS.WritableStream) => stream.pipe(input),
 		} as unknown as Request;
+
 		const res = {} as Response;
 
 		const stream = new PassThrough();

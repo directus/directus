@@ -2,13 +2,13 @@
 	<div
 		data-dropzone
 		class="v-upload"
-		:class="{ dragging, uploading }"
+		:class="{ dragging: dragging && fromUser, uploading }"
 		@dragenter.prevent="onDragEnter"
 		@dragover.prevent
 		@dragleave.prevent="onDragLeave"
 		@drop.stop.prevent="onDrop"
 	>
-		<template v-if="dragging">
+		<template v-if="dragging && fromUser">
 			<v-icon class="upload-icon" x-large name="file_upload" />
 			<p class="type-label">{{ t('drop_to_upload') }}</p>
 		</template>
@@ -27,7 +27,7 @@
 
 		<template v-else>
 			<div class="actions">
-				<v-button v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
 					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
 					<v-icon name="file_upload" />
 				</v-button>
@@ -41,12 +41,19 @@
 				>
 					<v-icon name="folder_open" />
 				</v-button>
-				<v-button v-if="fromUrl" v-tooltip="t('import_from_url')" icon rounded secondary @click="activeDialog = 'url'">
+				<v-button
+					v-if="fromUrl && fromUser"
+					v-tooltip="t('import_from_url')"
+					icon
+					rounded
+					secondary
+					@click="activeDialog = 'url'"
+				>
 					<v-icon name="link" />
 				</v-button>
 			</div>
 
-			<p class="type-label">{{ t('drag_file_here') }}</p>
+			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
 				<drawer-collection
@@ -99,6 +106,8 @@ interface Props {
 	multiple?: boolean;
 	preset?: Record<string, any>;
 	fileId?: string;
+	/** In case that the user isn't allowed to upload files */
+	fromUser?: boolean;
 	fromUrl?: boolean;
 	fromLibrary?: boolean;
 	folder?: string;
@@ -108,6 +117,7 @@ const props = withDefaults(defineProps<Props>(), {
 	multiple: false,
 	preset: () => ({}),
 	fileId: undefined,
+	fromUser: true,
 	fromUrl: false,
 	fromLibrary: false,
 	folder: undefined,
@@ -131,9 +141,11 @@ const filterByFolder = computed(() => {
 
 function validFiles(files: FileList) {
 	if (files.length === 0) return false;
+
 	for (const file of files) {
 		if (file.size === 0) return false;
 	}
+
 	return true;
 }
 
@@ -154,12 +166,14 @@ function useUpload() {
 		if (props.folder) {
 			folderPreset.folder = props.folder;
 		}
+
 		try {
 			if (!validFiles(files)) {
 				throw new Error('An error has occurred while uploading the files.');
 			}
 
 			numberOfFiles.value = files.length;
+
 			if (props.multiple === true) {
 				const uploadedFiles = await uploadFiles(Array.from(files), {
 					onProgressChange: (percentage) => {
@@ -235,7 +249,7 @@ function useDragging() {
 
 		const files = event.dataTransfer?.files;
 
-		if (files) {
+		if (files && props.fromUser) {
 			upload(files);
 		}
 	}

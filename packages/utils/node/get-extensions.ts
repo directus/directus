@@ -47,8 +47,8 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 			extensions.push({
 				path: extensionPath,
 				name: parsedManifest.name,
-				description: parsedManifest.description,
-				icon: parsedManifest.icon,
+				description: parsedManifest.description || '',
+				icon: parsedManifest.icon || '',
 				version: parsedManifest.version,
 				type: extensionOptions.type,
 				entrypoint: {
@@ -63,8 +63,8 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 			extensions.push({
 				path: extensionPath,
 				name: parsedManifest.name,
-				description: parsedManifest.description,
-				icon: parsedManifest.icon,
+				description: parsedManifest.description ?? '',
+				icon: parsedManifest.icon ?? '',
 				version: parsedManifest.version,
 				type: extensionOptions.type,
 				entrypoint: {
@@ -78,8 +78,8 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 			extensions.push({
 				path: extensionPath,
 				name: parsedManifest.name,
-				description: parsedManifest.description,
-				icon: parsedManifest.icon,
+				description: parsedManifest.description ?? '',
+				icon: parsedManifest.icon ?? '',
 				version: parsedManifest.version,
 				type: extensionOptions.type,
 				entrypoint: extensionOptions.path,

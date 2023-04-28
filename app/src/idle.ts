@@ -2,6 +2,7 @@ import { throttle } from 'lodash';
 import mitt from 'mitt';
 
 const events = ['pointermove', 'pointerdown', 'keydown'];
+
 export const time = 5 * 60 * 1000; // 5 min in ms
 
 let timeout: number | null;
