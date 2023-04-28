@@ -109,3 +109,14 @@ const GET_MESSAGES = gql`
 	}
 `;
 ```
+
+## Utilize Hooks for GraphQL protocols
+
+At the top of your component, use the `useQuery` and `useMutation` hooks to complete the GraphQL and Websocket
+protocols:
+
+```js
+const { loading, error, data } = useQuery(GET_MESSAGES);
+
+const [addMessage] = useMutation(ADD_MESSAGE);
+```
