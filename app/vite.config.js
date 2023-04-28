@@ -4,26 +4,30 @@ import {
 	BUNDLE_EXTENSION_TYPES,
 	HYBRID_EXTENSION_TYPES,
 	NESTED_EXTENSION_TYPES,
-} from '@directus/shared/constants';
+} from '@directus/constants';
 import {
 	ensureExtensionDirs,
 	generateExtensionsEntrypoint,
 	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackageExtensions,
-} from '@directus/shared/utils/node';
+} from '@directus/utils/node';
 import yaml from '@rollup/plugin-yaml';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
-import fs from 'fs';
+import fs from 'node:fs';
+import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
+import { version } from '../directus/package.json';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	define: {
+		__DIRECTUS_VERSION__: JSON.stringify(version),
+	},
 	plugins: [
 		directusExtensions(),
 		vue(),
@@ -65,11 +69,14 @@ export default defineConfig({
 
 function getExtensionsRealPaths() {
 	return fs.existsSync(EXTENSIONS_PATH)
-		? fs.readdirSync(EXTENSIONS_PATH).flatMap((typeDir) => {
-				const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-
-				return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
-		  })
+		? fs
+				.readdirSync(EXTENSIONS_PATH)
+				.flatMap((typeDir) => {
+					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
+					if (!fs.lstatSync(extensionTypeDir).isDirectory()) return;
+					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
+				})
+				.filter((v) => v)
 		: [];
 }
 
@@ -130,7 +137,7 @@ function directusExtensions() {
 
 		const types = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES, ...BUNDLE_EXTENSION_TYPES];
 
-		const extensions = [...packageExtensions, ...localExtensions, ...localPackageExtensions].filter((extension) =>
+		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter((extension) =>
 			types.includes(extension.type)
 		);
 

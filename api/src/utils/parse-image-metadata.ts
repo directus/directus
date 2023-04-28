@@ -61,9 +61,9 @@ export function parseXmp(buffer: Buffer): Record<string, unknown> {
 			return;
 		}
 
-		const value = tagMatches[1].trim();
+		const value = tagMatches[1]?.trim();
 
-		if (value.toLowerCase().indexOf('<rdf:bag>') === 0) {
+		if (value?.toLowerCase().indexOf('<rdf:bag>') === 0) {
 			const r = new RegExp('<rdf:li>(.*?)</rdf:li>', 'smig');
 			let match = r.exec(value);
 			const result = [];
@@ -73,9 +73,10 @@ export function parseXmp(buffer: Buffer): Record<string, unknown> {
 
 				match = r.exec(value);
 			}
+
 			xmp[x] = result;
 		} else {
-			xmp[x] = value.replace(/<[^>]*>?/gm, '').trim();
+			xmp[x] = value?.replace(/<[^>]*>?/gm, '').trim();
 		}
 	});
 

@@ -1,10 +1,12 @@
-import { FnHelper, FnHelperOptions } from '../types';
-import { Knex } from 'knex';
+import type { Knex } from 'knex';
+import type { FnHelperOptions } from '../types.js';
+import { FnHelper } from '../types.js';
 
 const parseLocaltime = (columnType?: string) => {
 	if (columnType === 'timestamp') {
 		return ` AT TIME ZONE 'UTC'`;
 	}
+
 	return '';
 };
 
@@ -46,7 +48,7 @@ export class FnHelperPostgres extends FnHelper {
 		const type = this.schema.collections?.[collectionName]?.fields?.[column]?.type ?? 'unknown';
 
 		if (type === 'json') {
-			const { dbType } = this.schema.collections[table].fields[column];
+			const { dbType } = this.schema.collections[table]!.fields[column]!;
 
 			return this.knex.raw(dbType === 'jsonb' ? 'jsonb_array_length(??.??)' : 'json_array_length(??.??)', [
 				table,

@@ -47,9 +47,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, inject, Ref } from 'vue';
-import { Filter } from '@directus/shared/types';
+import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { useElementSize } from '@directus/shared/composables';
+import { useElementSize } from '@directus/composables';
 
 interface Props {
 	modelValue: string | null;
@@ -148,7 +148,7 @@ function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElem
 }
 
 function disable() {
-	if(props.alwaysActive) return;
+	if (props.alwaysActive) return;
 
 	active.value = false;
 	filterActive.value = false;

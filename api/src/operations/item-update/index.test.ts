@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
-vi.mock('../../services', () => {
+vi.mock('../../services/items.js', () => {
 	const ItemsService = vi.fn();
 	ItemsService.prototype.updateByQuery = vi.fn();
 	ItemsService.prototype.updateOne = vi.fn();
@@ -8,12 +8,12 @@ vi.mock('../../services', () => {
 	return { ItemsService };
 });
 
-vi.mock('../../utils/get-accountability-for-role', () => ({
+vi.mock('../../utils/get-accountability-for-role.js', () => ({
 	getAccountabilityForRole: vi.fn((role: string | null, _context) => Promise.resolve(role)),
 }));
 
-import { ItemsService } from '../../services';
-import config from './index';
+import { ItemsService } from '../../services/items.js';
+import config from './index.js';
 
 const testCollection = 'test';
 const testPayload = {};
@@ -59,6 +59,7 @@ describe('Operations / Item Update', () => {
 
 	test.each([undefined, []])('should call updateByQuery with correct query when key is $payload', async (key) => {
 		const query = { limit: -1 };
+
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, query, key } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -71,6 +72,7 @@ describe('Operations / Item Update', () => {
 
 	test('should emit events for updateByQuery when true', async () => {
 		const query = { limit: -1 };
+
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, query, emitEvents: true } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -83,6 +85,7 @@ describe('Operations / Item Update', () => {
 
 	test.each([undefined, false])('should not emit events for updateByQuery when %s', async (emitEvents) => {
 		const query = { limit: -1 };
+
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, query, emitEvents } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -106,6 +109,7 @@ describe('Operations / Item Update', () => {
 
 	test('should emit events for updateOne when true', async () => {
 		const key = 1;
+
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key, emitEvents: true } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -116,6 +120,7 @@ describe('Operations / Item Update', () => {
 
 	test.each([undefined, false])('should not emit events for updateOne when %s', async (emitEvents) => {
 		const key = 1;
+
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key: key, emitEvents } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -137,6 +142,7 @@ describe('Operations / Item Update', () => {
 
 	test('should emit events for updateMany when true', async () => {
 		const keys = [1, 2, 3];
+
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key: keys, emitEvents: true } as any,
 			{ accountability: testAccountability, getSchema } as any
@@ -147,6 +153,7 @@ describe('Operations / Item Update', () => {
 
 	test.each([undefined, false])('should not emit events for updateMany when %s', async (emitEvents) => {
 		const keys = [1, 2, 3];
+
 		await config.handler(
 			{ collection: testCollection, payload: testPayload, key: keys, emitEvents } as any,
 			{ accountability: testAccountability, getSchema } as any

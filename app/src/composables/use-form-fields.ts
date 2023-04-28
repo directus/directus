@@ -1,5 +1,5 @@
 import { FormField } from '@/components/v-form/types';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { cloneDeep, orderBy } from 'lodash';
 import { computed, ComputedRef, Ref } from 'vue';
@@ -25,6 +25,7 @@ export function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef<F
 			if (!field.meta) return field;
 
 			let interfaceUsed = field.meta.interface ? useExtension('interface', field.meta.interface).value : null;
+
 			if (interfaceUsed === null) {
 				field.meta.interface = getDefaultInterfaceForType(field.type);
 				interfaceUsed = useExtension('interface', field.meta.interface).value;

@@ -1,6 +1,6 @@
-import { mergePermission } from '../../src/utils/merge-permissions';
-import { Permission, Filter } from '@directus/shared/types';
+import type { Filter, Permission } from '@directus/types';
 import { describe, expect, test } from 'vitest';
+import { mergePermission } from './merge-permissions.js';
 
 const fullFilter = {} as Filter;
 const conditionalFilter = { user: { id: { _eq: '$CURRENT_USER' } } } as Filter;
@@ -22,6 +22,7 @@ describe('merging permissions', () => {
 			{ ...permissionTemplate, permissions: conditionalFilter },
 			{ ...permissionTemplate, permissions: conditionalFilter2 }
 		);
+
 		expect(mergedPermission).toStrictEqual({
 			...permissionTemplate,
 			permissions: {
@@ -36,6 +37,7 @@ describe('merging permissions', () => {
 			{ ...permissionTemplate, validation: conditionalFilter },
 			{ ...permissionTemplate, validation: conditionalFilter2 }
 		);
+
 		expect(mergedPermission).toStrictEqual({
 			...permissionTemplate,
 			validation: {
@@ -50,6 +52,7 @@ describe('merging permissions', () => {
 			{ ...permissionTemplate, permissions: conditionalFilter },
 			{ ...permissionTemplate, permissions: conditionalFilter2 }
 		);
+
 		expect(mergedPermission).toStrictEqual({
 			...permissionTemplate,
 			permissions: {
@@ -64,6 +67,7 @@ describe('merging permissions', () => {
 			{ ...permissionTemplate, validation: conditionalFilter },
 			{ ...permissionTemplate, validation: conditionalFilter2 }
 		);
+
 		expect(mergedPermission).toStrictEqual({
 			...permissionTemplate,
 			validation: {
@@ -78,6 +82,7 @@ describe('merging permissions', () => {
 			{ ...permissionTemplate, permissions: fullFilter },
 			{ ...permissionTemplate, permissions: conditionalFilter }
 		);
+
 		expect(mergedPermission).toStrictEqual({ ...permissionTemplate, permissions: fullFilter });
 	});
 
@@ -87,6 +92,7 @@ describe('merging permissions', () => {
 			{ ...permissionTemplate, validation: fullFilter },
 			{ ...permissionTemplate, validation: conditionalFilter }
 		);
+
 		expect(mergedPermission).toStrictEqual({ ...permissionTemplate, validation: fullFilter });
 	});
 
@@ -96,6 +102,7 @@ describe('merging permissions', () => {
 			{ ...permissionTemplate, permissions: fullFilter },
 			{ ...permissionTemplate, permissions: conditionalFilter }
 		);
+
 		const expectedPermission = {
 			...permissionTemplate,
 			permissions: {
@@ -112,6 +119,7 @@ describe('merging permissions', () => {
 			{ ...permissionTemplate, validation: fullFilter },
 			{ ...permissionTemplate, validation: conditionalFilter }
 		);
+
 		const expectedPermission = {
 			...permissionTemplate,
 			validation: {

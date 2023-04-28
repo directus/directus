@@ -87,23 +87,23 @@ export default {
 </script>
 
 <script setup lang="ts">
-import Draggable from 'vuedraggable';
-import { computed, ref, toRefs } from 'vue';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import ItemPreview from './item-preview.vue';
-import { Filter } from '@directus/shared/types';
-import { RelationO2M } from '@/composables/use-relation-o2m';
 import {
+	ChangesItem,
 	DisplayItem,
 	RelationQueryMultiple,
 	useRelationMultiple,
-	ChangesItem,
 } from '@/composables/use-relation-multiple';
+import { RelationO2M } from '@/composables/use-relation-o2m';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { Filter } from '@directus/types';
+import { moveInArray } from '@directus/utils';
+import { cloneDeep } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { moveInArray } from '@directus/shared/utils';
-import { cloneDeep, isEmpty } from 'lodash';
+import Draggable from 'vuedraggable';
+import ItemPreview from './item-preview.vue';
 
 type ChangeEvent =
 	| {
@@ -154,14 +154,9 @@ const props = withDefaults(
 const { t } = useI18n();
 const emit = defineEmits(['update:modelValue']);
 
-const value = computed<ChangesItem>({
+const value = computed<ChangesItem | any[]>({
 	get() {
-		if (props.modelValue === undefined)
-			return {
-				create: [],
-				update: [],
-				delete: [],
-			};
+		if (props.modelValue === undefined) return [];
 		return props.modelValue as ChangesItem;
 	},
 	set: (val) => {
@@ -183,7 +178,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { displayItems, create, update, remove, select, cleanItem, localDelete, getItemEdits } = useRelationMultiple(
+const { displayItems, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -192,7 +187,7 @@ const { displayItems, create, update, remove, select, cleanItem, localDelete, ge
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
@@ -228,16 +223,20 @@ function change(event: ChangeEvent) {
 			case 'created':
 				create(cleanItem(event.added.element));
 				break;
+
 			case 'updated': {
 				const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 				const exists = displayItems.value.find((item) => item[pkField] === event.added.element[pkField]);
+
 				// We have to make sure we remove the reverseJunctionField when we move it back to its initial position as otherwise it will be selected.
 				update({
 					...cleanItem(event.added.element),
 					[relationInfo.value.reverseJunctionField.field]: exists ? undefined : primaryKey.value,
 				});
+
 				break;
 			}
+
 			default:
 				update({
 					...event.added.element,
@@ -274,8 +273,6 @@ function addNew(item: Record<string, any>) {
 }
 
 function stageEdits(item: Record<string, any>) {
-	if (isEmpty(item)) return;
-
 	update(item);
 }
 </script>

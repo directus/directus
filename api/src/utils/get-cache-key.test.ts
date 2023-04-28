@@ -1,7 +1,10 @@
-import { Request } from 'express';
-import { getCacheKey } from './get-cache-key';
-import * as getGraphqlQueryUtil from './get-graphql-query-and-variables';
-import { afterEach, beforeAll, describe, expect, SpyInstance, test, vi } from 'vitest';
+import type { Request } from 'express';
+import type { SpyInstance } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import { getCacheKey } from './get-cache-key.js';
+import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
+
+vi.mock('./package.js', () => ({ version: '1.2.3' }));
 
 const baseUrl = 'http://localhost';
 const restUrl = `${baseUrl}/items/example`;
@@ -13,42 +16,42 @@ const requests = [
 	{
 		name: 'as unauthenticated request',
 		params: { method, originalUrl: restUrl },
-		key: '17da8272c9a0ec6eea38a37d6d78bddeb7c79045',
+		key: '20ada3d7cc37fb7e742d2a723f6f1d7a64686d2e',
 	},
 	{
 		name: 'as authenticated request',
 		params: { method, originalUrl: restUrl, accountability },
-		key: '99a6394222a3d7d149ac1662fc2fff506932db58',
+		key: '79daba5bf38b6b80cb4bf4e2de95d6a8380f7927',
 	},
 	{
 		name: 'a request with a fields query',
 		params: { method, originalUrl: restUrl, sanitizedQuery: { fields: ['id', 'name'] } },
-		key: 'aa6e2d8a78de4dfb4af6eaa230d1cd9b7d31ed19',
+		key: 'e1839f7379b39188622e797fdbe2e3e6d477cbdc',
 	},
 	{
 		name: 'a request with a filter query',
 		params: { method, originalUrl: restUrl, sanitizedQuery: { filter: { name: { _eq: 'test' } } } },
-		key: 'd7eb8970f0429e1cf85e12eb5bb8669f618b09d3',
+		key: '0bcc9af5f628db85043133e59226b2de154d7183',
 	},
 	{
 		name: 'a GraphQL GET query request',
 		params: { method, originalUrl: graphQlUrl, query: { query: 'query { test { id } }' } },
-		key: '201731b75c627c60554512d819b6935b54c73814',
+		key: '14bc276cf21e2d22334b84841533e2c8e1bba9bd',
 	},
 	{
 		name: 'a GraphQL POST query request',
 		params: { method: 'POST', originalUrl: graphQlUrl, body: { query: 'query { test { name } }' } },
-		key: '64eb0c48ea69d0863ff930398f29b5c7884f88f7',
+		key: 'c5bf03e138e0f7bbaa50dde9cad554bef47a81d2',
 	},
 	{
 		name: 'an authenticated GraphQL GET query request',
 		params: { method, originalUrl: graphQlUrl, accountability, query: { query: 'query { test { id } }' } },
-		key: '9bc52c98dcf2de04c64589f52e0ada1e38d53a90',
+		key: '981f27be4c0cfed0b4eca6ac2514f6629aea6be1',
 	},
 	{
 		name: 'an authenticated GraphQL POST query request',
 		params: { method: 'POST', originalUrl: graphQlUrl, accountability, body: { query: 'query { test { name } }' } },
-		key: '051ea77ce5ba71bbc88bcb567b9ddc602b585c13',
+		key: '358336a2c61f7ea2b41b5c1566bbebe692be601d',
 	},
 ];
 

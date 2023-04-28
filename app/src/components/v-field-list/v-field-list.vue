@@ -11,6 +11,14 @@
 			</v-list-item-content>
 		</v-list-item>
 
+		<template v-if="allowSelectAll">
+			<v-list-item clickable :disabled="selectAllDisabled" @click="addAll">
+				{{ t('select_all') }}
+			</v-list-item>
+
+			<v-divider />
+		</template>
+
 		<v-field-list-item
 			v-for="fieldNode in treeList"
 			:key="fieldNode.field"
@@ -18,19 +26,20 @@
 			:search="search"
 			:include-functions="includeFunctions"
 			:relational-field-selectable="relationalFieldSelectable"
-			@add="$emit('select-field', $event)"
+			:allow-select-all="allowSelectAll"
+			@add="$emit('add', $event)"
 		/>
 	</v-list>
 </template>
 
 <script lang="ts" setup>
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
-import { Field } from '@directus/shared/types';
-import { computed, ref, toRefs, watch } from 'vue';
+import { useFieldsStore } from '@/stores/fields';
+import { Field } from '@directus/types';
+import { debounce, isNil } from 'lodash';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
-import { debounce, isNil } from 'lodash';
-import { useFieldsStore } from '@/stores/fields';
 
 interface Props {
 	collection: string;
@@ -39,6 +48,7 @@ interface Props {
 	includeFunctions?: boolean;
 	includeRelations?: boolean;
 	relationalFieldSelectable?: boolean;
+	allowSelectAll?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -47,9 +57,10 @@ const props = withDefaults(defineProps<Props>(), {
 	includeFunctions: false,
 	includeRelations: true,
 	relationalFieldSelectable: true,
+	allowSelectAll: false,
 });
 
-defineEmits(['select-field']);
+const emit = defineEmits(['add']);
 
 const fieldsStore = useFieldsStore();
 
@@ -67,6 +78,8 @@ watch(search, () => debouncedRefresh());
 
 const { t } = useI18n();
 
+const selectAllDisabled = computed(() => unref(treeList).every((field) => field.disabled === true));
+
 const treeList = computed(() => {
 	const list = treeListOriginal.value.map(setDisabled);
 
@@ -75,8 +88,8 @@ const treeList = computed(() => {
 	return list;
 
 	function setDisabled(
-		field: typeof treeListOriginal.value[number]
-	): typeof treeListOriginal.value[number] & { disabled: boolean } {
+		field: (typeof treeListOriginal.value)[number]
+	): (typeof treeListOriginal.value)[number] & { disabled: boolean } {
 		let disabled = field.group || false;
 
 		if (props.disabledFields?.includes(field.key)) disabled = true;
@@ -89,6 +102,11 @@ const treeList = computed(() => {
 	}
 });
 
+const addAll = () => {
+	const allFields = unref(treeList).map((field) => field.field);
+	emit('add', unref(allFields));
+};
+
 function filter(field: Field, parent?: FieldNode): boolean {
 	if (
 		!includeRelations.value &&
@@ -100,6 +118,7 @@ function filter(field: Field, parent?: FieldNode): boolean {
 	const children = isNil(field.schema?.foreign_key_table)
 		? fieldsStore.getFieldGroupChildren(field.collection, field.field)
 		: fieldsStore.getFieldsForCollection(field.schema!.foreign_key_table);
+
 	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);
 
 	function matchesSearch(field: Field) {

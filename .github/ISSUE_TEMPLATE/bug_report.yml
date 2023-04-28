@@ -1,15 +1,13 @@
-name: Bug Report
+name: Report a bug
 description: Create a report to help us improve
 body:
   - type: markdown
     attributes:
       value: |
-        Hi, thank you for taking the time to create an issue!
+        Hi, thank you for taking the time to create an issue! Before you get started, please ensure the following are correct:
 
-        Before opening this issue, please make sure that:
-
-        - You've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
-        - You're using [the latest version of Directus](https://github.com/directus/directus/releases).
+        - I'm using the [latest version of Directus](https://github.com/directus/directus/releases)
+        - I've completed all [Troubleshooting Steps](https://docs.directus.io/getting-started/support/#troubleshooting-steps).
         - There's [no other issue](https://github.com/directus/directus/issues?q=is%3Aissue) that already describes the problem.
 
         _For issues specific to Directus Cloud projects, please reach out through the Live Chat in our Cloud Dashboard._
@@ -27,39 +25,19 @@ body:
         the bug.
     validations:
       required: true
-  - type: textarea
-    attributes:
-      label: Errors Shown
-      description: Are there any errors logged in the browser console, or terminal where you're running Directus?
   - type: input
-    id: directus-version
     attributes:
-      label: What version of Directus are you using?
-      description: 'Version is displayed under "Settings". For example: 9.0.1'
+      label: Directus Version
+      placeholder: v10.x.x
     validations:
       required: true
-  - type: input
-    id: node-version
+  - type: dropdown
+    id: deployment
     attributes:
-      label: What version of Node.js are you using?
-      description: 'For example: 12.0.0'
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: What database are you using?
-      description: 'For example: Postgres 13, SQLite 3.31.0'
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: What browser are you using?
-      description: 'For example: Chrome, Safari'
-    validations:
-      required: true
-  - type: input
-    attributes:
-      label: How are you deploying Directus?
-      description: 'For example: running locally, Docker, PaaS'
+      label: Hosting Strategy
+      options:
+        - Self-Hosted (Docker Image)
+        - Self-Hosted (Custom)
+        - Directus Cloud
     validations:
       required: true

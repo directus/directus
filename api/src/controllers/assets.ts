@@ -1,20 +1,22 @@
-// @ts-expect-error https://github.com/microsoft/TypeScript/issues/49721
 import type { Range } from '@directus/storage';
-
-import { parseJSON } from '@directus/shared/utils';
+import { parseJSON } from '@directus/utils';
+import contentDisposition from 'content-disposition';
 import { Router } from 'express';
-import { merge, pick } from 'lodash';
-import ms from 'ms';
-import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants';
-import getDatabase from '../database';
-import env from '../env';
-import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions';
-import logger from '../logger';
-import useCollection from '../middleware/use-collection';
-import { AssetsService, PayloadService } from '../services';
-import { TransformationMethods, TransformationParams, TransformationPreset } from '../types/assets';
-import asyncHandler from '../utils/async-handler';
-import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { merge, pick } from 'lodash-es';
+import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
+import getDatabase from '../database/index.js';
+import env from '../env.js';
+import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions/index.js';
+import logger from '../logger.js';
+import useCollection from '../middleware/use-collection.js';
+import { AssetsService } from '../services/assets.js';
+import { PayloadService } from '../services/payload.js';
+import type { TransformationParams } from '../types/assets.js';
+import { TransformationMethods } from '../types/assets.js';
+import asyncHandler from '../utils/async-handler.js';
+import { getCacheControlHeader } from '../utils/get-cache-headers.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
 
 const router = Router();
 
@@ -28,6 +30,7 @@ router.get(
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
 		const database = getDatabase();
+
 		const savedAssetSettings = await database
 			.select('storage_asset_presets', 'storage_asset_transform')
 			.from('directus_settings')
@@ -61,9 +64,9 @@ router.get(
 			}
 
 			// Check against ASSETS_TRANSFORM_MAX_OPERATIONS
-			if (transforms.length > Number(env.ASSETS_TRANSFORM_MAX_OPERATIONS)) {
+			if (transforms.length > Number(env['ASSETS_TRANSFORM_MAX_OPERATIONS'])) {
 				throw new InvalidQueryException(
-					`"transforms" Parameter is only allowed ${env.ASSETS_TRANSFORM_MAX_OPERATIONS} transformations.`
+					`"transforms" Parameter is only allowed ${env['ASSETS_TRANSFORM_MAX_OPERATIONS']} transformations.`
 				);
 			}
 
@@ -76,37 +79,40 @@ router.get(
 				}
 			});
 
-			transformation.transforms = transforms;
+			transformation['transforms'] = transforms;
 		}
 
-		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation.key!);
+		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation['key']!);
+
 		const allKeys: string[] = [
 			...systemKeys,
-			...(assetSettings.storage_asset_presets || []).map((transformation: TransformationParams) => transformation.key),
+			...(assetSettings.storage_asset_presets || []).map(
+				(transformation: TransformationParams) => transformation['key']
+			),
 		];
 
 		// For use in the next request handler
-		res.locals.shortcuts = [...SYSTEM_ASSET_ALLOW_LIST, ...(assetSettings.storage_asset_presets || [])];
-		res.locals.transformation = transformation;
+		res.locals['shortcuts'] = [...SYSTEM_ASSET_ALLOW_LIST, ...(assetSettings.storage_asset_presets || [])];
+		res.locals['transformation'] = transformation;
 
 		if (
 			Object.keys(transformation).length === 0 ||
-			('transforms' in transformation && transformation.transforms!.length === 0)
+			('transforms' in transformation && transformation['transforms']!.length === 0)
 		) {
 			return next();
 		}
 
 		if (assetSettings.storage_asset_transform === 'all') {
-			if (transformation.key && allKeys.includes(transformation.key as string) === false) {
-				throw new InvalidQueryException(`Key "${transformation.key}" isn't configured.`);
+			if (transformation['key'] && allKeys.includes(transformation['key'] as string) === false) {
+				throw new InvalidQueryException(`Key "${transformation['key']}" isn't configured.`);
 			}
 
 			return next();
 		} else if (assetSettings.storage_asset_transform === 'presets') {
-			if (allKeys.includes(transformation.key as string)) return next();
+			if (allKeys.includes(transformation['key'] as string)) return next();
 			throw new InvalidQueryException(`Only configured presets can be used in asset generation.`);
 		} else {
-			if (transformation.key && systemKeys.includes(transformation.key as string)) return next();
+			if (transformation['key'] && systemKeys.includes(transformation['key'] as string)) return next();
 			throw new InvalidQueryException(`Dynamic asset generation has been disabled for this project.`);
 		}
 	}),
@@ -129,44 +135,67 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
-		const id = req.params.pk?.substring(0, 36);
+		const id = req.params['pk']!.substring(0, 36);
 
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const transformation: TransformationParams | TransformationPreset = res.locals.transformation.key
-			? (res.locals.shortcuts as TransformationPreset[]).find(
-					(transformation) => transformation.key === res.locals.transformation.key
+		const vary = ['Origin', 'Cache-Control'];
+
+		const transformation: TransformationParams = res.locals['transformation'].key
+			? (res.locals['shortcuts'] as TransformationParams[]).find(
+					(transformation) => transformation['key'] === res.locals['transformation'].key
 			  )
-			: res.locals.transformation;
+			: res.locals['transformation'];
+
+		if (transformation.format === 'auto') {
+			let format: Exclude<TransformationParams['format'], 'auto'>;
+
+			if (req.headers.accept?.includes('image/avif')) {
+				format = 'avif';
+			} else if (req.headers.accept?.includes('image/webp')) {
+				format = 'webp';
+			} else {
+				format = 'jpg';
+			}
+
+			transformation.format = format;
+			vary.push('Accept');
+		}
 
 		let range: Range | undefined = undefined;
 
 		if (req.headers.range) {
 			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
 
-			range = {
-				start: rangeParts?.[1] ? Number(rangeParts[1]) : undefined,
-				end: rangeParts?.[2] ? Number(rangeParts[2]) : undefined,
-			};
+			if (rangeParts && rangeParts.length > 1) {
+				range = {};
 
-			if (Number.isNaN(range.start) || Number.isNaN(range.end)) {
-				throw new RangeNotSatisfiableException(range);
+				if (rangeParts[1]) {
+					range.start = Number(rangeParts[1]);
+					if (Number.isNaN(range.start)) throw new RangeNotSatisfiableException(range);
+				}
+
+				if (rangeParts[2]) {
+					range.end = Number(rangeParts[2]);
+					if (Number.isNaN(range.end)) throw new RangeNotSatisfiableException(range);
+				}
 			}
 		}
 
 		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
-		const access = req.accountability?.role ? 'private' : 'public';
-
-		res.attachment(req.params.filename ?? file.filename_download);
+		const filename = req.params['filename'] ?? file.filename_download;
+		res.attachment(filename);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
+		res.setHeader('Cache-Control', getCacheControlHeader(req, getMilliseconds(env['ASSETS_CACHE_TTL']), false, true));
+		res.setHeader('Vary', vary.join(', '));
 
 		const unixTime = Date.parse(file.modified_on);
+
 		if (!Number.isNaN(unixTime)) {
 			const lastModifiedDate = new Date(unixTime);
 			res.setHeader('Last-Modified', lastModifiedDate.toUTCString());
@@ -181,7 +210,7 @@ router.get(
 		}
 
 		if ('download' in req.query === false) {
-			res.removeHeader('Content-Disposition');
+			res.setHeader('Content-Disposition', contentDisposition(filename, { type: 'inline' }));
 		}
 
 		if (req.method.toLowerCase() === 'head') {
@@ -223,6 +252,8 @@ router.get(
 				});
 			}
 		});
+
+		return undefined;
 	})
 );
 

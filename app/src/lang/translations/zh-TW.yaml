@@ -131,7 +131,6 @@ archive_confirm_count: >-
   未選擇任何項目 | 是否確定要封存此項目？ | 是否確定要封存這 {count} 個項目？
 reset_system_permissions_to: '重設系統權限至:'
 reset_system_permissions_copy: 此動作會取代你先前自設的系統權限。你確定?
-the_following_are_minimum_permissions: 當啟用管理介面權限時，您至少需要開啟以下這些權限。
 app_access_minimum: 管理介面最低需求
 recommended_defaults: 建議值
 unarchive: 取消封存
@@ -294,6 +293,7 @@ o2m_relationship: 一對多關聯
 m2m_relationship: 多對多關聯
 m2a_relationship: 多對Any關係
 invalid_item: 無效項目
+modal: 對話框
 next: 下一個
 field_name: 欄位名稱
 translations: 翻譯
@@ -776,7 +776,6 @@ label: 標籤
 flows: 流程
 flow: 流程
 select_a_flow: 選擇流程
-run_flow_on_current: 在目前項目上執行流程
 run_flow_on_current_edited_confirm: 有些項目可能會被這個工作流程更新，是否確定要執行？
 run_flow_success: 流程 {flow} 執行完畢
 trigger: 觸發條件
@@ -1606,7 +1605,6 @@ interfaces:
   system-folder:
     folder: 資料夾
     description: 選擇一個資料夾
-    field_hint: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
     root_name: 檔案庫的基礎位置
     system_default: 系統預設值
   select-radio:
@@ -1619,7 +1617,6 @@ interfaces:
     add_label: '「新增」標籤'
     sort: 排序
     sort_placeholder: 手動
-    field_name_placeholder: 輸入欄位名稱...
     field_note_placeholder: 輸入欄位備註...
     incompatible_data: 目前的資料與重複器不相容，在將資料加入重複器時將會被覆寫
   slider:
@@ -1891,6 +1888,8 @@ layouts:
     crop: 裁剪
     advanced: 進階
     not_all_loaded: 只能讀取前1000個項目。
+horizontal: 水平
+both: 都要
 panels:
   metric:
     name: 格式
@@ -1912,62 +1911,21 @@ panels:
   barchart:
     name: 柱狀圖
     description: 以柱狀圖顯示群組後的值
-    select_field: 你必須選擇一個欄位。
-    select_collection: 您必須選擇一個資料集。
-    select_x_axis: 您必須選擇一個 X 軸。
-    function: 函數
     horizontal: 水平
-    x_axis_grouping: X軸群組集合
-    x_axis: X 軸
-    y_axis_function: Y軸函數
-    y_axis: Y 軸
-    show_x_axis: 顯示 X 軸
-    show_y_axis: 顯示 Y 軸
-    show_data_label: 顯示資料標籤
-    group_by: 群組方式
-    group_and_function: 您必須選擇一個群組或一個函數。
-    y_axis_NaN: Y 軸必須是數字。
-    y_axis_conditional_one: 條件值
-    y_axis_conditional_two: 只允許數字
+    select_collection: 您必須選擇一個資料集。
   linechart:
     name: 折線圖
-    select_field: 你必須選擇一個欄位。
-    select_collection: 您必須選擇一個資料集。
-    select_x_axis: 您必須選擇一個 X 軸。
-    function: 函數
-    x_axis: X 軸
-    x_axis_decimals: X 軸位數
     disabled_no_grouping: 當未選擇群組時停用
-    y_axis: Y 軸
-    datasets: 資料集
-    show_legend: 顯示圖例
     show_marker: 顯示提示文字
-    include_y_axis: 當沒有選擇群組時，必須包含一個 Y 軸
-    group_and_function: 您必須選擇一個群組或一個函數。
+    curve_type: 曲線類型
     smooth: 平滑
     straight: 直線
     step_line: 線段
   meter:
     name: 格線
     description: 根據數值產生格線
-    stroke_width: 線條粗細
-    select_max_value: 您必須選擇最大值
-    max_greater_than_zero: 最大值必須大於0
-    select_field: 你必須選擇一個欄位。
-    select_collection: 您必須選擇一個資料集。
-    function: 函數
-    thin: 細線
-    medium: 中等
-    broad: 寬線
   piechart:
     name: 圓餅圖
-    function: 函數
-    donut: 圓餅圖
-    show_legend: 顯示圖例
-    right: 右
-    bottom: 下方
-    monochrome: 黑白
-    monochrome_color: 黑白
   variable:
     name: 全域變數
     description: 在其他面板的篩選器中設定一個全域值
@@ -2054,11 +2012,12 @@ operations:
     to: 收件人
     to_placeholder: 輸入電子郵件信箱並按下Enter...
     body: 郵件內文
+    template: 模板
+    data: 資料
   notification:
     name: 發送通知
     description: 發送管理介面通知給其他使用者
     recipient: 用戶
-    recipient_placeholder: 輸入使用者編號(UUID)並按下Enter鍵....
     message: 訊息
   request:
     name: Webhook / 要求網址

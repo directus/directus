@@ -5,6 +5,38 @@ const defaultRules = {
 	'no-debugger': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
 	// Enforce prettier formatting
 	'prettier/prettier': 'error',
+	'padding-line-between-statements': [
+		'error',
+		{
+			blankLine: 'always',
+			prev: [
+				'block',
+				'block-like',
+				'cjs-export',
+				'class',
+				'export',
+				'import',
+				'multiline-block-like',
+				'multiline-const',
+				'multiline-expression',
+				'multiline-let',
+				'multiline-var',
+			],
+			next: '*',
+		},
+		{
+			blankLine: 'always',
+			prev: ['const', 'let'],
+			next: ['block', 'block-like', 'cjs-export', 'class', 'export', 'import'],
+		},
+		{
+			blankLine: 'always',
+			prev: '*',
+			next: ['multiline-block-like', 'multiline-const', 'multiline-expression', 'multiline-let', 'multiline-var'],
+		},
+		{ blankLine: 'any', prev: ['export', 'import'], next: ['export', 'import'] },
+	],
+	'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
 };
 
 module.exports = {
@@ -20,17 +52,11 @@ module.exports = {
 	extends: ['eslint:recommended', 'prettier'],
 	rules: defaultRules,
 	parserOptions: {
-		ecmaVersion: 2020,
+		ecmaVersion: 2022,
+		sourceType: 'module',
 	},
 	overrides: [
-		// Parse config files as modules
-		{
-			files: ['rollup.config.js', 'vite?(st).config.js', 'api/globalSetup.js'],
-			parserOptions: {
-				sourceType: 'module',
-			},
-			rules: defaultRules,
-		},
+		// Jest
 		{
 			files: ['**/*.test.js'],
 			env: {

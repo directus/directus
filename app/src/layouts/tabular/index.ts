@@ -1,16 +1,16 @@
 import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
-import { useFieldsStore } from '@/stores/fields';
 import { useAliasFields } from '@/composables/use-alias-fields';
+import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
-import { useCollection, useItems, useSync } from '@directus/shared/composables';
-import { Field } from '@directus/shared/types';
-import { defineLayout } from '@directus/shared/utils';
-import { clone, debounce } from 'lodash';
+import { useCollection, useItems, useSync } from '@directus/composables';
+import { Field } from '@directus/types';
+import { defineLayout } from '@directus/utils';
+import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
@@ -28,6 +28,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		sidebar: () => undefined,
 		actions: TabularActions,
 	},
+	headerShadow: false,
 	setup(props, { emit }) {
 		const router = useRouter();
 
@@ -41,15 +42,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
-		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
+		const { sort, limit, page, fields } = useItemOptions();
 
-		const { aliasFields, aliasQuery } = useAliasFields(fieldsWithRelational);
+		const { aliasedFields, aliasQuery, aliasedKeys } = useAliasFields(fields, collection);
 
 		const fieldsWithRelationalAliased = computed(() => {
-			if (!aliasFields.value) return fieldsWithRelational.value;
-			return fieldsWithRelational.value.map((field) =>
-				aliasFields.value?.[field] ? aliasFields.value[field].fullAlias : field
-			);
+			return Object.values(aliasedFields.value).reduce<string[]>((acc, value) => {
+				return [...acc, ...value.fields];
+			}, []);
 		});
 
 		const {
@@ -121,6 +121,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filter,
 			search,
 			download,
+			fieldsWithRelationalAliased,
+			aliasedFields,
+			aliasedKeys,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -146,7 +149,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		function selectAll() {
 			if (!primaryKeyField.value) return;
 			const pk = primaryKeyField.value;
-			selection.value = clone(items.value).map((item) => item[pk.field]);
+			selection.value = items.value.map((item) => item[pk.field]);
 		}
 
 		function useItemOptions() {
@@ -154,6 +157,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
 			const defaultSort = computed(() => (primaryKeyField.value ? [primaryKeyField.value?.field] : []));
 			const sort = syncRefProperty(layoutQuery, 'sort', defaultSort);
+
 			const fieldsDefaultValue = computed(() => {
 				return fieldsInCollection.value
 					.filter((field: Field) => !field.meta?.hidden)
@@ -214,19 +218,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const tableHeaders = computed<HeaderRaw[]>({
 				get() {
 					return activeFields.value.map((field) => {
-						let description: string | null = null;
-
-						const fieldParts = field.key.split('.');
-
-						if (fieldParts.length > 1) {
-							const fieldNames = fieldParts.map((fieldKey, index) => {
-								const pathPrefix = fieldParts.slice(0, index);
-								const field = fieldsStore.getField(collection.value!, [...pathPrefix, fieldKey].join('.'));
-								return field?.name ?? fieldKey;
-							});
-
-							description = fieldNames.join(' -> ');
-						}
+						const description: string | null = null;
 
 						return {
 							text: field.name,
@@ -316,9 +308,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				}
 
 				let sortString = newSort.by;
+
 				if (newSort.desc === true) {
 					sortString = '-' + sortString;
 				}
+
 				sort.value = [sortString];
 			}
 

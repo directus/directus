@@ -1,4 +1,5 @@
 import VNotice from './v-notice.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -6,7 +7,8 @@ export default {
 	component: VNotice,
 	argTypes: {
 		type: {
-			control: { type: 'select', options: ['normal', 'info', 'success', 'warning', 'danger'] },
+			control: 'select',
+			options: ['normal', 'info', 'success', 'warning', 'danger'],
 		},
 	},
 };
@@ -19,4 +21,5 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {};

@@ -33,7 +33,7 @@ data:
     icon: admin_panel_settings
     note: $t:directus_collection.directus_permissions
   - collection: directus_presets
-    icon: bookmark_border
+    icon: bookmark
     note: $t:directus_collection.directus_presets
     accountability: null
   - collection: directus_relations

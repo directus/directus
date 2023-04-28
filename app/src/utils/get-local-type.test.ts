@@ -3,6 +3,7 @@ import { setActivePinia } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 
 import { cryptoStub } from '@/__utils__/crypto';
+
 vi.stubGlobal('crypto', cryptoStub);
 
 beforeEach(() => {
@@ -26,6 +27,7 @@ test('Returns NULL for non-existing relations', () => {
 
 test('Returns GROUP for Alias', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'test_fields',
@@ -46,6 +48,7 @@ test('Returns GROUP for Alias', () => {
 
 test('Returns PRESENTATION for Alias', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'test_fields',
@@ -67,6 +70,7 @@ test('Returns PRESENTATION for Alias', () => {
 
 test('Returns STANDARD with no relations', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'test_fields',
@@ -88,6 +92,7 @@ test('Returns STANDARD with no relations', () => {
 
 test('Returns FILE for m2o relations to directus_files', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'test_fields',
@@ -101,6 +106,7 @@ test('Returns FILE for m2o relations to directus_files', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{
 			collection: 'test_collection',
@@ -125,6 +131,7 @@ test('Returns FILE for m2o relations to directus_files', () => {
 
 test('Returns M2O', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'test_fields',
@@ -138,6 +145,7 @@ test('Returns M2O', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{
 			collection: 'test_collection',
@@ -162,6 +170,7 @@ test('Returns M2O', () => {
 
 test('Returns O2M', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'test_fields',
@@ -175,6 +184,7 @@ test('Returns O2M', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{
 			collection: 'test_collection',
@@ -199,6 +209,7 @@ test('Returns O2M', () => {
 
 test('Returns TRANSLATIONS for special M2M relations', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'translations',
@@ -214,6 +225,7 @@ test('Returns TRANSLATIONS for special M2M relations', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{
 			collection: 'test_collection_translations',
@@ -255,6 +267,7 @@ test('Returns TRANSLATIONS for special M2M relations', () => {
 
 test('Returns M2A', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'collection_a',
 		field: 'm2a',
@@ -271,6 +284,7 @@ test('Returns M2A', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{
 			collection: 'test_collection_m2a',
@@ -312,6 +326,7 @@ test('Returns M2A', () => {
 
 test('Returns M2O for searched relation', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'collection_a',
 		field: 'relation',
@@ -327,6 +342,7 @@ test('Returns M2O for searched relation', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{
 			collection: 'collection_a_collection_b',
@@ -367,6 +383,7 @@ test('Returns M2O for searched relation', () => {
 
 test('Returns FILES for M2M relations to directus_files', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'collection_a',
 		field: 'relation',
@@ -382,6 +399,7 @@ test('Returns FILES for M2M relations to directus_files', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{
 			collection: 'collection_a_directus_files',
@@ -422,6 +440,7 @@ test('Returns FILES for M2M relations to directus_files', () => {
 
 test('Returns M2M ', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'collection_a',
 		field: 'relation',
@@ -437,6 +456,7 @@ test('Returns M2M ', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{
 			collection: 'collection_a_collection_b',
@@ -477,6 +497,7 @@ test('Returns M2M ', () => {
 
 test('Returns STANDARD as final fallback', () => {
 	const fieldsStore = useFieldsStore();
+
 	(fieldsStore.getField as Mock).mockReturnValue({
 		collection: 'test_collection',
 		field: 'test',
@@ -492,6 +513,7 @@ test('Returns STANDARD as final fallback', () => {
 	});
 
 	const relationsStore = useRelationsStore();
+
 	(relationsStore.getRelationsForField as Mock).mockReturnValue([
 		{ doesnt: 'matter' },
 		{ doesnt: 'matter' },

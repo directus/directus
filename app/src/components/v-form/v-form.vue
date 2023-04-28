@@ -1,13 +1,13 @@
 <template>
 	<div ref="el" class="v-form" :class="gridClass">
 		<validation-errors
-			v-if="!nested && validationErrors.length > 0"
+			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
 			:fields="fields ? fields : []"
 			@scroll-to-field="scrollToField"
 		/>
 		<v-info
-			v-if="noVisibleFields && !nested && !loading"
+			v-if="noVisibleFields && showNoVisibleFields && !loading"
 			:title="t('no_visible_fields')"
 			:icon="inline ? false : 'search'"
 			center
@@ -90,8 +90,8 @@ import { useFieldsStore } from '@/stores/fields';
 import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { useElementSize } from '@directus/shared/composables';
-import { Field, ValidationError } from '@directus/shared/types';
+import { useElementSize } from '@directus/composables';
+import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { computed, ComputedRef, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -115,7 +115,8 @@ interface Props {
 	autofocus?: boolean;
 	group?: string | null;
 	badge?: string;
-	nested?: boolean;
+	showValidationErrors?: boolean;
+	showNoVisibleFields?: boolean;
 	rawEditorEnabled?: boolean;
 	direction?: string;
 	showDivider?: boolean;
@@ -135,7 +136,8 @@ const props = withDefaults(defineProps<Props>(), {
 	autofocus: false,
 	group: null,
 	badge: undefined,
-	nested: false,
+	showValidationErrors: true,
+	showNoVisibleFields: true,
 	rawEditorEnabled: false,
 	direction: undefined,
 	showDivider: false,
@@ -177,20 +179,24 @@ const { toggleRawField, rawActiveFields } = useRawEditor();
 const firstEditableFieldIndex = computed(() => {
 	for (let i = 0; i < fieldNames.value.length; i++) {
 		const field = fieldsMap.value[fieldNames.value[i]];
+
 		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
 			return i;
 		}
 	}
+
 	return null;
 });
 
 const firstVisibleFieldIndex = computed(() => {
 	for (let i = 0; i < fieldNames.value.length; i++) {
 		const field = fieldsMap.value[fieldNames.value[i]];
+
 		if (field?.meta && !field.meta?.hidden) {
 			return i;
 		}
 	}
+
 	return null;
 });
 
@@ -203,7 +209,7 @@ const noVisibleFields = computed(() => {
 watch(
 	() => props.validationErrors,
 	(newVal, oldVal) => {
-		if (props.nested) return;
+		if (!props.showValidationErrors) return;
 		if (isEqual(newVal, oldVal)) return;
 		if (newVal?.length > 0) el?.value?.scrollIntoView({ behavior: 'smooth' });
 	}
@@ -219,6 +225,7 @@ function useForm() {
 		() => props.fields,
 		() => {
 			const newVal = getFields();
+
 			if (!isEqual(fields.value, newVal)) {
 				fields.value = newVal;
 			}
@@ -244,6 +251,7 @@ function useForm() {
 			(field: Field) => field.meta?.group === props.group || (props.group === null && isNil(field.meta?.group))
 		)
 	);
+
 	const fieldNames = computed(() => {
 		return fieldsInGroup.value.map((f) => f.field);
 	});
@@ -274,6 +282,7 @@ function useForm() {
 
 		for (const field of fieldsInGroup) {
 			const meta = fieldsMap.value?.[field.field]?.meta;
+
 			if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
 				passed.push(meta!.field);
 				fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));
@@ -287,6 +296,7 @@ function useForm() {
 		if (props.collection) {
 			return fieldsStore.getFieldsForCollection(props.collection);
 		}
+
 		if (props.fields) {
 			return props.fields;
 		}
@@ -333,6 +343,7 @@ function apply(updates: { [field: string]: any }) {
 		const groupFields = getFieldsForGroup(props.group)
 			.filter((field) => !field.schema?.is_primary_key && !isDisabled(field))
 			.map((field) => field.field);
+
 		emit('update:modelValue', assign({}, omit(props.modelValue, groupFields), pick(updates, updatableKeys)));
 	} else {
 		emit('update:modelValue', pick(assign({}, props.modelValue, updates), updatableKeys));
@@ -357,6 +368,7 @@ function useBatch() {
 
 	function toggleBatchField(field: Field | undefined) {
 		if (!field) return;
+
 		if (batchActiveFields.value.includes(field.field)) {
 			batchActiveFields.value = batchActiveFields.value.filter((fieldKey) => fieldKey !== field.field);
 
@@ -381,6 +393,7 @@ function useRawEditor() {
 
 	function toggleRawField(field: Field | undefined) {
 		if (!field) return;
+
 		if (rawActiveFields.value.has(field.field)) {
 			rawActiveFields.value.delete(field.field);
 		} else {

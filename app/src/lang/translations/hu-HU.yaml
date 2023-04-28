@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
 reset_system_permissions_to: 'Rendszerjogosultságok visszaállítása a következőkre:'
 reset_system_permissions_copy: Ez a művelet felülírja a rendszergyűjteményekre alkalmazott egyéni engedélyeid. Biztos vagy benne?
-the_following_are_minimum_permissions: Az alábbi minimális engedélyek szükségesek, ha az "Alkalmazás-hozzáférés" engedélyezve van. A jogosultságok ezen felül kiterjeszthetőek, de nem szűkíthetőek.
 app_access_minimum: App hozzáférés minimuma
 recommended_defaults: Ajánlott alapértelmezések
 unarchive: Archiválás visszavonása
@@ -245,6 +244,7 @@ float: Törtszám
 integer: Egész szám
 json: JSON
 xml: XML
+yaml: YAML
 string: Karaktersor
 text: Szöveg
 time: Idő
@@ -295,6 +295,7 @@ o2m_relationship: Egy a Többhöz kapcsolat
 m2m_relationship: Több a Többhöz kapcsolat
 m2a_relationship: M2A kapcsolat (polimorf asszociációs leképezéshez több táblából)
 invalid_item: Érvénytelen elem
+modal: Ablak
 next: Következő
 field_name: Mezőnév
 translations: Fordítások
@@ -786,10 +787,11 @@ label: Címke
 flows: Folyamatok
 flow: Folyamat
 select_a_flow: Válasszon egy folyamatot
-run_flow_on_current_collection: Futtassa a folyamatot az aktuális gyűjteményben
-run_flow_on_current: Folyamat futtatása a jelenlegi tételen
+run_flow_on_current_collection: Folyamat futtatása az aktuális gyűjteményen
+run_flow_on_current: Folyamat futtatása a jelenlegi elemen
 run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
-run_flow_on_selected: Válassz ki egy vagy több elemet | Futtasd a folyamatot 1 kiválasztott elemen | Futtasd a folyamatot {n} kiválasztott elemen
+run_flow_on_selected: Futtatás a kiválasztott elemeken
+run_flow: Folyamat futtatása
 run_flow_success: Folyamat "{flow}" sikeresen futtatva
 trigger: Eseményindító
 trigger_options: Trigger opciók
@@ -1431,7 +1433,6 @@ translation: Fordítás
 translation_placeholder: Fordítás megadása...
 value: Érték
 view_project: Projekt megtekintése
-weeks: { }
 report_error: Hiba jelentése
 start: Start
 table: Táblázat
@@ -1630,7 +1631,6 @@ interfaces:
   system-folder:
     folder: Könyvtár
     description: Válasszon egy mappát
-    field_hint: Mappa a feltöltött fájlok számára. Nem érinti a meglévő fájlokat.
     root_name: Fájlok gyökérkönyvtára
     system_default: Rendszer alapértelmezései
   select-radio:
@@ -1643,7 +1643,6 @@ interfaces:
     add_label: '"Új létrehozása" címke'
     sort: Rendezés
     sort_placeholder: Manuális
-    field_name_placeholder: Mezőnév megadása...
     field_note_placeholder: Megjegyzés hozzáadása mezőhöz...
     incompatible_data: Az aktuális adatok nem kompatibilisek az átjátszó interfésszel, és felülbírálásra kerülnek, amikor elemeket adunk az átjátszóhoz
   slider:
@@ -1940,6 +1939,29 @@ layouts:
     show: Mutasd
     no_group: Keresés és szűrés engedélyezése
     not_all_loaded: Csak az első 100 elemet sikerült betölteni.
+horizontal: Horizontális
+vertical: Függőleges
+x_axis: X-tengely
+y_axis: Y tengely
+y_axis_function: Y tengelyes függvény
+show_x_only: Csak az X tengely látszódjon
+show_y_only: Csak az Y tengely látszódjon
+show_data_label: Adat címke mutatása
+both: Mindkettő
+show_axis_labels: Tengely címke mutatása
+function: Függvény
+half_circle: Félkör
+full_circle: Teljes kör
+stroke_width: Tollvastagság
+rounded_stroke: Görbe vonal
+thin: Vékony
+medium: Közepes
+broad: Széles
+show_labels: Címkék megjelenítése
+show_legend: Mutasd a magyarázatot
+right: Jobb
+left: Balra
+donut: Fánk
 panels:
   metric:
     name: Metrikus
@@ -1961,69 +1983,24 @@ panels:
   barchart:
     name: Oszlopdiagram
     description: Sáv- vagy oszlopdiagramok értékcsoportok összehasonlításához
-    select_field: Ki kell választanod egy mezőt!
-    select_collection: Ki kell választanod egy gyűjteményt!
-    select_x_axis: Ki kell választanod egy X-tengelyt.
-    function: Függvény
     horizontal: Horizontális
-    x_axis_grouping: X-tengely csoportos aggregálás
-    x_axis: X-tengely
-    y_axis_function: Y tengelyes függvény
-    y_axis: Y tengely
-    show_x_axis: X tengely megjelenítése
-    show_y_axis: Y tengely megjelenítése
-    show_data_label: Mutasd az adat fejlécét
-    group_by: Csoportosítási szempont
-    group_and_function: Mind a csoportot, mind a függvényt fel kell vennie vagy ki kell hagynia.
-    y_axis_NaN: Az Y tengelynek számnak kell lennie.
-    y_axis_conditional_one: A feltétel értéke
-    y_axis_conditional_two: számnak kell lennie.
+    select_collection: Ki kell választanod egy gyűjteményt!
   linechart:
     name: Vonaldiagram
     description: Vonaldiagram egy mező változásának összehasonlításához
-    select_field: Ki kell választanod egy mezőt!
-    select_collection: Ki kell választanod egy gyűjteményt!
-    select_x_axis: Ki kell választanod egy X-tengelyt.
-    function: Függvény
-    x_axis: X-tengely
-    x_axis_decimals: X-tengely tizedesjegyei
+    disabled_grouping: Kikapcsolva, amikor csoportosítás van kiválasztva.
     disabled_no_grouping: Letiltva, ha nincs kiválasztva csoportosítás.
-    y_axis: Y tengely
-    datasets: Adatkészletek
-    show_legend: Mutasd a magyarázatot
     show_marker: Eszköztipp-jelölő megjelenítése
-    include_dataset: Legalább egy adatkészletet kell tartalmaznia.
-    include_y_axis: Minden adatkészlethez meg kell adnia Y-tengelyt, ha nincs csoport megadva.
-    group_and_function: Mind a csoportot, mind a függvényt fel kell vennie vagy ki kell hagynia.
+    curve_type: Görbe típusa
     smooth: Gördülékeny
     straight: Egyenes
     step_line: Lécsőzetes
   meter:
     name: Mértékegység
     description: Értékek nyomonkövetése
-    half_circle: Félkör
-    full_circle: Teljes kör
-    stroke_width: Tollvastagság
-    rounded_stroke: Görbe vonal
-    select_max_value: Ki kell választania egy maximális értéket.
-    max_greater_than_zero: A maximumnak 0-nál nagyobbnak kell lennie.
-    select_field: Ki kell választani egy mezőt.
-    select_collection: Ki kell választani egy gyűjteményt.
-    function: Függvény
-    thin: Vékony
-    medium: Közepes
-    broad: Széles
   piechart:
     name: Torta vagy fánk diagram
     description: Kör diagram, amely a csoportok arányát mutatja egy oszlopon
-    function: Függvény
-    donut: Fánk
-    show_labels: Címkék megjelenítése
-    show_legend: Mutasd a magyarázatot
-    right: Jobb
-    bottom: Alsó
-    monochrome: Monokróm
-    monochrome_color: Monokróm szín
   variable:
     name: Globális változó
     description: Állítson be egy globális értéket más panelek szűrőiben való használatra
@@ -2112,11 +2089,12 @@ operations:
     to: Neki
     to_placeholder: Adjon hozzá e-mail címeket, és nyomja meg az entert...
     body: Törzsszöveg
+    template: Sablon
+    data: Adat
   notification:
     name: Értesítés küldése
     description: Alkalmazáson belüli értesítés küldése egy vagy több felhasználónak
     recipient: Felhasználó
-    recipient_placeholder: Adjon hozzá felhasználói UUID-t, és nyomja meg az Enter-t...
     message: Üzenet
   request:
     name: Webhook / URL-kérés
@@ -2142,3 +2120,9 @@ operations:
     flows: Folyamatok
     flow: Folyamat
     data: Adat
+    iteration_mode: Iteráló mód
+    iteration_mode_note: Tömbökön iteráló mód.
+    serial: Soros
+    parallel: Párhuzamos
+    batch: Tömeges
+    batch_size: Darabszám

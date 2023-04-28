@@ -1,4 +1,4 @@
-import { Type } from '@directus/shared/types';
+import { Type } from '@directus/types';
 
 export const VALIDATION_TYPES = ['FAILED_VALIDATION', 'RECORD_NOT_UNIQUE'];
 
@@ -64,7 +64,7 @@ export const MODULE_BAR_DEFAULT = [
 		id: 'docs',
 		enabled: true,
 		name: '$t:documentation',
-		icon: 'help_outline',
+		icon: 'help',
 		url: 'https://docs.directus.io',
 	},
 	{

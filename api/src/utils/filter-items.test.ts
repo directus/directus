@@ -1,4 +1,4 @@
-import { filterItems } from '../../src/utils/filter-items';
+import { filterItems } from '../../src/utils/filter-items.js';
 import { describe, test, expect } from 'vitest';
 
 const items = [
@@ -50,6 +50,7 @@ describe('filter items', () => {
 				{},
 			],
 		});
+
 		expect(result).toStrictEqual(items.filter((item) => item.action === 'read'));
 	});
 
@@ -59,6 +60,7 @@ describe('filter items', () => {
 				_eq: 'read',
 			},
 		});
+
 		expect(result).toStrictEqual(items.filter((item) => item.action === 'read'));
 	});
 });

@@ -1,10 +1,10 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { computed, ComputedRef, Ref } from 'vue';
 import { cloneDeep } from 'lodash';
 import { isAllowed } from '../utils/is-allowed';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/composables';
 
 type UsablePermissions = {
 	createAllowed: ComputedRef<boolean>;
@@ -58,6 +58,13 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 		if (userStore.currentUser?.role?.admin_access === true) return fields;
 
 		const permissions = permissionsStore.getPermissionsForUser(collection.value, isNew.value ? 'create' : 'update');
+
+		// remove fields without read permissions so they don't show up in the DOM
+		const readableFields = permissionsStore.getPermissionsForUser(collection.value, 'read')?.fields;
+
+		if (readableFields && readableFields.includes('*') === false) {
+			fields = fields.filter((field) => readableFields.includes(field.field));
+		}
 
 		if (!permissions) return fields;
 

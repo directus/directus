@@ -1,13 +1,18 @@
+import type { Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { respond } from '../middleware/respond';
-import useCollection from '../middleware/use-collection';
-import { validateBatch } from '../middleware/validate-batch';
-import { AuthenticationService, MetaService, UsersService, RolesService, TFAService } from '../services';
-import { PrimaryKey } from '../types';
-import asyncHandler from '../utils/async-handler';
-import { Role } from '@directus/shared/types';
+import { ForbiddenException, InvalidCredentialsException, InvalidPayloadException } from '../exceptions/index.js';
+import { respond } from '../middleware/respond.js';
+import useCollection from '../middleware/use-collection.js';
+import { validateBatch } from '../middleware/validate-batch.js';
+import { AuthenticationService } from '../services/authentication.js';
+import { MetaService } from '../services/meta.js';
+import { RolesService } from '../services/roles.js';
+import { TFAService } from '../services/tfa.js';
+import { UsersService } from '../services/users.js';
+import type { PrimaryKey } from '../types/index.js';
+import asyncHandler from '../utils/async-handler.js';
+import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
@@ -34,10 +39,10 @@ router.post(
 		try {
 			if (Array.isArray(req.body)) {
 				const items = await service.readMany(savedKeys, req.sanitizedQuery);
-				res.locals.payload = { data: items };
+				res.locals['payload'] = { data: items };
 			} else {
-				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
-				res.locals.payload = { data: item };
+				const item = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
+				res.locals['payload'] = { data: item };
 			}
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
@@ -66,7 +71,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	const item = await service.readByQuery(req.sanitizedQuery);
 	const meta = await metaService.getMetaForQuery('directus_users', req.sanitizedQuery);
 
-	res.locals.payload = { data: item || null, meta };
+	res.locals['payload'] = { data: item || null, meta };
 	return next();
 });
 
@@ -85,7 +90,8 @@ router.get(
 					app_access: false,
 				},
 			};
-			res.locals.payload = { data: user };
+
+			res.locals['payload'] = { data: user };
 			return next();
 		}
 
@@ -100,10 +106,10 @@ router.get(
 
 		try {
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
-			res.locals.payload = { data: item || null };
+			res.locals['payload'] = { data: item || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
-				res.locals.payload = { data: { id: req.accountability.user } };
+				res.locals['payload'] = { data: { id: req.accountability.user } };
 				return next();
 			}
 
@@ -119,14 +125,15 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		if (req.path.endsWith('me')) return next();
+
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const items = await service.readOne(req.params.pk, req.sanitizedQuery);
+		const items = await service.readOne(req.params['pk']!, req.sanitizedQuery);
 
-		res.locals.payload = { data: items || null };
+		res.locals['payload'] = { data: items || null };
 		return next();
 	}),
 	respond
@@ -147,7 +154,7 @@ router.patch(
 		const primaryKey = await service.updateOne(req.accountability.user, req.body);
 		const item = await service.readOne(primaryKey, req.sanitizedQuery);
 
-		res.locals.payload = { data: item || null };
+		res.locals['payload'] = { data: item || null };
 		return next();
 	}),
 	respond
@@ -188,12 +195,13 @@ router.patch(
 		} else if (req.body.keys) {
 			keys = await service.updateMany(req.body.keys, req.body.data);
 		} else {
-			keys = await service.updateByQuery(req.body.query, req.body.data);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			keys = await service.updateByQuery(sanitizedQuery, req.body.data);
 		}
 
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals.payload = { data: result };
+			res.locals['payload'] = { data: result };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -215,11 +223,11 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.updateOne(req.params.pk, req.body);
+		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: item || null };
+			res.locals['payload'] = { data: item || null };
 		} catch (error: any) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -247,7 +255,8 @@ router.delete(
 		} else if (req.body.keys) {
 			await service.deleteMany(req.body.keys);
 		} else {
-			await service.deleteByQuery(req.body.query);
+			const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			await service.deleteByQuery(sanitizedQuery);
 		}
 
 		return next();
@@ -263,7 +272,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params.pk);
+		await service.deleteOne(req.params['pk']!);
 
 		return next();
 	}),
@@ -286,6 +295,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.inviteUser(req.body.email, req.body.role, req.body.invite_url || null);
 		return next();
 	}),
@@ -302,10 +312,12 @@ router.post(
 	asyncHandler(async (req, _res, next) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
+
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.acceptInvite(req.body.token, req.body.password);
 		return next();
 	}),
@@ -332,11 +344,12 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await authService.verifyPassword(req.accountability.user, req.body.password);
 
 		const { url, secret } = await service.generateTFA(req.accountability.user);
 
-		res.locals.payload = { data: { secret, otpauth_url: url } };
+		res.locals['payload'] = { data: { secret, otpauth_url: url } };
 		return next();
 	}),
 	respond
@@ -362,6 +375,7 @@ router.post(
 			const rolesService = new RolesService({
 				schema: req.schema,
 			});
+
 			const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
 			if (role && role.enforce_tfa) {
@@ -416,6 +430,7 @@ router.post(
 			const rolesService = new RolesService({
 				schema: req.schema,
 			});
+
 			const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
 			if (role && role.enforce_tfa) {
@@ -466,7 +481,7 @@ router.post(
 			throw new InvalidCredentialsException();
 		}
 
-		if (!req.accountability.admin || !req.params.pk) {
+		if (!req.accountability.admin || !req.params['pk']) {
 			throw new ForbiddenException();
 		}
 
@@ -475,7 +490,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		await service.disableTFA(req.params.pk);
+		await service.disableTFA(req.params['pk']);
 		return next();
 	}),
 	respond

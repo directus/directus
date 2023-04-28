@@ -40,8 +40,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { RouteLocation, useRoute, useLink } from 'vue-router';
-import { useSizeClass, useGroupable } from '@directus/shared/composables';
+import { RouteLocationRaw, useRoute, useLink } from 'vue-router';
+import { useSizeClass, useGroupable } from '@directus/composables';
 import { isEqual, isNil } from 'lodash';
 
 interface Props {
@@ -64,7 +64,7 @@ interface Props {
 	/** Show a circular progress bar */
 	loading?: boolean;
 	/** To what internal link the button should direct */
-	to?: string | RouteLocation;
+	to?: RouteLocationRaw;
 	/** To what external link the button should direct */
 	href?: string;
 	/** Renders the button highlighted */

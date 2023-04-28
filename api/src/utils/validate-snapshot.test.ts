@@ -1,12 +1,12 @@
 import { describe, expect, test, vi } from 'vitest';
-import { Snapshot } from '../types/snapshot';
-import { validateSnapshot } from './validate-snapshot';
+import type { Snapshot } from '../types/snapshot.js';
+import { validateSnapshot } from './validate-snapshot.js';
 
-vi.mock('../../package.json', () => ({
-	version: '9.22.4',
+vi.mock('./package.js', () => ({
+	version: '10.0.0',
 }));
 
-vi.mock('../database', () => ({
+vi.mock('../database/index.js', () => ({
 	getDatabaseClient: () => 'sqlite',
 }));
 
@@ -24,7 +24,7 @@ describe('should fail on invalid snapshot schema', () => {
 	});
 
 	test('invalid schema', () => {
-		const snapshot = { version: 1, directus: '9.22.4', collections: {} } as Snapshot;
+		const snapshot = { version: 1, directus: '10.0.0', collections: {} } as Snapshot;
 
 		expect(() => validateSnapshot(snapshot)).toThrowError('"collections" must be an array');
 	});
@@ -32,15 +32,15 @@ describe('should fail on invalid snapshot schema', () => {
 
 describe('should require force option on version / vendor mismatch', () => {
 	test('directus version mismatch', () => {
-		const snapshot = { version: 1, directus: '9.22.3' } as Snapshot;
+		const snapshot = { version: 1, directus: '9.26.0' } as Snapshot;
 
 		expect(() => validateSnapshot(snapshot)).toThrowError(
-			"Provided snapshot's directus version 9.22.3 does not match the current instance's version 9.22.4"
+			"Provided snapshot's directus version 9.26.0 does not match the current instance's version 10.0.0"
 		);
 	});
 
 	test('db vendor mismatch', () => {
-		const snapshot = { version: 1, directus: '9.22.4', vendor: 'postgres' } as Snapshot;
+		const snapshot = { version: 1, directus: '10.0.0', vendor: 'postgres' } as Snapshot;
 
 		expect(() => validateSnapshot(snapshot)).toThrowError(
 			"Provided snapshot's vendor postgres does not match the current instance's vendor sqlite."
@@ -49,7 +49,7 @@ describe('should require force option on version / vendor mismatch', () => {
 });
 
 test('should allow bypass on version / vendor mismatch via force option ', () => {
-	const snapshot = { version: 1, directus: '9.22.3', vendor: 'postgres' } as Snapshot;
+	const snapshot = { version: 1, directus: '9.26.0', vendor: 'postgres' } as Snapshot;
 
 	expect(validateSnapshot(snapshot, true)).toBeUndefined();
 });

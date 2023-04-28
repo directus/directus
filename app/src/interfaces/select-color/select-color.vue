@@ -159,7 +159,7 @@
 <script lang="ts" setup>
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
-import { cssVar } from '@directus/shared/utils/browser';
+import { cssVar } from '@directus/utils/browser';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { i18n } from '@/lang';
@@ -286,9 +286,11 @@ function useColor() {
 			let alpha = Math.round(255 * color.value.alpha())
 				.toString(16)
 				.toUpperCase();
+
 			alpha = alpha.padStart(2, '0');
 			return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
 		}
+
 		return null;
 	};
 
@@ -342,6 +344,7 @@ function useColor() {
 			if (newAlpha === null) {
 				return;
 			}
+
 			const newColor = color.value !== null ? color.value.rgb().array() : [0, 0, 0];
 			setColor(Color(newColor).alpha(newAlpha / 100));
 		},
@@ -369,8 +372,9 @@ function useColor() {
 
 	position: relative;
 	box-sizing: border-box;
-	width: calc(var(--input-height) - 12px);
-	max-height: calc(var(--input-height) - 12px);
+	margin-left: -8px;
+	width: calc(var(--input-height) - 20px);
+	max-height: calc(var(--input-height) - 20px);
 	overflow: hidden;
 	border-radius: calc(var(--border-radius) + 2px);
 	cursor: pointer;
@@ -406,14 +410,12 @@ function useColor() {
 	padding-right: 0px;
 }
 
-.v-input.html-color-select {
-	width: 0;
-	height: 0;
-	visibility: hidden;
-}
-
-.color-input :deep(.input) {
-	padding-left: 6px;
+.color-input {
+	.v-input.html-color-select {
+		width: 0;
+		height: 0;
+		visibility: hidden;
+	}
 }
 
 .color-data-inputs {

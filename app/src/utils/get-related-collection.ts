@@ -1,5 +1,5 @@
 import { useRelationsStore } from '@/stores/relations';
-import { Relation } from '@directus/shared/types';
+import { Relation } from '@directus/types';
 import { getLocalTypeForField } from './get-local-type';
 
 export interface RelatedCollectionData {

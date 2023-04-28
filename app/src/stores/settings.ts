@@ -4,7 +4,7 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
-import { Settings } from '@directus/shared/types';
+import { Settings } from '@directus/types';
 import { useUserStore } from './user';
 
 export const useSettingsStore = defineStore({
@@ -53,6 +53,7 @@ export const useSettingsStore = defineStore({
 					fields: ['translation_strings'],
 				},
 			});
+
 			const { translation_strings } = response.data.data;
 			if (this.settings) this.settings.translation_strings = translation_strings;
 			return translation_strings;

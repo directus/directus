@@ -47,6 +47,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const { t } = useI18n();
+
 		const changesFiltered = computed(() => {
 			return (props.changes as Change[]).filter((change: any) => {
 				if (props.updated) return true;

@@ -1,0 +1,1256 @@
+---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identigilo
+avatar: Profilbildo
+application: Aplikaĵo
+default_provider: Defaŭlta
+method: Metodo
+published: Publikigita
+draft: Malneto
+archived: Arĥivita
+modules: Moduloj
+module_bar: Modula breto
+logs: Protokoloj
+edit_field: Redakti la kampon
+conditions: Kondiĉoj
+location: Loko
+condition_rules: Kondiĉaj reguloj
+input: Enigo
+maps: Mapoj
+switch_user: Ŝanĝi la uzanton
+enter_a_name: Entajpu nomon...
+duplicate_field: Duobligi la kampon
+half_width: Duona larĝo
+full_width: Plena larĝo
+group: Grupo
+export_items: Eksporti erojn
+and: Kaj
+or: Aŭ
+dataset_too_large_currently_showing_n_items: La datumaro estas tro granda. Nur la unuaj {n} eroj estas nun montrataj.
+modifier: Ŝanĝilo
+custom: Propra
+hook: Hoko
+enter_password_to_enable_tfa: Entajpu vian pasvorton por ŝalti dufaktoran kontroladon
+add_field: Aldoni kampon
+role_name: Nomo de la rolo
+branch: Branĉo
+leaf: Folio
+indeterminate: Nedeterminita
+edit_collection: Redakti la kolekton
+exclusive: Ekskluziva
+children: Idoj
+db_only_click_to_configure: 'Nur datumbazo: alklaku por agordi'
+show_active_items: Montri aktivajn erojn
+show_archived_items: Montri arĥivitajn erojn
+show_all_items: Montri ĉiujn erojn
+edited: Valoro redaktita
+required: Deviga
+create_preset: Krei antaŭagordon
+create_panel: Krei panelon
+create_role: Krei rolon
+create_user: Krei uzanton
+message: Mesaĝo
+delete_panel: Forigi la panelon
+create_webhook: Krei rethokon
+translation_string_translations_placeholder: Aldoni novan tradukon
+invite_users: Inviti uzantojn
+invite: Inviti
+email_already_invited: La retpoŝtadreso "{email}" jam estas invitita
+subject: Temo
+inbox: Enirkesto
+connection_excellent: Bonega konekto
+connection_good: Bona konekto
+connection_fair: Mezbona konekto
+connection_poor: Malbona konekto
+primary: Ĉefa
+rename_folder: Alinomi la dosierujon
+delete_folder: Forigi la dosierujon
+prefix: Prefikso
+suffix: Sufikso
+delete_bookmark: Forigi la legosignon
+delete_bookmark_copy: >-
+  Ĉu vi certas, ke vi volas forigi la legosignon "{bookmark}"? La ago ne estas malfarebla.
+delete_personal_bookmark: Forigi la personan legosignon
+logoutReason:
+  SIGN_OUT: Elsalutinta
+  SESSION_EXPIRED: Seanco eksvalidiĝinta
+public_label: Publika
+not_allowed: Ne permesita
+directus_version: Directus-versio
+node_version: Node-versio
+node_uptime: Node-funkcidaŭro
+os_type: Operaciuma tipo
+os_version: Operaciuma versio
+os_uptime: Operaciuma funkcidaŭro
+os_totalmem: Operaciuma memoro
+archive: Arĥivi
+archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
+archive_confirm_count: >-
+  Neniu ero elektita | Ĉu vi certas, ke vi volas arĥivi la eron? | Ĉu vi certas, ke vi volas arĥivi {count} erojn?
+recommended_defaults: Rekomendataj defaŭltoj
+unarchive: Malarĥivi
+unarchive_confirm: Ĉu vi certas, ke vi volas malarĥivi la eron?
+validation_errors_notice: 'La sekvaj kampoj havas nevalidajn valorojn:'
+validationError:
+  eq: Valoro devas esti {valid}
+  neq: Valoro ne povas esti {invalid}
+  in: Valoro devas esti unu el {valid}
+  nin: Valoro ne povas esti unu el {invalid}
+  contains: Valoro devas enhavi {substring}
+  ncontains: Valoro ne povas enhavi {substring}
+  gt: Valoro devas esti pli granda ol {valid}
+  gte: Valoro devas esti pli granda ol aŭ egala al {valid}
+  lt: Valoro devas esti malpli granda ol {valid}
+  lte: Valoro devas esti malpli granda ol aŭ egala al {valid}
+  empty: Valoro devas esti malplena
+  nempty: Valoro ne povas esti malplena
+  null: Valoro devas esti NULL
+  nnull: Valoro ne povas esti NULL
+  required: Valoro estas deviga
+  unique: Valoro devas esti unika
+use_custom: Uzi propran
+nullable: Povas esti NULL
+allow_null_value: Permesi la valoron NULL
+allow_multiple: Permesi plurajn
+field_presentation: Prezento kaj kromnomoj
+field_file: Unuopa dosiero
+field_files: Pluraj dosieroj
+field_m2o: Pluraj-al-unu-rilato
+field_m2a: Pluraj-al-ajnaj-rilato
+field_o2m: Unu-al-pluraj-rilato
+field_m2m: Pluraj-al-pluraj-rilato
+field_translations: Tradukoj
+field_group: Kampogrupo
+field_validation: Validigo de la kampo
+permissions_for_role: 'Eroj, kiujn la rolo {role} povas {action}.'
+fields_for_role: 'Kampoj, kiujn la rolo {role} povas {action}.'
+presentation_and_aliases: Prezento kaj kromnomoj
+top: Supra
+bottom: Malsupra
+hide_field: Kaŝi la kampon
+delete_field: Forigi la kampon
+fields_and_layout: Kampoj kaj aranĝo
+field_create_success: 'Kampo kreita: "{field}"'
+language: Lingvo
+language_placeholder: Elekti lingvon...
+admins_have_all_permissions: Administrantoj havas ĉiujn permesojn
+camera: Kamerao
+validation: Validigo
+sum: Sumo
+avg: Averaĝo
+min: Minimumo
+max: Maksimumo
+iso: ISO
+create_field: Krei kampon
+creating_new_field: 'Nova kampo ({collection})'
+field_in_collection: '{field} ({collection})'
+hidden_field: Kaŝita kampo
+disabled_editing_value: Malŝalti redaktadon de la valoro
+key: Ŝlosilo
+alias: Kromnomo
+boolean: Bulea valoro
+date: Dato
+precision: Precizeco
+json: JSON
+xml: XML
+yaml: YAML
+text: Teksto
+time: Tempo
+timestamp: Tempindiko
+uuid: UUID
+geometry: Geometrio (ĉiuj)
+geometry.Point: Punkto
+not_available_for_type: Ne disponebla por la tipo
+create_translations: Krei tradukojn
+auto_refresh: Aŭtomate aktualigi
+refresh_interval: Intervalo por aktualigi
+no_refresh: Ne aktualigi
+auto_generate: Aŭtomate generi
+click_here: Alklaku ĉi tie
+click_to_manage_translated_fields: >-
+  Ankoraŭ ne estas tradukitaj kampoj. Alklaku ĉi tie por krei ilin. | Estas tradukita kampo. Alklaku ĉi tie por administri ĝin. | Estas {count} tradukitaj kampoj. Alklaku ĉi tie por administri ilin.
+fields_group: Kampogrupo
+no_collections_found: Neniu kolekto trovita.
+search_field: Serĉkampo...
+new_field: 'Nova kampo'
+new_collection: 'Nova kolekto'
+add_m2o_to_collection: 'Aldoni pluraj-al-unu-rilaton al "{collection}'
+add_o2m_to_collection: 'Aldoni unu-al-pluraj-rilaton al "{collection}"'
+add_m2m_to_collection: 'Aldoni pluraj-al-pluraj-rilaton al "{collection}"'
+choose_a_type: Elekti tipon...
+determined_by_relationship: Determinita de la rilato
+add_note: Aldoni helpan noton por uzantoj...
+add_link: Aldoni ligilon
+custom_link: Propra ligilo
+default_value: Defaŭlta valoro
+single_file: Unuopa dosiero
+multiple_files: Pluraj dosieroj
+m2o_relationship: Pluraj-al-unu-rilato
+o2m_relationship: Unu-al-pluraj-rilato
+m2m_relationship: Pluraj-al-pluraj-rilato
+m2a_relationship: Pluraj-al-ajnaj-rilato
+invalid_item: Nevalida ero
+next: Sekva
+field_name: Nomo de la kampo
+translations: Tradukoj
+no_translations: Neniu traduko
+note: Noto
+enter_a_value: Entajpu valoron...
+length: Longo
+precision_scale: Precizeco kaj skalo
+readonly: Nur legi
+unique: Unika
+primary_key: Ĉefa ŝlosilo
+foreign_key: Fremda ŝlosilo
+dismiss: Ignori
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Kruda valoro
+copy_raw_value: Kopii la krudan valoron
+copy_raw_value_success: Kopiita
+paste_raw_value: Alglui la krudan valoron
+paste_raw_value_success: Algluita
+view_raw_value: Vidi la krudan valoron
+edit_raw_value: Redakti la krudan valoron
+enter_raw_value: Entajpu krudan valoron...
+undo_changes: Malfari la ŝanĝojn
+notifications: Sciigoj
+page_not_found: Paĝo ne trovita
+display: Montri
+title: Titolo
+revision_delta_created: Kreita
+revision_delta_created_externally: Ekstere kreita
+revision_delta_deleted: Forigita
+revision_delta_reverted: Malfarita
+revision_delta_other: Versio
+revision_delta_by: '{date} de {user}'
+download_page_as_csv: 'Elŝuti la paĝon kiel CSV'
+private_user: Privata uzanto
+item_create_success: Ero kreita | Eroj kreitaj
+item_delete_success: Ero forigita | Eroj forigitaj
+this_collection: Ĉi tiu kolekto
+related_collection: Rilata kolekto
+related_collections: Rilataj kolektoj
+translations_collection: Kolekto de tradukoj
+languages_collection: Kolekto de lingvoj
+import_data_input_placeholder: CSV aŭ JSON...
+import_data_button: Komenci importi
+import_data_success: Datumoj sukcese importitaj de {filename}
+label_import: Importi
+label_export: Eksporti
+import_export: Importi / eksporti
+last_page: Lasta paĝo
+move_to_folder: Movi al dosierujo
+move: Move
+system: Sistemo
+interface_label: Interfaco
+today: Hodiaŭ
+yesterday: Hieraŭ
+delete_comment: Forigi la komenton
+delete_share: Forigi la konigon
+functions:
+  year: Jaro
+  month: Monato
+  week: Semajno
+  day: Tago
+  weekday: Semajntago
+  hour: Horo
+  minute: Minuto
+  second: Sekundo
+date-fns_date: PPP
+date-fns_time: 'H:mm:ss'
+date-fns_time_no_seconds: 'H:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'H:mm'
+date-fns_date_short_no_year: d MMM
+minutes: Minutoj
+hours: Horoj
+month: Monato
+year: Jaro
+select_all: Elekti ĉiujn
+months:
+  january: januaro
+  february: februaro
+  march: marto
+  april: aprilo
+  may: majo
+  june: junio
+  july: julio
+  august: aŭgusto
+  september: septembro
+  october: oktobro
+  november: novembro
+  december: decembro
+url: URL
+import_label: Importi
+dimensions: Dimensioj
+size: Grando
+created: Kreita
+modified: Ŝanĝita
+checksum: Kontrolsumo
+owner: Posedanto
+edited_by: Redaktita de
+folder: Dosierujo
+zoom: Zomi
+download: Elŝuti
+open: Malfermi
+open_in_new_window: Malfermi en nova fenestro
+open_folder: Malfermi la dosierujon "{folder}"
+foreground_color: Malfona koloro
+background_color: Fona koloro
+upload_from_device: Alŝuti dosieron de la aparato
+choose_from_library: Alŝuti dosieron de biblioteko
+import_from_url: Importi dosieron per URL
+no_file_selected: Neniu dosiero elektita
+download_file: Elŝuti la dosieron
+open_file_in_tab: Malfermi la dosieron en nova langeto
+start_export: Komenci eksporti
+not_available_for_local_downloads: Ne disponebla por lokaj elŝutoj
+collection_key: Ŝlosilo de la kolekto
+name: Nomo
+primary_key_field: Kampo de la ĉefa ŝlosilo
+type: Tipo
+creating_new_collection: Krei novan kolekton
+created_by: Kreita de
+created_on: Kreita je
+generated_uuid: Generita UUID
+save_and_create_new: Konservi kaj krei novan
+save_as_copy: Konservi kiel kopion
+add_existing: Aldoni ekzistantan
+creating_items: Krei erojn
+selecting_items: Elekti erojn
+allow_duplicates: Permesi duoblaĵojn
+comments: Komentoj
+no_comments: Ankoraŭ neniu komento
+select_item: Elekti kampon
+no_items: Neniu ero
+search_items: Serĉi erojn...
+disabled: Malŝaltita
+information: Informoj
+report_bug: Raporti cimon
+request_feature: Peti funkcion
+request_body: Enhavo de la peto
+interface_not_found: 'Interfaco "{interface}" ne trovita.'
+list-m2a: Konstruilo (pluraj-al-ajnaj-rilato)
+item_count: 'Neniu ero | 1 ero | {count} eroj'
+no_items_copy: Ankoraŭ ne estas ero en la kolekto.
+file_count: 'Neniu dosiero | 1 dosiero | {count} dosieroj'
+no_files_copy: Ne estas dosiero ĉi tie.
+user_count: 'Neniu uzanto | 1 uzanto | {count} uzantoj'
+no_users_copy: Ankoraŭ ne estas uzanto en la rolo.
+webhooks_count: 'Neniu rethoko | 1 rethoko | {count} rethokoj'
+no_notifications: Neniu sciigo
+all_items: Ĉiuj eroj
+any: Ajna
+csv: CSV
+no_collections: Neniu kolekto
+create_collection: Krei kolekton
+select_a_collection: Elekti kolekton
+select_a_field: Elekti kampon
+active: Aktiva
+move_to: Movi al...
+copy: Kopii
+copy_to: Kopii al...
+no_other_dashboards_copy: Vi ankoraŭ ne havas alian stirpanelon.
+inactive: Neaktiva
+users: Uzantoj
+action: Ago
+ip_address: IP-adreso
+user_agent: Aplikaĵo de la uzanto
+origin: Origino
+webhooks: Rethokoj
+min_value: Minimuma valoro
+max_value: Maksimuma valoro
+automatic: Aŭtomata
+add_filter: Aldoni filtrilon
+upper_limit: Supra limo...
+lower_limit: Malsupra limo...
+sidebar: Flankpanelo
+duration: Daŭro
+charset: Signaro
+second: sekundo
+file_moved: Dosiero movita
+collection_created: Kolekto kreita
+modified_on: Ŝanĝita je
+card_size: Grando de la karto
+sort: Ordigi
+status: Stato
+remove: Forigi
+bookmark_doesnt_exist_cta: Reveni al la kolekto
+select_an_item: Elekti eron...
+edit: Redakti
+enabled: Ŝaltita
+disable_tfa: Malŝalti dufaktoran kontroladon
+admin_disable_tfa_text: Ĉu vi certas, ke vi volas malŝalti dufaktoran kontroladon por la uzanto?
+tfa_setup: Agordi dufaktoran kontroladon
+enter_otp_to_disable_tfa: Entajpu la unufojan pasvorton por malŝalti dufaktoran kontroladon
+create_account: Krei konton
+account_created_successfully: Konto sukcese kreita
+errors:
+  COLLECTION_NOT_FOUND: "Kolekto ne ekzistas"
+  FIELD_NOT_FOUND: Kampo ne trovita
+  FORBIDDEN: Malpermesita
+  INVALID_CREDENTIALS: Malĝusta uzantnomo aŭ pasvorto
+  INVALID_OTP: Malĝusta unufoja pasvorto
+  INVALID_PAYLOAD: Nevalidaj enhavaj datumoj
+  INVALID_TOKEN: Nevalida ĵetono
+  INVALID_IP: IP-adreso ne permesita
+  ITEM_NOT_FOUND: Ero ne trovita
+  ROUTE_NOT_FOUND: Ne trovita
+  CONTAINS_NULL_VALUES: La kampo enhavas NULL-valorojn
+  INTERNAL_SERVER_ERROR: Neatendita eraro
+  NOT_NULL_VIOLATION: Valoro ne povas esti NULL
+  VALUE_TOO_LONG: Valoro estas tro longa
+  VALUE_OUT_OF_RANGE: Valoro estas ekster la intervalo
+  INVALID_FOREIGN_KEY: Nevalida fremda ŝlosilo
+  UNKNOWN: Neatendita eraro
+  SERVICE_UNAVAILABLE: Servo ne disponebla
+  UNEXPECTED_RESPONSE: Neatendita respondo
+  TOKEN_EXPIRED: Ĵetono eksvalidiĝinta
+  RANGE_NOT_SATISFIABLE: Nevalida intervalo
+  METHOD_NOT_ALLOWED: Metodo ne permesita
+security: Sekureco
+create_bookmark: Krei legosignon
+edit_bookmark: Redakti la legosignon
+bookmarks: Legosignoj
+presets: Antaŭagordoj
+unexpected_error: Neatendita eraro
+back: Reveni
+filter: Filtrilo
+edit_image: Redakti la bildon
+editing_image: Redakti la bildon
+free: Libera
+rotate: Turni
+all_users: Ĉiuj uzantoj
+delete_collection: Forigi la kolekton
+delete_collection_success: Forigita kolekto
+make_collection_visible: Igi la kolekton videbla
+make_collection_hidden: Igi la kolekton kaŝita
+make_folder_visible: Igi la dosierujon videbla
+make_folder_hidden: Igi la dosierujon kaŝita
+goto_collection_content: Vidi la enhavon
+start_end_of_count_items: '{start}-{end} de {count} eroj'
+start_end_of_count_filtered_items: '{start}-{end} de {count} filtritaj eroj'
+one_item: '1 ero'
+one_filtered_item: '1 filtrita ero'
+visible_collections: Videblaj kolektoj
+hidden_collections: Kaŝitaj kolektoj
+show_hidden_collections: Montri kaŝitajn kolektojn
+hide_hidden_collections: Kaŝi kaŝitajn kolektojn
+unmanaged_collections: Neagorditaj kolektoj
+system_collections: Sistemaj kolektoj
+placeholder: Lokokupilo
+icon_left: Emblemo maldekstra
+icon_right: Emblemo dekstra
+count_other_revisions: '{count} aliaj versioj'
+font: Tiparo
+sans_serif: Senserifa
+serif: Serifa
+monospace: Egallarĝa
+color: Koloro
+circle: Cirklo
+empty_item: Malplena ero
+log_in_with: 'Ensaluti per {provider}'
+advanced_settings: Altnivelaj agordoj
+advanced_filter: Altnivela filtrilo
+delete_advanced_filter: Forigi la filtrilon
+operators:
+  eq: Egalas al
+  neq: Ne egalas al
+  lt: Malpli ol
+  gt: Pli ol
+  lte: Malpli ol aŭ egala al
+  gte: Pli ol aŭ egala al
+  in: Estas unu el
+  nin: Ne estas unu el
+  null: Estas NULL
+  nnull: Ne estas NULL
+  contains: Enhavas
+  ncontains: Ne enhavas
+  starts_with: Komenciĝas per
+  nstarts_with: Ne komenciĝas per
+  ends_with: Finiĝas per
+  nends_with: Ne finiĝas per
+  between: Estas inter
+  nbetween: Ne estas inter
+  empty: Estas malplena
+  nempty: Ne estas malplena
+loading: Ŝargado...
+item: Ero
+items: Eroj
+upload_file: Alŝuti dosieron
+upload_file_indeterminate: Alŝutado de dosiero...
+upload_file_success: Dosiero alŝutita
+upload_files_indeterminate: 'Alŝutado de dosieroj {done}/{total}'
+upload_files_success: '{count} dosieroj alŝutitaj'
+rows: Vicoj
+columns: Kolumnoj
+optional_system_fields: Nedevigaj sistemaj valoroj
+value_unique: Valoro devas esti unika
+create_item: Krei eron
+all_files: Ĉiuj dosieroj
+my_files: Miaj dosieroj
+create_folder: Krei dosierujon
+edit_folder: Redakti la dosierujon
+add_file: Aldoni dosieron
+no_results: Neniu rezulto
+no_visible_fields: Malplena formularo
+role: Rolo
+edit_role: Redakti la rolon
+rule: Rolo
+user: Uzanto
+no_presets: Neniu antaŭagordo
+no_presets_cta: Aldoni antaŭagordon
+presets_only: Nur antaŭagordoj
+create: Krei
+read: Legi
+delete: Forigi
+select_fields: Elekti kampojn
+bold: Grasa
+icon_on: Emblemo ŝaltita
+icon_off: Emblemo malŝaltita
+label: Etikedo
+flows: Fluoj
+flow: Fluo
+select_a_flow: Elekti fluon
+trigger: Ekagilo
+view_trigger: Vidi la ekagilon
+create_trigger: Krei ekagilon
+flow_delete_confirm: Ĉu vi certas, ke vi volas forigi la fluon "{flow}"? La ago ne estas malfarebla.
+edit_flow: Redakti la fluon
+delete_flow: Forigi la fluon
+no_flows: Neniu fluo
+create_flow: Krei fluon
+creating_new_flow: Krei novan fluon
+flow_name: Nomo
+start_flow: Komenci la fluon
+code: Kodo
+dashboard: Stirpanelo
+panel: Panelo
+panel_delete_confirm: Ĉu vi certas, ke vi volas forigi la panelon? La ago ne estas malfarebla.
+dashboard_delete_confirm: Ĉu vi certas, ke vi volas forigi la stirpanelon? La ago ne estas malfarebla.
+edit_dashboard: Redakti la stirpanelon
+delete_dashboard: Forigi la stirpanelon
+visible: Videbla
+no_dashboards: Neniu stirpanelo
+no_dashboards_copy: Vi ankoraŭ ne havas stirpanelon.
+create_dashboard: Krei stirpanelon
+dashboard_name: Nomo de la stirpanelo
+payload: Enhavaj datumoj
+image_url: URL de la bildo
+alt_text: Alternativa teksto
+quality: Kvalito
+width: Larĝo
+height: Alto
+source: Fonto
+url_placeholder: Entajpu URL...
+interface_group_selection: Elekto
+interface_group_relational: Rilata
+interface_group_groups: Grupoj
+interface_group_other: Alia
+unlimited: Senlima
+new_tab: Nova langeto
+current_tab: Nuna langeto
+save_image: Konservi la bildon
+wysiwyg_options:
+  forecolor: Malfona koloro
+  backcolor: Fona koloro
+  bold: Grasa
+  italic: Kursiva
+  underline: Substrekita
+  strikethrough: Trastrekita
+  codeblock: Kodo
+  link: Aldoni/redakti ligilon
+  unlink: Forigi la ligilon
+  copy: Kopii
+  cut: Eltondi
+  paste: Alglui
+  fontselect: Elekti tiparon
+  undo: Malfari
+  redo: Refari
+  remove: Forigi
+  selectall: Elekti ĉiujn
+  table: Tabelo
+  directionality: Direkto
+dropdown: Falmenuo
+choices: Elektoj
+choices_option_configured_incorrectly: Elektoj malĝuste agorditaj
+deselect: Malelekti
+deselect_all: Malelekti ĉiujn
+other: Alia...
+adding_user: Aldoni uzanton
+unknown_user: Nekonata uzanto
+settings_data_model: Datummodelo
+settings_permissions: Roloj kaj permesoj
+settings_project: Agordoj de la projekto
+settings_webhooks: Rethokoj
+settings_flows: Fluoj
+settings_presets: Antaŭagordoj kaj legosignoj
+actions: Agoj
+select: Elekti...
+layout: Aranĝo
+editing_preset: Redakti la antaŭagordon
+data: Datumoj
+unsaved_changes: Nekonservitaj ŝanĝoj
+discard_changes: Forĵeti la ŝanĝojn
+discard_all_changes: Forĵeti ĉiujn ŝanĝojn
+discard_changes_copy: Ĉu vi certas, ke vi volas forĵeti ĉiujn viajn ŝanĝojn?
+show_x_axis: Montri la X-akson
+show_y_axis: Montri la Y-akson
+page_help_collections_overview: '**Superrigaro de kolektoj** — Listo de ĉiuj kolektoj, kiujn vi povas atingi.'
+page_help_insights_dashboard: '**Stirpanelo** — Laborspaco por administri unu aŭ pliajn panelojn'
+add_new: Aldoni novan
+create_new: Krei novan
+all: Ĉiuj
+none: Neniu
+batch_delete_confirm: >-
+  Neniu ero estas elektita | Ĉu vi certas, ke vi volas forigi la eron? La ago ne estas malfarebla. | Ĉu vi certas, ke vi volas forigi {count} erojn? La ago ne estas malfarebla.
+cancel: Nuligi
+collection: Kolekto
+collections: Kolektoj
+content: Enhavo
+system_fields_locked: Sistemaj valoroj estas ŝlositaj kaj ne povas esti redaktitaj
+directus_collection:
+  directus_flows: Aŭtomatigaj fluoj
+fields:
+  directus_activity:
+    item: Ĉefa ŝlosilo de la ero
+    action: Ago
+    collection: Kolekto
+    timestamp: Ago je
+    user: Ago de
+    comment: Komento
+    user_agent: Aplikaĵo de la uzanto
+    origin: Origino
+    ip: IP-adreso
+    revisions: Versioj
+  directus_collections:
+    collection: Kolekto
+    icon: Emblemo
+    note: Noto
+    color: Koloro
+    hidden: Kaŝita
+    archive_value: Arĥivi la valoron
+    unarchive_value: Malarĥivi la valoron
+    archive_field: Arĥivi la kampon
+  directus_files:
+    $thumbnail: Bildeto
+    title: Titolo
+    description: Priskribo
+    tags: Etikedoj
+    location: Loko
+    metadata: Metadatumoj
+    type: Aŭdvida tipo
+    modified_by: Ŝanĝita de
+    modified_on: Ŝanĝita je
+    created_on: Kreita je
+    created_by: Kreita de
+    embed: Enkorpigi
+    uploaded_by: Alŝutita de
+    folder: Dosierujo
+    width: Larĝo
+    height: Alto
+    charset: Signaro
+    duration: Daŭro
+  directus_users:
+    first_name: Pesona nomo
+    last_name: Familia nomo
+    email: Retpoŝtadreso
+    password: Pasvorto
+    avatar: Profilbildo
+    location: Loko
+    title: Titolo
+    description: Priskribo
+    tags: Etikedoj
+    language: Lingvo
+    theme: Aspekto
+    theme_auto: Aŭtomata (bazita je la sistemo)
+    theme_light: Hela reĝimo
+    theme_dark: Malhela reĝimo
+    tfa_secret: Dufaktora kontrolado
+    admin_options: Opcioj por administrantoj
+    status: Stato
+    status_draft: Malneto
+    status_invited: Invitita
+    status_active: Aktiva
+    status_archived: Arĥivita
+    role: Rolo
+    token: Ĵetono
+    provider: Provizanto
+    external_identifier: Ekstera identigilo
+    last_page: Lasta paĝo
+  directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    basemaps: Bazmapoj
+    basemaps_style: Mapbox-stilo
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution_placeholder: '© OpenStreetMap-kontribuantoj'
+    transforms_note: La Sharp-metodonomo kaj ĝiaj argumentoj. Vidu https://sharp.pixelplumbing.com/api-constructor por pliaj informoj.
+    project_name: Nomo de la projekto
+    project_url: URL de la projekto
+    project_color: Koloro de la projekto
+    project_logo: Emblemo de la projekto
+    default_language: Defaŭlta lingvo
+    public_foreground: Publika malfono
+    public_background: Publika fono
+    public_note: Publika noto
+    files_and_thumbnails: Dosieroj kaj konservado
+    storage_default_folder: Defaŭlta dosierujo
+    storage_asset_transform: Permesitaj transformoj
+    custom_css: Propra CSS
+    module_bar: Modula breto
+    transformations_all: Permesi ĉiujn transformojn
+    transformations_none: Malŝalti transformojn
+  directus_shares:
+    name: Nomo
+    role: Rolo
+    password: Pasvorto
+  directus_fields:
+    icon: Emblemo de la kolekto
+    note: Noto
+    hidden: Kaŝita
+    display_template: Ŝablono
+  directus_roles:
+    name: Nomo de la rolo
+    icon: Emblemo de la rolo
+    description: Priskribo
+    ip_access: IP-adreso
+    enforce_tfa: Postuli dufaktoran kontroladon
+  directus_webhooks:
+    name: Nomo
+    method: Metodo
+    status: Stato
+    data: Datumoj
+    value: Valoro
+    data_label: Sendi eventodatumojn
+    triggers: Ekagiloj
+    actions: Agoj
+    collections: Kolektoj
+field_options:
+  directus_settings:
+    project_name_placeholder: Mia projekto...
+    project_logo_note: Blanka 40x40 SVG/PNG
+    security_divider_title: Sekureco
+    auth_password_policy:
+      none_text: Neniu – ne rekomendata
+      weak_text: Malforta – minimume 8 signoj
+      strong_text: Forta – majuskloj / minuskloj / ciferoj / specialaj signoj
+    transforms_note: La Sharp-metodonomo kaj ĝiaj argumentoj. Vidu https://sharp.pixelplumbing.com/api-constructor por pliaj informoj.
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Bazmapoj
+    basemaps_name_placeholder: Entajpu la nomon de la bazmapo...
+    basemaps_style: Mapbox-stilo
+    files_divider_title: Dosieroj kaj bildetoj
+  directus_activity:
+    login: Ensaluti
+    create: Krei
+    delete: Forigi
+  directus_collections:
+    note_placeholder: Priskribo de la kolekto...
+    language: Lingvo
+    translation: Traduko
+    translation_placeholder: Entajpu tradukon...
+    singular_unit: Singulara unuo
+    plural_unit: Plurala unuo
+    archive_divider: Arĥivi
+    archive_field_placeholder: Elekti kampon...
+    sort_divider: Ordigi
+    sort_field: Elekti kampon...
+  directus_files:
+    title: Unika titolo...
+    description: Nedeviga priskribo...
+    location: Nedeviga loko...
+  directus_roles:
+    fields:
+      icon_name: Emblemo
+      name_name: Nomo
+      name_placeholder: Entajpu titolon...
+      link_name: Ligilo
+      link_placeholder: Relativa aŭ absoluta URL...
+    collections_name: Kolektoj
+    collections_addLabel: Aldoni kolekton...
+  directus_users:
+    dropdown_auto: Aŭtomata (bazita je la sistemo)
+    dropdown_light: Hela reĝimo
+    dropdown_dark: Malhela reĝimo
+    admin_divider: Opcioj por administrantoj
+    status_dropdown_draft: Malneto
+    status_dropdown_invited: Invitita
+    status_dropdown_active: Aktiva
+    status_dropdown_archived: Arĥivita
+  directus_webhooks:
+    status_options_active: Aktiva
+    status_options_inactive: Neaktiva
+    data_label: Sendi eventodatumojn
+    triggers_divider: Ekagiloj
+    actions_create: Krei
+    actions_delete: Forigi
+    actions_login: Ensaluti
+    headers:
+      value: Valoro
+no_fields_in_collection: 'Ankoraŭ ne estas kampo en "{collection}"'
+no_value: Neniu valoro
+do_nothing: Fari nenion
+generate_and_save_uuid: Generi kaj konservi UUID
+comment: Komento
+shares: Konigoj
+unlimited_usage: Senlima uzado
+new_share: Nova konigo
+expired: Eksvalidiĝinta
+share: Konigi
+share_item: Konigi la eron
+share_copy_link: Kopii la ligilon
+share_copy_link_success: Ligilo kopiita
+share_send_link: Sendi la ligilon
+relational_triggers: Rilataj ekagiloj
+referential_action_set_null: Igi la kampon {field} NULL
+choose_action: Elekti agon
+continue_label: Daŭrigi
+editing_role: 'Rolo {role}'
+creating_webhook: Krei rethokon
+default_label: Defaŭlta
+delete_label: Forigi
+delete_field_are_you_sure: >-
+  Ĉu vi certas, ke vi volas forigi la kampon "{field}"? La ago ne estas malfarebla.
+description: Priskribo
+done: Preta
+duplicate: Duobligi
+limit: Limo
+email: Retpoŝtadreso
+embed: Enkorpigi
+field: Kampo | Kampoj
+file: Dosiero
+forgot_password: Pasvorto forgesita
+hidden: Kaŝita
+hidden_in_group: Kaŝita en {group}
+icon: Emblemo
+info: Informoj
+normal: Normala
+success: Sukceso
+warning: Averto
+danger: Danĝero
+colors:
+  purple: Viola
+  blue: Blua
+  green: Verda
+  yellow: Flava
+  orange: Oranĝa
+  red: Ruĝa
+  black: Nigra
+  gray: Griza
+  white: Blanka
+login: Ensaluti
+options: Opcioj
+otp: Unufoja pasvorto
+password: Pasvorto
+permissions: Permesoj
+relationship: Rilato
+revisions: Versioj
+no_revisions: Ankoraŭ neniu versio
+no_logs: Ankoraŭ neniu protokolo
+revert: Malfari
+save: Konservi
+schema: Skemo
+search: Serĉi
+select_existing: Elekti ekzistantan
+settings: Agordoj
+sign_in: Ensaluti
+sign_out: Elsaluti
+sign_out_confirm: Ĉu vi certas, ke vi volas elsaluti?
+export_started: Eksporto komencita
+template: Ŝablono
+translation: Traduko
+translation_placeholder: Entajpu tradukon...
+value: Valoro
+view_project: Vidi la projekton
+report_error: Raporti eraron
+start: Komenci
+table: Tabelo
+list: Listo
+search_filter: Serĉi kaj filtri
+remove_item: Forigi la eron
+delete_item: Forigi la eron
+interfaces:
+  filter:
+    name: Filtrilo
+    add_filter: Aldoni filtrilon
+    add_group: Kaj/aŭ-grupo
+    add_value: Aldoni valoron
+    logic_type_and: KAJ
+    logic_type_or: AŬ
+    all: Ĉiuj
+    any: Ajna
+    and: kaj
+    add_key_placeholder: Aldoni ŝlosilon kaj premi Enter...
+  fields:
+    name: Kampoj
+  group-accordion:
+    name: Akordiono
+    start: Komenci
+    accordion_mode: Akordiona reĝimo
+  presentation-links:
+    links: Ligiloj
+    style: Stilo
+    primary: Ĉefa
+    link: Ligiloj
+    button: Butonoj
+  select-multiple-checkbox-tree:
+    show_all: Montri ĉiujn
+  input-code:
+    code: Kodo
+    line_number: Lininumero
+  system-collection:
+    collection: Kolekto
+  system-collections:
+    collections: Kolektoj
+  select-color:
+    color: Koloro
+    placeholder: Elekti koloron...
+    preset_colors_add_label: Aldoni novan koloron...
+    name_placeholder: Entajpu nomon de koloro...
+  system-fields:
+    select_a_collection: Elekti kolekton
+    no_fields: Neniu kampo
+  system-display-template:
+    select_a_collection: Elekti kolekton
+  select-dropdown:
+    choices_placeholder: Aldoni novan elekton
+    choices_name_placeholder: Entajpu nomon...
+    choices_value_placeholder: Entajpu valoron...
+  file:
+    file: Dosiero
+    description: Elekti aŭ alŝuti dosieron
+  files:
+    files: Dosieroj
+    description: Elekti aŭ alŝuti plurajn dosierojn
+  input-hash:
+    masked: Kaŝita
+    masked_label: Kaŝi la verajn valorojn
+  select-icon:
+    icon: Emblemo
+    search_for_icon: Serĉi emblemon...
+  file-image:
+    image: Bildo
+    description: Elekti aŭ alŝuti bildon
+  system-interface:
+    interface: Interfaco
+    description: Elekti ekzistantan interfacon
+    placeholder: Elekti interfacon...
+  list-m2m:
+    many-to-many: Pluraj-al-pluraj-rilato
+  select-dropdown-m2o:
+    many-to-one: Pluraj-al-unu-rilato
+  input-rich-text-md:
+    edit: Redakti
+  map:
+    map: Mapo
+    zoom: Zomi
+    default_view: Defaŭlta vido
+    invalid_options: Nevalidaj opcioj
+    geojson: GeoJSON
+    lnglat: Longitudo, latitudo
+    wkt: WKT
+    wkb: WKB
+  presentation-notice:
+    notice: Atentigo
+    description: Montri mallongan atentigon
+    text: Entajpu la enhavon de la atentigo...
+  list-o2m:
+    one-to-many: Unu-al-pluraj-rilato
+  system-folder:
+    folder: Dosierujo
+    description: Elekti dosierujon
+  list:
+    repeater: Ripetilo
+    edit_fields: Redakti kampojn
+    add_label: 'Etikedo por "Krei novan"'
+    sort: Ordigi
+    sort_placeholder: Mana
+  tags:
+    tags: Etikedoj
+    description: Elekti aŭ aldoni etikedojn
+    capitalization: Uskleco
+    uppercase: Majuskligi
+    lowercase: Minuskligi
+    alphabetize_label: Devigi alfabetan ordon
+    add_tags: Aldoni etikedon kaj premi Enter...
+  input:
+    trim: Forigi spacetojn
+    trim_label: Forigi komencajn kaj finajn spacetojn
+    mask: Kaŝita
+    mask_label: Kaŝi la veran valoron
+    minimum_value: Minimuma valoro
+    maximum_value: Maksimuma valoro
+    slug: URL-sekurigi
+    slug_label: Igi la entajpitan valoron URL-sekura
+  input-translated-string:
+    search_placeholder: Serĉi...
+  boolean:
+    color_on: Koloro ŝaltita
+    color_off: Koloro malŝaltita
+    label_placeholder: Entajpu etikedon...
+    label_default: Ŝaltita
+  translations:
+    no_collection: Neniu kolekto
+    enable: Ŝalti
+    default_language: Defaŭlta lingvo
+  user:
+    user: Uzanto
+    modes:
+      auto: Aŭtomata
+      dropdown: Falmenuo
+  input-rich-text-html:
+    toolbar: Ilobreto
+  input-autocomplete-api:
+    trigger: Ekagilo
+  group-raw:
+    name: Kruda grupo
+  system-token:
+    system-token: Ĵetono
+    generate: Generi ĵetonon
+    regenerate: Regeneri ĵetonon
+    remove_token: Forigi la ĵetonon
+  system-raw-editor:
+    system-raw-editor: Kruda redaktilo
+displays:
+  translations:
+    translations: Tradukoj
+    enable: Ŝalti
+    default_language: Defaŭlta lingvo
+  boolean:
+    boolean: Bulea valoro
+    label_on: Etikedo ŝaltita
+    label_off: Etikedo malŝaltita
+    icon_on: Emblemo ŝaltita
+    icon_off: Emblemo malŝaltita
+    color_on: Koloro ŝaltita
+    color_off: Koloro malŝaltita
+  collection:
+    collection: Kolekto
+    description: Montri kolekton
+  color:
+    color: Koloro
+    default_color: Defaŭlta koloro
+  datetime:
+    long: Longa
+    short: Mallonga
+    relative: Relativa
+    suffix: Sufikso
+    strict: Strikta
+    strict_label: Uzi striktajn unuojn
+    round: Rondigi
+    down: Malsupren
+    nearest: Proksimen
+    up: Supren
+  file:
+    file: Dosiero
+    description: Montri dosierojn
+  formatted-value:
+    font: Tiparo
+    font_sans_serif: Senserifa
+    font_serif: Serifa
+    font_monospace: Egallarĝa
+    bold: Grasa
+    italic: Kursiva
+    prefix: Prefikso
+    suffix: Sufikso
+    color: Koloro
+    background: Fono
+    icon: Emblemo
+    text: Teksto
+  icon:
+    icon: Emblemo
+    description: Montri emblemon
+    filled: Plenigita
+  image:
+    image: Bildo
+    circle: Cirklo
+    circle_label: Montri kiel cirklo
+  labels:
+    labels: Etikedoj
+    default_foreground: Defaŭlta malfono
+    default_background: Defaŭlta fono
+    choices_value_placeholder: Entajpu valoron...
+    choices_text_placeholder: Entajpu tekston...
+  mime-type:
+    mime-type: Aŭdvida tipo
+    description: Montri la aŭdvidan tipon de dosiero
+  rating:
+    simple: Simpla
+  raw:
+    raw: Kruda valoro
+  user:
+    user: Uzanto
+    avatar: Profilbildo
+    name: Nomo
+    both: Ambaŭ
+    circle_label: Montri la uzanton en cirklo
+layouts:
+  cards:
+    cards: Kartoj
+    crop: Stuci
+    contain: Enhavas
+    title: Titolo
+    subtitle: Subtitolo
+  tabular:
+    tabular: Tabelo
+    comfortable: Komforta
+    compact: Kompakta
+    cozy: Intima
+  calendar:
+    calendar: Kalendaro
+    optional: Nedeviga
+    first_day: Unua tago de la semajno
+  map:
+    map: Mapo
+    basemap: Bazmapo
+    layers: Tavoloj
+    invalid_geometry: Nevalida geometrio
+    find_location: Trovi lokon...
+  kanban:
+    name: Kanban
+    group_field: Grupigi laŭ
+    group_title: Titolo de la grupo
+    title: Titolo de la karto
+    text: Teksto de la karto
+    date: Dato de la karto
+    tags: Etikedoj de la karto
+    user: Uzanto de la karto
+    image: Bildo de la karto
+    crop: Stuci
+    edit_group: Redakti la grupon
+    delete_group: Forigi la grupon
+    add_group: Aldoni grupon
+    add_group_placeholder: Entajpu novan titolon por la grupo...
+    show: Montri
+    no_group: Neniu grupo
+horizontal: Horizontala
+vertical: Vertikala
+x_axis: X-akso
+y_axis: Y-akso
+y_axis_function: Y-aksa funkcio
+show_x_only: Montri nur la X-akson
+show_y_only: Montri nur la Y-akson
+both: Ambaŭ
+show_axis_labels: Montri la aksajn etikedojn
+function: Funkcio
+half_circle: Duona cirklo
+full_circle: Plena cirklo
+thin: Mallarĝa
+medium: Meza
+broad: Larĝa
+show_labels: Montri etikedojn
+right: Dekstra
+left: Maldekstra
+panels:
+  metric:
+    field: Kampo
+  label:
+    name: Etikedo
+  list:
+    name: Listo
+  barchart:
+    name: Bastona diagramo
+    horizontal: Horizontala
+    select_collection: Vi devas elekti kolekton.
+  linechart:
+    name: Linia diagramo
+    smooth: Glata
+    straight: Rekta
+  variable:
+    variable_key: Variabla ŝlosilo
+  relational-variable:
+    variable_key: Variabla ŝlosilo
+    multiple-label: Elekti plurajn erojn
+triggers:
+  common:
+    response_body: Enhavo de la respondo
+    response_body_all: Ĉiuj datumoj
+  event:
+    name: Eventohoko
+    action: 'Ago (neblokanta)'
+    filter: 'Filtrilo (blokanta)'
+  webhook:
+    name: Rethoko
+    method: Metodo
+    async: Nesinkrona
+  operation:
+    name: Alia fluo
+  schedule:
+    name: Plani (CRON)
+    cron: Intervalo
+  manual:
+    name: Mana
+operation_variables_note: Vi povas atingi datumojn de la fluo per variabloj kiel **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** kaj **{'{'}{'{'}$accountability{'}'}{'}'}**, aŭ referenci antaŭajn operaciojn per **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operations:
+  condition:
+    name: Kondiĉo
+  item-create:
+    name: Krei datumojn
+    payload: Enhavaj datumoj
+  item-delete:
+    name: Forigi datumojn
+    key: Identigiloj
+  item-read:
+    name: Legi datumojn
+    description: Legi erojn de la datumbazo
+    key: Identigiloj
+  item-update:
+    key: Identigiloj
+    payload: Enhavaj datumoj
+  log:
+    name: Protokoli al la konzolo
+    message: Mesaĝo
+  mail:
+    name: Sendi retpoŝtmesaĝon
+    to: Al
+    to_placeholder: Aldoni retpoŝtadresojn kaj premi Enter...
+    body: Enhavo
+    template: Ŝablono
+    data: Datumoj
+  notification:
+    name: Sendi sciigon
+    recipient: Uzanto
+    recipient_placeholder: Entajpu UUID...
+    recipient_note: Aldoni UUID de la uzanto kaj premi Enter...
+    message: Mesaĝo
+  request:
+    url: URL
+    url_placeholder: https://example.com/ekzemplo
+    method: Metodo
+    data: Datumoj
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Atendi
+    milliseconds: Milisekundoj
+  transform:
+    name: Transformi la enhavajn datumojn
+  trigger:
+    flows: Fluoj
+    flow: Fluo
+    data: Datumoj
+    serial: Seria
+    parallel: Paralela

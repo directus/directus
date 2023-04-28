@@ -1,7 +1,7 @@
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { Field, Relation, Type } from '@directus/shared/types';
-import { getRelationType } from '@directus/shared/utils';
+import { Field, Relation, Type } from '@directus/types';
+import { getRelationType } from '@directus/utils';
 import { isNil } from 'lodash';
 import { Ref, ref, watch } from 'vue';
 
@@ -15,6 +15,7 @@ export type FieldNode = {
 	type: Type;
 	children?: FieldNode[];
 	group?: boolean;
+	_loading?: boolean;
 };
 
 export type FieldTreeContext = {
@@ -94,7 +95,9 @@ export function useFieldTree(
 			if (children) {
 				for (const child of children) {
 					if (child.relatedCollection) {
-						child.children = getTree(child.relatedCollection, child);
+						child.children = [
+							{ name: 'Loading...', field: '', collection: '', key: '', path: '', type: 'alias', _loading: true },
+						];
 					}
 				}
 			}
@@ -172,6 +175,7 @@ export function useFieldTree(
 					if (node.group === true && node.children && node.children.length > 0) {
 						acc.push(...node.children);
 					}
+
 					return acc;
 				}, [])
 				.find((node) => node.field === field);
@@ -191,6 +195,10 @@ export function useFieldTree(
 			visitedPaths.value.add(path);
 
 			const node = getNodeAtPath(path.split('.'), treeList.value);
+
+			if (node && node.children?.length === 1 && node.children[0]._loading) {
+				node.children = getTree(node.relatedCollection, node);
+			}
 
 			for (const child of node?.children || []) {
 				if (child?.relatedCollection) {

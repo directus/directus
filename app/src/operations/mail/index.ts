@@ -1,11 +1,11 @@
-import { defineOperationApp } from '@directus/shared/utils';
+import { defineOperationApp } from '@directus/utils';
 
 export default defineOperationApp({
 	id: 'mail',
 	icon: 'mail',
 	name: '$t:operations.mail.name',
 	description: '$t:operations.mail.description',
-	overview: ({ subject, to, type, body }) => [
+	overview: ({ subject, to, type }) => [
 		{
 			label: '$t:subject',
 			text: subject,
@@ -17,10 +17,6 @@ export default defineOperationApp({
 		{
 			label: '$t:type',
 			text: type || 'markdown',
-		},
-		{
-			label: '$t:operations.mail.body',
-			text: body,
 		},
 	],
 	options: (panel) => {
@@ -70,7 +66,24 @@ export default defineOperationApp({
 								text: '$t:interfaces.input-rich-text-html.wysiwyg',
 								value: 'wysiwyg',
 							},
+							{
+								text: '$t:operations.mail.template',
+								value: 'template',
+							},
 						],
+					},
+				},
+			},
+			{
+				field: 'template',
+				name: '$t:operations.mail.template',
+				type: 'string',
+				meta: {
+					interface: 'input',
+					hidden: panel.type !== 'template',
+					width: 'half',
+					options: {
+						placeholder: 'base',
 					},
 				},
 			},
@@ -81,6 +94,34 @@ export default defineOperationApp({
 				meta: {
 					width: 'full',
 					interface: panel.type === 'wysiwyg' ? 'input-rich-text-html' : 'input-rich-text-md',
+					hidden: panel.type === 'template',
+				},
+			},
+			{
+				field: 'data',
+				name: '$t:operations.mail.data',
+				type: 'json',
+				meta: {
+					width: 'full',
+					interface: 'input-code',
+					hidden: panel.type !== 'template',
+					options: {
+						language: 'json',
+						placeholder: JSON.stringify(
+							{
+								url: 'example.com',
+							},
+							null,
+							2
+						),
+						template: JSON.stringify(
+							{
+								url: 'example.com',
+							},
+							null,
+							2
+						),
+					},
 				},
 			},
 		];

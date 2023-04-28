@@ -1,5 +1,5 @@
 import api from '@/api';
-import { getEndpoint } from '@directus/shared/utils';
+import { getEndpoint } from '@directus/utils';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { merge } from 'lodash';
 import { ref, Ref, watch } from 'vue';
@@ -17,7 +17,7 @@ export function useRelationSingle(
 	const displayItem = ref<Record<string, any> | null>(null);
 	const loading = ref(false);
 
-	watch([value, previewQuery, relation], getDisplayItems, { immediate: true });
+	watch([value, previewQuery, relation], getDisplayItem, { immediate: true });
 
 	return { update, remove, refresh, displayItem, loading };
 
@@ -41,10 +41,10 @@ export function useRelationSingle(
 	}
 
 	async function refresh() {
-		await getDisplayItems();
+		await getDisplayItem();
 	}
 
-	async function getDisplayItems() {
+	async function getDisplayItem() {
 		const val = value.value;
 
 		if (!val) {

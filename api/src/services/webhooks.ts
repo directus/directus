@@ -1,6 +1,7 @@
-import { AbstractServiceOptions, Item, PrimaryKey, Webhook, MutationOptions } from '../types';
-import { ItemsService } from './items';
-import { getMessenger, Messenger } from '../messenger';
+import type { Messenger } from '../messenger.js';
+import { getMessenger } from '../messenger.js';
+import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey, Webhook } from '../types/index.js';
+import { ItemsService } from './items.js';
 
 export class WebhooksService extends ItemsService<Webhook> {
 	messenger: Messenger;
@@ -10,25 +11,25 @@ export class WebhooksService extends ItemsService<Webhook> {
 		this.messenger = getMessenger();
 	}
 
-	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const result = await super.createOne(data, opts);
 		this.messenger.publish('webhooks', { type: 'reload' });
 		return result;
 	}
 
-	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const result = await super.createMany(data, opts);
 		this.messenger.publish('webhooks', { type: 'reload' });
 		return result;
 	}
 
-	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const result = await super.updateMany(keys, data, opts);
 		this.messenger.publish('webhooks', { type: 'reload' });
 		return result;
 	}
 
-	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const result = await super.deleteMany(keys, opts);
 		this.messenger.publish('webhooks', { type: 'reload' });
 		return result;
