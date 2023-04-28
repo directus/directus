@@ -23,6 +23,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		includeFolders: {
+			type: Boolean,
+			default: false,
+		},
 		includeSystem: {
 			type: Boolean,
 			default: false,
@@ -52,10 +56,15 @@ export default defineComponent({
 		});
 
 		const items = computed(() => {
-			return collections.value.map((collection) => ({
-				text: collection.name,
-				value: collection.collection,
-			}));
+			return collections.value.reduce<{ text: string; value: string }[]>((acc, collection) => {
+				if (collection.type !== 'alias' || props.includeFolders)
+					acc.push({
+						text: collection.name,
+						value: collection.collection,
+					});
+
+				return acc;
+			}, []);
 		});
 
 		return { items, t };
