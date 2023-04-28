@@ -602,6 +602,11 @@ function getRollupOptions({
 			}),
 			minify ? terser() : null,
 		],
+		onwarn(warning, warn) {
+			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
+
+			warn(warning);
+		},
 	};
 }
 
