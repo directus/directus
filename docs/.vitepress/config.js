@@ -512,6 +512,7 @@ function sidebar() {
 						{ text: 'Authentication', link: '/guides/real-time/authentication' },
 						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
 						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
+						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
 					]
 				},
 			],
