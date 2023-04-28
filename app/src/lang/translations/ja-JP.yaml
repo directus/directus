@@ -331,27 +331,42 @@ page_not_found_body: お探しのページは存在しません。
 display: ディスプレイ
 settings_update_success: 設定が更新されました
 title: タイトル
+revision_delta_updated: '1フィールド更新 |  {count} フィールド更新'
+revision_delta_deleted: 削除済み
 revision_delta_other: 履歴
+revision_delta_by: '{date} by {user}'
+download_page_as_csv: 'CSV 形式でダウンロード'
 private_user: 非公開ユーザー
 revision_preview: 履歴のプレビュー
 leave_comment: コメントを残す...
+post_comment_success: コメントを投稿
+post_comment_updated: コメントを更新
 item_create_success: 作成されたアイテム|作成されたアイテム
 item_update_success: 更新されたアイテム | 更新されたアイテム
 item_delete_success: 削除されたアイテム|削除されたアイテム
 this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
+translations_collection: 翻訳コレクション
 languages_collection: 言語コレクション
+import_data_input_placeholder: CSV または JSON
+import_data_button: インポートを開始
+import_data_indeterminate: データをインポート中...
+import_data_success: '{filename} からデータをインポートしました'
+import_data_error: このファイルのデータ構造はコレクションと一致しません
 label_import: インポート
+label_export: エクスポート
 import_export: インポート / エクスポート
 format: 書式
 last_access: 最後にアクセスした日時
+fill_template: テンプレート値で埋める
 a_unique_table_name: 重複しない名前をつけてください
 a_unique_column_name: 重複しない名前をつけてください
 submit: 送信
 move_to_folder: フォルダに移動
 move: 移動
 system: システム
+add_field_related: 関連するコレクションにフィールドを追加
 interface_label: インターフェイス
 today: 今日
 yesterday: 昨日
@@ -367,6 +382,7 @@ functions:
   minute: 分
   second: 秒
   count: 回数
+date-fns_date: PPP
 date-fns_time: 'a h:mm:ss'
 date-fns_time_no_seconds: 'a hh:mm'
 date-fns_time_24hour: 'HH:mm:ss'
@@ -467,18 +483,33 @@ csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
+select_a_collection: コレクションを選択
+select_a_field: フィールドを選択
+active: 有効
+move_to: 移動中...
 copy: コピー
+copy_to: コピー中...
 no_other_dashboards_copy: 他のダッシュボードはまだありません。
+inactive: 無効
 users: ユーザー
 activity: 操作履歴
+activity_item: アクティビティアイテム
+action: アクション
 ip_address: IPアドレス
 user_agent: ユーザーエージェント
 webhooks: Webhook
+min_value: 最小値
+max_value: 最大値
+automatic: 自動
 field_width: 入力欄幅
+add_filter: フィルターを追加
 user_directory: ユーザーディレクトリ
 documentation: ドキュメンテーション
+sidebar: サイドバー
+second: 秒
 collection_created: コレクションが作成されました
 modified_on: 修正日時
+card_size: カードサイズ
 sort_field: フィールドの並べ替え
 add_sort_field: Sort フィールドを追加
 sort: 並べ替え
@@ -498,6 +529,7 @@ enter_otp_to_disable_tfa: 2要素認証の無効化にOTP（ワンタイムパ�
 create_account: アカウントを作成
 account_created_successfully: アカウントの作成に成功しました
 auto_fill: 自動入力
+corresponding_field: 対応するフィールド
 errors:
   COLLECTION_NOT_FOUND: "コレクションが存在しません"
   FIELD_NOT_FOUND: フィールドが見つかりません
@@ -506,6 +538,7 @@ errors:
   INVALID_OTP: ワンタイムパスワードが間違っています
   INVALID_PROVIDER: ユーザーは別の認証プロバイダに属しています
   INVALID_QUERY: 無効なクエリー
+  INVALID_TOKEN: 無効なトークン
   INVALID_IP: IPアドレスが許可されていません
   INVALID_USER: ユーザー認証に失敗しました
   ITEM_LIMIT_REACHED: アイテムの上限に達しました
@@ -548,8 +581,20 @@ back: 戻る
 filter: 絞り込み
 edit_image: 画像を編集
 editing_image: 画像を編集
+square: 正方形
+free: 無料
+flip_horizontal: 水平方向に反転
+flip_vertical: 垂直方向に反転
+aspect_ratio: アスペクト比
 rotate: 回転
 all_users: すべてのユーザー
+delete_collection: コレクションを削除
+update_collection_success: コレクションを更新
+delete_collection_success: コレクションを削除
+make_collection_visible: コレクションを公開
+make_collection_hidden: コレクションを非表示
+make_folder_visible: フォルダを表示
+make_folder_hidden: フォルダを非表示
 goto_collection_content: コンテンツを表示
 one_item: '1 つのアイテム'
 icon_left: 左側に表示するアイコン
@@ -581,16 +626,23 @@ operators:
   all: 含まれるキー
   has: 含まれるいくつかのキー
 loading: 読み込み中...
+drop_to_upload: ドロップしてアップロード
+item: アイテム
+items: アイテム
+upload_file: ファイルをアップロード
 upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
 upload_files_success: '{count} 個のファイルがアップロードされました'
 drag_file_here: ここにファイルをドラッグ & ドロップ
 click_to_browse: クリックしてローカルフォルダを参照
 layout_options: レイアウト設定
+rows: 行
+columns: 列
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
 value_unique: 他と重複しない値である必要があります
 all_activity: すべてのアクティビティ
 create_item: アイテムの作成
+display_template: テンプレートを表示
 all_files: すべてのファイル
 my_files: マイファイル
 recent_files: 最近使用したファイル
@@ -679,6 +731,7 @@ fields:
     icon: アイコン
     note: 備考
     color: 色
+    display_template: テンプレートを表示
     hidden: 非表示
     singleton: シングルトン
     sort_field: フィールドの並べ替え
@@ -711,6 +764,7 @@ fields:
     language: 言語
     theme: テーマ
     status: ステータス
+    status_active: 有効
     token: トークン
     last_access: 最後にアクセスした日時
   directus_settings:
@@ -755,7 +809,11 @@ field_options:
       icon_name: アイコン
       name_name: 名前
     collections_name: コレクション
+  directus_users:
+    status_dropdown_active: 有効
   directus_webhooks:
+    status_options_active: 有効
+    status_options_inactive: 無効
     actions_create: 作成
     actions_update: 更新
     headers:
@@ -814,6 +872,7 @@ table: テーブル
 interfaces:
   filter:
     name: 絞り込み
+    add_filter: フィルターを追加
     all: すべて
   presentation-links:
     primary: プライマリ
@@ -823,6 +882,11 @@ interfaces:
     color: 色
   datetime:
     set_to_now: 現在時刻を設定
+  system-fields:
+    select_a_collection: コレクションを選択
+  system-display-template:
+    display-template: テンプレートを表示
+    select_a_collection: コレクションを選択
   select-dropdown:
     choices_value_placeholder: 値を入力...
   file:
@@ -833,6 +897,8 @@ interfaces:
     hash: ハッシュ値
   select-icon:
     icon: アイコン
+  select-dropdown-m2o:
+    display_template: テンプレートを表示
   input-rich-text-md:
     edit: 編集
   map:
@@ -846,6 +912,7 @@ interfaces:
   boolean:
     label_default: 有効化
   translations:
+    display_template: テンプレートを表示
     no_collection: コレクションがありません
   user:
     user: ユーザー
