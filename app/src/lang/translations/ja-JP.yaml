@@ -318,7 +318,14 @@ dismiss: とりやめる
 raw_value: 値を加工しない
 copy_raw_value_success: コピー
 copy_raw_value_fail: コピー失敗
+paste_raw_value_success: 貼り付け
+paste_raw_value_fail: 貼り付けに失敗
+clear_changes: 変更をクリア
+clear_items: 項目をクリア
+reset_to_default: 初期設定に戻す
+undo_changes: 変更を取消
 notifications: 通知
+show_all_activity: すべてのアクティビティを表示
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
 display: ディスプレイ
