@@ -526,6 +526,7 @@ no_collections_copy_admin: まだコレクションを作成していません�
 no_collections_copy: コレクションはまだありません。システム管理者にお問い合わせ下さい。
 relationship_not_setup: 正しく関係が設定されていません
 display_template_not_setup: 表示テンプレートのオプションが間違っています
+collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
 select_a_collection: コレクションを選択
 select_a_field: フィールドを選択
 active: 有効
@@ -549,7 +550,9 @@ add_filter: フィルターを追加
 user_directory: ユーザーディレクトリ
 documentation: ドキュメンテーション
 sidebar: サイドバー
+charset: 文字コード
 second: 秒
+file_moved: ファイルを移動しました
 collection_created: コレクションが作成されました
 modified_on: 修正日時
 card_size: カードサイズ
@@ -561,6 +564,7 @@ remove: 削除
 toggle_manual_sorting: 手動ソートを有効にする
 bookmark_doesnt_exist: ブックマークは存在しません
 bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。
+bookmark_doesnt_exist_cta: コレクションに戻る
 select_an_item: アイテムを選択
 edit: 編集
 enabled: 有効化
@@ -581,6 +585,7 @@ errors:
   INVALID_OTP: ワンタイムパスワードが間違っています
   INVALID_PROVIDER: ユーザーは別の認証プロバイダに属しています
   INVALID_QUERY: 無効なクエリー
+  INVALID_CONFIG: 無効な設定
   INVALID_TOKEN: 無効なトークン
   INVALID_IP: IPアドレスが許可されていません
   INVALID_USER: ユーザー認証に失敗しました
@@ -588,6 +593,8 @@ errors:
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
+  CONTAINS_NULL_VALUES: フィールドに null 値が含まれています
+  UNPROCESSABLE_ENTITY: 処理できないエンティティ
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
   NOT_NULL_VIOLATION: 値は Null 値にできません
   ILLEGAL_ASSET_TRANSFORMATION: 画像ソースが大きすぎるためプレビューできません
@@ -1068,16 +1075,20 @@ field_options:
     accountability_divider: 責任
     duplication_divider: 複製
   directus_files:
-    title: 固有なタイトル...
+    title: 唯一無二なタイトル...
     description: オプションの説明...
     location: オプションのロケーション...
-    storage_divider: 'ファイル名:'
+    storage_divider: ファイル名
     filename_disk: ディスクストレージ上の名前...
     filename_download: ダウンロード時の名前...
   directus_roles:
+    name: このロールの唯一無二な名前...
+    description: このロールの説明...
+    ip_access: 許可するIPアドレスを追加します。空欄の場合全てのIPアドレスが許可されます。
     fields:
       icon_name: アイコン
       name_name: 名前
+      name_placeholder: タイトルを入力...
     collections_name: コレクション
   directus_users:
     preferences_divider: ユーザー設定
@@ -1094,6 +1105,7 @@ field_options:
     status_options_inactive: 無効
     actions_create: 作成
     actions_update: 更新
+    actions_delete: 削除
     headers:
       value: 値
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
@@ -1103,21 +1115,42 @@ save_current_datetime: 現在の日付/時刻を保存
 inline: インライン
 comment: コメント
 referential_action_set_null: '{field} フィールドを Null にする'
+creating_webhook: Webhookの作成
+default_label: デフォルト
+delete_label: 削除
+delete_are_you_sure: >-
+  この操作は元に戻すことはできません。続行しますか？
 delete_field_are_you_sure: >-
   このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
 description: 説明
 done: 完了
 duplicate: 複製
+limit: リミット
 email: メールアドレス
 embed: 埋め込む
+fallback_icon: フォールバックアイコン
+field: フィールド | フィールド
 file: ファイル
 file_library: ファイルライブラリー
 forgot_password: パスワード忘れ
 hidden: 非表示
+hidden_in_group: 非表示の{group} 
 icon: アイコン
 info: 情報
+normal: 正常
 success: 成功
 warning: 注意
+danger: 危険
+colors:
+  purple: 紫
+  blue: 青
+  green: 緑
+  yellow: 黄
+  orange: 橙
+  red: 赤
+  black: 黒
+  gray: グレー
+  white: 白
 junction_collection: 中継コレクション
 latency: 待ち時間
 login: ログイン
@@ -1132,11 +1165,13 @@ relationship: 関連
 reset: リセット
 reset_password: パスワードリセット
 revisions: 履歴
+no_logs: まだログはありません
 revert: 元に戻す
 save: 保存
 schema: スキーマ
 search: 検索
 select_existing: 既存から選択
+select_field_type: フィールドタイプを選択
 select_interface: インターフェースを選択してください
 settings: 設定
 sign_in: サインイン
@@ -1144,16 +1179,46 @@ sign_out: サインアウト
 sign_out_confirm: サインアウトしてもよろしいですか？
 something_went_wrong: 問題が発生しました
 sort_direction: ソート順
+export_location: エクスポート場所
+export_started: エクスポートを開始しました
+export_started_copy: エクスポートを開始しました。ダウンロードの準備ができ次第通知されます。
+sort_asc: 昇順に並べ替え
+sort_desc: 降順に並べ替え
+disable_sort: 並べ替えを無効化
+template: テンプレート
+require_value_to_be_set: 作成時に値を設定する必要があります
 translation: 翻訳
 translation_placeholder: 翻訳を入力...
 value: 値
+view_project: プロジェクトを表示
+report_error: レポートのエラー
+start: 開始
 table: テーブル
+list: 一覧
+search_filter: 検索フィルター
+enable_search_filter: 検索とフィルターを有効化
+item_link: アイテムリンク
+show_link_to_item: アイテムへのリンクを表示
+navigate_to_item: アイテムに移動
+undo_removed_item: 削除されたアイテムを元に戻す
+remove_item: アイテムを消去
+delete_item: アイテムを削除
 interfaces:
   filter:
     name: 絞り込み
+    description: フィルターオブジェクトを設定
     add_filter: フィルターを追加
+    add_group: And / Or グループ
+    add_value: 値を追加
+    logic_type_and: および
+    logic_type_or: または
     all: すべて
     any: すべて
+    and: と
+    of_the_following: 以下の
+    no_rules: 設定されたルールはありません
+  group-accordion:
+    start: 開始
   presentation-links:
     primary: プライマリ
   input-code:
@@ -1168,17 +1233,51 @@ interfaces:
     select_a_collection: コレクションを選択
   system-display-template:
     display-template: テンプレートを表示
+    description: 静的テキストと動的フィールド値をミックス
+    collection_field: コレクションのフィールド
+    collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
     select_a_collection: コレクションを選択
+  presentation-divider:
+    divider: 区切り線
+    description: ラベルと項目をセクションに分割
+    title_placeholder: タイトルを入力するか、空白のままの場合行だけが表示されます...
+    inline_title: インラインタイトル
+    inline_title_label: 行内にタイトルを表示
+    margin_top: 上の余白
+    margin_top_label: 上の余白を増やす
   select-dropdown:
+    description: ドロップダウンから値を選択
+    choices_placeholder: 選択肢を追加
+    allow_other: その他を許可
+    allow_other_label: 他の値を許可
+    allow_none: Noneを許可
+    allow_none_label: 選択なしを許可
+    choices_name_placeholder: 名前を入力...
     choices_value_placeholder: 値を入力...
+    preview_threshold: しきい値をプレビュー
+  select-multiple-dropdown:
+    select-multiple-dropdown: ドロップダウン(複数)
+    description: ドロップダウンから複数の値を選択
   file:
     file: ファイル
+    description: ファイルを選択またはアップロード
   files:
     files: ファイル
+    description: 複数のファイルを選択またはアップロード
   input-hash:
     hash: ハッシュ値
+    description: ハッシュ化する値を入力してください
+    masked: マスク
+    masked_label: 入力値を非表示にする
   select-icon:
     icon: アイコン
+    description: ドロップダウンからアイコンを選択
+    search_for_icon: アイコンを検索...
+  file-image:
+    image: 画像
+    description: 画像を選択またはアップロード
+    crop: 合わせて切り抜き
+    crop_label: 必要に応じて画像を切り抜き
   select-dropdown-m2o:
     display_template: テンプレートを表示
   input-rich-text-md:
@@ -1191,6 +1290,8 @@ interfaces:
     sort: 並べ替え
   tags:
     tags: タグ
+  input:
+    mask: マスク
   boolean:
     toggle: 切り替え
     label_default: 有効化
