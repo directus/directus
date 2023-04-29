@@ -181,6 +181,7 @@ field_presets: フィールド プリセット
 permissions_for_role: '{role} ロールのアイテム は{action} ことができます'
 fields_for_role: '{role} ロールのフィールド は{action} ことができます'
 validation_for_role: 'フィールド {action} は、 {role} ロールに準じます'
+presets_for_role: "フィールド値のデフォルトは、{role} ロールです\n"
 presentation_and_aliases: エイリアス
 revision_post_create: 作成時の見え方はこの通りです
 revision_post_update: 更新後の見え方はこの通りです
@@ -212,6 +213,7 @@ continue_in_advanced_field_creation_mode: アドバンスドフィールド作�
 validation: バリデーション
 sum: 合計
 avg: 平均
+count: カウント
 min: 最小
 max: 最大
 exposure: 露出度
@@ -228,6 +230,7 @@ hidden_on_detail: 詳細に表示しない
 disabled_editing_value: 項目の編集を無効にする
 key: キー
 alias: エイリアス
+bigInteger: 整数
 boolean: 真偽値
 date: 日付
 date_range: 期間
@@ -315,11 +318,18 @@ foreign_key: 外部キー
 field_key: フィールドキー
 finish_setup: 設定終了
 dismiss: とりやめる
+toggle_raw_editor: 行編集の切り替え
 raw_value: 値を加工しない
+copy_raw_value: 行をコピー
 copy_raw_value_success: コピー
 copy_raw_value_fail: コピー失敗
+paste_raw_value: 行を貼り付け
 paste_raw_value_success: 貼り付け
 paste_raw_value_fail: 貼り付けに失敗
+view_raw_value: 行の値
+edit_raw_value: 行を編集
+enter_raw_value: 値を入力...
+clear_value: 値をクリア
 clear_changes: 変更をクリア
 clear_items: 項目をクリア
 reset_to_default: 初期設定に戻す
@@ -328,16 +338,25 @@ notifications: 通知
 show_all_activity: すべてのアクティビティを表示
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
+confirm_revert: 再確認
+confirm_revert_body: 選択した状態へ戻す
 display: ディスプレイ
 settings_update_success: 設定が更新されました
 title: タイトル
+revision_delta_created: 作成
+revision_delta_created_externally: 外部で作成
 revision_delta_updated: '1フィールド更新 |  {count} フィールド更新'
 revision_delta_deleted: 削除済み
+revision_delta_reverted: 復元済
+revision_delta_update_message: 項目は更新済ですが、セキュリティーにより値は非表示です
 revision_delta_other: 履歴
 revision_delta_by: '{date} by {user}'
+presentation_text_values_cannot_be_reimported: "テキストを使用しますが、値は再インポートできません"
 download_page_as_csv: 'CSV 形式でダウンロード'
 private_user: 非公開ユーザー
+creation_preview: 作成プレビュー
 revision_preview: 履歴のプレビュー
+updates_made: 更新済み
 leave_comment: コメントを残す...
 post_comment_success: コメントを投稿
 post_comment_updated: コメントを更新
@@ -358,10 +377,12 @@ label_import: インポート
 label_export: エクスポート
 import_export: インポート / エクスポート
 format: 書式
+last_page: 最終ページ
 last_access: 最後にアクセスした日時
 fill_template: テンプレート値で埋める
 a_unique_table_name: 重複しない名前をつけてください
 a_unique_column_name: 重複しない名前をつけてください
+enable_custom_values: カスタム値を有効にする
 submit: 送信
 move_to_folder: フォルダに移動
 move: 移動
@@ -387,7 +408,9 @@ date-fns_time: 'a h:mm:ss'
 date-fns_time_no_seconds: 'a hh:mm'
 date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
 minutes: 分
 hours: 時間
 month: 月
@@ -412,6 +435,7 @@ original: オリジナル
 url: URL
 import_label: インポート
 file_details: ファイルの詳細
+dimensions: ディメンション
 size: サイズ
 created: 作成
 modified: 修正されました
@@ -443,6 +467,7 @@ exporting_no_items_to_export: エクスポートするアイテムがありま�
 exporting_download_hint: 完了すると、自動的にこの {format} ファイルがデバイスへダウンロードされます。
 exporting_batch_hint: このエクスポートのバッチ処理が完了すると、 {format} ファイルはファイルライブラリへ保存されます。
 exporting_batch_hint_forced: アイテム数が多いため、このエクスポートはバッチ処理の必要があります。 完了すると、 {format} ファイルがファイルライブラリへ保存されます。
+collection_key: コレクション
 name: 名前
 primary_key_field: プライマリーキー
 type: タイプ
@@ -452,6 +477,7 @@ created_on: 作成日時
 creating_collection_info: コレクション名（半角英数字を推奨）と投稿を識別するプライマリーキーを設定しましょう。
 creating_collection_system: オプションフィールドの有効化および名称の変更ができます。
 auto_increment_integer: 整数を自動生成
+auto_increment_big_integer: 整数を自動生成
 generated_uuid: UUIDを生成
 manual_string: 値を手動で入力する
 save_and_create_new: 保存して新規作成
@@ -473,12 +499,18 @@ disabled: 無効
 information: インフォメーション
 report_bug: 不具合の報告
 request_feature: 機能リクエスト
+request_body: リクエスト本文
 interface_not_found: 'インターフェイス "{interface}" が見つかりません'
 operation_not_found: 'オペレーション "{operation}" が見つかりません'
+reset_interface: インターフェースをリセット
+display_not_found: ' 表示"{display}" が見つかりません'
 reset_display: 表示をリセット
+list-m2a: ' (M2A)ビルダー'
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
+no_items_copy: このコレクションにはまだ項目がありません
 file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
 no_files_copy: まだファイルがありません。
+user_count: 'ユーザーなし | 1ユーザー | {count} ユーザー'
 csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
@@ -795,6 +827,7 @@ fields:
     status_active: 有効
     role: ロール
     token: トークン
+    last_page: 最終ページ
     last_access: 最後にアクセスした日時
   directus_settings:
     project_name: プロジェクト名
