@@ -1335,7 +1335,7 @@ start_collapsed: 축소 시작
 block: 차단하다
 inline: 인라인
 comment: 코멘트
-shares: 주식
+shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
