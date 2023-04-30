@@ -98,6 +98,10 @@ do
 
 done
 
+if [ ! -d "migrations" ]; then
+    echo "No migrations found"
+    exit 0
+fi
 cd migrations
 for migration in *
 do
