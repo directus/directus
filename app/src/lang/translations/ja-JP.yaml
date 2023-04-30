@@ -802,6 +802,7 @@ stop_flow: フローを停止
 create_operation: 操作を作成
 edit_operation: 操作を編集
 code: コード
+operation_options: 操作オプション
 dashboard: ダッシュボード
 dashboard_delete_confirm: このダッシュボードを削除してよろしいですか？この操作を取り消すことはできません。
 edit_dashboard: ダッシュボードを編集
@@ -811,9 +812,29 @@ no_dashboards_copy: ダッシュボードが作成されていません。
 create_dashboard: ダッシュボードを作成
 dashboard_name: ダッシュボード名
 accountability: 責任
+details: 詳細
 full_screen: 全画面表示
+full_text_search: テキスト全体検索
+edit_panels: パネルを編集
+center_align: 中央揃え
+left_align: 左揃え
+right_align: 右揃え
+fit_to_screen: 画面に合わせる
+image_url: 画像のURL
+alt_text: 代替テキスト
+media: メディア
+quality: 品質
 width: 幅
 height: 高さ
+source: 参照元
+url_placeholder: URLを入力...
+display_text: テキストを表示
+display_text_placeholder: 表示テキストを入力...
+interface_group_text_and_numbers: テキストと数値
+interface_group_selection: 選択
+interface_group_relational: 関連
+interface_group_presentation: プレゼンテーション
+interface_group_groups: グループ
 interface_group_other: その他
 tooltip: ヒント
 tooltip_placeholder: ヒントを入力中...
@@ -827,6 +848,7 @@ wysiwyg_options:
   aligncenter: 中央揃え
   alignjustify: 両端揃え
   alignleft: 左揃え
+  alignnone: Noneを許可
   alignright: 右揃え
   forecolor: 前景色
   backcolor: 背景色
@@ -890,6 +912,7 @@ settings_project: プロジェクト設定
 settings_webhooks: Webhook
 settings_flows: フロー
 settings_presets: プリセットとブックマーク
+settings_translation_strings: 翻訳文字列
 one_or_more_options_are_missing: 1つ以上のオプションがありません
 scope: 適用範囲
 actions: 操作
@@ -897,12 +920,46 @@ select: 選択...
 layout: レイアウト
 tree_view: ツリービュー
 changes_are_permanent: 後で変更できません
+preset_name_placeholder: 空欄の場合デフォルトで機能します...
+preset_search_placeholder: 検索クエリ
 editing_preset: プリセットを編集
+layout_preview: レイアウトプレビュー
 layout_setup: レイアウト設定
+data: データ
+unsaved_changes: 未保存の変更
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
+discard_all_changes: すべての変更を破棄
+discard_changes_copy: 全ての変更を破棄しますか？
+show_x_axis: X軸を表示
+show_y_axis: Y軸を表示
 keep_editing: 編集を続ける
+page_help_collections_overview: '**コレクションの概要** — アクセスできるすべてのコレクション一覧です'
+page_help_collections_collection: >-
+  **アイテムを参照** — アクセスできるすべての {collection} アイテム一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
+page_help_collections_item: >-
+  **アイテムの詳細** — アイテムを表示および管理するためのフォーム。このサイドバーには、リビジョンと埋め込みコメントの全履歴も含まれます。
+page_help_activity_collection: >-
+  **アクティビティをブラウズ** — ユーザーのシステムとコンテンツアクティビティの包括的なリスト。
+page_help_docs_global: >-
+  **ドキュメントの概要** — このプロジェクトのバージョンとスキーマに特化したドキュメント。
+page_help_files_collection: >-
+  **ファイルのライブラリー** — このプロジェクトにアップロードされたすべてのファイルアセットを一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
+page_help_files_item: >-
+  **ファイルの詳細** — ファイルメタデータの管理、元のアセットの編集、アクセス設定の更新のためのフォーム。
 page_help_settings_project: "**プロジェクトの設定** — プロジェクト全体の設定です。"
+page_help_settings_datamodel_collections: >-
+  **データモデル: コレクション** — 利用可能なすべてのコレクション一覧です。表示、非表示、システムコレクション、および追加可能な管理されていないデータベーステーブルを含みます。
+page_help_settings_datamodel_fields: >-
+  **データモデル: コレクション** — このコレクションとそのフィールドを管理するためのフォーム。
+page_help_settings_roles_collection: '**ロールの検索** — 管理者、公開およびカスタムユーザーロールの一覧です。'
+page_help_settings_roles_item: "**ロールの詳細** : ロールの権限とその他の設定を管理します。"
+page_help_settings_presets_collection: >-
+  **プリセットの検索** — プリセットの一覧です。ユーザー、ロール、ブックマーク、デフォルトのビューなどを含みます。
+page_help_settings_presets_item: >-
+  *プリセットの詳細** — ブックマーク、デフォルトコレクションのプリセットを管理するフォームです。
+page_help_settings_webhooks_collection: '**Webhooksを検索** — プロジェクト内にあるWebhookの一覧です。'
+page_help_settings_webhooks_item: '**Webhookの詳細** — プロジェクトのWebhookを作成と管理するためのフォーム。'
 add_new: 新規追加
 create_new: 新規作成
 all: すべて
