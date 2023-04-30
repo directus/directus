@@ -38,25 +38,75 @@ curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/pro
 
 unzip directus-custom-extensions-release.zip
 
-ls -la ./directus-custom-extensions-release
+cd directus-custom-extensions-release
+ls -la
 
-mkdir -p ${DIRECTUS_ENDPOINTS}/atomic-counters
+# Extensions to skip (these belong to different control scripts)
+declare -a skip_extensions=(
+    # Payment extensions
+    "payments-api"
+    "payments-hook"
+    "payments-module"
+    "services-module"
+    "orders-module"
 
-cp -r ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/image-carousel ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/scheduler-field ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/contact-display ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/toggle-field ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/filtered-count ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/m2o-link-display ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/favorite-display ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/atomic-counters/* ${DIRECTUS_ENDPOINTS}/atomic-counters
-cp -r ./directus-custom-extensions-release/b64-upload ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/collection-builder ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/count-alias ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/salary-ranges ${DIRECTUS_INTERFACES}
+    # Chat extensions
+    "chat"
+    "chat-display"
 
+    # Leads extensions
+    "dashboard"
+    "leads"
+    "areas"
+    "saved-searches"
+    "area-hook"
+    "hide-modules"
 
-cp -r ./directus-custom-extensions-release/collection-builder/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
+    # Collaboration extensions
+    "collab-hook"
+    "marketplace-filters-hook"
+    "workflows-defaults-hook"
+    "webhook-api-endpoint"
+)
+
+declare -a skip_migrations=(
+    "add-chat"
+    "add-saved-searches"
+    "add-collaboration"
+)
+
+for ext_type in *
+do
+    # Skip all migrations here
+    if [ "$ext_type" = "migrations" ]; then
+        continue
+    fi
+
+    cd ${ext_type}
+    for ext_name in *
+    do
+        # Skip extensions
+        if [[ " ${skip_extensions[@]} " =~ " ${ext_name} " ]]; then
+            echo "Skipping ${ext_type}/${ext_name}"
+            continue
+        fi
+        echo "Adding ${ext_type}/${ext_name}"
+        cp -r ${ext_name} ${DIRECTUS_EXTENSIONS}/${ext_type}/
+
+    done
+    cd ..
+
+done
+
+cd migrations
+for migration in *
+do
+    # Skip migrations
+    if [[ " ${skip_migrations[@]} " =~ " ${migration} " ]]; then
+        continue
+    fi
+    echo "Adding migration ${migration}"
+    cp ${migration} ${DIRECTUS_EXTENSIONS}/migrations/
+done
+
+cd ..
