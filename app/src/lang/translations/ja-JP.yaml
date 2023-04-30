@@ -647,11 +647,30 @@ make_folder_visible: フォルダを表示
 make_folder_hidden: フォルダを非表示
 goto_collection_content: コンテンツを表示
 one_item: '1 つのアイテム'
+visible_collections: 表示中のコレクション
+hidden_collections: 非表示のコレクション
+show_hidden_collections: 非表示コレクションを表示
+hide_hidden_collections: 非表示コレクションを非表示
+show_header: ヘッダーを表示
+unmanaged_collections: 未設定のコレクション
+system_collections: システムコレクション
+placeholder: プレースホルダー
 icon_left: 左側に表示するアイコン
 icon_right: 右側に表示するアイコン
+count_other_revisions: '{count} その他のリビジョン'
 font: フォント
+sans_serif: サンセリフ
+serif: セリフ
+monospace: 等幅フォント
+divider: 区切り線
 color: 色
+circle: サークル
+empty_item: 空のアイテム
+log_in_with: '{provider} でログイン'
+conditional_styles: 条件付きスタイル
+advanced_settings: 詳細設定
 advanced_filter: 高度なフィルタ
+delete_advanced_filter: フィルターを削除
 change_advanced_filter_operator: オペレーターを変更
 advanced: 詳細設定
 operators:
@@ -1323,6 +1342,8 @@ displays:
   formatted-value:
     format: 書式
     font: フォント
+    font_serif: セリフ
+    font_monospace: 等幅フォント
     bold: 太字
     italic: 斜体
     prefix: 接頭辞
@@ -1332,6 +1353,8 @@ displays:
     text: テキスト
   icon:
     icon: アイコン
+  image:
+    circle: サークル
   labels:
     choices_value_placeholder: 値を入力...
   user:
