@@ -42,38 +42,11 @@ cd directus-custom-extensions-release
 ls -la
 
 # Extensions to skip (these belong to different control scripts)
-declare -a skip_extensions=(
-    # Payment extensions
-    "payments-api"
-    "payments-hook"
-    "payments-module"
-    "services-module"
-    "orders-module"
+# These are payment, chat, leads and collaboration extensions
+skip_extensions="payments-api payments-hook payments-module services-module orders-module chat chat-display dashboard leads areas saved-searches area-hook hide-modules collab-hook marketplace-filters-hook workflows-defaults-hook webhook-api-endpoint"
 
-    # Chat extensions
-    "chat"
-    "chat-display"
-
-    # Leads extensions
-    "dashboard"
-    "leads"
-    "areas"
-    "saved-searches"
-    "area-hook"
-    "hide-modules"
-
-    # Collaboration extensions
-    "collab-hook"
-    "marketplace-filters-hook"
-    "workflows-defaults-hook"
-    "webhook-api-endpoint"
-)
-
-declare -a skip_migrations=(
-    "add-chat"
-    "add-saved-searches"
-    "add-collaboration"
-)
+# Corresponding migrations to skip
+skip_migrations="add-chat add-saved-searches add-collaboration"
 
 for ext_type in *
 do
@@ -86,7 +59,7 @@ do
     for ext_name in *
     do
         # Skip extensions
-        if [[ " ${skip_extensions[@]} " =~ " ${ext_name} " ]]; then
+        if echo "$skip_extensions" | grep -qw "$ext_name"; then
             echo "Skipping ${ext_type}/${ext_name}"
             continue
         fi
@@ -106,7 +79,7 @@ cd migrations
 for migration in *
 do
     # Skip migrations
-    if [[ " ${skip_migrations[@]} " =~ " ${migration} " ]]; then
+    if echo "$skip_migrations" | grep -qw "$migration"; then
         continue
     fi
     echo "Adding migration ${migration}"
