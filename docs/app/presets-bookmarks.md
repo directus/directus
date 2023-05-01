@@ -59,7 +59,7 @@ becomes a Bookmark. If **Name** is left blank, the preset will be a Default. To 
    - **Scope** — Defines which users have access to this preset.
    - **Layout** — Selects a Layout for the preset, which is adjusted from the Sidebar.
    - **Name** — Sets a name, which determines if the preset is a Default or Bookmark. Note that this field supports
-     [Translation Strings](/configuration/translation-strings.md).
+     [Translation Strings](/app/translation-strings.md).
 4. Scroll down to the **Layout Preview** section and make any other adjustments or configurations as desired. Each
    preset saves all of the information needed to recreate this Layout Preview, just as it is shown.
 5. Click <span mi btn>check</span> to confirm.

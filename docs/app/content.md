@@ -39,7 +39,7 @@ more, see our guide on the [Collection Page](/app/content/collections).
 
 The Content module helps you manage Items. Collections are managed within the **Settings** menu, as these actions
 results in changes to the data model. To learn more, see our guide on
-[data model configuration](/configuration/data-model).
+[data model configuration](/app/data-model).
 
 :::
 

@@ -74,7 +74,7 @@ adjust how Users are displayed on the User Directory. To learn more, see [Layout
 A User's profile page can be accessed from the User Directory or by clicking the User Menu at the bottom of the
 [Module Bar](/app/overview#_1-module-bar). The profile page has the same features and functionality as the
 [Item Page](/app/content/items). Administrators can add and customize Fields under
-[Settings > Data Model > Directus Users](/configuration/data-model), but the following are available by default.
+[Settings > Data Model > Directus Users](/app/data-model), but the following are available by default.
 
 - **First Name** — The given name.
 - **Last Name** — The family/surname.
