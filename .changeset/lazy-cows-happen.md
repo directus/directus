@@ -1,5 +1,6 @@
 ---
 "@directus/api": minor
+"directus": minor
 ---
 
 Integrating Websockets Subscriptions for REST and GraphQL in Directus 🕸️🧦 
