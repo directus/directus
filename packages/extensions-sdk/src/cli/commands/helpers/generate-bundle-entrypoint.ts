@@ -9,7 +9,7 @@ export default function generateBundleEntrypoint(mode: 'app' | 'api', entries: E
 
 	const entriesForTypes = entries.filter((entry) => isIn(entry.type, types));
 
-	const imports = entriesForTypes.map((entry, i) => {
+	const imports = entriesForTypes.map((entry, index) => {
 		let entryPath: string;
 
 		if (isTypeIn(entry, HYBRID_EXTENSION_TYPES)) {
@@ -18,7 +18,7 @@ export default function generateBundleEntrypoint(mode: 'app' | 'api', entries: E
 			entryPath = entry.source;
 		}
 
-		return `import e${i} from './${pathToRelativeUrl(path.resolve(entryPath))}';`;
+		return `import e${index} from './${pathToRelativeUrl(path.resolve(entryPath))}';`;
 	});
 
 	const exports = types.map((type) => {
