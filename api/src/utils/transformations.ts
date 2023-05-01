@@ -1,7 +1,7 @@
 import type { File, Transformation, TransformationParams } from '../types/index.js';
 
 export function resolvePreset(input: TransformationParams, file: File): Transformation[] {
-	const transforms = input.transforms ?? [];
+	const transforms = input.transforms ? [...input.transforms] : [];
 
 	if (input.format || input.quality)
 		transforms.push([
