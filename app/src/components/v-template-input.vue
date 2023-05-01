@@ -228,8 +228,13 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	let newHTML = input.value.innerText;
+	let caretPos = 0;
 
-	const caretPos = isDirectInput ? previousCaretPos : window.getSelection()?.rangeCount ? position(input.value).pos : 0;
+	if (isDirectInput) {
+		caretPos = previousCaretPos;
+	} else if (window.getSelection()?.rangeCount) {
+		caretPos = position(input.value).pos;
+	}
 
 	let lastMatchIndex = 0;
 	const matches = newHTML.match(new RegExp(`${props.captureGroup}(?!</mark>)`, 'gi'));
