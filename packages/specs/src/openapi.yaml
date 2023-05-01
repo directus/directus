@@ -5,9 +5,9 @@ info:
   contact:
     email: contact@directus.io
   license:
-    name: GPL-3.0
-    url: 'https://www.gnu.org/licenses/gpl-3.0.html'
-  version: 9.0.0
+    name: BUSL-1.1
+    url: 'https://directus.io/bsl'
+  version: '10'
 externalDocs:
   description: Directus Docs
   url: 'https://docs.directus.io'

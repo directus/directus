@@ -74,7 +74,7 @@ test('Throws error if latest version does not exist in json response', async () 
 });
 
 test('Uses semver.gte to check if passed version is bigger than latest', async () => {
-	sample.latest = '9.23.4';
+	sample.latest = '9.26.0';
 	sample.version = '10.0.0';
 	mockResponseJson['dist-tags'].latest = sample.latest;
 

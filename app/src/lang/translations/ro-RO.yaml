@@ -1789,6 +1789,9 @@ triggers:
 operations:
   log:
     message: Mesaj
+  mail:
+    template: Șablon
+    data: Date
   notification:
     recipient: Utilizator
     message: Mesaj

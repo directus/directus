@@ -178,7 +178,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 	page: page.value,
 }));
 
-const { displayItems, create, update, remove, select, cleanItem, localDelete, getItemEdits } = useRelationMultiple(
+const { displayItems, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -187,7 +187,7 @@ const { displayItems, create, update, remove, select, cleanItem, localDelete, ge
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
