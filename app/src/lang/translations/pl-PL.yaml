@@ -131,7 +131,7 @@ archive_confirm_count: >-
   Brak zaznaczonych elementów | Czy na pewno chcesz zarchiwizować ten element? | Czy na pewno chcesz zarchiwizować te {count} elementy?
 reset_system_permissions_to: 'Resetuj uprawnienia systemowe:'
 reset_system_permissions_copy: Ta akcja nadpisze wszelkie uprawnienia niestandardowe, które mogły być zastosowane do kolekcji systemowych. Czy jesteś pewien?
-the_following_are_minimum_permissions: Poniższe uprawnienia są wymagane, gdy "Dostęp do aplikacji" jest włączony.
+the_following_are_minimum_permissions: Następujące minimalne uprawnienia są stosowane automatycznie, gdy "Dostęp do aplikacji" jest włączony. Możesz przyznać dodatkowe uprawnienia w razie potrzeby, ale nie możesz zmniejszyć uprawnień poniżej tego poziomu.
 app_access_minimum: Minimalny dostęp do aplikacji
 recommended_defaults: Zalecane ustawienia domyślne
 unarchive: Przywróć z archiwum
@@ -2108,6 +2108,8 @@ operations:
     to: Do
     to_placeholder: Dodaj adresy e-mail i naciśnij enter...
     body: Treść
+    template: Szablon
+    data: Dane
   notification:
     name: Wyślij powiadomienie
     description: Wyślij powiadomienie w aplikacji do jednego lub więcej użytkowników

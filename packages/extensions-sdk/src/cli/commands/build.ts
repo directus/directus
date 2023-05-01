@@ -25,14 +25,8 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import {
-	Plugin,
-	RollupError,
-	RollupOptions,
-	OutputOptions as RollupOutputOptions,
-	rollup,
-	watch as rollupWatch,
-} from 'rollup';
+import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
+import { rollup, watch as rollupWatch } from 'rollup';
 import esbuildDefault from 'rollup-plugin-esbuild';
 import stylesDefault from 'rollup-plugin-styles';
 import vueDefault from 'rollup-plugin-vue';
@@ -597,7 +591,7 @@ function getRollupOptions({
 			languages.includes('typescript') ? esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }) : null,
 			mode === 'browser' ? styles() : null,
 			...plugins,
-			nodeResolve({ browser: mode === 'browser' }),
+			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
 			replace({
@@ -608,6 +602,11 @@ function getRollupOptions({
 			}),
 			minify ? terser() : null,
 		],
+		onwarn(warning, warn) {
+			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
+
+			warn(warning);
+		},
 	};
 }
 

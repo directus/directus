@@ -27,6 +27,12 @@ npx directus init
 
 Will install the required database driver, and create a `.env` file based on the inputted values.
 
+::: warning Initialize Node.js Package
+
+Run `npm init` if your project folder does not contain a `package.json` file.
+
+:::
+
 ### Bootstrap a Project
 
 ```bash

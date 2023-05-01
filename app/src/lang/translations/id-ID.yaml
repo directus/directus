@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan {count} item ini?
 reset_system_permissions_to: 'Set Ulang Perizinan Sistem ke:'
 reset_system_permissions_copy: Tindakan ini akan menimpa perizinan kustom apapun yang mungkin telah diterapkan ke koleksi sistem. Apakah Anda yakin?
-the_following_are_minimum_permissions: Berikut adalah perizinan minimum yang diperlukan ketika "Akses Aplikasi" diaktifkan. Anda dapat mengembangkan perizinan lebih dari ini, tetapi tidak dibawahnya.
 app_access_minimum: Minimum Akses Aplikasi
 recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
@@ -1479,6 +1478,8 @@ operations:
     payload: Muatan
   log:
     message: Pesan
+  mail:
+    template: Templat
   notification:
     recipient: Pengguna
     message: Pesan
