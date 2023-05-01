@@ -7,7 +7,7 @@ pageClass: page-reference
 # Authentication
 
 > All data within the platform is private by default. The
-> [public role](/configuration/users-roles-permissions#configure-permissions) can be configured to expose data without
+> [public role](/app/users-roles-permissions#configure-permissions) can be configured to expose data without
 > authentication, or you can pass an access token to the API to access private data.
 
 ---

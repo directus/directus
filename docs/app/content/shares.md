@@ -33,7 +33,7 @@ permissions. We welcome any [pull-requests](/contributing/introduction) to addre
 
 ::: warning Users, Roles and Permissions!
 
-You will need to understand how [Users, Roles, and Permissions](/configuration/users-roles-permissions) work in Directus
+You will need to understand how [Users, Roles, and Permissions](/app/users-roles-permissions) work in Directus
 to configure Shares properly.
 
 :::

@@ -84,8 +84,8 @@ Once logged in, you're greeted with the option to create your first [Collection]
 :::tip Learn More About Collections
 
 - [The Content Module](/app/content)
-- [Create and Manage a Collection](/configuration/data-model/collections.md)
-- [Build Relationships Between Collections](/configuration/data-model/relationships)
+- [Create and Manage a Collection](/app/data-model/collections.md)
+- [Build Relationships Between Collections](/app/data-model/relationships)
 
 :::
 
@@ -101,7 +101,7 @@ With your first Collection created, it's time to start adding some [Fields](/get
 
 ::: tip Learn More About Fields
 
-- [Create and Manage Fields in the App](/configuration/data-model)
+- [Create and Manage Fields in the App](/app/data-model)
 
 :::
 
@@ -141,7 +141,7 @@ of creating a new Role.
 
 ::: tip Learn More About Roles & Permissions
 
-- [Users, Roles and Permissions](/configuration/users-roles-permissions).
+- [Users, Roles and Permissions](/app/users-roles-permissions).
 
 :::
 

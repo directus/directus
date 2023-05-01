@@ -45,7 +45,7 @@ each system collection is responsible for, as well as where to find relevant App
 | Activity          | Tracks and stores all events within Directus, giving full accountability over everything.                                            | [Activity Log](/app/activity-log)                                       | [Activity](/reference/system/activity)           |
 | Collections       | Stores data table & configuration details each and every Collection.                                                                 | [Collections](/app/data-model/collections)                              | [Collections](/reference/system/collections)     |
 | Dashboards        | Stores dashboard configuration details and all relationally linked panels.                                                           | [Insights](/app/insights)                                                         | **N/A**                                          |
-| Fields            | Stores configuration details for each field.                                                                                         | [Fields](/app/data-model/fields/)                                       | [Fields](/reference/system/fields)               |
+| Fields            | Stores configuration details for each field.                                                                                         | [Fields](/app/data-model/fields)                                       | [Fields](/reference/system/fields)               |
 | Files             | This stores file location from asset storage as well as any data associated with that file.                                          | [File Library](/app/file-library)                                                 | [Files](/reference/files)                        |
 | Flows             | Stores basic logic required for Flows, which enable event-triggered task automation.                                                 | [Flows](/app/flows)                                                     | [Flows](/reference/system/flows)                 |
 | Folders           | Stores information required for Folders, which provide virtual file asset management.                                                | [Folders](/app/file-library#folders)                                              | [Folders](/reference/system/folders)             |
@@ -132,7 +132,7 @@ To toggle whether a collection is hidden by default in the Content Module, follo
 
 :::tip
 
-Assuming a user has [access permissions](/configuration/users-roles-permissions), hidden collections can still be
+Assuming a user has [access permissions](/app/users-roles-permissions), hidden collections can still be
 viewed. They must right-click on the Navigation Bar and choose <span mi icon>visibility</span> **Show Hidden
 Collections**.
 
@@ -207,7 +207,7 @@ To configure a collection, follow these steps.
 
 This section allows you to create and configure fields, as well as configure how fields are displayed on the
 [Item Details Page](/app/content/items). To learn more, please see the documentation on
-[fields](/configuration/data-model/fields/).
+[fields](/app/data-model/fields).
 
 ### Collection Setup
 
@@ -229,7 +229,7 @@ These controls allow you to modify how the collection is displayed within the Co
 - **Singleton** — Toggle to bypass the [Collection Page](/app/content/collections) and take users to the
   [Item Details Page](/app/content/items).
 - **Collection Naming Translations** — Translate the collection name across multiple languages. When the default
-  language is changed in [Project Settings](/configuration/project-settings#general) or
+  language is changed in [Project Settings](/app/project-settings#general) or
   [User Details Page](/app/user-directory#user-details-page), the relevant translation, if any exists, will be used
   throughout the app.
 
@@ -300,7 +300,7 @@ unselectable in the Sort Field dropdown.
 
 To configure a sort field, follow these steps.
 
-1. [Create a Field](/configuration/data-model/fields/#create-a-field-standard) with an `INTEGER` data type.
+1. [Create a Field](/app/data-model/fields#create-a-field-standard) with an `INTEGER` data type.
 2. Choose a field from the dropdown under **Settings > Data Model > [Collection] > Sort**.
 3. Click <span mi btn>check</span> to confirm.
 
@@ -309,7 +309,7 @@ Once you sort field is configured, you may want to learn how to
 
 ::: tip Automatic Setup
 
-When you [create a Collection](/configuration/data-model/collections#create-a-collection), you have the option of
+When you [create a Collection](/app/data-model/collections#create-a-collection), you have the option of
 creating a **Sort** field. If you choose to include this field, the collection's sort settings will automatically be
 configured for you.
 
