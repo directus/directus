@@ -4,4 +4,4 @@
 "tests-blackbox": patch
 ---
 
-Adds `no-nested-ternary` eslint rule
+Added `no-nested-ternary` eslint rule to ensure better readability in the code base
