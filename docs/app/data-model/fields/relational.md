@@ -49,7 +49,7 @@ Interface that allows users to create relationships between the current item and
 collections. See [Many-to-Any (M2A) Relationships](/app/data-model/relationships#many-to-any-m2a).
 
 Useful in many different contexts including
-[creating re-usable page components](/use-cases/headless-cms/create-reusable-page-components-using-m2a).
+[creating re-usable page components](/guides/headless-cms/reusable-components).
 
 - **Creating Items**: Allow users to create new Items in the M2A collection.
 - **Selecting Items**: Allow users to select existing files in the M2A collection.
