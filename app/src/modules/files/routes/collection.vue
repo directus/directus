@@ -6,9 +6,9 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="mergeFilters(filter, folderTypeFilter)"
+		:filter="mergeFilters(filter, folderFilter)"
 		:filter-user="filter"
-		:filter-system="folderTypeFilter"
+		:filter-system="folderFilter"
 		:search="search"
 		collection="directus_files"
 		:reset-preset="resetPreset"
@@ -173,7 +173,7 @@
 				<export-sidebar-detail
 					collection="directus_files"
 					:layout-query="layoutQuery"
-					:filter="mergeFilters(filter, folderTypeFilter)"
+					:filter="mergeFilters(filter, folderFilter)"
 					:search="search"
 					@refresh="refresh"
 				/>
@@ -213,7 +213,7 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
-import { Special } from '@/types/folders';
+import { SpecialFolder } from '@/types/folders';
 
 type Item = {
 	[field: string]: any;
@@ -235,7 +235,7 @@ export default defineComponent({
 			default: undefined,
 		},
 		special: {
-			type: String as PropType<Special>,
+			type: String as PropType<SpecialFolder>,
 			default: undefined,
 		},
 	},
@@ -261,8 +261,8 @@ export default defineComponent({
 
 		const { breadcrumb, title } = useBreadcrumb();
 
-		const folderTypeFilter = computed(() => {
-			return getFolderFilter(props.special, props.folder, userStore?.currentUser?.id);
+		const folderFilter = computed(() => {
+			return getFolderFilter(props.folder, props.special, userStore?.currentUser?.id);
 		});
 
 		const { layoutWrapper } = useLayout(layout);
@@ -299,7 +299,7 @@ export default defineComponent({
 			layoutOptions,
 			layoutQuery,
 			layout,
-			folderTypeFilter,
+			folderFilter,
 			search,
 			moveToDialogActive,
 			moveToFolder,

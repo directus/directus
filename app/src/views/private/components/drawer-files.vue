@@ -1,257 +1,59 @@
 <template>
-	<component
-		:is="layoutWrapper"
-		v-slot="{ layoutState }"
-		v-model:selection="layoutSelection"
-		v-model:layout-options="localOptions"
-		v-model:layout-query="localQuery"
-		:filter="mergeFilters(mergeFilters(folderTypeFilter, filter), presetFilter)"
-		:filter-user="presetFilter"
-		:filter-system="mergeFilters(folderTypeFilter, filter)"
-		:search="search"
+	<drawer-collection
+		v-bind="$attrs"
 		:collection="collection"
-		select-mode
-		:show-select="multiple ? 'multiple' : 'one'"
+		:drawer-props="drawerProps"
+		:filter="mergeFilters(filter, folderFilter)"
 	>
-		<v-drawer
-			v-model="internalActive"
-			:title="t('select_item')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
-			sidebar-resizeable
-			:sidebar-label="t('folders')"
-			@cancel="cancel"
-		>
-			<template v-if="!folder" #sidebar>
-				<files-navigation
-					:custom-target-handler="onFolderChange"
-					:current-folder="currentFolder"
-					:current-special="currentSpecial"
-					reset-open-folders
-					actions-disabled
-				/>
-			</template>
-
-			<template #navigation>
-				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
-			</template>
-
-			<template #subtitle>
-				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
-			</template>
-
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="collectionInfo.icon" :color="collectionInfo.color" />
-				</v-button>
-			</template>
-
-			<template #actions:prepend><component :is="`layout-actions-${localLayout}`" v-bind="layoutState" /></template>
-
-			<template #actions>
-				<search-input v-model="search" v-model:filter="presetFilter" :collection="collection" />
-
-				<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
-					<v-icon name="check" />
-				</v-button>
-			</template>
-
-			<div class="layout">
-				<component :is="`layout-${localLayout}`" v-bind="layoutState">
-					<template #no-results>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
-					</template>
-
-					<template #no-items>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
-					</template>
-				</component>
-			</div>
-		</v-drawer>
-	</component>
+		<template v-if="!folder" #sidebar>
+			<files-navigation
+				:custom-target-handler="onFolderChange"
+				:current-folder="currentFolder"
+				:current-special="currentSpecial"
+				local-open-folders
+				actions-disabled
+			/>
+		</template>
+	</drawer-collection>
 </template>
 
-<script lang="ts">
-import { useExtension } from '@/composables/use-extension';
-import { usePreset } from '@/composables/use-preset';
+<script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
-import SearchInput from '@/views/private/components/search-input.vue';
-import { useCollection, useLayout } from '@directus/composables';
 import { getFolderFilter } from '@/utils/get-folder-filter';
-import { mergeFilters } from '@directus/utils';
-import { PropType, computed, defineComponent, ref, toRefs, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { FolderTarget, SpecialFolder } from '@/types/folders';
 import { Filter } from '@directus/types';
-import { Special } from '@/types/folders';
+import { mergeFilters } from '@directus/utils';
 
-export default defineComponent({
-	components: { SearchInput, FilesNavigation },
-	props: {
-		collection: {
-			type: String,
-			default: 'directus_files',
-		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-		selection: {
-			type: Array as PropType<(number | string)[]>,
-			default: () => [],
-		},
-		folder: {
-			type: String,
-			default: undefined,
-		},
-		filter: {
-			type: Object as PropType<Filter>,
-			default: null,
-		},
-		multiple: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:active', 'input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
-
-		const { save, cancel } = useActions();
-		const { internalActive } = useActiveState();
-		const { internalSelection, onSelect } = useSelection();
-
-		const { collection } = toRefs(props);
-
-		const currentFolder = ref<string | undefined>(props.folder);
-		const currentSpecial = ref<Special | undefined>();
-
-		const { info: collectionInfo } = useCollection(collection);
-		const { layout, layoutOptions, layoutQuery, search, filter: presetFilter } = usePreset(collection, ref(null), true);
-		const userStore = useUserStore();
-
-		// This is a local copy of the layout. This means that we can sync it the layout without
-		// having use-preset auto-save the values
-		const localLayout = ref(layout.value || 'tabular');
-		const localOptions = ref(layoutOptions.value);
-		const localQuery = ref(layoutQuery.value);
-
-		const currentLayout = useExtension('layout', localLayout);
-
-		const layoutSelection = computed<any>({
-			get() {
-				return internalSelection.value;
-			},
-			set(newFilters) {
-				onSelect(newFilters);
-			},
-		});
-
-		const { layoutWrapper } = useLayout(layout);
-
-		const folderTypeFilter = ref(getFolderFilter(currentSpecial.value, currentFolder.value));
-
-		return {
-			t,
-			save,
-			cancel,
-			internalActive,
-			layoutWrapper,
-			layoutSelection,
-			localLayout,
-			localOptions,
-			localQuery,
-			collectionInfo,
-			search,
-			mergeFilters,
-			folderTypeFilter,
-			presetFilter,
-			currentLayout,
-			currentFolder,
-			currentSpecial,
-			onFolderChange,
-		};
-
-		function onFolderChange(target: { special?: Special; folder?: string }) {
-			currentSpecial.value = target.special;
-			currentFolder.value = target.folder;
-			folderTypeFilter.value = getFolderFilter(target.special, target.folder, userStore?.currentUser?.id);
-		}
-
-		function useActiveState() {
-			const localActive = ref(false);
-
-			const internalActive = computed({
-				get() {
-					return props.active === undefined ? localActive.value : props.active;
-				},
-				set(newActive: boolean) {
-					localActive.value = newActive;
-					emit('update:active', newActive);
-				},
-			});
-
-			return { internalActive };
-		}
-
-		function useSelection() {
-			const localSelection = ref<(string | number)[] | null>(null);
-
-			const internalSelection = computed({
-				get() {
-					if (localSelection.value === null) {
-						return props.selection;
-					}
-
-					return localSelection.value;
-				},
-				set(newSelection: (string | number)[]) {
-					localSelection.value = newSelection;
-				},
-			});
-
-			watch(
-				() => props.active,
-				() => {
-					localSelection.value = null;
-				}
-			);
-
-			return { internalSelection, onSelect };
-
-			function onSelect(newSelection: (string | number)[]) {
-				if (newSelection.length === 0) {
-					localSelection.value = [];
-					return;
-				}
-
-				if (props.multiple === true) {
-					localSelection.value = newSelection;
-				} else {
-					localSelection.value = [newSelection[newSelection.length - 1]];
-				}
-			}
-		}
-
-		function useActions() {
-			return { save, cancel };
-
-			function save() {
-				emit('input', internalSelection.value);
-				internalActive.value = false;
-			}
-
-			function cancel() {
-				internalActive.value = false;
-			}
-		}
-	},
+const props = withDefaults(defineProps<{ collection?: string; folder?: string; filter?: Filter }>(), {
+	collection: 'directus_files',
 });
-</script>
 
-<style lang="scss" scoped>
-.layout {
-	display: contents;
-	--layout-offset-top: calc(var(--header-bar-height) - 1px);
+const { t } = useI18n();
+
+const drawerProps = {
+	sidebarResizeable: true,
+	sidebarLabel: t('folders'),
+};
+
+const currentFolder = ref<string | undefined>(props.folder);
+const currentSpecial = ref<SpecialFolder>();
+const folderFilter = ref<Filter>();
+
+const userStore = useUserStore();
+
+watch(
+	[currentFolder, currentSpecial],
+	() => {
+		folderFilter.value = getFolderFilter(currentFolder.value, currentSpecial.value, userStore?.currentUser?.id);
+	},
+	{ immediate: true }
+);
+
+function onFolderChange(target: FolderTarget) {
+	currentFolder.value = target.folder;
+	currentSpecial.value = target.special;
 }
-</style>
+</script>

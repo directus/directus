@@ -75,7 +75,7 @@ import HeaderBar from '@/views/private/components/header-bar.vue';
 import { i18n } from '@/lang';
 import VNav from './v-nav.vue';
 
-interface Props {
+export interface Props {
 	title: string;
 	subtitle?: string | null;
 	modelValue?: boolean;

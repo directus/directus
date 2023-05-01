@@ -66,39 +66,31 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { onUnmounted, ref, watch } from 'vue';
-import { useFolders, Folder } from '@/composables/use-folders';
+import { ref, watch } from 'vue';
+import { useFolders, openFoldersInitial } from '@/composables/use-folders';
 import NavigationFolder from './files-navigation-folder.vue';
 import { isEqual } from 'lodash';
 import { useRouter } from 'vue-router';
-import { Special } from '@/types/folders';
-
-type Target = { special?: Special; folder?: string };
+import { SpecialFolder, FolderTarget } from '@/types/folders';
 
 const router = useRouter();
 
 const props = defineProps<{
 	currentFolder?: string;
-	currentSpecial?: Special;
-	customTargetHandler?: (target: Target) => void;
-	resetOpenFolders?: boolean;
+	currentSpecial?: SpecialFolder;
+	customTargetHandler?: (target: FolderTarget) => void;
+	localOpenFolders?: boolean;
 	actionsDisabled?: boolean;
 }>();
 
 const { t } = useI18n();
 
-const { nestedFolders, folders, loading, openFolders, resetOpenFolders } = useFolders();
-const prevOpenFolders = ref();
+const { nestedFolders, folders, loading, openFolders: sharedOpenFolders } = useFolders();
+const openFolders = props.localOpenFolders ? ref(openFoldersInitial) : sharedOpenFolders;
 
 watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
 
-onUnmounted(() => {
-	if (props.resetOpenFolders) {
-		openFolders.value = prevOpenFolders.value;
-	}
-});
-
-function onClick(target: Target) {
+function onClick(target: FolderTarget) {
 	if (props.customTargetHandler) {
 		props.customTargetHandler(target);
 	} else {
@@ -114,20 +106,13 @@ function onClick(target: Target) {
 }
 
 function setOpenFolders() {
-	if (loading.value) return;
-
-	if (props.resetOpenFolders && !prevOpenFolders.value) {
-		prevOpenFolders.value = openFolders.value;
-		resetOpenFolders();
-	}
-
 	if (!folders.value) return;
 	if (!openFolders?.value) return;
 
 	const shouldBeOpen: string[] = [];
-	const folder = folders.value.find((folder: Folder) => folder.id === props.currentFolder);
+	const folder = folders.value.find((folder) => folder.id === props.currentFolder);
 
-	if (folder && folder.parent) parseFolder(folder.parent);
+	if (folder?.parent) parseFolder(folder.parent);
 
 	const newOpenFolders = [...openFolders.value];
 
@@ -145,7 +130,7 @@ function setOpenFolders() {
 		if (!folders.value) return;
 		shouldBeOpen.push(id);
 
-		const folder = folders.value.find((folder: Folder) => folder.id === id);
+		const folder = folders.value.find((folder) => folder.id === id);
 
 		if (folder && folder.parent) {
 			parseFolder(folder.parent);
