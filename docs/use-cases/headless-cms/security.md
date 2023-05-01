@@ -58,7 +58,7 @@ levels of data.
 For each of these roles, allow access only to the collections and specific CRUD operations that each role needs to
 perform their function.
 
-Our guide on [Content Approval Workflows](/cookbook/permissions/basic-workflows) is helpful for scoping roles and
+Our guide on [Content Approval Workflows](/guides/headless-cms/approval-workflows) is helpful for scoping roles and
 permissions.
 
 ## Obscure Access Tokens and URLs

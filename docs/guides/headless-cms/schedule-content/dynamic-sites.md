@@ -32,7 +32,7 @@ visitor requests a page from your site, all you need to do is add a filter to yo
 :::info Note
 
 If your site is statically generated and your content fetched at build time, please
-[follow the recipe for static sites](/cookbook/flows/scheduling-content-static-sites).
+[follow the recipe for static sites](/guides/headless-cms/schedule-content/static-sites).
 
 :::
 

@@ -1,8 +1,7 @@
 # Relational
 
 > Interfaces are how users interact with fields on the Item Detail page. These are the standard Relational interfaces.
-> We recommend that you review [Relationships](/app/data-model/relationships) before working with Relational
-> interfaces.
+> We recommend that you review [Relationships](/app/data-model/relationships) before working with Relational interfaces.
 
 ## File
 
@@ -30,9 +29,8 @@ Interface that allows uses to upload a single image file, choose an existing ima
 Interface that allows uses to upload multiple files, choose an existing image from the
 [File Library](/app/file-library), or import an image from a URL.
 
-This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many-to-many-m2m) junction
-collection when added to the [Data Model](/app/data-model) for your
-[Collection](/app/data-model/collections).
+This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many-to-many-m2m) junction collection when
+added to the [Data Model](/app/data-model) for your [Collection](/app/data-model/collections).
 
 - **Folder**: Folder for the uploaded files. Does not affect the location of existing files.
 - [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
@@ -63,9 +61,8 @@ Useful in many different contexts including
 Interface that allows users to create relationships between the current item and many different items from a single
 collection.
 
-This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many-to-many-m2m) junction
-collection when added to the [Data Model](/app/data-model) for your
-[Collection](/app/data-model/collections).
+This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many-to-many-m2m) junction collection when
+added to the [Data Model](/app/data-model) for your [Collection](/app/data-model/collections).
 
 - **Layout**: `List`, `Table`
 - **Creating Items**: Allow users to create new Items in the M2M collection.
@@ -102,8 +99,7 @@ Special One-to-Many (O2M) interface that allows users to create and manage recur
 the same collection.
 
 The Tree View interface is only available on self-referencing (recursive) relationships. See
-[Many-to-Any (O2M) Relationships](/app/data-model/relationships#many-to-any-m2a) and
-[Build a Content Hierarchy](/cookbook/data-models/build-a-content-hierarchy).
+[Many-to-Any (O2M) Relationships](/app/data-model/relationships#many-to-any-m2a).
 
 - [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
   places in the App Studio.

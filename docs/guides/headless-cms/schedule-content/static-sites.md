@@ -35,13 +35,13 @@ whenever the published date is less than or equal the current timestamp.
 
 Last, we'll kick off a new deployment of your static site at your hosting provider using one of the recipes below.
 
-- [Triggering a static site build at Netlify](/cookbook/flows/trigger-static-site-build-netlify)
-- [Triggering a static site build at Vercel](/cookbook/flows/trigger-static-site-build-vercel)
+- [Triggering a static site build at Netlify](/guides/headless-cms/trigger-static-builds/netlify)
+- [Triggering a static site build at Vercel](/guides/headless-cms/trigger-static-builds/vercel)
 
 ::: info Note
 
 If your site fetches content at runtime or at the time of a page request, please
-[follow the recipe for dynamic sites](/cookbook/flows/scheduling-content-dynamic-sites).
+[follow the recipe for dynamic sites](/guides/headless-cms/schedule-content/dynamic-sites).
 
 :::
 
@@ -169,8 +169,9 @@ process for your site. This approach helps keep everything modular and easier to
 
 If you haven't already, you'll want to configure one of the recipes below.
 
-- [Triggering a static site build at Netlify](/cookbook/flows/trigger-static-site-build-netlify)
-- [Triggering a static site build at Vercel](/cookbook/flows/trigger-static-site-build-vercel)
+- [Triggering a static site build at Netlify](/guides/headless-cms/trigger-static-builds/netlify)
+- [Triggering a static site build at Vercel](/guides/headless-cms/trigger-static-builds/vercel)
+
 
 You checked Emit Events in the Operation during Step 7. This will emit an `item.update` event which is a trigger for the
 Flows in the recipes above.
