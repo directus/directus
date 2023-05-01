@@ -30,7 +30,7 @@ Link to tutorial
 
 Some projects may have dozens or even hundreds of collections, which can be overwhelming to sort through. To ease this
 problem, Admins can choose to
-[hide collections by default](/app/data-model/collections.html#toggle-collection-visibility) on the Navigation
+[hide collections by default](/app/data-model/collections#toggle-collection-visibility) on the Navigation
 bar. Users can then show or hide hidden collections as desired. To toggle collection visibility, follow these steps.
 
 1. Navigate to the Content Module.

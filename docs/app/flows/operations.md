@@ -41,7 +41,7 @@ append an array containing an object you can use to help debug the misconfigurat
 
 :::warning
 
-When using an [Event Hook](/app/flows/triggers.md#event-hook) configured to be **Action (Blocking)**, if your
+When using an [Event Hook](/app/flows/triggers#event-hook) configured to be **Action (Blocking)**, if your
 flow ends with a condition that executes with a `reject` path, it will cancel your database transaction.
 
 :::
@@ -114,7 +114,7 @@ Make sure your `return` value is valid JSON.
 :::tip Throwing Errors
 
 If you throw an error in a **Run Script** operation, it will immediately break your flow chain and stop execution of
-subsequent flows. If you used a ["Blocking" Event hook](/app/flows/triggers.md#event-hook), throwing an error
+subsequent flows. If you used a ["Blocking" Event hook](/app/flows/triggers#event-hook), throwing an error
 will cancel the original event transaction to the database.
 
 :::

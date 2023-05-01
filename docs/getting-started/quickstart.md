@@ -67,7 +67,7 @@ Once logged in, you're greeted with the option to create your first [Collection]
 :::tip Learn More About Collections
 
 - [The Content Module](/app/content)
-- [Create and Manage a Collection](/app/data-model/collections.md)
+- [Create and Manage a Collection](/app/data-model/collections)
 - [Build Relationships Between Collections](/app/data-model/relationships)
 
 :::

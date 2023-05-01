@@ -9,7 +9,7 @@ readTime: 5 min read
 
 ## Create a Bundle
 
-When [scaffolding your Directus extension](/extensions/creating-extensions.html#scaffolding-your-directus-extension),
+When [scaffolding your Directus extension](/extensions/creating-extensions#scaffolding-your-directus-extension),
 select the `bundle` type. This will create a new empty bundle.
 
 ## Entries

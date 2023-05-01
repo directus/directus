@@ -201,7 +201,7 @@ Mode option.
 ### Fetching Page Data From the APIs
 
 Next, you'll want to access these with the API. If you try to use `/items/pages` then `blocks` returns an array of IDs.
-Instead, you'll want to add a [field parameter](/reference/query.md#many-to-any-union-types) to get nested relational
+Instead, you'll want to add a [field parameter](/reference/query#many-to-any-union-types) to get nested relational
 data.
 
 :::tip

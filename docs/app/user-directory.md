@@ -16,7 +16,7 @@ readTime: 7 min read
 :::tip Before You Begin
 
 To use this Module effectively, you will need to understand
-[Users, Roles and Permissions](/app/users-roles-permissions.md).
+[Users, Roles and Permissions](/app/users-roles-permissions).
 
 :::
 -->

@@ -27,7 +27,7 @@ This page is a non-technical guide to using Filters. For more technical info, se
 
 Filters are intuitive to use, but get quite nuanced as complexity increases. In order to use Filters effectively, you
 will need to understand the Field _(aka [data model](/app/data-model))_ being filtered as well as any relevant
-[Users, Roles and Permissions](/app/users-roles-permissions.md).
+[Users, Roles and Permissions](/app/users-roles-permissions).
 
 :::
 

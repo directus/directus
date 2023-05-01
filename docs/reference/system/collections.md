@@ -87,7 +87,7 @@ The table comment.
 #### Fields
 
 This holds an array of initial fields used for the collection. You can use the same model as used in
-[Fields](/reference/system/fields.html) to submit fields here. You can use this to set a custom primary key type as
+[Fields](/reference/system/fields) to submit fields here. You can use this to set a custom primary key type as
 well. If a primary key field is omitted, the request will auto-generate an auto-incremented primary key field named
 `id`.
 
