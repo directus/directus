@@ -370,7 +370,7 @@ function useColor() {
 
 	function roundColorValues(arr: number[]): number[] {
 		if (arr.length === 4) {
-			// do not round the opacity
+			// Do not round the opacity
 			return [...arr.slice(0, -1).map((x) => Math.round(x)), arr[3]];
 		}
 
