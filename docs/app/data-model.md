@@ -286,9 +286,9 @@ blog
 - author_img
 ```
 
-As described in the section on [Rows](/app/data-model#rows), we want each row in a data table to represent one
-unique record, event, object, entity, observation, etc. To do this, we can remove the `author_name` column from the
-`blog` table and replace it with an `author_id` foreign key table, which stores foreign keys from the `users` table.
+As described in the section on [Rows](/app/data-model#rows), we want each row in a data table to represent one unique
+record, event, object, entity, observation, etc. To do this, we can remove the `author_name` column from the `blog`
+table and replace it with an `author_id` foreign key table, which stores foreign keys from the `users` table.
 
 ```
 blog
@@ -430,8 +430,8 @@ Directus abstracts type differences between SQL vendors with a
 </video>
 
 Primary keys are called IDs in Directus fairly frequently. When you
-[create a collection](/app/data-model/collections#create-a-collection), you must add an `id` field. Directus
-supports the following types of IDs:
+[create a collection](/app/data-model/collections#create-a-collection), you must add an `id` field. Directus supports
+the following types of IDs:
 
 - **Auto-Incremented Integer** — IDs increment `1`, `2`, `3` up to `2^31-1` or `2,147,483,647`.
 - **Auto-Incremented Big Integer** — IDs increment `1`, `2`, `3` up to `2^63-1` or `9,223,372,036,854,775,807`. _(only

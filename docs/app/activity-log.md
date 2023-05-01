@@ -18,8 +18,7 @@ We recommend you try the [Quickstart Guide](/getting-started/quickstart) to get 
 
 :::tip Learn More
 
-To manage the Activity Log programmatically, please see our guide on the
-[Activity Log API](/reference/system/activity).
+To manage the Activity Log programmatically, please see our guide on the [Activity Log API](/reference/system/activity).
 
 :::
 

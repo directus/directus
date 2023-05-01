@@ -23,8 +23,7 @@ We recommend you try the [Quickstart Guide](/getting-started/quickstart) to get 
 :::tip Learn More
 
 To manage users, role and permissions programmatically via the API, please see our API guides on
-[users](/reference/system/users), [roles](/reference/system/roles), and
-[permissions](/reference/system/permissions).
+[users](/reference/system/users), [roles](/reference/system/roles), and [permissions](/reference/system/permissions).
 
 :::
 
@@ -59,8 +58,8 @@ other entity that can login and interact with the database.
 In many cases, your project will have multiple users doing the same thing _(managers, writers, subscribers, etc)_. If we
 assigned permissions directly to the user, we would have to configure the same permissions over and over, which makes it
 tedious to change configurations for all users doing the same job and also leads to a higher chance of misconfiguration.
-This problem is an example of [data duplication](/app/data-model#avoid-data-duplication). To avoid this, we
-create roles, configure the role's permissions once, then assign the role to users as desired.
+This problem is an example of [data duplication](/app/data-model#avoid-data-duplication). To avoid this, we create
+roles, configure the role's permissions once, then assign the role to users as desired.
 
 Regardless of your project, your SQL database will _always_ need an administrator role and a public role. In addition,
 you may need any number of custom roles.
@@ -170,11 +169,10 @@ Directus offers an extremely granular, yet easy to configure permissions system.
 as desired.
 
 There are two other key points to note about Directus. First, the term
-[custom access permissions](/app/users-roles-permissions/permissions#configure-custom-permissions) is used
-in place of [business rules](#business-rules), however the concept is the same. Second, instead of the standard CRUD
-permissions, Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of
-permission, share, defines whether a user has permissions to perform [data sharing](/app/content/shares) on items in
-a collection.
+[custom access permissions](/app/users-roles-permissions/permissions#configure-custom-permissions) is used in place of
+[business rules](#business-rules), however the concept is the same. Second, instead of the standard CRUD permissions,
+Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of permission, share,
+defines whether a user has permissions to perform [data sharing](/app/content/shares) on items in a collection.
 
 To learn more, see our guide on [permissions](/app/users-roles-permissions/permissions).
 
@@ -183,7 +181,7 @@ To learn more, see our guide on [permissions](/app/users-roles-permissions/permi
 ![Workflows in the Directus](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/workflows-20220909/workflows-20220909B.webp)
 
 Workflows are a way to setup structured stages to content authoring and data management. They are created primarily with
-custom access permissions, but can be enhanced with email notifications, custom [Interfaces](/extensions/interfaces)
-as well as [flows](/app/flows). Directus supports endlessly configurable workflows.
+custom access permissions, but can be enhanced with email notifications, custom [Interfaces](/extensions/interfaces) as
+well as [flows](/app/flows). Directus supports endlessly configurable workflows.
 
 To learn more, see our recipe on [Content Approval Workflows](/guides/headless-cms/approval-workflows).

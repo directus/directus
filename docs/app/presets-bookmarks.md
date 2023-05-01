@@ -24,10 +24,10 @@ To manage Presets and Bookmarks programmatically, see our [API guide on Presets]
 
 :::
 
-Remember, a [Collection Page](/app/content/collections) enables you to customize how its items are presented. That
-is, it lets you sort, search, or filter items and even change [Layouts](/app/layouts). In some cases, you may need to
-apply the same display adjustments again and again. Presets save these adjustments, like a snapshot. You can create
-presets for all project collections, as well as `directus_activity`, `directus_files` and `directus_users`.
+Remember, a [Collection Page](/app/content/collections) enables you to customize how its items are presented. That is,
+it lets you sort, search, or filter items and even change [Layouts](/app/layouts). In some cases, you may need to apply
+the same display adjustments again and again. Presets save these adjustments, like a snapshot. You can create presets
+for all project collections, as well as `directus_activity`, `directus_files` and `directus_users`.
 
 Admins can access and manage all presets under **Settings > Presets and Bookmarks**.
 

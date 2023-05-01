@@ -51,8 +51,8 @@ page has the same functionality as the [Collection Page](/app/content/collection
 - **Sort Direction** — Toggles ascending & descending sort order.
 - **Search** — Enables classic type-based searching.
 - **Filter** — Enables advanced query-based search.
-- <span mi btn sec>person_add</span> — [Invite people](/app/users-roles-permissions#inviting-a-user) to become
-  Users via email.
+- <span mi btn sec>person_add</span> — [Invite people](/app/users-roles-permissions#inviting-a-user) to become Users via
+  email.
 - <span mi btn>add</span> — [Create User](/app/users-roles-permissions#creating-a-user) manually.
 
 _The following are only visible once Users are selected._

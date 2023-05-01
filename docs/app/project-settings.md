@@ -34,8 +34,8 @@ All configuration options are described in detail below.
 
 ![How to Configure General Project Settings](https://cdn.directus.io/docs/v9/configuration/project-settings/project-settings-20220815/general-project-settings-20220811A.webp)
 
-- **Project Name** — Sets the name on the [Navigation Bar](/app/overview#_2-navigation-bar), as well as login and
-  public pages.
+- **Project Name** — Sets the name on the [Navigation Bar](/app/overview#_2-navigation-bar), as well as login and public
+  pages.
 - **Project Descriptor** — Sets the descriptor shown below the Project Name.
 - **Project URL** — Sets URL when clicking the logo at the top of the [Module Bar](/app/overview#_1-module-bar).
 - **Default Language** — Sets the default language used within the app.

@@ -44,8 +44,7 @@ async function publicData() {
 
 ### Basic Authentication
 
-To access anything that is not available to the
-[public role](/app/users-roles-permissions#directus-roles), you must be
+To access anything that is not available to the [public role](/app/users-roles-permissions#directus-roles), you must be
 [authenticated](/reference/authentication).
 
 ```js
