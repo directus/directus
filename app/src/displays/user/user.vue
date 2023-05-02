@@ -20,9 +20,9 @@
 	</user-popover>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { userName } from '@/utils/user-name';
-import { computed, defineComponent, PropType } from 'vue';
+import { computed } from 'vue';
 
 type User = {
 	id: number;
@@ -34,34 +34,25 @@ type User = {
 	last_name: string;
 };
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Object as PropType<User>,
-			default: null,
-		},
-		display: {
-			type: String as PropType<'avatar' | 'name' | 'both'>,
-			default: 'both',
-		},
-		circle: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const src = computed(() => {
-			if (props.value === null) return null;
+const props = withDefaults(
+	defineProps<{
+		value: User | null;
+		display?: 'avatar' | 'name' | 'both';
+		circle?: boolean;
+	}>(),
+	{
+		display: 'both',
+	}
+);
 
-			if (props.value.avatar?.id) {
-				return `/assets/${props.value.avatar.id}?key=system-small-cover`;
-			}
+const src = computed(() => {
+	if (props.value === null) return null;
 
-			return null;
-		});
+	if (props.value.avatar?.id) {
+		return `/assets/${props.value.avatar.id}?key=system-small-cover`;
+	}
 
-		return { src, userName };
-	},
+	return null;
 });
 </script>
 
