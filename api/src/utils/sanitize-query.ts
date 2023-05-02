@@ -35,7 +35,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.filter = sanitizeFilter(rawQuery['filter'], accountability || null);
 	}
 
-	if (rawQuery['offset']) {
+	if (rawQuery['offset'] !== undefined) {
 		query.offset = sanitizeOffset(rawQuery['offset']);
 	}
 

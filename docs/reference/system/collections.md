@@ -57,17 +57,17 @@ Whether or not the Admin App should allow the user to view archived items.
 What field holds the sort value on the collection. The Admin App uses this to allow drag-and-drop manual sorting.
 
 `accountability` **string**\
-What data is tracked. One of `all`, `activity`. See [Accountability](/configuration/data-model#accountability) for more information.
+What data is tracked. One of `all`, `activity`. See [Accountability](/app/data-model#accountability) for more information.
 
 `item_duplication_fields` **array**\
-What fields are duplicated during "Save as copy" action of an item in this collection. See [Duplication](/configuration/data-model#duplication)
+What fields are duplicated during "Save as copy" action of an item in this collection. See [Duplication](/app/data-model#duplication)
 for more information.
 
 `group` **string**\
-The name of the parent collection. This is used in [grouping/nesting of collections](/configuration/data-model#sorting-grouping).
+The name of the parent collection. This is used in [grouping/nesting of collections](/app/data-model#sorting-grouping).
 
 `sort` **number**\
-What sort order of the collection relative to other collections of the same level. This is used in [sorting of collections](/configuration/data-model#sorting-grouping).
+What sort order of the collection relative to other collections of the same level. This is used in [sorting of collections](/app/data-model#sorting-grouping).
 
 `collapse` **string**\
 What is the default behavior of this collection or "folder" collection when it has nested collections. One of `open`, `closed`,
@@ -87,13 +87,13 @@ The table comment.
 #### Fields
 
 This holds an array of initial fields used for the collection. You can use the same model as used in
-[Fields](/reference/system/fields.html) to submit fields here. You can use this to set a custom primary key type as
+[Fields](/reference/system/fields) to submit fields here. You can use this to set a custom primary key type as
 well. If a primary key field is omitted, the request will auto-generate an auto-incremented primary key field named
 `id`.
 
 ::: tip
 
-["folder" collections do not hold any data](/configuration/data-model#sorting-grouping), hence their schema would be
+["folder" collections do not hold any data](/app/data-model#sorting-grouping), hence their schema would be
 `null`.
 
 :::
@@ -265,7 +265,7 @@ The [collection object](#the-collection-object) for the collection created in th
 ::: tip
 
 Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
-entirely or use `schema: null` to create ["folder" collections](/configuration/data-model#sorting-grouping).
+entirely or use `schema: null` to create ["folder" collections](/app/data-model#sorting-grouping).
 
 :::
 

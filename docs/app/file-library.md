@@ -28,9 +28,9 @@ Familiarity with the [Collections Page](/app/content/collections) will be helpfu
 
 The File Library acts as one big [Folder](#folders) to store all uploaded [Files](#files). Sub-folders can be created
 within the File Library to help Files stay organized. Folders and File information are stored in regular Collections,
-which means [User and Role access permissions](/configuration/users-roles-permissions.md) are fully configurable and
-granular on both Folders and Files. Multiple files can be uploaded at once through the app and also programmatically via
-the API. Any type of file can be uploaded, _not just images_. When a Folder is selected from the Navigation Bar, the
+which means [User and Role access permissions](/app/users-roles-permissions) are fully configurable and granular on both
+Folders and Files. Multiple files can be uploaded at once through the app and also programmatically via the API. Any
+type of file can be uploaded, _not just images_. When a Folder is selected from the Navigation Bar, the
 [File Listing Page](#folders) is presented. This page has all the same features and functionalities as the
 [Collections Page](/app/content/collections).
 

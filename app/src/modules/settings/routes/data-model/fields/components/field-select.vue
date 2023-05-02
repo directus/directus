@@ -92,6 +92,14 @@
 							small
 						/>
 						<v-icon v-if="hidden" v-tooltip="t('hidden_field')" name="visibility_off" class="hidden-icon" small />
+
+						<router-link
+							v-if="showRelatedCollectionLink"
+							:to="`/settings/data-model/${relatedCollectionInfo!.relatedCollection}`"
+						>
+							<v-icon name="open_in_new" class="link-icon" small />
+						</router-link>
+
 						<field-select-menu
 							:field="field"
 							@toggle-visibility="toggleVisibility"
@@ -145,7 +153,7 @@
 
 <script lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref, computed } from 'vue';
+import { defineComponent, PropType, ref, computed, unref } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRouter } from 'vue-router';
@@ -160,6 +168,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 import formatTitle from '@directus/format-title';
 import { useExtension } from '@/composables/use-extension';
+import { getRelatedCollection } from '@/utils/get-related-collection';
 
 export default defineComponent({
 	name: 'FieldSelect',
@@ -205,6 +214,15 @@ export default defineComponent({
 
 		const nestedFields = computed(() => props.fields.filter((field) => field.meta?.group === props.field.field));
 
+		const relatedCollectionInfo = computed(() => getRelatedCollection(props.field.collection, props.field.field));
+
+		const showRelatedCollectionLink = computed(
+			() =>
+				unref(relatedCollectionInfo) !== null &&
+				props.field.collection !== unref(relatedCollectionInfo)?.relatedCollection &&
+				['translations', 'm2o', 'm2m', 'o2m', 'files'].includes(unref(localType) as string)
+		);
+
 		return {
 			t,
 			interfaceName,
@@ -224,6 +242,8 @@ export default defineComponent({
 			hidden,
 			toggleVisibility,
 			localType,
+			showRelatedCollectionLink,
+			relatedCollectionInfo,
 			hideDragImage,
 			onGroupSortChange,
 			nestedFields,
@@ -376,6 +396,10 @@ export default defineComponent({
 		--v-icon-color: var(--warning);
 		--v-icon-color-hover: var(--warning);
 	}
+
+	&.link-icon:hover {
+		--v-icon-color: var(--foreground-normal);
+	}
 }
 
 .drag-handle {
@@ -522,7 +546,7 @@ export default defineComponent({
 }
 
 .icons {
-	.v-icon + .v-icon:not(:last-child) {
+	* + *:not(:last-child) {
 		margin-left: 8px;
 	}
 }

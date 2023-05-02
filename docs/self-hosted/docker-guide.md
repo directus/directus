@@ -167,7 +167,7 @@ extending from the official image and installing the packages there.
 
 First create a file called `Dockerfile` with a content like this:
 
-```Dockerfile
+```docker
 FROM directus/directus:10.0.0
 
 USER root
