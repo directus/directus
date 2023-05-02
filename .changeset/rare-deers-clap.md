@@ -3,4 +3,4 @@
 "@directus/api": patch
 ---
 
-Prevented parsing non-decimal values in search query.
+Prevented parsing non-decimal values in search query
