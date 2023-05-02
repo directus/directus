@@ -9,7 +9,7 @@ readTime: 1 min read
 
 - **[Directus Cloud](https://directus.cloud)** — The best way to get your Project up and running.
 - **[Enterprise Cloud](https://directus.io/contact)** — Custom-tailored solutions for industrial scale projects.
-- **[Cloud Documentation](/cloud/overview)** — Docs for Directus cloud.
+- **[Documentation](https://docs.directus.io)** — Docs for the most recent version of Directus.
 - **[System Status](https://status.directus.cloud)** — Up-to-date information on our various cloud systems.
 
 ## Developer Resources

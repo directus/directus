@@ -12,7 +12,7 @@ readTime: 4 min read
 If you're experiencing issues or think you have found a problem in Directus, be sure to follow these steps before
 [Reporting a Bug](/contributing/introduction#bug-reporting):
 
-1. Ensure your server and database meet the [minimum requirements](/self-hosted/docker-guide.html#supported-databases).
+1. Ensure your server and database meet the [minimum requirements](/self-hosted/docker-guide#supported-databases).
 2. Ensure you’re on the [latest version](https://github.com/directus/directus/releases/latest) of Directus.
 3. Stop `CTRL+C` and restart the server `npx directus start`.
 4. Run the database migration script: `directus database migrate:latest`\

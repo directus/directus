@@ -1,8 +1,7 @@
 # Relational
 
 > Interfaces are how users interact with fields on the Item Detail page. These are the standard Relational interfaces.
-> We recommend that you review [Relationships](/configuration/data-model/relationships) before working with Relational
-> interfaces.
+> We recommend that you review [Relationships](/app/data-model/relationships) before working with Relational interfaces.
 
 ## File
 
@@ -30,9 +29,8 @@ Interface that allows uses to upload a single image file, choose an existing ima
 Interface that allows uses to upload multiple files, choose an existing image from the
 [File Library](/app/file-library), or import an image from a URL.
 
-This field will create a [Many-To-Many (M2M)](/configuration/data-model/relationships#many-to-many-m2m) junction
-collection when added to the [Data Model](/configuration/data-model) for your
-[Collection](/configuration/data-model/collections).
+This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many-to-many-m2m) junction collection when
+added to the [Data Model](/app/data-model) for your [Collection](/app/data-model/collections).
 
 - **Folder**: Folder for the uploaded files. Does not affect the location of existing files.
 - [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
@@ -46,10 +44,10 @@ collection when added to the [Data Model](/configuration/data-model) for your
 ![A form interface that allows users to create a relationship from the current item by selecting different items from multiple, distinct Collections.](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-m2a.webp)
 
 Interface that allows users to create relationships between the current item and multiple items from multiple, distinct
-collections. See [Many-to-Any (M2A) Relationships](/configuration/data-model/relationships#many-to-any-m2a).
+collections. See [Many-to-Any (M2A) Relationships](/app/data-model/relationships#many-to-any-m2a).
 
 Useful in many different contexts including
-[creating re-usable page components](/use-cases/headless-cms/create-reusable-page-components-using-m2a).
+[creating re-usable page components](/guides/headless-cms/reusable-components).
 
 - **Creating Items**: Allow users to create new Items in the M2A collection.
 - **Selecting Items**: Allow users to select existing files in the M2A collection.
@@ -63,9 +61,8 @@ Useful in many different contexts including
 Interface that allows users to create relationships between the current item and many different items from a single
 collection.
 
-This field will create a [Many-To-Many (M2M)](/configuration/data-model/relationships#many-to-many-m2m) junction
-collection when added to the [Data Model](/configuration/data-model) for your
-[Collection](/configuration/data-model/collections).
+This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many-to-many-m2m) junction collection when
+added to the [Data Model](/app/data-model) for your [Collection](/app/data-model/collections).
 
 - **Layout**: `List`, `Table`
 - **Creating Items**: Allow users to create new Items in the M2M collection.
@@ -83,7 +80,7 @@ collection when added to the [Data Model](/configuration/data-model) for your
 Interface that allows users to create a relationship between the current item and many items from a single collection.
 
 Adding a One To Many field to the data model will create a corresponding Many to One field in the child collection. See
-[One-to-Many (O2M) Relationships](/configuration/data-model/relationships#one-to-many-o2m).
+[One-to-Many (O2M) Relationships](/app/data-model/relationships#one-to-many-o2m).
 
 - **Layout**: `List`, `Table`
 - **Creating Items**: Allow users to create new Items in the M2A collection.
@@ -102,8 +99,7 @@ Special One-to-Many (O2M) interface that allows users to create and manage recur
 the same collection.
 
 The Tree View interface is only available on self-referencing (recursive) relationships. See
-[Many-to-Any (O2M) Relationships](/configuration/data-model/relationships#many-to-any-m2a) and
-[Build a Content Hierarchy](/cookbook/data-models/build-a-content-hierarchy).
+[Many-to-Any (O2M) Relationships](/app/data-model/relationships#many-to-any-m2a).
 
 - [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
   places in the App Studio.
@@ -118,7 +114,7 @@ The Tree View interface is only available on self-referencing (recursive) relati
 Interface that allows users to create a relationship between the current item and a single item from a single
 collection.
 
-See [Many-to-One (M20) Relationships](/configuration/data-model/relationships#many-to-one-m2o)
+See [Many-to-One (M20) Relationships](/app/data-model/relationships#many-to-one-m2o)
 
 - [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
   places in the App Studio.
@@ -131,7 +127,7 @@ See [Many-to-One (M20) Relationships](/configuration/data-model/relationships#ma
 ![A form interface with two columns and two fields per column - "Title" and "Content". One column contains the English translation for each field. Second column contains the French translation for each field.](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-translations.webp)
 
 Special relational Interface designed specifically to handle translations. See
-[Translations (O2M)](/configuration/data-model/relationships#translations-o2m).
+[Translations (O2M)](/app/data-model/relationships#translations-o2m).
 
 - **Language Indicator Field**: The field from your `languages` collection that identifies the language to the user.
 - **Language Direction Field**: The field from your `languages` collection that identifies the text direction for a

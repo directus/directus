@@ -39,8 +39,7 @@ Each Directus Dashboard provides a drag-and-drop canvas where you can create and
 build out customized analytics. The Dashboard area automatically expands as you add more and more Panels. In theory, a
 Dashboard area can expand infinitely large... but in practice, users will probably only want to build Dashboards as
 large as the screen they will be viewing on. You are able to create as many Dashboards as you need. Additionally, the
-Dashboard view, edit, and create permissions are [fully configurable](/configuration/users-roles-permissions) by User
-Role.
+Dashboard view, edit, and create permissions are [fully configurable](/app/users-roles-permissions) by User Role.
 
 :::tip Auto Refresh
 
@@ -352,7 +351,6 @@ The Pie and Donut Charts allow you to create segmented charts based on your data
 - **Show Legend** - Selects if and where the legend is shown - none, right, or bottom.
 - **Filter** – Allows filtering of Items considered for analysis based on logical conditions.
 - **Value Decimals** – Changes the number of decimals displayed in the chart segments.
-- **Color** – Sets the default base color of your first segment. Other segments will be variations of this
-  default.
+- **Color** – Sets the default base color of your first segment. Other segments will be variations of this default.
 - **Conditional Styles** – Changes color of segment if its value is `>`, `>=`, `<`, `<=`, `==`, or `!=` to some defined
   value.

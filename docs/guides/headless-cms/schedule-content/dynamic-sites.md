@@ -32,7 +32,7 @@ visitor requests a page from your site, all you need to do is add a filter to yo
 :::info Note
 
 If your site is statically generated and your content fetched at build time, please
-[follow the recipe for static sites](/cookbook/flows/scheduling-content-static-sites).
+[follow the recipe for static sites](/guides/headless-cms/schedule-content/static-sites).
 
 :::
 
@@ -53,9 +53,9 @@ field `status` that controls the published state.
 
 1. Under Settings, go to Data Model.
 
-2. Choose your content [Collection](/configuration/data-model/collections).
+2. Choose your content [Collection](/app/data-model/collections).
 
-3. [Add a new field](/configuration/data-model/fields.html#create-a-field-standard) to your content Collection.
+3. [Add a new field](/app/data-model/fields#create-a-field-standard) to your content Collection.
 
    ![The interface for creating a new field is shown. The field type Datetime is selected. The Key is named date_published. The field for Use 24-Hour format is checked.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-publish-date.webp)
 
@@ -142,5 +142,5 @@ const articles = await response.json()
 **Tips**
 
 - If you're not receiving the data you expect, double-check your [filter rule](/reference/filter-rules) syntax.
-- Also be sure you have enabled the proper [permissions](/configuration/users-roles-permissions/permissions) for your
+- Also be sure you have enabled the proper [permissions](/app/users-roles-permissions/permissions) for your
   content Collection.

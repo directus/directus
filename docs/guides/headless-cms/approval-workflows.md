@@ -25,11 +25,11 @@ author: Eron Powell
 
 ## Explanation
 
-Remember, your basic [CRUDS permissions](/configuration/users-roles-permissions/permissions.md#configure-permissions)
+Remember, your basic [CRUDS permissions](/app/users-roles-permissions/permissions#configure-permissions)
 define what a role can and can't do to all items in a collection.
-[Custom access permissions](/configuration/users-roles-permissions/permissions.md#configure-custom-permissions) take
+[Custom access permissions](/app/users-roles-permissions/permissions#configure-custom-permissions) take
 things a step further and let you define what a role can and can't do to each item in a collection, _based on its
-[field values](/configuration/data-model/fields.md)_.
+[field values](/app/data-model/fields)_.
 
 Workflows are when you use these permissions techniques to create structured stages to content or data creation. In
 simplest terms, it is when you have two or more roles, and you give them different permissions at each stage in the
@@ -61,7 +61,7 @@ This whole workflow is created with permissions. All we need to do to create the
 
 To implement a workflow, you'll need:
 
-- An understanding of [permissions](/configuration/users-roles-permissions.md) and [filters](/reference/filter-rules.md)
+- An understanding of [permissions](/app/users-roles-permissions) and [filters](/reference/filter-rules)
   in Directus.
 - A collection with some kind of content. In this recipe, we'll use a collection called `articles`.
 - A field on that collection to validate conditionally. We'll use a `status` field.
@@ -75,13 +75,13 @@ To implement a workflow, you'll need:
 
 To create a structured workflow for `articles`, follow these steps.
 
-1. First, [create a field](/configuration/data-model/fields.md#create-a-field-standard) to track the article status.
+1. First, [create a field](/app/data-model/fields#create-a-field-standard) to track the article status.
    We'll call this field `status`, but it could be named anything.
-2. [Create a field](/configuration/data-model/fields.md#create-a-field-advanced) with a Dropdown Interface. Name it
+2. [Create a field](/app/data-model/fields#create-a-field-advanced) with a Dropdown Interface. Name it
    `status` and add the stages _(`draft`, `under review` and `published`)_ needed for your content creation process.
-3. Next, [create two roles](/configuration/users-roles-permissions/roles.md#create-a-role): `author` and `editor`.
+3. Next, [create two roles](/app/users-roles-permissions/roles#create-a-role): `author` and `editor`.
 4. Finally, configure
-   [custom access permissions](/configuration/users-roles-permissions/permissions.md#configure-custom-permissions) for
+   [custom access permissions](/app/users-roles-permissions/permissions#configure-custom-permissions) for
    each role based on the value of the `status` field.
    - For the `author` role:
      - Set a filter under **Create > Use Custom > Field Validation** to ensure the author can only create articles with
@@ -135,7 +135,7 @@ explicit set of permissions each role has at each stage.
 
 :::tip Next Steps
 
-Workflows can be further enhanced with custom [Interfaces](/extensions/interfaces.md) as well as
-[flows](/configuration/flows.md).
+Workflows can be further enhanced with custom [Interfaces](/extensions/interfaces) as well as
+[flows](/app/flows).
 
 :::
