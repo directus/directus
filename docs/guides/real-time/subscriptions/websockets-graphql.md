@@ -46,7 +46,7 @@ returned.
 ## Working With Specific CRUD Operations
 
 Using the `_event` value, you can implement your own conditional logic to execute different logic for `create`,
-`update`, and `delete` events. Here's an example of how it should look like:
+`update`, and `delete` events. Here's an example of how to do this:
 
 ```js
 next: ({ data }) => {
