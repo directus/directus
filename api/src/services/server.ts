@@ -206,7 +206,8 @@ export class ServerService {
 			checks[`${client}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 			if (
-				checks[`${client}:responseTime`]![0]!.observedValue! > checks[`${client}:responseTime`]![0]!.threshold! &&
+				Number(checks[`${client}:responseTime`]![0]!.observedValue!) >
+					checks[`${client}:responseTime`]![0]!.threshold! &&
 				checks[`${client}:responseTime`]![0]!.status !== 'error'
 			) {
 				checks[`${client}:responseTime`]![0]!.status = 'warn';
@@ -393,7 +394,7 @@ export class ServerService {
 					checks[`storage:${location}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`]![0]!.observedValue! >
+						Number(checks[`storage:${location}:responseTime`]![0]!.observedValue!) >
 							checks[`storage:${location}:responseTime`]![0]!.threshold! &&
 						checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
 					) {

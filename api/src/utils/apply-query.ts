@@ -15,8 +15,9 @@ import { clone, isPlainObject } from 'lodash-es';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
 import { InvalidQueryException } from '../exceptions/invalid-query.js';
+import type { AliasMap } from './get-column-path.js';
+import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
-import { AliasMap, getColumnPath } from './get-column-path.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { stripFunction } from './strip-function.js';
 
@@ -356,8 +357,9 @@ export function applyFilter(
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
 				// permission checks, as {} already matches full permissions.
-				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0))
+				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
 					continue;
+				}
 
 				value.forEach((subFilter: Record<string, any>) => {
 					addJoins(dbQuery, subFilter, collection);

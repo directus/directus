@@ -60,14 +60,14 @@
 					<table-row
 						:headers="internalHeaders"
 						:item="element"
-						:show-select="!disabled && showSelect"
+						:show-select="disabled ? 'none' : showSelect"
 						:show-manual-sort="!disabled && showManualSort"
 						:is-selected="getSelectedState(element)"
 						:subdued="loading || reordering"
 						:sorted-manually="internalSort.by === manualSortKey"
 						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
-						@click="clickable ? $emit('click:row', { item: element, event: $event }) : null"
+						@click="!disabled && clickable ? $emit('click:row', { item: element, event: $event }) : null"
 						@item-selected="
 							onItemSelected({
 								item: element,

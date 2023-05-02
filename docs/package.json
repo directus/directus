@@ -10,13 +10,13 @@
 	},
 	"devDependencies": {
 		"@thumbsmith/url": "0.1.3",
-		"@vueuse/head": "1.1.23",
+		"@unhead/vue": "1.1.26",
 		"spellchecker-cli": "6.1.1",
-		"vitepress": "1.0.0-alpha.65",
+		"vitepress": "1.0.0-alpha.73",
 		"vue": "3.2.47"
 	},
 	"dependencies": {
-		"node-fetch": "^3.3.1"
+		"node-fetch": "3.3.1"
 	},
-	"version": "9.25.1"
+	"version": "10.0.0"
 }

@@ -12,7 +12,7 @@ import { useCollection } from '@directus/composables';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
-import { computed, ComputedRef, Ref, ref, unref, watch } from 'vue';
+import { computed, ComputedRef, isRef, Ref, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { Field, Query, Relation } from '@directus/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -79,7 +79,7 @@ export function useItem(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, query], refresh, { immediate: true });
+	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh, { immediate: true });
 
 	return {
 		edits,

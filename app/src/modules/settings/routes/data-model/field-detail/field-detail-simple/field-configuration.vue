@@ -6,7 +6,7 @@
 					<div class="field half-left">
 						<div class="label type-label">
 							{{ t('key') }}
-							<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" />
+							<v-icon v-tooltip="t('required')" class="required-mark" sup name="star" filled />
 						</div>
 
 						<v-input v-model="key" autofocus class="monospace" db-safe :placeholder="t('a_unique_column_name')" />

@@ -1,6 +1,7 @@
-import BaseJoi, { AnySchema, StringSchema as BaseStringSchema, NumberSchema, DateSchema } from 'joi';
-import { escapeRegExp, merge } from 'lodash-es';
 import type { FieldFilter } from '@directus/types';
+import type { AnySchema, StringSchema as BaseStringSchema, DateSchema, NumberSchema } from 'joi';
+import BaseJoi from 'joi';
+import { escapeRegExp, merge } from 'lodash-es';
 
 export interface StringSchema extends BaseStringSchema {
 	contains(substring: string): this;

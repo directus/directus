@@ -25,7 +25,7 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="getDisplayValue(item, header.key)"
+					:value="getFromAliasedItem(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -178,18 +178,17 @@ export default {
 </script>
 
 <script lang="ts" setup>
+import { HeaderRaw } from '@/components/v-table/types';
+import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
+import { usePageSize } from '@/composables/use-page-size';
 import { useShortcut } from '@/composables/use-shortcut';
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, inject, ref, Ref, watch, computed, toRefs } from 'vue';
+import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { get } from '@directus/utils';
-import { useAliasFields } from '@/composables/use-alias-fields';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { HeaderRaw } from '@/components/v-table/types';
-import { usePageSize } from '@/composables/use-page-size';
 
 interface Props {
 	collection: string;
@@ -217,6 +216,8 @@ interface Props {
 	selectAll: () => void;
 	filterUser?: Filter;
 	search?: string;
+	aliasedFields: Record<string, AliasFields>;
+	aliasedKeys: string[];
 	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
 }
@@ -283,34 +284,16 @@ const showManualSort = computed(() => {
 
 	if (!permission) return false;
 
-	if (Array.isArray(permission.fields) && permission.fields.length > 0)
+	if (Array.isArray(permission.fields) && permission.fields.length > 0) {
 		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
+	}
+
 	return true;
 });
 
 const fieldsWritable = useSync(props, 'fields', emit);
 
-const { aliasedFields, aliasedKeys } = useAliasFields(fieldsWritable, collection);
-
-function getDisplayValue(item: Item, key: string) {
-	const aliasInfo = Object.values(aliasedFields.value).find((field) => field.key === key);
-
-	if (!aliasInfo) return get(item, key);
-
-	const dealiasedItem = Object.keys(item).reduce<Item>((result, key) => {
-		if (aliasedKeys.value.includes(key)) {
-			if (key !== aliasInfo.fieldAlias) return result;
-			const name = aliasedFields.value[key].fieldName;
-			result[name] = item[key];
-		} else {
-			result[key] = item[key];
-		}
-
-		return result;
-	}, {});
-
-	return get(dealiasedItem, key);
-}
+const { getFromAliasedItem } = useAliasFields(fieldsWritable, collection);
 
 function addField(fieldKey: string) {
 	fieldsWritable.value = [...fieldsWritable.value, fieldKey];

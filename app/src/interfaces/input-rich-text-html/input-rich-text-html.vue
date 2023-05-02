@@ -364,7 +364,7 @@ export default defineComponent({
 				.join(' ');
 
 			if (styleFormats) {
-				toolbarString += ' styleselect';
+				toolbarString += ' styles';
 			}
 
 			return {
