@@ -765,12 +765,28 @@ export async function applySearch(
 				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
 			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
 				const number = Number(searchQuery);
-				if (!isNaN(number)) this.orWhere({ [`${collection}.${name}`]: number });
+
+				// only cast finite base10 numeric values
+				if (validateNumber(searchQuery, number)) {
+					this.orWhere({ [`${collection}.${name}`]: number });
+				}
 			} else if (field.type === 'uuid' && validate(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
 			}
 		});
 	});
+}
+
+function validateNumber(value: string, parsed: number) {
+	if (isNaN(parsed) || !Number.isFinite(parsed)) return false;
+
+	// compare without the decimal point
+	if (value.includes('.')) {
+		value = value.replace('.', '');
+		parsed = Number(value);
+	}
+
+	return String(parsed) === value;
 }
 
 export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate, collection: string): void {
