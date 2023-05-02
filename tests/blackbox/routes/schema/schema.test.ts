@@ -359,7 +359,7 @@ describe('Schema Snapshots', () => {
 			});
 		});
 
-		describe('applies a snapshot (YAML)', () => {
+		describe('applies a snapshot (YAML) with multipart/form-data requests', () => {
 			it.each(vendors)(
 				'%s',
 				async (vendor) => {
@@ -373,8 +373,7 @@ describe('Schema Snapshots', () => {
 
 					const response = await request(getUrl(vendor))
 						.post('/schema/apply')
-						.send(responseDiff.body.data)
-						.set('Content-type', 'application/json')
+						.attach('file', Buffer.from(JSON.stringify(responseDiff.body.data)))
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
