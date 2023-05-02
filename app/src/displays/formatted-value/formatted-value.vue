@@ -32,7 +32,7 @@ const props = withDefaults(
 		type: string;
 		value?: string | number | (string | number)[];
 		format?: boolean;
-		font?: string;
+		font?: 'sans-serif' | 'serif' | 'monospace';
 		bold?: boolean;
 		italic?: boolean;
 		prefix?: string;
