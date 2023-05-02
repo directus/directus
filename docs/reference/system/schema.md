@@ -359,7 +359,7 @@ n/a
 
 ## Apply Schema Difference
 
-Update the instance's schema by passing the diff previously retrieved via `/schema/diff` endpoint in the request body - either as raw JSON or as a `multipart/form-data` file upload.
+Update the instance's schema by passing the diff previously retrieved via `/schema/diff` endpoint in the request body.
 This endpoint is only available to admin users.
 
 ### Query Parameters
@@ -369,8 +369,9 @@ This endpoint doesn't currently support any query parameters.
 ### Request Body
 
 JSON object containing hash and diffs of [collections](/reference/system/collections#the-collection-object),
-[fields](/reference/system/fields#the-field-object), and [relations](/reference/system/relations#the-relation-object) to
-apply.
+[fields](/reference/system/fields#the-field-object), and [relations](/reference/system/relations#the-relation-object) to apply.
+
+Alternatively, upload a JSON or YAML schema file. Relies on a `multipart/form-data` encoded request like regular file uploads. Check [Upload a File](/reference/files#upload-a-file) for more information.
 
 ### Returns
 
