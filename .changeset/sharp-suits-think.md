@@ -5,4 +5,4 @@
 '@directus/api': minor
 ---
 
-Support multipart/form-data to apply schema diffs
+Added support for the `multipart/form-data` content type in the `/schema/apply` endpoint
