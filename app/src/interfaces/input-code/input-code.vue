@@ -9,28 +9,28 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize } from '@/composables/use-window-size';
 import CodeMirror, { ModeSpec } from 'codemirror';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import importCodemirrorMode from './import-codemirror-mode';
 
+import 'codemirror/mode/meta';
+
+import 'codemirror/addon/comment/comment.js';
+import 'codemirror/addon/dialog/dialog.js';
 import 'codemirror/addon/display/placeholder.js';
 import 'codemirror/addon/lint/lint.js';
 import 'codemirror/addon/scroll/annotatescrollbar.js';
 import 'codemirror/addon/search/matchesonscrollbar.js';
 import 'codemirror/addon/search/search.js';
 import 'codemirror/addon/search/searchcursor.js';
-import 'codemirror/mode/meta';
 
-import 'codemirror/addon/comment/comment.js';
-import 'codemirror/addon/dialog/dialog.js';
 import 'codemirror/keymap/sublime.js';
-
-import { useWindowSize } from '@/composables/use-window-size';
-import importCodemirrorMode from './import-codemirror-mode';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string | Record<string, any> | [];
+		value: string | Record<string, unknown> | unknown[] | boolean | number | null;
 		disabled?: boolean;
 		altOptions?: Record<string, any>;
 		template?: string;
