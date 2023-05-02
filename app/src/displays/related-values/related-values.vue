@@ -45,7 +45,7 @@ const props = defineProps<{
 	collection: string;
 	field: string;
 	value: Record<string, any> | Record<string, any>[] | null;
-	template: string;
+	template?: string;
 }>();
 
 const { t, te } = useI18n();
