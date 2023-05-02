@@ -25,7 +25,7 @@
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
-					:value="getFromAliasedItem(item, header.key)"
+					:value="getFromAliasedItem(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -179,7 +179,7 @@ export default {
 
 <script lang="ts" setup>
 import { HeaderRaw } from '@/components/v-table/types';
-import { useAliasFields } from '@/composables/use-alias-fields';
+import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
 import { useShortcut } from '@/composables/use-shortcut';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
@@ -188,7 +188,6 @@ import { useSync } from '@directus/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { AliasFields } from '@/composables/use-alias-fields';
 
 interface Props {
 	collection: string;
