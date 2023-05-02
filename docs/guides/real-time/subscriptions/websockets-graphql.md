@@ -42,3 +42,22 @@ When a change happens to an item in a collection with an active subscription, it
 An `event` will be either `create`, `update`, or `delete`. If the event is `create` or `update`, the payload will
 contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be
 returned.
+
+## Working With Specific CRUD Operations
+
+Using the `_event` value, you can implement your own conditional logic to execute different logic for `create`,
+`update`, and `delete` events. Here's an example of how it should look like:
+
+```js
+next: ({ data }) => {
+	const { text, id, _event } = data?.messages_mutated || {};
+
+	if (_event === 'create') {
+		setMessageData((messages) => [...messages, { id, text }]);
+	} else if (_event === 'delete') {
+		setMessageData((messages) => messages.filter((m) => m.id !== id));
+	} else if (_event === 'update') {
+		setMessageData((messages) => messages.map((message) => (message.id === id ? { ...message, text } : message)));
+	}
+};
+```
