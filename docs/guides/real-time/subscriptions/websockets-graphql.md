@@ -61,3 +61,14 @@ next: ({ data }) => {
 	}
 };
 ```
+
+## Unsubscribing From Changes
+
+To unsubscribe from a subscription, use the `dispose` method. Here's an example:
+
+```js
+client.dispose();
+```
+
+Calling `dispose` sends a message to the server to unsubscribe from the specified subscription. This will stop receiving
+any further updates for that subscription.
