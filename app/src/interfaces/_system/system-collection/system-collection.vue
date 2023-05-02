@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
+import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export default defineComponent({
@@ -52,10 +52,16 @@ export default defineComponent({
 		});
 
 		const items = computed(() => {
-			return collections.value.map((collection) => ({
-				text: collection.name,
-				value: collection.collection,
-			}));
+			return collections.value.reduce<{ text: string; value: string }[]>((acc, collection) => {
+				if (collection.type !== 'alias') {
+					acc.push({
+						text: collection.name,
+						value: collection.collection,
+					});
+				}
+
+				return acc;
+			}, []);
 		});
 
 		return { items, t };
