@@ -559,6 +559,7 @@ function getRollupOutputOptions({
 	} else if (fileExtension === 'cjs') {
 		outputFormat = 'cjs';
 	}
+
 	return {
 		file: output,
 		format: outputFormat,
