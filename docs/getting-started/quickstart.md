@@ -13,32 +13,23 @@ readTime: 7 min read
 
 ## 1. Create Cloud Account and Login
 
-First, you'll need to [create an Account and log in](/cloud/accounts#create-account-and-login) on
-[Directus Cloud](https://directus.cloud/login)
+First, you'll need to create an Account and log in on [Directus Cloud](https://directus.cloud/login).
 
 Your Directus Cloud Account allows you to create and manage any number of Projects. We've made life easier by giving you
 the option to create and log in to your free Cloud Account automatically with GitHub. If you don't have a GitHub account
 or prefer not to use this login method, email-and-password login is available as well.
 
-The very first time you log in to your cloud account, you will be prompted to create a Team. Teams are totally free to
+The very first time you log in to your Cloud Account, you will be prompted to create a Team. Teams are totally free to
 create. Each Directus Cloud Project exists within the scope of one Team. They allow you to organize Team Members,
 Projects and Project Billing as desired.
 
 Once your Team is created, it's time to create your Directus Cloud Project!
 
-:::tip Learn More About Cloud
-
-- [Overview](/cloud/overview)
-- [Cloud Accounts](/cloud/accounts)
-- [Cloud Teams](/cloud/teams)
-
-:::
-
 ## 2. Create and Access Project
 
 To create a Project, follow the steps below:
 
-1. Open the Team Menu in the Dashboard Header and select or [create](/cloud/teams#create-a-team) the desired Team.
+1. Open the Team Menu in the Dashboard Header and select or create the desired Team.
 2. Navigate to **"Projects"** and click **"Create Project"**.
 3. Set the Project Name and tier.
 4. Scroll to the bottom of the screen and choose the **"Empty Project"** Starting Template.\
@@ -50,21 +41,13 @@ associated with your Cloud Account. The email will contain your Project URL as w
 If you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log
 in!_
 
-7. You can [access a Project](/cloud/projects#access-a-project) from within the Cloud Dashboard or type the URL into
-   your browser.
+7. You can access a Project from within the Cloud Dashboard or type the URL into your browser.
 8. Log in with your username and password from the email.
 
 :::tip Check All Inbox Folders
 
 Due to the algorithms used by some email providers, it is possible the email containing your Project login information
 will end up in another folder like "Social" or "Promotions".
-
-:::
-
-:::tip Learn More About Cloud Projects
-
-- [Overview](/cloud/overview)
-- [Cloud Projects](/cloud/projects)
 
 :::
 
@@ -84,8 +67,8 @@ Once logged in, you're greeted with the option to create your first [Collection]
 :::tip Learn More About Collections
 
 - [The Content Module](/app/content)
-- [Create and Manage a Collection](/configuration/data-model/collections.md)
-- [Build Relationships Between Collections](/configuration/data-model/relationships)
+- [Create and Manage a Collection](/app/data-model/collections)
+- [Build Relationships Between Collections](/app/data-model/relationships)
 
 :::
 
@@ -101,7 +84,7 @@ With your first Collection created, it's time to start adding some [Fields](/get
 
 ::: tip Learn More About Fields
 
-- [Create and Manage Fields in the App](/configuration/data-model)
+- [Create and Manage Fields in the App](/app/data-model)
 
 :::
 
@@ -141,7 +124,7 @@ of creating a new Role.
 
 ::: tip Learn More About Roles & Permissions
 
-- [Users, Roles and Permissions](/configuration/users-roles-permissions).
+- [Users, Roles and Permissions](/app/users-roles-permissions).
 
 :::
 

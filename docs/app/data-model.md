@@ -164,7 +164,7 @@ There are several ways you can relationally link tables:
   the related tables' names.
 
 To learn more about how these relationships work conceptually, as well as how they are handled within Directus, see our
-guide on [relationships](/configuration/data-model/relationships).
+guide on [relationships](/app/data-model/relationships).
 
 ### Database Schemas
 
@@ -286,9 +286,9 @@ blog
 - author_img
 ```
 
-As described in the section on [Rows](/configuration/data-model#rows), we want each row in a data table to represent one
-unique record, event, object, entity, observation, etc. To do this, we can remove the `author_name` column from the
-`blog` table and replace it with an `author_id` foreign key table, which stores foreign keys from the `users` table.
+As described in the section on [Rows](/app/data-model#rows), we want each row in a data table to represent one unique
+record, event, object, entity, observation, etc. To do this, we can remove the `author_name` column from the `blog`
+table and replace it with an `author_id` foreign key table, which stores foreign keys from the `users` table.
 
 ```
 blog
@@ -386,7 +386,7 @@ collections, or a readonly view.
 
 You access all collections, including built-in system collections required to power your project, under **Settings >
 Data Model**. From there, click a collection to open its configurations page. To learn more, see our guide on
-[collections](/configuration/data-model/collections).
+[collections](/app/data-model/collections).
 
 ## Fields
 
@@ -400,7 +400,7 @@ Remember, SQL database columns store pure, raw data. From there, developers buil
 how this data is displayed and interacted with. In Directus, fields encompass column configurations, as well as custom
 configuration over how to the data is displayed and interacted with in the Data Studio. Directus also has
 [alias fields](/getting-started/glossary#alias), which are virtual and do not match directly to a column. To learn more,
-see our guide on [fields](/configuration/data-model/fields/).
+see our guide on [fields](/app/data-model/fields).
 
 ## Items
 
@@ -430,8 +430,8 @@ Directus abstracts type differences between SQL vendors with a
 </video>
 
 Primary keys are called IDs in Directus fairly frequently. When you
-[create a collection](/configuration/data-model/collections#create-a-collection), you must add an `id` field. Directus
-supports the following types of IDs:
+[create a collection](/app/data-model/collections#create-a-collection), you must add an `id` field. Directus supports
+the following types of IDs:
 
 - **Auto-Incremented Integer** — IDs increment `1`, `2`, `3` up to `2^31-1` or `2,147,483,647`.
 - **Auto-Incremented Big Integer** — IDs increment `1`, `2`, `3` up to `2^63-1` or `9,223,372,036,854,775,807`. _(only
@@ -448,4 +448,4 @@ supports the following types of IDs:
 </video>
 
 Directus supports all standard [types of relationships](#types-of-relationships), as well as a few more of its own
-compound types. To learn more, see our guide on [relationships](/configuration/data-model/relationships).
+compound types. To learn more, see our guide on [relationships](/app/data-model/relationships).

@@ -34,10 +34,10 @@ All configuration options are described in detail below.
 
 ![How to Configure General Project Settings](https://cdn.directus.io/docs/v9/configuration/project-settings/project-settings-20220815/general-project-settings-20220811A.webp)
 
-- **Project Name** — Sets the name on the [Navigation Bar](/app/overview.html#_2-navigation-bar), as well as login and
-  public pages.
+- **Project Name** — Sets the name on the [Navigation Bar](/app/overview#_2-navigation-bar), as well as login and public
+  pages.
 - **Project Descriptor** — Sets the descriptor shown below the Project Name.
-- **Project URL** — Sets URL when clicking the logo at the top of the [Module Bar](/app/overview.html#_1-module-bar).
+- **Project URL** — Sets URL when clicking the logo at the top of the [Module Bar](/app/overview#_1-module-bar).
 - **Default Language** — Sets the default language used within the app.
 
 ## Branding & Style
@@ -47,7 +47,7 @@ All configuration options are described in detail below.
 </video>
 
 - **Project Color** — Sets color on the project logo, FavIcon and login/public pages.
-- **Project Logo** — Adds a 40x40px logo at the top of the [Module Bar](/app/overview.html#_1-module-bar) and on the
+- **Project Logo** — Adds a 40x40px logo at the top of the [Module Bar](/app/overview#_1-module-bar) and on the
   login/public pages. The image is inset within a 64x64px square filled with the project color. We recommend using a PNG
   file for optimal compatibility.
 - **Public Foreground** — Adds image on the public page's right-pane _(max-width 400px)_.
@@ -73,7 +73,7 @@ it easier to identify different Directus projects.
 </video>
 
 - **Module Bar** — Allows the following customization of links displayed in the
-  [Module Bar](/app/overview.html#_1-module-bar).
+  [Module Bar](/app/overview#_1-module-bar).
   - **Toggle Visibility** — Toggle <span mi icon>check_box_outline_blank</span> to set module link visibility in the
     Navigation Bar.
   - **Manually Sort Modules** — Click <span mi icon>drag_handle</span> and drag to reorder module links as desired.
@@ -123,7 +123,7 @@ following options to limit what transformations are possible.
 
 :::tip How to Use Transformation Presets
 
-To learn more, please see the API guide on [transformation presets](/reference/files.html#preset-transformations).
+To learn more, please see the API guide on [transformation presets](/reference/files#preset-transformations).
 
 :::
 

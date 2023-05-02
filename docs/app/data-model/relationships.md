@@ -82,7 +82,7 @@ This is where O2M fields come in to play.
 :::tip Configure an M2O
 
 The easiest way to configure an M2O field is to follow the guide on how to
-[create a field (standard)](/configuration/data-model/fields/#create-a-field-standard) and select the M2O Interface from
+[create a field (standard)](/app/data-model/fields#create-a-field-standard) and select the M2O Interface from
 the template wizard.
 
 :::
@@ -129,7 +129,7 @@ Note the following points from the schema above. When we create an O2M in Direct
 :::tip Configure an O2M
 
 The easiest way to configure an O2M is to follow the guide on how to
-[create a field (standard)](/configuration/data-model/fields/#create-a-field-standard) and select the O2M alias field
+[create a field (standard)](/app/data-model/fields#create-a-field-standard) and select the O2M alias field
 type from the template wizard.
 
 :::
@@ -144,7 +144,7 @@ For example, each country has one capital city, and vice versa. This is an O2O. 
 this O2O to the `cities` and `countries` example relationship used in the previous sections.
 
 The first strategy you may think of it to add a new `capital_city` field on the `countries` collection, storing the name
-of the capital city directly. But this would create [duplicate data](/configuration/data-model#avoid-data-duplication),
+of the capital city directly. But this would create [duplicate data](/app/data-model#avoid-data-duplication),
 because the same city would exist in both `countries.capital_city` as well as `cities.name`. But remember, we want to
 _avoid duplicate data!_
 
@@ -210,7 +210,7 @@ Note the following points from the schema above. When we create an O2O in Direct
 </video> -->
 
 The easiest way to configure an O2O is to follow the guide on how to
-[create a field (standard)](/configuration/data-model/fields/#create-a-field-standard) and select the **M2O** field type
+[create a field (standard)](/app/data-model/fields#create-a-field-standard) and select the **M2O** field type
 from the template wizard. Then, configure the field's schema, toggling on
 **Unique** so that each value in the M2O field is unique, resulting in an O2O relationship.
 
@@ -283,7 +283,7 @@ ingredients
 </video> -->
 
 The easiest way to configure an M2M is to follow the guide on how to
-[create a field (standard)](/configuration/data-model/fields/#create-a-field-standard) and select **Many to Many** from
+[create a field (standard)](/app/data-model/fields#create-a-field-standard) and select **Many to Many** from
 the template wizard.
 
 :::
@@ -353,7 +353,7 @@ Note the following points from the schema above. When we create an M2A in Direct
 -->
 
 The easiest way to configure an M2A is to follow the guide on how to
-[create a field (standard)](/configuration/data-model/fields/#create-a-field-standard) and select the **Many to Any**
+[create a field (standard)](/app/data-model/fields#create-a-field-standard) and select the **Many to Any**
 Interface from the template wizard.
 
 :::
@@ -406,7 +406,7 @@ Note the following points from the schema above. When we create a Translations O
   easily extensible and it creates a sub-optimal experience to have every single translation of every field on the item
   details page. The Translations O2M alias field is designed specifically to make the translation process easier.
 - There may come a time when you want to make a pre-existing parent field translatable. To do this, you can
-  [duplicate a field](/configuration/data-model/fields/#duplicate-a-field), move it to the translation collection, and
+  [duplicate a field](/app/data-model/fields#duplicate-a-field), move it to the translation collection, and
   then delete the parent field. However, be aware that duplicating a field does _not_ duplicate any existing field
   values.
 
@@ -419,7 +419,7 @@ Note the following points from the schema above. When we create a Translations O
 -->
 
 The easiest way to configure a Translations relationship is to follow the guide on how to
-[create a field (standard)](/configuration/data-model/fields/#create-a-field-standard) and select the **Translations
+[create a field (standard)](/app/data-model/fields#create-a-field-standard) and select the **Translations
 O2M** Interface from the template wizard.
 
 :::

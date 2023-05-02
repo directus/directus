@@ -26,7 +26,7 @@ author: Bryant Gillespie
 
 This recipe explains how to schedule content to be published on a future date for a statically generated site (SSG).
 
-We'll be using [Flows](/configuration/flows) to publish articles when the current date matches the published date.
+We'll be using [Flows](/app/flows) to publish articles when the current date matches the published date.
 
 First we'll schedule a flow to run at regular intervals.
 
@@ -35,13 +35,13 @@ whenever the published date is less than or equal the current timestamp.
 
 Last, we'll kick off a new deployment of your static site at your hosting provider using one of the recipes below.
 
-- [Triggering a static site build at Netlify](/cookbook/flows/trigger-static-site-build-netlify)
-- [Triggering a static site build at Vercel](/cookbook/flows/trigger-static-site-build-vercel)
+- [Triggering a static site build at Netlify](/guides/headless-cms/trigger-static-builds/netlify)
+- [Triggering a static site build at Vercel](/guides/headless-cms/trigger-static-builds/vercel)
 
 ::: info Note
 
 If your site fetches content at runtime or at the time of a page request, please
-[follow the recipe for dynamic sites](/cookbook/flows/scheduling-content-dynamic-sites).
+[follow the recipe for dynamic sites](/guides/headless-cms/schedule-content/dynamic-sites).
 
 :::
 
@@ -62,9 +62,9 @@ field `status` that controls the published state.
 
 1. Under Settings, go to Data Model.
 
-2. Choose your content [Collection](/configuration/data-model/collections).
+2. Choose your content [Collection](/app/data-model/collections).
 
-3. [Add a new field](/configuration/data-model/fields.html#create-a-field-standard) to your content Collection.
+3. [Add a new field](/app/data-model/fields#create-a-field-standard) to your content Collection.
 
    ![The interface for creating a new field is shown. The field type Datetime is selected. The Key is named date_published. The field for Use 24-Hour format is checked.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-publish-date.webp)
 
@@ -88,17 +88,17 @@ field `status` that controls the published state.
 
 ### Create and Configure Your Flow
 
-5. [Create a new Flow](/configuration/flows#create-a-flow)
+5. [Create a new Flow](/app/flows#create-a-flow)
 
    ![Under the Creating a New Flow interface, the Flow Setup tab is shown. The name of the new flow is Published Scheduled Articles. The status is Active. The Description field reads "This is triggered every 15 minutes to publish any scheduled articles". The icon selected is "Fiber New". For the Color field, a green color with the hex code #2ECDA7 is selected. Track Activity & Logs is selected.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-flow-setup.webp)
 
    Give it a memorable name and short description like `Publish Scheduled Articles`.
 
-6. [Complete the Trigger Setup](/configuration/flows/triggers#triggers)
+6. [Complete the Trigger Setup](/app/flows/triggers#triggers)
 
    ![Under the Creating New Flow interface, the Trigger Setup tab is shown. The selected trigger is Schedule(CRON). The Interval field has a value of "* 15 * * * *".](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-trigger.webp)
 
-   a. For **Type**, Select [Schedule (CRON)](/configuration/flows/triggers#schedule-cron). This will trigger this flow
+   a. For **Type**, Select [Schedule (CRON)](/app/flows/triggers#schedule-cron). This will trigger this flow
    at regular intervals of time.
 
    b. Add your **Interval** in proper CRON syntax.
@@ -110,7 +110,7 @@ field `status` that controls the published state.
 
 ### Add an Operation to Check The Published Date and Update Data
 
-7. [Create a new Operation](/configuration/flows/operations#operations)
+7. [Create a new Operation](/app/flows/operations#operations)
 
    ![Inside a Directus Flow, the Create Operation interface is shown. The Name of the operation is "Update Articles". The Key is "update_articles". The type of Operation is "Update Data". The Collection for the operation is "Articles". The Payload for the operation is a JSON object with key - status and value of published. There is also a JSON object for the Query field. A filter that checks that the item status is equal to "scheduled" and the date_published is less than or equal to the current timestamp.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-update-articles.webp)
 
@@ -169,8 +169,9 @@ process for your site. This approach helps keep everything modular and easier to
 
 If you haven't already, you'll want to configure one of the recipes below.
 
-- [Triggering a static site build at Netlify](/cookbook/flows/trigger-static-site-build-netlify)
-- [Triggering a static site build at Vercel](/cookbook/flows/trigger-static-site-build-vercel)
+- [Triggering a static site build at Netlify](/guides/headless-cms/trigger-static-builds/netlify)
+- [Triggering a static site build at Vercel](/guides/headless-cms/trigger-static-builds/vercel)
+
 
 You checked Emit Events in the Operation during Step 7. This will emit an `item.update` event which is a trigger for the
 Flows in the recipes above.

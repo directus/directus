@@ -34,10 +34,10 @@ Date picker input that allows user to select a date and time.
 
 Interface for repeating groups of fields.
 
-You can use any [Text & Number](/configuration/data-model/fields/text-numbers),
-[Selection](/configuration/data-model/fields/selection), or [Other](/configuration/data-model/fields/other) fields
-within a Repeater. [Relational](/configuration/data-model/fields/relational.md),
-[Presentation](/configuration/data-model/fields/presentation.md), or [Group](/configuration/data-model/fields/groups.md)
+You can use any [Text & Number](/app/data-model/fields/text-numbers),
+[Selection](/app/data-model/fields/selection), or [Other](/app/data-model/fields/other) fields
+within a Repeater. [Relational](/app/data-model/fields/relational),
+[Presentation](/app/data-model/fields/presentation), or [Group](/app/data-model/fields/groups)
 fields are not allowed.
 
 Value is stored as a JSON array of objects.

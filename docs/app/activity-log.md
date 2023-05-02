@@ -12,14 +12,13 @@ readTime: 2 min read
 
 :::tip Before You Begin
 
-We recommend you try the [Quickstart Guide](/getting-started/quickstart.md) to get an overview of the platform.
+We recommend you try the [Quickstart Guide](/getting-started/quickstart) to get an overview of the platform.
 
 :::
 
 :::tip Learn More
 
-To manage the Activity Log programmatically, please see our guide on the
-[Activity Log API](/reference/system/activity.md).
+To manage the Activity Log programmatically, please see our guide on the [Activity Log API](/reference/system/activity).
 
 :::
 

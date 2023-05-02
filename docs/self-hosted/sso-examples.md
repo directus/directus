@@ -157,13 +157,17 @@ AUTH_AWSSSO_DEFAULT_ROLE_ID='needs-to-be-a-valid-role-on-the-instance'
 AUTH_AWSSSO_IDENTIFIER_KEY=email
 AUTH_AWSSSO_EMAIL_KEY=email
 ```
+
 ::: tip AWS Help
 
-* AWS SSO Docs are not that verbose. Users have found that the `sp_metadata` environment variable can be supplied empty.
+- AWS SSO Docs are not that verbose. Users have found that the `sp_metadata` environment variable can be supplied empty.
 
-* Users have found that replacing `<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://your-soo-portal-url"/>` in the IAM Identity Center SAML metadata file with your AWS Portal URL is a fix for getting the 'Login With SSO' button on Directus to work, rather the default redirect from AWS.
+- Users have found that replacing
+  `<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://your-soo-portal-url"/>`
+  in the IAM Identity Center SAML metadata file with your AWS Portal URL is a fix for getting the 'Login With SSO'
+  button on Directus to work, rather the default redirect from AWS.
 
-* Directus expects `<?xml version="1.0" encoding="UTF-8"?>` to be removed from the start of the XML.
+- Directus expects `<?xml version="1.0" encoding="UTF-8"?>` to be removed from the start of the XML.
 
 :::
 
@@ -180,5 +184,4 @@ Maps the email address into Directus as external_identifier:
 
 **Config:**
 
-Relay state - `admin/login`
-Application ACS URL - `https://your-directus-instance/auth/login/awssso/acs`
+Relay state - `admin/login` Application ACS URL - `https://your-directus-instance/auth/login/awssso/acs`

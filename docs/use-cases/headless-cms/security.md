@@ -24,7 +24,7 @@ In this guide, we'll cover some best practices for keeping your Directus Headles
 
 Directus makes it super easy to share your content with our REST and GraphQL APIs.
 
-The Public role within [Roles and Permissions](/configuration/users-roles-permissions#roles) defines what content is
+The Public role within [Roles and Permissions](/app/users-roles-permissions#roles) defines what content is
 available without authentication. To be safe, all permissions are turned off by default. This means that no data is
 available via the API without providing a proper [access token](/reference/authentication#access-tokens). Your use case
 may allow all data to be public, but it may instead require restricted access.
@@ -33,7 +33,7 @@ may allow all data to be public, but it may instead require restricted access.
 
 - On your public role, only enable read access.
 - Consider defining a
-  [Custom Permission](/configuration/users-roles-permissions/permissions#configure-custom-permissions) for read
+  [Custom Permission](/app/users-roles-permissions/permissions#configure-custom-permissions) for read
   operations to control which items are available and which fields within those items consumers can see.
 
   ![The custom permissions interface for the Public role is displayed. The Item Permissions table is active and one Rule is active - "Status" Equals "Published".](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/custom-permissions.webp)
@@ -58,7 +58,7 @@ levels of data.
 For each of these roles, allow access only to the collections and specific CRUD operations that each role needs to
 perform their function.
 
-Our guide on [Content Approval Workflows](/cookbook/permissions/basic-workflows) is helpful for scoping roles and
+Our guide on [Content Approval Workflows](/guides/headless-cms/approval-workflows) is helpful for scoping roles and
 permissions.
 
 ## Obscure Access Tokens and URLs
@@ -109,7 +109,7 @@ But when it’s time to go to production and add all your different users, we re
 1. **Enable and enforce two-factor authentication.**
 
    Two-factor authentication can be enforced for each specific role by checking the Require 2FA field in a
-   [role's settings](/configuration/users-roles-permissions/roles#configure-role-details).
+   [role's settings](/app/users-roles-permissions/roles#configure-role-details).
 
    ![The Administrator role settings page is displayed. The Require 2FA form field is highlighted and enabled.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/2fa-role.webp)
 
@@ -119,6 +119,22 @@ But when it’s time to go to production and add all your different users, we re
    ![A sample user's detail page is shown. The Two-Factor Authentication form field is highlighted. ](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/2fa-user.webp)
 
 2. **Enable the Strong option for Auth Password Policy under
-   [Project Settings > Security](/configuration/project-settings#security).**
+   [Project Settings > Security](/app/project-settings#security).**
 
    ![The Project Settings page is shown. The Security section is highlighted. Within the Security, section there are two fields shown: Auth Password Policy and Auth Login Attempts.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/security-project-settings.webp)
+
+::: warning Use Different Project Names Between Environments
+
+The project name is used in two-factor authentication for identification. Remember to set a different project name to
+differentiate between environments to prevent the authenticator application from overriding the token for a different
+environment.
+
+For example:
+
+| Environment | Project Name     |
+| ----------- | ---------------- |
+| Production  | Directus         |
+| Staging     | Directus Staging |
+| Development | Directus Dev     |
+
+:::
