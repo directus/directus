@@ -786,6 +786,8 @@ function validateNumber(value: string, parsed: number) {
 		parsed = Number(value);
 	}
 
+	// casting parsed value back to string should be equal the original value
+	// (prevent unintended number parsing, e.g. String(7) !== "ob111")
 	return String(parsed) === value;
 }
 
