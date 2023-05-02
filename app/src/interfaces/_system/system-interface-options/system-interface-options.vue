@@ -33,7 +33,7 @@ import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-	value: Record<string, unknown>;
+	value: Record<string, unknown> | null;
 	interfaceField?: string;
 	interface?: string;
 	collection?: string;
