@@ -142,10 +142,11 @@ watch(
 				slugify(oldName ?? '', {
 					separator: '_',
 				})
-		)
+		) {
 			operationKey.value = slugify(newName ?? '', {
 				separator: '_',
 			});
+		}
 	},
 	{ immediate: true }
 );

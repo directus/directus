@@ -55,11 +55,12 @@ export default defineComponent({
 			const intervals = [null, 10, 30, 60, 300];
 
 			return intervals.map((seconds) => {
-				if (seconds === null)
+				if (seconds === null) {
 					return {
 						text: t('no_refresh'),
 						value: null,
 					};
+				}
 
 				return seconds >= 60 && seconds % 60 === 0
 					? {
