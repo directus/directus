@@ -9,6 +9,7 @@ import { flushCaches } from '../../cache.js';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
+import getModuleDefault from '../../utils/get-module-default.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -21,7 +22,8 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
 	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
-	customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
+
+	customMigrationFiles = customMigrationFiles.filter((file: string) => /\.(c|m)?js$/.test(file));
 
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
 
@@ -113,7 +115,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		for (const migration of migrations) {
 			if (migration.completed === false) {
 				needsCacheFlush = true;
-				const { up } = await import(`file://${migration.file}`);
+				const { up } = getModuleDefault(await import(`file://${migration.file}`));
 
 				if (log) {
 					logger.info(`Applying ${migration.name}...`);
