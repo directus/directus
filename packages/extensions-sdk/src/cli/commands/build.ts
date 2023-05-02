@@ -547,10 +547,16 @@ function getRollupOutputOptions({
 	sourcemap: boolean;
 }): RollupOutputOptions {
 	const fileExtension = getFileExt(output);
+	let outputFormat = format;
 
+	if (mode === 'browser' || fileExtension === 'mjs') {
+		outputFormat = 'esm';
+	} else if (fileExtension === 'cjs') {
+		outputFormat = 'cjs';
+	}
 	return {
 		file: output,
-		format: mode === 'browser' || fileExtension === 'mjs' ? 'esm' : fileExtension === 'cjs' ? 'cjs' : format,
+		format: outputFormat,
 		exports: 'auto',
 		inlineDynamicImports: true,
 		sourcemap,
