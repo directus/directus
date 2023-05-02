@@ -27,6 +27,12 @@ npx directus init
 
 Will install the required database driver, and create a `.env` file based on the inputted values.
 
+::: warning Initialize Node.js Package
+
+Run `npm init` if your project folder does not contain a `package.json` file.
+
+:::
+
 ### Bootstrap a Project
 
 ```bash
@@ -166,8 +172,8 @@ npx directus roles create --role <role-name>
 ```
 
 These roles are created with the
-[minimum permissions required](/configuration/users-roles-permissions#configure-system-permissions) to properly access
-the App by default.
+[minimum permissions required](/app/users-roles-permissions#configure-system-permissions) to properly access the App by
+default.
 
 To create a new role with admin access, set the `--admin` flag to `true`, such as
 

@@ -71,8 +71,8 @@ exist, it is dynamically generated and immediately returned.
 
 ### Preset Transformations
 
-- **`key`** — This **key** of the [Storage Asset Preset](/configuration/project-settings#files-thumbnails), a shortcut
-  for the below parameters
+- **`key`** — This **key** of the [Storage Asset Preset](/app/project-settings#files-thumbnails), a shortcut for the
+  below parameters
 
 ### Custom Transformations
 

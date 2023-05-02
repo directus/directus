@@ -246,7 +246,7 @@ Content-Disposition: form-data; name="file"; filename="schema.yaml"
 Content-Type: text/yaml
 
 version: 1
-directus: 9.22.4
+directus: 10.0.0
 vendor: sqlite
 collections:
   - collection: articles

@@ -135,6 +135,7 @@ customizations
 DateTime
 DDoS
 destructured
+Dev
 devs
 DigitalOcean
 DigitalOcean's
@@ -360,7 +361,7 @@ UUID
 UUIDs
 UUIDv4
 UX
-v[0-9]
+v[0-9]{1,2}
 varchar
 Vercel
 viewability

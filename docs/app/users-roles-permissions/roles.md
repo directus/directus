@@ -10,7 +10,7 @@ readTime:
 
 :::tip Learn More
 
-To configure roles programmatically, see our API documentation on [roles](/reference/system/roles.md).
+To configure roles programmatically, see our API documentation on [roles](/reference/system/roles).
 
 :::
 
@@ -73,7 +73,7 @@ details, follow these steps.
 
 Roles with _App Access_ enabled are created with the minimum permissions required to login to the app and access their
 own profile information. Roles that have neither _Admin_ nor _App Access_ enabled are created with public permissions.
-You can always [reconfigure permissions](/configuration/users-roles-permissions/permissions.md#configure-permissions)
+You can always [reconfigure permissions](/app/users-roles-permissions/permissions#configure-permissions)
 later.
 
 :::
@@ -94,13 +94,13 @@ To delete a role, follow these steps.
 
 If you delete a role that still has users in it, those users will be given a `NULL` role, which limits them to public
 permissions. However, you can always
-[assign them a new role](/configuration/users-roles-permissions/users.md#assign-role-to-existing-user).
+[assign them a new role](/app/users-roles-permissions/users#assign-role-to-existing-user).
 
 :::
 
 :::tip Built-in Roles
 
 Directus does not allow you to delete the built-in public role or administrator role. To learn more, please see the
-introductory section on [Directus Roles](/configuration/users-roles-permissions.html#directus-roles).
+introductory section on [Directus Roles](/app/users-roles-permissions#directus-roles).
 
 :::

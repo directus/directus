@@ -29,9 +29,9 @@ docker run \
 
 To stick to a more specific version of Directus you can use one of the following tags:
 
-- Full version, e.g. `9.0.0`
-- Minor releases, e.g. `9.0`
-- Major releases, e.g. `9`
+- Full version, e.g. `10.0.0`
+- Minor releases, e.g. `10.0`
+- Major releases, e.g. `10`
 
 To use a specific version of Directus, run:
 
@@ -41,7 +41,7 @@ docker run \
   -p 8055:8055 \
   -e KEY=255d861b-5ea1-5996-9aa3-922530ec40b1 \
   -e SECRET=6116487b-cda1-52c2-b5b5-c8022c45e263 \
-  directus/directus:9.0.0
+  directus/directus:10.0.0
 ```
 
 ### Configure Admin User
@@ -146,8 +146,8 @@ If you are not using the `latest` tag for the Directus image you need to adjust 
 increment the tag version number, e.g.:
 
 ```diff
--   image: directus/directus:9.0.0-rc.101
-+   image: directus/directus:9.0.0
+-   image: directus/directus:10.0.0
++   image: directus/directus:10.1.0
 ```
 
 You can then issue the following two commands (from your docker-compose root):
@@ -167,8 +167,8 @@ extending from the official image and installing the packages there.
 
 First create a file called `Dockerfile` with a content like this:
 
-```Dockerfile
-FROM directus/directus:9.25.2
+```docker
+FROM directus/directus:10.0.0
 
 USER root
 RUN corepack enable \

@@ -196,8 +196,7 @@ The following core principles guide this platform:
 **Directus Cloud is the fastest and easiest way to get your Directus Projects going.**
 
 Cloud architecture can be complicated and resource-intensive. Directus Cloud provides scalable, optimized storage and
-infrastructure, and automatic updates so developers can focus on the app's core business logic. Directus Cloud also
-offers [Cloud Exclusive Extensions](/cloud/glossary#cloud-exclusives), enhancing Directus Core with even more features.
+infrastructure, and automatic updates so developers can focus on the app's core business logic.
 
 With your free Directus Cloud account, you can set up Teams to organize Projects, Project billing, and other Team
 Members however you need. You'll be able to get a Project running in about 90 seconds. Then as Project growth changes
