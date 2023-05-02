@@ -122,3 +122,19 @@ But when it’s time to go to production and add all your different users, we re
    [Project Settings > Security](/configuration/project-settings#security).**
 
    ![The Project Settings page is shown. The Security section is highlighted. Within the Security, section there are two fields shown: Auth Password Policy and Auth Login Attempts.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/security-project-settings.webp)
+
+::: warning Use Different Project Names Between Environments
+
+The project name is used in two-factor authentication for identification. Remember to set a different project name to
+differentiate between environments to prevent the authenticator application from overriding the token for a different
+environment.
+
+For example:
+
+| Environment | Project Name     |
+| ----------- | ---------------- |
+| Production  | Directus         |
+| Staging     | Directus Staging |
+| Development | Directus Dev     |
+
+:::
