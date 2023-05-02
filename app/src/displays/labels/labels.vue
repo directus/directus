@@ -36,7 +36,7 @@ type Choice = {
 const props = withDefaults(
 	defineProps<{
 		value: string | string[];
-		type: string;
+		type: 'text' | 'string' | 'json' | 'csv';
 		format?: boolean;
 		showAsDot?: boolean;
 		choices?: Choice[];
