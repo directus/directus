@@ -38,6 +38,7 @@ const defaultRules = {
 	],
 	'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
 	'no-nested-ternary': 'error',
+	curly: ['error', 'multi-line'],
 };
 
 module.exports = {
