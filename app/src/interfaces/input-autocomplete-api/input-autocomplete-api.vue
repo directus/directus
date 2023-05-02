@@ -38,7 +38,7 @@ import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string | number;
+		value: string | number | null;
 		url?: string;
 		resultsPath?: string;
 		textPath?: string;
