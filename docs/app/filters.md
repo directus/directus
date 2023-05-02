@@ -26,8 +26,8 @@ This page is a non-technical guide to using Filters. For more technical info, se
 ::: tip Assumed Knowledge
 
 Filters are intuitive to use, but get quite nuanced as complexity increases. In order to use Filters effectively, you
-will need to understand the Field _(aka [data model](/configuration/data-model))_ being filtered as well as any relevant
-[Users, Roles and Permissions](/configuration/users-roles-permissions.md).
+will need to understand the Field _(aka [data model](/app/data-model))_ being filtered as well as any relevant
+[Users, Roles and Permissions](/app/users-roles-permissions).
 
 :::
 

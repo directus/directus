@@ -13,7 +13,7 @@ readTime: 3 min read
 
 :::tip Before You Begin
 
-Please be sure to read the overview documentation on [Flows](/configuration/flows).
+Please be sure to read the overview documentation on [Flows](/app/flows).
 
 :::
 
@@ -71,8 +71,7 @@ cancel the transaction.
 :::tip Cancelling Transactions
 
 To completely cancel a transaction, you'll need to throw an error within a
-[script operation](/configuration/flows/operations.md#script) or end the flow on a
-[failure path](/configuration/flows#control-flow).
+[script operation](/app/flows/operations#script) or end the flow on a [failure path](/app/flows#control-flow).
 
 :::
 
@@ -109,6 +108,8 @@ trigger panel.
   - **Data of Last Operation** — Responds with value from `$last`.
   - **All Data** — Responds with the entire data chain.
   - **Other** — Responds with value from an `<operationKey>`.
+- **Cache** — Choose whether responses to `GET` requests should be stored and served from cache or the cache should be
+  bypassed.
 
 :::tip Response Body
 
@@ -151,11 +152,10 @@ This trigger enables you to create data at scheduled intervals, via
 
 ![Another Flow](https://cdn.directus.io/docs/v9/configuration/flows/triggers/triggers-20220603A/another-flow-20220602A.webp)
 
-This trigger executes by the [trigger flow](/configuration/flows/operations#another-flow) operation, allowing you to
-chain flows.
+This trigger executes by the [trigger flow](/app/flows/operations#another-flow) operation, allowing you to chain flows.
 
 - **Response Body** — Optional. Defines data to return and append under the `<operationKey>` of
-  [trigger flow](/configuration/flows/operations#another-flow) operation that tripped the trigger. Choose to return:
+  [trigger flow](/app/flows/operations#another-flow) operation that tripped the trigger. Choose to return:
   - **Data of Last Operation** — Responds with value from `$last`.
   - **All Data** — Responds with the entire data chain.
   - **Other** — Responds with value from an `<operationKey>`.
@@ -178,15 +178,15 @@ _grayed out_ until you select some number of items. From the item page, the curr
 automatically. These item IDs are passed in to `$trigger`.
 
 - **Collections** — Choose the Collection(s) to add the button to.
-- **Location** — Choose to display the button on the [Item Page](/app/content.md#item-page),
-  [Collection Page](/app/content.md#collection-page), or both.
+- **Location** — Choose to display the button on the [Item Page](/app/content#item-page),
+  [Collection Page](/app/content#collection-page), or both.
 - **Asynchronous** — Toggle whether the Flow executes asynchronously. If enabled, you can immediately trigger the flow
   again. If not, you must wait for the flow to complete to use it again.
 - **Collection Page (Requires Selection)** — Toggle whether a selection is required in the Collection Page to trigger.
 - **Require Confirmation** - Toggle whether a confirmation dialog will be shown before the flow is executed.
 
-After the operation runs, a toast notification will appear in your [sidebar](/app/overview.md#4-sidebar) indicating
-whether the flow ran successfully.
+After the operation runs, a toast notification will appear in your [sidebar](/app/overview#4-sidebar) indicating whether
+the flow ran successfully.
 
 ### Confirmation Dialog
 

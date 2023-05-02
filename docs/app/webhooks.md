@@ -12,7 +12,7 @@ readTime: 2 min read
 :::warning
 
 Webhooks are a deprecated feature and will be removed from the platform. This functionality has been fully replaced by
-[Flows](/configuration/flows.md).
+[Flows](/app/flows).
 
 :::
 

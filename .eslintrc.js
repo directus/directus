@@ -37,6 +37,7 @@ const defaultRules = {
 		{ blankLine: 'any', prev: ['export', 'import'], next: ['export', 'import'] },
 	],
 	'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+	'no-nested-ternary': 'error',
 };
 
 module.exports = {

@@ -124,7 +124,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 		if (newEmbed === '') {
 			mediaSelection.value = null;
 		} else {
-			const tag = /<(video|audio|iframe)/g.exec(newEmbed)?.[1];
+			const tag = /<(video|audio|iframe)/g.exec(newEmbed)?.[1] as 'video' | 'audio' | 'iframe' | undefined;
 			const sourceUrl = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
 			const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
 			const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
@@ -136,7 +136,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 			const previewUrl = replaceUrlAccessToken(sourceUrl, imageToken.value || getToken());
 
 			mediaSelection.value = {
-				tag: tag === 'audio' ? 'audio' : tag === 'iframe' ? 'iframe' : 'video',
+				tag,
 				sourceUrl,
 				width,
 				height,
