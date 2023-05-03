@@ -50,21 +50,16 @@ import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 
-const props = withDefaults(
-	defineProps<{
-		revisions: Revision[];
-		current?: number | string | null;
-		active: boolean;
-	}>(),
-	{
-		current: null,
-	}
-);
+const props = defineProps<{
+	revisions: Revision[];
+	current?: number | string;
+	active?: boolean;
+}>();
 
 const emit = defineEmits<{
 	(e: 'revert', value: Record<string, unknown>): void;
 	(e: 'update:active', value: boolean): void;
-	(e: 'update:current', value: number | string | null): void;
+	(e: 'update:current', value: number | string): void;
 }>();
 
 const { t } = useI18n();
