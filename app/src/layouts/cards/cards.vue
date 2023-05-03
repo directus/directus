@@ -144,7 +144,7 @@ const { width } = useElementSize(layoutElement);
 
 watch(
 	() => props.page,
-	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
+	() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
 );
 
 watch(width, () => {

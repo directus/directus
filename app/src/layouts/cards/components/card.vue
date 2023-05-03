@@ -13,9 +13,9 @@
 				<template v-else>
 					<v-image
 						v-if="showThumbnail"
-						:class="imageInfo?.fileType"
-						:src="imageInfo?.source"
-						:alt="item?.title"
+						:class="imageInfo.fileType"
+						:src="imageInfo.source"
+						:alt="item.title"
 						role="presentation"
 					/>
 					<v-icon v-else large :name="icon" />
@@ -105,7 +105,7 @@ const selectionIcon = computed(() => {
 });
 
 function toggleSelection() {
-	if (props.item === undefined) return null;
+	if (!props.item) return null;
 
 	if (props.modelValue.includes(props.item[props.itemKey])) {
 		emit(
