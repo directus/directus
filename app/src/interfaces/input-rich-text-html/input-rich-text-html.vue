@@ -227,7 +227,6 @@ const props = withDefaults(
 		direction?: string;
 	}>(),
 	{
-		value: '',
 		toolbar: () => [
 			'bold',
 			'italic',
