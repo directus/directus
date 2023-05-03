@@ -64,7 +64,7 @@ const props = defineProps<{
 	permissions: Permission[];
 	refreshing: number[];
 	role?: string;
-	appMinimal?: false | Partial<Permission>[];
+	appMinimal?: Partial<Permission>[];
 }>();
 
 const { t } = useI18n();

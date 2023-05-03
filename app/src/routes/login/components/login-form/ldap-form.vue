@@ -87,8 +87,12 @@ async function onSubmit() {
 
 		await login({ provider: provider.value, credentials });
 
-		// Stores are hydrated after login
-		const lastPage = userStore.currentUser?.last_page;
+		let lastPage: string | undefined;
+
+		if (userStore.currentUser && 'last_page' in userStore.currentUser) {
+			lastPage = userStore.currentUser.last_page;
+		}
+
 		router.push(lastPage || '/content');
 	} catch (err: any) {
 		if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {

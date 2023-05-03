@@ -2,10 +2,11 @@ import api, { replaceQueue } from '@/api';
 import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
+import { useUserStore } from '@/stores/user';
+import { AuthProvider } from '@/types/login';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, unref } from 'vue';
-import { useUserStore } from '@/stores/user';
 
 type HydrateOptions = {
 	/**
@@ -51,7 +52,7 @@ export type Info = {
 };
 
 export type Auth = {
-	providers: { driver: string; name: string }[];
+	providers: AuthProvider[];
 	disableDefault: boolean;
 };
 
@@ -105,7 +106,11 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		// set language as default locale before login
 		// or reset language for admin when they update it without having their own language set
-		if (!currentUser || (options?.isLanguageUpdated === true && !currentUser?.language)) {
+		if (
+			!currentUser ||
+			!('language' in currentUser) ||
+			(options?.isLanguageUpdated === true && !currentUser?.language)
+		) {
 			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
 		}
 

@@ -22,7 +22,7 @@
 			</v-avatar>
 			<div class="data">
 				<div class="name type-title">{{ userName(data) }}</div>
-				<div class="status-role" :class="data.status">{{ t(data.status) }} {{ data.role.name }}</div>
+				<div class="status-role" :class="data!.status">{{ t(data.status) }} {{ data.role.name }}</div>
 				<div class="email">{{ data.email }}</div>
 			</div>
 		</div>

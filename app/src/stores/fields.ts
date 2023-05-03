@@ -51,6 +51,8 @@ const fakeFilesField: Field = {
 		note: null,
 		required: false,
 		conditions: null,
+		validation: null,
+		validation_message: null,
 	},
 };
 

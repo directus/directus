@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { DEFAULT_AUTH_PROVIDER, DEFAULT_AUTH_DRIVER } from '@/constants';
+import { DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { useAppStore } from '@/stores/app';
 import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';
@@ -47,7 +47,7 @@ withDefaults(defineProps<Props>(), {
 	logoutReason: null,
 });
 
-const { t, te } = useI18n();
+const { t } = useI18n();
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
