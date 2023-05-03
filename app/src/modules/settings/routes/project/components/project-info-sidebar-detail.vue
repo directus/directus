@@ -37,20 +37,13 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
 import { useProjectInfo } from '../../../composables/use-project-info';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const { parsedInfo } = useProjectInfo();
-
-		return { t, parsedInfo };
-	},
-});
+const { parsedInfo } = useProjectInfo();
 </script>
 
 <style lang="scss" scoped>
