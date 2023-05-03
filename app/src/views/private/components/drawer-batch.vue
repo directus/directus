@@ -32,17 +32,12 @@ import { getEndpoint } from '@directus/utils';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		collection: string;
-		primaryKeys: (number | string)[];
-		active?: boolean;
-		edits?: Record<string, any>;
-	}>(),
-	{
-		edits: undefined,
-	}
-);
+const props = defineProps<{
+	collection: string;
+	primaryKeys: (number | string)[];
+	active?: boolean;
+	edits?: Record<string, any>;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:active', value: boolean): void;
