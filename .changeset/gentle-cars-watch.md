@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-improved flows error handling
+Improved flows error class handling
