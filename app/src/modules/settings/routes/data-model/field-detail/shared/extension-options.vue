@@ -46,10 +46,7 @@ const props = withDefaults(
 		rawEditorEnabled?: boolean;
 	}>(),
 	{
-		showAdvanced: false,
 		modelValue: () => ({}),
-		disabled: false,
-		rawEditorEnabled: false,
 	}
 );
 
