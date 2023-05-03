@@ -57,3 +57,11 @@ defineEmits<{
 	(e: 'click', folderId: Folder['id']): void;
 }>();
 </script>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+	name: 'FolderListItem',
+});
+</script>
