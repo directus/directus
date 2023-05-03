@@ -59,18 +59,13 @@ import { useI18n } from 'vue-i18n';
 import useUpdatePermissions from '../composables/use-update-permissions';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 
-const props = withDefaults(
-	defineProps<{
-		collection: Collection;
-		permissions: Permission[];
-		refreshing: number[];
-		role?: string;
-		appMinimal?: false | Partial<Permission>[];
-	}>(),
-	{
-		appMinimal: false,
-	}
-);
+const props = defineProps<{
+	collection: Collection;
+	permissions: Permission[];
+	refreshing: number[];
+	role?: string;
+	appMinimal?: false | Partial<Permission>[];
+}>();
 
 const { t } = useI18n();
 
