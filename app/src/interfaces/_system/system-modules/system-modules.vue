@@ -123,7 +123,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-	(e: 'input', value: Settings['module_bar'] | null): void;
+	(e: 'input', value: Settings['module_bar']): void;
 }>();
 
 const { t } = useI18n();
@@ -187,7 +187,7 @@ function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
 					...part,
 					to: part.url,
 					icon: part.icon,
-					name: part.name,
+					name: translate(part.name),
 				};
 			}
 
@@ -196,7 +196,7 @@ function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
 			return {
 				...part,
 				to: `/${module.id}`,
-				name: translate(module.name),
+				name: module.name,
 				icon: module.icon,
 			};
 		});
