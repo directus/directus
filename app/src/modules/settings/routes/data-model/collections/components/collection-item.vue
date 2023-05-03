@@ -66,16 +66,11 @@ import { DeepPartial } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-const props = withDefaults(
-	defineProps<{
-		collection: Collection;
-		collections: Collection[];
-		disableDrag?: boolean;
-	}>(),
-	{
-		disableDrag: false,
-	}
-);
+const props = defineProps<{
+	collection: Collection;
+	collections: Collection[];
+	disableDrag?: boolean;
+}>();
 
 const emit = defineEmits(['setNestedSort', 'editCollection']);
 
