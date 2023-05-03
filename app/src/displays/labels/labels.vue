@@ -21,7 +21,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import formatTitle from '@directus/format-title';
 import { isEmpty } from 'lodash';
 import { computed } from 'vue';

@@ -67,7 +67,7 @@ export default {
 };
 </script>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { FieldNode } from '@/composables/use-field-tree';
 import formatTitle from '@directus/format-title';
 import { getFunctionsForType } from '@directus/utils';

@@ -2,7 +2,7 @@
 	<img ref="imageElement" :src="srcData" v-bind="attrsWithoutSrc" />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { omit } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, useAttrs, watch } from 'vue';

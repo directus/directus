@@ -23,7 +23,7 @@
 	</v-drawer>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { VALIDATION_TYPES } from '@/constants';
 import { APIError } from '@/types/error';

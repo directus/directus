@@ -32,7 +32,7 @@
 	</v-menu>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { localizedFormat } from '@/utils/localized-format';
 import { isValid, parse, parseISO } from 'date-fns';
 import { computed, ref, watch } from 'vue';

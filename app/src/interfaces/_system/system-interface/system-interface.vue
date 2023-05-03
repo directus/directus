@@ -11,7 +11,7 @@
 	/>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useExtensions } from '@/extensions';
 import { InterfaceConfig } from '@directus/types';
 import { computed, inject, ref, watch } from 'vue';

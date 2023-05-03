@@ -231,7 +231,7 @@
 	</sidebar-detail>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getPublicURL } from '@/utils/get-root-path';

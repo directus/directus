@@ -16,7 +16,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Revision } from '@/types/revisions';
 import { userName } from '@/utils/user-name';
 import { format } from 'date-fns';

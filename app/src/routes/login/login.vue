@@ -28,7 +28,7 @@
 	</public-view>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { DEFAULT_AUTH_PROVIDER, DEFAULT_AUTH_DRIVER } from '@/constants';
 import { useAppStore } from '@/stores/app';
 import { useServerStore } from '@/stores/server';

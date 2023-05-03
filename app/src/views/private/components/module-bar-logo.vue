@@ -18,7 +18,7 @@
 	</component>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useRequestsStore } from '@/stores/requests';
 import { useSettingsStore } from '@/stores/settings';
 import { computed, ref, toRefs, watch } from 'vue';

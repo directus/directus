@@ -35,7 +35,7 @@
 	</v-dialog>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 

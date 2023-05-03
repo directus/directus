@@ -137,7 +137,7 @@
 	</v-workspace-tile>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useExtensions } from '@/extensions';
 import { Vector2 } from '@/utils/vector2';
 import { FlowRaw } from '@directus/types';

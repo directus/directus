@@ -15,7 +15,7 @@
 	</sidebar-detail>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
 import { useSync } from '@directus/composables';

@@ -26,7 +26,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { toRefs } from 'vue';
 import { useAppStore } from '@/stores/app';
 import { useGroupable } from '@directus/composables';

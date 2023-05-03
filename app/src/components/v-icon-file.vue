@@ -5,7 +5,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 interface Props {
 	/** The extension type of the file */
 	ext: string;

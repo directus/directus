@@ -22,7 +22,7 @@
 	</v-menu>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useI18n } from 'vue-i18n';
 import { computed, watch, ref } from 'vue';
 import { Revision } from '@/types/revisions';

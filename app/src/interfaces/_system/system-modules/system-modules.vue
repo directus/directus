@@ -58,7 +58,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
 import { hideDragImage } from '@/utils/hide-drag-image';

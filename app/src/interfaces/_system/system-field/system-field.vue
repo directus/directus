@@ -16,7 +16,7 @@
 	/>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
 import { computed, inject, ref, watch } from 'vue';

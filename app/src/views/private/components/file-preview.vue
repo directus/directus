@@ -16,7 +16,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, computed } from 'vue';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { addTokenToURL } from '@/api';

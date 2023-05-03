@@ -35,7 +35,7 @@
 	</sidebar-detail>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useRevisions } from '@/composables/use-revisions';
 import { abbreviateNumber } from '@directus/utils';
 import { ref, toRefs, watch } from 'vue';

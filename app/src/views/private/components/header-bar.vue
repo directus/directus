@@ -36,7 +36,7 @@
 	</header>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
 

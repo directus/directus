@@ -15,7 +15,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useNotificationsStore } from '@/stores/notifications';
 
 const props = defineProps<{

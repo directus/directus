@@ -20,7 +20,7 @@
 	</user-popover>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { userName } from '@/utils/user-name';
 import { computed } from 'vue';
 

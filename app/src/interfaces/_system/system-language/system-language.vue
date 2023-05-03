@@ -8,7 +8,7 @@
 	/>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import availableLanguages from '@/lang/available-languages.yaml';
 import { useI18n } from 'vue-i18n';
 

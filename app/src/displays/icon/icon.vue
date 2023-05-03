@@ -2,7 +2,7 @@
 	<v-icon small :name="value" :style="style" :filled="filled" />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { isHex } from '@/utils/is-hex';
 import { computed } from 'vue';
 

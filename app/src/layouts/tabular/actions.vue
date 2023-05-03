@@ -6,7 +6,7 @@
 	</transition>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 defineProps<{
 	itemCount?: number;
 	showingCount: string;

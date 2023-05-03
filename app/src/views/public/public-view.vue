@@ -56,7 +56,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed } from 'vue';
 import { useServerStore } from '@/stores/server';
 import { storeToRefs } from 'pinia';

@@ -36,7 +36,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 type Folder = {
 	id: string;
 	name: string;

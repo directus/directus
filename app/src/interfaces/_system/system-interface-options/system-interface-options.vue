@@ -27,7 +27,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useExtension } from '@/composables/use-extension';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

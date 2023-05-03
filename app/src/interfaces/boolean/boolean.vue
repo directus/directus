@@ -15,7 +15,7 @@
 	/>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { i18n } from '@/lang';
 
 withDefaults(

@@ -12,7 +12,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Type } from '@directus/types';
 import { computed } from 'vue';
 import { useInsightsStore } from '@/stores/insights';

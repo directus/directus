@@ -23,7 +23,7 @@
 	</v-dialog>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { computed, ref, watch } from 'vue';
 

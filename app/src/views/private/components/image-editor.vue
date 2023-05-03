@@ -123,7 +123,7 @@
 	</v-drawer>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api, { addTokenToURL } from '@/api';
 import { useSettingsStore } from '@/stores/settings';
 import { getRootPath } from '@/utils/get-root-path';

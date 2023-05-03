@@ -7,7 +7,7 @@
 	/>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
 import formatTitle from '@directus/format-title';

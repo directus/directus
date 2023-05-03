@@ -33,7 +33,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
 import { storeToRefs } from 'pinia';

@@ -21,7 +21,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { computed } from 'vue';

@@ -51,7 +51,7 @@
 	</sidebar-detail>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { notify } from '@/utils/notify';

@@ -12,7 +12,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';

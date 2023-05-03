@@ -75,7 +75,7 @@
 	</v-menu>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -20,7 +20,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';

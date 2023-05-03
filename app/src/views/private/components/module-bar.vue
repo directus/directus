@@ -28,7 +28,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed } from 'vue';
 import ModuleBarLogo from './module-bar-logo.vue';
 import ModuleBarAvatar from './module-bar-avatar.vue';

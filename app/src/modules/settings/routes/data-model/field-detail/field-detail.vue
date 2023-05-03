@@ -38,7 +38,7 @@
 	</v-drawer>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { ref, computed, toRefs, watch } from 'vue';
 import { LocalType } from '@directus/types';
 import { useFieldDetailStore } from './store/';

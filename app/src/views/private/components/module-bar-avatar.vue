@@ -50,7 +50,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { addTokenToURL } from '@/api';
 import { useAppStore } from '@/stores/app';
 import { useNotificationsStore } from '@/stores/notifications';

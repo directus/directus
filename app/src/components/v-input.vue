@@ -61,7 +61,7 @@ export default {
 };
 </script>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';

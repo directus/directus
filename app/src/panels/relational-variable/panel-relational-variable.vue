@@ -36,7 +36,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useInsightsStore } from '@/stores/insights';

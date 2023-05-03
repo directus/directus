@@ -5,7 +5,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
 import Color from 'color';

@@ -24,7 +24,7 @@
 	</v-item-group>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Field, ValidationError } from '@directus/types';
 import { isEqual } from 'lodash';
 import { ref, watch } from 'vue';

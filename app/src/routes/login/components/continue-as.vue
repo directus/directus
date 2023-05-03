@@ -15,7 +15,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { logout } from '@/auth';
 import { hydrate } from '@/hydrate';

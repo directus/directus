@@ -19,7 +19,7 @@
 	</v-error-boundary>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useExtension } from '@/composables/use-extension';
 import { toRefs } from 'vue';
 

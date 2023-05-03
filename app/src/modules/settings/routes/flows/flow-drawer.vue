@@ -118,7 +118,7 @@
 	</v-drawer>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';

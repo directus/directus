@@ -181,7 +181,7 @@
 	</private-view>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';

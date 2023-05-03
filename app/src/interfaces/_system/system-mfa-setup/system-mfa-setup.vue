@@ -84,7 +84,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useTFASetup } from '@/composables/use-tfa-setup';
 import { useUserStore } from '@/stores/user';
 import { User } from '@directus/types';

@@ -12,7 +12,7 @@
 	</transition-group>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { toRefs } from 'vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import NotificationItem from './notification-item.vue';

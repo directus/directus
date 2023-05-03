@@ -14,7 +14,7 @@
 	</form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { RequestError } from '@/api';
 import { login } from '@/auth';
 import { translateAPIError } from '@/lang';

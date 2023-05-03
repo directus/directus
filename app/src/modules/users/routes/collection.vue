@@ -165,7 +165,7 @@
 	</component>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import UsersInvite from '@/views/private/components/users-invite.vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

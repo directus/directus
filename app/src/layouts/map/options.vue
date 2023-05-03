@@ -37,7 +37,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useAppStore } from '@/stores/app';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useSync } from '@directus/composables';

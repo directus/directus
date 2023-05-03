@@ -80,7 +80,7 @@
 	</v-drawer>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useRevisions } from '@/composables/use-revisions';
 import { useExtensions } from '@/extensions';
 import type { FlowRaw } from '@directus/types';

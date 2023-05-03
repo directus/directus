@@ -74,7 +74,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useElementSize } from '@directus/composables';
 import { useEventListener } from '@/composables/use-event-listener';
 import { useLocalStorage } from '@/composables/use-local-storage';

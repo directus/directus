@@ -6,7 +6,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useCollection } from '@directus/composables';
 import { toRefs } from 'vue';
 

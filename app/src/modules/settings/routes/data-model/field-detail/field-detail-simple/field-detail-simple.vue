@@ -38,7 +38,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed, toRefs, watch } from 'vue';
 import { Collection } from '@directus/types';
 import { useI18n } from 'vue-i18n';

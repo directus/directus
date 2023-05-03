@@ -177,7 +177,7 @@ export default {
 };
 </script>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { HeaderRaw } from '@/components/v-table/types';
 import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
 import { useShortcut } from '@/composables/use-shortcut';
