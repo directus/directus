@@ -6,32 +6,16 @@
 	<relationship-translations v-else-if="localType === 'translations'" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-import RelationshipM2o from './field-detail-advanced-relationship-m2o.vue';
-import RelationshipO2m from './field-detail-advanced-relationship-o2m.vue';
-import RelationshipM2m from './field-detail-advanced-relationship-m2m.vue';
-import RelationshipM2a from './field-detail-advanced-relationship-m2a.vue';
-import RelationshipTranslations from './field-detail-advanced-relationship-translations.vue';
-
+<script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useFieldDetailStore } from '../store';
+import RelationshipM2a from './field-detail-advanced-relationship-m2a.vue';
+import RelationshipM2m from './field-detail-advanced-relationship-m2m.vue';
+import RelationshipM2o from './field-detail-advanced-relationship-m2o.vue';
+import RelationshipO2m from './field-detail-advanced-relationship-o2m.vue';
+import RelationshipTranslations from './field-detail-advanced-relationship-translations.vue';
 
-export default defineComponent({
-	components: {
-		RelationshipM2o,
-		RelationshipO2m,
-		RelationshipM2m,
-		RelationshipM2a,
-		RelationshipTranslations,
-	},
-	setup() {
-		const fieldDetailStore = useFieldDetailStore();
+const fieldDetailStore = useFieldDetailStore();
 
-		const { collection, localType } = storeToRefs(fieldDetailStore);
-
-		return { collection, localType };
-	},
-});
+const { localType } = storeToRefs(fieldDetailStore);
 </script>
