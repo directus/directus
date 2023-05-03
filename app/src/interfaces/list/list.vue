@@ -130,7 +130,7 @@ const templateWithDefaults = computed(() =>
 
 const showAddNew = computed(() => {
 	if (props.disabled) return false;
-	if (props.value === undefined) return true;
+	if (props.value === null) return true;
 	if (props.limit === undefined) return true;
 	if (Array.isArray(props.value) && props.value.length < props.limit) return true;
 	return false;
@@ -177,11 +177,11 @@ const fieldsWithNames = computed(() =>
 
 const internalValue = computed({
 	get: () => {
-		if (props.fields && props.sort) return sortBy(value?.value, props.sort);
-		return value?.value;
+		if (props.fields && props.sort) return sortBy(value.value, props.sort);
+		return value.value;
 	},
 	set: (newVal) => {
-		value.value = props.fields && props.sort ? sortBy(value?.value, props.sort) : newVal;
+		value.value = props.fields && props.sort ? sortBy(value.value, props.sort) : newVal;
 	},
 });
 
@@ -238,7 +238,7 @@ function updateValues(index: number, updatedValues: any) {
 }
 
 function removeItem(item: Record<string, any>) {
-	if (value?.value) {
+	if (value.value) {
 		emitValue(internalValue.value?.filter((i) => i !== item));
 	} else {
 		emitValue();
