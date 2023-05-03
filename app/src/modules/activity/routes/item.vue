@@ -8,33 +8,33 @@
 			</v-notice>
 		</div>
 
-		<div v-else class="content">
+		<div v-else-if="item" class="content">
 			<!-- @TODO add final design -->
 			<p class="type-label">{{ t('user') }}:</p>
-			<user-popover v-if="item?.user" :user="item.user.id">
+			<user-popover v-if="item.user" :user="item.user.id">
 				{{ userName(item.user) }}
 			</user-popover>
 
 			<p class="type-label">{{ t('action') }}:</p>
-			<p>{{ item?.action_translated }}</p>
+			<p>{{ item.action_translated }}</p>
 
 			<p class="type-label">{{ t('date') }}:</p>
-			<p>{{ item?.timestamp }}</p>
+			<p>{{ item.timestamp }}</p>
 
 			<p class="type-label">{{ t('ip_address') }}:</p>
-			<p>{{ item?.ip }}</p>
+			<p>{{ item.ip }}</p>
 
 			<p class="type-label">{{ t('user_agent') }}:</p>
-			<p>{{ item?.user_agent }}</p>
+			<p>{{ item.user_agent }}</p>
 
 			<p class="type-label">{{ t('origin') }}:</p>
-			<p>{{ item?.origin }}</p>
+			<p>{{ item.origin }}</p>
 
 			<p class="type-label">{{ t('collection') }}:</p>
-			<p>{{ item?.collection }}</p>
+			<p>{{ item.collection }}</p>
 
 			<p class="type-label">{{ t('item') }}:</p>
-			<p>{{ item?.item }}</p>
+			<p>{{ item.item }}</p>
 		</div>
 
 		<template #actions>
