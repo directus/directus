@@ -18,9 +18,8 @@
 	</v-select>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
 import { i18n } from '@/lang';
 
 type Option = {
@@ -29,41 +28,22 @@ type Option = {
 	children?: Option[];
 };
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: [String, Number],
-			default: null,
-		},
-		choices: {
-			type: Array as PropType<Option[]>,
-			default: null,
-		},
-		icon: {
-			type: String,
-			default: null,
-		},
-		allowNone: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: () => i18n.global.t('select_an_item'),
-		},
-		allowOther: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['input'],
-	setup() {
-		const { t } = useI18n();
-		return { t };
-	},
-});
+withDefaults(
+	defineProps<{
+		value?: string | number;
+		disabled?: boolean;
+		choices?: Option[];
+		icon?: string;
+		allowNone?: boolean;
+		placeholder?: string;
+		allowOther?: boolean;
+	}>(),
+	{
+		placeholder: () => i18n.global.t('select_an_item'),
+	}
+);
+
+defineEmits(['input']);
+
+const { t } = useI18n();
 </script>
