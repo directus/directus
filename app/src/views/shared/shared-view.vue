@@ -40,15 +40,10 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-withDefaults(
-	defineProps<{
-		title?: string;
-		inline?: boolean;
-	}>(),
-	{
-		title: undefined,
-	}
-);
+defineProps<{
+	title?: string;
+	inline?: boolean;
+}>();
 
 const serverStore = useServerStore();
 
