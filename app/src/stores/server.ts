@@ -108,8 +108,8 @@ export const useServerStore = defineStore('serverStore', () => {
 		// or reset language for admin when they update it without having their own language set
 		if (
 			!currentUser ||
-			!('language' in currentUser) ||
-			(options?.isLanguageUpdated === true && !currentUser?.language)
+			(options?.isLanguageUpdated &&
+				(!('language' in currentUser) || ('language' in currentUser && !currentUser?.language)))
 		) {
 			await setLanguage(unref(info)?.project?.default_language ?? 'en-US');
 		}
