@@ -104,6 +104,9 @@ function useActivity(collection: string, primaryKey: string | number) {
 				return {
 					...comment,
 					display,
+				} as Activity & {
+					display: string;
+					user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
 				};
 			});
 
