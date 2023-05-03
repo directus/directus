@@ -102,20 +102,23 @@ const activeLayers = [
 
 const props = withDefaults(
 	defineProps<{
-		type?: 'geometry' | 'json' | 'csv' | 'string' | 'text';
+		value: Record<string, unknown> | unknown[] | string | null;
+		type: 'geometry' | 'json' | 'csv' | 'string' | 'text';
 		fieldData?: Field;
-		value?: Record<string, unknown> | [] | string;
 		loading?: boolean;
 		disabled?: boolean;
 		geometryType?: GeometryType;
-		defaultView: Record<string, unknown>;
+		defaultView?: Record<string, unknown>;
 	}>(),
 	{
+		loading: true,
 		defaultView: () => ({}),
 	}
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	(e: 'input', value: Record<string, unknown> | unknown[] | string | null): void;
+}>();
 
 const { t } = useI18n();
 const container = ref<HTMLElement | null>(null);
