@@ -49,17 +49,11 @@ import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
 import { useElementSize } from '@directus/composables';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue: string | null;
-		collection: string;
-		filter?: Filter | null;
-	}>(),
-	{
-		modelValue: null,
-		filter: null,
-	}
-);
+const props = defineProps<{
+	modelValue: string | null;
+	collection: string;
+	filter?: Filter | null;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: string | null): void;
