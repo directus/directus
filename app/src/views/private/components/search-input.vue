@@ -43,23 +43,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { ref, watch, computed, inject, Ref } from 'vue';
+import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { useElementSize } from '@directus/composables';
+import { Ref, computed, inject, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue: string | null;
-		collection: string;
-		filter?: Filter | null;
-	}>(),
-	{
-		modelValue: null,
-		filter: null,
-	}
-);
+const props = defineProps<{
+	modelValue: string | null;
+	collection: string;
+	filter?: Filter | null;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: string | null): void;
