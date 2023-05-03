@@ -68,16 +68,15 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useShortcut } from '@/composables/use-shortcut';
+import { Activity } from '@/types/activity';
 import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
-import { User } from '@directus/types';
 import axios, { CancelTokenSource } from 'axios';
 import { cloneDeep, throttle } from 'lodash';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Activity } from '@/types/activity';
 
 const props = withDefaults(
 	defineProps<{
@@ -119,7 +118,7 @@ watch(
 const saving = ref(false);
 const showMentionDropDown = ref(false);
 
-const searchResult = ref<User[]>([]);
+const searchResult = ref<{ first_name: string; last_name: string; email: string; id: string; avatar: string }[]>([]);
 const userPreviews = ref<Record<string, string>>({});
 
 watch(

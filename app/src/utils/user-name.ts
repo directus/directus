@@ -1,7 +1,7 @@
 import { i18n } from '@/lang';
 import { User } from '@directus/types';
 
-export function userName(user?: Partial<User>): string {
+export function userName(user?: Pick<User, 'first_name' | 'last_name' | 'email'>): string {
 	if (!user) {
 		return i18n.global.t('unknown_user') as string;
 	}
