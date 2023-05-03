@@ -721,12 +721,12 @@ operators:
   empty: 비었다
   nempty: 이(가) 비어 있지 않음
   all: '이(가) 이 키를 포함 : '
-  has: 다음 키 중 일부를 포함합니다.
-  intersects: 교차
-  nintersects: 교차하지 않음
-  intersects_bbox: 교차 경계 상자
-  nintersects_bbox: 경계 상자와 교차하지 않음
-  regex: RegExp와 일치
+  has: '이(가) 이 키중 일부를 포함 : '
+  intersects: '이(가) 교차함 :'
+  nintersects: '이(가) 교차하지 않음 :'
+  intersects_bbox: 이(가) 경계 상자와 교차함
+  nintersects_bbox: 이(가) 경계 상자와 교차하지 않음
+  regex: '이(가) 정규표현식과 일치 :'
 custom_validation_message: 사용자 지정 유효성 검사 메시지
 loading: 로드 중...
 drop_to_upload: 드롭하여 업로드
