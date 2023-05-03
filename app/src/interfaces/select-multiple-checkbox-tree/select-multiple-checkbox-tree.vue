@@ -47,7 +47,7 @@ type Choice = {
 
 withDefaults(
 	defineProps<{
-		value?: string[];
+		value: string[] | null;
 		disabled?: boolean;
 		choices?: Choice[];
 		valueCombining?: 'all' | 'branch' | 'leaf' | 'indeterminate' | 'exclusive';
