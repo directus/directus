@@ -123,7 +123,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-	(e: 'input', value: Settings['module_bar'] | null): void;
+	(e: 'input', value: Settings['module_bar']): void;
 }>();
 
 const { t } = useI18n();
