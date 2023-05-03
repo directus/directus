@@ -225,7 +225,7 @@ import { Alteration, CustomSyntax, applyEdit } from './edits';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string;
+		value: string | null;
 		disabled?: boolean;
 		placeholder?: string;
 		editorFont?: 'sans-serif' | 'serif' | 'monospace';
