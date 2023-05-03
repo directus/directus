@@ -13,12 +13,15 @@ import { useCollectionsStore } from '@/stores/collections';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps<{
-	value: string | null;
-	disabled?: boolean;
-	includeSystem?: boolean;
-	includeSingleton?: boolean;
-}>();
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		includeSystem?: boolean;
+		includeSingleton?: boolean;
+	}>(),
+	{ includeSingleton: true }
+);
 
 defineEmits<{
 	(e: 'input', value: string | null): void;

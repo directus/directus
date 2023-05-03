@@ -41,17 +41,12 @@ import { get } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		collection: string;
-		field: string;
-		value: Record<string, any> | Record<string, any>[] | null;
-		template: string;
-	}>(),
-	{
-		value: null,
-	}
-);
+const props = defineProps<{
+	collection: string;
+	field: string;
+	value: Record<string, any> | Record<string, any>[] | null;
+	template?: string;
+}>();
 
 const { t, te } = useI18n();
 

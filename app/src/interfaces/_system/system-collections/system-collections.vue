@@ -27,7 +27,7 @@ const props = withDefaults(
 );
 
 defineEmits<{
-	(e: 'input', value: null | string[]): void;
+	(e: 'input', value: string[] | null): void;
 }>();
 
 const { t } = useI18n();

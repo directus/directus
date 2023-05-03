@@ -15,9 +15,11 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from 'vue';
+
+export default defineComponent({
 	inheritAttrs: false,
-};
+});
 </script>
 
 <script setup lang="ts">
@@ -25,7 +27,7 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-	value?: string;
+	value: string | null;
 	disabled?: boolean;
 	placeholder?: string;
 	masked?: boolean;

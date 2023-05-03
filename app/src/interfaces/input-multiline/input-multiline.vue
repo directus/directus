@@ -28,7 +28,7 @@ import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string;
+		value: string | null;
 		clear?: boolean;
 		disabled?: boolean;
 		placeholder?: string;

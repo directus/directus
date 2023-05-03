@@ -51,13 +51,7 @@ const props = withDefaults(
 		}[];
 	}>(),
 	{
-		value: undefined,
 		font: 'sans-serif',
-		prefix: undefined,
-		suffix: undefined,
-		color: undefined,
-		background: undefined,
-		icon: undefined,
 		conditionalFormatting: () => [],
 	}
 );

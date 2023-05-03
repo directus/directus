@@ -39,7 +39,7 @@ import { computed } from 'vue';
 
 const props = withDefaults(
 	defineProps<{
-		value?: string | number;
+		value: string | number | null;
 		type?: string;
 		clear?: boolean;
 		disabled?: boolean;
