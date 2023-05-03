@@ -44,7 +44,9 @@ const props = defineProps<{
 	dashboard?: Dashboard;
 }>();
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: boolean): void;
+}>();
 
 const { t } = useI18n();
 
