@@ -4,12 +4,6 @@
 	</div>
 </template>
 
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 withDefaults(
 	defineProps<{
@@ -23,6 +17,14 @@ withDefaults(
 		color: undefined,
 	}
 );
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+	inheritAttrs: false,
+});
 </script>
 
 <style scoped>

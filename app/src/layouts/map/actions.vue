@@ -6,17 +6,19 @@
 	</transition>
 </template>
 
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 defineProps<{
 	itemCount?: number;
 	showingCount: string;
 }>();
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+	inheritAttrs: false,
+});
 </script>
 
 <style lang="scss" scoped>

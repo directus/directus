@@ -44,12 +44,6 @@
 	</v-detail>
 </template>
 
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 
@@ -81,6 +75,14 @@ const imageSourceWritable = useSync(props, 'imageSource', emit);
 const titleWritable = useSync(props, 'title', emit);
 const subtitleWritable = useSync(props, 'subtitle', emit);
 const imageFitWritable = useSync(props, 'imageFit', emit);
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+	inheritAttrs: false,
+});
 </script>
 
 <style lang="scss" scoped>

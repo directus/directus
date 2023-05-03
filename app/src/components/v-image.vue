@@ -2,12 +2,6 @@
 	<img ref="imageElement" :src="srcData" v-bind="attrsWithoutSrc" />
 </template>
 
-<script lang="ts">
-export default {
-	inheritAttrs: false,
-};
-</script>
-
 <script setup lang="ts">
 import api from '@/api';
 import { omit } from 'lodash';
@@ -89,4 +83,12 @@ onUnmounted(() => {
 });
 
 const attrsWithoutSrc = computed(() => omit(attrs, ['src']));
+</script>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+	inheritAttrs: false,
+});
 </script>
