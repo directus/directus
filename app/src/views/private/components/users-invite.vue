@@ -47,15 +47,10 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { APIError } from '@/types/error';
 import api from '@/api';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue: boolean;
-		role?: string | null;
-	}>(),
-	{
-		role: null,
-	}
-);
+const props = defineProps<{
+	modelValue: boolean;
+	role?: string;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: boolean): void;
@@ -65,7 +60,7 @@ const { t } = useI18n();
 
 const emails = ref<string>('');
 const roles = ref<Record<string, any>[]>([]);
-const roleSelected = ref<string | null>(props.role);
+const roleSelected = ref<string | undefined>(props.role);
 const loading = ref(false);
 
 const uniqueValidationErrors = ref([]);
