@@ -73,7 +73,7 @@ type Option = {
 
 const props = withDefaults(
 	defineProps<{
-		value?: string[];
+		value: string[] | null;
 		disabled?: boolean;
 		choices?: Option[];
 		allowOther?: boolean;
