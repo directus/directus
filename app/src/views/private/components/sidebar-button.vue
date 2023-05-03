@@ -6,7 +6,7 @@
 		@click="$emit('click', $event)"
 	>
 		<div class="icon">
-			<v-icon :name="icon" />
+			<v-icon :name="icon!" />
 		</div>
 		<div v-if="sidebarOpen" class="title">
 			<slot />
@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useAppStore } from '@/stores/app';
 import { toRefs } from 'vue';
+import { useAppStore } from '@/stores/app';
 
 withDefaults(
 	defineProps<{

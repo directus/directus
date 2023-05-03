@@ -53,7 +53,7 @@ import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 const props = defineProps<{
 	revisions: Revision[];
 	current?: number | string | null;
-	active?: boolean;
+	active: boolean;
 }>();
 
 const emit = defineEmits<{
