@@ -46,10 +46,12 @@ import { useI18n } from 'vue-i18n';
 import Repeater from './list.vue';
 
 const props = defineProps<{
-	value?: Record<string, any>;
+	value: Record<string, any> | null;
 }>();
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	(e: 'input', value: Record<string, any>[] | null): void;
+}>();
 
 const { t } = useI18n();
 
@@ -67,7 +69,7 @@ const repeaterValue = computed({
 
 		emit('input', {
 			...(props.value || {}),
-			fields: fields,
+			fields,
 		});
 	},
 });
