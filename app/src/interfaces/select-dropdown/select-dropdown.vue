@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { i18n } from '@/lang';
+import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
@@ -30,7 +30,7 @@ type Option = {
 
 withDefaults(
 	defineProps<{
-		value?: string | number;
+		value: string | number | null;
 		disabled?: boolean;
 		choices?: Option[];
 		icon?: string;

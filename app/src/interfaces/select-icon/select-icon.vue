@@ -53,7 +53,7 @@ import icons from './icons.json';
 
 withDefaults(
 	defineProps<{
-		value?: string;
+		value: string | null;
 		disabled?: boolean;
 		width?: string;
 	}>(),

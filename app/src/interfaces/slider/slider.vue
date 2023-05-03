@@ -15,7 +15,7 @@
 <script setup lang="ts">
 withDefaults(
 	defineProps<{
-		value?: number;
+		value: number | null;
 		disabled?: boolean;
 		minValue?: number;
 		maxValue?: number;

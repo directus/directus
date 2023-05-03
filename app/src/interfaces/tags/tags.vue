@@ -53,8 +53,8 @@ import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
+		value: string[] | string | null;
 		disabled?: boolean;
-		value?: string[] | string;
 		placeholder?: string;
 		whitespace?: string;
 		capitalization?: 'uppercase' | 'lowercase' | 'auto-format';
