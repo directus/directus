@@ -95,8 +95,11 @@ async function onSubmit() {
 
 		const redirectQuery = router.currentRoute.value.query.redirect as string;
 
-		// Stores are hydrated after login
-		const lastPage = userStore.currentUser?.last_page;
+		let lastPage: string | undefined;
+
+		if (userStore.currentUser && 'last_page' in userStore.currentUser) {
+			lastPage = userStore.currentUser.last_page;
+		}
 
 		router.push(redirectQuery || lastPage || '/content');
 	} catch (err: any) {
