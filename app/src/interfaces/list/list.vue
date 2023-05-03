@@ -94,7 +94,7 @@ import { isEqual, sortBy } from 'lodash';
 
 const props = withDefaults(
 	defineProps<{
-		value?: Record<string, any>[];
+		value: Record<string, unknown>[] | null;
 		fields?: Partial<Field>[];
 		template?: string;
 		addLabel?: string;
@@ -114,7 +114,9 @@ const props = withDefaults(
 	}
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	(e: 'input', value: Record<string, unknown>[] | null): void;
+}>();
 
 const { t } = useI18n();
 
@@ -269,7 +271,7 @@ function addNew() {
 	active.value = (internalValue.value || []).length;
 }
 
-function emitValue(value?: any[]) {
+function emitValue(value?: Record<string, unknown>[]) {
 	if (!value || value.length === 0) {
 		return emit('input', null);
 	}
