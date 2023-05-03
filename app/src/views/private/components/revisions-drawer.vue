@@ -41,25 +41,20 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { computed, ref, watchEffect } from 'vue';
-import { isEqual } from 'lodash';
-import { useSync } from '@directus/composables';
 import { Revision } from '@/types/revisions';
+import { useSync } from '@directus/composables';
+import { isEqual } from 'lodash';
+import { computed, ref, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 
-const props = withDefaults(
-	defineProps<{
-		revisions: Revision[];
-		current?: number | string | null;
-		active: boolean;
-	}>(),
-	{
-		current: null,
-	}
-);
+const props = defineProps<{
+	revisions: Revision[];
+	current?: number | string | null;
+	active: boolean;
+}>();
 
 const emit = defineEmits<{
 	(e: 'revert', value: Record<string, unknown>): void;
