@@ -68,14 +68,6 @@ import { useRouter } from 'vue-router';
 import { parseISO } from 'date-fns';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 
-const props = defineProps<{
-	modelValue?: boolean;
-}>();
-
-defineEmits<{
-	(e: 'update:modelValue', value: boolean): void;
-}>();
-
 const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
@@ -111,7 +103,7 @@ const tableHeaders = ref<TableHeader[]>([
 
 fetchNotifications();
 
-watch([() => props.modelValue, tab], () => fetchNotifications());
+watch(tab, () => fetchNotifications());
 
 async function fetchNotifications() {
 	loading.value = true;
