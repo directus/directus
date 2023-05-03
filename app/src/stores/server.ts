@@ -3,6 +3,7 @@ import { AUTH_SSO_DRIVERS, DEFAULT_AUTH_DRIVER, DEFAULT_AUTH_PROVIDER } from '@/
 import { i18n } from '@/lang';
 import { setLanguage } from '@/lang/set-language';
 import { useUserStore } from '@/stores/user';
+import { AuthProvider } from '@/types/login';
 import formatTitle from '@directus/format-title';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { computed, reactive, unref } from 'vue';
@@ -51,7 +52,7 @@ export type Info = {
 };
 
 export type Auth = {
-	providers: { driver: string; name: string }[];
+	providers: AuthProvider[];
 	disableDefault: boolean;
 };
 
