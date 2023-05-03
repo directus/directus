@@ -42,7 +42,6 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
-		"@directus/storage": "workspace:*",
 		"date-fns": "2.29.3",
 		"fs-extra": "11.1.1",
 		"joi": "17.9.1",
@@ -54,7 +53,6 @@
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",
 		"@directus/types": "workspace:*",
-		"@ngneat/falso": "6.4.0",
 		"@types/fs-extra": "11.0.1",
 		"@types/lodash-es": "4.17.7",
 		"@types/node": "18.15.13",

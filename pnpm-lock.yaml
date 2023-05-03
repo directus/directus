@@ -1285,9 +1285,6 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
-      '@directus/storage':
-        specifier: workspace:*
-        version: link:../storage
       date-fns:
         specifier: 2.29.3
         version: 2.29.3
@@ -1316,9 +1313,6 @@ importers:
       '@directus/types':
         specifier: workspace:*
         version: link:../types
-      '@ngneat/falso':
-        specifier: 6.4.0
-        version: 6.4.0
       '@types/fs-extra':
         specifier: 11.0.1
         version: 11.0.1
