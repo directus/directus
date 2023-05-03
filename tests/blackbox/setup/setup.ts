@@ -96,8 +96,9 @@ export default async (): Promise<void> => {
 											writeFileSync(__dirname + `/../server-log-${vendor}-no-cache.txt`, serverNoCacheOutput);
 										}
 
-										if (code !== null)
+										if (code !== null) {
 											throw new Error(`Directus-${vendor}-no-cache server failed: \n ${serverNoCacheOutput}`);
+										}
 									});
 
 									// Give the server some time to start

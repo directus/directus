@@ -197,7 +197,7 @@ export function getTriggers() {
 					copyable: true,
 				},
 			],
-			options: ({ async }) => [
+			options: ({ async, method }) => [
 				{
 					field: 'method',
 					name: t('triggers.webhook.method'),
@@ -253,6 +253,19 @@ export function getTriggers() {
 							allowOther: true,
 						},
 						hidden: async,
+					},
+				},
+				{
+					field: 'cacheEnabled',
+					name: '$t:operations.trigger.cache',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						hidden: method && method !== 'GET',
+						interface: 'toggle',
+					},
+					schema: {
+						default_value: true,
 					},
 				},
 			],

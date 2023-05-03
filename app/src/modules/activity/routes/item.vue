@@ -123,8 +123,10 @@ export default defineComponent({
 				item.value = response.data.data;
 
 				if (item.value) {
-					if (te(`field_options.directus_activity.${item.value.action}`))
+					if (te(`field_options.directus_activity.${item.value.action}`)) {
 						item.value.action_translated = t(`field_options.directus_activity.${item.value.action}`);
+					}
+
 					item.value.timestamp = new Date(item.value.timestamp).toLocaleString(i18n.global.locale.value);
 				}
 			} catch (err: any) {
