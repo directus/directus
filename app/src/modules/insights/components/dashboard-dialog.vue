@@ -39,15 +39,10 @@ import { isEqual } from 'lodash';
 import { reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue?: boolean;
-		dashboard?: Dashboard;
-	}>(),
-	{
-		modelValue: false,
-	}
-);
+const props = defineProps<{
+	modelValue?: boolean;
+	dashboard?: Dashboard;
+}>();
 
 const emit = defineEmits(['update:modelValue']);
 
