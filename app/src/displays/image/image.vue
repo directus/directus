@@ -11,7 +11,7 @@
 	<value-null v-else />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue';
 
 type Image = {

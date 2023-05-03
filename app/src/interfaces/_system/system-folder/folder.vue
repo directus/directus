@@ -43,7 +43,7 @@
 	</v-menu>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Folder, useFolders } from '@/composables/use-folders';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

@@ -19,7 +19,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';

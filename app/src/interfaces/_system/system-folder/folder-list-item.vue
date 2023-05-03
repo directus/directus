@@ -36,7 +36,7 @@
 	</v-list-group>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 type Folder = {
 	id: string;
 	name: string;
@@ -56,12 +56,4 @@ withDefaults(
 defineEmits<{
 	(e: 'click', folderId: Folder['id']): void;
 }>();
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	name: 'FolderListItem',
-});
 </script>

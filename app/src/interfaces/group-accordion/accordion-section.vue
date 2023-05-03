@@ -33,7 +33,7 @@
 	</v-item>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Field, ValidationError } from '@directus/types';
 import { isNil, merge } from 'lodash';
 import { computed } from 'vue';

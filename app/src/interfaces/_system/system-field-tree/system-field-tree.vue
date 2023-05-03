@@ -19,7 +19,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useFieldTree } from '@/composables/use-field-tree';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
