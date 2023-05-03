@@ -74,17 +74,12 @@ import { appMinimalPermissions, appRecommendedPermissions } from '../../app-perm
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 
-const props = withDefaults(
-	defineProps<{
-		role?: string;
-		// the permission row primary key in case we're on the permission detail modal view
-		permission?: string;
-		appAccess?: boolean;
-	}>(),
-	{
-		appAccess: false,
-	}
-);
+const props = defineProps<{
+	role?: string;
+	// the permission row primary key in case we're on the permission detail modal view
+	permission?: string;
+	appAccess?: boolean;
+}>();
 
 const { t } = useI18n();
 
