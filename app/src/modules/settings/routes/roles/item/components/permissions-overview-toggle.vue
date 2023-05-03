@@ -97,12 +97,14 @@ const permission = computed(() => getPermission(props.action));
 
 const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 	if (permission.value === undefined) return 'none';
+
 	if (
 		permission.value.fields?.includes('*') &&
 		Object.keys(permission.value.permissions || {}).length === 0 &&
 		Object.keys(permission.value.validation || {}).length === 0
-	)
+	) {
 		return 'all';
+	}
 
 	return 'custom';
 });

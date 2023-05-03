@@ -3,8 +3,8 @@
 Heya! Welcome to Directus, and thank you for taking the time to contribute back to Open Source Software! ❤️ We want
 everybody to be able to contribute to Directus, no matter your background or expertise. In order to facilitate that,
 we've put together a couple tips and tricks below. Our team truly appreciates every single contributor, community
-member, GitHub star, pull-request, bug report, and feature request. Keeping Directus completely free and open-source is
-our way of saying: **Thank you!**
+member, GitHub star, pull-request, bug report, and feature request. Keeping Directus completely open-source is our way
+of saying: **Thank you!**
 
 > We're here to help!
 >
@@ -66,12 +66,19 @@ project.
 
 ### Pull Requests
 
-Issues marked "Community" are ready to be implemented by anybody at any point! If you're looking to implement an issue that doesn't have that label, please make sure to ping the maintainers before getting started!
+Issues marked "Community" are ready to be implemented by anybody at any point! If you're looking to implement an issue
+that doesn't have that label, please make sure to ping the maintainers before getting started!
 
 #### Contributor License Agreement
 
 All code contributors are required to sign the Contributor License Agreement (CLA). When you start a pull request, a
 GitHub Action will prompt you to review the CLA and sign it by adding your name to contributors.yml
+
+#### Changesets
+
+To properly generate changelogs and determine the right version number after a change is merged, we rely on
+[changesets](https://github.com/changesets/changesets). Each PR should include a changeset that describes whether the
+change is a patch/minor/major version bump, and describe what the change is.
 
 #### Bug Fixes
 

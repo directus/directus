@@ -68,6 +68,7 @@ import { nanoid } from 'nanoid';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
+import { translate } from '@/utils/translate-object-values';
 
 type PreviewExtra = {
 	to: string;
@@ -186,7 +187,7 @@ function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
 					...part,
 					to: part.url,
 					icon: part.icon,
-					name: part.name,
+					name: translate(part.name),
 				};
 			}
 

@@ -1388,6 +1388,9 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  mail:
+    template: Predloga
+    data: Podatki
   notification:
     recipient: Uporabnik
   request:

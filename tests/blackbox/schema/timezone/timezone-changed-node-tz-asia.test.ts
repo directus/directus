@@ -31,9 +31,16 @@ describe('schema', () => {
 	const isWindows = ['win32', 'win64'].includes(process.platform);
 
 	const newTzOffset = currentTzOffset !== -540 ? -540 : -240;
+	let newTz: string;
 
 	// Different timezone format for Windows
-	const newTz = isWindows ? String(newTzOffset * 60) : newTzOffset === -540 ? 'Asia/Seoul' : 'Asia/Dubai';
+	if (isWindows) {
+		newTz = String(newTzOffset * 60);
+	} else if (newTzOffset === -540) {
+		newTz = 'Asia/Seoul';
+	} else {
+		newTz = 'Asia/Dubai';
+	}
 
 	const sampleDates: SchemaTimezoneTypesObject[] = [];
 
