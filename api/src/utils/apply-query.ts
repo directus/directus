@@ -779,13 +779,6 @@ export async function applySearch(
 
 function validateNumber(value: string, parsed: number) {
 	if (isNaN(parsed) || !Number.isFinite(parsed)) return false;
-
-	// compare without the decimal point
-	if (value.includes('.')) {
-		value = value.replace('.', '');
-		parsed = Number(value);
-	}
-
 	return String(parsed) === value;
 }
 

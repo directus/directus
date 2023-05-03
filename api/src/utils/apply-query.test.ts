@@ -85,7 +85,7 @@ describe('applySearch', () => {
 		relations: [],
 	};
 
-	test.each(['0x56071c902718e681e274DB0AaC9B4Ed2d027924d', '0b11111', '0.42e3', 'Infinity'])(
+	test.each(['0x56071c902718e681e274DB0AaC9B4Ed2d027924d', '0b11111', '0.42e3', 'Infinity', '42.000'])(
 		'Prevent %s from being cast to number',
 		async (number) => {
 			const db = mockDatabase();
@@ -104,7 +104,7 @@ describe('applySearch', () => {
 		}
 	);
 
-	test.each(['1234', '-128', '12.34', '42.000'])('Casting number %s', async (number) => {
+	test.each(['1234', '-128', '12.34'])('Casting number %s', async (number) => {
 		const db = mockDatabase();
 
 		db['andWhere'].mockImplementation((callback: () => void) => {
