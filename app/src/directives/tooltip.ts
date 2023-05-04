@@ -51,6 +51,7 @@ export function createEnterHandler(element: HTMLElement, binding: DirectiveBindi
 			updateTooltip(element, binding, tooltip);
 		} else {
 			clearTimeout(tooltipTimer);
+
 			tooltipTimer = window.setTimeout(() => {
 				animateIn(tooltip);
 				updateTooltip(element, binding, tooltip);

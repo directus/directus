@@ -86,6 +86,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const shape = createShape(pkType);
+
 					const insertedShape = await CreateItem(vendor, {
 						collection: localCollectionShapes,
 						item: {
@@ -143,6 +144,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const shape = createShape(pkType);
+
 					const insertedShape = await CreateItem(vendor, {
 						collection: localCollectionShapes,
 						item: {
@@ -196,6 +198,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data.children).toHaveLength(4);
+
 					for (const child of response.body.data.children) {
 						if (typeof child.item === 'object') {
 							expect(child.item).toEqual(
@@ -208,6 +211,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(gqlResponse.statusCode).toEqual(200);
 					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(4);
+
 					for (const child of gqlResponse.body.data[localCollectionShapes][0].children) {
 						if (child.item.__typename === localCollectionCircles) {
 							expect(child.item).toEqual(
@@ -231,6 +235,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const shape = createShape(pkType);
+
 					const insertedShape = await CreateItem(vendor, {
 						collection: localCollectionShapes,
 						item: {
@@ -286,6 +291,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data.children).toHaveLength(4);
+
 					for (const child of response.body.data.children) {
 						if (typeof child.item === 'object') {
 							expect(child.item).toEqual(
@@ -300,6 +306,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(gqlResponse.statusCode).toEqual(200);
 					expect(gqlResponse.body.data[localCollectionShapes][0].children).toHaveLength(4);
+
 					for (const child of gqlResponse.body.data[localCollectionShapes][0].children) {
 						if (child.item.__typename === localCollectionCircles) {
 							expect(child.item).toEqual(
@@ -329,6 +336,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Setup
 						const shape = createShape(pkType);
 						shape.name = 'shape-m2a-top-' + uuid();
+
 						const insertedShape = await CreateItem(vendor, {
 							collection: localCollectionShapes,
 							item: shape,
@@ -388,9 +396,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionShapes][0]).toMatchObject({
 							id: String(insertedShape.id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
@@ -405,6 +415,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						square.name = 'square-m2a-' + uuid();
 						const shape = createShape(pkType);
 						shape.name = 'shape-m2a-' + uuid();
+
 						const insertedShape = await CreateItem(vendor, {
 							collection: localCollectionShapes,
 							item: {
@@ -494,9 +505,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionShapes][0]).toMatchObject({
 							id: String(insertedShape.id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
@@ -513,6 +526,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						square.name = 'square-m2a-top-fn-' + uuid();
 						const shape = createShape(pkType);
 						shape.name = 'shape-m2a-top-fn-' + uuid();
+
 						const insertedShape = await CreateItem(vendor, {
 							collection: localCollectionShapes,
 							item: {
@@ -527,6 +541,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						const shape2 = createShape(pkType);
 						shape2.name = 'shape-m2a-top-fn-' + uuid();
+
 						const insertedShape2 = await CreateItem(vendor, {
 							collection: localCollectionShapes,
 							item: {
@@ -615,15 +630,19 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionShapes][0]).toMatchObject({
 							id: String(insertedShape.id),
 						});
+
 						expect(gqlResponse.body.data[localCollectionShapes][0].children.length).toBe(1);
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse2.body.data[localCollectionShapes].length).toBe(1);
+
 						expect(gqlResponse2.body.data[localCollectionShapes][0]).toMatchObject({
 							id: String(insertedShape2.id),
 						});
+
 						expect(gqlResponse2.body.data[localCollectionShapes][0].children.length).toBe(2);
 					});
 				});
@@ -640,6 +659,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							circle.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
 							const shape = createShape(pkType);
 							shape.name = 'shape-m2a-fn-' + uuid();
+
 							const insertedShape = await CreateItem(vendor, {
 								collection: localCollectionShapes,
 								item: {
@@ -764,11 +784,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionShapes][0]).toMatchObject({
 							id: String(retrievedShapes[0][0].id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse2.body.data[localCollectionShapes].length).toBe(1);
+
 						expect(gqlResponse2.body.data[localCollectionShapes][0]).toMatchObject({
 							id: String(retrievedShapes[1][0].id),
 						});
@@ -849,6 +872,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
 								gqlResponse2.body.data[localCollectionShapes].reverse()
 							);
@@ -916,11 +940,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
@@ -930,17 +956,21 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
 								gqlResponse2.body.data[localCollectionShapes]
 							);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
 								gqlResponse2.body.data[localCollectionShapes]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.name.slice(-1));
@@ -961,6 +991,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								circle.name = 'circle-m2a-sort-' + val;
 								const shape = createShape(pkType);
 								shape.name = 'shape-m2a-sort-' + uuid();
+
 								await CreateItem(vendor, {
 									collection: localCollectionShapes,
 									item: {
@@ -1031,6 +1062,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 							if (vendor === 'mysql5') {
 								let lastIndex = -1;
+
 								for (const item of response2.body.data.reverse()) {
 									const foundIndex = findIndex(response.body.data, { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1043,6 +1075,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								lastIndex = -1;
+
 								for (const item of gqlResponse2.body.data[localCollectionShapes].reverse()) {
 									const foundIndex = findIndex(gqlResponse.body.data[localCollectionShapes], { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1053,6 +1086,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										lastIndex = foundIndex;
 									}
 								}
+
 								return;
 							}
 
@@ -1060,6 +1094,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data).toEqual(response2.body.data.reverse());
 
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
 								gqlResponse2.body.data[localCollectionShapes].reverse()
 							);
@@ -1154,6 +1189,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(parseInt(item.children[0].item.name.slice(-1)));
 
@@ -1172,6 +1208,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(parseInt(item.children[0].item.name.slice(-1)));
 
@@ -1188,11 +1225,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.children[0].item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.children[0].item.name.slice(-1));
@@ -1200,14 +1239,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
 								gqlResponse2.body.data[localCollectionShapes]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.children[0].item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.children[0].item.name.slice(-1));
@@ -1229,9 +1271,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const shape = createShape(pkType);
 								shape.name = 'shape-m2a-top-sort-fn-' + uuid();
+
 								shape.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
 									.slice(0, 19);
+
 								shapes.push(shape);
 							}
 
@@ -1294,6 +1338,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
 								gqlResponse2.body.data[localCollectionShapes].reverse()
 							);
@@ -1365,11 +1410,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
@@ -1379,14 +1426,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
 								gqlResponse2.body.data[localCollectionShapes]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
@@ -1405,11 +1455,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const circle = createCircle(pkType);
 								circle.name = 'circle-m2a-sort-fn-' + uuid();
+
 								circle.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
 									.slice(0, 19);
+
 								const shape = createCircle(pkType);
 								shape.name = 'shape-m2a-sort-fn-' + uuid();
+
 								await CreateItem(vendor, {
 									collection: localCollectionShapes,
 									item: {
@@ -1478,6 +1531,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Oddity in MySQL5, looks to be indexing delays resulting in missing values
 							if (vendor === 'mysql5') {
 								let lastIndex = -1;
+
 								for (const item of response2.body.data.reverse()) {
 									const foundIndex = findIndex(response.body.data, { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1490,6 +1544,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								}
 
 								lastIndex = -1;
+
 								for (const item of gqlResponse2.body.data[localCollectionShapes].reverse()) {
 									const foundIndex = findIndex(gqlResponse.body.data[localCollectionShapes], { id: item.id });
 									if (foundIndex === -1) continue;
@@ -1500,6 +1555,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										lastIndex = foundIndex;
 									}
 								}
+
 								return;
 							}
 
@@ -1507,6 +1563,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data).toEqual(response2.body.data.reverse());
 
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(5);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).toEqual(
 								gqlResponse2.body.data[localCollectionShapes].reverse()
 							);
@@ -1605,6 +1662,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.children[0].item.test_datetime_year.toString().slice(-1))
@@ -1625,6 +1683,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(data.response.length).toBeLessThanOrEqual(expectedLength);
 
 									let lastIndex = -1;
+
 									for (const item of data.response) {
 										const foundIndex = data.expected.indexOf(
 											parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1))
@@ -1643,11 +1702,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.children[0].item.test_datetime_year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.children[0].item.test_datetime_year.toString().slice(-1));
@@ -1655,14 +1716,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							).toEqual(expectedDesc);
 
 							expect(gqlResponse.body.data[localCollectionShapes].length).toBe(expectedLength);
+
 							expect(gqlResponse.body.data[localCollectionShapes]).not.toEqual(
 								gqlResponse2.body.data[localCollectionShapes]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionShapes].map((item: any) => {
 									return parseInt(item.children[0].item.test_datetime_func.year.toString().slice(-1));
@@ -1746,6 +1810,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
+
 								expect(response.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
@@ -1767,6 +1832,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 								for (let i = 0; i < count; i++) {
 									shapes.push(createShape(pkType));
+
 									shapes[i].children = Array(countNested)
 										.fill(0)
 										.map((_, index) => {
@@ -1809,6 +1875,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 								for (let i = 0; i < count; i++) {
 									shapes.push(createShape(pkType));
+
 									shapes[i].children = Array(countNested)
 										.fill(0)
 										.map((_, index) => {
@@ -1829,6 +1896,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
+
 								expect(response.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
@@ -1852,6 +1920,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 								for (let i = 0; i < count; i++) {
 									const shape: any = createShape(pkType);
+
 									shape.children = Array(countUpdate + countDelete)
 										.fill(0)
 										.map((_, index) => {
@@ -1861,6 +1930,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 												return { collection: localCollectionSquares, item: createSquare(pkType) };
 											}
 										});
+
 									shapesID.push((await CreateItem(vendor, { collection: localCollectionShapes, item: shape })).id);
 								}
 
@@ -1872,6 +1942,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 								for (const shape of shapes) {
 									const children = shape.children;
+
 									shape.children = {
 										create: Array(countCreate)
 											.fill(0)
@@ -1920,6 +1991,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 								for (let i = 0; i < count; i++) {
 									const shape: any = createShape(pkType);
+
 									shape.children = Array(countUpdate + countDelete)
 										.fill(0)
 										.map((_, index) => {
@@ -1929,6 +2001,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 												return { collection: localCollectionSquares, item: createSquare(pkType) };
 											}
 										});
+
 									shapesID.push((await CreateItem(vendor, { collection: localCollectionShapes, item: shape })).id);
 								}
 
@@ -1940,6 +2013,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 								for (const shape of shapes) {
 									const children = shape.children;
+
 									shape.children = {
 										create: Array(countCreate)
 											.fill(0)
@@ -1964,6 +2038,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
+
 								expect(response.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);

@@ -52,8 +52,12 @@
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
+				:disabled="!updateAllowed"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
 				show-resize
 				@click:row="editRow"
+				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
@@ -76,7 +80,7 @@
 					</router-link>
 
 					<v-icon
-						v-if="!disabled && selectAllowed"
+						v-if="!disabled && (deleteAllowed || isLocalItem(item))"
 						v-tooltip="t(getDeselectTooltip(item))"
 						class="deselect"
 						:class="{ deleted: item.$type === 'deleted' }"
@@ -111,6 +115,7 @@
 						<v-list-item
 							block
 							clickable
+							:disabled="disabled"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -134,7 +139,7 @@
 								<v-icon name="launch" />
 							</router-link>
 							<v-icon
-								v-if="!disabled && selectAllowed"
+								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
 								v-tooltip="t(getDeselectTooltip(element))"
 								class="deselect"
 								:name="getDeselectIcon(element)"
@@ -173,7 +178,7 @@
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled"
+			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -211,12 +216,11 @@ import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, get, clamp, isNil, set } from 'lodash';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -225,7 +229,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		width: string;
-		layout: LAYOUTS;
+		layout?: LAYOUTS;
 		tableSpacing?: 'compact' | 'cozy' | 'comfortable';
 		fields?: Array<string>;
 		template?: string | null;
@@ -274,10 +278,13 @@ const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
 
 	if (props.template) return props.template;
-	if (relationInfo.value.junctionCollection.meta?.display_template)
+
+	if (relationInfo.value.junctionCollection.meta?.display_template) {
 		return relationInfo.value.junctionCollection.meta.display_template;
+	}
 
 	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
+
 	if (relatedDisplayTemplate) {
 		const regex = /({{.*?}})/g;
 		const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
@@ -328,12 +335,15 @@ const query = computed<RelationQueryMultiple>(() => {
 	if (!relationInfo.value) {
 		return q;
 	}
+
 	if (searchFilter.value) {
 		q.filter = searchFilter.value;
 	}
+
 	if (search.value) {
 		q.search = search.value;
 	}
+
 	if (sort.value) {
 		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
 	}
@@ -355,7 +365,7 @@ const {
 	loading,
 	selected,
 	isItemSelected,
-	localDelete,
+	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
@@ -383,11 +393,13 @@ watch(
 		const junctionCollection = relationInfo.value.junctionCollection.collection;
 
 		const contentWidth: Record<string, number> = {};
+
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
 			props.fields.forEach((key) => {
 				if (!contentWidth[key]) {
 					contentWidth[key] = 5;
 				}
+
 				if (String(item[key]).length > contentWidth[key]) {
 					contentWidth[key] = String(item[key]).length;
 				}
@@ -427,13 +439,13 @@ const allowDrag = computed(
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
 function getDeselectTooltip(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (localDelete(item)) return 'delete_item';
+	if (isLocalItem(item)) return 'delete_item';
 	return 'remove_item';
 }
 
@@ -457,6 +469,7 @@ function sortItems(items: DisplayItem[]) {
 		if (!isNil(junctionId)) {
 			changes[info.junctionPrimaryKeyField.field] = junctionId;
 		}
+
 		if (!isNil(relatedId)) {
 			set(changes, info.junctionField.field + '.' + info.relatedPrimaryKeyField.field, relatedId);
 		}
@@ -537,6 +550,7 @@ function deleteItem(item: DisplayItem) {
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
+
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
@@ -587,43 +601,14 @@ function getLinkForItem(item: DisplayItem) {
 			relationInfo.value.junctionField.field,
 			relationInfo.value.relatedPrimaryKeyField.field,
 		]);
+
 		return `/content/${relationInfo.value.relatedCollection.collection}/${encodeURIComponent(primaryKey)}`;
 	}
 
 	return null;
 }
 
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
-	);
-
-	const hasRelatedPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
-
-	return hasJunctionPermissions && hasRelatedPermissions;
-});
-
-const selectAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
-	);
-
-	return hasJunctionPermissions;
-});
+const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
 </script>
 
 <style lang="scss">
@@ -751,6 +736,7 @@ const selectAllowed = computed(() => {
 	--v-icon-color: var(--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
+	cursor: pointer;
 
 	&:hover {
 		--v-icon-color: var(--danger);

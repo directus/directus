@@ -8,6 +8,7 @@ vi.mock('../env', () => ({
 		PRESENT_TEST_VARIABLE: true,
 	}),
 }));
+
 vi.mock('../logger', () => ({
 	default: {
 		error: vi.fn(),

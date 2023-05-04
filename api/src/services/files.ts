@@ -2,6 +2,7 @@ import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import encodeURL from 'encodeurl';
 import exif from 'exif-reader';
+import type { IccProfile } from 'icc';
 import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
@@ -166,28 +167,34 @@ export class FilesService extends ItemsService {
 						exif?: Record<string, unknown>;
 						gps?: Record<string, unknown>;
 						interop?: Record<string, unknown>;
-						icc?: Record<string, unknown>;
+						icc?: IccProfile;
 						iptc?: Record<string, unknown>;
 						xmp?: Record<string, unknown>;
 					} = {};
+
 					if (sharpMetadata.exif) {
 						try {
 							const { image, thumbnail, interoperability, ...rest } = exif(sharpMetadata.exif);
+
 							if (image) {
 								fullMetadata.ifd0 = image;
 							}
+
 							if (thumbnail) {
 								fullMetadata.ifd1 = thumbnail;
 							}
+
 							if (interoperability) {
 								fullMetadata.interop = interoperability;
 							}
+
 							Object.assign(fullMetadata, rest);
 						} catch (err) {
 							logger.warn(`Couldn't extract EXIF metadata from file`);
 							logger.warn(err);
 						}
 					}
+
 					if (sharpMetadata.icc) {
 						try {
 							fullMetadata.icc = parseIcc(sharpMetadata.icc);
@@ -196,6 +203,7 @@ export class FilesService extends ItemsService {
 							logger.warn(err);
 						}
 					}
+
 					if (sharpMetadata.iptc) {
 						try {
 							fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
@@ -204,6 +212,7 @@ export class FilesService extends ItemsService {
 							logger.warn(err);
 						}
 					}
+
 					if (sharpMetadata.xmp) {
 						try {
 							fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
@@ -216,9 +225,11 @@ export class FilesService extends ItemsService {
 					if (fullMetadata?.iptc?.['Caption'] && typeof fullMetadata.iptc['Caption'] === 'string') {
 						metadata.description = fullMetadata.iptc?.['Caption'];
 					}
+
 					if (fullMetadata?.iptc?.['Headline'] && typeof fullMetadata.iptc['Headline'] === 'string') {
 						metadata.title = fullMetadata.iptc['Headline'];
 					}
+
 					if (fullMetadata?.iptc?.['Keywords']) {
 						metadata.tags = fullMetadata.iptc['Keywords'];
 					}
@@ -261,6 +272,7 @@ export class FilesService extends ItemsService {
 
 		try {
 			const axios = await getAxios();
+
 			fileResponse = await axios.get<Readable>(encodeURL(importURL), {
 				responseType: 'stream',
 			});

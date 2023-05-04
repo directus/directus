@@ -50,6 +50,7 @@ describe('filter items', () => {
 				{},
 			],
 		});
+
 		expect(result).toStrictEqual(items.filter((item) => item.action === 'read'));
 	});
 
@@ -59,6 +60,7 @@ describe('filter items', () => {
 				_eq: 'read',
 			},
 		});
+
 		expect(result).toStrictEqual(items.filter((item) => item.action === 'read'));
 	});
 });

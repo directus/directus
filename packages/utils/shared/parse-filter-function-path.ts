@@ -11,6 +11,7 @@ export function parseFilterFunctionPath(path: string): string {
 		const functionName = preHasColumns ? pre.slice(pre.lastIndexOf('.') + 1) : pre;
 
 		const matched = path.match(REGEX_BETWEEN_PARENS);
+
 		if (matched) {
 			const fields = matched[1]!;
 			const fieldsHasColumns = fields.includes('.');
@@ -20,5 +21,6 @@ export function parseFilterFunctionPath(path: string): string {
 			return `${preColumns}${columns}${functionName}(${field})`;
 		}
 	}
+
 	return path;
 }

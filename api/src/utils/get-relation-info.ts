@@ -10,6 +10,7 @@ function checkImplicitRelation(field: string) {
 	if (field.startsWith('$FOLLOW(') && field.endsWith(')')) {
 		return field.slice(8, -1).split(',');
 	}
+
 	return null;
 }
 

@@ -28,6 +28,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockResult = {
 			_and: [
 				{
@@ -37,6 +38,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockAccountability = { role: 'admin' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
@@ -51,6 +53,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockResult = {
 			_and: [
 				{
@@ -60,6 +63,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockAccountability = { role: 'admin' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
@@ -74,6 +78,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockResult = {
 			_and: [
 				{
@@ -83,6 +88,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockAccountability = { role: 'admin' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
@@ -97,6 +103,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockAccountability = { role: 'admin' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
 	});
@@ -156,6 +163,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockResult = {
 			_and: [
 				{
@@ -165,6 +173,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockAccountability = { role: 'admin', user: 'user' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
@@ -179,6 +188,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockResult = {
 			_and: [
 				{
@@ -188,6 +198,7 @@ describe('', () => {
 				},
 			],
 		} as Filter;
+
 		const mockAccountability = { role: 'admin' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
@@ -198,11 +209,13 @@ describe('', () => {
 				_eq: '$NOW(-1 day)',
 			},
 		} as Filter;
+
 		const mockResult = {
 			date: {
 				_eq: new Date('2021-09-22T21:11:45.992Z'),
 			},
 		} as Filter;
+
 		const mockAccountability = { role: 'admin', user: 'user' };
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});

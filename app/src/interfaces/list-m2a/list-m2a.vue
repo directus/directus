@@ -39,7 +39,7 @@
 						/>
 						<div class="spacer" />
 						<v-icon
-							v-if="!disabled"
+							v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
 							class="clear-icon"
 							:name="getDeselectIcon(element)"
 							@click.stop="deleteItem(element)"
@@ -62,7 +62,7 @@
 		</v-list>
 
 		<div class="actions">
-			<v-menu v-if="enableCreate" :disabled="disabled" show-arrow>
+			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button :disabled="disabled" @click="toggle">
 						{{ t('create_new') }}
@@ -85,7 +85,7 @@
 				</v-list>
 			</v-menu>
 
-			<v-menu v-if="enableSelect" :disabled="disabled" show-arrow>
+			<v-menu v-if="enableSelect && selectAllowed" :disabled="disabled" show-arrow>
 				<template #activator="{ toggle }">
 					<v-button class="existing" :disabled="disabled" @click="toggle">
 						{{ t('add_existing') }}
@@ -123,7 +123,9 @@
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled"
+			:disabled="
+				disabled || (editingCollection !== null && !updateAllowed[editingCollection] && currentlyEditing !== null)
+			"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -138,6 +140,7 @@
 <script setup lang="ts">
 import { useRelationM2A } from '@/composables/use-relation-m2a';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useRelationPermissionsM2A } from '@/composables/use-relation-permissions';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -239,19 +242,15 @@ const {
 	loading,
 	selected,
 	isItemSelected,
-	localDelete,
+	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
-);
-
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
@@ -277,21 +276,25 @@ function sortItems(items: DisplayItem[]) {
 		if (!isNil(junctionId)) {
 			changes[info.junctionPrimaryKeyField.field] = junctionId;
 		}
+
 		if (!isNil(collection)) {
 			changes[info.collectionField.field] = collection;
 		}
+
 		if (!isNil(relatedId)) {
 			set(changes, info.junctionField.field + '.' + pkField, relatedId);
 		}
 
 		return changes;
 	});
+
 	update(...sortedItems);
 }
 
 const editModalActive = ref(false);
 const currentlyEditing = ref<string | number | null>(null);
 const relatedPrimaryKey = ref<string | number | null>(null);
+const editingCollection = ref<string | null>(null);
 const selectingFrom = ref<string | null>(null);
 const editsAtStart = ref<Record<string, any>>({});
 let newItem = false;
@@ -301,10 +304,12 @@ function createItem(collection: string) {
 
 	currentlyEditing.value = null;
 	relatedPrimaryKey.value = null;
+
 	editsAtStart.value = {
 		[relationInfo.value.collectionField.field]: collection,
 		[relationInfo.value.junctionField.field]: {},
 	};
+
 	newItem = true;
 	editModalActive.value = true;
 }
@@ -314,20 +319,24 @@ function editItem(item: DisplayItem) {
 
 	const relationPkField =
 		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]].field;
+
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
 	newItem = false;
+
 	editsAtStart.value = {
 		...getItemEdits(item),
 		[relationInfo.value.collectionField.field]: item[relationInfo.value.collectionField.field],
 	};
 
 	editModalActive.value = true;
+	editingCollection.value = item[relationInfo.value.collectionField.field];
 
 	if (item?.$type === 'created' && !isItemSelected(item)) {
 		currentlyEditing.value = null;
 		relatedPrimaryKey.value = null;
+		editingCollection.value = null;
 	} else {
 		if (!relationPkField) return;
 		currentlyEditing.value = get(item, [junctionPkField], null);
@@ -371,10 +380,15 @@ function getCollectionName(item: DisplayItem) {
 	if (!info) return false;
 
 	const collection = allowedCollections.value.find((coll) => coll.collection === item[info.collectionField.field]);
-	if (te(`collection_names_singular.${collection?.collection}`))
+
+	if (te(`collection_names_singular.${collection?.collection}`)) {
 		return t(`collection_names_singular.${collection?.collection}`);
-	if (te(`collection_names_plural.${collection?.collection}`))
+	}
+
+	if (te(`collection_names_plural.${collection?.collection}`)) {
 		return t(`collection_names_plural.${collection?.collection}`);
+	}
+
 	return collection?.name;
 }
 
@@ -416,17 +430,37 @@ const customFilter = computed(() => {
 		return acc;
 	}, [] as (string | number)[]);
 
-	if (selectedPrimaryKeys.length > 0)
+	if (selectedPrimaryKeys.length > 0) {
 		filter._and.push({
 			[info.relationPrimaryKeyFields[selectingFrom.value].field]: {
 				_nin: selectedPrimaryKeys,
 			},
 		});
+	}
 
 	if (props.primaryKey !== '+') filter._and.push(selectFilter);
 
 	return filter;
 });
+
+const { createAllowed, deleteAllowed, selectAllowed, updateAllowed } = useRelationPermissionsM2A(relationInfo);
+
+const createCollections = computed(() => {
+	const info = relationInfo.value;
+	if (!info) return [];
+
+	return info.allowedCollections.filter((collection) => {
+		return createAllowed.value[collection.collection];
+	});
+});
+
+const allowDrag = computed(
+	() =>
+		totalItemCount.value <= limit.value &&
+		relationInfo.value?.sortField !== undefined &&
+		!props.disabled &&
+		updateAllowed.value
+);
 </script>
 
 <style lang="scss" scoped>

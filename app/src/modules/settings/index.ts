@@ -199,6 +199,7 @@ export default defineModule({
 					async beforeEnter(to) {
 						const { flows } = useFlowsStore();
 						const existingFlow = flows.find((flow) => flow.id === to.params.primaryKey);
+
 						if (!existingFlow) {
 							return {
 								name: 'settings-not-found',

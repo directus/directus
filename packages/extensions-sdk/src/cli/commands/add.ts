@@ -15,7 +15,7 @@ import type {
 import { isIn, isTypeIn } from '@directus/utils';
 import { pathToRelativeUrl } from '@directus/utils/node';
 import chalk from 'chalk';
-import execa from 'execa';
+import { execa } from 'execa';
 import fse from 'fs-extra';
 import inquirer from 'inquirer';
 import ora from 'ora';
@@ -114,6 +114,7 @@ export default async function add(): Promise<void> {
 		];
 
 		const newExtensionOptions: ExtensionOptions = { ...extensionOptions, entries: newEntries };
+
 		const newExtensionManifest = {
 			...extensionManifest,
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
@@ -251,6 +252,7 @@ export default async function add(): Promise<void> {
 			host: extensionOptions.host,
 			hidden: extensionOptions.hidden,
 		};
+
 		const newExtensionManifest = {
 			...extensionManifest,
 			name: EXTENSION_NAME_REGEX.test(extensionName) ? extensionName : `directus-extension-${extensionName}`,
@@ -284,6 +286,7 @@ function getLanguageFromEntries(entries: ExtensionOptionsBundleEntry[]): Languag
 				log(`App language ${chalk.bold(languageApp)} is not supported.`, 'error');
 				process.exit(1);
 			}
+
 			if (!isLanguage(languageApi)) {
 				log(`API language ${chalk.bold(languageApi)} is not supported.`, 'error');
 				process.exit(1);

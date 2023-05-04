@@ -32,6 +32,8 @@ RUN : \
 
 FROM node:18-alpine AS runtime
 
+USER node
+
 WORKDIR /directus
 
 EXPOSE 8055
@@ -45,8 +47,6 @@ ENV \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
 COPY --from=builder --chown=node:node /directus/dist .
-
-USER node
 
 CMD : \
 	&& node /directus/cli.js bootstrap \

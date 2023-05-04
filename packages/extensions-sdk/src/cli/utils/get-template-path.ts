@@ -1,5 +1,6 @@
-import path from 'path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export default function getTemplatePath(): string {
-	return path.resolve(__dirname, '..', '..', '..', '..', 'templates');
+	return resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'templates');
 }

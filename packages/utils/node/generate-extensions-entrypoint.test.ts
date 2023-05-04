@@ -13,7 +13,7 @@ describe('generateExtensionsEntrypoint', () => {
 				type: 'bundle',
 				entrypoint: { app: 'app.js', api: 'api.js' },
 				entries: [],
-				host: '^9.0.0',
+				host: '^10.0.0',
 				local: false,
 			},
 		];
@@ -62,7 +62,7 @@ describe('generateExtensionsEntrypoint', () => {
 					{ type: 'operation', name: 'mock-bundle-operation' },
 					{ type: 'hook', name: 'mock-bundle-hook' },
 				],
-				host: '^9.0.0',
+				host: '^10.0.0',
 				local: false,
 			},
 		];
@@ -99,7 +99,7 @@ describe('generateExtensionsEntrypoint', () => {
 					{ type: 'operation', name: 'mock-bundle-operation' },
 					{ type: 'hook', name: 'mock-bundle-hook' },
 				],
-				host: '^9.0.0',
+				host: '^10.0.0',
 				local: false,
 			},
 			{
@@ -109,7 +109,7 @@ describe('generateExtensionsEntrypoint', () => {
 				type: 'bundle',
 				entrypoint: { app: 'app.js', api: 'api.js' },
 				entries: [{ type: 'endpoint', name: 'mock-bundle-no-app-endpoint' }],
-				host: '^9.0.0',
+				host: '^10.0.0',
 				local: false,
 			},
 		];

@@ -256,6 +256,7 @@ export class UsersService extends ItemsService {
 						invalid: data['email'],
 					});
 				}
+
 				await this.checkUniqueEmails([data['email']], keys[0]);
 			}
 
@@ -344,6 +345,7 @@ export class UsersService extends ItemsService {
 		}
 
 		const emails = toArray(email);
+
 		const mailService = new MailService({
 			schema: this.schema,
 			accountability: this.accountability,
@@ -427,9 +429,11 @@ export class UsersService extends ItemsService {
 
 		const payload = { email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
 		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
+
 		const acceptURL = url
 			? new Url(url).setQuery('token', token).toString()
 			: new Url(env['PUBLIC_URL']).addPath('admin', 'reset-password').setQuery('token', token).toString();
+
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({

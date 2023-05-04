@@ -61,66 +61,57 @@
 	</v-list>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, watch } from 'vue';
-import { useFolders, Folder } from '@/composables/use-folders';
-import NavigationFolder from './navigation-folder.vue';
+<script setup lang="ts">
+import { Folder, useFolders } from '@/composables/use-folders';
 import { isEqual } from 'lodash';
+import { watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import NavigationFolder from './navigation-folder.vue';
 
-export default defineComponent({
-	components: { NavigationFolder },
-	props: {
-		currentFolder: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	currentFolder?: string;
+}>();
 
-		const { nestedFolders, folders, error, loading, openFolders } = useFolders();
+const { t } = useI18n();
 
-		setOpenFolders();
+const { nestedFolders, folders, loading, openFolders } = useFolders();
 
-		watch(() => props.currentFolder, setOpenFolders);
+setOpenFolders();
 
-		return { t, folders, nestedFolders, error, loading, openFolders };
+watch(() => props.currentFolder, setOpenFolders);
 
-		function setOpenFolders() {
-			if (!folders.value) return [];
-			if (!openFolders?.value) return [];
+function setOpenFolders() {
+	if (!folders.value) return [];
+	if (!openFolders?.value) return [];
 
-			const shouldBeOpen: string[] = [];
-			const folder = folders.value.find((folder: Folder) => folder.id === props.currentFolder);
+	const shouldBeOpen: string[] = [];
+	const folder = folders.value.find((folder: Folder) => folder.id === props.currentFolder);
 
-			if (folder && folder.parent) parseFolder(folder.parent);
+	if (folder && folder.parent) parseFolder(folder.parent);
 
-			const newOpenFolders = [...openFolders.value];
+	const newOpenFolders = [...openFolders.value];
 
-			for (const folderID of shouldBeOpen) {
-				if (newOpenFolders.includes(folderID) === false) {
-					newOpenFolders.push(folderID);
-				}
-			}
-
-			if (newOpenFolders.length !== 1 && isEqual(newOpenFolders, openFolders.value) === false) {
-				openFolders.value = newOpenFolders;
-			}
-
-			function parseFolder(id: string) {
-				if (!folders.value) return;
-				shouldBeOpen.push(id);
-
-				const folder = folders.value.find((folder: Folder) => folder.id === id);
-
-				if (folder && folder.parent) {
-					parseFolder(folder.parent);
-				}
-			}
+	for (const folderID of shouldBeOpen) {
+		if (newOpenFolders.includes(folderID) === false) {
+			newOpenFolders.push(folderID);
 		}
-	},
-});
+	}
+
+	if (newOpenFolders.length !== 1 && isEqual(newOpenFolders, openFolders.value) === false) {
+		openFolders.value = newOpenFolders;
+	}
+
+	function parseFolder(id: string) {
+		if (!folders.value) return;
+		shouldBeOpen.push(id);
+
+		const folder = folders.value.find((folder: Folder) => folder.id === id);
+
+		if (folder && folder.parent) {
+			parseFolder(folder.parent);
+		}
+	}
+}
 </script>
 
 <style lang="scss" scoped>

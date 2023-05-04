@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
 reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
-the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindestens errforderlich, falls "App Acces" aktiviert ist. Sie können die Berechtigungen darüber hinaus erweitern, jedoch nicht weiter einschränken.
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
@@ -2086,6 +2085,8 @@ operations:
     to: An
     to_placeholder: E-Mail-Adressen hinzufügen und Enter drücken...
     body: Inhalt
+    template: Vorlage
+    data: Daten
   notification:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden

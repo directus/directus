@@ -86,6 +86,7 @@ function checkKeyDown(event: any) {
 					input.value!.innerText.substring(caretPos),
 				true
 			);
+
 			position(input.value!, caretPos + 1);
 		}
 	} else if (event.code === 'ArrowUp' && !event.shiftKey) {
@@ -102,6 +103,7 @@ function checkKeyDown(event: any) {
 		}
 	} else if (event.code === 'ArrowLeft' && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			event.preventDefault();
 
@@ -109,6 +111,7 @@ function checkKeyDown(event: any) {
 		}
 	} else if (event.code === 'ArrowRight' && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 			event.preventDefault();
 
@@ -116,10 +119,12 @@ function checkKeyDown(event: any) {
 		}
 	} else if (event.code === 'Backspace') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			event.preventDefault();
 
 			const newCaretPos = matchedPositions[checkCaretPos - 1];
+
 			parseHTML(
 				(input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)).replaceAll(
 					String.fromCharCode(160),
@@ -127,11 +132,13 @@ function checkKeyDown(event: any) {
 				),
 				true
 			);
+
 			position(input.value!, newCaretPos);
 			emit('update:modelValue', input.value!.innerText);
 		}
 	} else if (event.code === 'Delete') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 			event.preventDefault();
 
@@ -142,6 +149,7 @@ function checkKeyDown(event: any) {
 				).replaceAll(String.fromCharCode(160), ' '),
 				true
 			);
+
 			position(input.value!, caretPos);
 			emit('update:modelValue', input.value!.innerText);
 		}
@@ -153,6 +161,7 @@ function checkKeyUp(event: any) {
 
 	if ((event.code === 'ArrowUp' || event.code === 'ArrowDown') && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos);
+
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			position(input.value!, matchedPositions[checkCaretPos] + 1);
 		} else if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
@@ -165,12 +174,14 @@ function checkClick(event: any) {
 	const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
 
 	const checkCaretPos = matchedPositions.indexOf(caretPos);
+
 	if (checkCaretPos !== -1) {
 		if (checkCaretPos % 2 === 0) {
 			position(input.value!, caretPos - 1);
 		} else {
 			position(input.value!, caretPos + 1);
 		}
+
 		event.preventDefault();
 	}
 }
@@ -217,8 +228,13 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	let newHTML = input.value.innerText;
+	let caretPos = 0;
 
-	const caretPos = isDirectInput ? previousCaretPos : window.getSelection()?.rangeCount ? position(input.value).pos : 0;
+	if (isDirectInput) {
+		caretPos = previousCaretPos;
+	} else if (window.getSelection()?.rangeCount) {
+		caretPos = position(input.value).pos;
+	}
 
 	let lastMatchIndex = 0;
 	const matches = newHTML.match(new RegExp(`${props.captureGroup}(?!</mark>)`, 'gi'));
@@ -250,6 +266,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 			}
 
 			let searchString = replaceSpaceBefore + match + replaceSpaceAfter;
+
 			let replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
 				props.items[match.substring(props.triggerCharacter.length)]
 			}" contenteditable="false">${match}</mark>${addSpaceAfter}`;
@@ -273,6 +290,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	lastMatchIndex = 0;
+
 	for (const match of matches ?? []) {
 		let matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
 		matchedPositions.push(matchIndex, matchIndex + match.length);

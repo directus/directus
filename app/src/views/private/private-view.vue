@@ -115,8 +115,10 @@ const { width: contentWidth } = useElementSize(contentEl);
 const { width: sidebarWidth } = useElementSize(sidebarEl);
 
 const moduleNavEl = ref<HTMLElement>();
+
 const { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp } =
 	useModuleNavResize();
+
 useEventListener(window, 'pointermove', onPointerMove);
 useEventListener(window, 'pointerup', onPointerUp);
 
@@ -224,6 +226,7 @@ function useModuleNavResize() {
 	function onPointerUp() {
 		if (dragging.value === true) {
 			dragging.value = false;
+
 			if (rafId.value) {
 				window.cancelAnimationFrame(rafId.value);
 			}

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage",
-	"version": "9.24.0",
+	"version": "10.0.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
@@ -14,7 +14,7 @@
 		"directory": "packages/storage"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
@@ -23,15 +23,15 @@
 	"main": "dist/index.js",
 	"files": [
 		"dist",
-		"!**/*.d.ts?(.map)"
+		"!**/*.test.{js,d.ts}"
 	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
-		"@vitest/coverage-c8": "0.29.3",
-		"typescript": "4.9.5",
-		"vitest": "0.29.3"
+		"@directus/tsconfig": "0.0.7",
+		"@vitest/coverage-c8": "0.30.1",
+		"typescript": "5.0.4",
+		"vitest": "0.30.1"
 	}
 }

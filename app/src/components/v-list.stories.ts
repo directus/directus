@@ -1,4 +1,5 @@
 import VList from './v-list.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -21,6 +22,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	modelValue: [1],
 };

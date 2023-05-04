@@ -218,9 +218,11 @@ const { t } = useI18n();
 const { internalItems, internalItemsCount, internalSearch } = useItems();
 const { displayValue } = useDisplayValue();
 const { modelValue } = toRefs(props);
+
 const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, internalItems, (value) =>
 	emit('update:modelValue', value)
 );
+
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
 	modelValue as Ref<string[]>,
 	internalItems,
@@ -228,6 +230,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 );
 
 const search = ref<string | null>(null);
+
 watch(
 	search,
 	debounce((val: string | null) => {
@@ -291,6 +294,7 @@ function useItems() {
 				if (item?.children) {
 					acc += countItems(item.children);
 				}
+
 				return acc + 1;
 			}, 0);
 

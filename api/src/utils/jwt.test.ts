@@ -64,6 +64,7 @@ test('Returns the payload of an access token', () => {
 	const payload = { id: 1, role: 1, app_access: true, admin_access: true };
 	const token = jwt.sign(payload, secret, options);
 	const result = verifyAccessJWT(token, secret);
+
 	expect(result).toEqual({
 		id: 1,
 		role: 1,

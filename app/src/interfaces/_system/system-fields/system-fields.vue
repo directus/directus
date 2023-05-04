@@ -28,7 +28,12 @@
 				</button>
 			</template>
 
-			<v-field-list :disabled-fields="value" :collection="collectionName" @select-field="addField" />
+			<v-field-list
+				:disabled-fields="value"
+				:collection="collectionName"
+				:allow-select-all="allowSelectAll"
+				@add="addFields"
+			/>
 		</v-menu>
 	</template>
 </template>
@@ -44,9 +49,13 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 interface Props {
 	collectionName: string;
 	value?: string[] | null;
+	allowSelectAll?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { value: () => null });
+const props = withDefaults(defineProps<Props>(), {
+	value: () => null,
+	allowSelectAll: false,
+});
 
 const emit = defineEmits(['input']);
 
@@ -100,19 +109,20 @@ const fields = computed<(Field & { key: string })[]>({
 
 const { t } = useI18n();
 
-function addField(fieldKey: string) {
-	emit('input', [...(props.value ?? []), fieldKey]);
-}
+const addFields = (fields: string[]) => {
+	const uniqueFields = new Set([...(props.value ?? []), ...fields]);
+	emit('input', Array.from(uniqueFields));
+};
 
-function removeField(fieldKey: string) {
-	const newArray = props.value?.filter((val) => val !== fieldKey);
+const removeField = (field: string) => {
+	const newFields = props.value?.filter((val) => val !== field);
 
-	if (!newArray || newArray.length === 0) {
+	if (!newFields || newFields.length === 0) {
 		emit('input', null);
 	}
 
-	emit('input', newArray);
-}
+	emit('input', newFields);
+};
 </script>
 
 <style lang="scss" scoped>

@@ -43,6 +43,7 @@ export default defineOperationApi<Options>({
 				message: messageString,
 			};
 		});
+
 		const result = await notificationsService.createMany(payload);
 
 		return result;

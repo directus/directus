@@ -63,6 +63,7 @@ describe('#registerLocation', () => {
 describe('#location', () => {
 	test(`Throws error if location is used that wasn't registered`, () => {
 		const manager = new StorageManager();
+
 		expect(() => manager.location('missing')).toThrowErrorMatchingInlineSnapshot(
 			'"Location \\"missing\\" doesn\'t exist."'
 		);

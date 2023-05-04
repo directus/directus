@@ -12,7 +12,7 @@ import { useCollection } from '@directus/composables';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
-import { computed, ComputedRef, Ref, ref, watch } from 'vue';
+import { computed, ComputedRef, isRef, Ref, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 import { Field, Query, Relation } from '@directus/types';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -41,7 +41,7 @@ type UsableItem = {
 export function useItem(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
-	query: Query = {}
+	query: Ref<Query> | Query = {}
 ): UsableItem {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
@@ -79,7 +79,7 @@ export function useItem(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey], refresh, { immediate: true });
+	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh, { immediate: true });
 
 	return {
 		edits,
@@ -107,7 +107,7 @@ export function useItem(
 		error.value = null;
 
 		try {
-			const response = await api.get(itemEndpoint.value, { params: query });
+			const response = await api.get(itemEndpoint.value, { params: unref(query) });
 			setItemValueToResponse(response);
 		} catch (err: any) {
 			error.value = err;
@@ -191,8 +191,10 @@ export function useItem(
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const relations = relationsStore.getRelationsForCollection(collection.value);
+
 		for (const relation of relations) {
 			const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
+
 			const existsJunctionRelated = relationsStore.relations.find((r) => {
 				return r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field;
 			});
@@ -243,6 +245,7 @@ export function useItem(
 					for (const item of existingItems) {
 						updateExistingRelatedItems(updatedRelatedItems, item, relatedPrimaryKeyField, relation);
 					}
+
 					updatedRelatedItems.length = 0;
 
 					for (const item of existingItems) {
@@ -294,8 +297,10 @@ export function useItem(
 						[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
 					},
 				});
+
 				existingItems = response.data.data;
 			}
+
 			return existingItems;
 		}
 
@@ -318,6 +323,7 @@ export function useItem(
 		) {
 			if (item[relatedPrimaryKeyField!.field] === updatedItem[relatedPrimaryKeyField!.field]) {
 				const columns = fields.filter((s) => s.startsWith(relation.meta!.one_field!));
+
 				for (const col of columns) {
 					const colName = col.split('.')[1];
 					item[colName] = updatedItem[colName];
@@ -361,6 +367,7 @@ export function useItem(
 		} else {
 			unexpectedError(err);
 		}
+
 		throw err;
 	}
 
@@ -447,6 +454,7 @@ export function useItem(
 		) {
 			response.data.data = translate(response.data.data);
 		}
+
 		if (isBatch.value === false) {
 			item.value = response.data.data;
 		} else {

@@ -230,6 +230,7 @@ const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
 const fetchedFlow = ref<FlowRaw>();
+
 const flow = computed<FlowRaw | undefined>({
 	get() {
 		if (!fetchedFlow.value) return undefined;
@@ -261,6 +262,7 @@ async function loadCurrentFlow() {
 				fields: ['*', 'operations.*'],
 			},
 		});
+
 		fetchedFlow.value = response.data.data;
 	} catch (err: any) {
 		unexpectedError(err);
@@ -361,18 +363,21 @@ const currentOperation = computed(() => {
 
 const parentPanels = computed(() => {
 	const parents = panels.value.reduce<Record<string, ParentInfo>>((acc, panel) => {
-		if (panel.resolve)
+		if (panel.resolve) {
 			acc[panel.resolve] = {
 				id: panel.id,
 				type: 'resolve',
 				loner: true,
 			};
-		if (panel.reject)
+		}
+
+		if (panel.reject) {
 			acc[panel.reject] = {
 				id: panel.id,
 				type: 'reject',
 				loner: true,
 			};
+		}
 
 		return acc;
 	}, {});
@@ -385,10 +390,12 @@ const parentPanels = computed(() => {
 
 	function connectedToTrigger(id: string) {
 		let parent = parents[id];
+
 		while (parent?.id !== '$trigger') {
 			if (parent === undefined) return false;
 			parent = parents[parent.id];
 		}
+
 		return true;
 	}
 });
@@ -631,6 +638,7 @@ function arrowStop() {
 		arrowInfo.value = undefined;
 		return;
 	}
+
 	const nearPanel = getNearAttachment(arrowInfo.value?.pos);
 
 	if (nearPanel && isLoop(arrowInfo.value.id, nearPanel)) {
@@ -670,6 +678,7 @@ function arrowStop() {
 
 function isLoop(currentId: string, attachTo: string) {
 	let parent = currentId;
+
 	while (parent !== undefined) {
 		if (parent === attachTo) return true;
 		parent = parentPanels.value[parent]?.id ?? undefined;
@@ -684,8 +693,10 @@ function getNearAttachment(pos: Vector2) {
 			(panel.x - 1) * 20 + ATTACHMENT_OFFSET.x,
 			(panel.y - 1) * 20 + ATTACHMENT_OFFSET.y
 		);
+
 		if (attachmentPos.distanceTo(pos) <= 40) return panel.id as string;
 	}
+
 	return undefined;
 }
 

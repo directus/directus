@@ -21,6 +21,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const fields = await service.readAll();
 
 		res.locals['payload'] = { data: fields || null };
@@ -37,6 +38,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const fields = await service.readAll(req.params['collection']);
 
 		res.locals['payload'] = { data: fields || null };
@@ -133,6 +135,7 @@ router.patch(
 
 		try {
 			const results: any = [];
+
 			for (const field of req.body) {
 				const updatedField = await service.readOne(req.params['collection']!, field.field);
 				results.push(updatedField);
@@ -214,6 +217,7 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.deleteField(req.params['collection']!, req.params['field']!);
 		return next();
 	}),

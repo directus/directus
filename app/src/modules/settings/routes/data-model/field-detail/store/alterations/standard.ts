@@ -23,6 +23,7 @@ function updateInterface(updates: StateUpdates, fn: HelperFunctions) {
 	const inter = useExtension('interface', fn.getCurrent('field.meta.interface'));
 
 	const type = updates.field?.type;
+
 	if (type && !inter.value?.types.includes(type)) {
 		set(updates, 'field.meta.interface', undefined);
 	}

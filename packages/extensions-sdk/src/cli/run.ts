@@ -3,13 +3,12 @@ import add from './commands/add.js';
 import build from './commands/build.js';
 import create from './commands/create.js';
 import link from './commands/link.js';
-
-const pkg = require('../../../package.json');
+import getSdkVersion from './utils/get-sdk-version.js';
 
 const program = new Command();
 
 program.name('directus-extension').usage('[command] [options]');
-program.version(pkg.version, '-v, --version');
+program.version(getSdkVersion(), '-v, --version');
 
 program
 	.command('create')

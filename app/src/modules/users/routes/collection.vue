@@ -244,6 +244,7 @@ const canInviteUsers = computed(() => {
 	const usersCreatePermission = permissionsStore.permissions.find(
 		(permission) => permission.collection === 'directus_users' && permission.action === 'create'
 	);
+
 	const rolesReadPermission = permissionsStore.permissions.find(
 		(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
 	);
@@ -258,6 +259,7 @@ const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions()
 onBeforeRouteLeave(() => {
 	selection.value = [];
 });
+
 onBeforeRouteUpdate(() => {
 	selection.value = [];
 });
@@ -340,6 +342,7 @@ function usePermissions() {
 		const updatePermissions = permissionsStore.permissions.find(
 			(permission) => permission.action === 'update' && permission.collection === 'directus_users'
 		);
+
 		return !!updatePermissions;
 	});
 
@@ -350,6 +353,7 @@ function usePermissions() {
 		const deletePermissions = permissionsStore.permissions.find(
 			(permission) => permission.action === 'delete' && permission.collection === 'directus_users'
 		);
+
 		return !!deletePermissions;
 	});
 
@@ -360,6 +364,7 @@ function usePermissions() {
 		const createPermissions = permissionsStore.permissions.find(
 			(permission) => permission.action === 'create' && permission.collection === 'directus_users'
 		);
+
 		return !!createPermissions;
 	});
 

@@ -145,110 +145,39 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed } from 'vue';
+import { computed } from 'vue';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
 import RelatedFieldSelect from '../shared/related-field-select.vue';
 import { useFieldsStore } from '@/stores/fields';
 
-export default defineComponent({
-	components: { RelatedCollectionSelect, RelatedFieldSelect },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const fieldDetailStore = useFieldDetailStore();
-		const fieldsStore = useFieldsStore();
+const fieldDetailStore = useFieldDetailStore();
+const fieldsStore = useFieldsStore();
 
-		const { field, collection, editing, generationInfo } = storeToRefs(fieldDetailStore);
+const { field, collection, editing } = storeToRefs(fieldDetailStore);
 
-		const sortField = syncFieldDetailStoreProperty('relations.o2m.meta.sort_field');
-		const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
-		const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
-		const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
-		const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
-		const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
-		const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
-		const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
-		const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
-		const correspondingField = syncFieldDetailStoreProperty('fields.corresponding');
+const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
+const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
+const junctionFieldRelated = syncFieldDetailStoreProperty('relations.m2o.field');
+const relatedCollection = syncFieldDetailStoreProperty('relations.m2o.related_collection');
+const autoGenerateJunctionRelation = syncFieldDetailStoreProperty('autoGenerateJunctionRelation');
+const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_delete');
+const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
+const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
 
-		const type = computed(() => field.value.type);
-		const isExisting = computed(() => editing.value !== '+');
+const type = computed(() => field.value.type);
+const isExisting = computed(() => editing.value !== '+');
 
-		const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
+const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
 
-		const relatedPrimaryKey = computed(
-			() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
-		);
-
-		const hasCorresponding = computed({
-			get() {
-				return !!correspondingField.value;
-			},
-			set(enabled: boolean) {
-				if (enabled) {
-					correspondingField.value = {
-						field: collection.value,
-						collection: relatedCollection.value,
-						type: 'alias',
-						meta: {
-							special: ['m2m'],
-							interface: 'list-m2m',
-						},
-					};
-				} else {
-					correspondingField.value = null;
-				}
-			},
-		});
-
-		const correspondingLabel = computed(() => {
-			if (junctionCollection.value) {
-				return t('add_m2m_to_collection', { collection: relatedCollection.value });
-			}
-
-			return t('add_field_related');
-		});
-
-		const correspondingFieldKey = computed({
-			get() {
-				return correspondingField.value?.field;
-			},
-			set(key: string | undefined) {
-				if (!hasCorresponding.value) {
-					hasCorresponding.value = true;
-				}
-
-				correspondingField.value!.field = key;
-			},
-		});
-
-		return {
-			t,
-			autoGenerateJunctionRelation,
-			collection,
-			type,
-			isExisting,
-			junctionCollection,
-			junctionFieldCurrent,
-			relatedCollection,
-			sortField,
-			currentPrimaryKey,
-			junctionFieldRelated,
-			relatedPrimaryKey,
-			onDeleteCurrent,
-			onDeleteRelated,
-			deselectAction,
-			hasCorresponding,
-			correspondingLabel,
-			correspondingFieldKey,
-			generationInfo,
-		};
-	},
-});
+const relatedPrimaryKey = computed(
+	() => fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection.value)?.field ?? 'id'
+);
 </script>
 
 <style lang="scss" scoped>

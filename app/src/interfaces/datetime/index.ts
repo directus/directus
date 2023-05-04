@@ -15,6 +15,7 @@ export default defineInterface({
 			if (field.meta?.options) {
 				field.meta.options = {};
 			}
+
 			return [];
 		}
 

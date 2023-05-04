@@ -25,8 +25,9 @@ router.get(
 	asyncHandler(async (req, res) => {
 		const { nanoid } = await import('nanoid');
 
-		if (req.query && req.query['length'] && Number(req.query['length']) > 500)
+		if (req.query && req.query['length'] && Number(req.query['length']) > 500) {
 			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
+		}
 
 		const string = nanoid(req.query?.['length'] ? Number(req.query['length']) : 32);
 
@@ -80,6 +81,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.sort(req.collection, req.body);
 
 		return res.status(200).end();
@@ -93,6 +95,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.revert(req.params['revision']!);
 		next();
 	}),
@@ -103,8 +106,9 @@ router.post(
 	'/import/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data') === false)
+		if (req.is('multipart/form-data') === false) {
 			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+		}
 
 		const service = new ImportService({
 			accountability: req.accountability,

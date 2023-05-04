@@ -184,6 +184,7 @@ function closeDialog() {
 
 async function saveNewTranslationString() {
 	const newTranslationStrings = translationStrings.value ? [...translationStrings.value, values.value] : [values.value];
+
 	try {
 		await update(newTranslationStrings);
 		emit('savedKey', values.value.key);
@@ -197,6 +198,7 @@ async function deleteCurrentTranslationString() {
 	const newTranslationStrings = translationStrings.value
 		? translationStrings.value.filter((val) => val.key !== values.value.key)
 		: [];
+
 	try {
 		await update(newTranslationStrings);
 		confirmDelete.value = false;

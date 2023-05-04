@@ -1,4 +1,5 @@
 import VHighlight from './v-highlight.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -15,6 +16,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	text: 'The cake is a lie.',
 	query: ['cake', 'lie'],

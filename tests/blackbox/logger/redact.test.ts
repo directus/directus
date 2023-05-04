@@ -106,6 +106,7 @@ describe('Logger Redact Tests', () => {
 
 							// Assert
 							expect(response.statusCode).toBe(200);
+
 							if (mode === 'cookie') {
 								expect(response.body).toMatchObject({
 									data: {
@@ -134,6 +135,7 @@ describe('Logger Redact Tests', () => {
 							}
 
 							expect(gqlResponse.statusCode).toBe(200);
+
 							expect(gqlResponse.body).toMatchObject({
 								data: {
 									[mutationKey]: {
@@ -217,6 +219,7 @@ describe('Logger Redact Tests', () => {
 
 							// Assert
 							expect(response.statusCode).toBe(200);
+
 							if (mode === 'cookie') {
 								expect(response.body).toMatchObject({
 									data: {
@@ -245,6 +248,7 @@ describe('Logger Redact Tests', () => {
 							}
 
 							expect(gqlResponse.statusCode).toBe(200);
+
 							expect(gqlResponse.body).toMatchObject({
 								data: {
 									[mutationKey]: {

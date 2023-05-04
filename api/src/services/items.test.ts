@@ -1,21 +1,24 @@
 import type { CollectionsOverview, NestedDeepQuery } from '@directus/types';
-import knex from 'knex';
 import type { Knex } from 'knex';
-import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import knex from 'knex';
+import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { cloneDeep } from 'lodash-es';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, vi } from 'vitest';
+import type { MockedFunction } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getDatabaseClient } from '../../src/database/index.js';
 import { ItemsService } from '../../src/services/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
+
 	const MOCK_ENV = {
 		...actual.default,
 		CACHE_AUTO_PURGE: true,
 	};
+
 	return {
 		default: MOCK_ENV,
 		getEnv: () => MOCK_ENV,
@@ -80,6 +83,7 @@ describe('Integration Tests', () => {
 
 				expect(tracker.history.insert.length).toBe(1);
 				expect(tracker.history.insert[0]!.bindings).toStrictEqual([item.id, item.name]);
+
 				expect(tracker.history.insert[0]!.sql).toBe(
 					`insert into "${table}" (${sqlFieldList(schemas[schema].schema, table)}) values (?, ?)`
 				);
@@ -122,10 +126,12 @@ describe('Integration Tests', () => {
 					accountability: { role: 'admin', admin: true },
 					schema: schemas[schema].schema,
 				});
+
 				const response = await itemsService.readOne(rawItems[0]!.id, { fields: ['id', 'name'] });
 
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
+
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select ${sqlFieldFormatter(
 						schemas[schema].schema,
@@ -163,10 +169,12 @@ describe('Integration Tests', () => {
 						},
 						schema: schemas[schema].schema,
 					});
+
 					const response = await itemsService.readOne(rawItems[0]!.id);
 
 					expect(tracker.history.select.length).toBe(1);
 					expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
+
 					expect(tracker.history.select[0]!.sql).toBe(
 						`select "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 					);
@@ -185,6 +193,7 @@ describe('Integration Tests', () => {
 					accountability: { role: 'admin', admin: true },
 					schema: schemas[schema].schema,
 				});
+
 				const response = await itemsService.readOne(rawItems[0]!.id, {
 					fields: ['id', 'name'],
 					filter: { name: { _eq: 'something' } },
@@ -192,6 +201,7 @@ describe('Integration Tests', () => {
 
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual(['something', rawItems[0]!.id, 100]);
+
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select "${table}"."id", "${table}"."name" from "${table}" where "${table}"."name" = ? and "${table}"."id" = ? order by "${table}"."id" asc limit ?`
 				);
@@ -236,6 +246,7 @@ describe('Integration Tests', () => {
 						},
 						schema: schemas[schema].schema,
 					});
+
 					const response = await itemsService.readOne(rawItems[0]!.id, {
 						fields: ['id', 'name'],
 						filter: { name: { _eq: 'something' } },
@@ -243,6 +254,7 @@ describe('Integration Tests', () => {
 
 					expect(tracker.history.select.length).toBe(1);
 					expect(tracker.history.select[0]!.bindings).toStrictEqual(['something', rawItems[0]!.id, 100]);
+
 					expect(tracker.history.select[0]!.sql).toBe(
 						`select "${table}"."id", "${table}"."name" from "${table}" where ("${table}"."name" = ? and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 					);
@@ -288,17 +300,20 @@ describe('Integration Tests', () => {
 						},
 						schema: schemas[schema].schema,
 					});
+
 					const response = await itemsService.readOne(rawItems[0]!.id, {
 						fields: ['id'],
 						filter: { uploaded_by: { _in: ['b5a7dd0f-fc9f-4242-b331-83990990198f'] } },
 					});
 
 					expect(tracker.history.select.length).toBe(1);
+
 					expect(tracker.history.select[0]!.bindings).toStrictEqual([
 						'b5a7dd0f-fc9f-4242-b331-83990990198f',
 						rawItems[0]!.id,
 						100,
 					]);
+
 					expect(tracker.history.select[0]!.sql).toBe(
 						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 					);
@@ -364,17 +379,20 @@ describe('Integration Tests', () => {
 						},
 						schema: schemas[schema].schema,
 					});
+
 					const response = await itemsService.readOne(rawItems[0]!.id, {
 						fields: ['id'],
 						filter: { uploaded_by: { _in: ['b5a7dd0f-fc9f-4242-b331-83990990198f'] } },
 					});
 
 					expect(tracker.history.select.length).toBe(1);
+
 					expect(tracker.history.select[0]!.bindings).toStrictEqual([
 						'b5a7dd0f-fc9f-4242-b331-83990990198f',
 						rawItems[0]!.id,
 						100,
 					]);
+
 					expect(tracker.history.select[0]!.sql).toBe(
 						`select "${table}"."id" from "${table}" where ("${table}"."uploaded_by" in (?) and "${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 					);
@@ -387,10 +405,12 @@ describe('Integration Tests', () => {
 				'%s denies one item with filter from tables not as admin and has no field permissions',
 				async (schema) => {
 					let table = schemas[schema].tables[1];
+
 					const item = {
 						id: 'd66ec139-2655-48c1-9d9a-4753f98a9ee7',
 						uploaded_by: '6107c897-9182-40f7-b22e-4f044d1258d2',
 					};
+
 					let itemsService = new ItemsService(table, {
 						knex: db,
 						accountability: { role: 'admin', admin: true },
@@ -439,6 +459,7 @@ describe('Integration Tests', () => {
 					expect(() =>
 						itemsService.readOne(rawItems[0]!.id, { filter: { name: { _eq: 'something' } } })
 					).rejects.toThrow("You don't have permission to access this.");
+
 					expect(tracker.history.select.length).toBe(0);
 				}
 			);
@@ -465,6 +486,7 @@ describe('Integration Tests', () => {
 					accountability: { role: 'admin', admin: true },
 					schema: schemas[schema].schema,
 				});
+
 				const response = await itemsService.readOne(rawItems[0]!.id, {
 					fields: ['id', 'items.*'],
 					deep: { items: { _filter: { title: { _eq: childItems[0]!.title } } } as NestedDeepQuery },
@@ -472,17 +494,21 @@ describe('Integration Tests', () => {
 
 				expect(tracker.history.select.length).toBe(2);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
+
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select "${table}"."id" from "${table}" where "${table}"."id" = ? order by "${table}"."id" asc limit ?`
 				);
+
 				expect(tracker.history.select[1]!.bindings).toStrictEqual([
 					childItems[0]!.title,
 					...rawItems.map((item) => item.id),
 					25000,
 				]);
+
 				expect(tracker.history.select[1]!.sql).toBe(
 					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where "${childTable}"."title" = ? and "${childTable}"."uploaded_by" in (?, ?) order by "${childTable}"."id" asc limit ?`
 				);
+
 				expect(response).toStrictEqual({ id: rawItems[0]!.id, items: childItems });
 			});
 
@@ -555,6 +581,7 @@ describe('Integration Tests', () => {
 						},
 						schema: schemas[schema].schema,
 					});
+
 					const response = await itemsService.readOne(rawItems[0]!.id, {
 						fields: ['id', 'items.*'],
 						deep: { items: { _filter: { title: { _eq: childItems[0]!.title } } } as NestedDeepQuery },
@@ -562,17 +589,21 @@ describe('Integration Tests', () => {
 
 					expect(tracker.history.select.length).toBe(2);
 					expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
+
 					expect(tracker.history.select[0]!.sql).toBe(
 						`select "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 					);
+
 					expect(tracker.history.select[1]!.bindings).toStrictEqual([
 						childItems[0]!.title,
 						...rawItems.map((item) => item.id),
 						25000,
 					]);
+
 					expect(tracker.history.select[1]!.sql).toBe(
 						`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where ("${childTable}"."title" = ?) and "${childTable}"."uploaded_by" in (?, ?) order by "${childTable}"."id" asc limit ?`
 					);
+
 					expect(response).toStrictEqual({ id: rawItems[0]!.id, items: childItems });
 				}
 			);
@@ -653,6 +684,7 @@ describe('Integration Tests', () => {
 							deep: { items: { _filter: { title: { _eq: childItems[0]!.title } } } as NestedDeepQuery },
 						})
 					).rejects.toThrow("You don't have permission to access this.");
+
 					expect(tracker.history.select.length).toBe(0);
 				}
 			);
@@ -677,6 +709,7 @@ describe('Integration Tests', () => {
 					expect(() => itemsService.readOne(rawItems[0]!.id)).rejects.toThrow(
 						"You don't have permission to access this."
 					);
+
 					expect(tracker.history.select.length).toBe(0);
 				}
 			);
@@ -706,9 +739,11 @@ describe('Integration Tests', () => {
 						},
 						schema: schemas[schema].schema,
 					});
+
 					expect(() => itemsService.readOne(rawItems[0]!.id)).rejects.toThrow(
 						"You don't have permission to access this."
 					);
+
 					expect(tracker.history.select.length).toBe(0);
 				}
 			);
@@ -757,12 +792,14 @@ describe('Integration Tests', () => {
 					},
 					schema: schemas[schema].schema,
 				});
+
 				const response = await itemsService.readOne(rawItems[0]!.id, {
 					fields: ['count(items)'],
 				});
 
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
+
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select (select count(*) from "${childTable}" where "uploaded_by" = "${table}"."id") AS "items_count", "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 				);
@@ -814,12 +851,14 @@ describe('Integration Tests', () => {
 					},
 					schema: schemas[schema].schema,
 				});
+
 				const response = await itemsService.readOne(rawItems[0]!.id, {
 					fields: ['count(items)'],
 				});
 
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([rawItems[0]!.id, 100]);
+
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select (select count(*) from "${childTable}" where "uploaded_by" = "${table}"."id" and (("${childTable}"."title" like '%child%'))) AS "items_count", "${table}"."id" from "${table}" where ("${table}"."id" = ?) order by "${table}"."id" asc limit ?`
 				);
@@ -845,10 +884,12 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
+
 			const response = await itemsService.readMany([items[0]!.id, items[1]!.id], { fields: ['id', 'name'] });
 
 			expect(tracker.history.select.length).toBe(1);
 			expect(tracker.history.select[0]!.bindings).toStrictEqual([items[0]!.id, items[1]!.id, 2]);
+
 			expect(tracker.history.select[0]!.sql).toBe(
 				`select ${sqlFieldFormatter(
 					schemas[schema].schema,
@@ -870,6 +911,7 @@ describe('Integration Tests', () => {
 					accountability: { role: 'admin', admin: true },
 					schema: schemas[schema].schema,
 				});
+
 				const response = await itemsService.readMany([], {
 					fields: ['id', 'name'],
 					filter: { id: { _eq: items[1]!.id } },
@@ -877,6 +919,7 @@ describe('Integration Tests', () => {
 
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([0, items[1]!.id, 100]);
+
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select ${sqlFieldFormatter(
 						schemas[schema].schema,
@@ -897,6 +940,7 @@ describe('Integration Tests', () => {
 					accountability: { role: 'admin', admin: true },
 					schema: schemas[schema].schema,
 				});
+
 				const response = await itemsService.readMany([], {
 					fields: ['id', 'name'],
 					filter: { _or: [{ id: { _eq: items[1]!.id } }, { name: { _eq: items[1]!.name } }] },
@@ -904,6 +948,7 @@ describe('Integration Tests', () => {
 
 				expect(tracker.history.select.length).toBe(1);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([0, items[1]!.id, items[1]!.name, 100]);
+
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select ${sqlFieldFormatter(
 						schemas[schema].schema,
@@ -929,6 +974,7 @@ describe('Integration Tests', () => {
 					title: 'A new child item',
 					uploaded_by: '6107c897-9182-40f7-b22e-4f044d1258d2',
 				};
+
 				tracker.on.select(childTable).response([childItem]);
 				tracker.on.update(childTable).response(childItem);
 
@@ -987,6 +1033,7 @@ describe('Integration Tests', () => {
 					},
 					schema: schemas[schema].schema,
 				});
+
 				const response = await itemsService.updateOne(
 					item.id,
 					{
@@ -997,21 +1044,29 @@ describe('Integration Tests', () => {
 
 				expect(tracker.history.select.length).toBe(4);
 				expect(tracker.history.select[0]!.bindings).toStrictEqual([item.id, 1]);
+
 				expect(tracker.history.select[0]!.sql).toBe(
 					`select "${table}"."id", "${table}"."name" from "${table}" where (("${table}"."id" in (?))) order by "${table}"."id" asc limit ?`
 				);
+
 				expect(tracker.history.select[1]!.bindings).toStrictEqual([item.id, 25000]);
+
 				expect(tracker.history.select[1]!.sql).toBe(
 					`select "${childTable}"."uploaded_by", "${childTable}"."id" from "${childTable}" where "${childTable}"."uploaded_by" in (?) order by "${childTable}"."id" asc limit ?`
 				);
+
 				expect(tracker.history.select[2]!.bindings).toStrictEqual([item.id, 1, 100]);
+
 				expect(tracker.history.select[2]!.sql).toBe(
 					`select "${childTable}"."id" from "${childTable}" where ("${childTable}"."uploaded_by" = ? and 1 = ?) order by "${childTable}"."id" asc limit ?`
 				);
+
 				expect(tracker.history.select[3]!.bindings).toStrictEqual([childItem.id, 1]);
+
 				expect(tracker.history.select[3]!.sql).toBe(
 					`select "${childTable}"."id", "${childTable}"."title", "${childTable}"."uploaded_by" from "${childTable}" where (("${childTable}"."id" in (?))) order by "${childTable}"."id" asc limit ?`
 				);
+
 				expect(tracker.history.update[0]!.bindings).toStrictEqual([null, childItem.id]);
 				expect(tracker.history.update[0]!.sql).toBe(`update "${childTable}" set "uploaded_by" = ? where "id" in (?)`);
 
@@ -1093,6 +1148,7 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
+
 			await itemsService.readByQuery({
 				fields: ['id', 'name'],
 				filter: { name: { _eq: 'something' } },
@@ -1100,6 +1156,7 @@ describe('Integration Tests', () => {
 
 			expect(tracker.history.select.length).toBe(1);
 			expect(tracker.history.select[0]!.bindings).toStrictEqual(['something', 100]);
+
 			expect(tracker.history.select[0]!.sql).toBe(
 				`select "${table}"."id", "${table}"."name" from "${table}" where "${table}"."name" = ? order by "${table}"."id" asc limit ?`
 			);
@@ -1116,6 +1173,7 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
+
 			await itemsService.readByQuery({
 				fields: ['id', 'title'],
 				filter: { uploaded_by: { name: { _eq: 'something' } } },
@@ -1123,6 +1181,7 @@ describe('Integration Tests', () => {
 
 			expect(tracker.history.select.length).toBe(1);
 			expect(tracker.history.select[0]!.bindings).toStrictEqual(['something', 100]);
+
 			expect(tracker.history.select[0]!.sql).toMatch(
 				new RegExp(
 					`select "${otherTable}"."id", "${otherTable}"."title" from "${otherTable}" ` +
@@ -1143,6 +1202,7 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
+
 			await itemsService.readByQuery({
 				fields: ['id', 'name'],
 				filter: { items: { title: { _eq: 'something' } } },
@@ -1150,6 +1210,7 @@ describe('Integration Tests', () => {
 
 			expect(tracker.history.select.length).toBe(1);
 			expect(tracker.history.select[0]!.bindings).toStrictEqual(['something', 100]);
+
 			expect(tracker.history.select[0]!.sql).toMatch(
 				new RegExp(
 					`select "${table}"."id", "${table}"."name" from "${table}" inner join ` +
@@ -1174,6 +1235,7 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
+
 			await itemsService.readByQuery({
 				fields: ['id', 'name'],
 				sort: ['name'],
@@ -1181,6 +1243,7 @@ describe('Integration Tests', () => {
 
 			expect(tracker.history.select.length).toBe(1);
 			expect(tracker.history.select[0]!.bindings).toStrictEqual([100]);
+
 			expect(tracker.history.select[0]!.sql).toBe(
 				`select "${table}"."id", "${table}"."name" from "${table}" order by "${table}"."name" asc limit ?`
 			);
@@ -1197,6 +1260,7 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
+
 			await itemsService.readByQuery({
 				fields: ['id', 'title'],
 				sort: ['uploaded_by.name'],
@@ -1204,6 +1268,7 @@ describe('Integration Tests', () => {
 
 			expect(tracker.history.select.length).toBe(1);
 			expect(tracker.history.select[0]!.bindings).toStrictEqual([100]);
+
 			expect(tracker.history.select[0]!.sql).toMatch(
 				new RegExp(
 					`select "${otherTable}"."id", "${otherTable}"."title" from "${otherTable}" ` +
@@ -1223,6 +1288,7 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: schemas[schema].schema,
 			});
+
 			await itemsService.readByQuery({
 				fields: ['id', 'name'],
 				sort: ['items.title'],
@@ -1230,6 +1296,7 @@ describe('Integration Tests', () => {
 
 			expect(tracker.history.select.length).toBe(1);
 			expect(tracker.history.select[0]!.bindings).toStrictEqual([100, 1, 100]);
+
 			expect(tracker.history.select[0]!.sql).toMatch(
 				new RegExp(
 					`select "${table}"."id", "${table}"."name" from "${table}" ` +
@@ -1378,6 +1445,7 @@ describe('Integration Tests', () => {
 				accountability: { role: 'admin', admin: true },
 				schema: testSchema,
 			});
+
 			const response = await itemsService.readSingleton({ fields: ['*'] });
 
 			expect(tracker.history.select.length).toBe(1);

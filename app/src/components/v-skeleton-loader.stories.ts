@@ -1,4 +1,5 @@
 import VSkeletonLoader from './v-skeleton-loader.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -20,4 +21,5 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {};

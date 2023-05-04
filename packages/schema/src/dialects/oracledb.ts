@@ -173,6 +173,7 @@ export default class oracleDB implements SchemaInspector {
         `)
 			)
 			.from('USER_TABLES');
+
 		return records.map(({ name }) => name);
 	}
 
@@ -213,6 +214,7 @@ export default class oracleDB implements SchemaInspector {
 			.from('USER_TABLES')
 			.where({ TABLE_NAME: table })
 			.first();
+
 		return !!result?.count;
 	}
 
@@ -320,6 +322,7 @@ export default class oracleDB implements SchemaInspector {
 					'c.COLUMN_NAME': column,
 				})
 				.first();
+
 			return rawColumnToColumn(rawColumn);
 		}
 
@@ -356,6 +359,7 @@ export default class oracleDB implements SchemaInspector {
 				HIDDEN_COLUMN: 'NO',
 			})
 			.first();
+
 		return !!result?.count;
 	}
 

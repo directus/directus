@@ -11,6 +11,7 @@ import path from 'path';
 import { requireYAML } from './utils/require-yaml.js';
 
 import { createRequire } from 'node:module';
+
 const require = createRequire(import.meta.url);
 
 // keeping this here for now to prevent a circular import to constants.ts
@@ -405,6 +406,7 @@ function getEnvironmentValueWithPrefix(envArray: Array<string>): Array<string | 
 		if (isEnvSyntaxPrefixPresent(item)) {
 			return getEnvironmentValueByType(item);
 		}
+
 		return item;
 	});
 }
@@ -438,14 +440,17 @@ function processValues(env: Record<string, any>) {
 		// If key ends with '_FILE', try to get the value from the file defined in this variable
 		// and store it in the variable with the same name but without '_FILE' at the end
 		let newKey: string | undefined;
+
 		if (key.length > 5 && key.endsWith('_FILE')) {
 			newKey = key.slice(0, -5);
+
 			if (allowedEnvironmentVars.some((pattern) => pattern.test(newKey as string))) {
 				if (newKey in env && !(newKey in defaults && env[newKey] === defaults[newKey])) {
 					throw new Error(
 						`Duplicate environment variable encountered: you can't use "${newKey}" and "${key}" simultaneously.`
 					);
 				}
+
 				try {
 					value = fs.readFileSync(value, { encoding: 'utf8' });
 					key = newKey;
@@ -480,6 +485,7 @@ function processValues(env: Record<string, any>) {
 				case 'boolean':
 					env[key] = toBoolean(value);
 			}
+
 			continue;
 		}
 
