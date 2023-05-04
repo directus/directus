@@ -19,8 +19,8 @@
 					</div>
 					<v-notice v-if="uniqueValidationErrors.length > 0" class="field" type="danger">
 						<div v-for="(err, i) in uniqueValidationErrors" :key="i">
-							<template v-if="err.extensions.invalid">
-								{{ t('email_already_invited', { email: err.extensions.invalid }) }}
+							<template v-if="(err as any).extensions.invalid">
+								{{ t('email_already_invited', { email: (err as any).extensions.invalid }) }}
 							</template>
 							<template v-else-if="i === 0">
 								{{ t('validationError.unique') }}
@@ -41,11 +41,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { ref, watch } from 'vue';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { APIError } from '@/types/error';
 import api from '@/api';
+import { APIError } from '@/types/error';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	modelValue: boolean;
