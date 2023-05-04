@@ -278,8 +278,10 @@ const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
 
 	if (props.template) return props.template;
-	if (relationInfo.value.junctionCollection.meta?.display_template)
+
+	if (relationInfo.value.junctionCollection.meta?.display_template) {
 		return relationInfo.value.junctionCollection.meta.display_template;
+	}
 
 	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
 

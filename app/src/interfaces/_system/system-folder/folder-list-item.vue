@@ -36,35 +36,24 @@
 	</v-list-group>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from 'vue';
-
+<script setup lang="ts">
 type Folder = {
 	id: string;
 	name: string;
 	children: Folder[];
 };
 
-export default defineComponent({
-	name: 'FolderListItem',
-	props: {
-		folder: {
-			type: Object as PropType<Folder>,
-			required: true,
-		},
-		currentFolder: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		disabledFolders: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-	},
-	emits: ['click'],
-});
+withDefaults(
+	defineProps<{
+		folder: Folder;
+		currentFolder: string | null;
+		disabled?: boolean;
+		disabledFolders?: string[];
+	}>(),
+	{ disabledFolders: () => [] }
+);
+
+defineEmits<{
+	(e: 'click', folderId: Folder['id']): void;
+}>();
 </script>

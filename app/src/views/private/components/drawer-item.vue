@@ -368,11 +368,14 @@ function useRelation() {
 		if (!relationForField) return null;
 
 		if (relationForField.related_collection) return relationForField.related_collection;
-		if (relationForField.meta?.one_collection_field)
+
+		if (relationForField.meta?.one_collection_field) {
 			return (
 				props.edits[relationForField.meta.one_collection_field] ||
 				initialValues.value?.[relationForField.meta.one_collection_field]
 			);
+		}
+
 		return null;
 	});
 

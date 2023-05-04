@@ -80,6 +80,7 @@ export const ExtensionOptions = ExtensionOptionsBase.and(
 export const ExtensionManifest = z.object({
 	name: z.string(),
 	version: z.string(),
+	type: z.union([z.literal('module'), z.literal('commonjs')]).optional(),
 	description: z.string().optional(),
 	icon: z.string().optional(),
 	dependencies: z.record(z.string()).optional(),
