@@ -39,7 +39,8 @@ if (process.env.TEST_SAVE_LOGS) {
 }
 
 const directusAuthConfig = {
-	AUTH_PROVIDERS: 'saml',
+	// SAM
+	AUTH_PROVIDERS: 'saml,directus',
 	AUTH_SAML_DRIVER: 'saml',
 	AUTH_SAML_ALLOW_PUBLIC_REGISTRATION: 'true',
 	AUTH_SAML_SP_metadata:
@@ -49,6 +50,14 @@ const directusAuthConfig = {
 	AUTH_SAML_DEFAULT_ROLE_ID: 'd70c0943-5b55-4c5d-a613-f539a27a57f5',
 	AUTH_SAML_IDENTIFIER_KEY: 'uid',
 	AUTH_SAML_EMAIL_KEY: 'email',
+
+	// OAuth2 and OpenId
+	AUTH_DIRECTUS_DRIVER: 'openid',
+	AUTH_DIRECTUS_CLIENT_ID: '000000000000-abcdefvaldeirpsrbcdefabcdefabcdefab.apps.directususercontent.com',
+	AUTH_DIRECTUS_CLIENT_SECRET: 'ABCDEF-abcdefghijklmnopqrstuvwxyz',
+	AUTH_DIRECTUS_ISSUER_URL: 'https://accounts.google.com',
+	AUTH_DIRECTUS_DEFAULT_ROLE_ID: 'd70c0943-5b55-4c5d-a613-f539a27a57f5',
+	AUTH_DIRECTUS_CUSTOM_URL_PARAMS: 'login_hint,display'
 };
 
 const directusStorageConfig = {
