@@ -39,8 +39,9 @@ export function useTemplateData(
 			primaryKey.value === '+' ||
 			fields.value === null ||
 			!collection.value
-		)
+		) {
 			return;
+		}
 
 		loading.value = true;
 
