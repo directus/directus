@@ -1,9 +1,9 @@
 import { logout, LogoutReason, refresh } from '@/auth';
 import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import PQueue, { DefaultAddOptions, Options } from 'p-queue';
 import { addQueryToPath } from './utils/add-query-to-path';
-import PQueue, { Options, DefaultAddOptions } from 'p-queue';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -12,19 +12,11 @@ const api = axios.create({
 
 let queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
 
-interface RequestConfig extends AxiosRequestConfig {
-	id: string;
-}
+type RequestConfig = InternalAxiosRequestConfig & { id: string };
+type Response = AxiosResponse & { config: RequestConfig };
+export type RequestError = AxiosError & { response: Response };
 
-interface Response extends AxiosResponse {
-	config: RequestConfig;
-}
-
-export interface RequestError extends AxiosError {
-	response: Response;
-}
-
-export const onRequest = (config: AxiosRequestConfig): Promise<RequestConfig> => {
+export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
 	const requestsStore = useRequestsStore();
 	const id = requestsStore.startRequest();
 
@@ -101,7 +93,7 @@ api.interceptors.response.use(onResponse, onError);
 export default api;
 
 export function getToken(): string | null {
-	return api.defaults.headers.common['Authorization']?.split(' ')[1] || null;
+	return (api.defaults.headers.common['Authorization'] as string | undefined)?.split(' ')[1] || null;
 }
 
 export function addTokenToURL(url: string, token?: string): string {
