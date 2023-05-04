@@ -34,11 +34,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
-import { useUserStore } from '@/stores/user';
-import { isNil } from 'lodash';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { useFieldsStore } from '@/stores/fields';
+import { useUserStore } from '@/stores/user';
+import type { User } from '@directus/types';
+import { isNil } from 'lodash';
+import { computed, toRefs } from 'vue';
 
 interface Props {
 	collection: string;
@@ -83,7 +84,7 @@ const displayItem = computed(() => {
 
 	if (props.userLanguage) {
 		const user = useUserStore();
-		item = props.value.find((val) => val?.[langField]?.[langPkField] === user.currentUser?.language) ?? item;
+		item = props.value.find((val) => val?.[langField]?.[langPkField] === (user.currentUser as User)?.language) ?? item;
 	}
 
 	return item ?? {};
