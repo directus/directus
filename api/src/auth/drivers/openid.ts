@@ -98,7 +98,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			const codeChallenge = generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
 
-			const { url_params = [] } = getConfigFromEnv(`AUTH_${this.config['provider'].toUpperCase()}_CUSTOM_`, [], 'underscore');
+			const { url_params = [] } = getConfigFromEnv(
+				`AUTH_${this.config['provider'].toUpperCase()}_CUSTOM_`,
+				[],
+				'underscore'
+			);
 
 			for (const query in queriesUrl) {
 				if (![...url_params].includes(query)) continue;

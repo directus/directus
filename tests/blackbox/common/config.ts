@@ -57,7 +57,7 @@ const directusAuthConfig = {
 	AUTH_DIRECTUS_CLIENT_SECRET: 'ABCDEF-abcdefghijklmnopqrstuvwxyz',
 	AUTH_DIRECTUS_ISSUER_URL: 'https://accounts.google.com',
 	AUTH_DIRECTUS_DEFAULT_ROLE_ID: 'd70c0943-5b55-4c5d-a613-f539a27a57f5',
-	AUTH_DIRECTUS_CUSTOM_URL_PARAMS: 'login_hint,display'
+	AUTH_DIRECTUS_CUSTOM_URL_PARAMS: 'login_hint,display',
 };
 
 const directusStorageConfig = {

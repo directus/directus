@@ -9,14 +9,13 @@ describe('/auth/login/directus', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					const customParams = {
 						login_hint: 'example@directus.com',
-						display: 'wap'
+						display: 'wap',
 					};
 
 					const params = new URLSearchParams(customParams).toString();
 
 					// Actions
-					const response = await request(getUrl(vendor))
-						.get(`/auth/login/directus?${params}`);
+					const response = await request(getUrl(vendor)).get(`/auth/login/directus?${params}`);
 
 					// Assert Status Code
 					expect(response.statusCode).toBe(302);
@@ -36,14 +35,13 @@ describe('/auth/login/directus', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					const customParams = {
 						invalid_query: 'mc-sid',
-						display: 'wap' // Valid param
+						display: 'wap', // Valid param
 					};
 
 					const params = new URLSearchParams(customParams).toString();
 
 					// Actions
-					const response = await request(getUrl(vendor))
-						.get(`/auth/login/directus?${params}`);
+					const response = await request(getUrl(vendor)).get(`/auth/login/directus?${params}`);
 
 					// Assert Status Code
 					expect(response.statusCode).toBe(302);
