@@ -2181,3 +2181,4 @@ operations:
     parallel: Parallel
     batch: Batch
     batch_size: Batch Size
+    cache: Cache

@@ -7,7 +7,7 @@ import { InvalidPayloadException, UnsupportedMediaTypeException } from '../excep
 import logger from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';
-import type { Snapshot } from '../types/index.js';
+import type { Snapshot, SnapshotDiffWithHash } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
 
@@ -24,24 +24,19 @@ router.get(
 	respond
 );
 
-router.post(
-	'/apply',
-	asyncHandler(async (req, _res, next) => {
-		const service = new SchemaService({ accountability: req.accountability });
-		await service.apply(req.body);
-		return next();
-	}),
-	respond
-);
-
 const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	if (req.is('application/json')) {
-		if (Object.keys(req.body).length === 0) throw new InvalidPayloadException(`No data was included in the body`);
-		res.locals['uploadedSnapshot'] = req.body;
+		if (Object.keys(req.body).length === 0) {
+			throw new InvalidPayloadException(`No data was included in the body`);
+		}
+
+		res.locals['upload'] = req.body;
 		return next();
 	}
 
-	if (!req.is('multipart/form-data')) throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+	if (!req.is('multipart/form-data')) {
+		throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+	}
 
 	const headers = req.headers['content-type']
 		? req.headers
@@ -53,7 +48,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	const busboy = Busboy({ headers });
 
 	let isFileIncluded = false;
-	let uploadedSnapshot: Snapshot | null = null;
+	let upload: any | null = null;
 
 	busboy.on('file', async (_, fileStream, { mimeType }) => {
 		if (isFileIncluded) return next(new InvalidPayloadException(`More than one file was included in the body`));
@@ -67,23 +62,25 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 
 			if (mimeType === 'application/json') {
 				try {
-					uploadedSnapshot = parseJSON(uploadedString);
+					upload = parseJSON(uploadedString);
 				} catch (err: any) {
 					logger.warn(err);
-					throw new InvalidPayloadException('Invalid JSON schema snapshot');
+					throw new InvalidPayloadException('The provided JSON is invalid.');
 				}
 			} else {
 				try {
-					uploadedSnapshot = (await loadYaml(uploadedString)) as Snapshot;
+					upload = await loadYaml(uploadedString);
 				} catch (err: any) {
 					logger.warn(err);
-					throw new InvalidPayloadException('Invalid YAML schema snapshot');
+					throw new InvalidPayloadException('The provided YAML is invalid.');
 				}
 			}
 
-			if (!uploadedSnapshot) throw new InvalidPayloadException(`No file was included in the body`);
+			if (!upload) {
+				throw new InvalidPayloadException(`No file was included in the body`);
+			}
 
-			res.locals['uploadedSnapshot'] = uploadedSnapshot;
+			res.locals['upload'] = upload;
 
 			return next();
 		} catch (error: any) {
@@ -105,14 +102,25 @@ router.post(
 	asyncHandler(schemaMultipartHandler),
 	asyncHandler(async (req, res, next) => {
 		const service = new SchemaService({ accountability: req.accountability });
-		const snapshot: Snapshot = res.locals['uploadedSnapshot'];
-
+		const snapshot: Snapshot = res.locals['upload'];
 		const currentSnapshot = await service.snapshot();
 		const snapshotDiff = await service.diff(snapshot, { currentSnapshot, force: 'force' in req.query });
 		if (!snapshotDiff) return next();
 
 		const currentSnapshotHash = getVersionedHash(currentSnapshot);
 		res.locals['payload'] = { data: { hash: currentSnapshotHash, diff: snapshotDiff } };
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/apply',
+	asyncHandler(schemaMultipartHandler),
+	asyncHandler(async (req, res, next) => {
+		const service = new SchemaService({ accountability: req.accountability });
+		const diff: SnapshotDiffWithHash = res.locals['upload'];
+		await service.apply(diff);
 		return next();
 	}),
 	respond

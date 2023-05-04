@@ -263,7 +263,7 @@ return more in-depth information about the current health status of the system.
 // Admin
 {
   "status": "ok",
-  "releaseId": "9.0.0",
+  "releaseId": "10.0.0",
   "serviceId": "3292c816-ae02-43b4-ba91-f0bb549f040c",
   "checks": {
     "pg:responseTime": [
