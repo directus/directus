@@ -33,43 +33,27 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script lang="ts" setup>
 import { useServerStore } from '@/stores/server';
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
 import { getRootPath } from '@/utils/get-root-path';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	name: 'SharedView',
-	props: {
-		title: {
-			type: String,
-			default: null,
-		},
-		inline: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup() {
-		const serverStore = useServerStore();
+defineProps<{
+	title?: string;
+	inline?: boolean;
+}>();
 
-		const { info } = storeToRefs(serverStore);
+const serverStore = useServerStore();
 
-		const { t } = useI18n();
+const { info: serverInfo } = storeToRefs(serverStore);
 
-		const logoURL = computed<string | null>(() => {
-			if (!serverStore.info?.project?.project_logo) return null;
-			return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
-		});
+const { t } = useI18n();
 
-		return {
-			serverInfo: info,
-			t,
-			logoURL,
-		};
-	},
+const logoURL = computed<string | null>(() => {
+	if (!serverStore.info?.project?.project_logo) return null;
+	return getRootPath() + `assets/${serverStore.info.project?.project_logo}`;
 });
 </script>
 

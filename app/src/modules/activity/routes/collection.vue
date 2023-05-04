@@ -63,7 +63,7 @@
 	</component>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
@@ -71,59 +71,23 @@ import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { computed, defineComponent, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ActivityNavigation from '../components/navigation.vue';
 
-export default defineComponent({
-	name: 'ActivityCollection',
-	components: { ActivityNavigation, LayoutSidebarDetail, SearchInput },
-	props: {
-		primaryKey: {
-			type: String,
-			default: null,
-		},
-	},
-	setup() {
-		const { t } = useI18n();
+defineProps<{
+	primaryKey?: string;
+}>();
 
-		const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
-		const { breadcrumb } = useBreadcrumb();
+const { t } = useI18n();
 
-		const { layoutWrapper } = useLayout(layout);
+const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
 
-		const currentLayout = useExtension('layout', layout);
+const { layoutWrapper } = useLayout(layout);
 
-		const roleFilter = ref<Filter | null>(null);
+const currentLayout = useExtension('layout', layout);
 
-		return {
-			t,
-			breadcrumb,
-			layout,
-			layoutWrapper,
-			layoutOptions,
-			layoutQuery,
-			search,
-			filter,
-			roleFilter,
-			mergeFilters,
-			currentLayout,
-		};
-
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => {
-				return [
-					{
-						name: t('collection', 2),
-						to: `/content`,
-					},
-				];
-			});
-
-			return { breadcrumb };
-		}
-	},
-});
+const roleFilter = ref<Filter | null>(null);
 </script>
 
 <style lang="scss" scoped>

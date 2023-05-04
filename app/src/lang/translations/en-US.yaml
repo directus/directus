@@ -2172,6 +2172,7 @@ operations:
     parallel: Parallel
     batch: Batch
     batch_size: Batch Size
+    cache: Cache
 dx:
   loaded_interfaces: Loaded Interfaces
   loaded_displays: Loaded Displays

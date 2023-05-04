@@ -12,26 +12,17 @@
 	</transition-group>
 </template>
 
-<script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+<script lang="ts" setup>
+import { toRefs } from 'vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import NotificationItem from './notification-item.vue';
 
-export default defineComponent({
-	components: { NotificationItem },
-	props: {
-		sidebarOpen: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup() {
-		const notificationsStore = useNotificationsStore();
-		const queue = toRefs(notificationsStore).queue;
+defineProps<{
+	sidebarOpen?: boolean;
+}>();
 
-		return { queue };
-	},
-});
+const notificationsStore = useNotificationsStore();
+const queue = toRefs(notificationsStore).queue;
 </script>
 
 <style lang="scss" scoped>

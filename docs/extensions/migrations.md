@@ -22,23 +22,27 @@ for example:
 20201202A-my-custom-migration.js
 ```
 
+::: tip
+
+For backwards compatibility it is possible to rename your existing CommonJS migrations to `<migration-name>.cjs`. However using ESM where possible is recommended.
+
+:::
+
 ## Structure
 
 Migrations have to export an `up` and a `down` function. These functions get a [Knex](http://knexjs.org) instance that
 can be used to do virtually whatever.
 
 ```js
-module.exports = {
-	async up(knex) {
-		await knex.schema.createTable('test', (table) => {
-			table.increments();
-			table.string('rijk');
-		});
-	},
+export async function up(knex) {
+	await knex.schema.createTable('test', (table) => {
+		table.increments();
+		table.string('rijk');
+	});
+};
 
-	async down(knex) {
-		await knex.schema.dropTable('test');
-	},
+export async function down(knex) {
+	await knex.schema.dropTable('test');
 };
 ```
 

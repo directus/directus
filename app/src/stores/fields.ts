@@ -51,6 +51,8 @@ const fakeFilesField: Field = {
 		note: null,
 		required: false,
 		conditions: null,
+		validation: null,
+		validation_message: null,
 	},
 };
 
@@ -133,8 +135,10 @@ export const useFieldsStore = defineStore({
 				if (field.meta?.note) field.meta.note = translateLiteral(field.meta.note);
 				if (field.meta?.options) field.meta.options = translate(field.meta.options);
 				if (field.meta?.display_options) field.meta.display_options = translate(field.meta.display_options);
-				if (field.meta?.validation_message)
+
+				if (field.meta?.validation_message) {
 					field.meta.validation_message = translateLiteral(field.meta.validation_message);
+				}
 
 				return field;
 			});

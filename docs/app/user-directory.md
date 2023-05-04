@@ -16,7 +16,7 @@ readTime: 7 min read
 :::tip Before You Begin
 
 To use this Module effectively, you will need to understand
-[Users, Roles and Permissions](/configuration/users-roles-permissions.md).
+[Users, Roles and Permissions](/app/users-roles-permissions).
 
 :::
 -->
@@ -51,9 +51,9 @@ page has the same functionality as the [Collection Page](/app/content/collection
 - **Sort Direction** — Toggles ascending & descending sort order.
 - **Search** — Enables classic type-based searching.
 - **Filter** — Enables advanced query-based search.
-- <span mi btn sec>person_add</span> — [Invite people](/configuration/users-roles-permissions#inviting-a-user) to become
-  Users via email.
-- <span mi btn>add</span> — [Create User](/configuration/users-roles-permissions#creating-a-user) manually.
+- <span mi btn sec>person_add</span> — [Invite people](/app/users-roles-permissions#inviting-a-user) to become Users via
+  email.
+- <span mi btn>add</span> — [Create User](/app/users-roles-permissions#creating-a-user) manually.
 
 _The following are only visible once Users are selected._
 
@@ -74,7 +74,7 @@ adjust how Users are displayed on the User Directory. To learn more, see [Layout
 A User's profile page can be accessed from the User Directory or by clicking the User Menu at the bottom of the
 [Module Bar](/app/overview#_1-module-bar). The profile page has the same features and functionality as the
 [Item Page](/app/content/items). Administrators can add and customize Fields under
-[Settings > Data Model > Directus Users](/configuration/data-model), but the following are available by default.
+[Settings > Data Model > Directus Users](/app/data-model), but the following are available by default.
 
 - **First Name** — The given name.
 - **Last Name** — The family/surname.

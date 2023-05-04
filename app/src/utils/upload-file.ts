@@ -2,6 +2,7 @@ import api from '@/api';
 import emitter, { Events } from '@/events';
 import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
+import type { AxiosProgressEvent } from 'axios';
 import { unexpectedError } from './unexpected-error';
 
 export async function uploadFile(
@@ -50,8 +51,8 @@ export async function uploadFile(
 		unexpectedError(err);
 	}
 
-	function onUploadProgress(progressEvent: { loaded: number; total: number }) {
-		const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+	function onUploadProgress(progressEvent: AxiosProgressEvent) {
+		const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
 		progressHandler(percentCompleted);
 	}
 }

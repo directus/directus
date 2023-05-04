@@ -49,133 +49,122 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, toRefs } from 'vue';
-import { useCollection } from '@directus/composables';
-import Draggable from 'vuedraggable';
-import { Field } from '@directus/types';
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
-import FieldSelect from './field-select.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { orderBy, isNil } from 'lodash';
-import { LocalType } from '@directus/types';
+import { useCollection } from '@directus/composables';
+import { Field, LocalType } from '@directus/types';
+import { isNil, orderBy } from 'lodash';
+import { computed, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import FieldSelect from './field-select.vue';
 
-export default defineComponent({
-	name: 'FieldsManagement',
-	components: { Draggable, FieldSelect },
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	collection: string;
+}>();
 
-		const { collection } = toRefs(props);
-		const { fields } = useCollection(collection);
-		const fieldsStore = useFieldsStore();
+const { t } = useI18n();
 
-		const parsedFields = computed(() => {
-			return orderBy(fields.value, [(o) => (o.meta?.sort ? Number(o.meta?.sort) : null), (o) => o.meta?.id]).filter(
-				(field) => field.field.startsWith('$') === false
-			);
-		});
+const { collection } = toRefs(props);
+const { fields } = useCollection(collection);
+const fieldsStore = useFieldsStore();
 
-		const lockedFields = computed(() => {
-			return parsedFields.value.filter((field) => field.meta?.system === true);
-		});
-
-		const usableFields = computed(() => {
-			return parsedFields.value.filter((field) => field.meta?.system !== true);
-		});
-
-		const addOptions = computed<Array<{ type: LocalType; icon: string; text: any } | { divider: boolean }>>(() => [
-			{
-				type: 'standard',
-				icon: 'create',
-				text: t('standard_field'),
-			},
-			{
-				type: 'presentation',
-				icon: 'scatter_plot',
-				text: t('presentation_and_aliases'),
-			},
-			{
-				type: 'group',
-				icon: 'view_in_ar',
-				text: t('field_group'),
-			},
-			{
-				divider: true,
-			},
-			{
-				type: 'file',
-				icon: 'photo',
-				text: t('single_file'),
-			},
-			{
-				type: 'files',
-				icon: 'collections',
-				text: t('multiple_files'),
-			},
-			{
-				divider: true,
-			},
-			{
-				type: 'm2o',
-				icon: 'call_merge',
-				text: t('m2o_relationship'),
-			},
-			{
-				type: 'o2m',
-				icon: 'call_split',
-				text: t('o2m_relationship'),
-			},
-			{
-				type: 'm2m',
-				icon: 'import_export',
-				text: t('m2m_relationship'),
-			},
-			{
-				type: 'm2a',
-				icon: 'gesture',
-				text: t('m2a_relationship'),
-			},
-			{
-				divider: true,
-			},
-			{
-				type: 'translations',
-				icon: 'translate',
-				text: t('translations'),
-			},
-		]);
-
-		return { t, usableFields, lockedFields, setSort, hideDragImage, addOptions, setNestedSort, isNil };
-
-		async function setSort(fields: Field[]) {
-			const updates = fields.map((field, index) => ({
-				field: field.field,
-				meta: {
-					sort: index + 1,
-					group: null,
-				},
-			}));
-
-			await fieldsStore.updateFields(collection.value, updates);
-		}
-
-		async function setNestedSort(updates?: Field[]) {
-			updates = (updates || []).filter((val) => isNil(val) === false);
-
-			if (updates.length > 0) {
-				await fieldsStore.updateFields(collection.value, updates);
-			}
-		}
-	},
+const parsedFields = computed(() => {
+	return orderBy(fields.value, [(o) => (o.meta?.sort ? Number(o.meta?.sort) : null), (o) => o.meta?.id]).filter(
+		(field) => field.field.startsWith('$') === false
+	);
 });
+
+const lockedFields = computed(() => {
+	return parsedFields.value.filter((field) => field.meta?.system === true);
+});
+
+const usableFields = computed(() => {
+	return parsedFields.value.filter((field) => field.meta?.system !== true);
+});
+
+const addOptions = computed<Array<{ type: LocalType; icon: string; text: any } | { divider: boolean }>>(() => [
+	{
+		type: 'standard',
+		icon: 'create',
+		text: t('standard_field'),
+	},
+	{
+		type: 'presentation',
+		icon: 'scatter_plot',
+		text: t('presentation_and_aliases'),
+	},
+	{
+		type: 'group',
+		icon: 'view_in_ar',
+		text: t('field_group'),
+	},
+	{
+		divider: true,
+	},
+	{
+		type: 'file',
+		icon: 'photo',
+		text: t('single_file'),
+	},
+	{
+		type: 'files',
+		icon: 'collections',
+		text: t('multiple_files'),
+	},
+	{
+		divider: true,
+	},
+	{
+		type: 'm2o',
+		icon: 'call_merge',
+		text: t('m2o_relationship'),
+	},
+	{
+		type: 'o2m',
+		icon: 'call_split',
+		text: t('o2m_relationship'),
+	},
+	{
+		type: 'm2m',
+		icon: 'import_export',
+		text: t('m2m_relationship'),
+	},
+	{
+		type: 'm2a',
+		icon: 'gesture',
+		text: t('m2a_relationship'),
+	},
+	{
+		divider: true,
+	},
+	{
+		type: 'translations',
+		icon: 'translate',
+		text: t('translations'),
+	},
+]);
+
+async function setSort(fields: Field[]) {
+	const updates = fields.map((field, index) => ({
+		field: field.field,
+		meta: {
+			sort: index + 1,
+			group: null,
+		},
+	}));
+
+	await fieldsStore.updateFields(collection.value, updates);
+}
+
+async function setNestedSort(updates?: Field[]) {
+	updates = (updates || []).filter((val) => isNil(val) === false);
+
+	if (updates.length > 0) {
+		await fieldsStore.updateFields(collection.value, updates);
+	}
+}
 </script>
 
 <style lang="scss" scoped>
