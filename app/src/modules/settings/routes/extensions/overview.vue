@@ -28,7 +28,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_extensions')" class="page-description" />
 			</sidebar-detail>
 		</template>
