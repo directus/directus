@@ -23,8 +23,8 @@
 				v-if="(percentageRemaining !== null && percentageRemaining <= 20) || softLength"
 				class="remaining"
 				:class="{
-					warning: percentageRemaining < 10,
-					danger: percentageRemaining < 5,
+					warning: percentageRemaining! < 10,
+					danger: percentageRemaining! < 5,
 				}"
 			>
 				{{ charsRemaining }}
@@ -73,8 +73,8 @@ const charsRemaining = computed(() => {
 	if (!props.length && !props.softLength) return null;
 	if (!props.value && !props.softLength) return null;
 	if (!props.value && props.softLength) return props.softLength;
-	if (props.softLength) return +props.softLength - props.value.length;
-	if (props.length) return +props.length - props.value.length;
+	if (props.softLength) return +props.softLength - props.value!.length;
+	if (props.length) return +props.length - props.value!.length;
 	return null;
 });
 
@@ -92,7 +92,7 @@ const percentageRemaining = computed(() => {
 
 const inputType = computed(() => {
 	if (props.masked) return 'password';
-	if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type)) return 'number';
+	if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type!)) return 'number';
 	return 'text';
 });
 </script>
