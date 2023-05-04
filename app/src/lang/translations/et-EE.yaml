@@ -130,7 +130,6 @@ archive_confirm_count: >-
   Kirjeid pole valitud | Oled kindel, et soovid arhiveerida selle kirje? | Oled kindel, et soovid arhiveerida {count} kirjet?
 reset_system_permissions_to: 'Lähtesta Süsteemi Load:'
 reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
-the_following_are_minimum_permissions: Need on vähimad load, mida on vaja "Rakenduse ligipääsu" võimaldamiseks. Sa võid ligipääsulube lisada, kuid mitte vähendada.
 app_access_minimum: Rakenduse Ligipääsu Miinimum
 recommended_defaults: Soovituslikud Vaikeväärtused
 unarchive: Eemalda arhiivist
@@ -1400,6 +1399,8 @@ panels:
 operations:
   log:
     message: Sõnum
+  mail:
+    template: Mall
   notification:
     recipient: Kasutaja
     message: Sõnum

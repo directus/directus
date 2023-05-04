@@ -1,7 +1,8 @@
 {
 	"name": "@directus/constants",
-	"version": "9.25.1",
+	"version": "10.0.0",
 	"type": "module",
+	"sideEffects": false,
 	"scripts": {
 		"build": "tsc --build",
 		"dev": "tsc --watch"
@@ -13,7 +14,7 @@
 		"directory": "packages/constants"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
@@ -27,8 +28,8 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
-		"typescript": "4.9.5"
+		"@directus/tsconfig": "0.0.7",
+		"typescript": "5.0.4"
 	},
 	"dependencies": {
 		"zod": "3.21.4"

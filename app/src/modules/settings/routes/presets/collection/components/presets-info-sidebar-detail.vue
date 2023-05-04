@@ -17,46 +17,40 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const loading = ref(false);
-		const bookmarksCount = ref<number | null>(null);
-		const presetsCount = ref<number | null>(null);
+const loading = ref(false);
+const bookmarksCount = ref<number | null>(null);
+const presetsCount = ref<number | null>(null);
 
-		fetchCounts();
+fetchCounts();
 
-		return { t, bookmarksCount, presetsCount };
+async function fetchCounts() {
+	loading.value = true;
 
-		async function fetchCounts() {
-			loading.value = true;
+	try {
+		const response = await api.get(`/presets`, {
+			params: {
+				[`filter[bookmark][_nnull]`]: true,
+				fields: ['id'],
+				meta: 'filter_count,total_count',
+			},
+		});
 
-			try {
-				const response = await api.get(`/presets`, {
-					params: {
-						[`filter[bookmark][_nnull]`]: true,
-						fields: ['id'],
-						meta: 'filter_count,total_count',
-					},
-				});
-
-				bookmarksCount.value = response.data.meta.filter_count as number;
-				presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
-		}
-	},
-});
+		bookmarksCount.value = response.data.meta.filter_count as number;
+		presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>

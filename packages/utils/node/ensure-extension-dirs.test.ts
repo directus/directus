@@ -1,7 +1,7 @@
-import { describe, beforeEach, afterEach, it, expect } from 'vitest';
-
-import { DirResult, dirSync } from 'tmp';
 import { NESTED_EXTENSION_TYPES } from '@directus/constants';
+import type { DirResult } from 'tmp';
+import { dirSync } from 'tmp';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ensureExtensionDirs } from './ensure-extension-dirs.js';
 
 describe('ensureExtensionDirs', () => {

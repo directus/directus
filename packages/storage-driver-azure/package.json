@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-azure",
-	"version": "9.25.1",
+	"version": "10.0.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --build",
@@ -14,7 +14,7 @@
 		"directory": "packages/storage-driver-azure"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
@@ -29,15 +29,15 @@
 		"access": "public"
 	},
 	"dependencies": {
-		"@azure/storage-blob": "12.13.0",
+		"@azure/storage-blob": "12.14.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
+		"@directus/tsconfig": "0.0.7",
 		"@ngneat/falso": "6.4.0",
-		"@vitest/coverage-c8": "0.29.3",
-		"typescript": "4.9.5",
-		"vitest": "0.29.3"
+		"@vitest/coverage-c8": "0.30.1",
+		"typescript": "5.0.4",
+		"vitest": "0.30.1"
 	}
 }

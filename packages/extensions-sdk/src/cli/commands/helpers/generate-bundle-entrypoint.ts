@@ -9,28 +9,33 @@ export default function generateBundleEntrypoint(mode: 'app' | 'api', entries: E
 
 	const entriesForTypes = entries.filter((entry) => isIn(entry.type, types));
 
-	const imports = entriesForTypes.map(
-		(entry, i) =>
-			`import e${i} from './${pathToRelativeUrl(
-				path.resolve(
-					isTypeIn(entry, HYBRID_EXTENSION_TYPES)
-						? mode === 'app'
-							? entry.source.app
-							: entry.source.api
-						: entry.source
-				)
-			)}';`
-	);
+	const imports = entriesForTypes.map((entry, index) => {
+		let entryPath: string;
 
-	const exports = types.map(
-		(type) =>
-			`export const ${pluralize(type)} = [${entriesForTypes
-				.map((entry, i) =>
-					entry.type === type ? (mode === 'app' ? `e${i}` : `{name:'${entry.name}',config:e${i}}`) : null
-				)
-				.filter((e): e is string => e !== null)
-				.join(',')}];`
-	);
+		if (isTypeIn(entry, HYBRID_EXTENSION_TYPES)) {
+			entryPath = mode === 'app' ? entry.source.app : entry.source.api;
+		} else {
+			entryPath = entry.source;
+		}
+
+		return `import e${index} from './${pathToRelativeUrl(path.resolve(entryPath))}';`;
+	});
+
+	const exports = types.map((type) => {
+		const entries = entriesForTypes.reduce<string[]>((result, entry, index) => {
+			if (entry.type !== type) return result;
+
+			if (mode === 'app') {
+				result.push(`e${index}`);
+			} else {
+				result.push(`{name:'${entry.name}',config:e${index}}`);
+			}
+
+			return result;
+		}, []);
+
+		return `export const ${pluralize(type)} = [${entries.join(',')}];`;
+	});
 
 	return `${imports.join('')}${exports.join('')}`;
 }

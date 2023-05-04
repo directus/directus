@@ -113,180 +113,156 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, ref } from 'vue';
+import { ref } from 'vue';
 import { useFolders, Folder } from '@/composables/use-folders';
 import api from '@/api';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export default defineComponent({
-	name: 'NavigationFolder',
-	components: { FolderPicker },
-	props: {
-		folder: {
-			type: Object as PropType<Folder>,
-			required: true,
-		},
-		currentFolder: {
-			type: String,
-			default: null,
-		},
-		clickHandler: {
-			type: Function,
-			default: () => undefined,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		folder: Folder;
+		currentFolder?: string;
+		clickHandler?: () => void;
+	}>(),
+	{
+		clickHandler: () => undefined,
+	}
+);
 
-		const router = useRouter();
+const { t } = useI18n();
 
-		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
-		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
-		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
+const router = useRouter();
 
-		const { fetchFolders } = useFolders();
+const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
+const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
+const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
 
-		return {
-			t,
-			renameActive,
-			renameValue,
-			renameSave,
-			renameSaving,
-			moveActive,
-			moveValue,
-			moveSave,
-			moveSaving,
-			deleteActive,
-			deleteSave,
-			deleteSaving,
-		};
+const { fetchFolders } = useFolders();
 
-		function useRenameFolder() {
-			const renameActive = ref(false);
-			const renameValue = ref(props.folder.name);
-			const renameSaving = ref(false);
+function useRenameFolder() {
+	const renameActive = ref(false);
+	const renameValue = ref(props.folder.name);
+	const renameSaving = ref(false);
 
-			return { renameActive, renameValue, renameSave, renameSaving };
+	return { renameActive, renameValue, renameSave, renameSaving };
 
-			async function renameSave() {
-				renameSaving.value = true;
+	async function renameSave() {
+		renameSaving.value = true;
 
-				try {
-					await api.patch(`/folders/${props.folder.id}`, {
-						name: renameValue.value,
-					});
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					renameSaving.value = false;
-					await fetchFolders();
-					renameActive.value = false;
-				}
-			}
+		try {
+			await api.patch(`/folders/${props.folder.id}`, {
+				name: renameValue.value,
+			});
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			renameSaving.value = false;
+			await fetchFolders();
+			renameActive.value = false;
 		}
+	}
+}
 
-		function useMoveFolder() {
-			const moveActive = ref(false);
-			const moveValue = ref(props.folder.parent);
-			const moveSaving = ref(false);
+function useMoveFolder() {
+	const moveActive = ref(false);
+	const moveValue = ref(props.folder.parent);
+	const moveSaving = ref(false);
 
-			return { moveActive, moveValue, moveSave, moveSaving };
+	return { moveActive, moveValue, moveSave, moveSaving };
 
-			async function moveSave() {
-				moveSaving.value = true;
+	async function moveSave() {
+		moveSaving.value = true;
 
-				try {
-					await api.patch(`/folders/${props.folder.id}`, {
-						parent: moveValue.value,
-					});
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					moveSaving.value = false;
-					await fetchFolders();
-					moveActive.value = false;
-				}
-			}
+		try {
+			await api.patch(`/folders/${props.folder.id}`, {
+				parent: moveValue.value,
+			});
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			moveSaving.value = false;
+			await fetchFolders();
+			moveActive.value = false;
 		}
+	}
+}
 
-		function useDeleteFolder() {
-			const deleteActive = ref(false);
-			const deleteSaving = ref(false);
+function useDeleteFolder() {
+	const deleteActive = ref(false);
+	const deleteSaving = ref(false);
 
-			return { deleteActive, deleteSave, deleteSaving };
+	return { deleteActive, deleteSave, deleteSaving };
 
-			async function deleteSave() {
-				deleteSaving.value = true;
+	async function deleteSave() {
+		deleteSaving.value = true;
 
-				try {
-					const foldersToUpdate = await api.get('/folders', {
-						params: {
-							filter: {
-								parent: {
-									_eq: props.folder.id,
-								},
-							},
-							fields: ['id'],
+		try {
+			const foldersToUpdate = await api.get('/folders', {
+				params: {
+					filter: {
+						parent: {
+							_eq: props.folder.id,
 						},
-					});
+					},
+					fields: ['id'],
+				},
+			});
 
-					const filesToUpdate = await api.get('/files', {
-						params: {
-							filter: {
-								folder: {
-									_eq: props.folder.id,
-								},
-							},
-							fields: ['id'],
+			const filesToUpdate = await api.get('/files', {
+				params: {
+					filter: {
+						folder: {
+							_eq: props.folder.id,
 						},
-					});
+					},
+					fields: ['id'],
+				},
+			});
 
-					const newParent = props.folder.parent || null;
+			const newParent = props.folder.parent || null;
 
-					const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
-					const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
+			const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
+			const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
 
-					await api.delete(`/folders/${props.folder.id}`);
+			await api.delete(`/folders/${props.folder.id}`);
 
-					if (folderKeys.length > 0) {
-						await api.patch(`/folders`, {
-							keys: folderKeys,
-							data: {
-								parent: newParent,
-							},
-						});
-					}
-
-					if (fileKeys.length > 0) {
-						await api.patch(`/files`, {
-							keys: fileKeys,
-							data: {
-								folder: newParent,
-							},
-						});
-					}
-
-					if (newParent) {
-						router.replace(`/files/folders/${newParent}`);
-					} else {
-						router.replace('/files');
-					}
-
-					deleteActive.value = false;
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					await fetchFolders();
-					deleteSaving.value = false;
-				}
+			if (folderKeys.length > 0) {
+				await api.patch(`/folders`, {
+					keys: folderKeys,
+					data: {
+						parent: newParent,
+					},
+				});
 			}
+
+			if (fileKeys.length > 0) {
+				await api.patch(`/files`, {
+					keys: fileKeys,
+					data: {
+						folder: newParent,
+					},
+				});
+			}
+
+			if (newParent) {
+				router.replace(`/files/folders/${newParent}`);
+			} else {
+				router.replace('/files');
+			}
+
+			deleteActive.value = false;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			await fetchFolders();
+			deleteSaving.value = false;
 		}
-	},
-});
+	}
+}
 </script>
 
 <style scoped>
