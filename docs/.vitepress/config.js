@@ -510,7 +510,7 @@ function sidebar() {
 					items: [
 						{ text: 'Getting Started', link: '/guides/real-time/getting-started/index.html' },
 						{ text: 'Authentication', link: '/guides/real-time/authentication' },
-						{ text: 'Operations', link: '/guides/real-time/subscriptions/operations' },
+						{ text: 'Operations', link: '/guides/real-time/operations' },
 						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
 						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
 						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
