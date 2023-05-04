@@ -17,7 +17,7 @@ services:
 before_script:
   - |
     # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1986#note_549888956
-    attempts=30
+    attempts=50
     echo "---- Waiting $attempts sec for docker to come up ----"
     while ! docker info > /dev/null 2>&1; do
         echo "Connection attempts left: $attempts"
