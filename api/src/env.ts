@@ -131,6 +131,7 @@ const allowedEnvironmentVars = [
 	'AUTH_.+_ICON',
 	'AUTH_.+_LABEL',
 	'AUTH_.+_PARAMS',
+	'AUTH_.+_CUSTOM_URL_PARAMS',
 	'AUTH_.+_ISSUER_URL',
 	'AUTH_.+_AUTH_REQUIRE_VERIFIED_EMAIL',
 	'AUTH_.+_CLIENT_URL',
