@@ -53,11 +53,11 @@
 					}
 				"
 				:class="index === firstVisibleFieldIndex ? 'first-visible-field' : ''"
-				:field="fieldsMap[fieldName] || {}"
+				:field="fieldsMap[fieldName]!"
 				:autofocus="index === firstEditableFieldIndex && autofocus"
 				:model-value="(values || {})[fieldName]"
 				:initial-value="(initialValues || {})[fieldName]"
-				:disabled="isDisabled(fieldsMap[fieldName])"
+				:disabled="isDisabled(fieldsMap[fieldName]!)"
 				:batch-mode="batchMode"
 				:batch-active="batchActiveFields.includes(fieldName)"
 				:primary-key="primaryKey"
@@ -75,9 +75,9 @@
 				:direction="direction"
 				@update:model-value="setValue(fieldName, $event)"
 				@set-field-value="setValue($event.field, $event.value, { force: true })"
-				@unset="unsetValue(fieldsMap[fieldName])"
-				@toggle-batch="toggleBatchField(fieldsMap[fieldName])"
-				@toggle-raw="toggleRawField(fieldsMap[fieldName])"
+				@unset="unsetValue(fieldsMap[fieldName]!)"
+				@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
+				@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
 			/>
 		</template>
 		<v-divider v-if="showDivider && !noVisibleFields" />
@@ -93,9 +93,10 @@ import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fiel
 import { useElementSize } from '@directus/composables';
 import { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
-import { computed, ComputedRef, onBeforeUpdate, provide, ref, watch } from 'vue';
+import { ComputedRef, computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormField from './form-field.vue';
+import type { FormField as TFormField } from './types';
 import ValidationErrors from './validation-errors.vue';
 
 type FieldValues = {
@@ -236,7 +237,7 @@ function useForm() {
 
 	const { formFields } = useFormFields(fields);
 
-	const fieldsMap: ComputedRef<Record<string, Field | undefined>> = computed(() => {
+	const fieldsMap: ComputedRef<Record<string, TFormField | undefined>> = computed(() => {
 		if (props.loading) return {} as Record<string, undefined>;
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 		return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
@@ -262,7 +263,7 @@ function useForm() {
 
 	return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
 
-	function isDisabled(field: Field | undefined) {
+	function isDisabled(field: TFormField | undefined) {
 		if (!field) return true;
 		const meta = fieldsMap.value?.[field.field]?.meta;
 		return (
@@ -283,9 +284,9 @@ function useForm() {
 		for (const field of fieldsInGroup) {
 			const meta = fieldsMap.value?.[field.field]?.meta;
 
-			if (meta?.special?.includes('group') && !passed.includes(meta!.field)) {
-				passed.push(meta!.field);
-				fieldsInGroup.push(...getFieldsForGroup(meta!.field, passed));
+			if (meta?.special?.includes('group') && !passed.includes(meta!.field!)) {
+				passed.push(meta!.field!);
+				fieldsInGroup.push(...getFieldsForGroup(meta!.field!, passed));
 			}
 		}
 
@@ -350,7 +351,7 @@ function apply(updates: { [field: string]: any }) {
 	}
 }
 
-function unsetValue(field: Field | undefined) {
+function unsetValue(field: TFormField | undefined) {
 	if (!field) return;
 	if (!props.batchMode && isDisabled(field)) return;
 
@@ -366,7 +367,7 @@ function useBatch() {
 
 	return { batchActiveFields, toggleBatchField };
 
-	function toggleBatchField(field: Field | undefined) {
+	function toggleBatchField(field: TFormField | undefined) {
 		if (!field) return;
 
 		if (batchActiveFields.value.includes(field.field)) {
@@ -391,7 +392,7 @@ function useRawEditor() {
 
 	return { rawActiveFields, toggleRawField };
 
-	function toggleRawField(field: Field | undefined) {
+	function toggleRawField(field: TFormField | undefined) {
 		if (!field) return;
 
 		if (rawActiveFields.value.has(field.field)) {
