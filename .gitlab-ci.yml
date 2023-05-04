@@ -33,8 +33,8 @@ before_script:
   - docker info
   - echo $CI_REGISTRY_USER
   - echo $CI_REGISTRY
-  - echo $CI_BUILD_TOKEN
-  - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY
+  - echo $CI_JOB_TOKEN
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
 after_script:
   - docker logout $CI_REGISTRY
