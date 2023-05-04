@@ -16,7 +16,7 @@
 			</template>
 
 			<template v-if="page == pagesCount && !created">
-				<v-divider v-if="revisionsByDate.length > 0" />
+				<v-divider v-if="revisionsByDate!.length > 0" />
 
 				<div class="external">
 					{{ t('revision_delta_created_externally') }}
@@ -62,7 +62,7 @@ const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount
 );
 
 const modalActive = ref(false);
-const modalCurrentRevision = ref<number>();
+const modalCurrentRevision = ref<number | null>(null);
 const page = ref<number>(1);
 
 watch(

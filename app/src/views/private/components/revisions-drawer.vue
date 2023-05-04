@@ -52,7 +52,7 @@ import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 
 const props = defineProps<{
 	revisions: Revision[];
-	current: number;
+	current: number | null;
 	active: boolean;
 }>();
 
