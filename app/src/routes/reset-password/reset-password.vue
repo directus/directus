@@ -12,25 +12,18 @@
 	</public-view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { defineComponent, computed } from 'vue';
 import RequestForm from './request.vue';
 import ResetForm from './reset.vue';
 
-export default defineComponent({
-	components: { RequestForm, ResetForm },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const route = useRoute();
+const route = useRoute();
 
-		const resetToken = computed(() => route.query.token);
-
-		return { t, resetToken };
-	},
-});
+const resetToken = computed(() => (Array.isArray(route.query.token) ? route.query.token[0] : route.query.token));
 </script>
 
 <style lang="scss" scoped>

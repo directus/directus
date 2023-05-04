@@ -1943,6 +1943,9 @@ operations:
     payload: سودبار
   log:
     message: پەیام
+  mail:
+    template: قاڵب
+    data: داتا
   notification:
     recipient: بەکارهێنەر
     message: پەیام

@@ -1746,6 +1746,8 @@ operations:
   mail:
     name: Skicka e-post
     to: Till
+    template: Mall
+    data: Data
   notification:
     recipient: Användare
     message: Meddelande

@@ -1943,6 +1943,8 @@ operations:
     to: Za
     to_placeholder: Dodajte adrese e-pošte i pritisnite enter...
     body: Sadržaj
+    template: Predložak
+    data: Podaci
   notification:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika

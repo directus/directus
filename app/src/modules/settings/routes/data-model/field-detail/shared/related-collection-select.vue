@@ -55,39 +55,29 @@
 	</v-input>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+<script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import { orderBy } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props) {
-		const { t } = useI18n();
-		const collectionsStore = useCollectionsStore();
+const props = defineProps<{
+	modelValue?: string;
+	disabled?: boolean;
+}>();
 
-		const collectionExists = computed(() => {
-			return !!collectionsStore.getCollection(props.modelValue);
-		});
+defineEmits(['update:modelValue']);
 
-		const availableCollections = computed(() => {
-			return orderBy(collectionsStore.databaseCollections, ['sort', 'collection'], ['asc']);
-		});
+const { t } = useI18n();
+const collectionsStore = useCollectionsStore();
 
-		const systemCollections = collectionsStore.crudSafeSystemCollections;
-
-		return { t, collectionExists, availableCollections, systemCollections };
-	},
+const collectionExists = computed(() => {
+	return !!collectionsStore.getCollection(props.modelValue);
 });
+
+const availableCollections = computed(() => {
+	return orderBy(collectionsStore.databaseCollections, ['sort', 'collection'], ['asc']);
+});
+
+const systemCollections = collectionsStore.crudSafeSystemCollections;
 </script>

@@ -1730,6 +1730,8 @@ operations:
     message: Bericht
   mail:
     to: Aan
+    template: Sjabloon
+    data: Data
   notification:
     recipient: Gebruiker
     message: Bericht

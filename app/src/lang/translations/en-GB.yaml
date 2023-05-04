@@ -2086,6 +2086,8 @@ operations:
     to: To
     to_placeholder: Add e-mail addresses and press enter...
     body: Body
+    template: Template
+    data: Data
   notification:
     name: Send Notification
     description: Send an in-app notification to one or more users

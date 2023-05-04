@@ -1761,6 +1761,9 @@ operations:
     payload: Tietosisältö
   log:
     message: Viesti
+  mail:
+    template: Pohja
+    data: Tiedot
   notification:
     recipient: Käyttäjänimi
     message: Viesti

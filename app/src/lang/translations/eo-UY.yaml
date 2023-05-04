@@ -1229,6 +1229,8 @@ operations:
     to: Al
     to_placeholder: Aldoni retpoŝtadresojn kaj premi Enter...
     body: Enhavo
+    template: Ŝablono
+    data: Datumoj
   notification:
     name: Sendi sciigon
     recipient: Uzanto

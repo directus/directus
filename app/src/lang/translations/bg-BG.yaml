@@ -2062,6 +2062,8 @@ operations:
     to: До
     to_placeholder: Добавете имейл адрес и натиснете enter...
     body: Съдържание
+    template: Шаблон
+    data: Данни
   notification:
     name: Изпращане на известие
     description: Изпращане на известие в приложението до потребители

@@ -1917,6 +1917,9 @@ operations:
     payload: Payload
   log:
     message: Mensagem
+  mail:
+    template: Template
+    data: Dados
   notification:
     recipient: Usuário
     message: Mensagem
