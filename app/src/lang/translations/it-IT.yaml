@@ -1447,6 +1447,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -2146,3 +2147,4 @@ operations:
     parallel: Parallela
     batch: A gruppi
     batch_size: Dimensione dei gruppi
+    cache: Cache
