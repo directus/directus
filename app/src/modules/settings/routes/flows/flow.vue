@@ -363,18 +363,21 @@ const currentOperation = computed(() => {
 
 const parentPanels = computed(() => {
 	const parents = panels.value.reduce<Record<string, ParentInfo>>((acc, panel) => {
-		if (panel.resolve)
+		if (panel.resolve) {
 			acc[panel.resolve] = {
 				id: panel.id,
 				type: 'resolve',
 				loner: true,
 			};
-		if (panel.reject)
+		}
+
+		if (panel.reject) {
 			acc[panel.reject] = {
 				id: panel.id,
 				type: 'reject',
 				loner: true,
 			};
+		}
 
 		return acc;
 	}, {});

@@ -181,8 +181,10 @@ const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
 
 	if (props.template) return props.template;
-	if (relationInfo.value.junctionCollection.meta?.display_template)
+
+	if (relationInfo.value.junctionCollection.meta?.display_template) {
 		return relationInfo.value.junctionCollection.meta?.display_template;
+	}
 
 	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
 
@@ -390,12 +392,13 @@ const customFilter = computed(() => {
 		},
 	};
 
-	if (selectedPrimaryKeys.value.length > 0)
+	if (selectedPrimaryKeys.value.length > 0) {
 		filter._and.push({
 			[relationInfo.value.relatedPrimaryKeyField.field]: {
 				_nin: selectedPrimaryKeys.value,
 			},
 		});
+	}
 
 	if (props.primaryKey !== '+') filter._and.push(selectFilter);
 

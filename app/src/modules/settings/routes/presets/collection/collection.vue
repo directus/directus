@@ -145,171 +145,130 @@
 	</component>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
-import SettingsNavigation from '../../../components/navigation.vue';
-import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
-
-import { useCollection, useLayout } from '@directus/composables';
+<script setup lang="ts">
+import { useExtension } from '@/composables/use-extension';
+import { usePreset } from '@/composables/use-preset';
+import { usePermissionsStore } from '@/stores/permissions';
+import { usePresetsStore } from '@/stores/presets';
+import { useUserStore } from '@/stores/user';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { usePresetsStore } from '@/stores/presets';
-import DrawerBatch from '@/views/private/components/drawer-batch.vue';
-import { usePreset } from '@/composables/use-preset';
-import { useExtension } from '@/composables/use-extension';
+import { useCollection, useLayout } from '@directus/composables';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../../components/navigation.vue';
+import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 
-export default defineComponent({
-	name: 'ContentCollection',
-	components: {
-		SettingsNavigation,
-		PresetsInfoSidebarDetail,
-		LayoutSidebarDetail,
-		SearchInput,
-		DrawerBatch,
-		RefreshSidebarDetail,
-	},
-	setup() {
-		const layout = ref('tabular');
-		const collection = ref('directus_presets');
-		const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
+const layout = ref('tabular');
+const collection = ref('directus_presets');
+const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
 
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
-		const layoutRef = ref();
+const userStore = useUserStore();
+const permissionsStore = usePermissionsStore();
+const layoutRef = ref();
 
-		const { selection } = useSelection();
-		const { info: currentCollection } = useCollection(collection);
+const { selection } = useSelection();
+const { info: currentCollection } = useCollection(collection);
 
-		const { layoutWrapper } = useLayout(layout);
+const { layoutWrapper } = useLayout(layout);
 
-		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
+const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
-		const currentLayout = useExtension('layout', layout);
+const currentLayout = useExtension('layout', layout);
 
-		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
-		const presetsStore = usePresetsStore();
+const presetsStore = usePresetsStore();
 
-		return {
-			t,
-			batchDelete,
-			batchEditActive,
-			confirmDelete,
-			currentCollection,
-			deleting,
-			filter,
-			layoutRef,
-			layoutWrapper,
-			selection,
-			layoutOptions,
-			layoutQuery,
-			layout,
-			search,
-			clearFilters,
-			batchEditAllowed,
-			batchDeleteAllowed,
-			deleteError,
-			createAllowed,
-			drawerBatchRefresh,
-			refresh,
-			refreshInterval,
-			currentLayout,
-			collection,
-		};
+async function refresh() {
+	await layoutRef.value?.state?.refresh?.();
+}
 
-		async function refresh() {
-			await layoutRef.value?.state?.refresh?.();
-		}
+async function drawerBatchRefresh() {
+	selection.value = [];
+	await refresh();
+}
 
-		async function drawerBatchRefresh() {
+function useSelection() {
+	const selection = ref<number[]>([]);
+
+	return { selection };
+}
+
+function useBatch() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
+
+	const batchEditActive = ref(false);
+
+	const error = ref<any>(null);
+
+	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
+
+	async function batchDelete() {
+		deleting.value = true;
+
+		try {
+			const batchPrimaryKeys = selection.value;
+			await presetsStore.delete(batchPrimaryKeys);
+
 			selection.value = [];
 			await refresh();
+
+			confirmDelete.value = false;
+		} catch (err: any) {
+			error.value = err;
+		} finally {
+			deleting.value = false;
 		}
+	}
+}
 
-		function useSelection() {
-			const selection = ref<number[]>([]);
+function clearFilters() {
+	filter.value = null;
+	search.value = null;
+}
 
-			return { selection };
-		}
+function usePermissions() {
+	const batchEditAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
 
-		function useBatch() {
-			const confirmDelete = ref(false);
-			const deleting = ref(false);
+		const updatePermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'update' && permission.collection === collection.value
+		);
 
-			const batchEditActive = ref(false);
+		return !!updatePermissions;
+	});
 
-			const error = ref<any>(null);
+	const batchDeleteAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
 
-			return { batchEditActive, confirmDelete, deleting, batchDelete, error };
+		const deletePermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'delete' && permission.collection === collection.value
+		);
 
-			async function batchDelete() {
-				deleting.value = true;
+		return !!deletePermissions;
+	});
 
-				try {
-					const batchPrimaryKeys = selection.value;
-					await presetsStore.delete(batchPrimaryKeys);
+	const createAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
 
-					selection.value = [];
-					await refresh();
+		const createPermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'create' && permission.collection === collection.value
+		);
 
-					confirmDelete.value = false;
-				} catch (err: any) {
-					error.value = err;
-				} finally {
-					deleting.value = false;
-				}
-			}
-		}
+		return !!createPermissions;
+	});
 
-		function clearFilters() {
-			filter.value = null;
-			search.value = null;
-		}
-
-		function usePermissions() {
-			const batchEditAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const updatePermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'update' && permission.collection === collection.value
-				);
-
-				return !!updatePermissions;
-			});
-
-			const batchDeleteAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const deletePermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'delete' && permission.collection === collection.value
-				);
-
-				return !!deletePermissions;
-			});
-
-			const createAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const createPermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'create' && permission.collection === collection.value
-				);
-
-				return !!createPermissions;
-			});
-
-			return { batchEditAllowed, batchDeleteAllowed, createAllowed };
-		}
-	},
-});
+	return { batchEditAllowed, batchDeleteAllowed, createAllowed };
+}
 </script>
 
 <style lang="scss" scoped>

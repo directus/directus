@@ -31,11 +31,11 @@ English text.
 
 :::tip Requirements
 
-You'll need a string somewhere in your [data chain](/configuration/flows.md#data-chains).
+You'll need a string somewhere in your [data chain](/app/flows#data-chains).
 
 :::
 
-1. Create a [Run Script](/configuration/flows/operations.md#run-script) operation in your flow.
+1. Create a [Run Script](/app/flows/operations#run-script) operation in your flow.
 2. Paste the following function into your Run Script operation.
 
 ```js

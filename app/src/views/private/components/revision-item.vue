@@ -16,61 +16,53 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
+<script lang="ts" setup>
 import { Revision } from '@/types/revisions';
-import { format } from 'date-fns';
 import { userName } from '@/utils/user-name';
+import { format } from 'date-fns';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		revision: {
-			type: Object as PropType<Revision>,
-			required: true,
-		},
-		last: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['click'],
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	revision: Revision;
+	last?: boolean;
+}>();
 
-		const revisionCount = computed(() => {
-			return Object.keys(props.revision.delta).length;
-		});
+defineEmits<{
+	(e: 'click'): void;
+}>();
 
-		const headerMessage = computed(() => {
-			switch (props.revision.activity.action.toLowerCase()) {
-				case 'create':
-					return t('revision_delta_created');
-				case 'update':
-					return t('revision_delta_updated', revisionCount.value);
-				case 'delete':
-					return t('revision_delta_deleted');
-				case 'revert':
-					return t('revision_delta_reverted');
-				default:
-					return t('revision_delta_other');
-			}
-		});
+const { t } = useI18n();
 
-		const time = computed(() => {
-			return format(new Date(props.revision.activity.timestamp), String(t('date-fns_time')));
-		});
+const revisionCount = computed(() => {
+	return Object.keys(props.revision.delta).length;
+});
 
-		const user = computed(() => {
-			if (props.revision?.activity?.user && typeof props.revision.activity.user === 'object') {
-				return userName(props.revision.activity.user);
-			}
+const headerMessage = computed(() => {
+	switch (props.revision.activity.action.toLowerCase()) {
+		case 'create':
+			return t('revision_delta_created');
+		case 'update':
+			return t('revision_delta_updated', revisionCount.value);
+		case 'delete':
+			return t('revision_delta_deleted');
+		case 'revert':
+			return t('revision_delta_reverted');
+		default:
+			return t('revision_delta_other');
+	}
+});
 
-			return t('private_user');
-		});
+const time = computed(() => {
+	return format(new Date(props.revision.activity.timestamp), String(t('date-fns_time')));
+});
 
-		return { t, headerMessage, time, user };
-	},
+const user = computed(() => {
+	if (props.revision?.activity?.user && typeof props.revision.activity.user === 'object') {
+		return userName(props.revision.activity.user);
+	}
+
+	return t('private_user');
 });
 </script>
 
