@@ -1,4 +1,4 @@
-# Getting Started with GraphQL Subscriptions
+# Getting Started With GraphQL Subscriptions
 
 You can connect to a Directus project and get updates on data held in a collection in real-time.
 

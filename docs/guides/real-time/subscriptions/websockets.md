@@ -1,4 +1,4 @@
-# Subscriptions With WebSockets
+# WebSockets Subscriptions
 
 WebSocket subscriptions allows for real-time notification of item creations, edits, and deletions in a collection. 
 
