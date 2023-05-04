@@ -1,6 +1,7 @@
 import type { Request } from 'express';
 import { getEnv } from '../env.js';
 import { Url } from './url.js';
+import url from 'url';
 
 /**
  * Whether to skip caching for the current request
@@ -15,13 +16,25 @@ export function shouldSkipCache(req: Request): boolean {
 	const referer = req.get('Referer');
 
 	if (referer) {
-		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+		if (env['CACHE_AUTO_PURGE']) {
+			const path = url.parse(req.originalUrl).pathname;
 
-		if (adminUrl.isRootRelative()) {
-			const refererUrl = new Url(referer);
-			if (refererUrl.path.join('/').startsWith(adminUrl.path.join('/'))) return true;
-		} else if (referer.startsWith(adminUrl.toString())) {
-			return true;
+			for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST']) {
+				const ignoredPath = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
+
+				if (path === ignoredPath) {
+					return true;
+				}
+			}
+		} else {
+			const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+
+			if (adminUrl.isRootRelative()) {
+				const refererUrl = new Url(referer);
+				if (refererUrl.path.join('/').startsWith(adminUrl.path.join('/'))) return true;
+			} else if (referer.startsWith(adminUrl.toString())) {
+				return true;
+			}
 		}
 	}
 
