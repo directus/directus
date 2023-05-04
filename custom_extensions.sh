@@ -76,6 +76,7 @@ if [ ! -d "migrations" ]; then
     exit 0
 fi
 cd migrations
+ls -la
 #for migration in *
 #do
 #    # Skip migrations
