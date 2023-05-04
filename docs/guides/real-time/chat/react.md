@@ -46,8 +46,6 @@ function App() {
 The first form will handle user login, the second will handle new message submissions while the empty `<ol>` will be
 populated with messages we will create shortly.
 
-### Initialize Connection
-
 Create a `url` variable and be sure to replace `your-directus-url` with your project’s URL:
 
 ```js
@@ -66,9 +64,13 @@ const connectionRef = useRef(null);
 Create the methods for form submissions:
 
 ```js
-const loginSubmit = () => {};
+const loginSubmit = (event) => {
 
-const messageSubmit = () => {};
+};
+
+const messageSubmit = (event) => {
+
+};
 ```
 
 Ensure to call the `event.preventDefault()` in these methods to prevent the browser from refreshing the page upon
@@ -86,7 +88,7 @@ const messageSubmit = (event) => {
 
 ## Establish WebSocket Connection
 
-First, create a piece of state to hold the `email` and `password` values of the login form:
+At the top of your component, create a piece of state to hold the `email` and `password` values of the login form:
 
 ```js
 const [formValue, setFormValue] = useState({ email: '', password: '' });
@@ -142,7 +144,7 @@ const authenticate = (opts) => {
 };
 ```
 
-### Subscribe to messages
+### Subscribe to Messages
 
 In a WebSocket connection, all data sent from the server will trigger the connection’s `message` event. Inside
 `loginSubmit`, add an event handler:
@@ -169,16 +171,20 @@ As soon as you have successfully authenticated, a message will be sent. When thi
 ```js
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
-	if (data.type === 'auth' && data.status === 'ok') { // [!code ++]
-		connectionRef.current.send( // [!code ++]
-			JSON.stringify({ // [!code ++]
+	if (data.type === 'auth' && data.status === 'ok') {
+		// [!code ++]
+		connectionRef.current.send(
+			// [!code ++]
+			JSON.stringify({
+				// [!code ++]
 				type: 'subscribe', // [!code ++]
 				collection: 'messages', // [!code ++]
-				query: { // [!code ++]
+				query: {
+					// [!code ++]
 					fields: ['*', 'user_created.first_name'], // [!code ++]
 					sort: 'date_created', // [!code ++]
 				}, // [!code ++]
-			})// [!code ++]
+			}) // [!code ++]
 		); // [!code ++]
 	} // [!code ++]
 };
@@ -201,7 +207,8 @@ const receiveMessage = (message) => {
 			})
 		);
 	}
-	if (data.type === 'subscription' && data.event === 'init') { // [!code ++]
+	if (data.type === 'subscription' && data.event === 'init') {
+		// [!code ++]
 		console.log('subscription started'); // [!code ++]
 	} // [!code ++]
 };
@@ -212,7 +219,8 @@ Open your browser, enter your user’s email and password, and hit submit. Check
 
 ## Create New Messages
 
-At the top of your component, set up two pieces of state to hold messages: one to keep track of new messages and another to store an array of previous message history.
+At the top of your component, set up two pieces of state to hold messages: one to keep track of new messages and another
+to store an array of previous message history.
 
 ```js
 const [newMessage, setNewMessage] = useState('');
