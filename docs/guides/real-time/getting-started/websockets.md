@@ -1,3 +1,8 @@
+---
+contributors: Kevin Lewis
+description: "Learn how to get started with Directus' WebSockets interface."
+---
+
 # Getting Started With WebSockets
 
 You can connect to a Directus project using a WebSocket interface and get updates on data held in a collection in real-time.

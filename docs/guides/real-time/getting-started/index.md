@@ -1,3 +1,8 @@
+---
+description: "Learn how to get started with Directus' real-time functionality."
+---
+
+
 # Getting Started With Real-Time
 
 Directus' WebSockets and GraphQL Subscription interfaces allow for real-time updates across clients. You can execute

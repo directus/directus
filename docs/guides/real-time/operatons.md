@@ -1,3 +1,8 @@
+---
+description: "Learn how to execute CRUD operations over Directus' WebSockets interface"
+contributors: Kevin Lewis
+---
+
 # WebSockets Operations
 
 You can execute CRUD operations over Directus' WebSockets interface.

@@ -1,3 +1,7 @@
+---
+description: "Learn how to get started with Directus real-time subscriptons."
+---
+
 # Real-Time Subscriptions
 
 WebSocket and GraphQL subscriptions allows for real-time notification of item creations, edits, and deletions in a

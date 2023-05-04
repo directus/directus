@@ -1,3 +1,9 @@
+---
+contributors: Esther Agbaje
+description: "Learn how to get started with Directus' GraphQL interface."
+---
+
+
 # Getting Started With GraphQL Subscriptions
 
 You can connect to a Directus project and get updates on data held in a collection in real-time.

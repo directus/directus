@@ -1,6 +1,6 @@
 ---
 description: Learn how to build a live-updating pie chart with results from a poll.
-author: Kevin Lewis
+contributors: Kevin Lewis
 ---
 
 # Build a Live Poll Result Chart With JavaScript

@@ -1,3 +1,8 @@
+---
+contributors: Kevin Lewis
+description: "Learn how to get started with Directus' WebSockets subscriptons."
+---
+
 # WebSockets Subscriptions
 
 WebSocket subscriptions allows for real-time notification of item creations, edits, and deletions in a collection. 

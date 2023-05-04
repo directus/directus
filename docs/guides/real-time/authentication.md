@@ -1,3 +1,9 @@
+---
+contributors: Kevin Lewis
+description: "Learn about Directus' real-time security and authentication settings."
+---
+
+
 # WebSocket & GraphQL Authentication
 
 Authentication is an important part of establishing your persistent connection with a Directus project. 

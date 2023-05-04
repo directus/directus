@@ -1,3 +1,8 @@
+---
+contributors: Esther Agbaje
+description: "Learn how to get started with Directus' GraphQL subscriptons."
+---
+
 # GraphQL Subscriptions
 
 GraphQL subscriptions provide live updates that are delivered in real-time whenever an item is created, updated or

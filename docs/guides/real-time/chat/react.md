@@ -1,3 +1,8 @@
+---
+contributors: Esther Agbaje
+description: Learn how to build a real-time multi-user chat with WebSockets and React.js.
+---
+
 # Build a Multi-User Chat With React.js
 
 In this guide, you will build a multi-user chat application with Directus’ WebSockets interface that authenticates users
