@@ -29,6 +29,7 @@ import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
+import type { Query } from 'express-serve-static-core';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -91,11 +92,18 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		return generators.codeVerifier();
 	}
 
-	async generateAuthUrl(codeVerifier: string, prompt = false): Promise<string> {
+	async generateAuthUrl(codeVerifier: string, prompt = false, queriesUrl: Query): Promise<string> {
 		try {
 			const client = await this.client;
 			const codeChallenge = generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
+
+			const { url_params = [] } = getConfigFromEnv(`AUTH_${this.config['provider'].toUpperCase()}_CUSTOM_`, [], 'underscore');
+
+			for (const query in queriesUrl) {
+				if (![...url_params].includes(query)) continue;
+				paramsConfig[query] = queriesUrl[query];
+			}
 
 			return client.authorizationUrl({
 				scope: this.config['scope'] ?? 'openid profile email',
@@ -316,7 +324,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt));
+			return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt, req.query));
 		}),
 		respond
 	);
