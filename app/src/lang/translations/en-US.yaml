@@ -187,7 +187,7 @@ permissions_for_role: 'Items the {role} Role can {action}.'
 fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
-presets_field_warning: 'The app interface for relational field {field} only supports the detailed syntax.'
+presets_field_warning: 'Relational presets for field "{field}" should be configured with the "detailed" syntax.'
 presentation_and_aliases: Presentation & Aliases
 revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
