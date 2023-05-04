@@ -10,7 +10,7 @@ collection.
   url="/guides/real-time/subscriptions/websockets" />
 
 <Card
-  title="Websockets with GraphQL"
+  title="GraphQL Subscriptions"
   h="2"
-  text="Learn how to subscribe to changes using GraphQL."
-  url="/guides/real-time/subscriptions/websockets-graphql" />
+  text="Learn how to implement GraphQL Subscriptions in Directus."
+  url="/guides/real-time/subscriptions/graphql" />

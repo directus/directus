@@ -1,9 +1,8 @@
-# Getting Started With WebSockets using GraphQL
+# Getting Started with GraphQL Subscriptions
 
-You can connect to a Directus project using a WebSocket interface and get updates on data held in a collection in
-real-time.
+You can connect to a Directus project and get updates on data held in a collection in real-time.
 
-This guide will show you how to get started with Directus' WebSockets interface, by subscribing to data using GraphQL.
+This guide will show you how to get started with subscribing to data using GraphQL.
 
 We'll be using a React.js project for demonstration purposes, however, WebSockets are language-agnostic, so you can
 apply the same set of steps in your stack of choice.
@@ -226,19 +225,28 @@ Within the `<ul/>` created earlier, map over `messageData` and render it:
 
 ```js
 <ul>
-	{messageData.map((message) => ( // [!code ++]
-		<li key={message.id}> // [!code ++]
-			<p> // [!code ++]
-				{message.user} says {message.text} // [!code ++]
-			</p> // [!code ++]
-		</li> // [!code ++]
-	))} // [!code ++]
+	{messageData.map(
+		(
+			message // [!code ++]
+		) => (
+			<li key={message.id}>
+				{' '}
+				// [!code ++]
+				<p>
+					{' '}
+					// [!code ++]
+					{message.user} says {message.text} // [!code ++]
+				</p>{' '}
+				// [!code ++]
+			</li> // [!code ++]
+		)
+	)}{' '}
+	// [!code ++]
 </ul>
 ```
 
 Now, whenever you click the button, a new message with its corresponding text and user will be displayed. Also, any
 updates made in the collection should automatically reflect in the UI.
-
 
 ## In Summary
 

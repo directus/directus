@@ -1,9 +1,10 @@
-# Subscriptions With WebSockets using GraphQL
+# GraphQL Subscriptions
 
-WebSocket subscriptions allows for real-time notification of item creations, edits, and deletions in a collection.
+GraphQL subscriptions provide live updates that are delivered in real-time whenever an item is created, updated or
+deleted in your collection.
 
-This guide assumes you already know
-[how to establish and authenticate](/guides/real-time/getting-started/websockets-graphql) over a WebSocket connection.
+This guide assumes you already know [how to establish and authenticate](/guides/real-time/getting-started/graphql) over
+a GraphQL connection.
 
 ## Subscribe To Changes In A Collection
 

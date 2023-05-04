@@ -10,7 +10,7 @@ CRUD operations, as well as subscribe to changes in a collection.
   url="/guides/real-time/getting-started/websockets" />
 
 <Card
-  title="WebSockets with GraphQL"
+  title="GraphQL Subscriptions"
   h="2"
-  text="Learn how to use Directus' WebSockets Interface with GraphQL."
-  url="/guides/real-time/getting-started/websockets-graphql" />
+  text="Learn how to use GraphQL Subscriptions."
+  url="/guides/real-time/getting-started/graphql" />
