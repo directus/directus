@@ -15,7 +15,7 @@
 			:validation-errors="validationErrors"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
-			:group="field.meta.field"
+			:group="field.meta!.field"
 			:multiple="accordionMode === false"
 			:direction="direction"
 			@apply="$emit('apply', $event)"

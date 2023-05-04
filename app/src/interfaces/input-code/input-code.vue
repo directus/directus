@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
 import CodeMirror, { ModeSpec } from 'codemirror';
-import { computed, onMounted, ref, watch } from 'vue';
+import { Ref, computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import importCodemirrorMode from './import-codemirror-mode';
 
@@ -52,7 +52,7 @@ const { t } = useI18n();
 
 const { width } = useWindowSize();
 
-const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
+const codemirrorEl: Ref<HTMLTextAreaElement | null> = ref(null);
 let codemirror: CodeMirror.Editor | null;
 let previousContent: string | null = null;
 
