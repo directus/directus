@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-graceful shutdown for bootstrap CLI
+Added graceful shutdown of database connection to bootstrap CLI command
