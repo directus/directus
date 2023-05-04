@@ -147,7 +147,7 @@ function handleObject(fieldKey: string) {
 
 	const displayInfo = useExtension(
 		'display',
-		computed(() => field.meta?.display ?? null)
+		computed(() => field?.meta?.display ?? null)
 	);
 
 	// If used display doesn't exist in the current project, return raw value
