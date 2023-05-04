@@ -52,8 +52,8 @@ import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 
 const props = defineProps<{
 	revisions: Revision[];
-	current?: number | string;
-	active?: boolean;
+	current: number;
+	active: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -74,7 +74,7 @@ const title = computed(() => {
 });
 
 const currentRevision = computed(() => {
-	return props.revisions.find((revision) => revision.id === props.current);
+	return props.revisions.find((revision) => revision.id === props.current)!;
 });
 
 const previousRevision = computed<Revision | undefined>(() => {
