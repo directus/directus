@@ -71,141 +71,66 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
+export default {
+	inheritAttrs: false,
+};
+</script>
 
-import MapComponent from './components/map.vue';
+<script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
 import { useSync } from '@directus/composables';
 import { GeometryOptions, Item } from '@directus/types';
-import { usePageSize } from '@/composables/use-page-size';
+import { useI18n } from 'vue-i18n';
+import MapComponent from './components/map.vue';
 
-export default defineComponent({
-	components: { MapComponent },
-	inheritAttrs: false,
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		selection: {
-			type: Array as PropType<Item[]>,
-			default: () => [],
-		},
-		loading: {
-			type: Boolean,
-			required: true,
-		},
-		error: {
-			type: Object as PropType<any>,
-			default: null,
-		},
-		geojsonError: {
-			type: String,
-			default: null,
-		},
-		geometryOptions: {
-			type: Object as PropType<GeometryOptions>,
-			default: undefined,
-		},
-		geojson: {
-			type: Object as PropType<any>,
-			required: true,
-		},
-		featureId: {
-			type: String,
-			default: null,
-		},
-		geojsonBounds: {
-			type: Object as PropType<any>,
-			default: undefined,
-		},
-		directusSource: {
-			type: Object as PropType<any>,
-			required: true,
-		},
-		directusLayers: {
-			type: Array as PropType<any[]>,
-			required: true,
-		},
-		handleClick: {
-			type: Function as PropType<(event: { id: string | number; replace: boolean }) => void>,
-			required: true,
-		},
-		handleSelect: {
-			type: Function as PropType<(event: { ids: Array<string | number>; replace: boolean }) => void>,
-			required: true,
-		},
-		cameraOptions: {
-			type: Object as PropType<any>,
-			default: undefined,
-		},
-		resetPresetAndRefresh: {
-			type: Function as PropType<() => Promise<void>>,
-			required: true,
-		},
-		geojsonLoading: {
-			type: Boolean,
-			required: true,
-		},
-		itemCount: {
-			type: Number,
-			default: null,
-		},
-		totalPages: {
-			type: Number,
-			required: true,
-		},
-		page: {
-			type: Number,
-			required: true,
-		},
-		toPage: {
-			type: Function as PropType<(newPage: number) => void>,
-			required: true,
-		},
-		limit: {
-			type: Number,
-			required: true,
-		},
-		autoLocationFilter: {
-			type: Boolean,
-			default: undefined,
-		},
-		fitDataBounds: {
-			type: Function as PropType<() => void>,
-			required: true,
-		},
-		template: {
-			type: String,
-			default: () => undefined,
-		},
-		itemPopup: {
-			type: Object as PropType<{ item?: any; position?: { x: number; y: number } }>,
-			default: () => undefined,
-		},
-		updateItemPopup: {
-			type: Function,
-			required: true,
-		},
-	},
-	emits: ['update:cameraOptions', 'update:limit'],
-	setup(props, { emit }) {
-		const { t, n } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		geojson: any;
+		directusSource: any;
+		directusLayers: any[];
+		handleClick: (event: { id: string | number; replace: boolean }) => void;
+		handleSelect: (event: { ids: Array<string | number>; replace: boolean }) => void;
+		resetPresetAndRefresh: () => Promise<void>;
+		fitDataBounds: () => void;
+		updateItemPopup: () => void;
+		geojsonLoading: boolean;
+		loading: boolean;
+		totalPages: number;
+		page: number;
+		toPage: (newPage: number) => void;
+		limit: number;
+		selection?: Item[];
+		error?: any;
+		geojsonError?: string;
+		geometryOptions?: GeometryOptions;
+		featureId?: string;
+		geojsonBounds?: any;
+		cameraOptions?: any;
+		itemCount?: number;
+		autoLocationFilter?: boolean;
+		template?: string;
+		itemPopup?: { item?: any; position?: { x: number; y: number } };
+	}>(),
+	{
+		selection: () => [],
+	}
+);
 
-		const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
-		const limitWritable = useSync(props, 'limit', emit);
+const emit = defineEmits(['update:cameraOptions', 'update:limit']);
 
-		const { sizes: pageSizes, selected: selectedSize } = usePageSize<{ text: string; value: number }>(
-			[100, 1000, 10000, 100000],
-			(value) => ({ text: n(value), value }),
-			props.limit
-		);
+const { t, n } = useI18n();
 
-		limitWritable.value = selectedSize;
+const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
+const limitWritable = useSync(props, 'limit', emit);
 
-		return { t, n, cameraOptionsWritable, limitWritable, pageSizes };
-	},
-});
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<{ text: string; value: number }>(
+	[100, 1000, 10000, 100000],
+	(value) => ({ text: n(value), value }),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
 </script>
 
 <style lang="scss" scoped>

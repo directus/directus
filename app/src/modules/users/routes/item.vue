@@ -181,10 +181,7 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
+<script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useFormFields } from '@/composables/use-form-fields';
@@ -192,10 +189,10 @@ import { useItem } from '@/composables/use-item';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { setLanguage } from '@/lang/set-language';
-import { useUserStore } from '@/stores/user';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
@@ -203,327 +200,269 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
 import { Field } from '@directus/types';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 
-export default defineComponent({
-	name: 'UsersItem',
-	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsSidebarDetail, UserInfoSidebarDetail },
-	props: {
-		primaryKey: {
-			type: String,
-			required: true,
-		},
-		role: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t, locale } = useI18n();
+const props = defineProps<{
+	primaryKey: string;
+	role?: string;
+}>();
 
-		const router = useRouter();
+const { t, locale } = useI18n();
 
-		const form = ref<HTMLElement>();
-		const fieldsStore = useFieldsStore();
-		const collectionsStore = useCollectionsStore();
-		const userStore = useUserStore();
-		const serverStore = useServerStore();
+const router = useRouter();
 
-		const { primaryKey } = toRefs(props);
-		const { breadcrumb } = useBreadcrumb();
+const form = ref<HTMLElement>();
+const fieldsStore = useFieldsStore();
+const collectionsStore = useCollectionsStore();
+const userStore = useUserStore();
+const serverStore = useServerStore();
 
-		const { info: collectionInfo } = useCollection('directus_users');
+const { primaryKey } = toRefs(props);
+const { breadcrumb } = useBreadcrumb();
 
-		const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const { info: collectionInfo } = useCollection('directus_users');
 
-		const {
-			isNew,
-			edits,
-			hasEdits,
-			item,
-			saving,
-			loading,
-			save,
-			remove,
-			deleting,
-			saveAsCopy,
-			isBatch,
-			archive,
-			archiving,
-			isArchived,
-			validationErrors,
-		} = useItem(ref('directus_users'), primaryKey);
+const revisionsDrawerDetail = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-		if (props.role) {
-			edits.value = {
-				role: props.role,
-				...edits.value,
-			};
-		}
+const {
+	isNew,
+	edits,
+	hasEdits,
+	item,
+	saving,
+	loading,
+	save,
+	remove,
+	deleting,
+	saveAsCopy,
+	isBatch,
+	archive,
+	archiving,
+	isArchived,
+	validationErrors,
+} = useItem(ref('directus_users'), primaryKey);
 
-		const isSavable = computed(() => saveAllowed.value && hasEdits.value);
+if (props.role) {
+	edits.value = {
+		role: props.role,
+		...edits.value,
+	};
+}
 
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
-		const confirmDelete = ref(false);
-		const confirmArchive = ref(false);
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
-		const avatarError = ref(null);
+const confirmDelete = ref(false);
+const confirmArchive = ref(false);
 
-		const title = computed(() => {
-			if (loading.value === true) return t('loading');
+const avatarError = ref(null);
 
-			if (isNew.value === false && item.value) {
-				const user = item.value as any;
-				return userName(user);
-			}
+const title = computed(() => {
+	if (loading.value === true) return t('loading');
 
-			return t('adding_user');
-		});
+	if (isNew.value === false && item.value) {
+		const user = item.value as any;
+		return userName(user);
+	}
 
-		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
-
-		const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
-			usePermissions(ref('directus_users'), item, isNew);
-
-		// These fields will be shown in the sidebar instead
-		const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
-
-		const fieldsFiltered = computed(() => {
-			return fields.value.filter((field: Field) => {
-				// These fields should only be editable when creating new users or by administrators
-				if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
-					field.meta.readonly = true;
-				}
-
-				return !fieldsDenyList.includes(field.field);
-			});
-		});
-
-		const { formFields } = useFormFields(fieldsFiltered);
-
-		const archiveTooltip = computed(() => {
-			if (archiveAllowed.value === false) return t('not_allowed');
-			if (isArchived.value === true) return t('unarchive');
-			return t('archive');
-		});
-
-		useShortcut('meta+s', saveAndStay, form);
-		useShortcut('meta+shift+s', saveAndAddNew, form);
-
-		return {
-			t,
-			router,
-			title,
-			item,
-			loading,
-			isNew,
-			navigateBack,
-			breadcrumb,
-			edits,
-			hasEdits,
-			saving,
-			saveAndQuit,
-			deleteAndQuit,
-			confirmDelete,
-			deleting,
-			saveAndStay,
-			saveAndAddNew,
-			saveAsCopyAndNavigate,
-			discardAndStay,
-			isBatch,
-			revisionsDrawerDetail,
-			previewLoading,
-			avatarSrc,
-			roleName,
-			confirmLeave,
-			leaveTo,
-			discardAndLeave,
-			formFields,
-			createAllowed,
-			deleteAllowed,
-			saveAllowed,
-			archiveAllowed,
-			isArchived,
-			updateAllowed,
-			toggleArchive,
-			confirmArchive,
-			collectionInfo,
-			archiving,
-			archiveTooltip,
-			form,
-			userName,
-			revisionsAllowed,
-			validationErrors,
-			revert,
-			avatarError,
-			isSavable,
-		};
-
-		function navigateBack() {
-			const backState = router.options.history.state.back;
-
-			if (typeof backState !== 'string' || !backState.startsWith('/login')) {
-				router.back();
-				return;
-			}
-
-			router.push('/users');
-		}
-
-		function useBreadcrumb() {
-			const breadcrumb = computed(() => [
-				{
-					name: t('user_directory'),
-					to: `/users`,
-				},
-			]);
-
-			return { breadcrumb };
-		}
-
-		async function saveAndQuit() {
-			try {
-				const savedItem: Record<string, any> = await save();
-				await setLang(savedItem);
-				await refreshCurrentUser();
-				router.push(`/users`);
-			} catch {
-				// `save` will show unexpected error dialog
-			}
-		}
-
-		async function saveAndStay() {
-			try {
-				const savedItem: Record<string, any> = await save();
-				await setLang(savedItem);
-				await refreshCurrentUser();
-
-				revisionsDrawerDetail.value?.refresh?.();
-
-				if (props.primaryKey === '+') {
-					const newPrimaryKey = savedItem.id;
-					router.replace(`/users/${newPrimaryKey}`);
-				}
-			} catch {
-				// `save` will show unexpected error dialog
-			}
-		}
-
-		async function saveAndAddNew() {
-			try {
-				const savedItem: Record<string, any> = await save();
-				await setLang(savedItem);
-				await refreshCurrentUser();
-				router.push(`/users/+`);
-			} catch {
-				// `save` will show unexpected error dialog
-			}
-		}
-
-		async function saveAsCopyAndNavigate() {
-			try {
-				const newPrimaryKey = await saveAsCopy();
-				if (newPrimaryKey) router.push(`/users/${newPrimaryKey}`);
-			} catch {
-				// `save` will show unexpected error dialog
-			}
-		}
-
-		async function deleteAndQuit() {
-			try {
-				await remove();
-				edits.value = {};
-				router.replace(`/users`);
-			} catch {
-				// `remove` will show the unexpected error dialog
-			}
-		}
-
-		async function setLang(user: Record<string, any>) {
-			if (userStore.currentUser!.id !== item.value?.id) return;
-
-			const newLang = user?.language ?? serverStore.info?.project?.default_language;
-
-			if (newLang && newLang !== locale.value) {
-				await setLanguage(newLang);
-
-				await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
-			}
-		}
-
-		async function refreshCurrentUser() {
-			if (userStore.currentUser!.id === item.value?.id) {
-				await userStore.hydrate();
-			}
-		}
-
-		function useUserPreview() {
-			const loading = ref(false);
-			const avatarSrc = ref<string | null>(null);
-			const roleName = ref<string | null>(null);
-
-			watch(() => props.primaryKey, getUserPreviewData, { immediate: true });
-
-			return { loading, avatarSrc, roleName };
-
-			async function getUserPreviewData() {
-				if (props.primaryKey === '+') return;
-
-				loading.value = true;
-
-				try {
-					const response = await api.get(`/users/${props.primaryKey}`, {
-						params: {
-							fields: ['role.name', 'avatar.id'],
-						},
-					});
-
-					avatarSrc.value = response.data.data.avatar?.id
-						? `/assets/${response.data.data.avatar.id}?key=system-medium-cover`
-						: null;
-
-					roleName.value = response.data.data?.role?.name;
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
-			}
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-
-		function discardAndStay() {
-			edits.value = {};
-			confirmLeave.value = false;
-		}
-
-		async function toggleArchive() {
-			await archive();
-
-			if (isArchived.value === true) {
-				router.push('/users');
-			} else {
-				confirmArchive.value = false;
-			}
-		}
-
-		function revert(values: Record<string, any>) {
-			edits.value = {
-				...edits.value,
-				...values,
-			};
-		}
-	},
+	return t('adding_user');
 });
+
+const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
+
+const { createAllowed, deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed, fields } =
+	usePermissions(ref('directus_users'), item, isNew);
+
+// These fields will be shown in the sidebar instead
+const fieldsDenyList = ['id', 'last_page', 'created_on', 'created_by', 'modified_by', 'modified_on', 'last_access'];
+
+const fieldsFiltered = computed(() => {
+	return fields.value.filter((field: Field) => {
+		// These fields should only be editable when creating new users or by administrators
+		if (!isNew.value && ['provider', 'external_identifier'].includes(field.field) && !userStore.isAdmin) {
+			field.meta.readonly = true;
+		}
+
+		return !fieldsDenyList.includes(field.field);
+	});
+});
+
+const { formFields } = useFormFields(fieldsFiltered);
+
+const archiveTooltip = computed(() => {
+	if (archiveAllowed.value === false) return t('not_allowed');
+	if (isArchived.value === true) return t('unarchive');
+	return t('archive');
+});
+
+useShortcut('meta+s', saveAndStay, form);
+useShortcut('meta+shift+s', saveAndAddNew, form);
+
+function navigateBack() {
+	const backState = router.options.history.state.back;
+
+	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+		router.back();
+		return;
+	}
+
+	router.push('/users');
+}
+
+function useBreadcrumb() {
+	const breadcrumb = computed(() => [
+		{
+			name: t('user_directory'),
+			to: `/users`,
+		},
+	]);
+
+	return { breadcrumb };
+}
+
+async function saveAndQuit() {
+	try {
+		const savedItem: Record<string, any> = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+		router.push(`/users`);
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function saveAndStay() {
+	try {
+		const savedItem: Record<string, any> = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+
+		revisionsDrawerDetail.value?.refresh?.();
+
+		if (props.primaryKey === '+') {
+			const newPrimaryKey = savedItem.id;
+			router.replace(`/users/${newPrimaryKey}`);
+		}
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function saveAndAddNew() {
+	try {
+		const savedItem: Record<string, any> = await save();
+		await setLang(savedItem);
+		await refreshCurrentUser();
+		router.push(`/users/+`);
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function saveAsCopyAndNavigate() {
+	try {
+		const newPrimaryKey = await saveAsCopy();
+		if (newPrimaryKey) router.push(`/users/${newPrimaryKey}`);
+	} catch {
+		// `save` will show unexpected error dialog
+	}
+}
+
+async function deleteAndQuit() {
+	try {
+		await remove();
+		edits.value = {};
+		router.replace(`/users`);
+	} catch {
+		// `remove` will show the unexpected error dialog
+	}
+}
+
+async function setLang(user: Record<string, any>) {
+	if (userStore.currentUser!.id !== item.value?.id) return;
+
+	const newLang = user?.language ?? serverStore.info?.project?.default_language;
+
+	if (newLang && newLang !== locale.value) {
+		await setLanguage(newLang);
+
+		await Promise.all([fieldsStore.hydrate(), collectionsStore.hydrate()]);
+	}
+}
+
+async function refreshCurrentUser() {
+	if (userStore.currentUser!.id === item.value?.id) {
+		await userStore.hydrate();
+	}
+}
+
+function useUserPreview() {
+	const loading = ref(false);
+	const avatarSrc = ref<string | null>(null);
+	const roleName = ref<string | null>(null);
+
+	watch(() => props.primaryKey, getUserPreviewData, { immediate: true });
+
+	return { loading, avatarSrc, roleName };
+
+	async function getUserPreviewData() {
+		if (props.primaryKey === '+') return;
+
+		loading.value = true;
+
+		try {
+			const response = await api.get(`/users/${props.primaryKey}`, {
+				params: {
+					fields: ['role.name', 'avatar.id'],
+				},
+			});
+
+			avatarSrc.value = response.data.data.avatar?.id
+				? `/assets/${response.data.data.avatar.id}?key=system-medium-cover`
+				: null;
+
+			roleName.value = response.data.data?.role?.name;
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			loading.value = false;
+		}
+	}
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
+}
+
+async function toggleArchive() {
+	await archive();
+
+	if (isArchived.value === true) {
+		router.push('/users');
+	} else {
+		confirmArchive.value = false;
+	}
+}
+
+function revert(values: Record<string, any>) {
+	edits.value = {
+		...edits.value,
+		...values,
+	};
+}
 </script>
 
 <style lang="scss" scoped>

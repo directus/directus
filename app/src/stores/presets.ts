@@ -228,6 +228,7 @@ export const usePresetsStore = defineStore({
 			const userStore = useUserStore();
 
 			if (userStore.currentUser === null) return null;
+			if (!('id' in userStore.currentUser)) return null;
 
 			const { id: userID, role: userRole } = userStore.currentUser;
 

@@ -51,91 +51,67 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed } from 'vue';
-import { Field, ShowSelect } from '@directus/types';
+<script setup lang="ts">
 import { useSync } from '@directus/composables';
+import { Field, ShowSelect } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		fields: {
-			type: Array as PropType<Field[]>,
-			required: true,
-		},
-		size: {
-			type: Number,
-			required: true,
-		},
-		sort: {
-			type: Array as PropType<string[]>,
-			required: true,
-		},
-		showSelect: {
-			type: String as PropType<ShowSelect>,
-			default: 'multiple',
-		},
-		selection: {
-			type: Array as PropType<Record<string, any>>,
-			default: () => [],
-		},
-	},
-	emits: ['select-all', 'update:size', 'update:sort', 'update:selection'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		fields: Field[];
+		size: number;
+		sort: string[];
+		showSelect?: ShowSelect;
+		selection?: (number | string)[];
+	}>(),
+	{
+		showSelect: 'multiple',
+		selection: () => [],
+	}
+);
 
-		const sizeSync = useSync(props, 'size', emit);
-		const sortSync = useSync(props, 'sort', emit);
-		const selectionSync = useSync(props, 'selection', emit);
+const emit = defineEmits(['select-all', 'update:size', 'update:sort', 'update:selection']);
 
-		const descending = computed(() => props.sort[0].startsWith('-'));
+const { t } = useI18n();
 
-		const sortKey = computed(() => (props.sort[0].startsWith('-') ? props.sort[0].substring(1) : props.sort[0]));
+const sizeSync = useSync(props, 'size', emit);
+const sortSync = useSync(props, 'sort', emit);
+const selectionSync = useSync(props, 'selection', emit);
 
-		const sortField = computed(() => {
-			return props.fields.find((field) => field.field === sortKey.value);
-		});
+const descending = computed(() => props.sort[0].startsWith('-'));
 
-		const fieldsWithoutFake = computed(() => {
-			return props.fields
-				.filter((field) => field.field.startsWith('$') === false)
-				.map((field) => ({
-					field: field.field,
-					name: field.name,
-					disabled: ['json', 'o2m', 'm2o', 'm2a', 'file', 'files', 'alias', 'presentation'].includes(field.type),
-				}));
-		});
+const sortKey = computed(() => (props.sort[0].startsWith('-') ? props.sort[0].substring(1) : props.sort[0]));
 
-		return {
-			t,
-			toggleSize,
-			descending,
-			toggleDescending,
-			sortField,
-			sizeSync,
-			sortSync,
-			selectionSync,
-			sortKey,
-			fieldsWithoutFake,
-		};
-
-		function toggleSize() {
-			if (props.size >= 2 && props.size < 5) {
-				sizeSync.value++;
-			} else {
-				sizeSync.value = 2;
-			}
-		}
-
-		function toggleDescending() {
-			if (descending.value === true) {
-				sortSync.value = [sortSync.value[0].substring(1)];
-			} else {
-				sortSync.value = ['-' + sortSync.value];
-			}
-		}
-	},
+const sortField = computed(() => {
+	return props.fields.find((field) => field.field === sortKey.value);
 });
+
+const fieldsWithoutFake = computed(() => {
+	return props.fields
+		.filter((field) => field.field.startsWith('$') === false)
+		.map((field) => ({
+			field: field.field,
+			name: field.name,
+			disabled: ['json', 'o2m', 'm2o', 'm2a', 'file', 'files', 'alias', 'presentation'].includes(field.type),
+		}));
+});
+
+function toggleSize() {
+	if (props.size >= 2 && props.size < 5) {
+		sizeSync.value++;
+	} else {
+		sizeSync.value = 2;
+	}
+}
+
+function toggleDescending() {
+	if (descending.value === true) {
+		sortSync.value = [sortSync.value[0].substring(1)];
+	} else {
+		sortSync.value = ['-' + sortSync.value];
+	}
+}
 </script>
 
 <style lang="scss" scoped>

@@ -37,73 +37,52 @@
 	</v-input>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useFieldsStore } from '@/stores/fields';
+<script setup lang="ts">
 import { i18n } from '@/lang';
+import { useFieldsStore } from '@/stores/fields';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		collection: {
-			type: String,
-			default: null,
-		},
-		disabledFields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		typeDenyList: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		typeAllowList: {
-			type: Array as PropType<string[]>,
-			default: undefined,
-		},
-		placeholder: {
-			type: String,
-			default: () => i18n.global.t('foreign_key') + '...',
-		},
-		nullable: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props) {
-		const { t } = useI18n();
-		const fieldsStore = useFieldsStore();
+const props = withDefaults(
+	defineProps<{
+		modelValue?: string;
+		disabled?: boolean;
+		collection?: string;
+		disabledFields?: string[];
+		typeDenyList?: string[];
+		typeAllowList?: string[];
+		placeholder?: string;
+		nullable?: boolean;
+	}>(),
+	{
+		disabledFields: () => [],
+		typeDenyList: () => [],
+		placeholder: () => i18n.global.t('foreign_key') + '...',
+	}
+);
 
-		const fields = computed(() => {
-			if (!props.collection) return [];
+defineEmits(['update:modelValue']);
 
-			return fieldsStore.getFieldsForCollectionAlphabetical(props.collection).map((field) => ({
-				text: field.field,
-				value: field.field,
-				disabled:
-					!field.schema ||
-					!!field.schema?.is_primary_key ||
-					props.disabledFields.includes(field.field) ||
-					props.typeDenyList.includes(field.type) ||
-					(props.typeAllowList && !props.typeAllowList.includes(field.type)),
-			}));
-		});
+const { t } = useI18n();
+const fieldsStore = useFieldsStore();
 
-		const fieldExists = computed(() => {
-			if (!props.collection || !props.modelValue) return false;
-			return !!fieldsStore.getField(props.collection, props.modelValue);
-		});
+const fields = computed(() => {
+	if (!props.collection) return [];
 
-		return { t, fields, fieldExists };
-	},
+	return fieldsStore.getFieldsForCollectionAlphabetical(props.collection).map((field) => ({
+		text: field.field,
+		value: field.field,
+		disabled:
+			!field.schema ||
+			!!field.schema?.is_primary_key ||
+			props.disabledFields.includes(field.field) ||
+			props.typeDenyList.includes(field.type) ||
+			(props.typeAllowList && !props.typeAllowList.includes(field.type)),
+	}));
+});
+
+const fieldExists = computed(() => {
+	if (!props.collection || !props.modelValue) return false;
+	return !!fieldsStore.getField(props.collection, props.modelValue);
 });
 </script>
