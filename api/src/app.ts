@@ -93,7 +93,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await registerAuthProviders();
 
-	const extensionManager = getExtensionManager();
+	const extensionManager = await getExtensionManager();
 	const flowManager = getFlowManager();
 
 	await extensionManager.initialize();
@@ -273,6 +273,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	// Register custom endpoints
 	await emitter.emitInit('routes.custom.before', { app });
+
 	app.use(extensionManager.getEndpointRouter());
 	await emitter.emitInit('routes.custom.after', { app });
 

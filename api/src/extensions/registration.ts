@@ -68,6 +68,8 @@ export class RegistrationManager {
 		this.extensionManager = extensionManager;
 		this.endpointRouter = Router();
 		this.appExtensionChunks = new Map();
+
+		console.log(express.Router())
 	}
 
 	public async registerHooks(): Promise<void> {
@@ -195,6 +197,8 @@ export class RegistrationManager {
 	public registerHook(register: HookConfig): void {
 		const registerFunctions = {
 			filter: (event: string, handler: FilterHandler) => {
+				console.log('register filter', event, handler);
+
 				emitter.onFilter(event, handler);
 
 				this.hookEvents.push({
@@ -259,6 +263,8 @@ export class RegistrationManager {
 			},
 		};
 
+		console.log(registerFunctions, register);
+
 		register(registerFunctions, {
 			services,
 			exceptions: { ...exceptions, ...sharedExceptions },
@@ -276,6 +282,10 @@ export class RegistrationManager {
 
 		const scopedRouter = express.Router();
 		this.endpointRouter.use(`/${routeName}`, scopedRouter);
+
+		scopedRouter.get('/test', function () {
+			console.log(structuredClone(arguments[0]), structuredClone(arguments[1]))
+		})
 
 		register(scopedRouter, {
 			services,

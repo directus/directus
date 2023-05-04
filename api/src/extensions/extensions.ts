@@ -17,18 +17,17 @@ import { JobQueue } from '../utils/job-queue.js';
 import { ExtensionsService } from './service.js';
 import { RegistrationManager } from './registration.js';
 import { InstallationManager } from './installation.js';
+import { Worker, isMainThread, parentPort } from 'node:worker_threads'
+import { fileURLToPath } from 'node:url'
 import { WatcherManager } from './watcher.js';
 
 let extensionManager: ExtensionManager;
 
-export function getExtensionManager(): ExtensionManager {
-	if (extensionManager) {
-		return extensionManager;
-	}
 
-	extensionManager = new ExtensionManager();
+export async function getExtensionManager(): Promise<ExtensionManager> {
+	if (!extensionManager) extensionManager = new ExtensionManager();
 
-	return extensionManager;
+	return extensionManager
 }
 
 type FullExtension = Extension & ExtensionRaw;
