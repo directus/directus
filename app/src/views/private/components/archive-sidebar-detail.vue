@@ -48,8 +48,10 @@ watch(selectedItem, () => {
 	url.searchParams.delete('archived');
 	url.searchParams.delete('all');
 
-	if (unref(selectedItem)) {
-		url.searchParams.set(selectedItem.value!, '');
+	const selectedItemValue = unref(selectedItem);
+
+	if (selectedItemValue) {
+		url.searchParams.set(selectedItemValue, '');
 	}
 
 	router.push(url.pathname + url.search);

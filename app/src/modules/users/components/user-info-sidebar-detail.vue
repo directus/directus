@@ -49,15 +49,10 @@ import { localizedFormat } from '@/utils/localized-format';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		user?: Record<string, any>;
-		isNew: boolean;
-	}>(),
-	{
-		isNew: false,
-	}
-);
+const props = defineProps<{
+	user?: Record<string, any>;
+	isNew?: boolean;
+}>();
 
 const { t } = useI18n();
 

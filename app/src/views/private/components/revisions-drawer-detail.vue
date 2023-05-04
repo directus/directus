@@ -62,7 +62,7 @@ const { revisions, revisionsByDate, loading, refresh, revisionsCount, pagesCount
 );
 
 const modalActive = ref(false);
-const modalCurrentRevision = ref<number | null>(null);
+const modalCurrentRevision = ref<number>();
 const page = ref<number>(1);
 
 watch(

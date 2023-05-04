@@ -63,11 +63,11 @@ const props = withDefaults(
 		size: number;
 		sort: string[];
 		showSelect?: ShowSelect;
-		selection?: Record<string, any>;
+		selection?: (number | string)[];
 	}>(),
 	{
 		showSelect: 'multiple',
-		selection: () => ({}),
+		selection: () => [],
 	}
 );
 

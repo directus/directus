@@ -61,15 +61,10 @@ import { orderBy } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue?: string;
-		disabled?: boolean;
-	}>(),
-	{
-		disabled: false,
-	}
-);
+const props = defineProps<{
+	modelValue?: string;
+	disabled?: boolean;
+}>();
 
 defineEmits(['update:modelValue']);
 
