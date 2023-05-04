@@ -40,7 +40,7 @@ When a change happens to an item in a collection with an active subscription, it
 }
 ```
 
-An `event` will be either `create`, `update`, or `delete`. If the event is `create` or `update`, the payload will
+An event will be either `create`, `update`, or `delete`. If the event is `create` or `update`, the payload will
 contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be
 returned.
 
