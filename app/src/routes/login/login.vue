@@ -15,15 +15,18 @@
 
 		<sso-links v-if="!authenticated" :providers="auth.providers" />
 
-		<template v-if="authenticated" #notice>
-			<v-icon name="lock_open" left />
-			{{ t('authenticated') }}
-		</template>
-		<template v-else #notice>
-			<v-icon name="lock" left />
-			{{
-				logoutReason && te(`logoutReason.${logoutReason}`) ? t(`logoutReason.${logoutReason}`) : t('not_authenticated')
-			}}
+		<template #notice>
+			<div v-if="authenticated">
+				<v-icon name="lock_open" left />
+				{{ t('authenticated') }}
+			</div>
+			<div v-else>
+				{{
+					logoutReason && te(`logoutReason.${logoutReason}`)
+						? t(`logoutReason.${logoutReason}`)
+						: t('not_authenticated')
+				}}
+			</div>
 		</template>
 	</public-view>
 </template>
@@ -47,7 +50,7 @@ withDefaults(defineProps<Props>(), {
 	logoutReason: null,
 });
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
