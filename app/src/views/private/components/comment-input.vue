@@ -213,6 +213,7 @@ function cancel() {
 function saveCursorPosition() {
 	if (document.getSelection) {
 		const selection = document.getSelection();
+
 		if (selection) {
 			lastCaretOffset = selection.anchorOffset;
 

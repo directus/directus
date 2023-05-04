@@ -18,7 +18,7 @@ router.use(useCollection('directus_flows'));
 const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 	const flowManager = getFlowManager();
 
-	const result = await flowManager.runWebhookFlow(
+	const { result, cacheEnabled } = await flowManager.runWebhookFlow(
 		`${req.method}-${req.params['pk']}`,
 		{
 			path: req.path,
@@ -32,6 +32,10 @@ const webhookFlowHandler = asyncHandler(async (req, res, next) => {
 			schema: req.schema,
 		}
 	);
+
+	if (!cacheEnabled) {
+		res.locals['cache'] = false;
+	}
 
 	res.locals['payload'] = result;
 	return next();
@@ -84,6 +88,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 		accountability: req.accountability,
 		schema: req.schema,
 	});
+
 	const metaService = new MetaService({
 		accountability: req.accountability,
 		schema: req.schema,

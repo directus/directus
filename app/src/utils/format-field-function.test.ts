@@ -4,6 +4,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { createI18n } from 'vue-i18n';
 
 import { cryptoStub } from '@/__utils__/crypto';
+
 vi.stubGlobal('crypto', cryptoStub);
 
 import { useFieldsStore } from '@/stores/fields';

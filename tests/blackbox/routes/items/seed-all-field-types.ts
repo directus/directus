@@ -8,6 +8,7 @@ export function getTestsAllTypesSchema(): TestsFieldSchema {
 
 	for (const key of Object.keys(SeedFunctions.generateValues)) {
 		const field = `test_${key.toLowerCase()}`;
+
 		fieldSchema[field] = {
 			field: field,
 			type: key,
@@ -68,6 +69,7 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 
 		// Create items
 		let generatedStringIdCounter = 0;
+
 		for (const key of Object.keys(fieldSchema)) {
 			// Oracle does not have a time datatype
 			if (vendor === 'oracle' && fieldSchema[key].type === 'time') {
@@ -88,6 +90,7 @@ export const seedAllFieldTypesValues = async (vendor: string, collection: string
 							? String(fieldSchema[key].possibleValues[i])
 							: fieldSchema[key].possibleValues[i],
 					});
+
 					generatedStringIdCounter++;
 				}
 			} else {
@@ -129,11 +132,13 @@ export const seedO2MAliasAllFieldTypesValues = async (
 		for (const aliasKey of possibleKeys) {
 			for (let i = 0; i < valuesQuantity; i++) {
 				const item: any = {};
+
 				if (pkType === 'string') {
 					item['id'] = SeedFunctions.generateValues.string({
 						quantity: 1,
 						seed: `id-${generatedStringIdCounter}`,
 					})[0];
+
 					generatedStringIdCounter++;
 				}
 
@@ -183,6 +188,7 @@ export const seedM2MAliasAllFieldTypesValues = async (
 		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['*'] });
 		const otherCollectionItems = await ReadItem(vendor, { collection: otherCollection, fields: ['*'] });
 		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
+
 		const newOtherCollectionKeys = otherCollectionItems
 			.map((i: any) => i.id)
 			.filter((i: any) => !otherPossibleKeys.includes(i));
@@ -217,6 +223,7 @@ export const seedM2AAliasAllFieldTypesValues = async (
 		const collectionItems = await ReadItem(vendor, { collection: collection, fields: ['id'] });
 		const otherCollectionItems = await ReadItem(vendor, { collection: relatedCollection, fields: ['id'] });
 		const newCollectionKeys = collectionItems.map((i: any) => i.id).filter((i: any) => !possibleKeys.includes(i));
+
 		const newOtherCollectionKeys = otherCollectionItems
 			.map((i: any) => i.id)
 			.filter((i: any) => !otherPossibleKeys.includes(i));

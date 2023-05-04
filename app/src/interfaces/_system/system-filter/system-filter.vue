@@ -46,7 +46,8 @@
 					include-functions
 					:include-relations="includeRelations"
 					:relational-field-selectable="relationalFieldSelectable"
-					@select-field="addNode($event)"
+					:allow-select-all="false"
+					@add="addNode($event[0])"
 				>
 					<template #prepend>
 						<v-list-item clickable @click="addNode('$group')">
@@ -81,7 +82,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Filter, Type, FieldFunction } from '@directus/types';
@@ -187,11 +188,13 @@ function addNode(key: string) {
 			// Alias uses the foreign key type
 			if (type === 'alias') {
 				const relations = relationsStore.getRelationsForField(collection.value, key);
+
 				if (relations[0]) {
 					type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
 				}
 			}
 		}
+
 		let filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
 		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
 		const node = set({}, key, { ['_' + operator]: null });

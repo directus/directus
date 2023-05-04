@@ -34,7 +34,7 @@
 				</v-button>
 
 				<v-button
-					v-if="!disabled && enableCreate && createAllowed && updateAllowed"
+					v-if="!disabled && enableCreate && createAllowed"
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 					rounded
 					icon
@@ -50,10 +50,13 @@
 				v-model:headers="headers"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
 				:items="displayItems"
 				:row-height="tableRowHeight"
 				show-resize
 				@click:row="editRow"
+				@update:items="sortItems"
 			>
 				<template v-for="header in headers" :key="header.value" #[`item.${header.value}`]="{ item }">
 					<render-template
@@ -76,7 +79,7 @@
 					</router-link>
 
 					<v-icon
-						v-if="!disabled && updateAllowed"
+						v-if="!disabled && (deleteAllowed || isLocalItem(item))"
 						v-tooltip="t(getDeselectTooltip(item))"
 						class="deselect"
 						:name="getDeselectIcon(item)"
@@ -110,6 +113,7 @@
 						<v-list-item
 							block
 							clickable
+							:disabled="disabled"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -133,7 +137,7 @@
 								<v-icon name="launch" />
 							</router-link>
 							<v-icon
-								v-if="!disabled && updateAllowed"
+								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
 								v-tooltip="t(getDeselectTooltip(element))"
 								class="deselect"
 								:name="getDeselectIcon(element)"
@@ -158,7 +162,7 @@
 					</template>
 				</template>
 				<template v-else>
-					<v-button v-if="enableCreate && createAllowed && updateAllowed" :disabled="disabled" @click="createItem">
+					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
 						{{ t('create_new') }}
 					</v-button>
 					<v-button v-if="enableSelect && updateAllowed" :disabled="disabled" @click="selectModalActive = true">
@@ -171,7 +175,7 @@
 		</div>
 
 		<drawer-item
-			:disabled="disabled"
+			:disabled="disabled || (!updateAllowed && currentlyEditing !== '+')"
 			:active="currentlyEditing !== null"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -208,12 +212,11 @@ import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { isEmpty, clamp, get, isNil } from 'lodash';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -222,7 +225,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		width: string;
-		layout: LAYOUTS;
+		layout?: LAYOUTS;
 		tableSpacing?: 'compact' | 'cozy' | 'comfortable';
 		fields?: Array<string>;
 		template?: string | null;
@@ -275,6 +278,7 @@ const fields = computed(() => {
 	if (!relationInfo.value) return [];
 
 	let displayFields: string[] = [];
+
 	if (props.layout === LAYOUTS.TABLE) {
 		displayFields = adjustFieldsForDisplays(props.fields, relationInfo.value.relatedCollection.collection);
 	} else {
@@ -303,12 +307,15 @@ const query = computed<RelationQueryMultiple>(() => {
 	if (!relationInfo.value) {
 		return q;
 	}
+
 	if (searchFilter.value) {
 		q.filter = searchFilter.value;
 	}
+
 	if (search.value) {
 		q.search = search.value;
 	}
+
 	if (sort.value) {
 		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
 	}
@@ -330,9 +337,11 @@ const {
 	loading,
 	selected,
 	isItemSelected,
-	localDelete,
+	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
+
+const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -358,11 +367,13 @@ watch(
 		const relatedCollection = relationInfo.value.relatedCollection.collection;
 
 		const contentWidth: Record<string, number> = {};
+
 		(displayItems.value ?? []).forEach((item: Record<string, any>) => {
 			props.fields.forEach((key) => {
 				if (!contentWidth[key]) {
 					contentWidth[key] = 5;
 				}
+
 				if (String(item[key]).length > contentWidth[key]) {
 					contentWidth[key] = String(item[key]).length;
 				}
@@ -402,13 +413,13 @@ const allowDrag = computed(
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
 function getDeselectTooltip(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (localDelete(item)) return 'delete_item';
+	if (isLocalItem(item)) return 'delete_item';
 	return 'remove_item';
 }
 
@@ -500,6 +511,7 @@ function deleteItem(item: DisplayItem) {
 }
 
 const values = inject('values', ref<Record<string, any>>({}));
+
 const customFilter = computed(() => {
 	const filter: Filter = {
 		_and: [],
@@ -555,29 +567,6 @@ function getLinkForItem(item: DisplayItem) {
 
 	return null;
 }
-
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	return !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
-});
-
-const updateAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	return !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'update' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
-});
 </script>
 
 <style lang="scss">

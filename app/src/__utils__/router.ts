@@ -5,5 +5,6 @@ export function generateRouter(routes: RouteRecordRaw[]) {
 		history: createWebHistory(),
 		routes,
 	});
+
 	return router;
 }

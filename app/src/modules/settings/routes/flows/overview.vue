@@ -245,6 +245,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 		await api.patch(`/flows/${id}`, {
 			status: value === 'active' ? 'inactive' : 'active',
 		});
+
 		await flowsStore.hydrate();
 	} catch (error) {
 		unexpectedError(error as Error);

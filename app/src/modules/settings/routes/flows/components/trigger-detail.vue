@@ -61,6 +61,7 @@ function saveTrigger() {
 		...(props.flow ?? {}),
 		...flowEdits.value,
 	});
+
 	emit('update:open', false);
 }
 

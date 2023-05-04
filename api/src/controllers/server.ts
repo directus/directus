@@ -55,6 +55,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const data = await service.serverInfo();
 		res.locals['payload'] = { data };
 		return next();

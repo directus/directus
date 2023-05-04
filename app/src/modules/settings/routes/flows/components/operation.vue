@@ -223,6 +223,7 @@ function pointerdown(target: Target | 'parent') {
 	down = target;
 
 	const rect = document.getElementsByClassName('workspace').item(0)?.getBoundingClientRect();
+
 	if (rect) {
 		workspaceOffset = new Vector2(rect.left, rect.top);
 	}
@@ -235,6 +236,7 @@ const pointermove = (event: PointerEvent) => {
 	rafId = window.requestAnimationFrame(() => {
 		moving.value = true;
 		if (!down) return;
+
 		const arrowInfo: ArrowInfo =
 			down === 'parent'
 				? {
@@ -263,8 +265,10 @@ function pointerup() {
 		!moving.value &&
 		((down === 'reject' && (!props.panel.reject || panelsToBeDeleted.value.includes(props.panel.reject))) ||
 			(down === 'resolve' && (!props.panel.resolve || panelsToBeDeleted.value.includes(props.panel.resolve))))
-	)
+	) {
 		emit('create', props.panel.id, down);
+	}
+
 	moving.value = false;
 	down = undefined;
 	if (rafId) window.cancelAnimationFrame(rafId);
@@ -289,6 +293,7 @@ function pointerEnter() {
 	if (!props.editMode) return;
 	emit('show-hint', props.panel.id);
 }
+
 function pointerLeave() {
 	if (!props.editMode) return;
 	emit('hide-hint');

@@ -1,6 +1,7 @@
 import { parseJSON } from '@directus/utils';
 import type { RequestHandler } from 'express';
-import { DocumentNode, getOperationAST, parse, Source } from 'graphql';
+import type { DocumentNode } from 'graphql';
+import { getOperationAST, parse, Source } from 'graphql';
 import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions/index.js';
 import type { GraphQLParams } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';

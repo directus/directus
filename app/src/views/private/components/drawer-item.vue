@@ -135,8 +135,10 @@ const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 
 const { internalActive } = useActiveState();
+
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, setRelationEdits, relatedPrimaryKeyField } =
 	useRelation();
+
 const { internalEdits, loading, initialValues } = useItem();
 const { save, cancel } = useActions();
 
@@ -197,6 +199,7 @@ const fields = computed(() => {
 			if (field.field === props.circularField) {
 				set(field, 'meta.readonly', true);
 			}
+
 			return field;
 		});
 	} else {
@@ -295,6 +298,7 @@ function useItem() {
 		loading.value = true;
 
 		const baseEndpoint = getEndpoint(props.collection);
+
 		const endpoint = props.collection.startsWith('directus_')
 			? `${baseEndpoint}/${props.primaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.primaryKey)}`;
@@ -324,6 +328,7 @@ function useItem() {
 		loading.value = true;
 
 		const baseEndpoint = getEndpoint(collection);
+
 		const endpoint = collection.startsWith('directus_')
 			? `${baseEndpoint}/${props.relatedPrimaryKey}`
 			: `${baseEndpoint}/${encodeURIComponent(props.relatedPrimaryKey)}`;
@@ -363,11 +368,14 @@ function useRelation() {
 		if (!relationForField) return null;
 
 		if (relationForField.related_collection) return relationForField.related_collection;
-		if (relationForField.meta?.one_collection_field)
+
+		if (relationForField.meta?.one_collection_field) {
 			return (
 				props.edits[relationForField.meta.one_collection_field] ||
 				initialValues.value?.[relationForField.meta.one_collection_field]
 			);
+		}
+
 		return null;
 	});
 
@@ -390,6 +398,7 @@ function useActions() {
 		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
 		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
+
 		let errors = validateItem(
 			merge({}, defaultValues.value, existingValues, editsToValidate),
 			fieldsToValidate,

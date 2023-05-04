@@ -12,6 +12,7 @@ describe('Common', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Setup
 				const roleName = common.ROLE.ADMIN.NAME;
+
 				const options: common.OptionsCreateRole = {
 					name: roleName,
 					appAccessEnabled: true,
@@ -48,6 +49,7 @@ describe('Common', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Setup
 				const roleName = common.ROLE.APP_ACCESS.NAME;
+
 				const options: common.OptionsCreateRole = {
 					name: roleName,
 					appAccessEnabled: true,
@@ -56,6 +58,7 @@ describe('Common', () => {
 
 				// Action
 				await common.CreateRole(vendor, options);
+
 				const response = await request(getUrl(vendor))
 					.get(`/roles`)
 					.query({
@@ -83,6 +86,7 @@ describe('Common', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Setup
 				const roleName = common.ROLE.API_ONLY.NAME;
+
 				const options: common.OptionsCreateRole = {
 					name: roleName,
 					appAccessEnabled: false,
@@ -91,6 +95,7 @@ describe('Common', () => {
 
 				// Action
 				await common.CreateRole(vendor, options);
+
 				const response = await request(getUrl(vendor))
 					.get(`/roles`)
 					.query({
@@ -124,6 +129,7 @@ describe('Common', () => {
 				const password = common.USER.ADMIN.PASSWORD;
 				const name = common.USER.ADMIN.NAME;
 				const roleName = common.ROLE.ADMIN.NAME;
+
 				const options: common.OptionsCreateUser = {
 					token,
 					email,
@@ -134,6 +140,7 @@ describe('Common', () => {
 
 				// Action
 				await common.CreateUser(vendor, options);
+
 				const response = await request(getUrl(vendor))
 					.get(`/users`)
 					.query({
@@ -164,6 +171,7 @@ describe('Common', () => {
 				const password = common.USER.APP_ACCESS.PASSWORD;
 				const name = common.USER.APP_ACCESS.NAME;
 				const roleName = common.ROLE.APP_ACCESS.NAME;
+
 				const options: common.OptionsCreateUser = {
 					token,
 					email,
@@ -174,6 +182,7 @@ describe('Common', () => {
 
 				// Action
 				await common.CreateUser(vendor, options);
+
 				const response = await request(getUrl(vendor))
 					.get(`/users`)
 					.query({
@@ -204,6 +213,7 @@ describe('Common', () => {
 				const password = common.USER.API_ONLY.PASSWORD;
 				const name = common.USER.API_ONLY.NAME;
 				const roleName = common.ROLE.API_ONLY.NAME;
+
 				const options: common.OptionsCreateUser = {
 					token,
 					email,
@@ -214,6 +224,7 @@ describe('Common', () => {
 
 				// Action
 				await common.CreateUser(vendor, options);
+
 				const response = await request(getUrl(vendor))
 					.get(`/users`)
 					.query({
@@ -243,6 +254,7 @@ describe('Common', () => {
 				const email = common.USER.NO_ROLE.EMAIL;
 				const password = common.USER.NO_ROLE.PASSWORD;
 				const name = common.USER.NO_ROLE.NAME;
+
 				const options: common.OptionsCreateUser = {
 					token,
 					email,
@@ -252,6 +264,7 @@ describe('Common', () => {
 
 				// Action
 				await common.CreateUser(vendor, options);
+
 				const response = await request(getUrl(vendor))
 					.get(`/users`)
 					.query({
@@ -284,15 +297,18 @@ describe('Common', () => {
 					const options: common.OptionsCreateCollection = {
 						collection: collectionName,
 					};
+
 					const options2: common.OptionsCreateCollection = {
 						collection: collectionNameM2O,
 					};
+
 					const options3: common.OptionsCreateCollection = {
 						collection: collectionNameO2M,
 					};
 
 					// Action
 					await common.CreateCollection(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/collections/${collectionName}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -300,6 +316,7 @@ describe('Common', () => {
 						.expect(200);
 
 					await common.CreateCollection(vendor, options2);
+
 					const response2 = await request(getUrl(vendor))
 						.get(`/collections/${collectionNameM2O}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -307,6 +324,7 @@ describe('Common', () => {
 						.expect(200);
 
 					await common.CreateCollection(vendor, options3);
+
 					const response3 = await request(getUrl(vendor))
 						.get(`/collections/${collectionNameO2M}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -323,6 +341,7 @@ describe('Common', () => {
 							name: collectionName,
 						}),
 					});
+
 					expect(response2.body.data).toEqual({
 						collection: collectionNameM2O,
 						meta: expect.objectContaining({
@@ -332,6 +351,7 @@ describe('Common', () => {
 							name: collectionNameM2O,
 						}),
 					});
+
 					expect(response3.body.data).toEqual({
 						collection: collectionNameO2M,
 						meta: expect.objectContaining({
@@ -355,6 +375,7 @@ describe('Common', () => {
 					// Setup
 					const fieldName = 'sample_field';
 					const fieldType = 'string';
+
 					const options: common.OptionsCreateField = {
 						collection: collectionName,
 						field: fieldName,
@@ -363,6 +384,7 @@ describe('Common', () => {
 
 					// Action
 					await common.CreateField(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/fields/${collectionName}/${fieldName}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -391,10 +413,12 @@ describe('Common', () => {
 					// Setup
 					const fieldName = 'm2o_field';
 					const primaryKeyType = 'integer';
+
 					const collectionOptions: common.OptionsCreateCollection = {
 						collection: collectionNameM2O,
 						primaryKeyType,
 					};
+
 					await common.CreateCollection(vendor, collectionOptions);
 
 					const options: common.OptionsCreateFieldM2O = {
@@ -406,6 +430,7 @@ describe('Common', () => {
 
 					// Action
 					await common.CreateFieldM2O(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/fields/${collectionName}/${fieldName}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -437,10 +462,12 @@ describe('Common', () => {
 					const fieldName = 'o2m_field';
 					const otherFieldName = 'm2o_field';
 					const primaryKeyType = 'integer';
+
 					const collectionOptions: common.OptionsCreateCollection = {
 						collection: collectionNameO2M,
 						primaryKeyType,
 					};
+
 					await common.CreateCollection(vendor, collectionOptions);
 
 					const options: common.OptionsCreateFieldO2M = {
@@ -453,6 +480,7 @@ describe('Common', () => {
 
 					// Action
 					await common.CreateFieldO2M(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/fields/${collectionName}/${fieldName}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -488,6 +516,7 @@ describe('Common', () => {
 
 					// Action
 					const createdItem = await common.CreateItem(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/items/${collectionName}/${createdItem.id}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -521,6 +550,7 @@ describe('Common', () => {
 
 					// Action
 					const createdItem = await common.CreateItem(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/items/${collectionName}/${createdItem.id}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -559,6 +589,7 @@ describe('Common', () => {
 
 					// Action
 					const createdItem = await common.CreateItem(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/items/${collectionName}/${createdItem.id}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -586,6 +617,7 @@ describe('Common', () => {
 				async (vendor) => {
 					// Setup
 					const fieldName = 'o2m_field';
+
 					const options: common.OptionsDeleteField = {
 						collection: collectionName,
 						field: fieldName,
@@ -593,6 +625,7 @@ describe('Common', () => {
 
 					// Action
 					await common.DeleteField(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/fields/${collectionName}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -614,6 +647,7 @@ describe('Common', () => {
 				async (vendor) => {
 					// Setup
 					const fieldName = 'm2o_field';
+
 					const options: common.OptionsDeleteField = {
 						collection: collectionNameO2M,
 						field: fieldName,
@@ -621,6 +655,7 @@ describe('Common', () => {
 
 					// Action
 					await common.DeleteField(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/fields/${collectionNameO2M}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -642,6 +677,7 @@ describe('Common', () => {
 				async (vendor) => {
 					// Setup
 					const fieldName = 'm2o_field';
+
 					const options: common.OptionsDeleteField = {
 						collection: collectionName,
 						field: fieldName,
@@ -649,6 +685,7 @@ describe('Common', () => {
 
 					// Action
 					await common.DeleteField(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/fields/${collectionName}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -670,6 +707,7 @@ describe('Common', () => {
 				async (vendor) => {
 					// Setup
 					const fieldName = 'sample_field';
+
 					const options: common.OptionsDeleteField = {
 						collection: collectionName,
 						field: fieldName,
@@ -677,6 +715,7 @@ describe('Common', () => {
 
 					// Action
 					await common.DeleteField(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/fields/${collectionName}`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)
@@ -705,6 +744,7 @@ describe('Common', () => {
 
 					// Action
 					await common.DeleteCollection(vendor, options);
+
 					const response = await request(getUrl(vendor))
 						.get(`/collections`)
 						.set('Authorization', `Bearer ${common.USER.TESTS_FLOW.TOKEN}`)

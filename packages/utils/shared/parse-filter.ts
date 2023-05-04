@@ -19,9 +19,11 @@ export function parseFilter(
 	context: ParseFilterContext = {}
 ): Filter | null {
 	let parsedFilter = parseFilterRecursive(filter, accountability, context);
+
 	if (parsedFilter) {
 		parsedFilter = shiftLogicalOperatorsUp(parsedFilter);
 	}
+
 	return parsedFilter;
 }
 
@@ -36,10 +38,12 @@ function shiftLogicalOperatorsUp(filter: any): any {
 		for (const childKey of Object.keys(filter[key])) {
 			filter[key][childKey] = shiftLogicalOperatorsUp(filter[key][childKey]);
 		}
+
 		return filter;
 	} else {
 		const childKey = Object.keys(filter[key])[0];
 		if (!childKey) return filter;
+
 		if (logicalFilterOperators.includes(childKey)) {
 			return {
 				[childKey]: toArray(filter[key][childKey]).map((childFilter) => {

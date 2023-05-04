@@ -45,55 +45,47 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import formatTitle from '@directus/format-title';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import icons from './icons.json';
-import { defineComponent, ref, computed } from 'vue';
-import formatTitle from '@directus/format-title';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		width: {
-			type: String,
-			default: 'half',
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+withDefaults(
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		width?: string;
+	}>(),
+	{
+		width: 'half',
+	}
+);
 
-		const searchQuery = ref('');
+const emit = defineEmits(['input']);
 
-		const filteredIcons = computed(() => {
-			if (searchQuery.value.length === 0) return icons;
+const { t } = useI18n();
 
-			return icons.map((group) => {
-				const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
+const searchQuery = ref('');
 
-				return {
-					name: group.name,
-					icons,
-				};
-			});
-		});
+const filteredIcons = computed(() => {
+	if (searchQuery.value.length === 0) return icons;
 
-		return { t, icons, setIcon, searchQuery, filteredIcons, formatTitle };
+	return icons.map((group) => {
+		const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
 
-		function setIcon(icon: string | null) {
-			searchQuery.value = '';
-
-			emit('input', icon);
-		}
-	},
+		return {
+			name: group.name,
+			icons,
+		};
+	});
 });
+
+function setIcon(icon: string | null) {
+	searchQuery.value = '';
+
+	emit('input', icon);
+}
 </script>
 
 <style lang="scss" scoped>

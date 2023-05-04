@@ -23,6 +23,7 @@ describe('/assets', () => {
 						let spawnCount = 0;
 						let hasErrors = false;
 						let isSpawnRunning = false;
+
 						const insertResponse = await request(getUrl(vendor))
 							.post('/files')
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
@@ -36,6 +37,7 @@ describe('/assets', () => {
 							const url = `${getUrl(vendor)}/assets/${insertResponse.body.data.id}?access_token=${
 								common.USER.ADMIN.TOKEN
 							}`;
+
 							const options = ['exec', 'autocannon', '-c', '100', url];
 							const child = spawn('pnpm', options);
 

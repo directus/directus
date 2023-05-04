@@ -49,9 +49,11 @@ describe('Schema Snapshots', () => {
 				const response = await request(getUrl(vendor))
 					.get('/schema/snapshot')
 					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`);
+
 				const response2 = await request(getUrl(vendor))
 					.get('/schema/snapshot')
 					.set('Authorization', `Bearer ${common.USER.API_ONLY.TOKEN}`);
+
 				const response3 = await request(getUrl(vendor))
 					.get('/schema/snapshot')
 					.set('Authorization', `Bearer ${common.USER.NO_ROLE.TOKEN}`);
@@ -144,6 +146,7 @@ describe('Schema Snapshots', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Action
 				const currentVendor = vendor.replace(/[0-9]/g, '');
+
 				const response = await request(getUrl(vendor))
 					.post('/schema/diff')
 					.send({
@@ -156,6 +159,7 @@ describe('Schema Snapshots', () => {
 					})
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`);
+
 				const response2 = await request(getUrl(vendor))
 					.post('/schema/diff')
 					.send({
@@ -168,6 +172,7 @@ describe('Schema Snapshots', () => {
 					})
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.API_ONLY.TOKEN}`);
+
 				const response3 = await request(getUrl(vendor))
 					.post('/schema/diff')
 					.send({
@@ -212,7 +217,9 @@ describe('Schema Snapshots', () => {
 					// Setup
 					const collectionsCount =
 						snapshotsCacheOriginal[vendor].collections.length - snapshotsCacheEmpty[vendor].collections.length;
+
 					const fieldsCount = snapshotsCacheOriginal[vendor].fields.length - snapshotsCacheEmpty[vendor].fields.length;
+
 					const relationsCount =
 						snapshotsCacheOriginal[vendor].relations.length - snapshotsCacheEmpty[vendor].relations.length;
 
@@ -243,11 +250,13 @@ describe('Schema Snapshots', () => {
 					.send({ data: true })
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.APP_ACCESS.TOKEN}`);
+
 				const response2 = await request(getUrl(vendor))
 					.post('/schema/apply')
 					.send({ data: true })
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${common.USER.API_ONLY.TOKEN}`);
+
 				const response3 = await request(getUrl(vendor))
 					.post('/schema/apply')
 					.send({ data: true })
@@ -350,7 +359,7 @@ describe('Schema Snapshots', () => {
 			});
 		});
 
-		describe('applies a snapshot (YAML)', () => {
+		describe('applies a snapshot (YAML) with multipart/form-data requests', () => {
 			it.each(vendors)(
 				'%s',
 				async (vendor) => {
@@ -364,8 +373,7 @@ describe('Schema Snapshots', () => {
 
 					const response = await request(getUrl(vendor))
 						.post('/schema/apply')
-						.send(responseDiff.body.data)
-						.set('Content-type', 'application/json')
+						.attach('file', Buffer.from(JSON.stringify(responseDiff.body.data)))
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					// Assert
@@ -596,6 +604,7 @@ describe('Schema Snapshots', () => {
 					// Setup
 					const childrenIDs: Record<string, { id: any; m2o_id: any; o2m_id: any }> = {};
 					const tempRelationalField = 'temp_relational';
+
 					for (const pkType of PRIMARY_KEY_TYPES) {
 						const item = await common.CreateItem(vendor, {
 							collection: `${collectionAll}_${pkType}`,
@@ -605,7 +614,9 @@ describe('Schema Snapshots', () => {
 								o2m: [{ id: pkType === 'string' ? uuid() : undefined }],
 							},
 						});
+
 						childrenIDs[pkType] = { id: item.id, m2o_id: item.all_id, o2m_id: item.o2m[0] };
+
 						await common.CreateFieldM2O(vendor, {
 							collection: `${collectionAll}_${pkType}`,
 							field: tempRelationalField,
@@ -628,6 +639,7 @@ describe('Schema Snapshots', () => {
 
 					// Assert
 					expect(response.statusCode).toEqual(204);
+
 					for (const pkType of PRIMARY_KEY_TYPES) {
 						const item = (
 							await request(getUrl(vendor))
@@ -774,36 +786,43 @@ async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) 
 				.get(`/items/${localJunctionSelfM2M}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionSelf}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionO2M2}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionO2M}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localJunctionM2AM2A2}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localJunctionAllM2A}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2A2}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2A}`)
@@ -815,31 +834,37 @@ async function assertCollectionsDeleted(vendor: string, pkType: PrimaryKeyType) 
 				.get(`/items/${localJunctionM2MM2M2}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localJunctionAllM2M}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2M2}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2M}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionAll}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2O}`)
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 		);
+
 		responses.push(
 			await request(getUrl(vendor))
 				.get(`/items/${localCollectionM2O2}`)

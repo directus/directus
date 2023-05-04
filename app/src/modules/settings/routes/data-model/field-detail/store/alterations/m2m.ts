@@ -125,6 +125,7 @@ export function autoGenerateJunctionFields(updates: StateUpdates, state: State, 
 
 	const currentCollection = state.collection!;
 	const currentPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
+
 	const relatedCollection =
 		updates.relations?.m2o?.related_collection ?? getCurrent('relations.m2o.related_collection');
 
@@ -251,8 +252,10 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 	const junctionRelated = getCurrent('relations.m2o.field');
 	const sort = getCurrent('relations.o2m.meta.sort_field');
 	const relatedCollection = getCurrent('relations.m2o.related_collection');
+
 	const relatedPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection) ?? getCurrent('collections.related.fields[0]');
+
 	const existsJunctionRelated = relationsStore.relations.find(
 		(relation) => relation.collection === junctionCollection && relation.field === junctionRelated
 	);

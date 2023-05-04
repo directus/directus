@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Nevybrány žádné položky | Jste si jisti, že chcete archivovat tuto položku? | Jste si jisti, že chcete archivovat tyto {count} položky?
 reset_system_permissions_to: 'Resetovat systémová oprávnění na:'
 reset_system_permissions_copy: Tato akce přepíše libovolná vlastní oprávnění, která jste možná použili na kolekce systému. Jste si jisti?
-the_following_are_minimum_permissions: Následující oprávnění jsou vyžadována v případě, že je povolen "Přístup k aplikaci". Můžete rozšířit oprávnění nad tuto úroveň, ale ne níže.
 app_access_minimum: Minimální přístup k aplikaci
 recommended_defaults: Doporučené výchozí hodnoty
 unarchive: Vyjmout z archivu
@@ -297,6 +296,8 @@ next: Další
 field_name: Název pole
 translations: Překlady
 no_translations: Žádné překlady
+left_to_right: Zleva doprava
+right_to_left: Zprava doleva
 note: Poznámka
 enter_a_value: Zadejte hodnotu...
 enter_a_placeholder: Zadejte placeholder...
@@ -479,6 +480,7 @@ creating_items: Vytváření položek
 enable_create_button: Povolit tlačítko Vytvořit
 selecting_items: Výběr položek
 enable_select_button: Povolit tlačítko Vybrat
+allow_duplicates: Povolit duplicity
 comments: Komentáře
 no_comments: Zatím bez komentářů
 click_to_expand: Kliknutím rozbalíte
@@ -579,6 +581,8 @@ errors:
   INVALID_PAYLOAD: Neplatný payload
   INVALID_PROVIDER: Uživatel patří k jinému poskytovateli ověření
   INVALID_QUERY: Neplatný dotaz
+  INVALID_TOKEN: Neplatný token
+  INVALID_IP: IP adresa není povolena
   INVALID_USER: Ověření uživatele se nezdařilo
   ITEM_LIMIT_REACHED: Dosažen limit položek
   ITEM_NOT_FOUND: Položka nebyla nalezena
@@ -595,6 +599,9 @@ errors:
   INVALID_FOREIGN_KEY: Neplatný cizí klíč
   UNKNOWN: Neočekávaná chyba
   GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
+  SERVICE_UNAVAILABLE: Služba není dostupná
+  UNSUPPORTED_MEDIA_TYPE: Nepodporovaný typ média
+  UNEXPECTED_RESPONSE: Neočekávaná odpověď
 security: Zabezpečení
 value_hashed: Hodnota bezpečně hashována
 bookmark_name: Název záložky...
@@ -1101,7 +1108,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: Mapování
     basemaps: Základní mapy
     basemaps_raster: Rastr
@@ -1959,6 +1965,8 @@ operations:
     to: Komu
     to_placeholder: Přidejte e-mailové adresy a stiskněte Enter...
     body: Tělo
+    template: Šablona
+    data: Údaje
   notification:
     name: Odeslat oznámení
     recipient: Uživatel

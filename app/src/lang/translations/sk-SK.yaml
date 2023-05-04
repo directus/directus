@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Žiadne označené položky | Naozaj chcete archivovať túto položku? | Naozaj chcete archivovať týchto {count} položiek?
 reset_system_permissions_to: 'Resetovať systémové práva na:'
 reset_system_permissions_copy: Táto akcia prepíše všetky vlastné práva, ktoré ste použili na systémové zbierky. Ste si istý?
-the_following_are_minimum_permissions: Nasledujúce minimálne oprávnenia sa vyžadujú ked je zapnutý "Prístup z aplikácie". Môžete rozšíriť oprávnenia za túto hranicu, ale nie menej.
 app_access_minimum: Minimálny prístup v aplikácii
 recommended_defaults: Odporúčané prevolenia
 unarchive: Odarchivovať
@@ -1128,7 +1127,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: TIFF
-    avif: AVIF
     mapping: Mapovanie
     basemaps: Podkladové mapy
     basemaps_raster: Raster
@@ -2058,6 +2056,8 @@ operations:
     to: Komu
     to_placeholder: Zadajte emailové adresy a stlačte enter...
     body: Telo správy
+    template: Šablóna
+    data: Údaje
   notification:
     name: Odoslať oznámenie
     description: Pošle internú notifikáciu jednému alebo viacerým používateľom

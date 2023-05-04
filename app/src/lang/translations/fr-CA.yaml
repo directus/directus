@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
 reset_system_permissions_to: 'Réinitialiser les autorisations système:'
 reset_system_permissions_copy: Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du système. Êtes-vous sûr ?
-the_following_are_minimum_permissions: Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez donner davantage de permissions, mais pas les restreindre.
 app_access_minimum: Autorisation minimale requise pour accéder à l'application
 recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
@@ -1144,7 +1143,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: Cartographie
     basemaps: Cartes de base
     basemaps_raster: Raster
@@ -2105,6 +2103,8 @@ operations:
     to: À
     to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
     body: Corps du mail
+    template: Modèle
+    data: Données
   notification:
     name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs

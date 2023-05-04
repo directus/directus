@@ -146,6 +146,7 @@ function onSelect() {
 
 		for (let i = 0; i < contentEl.value.childNodes.length || !textSpan; i++) {
 			const child = contentEl.value.children[i];
+
 			if (child.classList.contains('text')) {
 				textSpan = child;
 			}
@@ -270,6 +271,7 @@ function setContent() {
 				if (part.startsWith('{{') === false) {
 					return `<span class="text">${part}</span>`;
 				}
+
 				const fieldKey = part.replace(/({|})/g, '').trim();
 				const fieldPath = fieldKey.split('.');
 
@@ -286,6 +288,7 @@ function setContent() {
 				}</button>`;
 			})
 			.join('');
+
 		contentEl.value.innerHTML = newInnerHTML;
 	}
 }

@@ -56,12 +56,15 @@ export default defineLayout<LayoutOptions>({
 			if (!calendar.value || !startDateField.value) {
 				return;
 			}
+
 			const start = formatISO(calendar.value.view.activeStart);
 			const end = formatISO(calendar.value.view.activeEnd);
 			const startsHere = { [startDateField.value]: { _between: [start, end] } };
+
 			if (!endDateField.value) {
 				return startsHere;
 			}
+
 			const endsHere = { [endDateField.value]: { _between: [start, end] } };
 			const startsBefore = { [startDateField.value]: { _lte: start } };
 			const endsAfter = { [endDateField.value]: { _gte: end } };
@@ -82,14 +85,17 @@ export default defineLayout<LayoutOptions>({
 		const viewInfo = syncRefProperty(layoutOptions, 'viewInfo', undefined);
 
 		const startDateField = syncRefProperty(layoutOptions, 'startDateField', undefined);
+
 		const startDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === startDateField.value);
 		});
 
 		const endDateField = syncRefProperty(layoutOptions, 'endDateField', undefined);
+
 		const endDateFieldInfo = computed(() => {
 			return fieldsInCollection.value.find((field: Field) => field.field === endDateField.value);
 		});
+
 		const firstDay = syncRefProperty(layoutOptions, 'firstDay', undefined);
 
 		const queryFields = computed(() => {
@@ -293,6 +299,7 @@ export default defineLayout<LayoutOptions>({
 
 			if (endDateField.value) {
 				const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
+
 				if (allDay && isValid(date)) {
 					// FullCalendar uses exclusive end moments, so we'll have to increment the end date by 1 to get the
 					// expected result in the calendar
@@ -324,6 +331,7 @@ export default defineLayout<LayoutOptions>({
 			if (type === 'dateTime') {
 				return dateString.substring(0, 19);
 			}
+
 			return dateString;
 		}
 	},

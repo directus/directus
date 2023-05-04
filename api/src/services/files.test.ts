@@ -1,7 +1,8 @@
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
+import type { MockedFunction, SpyInstance } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import { FilesService, ItemsService } from './index.js';
 
@@ -29,6 +30,7 @@ describe('Integration Tests', () => {
 					knex: db,
 					schema: { collections: {}, relations: [] },
 				});
+
 				superCreateOne = vi.spyOn(ItemsService.prototype, 'createOne').mockReturnValue(Promise.resolve(1));
 			});
 

@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
 reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
-the_following_are_minimum_permissions: Di seguito sono riportati i permessi minimi richiesti quando "App Access" è abilitato. È possibile estendere i permessi, ma non ridurli.
 app_access_minimum: Accesso App Minimo
 recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
@@ -531,6 +530,7 @@ create_collection: Crea Raccolta
 no_collections_copy_admin: Non hai ancora nessuna Raccolta. Clicca sul pulsante qui sotto per iniziare.
 no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo amministratore di sistema.
 relationship_not_setup: La relazione non è stata configurata correttamente
+no_singleton_relations: Le relazioni con gli oggetti singoli non sono supportate
 display_template_not_setup: L'opzione del modello di visualizzazione non è configurata correttamente
 collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
 select_a_collection: Seleziona una Raccolta
@@ -669,6 +669,7 @@ one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
   Sei sicuro di voler eliminare la raccolta "{collection}"? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione non può essere annullata.
 delete_folder_are_you_sure: Sei sicuro di voler eliminare la cartella "{folder}"? Le cartelle e le raccolte annidate saranno spostate al livello più alto.
+delete_collection_peer_dependencies: Verranno eliminati anche i seguenti campi, in quanto relativi alla raccolta corrente.
 collections_shown: Raccolte Mostrate
 visible_collections: Raccolte Visibili
 hidden_collections: Raccolte Nascoste
@@ -1438,6 +1439,7 @@ export_started: Esportazione iniziata
 export_started_copy: La tua esportazione è iniziata. Sarai avvisato quando sarà pronta per il download.
 sort_asc: Ordinamento Crescente
 sort_desc: Ordinamento Decrescente
+disable_sort: Disabilita l'ordinamento
 template: Template
 require_value_to_be_set: Richiede che il valore sia impostato alla creazione
 translation: Traduzione
@@ -2104,6 +2106,8 @@ operations:
     to: A
     to_placeholder: Aggiungi gli indirizzi e-mail e premi invio...
     body: Contenuto
+    template: Template
+    data: Dati
   notification:
     name: Invia una notifica
     description: Invia una notifica in app a uno o più utenti

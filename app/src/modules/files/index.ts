@@ -76,6 +76,7 @@ export default defineModule({
 		const permission = permissions.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'read'
 		);
+
 		return !!permission;
 	},
 });

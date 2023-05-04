@@ -1,9 +1,12 @@
 <template>
 	<sidebar-detail :title="t('logs')" icon="fact_check" :badge="revisionsCount">
-		<div v-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
+		<v-progress-linear v-if="loading" indeterminate />
+
+		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
 
 		<v-detail
 			v-for="group in revisionsByDate"
+			v-else
 			:key="group.dateFormatted"
 			:label="group.dateFormatted"
 			class="revisions-date-group"
@@ -103,7 +106,7 @@ const usedTrigger = computed(() => {
 	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
 });
 
-const { revisionsByDate, revisionsCount } = useRevisions(
+const { revisionsByDate, revisionsCount, loading } = useRevisions(
 	ref('directus_flows'),
 	computed(() => unref(flow).id),
 	{
@@ -160,6 +163,10 @@ const steps = computed(() => {
 </script>
 
 <style lang="scss" scoped>
+.v-progress-linear {
+	margin: 24px 0;
+}
+
 .content {
 	padding: var(--content-padding);
 }

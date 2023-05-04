@@ -51,6 +51,7 @@ export default defineDisplay({
 	},
 	options: ({ field }) => {
 		const options = field.meta?.display_options || {};
+
 		const fields = [
 			{
 				field: 'relative',

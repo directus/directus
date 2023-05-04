@@ -19,6 +19,7 @@ const imageElement = ref<HTMLImageElement>();
 
 const emptyPixel =
 	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
 const srcData = ref<string>(emptyPixel);
 
 const observer = new IntersectionObserver((entries, observer) => {
@@ -31,6 +32,7 @@ const observer = new IntersectionObserver((entries, observer) => {
 		loadImage();
 	}
 });
+
 watch(
 	() => props.src,
 	() => {

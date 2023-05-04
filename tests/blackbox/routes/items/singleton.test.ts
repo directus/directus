@@ -44,6 +44,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toMatchObject({ name: 'parent', o2m: expect.anything() });
 
 					expect(gqlResponse.statusCode).toEqual(200);
+
 					expect(gqlResponse.body.data).toMatchObject({
 						[localCollectionSingleton]: { name: 'parent', o2m: expect.anything() },
 					});
@@ -114,11 +115,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
+
 					expect(response.body.data).toMatchObject({
 						name: newName,
 					});
 
 					expect(gqlResponse.statusCode).toBe(200);
+
 					expect(gqlResponse.body.data[mutationKey]).toEqual({
 						name: newName2,
 					});
@@ -182,12 +185,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					const updatedO2M = gqlResponsePre.body.data[localCollectionSingleton].o2m;
 					const newO2mItem: any = { name: o2mNameNew2 };
+
 					if (pkType === 'string') {
 						newO2mItem.id = SeedFunctions.generatePrimaryKeys(pkType, {
 							quantity: 1,
 							seed: `${localCollectionSingletonO2M}_update_o2m2`,
 						})[0];
 					}
+
 					updatedO2M.push(newO2mItem);
 					updatedO2M[0].name = o2mNameUpdated2;
 
@@ -212,6 +217,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.statusCode).toEqual(200);
 					expect(response.body.data.o2m).toBeDefined();
 					expect(response.body.data.o2m.length).toBe(2);
+
 					expect(response.body.data.o2m.map((item: any) => item.name)).toEqual(
 						expect.arrayContaining([o2mNameNew, o2mNameUpdated])
 					);
@@ -219,6 +225,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(gqlResponse.statusCode).toEqual(200);
 					expect(gqlResponse.body.data[mutationKey].o2m).toBeDefined();
 					expect(gqlResponse.body.data[mutationKey].o2m.length).toBe(3);
+
 					expect(gqlResponse.body.data[mutationKey].o2m.map((item: any) => item.name)).toEqual(
 						expect.arrayContaining([o2mNameNew2, o2mNameUpdated2])
 					);

@@ -1,7 +1,8 @@
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
-import express, { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
+import express from 'express';
 import Joi from 'joi';
 import path from 'path';
 import env from '../env.js';
@@ -128,6 +129,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		let keys: PrimaryKey | PrimaryKey[] = [];
 
 		if (req.is('multipart/form-data')) {

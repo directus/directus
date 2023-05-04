@@ -10,7 +10,7 @@ readTime: 5 min read
 The easiest way to start developing extensions is to use the `create-directus-extension` utility:
 
 ```bash
-npm init directus-extension
+npm init directus-extension@latest
 ```
 
 After specifying the name of the extension, the type of the extension and the programming language you want to use, the
@@ -83,7 +83,7 @@ to your specific needs. This can be done by creating a `extension.config.js` fil
 with the following content:
 
 ```js
-module.exports = {
+export default {
 	plugins: [],
 };
 ```

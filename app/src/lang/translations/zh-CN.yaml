@@ -131,7 +131,6 @@ archive_confirm_count: >-
   没有选定条目 | 你确定要存档这个条目吗？| 你确定你想要存档这些 {count} 个条目吗？
 reset_system_permissions_to: '重置系统权限：'
 reset_system_permissions_copy: 此操作将覆盖您可能应用到系统模型中的自定义权限。确定吗？
-the_following_are_minimum_permissions: 以下是启用"应用访问"时所需的最低权限，您可以对除以下权限外的其他权限进行扩展。
 app_access_minimum: 最小权限
 recommended_defaults: 推荐设置
 unarchive: 取消存档
@@ -668,6 +667,7 @@ one_filtered_item: '1 个已过滤条目'
 delete_collection_are_you_sure: >-
   您确定要删除 "{collection}" 数据模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
 delete_folder_are_you_sure: 您确定要删除 "{folder}" 文件夹吗？嵌套文件夹和数据模型将被移动到最上层。
+delete_collection_peer_dependencies: 以下字段也将被删除，因为它们与当前集合相关。
 collections_shown: 展开模型
 visible_collections: 显示模型
 hidden_collections: 隐藏模型
@@ -1142,7 +1142,6 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF
     mapping: 映射
     basemaps: 底图
     basemaps_raster: 栅格化
@@ -1436,6 +1435,7 @@ export_started: 导出已开始
 export_started_copy: 您的导出已经开始。当准备下载时，您会收到通知。
 sort_asc: 升序
 sort_desc: 降序
+disable_sort: 禁用排序
 template: 模板
 require_value_to_be_set: 创建时需要设置值
 translation: 翻译
@@ -2102,6 +2102,8 @@ operations:
     to: 至
     to_placeholder: 添加电子邮件地址并按回车...
     body: 正文内容
+    template: 模板
+    data: 数据
   notification:
     name: 发送通知
     description: 向一个或多个用户发送应用内通知

@@ -43,45 +43,34 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch } from 'vue';
-import { localizedFormat } from '@/utils/localized-format';
+<script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
+import { localizedFormat } from '@/utils/localized-format';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		user: {
-			type: Object,
-			default: null,
-		},
-		isNew: {
-			type: Boolean,
-			default: false,
-		},
+const props = defineProps<{
+	user?: Record<string, any>;
+	isNew?: boolean;
+}>();
+
+const { t } = useI18n();
+
+const { isCopySupported, copyToClipboard } = useClipboard();
+
+const lastAccessDate = ref('');
+
+watch(
+	[() => props.user, () => props.isNew],
+	async () => {
+		if (!props.user) return;
+
+		if (props.user.last_access) {
+			lastAccessDate.value = localizedFormat(new Date(props.user.last_access), String(t('date-fns_date_short')));
+		}
 	},
-	setup(props) {
-		const { t } = useI18n();
-
-		const { isCopySupported, copyToClipboard } = useClipboard();
-
-		const lastAccessDate = ref('');
-
-		watch(
-			[() => props.user, () => props.isNew],
-			async () => {
-				if (!props.user) return;
-
-				if (props.user.last_access) {
-					lastAccessDate.value = localizedFormat(new Date(props.user.last_access), String(t('date-fns_date_short')));
-				}
-			},
-			{ immediate: true }
-		);
-
-		return { t, lastAccessDate, isCopySupported, copyToClipboard };
-	},
-});
+	{ immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>

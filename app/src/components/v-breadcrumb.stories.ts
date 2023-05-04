@@ -1,4 +1,5 @@
 import VBreadcrumb from './v-breadcrumb.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -15,6 +16,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	items: [
 		{

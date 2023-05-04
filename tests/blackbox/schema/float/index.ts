@@ -169,6 +169,7 @@ const _eq = (inputValue: any, possibleValues: any): boolean => {
 	if (Number(inputValue) === possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -176,6 +177,7 @@ const _neq = (inputValue: any, possibleValues: any): boolean => {
 	if (Number(inputValue) !== possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -183,6 +185,7 @@ const _lt = (inputValue: any, possibleValues: any): boolean => {
 	if (Number(inputValue) < possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -190,6 +193,7 @@ const _lte = (inputValue: any, possibleValues: any): boolean => {
 	if (Number(inputValue) <= possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -197,6 +201,7 @@ const _gt = (inputValue: any, possibleValues: any): boolean => {
 	if (Number(inputValue) > possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -204,6 +209,7 @@ const _gte = (inputValue: any, possibleValues: any): boolean => {
 	if (Number(inputValue) >= possibleValues) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -211,6 +217,7 @@ const _between = (inputValue: any, possibleValues: any): boolean => {
 	if (Number(inputValue) >= possibleValues[0] && Number(inputValue) <= possibleValues[1]) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -218,6 +225,7 @@ const _nbetween = (inputValue: any, possibleValues: any): boolean => {
 	if (Number(inputValue) < possibleValues[0] || Number(inputValue) > possibleValues[1]) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -225,6 +233,7 @@ const _null = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue === undefined || inputValue === null) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -232,6 +241,7 @@ const _nnull = (inputValue: any, _possibleValues: any): boolean => {
 	if (inputValue !== undefined && inputValue !== null) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -239,6 +249,7 @@ const _in = (inputValue: any, possibleValues: any): boolean => {
 	if (possibleValues.includes(Number(inputValue))) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -246,6 +257,7 @@ const _nin = (inputValue: any, possibleValues: any): boolean => {
 	if (!possibleValues.includes(Number(inputValue))) {
 		return true;
 	}
+
 	return false;
 };
 
@@ -279,6 +291,7 @@ const empty_lt = (inputValue: any, possibleValues: any): boolean => {
 				return false;
 			}
 		}
+
 		return true;
 	} else {
 		return Number(inputValue) >= possibleValues;
@@ -292,6 +305,7 @@ const empty_gt = (inputValue: any, possibleValues: any): boolean => {
 				return false;
 			}
 		}
+
 		return true;
 	} else {
 		return Number(inputValue) <= possibleValues;
@@ -305,6 +319,7 @@ const empty_nbetween = (inputValue: any, possibleValues: any): boolean => {
 				return false;
 			}
 		}
+
 		return true;
 	} else {
 		return Number(inputValue[0]) >= possibleValues && Number(inputValue[1]) <= possibleValues;
@@ -318,6 +333,7 @@ const empty_null = (_inputValue: any, possibleValues: any): boolean => {
 				return false;
 			}
 		}
+
 		return true;
 	} else {
 		return possibleValues !== null;

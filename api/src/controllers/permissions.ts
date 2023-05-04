@@ -46,6 +46,7 @@ router.post(
 
 			throw error;
 		}
+
 		return next();
 	}),
 	respond
@@ -85,6 +86,7 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		if (req.path.endsWith('me')) return next();
+
 		const service = new PermissionsService({
 			accountability: req.accountability,
 			schema: req.schema,

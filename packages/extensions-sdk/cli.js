@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-import './dist/esm/cli/run.js';
+import './dist/cli/run.js';

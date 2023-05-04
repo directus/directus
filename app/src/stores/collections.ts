@@ -153,6 +153,7 @@ export const useCollectionsStore = defineStore({
 			try {
 				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();
+
 				notify({
 					title: i18n.global.t('update_collection_success'),
 				});

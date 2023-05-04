@@ -1,4 +1,5 @@
 import VTemplateInput from './v-template-input.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -15,6 +16,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	modelValue: 'Hey ho everyone, I am a new comment!',
 	multiline: true,

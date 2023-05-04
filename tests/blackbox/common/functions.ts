@@ -86,6 +86,7 @@ export async function CreateUser(vendor: string, options: Partial<OptionsCreateU
 	if (!options.token) {
 		throw new Error('Missing required field: token');
 	}
+
 	if (!options.email) {
 		throw new Error('Missing required field: email');
 	}
@@ -150,6 +151,7 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 				meta: { hidden: true, readonly: true, interface: 'input', special: ['uuid'] },
 				schema: { is_primary_key: true, length: 36, has_auto_increment: false },
 			});
+
 			break;
 		case 'string':
 			options.fields.push({
@@ -158,6 +160,7 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 				meta: { hidden: false, readonly: false, interface: 'input' },
 				schema: { is_primary_key: true, length: 255, has_auto_increment: false },
 			});
+
 			break;
 		case 'integer':
 		default:
@@ -167,6 +170,7 @@ export async function CreateCollection(vendor: string, options: Partial<OptionsC
 				meta: { hidden: true, interface: 'input', readonly: true },
 				schema: { is_primary_key: true, has_auto_increment: true },
 			});
+
 			break;
 	}
 
@@ -479,6 +483,7 @@ export async function CreateFieldM2M(vendor: string, options: OptionsCreateField
 	const junctionCollection = await CreateCollection(vendor, junctionCollectionOptions);
 
 	const junctionFieldName = `${options.collection}_id`;
+
 	const junctionFieldOptions: OptionsCreateField = {
 		collection: options.junctionCollection,
 		field: junctionFieldName,
@@ -488,6 +493,7 @@ export async function CreateFieldM2M(vendor: string, options: OptionsCreateField
 	const junctionField = await CreateField(vendor, junctionFieldOptions);
 
 	const otherJunctionFieldName = `${options.otherCollection}_id${isSelfReferencing ? '2' : ''}`;
+
 	const otherJunctionFieldOptions: OptionsCreateField = {
 		collection: options.junctionCollection,
 		field: otherJunctionFieldName,
@@ -582,6 +588,7 @@ export async function CreateFieldM2A(vendor: string, options: OptionsCreateField
 	const junctionCollection = await CreateCollection(vendor, junctionCollectionOptions);
 
 	const junctionFieldName = `${options.junctionCollection}_id`;
+
 	const junctionFieldOptions: OptionsCreateField = {
 		collection: options.junctionCollection,
 		field: junctionFieldName,

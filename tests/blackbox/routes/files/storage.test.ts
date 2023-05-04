@@ -7,6 +7,7 @@ import * as common from '@common/index';
 
 const assetsDirectory = [__dirname, '..', '..', 'assets'];
 const storages = ['local', 'minio'];
+
 const imageFile = {
 	name: 'directus.png',
 	type: 'image/png',
@@ -14,6 +15,7 @@ const imageFile = {
 	title: 'Directus',
 	description: 'The Directus Logo',
 };
+
 const imageFilePath = path.join(...assetsDirectory, imageFile.name);
 
 describe('/files', () => {
@@ -34,6 +36,7 @@ describe('/files', () => {
 
 				// Assert
 				expect(response.statusCode).toBe(200);
+
 				expect(response.body.data).toEqual(
 					expect.objectContaining({
 						filesize: imageFile.filesize,

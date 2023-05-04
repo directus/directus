@@ -106,6 +106,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								} else {
 									expect(gqlResponse.body.errors).toBeDefined();
 								}
+
 								break;
 							default:
 								if (pkType !== 'integer') {
@@ -113,10 +114,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								} else {
 									expect(gqlResponse.body.errors).toBeDefined();
 								}
+
 								break;
 						}
 					});
 				});
+
 				describe('returns an error when an invalid table is used', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Action
@@ -157,6 +160,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						collection: localCollectionArtists,
 						item: createArtist(pkType),
 					});
+
 					const body = { name: 'Tommy Cash' };
 
 					// Action
@@ -184,12 +188,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
+
 					expect(response.body.data).toMatchObject({
 						id: insertedArtist.id,
 						name: 'Tommy Cash',
 					});
 
 					expect(gqlResponse.statusCode).toBe(200);
+
 					expect(gqlResponse.body.data[mutationKey]).toEqual({
 						id: String(insertedArtist.id),
 						name: 'updated',
@@ -261,9 +267,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Setup
 					const artists = [];
 					const artistsCount = 50;
+
 					for (let i = 0; i < artistsCount; i++) {
 						artists.push(createArtist(pkType));
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -442,6 +450,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Setup
 					const artists = [];
 					const artistsCount = 5;
+
 					for (let i = 0; i < artistsCount; i++) {
 						artists.push(createArtist(pkType));
 					}
@@ -478,19 +487,23 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					// Assert
 					expect(response.statusCode).toEqual(200);
+
 					for (let row = 0; row < response.body.data.length; row++) {
 						expect(response.body.data[row]).toMatchObject({
 							name: 'Johnny Cash',
 						});
 					}
+
 					expect(response.body.data.length).toBe(keys.length);
 
 					expect(gqlResponse.statusCode).toEqual(200);
+
 					for (let row = 0; row < gqlResponse.body.data[mutationKey].length; row++) {
 						expect(gqlResponse.body.data[mutationKey][row]).toMatchObject({
 							name: 'updated',
 						});
 					}
+
 					expect(gqlResponse.body.data[mutationKey].length).toBe(keys.length);
 				});
 			});
@@ -503,6 +516,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artists = [];
 					const artists2 = [];
 					const artistsCount = 10;
+
 					for (let i = 0; i < artistsCount; i++) {
 						artists.push(createArtist(pkType));
 						artists2.push(createArtist(pkType));
@@ -575,6 +589,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				// Assert
 				expect(response.statusCode).toBe(200);
 				expect(response.body.data.length).toBe(2);
+
 				for (const log of response.body.data) {
 					expect(log.value).toBe('1');
 				}
@@ -598,6 +613,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				// Assert
 				expect(response.statusCode).toBe(200);
 				expect(response.body.data.length).toBe(10);
+
 				for (const log of response.body.data) {
 					expect(log.value).toBe('1');
 				}
@@ -619,6 +635,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.company = artistCompany;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -667,12 +684,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = artistName;
 						artists1.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists1 });
+
 					for (let i = 0; i < count; i++) {
 						const artist = createArtist(pkType);
 						artist.company = artistCompany;
 						artists2.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists2 });
 
 					// Action
@@ -721,6 +741,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = artistName;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -737,6 +758,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 					const queryKey = `${localCollectionArtists}_aggregated`;
+
 					const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
 						query: {
 							[queryKey]: {
@@ -776,6 +798,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = artistName;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -822,6 +845,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artistName = 'offset-limit-sort-test';
 					const artists = [];
 					const expectedResultAsc = Array.from(Array(count).keys()).slice(offset, offset + limit);
+
 					const expectedResultDesc = Array.from(Array(count).keys())
 						.sort((v) => -v)
 						.slice(offset, offset + limit);
@@ -831,6 +855,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = `${i}-${artistName}`;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -899,6 +924,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(gqlResponseAsc.statusCode).toBe(200);
 					expect(gqlResponseAsc.body.data[localCollectionArtists].length).toEqual(limit);
+
 					expect(
 						gqlResponseAsc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0]))
 					).toEqual(expectedResultAsc);
@@ -909,6 +935,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(gqlResponseDesc.statusCode).toBe(200);
 					expect(gqlResponseDesc.body.data[localCollectionArtists].length).toEqual(limit);
+
 					expect(
 						gqlResponseDesc.body.data[localCollectionArtists].map((v: any) => parseInt(v.name.split('-')[0]))
 					).toEqual(expectedResultDesc);
@@ -930,6 +957,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = `${i}-${artistName}`;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -1040,6 +1068,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const artistName = 'offset-aggregation-limit-sort-test';
 					const artists = [];
 					const expectedResultAsc = Array.from(Array(count).keys()).slice(offset, offset + limit);
+
 					const expectedResultDesc = Array.from(Array(count).keys())
 						.sort((v) => -v)
 						.slice(offset, offset + limit);
@@ -1049,6 +1078,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						artist.name = `${i}-${artistName}`;
 						artists.push(artist);
 					}
+
 					await CreateItem(vendor, { collection: localCollectionArtists, item: artists });
 
 					// Action
@@ -1133,6 +1163,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(gqlResponseAsc.statusCode).toBe(200);
 					expect(gqlResponseAsc.body.data[queryKey].length).toEqual(limit);
+
 					expect(gqlResponseAsc.body.data[queryKey].map((v: any) => parseInt(v.group.name.split('-')[0]))).toEqual(
 						expectedResultAsc
 					);
@@ -1143,6 +1174,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 					expect(gqlResponseDesc.statusCode).toBe(200);
 					expect(gqlResponseDesc.body.data[queryKey].length).toEqual(limit);
+
 					expect(gqlResponseDesc.body.data[queryKey].map((v: any) => parseInt(v.group.name.split('-')[0]))).toEqual(
 						expectedResultDesc
 					);
@@ -1232,12 +1264,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -1261,6 +1295,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								artists.push(
 									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
 								);
+
 								artists2.push(
 									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
 								);
@@ -1309,6 +1344,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								artists.push(
 									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
 								);
+
 								artists2.push(
 									await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })
 								);
@@ -1336,12 +1372,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -1365,6 +1403,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								artistIDs.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
+
 								artistIDs2.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
@@ -1414,6 +1453,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								artistIDs.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
+
 								artistIDs2.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
@@ -1442,12 +1482,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -1521,6 +1563,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -1546,12 +1589,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								artistIDs.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
+
 								artistIDs2.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
+
 								artistIDs3.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
+
 								artistIDs4.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
@@ -1622,12 +1668,15 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								artistIDs.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
+
 								artistIDs2.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
+
 								artistIDs3.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
+
 								artistIDs4.push(
 									(await CreateItem(vendor, { collection: localCollectionArtists, item: createArtist(pkType) })).id
 								);
@@ -1671,24 +1720,28 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(response2.statusCode).toBe(400);
 							expect(response2.body.errors).toBeDefined();
+
 							expect(response2.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
+
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse2.statusCode).toBe(200);
 							expect(gqlResponse2.body.errors).toBeDefined();
+
 							expect(gqlResponse2.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
@@ -1759,6 +1812,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
+
 							expect(response.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);

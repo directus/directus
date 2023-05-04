@@ -41,6 +41,7 @@ const internalActive = computed({
 		if (props.modelValue !== undefined) {
 			return props.modelValue;
 		}
+
 		return localActive.value;
 	},
 	set(newActive: boolean) {

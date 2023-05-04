@@ -118,6 +118,7 @@ export async function up(knex: Knex): Promise<void> {
 					logger.warn(
 						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
 					);
+
 					logger.warn(err);
 				}
 			}
@@ -160,6 +161,7 @@ export async function down(knex: Knex): Promise<void> {
 					logger.warn(
 						`Couldn't clean up index for foreign key ${update.table}.${constraint.column}->${constraint.references}`
 					);
+
 					logger.warn(err);
 				}
 			}

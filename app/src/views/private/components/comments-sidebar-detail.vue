@@ -47,6 +47,7 @@ const props = defineProps<{
 	collection: string;
 	primaryKey: string | number;
 }>();
+
 const { t } = useI18n();
 
 const { activity, loading, refresh, count, userPreviews } = useActivity(props.collection, props.primaryKey);
@@ -98,6 +99,7 @@ function useActivity(collection: string, primaryKey: string | number) {
 					regex,
 					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`
 				);
+
 				return {
 					...comment,
 					display,

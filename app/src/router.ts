@@ -92,6 +92,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 	// First load
 	if (firstLoad) {
 		firstLoad = false;
+
 		// Try retrieving a fresh access token on first load
 		try {
 			await refresh({ navigate: false });
@@ -111,8 +112,10 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 	if (to.meta?.public !== true) {
 		if (appStore.hydrated === false) {
 			appStore.hydrating = false;
+
 			if (appStore.authenticated === true) {
 				await hydrate();
+
 				if (
 					userStore.currentUser &&
 					to.fullPath === '/tfa-setup' &&
@@ -121,6 +124,7 @@ export const onBeforeEach: NavigationGuard = async (to) => {
 				) {
 					return userStore.currentUser.last_page || '/login';
 				}
+
 				return to.fullPath;
 			} else {
 				if (to.fullPath) {

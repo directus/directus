@@ -1,4 +1,5 @@
 import VCheckbox from './v-checkbox.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -17,6 +18,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	modelValue: true,
 };

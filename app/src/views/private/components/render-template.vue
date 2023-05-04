@@ -76,6 +76,7 @@ const parts = computed(() =>
 
 function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 	const value = get(props.item, fieldKeyBefore);
+
 	const field =
 		fieldsStore.getField(props.collection, fieldKeyBefore) ||
 		props.fields?.find((field) => field.field === fieldKeyBefore);
