@@ -31,6 +31,8 @@ before_script:
     done
     echo "---- Docker came up ----"
   - docker info
+  - echo $CI_REGISTRY_USER
+  - echo $CI_REGISTRY
   - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY
 
 after_script:
