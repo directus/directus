@@ -25,21 +25,22 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
-
 import api from '@/api';
 import { Activity, ActivityByDate } from '@/types/activity';
-import CommentInput from './comment-input.vue';
-import { groupBy, orderBy, flatten } from 'lodash';
 import { localizedFormat } from '@/utils/localized-format';
-import { isToday, isYesterday, isThisYear } from 'date-fns';
-import CommentItem from './comment-item.vue';
 import { userName } from '@/utils/user-name';
+import type { User } from '@directus/types';
+import { isThisYear, isToday, isYesterday } from 'date-fns';
+import { flatten, groupBy, orderBy } from 'lodash';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import CommentInput from './comment-input.vue';
+import CommentItem from './comment-item.vue';
 
 type ActivityByDateDisplay = ActivityByDate & {
 	activity: (Activity & {
 		display: string;
+		user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
 	})[];
 };
 
@@ -103,6 +104,9 @@ function useActivity(collection: string, primaryKey: string | number) {
 				return {
 					...comment,
 					display,
+				} as Activity & {
+					display: string;
+					user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
 				};
 			});
 

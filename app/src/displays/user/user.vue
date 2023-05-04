@@ -22,21 +22,12 @@
 
 <script setup lang="ts">
 import { userName } from '@/utils/user-name';
+import { User } from '@directus/types';
 import { computed } from 'vue';
-
-type User = {
-	id: number;
-	avatar: {
-		id: string;
-	};
-	email: string;
-	first_name: string;
-	last_name: string;
-};
 
 const props = withDefaults(
 	defineProps<{
-		value: User | null;
+		value: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'> | null;
 		display?: 'avatar' | 'name' | 'both';
 		circle?: boolean;
 	}>(),
