@@ -79,15 +79,10 @@ import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { Collection } from '@/types/collections';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue?: boolean;
-		collection?: Collection;
-	}>(),
-	{
-		modelValue: false,
-	}
-);
+const props = defineProps<{
+	modelValue?: boolean;
+	collection?: Collection;
+}>();
 
 const emit = defineEmits(['update:modelValue']);
 

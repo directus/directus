@@ -105,7 +105,7 @@ const selectionIcon = computed(() => {
 });
 
 function toggleSelection() {
-	if (props.item === undefined) return null;
+	if (!props.item) return null;
 
 	if (props.modelValue.includes(props.item[props.itemKey])) {
 		emit(

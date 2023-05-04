@@ -49,19 +49,15 @@ const props = withDefaults(
 		disabled?: boolean;
 		collection?: string;
 		disabledFields?: string[];
-
 		typeDenyList?: string[];
 		typeAllowList?: string[];
-
 		placeholder?: string;
 		nullable?: boolean;
 	}>(),
 	{
-		disabled: false,
 		disabledFields: () => [],
 		typeDenyList: () => [],
 		placeholder: () => i18n.global.t('foreign_key') + '...',
-		nullable: false,
 	}
 );
 

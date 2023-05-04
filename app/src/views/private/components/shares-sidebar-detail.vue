@@ -96,7 +96,7 @@ const { t } = useI18n();
 
 const { copyToClipboard } = useClipboard();
 
-const shares = ref<Share[]>([]);
+const shares = ref<Share[] | null>([]);
 const count = ref(0);
 const error = ref(null);
 const loading = ref(false);
