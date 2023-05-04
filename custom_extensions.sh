@@ -76,15 +76,14 @@ if [ ! -d "migrations" ]; then
     exit 0
 fi
 cd migrations
-ls -la
-#for migration in *
-#do
-#    # Skip migrations
-#    if echo "$skip_migrations" | grep -qw "$migration"; then
-#        continue
-#    fi
-#    echo "Adding migration ${migration}"
-#    cp ${migration} ${DIRECTUS_EXTENSIONS}/migrations/
-#done
+for migration in *
+do
+    # Skip migrations
+    if echo "$skip_migrations" | grep -qw "$migration"; then
+        continue
+    fi
+    echo "Adding migration ${migration}"
+    cp ${migration} ${DIRECTUS_EXTENSIONS}/migrations/
+done
 
 cd ..

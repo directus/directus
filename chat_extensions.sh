@@ -18,4 +18,4 @@ ls -la ./directus-custom-extensions-release
 cp -r ./directus-custom-extensions-release/interfaces/chat ${DIRECTUS_INTERFACES}
 cp -r ./directus-custom-extensions-release/displays/chat-display ${DIRECTUS_DISPLAYS}
 
-#cp ./directus-custom-extensions-release/migrations/*chat* ${DIRECTUS_EXTENSIONS}/migrations
+cp ./directus-custom-extensions-release/migrations/*chat* ${DIRECTUS_EXTENSIONS}/migrations

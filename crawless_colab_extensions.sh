@@ -23,4 +23,4 @@ cp -r ./directus-custom-extensions-release/interfaces/filter-ext ${DIRECTUS_INTE
 cp -r ./directus-custom-extensions-release/endpoints/webhook-api-endpoint ${DIRECTUS_ENDPOINTS}
 
 # Migrations
-#cp -r ./directus-custom-extensions-release/migrations/*add-collaboration* ${DIRECTUS_EXTENSIONS}/migrations
+cp -r ./directus-custom-extensions-release/migrations/*add-collaboration* ${DIRECTUS_EXTENSIONS}/migrations

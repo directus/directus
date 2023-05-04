@@ -26,7 +26,7 @@ cp -r ./directus-custom-extensions-release/modules/saved-searches ${DIRECTUS_MOD
 cp -r ./directus-custom-extensions-release/hooks/area-hook ${DIRECTUS_HOOKS}/
 cp -r ./directus-custom-extensions-release/hooks/hide-modules ${DIRECTUS_HOOKS}/
 
-#cp -r ./directus-custom-extensions-release/migrations/*saved-searches* ${DIRECTUS_EXTENSIONS}/migrations
+cp -r ./directus-custom-extensions-release/migrations/*saved-searches* ${DIRECTUS_EXTENSIONS}/migrations
 
 ls -la ${DIRECTUS_MODULES}
 ls -la ${DIRECTUS_HOOKS}
