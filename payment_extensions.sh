@@ -21,7 +21,7 @@ mkdir -p ${DIRECTUS_HOOKS}/payments-hook
 mv -v ./directus-payment-integration-release/payments-hook/* ${DIRECTUS_HOOKS}/payments-hook/
 
 mv -v ./directus-payment-integration-release/payments-module ${DIRECTUS_MODULES}
-#mv -v ./directus-payment-integration-release/migrations ${DIRECTUS_EXTENSIONS}
+mv -v ./directus-payment-integration-release/migrations ${DIRECTUS_EXTENSIONS}
 
 rm -rf directus-custom-extensions-release*
 curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/projects/40500377/packages/generic/Releases/0.0.1/directus-custom-extensions-release.zip
