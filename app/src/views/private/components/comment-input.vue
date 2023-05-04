@@ -30,7 +30,7 @@
 				>
 					<v-list-item-icon>
 						<v-avatar x-small>
-							<v-image v-if="user.avatar" :src="avatarSource(user.avatar)" />
+							<v-image v-if="user.avatar" :src="avatarSource(user.avatar.id)" />
 							<v-icon v-else name="person_outline" />
 						</v-avatar>
 					</v-list-item-icon>
@@ -73,6 +73,7 @@ import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
+import { User } from '@directus/types';
 import axios, { CancelTokenSource } from 'axios';
 import { cloneDeep, throttle } from 'lodash';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
@@ -118,7 +119,7 @@ watch(
 const saving = ref(false);
 const showMentionDropDown = ref(false);
 
-const searchResult = ref<{ first_name: string; last_name: string; email: string; id: string; avatar: string }[]>([]);
+const searchResult = ref<Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>[]>([]);
 const userPreviews = ref<Record<string, string>>({});
 
 watch(
