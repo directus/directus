@@ -1,7 +1,8 @@
 {
 	"name": "@directus/exceptions",
-	"version": "9.26.0",
+	"version": "10.0.0",
 	"type": "module",
+	"sideEffects": false,
 	"scripts": {
 		"build": "tsc --build",
 		"dev": "tsc --watch",
@@ -14,7 +15,7 @@
 		"directory": "packages/exceptions"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",

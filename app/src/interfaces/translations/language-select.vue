@@ -9,7 +9,7 @@
 			</button>
 		</template>
 
-		<v-list>
+		<v-list v-if="items">
 			<v-list-item v-for="(item, index) in items" :key="index" @click="$emit('update:modelValue', item.value)">
 				<div class="start">
 					<div class="dot" :class="{ show: item.edited }"></div>
@@ -28,34 +28,25 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	components: {},
-	props: {
-		modelValue: {
-			type: String,
-			default: null,
-		},
-		items: {
-			type: Array as PropType<Record<string, any>[]>,
-			default: () => [],
-		},
-		secondary: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props) {
-		const displayValue = computed(() => {
-			const item = props.items.find((item) => item.value === props.modelValue);
-			return item?.text ?? props.modelValue;
-		});
+const props = withDefaults(
+	defineProps<{
+		modelValue?: string;
+		items?: Record<string, any>[];
+		secondary?: boolean;
+	}>(),
+	{
+		items: () => [],
+	}
+);
 
-		return { displayValue };
-	},
+defineEmits(['update:modelValue']);
+
+const displayValue = computed(() => {
+	const item = props.items.find((item) => item.value === props.modelValue);
+	return item?.text ?? props.modelValue;
 });
 </script>
 

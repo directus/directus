@@ -65,12 +65,14 @@ const { collection, field, primaryKey } = toRefs(props);
 
 const _value = computed<ChangesItem>({
 	get() {
-		if (Array.isArray(props.value))
+		if (Array.isArray(props.value)) {
 			return {
 				create: [],
 				update: [],
 				delete: [],
 			};
+		}
+
 		return props.value as ChangesItem;
 	},
 	set: (val) => {

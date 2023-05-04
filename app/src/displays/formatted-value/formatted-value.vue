@@ -19,196 +19,155 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+<script setup lang="ts">
 import formatTitle from '@directus/format-title';
-import { decode } from 'html-entities';
-import { useI18n } from 'vue-i18n';
-import { isNil } from 'lodash';
 import dompurify from 'dompurify';
+import { decode } from 'html-entities';
+import { isNil } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		type: {
-			type: String,
-			required: true,
-		},
-		value: {
-			type: [String, Number, Array],
-			default: null,
-		},
-		format: {
-			type: Boolean,
-			default: false,
-		},
-		font: {
-			type: String,
-			default: 'sans-serif',
-			validator: (value: string) => ['sans-serif', 'serif', 'monospace'].includes(value),
-		},
-		bold: {
-			type: Boolean,
-			default: false,
-		},
-		italic: {
-			type: Boolean,
-			default: false,
-		},
-		prefix: {
-			type: String,
-			default: null,
-		},
-		suffix: {
-			type: String,
-			default: null,
-		},
-		color: {
-			type: String,
-			default: null,
-		},
-		background: {
-			type: String,
-			default: null,
-		},
-		icon: {
-			type: String,
-			default: null,
-		},
-		border: {
-			type: Boolean,
-			default: false,
-		},
-		conditionalFormatting: {
-			type: Array as PropType<
-				{
-					operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
-					value: string;
-					color: string;
-					background: string;
-					text: string;
-					icon: string;
-				}[]
-			>,
-			default: () => [],
-		},
-	},
-	setup(props) {
-		const { t, n } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		type: string;
+		value?: string | number | (string | number)[];
+		format?: boolean;
+		font?: 'sans-serif' | 'serif' | 'monospace';
+		bold?: boolean;
+		italic?: boolean;
+		prefix?: string;
+		suffix?: string;
+		color?: string;
+		background?: string;
+		icon?: string;
+		border?: boolean;
+		conditionalFormatting?: {
+			operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
+			value: string;
+			color: string;
+			background: string;
+			text: string;
+			icon: string;
+		}[];
+	}>(),
+	{
+		font: 'sans-serif',
+		conditionalFormatting: () => [],
+	}
+);
 
-		const matchedConditions = computed(() => {
-			return (props.conditionalFormatting || []).filter(({ operator, value }) => {
-				if (['string', 'text'].includes(props.type)) {
-					const left = String(props.value);
-					const right = String(value);
-					return matchString(left, right, operator);
-				} else if (['float', 'decimal'].includes(props.type)) {
-					const left = parseFloat(String(props.value));
-					const right = parseFloat(String(value));
-					return matchNumber(left, right, operator);
-				} else {
-					const left = parseInt(String(props.value));
-					const right = parseInt(String(value));
-					return matchNumber(left, right, operator);
-				}
-			});
-		});
+const { t, n } = useI18n();
 
-		const computedFormat = computed(() => {
-			const { color, background, icon } = props;
-
-			return matchedConditions.value.reduce(
-				({ color, background, icon, text }, format) => ({
-					color: format.color || color,
-					background: format.background || background,
-					icon: format.icon || icon,
-					text: format.text || text,
-				}),
-				{
-					color,
-					background,
-					icon,
-					text: '',
-				}
-			);
-		});
-
-		const computedStyle = computed(() => {
-			return {
-				color: computedFormat.value.color,
-				borderStyle: 'solid',
-				borderWidth: props.border ? '2px' : 0,
-				borderColor: computedFormat.value.color,
-				backgroundColor: computedFormat.value.background ?? 'transparent',
-			};
-		});
-
-		const displayValue = computed(() => {
-			if (computedFormat.value.text) {
-				const { text } = computedFormat.value;
-				return text.startsWith('$t:') ? t(text.slice(3)) : text;
-			}
-
-			if (isNil(props.value) || props.value === '') return null;
-
-			let value = String(props.value);
-
-			// Strip out all HTML tags
-			value = dompurify.sanitize(value, { ALLOWED_TAGS: [] });
-
-			// Decode any HTML encoded characters (like &copy;)
-			value = decode(value);
-
-			if (props.format) {
-				if (['string', 'text'].includes(props.type)) {
-					value = formatTitle(value);
-				} else if (['float', 'decimal'].includes(props.type)) {
-					value = n(parseFloat(value));
-				} else {
-					value = n(parseInt(value));
-				}
-			}
-
-			const prefix = props.prefix ?? '';
-			const suffix = props.suffix ?? '';
-
-			return `${prefix}${value}${suffix}`;
-		});
-
-		return { t, computedFormat, displayValue, computedStyle };
-
-		function matchString(left: string, right: string, operator: string) {
-			switch (operator) {
-				case 'eq':
-					return left === right;
-				case 'neq':
-					return left !== right;
-				case 'contains':
-					return left.includes(right);
-				case 'starts_with':
-					return left.startsWith(right);
-				case 'ends_with':
-					return left.endsWith(right);
-			}
+const matchedConditions = computed(() => {
+	return (props.conditionalFormatting || []).filter(({ operator, value }) => {
+		if (['string', 'text'].includes(props.type)) {
+			const left = String(props.value);
+			const right = String(value);
+			return matchString(left, right, operator);
+		} else if (['float', 'decimal'].includes(props.type)) {
+			const left = parseFloat(String(props.value));
+			const right = parseFloat(String(value));
+			return matchNumber(left, right, operator);
+		} else {
+			const left = parseInt(String(props.value));
+			const right = parseInt(String(value));
+			return matchNumber(left, right, operator);
 		}
-
-		function matchNumber(left: number, right: number, operator: string) {
-			switch (operator) {
-				case 'eq':
-					return left === right;
-				case 'neq':
-					return left !== right;
-				case 'gt':
-					return left > right;
-				case 'gte':
-					return left >= right;
-				case 'lt':
-					return left < right;
-				case 'lte':
-					return left <= right;
-			}
-		}
-	},
+	});
 });
+
+const computedFormat = computed(() => {
+	const { color, background, icon } = props;
+
+	return matchedConditions.value.reduce(
+		({ color, background, icon, text }, format) => ({
+			color: format.color || color,
+			background: format.background || background,
+			icon: format.icon || icon,
+			text: format.text || text,
+		}),
+		{
+			color,
+			background,
+			icon,
+			text: '',
+		}
+	);
+});
+
+const computedStyle = computed(() => {
+	return {
+		color: computedFormat.value.color,
+		borderStyle: 'solid',
+		borderWidth: props.border ? '2px' : 0,
+		borderColor: computedFormat.value.color,
+		backgroundColor: computedFormat.value.background ?? 'transparent',
+	};
+});
+
+const displayValue = computed(() => {
+	if (computedFormat.value.text) {
+		const { text } = computedFormat.value;
+		return text.startsWith('$t:') ? t(text.slice(3)) : text;
+	}
+
+	if (isNil(props.value) || props.value === '') return null;
+
+	let value = String(props.value);
+
+	// Strip out all HTML tags
+	value = dompurify.sanitize(value, { ALLOWED_TAGS: [] });
+
+	// Decode any HTML encoded characters (like &copy;)
+	value = decode(value);
+
+	if (props.format) {
+		if (['string', 'text'].includes(props.type)) {
+			value = formatTitle(value);
+		} else if (['float', 'decimal'].includes(props.type)) {
+			value = n(parseFloat(value));
+		} else {
+			value = n(parseInt(value));
+		}
+	}
+
+	const prefix = props.prefix ?? '';
+	const suffix = props.suffix ?? '';
+
+	return `${prefix}${value}${suffix}`;
+});
+
+function matchString(left: string, right: string, operator: string) {
+	switch (operator) {
+		case 'eq':
+			return left === right;
+		case 'neq':
+			return left !== right;
+		case 'contains':
+			return left.includes(right);
+		case 'starts_with':
+			return left.startsWith(right);
+		case 'ends_with':
+			return left.endsWith(right);
+	}
+}
+
+function matchNumber(left: number, right: number, operator: string) {
+	switch (operator) {
+		case 'eq':
+			return left === right;
+		case 'neq':
+			return left !== right;
+		case 'gt':
+			return left > right;
+		case 'gte':
+			return left >= right;
+		case 'lt':
+			return left < right;
+		case 'lte':
+			return left <= right;
+	}
+}
 </script>
 
 <style lang="scss" scoped>
