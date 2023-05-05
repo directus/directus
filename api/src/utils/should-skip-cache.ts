@@ -2,6 +2,7 @@ import type { Request } from 'express';
 import { getEnv } from '../env.js';
 import { Url } from './url.js';
 import url from 'url';
+import { getEndpoint } from '@directus/utils';
 
 /**
  * Whether to skip caching for the current request
@@ -20,7 +21,7 @@ export function shouldSkipCache(req: Request): boolean {
 			const path = url.parse(req.originalUrl).pathname;
 
 			for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST']) {
-				const ignoredPath = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
+				const ignoredPath = getEndpoint(collection);
 
 				if (path === ignoredPath) {
 					return true;
