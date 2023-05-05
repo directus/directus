@@ -26,7 +26,7 @@
 			<extension-options
 				v-if="panel.type"
 				:model-value="panel.options"
-				:options="customOptionsFields"
+				:options="customOptionsFields ?? []"
 				type="panel"
 				:extension="panel.type"
 				raw-editor-enabled
@@ -97,15 +97,15 @@
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
-import { useInsightsStore } from '@/stores/insights';
-import { CreatePanel } from '@/stores/insights';
+import { CreatePanel, useInsightsStore } from '@/stores/insights';
 import { Panel } from '@directus/types';
-import { assign, clone, omitBy, isUndefined } from 'lodash';
+import { assign, clone, isUndefined, omitBy } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';
 import { computed, reactive, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { FancySelectItem } from '../../../components/v-fancy-select.vue';
 import ExtensionOptions from '../../settings/routes/data-model/field-detail/shared/extension-options.vue';
 
 interface Props {

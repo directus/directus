@@ -2,9 +2,9 @@ import { router } from '@/router';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import RouterPass from '@/utils/router-passthrough';
-import { ModuleConfig } from '@directus/types';
-import { ShallowRef, shallowRef } from 'vue';
+import { ModuleConfig, User } from '@directus/types';
 import { sortBy } from 'lodash';
+import { ShallowRef, shallowRef } from 'vue';
 
 export function getInternalModules(): ModuleConfig[] {
 	const modules = import.meta.glob<ModuleConfig>('./*/index.ts', { import: 'default', eager: true });
@@ -30,7 +30,7 @@ export function registerModules(modules: ModuleConfig[]): {
 				modules.map(async (module) => {
 					if (!module.preRegisterCheck) return module;
 
-					const allowed = await module.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
+					const allowed = await module.preRegisterCheck(userStore.currentUser as User, permissionsStore.permissions);
 
 					if (allowed) return module;
 

@@ -94,24 +94,24 @@
 
 		<dashboard-dialog
 			:model-value="!!editDashboard"
-			:dashboard="editDashboard"
+			:dashboard="editDashboard!"
 			@update:model-value="editDashboard = null"
 		/>
 	</private-view>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import api from '@/api';
+import { Header } from '@/components/v-table/types';
+import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
 import { usePermissionsStore } from '@/stores/permissions';
-import { useI18n } from 'vue-i18n';
 import { Dashboard } from '@/types/insights';
-import { router } from '@/router';
-import { Header } from '@/components/v-table/types';
-import InsightsNavigation from '../components/navigation.vue';
-import DashboardDialog from '../components/dashboard-dialog.vue';
-import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import DashboardDialog from '../components/dashboard-dialog.vue';
+import InsightsNavigation from '../components/navigation.vue';
 
 const { t } = useI18n();
 
@@ -178,7 +178,7 @@ async function deleteDashboard() {
 		await api.delete(`/dashboards/${confirmDelete.value}`);
 		await insightsStore.hydrate();
 		confirmDelete.value = null;
-	} catch (err) {
+	} catch (err: any) {
 		unexpectedError(err);
 	} finally {
 		deletingDashboard.value = false;
