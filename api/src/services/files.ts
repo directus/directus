@@ -309,15 +309,15 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete a file
 	 */
-	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.deleteMany([key], opts);
+	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
+		await this.deleteMany([key]);
 		return key;
 	}
 
 	/**
 	 * Delete multiple files
 	 */
-	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
