@@ -204,13 +204,13 @@
 		"@types/uuid": "9.0.1",
 		"@types/uuid-validate": "0.0.1",
 		"@types/wellknown": "0.5.4",
-		"@vitest/coverage-c8": "0.30.1",
+		"@vitest/coverage-c8": "0.31.0",
 		"copyfiles": "2.4.1",
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
 		"supertest": "6.3.3",
 		"typescript": "5.0.4",
-		"vitest": "0.30.1"
+		"vitest": "0.31.0"
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.5.7",

@@ -19,12 +19,12 @@
 			@cancel="cancel"
 		>
 			<template #subtitle>
-				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+				<v-breadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
 			</template>
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="collectionInfo.icon" :color="collectionInfo.color" />
+					<v-icon :name="collectionInfo!.icon" :color="collectionInfo!.color" />
 				</v-button>
 			</template>
 
@@ -41,11 +41,11 @@
 			<div class="layout">
 				<component :is="`layout-${localLayout}`" v-bind="layoutState">
 					<template #no-results>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 
 					<template #no-items>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 				</component>
 			</div>

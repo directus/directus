@@ -38,7 +38,7 @@ const selectedType = computed(() => {
 });
 
 watch(
-	() => values.value[props.typeField],
+	() => values.value[props.typeField!],
 	() => {
 		emit('input', null);
 	}

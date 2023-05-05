@@ -1,22 +1,22 @@
 <template>
 	<value-null v-if="!relatedCollection" />
 	<v-menu
-		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType.toLowerCase())"
+		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(localType!.toLowerCase())"
 		show-arrow
-		:disabled="value.length === 0"
+		:disabled="value?.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span class="toggle" :class="{ subdued: value.length === 0 }" @click.stop="toggle">
+			<span class="toggle" :class="{ subdued: value?.length === 0 }" @click.stop="toggle">
 				<span class="label">
-					{{ value.length }}
-					<template v-if="value.length >= 100">+</template>
+					{{ value?.length }}
+					<template v-if="value?.length >= 100">+</template>
 					{{ unit }}
 				</span>
 			</span>
 		</template>
 
 		<v-list class="links">
-			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath]">
+			<v-list-item v-for="item in value" :key="item[primaryKeyFieldPath!]">
 				<v-list-item-content>
 					<render-template
 						:template="internalTemplate"
@@ -25,7 +25,7 @@
 					/>
 				</v-list-item-content>
 				<v-list-item-icon>
-					<router-link :to="getLinkForItem(item)"><v-icon name="launch" small /></router-link>
+					<router-link :to="getLinkForItem(item)!"><v-icon name="launch" small /></router-link>
 				</v-list-item-icon>
 			</v-list-item>
 		</v-list>
@@ -55,11 +55,11 @@ const relatedCollectionData = computed(() => {
 });
 
 const relatedCollection = computed(() => {
-	return relatedCollectionData.value.relatedCollection;
+	return relatedCollectionData.value!.relatedCollection;
 });
 
 const junctionCollection = computed(() => {
-	return relatedCollectionData.value.junctionCollection;
+	return relatedCollectionData.value!.junctionCollection;
 });
 
 const localType = computed(() => {
@@ -69,8 +69,8 @@ const localType = computed(() => {
 const { primaryKeyField } = useCollection(relatedCollection);
 
 const primaryKeyFieldPath = computed(() => {
-	return relatedCollectionData.value.path
-		? [...relatedCollectionData.value.path, primaryKeyField.value?.field].join('.')
+	return relatedCollectionData.value!.path
+		? [...relatedCollectionData.value!.path, primaryKeyField.value?.field].join('.')
 		: primaryKeyField.value?.field;
 });
 
