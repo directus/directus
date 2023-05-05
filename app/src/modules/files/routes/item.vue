@@ -163,7 +163,7 @@
 		</v-dialog>
 
 		<template #sidebar>
-			<file-info-sidebar-detail :file="item" />
+			<file-info-sidebar-detail :file="item!" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false && revisionsAllowed"
 				ref="revisionsDrawerDetailRef"
@@ -177,7 +177,7 @@
 			/>
 		</template>
 
-		<replace-file v-model="replaceFileDialogActive" :file="item" @replaced="refresh" />
+		<replace-file v-model="replaceFileDialogActive" :file="item!" @replaced="refresh" />
 	</private-view>
 </template>
 
@@ -375,7 +375,7 @@ function discardAndStay() {
 function useMovetoFolder() {
 	const moveToDialogActive = ref(false);
 	const moving = ref(false);
-	const selectedFolder = ref<number | null>();
+	const selectedFolder = ref<string | null>(null);
 
 	watch(item, () => {
 		selectedFolder.value = item.value?.folder || null;

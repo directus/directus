@@ -32,7 +32,7 @@
 
 			<navigation-folder
 				v-for="childFolder in folder.children"
-				:key="childFolder.id"
+				:key="childFolder.id!"
 				:folder="childFolder"
 				:current-folder="currentFolder"
 				:click-handler="clickHandler"
@@ -87,7 +87,7 @@
 			<v-card>
 				<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 				<v-card-text>
-					<folder-picker v-model="moveValue" :disabled-folders="[folder.id]" />
+					<folder-picker v-model="moveValue" :disabled-folders="[folder.id!]" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="moveActive = false">{{ t('cancel') }}</v-button>
@@ -114,13 +114,13 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
-import { useFolders, Folder } from '@/composables/use-folders';
 import api from '@/api';
-import FolderPicker from '@/views/private/components/folder-picker.vue';
-import { useRouter } from 'vue-router';
+import { Folder, useFolders } from '@/composables/use-folders';
 import { unexpectedError } from '@/utils/unexpected-error';
+import FolderPicker from '@/views/private/components/folder-picker.vue';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{

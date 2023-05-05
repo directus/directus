@@ -28,7 +28,7 @@
 
 					<navigation-folder
 						v-for="folder in nestedFolders"
-						:key="folder.id"
+						:key="folder.id!"
 						:folder="folder"
 						:current-folder="currentFolder"
 					/>

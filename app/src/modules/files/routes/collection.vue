@@ -206,6 +206,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
+import type { User } from '@directus/types';
 import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { subDays } from 'date-fns';
@@ -214,10 +215,6 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
 import FilesNavigation from '../components/navigation.vue';
-
-type Item = {
-	[field: string]: any;
-};
 
 const props = defineProps<{
 	folder?: string;
@@ -233,7 +230,7 @@ const permissionsStore = usePermissionsStore();
 const { folders } = useFolders();
 
 const layoutRef = ref();
-const selection = ref<Item[]>([]);
+const selection = ref<(number | string)[]>([]);
 
 const userStore = useUserStore();
 
@@ -275,7 +272,7 @@ const folderTypeFilter = computed(() => {
 	if (props.special === 'mine' && userStore.currentUser) {
 		filterParsed._and.push({
 			uploaded_by: {
-				_eq: userStore.currentUser.id,
+				_eq: (userStore.currentUser as User).id,
 			},
 		});
 	}
@@ -392,7 +389,7 @@ function useBreadcrumb() {
 function useMovetoFolder() {
 	const moveToDialogActive = ref(false);
 	const moving = ref(false);
-	const selectedFolder = ref<number | null>();
+	const selectedFolder = ref<string | null>(null);
 
 	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
 
