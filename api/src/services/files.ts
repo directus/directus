@@ -114,10 +114,6 @@ export class FilesService extends ItemsService {
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
-			await this.cache.clear();
-		}
-
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
 				'files.upload',
@@ -338,10 +334,6 @@ export class FilesService extends ItemsService {
 			for await (const filepath of disk.list(file['id'])) {
 				await disk.delete(filepath);
 			}
-		}
-
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
-			await this.cache.clear();
 		}
 
 		return keys;
