@@ -17,7 +17,7 @@
 		</div>
 
 		<v-dialog :model-value="!!confirmRunFlow" @esc="resetConfirm">
-			<v-card>
+			<v-card class="card">
 				<template v-if="confirmDetails">
 					<v-card-title>{{ confirmDetails.description ?? t('run_flow_confirm') }}</v-card-title>
 
@@ -245,6 +245,16 @@ const runManualFlow = async (flowId: string) => {
 
 	:deep(.type-label) {
 		font-size: 1rem;
+	}
+}
+
+.card {
+	margin-bottom: 24px;
+	overflow: auto;
+	font-size: 24px;
+	.card-title {
+		margin-bottom: 24px;
+		font-size: 24px;
 	}
 }
 </style>
