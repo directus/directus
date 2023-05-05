@@ -50,7 +50,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'input', value: Record<string, any>[] | null): void;
+	(e: 'input', value: Record<string, any> | null): void;
 }>();
 
 const { t } = useI18n();
