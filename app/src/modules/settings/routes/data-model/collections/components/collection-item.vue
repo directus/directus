@@ -31,7 +31,12 @@
 				/>
 				<v-icon v-else :name="collapseIcon" />
 			</template>
-			<collection-options :collection="collection" />
+			<collection-options
+				:collection="collection"
+				:has-nested-collections="nestedCollections.length > 0"
+				:is-collection-expanded="!!isCollectionExpanded"
+				@collection-toggle="onCollectionToggle"
+			/>
 		</v-list-item>
 
 		<draggable
@@ -45,12 +50,14 @@
 			@update:model-value="onGroupSortChange"
 		>
 			<template #item="{ element }">
-				<collection-item
-					:collection="element"
-					:collections="collections"
-					@edit-collection="$emit('editCollection', $event)"
-					@set-nested-sort="$emit('setNestedSort', $event)"
-				/>
+				<transition-expand v-if="isCollectionExpanded" class="collection-items">
+					<collection-item
+						:collection="element"
+						:collections="collections"
+						@edit-collection="$emit('editCollection', $event)"
+						@set-nested-sort="$emit('setNestedSort', $event)"
+					/>
+				</transition-expand>
 			</template>
 		</draggable>
 	</div>
@@ -65,6 +72,7 @@ import { useCollectionsStore } from '@/stores/collections';
 import { DeepPartial } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { useLocalStorage } from '@/composables/use-local-storage';
 
 const props = defineProps<{
 	collection: Collection;
@@ -76,6 +84,11 @@ const emit = defineEmits(['setNestedSort', 'editCollection']);
 
 const collectionsStore = useCollectionsStore();
 const { t } = useI18n();
+const { data: isCollectionExpanded } = useLocalStorage(props.collection.collection, true);
+
+const onCollectionToggle = () => {
+	isCollectionExpanded.value = !isCollectionExpanded.value;
+};
 
 const nestedCollections = computed(() =>
 	props.collections.filter((collection) => collection.meta?.group === props.collection.collection)

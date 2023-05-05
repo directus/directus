@@ -29,6 +29,16 @@
 					</template>
 				</v-list-item>
 
+				<v-list-item v-if="hasNestedCollections" clickable @click="onCollectionToggle">
+					<v-list-item-icon>
+						<v-icon v-if="isCollectionExpanded" name="unfold_less" />
+						<v-icon v-else name="unfold_more" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ isCollectionExpanded ? t('click_to_collapse') : t('click_to_expand') }}
+					</v-list-item-content>
+				</v-list-item>
+
 				<v-list-item clickable class="danger" @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" />
@@ -84,6 +94,9 @@ import { useFieldsStore } from '@/stores/fields';
 
 type Props = {
 	collection: Collection;
+	hasNestedCollections?: boolean;
+	isCollectionExpanded: boolean;
+	onCollectionToggle?: () => void;
 };
 
 const props = withDefaults(defineProps<Props>(), {});
