@@ -90,7 +90,7 @@ import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Preset } from '@directus/types';
+import { Preset, User } from '@directus/types';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -109,7 +109,7 @@ const route = useRoute();
 const { currentUser, isAdmin } = useUserStore();
 const presetsStore = usePresetsStore();
 
-const isMine = computed(() => props.bookmark.user === currentUser!.id);
+const isMine = computed(() => props.bookmark.user === (currentUser as User)!.id);
 
 const hasPermission = computed(() => isMine.value || isAdmin);
 

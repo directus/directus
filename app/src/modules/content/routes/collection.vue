@@ -241,8 +241,8 @@
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
 				<export-sidebar-detail
 					:collection="collection"
-					:filter="mergeFilters(filter, archiveFilter)"
-					:search="search"
+					:filter="mergeFilters(filter, archiveFilter)!"
+					:search="search!"
 					:layout-query="layoutQuery"
 					@download="download"
 					@refresh="refresh"
@@ -293,10 +293,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
-
-type Item = {
-	[field: string]: any;
-};
 
 const props = defineProps<{
 	collection: string;
@@ -428,7 +424,7 @@ function useBreadcrumb() {
 }
 
 function useSelection() {
-	const selection = ref<Item[]>([]);
+	const selection = ref<(number | string)[]>([]);
 
 	// Whenever the collection we're working on changes, we have to clear the selection
 	watch(

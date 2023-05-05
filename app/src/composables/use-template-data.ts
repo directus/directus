@@ -2,7 +2,7 @@ import api from '@/api';
 import { Collection } from '@/types/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { computed, Ref, ref, watch } from 'vue';
+import { Ref, computed, ref, watch } from 'vue';
 
 type UsableTemplateData = {
 	templateData: Ref<Record<string, any> | undefined>;
@@ -10,7 +10,10 @@ type UsableTemplateData = {
 	error: Ref<any>;
 };
 
-export function useTemplateData(collection: Ref<Collection | null>, primaryKey: Ref<string>): UsableTemplateData {
+export function useTemplateData(
+	collection: Ref<Collection | null>,
+	primaryKey: Ref<string | null>
+): UsableTemplateData {
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
 	const error = ref<any>(null);

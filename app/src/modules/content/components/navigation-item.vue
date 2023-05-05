@@ -13,8 +13,8 @@
 			<navigation-item-content
 				:search="search"
 				:name="collection.name"
-				:icon="collection.meta?.icon"
-				:color="collection.meta?.color"
+				:icon="collection.meta?.icon!"
+				:color="collection.meta?.color!"
 			/>
 		</template>
 		<navigation-item
@@ -38,8 +38,8 @@
 		<navigation-item-content
 			:search="search"
 			:name="collection.name"
-			:icon="collection.meta?.icon"
-			:color="collection.meta?.color"
+			:icon="collection.meta?.icon!"
+			:color="collection.meta?.color!"
 		/>
 	</v-list-item>
 
@@ -58,16 +58,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Collection } from '@/types/collections';
-import { Preset } from '@directus/types';
-import { useUserStore } from '@/stores/user';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
-import NavigationItemContent from './navigation-item-content.vue';
-import NavigationBookmark from './navigation-bookmark.vue';
-import { useI18n } from 'vue-i18n';
+import { useUserStore } from '@/stores/user';
+import { Collection } from '@/types/collections';
+import { Preset } from '@directus/types';
 import { orderBy } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import NavigationBookmark from './navigation-bookmark.vue';
+import NavigationItemContent from './navigation-item-content.vue';
 
 const props = defineProps<{
 	collection: Collection;

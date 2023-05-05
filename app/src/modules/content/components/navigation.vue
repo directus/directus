@@ -45,7 +45,7 @@ import { useNavigation } from '../composables/use-navigation';
 import NavigationItem from './navigation-item.vue';
 
 const props = defineProps<{
-	currentCollection?: string;
+	currentCollection: string;
 }>();
 
 const { t } = useI18n();

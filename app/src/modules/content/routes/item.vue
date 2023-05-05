@@ -215,7 +215,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, unref, toRefs } from 'vue';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
@@ -285,7 +285,7 @@ const isSavable = computed(() => {
 	if (hasEdits.value === true) return true;
 
 	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
-		return !!edits.value?.[primaryKeyField.value.field];
+		return !!edits.value?.[primaryKeyField.value!.field];
 	}
 
 	if (isNew.value === true) {
@@ -353,7 +353,7 @@ const internalPrimaryKey = computed(() => {
 	if (unref(loading)) return '+';
 	if (unref(isNew)) return '+';
 
-	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)?.field] ?? '+';
+	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)!.field!] ?? '+';
 
 	return props.primaryKey;
 });
