@@ -521,7 +521,7 @@ no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
 no_webhooks_copy: 아직 웹훅이 구성되지 않았습니다. 아래 버튼을 통해 시작해 보세요.
 no_notifications: 알림 없음
-no_notifications_copy: 당신은 모두 잡혔습니다!
+no_notifications_copy: 모든 알림을 확인하셨습니다!
 activity_log: 활동 기록
 all_items: 전체 내용
 any: 모두
