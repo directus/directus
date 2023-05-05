@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Added overflow scrollbars in manual flow's confirmation dialog
+Added overflow scrollbars in v-card component
