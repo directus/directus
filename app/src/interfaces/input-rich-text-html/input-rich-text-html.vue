@@ -24,7 +24,7 @@
 		</template>
 		<v-dialog v-model="linkDrawerOpen">
 			<v-card>
-				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
+				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
 					<div class="grid">
 						<div class="field">
