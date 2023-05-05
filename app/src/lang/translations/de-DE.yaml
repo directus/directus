@@ -181,7 +181,6 @@ permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
-presets_field_warning: 'Der App-Editor für Feld {field} unterstützt nur die detaillierte Syntax.'
 presentation_and_aliases: Darstellung & Aliase
 revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
