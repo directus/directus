@@ -1,6 +1,6 @@
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || itemCount > 0">
+		<template v-if="loading || itemCount! > 0">
 			<cards-header
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
@@ -13,9 +13,9 @@
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
 				<card
 					v-for="item in items"
-					:key="item[primaryKeyField.field]"
+					:key="item[primaryKeyField!.field]"
 					v-model="selectionWritable"
-					:item-key="primaryKeyField.field"
+					:item-key="primaryKeyField!.field"
 					:crop="imageFit === 'crop'"
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
@@ -93,7 +93,7 @@ const props = withDefaults(
 	defineProps<{
 		collection: string;
 		items: Item[];
-		selection: Item[];
+		selection: (number | string)[];
 		selectMode: boolean;
 		readonly: boolean;
 		limit: number;
@@ -106,7 +106,7 @@ const props = withDefaults(
 		page: number;
 		toPage: (newPage: number) => void;
 		getLinkForItem: (item: Record<string, any>) => string | undefined;
-		fieldsInCollection: Item[];
+		fieldsInCollection: Field[];
 		selectAll: () => void;
 		resetPresetAndRefresh: () => Promise<void>;
 		sort: string[];
@@ -144,7 +144,7 @@ const { width } = useElementSize(layoutElement);
 
 watch(
 	() => props.page,
-	() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
+	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' })
 );
 
 watch(width, () => {

@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/utils';
-import InterfaceSelectDropdown from './select-dropdown.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceSelectDropdown from './select-dropdown.vue';
 
 export default defineInterface({
 	id: 'select-dropdown',
@@ -66,7 +66,7 @@ export default defineInterface({
 				},
 			},
 			schema: {
-				default_value: false,
+				default_value: 'false',
 			},
 		},
 		{
@@ -81,7 +81,7 @@ export default defineInterface({
 				},
 			},
 			schema: {
-				default_value: false,
+				default_value: 'false',
 			},
 		},
 		{
