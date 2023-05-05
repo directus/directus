@@ -35,7 +35,7 @@ export default function useLink(editor: Ref<any>): UsableLink {
 	};
 
 	const linkSelection = ref<LinkSelection>(defaultLinkSelection);
-	const linkNode = ref<HTMLLinkElement | null>(null);
+	const linkNode: Ref<HTMLLinkElement | null> = ref(null);
 	const currentSelectionNode = ref<HTMLElement | null>(null);
 
 	const linkButton = {

@@ -22,7 +22,7 @@ const props = defineProps<{
 	id: string;
 	title: string;
 	text?: string;
-	icon?: string;
+	icon?: string | null;
 	type?: 'info' | 'success' | 'warning' | 'error';
 	tail?: boolean;
 	dense?: boolean;

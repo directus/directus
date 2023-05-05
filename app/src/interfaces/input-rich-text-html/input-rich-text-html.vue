@@ -270,7 +270,7 @@ let count = ref(0);
 
 const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 	editorRef,
-	imageToken,
+	imageToken!,
 	{
 		storageAssetTransform,
 		storageAssetPresets,
@@ -289,7 +289,7 @@ const {
 	mediaWidth,
 	mediaSource,
 	mediaButton,
-} = useMedia(editorRef, imageToken);
+} = useMedia(editorRef, imageToken!);
 
 const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
 

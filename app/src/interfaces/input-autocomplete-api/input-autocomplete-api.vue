@@ -71,7 +71,7 @@ const fetchResultsRaw = async (value: string | null) => {
 		return;
 	}
 
-	const url = render(props.url, { value });
+	const url = render(props.url!, { value });
 
 	try {
 		const result = await (url.startsWith('/') ? api.get(url) : axios.get(url));
