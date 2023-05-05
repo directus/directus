@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
 const starCount = computed(() => {
 	if (props.interfaceOptions === null) return 5;
 
-	return Math.ceil(props.interfaceOptions.maxValue ?? 5);
+	return Math.ceil(props.interfaceOptions?.maxValue ?? 5);
 });
 
 const ratingPercentage = computed(() => ({

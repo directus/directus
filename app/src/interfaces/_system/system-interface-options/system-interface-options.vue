@@ -57,7 +57,7 @@ const options = computed({
 
 const values = inject('values', ref<Record<string, any>>({}));
 
-const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField] ?? null);
+const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField!] ?? null);
 const selectedInterface = useExtension('interface', selectedInterfaceId);
 
 const usesCustomComponent = computed(() => {

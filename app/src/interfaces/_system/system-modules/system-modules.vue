@@ -118,7 +118,7 @@ const props = withDefaults(
 		value: Settings['module_bar'];
 	}>(),
 	{
-		value: () => MODULE_BAR_DEFAULT,
+		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],
 	}
 );
 
@@ -248,11 +248,11 @@ function edit(id: string) {
 
 function save() {
 	if (editing.value === '+') {
-		emit('input', [...(props.value ?? MODULE_BAR_DEFAULT), values.value]);
+		emit('input', [...(props.value ?? MODULE_BAR_DEFAULT), values.value!]);
 	} else {
 		emit(
 			'input',
-			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value : val))
+			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value! : val))
 		);
 	}
 

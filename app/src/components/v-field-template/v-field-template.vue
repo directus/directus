@@ -29,12 +29,12 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, ref, watch, onMounted, onUnmounted, computed } from 'vue';
-import FieldListItem from './field-list-item.vue';
-import { FieldTree } from './types';
-import { Field, Relation } from '@directus/types';
 import { useFieldTree } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
+import { Field, Relation } from '@directus/types';
+import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
+import FieldListItem from './field-list-item.vue';
+import { FieldTree } from './types';
 
 interface Props {
 	disabled?: boolean;
@@ -158,7 +158,7 @@ function onSelect() {
 			contentEl.value.appendChild(textSpan);
 		}
 
-		range.setStart(textSpan, 0);
+		range.setStart(textSpan as Node, 0);
 		selection.addRange(range);
 	}
 }
@@ -173,7 +173,7 @@ function addField(field: FieldTree) {
 
 	if (window.getSelection()?.rangeCount == 0) {
 		const range = document.createRange();
-		range.selectNodeContents(contentEl.value.children[0]);
+		range.selectNodeContents(contentEl.value.children[0] as Node);
 		window.getSelection()?.addRange(range);
 	}
 

@@ -318,7 +318,7 @@ describe('hydrate action', async () => {
 	});
 });
 
-describe('dehyrate action', () => {
+describe('dehydrate action', () => {
 	test('should reset store', async () => {
 		apiGetSpy.mockImplementation((path: string) => {
 			if (path === '/server/info') {

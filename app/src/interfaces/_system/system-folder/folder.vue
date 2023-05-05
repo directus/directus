@@ -31,11 +31,11 @@
 			<v-divider v-if="nestedFolders && nestedFolders.length > 0" />
 			<folder-list-item
 				v-for="folder in nestedFolders"
-				:key="folder.id"
+				:key="folder.id!"
 				clickable
 				:folder="folder"
 				:current-folder="value"
-				:disabled="disabledFolders.includes(folder.id)"
+				:disabled="disabledFolders.includes(folder.id!)"
 				:disabled-folders="disabledFolders"
 				@click="emitValue"
 			/>

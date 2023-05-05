@@ -79,23 +79,22 @@
 
 <script setup lang="ts">
 import api from '@/api';
-import FilePreview from '@/views/private/components/file-preview.vue';
-import { isEmpty, merge, set } from 'lodash';
-import { computed, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
+import { useEditsGuard } from '@/composables/use-edits-guard';
 import { usePermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+import FilePreview from '@/views/private/components/file-preview.vue';
 import { useCollection } from '@directus/composables';
 import { Field, Relation } from '@directus/types';
-import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useRouter } from 'vue-router';
 import { getEndpoint } from '@directus/utils';
+import { isEmpty, merge, set } from 'lodash';
+import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 interface Props {
 	collection: string;
@@ -371,7 +370,7 @@ function useRelation() {
 
 		if (relationForField.meta?.one_collection_field) {
 			return (
-				props.edits[relationForField.meta.one_collection_field] ||
+				props.edits?.[relationForField.meta.one_collection_field] ||
 				initialValues.value?.[relationForField.meta.one_collection_field]
 			);
 		}

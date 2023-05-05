@@ -1,8 +1,9 @@
+import { i18n } from '@/lang';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import type { DeepPartial, Field } from '@directus/types';
 import { defineDisplay } from '@directus/utils';
 import { parse, parseISO } from 'date-fns';
-import { i18n } from '@/lang';
 import DisplayDateTime from './datetime.vue';
 
 export default defineDisplay({
@@ -52,7 +53,7 @@ export default defineDisplay({
 	options: ({ field }) => {
 		const options = field.meta?.display_options || {};
 
-		const fields = [
+		const fields: DeepPartial<Field>[] = [
 			{
 				field: 'relative',
 				name: '$t:displays.datetime.relative',
@@ -65,7 +66,7 @@ export default defineDisplay({
 					},
 				},
 				schema: {
-					default_value: false,
+					default_value: 'false',
 				},
 			},
 		];
@@ -106,7 +107,7 @@ export default defineDisplay({
 						note: '$t:displays.datetime.suffix_note',
 					},
 					schema: {
-						default_value: true,
+						default_value: 'true',
 					},
 				},
 				{
@@ -122,7 +123,7 @@ export default defineDisplay({
 						note: '$t:displays.datetime.strict_note',
 					},
 					schema: {
-						default_value: false,
+						default_value: 'false',
 					},
 				},
 				{

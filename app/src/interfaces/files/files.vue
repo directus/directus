@@ -337,8 +337,8 @@ function onUpload(files: Record<string, any>[]) {
 	select(fileIds);
 }
 
-function onSelect(selected: string[]) {
-	select(selected.filter((id) => selectedPrimaryKeys.value.includes(id) === false));
+function onSelect(selected: (string | number)[] | null) {
+	select(selected!.filter((id) => selectedPrimaryKeys.value.includes(id) === false));
 }
 
 const downloadName = computed(() => {
