@@ -816,9 +816,9 @@ set_flow_active: 플로우을 활성으로 설정
 set_flow_inactive: 플로우을 비활성으로 설정
 edit_flow: 플로우 편집
 delete_flow: 플로우 삭제
-no_other_flows_copy: 아직 다른 플로우이 없습니다.
+no_other_flows_copy: 아직 다른 플로우가 없습니다.
 no_flows: 플로우 없음
-no_flows_copy: 아직 플로우이 없습니다.
+no_flows_copy: 아직 플로우가 없습니다.
 create_flow: 플로우 작성
 creating_new_flow: 새 플로우 만들기
 updating_flow: 플로우 업데이트 중...
