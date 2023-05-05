@@ -93,12 +93,12 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { Filter } from '@directus/types';
+import { Filter, User } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-	filter?: Filter;
+	filter: Filter | null;
 }>();
 
 const emit = defineEmits(['update:filter']);
@@ -106,7 +106,7 @@ const emit = defineEmits(['update:filter']);
 const { t } = useI18n();
 
 const userStore = useUserStore();
-const currentUserID = computed(() => userStore.currentUser?.id);
+const currentUserID = computed(() => (userStore.currentUser as User)?.id);
 
 const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
 const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);

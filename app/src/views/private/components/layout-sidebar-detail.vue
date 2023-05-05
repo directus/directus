@@ -24,7 +24,7 @@ import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{
-		modelValue?: string;
+		modelValue: string | null;
 	}>(),
 	{
 		modelValue: 'tabular',
@@ -39,7 +39,7 @@ const { t } = useI18n();
 
 const { layouts } = useExtensions();
 
-const selectedLayout = useExtension('layout', props.modelValue);
+const selectedLayout = useExtension('layout', props.modelValue!);
 const fallbackLayout = useExtension('layout', 'tabular');
 const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.value);
 
