@@ -70,11 +70,9 @@ Create the methods for form submissions:
 
 ```js
 const loginSubmit = (event) => {
-
 };
 
 const messageSubmit = (event) => {
-
 };
 ```
 
@@ -307,8 +305,7 @@ Replace the `console.log()` you created when the subscription is initialized:
 ```js
 if (data.type === 'subscription' && data.event === 'init') {
 	console.log('subscription started'); // [!code --]
-
-	for (const message of data.payload) {
+	for (const message of data.payload) { // [!code ++]
 		setMessageHistory((history) => [...history, message]); // [!code ++]
 	} // [!code ++]
 }

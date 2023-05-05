@@ -36,10 +36,10 @@ enter both `your-directus-url` and the `token` generated earlier.
 import { createClient } from 'graphql-ws';
 
 const client = createClient({
-	url: 'ws://your-directus-url/graphql', // [!code ++]
+	url: 'ws://your-directus-url/graphql',
 	keepAlive: 30000,
 	connectionParams: async () => {
-		return { access_token: 'MY_TOKEN' }; // [!code ++]
+		return { access_token: 'MY_TOKEN' };
 	},
 });
 ```
