@@ -801,7 +801,11 @@ run_flow_confirm: Sind Sie sicher, dass Sie diesen Flow ausführen wollen?
 run_flow_on_current_collection: Flow in der aktuellen Kollektion ausführen
 run_flow_on_current: Flow beim aktuellen Element ausführen
 run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
+run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
+run_flow: Flow ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
+field_name_placeholder: Feldnamen eingeben...
+field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger
 trigger_options: Auslöse-Optionen
 view_trigger: Auslöser anzeigen
@@ -1143,6 +1147,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Zuordnung
     basemaps: Basiskarte
     basemaps_raster: Raster
@@ -1436,12 +1441,14 @@ export_started: Export gestartet
 export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die Datei zum Download bereit ist.
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
+disable_sort: Sortierung deaktivieren
 template: Vorlage
 require_value_to_be_set: Wert muss bei Erstellung gesetzt werden
 translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 table: Tabelle
@@ -1599,6 +1606,9 @@ interfaces:
     many-to-one: n:1
     description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
+  collection-item-dropdown:
+    collection-item-dropdown: Dropdown für Kollektion Elemente
+    description: Auswahl eines Elements aus einer Sammlung im JSON-Format
   input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
@@ -1640,6 +1650,7 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
+    field_hint: Standardordner für hochgeladene Dateien ohne Angabe eines Ordners. Vorhandene Dateien sind davon nicht betroffen.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -1999,6 +2010,7 @@ panels:
     description: Liniendiagramm zum Vergleich der Änderung eines Feldes
     disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist.
     disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist.
+    show_marker: Tooltip-Marker anzeigen
     curve_type: Kurventyp
     smooth: Weich
     straight: Gerade
@@ -2103,6 +2115,8 @@ operations:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
+    recipient_placeholder: Eine UUID eingeben...
+    recipient_note: Benutzer UUID hinzufügen und Enter drücken...
     message: Nachricht
   request:
     name: Webhook / Anfrage URL
@@ -2134,3 +2148,4 @@ operations:
     parallel: Parallel
     batch: Stapel
     batch_size: Stapelgröße
+    cache: Cache
