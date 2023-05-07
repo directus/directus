@@ -59,12 +59,18 @@ do
     for ext_name in *
     do
         # Skip extensions
-        if echo "$skip_extensions" | grep -qw "$ext_name"; then
-            echo "Skipping ${ext_type}/${ext_name}"
-            continue
+        if [[ "$skip_migrations" =~ $ext_name ]]; then
+        	echo "Adding ${ext_type}/${ext_name}"
+        	cp -r "${ext_name}" ${DIRECTUS_EXTENSIONS}/${ext_type}/
+        else
+        	echo "Skipping ${ext_type}/${ext_name}"
         fi
-        echo "Adding ${ext_type}/${ext_name}"
-        cp -r ${ext_name} ${DIRECTUS_EXTENSIONS}/${ext_type}/
+#        if echo "$skip_extensions" | grep -qw "$ext_name"; then
+#            echo "Skipping ${ext_type}/${ext_name}"
+#            continue
+#        fi
+#        echo "Adding ${ext_type}/${ext_name}"
+#        cp -r ${ext_name} ${DIRECTUS_EXTENSIONS}/${ext_type}/
 
     done
     cd ..
@@ -80,6 +86,7 @@ for migration in *
 do
     # Skip migrations
     if echo "$skip_migrations" | grep -qw "$migration"; then
+    	  echo "Skip migration ${migration}"
         continue
     fi
     echo "Adding migration ${migration}"
