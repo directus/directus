@@ -79,7 +79,8 @@ cd migrations
 for migration in *
 do
     # Skip migrations
-    if echo "$skip_migrations" | grep -qw "$migration"; then
+    migration_name=$(basename "$migration" .js | cut -c 16-)
+    if echo "$skip_migrations" | grep -qw "$migration_name"; then
     	  echo "Skip migration ${migration}"
         continue
     fi
