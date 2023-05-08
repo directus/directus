@@ -21,8 +21,8 @@ The GraphQL Subscriptions specification does not support CRUD operations. This g
 {
   "type": "items",
   "action": "read",
-  "collection": "collection_name",
-  "id": "item_id"
+  "collection": "your_collection_name",
+  "id": "single_item_id"
 }
 ```
 
@@ -35,8 +35,6 @@ In return, you will receive a message with the specified item:
 }
 ```
 
-You can optionally provide an `ids` property with an array of item IDs to specify which items to return.
-
 ### Read Multiple Items
 
 Instead of using an `id` property, you can use an `ids` property with an array of item IDs you'd like to return, or omit it to return all items in the specified collection. When returning multiple items, `data` will be an array of objects.
@@ -47,7 +45,7 @@ Instead of using an `id` property, you can use an `ids` property with an array o
 {
   "type": "items",
   "action": "create",
-  "collection": "collection_name",
+  "collection": "your_collection_name",
   "data": { ... }
 }
 ```
@@ -71,8 +69,8 @@ Instead of using an object as the value of `data`, you can provide an array of o
 {
   "type": "items",
   "action": "update",
-  "collection": "collection_name",
-  "id": "item_id",
+  "collection": "your_collection_name",
+  "id": "single_item_id",
   "data": { ... }
 }
 ```
@@ -97,8 +95,8 @@ Instead of using an `id` property, you can use an `ids` property with an array o
 {
   "type": "items",
   "action": "delete",
-  "collection": "collection_name",
-  "id": "item_id"
+  "collection": "your_collection_name",
+  "id": "single_item_id"
 }
 ```
 
@@ -107,8 +105,8 @@ Regardless of how many items are updated, the `payload` in the returned data wil
 ```json
 {
   "type": "items",
-  "event": "dekete",
-  "payload": ["item_id", "item_id_2"]
+  "event": "delete",
+  "payload": ["single_item_id", "single_item_id_2"]
 }
 ```
 
@@ -132,7 +130,7 @@ All messages sent over WebSockets can optionally include a `uid` property with a
 {
   "type": "items",
   "action": "read",
-  "collection": "collection_name",
+  "collection": "your_collection_name",
   "query": { 
     "sort": "date_created"
   },
