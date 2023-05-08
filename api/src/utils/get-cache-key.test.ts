@@ -1,5 +1,6 @@
 import type { Request } from 'express';
-import { afterEach, beforeAll, describe, expect, SpyInstance, test, vi } from 'vitest';
+import type { SpyInstance } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { getCacheKey } from './get-cache-key.js';
 import * as getGraphqlQueryUtil from './get-graphql-query-and-variables.js';
 

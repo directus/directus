@@ -131,7 +131,6 @@ archive_confirm_count: >-
   No hay elementos seleccionados | ¿Estás seguro que quieres archivar este elemento? | ¿Estás seguro que quieres archivar estos {count} elementos?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que hayas aplicado a las colecciones del sistema. ¿Estás seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a la aplicación" está habilitado. Puedes extender permisos más allá de esto, pero no más abajo.
 app_access_minimum: Acceso mínimo a la aplicación
 recommended_defaults: Valores por defecto recomendados
 unarchive: Desarchivar
@@ -245,6 +244,7 @@ float: Flotante
 integer: Entero
 json: JSON
 xml: XML
+yaml: YAML
 string: Cadena de texto
 text: Texto
 time: Hora
@@ -295,7 +295,12 @@ o2m_relationship: Relación Uno a Muchos
 m2m_relationship: Relacion Muchos a Muchos
 m2a_relationship: Relación Muchos a Cualquiera
 invalid_item: Elemento inválido
+require_confirmation: Requiere confirmación
+dialog: Diálogo
 modal: Diálogo
+confirmation_dialog: Diálogo de confirmación
+confirmation_description: Descripción de la confirmación
+confirmation_input_fields: Campos de entrada de confirmación
 next: Siguiente
 field_name: Nombre del campo
 translations: Traducciones
@@ -314,6 +319,7 @@ updated_on: Actualizado el
 updated_by: Actualizado por
 primary_key: Llave primaria
 foreign_key: Llave foránea
+field_key: Campo clave
 finish_setup: Finalizar configuración
 dismiss: Descartar
 toggle_raw_editor: Alternar editor raw
@@ -524,6 +530,7 @@ create_collection: Crear colección
 no_collections_copy_admin: Aún no tiene alguna Colección. Haga clic en el botón para empezar.
 no_collections_copy: Aún no tiene alguna Colección. Por favor contacte al administrador del sistema.
 relationship_not_setup: La relación no se ha configurado correctamente
+no_singleton_relations: No se admiten las relaciones con Singletons
 display_template_not_setup: La opción de plantilla de Presentación está mal configurada
 collection_field_not_setup: La opción del campo de colección está mal configurada
 select_a_collection: Seleccionar una Colección
@@ -662,6 +669,7 @@ one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
   ¿Estás seguro que quieres eliminar la colección "{collection}"? Esto eliminará la colección y todos los elementos de la misma. Esta acción es permanente.
 delete_folder_are_you_sure: '¿Estás seguro que quieres eliminar la carpeta "{folder}"? Las carpetas y colecciones anidadas se moverán al nivel más alto.'
+delete_collection_peer_dependencies: También se eliminarán los siguientes campos, ya que están relacionados con la colección actual.
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -787,8 +795,15 @@ label: Etiqueta
 flows: Flujos
 flow: Flujo
 select_a_flow: Selecciona un flujo
+run_flow_confirm: '¿Estás seguro que deseas ejecutar este flujo?'
+run_flow_on_current_collection: Ejecutar flujo en la colección actual
+run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento puede ser actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
+run_flow_on_selected: Seleccione uno o más elementos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} elementos seleccionados
+run_flow: Ejecutar flujo
 run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
+field_name_placeholder: Ingresa el nombre del campo...
+field_key_placeholder: Ingresa la clave de campo...
 trigger: Disparador
 trigger_options: Opciones de activación
 view_trigger: Ver activador
@@ -851,8 +866,8 @@ details: Detalles
 full_screen: Pantalla Completa
 full_text_search: Búsqueda de texto completo
 edit_panels: Editar Panel
-center_align: Center Align
-left_align: Left Align
+center_align: Alinear al centro
+left_align: Alinear a la izquierda
 right_align: Alineación derecha
 fit_to_screen: Ajustar a la pantalla
 image_url: Url de la imagen
@@ -1130,10 +1145,11 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Mapeo
     basemaps: Mapas basales
-    basemaps_raster: Raster
-    basemaps_tile: Raster TileJSON
+    basemaps_raster: Ráster
+    basemaps_tile: Ráster TileJSON
     basemaps_style: Estilo Mapbox
     mapbox_key: Token de acceso Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
@@ -1228,8 +1244,8 @@ field_options:
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Mapas basales
     basemaps_name_placeholder: Ingresa el nombre del mapa base...
-    basemaps_raster: Raster
-    basemaps_tile: Raster TileJSON
+    basemaps_raster: Ráster
+    basemaps_tile: Ráster TileJSON
     basemaps_style: Estilo Mapbox
     files_divider_title: Archivos y miniaturas
     overrides_divider_title: Reemplazos de la aplicación
@@ -1423,6 +1439,7 @@ export_started: Exportación iniciada
 export_started_copy: Tu exportación ha comenzado. Serás notificado cuando esté listo para descargar.
 sort_asc: Ordenar ascendente
 sort_desc: Orden descendente
+disable_sort: Deshabilitar ordenación
 template: Plantilla
 require_value_to_be_set: Requiere un valor para ser establecido en la creación
 translation: Traducción
@@ -1586,6 +1603,9 @@ interfaces:
     many-to-one: Muchos a Uno
     description: Seleccionar un elemento único relacionado
     display_template: Plantilla de Presentación
+  collection-item-dropdown:
+    collection-item-dropdown: Menú desplegable de elementos de la colección
+    description: Selecciona un elemento de una colección en formato JSON
   input-rich-text-md:
     markdown: Markdown
     description: Ingresar y previsualizar markdown
@@ -1627,6 +1647,7 @@ interfaces:
   system-folder:
     folder: Carpeta
     description: Seleccione una carpeta
+    field_hint: Carpeta predeterminada para los archivos subidos sin una carpeta especificada. No afecta a los archivos existentes.
     root_name: Raíz de la Biblioteca de Archivos
     system_default: Valores por defecto del sistema
   select-radio:
@@ -1822,7 +1843,7 @@ displays:
     color: Color
     background: Fondo
     icon: Ícono
-    border: Border
+    border: Borde
     border_label: Mostrar borde
     text: Texto
     text_placeholder: Sobrescribir valor opcional...
@@ -1909,17 +1930,55 @@ layouts:
   kanban:
     name: Kanban
     group_field: Agrupar por
+    group_field_placeholder: Campo a agrupar por...
+    group_title: Título del grupo
+    group_title_placeholder: Campo para títulos del grupo...
+    title: Título de la tarjeta
+    title_placeholder: Campo de título opcional...
+    text: Texto de la tarjeta
+    text_placeholder: Campo de texto opcional...
+    date: Fecha de la tarjeta
+    date_placeholder: Campo de fecha opcional...
+    tags: Etiquetas de la tarjeta
+    tags_placeholder: Campo de etiquetas opcional...
+    user: Usuario de la tarjeta
+    user_placeholder: Campo de usuario opcional...
+    image: Imagen de la tarjeta
+    image_placeholder: Campo de imagen opcional...
+    image_fit: Ajustar imagen de la tarjeta
     crop: Recortar
     advanced: Avanzado
+    edit_group: Editar grupo
+    delete_group: Eliminar grupo
+    add_group: Añadir grupo
+    add_group_placeholder: Ingresa un nuevo título de grupo...
+    show_ungrouped: Mostrar desagrupado
+    show: Mostrar
+    no_group: Sin grupo
     not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 horizontal: Horizontal
-show_data_label: Mostrar Etiqueta de Datos
+vertical: Vertical
+x_axis: Eje X
+y_axis: Eje Y
+y_axis_function: Función del eje Y
+show_x_only: Mostrar solo el eje X
+show_y_only: Mostrar solo el eje Y
+show_data_label: Mostrar etiqueta de datos
 both: Ambos
+show_axis_labels: Mostrar etiquetas de eje
 function: Función
+half_circle: Medio círculo
+full_circle: Círculo completo
+stroke_width: Ancho del trazo
+rounded_stroke: Trazo redondeado
+thin: Fino
+medium: Medio
+broad: Amplio
 show_labels: Mostrar etiquetas
 show_legend: Mostrar leyenda
 right: Derecha
 left: Izquierda
+donut: Dona
 panels:
   metric:
     name: Métrico
@@ -1945,6 +2004,8 @@ panels:
     select_collection: Debe seleccionar una colección.
   linechart:
     name: Gráficos de línea
+    description: Gráfico de líneas para comparar el cambio de un campo
+    disabled_grouping: Desactivado cuando se selecciona la agrupación.
     disabled_no_grouping: Deshabilitado cuando no se selecciona ninguna agrupación.
     show_marker: Mostrar marcador de información sobre herramientas
     curve_type: Tipo de curva
@@ -1956,6 +2017,7 @@ panels:
     description: Medidor para los valores de seguimiento
   piechart:
     name: Gráfico de Pie o Donut
+    description: Gráfico circular que muestra las proporciones de los grupos en una columna
   variable:
     name: Variable global
     description: Establecer un valor global para el uso en los filtros de otros Paneles
@@ -1995,6 +2057,9 @@ triggers:
     collection_and_item: Paginas de colección y elementos
     collection_only: Pagina de colección solamente
     item_only: Página de elemento solamente
+    collection_page: Página de colección
+    require_selection: Requiere selección
+a_flow_uuid: Seleccione un flujo para disparar...
 any_string_or_json: Alguna cadena o JSON...
 item_payload_placeholder: Este es el JSON usado para actualizar los valores del campo del elemento...
 operation_variables_note: Puedes acceder a los datos del flujo con variables como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** y **{'{'}{'{'}$accountability{'}'}{'}'}**, o hacer referencia a previas operaciones usando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
@@ -2041,10 +2106,14 @@ operations:
     to: A
     to_placeholder: Añade una dirección de email y presiona enter...
     body: Cuerpo
+    template: Plantilla
+    data: Datos
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
     recipient: Usuario
+    recipient_placeholder: Ingresa un UUID...
+    recipient_note: Añade el UUID del usuario y presiona enter...
     message: Mensaje
   request:
     name: Webhook / Solicitud de URL
@@ -2065,8 +2134,14 @@ operations:
     name: Transformar payload
     description: Alterar la payload JSON del flujo
   trigger:
-    name: Activar flujo
+    name: Disparar flujo
     description: Pasar estos datos a otro flujo
     flows: Flujos
     flow: Flujo
     data: Datos
+    iteration_mode: Modo de iteración
+    iteration_mode_note: Modo para iterar sobre arrays.
+    serial: Serial
+    parallel: Paralelo
+    batch: Lote
+    batch_size: Tamaño del lote

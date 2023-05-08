@@ -1,4 +1,5 @@
-import { CloseCode, MessageType, Server, makeServer } from 'graphql-ws';
+import { CloseCode, MessageType, makeServer } from 'graphql-ws';
+import type { Server } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
 import type { WebSocket } from 'ws';
 import env from '../../env.js';
@@ -53,19 +54,21 @@ export class GraphQLSubscriptionController extends SocketController {
 				onMessage: (cb) => {
 					client.on('parsed-message', async (message: WebSocketMessage) => {
 						try {
-							if (getMessageType(message) === 'connection_init') {
+							if (getMessageType(message) === 'connection_init' && this.authentication.mode !== 'strict') {
 								const params = ConnectionParams.parse(message['payload']);
 
-								if (typeof params.access_token === 'string') {
-									const { accountability, expires_at } = await authenticateConnection({
-										access_token: params.access_token,
-									});
+								if (this.authentication.mode === 'handshake') {
+									if (typeof params.access_token === 'string') {
+										const { accountability, expires_at } = await authenticateConnection({
+											access_token: params.access_token,
+										});
 
-									client.accountability = accountability;
-									client.expires_at = expires_at;
-								} else if (this.authentication.mode !== 'public') {
-									client.close(CloseCode.Forbidden, 'Forbidden');
-									return;
+										client.accountability = accountability;
+										client.expires_at = expires_at;
+									} else {
+										client.close(CloseCode.Forbidden, 'Forbidden');
+										return;
+									}
 								}
 							} else if (this.authentication.mode === 'handshake' && !client.accountability?.user) {
 								// the first message should authenticate successfully in this mode
@@ -87,6 +90,11 @@ export class GraphQLSubscriptionController extends SocketController {
 
 		// notify server that the socket closed
 		client.once('close', (code, reason) => closedHandler(code, reason.toString()));
+
+		// check strict authentication status
+		if (this.authentication.mode === 'strict' && !client.accountability?.user) {
+			client.close(CloseCode.Forbidden, 'Forbidden');
+		}
 	}
 
 	override setTokenExpireTimer(client: WebSocketClient) {

@@ -2,13 +2,13 @@ import { afterEach, expect, test, vi } from 'vitest';
 
 const runOperationFlow = vi.fn();
 
-vi.mock('../../flows.js', () => ({
+vi.doMock('../../flows.js', () => ({
 	getFlowManager: vi.fn().mockReturnValue({
 		runOperationFlow,
 	}),
 }));
 
-import config from './index.js';
+const { default: config } = await import('./index.js');
 
 const testFlowId = '00000000-0000-0000-0000-000000000000';
 

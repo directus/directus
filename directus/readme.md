@@ -1,89 +1,59 @@
-<p>&nbsp;</p>
+<p align="center"><img alt="Directus Logo" src="https://user-images.githubusercontent.com/522079/158864859-0fbeae62-9d7a-4619-b35e-f8fa5f68e0c8.png"></p>
 
-<a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img width="250" alt="Logo" src="https://user-images.githubusercontent.com/9141017/88821768-0dc99800-d191-11ea-8c66-09c55ab451a2.png"></a>
+<br />
 
-<p>&nbsp;</p>
+## 🐰 Introduction
 
-## Introduction
+Directus is a real-time API and App dashboard for managing SQL database content.
 
-**Directus is a free and open-source data platform for headless content management**. It can be installed on top of any
-new or existing SQL database, instantly providing a dynamic API (REST+GraphQL) and accompanying App for managing
-content. Built entirely in TypeScript (in Node and Vue), Directus is completely modular and end-to-end extensible...
-with absolutely no paywalls or artificial limitations.
+- **Open Source.** No artificial limitations, vendor lock-in, or hidden paywalls.
+- **REST & GraphQL API.** Instantly layers a blazingly fast Node.js API on top of any SQL database.
+- **Manage Pure SQL.** Works with new or existing SQL databases, no migration required.
+- **Choose your Database.** Supports PostgreSQL, MySQL, SQLite, OracleDB, CockroachDB, MariaDB, and MS-SQL.
+- **On-Prem or Cloud.** Run locally, install on-premises, or use our
+  [self-service Cloud service](https://directus.io/pricing).
+- **Completely Extensible.** Built to white-label, it is easy to customize our modular platform.
+- **A Modern Dashboard.** Our no-code Vue.js app is safe and intuitive for non-technical users, no training required.
 
-Modern and intuitive, the Directus App enables no-code data discovery, allowing for even the most non-technical users to
-view, author, and manage your raw database content. Our performant and flexible API is able to adapt to any relational
-schema, and includes rule-based permissions, event/web hooks, custom endpoints, numerous auth options, configurable
-storage adapters, and much more.
+**[Learn more about Directus](https://directus.io)** • **[Documentation](https://docs.directus.io)**
 
-Current database support includes: PostgreSQL, MySQL, SQLite, MS-SQL Server, OracleDB, MariaDB, and variants such as AWS
-Aurora/Redshift or Google Cloud Platform SQL.
+<br />
 
-Learn more at...
+## 🚀 Directus Cloud
 
-- [Website](https://directus.io/)
-- [GitHub](https://github.com/directus/directus)
-- [Documentation](https://docs.directus.io/)
-- [Community](https://directus.chat/)
-- [Twitter](https://twitter.com/directus)
-- [Cloud](https://directus.cloud/)
-- [Marketplace](https://directus.market/)
+[Directus Cloud](https://directus.io/pricing) allows you to create projects, hosted by the Directus team, in 90 seconds.
 
-<p>&nbsp;</p>
+- **No product limitations or service usage quotas (unlimited users, API requests, etc)**
+- A modern self-service dashboard to create and monitor all your projects in one place
+- End-to-end solution: Directus, database, serverless auto-scaling, storage, and a global CDN
+- Select your desired region and provision a new project in ~90 seconds
 
-## Installing
+**[Create a Directus Cloud Project](https://directus.cloud)**
 
-Directus requires NodeJS 10+. Create a new project with our simple CLI tool:
+<br />
 
-```
-npm init directus-project my-project
-```
+## 🤔 Community Help
 
-Or using yarn:
+[The Directus Documentation](https://docs.directus.io) is a great place to start, or explore these other channels:
 
-```
-yarn create directus-project my-project
-```
+- [Discord](https://directus.chat) (Questions, Live Discussions)
+- [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
+- [GitHub Discussions](https://github.com/directus/directus/discussions) (Feature Requests)
+- [Twitter](https://twitter.com/directus) (Latest News)
+- [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 
-The above command will create a directory with your project name, then walk you through the database configuration and
-creation of your first admin user.
+<br />
 
-<p>&nbsp;</p>
+## ❤️ Contributing & Sponsoring
 
-## Updating
+Please read our [Contributing Guide](./contributing.md) before submitting Pull Requests.
 
-To update an existing Directus project, navigate to your project directory and run:
+All security vulnerabilities should be reported in accordance with our
+[Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
 
-```
-npm update
-```
+Directus is a premium open-source ([BSL 1.1](./license)) project, made possible with support from our passionate core
+team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!!
 
-<p>&nbsp;</p>
+<br />
 
-## Contributing
-
-Please report any and all issues [on our GitHub](https://github.com/directus/directus/issues/new).
-
-Pull-requests are more than welcome, and always appreciated. Please be sure to read our
-[Contributors Guide](https://docs.directus.io/contributing/introduction/) before starting work on a new feature/fix, or
-reach out a member of the Core Team via [GitHub](https://github.com/directus/directus/discussions) or
-[Discord](https://directus.chat) with any questions.
-
-<p>&nbsp;</p>
-
-## Supporting
-
-Directus is a free and open-source project with development made possible by support from our passionate core team,
-amazing contributors, and generous sponsors. It's not easy building premium open-source software; if you would like to
-help ensure Directus stays free, please consider becoming a sponsor.
-
-- [Support us through GitHub Sponsors](https://github.com/sponsors/directus)
-- [One-time donation through PayPal](https://www.paypal.me/supportdirectus)
-- [Backing Directus](https://docs.directus.io/getting-started/backing-directus/)
-
-<p>&nbsp;</p>
-
-## License
-
-Directus is released under the [GPLv3 license](./license). Monospace Inc owns all Directus trademarks, logos, and
-intellectual property on behalf of our project's community. Copyright © 2004-2020, Monospace Inc.
+© 2004-2023, Monospace, Inc.

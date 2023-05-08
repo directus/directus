@@ -246,7 +246,7 @@ Content-Disposition: form-data; name="file"; filename="schema.yaml"
 Content-Type: text/yaml
 
 version: 1
-directus: 9.22.4
+directus: 10.0.0
 vendor: sqlite
 collections:
   - collection: articles
@@ -369,8 +369,9 @@ This endpoint doesn't currently support any query parameters.
 ### Request Body
 
 JSON object containing hash and diffs of [collections](/reference/system/collections#the-collection-object),
-[fields](/reference/system/fields#the-field-object), and [relations](/reference/system/relations#the-relation-object) to
-apply.
+[fields](/reference/system/fields#the-field-object), and [relations](/reference/system/relations#the-relation-object) to apply.
+
+Alternatively, upload a JSON or YAML schema file. Relies on a `multipart/form-data` encoded request like regular file uploads. Check [Upload a File](/reference/files#upload-a-file) for more information.
 
 ### Returns
 

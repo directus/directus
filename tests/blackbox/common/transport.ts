@@ -89,7 +89,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 								break;
 						}
 
-						conn.close();
+						conn.terminate();
 						return reject(new Error(`WebSocket failed to achieve the ${stateName} state`));
 					}
 				}, 5);
@@ -138,7 +138,7 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 					} else if (Date.now() < startMs + (options?.waitTimeout ?? config?.waitTimeout ?? defaults.waitTimeout)) {
 						return promise().then(resolve, reject);
 					} else {
-						conn.close();
+						conn.terminate();
 
 						return reject(
 							new Error(
@@ -250,12 +250,11 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 	const parsedHost = host.split('//').slice(1).join('/');
 	let conn: WebSocket | null;
 	let isConnReady = false;
+	let authParams;
 
-	const authParams = config?.auth
-		? 'access_token' in config.auth
-			? { access_token: config.auth.access_token }
-			: undefined
-		: undefined;
+	if (config?.auth && 'access_token' in config.auth) {
+		authParams = { access_token: config.auth.access_token };
+	}
 
 	const client = createClient({
 		webSocketImpl: WebSocket,

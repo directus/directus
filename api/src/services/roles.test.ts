@@ -1,10 +1,11 @@
 import type { SchemaOverview } from '@directus/types';
-import knex from 'knex';
 import type { Knex } from 'knex';
+import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
-import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
+import type { MockedFunction, SpyInstance } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
+import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };

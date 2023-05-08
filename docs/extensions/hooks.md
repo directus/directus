@@ -329,19 +329,19 @@ import * as Sentry from '@sentry/node';
 import '@sentry/tracing';
 
 export default defineHook(({ init }, { env }) => {
-    const { SENTRY_DSN } = env;
-    Sentry.init({
-        dsn: SENTRY_DSN
-    });
-    
-    init('routes.before', ({ app }) => {
-        app.use(Sentry.Handlers.requestHandler());
-        console.log('-- Sentry Request Handler Added --');
-    });
+	const { SENTRY_DSN } = env;
+	Sentry.init({
+		dsn: SENTRY_DSN,
+	});
 
-    init('routes.custom.after', ({ app }) => {
-        app.use(Sentry.Handlers.errorHandler());
-        console.log('-- Sentry Error Handler Added --');
-    });
+	init('routes.before', ({ app }) => {
+		app.use(Sentry.Handlers.requestHandler());
+		console.log('-- Sentry Request Handler Added --');
+	});
+
+	init('routes.custom.after', ({ app }) => {
+		app.use(Sentry.Handlers.errorHandler());
+		console.log('-- Sentry Error Handler Added --');
+	});
 });
 ```

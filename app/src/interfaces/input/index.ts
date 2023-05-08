@@ -90,7 +90,7 @@ export default defineInterface({
 						},
 					},
 					schema: {
-						default_value: false,
+						default_value: 'false',
 					},
 				},
 				{
@@ -105,7 +105,7 @@ export default defineInterface({
 						},
 					},
 					schema: {
-						default_value: false,
+						default_value: 'false',
 					},
 				},
 				{
@@ -120,7 +120,7 @@ export default defineInterface({
 						},
 					},
 					schema: {
-						default_value: false,
+						default_value: 'false',
 					},
 				},
 				{
@@ -135,7 +135,7 @@ export default defineInterface({
 						},
 					},
 					schema: {
-						default_value: false,
+						default_value: 'false',
 					},
 				},
 			],
@@ -169,7 +169,7 @@ export default defineInterface({
 					interface: 'input',
 				},
 				schema: {
-					default_value: 1,
+					default_value: '1',
 				},
 			},
 			{

@@ -2,6 +2,7 @@ import {
 	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	HYBRID_EXTENSION_TYPES,
+	JAVASCRIPT_FILE_EXTS,
 	NESTED_EXTENSION_TYPES,
 } from '@directus/constants';
 import * as sharedExceptions from '@directus/exceptions';
@@ -294,23 +295,27 @@ class ExtensionManager {
 	private initializeWatcher(): void {
 		logger.info('Watching extensions for changes...');
 
-		const localExtensionPaths = NESTED_EXTENSION_TYPES.flatMap((type) => {
-			const typeDir = path.posix.join(pathToRelativeUrl(env['EXTENSIONS_PATH']), pluralize(type));
-			const fileExts = ['js', 'mjs', 'cjs'];
+		const extensionDirUrl = pathToRelativeUrl(env['EXTENSIONS_PATH']);
+
+		const localExtensionUrls = NESTED_EXTENSION_TYPES.flatMap((type) => {
+			const typeDir = path.posix.join(extensionDirUrl, pluralize(type));
 
 			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
 				return [
-					path.posix.join(typeDir, '*', `app.{${fileExts.join()}}`),
-					path.posix.join(typeDir, '*', `api.{${fileExts.join()}}`),
+					path.posix.join(typeDir, '*', `app.{${JAVASCRIPT_FILE_EXTS.join()}}`),
+					path.posix.join(typeDir, '*', `api.{${JAVASCRIPT_FILE_EXTS.join()}}`),
 				];
 			} else {
-				return path.posix.join(typeDir, '*', `index.{${fileExts.join()}}`);
+				return path.posix.join(typeDir, '*', `index.{${JAVASCRIPT_FILE_EXTS.join()}}`);
 			}
 		});
 
-		this.watcher = chokidar.watch([path.resolve('package.json'), ...localExtensionPaths], {
-			ignoreInitial: true,
-		});
+		this.watcher = chokidar.watch(
+			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json'), ...localExtensionUrls],
+			{
+				ignoreInitial: true,
+			}
+		);
 
 		this.watcher
 			.on('add', () => this.reload())
@@ -330,7 +335,7 @@ class ExtensionManager {
 		if (this.watcher) {
 			const toPackageExtensionPaths = (extensions: Extension[]) =>
 				extensions
-					.filter((extension) => !extension.local)
+					.filter((extension) => !extension.local || extension.type === 'bundle')
 					.flatMap((extension) =>
 						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 							? [

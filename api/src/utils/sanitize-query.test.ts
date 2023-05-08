@@ -166,12 +166,20 @@ describe('offset', () => {
 		expect(sanitizedQuery.offset).toBe(1);
 	});
 
-	test('should ignore zero', () => {
+	test('should accept zero #18370', () => {
 		const offset = 0;
 
 		const sanitizedQuery = sanitizeQuery({ offset });
 
-		expect(sanitizedQuery.offset).toBeUndefined();
+		expect(sanitizedQuery.offset).toBe(0);
+	});
+
+	test('should accept string zero #18370', () => {
+		const offset = '0';
+
+		const sanitizedQuery = sanitizeQuery({ offset });
+
+		expect(sanitizedQuery.offset).toBe(0);
 	});
 });
 

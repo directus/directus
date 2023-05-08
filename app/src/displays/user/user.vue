@@ -20,48 +20,30 @@
 	</user-popover>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { userName } from '@/utils/user-name';
-import { computed, defineComponent, PropType } from 'vue';
+import { User } from '@directus/types';
+import { computed } from 'vue';
 
-type User = {
-	id: number;
-	avatar: {
-		id: string;
-	};
-	email: string;
-	first_name: string;
-	last_name: string;
-};
+const props = withDefaults(
+	defineProps<{
+		value: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'> | null;
+		display?: 'avatar' | 'name' | 'both';
+		circle?: boolean;
+	}>(),
+	{
+		display: 'both',
+	}
+);
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Object as PropType<User>,
-			default: null,
-		},
-		display: {
-			type: String as PropType<'avatar' | 'name' | 'both'>,
-			default: 'both',
-		},
-		circle: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const src = computed(() => {
-			if (props.value === null) return null;
+const src = computed(() => {
+	if (props.value === null) return null;
 
-			if (props.value.avatar?.id) {
-				return `/assets/${props.value.avatar.id}?key=system-small-cover`;
-			}
+	if (props.value.avatar?.id) {
+		return `/assets/${props.value.avatar.id}?key=system-small-cover`;
+	}
 
-			return null;
-		});
-
-		return { src, userName };
-	},
+	return null;
 });
 </script>
 

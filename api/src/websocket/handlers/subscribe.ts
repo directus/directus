@@ -1,7 +1,8 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import emitter from '../../emitter.js';
 import { InvalidPayloadException } from '../../index.js';
-import { Messenger, getMessenger } from '../../messenger.js';
+import { getMessenger } from '../../messenger.js';
+import type { Messenger } from '../../messenger.js';
 import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { getService } from '../../utils/get-service.js';

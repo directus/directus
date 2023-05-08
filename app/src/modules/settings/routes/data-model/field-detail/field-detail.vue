@@ -77,11 +77,9 @@ const fieldDetail = useFieldDetailStore();
 const { editing } = storeToRefs(fieldDetail);
 
 watch(
-	[field, type],
+	field,
 	() => {
-		if (!type.value) return;
-
-		fieldDetail.startEditing(collection.value, field.value, type.value);
+		fieldDetail.startEditing(collection.value, field.value, type.value ?? undefined);
 	},
 	{ immediate: true }
 );

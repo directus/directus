@@ -6,21 +6,18 @@
 	</transition>
 </template>
 
+<script lang="ts" setup>
+defineProps<{
+	itemCount?: number;
+	showingCount: string;
+}>();
+</script>
+
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
 	inheritAttrs: false,
-	props: {
-		itemCount: {
-			type: Number,
-			default: null,
-		},
-		showingCount: {
-			type: String,
-			required: true,
-		},
-	},
 });
 </script>
 

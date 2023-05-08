@@ -318,3 +318,6 @@ layouts:
     compact: Компактни
     cozy: Удобно
 both: Оба
+operations:
+  mail:
+    template: Шаблон

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "9.25.1",
+	"version": "10.0.0",
 	"description": "Utility for extracting information about existing DB schema",
 	"type": "module",
 	"keywords": [
@@ -23,7 +23,7 @@
 		"directory": "packages/schema"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
@@ -45,8 +45,8 @@
 		"knex": "2.4.2"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
-		"typescript": "4.9.5"
+		"@directus/tsconfig": "0.0.7",
+		"typescript": "5.0.4"
 	},
 	"publishConfig": {
 		"access": "public"

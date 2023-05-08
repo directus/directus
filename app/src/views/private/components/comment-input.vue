@@ -30,7 +30,7 @@
 				>
 					<v-list-item-icon>
 						<v-avatar x-small>
-							<v-image v-if="user.avatar" :src="avatarSource(user.avatar)" />
+							<v-image v-if="user.avatar" :src="avatarSource(user.avatar.id)" />
 							<v-icon v-else name="person_outline" />
 						</v-avatar>
 					</v-list-item-icon>
@@ -68,6 +68,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useShortcut } from '@/composables/use-shortcut';
+import { Activity } from '@/types/activity';
 import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -77,7 +78,6 @@ import axios, { CancelTokenSource } from 'axios';
 import { cloneDeep, throttle } from 'lodash';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Activity } from '@/types/activity';
 
 const props = withDefaults(
 	defineProps<{
@@ -119,7 +119,7 @@ watch(
 const saving = ref(false);
 const showMentionDropDown = ref(false);
 
-const searchResult = ref<User[]>([]);
+const searchResult = ref<Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>[]>([]);
 const userPreviews = ref<Record<string, string>>({});
 
 watch(
