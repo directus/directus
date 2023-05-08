@@ -2,7 +2,7 @@
 
 import JWT from 'jsonwebtoken';
 import SC from 'socketcluster-client';
-import logger from '../logger.js';
+// import logger from '../logger.js';
 
 function genToken() {
 	return JWT.sign({ type: 'service' }, process.env.SECRET, {
@@ -40,7 +40,7 @@ const socketcluster = {
 			// codecEngine: SocketCodecEngine
 		};
 
-		logger.info('will connect to socketcluster...', options);
+		// logger.info('will connect to socketcluster...', options);
 
 		this.client = SC.create(options);
 
@@ -50,19 +50,19 @@ const socketcluster = {
 					throw new Error('Socket authentication failed');
 				}
 
-				logger.info(`Connected to socket://${options.hostname}:${options.port}`);
+				// logger.info(`Connected to socket://${options.hostname}:${options.port}`);
 			}
 		})();
 
 		(async () => {
 			for await (const error of this.client.listener('error')) {
-				logger.error(error);
+				// logger.error(error);
 			}
 		})();
 
 		(async () => {
 			for await (const { code, reason } of this.client.listener('disconnect')) {
-				logger.error(`Disconnected from socket: ${code} ${reason}`);
+				// logger.error(`Disconnected from socket: ${code} ${reason}`);
 			}
 		})();
 	},
