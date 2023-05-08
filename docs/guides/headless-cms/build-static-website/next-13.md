@@ -154,7 +154,7 @@ Create the following fields in your `posts` data model:
 - a text input field called `title`
 - a WYSIWYG input field called `content`
 - an image relational field called `image`
-- a datetime selection field called `published` - set the type to 'date'
+- a datetime selection field called `publish_date` - set the type to 'date'
 - a many-to-one relational field called `author` with the related collection set to `authors`
 
 In Roles & Permissions, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
