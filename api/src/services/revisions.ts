@@ -23,7 +23,7 @@ export class RevisionsService extends ItemsService {
 		await service.updateOne(revision['item'], revision['data']);
 	}
 
-	private overrideOptions(opts?: MutationOptions): MutationOptions {
+	private setDefaultOptions(opts?: MutationOptions): MutationOptions {
 		if (!opts) {
 			return { autoPurgeCache: false, bypassLimits: true };
 		}
@@ -40,18 +40,18 @@ export class RevisionsService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		return super.createOne(data, this.overrideOptions(opts));
+		return super.createOne(data, this.setDefaultOptions(opts));
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		return super.createMany(data, this.overrideOptions(opts));
+		return super.createMany(data, this.setDefaultOptions(opts));
 	}
 
 	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		return super.updateOne(key, data, this.overrideOptions(opts));
+		return super.updateOne(key, data, this.setDefaultOptions(opts));
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		return await super.updateMany(keys, data, this.overrideOptions(opts));
+		return await super.updateMany(keys, data, this.setDefaultOptions(opts));
 	}
 }
