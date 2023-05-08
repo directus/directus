@@ -76,8 +76,9 @@
 </template>
 
 <script setup lang="ts">
-import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
+import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { useCollectionsStore } from '@/stores/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
@@ -89,7 +90,6 @@ import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 
 const props = withDefaults(
 	defineProps<{
@@ -220,11 +220,11 @@ const selection = computed<(number | string)[]>(() => {
 	return [props.value];
 });
 
-function onSelection(selection: (number | string)[]) {
-	if (selection.length === 0) {
+function onSelection(selection: (number | string)[] | null) {
+	if (selection!.length === 0) {
 		remove();
 	} else {
-		update(selection[0]);
+		update(selection![0]);
 	}
 
 	selectModalActive.value = false;

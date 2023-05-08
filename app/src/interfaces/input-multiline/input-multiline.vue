@@ -13,8 +13,8 @@
 				v-if="(percentageRemaining && percentageRemaining <= 20) || softLength"
 				class="remaining"
 				:class="{
-					warning: percentageRemaining < 10,
-					danger: percentageRemaining < 5,
+					warning: percentageRemaining! < 10,
+					danger: percentageRemaining! < 5,
 				}"
 			>
 				{{ charsRemaining }}
@@ -49,7 +49,7 @@ const charsRemaining = computed(() => {
 
 	if (!props.softLength) return null;
 	if (!props.value && props.softLength) return props.softLength;
-	const realValue = props.value.replaceAll('\n', ' ').length;
+	const realValue = props.value!.replaceAll('\n', ' ').length;
 
 	if (props.softLength) return +props.softLength - realValue;
 	return null;
