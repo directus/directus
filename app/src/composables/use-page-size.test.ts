@@ -50,7 +50,7 @@ describe('usePageSize', () => {
 		const fallbackSize = 25;
 		const { sizes, selected } = usePageSize<number>(AVAILABLE_SIZES, (x) => x, fallbackSize);
 		expect(sizes.value).toStrictEqual(AVAILABLE_SIZES);
-		expect(selected).toBe(Infinity);
+		expect(selected).toBe(fallbackSize);
 	});
 
 	test('max queryLimit 100', () => {
@@ -66,7 +66,7 @@ describe('usePageSize', () => {
 		const fallbackSize = 25;
 		const { sizes, selected } = usePageSize<number>(AVAILABLE_SIZES, (x) => x, fallbackSize);
 		expect(sizes.value).toStrictEqual([10, 25, 50, 100]);
-		expect(selected).toBe(100);
+		expect(selected).toBe(fallbackSize);
 	});
 
 	test('max queryLimit 99', () => {
@@ -82,7 +82,7 @@ describe('usePageSize', () => {
 		const fallbackSize = 25;
 		const { sizes, selected } = usePageSize<number>(AVAILABLE_SIZES, (x) => x, fallbackSize);
 		expect(sizes.value).toStrictEqual([10, 25, 50]);
-		expect(selected).toBe(99);
+		expect(selected).toBe(fallbackSize);
 	});
 
 	test('max queryLimit 9', () => {
