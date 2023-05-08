@@ -6,22 +6,24 @@ export function usePageSize<T = any>(
 	mapCallback: (value: number, index: number, array: number[]) => T,
 	fallbackSize = 25
 ): { sizes: ComputedRef<T[]>; selected: number } {
-	const { info } = useServerStore();
+	const {
+		info: { queryLimit },
+	} = useServerStore();
 
 	const pageSizes = computed<T[]>(() => {
-		if (info.queryLimit === undefined) return availableSizes.map(mapCallback);
+		if (queryLimit === undefined) return availableSizes.map(mapCallback);
 
-		const sizes = availableSizes.filter((size) => size <= info.queryLimit!.max);
+		const sizes = availableSizes.filter((size) => size <= queryLimit.max);
 
 		if (sizes.length === 0) {
-			sizes.push(info.queryLimit!.max);
+			sizes.push(queryLimit.max);
 		}
 
 		return sizes.map(mapCallback);
 	});
 
 	const initialSize =
-		info.queryLimit === undefined ? fallbackSize : Math.min(info.queryLimit!.default ?? Infinity, info.queryLimit!.max);
+		queryLimit === undefined ? fallbackSize : Math.min(queryLimit.default ?? Infinity, queryLimit.max);
 
 	return {
 		sizes: pageSizes,
