@@ -2,9 +2,6 @@
 const props = defineProps({
 	contributors: { type: String, required: true }
 });
-
-const tagType = props.url ? 'a' : 'div';
-const headerType = 'h' + props.h;
 </script>
 
 <template>
