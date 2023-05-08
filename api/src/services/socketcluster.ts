@@ -37,7 +37,7 @@ const socketcluster = {
 				},
 				loadToken: async () => genToken(),
 			},
-			// codecEngine: SocketCodecEngine
+			// codecEngine:  SocketCodecEngine
 		};
 
 		// logger.info('will connect to socketcluster...', options);
