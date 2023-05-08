@@ -7,7 +7,6 @@ import { computed, ref, toRefs, watch } from 'vue';
 import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
-// TODO: check and reuses types
 import { translate } from '@/utils/translate-literal';
 import { User } from '@directus/types';
 import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
@@ -17,7 +16,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	name: '$t:layouts.kanban.name',
 	icon: 'view_week',
 	component: KanbanLayout,
-	// TODO: check this
 	headerShadow: false,
 	slots: {
 		options: KanbanOptions,
