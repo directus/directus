@@ -40,6 +40,8 @@ const socketcluster = {
 			// codecEngine: SocketCodecEngine
 		};
 
+		logger.info('will connect to socketcluster...', options);
+
 		this.client = SC.create(options);
 
 		(async () => {
