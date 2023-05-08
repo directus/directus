@@ -8,7 +8,7 @@ export type UsableCustomSelection = {
 };
 
 export function useCustomSelection(
-	currentValue: Ref<string>,
+	currentValue: Ref<string | null>,
 	items: Ref<any[]>,
 	emit: (event: string | null) => void
 ): UsableCustomSelection {
@@ -54,7 +54,7 @@ type UsableCustomSelectionMultiple = {
 };
 
 export function useCustomSelectionMultiple(
-	currentValues: Ref<string[]>,
+	currentValues: Ref<string[] | null>,
 	items: Ref<any[]>,
 	emit: (event: string[] | null) => void
 ): UsableCustomSelectionMultiple {

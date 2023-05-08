@@ -263,11 +263,11 @@ export function useRelationMultiple(
 			updateValue();
 		}
 
-		function select(items: (string | number)[], collection?: string) {
+		function select(items: (string | number)[] | null, collection?: string) {
 			const info = relation.value;
 			if (!info) return;
 
-			const selected = items.map((item) => {
+			const selected = items!.map((item) => {
 				switch (info.type) {
 					case 'o2m':
 						return {

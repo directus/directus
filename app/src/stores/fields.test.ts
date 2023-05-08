@@ -1,6 +1,7 @@
+import { translate as translateLiteral } from '@/utils/translate-literal';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { i18n } from '@/lang';
 import { Field } from '@directus/types';
@@ -16,6 +17,10 @@ beforeEach(() => {
 	);
 });
 
+afterEach(() => {
+	vi.clearAllMocks();
+});
+
 const mockField = {
 	collection: 'a',
 	field: 'name',
@@ -26,7 +31,7 @@ const mockField = {
 		field: 'name',
 		options: null,
 		display_options: null,
-		note: null,
+		note: 'note',
 		validation_message: null,
 	},
 } as Field;
@@ -49,21 +54,25 @@ vi.mock('@/api', () => {
 	};
 });
 
+vi.mock('@/utils/translate-literal', () => {
+	return {
+		translate: vi.fn(),
+	};
+});
+
 describe('hydrate action', () => {
 	test('should not skip translations by default', async () => {
 		const fieldsStore = useFieldsStore();
-		const translateFieldsSpy = vi.spyOn(fieldsStore, 'translateFields');
 		await fieldsStore.hydrate();
 
-		expect(translateFieldsSpy).toHaveBeenCalledOnce();
+		expect(translateLiteral).toHaveBeenCalledWith('note');
 	});
 
 	test('should skip translations when skipTranslation is true', async () => {
 		const fieldsStore = useFieldsStore();
-		const translateFieldsSpy = vi.spyOn(fieldsStore, 'translateFields');
 		await fieldsStore.hydrate({ skipTranslation: true });
 
-		expect(translateFieldsSpy).not.toHaveBeenCalled();
+		expect(translateLiteral).not.toHaveBeenCalledWith('note');
 	});
 });
 

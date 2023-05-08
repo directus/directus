@@ -1,39 +1,44 @@
+import { usePermissionsStore } from '@/stores/permissions';
+import { useUserStore } from '@/stores/user';
+import { fetchAll } from '@/utils/fetch-all';
 import { FlowRaw } from '@directus/types';
 import { defineStore } from 'pinia';
-import { useUserStore } from '@/stores/user';
-import { usePermissionsStore } from '@/stores/permissions';
-import { fetchAll } from '@/utils/fetch-all';
+import { ref } from 'vue';
 
-export const useFlowsStore = defineStore({
-	id: 'flowsStore',
-	state: () => ({
-		flows: [] as FlowRaw[],
-	}),
-	actions: {
-		async hydrate() {
-			const { isAdmin } = useUserStore();
-			const { hasPermission } = usePermissionsStore();
+export const useFlowsStore = defineStore('flowsStore', () => {
+	const flows = ref<FlowRaw[]>([]);
 
-			if (isAdmin !== true && !hasPermission('directus_flows', 'read')) {
-				this.flows = [];
-			} else {
-				try {
-					this.flows = await fetchAll('/flows', {
-						params: { fields: ['*', 'operations.*'] },
-					});
-				} catch {
-					this.flows = [];
-				}
+	return {
+		flows,
+		hydrate,
+		dehydrate,
+		getManualFlowsForCollection,
+	};
+
+	async function hydrate() {
+		const { isAdmin } = useUserStore();
+		const { hasPermission } = usePermissionsStore();
+
+		if (isAdmin !== true && !hasPermission('directus_flows', 'read')) {
+			flows.value = [];
+		} else {
+			try {
+				flows.value = await fetchAll('/flows', {
+					params: { fields: ['*', 'operations.*'] },
+				});
+			} catch {
+				flows.value = [];
 			}
-		},
-		async dehydrate() {
-			this.$reset();
-		},
-		getManualFlowsForCollection(collection: string): FlowRaw[] {
-			return this.flows.filter(
-				(flow) =>
-					flow.trigger === 'manual' && flow.status === 'active' && flow.options?.collections?.includes(collection)
-			);
-		},
-	},
+		}
+	}
+
+	async function dehydrate() {
+		flows.value = [];
+	}
+
+	function getManualFlowsForCollection(collection: string): FlowRaw[] {
+		return flows.value.filter(
+			(flow) => flow.trigger === 'manual' && flow.status === 'active' && flow.options?.collections?.includes(collection)
+		);
+	}
 });

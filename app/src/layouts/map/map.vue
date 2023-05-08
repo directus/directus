@@ -20,11 +20,11 @@
 
 		<transition name="fade">
 			<div
-				v-if="itemPopup.item"
+				v-if="itemPopup!.item"
 				class="popup"
-				:style="{ top: itemPopup.position.y + 'px', left: itemPopup.position.x + 'px' }"
+				:style="{ top: itemPopup!.position!.y + 'px', left: itemPopup!.position!.x + 'px' }"
 			>
-				<render-template :template="template" :item="itemPopup.item" :collection="collection" />
+				<render-template :template="template" :item="itemPopup!.item" :collection="collection" />
 			</div>
 		</transition>
 
@@ -50,7 +50,7 @@
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 		</transition>
 
-		<template v-if="loading || itemCount > 0">
+		<template v-if="loading || itemCount! > 0">
 			<div class="footer">
 				<div v-if="totalPages > 1" class="pagination">
 					<v-pagination
@@ -79,7 +79,7 @@ export default {
 <script setup lang="ts">
 import { usePageSize } from '@/composables/use-page-size';
 import { useSync } from '@directus/composables';
-import { GeometryOptions, Item } from '@directus/types';
+import { GeometryOptions } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import MapComponent from './components/map.vue';
 
@@ -100,7 +100,7 @@ const props = withDefaults(
 		page: number;
 		toPage: (newPage: number) => void;
 		limit: number;
-		selection?: Item[];
+		selection?: (string | number)[];
 		error?: any;
 		geojsonError?: string;
 		geometryOptions?: GeometryOptions;

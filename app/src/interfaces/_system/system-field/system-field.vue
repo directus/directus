@@ -50,7 +50,7 @@ const fieldsStore = useFieldsStore();
 
 const values = inject('values', ref<Record<string, any>>({}));
 
-const collection = computed(() => values.value[props.collectionField] || props.collectionName);
+const collection = computed(() => values.value[props.collectionField!] || props.collectionName);
 
 const fields = computed(() => {
 	if (!props.collectionField && !props.collectionName) return [];

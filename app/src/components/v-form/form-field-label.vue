@@ -35,10 +35,10 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/types';
+import type { FormField } from './types';
 
 interface Props {
-	field: Field;
+	field: FormField;
 	toggle: (event: Event) => any;
 	batchMode?: boolean;
 	batchActive?: boolean;

@@ -64,7 +64,7 @@ const { displayValue, isValidValue } = useDisplayValue();
 function useDisplayValue() {
 	const displayValue = ref<string | null>(null);
 
-	const isValidValue = computed(() => isValid(parseValue(props.value)));
+	const isValidValue = computed(() => isValid(parseValue(props.value!)));
 
 	watch(() => props.value, setDisplayValue, { immediate: true });
 

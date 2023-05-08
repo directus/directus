@@ -117,7 +117,7 @@
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
 			:filter="customFilter"
-			@input="select($event, selectingFrom ?? undefined)"
+			@input="select($event!, selectingFrom ?? undefined)"
 			@update:active="selectingFrom = null"
 		/>
 
@@ -403,7 +403,7 @@ const customFilter = computed(() => {
 
 	const reverseRelation = `$FOLLOW(${info.junctionCollection.collection},${info.junctionField.field},${info.collectionField.field})`;
 
-	const selectFilter: Filter = {
+	const selectFilter = {
 		[reverseRelation]: {
 			_none: {
 				_and: [
@@ -420,7 +420,7 @@ const customFilter = computed(() => {
 				],
 			},
 		},
-	};
+	} as Filter;
 
 	const junctionField = info.junctionField.field;
 

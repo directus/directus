@@ -149,7 +149,7 @@ async function enable() {
 }
 
 async function disable() {
-	const success = await (isCurrentUser.value ? disableTFA() : adminDisableTFA(props.primaryKey));
+	const success = await (isCurrentUser.value ? disableTFA() : adminDisableTFA(props.primaryKey!));
 	disableActive.value = !success;
 }
 
