@@ -42,6 +42,11 @@ const socketcluster = {
 
 		// logger.info('will connect to socketcluster...', options);
 
+		if (!process.env.NEURON_SOCKET_ENABLED === 'true') {
+			// console.warn('socketclsuter is disabled.');
+			return;
+		}
+
 		this.client = SC.create(options);
 
 		(async () => {
