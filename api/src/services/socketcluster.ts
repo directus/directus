@@ -2,7 +2,7 @@
 
 import JWT from 'jsonwebtoken';
 import SC from 'socketcluster-client';
-import logger from '../logger';
+import logger from '../logger.js';
 
 function genToken() {
 	return JWT.sign({ type: 'service' }, process.env.SECRET, {
