@@ -4,7 +4,7 @@ import { ComputedRef, computed } from 'vue';
 export function usePageSize<T = any>(
 	availableSizes: number[],
 	mapCallback: (value: number, index: number, array: number[]) => T,
-	fallbackSize = 25
+	defaultSize = 25
 ): { sizes: ComputedRef<T[]>; selected: number } {
 	const {
 		info: { queryLimit },
@@ -24,11 +24,7 @@ export function usePageSize<T = any>(
 		return sizes.map(mapCallback);
 	});
 
-	let initialSize = fallbackSize;
-
-	if (queryLimit !== undefined) {
-		initialSize = Math.min(parseLimit(queryLimit.default), parseLimit(queryLimit.max));
-	}
+	const initialSize = queryLimit !== undefined ? Math.min(defaultSize, parseLimit(queryLimit.max)) : defaultSize;
 
 	return {
 		sizes: pageSizes,
