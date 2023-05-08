@@ -59,7 +59,7 @@ import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
-// import socketcluster from './middleware/socketcluster.js';
+import socketcluster from './middleware/socketcluster.js';
 import socketclusterService from './services/socketcluster.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { collectTelemetry } from './utils/telemetry.js';
@@ -242,16 +242,14 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(getPermissions);
 
-	// app.use(socketcluster);
+	app.use(socketcluster);
 
 	await emitter.emitInit('middlewares.after', { app });
 
 	await emitter.emitInit('routes.before', { app });
 
 	app.use('/auth', authRouter);
-
 	app.use('/graphql', graphqlRouter);
-
 	app.use('/activity', activityRouter);
 	app.use('/assets', assetsRouter);
 	app.use('/collections', collectionsRouter);

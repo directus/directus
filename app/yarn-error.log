@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: ENOENT: no such file or directory, copyfile '/Users/botz/Library/Caches/Yarn/v6/npm-is-stream-3.0.0-e6bfd7aa6bef69f4f472ce9bb681e3e57b4319ac-integrity/node_modules/is-stream/index.js' -> '/Users/botz/dev/crawless/directus-gitlab/app/node_modules/@directus/extensions-sdk/node_modules/is-stream/index.js'
+  Error: ENOENT: no such file or directory, copyfile '/Users/botz/Library/Caches/Yarn/v6/npm-is-stream-3.0.0-e6bfd7aa6bef69f4f472ce9bb681e3e57b4319ac-integrity/node_modules/is-stream/index.d.ts' -> '/Users/botz/dev/crawless/directus-gitlab/app/node_modules/@directus/extensions-sdk/node_modules/is-stream/index.d.ts'
 
 npm manifest: 
   {

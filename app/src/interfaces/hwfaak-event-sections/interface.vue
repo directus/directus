@@ -156,6 +156,7 @@ export default defineComponent({
 					.map((item, index) => ({ ...item, index }));
 			},
 		});
+
 		const activeItem = computed(() => (activeIndex.value !== null ? tableItems.value[activeIndex.value] : null));
 
 		const tableRowHeight = computed<number>(() => {
