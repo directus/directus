@@ -25,11 +25,15 @@ export class RevisionsService extends ItemsService {
 
 	private overrideOptions(opts?: MutationOptions): MutationOptions {
 		if (!opts) {
-			return { autoPurgeCache: false };
+			return { autoPurgeCache: false, bypassLimits: true };
 		}
 
 		if (!('autoPurgeCache' in opts)) {
 			opts.autoPurgeCache = false;
+		}
+
+		if (!('bypassLimits' in opts)) {
+			opts.bypassLimits = true;
 		}
 
 		return opts;
