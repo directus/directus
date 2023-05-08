@@ -31,11 +31,11 @@
 			<v-divider v-if="nestedFolders && nestedFolders.length > 0" />
 			<folder-list-item
 				v-for="folder in nestedFolders"
-				:key="folder.id"
+				:key="folder.id!"
 				clickable
 				:folder="folder"
 				:current-folder="value"
-				:disabled="disabledFolders.includes(folder.id)"
+				:disabled="disabledFolders.includes(folder.id!)"
 				:disabled-folders="disabledFolders"
 				@click="emitValue"
 			/>
@@ -43,82 +43,57 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
-import FolderListItem from './folder-list-item.vue';
-import { useFolders, Folder } from '@/composables/use-folders';
+<script setup lang="ts">
+import { Folder, useFolders } from '@/composables/use-folders';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import FolderListItem from './folder-list-item.vue';
 
-export default defineComponent({
-	components: { FolderListItem },
-	props: {
-		value: {
-			type: String,
-			default: undefined,
-		},
-		disabledFolders: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: '',
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		disabledFolders: string[];
+		disabled?: boolean;
+		placeholder?: string;
+	}>(),
+	{
+		disabledFolders: () => [],
+	}
+);
 
-		const { nestedFolders, folders, loading } = useFolders();
+const emit = defineEmits<{
+	(e: 'input', value: string | null): void;
+}>();
 
-		const folderPath = computed(() => {
-			if (!props.value || !folders.value) {
-				return t('interfaces.system-folder.root_name');
-			}
+const { t } = useI18n();
 
-			const folder = folders.value.find((folder) => folder.id === props.value);
-			return folder
-				? folderParentPath(folder as Folder, folders.value)
-						.map((folder) => folder.name)
-						.join(' / ')
-				: props.value;
-		});
+const { nestedFolders, folders, loading } = useFolders();
 
-		return {
-			emitValue,
-			loading,
-			folderPath,
-			nestedFolders,
-			onFolderSelect,
-			t,
-		};
+const folderPath = computed(() => {
+	if (!props.value || !folders.value) {
+		return t('interfaces.system-folder.root_name');
+	}
 
-		function emitValue(id: string | null) {
-			return emit('input', id);
-		}
-
-		function folderParentPath(folder: Folder, folders: Folder[]) {
-			const folderMap = new Map(folders.map((folder) => [folder.id, folder]));
-
-			const folderParent = (target: Folder): Folder[] =>
-				(folderMap.has(target.parent) ? folderParent(folderMap.get(target.parent) as Folder) : []).concat(target);
-
-			return folderParent(folder);
-		}
-
-		function onFolderSelect(folderId: string | null) {
-			if (props.disabled) {
-				return;
-			}
-
-			emit('input', folderId);
-		}
-	},
+	const folder = folders.value.find((folder) => folder.id === props.value);
+	return folder
+		? folderParentPath(folder as Folder, folders.value)
+				.map((folder) => folder.name)
+				.join(' / ')
+		: props.value;
 });
+
+function emitValue(id: string | null) {
+	return emit('input', id);
+}
+
+function folderParentPath(folder: Folder, folders: Folder[]) {
+	const folderMap = new Map(folders.map((folder) => [folder.id, folder]));
+
+	const folderParent = (target: Folder): Folder[] =>
+		(folderMap.has(target.parent) ? folderParent(folderMap.get(target.parent) as Folder) : []).concat(target);
+
+	return folderParent(folder);
+}
 </script>
 
 <style lang="scss" scoped>

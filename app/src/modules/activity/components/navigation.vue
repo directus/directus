@@ -91,42 +91,35 @@
 	</v-list>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, PropType } from 'vue';
+<script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import { Filter } from '@directus/types';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		filter: {
-			type: Object as PropType<Filter>,
-			default: null,
+const props = defineProps<{
+	filter?: Filter;
+}>();
+
+const emit = defineEmits(['update:filter']);
+
+const { t } = useI18n();
+
+const userStore = useUserStore();
+const currentUserID = computed(() => userStore.currentUser?.id);
+
+const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
+const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);
+
+function setNavFilter(key: string, value: any) {
+	emit('update:filter', {
+		[key]: {
+			_eq: value,
 		},
-	},
-	emits: ['update:filter'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+	});
+}
 
-		const userStore = useUserStore();
-		const currentUserID = computed(() => userStore.currentUser?.id);
-
-		const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
-		const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);
-
-		return { t, currentUserID, setNavFilter, clearNavFilter, filterField, filterValue };
-
-		function setNavFilter(key: string, value: any) {
-			emit('update:filter', {
-				[key]: {
-					_eq: value,
-				},
-			});
-		}
-
-		function clearNavFilter() {
-			emit('update:filter', null);
-		}
-	},
-});
+function clearNavFilter() {
+	emit('update:filter', null);
+}
 </script>

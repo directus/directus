@@ -16,90 +16,67 @@
 	/>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, inject, ref, PropType, watch } from 'vue';
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
+import { computed, inject, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		collectionField: {
-			type: String,
-			default: null,
-		},
-		collectionName: {
-			type: String,
-			default: null,
-		},
-		typeAllowList: {
-			type: Array as PropType<string[]>,
-			default: () => [],
-		},
-		value: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		allowNone: {
-			type: Boolean,
-			default: false,
-		},
-		allowPrimaryKey: {
-			type: Boolean,
-			default: false,
-		},
-		allowForeignKeys: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		collectionField?: string;
+		collectionName?: string;
+		typeAllowList?: string[];
+		disabled?: boolean;
+		placeholder?: string;
+		allowNone?: boolean;
+		allowPrimaryKey?: boolean;
+		allowForeignKeys?: boolean;
+	}>(),
+	{
+		typeAllowList: () => [],
+		allowForeignKeys: true,
+	}
+);
 
-		const fieldsStore = useFieldsStore();
+const emit = defineEmits<{
+	(e: 'input', value: string | null): void;
+}>();
 
-		const values = inject('values', ref<Record<string, any>>({}));
+const { t } = useI18n();
 
-		const collection = computed(() => values.value[props.collectionField] || props.collectionName);
+const fieldsStore = useFieldsStore();
 
-		const fields = computed(() => {
-			if (!props.collectionField && !props.collectionName) return [];
-			return fieldsStore.getFieldsForCollection(collection.value);
-		});
+const values = inject('values', ref<Record<string, any>>({}));
 
-		// Reset value whenever the chosen collection changes
-		watch(collection, (newCol, oldCol) => {
-			if (oldCol !== null && newCol !== oldCol) {
-				emit('input', null);
-			}
-		});
+const collection = computed(() => values.value[props.collectionField!] || props.collectionName);
 
-		const selectItems = computed(() =>
-			fields.value.map((field: Field) => {
-				let disabled = false;
-
-				if (props.allowPrimaryKey === false && field?.schema?.is_primary_key === true) disabled = true;
-				if (props.allowForeignKeys === false && field?.schema?.foreign_key_table) disabled = true;
-				if (props.typeAllowList.length > 0 && props.typeAllowList.includes(field.type) === false) disabled = true;
-
-				return {
-					text: field.name,
-					value: field.field,
-					disabled,
-				};
-			})
-		);
-
-		return { t, selectItems, values, fields };
-	},
+const fields = computed(() => {
+	if (!props.collectionField && !props.collectionName) return [];
+	return fieldsStore.getFieldsForCollection(collection.value);
 });
+
+// Reset value whenever the chosen collection changes
+watch(collection, (newCol, oldCol) => {
+	if (oldCol !== null && newCol !== oldCol) {
+		emit('input', null);
+	}
+});
+
+const selectItems = computed(() =>
+	fields.value.map((field: Field) => {
+		let disabled = false;
+
+		if (props.allowPrimaryKey === false && field?.schema?.is_primary_key === true) disabled = true;
+		if (props.allowForeignKeys === false && field?.schema?.foreign_key_table) disabled = true;
+		if (props.typeAllowList.length > 0 && props.typeAllowList.includes(field.type) === false) disabled = true;
+
+		return {
+			text: field.name,
+			value: field.field,
+			disabled,
+		};
+	})
+);
 </script>

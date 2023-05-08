@@ -12,11 +12,11 @@
 
 		<template v-else>
 			<template v-for="group in revisionsByDate" :key="group.date.toString()">
-				<RevisionsDateGroup :group="group" @click="openModal" />
+				<revisions-date-group :group="group" @click="openModal" />
 			</template>
 
 			<template v-if="page == pagesCount && !created">
-				<v-divider v-if="revisionsByDate.length > 0" />
+				<v-divider v-if="revisionsByDate!.length > 0" />
 
 				<div class="external">
 					{{ t('revision_delta_created_externally') }}

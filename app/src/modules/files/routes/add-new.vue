@@ -3,7 +3,7 @@
 		<v-card>
 			<v-card-title>{{ t('add_file') }}</v-card-title>
 			<v-card-text>
-				<v-upload :preset="{ folder }" multiple from-url @input="close" />
+				<v-upload :preset="props.folder ? { folder: props.folder } : undefined" multiple from-url @input="close" />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="close">{{ t('done') }}</v-button>
@@ -12,31 +12,22 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router';
+<script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
-export default defineComponent({
-	props: {
-		folder: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	folder?: string;
+}>();
 
-		const router = useRouter();
+const { t } = useI18n();
 
-		const isOpen = useDialogRoute();
+const router = useRouter();
 
-		return { t, isOpen, close };
+const isOpen = useDialogRoute();
 
-		function close() {
-			router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
-		}
-	},
-});
+function close() {
+	router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
+}
 </script>

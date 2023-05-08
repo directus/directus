@@ -57,8 +57,8 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 import { Collection } from '@/types/collections';
 import { Preset } from '@directus/types';
 import { useUserStore } from '@/stores/user';
@@ -69,95 +69,70 @@ import NavigationBookmark from './navigation-bookmark.vue';
 import { useI18n } from 'vue-i18n';
 import { orderBy } from 'lodash';
 
-export default defineComponent({
-	name: 'NavigationItem',
-	components: { NavigationItemContent, NavigationBookmark },
-	props: {
-		collection: {
-			type: Object as PropType<Collection>,
-			required: true,
-		},
-		showHidden: {
-			type: Boolean,
-			default: false,
-		},
-		search: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	collection: Collection;
+	showHidden?: boolean;
+	search?: string;
+}>();
 
-		const { isAdmin } = useUserStore();
-		const collectionsStore = useCollectionsStore();
-		const presetsStore = usePresetsStore();
+const { t } = useI18n();
 
-		const childCollections = computed(() => getChildCollections(props.collection));
+const { isAdmin } = useUserStore();
+const collectionsStore = useCollectionsStore();
+const presetsStore = usePresetsStore();
 
-		const childBookmarks = computed(() => getChildBookmarks(props.collection));
+const childCollections = computed(() => getChildCollections(props.collection));
 
-		const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
+const childBookmarks = computed(() => getChildBookmarks(props.collection));
 
-		const to = computed(() => (props.collection.schema ? `/content/${props.collection.collection}` : ''));
+const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
 
-		const matchesSearch = computed(() => {
-			if (!props.search || props.search.length < 3) return true;
+const to = computed(() => (props.collection.schema ? `/content/${props.collection.collection}` : ''));
 
-			const searchQuery = props.search.toLowerCase();
+const matchesSearch = computed(() => {
+	if (!props.search || props.search.length < 3) return true;
 
-			return matchesSearch(props.collection) || childrenMatchSearch(childCollections.value, childBookmarks.value);
+	const searchQuery = props.search.toLowerCase();
 
-			function childrenMatchSearch(collections: Collection[], bookmarks: Preset[]): boolean {
-				return (
-					collections.some((collection) => {
-						const childCollections = getChildCollections(collection);
-						const childBookmarks = getChildBookmarks(collection);
+	return matchesSearch(props.collection) || childrenMatchSearch(childCollections.value, childBookmarks.value);
 
-						return matchesSearch(collection) || childrenMatchSearch(childCollections, childBookmarks);
-					}) || bookmarks.some((bookmark) => bookmarkMatchesSearch(bookmark))
-				);
-			}
+	function childrenMatchSearch(collections: Collection[], bookmarks: Preset[]): boolean {
+		return (
+			collections.some((collection) => {
+				const childCollections = getChildCollections(collection);
+				const childBookmarks = getChildBookmarks(collection);
 
-			function matchesSearch(collection: Collection) {
-				return collection.collection.includes(searchQuery) || collection.name.toLowerCase().includes(searchQuery);
-			}
+				return matchesSearch(collection) || childrenMatchSearch(childCollections, childBookmarks);
+			}) || bookmarks.some((bookmark) => bookmarkMatchesSearch(bookmark))
+		);
+	}
 
-			function bookmarkMatchesSearch(bookmark: Preset) {
-				return bookmark.bookmark?.toLowerCase().includes(searchQuery);
-			}
-		});
+	function matchesSearch(collection: Collection) {
+		return collection.collection.includes(searchQuery) || collection.name.toLowerCase().includes(searchQuery);
+	}
 
-		const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
-
-		return {
-			childCollections,
-			childBookmarks,
-			isGroup,
-			to,
-			matchesSearch,
-			isAdmin,
-			t,
-			hasContextMenu,
-		};
-
-		function getChildCollections(collection: Collection) {
-			let collections = collectionsStore.collections.filter(
-				(childCollection) => childCollection.meta?.group === collection.collection
-			);
-
-			if (props.showHidden === false) {
-				collections = collections.filter((collection) => collection.meta?.hidden !== true);
-			}
-
-			return orderBy(collections, ['meta.sort', 'collection']);
-		}
-
-		function getChildBookmarks(collection: Collection) {
-			return presetsStore.bookmarks.filter((bookmark) => bookmark.collection === collection.collection);
-		}
-	},
+	function bookmarkMatchesSearch(bookmark: Preset) {
+		return bookmark.bookmark?.toLowerCase().includes(searchQuery);
+	}
 });
+
+const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
+
+function getChildCollections(collection: Collection) {
+	let collections = collectionsStore.collections.filter(
+		(childCollection) => childCollection.meta?.group === collection.collection
+	);
+
+	if (props.showHidden === false) {
+		collections = collections.filter((collection) => collection.meta?.hidden !== true);
+	}
+
+	return orderBy(collections, ['meta.sort', 'collection']);
+}
+
+function getChildBookmarks(collection: Collection) {
+	return presetsStore.bookmarks.filter((bookmark) => bookmark.collection === collection.collection);
+}
 </script>
 
 <style scoped>

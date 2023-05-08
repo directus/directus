@@ -13,8 +13,8 @@
 				v-if="(percentageRemaining && percentageRemaining <= 20) || softLength"
 				class="remaining"
 				:class="{
-					warning: percentageRemaining < 10,
-					danger: percentageRemaining < 5,
+					warning: percentageRemaining! < 10,
+					danger: percentageRemaining! < 5,
 				}"
 			>
 				{{ charsRemaining }}
@@ -23,72 +23,46 @@
 	</v-textarea>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		clear: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		trim: {
-			type: Boolean,
-			default: false,
-		},
-		font: {
-			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
-			default: 'sans-serif',
-		},
-		softLength: {
-			type: Number,
-			default: undefined,
-		},
-		direction: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const charsRemaining = computed(() => {
-			if (typeof props.value === 'number') return null;
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		clear?: boolean;
+		disabled?: boolean;
+		placeholder?: string;
+		trim?: boolean;
+		font?: 'sans-serif' | 'serif' | 'monospace';
+		softLength?: number;
+		direction?: string;
+	}>(),
+	{
+		font: 'sans-serif',
+	}
+);
 
-			if (!props.softLength) return null;
-			if (!props.value && props.softLength) return props.softLength;
-			const realValue = props.value.replaceAll('\n', ' ').length;
+defineEmits(['input']);
 
-			if (props.softLength) return +props.softLength - realValue;
-			return null;
-		});
+const charsRemaining = computed(() => {
+	if (typeof props.value === 'number') return null;
 
-		const percentageRemaining = computed(() => {
-			if (typeof props.value === 'number') return null;
+	if (!props.softLength) return null;
+	if (!props.value && props.softLength) return props.softLength;
+	const realValue = props.value!.replaceAll('\n', ' ').length;
 
-			if (!props.softLength) return null;
-			if (!props.value) return 100;
+	if (props.softLength) return +props.softLength - realValue;
+	return null;
+});
 
-			if (props.softLength) return 100 - (props.value.length / +props.softLength) * 100;
-			return 100;
-		});
+const percentageRemaining = computed(() => {
+	if (typeof props.value === 'number') return null;
 
-		return {
-			charsRemaining,
-			percentageRemaining,
-		};
-	},
+	if (!props.softLength) return null;
+	if (!props.value) return 100;
+
+	if (props.softLength) return 100 - (props.value.length / +props.softLength) * 100;
+	return 100;
 });
 </script>
 

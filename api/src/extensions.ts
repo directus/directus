@@ -2,6 +2,7 @@ import {
 	APP_EXTENSION_TYPES,
 	APP_SHARED_DEPS,
 	HYBRID_EXTENSION_TYPES,
+	JAVASCRIPT_FILE_EXTS,
 	NESTED_EXTENSION_TYPES,
 } from '@directus/constants';
 import * as sharedExceptions from '@directus/exceptions';
@@ -298,15 +299,14 @@ class ExtensionManager {
 
 		const localExtensionUrls = NESTED_EXTENSION_TYPES.flatMap((type) => {
 			const typeDir = path.posix.join(extensionDirUrl, pluralize(type));
-			const fileExts = ['js', 'mjs', 'cjs'];
 
 			if (isIn(type, HYBRID_EXTENSION_TYPES)) {
 				return [
-					path.posix.join(typeDir, '*', `app.{${fileExts.join()}}`),
-					path.posix.join(typeDir, '*', `api.{${fileExts.join()}}`),
+					path.posix.join(typeDir, '*', `app.{${JAVASCRIPT_FILE_EXTS.join()}}`),
+					path.posix.join(typeDir, '*', `api.{${JAVASCRIPT_FILE_EXTS.join()}}`),
 				];
 			} else {
-				return path.posix.join(typeDir, '*', `index.{${fileExts.join()}}`);
+				return path.posix.join(typeDir, '*', `index.{${JAVASCRIPT_FILE_EXTS.join()}}`);
 			}
 		});
 

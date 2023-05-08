@@ -1,3 +1,4 @@
+import { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/utils';
 import InterfaceListO2M from './list-o2m.vue';
 import PreviewSVG from './preview.svg?raw';
@@ -16,7 +17,7 @@ export default defineInterface({
 		const collection = relations.o2m?.collection;
 		const options = meta?.options ?? {};
 
-		const tableOptions = [
+		const tableOptions: DeepPartial<Field>[] = [
 			{
 				field: 'tableSpacing',
 				name: '$t:layouts.tabular.spacing',
@@ -57,7 +58,7 @@ export default defineInterface({
 			},
 		];
 
-		const listOptions = [
+		const listOptions: DeepPartial<Field>[] = [
 			{
 				field: 'template',
 				name: '$t:display_template',
@@ -100,7 +101,7 @@ export default defineInterface({
 				field: 'enableCreate',
 				name: '$t:creating_items',
 				schema: {
-					default_value: true,
+					default_value: 'true',
 				},
 				meta: {
 					interface: 'boolean',
@@ -114,7 +115,7 @@ export default defineInterface({
 				field: 'enableSelect',
 				name: '$t:selecting_items',
 				schema: {
-					default_value: true,
+					default_value: 'true',
 				},
 				meta: {
 					interface: 'boolean',
@@ -133,7 +134,7 @@ export default defineInterface({
 					width: 'half',
 				},
 				schema: {
-					default_value: 15,
+					default_value: '15',
 				},
 			},
 			{
@@ -161,7 +162,7 @@ export default defineInterface({
 				field: 'enableSearchFilter',
 				name: '$t:search_filter',
 				schema: {
-					default_value: false,
+					default_value: 'false',
 				},
 				meta: {
 					interface: 'boolean',
@@ -186,7 +187,7 @@ export default defineInterface({
 				field: 'enableLink',
 				name: '$t:item_link',
 				schema: {
-					default_value: false,
+					default_value: 'false',
 				},
 				meta: {
 					interface: 'boolean',
