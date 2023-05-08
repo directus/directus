@@ -1,6 +1,6 @@
 #!/bin/sh -
 
-DIRECTUS_DIR="/directus/api"
+DIRECTUS_DIR="/directus"
 DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
 DIRECTUS_HOOKS="${DIRECTUS_EXTENSIONS}/hooks"
 DIRECTUS_INTERFACES="${DIRECTUS_EXTENSIONS}/interfaces"
@@ -14,10 +14,13 @@ unzip directus-custom-extensions-release.zip
 
 ls -la ./directus-custom-extensions-release
 
-cp -r ./directus-custom-extensions-release/collab-hook ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/collab-hook/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
+cp -r ./directus-custom-extensions-release/hooks/collab-hook ${DIRECTUS_HOOKS}
 
-cp -r ./directus-custom-extensions-release/marketplace-filters-hook ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
+cp -r ./directus-custom-extensions-release/hooks/marketplace-filters ${DIRECTUS_HOOKS}
+cp -r ./directus-custom-extensions-release/hooks/workflows-defaults ${DIRECTUS_HOOKS}
+cp -r ./directus-custom-extensions-release/interfaces/filter-ext ${DIRECTUS_INTERFACES}
 
-cp -r ./directus-custom-extensions-release/webhook-api-endpoint ${DIRECTUS_ENDPOINTS}
+cp -r ./directus-custom-extensions-release/endpoints/extended-api ${DIRECTUS_ENDPOINTS}
+
+# Migrations
+cp -r ./directus-custom-extensions-release/migrations/*add-collaboration* ${DIRECTUS_EXTENSIONS}/migrations

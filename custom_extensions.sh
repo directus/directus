@@ -1,6 +1,6 @@
 #!/bin/sh -
 
-DIRECTUS_DIR="/directus/api"
+DIRECTUS_DIR="/directus"
 DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
 DIRECTUS_INTERFACES="${DIRECTUS_EXTENSIONS}/interfaces"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
@@ -38,25 +38,54 @@ curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/pro
 
 unzip directus-custom-extensions-release.zip
 
-ls -la ./directus-custom-extensions-release
+cd directus-custom-extensions-release
+ls -la
 
-mkdir -p ${DIRECTUS_ENDPOINTS}/atomic-counters
+# Extensions to skip (these belong to different control scripts)
+# These are payment, chat, leads and collaboration extensions
+skip_extensions="payments-api payments-hook payments-module services-module orders-module chat chat-display dashboard leads areas saved-searches area-hook hide-modules collab-hook marketplace-filters workflows-defaults extended-api"
 
-cp -r ./directus-custom-extensions-release/collection-ext ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/filter-ext ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/loading-api-field ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/image-carousel ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/scheduler-field ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/contact-display ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/toggle-field ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/filtered-count ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/m2o-link-display ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/favorite-display ${DIRECTUS_DISPLAYS}
-cp -r ./directus-custom-extensions-release/atomic-counters/* ${DIRECTUS_ENDPOINTS}/atomic-counters
-cp -r ./directus-custom-extensions-release/b64-upload ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/collection-builder ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/count-alias ${DIRECTUS_INTERFACES}
-cp -r ./directus-custom-extensions-release/salary-ranges ${DIRECTUS_INTERFACES}
+# Corresponding migrations to skip
+skip_migrations="add-chat add-saved-searches add-collaboration"
 
+for ext_type in *
+do
+    # Skip all migrations here
+    if [ "$ext_type" = "migrations" ]; then
+        continue
+    fi
 
-#cp -r ./directus-custom-extensions-release/collection-builder/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
+    cd ${ext_type}
+    for ext_name in *
+    do
+        # Skip extensions
+        if echo "$skip_extensions" | grep -qw "$ext_name"; then
+            echo "Skipping ${ext_type}/${ext_name}"
+            continue
+        fi
+        echo "Adding ${ext_type}/${ext_name}"
+        cp -r ${ext_name} ${DIRECTUS_EXTENSIONS}/${ext_type}/
+
+    done
+    cd ..
+
+done
+
+if [ ! -d "migrations" ]; then
+    echo "No migrations found"
+    exit 0
+fi
+cd migrations
+for migration in *
+do
+    # Skip migrations
+    migration_name=$(basename "$migration" .js | cut -c 16-)
+    if echo "$skip_migrations" | grep -qw "$migration_name"; then
+    	  echo "Skip migration ${migration}"
+        continue
+    fi
+    echo "Adding migration ${migration}"
+    cp ${migration} ${DIRECTUS_EXTENSIONS}/migrations/
+done
+
+cd ..

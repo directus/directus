@@ -1,6 +1,6 @@
 #!/bin/sh -
 
-DIRECTUS_DIR="/directus/api"
+DIRECTUS_DIR="/directus"
 DIRECTUS_EXTENSIONS="${DIRECTUS_DIR}/extensions"
 DIRECTUS_MODULES="${DIRECTUS_EXTENSIONS}/modules"
 DIRECTUS_HOOKS="${DIRECTUS_EXTENSIONS}/hooks"
@@ -18,13 +18,15 @@ mkdir -p ${DIRECTUS_HOOKS}/hide-modules
 
 ls -la ./directus-custom-extensions-release
 
-cp -r ./directus-custom-extensions-release/dashboard ${DIRECTUS_MODULES}
-cp -r ./directus-custom-extensions-release/leads ${DIRECTUS_MODULES}
-cp -r ./directus-custom-extensions-release/areas ${DIRECTUS_MODULES}
-cp -r ./directus-custom-extensions-release/saved-searches ${DIRECTUS_MODULES}
-cp -r ./directus-custom-extensions-release/saved-searches/migrations/* ${DIRECTUS_EXTENSIONS}/migrations
-cp -r ./directus-custom-extensions-release/area-hook ${DIRECTUS_HOOKS}/
-cp -r ./directus-custom-extensions-release/hide-modules/* ${DIRECTUS_HOOKS}/hide-modules
+cp -r ./directus-custom-extensions-release/modules/dashboard ${DIRECTUS_MODULES}/
+cp -r ./directus-custom-extensions-release/modules/leads ${DIRECTUS_MODULES}/
+cp -r ./directus-custom-extensions-release/modules/areas ${DIRECTUS_MODULES}/
+cp -r ./directus-custom-extensions-release/modules/saved-searches ${DIRECTUS_MODULES}/
+
+cp -r ./directus-custom-extensions-release/hooks/area-hook ${DIRECTUS_HOOKS}/
+cp -r ./directus-custom-extensions-release/hooks/hide-modules ${DIRECTUS_HOOKS}/
+
+cp -r ./directus-custom-extensions-release/migrations/*saved-searches* ${DIRECTUS_EXTENSIONS}/migrations
 
 ls -la ${DIRECTUS_MODULES}
 ls -la ${DIRECTUS_HOOKS}

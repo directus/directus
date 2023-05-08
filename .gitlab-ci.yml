@@ -1,6 +1,6 @@
 stages:
 #  - crawless-directus-tests
-#  - crawless-directus-api2
+  - crawless-directus-api2
   - crawless-directus
 
 variables:
@@ -17,7 +17,7 @@ services:
 before_script:
   - |
     # https://gitlab.com/gitlab-org/gitlab-runner/-/issues/1986#note_549888956
-    attempts=30
+    attempts=50
     echo "---- Waiting $attempts sec for docker to come up ----"
     while ! docker info > /dev/null 2>&1; do
         echo "Connection attempts left: $attempts"
@@ -31,7 +31,10 @@ before_script:
     done
     echo "---- Docker came up ----"
   - docker info
-  - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY
+  - echo $CI_REGISTRY_USER
+  - echo $CI_REGISTRY
+  - echo $CI_JOB_TOKEN
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
 after_script:
   - docker logout $CI_REGISTRY
@@ -44,7 +47,7 @@ docker_build:
   retry: 2
   script:
     - export IMAGE_TAG=${CI_COMMIT_TAG:-latest}
-    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}" --build-arg CUSTOM_EXTENSION=0 .
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}" --build-arg CUSTOM_EXTENSION=1 --build-arg CHAT_EXTENSION=1 .
     - docker push $IMAGE_NAME:$IMAGE_TAG
   #    - 'curl --user $KEEL_USERNAME:$KEEL_PASSWORD -X POST -H "Content-Type: application/json" --data "{\"name\":\"${IMAGE_NAME}\",\"tag\":\"${IMAGE_TAG}\"}" $KEEL_WEBHOOK --insecure'
   tags:
@@ -62,7 +65,7 @@ docker_build:
 #    - export IMAGE_TAG=${CI_COMMIT_TAG:-test}
 #    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg
 #      GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg CUSTOM_EXTENSION=1 --build-arg
-#      LEAD_EXTENSION=1 -f DockerfileExtensions .
+#      LEAD_EXTENSION=1 --build-arg CHAT_EXTENSION=1 -f DockerfileExtensions .
 #    - docker push $IMAGE_NAME:$IMAGE_TAG
 #    - doctl kubernetes cluster kubeconfig save k8s-stage-fra1
 #    - kubectl rollout restart deployment directustests-admin-directus-next -n workflow-websites
@@ -72,21 +75,21 @@ docker_build:
 #  only:
 #    - main
 
-#docker_api2_build:
-#  stage: crawless-directus-api2
-#  variables:
-#    CI_DEBUG_TRACE: 'false'
-#    IMAGE_NAME: $CI_REGISTRY_IMAGE
-#  retry: 2
-#  script:
-#    - export IMAGE_TAG=${CI_COMMIT_TAG:-api2}
-#    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg
-#      GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg CUSTOM_EXTENSION=1 --build-arg
-#      COLAB_EXTENSION=1 -f DockerfileExtensions .
-#    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+docker_api2_build:
+  stage: crawless-directus-api2
+  variables:
+    CI_DEBUG_TRACE: 'false'
+    IMAGE_NAME: $CI_REGISTRY_IMAGE
+  retry: 2
+  script:
+    - export IMAGE_TAG=${CI_COMMIT_TAG:-api2}
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg
+      GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg CUSTOM_EXTENSION=1 --build-arg CHAT_EXTENSION=1 --build-arg COLAB_EXTENSION=1 -f DockerfileExtensions .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
 #    - doctl kubernetes cluster kubeconfig save k8s-stage-fra1
 #    - kubectl rollout restart deployment crawless-api-directus-directus-next -n default
-#  tags:
-#    - crawless
-#  only:
-#    - main
+  tags:
+    - crawless
+  only:
+    - main
