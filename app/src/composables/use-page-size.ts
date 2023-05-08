@@ -11,7 +11,9 @@ export function usePageSize<T = any>(
 	} = useServerStore();
 
 	const pageSizes = computed<T[]>(() => {
-		if (queryLimit === undefined) return availableSizes.map(mapCallback);
+		if (queryLimit === undefined || queryLimit.max === -1) {
+			return availableSizes.map(mapCallback);
+		}
 
 		const sizes = availableSizes.filter((size) => size <= queryLimit.max);
 
@@ -22,11 +24,22 @@ export function usePageSize<T = any>(
 		return sizes.map(mapCallback);
 	});
 
-	const initialSize =
-		queryLimit === undefined ? fallbackSize : Math.min(queryLimit.default ?? Infinity, queryLimit.max);
+	let initialSize = fallbackSize;
+
+	if (queryLimit !== undefined) {
+		initialSize = Math.min(parseLimit(queryLimit.default), parseLimit(queryLimit.max));
+	}
 
 	return {
 		sizes: pageSizes,
 		selected: initialSize,
 	};
+}
+
+function parseLimit(value: number | undefined) {
+	if (value === undefined || value === -1) {
+		return Infinity;
+	}
+
+	return value;
 }
