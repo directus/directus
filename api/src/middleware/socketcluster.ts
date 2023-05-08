@@ -1,9 +1,6 @@
-// @ts-nocheck
-
-import { RequestHandler } from 'express';
 import socketclusterService from '../services/socketcluster.js';
 
-const socketcluster: RequestHandler = async (req, res, next) => {
+const socketcluster = async (req: any, res, next) => {
 	req.socketcluster = socketclusterService;
 
 	return next();
