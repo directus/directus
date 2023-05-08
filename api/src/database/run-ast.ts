@@ -250,7 +250,7 @@ async function getDBQuery(
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
 
-	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
+	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : Number(env['QUERY_LIMIT_DEFAULT']);
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
