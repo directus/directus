@@ -31,7 +31,7 @@
 										<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 										<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
 									</v-list-item>
-									<v-list-item clickable @click="deleteGroup?.(group.id)">
+									<v-list-item class="danger" clickable @click="deleteGroup?.(group.id)">
 										<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 										<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
 									</v-list-item>
@@ -387,5 +387,11 @@ function saveChanges() {
 			}
 		}
 	}
+}
+
+.v-list-item.danger {
+	--v-list-item-color: var(--danger);
+	--v-list-item-color-hover: var(--danger);
+	--v-list-item-icon-color: var(--danger);
 }
 </style>
