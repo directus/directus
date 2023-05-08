@@ -17,6 +17,21 @@ export function shouldSkipCache(req: Request): boolean {
 	const referer = req.get('Referer');
 
 	if (referer) {
+		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
+
+		if (adminUrl.isRootRelative()) {
+			const refererUrl = new Url(referer);
+			if (refererUrl.path.join('/').startsWith(adminUrl.path.join('/')) && checkAutoPurge()) return true;
+		} else if (referer.startsWith(adminUrl.toString()) && checkAutoPurge()) {
+			return true;
+		}
+	}
+
+	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.includes('no-store')) return true;
+
+	return false;
+
+	function checkAutoPurge() {
 		if (env['CACHE_AUTO_PURGE']) {
 			const path = url.parse(req.originalUrl).pathname;
 
@@ -27,19 +42,10 @@ export function shouldSkipCache(req: Request): boolean {
 					return true;
 				}
 			}
-		} else {
-			const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
 
-			if (adminUrl.isRootRelative()) {
-				const refererUrl = new Url(referer);
-				if (refererUrl.path.join('/').startsWith(adminUrl.path.join('/'))) return true;
-			} else if (referer.startsWith(adminUrl.toString())) {
-				return true;
-			}
+			return false;
+		} else {
+			return true;
 		}
 	}
-
-	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.includes('no-store')) return true;
-
-	return false;
 }
