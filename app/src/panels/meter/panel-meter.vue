@@ -71,8 +71,11 @@ const displayValue = computed(() => {
 });
 
 const radius = computed(() => {
+	// 40 is 20*2 padding, 4 is 2*2 border
 	const widthPx = props.width * 20 - 40 - 4;
 	let heightPx = props.height * 20 - 40 - 4;
+
+	// Adjust for header if enabled, v-workspace-tile header has a fixed height of 42px
 	if (props.showHeader) heightPx = heightPx - 42;
 
 	const strokeOffset = props.strokeWidth / 2;
