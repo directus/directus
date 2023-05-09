@@ -62,7 +62,7 @@ const { n } = useI18n();
 const percent = computed(() => {
 	if (props.data.length === 0) return 0;
 	if (!props.fn || !props.field) return 0;
-	return +props.data[0][props.fn][props.field] / +props.max;
+	return Number(props.data[0][props.fn][props.field]) / Number(props.max);
 });
 
 const displayValue = computed(() => {
