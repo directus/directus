@@ -62,6 +62,7 @@ const isNumberColumn = computed(() => {
 
 watch(
 	[
+		() => props.data,
 		() => props.color,
 		() => props.donut,
 		() => props.decimals,
