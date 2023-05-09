@@ -514,6 +514,51 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
+      '@editorjs/attaches':
+        specifier: 1.3.0
+        version: 1.3.0
+      '@editorjs/checklist':
+        specifier: 1.5.0
+        version: 1.5.0
+      '@editorjs/code':
+        specifier: 2.8.0
+        version: 2.8.0
+      '@editorjs/delimiter':
+        specifier: 1.3.0
+        version: 1.3.0
+      '@editorjs/editorjs':
+        specifier: 2.26.5
+        version: 2.26.5
+      '@editorjs/embed':
+        specifier: 2.5.3
+        version: 2.5.3
+      '@editorjs/header':
+        specifier: 2.7.0
+        version: 2.7.0
+      '@editorjs/image':
+        specifier: 2.8.1
+        version: 2.8.1
+      '@editorjs/inline-code':
+        specifier: 1.4.0
+        version: 1.4.0
+      '@editorjs/nested-list':
+        specifier: 1.3.0
+        version: 1.3.0
+      '@editorjs/paragraph':
+        specifier: 2.9.0
+        version: 2.9.0
+      '@editorjs/quote':
+        specifier: 2.5.0
+        version: 2.5.0
+      '@editorjs/raw':
+        specifier: 2.4.0
+        version: 2.4.0
+      '@editorjs/table':
+        specifier: 2.2.1
+        version: 2.2.1
+      '@editorjs/underline':
+        specifier: 1.1.0
+        version: 1.1.0
       '@fortawesome/fontawesome-svg-core':
         specifier: 6.4.0
         version: 6.4.0
@@ -697,6 +742,12 @@ importers:
       dompurify:
         specifier: 3.0.2
         version: 3.0.2
+      editorjs-text-alignment-blocktune:
+        specifier: 1.0.3
+        version: 1.0.3
+      editorjs-toggle-block:
+        specifier: 0.3.11
+        version: 0.3.11
       escape-string-regexp:
         specifier: 5.0.0
         version: 5.0.0
@@ -4267,6 +4318,30 @@ packages:
       prettier: 2.8.7
     dev: true
 
+  /@codexteam/icons@0.0.2:
+    resolution: {integrity: sha512-KdeKj3TwaTHqM3IXd5YjeJP39PBUZTb+dtHjGlf5+b0VgsxYD4qzsZkb11lzopZbAuDsHaZJmAYQ8LFligIT6Q==}
+    dev: true
+
+  /@codexteam/icons@0.0.4:
+    resolution: {integrity: sha512-V8N/TY2TGyas4wLrPIFq7bcow68b3gu8DfDt1+rrHPtXxcexadKauRJL6eQgfG7Z0LCrN4boLRawR4S9gjIh/Q==}
+    dev: true
+
+  /@codexteam/icons@0.0.5:
+    resolution: {integrity: sha512-s6H2KXhLz2rgbMZSkRm8dsMJvyUNZsEjxobBEg9ztdrb1B2H3pEzY6iTwI4XUPJWJ3c3qRKwV4TrO3J5jUdoQA==}
+    dev: true
+
+  /@codexteam/icons@0.0.6:
+    resolution: {integrity: sha512-L7Q5PET8PjKcBT5wp7VR+FCjwCi5PUp7rd/XjsgQ0CI5FJz0DphyHGRILMuDUdCW2MQT9NHbVr4QP31vwAkS/A==}
+    dev: true
+
+  /@codexteam/icons@0.1.0:
+    resolution: {integrity: sha512-jW1fWnwtWzcP4FBGsaodbJY3s1ZaRU+IJy1pvJ7ygNQxkQinybJcwXoyt0a5mWwu/4w30A42EWhCrZn8lp4fdw==}
+    dev: true
+
+  /@codexteam/icons@0.3.0:
+    resolution: {integrity: sha512-fJE9dfFdgq8xU+sbsxjH0Kt8Yeatw9xHBJWb77DhRkEXz3OCoIS6hrRC1ewHEryxzIjxD8IyQrRq2f+Gz3BcmA==}
+    dev: true
+
   /@colors/colors@1.5.0:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
@@ -4323,6 +4398,98 @@ packages:
       algoliasearch: 4.17.0
     transitivePeerDependencies:
       - '@algolia/client-search'
+    dev: true
+
+  /@editorjs/attaches@1.3.0:
+    resolution: {integrity: sha512-D+dj55EsC5bvXV///Dh/+KN4unuI0j6SU3f5QcMA5zrfda47PNKwbKOuwMBJwn0O+o5qwqrFv67g98lAo2qqVQ==}
+    dependencies:
+      '@codexteam/icons': 0.0.4
+    dev: true
+
+  /@editorjs/checklist@1.5.0:
+    resolution: {integrity: sha512-2QUKDvLmtOFDaQLX6C+D9A4hIGBhsYwZW+60fOghSwC80dD931zOAA71cf+xppCTEhcr4eT18C6BJkBGf/DjTw==}
+    dependencies:
+      '@codexteam/icons': 0.3.0
+    dev: true
+
+  /@editorjs/code@2.8.0:
+    resolution: {integrity: sha512-qlv1OqSEPKnLv/ZQgNFmVgqsMbGDkh/qgTEnbVWsS+yujo1nlwgVkqCB8tOkQGVsrpmAYLiWRlA413nKxxCN5w==}
+    dependencies:
+      '@codexteam/icons': 0.0.5
+    dev: true
+
+  /@editorjs/delimiter@1.3.0:
+    resolution: {integrity: sha512-/qz+3yRSPmx6dJpBcwnDfgKtCjOrCsQRoDhXR+wLWirGOchOifhYwQ/6JZyTvcgmY84UEoYY29/dgdWOGVPEEQ==}
+    dependencies:
+      '@codexteam/icons': 0.0.5
+    dev: true
+
+  /@editorjs/editorjs@2.26.5:
+    resolution: {integrity: sha512-imwXZi9NmzxKjNosa1xQf286liJYsTe2J2DWCiV5TwKhvYZ1INg5Y+FietcM2v65QmeLqP7wgBUhoI7wiCB+yQ==}
+    dependencies:
+      '@codexteam/icons': 0.1.0
+      codex-notifier: 1.1.2
+      codex-tooltip: 1.0.5
+      html-janitor: 2.0.4
+      nanoid: 3.3.6
+    dev: true
+
+  /@editorjs/embed@2.5.3:
+    resolution: {integrity: sha512-+X0xX2tiwQjU/B2rPDv8DOwg0suiqrt2h/o9frjR308YuY1VTpqjLRF1lIV4TmelQyVr9cXkZruaa4Ty1wvfJg==}
+    dev: true
+
+  /@editorjs/header@2.7.0:
+    resolution: {integrity: sha512-4fGKGe2ZYblVqR/P/iw5ieG00uXInFgNMftBMqJRYcB2hUPD30kuu7Sn6eJDcLXoKUMOeqi8Z2AlUxYAmvw7zQ==}
+    dependencies:
+      '@codexteam/icons': 0.0.5
+    dev: true
+
+  /@editorjs/image@2.8.1:
+    resolution: {integrity: sha512-4WscDAoi6OO0F6L7N1mkQymADwj8hHgH/ICk5wGRPdkesUZW1TgldX8XvSmy+f5VylsEi3F/gUggaZsrYxu2sA==}
+    dependencies:
+      '@codexteam/icons': 0.0.6
+    dev: true
+
+  /@editorjs/inline-code@1.4.0:
+    resolution: {integrity: sha512-nJJx2eBgQyml7U8MdMdJNFY2RgZCOuvvXHEW73xsdu36ZXCd44eAo7vq1S5Jz9l8bC676SvNbRfeH/nojXK37A==}
+    dependencies:
+      '@codexteam/icons': 0.0.5
+    dev: true
+
+  /@editorjs/nested-list@1.3.0:
+    resolution: {integrity: sha512-diRsa64YjR4Xnf5jbSxnRn9kfFc0ZOQBqp0dx3ZwHkm5wxN9D46KI7qXdIyOoUNzAFyK+/Q5c29PcoBJLOp01w==}
+    dependencies:
+      '@codexteam/icons': 0.0.2
+    dev: true
+
+  /@editorjs/paragraph@2.9.0:
+    resolution: {integrity: sha512-lI6x1eiqFx2X3KmMak6gBlimFqXhG35fQpXMxzrjIphNLr4uPsXhVbyMPimPoLUnS9rM6Q00vptXmP2QNDd0zg==}
+    dependencies:
+      '@codexteam/icons': 0.0.4
+    dev: true
+
+  /@editorjs/quote@2.5.0:
+    resolution: {integrity: sha512-24Mu8cESaj34a0kg1Enj7qiZ3yiCOsZI59+8xpfXLO/NkO7hBYWNForVcBy5yIWs/VLlEZK11FP37f/mHrKugQ==}
+    dependencies:
+      '@codexteam/icons': 0.0.5
+    dev: true
+
+  /@editorjs/raw@2.4.0:
+    resolution: {integrity: sha512-6k7ngx1T8+ztTG4/i5QcGPKXkF2YvdqgKgtzpOTaG6Pzm17D7Hr30Krbqz2E2Y/uoV8SiR/X1UAyKTQxrk9B6Q==}
+    dependencies:
+      '@codexteam/icons': 0.0.4
+    dev: true
+
+  /@editorjs/table@2.2.1:
+    resolution: {integrity: sha512-6RJKF0DfPh7YuBVPmT5mHXjjhil2IJ8ytZpw2hTHAuduqoRlu6OJbaGzH2NTCdg7cgD4H4BbX0RB9kcVxRtB2w==}
+    dependencies:
+      '@codexteam/icons': 0.0.6
+    dev: true
+
+  /@editorjs/underline@1.1.0:
+    resolution: {integrity: sha512-vQj2ROW1KreD31QHlhaPikmDJGWYzRBusN4Zyfwl9nIIQCByt4S8fZQpsrRvH4sct5mkirsHllNT00rJlqHK7Q==}
+    dependencies:
+      '@codexteam/icons': 0.0.6
     dev: true
 
   /@emotion/use-insertion-effect-with-fallbacks@1.0.0(react@18.0.0):
@@ -8986,6 +9153,14 @@ packages:
     resolution: {integrity: sha512-z2jlHBocElRnPYysN2HAuhXbO3DNB0bcSKmNz3hcWR2Js2Dkhc1bEOxG93Z3DeUrnm+qx56XOY5wQmbP5KY0sw==}
     dev: true
 
+  /codex-notifier@1.1.2:
+    resolution: {integrity: sha512-DCp6xe/LGueJ1N5sXEwcBc3r3PyVkEEDNWCVigfvywAkeXcZMk9K41a31tkEFBW0Ptlwji6/JlAb49E3Yrxbtg==}
+    dev: true
+
+  /codex-tooltip@1.0.5:
+    resolution: {integrity: sha512-IuA8LeyLU5p1B+HyhOsqR6oxyFQ11k3i9e9aXw40CrHFTRO2Y1npNBVU3W1SvhKAbUU7R/YikUBdcYFP0RcJag==}
+    dev: true
+
   /collect-v8-coverage@1.0.1:
     resolution: {integrity: sha512-iBPtljfCNcTKNAto0KEtDfZ3qzjJvqE3aTGZsbhjSBlorqpXJlaWWtPO35D+ZImoC3KWejX64o+yPGxhWSTzfg==}
     dev: true
@@ -10031,6 +10206,16 @@ packages:
       lru-cache: 4.1.5
       semver: 5.7.1
       sigmund: 1.0.1
+    dev: true
+
+  /editorjs-text-alignment-blocktune@1.0.3:
+    resolution: {integrity: sha512-DAJ2LJP+WjETvU4lVOJCqZ1kZkKHp0GkujkqZgza9DRv7bO46m1M/s2d5Ba5hPFdmqk1vA/ci++MQXgWD7mWYw==}
+    dev: true
+
+  /editorjs-toggle-block@0.3.11:
+    resolution: {integrity: sha512-Z0/0/OKofiPU5rxlNcz7U/VANK0PGMWyKQ2tVZytMaoyHmqZXmpa68xKATvxO9ldher6873wjgOWT6ZK1bi5YA==}
+    dependencies:
+      uuid: 9.0.0
     dev: true
 
   /ee-first@1.1.1:
@@ -11593,6 +11778,10 @@ packages:
 
   /html-escaper@2.0.2:
     resolution: {integrity: sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg==}
+    dev: true
+
+  /html-janitor@2.0.4:
+    resolution: {integrity: sha512-92J5h9jNZRk30PMHapjHEJfkrBWKCOy0bq3oW2pBungky6lzYSoboBGPMvxl1XRKB2q+kniQmsLsPbdpY7RM2g==}
     dev: true
 
   /htmlparser2@8.0.2:
