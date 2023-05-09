@@ -41,7 +41,7 @@ const { t } = useI18n();
 
 const values = inject('values', ref<Record<string, any>>({}));
 
-const chosenCollection = computed(() => values.value[props.collectionField] || props.collectionName);
+const chosenCollection = computed(() => values.value[props.collectionField!] || props.collectionName);
 
 const { treeList, loadFieldRelations } = useFieldTree(chosenCollection);
 </script>

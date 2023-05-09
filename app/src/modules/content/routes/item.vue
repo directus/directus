@@ -150,7 +150,6 @@
 
 		<v-form
 			ref="form"
-			:key="collection"
 			v-model="edits"
 			:autofocus="isNew"
 			:disabled="isNew ? false : updateAllowed === false"

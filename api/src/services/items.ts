@@ -206,7 +206,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
-				payload,
+				payloadWithPresets,
 				primaryKey,
 				opts
 			);

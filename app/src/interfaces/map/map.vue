@@ -13,7 +13,7 @@
 		<div
 			v-if="location"
 			class="mapboxgl-user-location-dot mapboxgl-search-location-dot"
-			:style="`transform: translate(${projection.x}px, ${projection.y}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
+			:style="`transform: translate(${projection!.x}px, ${projection!.y}px) translate(-50%, -50%) rotateX(0deg) rotateZ(0deg)`"
 		></div>
 		<transition name="fade">
 			<div
@@ -62,8 +62,18 @@
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from '@/stores/app';
+import { useSettingsStore } from '@/stores/settings';
+import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
+import { ButtonControl } from '@/utils/geometry/controls';
+import { Field, GeoJSONParser, GeoJSONSerializer, GeometryType, MultiGeometry, SimpleGeometry } from '@directus/types';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import { Geometry } from 'geojson';
+import { debounce, isEqual, snakeCase } from 'lodash';
 import maplibre, {
 	AnimationOptions,
 	AttributionControl,
@@ -75,21 +85,13 @@ import maplibre, {
 	NavigationControl,
 } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import type { Ref } from 'vue';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
-import { useSettingsStore } from '@/stores/settings';
-import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
-import { ButtonControl } from '@/utils/geometry/controls';
-import { Field, GeoJSONParser, GeoJSONSerializer, GeometryType, MultiGeometry, SimpleGeometry } from '@directus/types';
+import { TranslateResult, useI18n } from 'vue-i18n';
+import { getMapStyle } from './style';
+
 // @ts-ignore
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { Geometry } from 'geojson';
-import { debounce, isEqual, snakeCase } from 'lodash';
-import { getMapStyle } from './style';
-import { useAppStore } from '@/stores/app';
-import { TranslateResult, useI18n } from 'vue-i18n';
-import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 
 const activeLayers = [
 	'directus-point',
@@ -121,7 +123,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-const container = ref<HTMLElement | null>(null);
+const container: Ref<HTMLElement | null> = ref(null);
 let map: Map;
 let mapLoading = ref(true);
 let currentGeometry: Geometry | null | undefined;
@@ -291,7 +293,7 @@ function updateValue(value: any) {
 			controls.draw.changeMode(mode);
 		}
 	} else {
-		if (!isEqual(value, currentGeometry && serialize(currentGeometry))) {
+		if (!isEqual(value, currentGeometry && serialize(currentGeometry as any))) {
 			loadValueFromProps();
 			controls.draw.changeMode('simple_select');
 		}
@@ -449,7 +451,7 @@ function handleDrawUpdate() {
 		controls.draw.deleteAll();
 		emit('input', null);
 	} else {
-		emit('input', serialize(currentGeometry));
+		emit('input', serialize(currentGeometry as any));
 	}
 }
 

@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/utils';
-import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceSelectDropdownM2O from './select-dropdown-m2o.vue';
 
 export default defineInterface({
 	id: 'select-dropdown-m2o',
@@ -30,7 +30,7 @@ export default defineInterface({
 				field: 'enableCreate',
 				name: '$t:creating_items',
 				schema: {
-					default_value: true,
+					default_value: 'true',
 				},
 				meta: {
 					interface: 'boolean',
@@ -44,7 +44,7 @@ export default defineInterface({
 				field: 'enableSelect',
 				name: '$t:selecting_items',
 				schema: {
-					default_value: true,
+					default_value: 'true',
 				},
 				meta: {
 					interface: 'boolean',

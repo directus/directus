@@ -83,19 +83,19 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, ref, toRefs } from 'vue';
-import { Field } from '@directus/types';
-import Draggable from 'vuedraggable';
 import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import formatTitle from '@directus/format-title';
+import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
 
 const props = withDefaults(
 	defineProps<{
 		value: Record<string, unknown>[] | null;
-		fields?: Partial<Field>[];
+		fields?: DeepPartial<Field>[];
 		template?: string;
 		addLabel?: string;
 		sort?: string;
@@ -115,7 +115,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-	(e: 'input', value: Record<string, unknown>[] | null): void;
+	(e: 'input', value: FieldMeta[] | null): void;
 }>();
 
 const { t } = useI18n();
