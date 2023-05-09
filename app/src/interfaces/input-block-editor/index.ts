@@ -3,7 +3,7 @@ import InterfaceBlockEditor from './input-block-editor.vue';
 import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
-	id: 'blockeditor',
+	id: 'input-block-editor',
 	name: '$t:interfaces.input-block-editor.input-block-editor',
 	description: '$t:interfaces.input-block-editor.description',
 	icon: 'code',
