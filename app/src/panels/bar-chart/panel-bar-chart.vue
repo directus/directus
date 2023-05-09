@@ -21,7 +21,7 @@ const props = withDefaults(
 		collection: string;
 		horizontal?: boolean;
 		xAxis: string;
-		function?: 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'count' | 'countDistinct' | 'min' | 'max';
+		function?: 'count' | 'countDistinct' | 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'min' | 'max';
 		yAxis: string;
 		decimals?: number;
 		color?: string;

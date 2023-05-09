@@ -34,7 +34,7 @@ interface Props {
 	field: string;
 	width: number;
 	height: number;
-	fn: 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'count' | 'countDistinct' | 'min' | 'max';
+	fn: 'count' | 'countDistinct' | 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'min' | 'max';
 	data?: { [fn: string]: { [field: string]: number } }[];
 	size?: 'full' | 'half';
 	decimals?: number;

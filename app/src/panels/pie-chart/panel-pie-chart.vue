@@ -21,7 +21,7 @@ const props = withDefaults(
 		data?: Record<string, any>[];
 		donut?: boolean;
 		decimals?: number;
-		function?: 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'count' | 'countDistinct' | 'min' | 'max';
+		function?: 'count' | 'countDistinct' | 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'min' | 'max';
 		legend?: 'none' | 'right' | 'bottom';
 		showLabels?: boolean;
 		color?: string;
