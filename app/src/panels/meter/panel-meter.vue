@@ -114,8 +114,10 @@ const dashOffset = computed(() => {
 });
 
 const conditionalColor = computed(() => {
+	const defaultColor = props.color ?? 'var(--primary)';
+
 	if (!unref(percent) || props.conditionalFill.length === 0) {
-		return props.color;
+		return defaultColor;
 	}
 
 	return (
@@ -137,7 +139,7 @@ const conditionalColor = computed(() => {
 				case '<=':
 					return percentValue < compareValue;
 			}
-		})?.color ?? props.color
+		})?.color ?? defaultColor
 	);
 });
 
