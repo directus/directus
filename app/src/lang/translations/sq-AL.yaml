@@ -1,1 +1,145 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikues
+avatar: Avatar
+application: Aplikacion
+default_provider: Default
+method: Metodë
+published: Publikuar
+draft: Draft
+archived: Arkivuar
+modules: Module
+module_bar: Shiriti i Moduleve
+logs: Regjistrime
+reset_width: Rikthe Gjerësinë
+tile_size: Madhësia e Mozaikut
+edit_field: Modifiko Fushën
+conditions: Kushte
+location: Vendndodhja
+condition_rules: Rregullat e Kushteve
+input: Input
+maps: Harta
+switch_user: Ndërro Përdoruesin
+item_creation: Krijimi i Artikullit
+item_revision: Rishikimi i Artikullit
+enter_a_name: Shkruaj një Emër...
+duplicate_field: Dupliko Fushën
+half_width: Gjerësi e Gjysmës
+full_width: Gjerësi e Plotë
+group: Grup
+export_items: Eksporto Artikujt
+and: Dhe
+or: Ose
+init: Init
+dataset_too_large_currently_showing_n_items: Seti i të dhënave është shumë i madh. Tani po shfaqen {n} artikujt e parë.
+modifier: Modifikues
+custom: Personalizuar
+hook: Kancë
+fill_width: Plotëso Gjerësinë
+field_name_translations: Përkthimet e Emrit të Fushës
+enter_password_to_enable_tfa: Shkruaj fjalëkalimin për të aktivizuar Autentikimin me dy Faktorë
+add_field: Shto Fushë
+role_name: Emri i Rolit
+branch: Dega
+leaf: Gjethe
+indeterminate: Indeterminuar
+edit_collection: Modifiko Koleksionin
+exclusive: Ekskluzive
+children: Fëmijë
+db_only_click_to_configure: 'Vetëm Baza e të Dhënave: Kliko për të Konfiguruar'
+show_active_items: Shfaq Artikujt Aktivë
+show_archived_items: Shfaq Artikujt e Arkivuar
+show_all_items: Shfaq të gjithë Artikujt
+edited: Vlera e Modifikuar
+required: E domosdoshme
+required_for_app_access: E domosdoshme për Qasjen në Aplikacion
+requires_value: Kërkon vlerë
+create_preset: Krijo Parametrat e Paracaktuar
+create_panel: Krijo Panel
+create_role: Krijo Rol
+create_user: Krijo Përdorues
+message: Mesazh
+delete_panel: Fshi Panelin
+create_webhook: Krijo Webhook
+create_translation_string: Krijo Stringun e Përkthimit
+no_translation_string: Nuk ka Stringje Përkthimi
+no_translation_string_copy: Nuk ka stringje përkthimi akoma.
+translation_string_key_placeholder: Çelësi i stringut të përkthimit...
+translation_string_translations_placeholder: Shto një përkthim të ri
+edit_translation_string: Modifiko Stringun e Përkthimit
+delete_translation_string_copy: >-
+  A je i sigurt që dëshiron të fshish stringun e përkthimit "{key}"? Ky veprim nuk mund të zhbëhet.
+invite_users: Fto Përdorues
+invite: Fto
+email_already_invited: Email-i "{email}" është ftuar tashmë
+subject: Subjekt
+inbox: Inbox
+emails: Email-e
+connection_excellent: Lidhje e Shkëlqyer
+connection_good: Lidhje e Mirë
+connection_fair: Lidhje e Mjaftueshme
+connection_poor: Lidhje e Dobët
+primary: Primar
+rename_folder: Riemërto Dosjen
+delete_folder: Fshi Dosjen
+prefix: Prefiks
+suffix: Sufiks
+reset_bookmark: Rikthe Shënuesin
+update_bookmark: Përditëso Shënuesin
+delete_bookmark: Fshi Shënuesin
+delete_bookmark_copy: >-
+  A je i sigurt që dëshiron të fshish shënuesin "{bookmark}"? Ky veprim nuk mund të zhbëhet.
+delete_personal_bookmark: Fshi Shënuesin Personal
+delete_role_bookmark: Fshi Shënuesin e Rolit
+delete_global_bookmark: Fshi Shënuesin Global
+logoutReason:
+  SIGN_OUT: Dalje nga Sistemi
+  SESSION_EXPIRED: Seanca ka skaduar
+public_label: Publik
+public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
+admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
+not_allowed: Nuk lejohet
+directus_version: Versioni i Directus
+node_version: Versioni i Node
+node_uptime: Kohëzgjatja e Node
+os_type: Lloji i OS
+fields:
+  directus_settings:
+    module_bar: Shiriti i Moduleve
+  directus_fields:
+    translation: Përkthimet e Emrit të Fushës
+  directus_roles:
+    name: Emri i Rolit
+interfaces:
+  presentation-links:
+    primary: Primar
+displays:
+  datetime:
+    suffix: Sufiks
+  formatted-value:
+    prefix: Prefiks
+    suffix: Sufiks
+operations:
+  log:
+    message: Mesazh
+  notification:
+    message: Mesazh
