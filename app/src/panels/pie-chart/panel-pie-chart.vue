@@ -5,13 +5,13 @@
 </template>
 
 <script lang="ts" setup>
+import { useFieldsStore } from '@/stores/fields';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { isNil } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { monoThemeGenerator } from './color-generator';
-import { useFieldsStore } from '@/stores/fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -110,14 +110,12 @@ async function setupChart() {
 
 	const total = series.reduce((acc, val) => acc + val, 0);
 
-	const baseColors: string[] = monoThemeGenerator(props.color, labels.length);
+	const baseColors: string[] = monoThemeGenerator(props.color ? props.color : cssVar('--primary'), labels.length);
 
-	// TODO: fix type/logic
 	const colors = baseColors.map((baseColor, index) => formatColor(baseColor, series[index]));
 
 	const size = props.height < props.width ? props.height * 20 : props.width * 20;
 
-	// TODO: extract these out
 	let left = 20;
 	let right = 20;
 	let top = props.showHeader ? 10 : 0;

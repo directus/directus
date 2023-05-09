@@ -7,13 +7,13 @@ export const monoThemeGenerator = (baseColor: string, length: number): string[] 
 	let newL = lab[0] - 15;
 
 	for (let index = 1; index < length; index++) {
-		updateLightness(index);
+		newL = getUpdatedLightness(newL, index);
 		let proposedColor = chroma.lab(newL, lab[1], lab[2]).hex();
 
 		let round = 0;
 
 		while (theme.includes(proposedColor)) {
-			updateLightness(index);
+			newL = getUpdatedLightness(newL, index);
 
 			if (newL > 0 && newL < 255) {
 				proposedColor = chroma.lab(newL, lab[1], lab[2]).hex();
@@ -31,7 +31,7 @@ export const monoThemeGenerator = (baseColor: string, length: number): string[] 
 
 	return theme;
 
-	function updateLightness(index: number) {
-		newL = newL < 0 ? lab[0] + index + 20 : newL - (index + 10);
+	function getUpdatedLightness(lightness: number, index: number) {
+		return lightness < 0 ? lab[0] + index + 20 : lightness - (index + 10);
 	}
 };
