@@ -6,6 +6,7 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
+import { PanelFunction } from '@/types/panels';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { isNil } from 'lodash';
@@ -21,7 +22,7 @@ const props = withDefaults(
 		data?: Record<string, any>[];
 		donut?: boolean;
 		decimals?: number;
-		function?: 'count' | 'countDistinct' | 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'min' | 'max';
+		function?: PanelFunction;
 		legend?: 'none' | 'right' | 'bottom';
 		showLabels?: boolean;
 		color?: string;

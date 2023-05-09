@@ -25,6 +25,7 @@
 </template>
 
 <script lang="ts" setup>
+import { PanelFunction } from '@/types/panels';
 import { computed, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -34,7 +35,7 @@ interface Props {
 	field: string;
 	width: number;
 	height: number;
-	fn: 'count' | 'countDistinct' | 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'min' | 'max';
+	fn: PanelFunction;
 	data?: { [fn: string]: { [field: string]: number } }[];
 	size?: 'full' | 'half';
 	decimals?: number;

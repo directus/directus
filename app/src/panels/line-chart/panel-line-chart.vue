@@ -6,6 +6,7 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
+import { PanelFunction } from '@/types/panels';
 import type { Filter } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { cssVar } from '@directus/utils/browser';
@@ -21,7 +22,7 @@ const props = withDefaults(
 		data?: Record<string, any>[];
 		group?: string;
 		xAxis?: string;
-		function: 'count' | 'countDistinct' | 'avg' | 'avgDistinct' | 'sum' | 'sumDistinct' | 'min' | 'max';
+		function: PanelFunction;
 		yAxis: string;
 		color: string;
 		filter: Filter;
