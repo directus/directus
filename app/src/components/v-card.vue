@@ -42,6 +42,7 @@ body {
 	height: var(--v-card-height);
 	min-height: var(--v-card-min-height);
 	max-height: var(--v-card-max-height);
+	overflow: auto;
 
 	/* Page Content Spacing */
 	font-size: 15px;

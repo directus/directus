@@ -22,7 +22,6 @@
 				<div
 					v-if="isActive"
 					:id="id"
-					:key="id"
 					v-click-outside="{
 						handler: deactivate,
 						middleware: onClickOutsideMiddleware,

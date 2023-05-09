@@ -92,15 +92,15 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
-import { uploadFiles } from '@/utils/upload-files';
-import { uploadFile } from '@/utils/upload-file';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
 import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { uploadFile } from '@/utils/upload-file';
+import { uploadFiles } from '@/utils/upload-files';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Filter } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	multiple?: boolean;
@@ -258,7 +258,9 @@ function useDragging() {
 function useSelection() {
 	return { setSelection };
 
-	async function setSelection(selection: string[]) {
+	async function setSelection(selection: (string | number)[] | null) {
+		if (!selection) return;
+
 		if (props.multiple) {
 			const filesResponse = await api.get(`/files`, {
 				params: {

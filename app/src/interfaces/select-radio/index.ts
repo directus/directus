@@ -1,6 +1,6 @@
 import { defineInterface } from '@directus/utils';
-import InterfaceSelectRadio from './select-radio.vue';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceSelectRadio from './select-radio.vue';
 
 export default defineInterface({
 	id: 'select-radio',
@@ -95,7 +95,7 @@ export default defineInterface({
 				},
 			},
 			schema: {
-				default_value: false,
+				default_value: 'false',
 			},
 		},
 	],
