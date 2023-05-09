@@ -32,20 +32,18 @@ export function shouldSkipCache(req: Request): boolean {
 	return false;
 
 	function checkAutoPurge() {
-		if (env['CACHE_AUTO_PURGE']) {
-			const path = url.parse(req.originalUrl).pathname;
+		if (env['CACHE_AUTO_PURGE'] === false) return true;
 
-			for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST']) {
-				const ignoredPath = getEndpoint(collection);
+		const path = url.parse(req.originalUrl).pathname;
 
-				if (path?.startsWith(ignoredPath)) {
-					return true;
-				}
+		for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST']) {
+			const ignoredPath = getEndpoint(collection);
+
+			if (path?.startsWith(ignoredPath)) {
+				return true;
 			}
-
-			return false;
-		} else {
-			return true;
 		}
+
+		return false;
 	}
 }
