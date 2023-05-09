@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PanelFunction } from '@/types/panels';
+import { BaseConditionalFillOperators, PanelFunction } from '@/types/panels';
 import { computed, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -43,7 +43,7 @@ interface Props {
 	roundedStroke?: boolean;
 	color?: string;
 	max?: number;
-	conditionalFill?: { operator: '=' | '!=' | '>' | '>=' | '<' | '<='; color: string; value: number }[];
+	conditionalFill?: { operator: BaseConditionalFillOperators; color: string; value: number }[];
 }
 
 const props = withDefaults(defineProps<Props>(), {

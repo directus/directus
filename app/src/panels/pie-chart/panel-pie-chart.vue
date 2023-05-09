@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
-import { PanelFunction } from '@/types/panels';
+import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { isNil } from 'lodash';
@@ -29,7 +29,7 @@ const props = withDefaults(
 		height: number;
 		width: number;
 		conditionalFill?: {
-			operator: '=' | '!=' | '>' | '>=' | '<' | '<=' | 'contains' | 'ncontains' | 'starts_with' | 'ends_with';
+			operator: StringConditionalFillOperators;
 			color: string;
 			value: number;
 		}[];

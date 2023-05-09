@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { useFieldsStore } from '@/stores/fields';
-import { PanelFunction } from '@/types/panels';
+import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 import type { Filter } from '@directus/types';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
@@ -31,7 +31,7 @@ const props = withDefaults(
 		showDataLabel?: boolean;
 		conditionalFill?: {
 			axis: 'X' | 'Y';
-			operator: '=' | '!=' | '>' | '>=' | '<' | '<=' | 'contains' | 'ncontains' | 'starts_with' | 'ends_with';
+			operator: StringConditionalFillOperators;
 			color: string;
 			value: number;
 		}[];
