@@ -294,7 +294,7 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('app.after', { app });
 
 	if (env['NEURON_SOCKET_ENABLED'] === true) {
-		// await socketclusterService.connect();
+		await socketclusterService.connect();
 	}
 
 	return app;
