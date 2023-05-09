@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/utils';
 import InterfaceBlockEditor from './input-block-editor.vue';
+import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
 	id: 'blockeditor',
@@ -9,6 +10,7 @@ export default defineInterface({
 	component: InterfaceBlockEditor,
 	types: ['json'],
 	group: 'standard',
+	preview: PreviewSVG,
 	options: [
 		{
 			field: 'placeholder',
