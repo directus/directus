@@ -13,6 +13,7 @@ exports.list = {
 		{ testFilePath: '/schema/timezone/timezone-changed-node-tz-asia.test.ts' },
 		{ testFilePath: '/logger/redact.test.ts' },
 		{ testFilePath: '/routes/flows/webhook.test.ts' },
+		{ testFilePath: '/app/cache.test.ts' },
 		{ testFilePath: '/routes/collections/schema-cache.test.ts' },
 		{ testFilePath: '/routes/assets/concurrency.test.ts' },
 	],
