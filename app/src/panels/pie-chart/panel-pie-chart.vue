@@ -201,7 +201,7 @@ async function setupChart() {
 			},
 		},
 		legend: {
-			show: props.legend !== 'none' ? true : false,
+			show: props.legend !== 'none',
 			position: props.legend !== 'none' ? props.legend : undefined,
 			customLegendItems: labels,
 			offsetX: props.legend === 'right' ? -25 : -((props.width - 4) * 5),
