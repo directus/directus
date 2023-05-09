@@ -3,8 +3,8 @@ import InterfaceBlockEditor from './input-block-editor.vue';
 
 export default defineInterface({
 	id: 'blockeditor',
-	name: 'Block Editor',
-	description: 'Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js',
+	name: '$t:interfaces.input-block-editor.input-block-editor',
+	description: '$t:interfaces.input-block-editor.description',
 	icon: 'code',
 	component: InterfaceBlockEditor,
 	types: ['json'],
@@ -51,7 +51,7 @@ export default defineInterface({
 		},
 		{
 			field: 'tools',
-			name: '$t:interfaces.input-rich-text-html.toolbar',
+			name: '$t:interfaces.input-block-editor.tools',
 			type: 'json',
 			schema: {
 				default_value: ['header', 'nestedlist', 'code', 'image', 'paragraph', 'checklist', 'quote', 'underline'],
@@ -63,67 +63,67 @@ export default defineInterface({
 					choices: [
 						{
 							value: 'header',
-							text: 'Header',
+							text: '$t:interfaces.input-block-editor.tools_options.header',
 						},
 						{
 							value: 'nestedlist',
-							text: 'List',
+							text: '$t:interfaces.input-block-editor.tools_options.nestedlist',
 						},
 						{
 							value: 'embed',
-							text: 'Embed',
+							text: '$t:interfaces.input-block-editor.tools_options.embed',
 						},
 						{
 							value: 'paragraph',
-							text: 'Paragraph',
+							text: '$t:interfaces.input-block-editor.tools_options.paragraph',
 						},
 						{
 							value: 'code',
-							text: 'Code',
+							text: '$t:interfaces.input-block-editor.tools_options.code',
 						},
 						{
 							value: 'image',
-							text: 'Image',
+							text: '$t:interfaces.input-block-editor.tools_options.image',
 						},
 						{
 							value: 'attaches',
-							text: 'Attaches',
+							text: '$t:interfaces.input-block-editor.tools_options.attaches',
 						},
 						{
 							value: 'table',
-							text: 'Table',
+							text: '$t:interfaces.input-block-editor.tools_options.table',
 						},
 						{
 							value: 'quote',
-							text: 'Quote',
+							text: '$t:interfaces.input-block-editor.tools_options.quote',
 						},
 						{
 							value: 'underline',
-							text: 'Underline',
+							text: '$t:interfaces.input-block-editor.tools_options.underline',
 						},
 						{
 							value: 'inlinecode',
-							text: 'Inline Code',
+							text: '$t:interfaces.input-block-editor.tools_options.inlinecode',
 						},
 						{
 							value: 'delimiter',
-							text: 'Delimiter',
+							text: '$t:interfaces.input-block-editor.tools_options.delimiter',
 						},
 						{
 							value: 'checklist',
-							text: 'Checklist',
+							text: '$t:interfaces.input-block-editor.tools_options.checklist',
 						},
 						{
 							value: 'toggle',
-							text: 'Toggle Block',
+							text: '$t:interfaces.input-block-editor.tools_options.toggle',
 						},
 						{
 							value: 'alignment',
-							text: 'Alignment',
+							text: '$t:interfaces.input-block-editor.tools_options.alignment',
 						},
 						{
 							value: 'raw',
-							text: 'Raw HTML',
+							text: '$t:interfaces.input-block-editor.tools_options.raw',
 						},
 					],
 				},
