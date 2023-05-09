@@ -96,9 +96,10 @@ function setUpChart() {
 		? props.data.map((d) => d['group'][props.group!])
 		: props.data.map((d) => d[props.xAxis!]);
 
-	const colors = props.color.startsWith('var(--')
-		? cssVar(props.color.substring(4, props.color.length - 1))
-		: props.color;
+	const colors =
+		props.color && props.color.startsWith('var(--')
+			? cssVar(props.color.substring(4, props.color.length - 1))
+			: props.color ?? 'var(--primary)';
 
 	chart.value = new ApexCharts(chartEl.value, {
 		colors: [colors],
