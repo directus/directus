@@ -428,7 +428,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const groups = computed(() => {
 				if (isRelational.value) return relationalGroupsItems.value;
-				return selectedGroup.value?.meta?.options?.choices as Record<string, any>[];
+				return (selectedGroup.value?.meta?.options?.choices ?? []) as Record<string, any>[];
 			});
 
 			return {
