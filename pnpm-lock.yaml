@@ -1340,6 +1340,9 @@ importers:
 
   tests/blackbox:
     devDependencies:
+      '@directus/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
       '@directus/types':
         specifier: workspace:*
         version: link:../../packages/types

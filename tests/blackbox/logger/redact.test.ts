@@ -2,6 +2,7 @@ import config, { getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
 import { TestLogger } from '@common/test-logger';
+import { REDACTED_TEXT } from '@directus/constants';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
 import { EnumType } from 'json-to-graphql-query';
@@ -116,8 +117,8 @@ describe('Logger Redact Tests', () => {
 								});
 
 								for (const log of [logs, logsGql]) {
-									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(1);
+									expect((log.match(`/"cookie":"${REDACTED_TEXT}"/g`) || []).length).toBe(0);
+									expect((log.match(`/"set-cookie":"${REDACTED_TEXT}"/g`) || []).length).toBe(1);
 								}
 							} else {
 								expect(response.body).toMatchObject({
@@ -129,8 +130,8 @@ describe('Logger Redact Tests', () => {
 								});
 
 								for (const log of [logs, logsGql]) {
-									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+									expect((log.match(`/"cookie":"${REDACTED_TEXT}"/g`) || []).length).toBe(0);
+									expect((log.match(`/"set-cookie":"${REDACTED_TEXT}"/g`) || []).length).toBe(0);
 								}
 							}
 
@@ -229,8 +230,8 @@ describe('Logger Redact Tests', () => {
 								});
 
 								for (const log of [logs, logsGql]) {
-									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(1);
-									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(1);
+									expect((log.match(`/"cookie":"${REDACTED_TEXT}"/g`) || []).length).toBe(1);
+									expect((log.match(`/"set-cookie":"${REDACTED_TEXT}"/g`) || []).length).toBe(1);
 								}
 							} else {
 								expect(response.body).toMatchObject({
@@ -242,8 +243,8 @@ describe('Logger Redact Tests', () => {
 								});
 
 								for (const log of [logs, logsGql]) {
-									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(1);
-									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+									expect((log.match(`/"cookie":"${REDACTED_TEXT}"/g`) || []).length).toBe(1);
+									expect((log.match(`/"set-cookie":"${REDACTED_TEXT}"/g`) || []).length).toBe(0);
 								}
 							}
 
