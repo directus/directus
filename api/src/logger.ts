@@ -1,12 +1,12 @@
-import { REDACTED_TEXT } from '@directus/constants';
 import { toArray } from '@directus/utils';
-import type { Request, RequestHandler } from 'express';
 import { merge } from 'lodash-es';
-import type { LoggerOptions } from 'pino';
 import { pino } from 'pino';
+import type { LoggerOptions } from 'pino';
+import type { Request, RequestHandler } from 'express';
 import { pinoHttp, stdSerializers } from 'pino-http';
 import { URL } from 'url';
 import env from './env.js';
+import { REDACTED_TEXT } from './constants.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 const pinoOptions: LoggerOptions = {

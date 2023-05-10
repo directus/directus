@@ -1,4 +1,3 @@
-import { REDACTED_TEXT } from '@directus/constants';
 import { merge } from 'lodash-es';
 import { expect, test } from 'vitest';
 import { redact } from './redact.js';
@@ -42,64 +41,64 @@ const input = {
 };
 
 test('should not mutate input', () => {
-	const redactInput = redact(['$trigger'], REDACTED_TEXT);
+	const redactInput = redact(['$trigger'], '--redacted--');
 
 	expect(redactInput(input)).not.toBe(input);
 });
 
 test('should support single level path', () => {
-	const redactInput = redact(['$trigger'], REDACTED_TEXT);
+	const redactInput = redact(['$trigger'], '--redacted--');
 
 	expect(redactInput(input)).toEqual(
 		merge({}, input, {
-			$trigger: REDACTED_TEXT,
+			$trigger: '--redacted--',
 		})
 	);
 });
 
 test('should support multi level path', () => {
-	const redactInput = redact(['$trigger.payload.password'], REDACTED_TEXT);
+	const redactInput = redact(['$trigger.payload.password'], '--redacted--');
 
 	expect(redactInput(input)).toEqual(
 		merge({}, input, {
 			$trigger: {
-				payload: { password: REDACTED_TEXT },
+				payload: { password: '--redacted--' },
 			},
 		})
 	);
 });
 
 test('should support wildcard path', () => {
-	const redactInput = redact(['*.payload'], REDACTED_TEXT);
+	const redactInput = redact(['*.payload'], '--redacted--');
 
 	expect(redactInput(input)).toEqual(
 		merge({}, input, {
 			$trigger: {
-				payload: REDACTED_TEXT,
+				payload: '--redacted--',
 			},
 		})
 	);
 });
 
 test('should support deep path', () => {
-	const redactInput = redact(['**.password'], REDACTED_TEXT);
+	const redactInput = redact(['**.password'], '--redacted--');
 
 	expect(redactInput(input)).toMatchObject(
 		merge({}, input, {
 			$trigger: {
 				payload: {
-					password: REDACTED_TEXT,
+					password: '--redacted--',
 				},
 			},
 			exec_fm27u: {
 				$trigger: {
 					payload: {
-						password: REDACTED_TEXT,
+						password: '--redacted--',
 					},
 				},
 				$last: {
 					payload: {
-						password: REDACTED_TEXT,
+						password: '--redacted--',
 					},
 				},
 			},
@@ -108,26 +107,26 @@ test('should support deep path', () => {
 });
 
 test('should support multiple paths', () => {
-	const redactInput = redact(['$trigger.key', '*.payload.email', '**.password'], REDACTED_TEXT);
+	const redactInput = redact(['$trigger.key', '*.payload.email', '**.password'], '--redacted--');
 
 	expect(redactInput(input)).toEqual(
 		merge({}, input, {
 			$trigger: {
-				key: REDACTED_TEXT,
+				key: '--redacted--',
 				payload: {
-					email: REDACTED_TEXT,
-					password: REDACTED_TEXT,
+					email: '--redacted--',
+					password: '--redacted--',
 				},
 			},
 			exec_fm27u: {
 				$trigger: {
 					payload: {
-						password: REDACTED_TEXT,
+						password: '--redacted--',
 					},
 				},
 				$last: {
 					payload: {
-						password: REDACTED_TEXT,
+						password: '--redacted--',
 					},
 				},
 			},
