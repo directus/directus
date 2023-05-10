@@ -524,12 +524,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 
 			async function changeGroupSort(event: ChangeEvent<Group>) {
-				if (event.moved && groupsSortField.value !== null) {
-					const item = groupedItems.value[event.moved.oldIndex - (showUngrouped.value ? 1 : 0)]?.id;
-					const to = groupedItems.value[event.moved.newIndex - (showUngrouped.value ? 1 : 0)]?.id;
-					if (!item || !to) return;
-					await groupsChangeManualSort({ item, to });
-				}
+				if (!event.moved || groupsSortField.value == null) return;
+				const offset = showUngrouped.value ? 1 : 0;
+				const item = groupedItems.value[event.moved.oldIndex - offset]?.id;
+				const to = groupedItems.value[event.moved.newIndex - offset]?.id;
+				// the special "ungrouped" group has null id
+				if (!item || !to) return;
+				await groupsChangeManualSort({ item, to });
 			}
 		}
 
