@@ -303,7 +303,7 @@
 	padding: 3px 0;
 }
 
-.codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox {
+.codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox-check {
 	background: var(--primary);
 	border-color: var(--primary);
 }
