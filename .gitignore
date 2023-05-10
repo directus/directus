@@ -40,7 +40,7 @@ TODO
 # Directus
 /schema.yaml
 /schema.json
-/api/uploads*
+/api/uploads
 /api/extensions
 /tests/blackbox/uploads
 /tests/blackbox/server-log-*
