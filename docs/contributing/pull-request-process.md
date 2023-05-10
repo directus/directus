@@ -13,7 +13,7 @@ next. Requiring PRs to implement Issues makes sure that your PR aligns with the 
 goals. Please leave a comment on the issue you're preparing a PR for, so you can be assigned which makes sure nobody
 else will work on the same thing at the same time.
 
-## Choosing what to Implement
+## Choosing What to Implement
 
 We welcome PRs for any [Issue](https://github.com/directus/directus/issues). Issues labeled
 ["Community"](https://github.com/directus/directus/issues?q=is:issue+is:open+label:Community) have been identified as
