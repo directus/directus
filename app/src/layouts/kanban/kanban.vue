@@ -210,11 +210,6 @@ function saveChanges() {
 			margin-right: 20px;
 			transition: border-color var(--transition) var(--fast);
 
-			&:active {
-				border-color: var(--border-normal-alt);
-				cursor: move;
-			}
-
 			.header {
 				display: flex;
 				justify-content: space-between;
