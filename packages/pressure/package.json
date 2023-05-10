@@ -1,6 +1,6 @@
 {
 	"name": "@directus/pressure",
-	"version": "10.0.0",
+	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
@@ -14,7 +14,7 @@
 		"directory": "packages/pressure"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
