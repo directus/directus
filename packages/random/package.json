@@ -1,6 +1,6 @@
 {
 	"name": "@directus/random",
-	"version": "10.0.0",
+	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
@@ -14,7 +14,7 @@
 		"directory": "packages/random"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
