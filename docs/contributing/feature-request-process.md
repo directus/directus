@@ -20,8 +20,7 @@ Directus Core team will review it to decide if it will be approved, denied, or i
 request is accepted, it will be moved to the "Approved Requests" status, at which point the feature is ready to be
 implemented.
 
-However, if a feature request didn't reach the required 15 upvotes after 3 months of time, it will be closed due to a
-lack of community interest.
+However, if a feature request doesn't reach at least 15 upvotes 3 months after it is created, it will be closed due to a lack of community interest.
 
 ## Implementing Accepted Feature Requests
 
