@@ -1,33 +1,35 @@
 <template>
-	<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
+	<div class="input-block-editor">
+		<div ref="editorElement" :class="{ [font]: true, disabled, bordered }"></div>
 
-	<v-drawer
-		v-if="haveFilesAccess && !disabled"
-		:model-value="fileHandler !== null"
-		icon="image"
-		:title="t('upload_from_device')"
-		:cancelable="true"
-		@update:model-value="unsetFileHandler"
-		@cancel="unsetFileHandler"
-	>
-		<div class="uploader-drawer-content">
-			<div v-if="currentPreview" class="uploader-preview-image">
-				<img :src="currentPreview" />
+		<v-drawer
+			v-if="haveFilesAccess && !disabled"
+			:model-value="fileHandler !== null"
+			icon="image"
+			:title="t('upload_from_device')"
+			:cancelable="true"
+			@update:model-value="unsetFileHandler"
+			@cancel="unsetFileHandler"
+		>
+			<div class="uploader-drawer-content">
+				<div v-if="currentPreview" class="uploader-preview-image">
+					<img :src="currentPreview" />
+				</div>
+				<v-upload
+					:ref="uploaderComponentElement"
+					:multiple="false"
+					:folder="folder"
+					from-library
+					from-url
+					@input="handleFile"
+				/>
 			</div>
-			<v-upload
-				:ref="uploaderComponentElement"
-				:multiple="false"
-				:folder="folder"
-				from-library
-				from-url
-				@input="handleFile"
-			/>
-		</div>
-	</v-drawer>
+		</v-drawer>
+	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, withDefaults } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import api, { addTokenToURL } from '@/api';
 import EditorJS from '@editorjs/editorjs';
@@ -45,9 +47,9 @@ const props = withDefaults(
 		value?: Record<string, any> | null;
 		bordered?: boolean;
 		placeholder?: string;
-		tools: string[];
+		tools?: string[];
 		folder?: string;
-		font: 'sans-serif' | 'monospace' | 'serif';
+		font?: 'sans-serif' | 'monospace' | 'serif';
 	}>(),
 	{
 		disabled: false,
@@ -87,7 +89,7 @@ const tools = getTools(
 	haveFilesAccess
 );
 
-onMounted(() => {
+onMounted(async () => {
 	const sanitizedValue = sanitizeValue(props.value);
 
 	editorjsRef.value = new EditorJS({
@@ -101,14 +103,14 @@ onMounted(() => {
 	});
 
 	// we have initial data, so we render it once the editor is ready...
-	if (sanitizedValue) {
-		editorjsRef.value.isReady.then(() => {
-			editorjsRef.value!.render(sanitizedValue);
+	await editorjsRef.value.isReady;
 
-			if (props.autofocus) {
-				editorjsRef.value!.focus();
-			}
-		});
+	if (sanitizedValue) {
+		await editorjsRef.value.render(sanitizedValue);
+	}
+
+	if (props.autofocus) {
+		editorjsRef.value.focus();
 	}
 });
 
