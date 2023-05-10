@@ -55,6 +55,9 @@ importers:
       '@directus/format-title':
         specifier: 10.0.0
         version: 10.0.0
+      '@directus/pressure':
+        specifier: workspace:*
+        version: link:../packages/pressure
       '@directus/schema':
         specifier: workspace:*
         version: link:../packages/schema
@@ -1007,6 +1010,46 @@ importers:
       '@types/inquirer':
         specifier: 9.0.3
         version: 9.0.3
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/pressure:
+    dependencies:
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/express':
+        specifier: 4.17.17
+        version: 4.17.17
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/random:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
       '@vitest/coverage-c8':
         specifier: 0.31.0
         version: 0.31.0(vitest@0.31.0)
