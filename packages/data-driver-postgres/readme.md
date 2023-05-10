@@ -1,3 +1,3 @@
-# `@directus/data`
+# `@directus/data-driver-postgres`
 
-Data abstraction for Directus
+Data abstraction for Postgres
