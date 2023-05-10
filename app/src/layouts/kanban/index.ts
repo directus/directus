@@ -1,14 +1,15 @@
 import api, { addTokenToURL } from '@/api';
+import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getRootPath } from '@/utils/get-root-path';
+import { translate } from '@/utils/translate-literal';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
+import { User } from '@directus/types';
 import { defineLayout, getRelationType } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
-import { translate } from '@/utils/translate-literal';
-import { User } from '@directus/types';
 import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
@@ -23,6 +24,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: KanbanActions,
 	},
 	setup(props, { emit }) {
+		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -471,11 +473,32 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 
 			async function editGroup(id: string | number, title: string) {
-				if (groupTitle.value === null) return;
+				if (isRelational.value) {
+					if (groupTitle.value === null) return;
 
-				await api.patch(`/items/${groupsCollection.value}/${id}`, {
-					[groupTitle.value]: title,
-				});
+					await api.patch(`/items/${groupsCollection.value}/${id}`, {
+						[groupTitle.value]: title,
+					});
+				} else {
+					if (!selectedGroup.value) return;
+
+					const updatedChoices = ((selectedGroup.value?.meta?.options?.choices as Record<string, any>[]) ?? []).map(
+						(choice) => {
+							if (choice.value === id) {
+								return {
+									...choice,
+									text: title,
+								};
+							}
+
+							return choice;
+						}
+					);
+
+					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
+						meta: { options: { choices: updatedChoices } },
+					});
+				}
 
 				await getGroups();
 			}
