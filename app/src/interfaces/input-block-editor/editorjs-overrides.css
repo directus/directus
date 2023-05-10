@@ -75,6 +75,11 @@
 	background: var(--v-list-background-color-hover) !important;
 }
 
+.codex-editor .ce-popover__item--confirmation,
+.codex-editor .ce-popover__item--confirmation:hover{
+	background: var(--danger-alt) !important;
+}
+
 .codex-editor .ce-popover__item-icon {
 	background: var(--background-page);
 	border-color: var(--background-normal-alt);
