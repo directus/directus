@@ -26,7 +26,7 @@ https://github.com/directus/directus/issues
 Please be as explicit and detailed as you can in the bug report. The more information available, the easier it is for
 other contributors to help you find the solution or fix. Consider adding a schema snapshot file, or a database dump.
 
-## Request a new Feature
+## Request a New Feature
 
 If you have a great idea for an improvement of the platform, or any other feedback, please make sure to open a new
 Discussion on our GitHub Discussions board: https://github.com/directus/directus/discussions. Feature requests are
