@@ -76,6 +76,7 @@
 		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
+		"@directus/pressure": "workspace:*",
 		"@directus/schema": "workspace:*",
 		"@directus/specs": "workspace:*",
 		"@directus/storage": "workspace:*",
