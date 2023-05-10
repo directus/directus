@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Add Kanban layout
+Added Kanban layout
