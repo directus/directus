@@ -445,7 +445,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				addGroup,
 				editGroup,
 				deleteGroup,
-				changeGroupTitle,
 				changeGroupSort,
 				isRelational,
 			};
@@ -499,25 +498,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						meta: { options: { choices: updatedChoices } },
 					});
 				}
-
-				await getGroups();
-			}
-
-			async function changeGroupTitle(id: string | number, newTitle: string) {
-				const pkField = primaryKeyField.value?.field;
-
-				if (groupTitle.value === null || pkField === undefined) return;
-
-
-				const itemIndex = items.value.findIndex((item) => item[pkField] === id);
-
-				if (itemIndex in items.value) {
-					items.value[itemIndex][groupTitle.value] = newTitle;
-				}
-
-				await api.patch(`/items/${groupsCollection.value}/${id}`, {
-					[groupTitle.value]: newTitle,
-				});
 
 				await getGroups();
 			}
