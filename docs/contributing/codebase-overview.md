@@ -65,6 +65,12 @@ The source code is located in `/api/src` and the below folders are inside there.
 | `/utils`       | Utility functions used in various parts of the app.                                                                                                          |
 | `/views`       | The (two) main views used in the app: public / private. Also contains "internal" coupled components for those two views.                                     |
 
+::: tip  Component Library
+
+Directus comes shipped with it's own [Vue Component Library and Storybook]((https://components.directus.io)) that you can use to enrich your extensions or when developing locally.
+These components can be used in any of the "app extensions", including Interfaces, Displays, Modules, Layouts, and Panels.
+
+:::
 
 ## Additional Packages (`/packages`)
 
