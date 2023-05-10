@@ -70,6 +70,29 @@ The source code is located in `/api/src` and the below folders are inside there.
 
 The various sub-packages of the platform. Including the file-storage adapters, schema, specs, etc.
 
+| Folder                       | Package Name                                                                                                             | Description                                                  |
+|------------------------------|--------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------|
+| `/composables`               | [@directus/composables](https://github.com/directus/directus/tree/main/packages/composables)                             | Shared Vue composables for Directus use                      |
+| `/constants`                 | [@directus/constants](https://github.com/directus/directus/tree/main/packages/constants)                                 | Shared constants for Directus                                |
+| `/create-directus-extension` | [create-directus-extension](https://github.com/directus/directus/tree/main/packages/create-directus-extension)           | A small util that will scaffold a Directus extension         |
+| `/data-driver-postgres`      | [@directus/data-driver-postgres](https://github.com/directus/directus/tree/main/packages/data-driver-postgres)           | Data abstraction for Postgres                                |
+| `/data`                      | [@directus/data](https://github.com/directus/directus/tree/main/packages/data)                                           | Data abstraction for Directus                                |
+| `/exceptions`                | [@directus/exceptions](https://github.com/directus/directus/tree/main/packages/exceptions)                               | Shared exceptions in Directus                                |
+| `/extensions-sdk`            | [@directus/extensions-sdk](https://github.com/directus/directus/tree/main/packages/extensions-sdk)                       | A toolkit to develop extensions to extend Directus           |
+| `/pressure`                  | [@directus/pressure](https://github.com/directus/directus/tree/main/packages/pressure)                                   | Pressure based rate limiter                                  |
+| `/random`                    | [@directus/random](https://github.com/directus/directus/tree/main/packages/random)                                       | Set of random-utilities for use in tests                     |
+| `/schema`                    | [@directus/schema](https://github.com/directus/directus/tree/main/packages/schema)                                       | Utility for extracting information about the database schema |
+| `/specs`                     | [@directus/specs](https://github.com/directus/directus/tree/main/packages/specs)                                         | OpenAPI Specification of the Directus API                    |
+| `/storage-driver-azure`      | [@directus/storage-driver-azure](https://github.com/directus/directus/tree/main/packages/storage-driver-azure)           | Azure file storage abstraction for `@directus/storage`       |
+| `/storage-driver-cloudinary` | [@directus/storage-driver-cloudinary](https://github.com/directus/directus/tree/main/packages/storage-driver-cloudinary) | Cloudinary file storage abstraction for `@directus/storage`  |
+| `/storage-driver-gcs`        | [@directus/storage-driver-gcs](https://github.com/directus/directus/tree/main/packages/storage-driver-gcs)               | GCS file storage abstraction for `@directus/storage`         |
+| `/storage-driver-local`      | [@directus/storage-driver-local](https://github.com/directus/directus/tree/main/packages/storage-driver-local)           | Local file storage abstraction for `@directus/storage`       |
+| `/storage-driver-s3`         | [@directus/storage-driver-s3](https://github.com/directus/directus/tree/main/packages/storage-driver-s3)                 | S3 file storage abstraction for `@directus/storage`          |
+| `/storage`                   | [@directus/storage](https://github.com/directus/directus/tree/main/packages/storage)                                     | Object storage abstraction layer for Directus                |
+| `/types`                     | [@directus/types](https://github.com/directus/directus/tree/main/packages/types)                                         | Shared types for Directus                                    |
+| `/update-check`              | [@directus/update-check](https://github.com/directus/directus/tree/main/packages/update-check)                           | Check if an update is available for a given package          |
+| `/utils`                     | [@directus/utils](https://github.com/directus/directus/tree/main/packages/utils)                                         | Utilities shared between the Directus packages               |
+
 ## Tests (`/tests`)
 
 Tests are maintained on a per-package base. This folder contains the platform-wide (end-to-end) tests.
