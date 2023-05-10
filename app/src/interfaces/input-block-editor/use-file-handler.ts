@@ -28,8 +28,8 @@ export function useFileHandler() {
 		fileHandler.value = handler;
 	}
 
-	function handleFile(event: InputEvent) {
-		if (fileHandler.value) {
+	function handleFile(event: InputEvent | null) {
+		if (fileHandler.value && event) {
 			fileHandler.value(event);
 		}
 
