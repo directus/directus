@@ -68,6 +68,7 @@
 
 .codex-editor .ce-popover__item--active {
 	color: var(--primary);
+	background: var(--v-list-background-color-active);
 }
 
 .codex-editor .ce-popover__item:hover {
