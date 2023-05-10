@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest run"
 	},
 	"description": "Shared Vue composables for Directus use",
 	"repository": {
