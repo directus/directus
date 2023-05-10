@@ -6,7 +6,7 @@ or new feature you care about land in the platform.
 Reviewing and maintaining community submitted code is a very time consuming process. To ensure the core team can give
 every PR the tender love and care it deserves, and not have valuable PRs to stale, we require that:
 
-**Every PR is required to fix/close an open [Issue](https://github.com/directus/directus/issues).**
+**Every pull request must be in answer to an existing open [Issue](https://github.com/directus/directus/issues).**
 
 We use [GitHub Issues](https://github.com/directus/directus/issues) as a living to-do list of tasks we want to work on
 next. Requiring PRs to implement Issues makes sure that your PR aligns with the core team's planning and long-term
