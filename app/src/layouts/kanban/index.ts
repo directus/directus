@@ -5,7 +5,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { User } from '@directus/types';
-import { defineLayout, getRelationType } from '@directus/utils';
+import { defineLayout, getRelationType, moveInArray } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
@@ -501,13 +501,35 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 
 			async function changeGroupSort(event: ChangeEvent<Group>) {
-				if (!event.moved || groupsSortField.value == null) return;
+				if (!event.moved) return;
+
 				const offset = showUngrouped.value ? 1 : 0;
 				const item = groupedItems.value[event.moved.oldIndex - offset]?.id;
 				const to = groupedItems.value[event.moved.newIndex - offset]?.id;
 				// the special "ungrouped" group has null id
 				if (!item || !to) return;
-				await groupsChangeManualSort({ item, to });
+
+				if (isRelational.value) {
+					if (groupsSortField.value == null) return;
+					await groupsChangeManualSort({ item, to });
+				} else {
+					if (!selectedGroup.value) return;
+					const groupedIds = groupedItems.value.map((item) => item.id);
+					const currentIndex = groupedIds.indexOf(item);
+					const targetIndex = groupedIds.indexOf(to);
+
+					const newSortedChoices = moveInArray(
+						groupedItems.value.map((item) => {
+							return { text: item.title, value: item.id };
+						}),
+						currentIndex,
+						targetIndex
+					);
+
+					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
+						meta: { options: { choices: newSortedChoices } },
+					});
+				}
 			}
 		}
 

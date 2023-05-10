@@ -6,7 +6,6 @@
 			item-key="id"
 			draggable=".draggable"
 			:animation="150"
-			:disabled="groupsSortField === null"
 			class="draggable"
 			:class="{ sortable: groupsSortField !== null }"
 			@change="changeGroupSort"
@@ -211,6 +210,11 @@ function saveChanges() {
 			margin-right: 20px;
 			transition: border-color var(--transition) var(--fast);
 
+			&:active {
+				border-color: var(--border-normal-alt);
+				cursor: move;
+			}
+
 			.header {
 				display: flex;
 				justify-content: space-between;
@@ -360,11 +364,6 @@ function saveChanges() {
 					}
 				}
 			}
-		}
-
-		&.sortable .group:active {
-			border-color: var(--border-normal-alt);
-			cursor: move;
 		}
 	}
 
