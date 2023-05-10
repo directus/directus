@@ -62,6 +62,14 @@
 	background: var(--v-list-background-color-active) !important;
 }
 
+.codex-editor .ce-popover__item--confirmation .ce-popover__item-label {
+	color: var(--foreground-normal);
+}
+
+.codex-editor .ce-popover__item--active {
+	color: var(--primary);
+}
+
 .codex-editor .ce-popover__item:hover {
 	background: var(--v-list-background-color-hover) !important;
 }
