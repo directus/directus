@@ -30,7 +30,7 @@ import 'codemirror/keymap/sublime.js';
 
 const props = withDefaults(
 	defineProps<{
-		value: string | Record<string, unknown> | unknown[] | boolean | number | null;
+		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
 		disabled?: boolean;
 		altOptions?: Record<string, any>;
 		template?: string;
@@ -99,8 +99,8 @@ onMounted(async () => {
 	}
 });
 
-const stringValue = computed<string>(() => {
-	if (props.value === null) return '';
+const stringValue = computed(() => {
+	if (props.value === null || props.value === undefined) return '';
 
 	if (props.type === 'json' || typeof props.value === 'object') {
 		return JSON.stringify(props.value, null, 4);
