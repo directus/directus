@@ -82,4 +82,4 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 	'image/avif',
 ];
 
-export const REDACT_TEXT = '--redact--';
+export const REDACTED_TEXT = '--redacted--';

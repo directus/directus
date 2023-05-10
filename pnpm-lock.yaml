@@ -163,9 +163,6 @@ importers:
       express:
         specifier: 4.18.2
         version: 4.18.2
-      fast-redact:
-        specifier: 3.1.2
-        version: 3.1.2
       flat:
         specifier: 5.0.2
         version: 5.0.2
@@ -316,6 +313,12 @@ importers:
       wellknown:
         specifier: 0.5.0
         version: 0.5.0
+      wild-wild-parser:
+        specifier: ^3.4.0
+        version: 3.4.0
+      wild-wild-path:
+        specifier: ^3.6.0
+        version: 3.6.0
     optionalDependencies:
       '@keyv/redis':
         specifier: 2.5.7
@@ -390,9 +393,6 @@ importers:
       '@types/express-serve-static-core':
         specifier: 4.17.33
         version: 4.17.33
-      '@types/fast-redact':
-        specifier: 3.0.2
-        version: 3.0.2
       '@types/flat':
         specifier: 5.0.2
         version: 5.0.2
@@ -6815,10 +6815,6 @@ packages:
       '@types/serve-static': 1.15.1
     dev: true
 
-  /@types/fast-redact@3.0.2:
-    resolution: {integrity: sha512-VQ8OBFBFnGT9hGbeBOzKrtHQYev7HN72tsD/7kxQ+/2tQ5PS9cifUOxT8Z42O6iNJK5QPN6IsFm7DNMw6Uq2SQ==}
-    dev: true
-
   /@types/file-saver@2.0.5:
     resolution: {integrity: sha512-zv9kNf3keYegP5oThGLaPk8E081DFDuwfqjtiTzm6PoxChdJ1raSuADf2YGCVIyrSynLrgc8JWv296s7Q7pQSQ==}
     dev: true
@@ -12036,7 +12032,6 @@ packages:
   /is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
     engines: {node: '>=12'}
-    dev: true
 
   /is-plain-object@2.0.4:
     resolution: {integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==}
@@ -19182,6 +19177,19 @@ packages:
     dependencies:
       string-width: 4.2.3
     dev: true
+
+  /wild-wild-parser@3.4.0:
+    resolution: {integrity: sha512-C9fn75nTPPkTp9ShAVgQPlGz9+ojDnG0NT9UuGZGy9wKR6G7qnaEjwqVUe7GMvVUjdudoSz1P3WuomuVRR3H2g==}
+    engines: {node: '>=14.18.0'}
+    dev: false
+
+  /wild-wild-path@3.6.0:
+    resolution: {integrity: sha512-TEUyDPCJFmLMCzfp48brS/m1BCasOHSVs+U2gZkXBZvT6AH1f8dd4vKPk0Wkx2FkWkq5C2hmO187+zYK/d2bMQ==}
+    engines: {node: '>=14.18.0'}
+    dependencies:
+      is-plain-obj: 4.1.0
+      wild-wild-parser: 3.4.0
+    dev: false
 
   /with@7.0.2:
     resolution: {integrity: sha512-RNGKj82nUPg3g5ygxkQl0R937xLyho1J24ItRCBTr/m1YnZkzJy1hUiHUJrc/VlsDQzsCnInEGSg3bci0Lmd4w==}

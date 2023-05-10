@@ -112,7 +112,6 @@
 		"execa": "7.1.1",
 		"exif-reader": "1.2.0",
 		"express": "4.18.2",
-		"fast-redact": "3.1.2",
 		"flat": "5.0.2",
 		"fs-extra": "11.1.1",
 		"graphql": "16.6.0",
@@ -162,7 +161,9 @@
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
 		"vm2": "3.9.17",
-		"wellknown": "0.5.0"
+		"wellknown": "0.5.0",
+		"wild-wild-parser": "^3.4.0",
+		"wild-wild-path": "^3.6.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",
@@ -180,7 +181,6 @@
 		"@types/exif-reader": "1.0.0",
 		"@types/express": "4.17.17",
 		"@types/express-serve-static-core": "4.17.33",
-		"@types/fast-redact": "3.0.2",
 		"@types/flat": "5.0.2",
 		"@types/fs-extra": "11.0.1",
 		"@types/inquirer": "9.0.3",

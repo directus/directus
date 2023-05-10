@@ -1,3 +1,4 @@
+import { Action } from '@directus/constants';
 import * as sharedExceptions from '@directus/exceptions';
 import type {
 	Accountability,
@@ -8,13 +9,12 @@ import type {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/types';
-import { Action } from '@directus/constants';
 import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/utils';
-import fastRedact from 'fast-redact';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
+import { REDACTED_TEXT } from './constants.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
@@ -22,23 +22,23 @@ import * as exceptions from './exceptions/index.js';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
-import * as services from './services/index.js';
 import { FlowsService } from './services/flows.js';
+import * as services from './services/index.js';
 import { RevisionsService } from './services/revisions.js';
 import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
+import { redact } from './utils/redact.js';
 import { sanitizeError } from './utils/sanitize-error.js';
 
 let flowManager: FlowManager | undefined;
 
-const redactLogs = fastRedact({
-	censor: '--redacted--',
-	paths: ['*.headers.authorization', '*.access_token', '*.headers.cookie'],
-	serialize: false,
-});
+const redactLogs = redact(
+	['**.headers.authorization', '**.headers.cookie', '**.query.access_token', '**.payload.password'],
+	REDACTED_TEXT
+);
 
 export function getFlowManager(): FlowManager {
 	if (flowManager) {
