@@ -1103,6 +1103,9 @@ importers:
       '@directus/tsconfig':
         specifier: 0.0.7
         version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
       '@vitest/coverage-c8':
         specifier: 0.31.0
         version: 0.31.0(vitest@0.31.0)
