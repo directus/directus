@@ -32,7 +32,7 @@
 										<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 										<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
 									</v-list-item>
-									<v-list-item v-if="isRelational" class="danger" clickable @click="deleteGroup?.(group.id)">
+									<v-list-item v-if="isRelational" class="danger" clickable @click="deleteGroup(group.id)">
 										<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 										<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
 									</v-list-item>
@@ -48,7 +48,7 @@
 						:sort="sortField !== null"
 						class="items"
 						item-key="id"
-						@change="change?.(group, $event)"
+						@change="change(group, $event)"
 					>
 						<template #item="{ element }">
 							<router-link :to="`${collection}/${element.id}`" class="item">
