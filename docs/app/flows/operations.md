@@ -339,7 +339,7 @@ This operation does not generate data. It will append a `null` value on its `ope
 
 :::tip Batch Notifications
 
-You can input an array of UUIDs in the `To` input option to send off multiple emails.
+You can input an array of UUIDs in the `To` input option to send off multiple notifications.
 
 :::
 
