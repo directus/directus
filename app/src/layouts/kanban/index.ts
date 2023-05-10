@@ -364,9 +364,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useGrouping() {
-			const isRelational = computed(() => {
-				return !!selectedGroup.value?.meta?.options?.choices === false;
-			});
+			const isRelational = computed(() => !selectedGroup.value?.meta?.options?.choices);
 
 			const groupsCollection = computed(() => {
 				if (isRelational.value) {
