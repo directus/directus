@@ -3,7 +3,7 @@
 If you have a great idea for an improvement of the platform, or any other feedback, please make sure to open a new
 Discussion on our GitHub Discussions board: https://github.com/directus/directus/discussions
 
-## Opening a new Feature Request
+## Opening a New Feature Request
 
 New feature requests can be opened under the Draft Requests section of
 [GitHub Discussions](https://github.com/directus/directus/discussions). Feature Requests follow a Request-for-Comments
