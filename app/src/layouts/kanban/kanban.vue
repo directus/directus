@@ -81,9 +81,9 @@
 				</div>
 			</template>
 		</draggable>
-		<div v-if="isRelational" class="add-group" @click="editDialogOpen = '+'">
+		<!-- <div v-if="isRelational" class="add-group" @click="editDialogOpen = '+'">
 			<v-icon name="add_box" />
-		</div>
+		</div> -->
 
 		<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()">
 			<v-card>
