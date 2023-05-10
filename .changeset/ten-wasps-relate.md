@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Add block editor interface
+Added block editor interface
