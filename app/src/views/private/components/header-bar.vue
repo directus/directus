@@ -185,7 +185,7 @@ onUnmounted(() => {
 	}
 
 	&.collapsed.shadow {
-		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
+		box-shadow: var(--header-shadow);
 
 		.title-container {
 			.headline {
