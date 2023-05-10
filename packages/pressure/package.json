@@ -1,13 +1,11 @@
 {
 	"name": "@directus/pressure",
-	"version": "9.23.1",
+	"version": "10.0.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"test": "vitest --watch=false"
 	},
 	"description": "Pressure based rate limiter",
 	"repository": {
@@ -24,18 +22,17 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
+		"dist"
 	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"devDependencies": {
 		"@directus/random": "workspace:*",
-		"@directus/tsconfig": "0.0.6",
+		"@directus/tsconfig": "0.0.7",
 		"@types/express": "4.17.17",
 		"@vitest/coverage-c8": "0.31.0",
-		"typescript": "4.9.5",
+		"typescript": "5.0.4",
 		"vitest": "0.31.0"
 	},
 	"dependencies": {

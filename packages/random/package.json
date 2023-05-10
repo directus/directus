@@ -1,13 +1,11 @@
 {
 	"name": "@directus/random",
-	"version": "9.23.1",
+	"version": "10.0.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"test": "vitest --watch=false"
 	},
 	"description": "Set of random-utilities for use in tests",
 	"repository": {
@@ -24,16 +22,15 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
+		"dist"
 	],
 	"publishConfig": {
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
-		"@vitest/coverage-c8": "0.29.3",
-		"typescript": "4.9.5",
-		"vitest": "0.29.3"
+		"@directus/tsconfig": "0.0.7",
+		"@vitest/coverage-c8": "0.31.0",
+		"typescript": "5.0.4",
+		"vitest": "0.31.0"
 	}
 }
