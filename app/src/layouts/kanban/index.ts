@@ -173,7 +173,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			items.value.forEach((item, index) => {
 				if (!group || !pkField) return;
 
-				const junctionField = userFieldJunction.value?.meta?.junction_field ?? undefined;
+				const junctionField = userFieldJunction.value?.meta?.junction_field;
 
 				let users: User[];
 
