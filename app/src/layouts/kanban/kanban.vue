@@ -21,7 +21,7 @@
 							<span class="badge">{{ group.items.length }}</span>
 						</div>
 						<div v-if="group.id !== null" class="actions">
-							<router-link :to="`${collection}/+`"><v-icon name="add" /></router-link>
+							<!-- <router-link :to="`${collection}/+`"><v-icon name="add" /></router-link> -->
 							<v-menu show-arrow placement="bottom-end">
 								<template #activator="{ toggle }">
 									<v-icon name="more_horiz" clickable @click="toggle" />
