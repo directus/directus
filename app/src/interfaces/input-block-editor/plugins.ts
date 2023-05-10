@@ -143,11 +143,6 @@ export class AttachesTool extends BaseAttachesTool {
 }
 
 export class ImageTool extends BaseImageTool {
-	uploader: Uploader;
-	config: any;
-	data: any;
-	_data: any;
-	ui: any;
 	constructor(params: any) {
 		super(params);
 
