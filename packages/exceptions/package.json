@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
-		"test": "vitest run"
+		"test": "vitest --watch=false"
 	},
 	"description": "Shared exceptions in Directus",
 	"repository": {
