@@ -4,7 +4,7 @@
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch"
 	},
 	"description": "Shared constants for Directus",
