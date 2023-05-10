@@ -11,7 +11,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
-		"directory": "packages/data"
+		"directory": "packages/data-driver-postgres"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "BUSL-1.1",
