@@ -24,9 +24,9 @@ const props = withDefaults(
 		xAxis?: string;
 		function: PanelFunction;
 		yAxis: string;
-		color: string;
+		color?: string;
 		filter: Filter;
-		decimals: number;
+		decimals?: number;
 		showAxisLabels?: string;
 		showLegend?: boolean;
 		showMarker?: boolean;
