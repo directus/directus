@@ -29,6 +29,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",
+		"@types/node": "18.15.13",
 		"@vitest/coverage-c8": "0.31.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.0"
