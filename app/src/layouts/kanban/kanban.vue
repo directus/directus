@@ -6,8 +6,9 @@
 			item-key="id"
 			draggable=".draggable"
 			:animation="150"
-			:disabled="groupSortField === null"
+			:disabled="groupsSortField === null"
 			class="draggable"
+			:class="{ sortable: groupsSortField !== null }"
 			@change="changeGroupSort"
 		>
 			<template #item="{ element: group }">
@@ -132,7 +133,7 @@ const props = withDefaults(
 		isRelational?: boolean;
 		sortField?: string | null;
 		userField?: string | null;
-		groupSortField?: string | null;
+		groupsSortField?: string | null;
 	}>(),
 	{
 		collection: null,
@@ -145,7 +146,7 @@ const props = withDefaults(
 		isRelational: true,
 		sortField: null,
 		userField: null,
-		groupSortField: null,
+		groupsSortField: null,
 	}
 );
 
@@ -359,6 +360,11 @@ function saveChanges() {
 					}
 				}
 			}
+		}
+
+		&.sortable .group:active {
+			border-color: var(--border-normal-alt);
+			cursor: move;
 		}
 	}
 
