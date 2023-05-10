@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc --project browser/tsconfig.prod.json && tsc --project node/tsconfig.prod.json && tsc --project shared/tsconfig.prod.json",
 		"dev": "concurrently \"tsc --watch --project browser/tsconfig.json\" \"tsc --watch --project node/tsconfig.json\" \"tsc --watch --project shared/tsconfig.json\"",
-		"test": "vitest run"
+		"test": "vitest --watch=false"
 	},
 	"description": "Utilities shared between the Directus packages",
 	"repository": {
