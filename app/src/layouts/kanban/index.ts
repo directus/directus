@@ -508,12 +508,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 				if (groupTitle.value === null || pkField === undefined) return;
 
+
 				const itemIndex = items.value.findIndex((item) => item[pkField] === id);
 
-				const item = items.value[itemIndex];
-
-				if (item) {
-					item[groupTitle.value] = newTitle;
+				if (itemIndex in items.value) {
+					items.value[itemIndex][groupTitle.value] = newTitle;
 				}
 
 				await api.patch(`/items/${groupsCollection.value}/${id}`, {
