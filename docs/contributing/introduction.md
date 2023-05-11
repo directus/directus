@@ -69,7 +69,7 @@ release patches. Our policy is to credit all researchers in the fix's release no
 security researchers must follow responsible disclosure practices, including:
 
 - They do not publish the vulnerability prior to the Directus team releasing a fix for it
-- They do not divulge exact details of the issue, eg exploits or proof-of-concepts
+- They do not divulge exact details of the issue, for example: exploits or proof-of-concepts
 
 ## Translate the App
 
