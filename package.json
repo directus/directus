@@ -10,7 +10,7 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.26.1",
-		"@directus/release-notes": "workspace:*",
+		"@directus/release-notes-generator": "workspace:*",
 		"@typescript-eslint/eslint-plugin": "5.59.0",
 		"@typescript-eslint/parser": "5.59.0",
 		"eslint": "8.38.0",

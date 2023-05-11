@@ -1,4 +1,4 @@
-# `@directus/release-notes`
+# `@directus/release-notes-generator`
 
 ## Usage
 

@@ -1,5 +1,5 @@
 {
-	"name": "@directus/release-notes",
+	"name": "@directus/release-notes-generator",
 	"private": true,
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",

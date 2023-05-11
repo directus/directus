@@ -1,6 +1,6 @@
 {
 	"$schema": "https://unpkg.com/@changesets/config@2.3.0/schema.json",
-	"changelog": "@directus/release-notes",
+	"changelog": "@directus/release-notes-generator",
 	"commit": false,
 	"fixed": [],
 	"linked": [],
