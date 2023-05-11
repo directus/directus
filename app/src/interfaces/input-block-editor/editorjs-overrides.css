@@ -348,11 +348,19 @@
 
 /* Attaches */
 
+.codex-editor .cdx-attaches--with-file {
+	border: var(--border-width) solid var(--border-normal);
+}
+
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon {
 	padding: 5px;
 	background: var(--background-normal-alt);
 	border-radius: var(--border-radius);
 	margin-right: 12px;
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon::before {
+	background: transparent;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
@@ -363,16 +371,21 @@
 	color: var(--foreground-normal);
 }
 
-.codex-editor .cdx-attaches__size {
-	color: var(--foreground-subdued);
+.codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
+	background: var(--background-subdued);
+	border: var(--border-width) solid var(--border-normal);
 }
 
-.cdx-attaches--with-file .cdx-attaches__download-button svg {
+.codex-editor .cdx-attaches--with-file .cdx-attaches__download-button:hover {
+	background: var(--background-highlight);
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__download-button svg {
 	fill: var(--v-button-background-color);
 }
 
-.codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon::before {
-	background: transparent;
+.codex-editor .cdx-attaches__size {
+	color: var(--foreground-subdued);
 }
 
 /* InlineCode */
