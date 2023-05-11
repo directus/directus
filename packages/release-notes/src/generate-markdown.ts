@@ -76,17 +76,19 @@ function formatChanges(changes: Change[]) {
 
 		let refUser = '';
 
-		if (ref || user) {
+		const refUserContent = [];
+
+		if (ref) {
+			refUserContent.push(ref);
+		}
+
+		if (user) {
+			refUserContent.push(user);
+		}
+
+		if (refUserContent.length > 0) {
 			refUser = ' (';
-
-			if (ref) {
-				refUser += ref;
-			}
-
-			if (user) {
-				refUser += ` ${user}`;
-			}
-
+			refUser += refUserContent.join(' ');
 			refUser += ')';
 		}
 
