@@ -2,9 +2,10 @@
 	<div>
 		<v-list-item
 			v-if="folder.children === undefined"
-			v-context-menu="'contextMenu'"
-			:to="`/files/folders/${folder.id}`"
+			v-context-menu="!actionsDisabled ? 'contextMenu' : null"
+			clickable
 			:active="currentFolder === folder.id"
+			@click="clickHandler({ folder: folder.id })"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>
@@ -14,12 +15,13 @@
 
 		<v-list-group
 			v-else
-			v-context-menu="'contextMenu'"
-			:to="`/files/folders/${folder.id}`"
+			v-context-menu="!actionsDisabled ? 'contextMenu' : null"
+			clickable
 			:active="currentFolder === folder.id"
 			:value="folder.id"
 			scope="files-navigation"
 			disable-groupable-parent
+			@click="clickHandler({ folder: folder.id })"
 		>
 			<template #activator>
 				<v-list-item-icon>
@@ -36,6 +38,7 @@
 				:folder="childFolder"
 				:current-folder="currentFolder"
 				:click-handler="clickHandler"
+				:actions-disabled="actionsDisabled"
 			/>
 		</v-list-group>
 
@@ -119,14 +122,17 @@ import { ref } from 'vue';
 import { useFolders, Folder } from '@/composables/use-folders';
 import api from '@/api';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
+import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { FolderTarget } from '@/types/folders';
 
 const props = withDefaults(
 	defineProps<{
 		folder: Folder;
 		currentFolder?: string;
-		clickHandler?: () => void;
+		actionsDisabled?: boolean;
+		clickHandler: (target: FolderTarget) => void;
 	}>(),
 	{
 		clickHandler: () => undefined,

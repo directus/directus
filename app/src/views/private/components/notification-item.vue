@@ -18,18 +18,23 @@
 <script lang="ts" setup>
 import { useNotificationsStore } from '@/stores/notifications';
 
-const props = defineProps<{
-	id: string;
-	title: string;
-	text?: string;
-	icon?: string | null;
-	type?: 'info' | 'success' | 'warning' | 'error';
-	tail?: boolean;
-	dense?: boolean;
-	showClose?: boolean;
-	loading?: boolean;
-	progress?: number;
-}>();
+const props = withDefaults(
+	defineProps<{
+		id: string;
+		title: string;
+		text?: string;
+		icon?: string | null;
+		type?: 'info' | 'success' | 'warning' | 'error';
+		tail?: boolean;
+		dense?: boolean;
+		showClose?: boolean;
+		loading?: boolean;
+		progress?: number;
+	}>(),
+	{
+		type: 'info',
+	}
+);
 
 const notificationsStore = useNotificationsStore();
 
