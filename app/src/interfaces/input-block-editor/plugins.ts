@@ -131,7 +131,7 @@ export class AttachesTool extends BaseAttachesTool {
 			const downloadButton = this.nodes.wrapper.querySelector('a.cdx-attaches__download-button');
 
 			if (downloadButton) {
-				downloadButton.href = this.uploader.config.uploader.addTokenToURL(this.data.file.url);
+				downloadButton.href = this.config.uploader.addTokenToURL(this.data.file.url) + '&download';
 			}
 		}
 	}
