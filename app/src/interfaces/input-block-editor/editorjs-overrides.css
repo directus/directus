@@ -592,3 +592,7 @@
 	color: var(--foreground-subdued);
 	text-align: center;
 }
+
+.codex-editor .ce-inline-tool--active {
+	color: var(--primary);
+}
