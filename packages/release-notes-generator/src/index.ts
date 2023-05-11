@@ -3,7 +3,7 @@ import { execSync } from 'node:child_process';
 import { existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { generateMarkdown } from './generate-markdown';
-import { prepareReleaseNotes } from './prepare-release-notes';
+import { getInfo } from './get-info';
 import { ChangesetsWithoutId, PackageInfo } from './types';
 
 const changesets: ChangesetsWithoutId = new Map();
@@ -43,7 +43,7 @@ const run = async () => {
 		}
 	}
 
-	const { types, untypedPackages, packageVersions } = await prepareReleaseNotes(changesets);
+	const { types, untypedPackages, packageVersions } = await getInfo(changesets);
 	generateMarkdown(mainVersion, types, untypedPackages, packageVersions);
 };
 

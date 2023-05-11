@@ -1,11 +1,11 @@
-import { getInfo } from '@changesets/get-github-info';
+import { getInfo as getGithubInfo } from '@changesets/get-github-info';
 import { execSync } from 'node:child_process';
 import { existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from './constants';
 import { Change, ChangesetsWithoutId, Package, PackageInfo, PackageVersion, Type } from './types';
 
-export async function prepareReleaseNotes(changesets: ChangesetsWithoutId) {
+export async function getInfo(changesets: ChangesetsWithoutId) {
 	const types: Type[] = [];
 	const untypedPackages: Package[] = [];
 	const packageVersions = new Map<string, string>();
@@ -30,7 +30,7 @@ export async function prepareReleaseNotes(changesets: ChangesetsWithoutId) {
 		let githubInfo;
 
 		if (commit) {
-			githubInfo = await getInfo({
+			githubInfo = await getGithubInfo({
 				repo: REPO,
 				commit: commit,
 			});
