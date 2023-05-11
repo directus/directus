@@ -19158,6 +19158,13 @@ packages:
       vfile-message: 3.1.4
     dev: true
 
+  /vinyl-buffer@1.0.1:
+    resolution: {integrity: sha512-LRBE2/g3C1hSHL2k/FynSZcVTRhEw8sb08oKGt/0hukZXwrh2m8nfy+r5yLhGEk7eFFuclhyIuPct/Bxlxk6rg==}
+    dependencies:
+      bl: 1.2.3
+      through2: 2.0.5
+    dev: false
+
   /vite-node@0.31.0(@types/node@18.15.13)(sass@1.62.0):
     resolution: {integrity: sha512-8x1x1LNuPvE2vIvkSB7c1mApX5oqlgsxzHQesYF7l5n1gKrEmrClIiZuOFbFDQcjLsmcWSwwmrWrcGWm9Fxc/g==}
     engines: {node: '>=v14.18.0'}
