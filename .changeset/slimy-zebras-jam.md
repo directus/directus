@@ -1,8 +1,8 @@
 ---
 "@directus/app": patch
 "@directus/api": minor
-"@directus/pressure": minor
-"@directus/random": patch
+"@directus/pressure": major
+"@directus/random": minor
 "@directus/utils": patch
 "docs": patch
 ---

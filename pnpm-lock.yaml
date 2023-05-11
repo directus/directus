@@ -7,6 +7,9 @@ importers:
       '@changesets/cli':
         specifier: 2.26.1
         version: 2.26.1
+      '@directus/release-notes-generator':
+        specifier: workspace:*
+        version: link:packages/release-notes-generator
       '@typescript-eslint/eslint-plugin':
         specifier: 5.59.0
         version: 5.59.0(@typescript-eslint/parser@5.59.0)(eslint@8.38.0)(typescript@5.0.4)
@@ -1143,6 +1146,31 @@ importers:
       '@directus/tsconfig':
         specifier: 0.0.7
         version: 0.0.7
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/release-notes-generator:
+    dependencies:
+      '@changesets/get-github-info':
+        specifier: ^0.5.2
+        version: 0.5.2
+    devDependencies:
+      '@changesets/types':
+        specifier: 5.2.1
+        version: 5.2.1
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
       '@vitest/coverage-c8':
         specifier: 0.31.0
         version: 0.31.0(vitest@0.31.0)
@@ -4323,6 +4351,15 @@ packages:
       fs-extra: 7.0.1
       semver: 5.7.1
     dev: true
+
+  /@changesets/get-github-info@0.5.2:
+    resolution: {integrity: sha512-JppheLu7S114aEs157fOZDjFqUDpm7eHdq5E8SSR0gUBTEK0cNSHsrSR5a66xs0z3RWuo46QvA3vawp8BxDHvg==}
+    dependencies:
+      dataloader: 1.4.0
+      node-fetch: 2.6.9
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /@changesets/get-release-plan@3.0.16:
     resolution: {integrity: sha512-OpP9QILpBp1bY2YNIKFzwigKh7Qe9KizRsZomzLe6pK8IUo8onkAAVUD8+JRKSr8R7d4+JRuQrfSSNlEwKyPYg==}
@@ -9911,6 +9948,10 @@ packages:
   /data-uri-to-buffer@4.0.1:
     resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
     engines: {node: '>= 12'}
+    dev: false
+
+  /dataloader@1.4.0:
+    resolution: {integrity: sha512-68s5jYdlvasItOJnCuI2Q9s4q98g0pCyL3HrcKJu8KNugUl8ahgmZYg38ysLTgQjjXX3H8CJLkAvWrclWfcalw==}
     dev: false
 
   /date-fns@2.29.3:
