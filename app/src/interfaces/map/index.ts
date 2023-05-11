@@ -1,4 +1,5 @@
 import { defineInterface } from '@directus/utils';
+import type { ComponentOptions } from 'vue';
 import InterfaceMap from './map.vue';
 import Options from './options.vue';
 import PreviewSVG from './preview.svg?raw';
@@ -23,7 +24,7 @@ export default defineInterface({
 		'csv',
 	],
 	group: 'selection',
-	options: Options,
+	options: Options as ComponentOptions,
 	recommendedDisplays: [],
 	preview: PreviewSVG,
 });

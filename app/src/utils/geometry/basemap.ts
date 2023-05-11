@@ -10,7 +10,7 @@ export type BasemapSource = {
 	attribution?: string;
 };
 
-const defaultBasemap: BasemapSource = {
+export const defaultBasemap: BasemapSource = {
 	name: 'OpenStreetMap',
 	type: 'raster',
 	url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',

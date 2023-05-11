@@ -252,5 +252,7 @@ both: Beide
 operations:
   log:
     message: Boodskap
+  mail:
+    template: Modelvorm
   notification:
     message: Boodskap

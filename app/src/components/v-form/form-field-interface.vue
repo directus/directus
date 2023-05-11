@@ -46,14 +46,14 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { Field } from '@directus/types';
-import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 import { useExtension } from '@/composables/use-extension';
+import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import type { FormField } from './types';
 
 interface Props {
-	field: Field;
+	field: FormField;
 	batchMode?: boolean;
 	batchActive?: boolean;
 	primaryKey?: string | number | null;
@@ -93,7 +93,7 @@ const interfaceExists = computed(() => !!inter.value);
 const componentName = computed(() => {
 	return props.field?.meta?.interface
 		? `interface-${props.field.meta.interface}`
-		: `interface-${getDefaultInterfaceForType(props.field.type)}`;
+		: `interface-${getDefaultInterfaceForType(props.field.type!)}`;
 });
 </script>
 

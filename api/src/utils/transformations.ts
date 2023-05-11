@@ -1,9 +1,9 @@
 import type { File, Transformation, TransformationParams } from '../types/index.js';
 
 export function resolvePreset(input: TransformationParams, file: File): Transformation[] {
-	const transforms = input.transforms ?? [];
+	const transforms = input.transforms ? [...input.transforms] : [];
 
-	if (input.format || input.quality)
+	if (input.format || input.quality) {
 		transforms.push([
 			'toFormat',
 			input.format || (file.type!.split('/')[1] as any),
@@ -11,8 +11,9 @@ export function resolvePreset(input: TransformationParams, file: File): Transfor
 				quality: input.quality ? Number(input.quality) : undefined,
 			},
 		]);
+	}
 
-	if (input.width || input.height)
+	if (input.width || input.height) {
 		transforms.push([
 			'resize',
 			{
@@ -22,6 +23,7 @@ export function resolvePreset(input: TransformationParams, file: File): Transfor
 				withoutEnlargement: input.withoutEnlargement ? Boolean(input.withoutEnlargement) : undefined,
 			},
 		]);
+	}
 
 	return transforms;
 }

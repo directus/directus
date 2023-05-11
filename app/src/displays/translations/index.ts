@@ -1,13 +1,13 @@
+import { useExtension } from '@/composables/use-extension';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { defineDisplay, getFieldsFromTemplate } from '@directus/utils';
 import { get, set } from 'lodash';
 import DisplayTranslations from './translations.vue';
-import { useExtension } from '@/composables/use-extension';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 
 type Options = {
 	template: string;

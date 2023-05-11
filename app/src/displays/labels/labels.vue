@@ -21,10 +21,10 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType } from 'vue';
+<script setup lang="ts">
 import formatTitle from '@directus/format-title';
 import { isEmpty } from 'lodash';
+import { computed } from 'vue';
 
 type Choice = {
 	value: string;
@@ -33,73 +33,58 @@ type Choice = {
 	background: string | null;
 };
 
-export default defineComponent({
-	props: {
-		value: {
-			type: [String, Array] as PropType<string | string[]>,
-			required: true,
-		},
-		format: {
-			type: Boolean,
-			default: true,
-		},
-		showAsDot: {
-			type: Boolean,
-			default: false,
-		},
-		choices: {
-			type: Array as PropType<Choice[]>,
-			default: () => [],
-		},
-		type: {
-			type: String,
-			required: true,
-			validator: (val: string) => ['text', 'string', 'json', 'csv'].includes(val),
-		},
-	},
-	setup(props) {
-		const items = computed(() => {
-			let items: string[];
+const props = withDefaults(
+	defineProps<{
+		value: string | string[];
+		type: 'text' | 'string' | 'json' | 'csv';
+		format?: boolean;
+		showAsDot?: boolean;
+		choices?: Choice[];
+	}>(),
+	{
+		format: true,
+		choices: () => [],
+	}
+);
 
-			if (isEmpty(props.value)) items = [];
-			else if (props.type === 'string') items = [props.value as string];
-			else items = props.value as string[];
+const items = computed(() => {
+	let items: string[];
 
-			return items.map((item) => {
-				const choice = (props.choices || []).find((choice) => choice.value === item);
+	if (isEmpty(props.value)) items = [];
+	else if (props.type === 'string') items = [props.value as string];
+	else items = props.value as string[];
 
-				let itemStringValue: string;
+	return items.map((item) => {
+		const choice = (props.choices || []).find((choice) => choice.value === item);
 
-				if (typeof item === 'object') {
-					itemStringValue = JSON.stringify(item);
-				} else {
-					if (props.format) {
-						itemStringValue = formatTitle(item);
-					} else {
-						itemStringValue = item;
-					}
-				}
+		let itemStringValue: string;
 
-				if (choice === undefined) {
-					return {
-						value: item,
-						text: itemStringValue,
-						foreground: 'var(--foreground-normal)',
-						background: 'var(--background-normal)',
-					};
-				} else {
-					return {
-						value: item,
-						text: choice.text || itemStringValue,
-						foreground: choice.foreground || 'var(--foreground-normal)',
-						background: choice.background || 'var(--background-normal)',
-					};
-				}
-			});
-		});
+		if (typeof item === 'object') {
+			itemStringValue = JSON.stringify(item);
+		} else {
+			if (props.format) {
+				itemStringValue = formatTitle(item);
+			} else {
+				itemStringValue = item;
+			}
+		}
 
-		return { items };
-	},
+		if (choice === undefined) {
+			return {
+				value: item,
+				text: itemStringValue,
+				foreground: 'var(--foreground-normal)',
+				background: 'var(--background-normal)',
+			};
+		} else {
+			return {
+				value: item,
+				text: choice.text || itemStringValue,
+				foreground: choice.foreground || 'var(--foreground-normal)',
+				background: choice.background || 'var(--background-normal)',
+			};
+		}
+	});
 });
 </script>
 

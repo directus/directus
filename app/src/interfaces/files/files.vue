@@ -24,6 +24,7 @@
 					<v-list-item
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
+						:disabled="disabled || !updateAllowed"
 						block
 						clickable
 						@click="editItem(element)"
@@ -36,7 +37,7 @@
 						/>
 						<div class="spacer" />
 						<v-icon
-							v-if="!disabled"
+							v-if="!disabled && (deleteAllowed || isLocalItem(element))"
 							:name="getDeselectIcon(element)"
 							class="deselect"
 							@click.stop="deleteItem(element)"
@@ -78,7 +79,7 @@
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled"
+			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -127,19 +128,18 @@
 
 <script setup lang="ts">
 import { useRelationM2M } from '@/composables/use-relation-m2m';
-import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getAssetUrl } from '@/utils/get-asset-url';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { Filter } from '@directus/types';
+import { getFieldsFromTemplate } from '@directus/utils';
+import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import DrawerItem from '@/views/private/components/drawer-item.vue';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import Draggable from 'vuedraggable';
-import { getAssetUrl } from '@/utils/get-asset-url';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { get, clamp, isNil, set, isEmpty } from 'lodash';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { getFieldsFromTemplate } from '@directus/utils';
-import { Filter } from '@directus/types';
 
 const props = withDefaults(
 	defineProps<{
@@ -181,8 +181,10 @@ const templateWithDefaults = computed(() => {
 	if (!relationInfo.value) return null;
 
 	if (props.template) return props.template;
-	if (relationInfo.value.junctionCollection.meta?.display_template)
+
+	if (relationInfo.value.junctionCollection.meta?.display_template) {
 		return relationInfo.value.junctionCollection.meta?.display_template;
+	}
 
 	let relatedDisplayTemplate = relationInfo.value.relatedCollection.meta?.display_template;
 
@@ -228,19 +230,17 @@ const {
 	loading,
 	selected,
 	isItemSelected,
-	localDelete,
+	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
-const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
+const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissionsM2M(relationInfo);
 
-const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
-);
+const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
@@ -337,8 +337,8 @@ function onUpload(files: Record<string, any>[]) {
 	select(fileIds);
 }
 
-function onSelect(selected: string[]) {
-	select(selected.filter((id) => selectedPrimaryKeys.value.includes(id) === false));
+function onSelect(selected: (string | number)[] | null) {
+	select(selected!.filter((id) => selectedPrimaryKeys.value.includes(id) === false));
 }
 
 const downloadName = computed(() => {
@@ -392,49 +392,26 @@ const customFilter = computed(() => {
 		},
 	};
 
-	if (selectedPrimaryKeys.value.length > 0)
+	if (selectedPrimaryKeys.value.length > 0) {
 		filter._and.push({
 			[relationInfo.value.relatedPrimaryKeyField.field]: {
 				_nin: selectedPrimaryKeys.value,
 			},
 		});
+	}
 
 	if (props.primaryKey !== '+') filter._and.push(selectFilter);
 
 	return filter;
 });
 
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
-	);
-
-	const hasRelatedPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
-
-	return hasJunctionPermissions && hasRelatedPermissions;
-});
-
-const selectAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	const hasJunctionPermissions = !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.junctionCollection.collection
-	);
-
-	return hasJunctionPermissions;
-});
+const allowDrag = computed(
+	() =>
+		totalItemCount.value <= limit.value &&
+		relationInfo.value?.sortField !== undefined &&
+		!props.disabled &&
+		updateAllowed.value
+);
 </script>
 
 <style lang="scss" scoped>
@@ -471,6 +448,7 @@ const selectAllowed = computed(() => {
 	--v-icon-color: var(--foreground-subdued);
 	margin-right: 4px;
 	transition: color var(--fast) var(--transition);
+	cursor: pointer;
 
 	&:hover {
 		--v-icon-color: var(--danger);

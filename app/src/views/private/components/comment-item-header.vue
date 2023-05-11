@@ -60,17 +60,20 @@
 </template>
 
 <script setup lang="ts">
+import api from '@/api';
+import { Activity } from '@/types/activity';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
+import type { User } from '@directus/types';
 import format from 'date-fns/format';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Activity } from '@/types/activity';
-
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
 
 const props = defineProps<{
-	activity: Activity;
+	activity: Activity & {
+		display: string;
+		user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
+	};
 	refresh: () => void;
 }>();
 

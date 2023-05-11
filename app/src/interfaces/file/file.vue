@@ -55,7 +55,7 @@
 					<v-divider v-if="!disabled" />
 				</template>
 				<template v-if="!disabled">
-					<v-list-item clickable @click="activeDialog = 'upload'">
+					<v-list-item v-if="createAllowed" clickable @click="activeDialog = 'upload'">
 						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
 						<v-list-item-content>
 							{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
@@ -69,7 +69,7 @@
 						</v-list-item-content>
 					</v-list-item>
 
-					<v-list-item clickable @click="activeDialog = 'url'">
+					<v-list-item v-if="createAllowed" clickable @click="activeDialog = 'url'">
 						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 						<v-list-item-content>
 							{{ t(file ? 'replace_from_url' : 'import_from_url') }}
@@ -85,7 +85,7 @@
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
-			:disabled="disabled"
+			:disabled="disabled || !updateAllowed"
 			@input="update"
 		>
 			<template #actions>
@@ -145,18 +145,19 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed, toRefs } from 'vue';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
+import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
+import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
+import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { addQueryToPath } from '@/utils/add-query-to-path';
-import { useRelationM2O } from '@/composables/use-relation-m2o';
-import { useRelationSingle, RelationQuerySingle } from '@/composables/use-relation-single';
 import { Filter } from '@directus/types';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type FileInfo = {
 	id: string;
@@ -195,6 +196,7 @@ const query = ref<RelationQuerySingle>({
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
 const { displayItem: file, loading, update, remove } = useRelationSingle(value, query, relationInfo);
+const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const { t } = useI18n();
 
@@ -234,9 +236,9 @@ const edits = computed(() => {
 	return props.value;
 });
 
-function setSelection(selection: number[]) {
-	if (selection[0]) {
-		update(selection[0]);
+function setSelection(selection: (string | number)[] | null) {
+	if (selection![0]) {
+		update(selection![0]);
 	} else {
 		remove();
 	}
