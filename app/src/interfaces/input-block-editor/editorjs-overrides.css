@@ -1,0 +1,615 @@
+.codex-editor {
+	--bg-color: var(--background-normal) !important;
+	--front-color: var(--foreground-normal) !important;
+	--border-color: var(--border-normal) !important;
+}
+
+.codex-editor .ce-toolbar__plus,
+.codex-editor .ce-toolbar__settings-btn {
+	color: var(--foreground-normal);
+	background-color: var(--background-normal);
+	border-radius: var(--border-radius);
+}
+
+.codex-editor .ce-toolbar__plus:hover,
+.codex-editor .ce-toolbar__settings-btn:hover {
+	background-color: var(--background-normal-alt);
+}
+
+.codex-editor .ce-toolbar__plus svg,
+.codex-editor .ce-toolbar__settings-btn svg {
+	fill: var(--foreground-normal) !important;
+}
+
+.codex-editor .cdx-settings-button svg,
+.codex-editor .ce-inline-toolbar__dropdown svg,
+.codex-editor .ce-inline-toolbar .ce-inline-tool svg,
+.codex-editor .ce-settings .ce-settings__button svg {
+	fill: var(--v-list-color) !important;
+}
+
+.codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
+.codex-editor .ce-settings .cdx-settings-button--active svg {
+	fill: var(--primary) !important;
+}
+
+.codex-editor .cdx-settings-button--active {
+	color: var(--primary);
+}
+
+.codex-editor .ce-toolbar .ce-toolbox__button svg,
+.codex-editor .ce-toolbar .ce-toolbox__button:hover svg {
+	fill: var(--foreground-normal);
+}
+
+.codex-editor .cdx-loader::before {
+	border: 3px solid var(--background-normal-alt);
+	border-left-color: var(--primary);
+}
+
+.codex-editor .cdx-search-field {
+	border-radius: var(--border-radius) !important;
+	border: none;
+	background: var(--background-subdued);
+}
+
+.codex-editor .ce-popover {
+	background: var(--background-page);
+	border-color: var(--border-normal);
+	border-width: var(--border-width);
+	border-radius: var(--border-radius);
+}
+
+.codex-editor .ce-popover__item--focused {
+	--webkit-box-shadow: none;
+	box-shadow: none;
+	background: var(--v-list-background-color-active) !important;
+}
+
+.codex-editor .ce-popover__item--confirmation .ce-popover__item-label {
+	color: var(--foreground-normal);
+}
+
+.codex-editor .ce-popover__item--active {
+	color: var(--primary);
+	background: var(--v-list-background-color-active);
+}
+
+.codex-editor .ce-popover__item:hover {
+	background: var(--v-list-background-color-hover) !important;
+}
+
+.codex-editor .ce-popover__item--confirmation,
+.codex-editor .ce-popover__item--confirmation:hover {
+	background: var(--danger-alt) !important;
+}
+
+.codex-editor .ce-popover__item-icon {
+	background: var(--background-page);
+	border: var(--border-width) solid var(--border-normal);
+	box-shadow: none;
+}
+
+.codex-editor .ce-popover__item-icon svg {
+	fill: var(--foreground-normal);
+}
+
+.codex-editor .ce-popover__item-secondary-label {
+	color: var(--foreground-subdued);
+}
+
+.codex-editor .ce-popover__items:not(:first-child) {
+	border-top: var(--border-width) solid var(--border-normal);
+	padding-top: 8px;
+}
+
+.codex-editor .image-tool--loading .image-tool__image,
+.codex-editor .ce-block--selected .ce-block__content {
+	background: var(--module-background-alt);
+}
+
+.codex-editor .image-tool--loading .image-tool__image {
+	border-color: var(--border-normal);
+}
+
+.codex-editor .ce-inline-toolbar__toggler-and-button-wrapper {
+	padding: 0;
+}
+
+.codex-editor .ce-inline-toolbar__dropdown {
+	margin: 0;
+	border-color: var(--border-normal);
+}
+
+.codex-editor .ce-inline-tool {
+	padding: 0 10px !important;
+}
+
+.codex-editor .ce-settings__button--confirm.ce-settings__button--confirm {
+	background-color: var(--danger-110) !important;
+}
+
+.codex-editor .ce-settings__button--confirm.ce-settings__button--confirm svg {
+	fill: var(--foreground-normal-alt) !important;
+}
+
+/* Tooltips */
+.ct {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.ct:before,
+.ct:after {
+	background-color: var(--background-inverted);
+}
+
+.ct__content {
+	background-color: var(--background-inverted);
+	color: var(--foreground-inverted);
+	border-radius: 4px;
+	padding: 8px;
+	font-size: inherit;
+}
+
+/* Button balloons */
+
+.codex-editor .ce-toolbox__button.ce-toolbox__button--active {
+	background: var(--background-normal-alt);
+}
+
+.codex-editor .ce-toolbox__button.ce-toolbox__button--active svg {
+	fill: var(--primary);
+}
+
+.codex-editor .ce-conversion-toolbar,
+.codex-editor .ce-inline-toolbar,
+.codex-editor .ce-settings {
+	background: var(--background-subdued);
+	border-color: var(--border-normal);
+	border-width: var(--border-width);
+	border-radius: var(--border-radius);
+}
+
+.codex-editor .cdx-settings-button:hover,
+.codex-editor .ce-conversion-tool:hover,
+.codex-editor .ce-inline-toolbar__dropdown:hover,
+.codex-editor .ce-inline-toolbar .ce-inline-tool:hover,
+.codex-editor .ce-settings .ce-settings__button:hover {
+	background: var(--background-normal-alt);
+}
+
+.codex-editor .ce-conversion-toolbar .ce-conversion-tool--focused:not(:hover) {
+	--webkit-box-shadow: unset;
+
+	color: var(--primary);
+	background-color: var(--v-list-item-background-color-hover) !important;
+	box-shadow: unset;
+}
+
+.codex-editor .ce-conversion-tool:hover {
+	--webkit-box-shadow: unset;
+
+	color: var(--v-list-item-color-hover);
+	background-color: var(--v-list-item-background-color-hover) !important;
+	box-shadow: unset;
+}
+
+.codex-editor .ce-conversion-toolbar__label {
+	color: var(--foreground-normal);
+}
+
+.codex-editor .ce-conversion-tool__icon {
+	background: transparent;
+}
+
+/* Textarea and inputs */
+
+.codex-editor [contentEditable='true'][data-placeholder]::before {
+	font-weight: unset;
+}
+
+.codex-editor .ce-code__textarea {
+	font-family: var(--family-monospace);
+}
+
+.codex-editor .cdx-input,
+.codex-editor .ce-code__textarea {
+	color: var(--foreground-normal);
+	font-size: inherit;
+	background-color: var(--background-page);
+	border: var(--border-width) solid var(--border-normal);
+	border-radius: var(--border-radius);
+	box-shadow: unset;
+}
+
+.codex-editor .cdx-input:hover,
+.codex-editor .ce-code__textarea:hover {
+	border-color: var(--border-normal-alt);
+}
+
+.codex-editor .cdx-input:focus,
+.codex-editor .ce-code__textarea:focus {
+	border-color: var(--primary);
+}
+
+.codex-editor .ce-inline-tool-input {
+	color: var(--primary);
+	background: var(--background-normal);
+	border-top-color: var(--border-normal);
+}
+
+/* Buttons */
+
+.codex-editor .cdx-button {
+	color: var(--v-button-color);
+	font-weight: var(--v-button-font-weight);
+	font-size: var(--v-button-font-size);
+	text-decoration: none;
+	background-color: var(--v-button-background-color);
+	border: var(--border-width) solid var(--v-button-background-color);
+	border-radius: var(--border-radius);
+	cursor: pointer;
+}
+
+.codex-editor .cdx-button:hover {
+	color: var(--v-button-color-hover);
+	background-color: var(--v-button-background-color-hover);
+	border-color: var(--v-button-background-color-hover);
+}
+
+/* General components re-style */
+
+.codex-editor .cdx-attaches,
+.codex-editor .cdx-personality {
+	color: var(--foreground-normal);
+	background: var(--background-normal);
+	border-color: var(--border-normal);
+	box-shadow: unset;
+}
+
+/* Paragraph */
+
+.codex-editor .ce-paragraph {
+	padding: 0;
+	line-height: inherit;
+}
+.codex-editor .ce-paragraph[data-placeholder]:empty::before {
+	color: var(--foreground-subdued);
+}
+
+/* Quote block */
+
+.codex-editor .cdx-block.cdx-quote {
+	padding-left: 22px;
+}
+
+/* Image Tool */
+
+.codex-editor .image-tool {
+	--bg-color: var(--background-normal-alt);
+	--front-color: var(--primary);
+	--border-color: var(--border-normal);
+}
+
+/* Personality */
+
+.codex-editor .cdx-personality__description {
+	font-weight: unset;
+	font-size: 0.9em;
+	font-style: oblique;
+}
+
+.codex-editor .cdx-personality .cdx-personality__photo {
+	background-color: transparent;
+}
+
+.codex-editor .cdx-personality__link {
+	color: var(--primary);
+	font-size: 0.72em;
+}
+
+/* Checklist */
+
+.codex-editor .cdx-checklist__item-checkbox {
+	background: transparent;
+	border-color: var(--border-normal);
+	border-width: var(--border-width);
+	border-radius: 4px;
+}
+
+.codex-editor .cdx-checklist__item-text {
+	padding: 3px 0;
+}
+
+/* Ripple effect when enabling a checkbox */
+.codex-editor .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check::before {
+	background-color: var(--primary);
+}
+
+.codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check {
+	background: var(--primary);
+	border-color: var(--primary);
+}
+
+/* Checkbox color when hovered. We have to use !important here because the specificity of the default styling is higher */
+.codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox:hover .cdx-checklist__item-checkbox-check {
+	background: var(--primary-125) !important;
+	border-color: var(--primary-125) !important;
+}
+
+.codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
+	top: 4px;
+	left: 3px;
+}
+
+/* Lists */
+
+.codex-editor .ce-block ul,
+.codex-editor .ce-block ol {
+	font-size: inherit !important;
+}
+
+/* Attaches */
+
+.codex-editor .cdx-attaches--with-file {
+	border: var(--border-width) solid var(--border-normal);
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon {
+	padding: 5px;
+	background: var(--background-normal-alt);
+	border-radius: var(--border-radius);
+	margin-right: 12px;
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon::before {
+	background: transparent;
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
+	margin-right: 0;
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__title {
+	color: var(--foreground-normal);
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {
+	background: var(--background-subdued);
+	border: var(--border-width) solid var(--border-normal);
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__download-button:hover {
+	background: var(--background-highlight);
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__download-button svg {
+	fill: var(--v-button-background-color);
+}
+
+.codex-editor .cdx-attaches__size {
+	color: var(--foreground-subdued);
+}
+
+/* InlineCode */
+
+.codex-editor .ce-block .inline-code {
+	padding: 4px;
+	color: var(--v-chip-background-color);
+	font-family: monospace;
+	background-color: var(--v-chip-color);
+	border-radius: 4px;
+}
+
+/* tc module */
+
+.codex-editor .tc-wrap {
+	--color-background: var(--v-list-item-background-color-active);
+	--color-border: var(--border-normal);
+	--color-background-hover: var(--v-list-item-background-color-hover);
+}
+
+.codex-editor .tc-popover {
+	--color-background: var(--background-normal);
+	--color-border: var(--background-normal);
+	--color-background-hover: var(--background-normal-alt);
+}
+
+.tc-cell--selected,
+.tc-cell--selected::after,
+.tc-row--selected,
+.tc-row--selected::after {
+	background: var(--background-highlight);
+}
+
+.tc-toolbox {
+	--toggler-dots-color: var(--foreground-normal);
+	--toggler-dots-color-hovered: var(--foreground-normal-alt);
+}
+
+.tc-toolbox__toggler:hover {
+	fill: var(--background-normal-alt) !important;
+}
+
+.codex-editor .tc-toolbox__toggler svg rect:first-child {
+	/* This is very ugly, but there no other way to set background of the element */
+	fill: var(--background-normal) !important;
+	border-radius: var(--border-radius);
+}
+
+.codex-editor .tc-toolbox__toggler:hover svg rect:first-child {
+	/* This is very ugly, but there no other way to set background of the element */
+	fill: var(--background-normal-alt) !important;
+}
+
+.tc-add-column:hover,
+.tc-add-row:hover {
+	background-color: var(--primary-alt);
+}
+
+.tc-add-row:hover::before {
+	background-color: var(--v-list-item-background-color-hover);
+}
+
+.interface.subdued .codex-editor {
+	pointer-events: none !important;
+}
+
+.ce-toolbar__content,
+.ce-block__content {
+	max-width: unset;
+	margin-right: 34px;
+	margin-left: 34px;
+}
+
+.codex-editor .ce-header {
+	padding: 0.4em 0;
+}
+
+.codex-editor .ce-block {
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+	font-weight: inherit;
+	font-family: inherit;
+}
+
+.codex-editor .ce-block h1 {
+	font-weight: 300;
+	font-size: 44px;
+	line-height: 52px;
+}
+
+.codex-editor .ce-block h2 {
+	font-weight: 600;
+	font-size: 34px;
+	line-height: 38px;
+}
+
+.codex-editor .ce-block h3 {
+	font-weight: 600;
+	font-size: 26px;
+	line-height: 31px;
+}
+
+.codex-editor .ce-block h4 {
+	font-weight: 600;
+	font-size: 22px;
+	line-height: 28px;
+}
+
+.codex-editor .ce-block h5 {
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 26px;
+}
+
+.codex-editor .ce-block h6 {
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 24px;
+}
+
+.codex-editor .ce-block p {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-size: 16px;
+	font-family: inherit;
+	line-height: 32px;
+}
+
+.codex-editor .ce-block a {
+	color: var(--primary);
+}
+
+.codex-editor .ce-block a.btn {
+	color: #fff !important;
+}
+
+.codex-editor .ce-block ul,
+.codex-editor .ce-block ol {
+	margin: 24px 0;
+	font-size: 18px;
+	line-height: 34px;
+}
+
+.codex-editor .ce-block ul ul,
+.codex-editor .ce-block ol ol,
+.codex-editor .ce-block ul ol,
+.codex-editor .ce-block ol ul {
+	margin: 0;
+}
+
+.codex-editor .ce-block b,
+.codex-editor .ce-block strong {
+	color: var(--foreground-normal-alt);
+	font-weight: 600;
+}
+
+.codex-editor .ce-block pre {
+	padding: 20px;
+	overflow: auto;
+	font-size: 18px;
+	line-height: 24px;
+	background-color: var(--background-normal-alt);
+	border-radius: 4px;
+}
+
+.codex-editor .ce-block blockquote {
+	font-size: 18px;
+	font-style: italic;
+	line-height: 34px;
+	border-left: 2px dashed var(--border-normal);
+}
+
+.codex-editor .ce-block video,
+.codex-editor .ce-block iframe,
+.codex-editor .ce-block img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 4px;
+}
+
+.codex-editor .ce-block hr {
+	margin-top: 52px;
+	margin-bottom: 56px;
+	text-align: center;
+	border: 0;
+}
+
+.codex-editor .ce-block hr::after {
+	font-size: 28px;
+	line-height: 0;
+	letter-spacing: 16px;
+	content: '...';
+}
+
+.codex-editor .ce-block table {
+	border-collapse: collapse;
+}
+
+.codex-editor .ce-block table th,
+.codex-editor .ce-block table td {
+	border: 1px solid var(--border-normal);
+}
+
+.codex-editor .ce-block .tc-table__wrap,
+.codex-editor .ce-block .tc-table__cell {
+	border-color: var(--border-normal);
+}
+
+.codex-editor .ce-block figure {
+	display: table;
+	margin: 1rem auto;
+}
+
+.codex-editor .ce-block figure figcaption {
+	display: block;
+	margin-top: 0.25rem;
+	color: var(--foreground-subdued);
+	text-align: center;
+}
+
+.codex-editor .ce-inline-tool--active {
+	color: var(--primary);
+}
