@@ -80,7 +80,7 @@ const active = ref(false);
 
 @media (min-width: 960px) {
 	.actions .action-buttons .sidebar-toggle {
-		display: none;
+		display: none !important;
 	}
 }
 
