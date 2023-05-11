@@ -112,7 +112,7 @@ export class AttachesTool extends BaseAttachesTool {
 	}) {
 		super(params);
 
-		this.config.uploader = params.config.uploader;
+		this.config = { uploader: params.config.uploader };
 
 		this.uploader = new Uploader({
 			config: this.config,
