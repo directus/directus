@@ -42,7 +42,6 @@ import { unexpectedError } from '@/utils/unexpected-error';
 const props = withDefaults(
 	defineProps<{
 		disabled?: boolean;
-		nullable?: boolean;
 		autofocus?: boolean;
 		value?: Record<string, any> | null;
 		bordered?: boolean;
@@ -53,7 +52,6 @@ const props = withDefaults(
 	}>(),
 	{
 		disabled: false,
-		nullable: false,
 		autofocus: false,
 		value: () => null,
 		bordered: true,
@@ -154,7 +152,7 @@ async function emitValue(context: EditorJS.API, _event: CustomEvent) {
 		const result: EditorJS.OutputData = await context.saver.save();
 
 		if (!result || result.blocks.length < 1) {
-			emit('input', props.nullable ? null : '{}');
+			emit('input', null);
 			return;
 		}
 
