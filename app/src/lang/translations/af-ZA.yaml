@@ -29,7 +29,6 @@ draft: Draft
 archived: Geargiveer
 modules: Modules
 module_bar: Modulebalk
-logs: ログ
 reset_width: Stel breedte terug
 tile_size: Teëlgrootte
 edit_field: Wysig veld
@@ -108,22 +107,9 @@ delete_bookmark_copy: >-
   Is jy seker jy wil die "{bookmark}" boekmerk uitvee? Hierdie aksie kan nie ongedaan gemaak word nie.
 delete_personal_bookmark: Wis Persoonlike Boekmerk Uit
 delete_role_bookmark: Wis Rolboekmerk Uit
-delete_global_bookmark: グローバルブックマークを削除
-logoutReason:
-  SIGN_OUT: サインアウト
-  SESSION_EXPIRED: セッション切れ
-public_label: パブリック
-public_description: 認証せず利用できる API データを制御
-admin_description: App/APIへアクセス制限が無い初期管理者のロール
-not_allowed: 不許可
 directus_version: Directus Version
 node_version: Node Version
-node_uptime: Node 稼働時間
-os_type: OS 種別
 os_version: OS Version
-os_uptime: OS 稼働時間
-os_totalmem: OS メモリ
-archive: アーカイブ
 field_translations: Vertalings
 language: Taal
 create_field: Skep Veld
@@ -222,7 +208,6 @@ field_options:
     create: Skep
   directus_collections:
     language: Taal
-    archive_divider: アーカイブ
   directus_webhooks:
     actions_create: Skep
 comment: Kommentaar
