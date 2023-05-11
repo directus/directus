@@ -208,12 +208,11 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
-import { PropType, computed, defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
 import FilesNavigation from '@/views/private/components/files-navigation.vue';
-import { SpecialFolder } from '@/types/folders';
 
 type Item = {
 	[field: string]: any;

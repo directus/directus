@@ -78,8 +78,10 @@ function onPointerMove(event: PointerEvent) {
 	rafId.value = window.requestAnimationFrame(() => {
 		currentWidth.value = Math.max(minWidth.value, dragStartWidth.value + (event.pageX - dragStartX.value));
 		if (props.maxWidth && currentWidth.value >= props.maxWidth) currentWidth.value = props.maxWidth;
-		if (currentWidth.value > minWidth.value && currentWidth.value <= minWidth.value + 10)
+
+		if (currentWidth.value > minWidth.value && currentWidth.value <= minWidth.value + 10) {
 			currentWidth.value = minWidth.value; // Snap when nearing min width
+		}
 
 		if (navEl.value) {
 			navEl.value.style.width = `${currentWidth.value}px`;
