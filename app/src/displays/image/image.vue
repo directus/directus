@@ -11,8 +11,8 @@
 	<value-null v-else />
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
 
 type Image = {
 	id: string;
@@ -20,27 +20,16 @@ type Image = {
 	title: string;
 };
 
-export default defineComponent({
-	props: {
-		value: {
-			type: Object as PropType<Image>,
-			default: null,
-		},
-		circle: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const imageError = ref(false);
+const props = defineProps<{
+	value: Image | null;
+	circle?: boolean;
+}>();
 
-		const src = computed(() => {
-			if (props.value?.id === null || props.value?.id === undefined) return null;
-			return `/assets/${props.value.id}?key=system-small-cover`;
-		});
+const imageError = ref(false);
 
-		return { src, imageError };
-	},
+const src = computed(() => {
+	if (props.value?.id === null || props.value?.id === undefined) return null;
+	return `/assets/${props.value.id}?key=system-small-cover`;
 });
 </script>
 

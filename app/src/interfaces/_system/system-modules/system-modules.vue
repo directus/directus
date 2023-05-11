@@ -58,17 +58,17 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
-import { Settings, SettingsModuleBarModule, SettingsModuleBarLink } from '@directus/types';
-import { hideDragImage } from '@/utils/hide-drag-image';
-import Draggable from 'vuedraggable';
-import { assign } from 'lodash';
-import { useI18n } from 'vue-i18n';
-import { nanoid } from 'nanoid';
-import { Field, DeepPartial } from '@directus/types';
+<script setup lang="ts">
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
+import { hideDragImage } from '@/utils/hide-drag-image';
+import { translate } from '@/utils/translate-object-values';
+import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
+import { assign } from 'lodash';
+import { nanoid } from 'nanoid';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
 
 type PreviewExtra = {
 	to: string;
@@ -113,174 +113,159 @@ const linkFields: DeepPartial<Field>[] = [
 	},
 ];
 
-export default defineComponent({
-	name: 'SystemModules',
-	components: { Draggable },
-	props: {
-		value: {
-			type: Array as PropType<Settings['module_bar']>,
-			default: () => MODULE_BAR_DEFAULT,
-		},
+const props = withDefaults(
+	defineProps<{
+		value: Settings['module_bar'];
+	}>(),
+	{
+		value: () => MODULE_BAR_DEFAULT as Settings['module_bar'],
+	}
+);
+
+const emit = defineEmits<{
+	(e: 'input', value: Settings['module_bar']): void;
+}>();
+
+const { t } = useI18n();
+
+const editing = ref<string | null>();
+const values = ref<SettingsModuleBarLink | null>();
+const initialValues = ref<SettingsModuleBarLink | null>();
+
+const { modules: registeredModules } = useExtensions();
+
+const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
+	return registeredModules.value
+		.filter((module) => module.hidden !== true)
+		.map(
+			(module): SettingsModuleBarModule => ({
+				type: 'module',
+				id: module.id,
+				enabled: false,
+			})
+		);
+});
+
+const valuesWithData = computed<PreviewValue[]>({
+	get() {
+		const savedModules = (
+			(props.value ?? MODULE_BAR_DEFAULT).filter((value) => value.type === 'module') as SettingsModuleBarModule[]
+		).map((value) => value.id);
+
+		return valueToPreview([
+			...(props.value ?? MODULE_BAR_DEFAULT),
+			...availableModulesAsBarModule.value.filter(
+				(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false
+			),
+		]);
 	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+	set(previewValue: PreviewValue[]) {
+		emit('input', previewToValue(previewValue));
+	},
+});
 
-		const editing = ref<string | null>();
-		const values = ref<SettingsModuleBarLink | null>();
-		const initialValues = ref<SettingsModuleBarLink | null>();
-
-		const { modules: registeredModules } = useExtensions();
-
-		const availableModulesAsBarModule = computed<SettingsModuleBarModule[]>(() => {
-			return registeredModules.value
-				.filter((module) => module.hidden !== true)
-				.map(
-					(module): SettingsModuleBarModule => ({
-						type: 'module',
-						id: module.id,
-						enabled: false,
-					})
-				);
-		});
-
-		const valuesWithData = computed<PreviewValue[]>({
-			get() {
-				const savedModules = (
-					(props.value ?? MODULE_BAR_DEFAULT).filter((value) => value.type === 'module') as SettingsModuleBarModule[]
-				).map((value) => value.id);
-
-				return valueToPreview([
-					...(props.value ?? MODULE_BAR_DEFAULT),
-					...availableModulesAsBarModule.value.filter(
-						(availableModuleAsBarModule) => savedModules.includes(availableModuleAsBarModule.id) === false
-					),
-				]);
-			},
-			set(previewValue: PreviewValue[]) {
-				emit('input', previewToValue(previewValue));
-			},
-		});
-
-		const isSaveDisabled = computed(() => {
-			for (const field of linkFields) {
-				if (field.meta?.required && field.field) {
-					const fieldValue = (values.value as Record<string, any>)[field.field];
-					if (fieldValue === null || fieldValue === undefined || fieldValue === '') return true;
-				}
-			}
-
-			return false;
-		});
-
-		return {
-			t,
-			editing,
-			valuesWithData,
-			hideDragImage,
-			updateItem,
-			edit,
-			linkFields,
-			isSaveDisabled,
-			save,
-			values,
-			remove,
-			initialValues,
-		};
-
-		function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
-			return value
-				.filter((part) => {
-					if (part.type === 'link') return true;
-					return !!registeredModules.value.find((module) => module.id === part.id);
-				})
-				.map((part) => {
-					if (part.type === 'link') {
-						return {
-							...part,
-							to: part.url,
-							icon: part.icon,
-							name: part.name,
-						};
-					}
-
-					const module = registeredModules.value.find((module) => module.id === part.id)!;
-
-					return {
-						...part,
-						to: `/${module.id}`,
-						name: module.name,
-						icon: module.icon,
-					};
-				});
+const isSaveDisabled = computed(() => {
+	for (const field of linkFields) {
+		if (field.meta?.required && field.field) {
+			const fieldValue = (values.value as Record<string, any>)[field.field];
+			if (fieldValue === null || fieldValue === undefined || fieldValue === '') return true;
 		}
+	}
 
-		function previewToValue(preview: PreviewValue[]): Settings['module_bar'] {
-			return preview.map((previewValue) => {
-				if (previewValue.type === 'link') {
-					const { type, id, name, url, icon, enabled, locked } = previewValue;
-					return { type, id, name, url, icon, enabled, locked };
-				}
+	return false;
+});
 
-				const { type, id, enabled, locked } = previewValue;
-				return { type, id, enabled, locked };
-			});
-		}
-
-		function updateItem(item: PreviewValue, updates: Partial<PreviewValue>): void {
-			valuesWithData.value = valuesWithData.value.map((previewValue) => {
-				if (previewValue === item) {
-					return assign({}, item, updates);
-				}
-
-				return previewValue;
-			});
-		}
-
-		function edit(id: string) {
-			editing.value = id;
-
-			let value: SettingsModuleBarLink;
-
-			if (id !== '+') {
-				value = (props.value ?? MODULE_BAR_DEFAULT).find((val) => val.id === id) as SettingsModuleBarLink;
-			} else {
-				value = {
-					id: nanoid(),
-					type: 'link',
-					enabled: true,
-					url: '',
-					name: '',
-					icon: '',
+function valueToPreview(value: Settings['module_bar']): PreviewValue[] {
+	return value
+		.filter((part) => {
+			if (part.type === 'link') return true;
+			return !!registeredModules.value.find((module) => module.id === part.id);
+		})
+		.map((part) => {
+			if (part.type === 'link') {
+				return {
+					...part,
+					to: part.url,
+					icon: part.icon,
+					name: translate(part.name),
 				};
 			}
 
-			values.value = value;
-			initialValues.value = value;
+			const module = registeredModules.value.find((module) => module.id === part.id)!;
+
+			return {
+				...part,
+				to: `/${module.id}`,
+				name: module.name,
+				icon: module.icon,
+			};
+		});
+}
+
+function previewToValue(preview: PreviewValue[]): Settings['module_bar'] {
+	return preview.map((previewValue) => {
+		if (previewValue.type === 'link') {
+			const { type, id, name, url, icon, enabled, locked } = previewValue;
+			return { type, id, name, url, icon, enabled, locked };
 		}
 
-		function save() {
-			if (editing.value === '+') {
-				emit('input', [...(props.value ?? MODULE_BAR_DEFAULT), values.value]);
-			} else {
-				emit(
-					'input',
-					(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value : val))
-				);
-			}
+		const { type, id, enabled, locked } = previewValue;
+		return { type, id, enabled, locked };
+	});
+}
 
-			values.value = null;
-			editing.value = null;
+function updateItem(item: PreviewValue, updates: Partial<PreviewValue>): void {
+	valuesWithData.value = valuesWithData.value.map((previewValue) => {
+		if (previewValue === item) {
+			return assign({}, item, updates);
 		}
 
-		function remove(id: string) {
-			emit(
-				'input',
-				(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id)
-			);
-		}
-	},
-});
+		return previewValue;
+	});
+}
+
+function edit(id: string) {
+	editing.value = id;
+
+	let value: SettingsModuleBarLink;
+
+	if (id !== '+') {
+		value = (props.value ?? MODULE_BAR_DEFAULT).find((val) => val.id === id) as SettingsModuleBarLink;
+	} else {
+		value = {
+			id: nanoid(),
+			type: 'link',
+			enabled: true,
+			url: '',
+			name: '',
+			icon: '',
+		};
+	}
+
+	values.value = value;
+	initialValues.value = value;
+}
+
+function save() {
+	if (editing.value === '+') {
+		emit('input', [...(props.value ?? MODULE_BAR_DEFAULT), values.value!]);
+	} else {
+		emit(
+			'input',
+			(props.value ?? MODULE_BAR_DEFAULT).map((val) => (val.id === editing.value ? values.value! : val))
+		);
+	}
+
+	values.value = null;
+	editing.value = null;
+}
+
+function remove(id: string) {
+	emit(
+		'input',
+		(props.value ?? MODULE_BAR_DEFAULT).filter((val) => val.id !== id)
+	);
+}
 </script>
 
 <style scoped>

@@ -5,6 +5,7 @@ export * from './adjust-date.js';
 export * from './apply-options-data.js';
 export * from './array-helpers.js';
 export * from './deep-map.js';
+export * from './defaults.js';
 export * from './define-extension.js';
 export * from './functions.js';
 export * from './generate-joi.js';

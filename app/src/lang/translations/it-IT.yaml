@@ -2101,6 +2101,8 @@ operations:
     to: A
     to_placeholder: Aggiungi gli indirizzi e-mail e premi invio...
     body: Contenuto
+    template: Template
+    data: Dati
   notification:
     name: Invia una notifica
     description: Invia una notifica in app a uno o più utenti

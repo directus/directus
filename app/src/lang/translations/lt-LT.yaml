@@ -984,6 +984,8 @@ panels:
   label:
     name: Žyma
 operations:
+  mail:
+    template: Šablonas
   notification:
     recipient: Vartotojas
   request:

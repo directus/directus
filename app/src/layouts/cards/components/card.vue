@@ -13,9 +13,9 @@
 				<template v-else>
 					<v-image
 						v-if="showThumbnail"
-						:class="imageInfo.fileType"
-						:src="imageInfo.source"
-						:alt="item.title"
+						:class="imageInfo?.fileType"
+						:src="imageInfo?.source"
+						:alt="item?.title"
 						role="presentation"
 					/>
 					<v-icon v-else large :name="icon" />
@@ -30,9 +30,9 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { readableMimeType } from '@/utils/readable-mime-type';
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 type File = {
@@ -42,115 +42,88 @@ type File = {
 	modified_on: Date;
 };
 
-export default defineComponent({
-	props: {
-		icon: {
-			type: String,
-			default: 'box',
-		},
-		file: {
-			type: Object as PropType<File>,
-			default: null,
-		},
-		crop: {
-			type: Boolean,
-			default: false,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		item: {
-			type: Object as PropType<Record<string, any>>,
-			default: null,
-		},
-		modelValue: {
-			type: Array as PropType<(string | number)[]>,
-			default: () => [],
-		},
-		selectMode: {
-			type: Boolean,
-			default: false,
-		},
-		to: {
-			type: String,
-			default: '',
-		},
-		readonly: {
-			type: Boolean,
-			default: false,
-		},
-		itemKey: {
-			type: String,
-			required: true,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const router = useRouter();
+const props = withDefaults(
+	defineProps<{
+		itemKey: string;
+		icon?: string;
+		file?: File;
+		crop?: boolean;
+		loading?: boolean;
+		item?: Record<string, any>;
+		modelValue?: (string | number)[];
+		selectMode?: boolean;
+		to?: string;
+		readonly?: boolean;
+	}>(),
+	{
+		icon: 'box',
+		modelValue: () => [],
+		to: '',
+	}
+);
 
-		const imgError = ref(false);
+const emit = defineEmits(['update:modelValue']);
 
-		const type = computed(() => {
-			if (!props.file || !props.file.type) return null;
-			if (!imgError.value && props.file.type.startsWith('image')) return null;
-			return readableMimeType(props.file.type, true);
-		});
+const router = useRouter();
 
-		const imageInfo = computed(() => {
-			let fileType = undefined;
-			if (!props.file || !props.file.type) return null;
-			if (props.file.type.startsWith('image') === true) fileType = 'image';
-			if (props.file.type.includes('svg')) fileType = 'svg';
+const imgError = ref(false);
 
-			// Show icon instead of thumbnail
-			if (!fileType) return { source: undefined, fileType };
-
-			let key = 'system-medium-cover';
-
-			if (props.crop === false) {
-				key = 'system-medium-contain';
-			}
-
-			const source = `/assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
-
-			return { source, fileType };
-		});
-
-		const showThumbnail = computed(() => {
-			return imageInfo.value && imageInfo.value.fileType;
-		});
-
-		const selectionIcon = computed(() => {
-			if (!props.item) return 'radio_button_unchecked';
-
-			return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
-		});
-
-		return { imageInfo, type, showThumbnail, selectionIcon, toggleSelection, handleClick, imgError };
-
-		function toggleSelection() {
-			if (!props.item) return null;
-
-			if (props.modelValue.includes(props.item[props.itemKey])) {
-				emit(
-					'update:modelValue',
-					props.modelValue.filter((key) => key !== props.item[props.itemKey])
-				);
-			} else {
-				emit('update:modelValue', [...props.modelValue, props.item[props.itemKey]]);
-			}
-		}
-
-		function handleClick() {
-			if (props.selectMode === true) {
-				toggleSelection();
-			} else {
-				router.push(props.to);
-			}
-		}
-	},
+const type = computed(() => {
+	if (!props.file || !props.file.type) return null;
+	if (!imgError.value && props.file.type.startsWith('image')) return null;
+	return readableMimeType(props.file.type, true);
 });
+
+const imageInfo = computed(() => {
+	let fileType = undefined;
+	if (!props.file || !props.file.type) return null;
+	if (props.file.type.startsWith('image') === true) fileType = 'image';
+	if (props.file.type.includes('svg')) fileType = 'svg';
+
+	// Show icon instead of thumbnail
+	if (!fileType) return { source: undefined, fileType };
+
+	let key = 'system-medium-cover';
+
+	if (props.crop === false) {
+		key = 'system-medium-contain';
+	}
+
+	const source = `/assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+
+	return { source, fileType };
+});
+
+const showThumbnail = computed(() => {
+	return imageInfo.value && imageInfo.value.fileType;
+});
+
+const selectionIcon = computed(() => {
+	if (!props.item) return 'radio_button_unchecked';
+
+	return props.modelValue.includes(props.item[props.itemKey]) ? 'check_circle' : 'radio_button_unchecked';
+});
+
+function toggleSelection() {
+	if (!props.item) return null;
+
+	if (props.modelValue.includes(props.item[props.itemKey])) {
+		emit(
+			'update:modelValue',
+			props.modelValue.filter((key) => key !== props.item?.[props.itemKey])
+		);
+	} else {
+		emit('update:modelValue', [...props.modelValue, props.item[props.itemKey]]);
+	}
+}
+
+function handleClick() {
+	if (props.selectMode === true) {
+		toggleSelection();
+	} else {
+		router.push(props.to);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

@@ -77,9 +77,11 @@ const parts = computed(() =>
 function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 	const value = get(props.item, fieldKeyBefore);
 
-	const field =
-		fieldsStore.getField(props.collection, fieldKeyBefore) ||
-		props.fields?.find((field) => field.field === fieldKeyBefore);
+	let field: Field | null = props.fields?.find((field) => field.field === fieldKeyBefore) ?? null;
+
+	if (props.collection) {
+		field = fieldsStore.getField(props.collection, fieldKeyBefore);
+	}
 
 	if (value === undefined) return null;
 
@@ -87,7 +89,7 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 
 	const displayInfo = useExtension(
 		'display',
-		computed(() => field.meta?.display ?? null)
+		computed(() => field?.meta?.display ?? null)
 	);
 
 	let component = field.meta?.display;
@@ -111,8 +113,11 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 }
 
 function handleObject(fieldKey: string) {
-	const field =
-		fieldsStore.getField(props.collection, fieldKey) || props.fields?.find((field) => field.field === fieldKey);
+	let field: Field | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
+
+	if (props.collection) {
+		field = fieldsStore.getField(props.collection, fieldKey);
+	}
 
 	/**
 	 * This is for cases where you are rendering a display template directly on
@@ -142,7 +147,7 @@ function handleObject(fieldKey: string) {
 
 	const displayInfo = useExtension(
 		'display',
-		computed(() => field.meta?.display ?? null)
+		computed(() => field?.meta?.display ?? null)
 	);
 
 	// If used display doesn't exist in the current project, return raw value

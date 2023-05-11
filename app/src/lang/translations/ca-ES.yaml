@@ -1757,6 +1757,9 @@ operations:
     payload: Càrrega
   log:
     message: Missatge
+  mail:
+    template: Plantilla
+    data: Dades
   notification:
     recipient: Usuari
     message: Missatge

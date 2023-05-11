@@ -1204,5 +1204,7 @@ panels:
   label:
     name: Tikedenn
 operations:
+  mail:
+    template: Patrom
   notification:
     recipient: Implijer

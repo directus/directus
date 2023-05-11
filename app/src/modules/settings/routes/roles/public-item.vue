@@ -21,28 +21,17 @@
 	</private-view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
-
 import SettingsNavigation from '../../components/navigation.vue';
 import PermissionsOverview from './item/components/permissions-overview.vue';
 import RoleInfoSidebarDetail from './item/components/role-info-sidebar-detail.vue';
 
-export default defineComponent({
-	name: 'RolesItem',
-	components: { SettingsNavigation, PermissionsOverview, RoleInfoSidebarDetail },
-	props: {
-		permissionKey: {
-			type: String,
-			default: null,
-		},
-	},
-	setup() {
-		const { t } = useI18n();
-		return { t };
-	},
-});
+defineProps<{
+	permissionKey?: string;
+}>();
+
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>

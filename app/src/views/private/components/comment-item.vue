@@ -17,17 +17,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { Activity } from '@/types/activity';
-import CommentItemHeader from './comment-item-header.vue';
-import CommentInput from './comment-input.vue';
-
 import api from '@/api';
+import { Activity } from '@/types/activity';
 import { unexpectedError } from '@/utils/unexpected-error';
+import type { User } from '@directus/types';
+import { ref, watch } from 'vue';
+import CommentInput from './comment-input.vue';
+import CommentItemHeader from './comment-item-header.vue';
 
 interface Props {
 	activity: Activity & {
 		display: string;
+		user: Pick<User, 'id' | 'email' | 'first_name' | 'last_name' | 'avatar'>;
 	};
 	refresh: () => void;
 	collection: string;
