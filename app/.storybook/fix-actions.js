@@ -5,7 +5,7 @@ export function fix(args, argTypes, update) {
     if(args === undefined) args = {}
 
     for(let type of Object.values(argTypes)) {
-        if(type.table.category !== 'events') continue
+        if(type.table?.category !== 'events') continue
 
         if(type.name.startsWith('update:')) {
             args[type.name] = (event) => {
