@@ -2,33 +2,18 @@
 	<v-icon small :name="value" :style="style" :filled="filled" />
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from 'vue';
+<script setup lang="ts">
 import { isHex } from '@/utils/is-hex';
+import { computed } from 'vue';
 
-export default defineComponent({
-	name: 'DisplayIcon',
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		color: {
-			type: String,
-			default: null,
-		},
-		filled: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const style = computed(() => {
-			if (isHex(props.color)) return { '--v-icon-color': props.color };
-			else return {};
-		});
+const props = defineProps<{
+	value: string | null;
+	color?: string;
+	filled?: boolean;
+}>();
 
-		return { style };
-	},
+const style = computed(() => {
+	if (props.color && isHex(props.color)) return { '--v-icon-color': props.color };
+	else return {};
 });
 </script>

@@ -229,9 +229,9 @@ const edits = computed(() => {
 	return props.value;
 });
 
-function setSelection(selection: number[]) {
-	if (selection[0]) {
-		update(selection[0]);
+function setSelection(selection: (string | number)[] | null) {
+	if (selection![0]) {
+		update(selection![0]);
 	} else {
 		remove();
 	}

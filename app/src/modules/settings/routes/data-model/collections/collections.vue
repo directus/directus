@@ -107,111 +107,93 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref } from 'vue';
-import SettingsNavigation from '../../../components/navigation.vue';
+<script setup lang="ts">
+import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
-import CollectionOptions from './components/collection-options.vue';
-import { sortBy, merge } from 'lodash';
-import CollectionItem from './components/collection-item.vue';
 import { translate } from '@/utils/translate-object-values';
-import Draggable from 'vuedraggable';
 import { unexpectedError } from '@/utils/unexpected-error';
-import api from '@/api';
+import { merge, sortBy } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
+import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
+import CollectionItem from './components/collection-item.vue';
+import CollectionOptions from './components/collection-options.vue';
 
-export default defineComponent({
-	components: { SettingsNavigation, CollectionItem, CollectionOptions, Draggable, CollectionDialog },
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const collectionDialogActive = ref(false);
-		const editCollection = ref<Collection | null>();
+const collectionDialogActive = ref(false);
+const editCollection = ref<Collection | null>();
 
-		const collectionsStore = useCollectionsStore();
+const collectionsStore = useCollectionsStore();
 
-		const collections = computed(() => {
-			return translate(
-				sortBy(
-					collectionsStore.collections.filter(
-						(collection) => collection.collection.startsWith('directus_') === false && collection.meta
-					),
-					['meta.sort', 'collection']
-				)
-			);
-		});
-
-		const rootCollections = computed(() => {
-			return collections.value.filter((collection) => !collection.meta?.group);
-		});
-
-		const tableCollections = computed(() => {
-			return translate(
-				sortBy(
-					collectionsStore.collections.filter(
-						(collection) =>
-							collection.collection.startsWith('directus_') === false &&
-							!!collection.meta === false &&
-							collection.schema
-					),
-					['meta.sort', 'collection']
-				)
-			);
-		});
-
-		const systemCollections = computed(() => {
-			return translate(
-				sortBy(
-					collectionsStore.collections
-						.filter((collection) => collection.collection.startsWith('directus_') === true)
-						.map((collection) => ({ ...collection, icon: 'settings' })),
-					'collection'
-				)
-			);
-		});
-
-		return {
-			collectionDialogActive,
-			t,
-			collections,
-			tableCollections,
-			systemCollections,
-			onSort,
-			rootCollections,
-			editCollection,
-		};
-
-		async function onSort(updates: Collection[], removeGroup = false) {
-			const updatesWithSortValue = updates.map((collection, index) =>
-				merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } })
-			);
-
-			collectionsStore.collections = collectionsStore.collections.map((collection) => {
-				const updatedValues = updatesWithSortValue.find(
-					(updatedCollection) => updatedCollection.collection === collection.collection
-				);
-
-				return updatedValues ? merge({}, collection, updatedValues) : collection;
-			});
-
-			try {
-				api.patch(
-					`/collections`,
-					updatesWithSortValue.map((collection) => {
-						return {
-							collection: collection.collection,
-							meta: { sort: collection.meta.sort, group: collection.meta.group },
-						};
-					})
-				);
-			} catch (err: any) {
-				unexpectedError(err);
-			}
-		}
-	},
+const collections = computed(() => {
+	return translate(
+		sortBy(
+			collectionsStore.collections.filter(
+				(collection) => collection.collection.startsWith('directus_') === false && collection.meta
+			),
+			['meta.sort', 'collection']
+		)
+	);
 });
+
+const rootCollections = computed(() => {
+	return collections.value.filter((collection) => !collection.meta?.group);
+});
+
+const tableCollections = computed(() => {
+	return translate(
+		sortBy(
+			collectionsStore.collections.filter(
+				(collection) =>
+					collection.collection.startsWith('directus_') === false && !!collection.meta === false && collection.schema
+			),
+			['meta.sort', 'collection']
+		)
+	);
+});
+
+const systemCollections = computed(() => {
+	return translate(
+		sortBy(
+			collectionsStore.collections
+				.filter((collection) => collection.collection.startsWith('directus_') === true)
+				.map((collection) => ({ ...collection, icon: 'settings' })),
+			'collection'
+		)
+	);
+});
+
+async function onSort(updates: Collection[], removeGroup = false) {
+	const updatesWithSortValue = updates.map((collection, index) =>
+		merge(collection, { meta: { sort: index + 1, group: removeGroup ? null : collection.meta?.group } })
+	);
+
+	collectionsStore.collections = collectionsStore.collections.map((collection) => {
+		const updatedValues = updatesWithSortValue.find(
+			(updatedCollection) => updatedCollection.collection === collection.collection
+		);
+
+		return updatedValues ? merge({}, collection, updatedValues) : collection;
+	});
+
+	try {
+		api.patch(
+			`/collections`,
+			updatesWithSortValue.map((collection) => {
+				return {
+					collection: collection.collection,
+					meta: { sort: collection.meta.sort, group: collection.meta.group },
+				};
+			})
+		);
+	} catch (err: any) {
+		unexpectedError(err);
+	}
+}
 </script>
 
 <style scoped lang="scss">

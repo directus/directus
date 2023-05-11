@@ -55,6 +55,9 @@ importers:
       '@directus/format-title':
         specifier: 10.0.0
         version: 10.0.0
+      '@directus/pressure':
+        specifier: workspace:*
+        version: link:../packages/pressure
       '@directus/schema':
         specifier: workspace:*
         version: link:../packages/schema
@@ -463,8 +466,8 @@ importers:
         specifier: 0.5.4
         version: 0.5.4
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -481,8 +484,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   app:
     dependencies:
@@ -604,6 +607,9 @@ importers:
       '@types/base-64':
         specifier: 1.0.0
         version: 1.0.0
+      '@types/chroma-js':
+        specifier: 2.4.0
+        version: 2.4.0
       '@types/codemirror':
         specifier: 5.60.7
         version: 5.60.7
@@ -676,6 +682,9 @@ importers:
       caret-pos:
         specifier: 2.0.0
         version: 2.0.0
+      chroma-js:
+        specifier: 2.4.2
+        version: 2.4.2
       codemirror:
         specifier: 5.65.12
         version: 5.65.12
@@ -785,8 +794,8 @@ importers:
         specifier: 4.3.1
         version: 4.3.1(@types/node@18.15.13)(sass@1.62.0)
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
       vue:
         specifier: 3.2.47
         version: 3.2.47
@@ -796,6 +805,9 @@ importers:
       vue-router:
         specifier: 4.1.6
         version: 4.1.6(vue@3.2.47)
+      vue-tsc:
+        specifier: 1.6.3
+        version: 1.6.3(typescript@5.0.4)
       vuedraggable:
         specifier: 4.1.0
         version: 4.1.0(vue@3.2.47)
@@ -862,8 +874,8 @@ importers:
         specifier: 4.17.7
         version: 4.17.7
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       '@vue/test-utils':
         specifier: 2.3.2
         version: 2.3.2(vue@3.2.47)
@@ -874,8 +886,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/constants:
     dependencies:
@@ -902,6 +914,42 @@ importers:
         specifier: 9.1.5
         version: 9.1.5
 
+  packages/data:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/data-driver-postgres:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
   packages/exceptions:
     devDependencies:
       '@directus/tsconfig':
@@ -914,8 +962,8 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       joi:
         specifier: 17.9.1
         version: 17.9.1
@@ -923,8 +971,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/extensions-sdk:
     dependencies:
@@ -1005,14 +1053,54 @@ importers:
         specifier: 9.0.3
         version: 9.0.3
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/pressure:
+    dependencies:
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/express':
+        specifier: 4.17.17
+        version: 4.17.17
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/random:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/schema:
     dependencies:
@@ -1051,15 +1139,18 @@ importers:
       '@directus/tsconfig':
         specifier: 0.0.7
         version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1080,14 +1171,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1111,14 +1202,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1139,14 +1230,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/storage-driver-local:
     dependencies:
@@ -1164,14 +1255,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/storage-driver-s3:
     dependencies:
@@ -1198,14 +1289,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/types:
     devDependencies:
@@ -1268,23 +1359,20 @@ importers:
         specifier: 7.3.13
         version: 7.3.13
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/utils:
     dependencies:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
-      '@directus/storage':
-        specifier: workspace:*
-        version: link:../storage
       date-fns:
         specifier: 2.29.3
         version: 2.29.3
@@ -1313,9 +1401,6 @@ importers:
       '@directus/types':
         specifier: workspace:*
         version: link:../types
-      '@ngneat/falso':
-        specifier: 6.4.0
-        version: 6.4.0
       '@types/fs-extra':
         specifier: 11.0.1
         version: 11.0.1
@@ -1329,8 +1414,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       '@vitest/coverage-c8':
-        specifier: 0.30.1
-        version: 0.30.1(vitest@0.30.1)
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
       concurrently:
         specifier: 8.0.1
         version: 8.0.1
@@ -1338,8 +1423,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.30.1
-        version: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   tests/blackbox:
     devDependencies:
@@ -6671,6 +6756,10 @@ packages:
     resolution: {integrity: sha512-KnRanxnpfpjUTqTCXslZSEdLfXExwgNxYPdiO2WGUj8+HDjFi8R3k5RVKPeSCzLjCcshCAtVO2QBbVuAV4kTnw==}
     dev: true
 
+  /@types/chroma-js@2.4.0:
+    resolution: {integrity: sha512-JklMxityrwjBTjGY2anH8JaTx3yjRU3/sEHSblLH1ba5lqcSh1LnImXJZO5peJfXyqKYWjHTGy4s5Wz++hARrw==}
+    dev: true
+
   /@types/codemirror@5.60.7:
     resolution: {integrity: sha512-QXIC+RPzt/1BGSuD6iFn6UMC9TDp+9hkOANYNPVsjjrDdzKphfRkwQDKGp2YaC54Yhz0g6P5uYTCCibZZEiMAA==}
     dependencies:
@@ -7403,54 +7492,101 @@ packages:
       vue: 3.2.47
     dev: true
 
-  /@vitest/coverage-c8@0.30.1(vitest@0.30.1):
-    resolution: {integrity: sha512-/Wa3dtSuckpdngAmiCwowaEXXgJkqPrtfvrs9HTB9QoEfNbZWPu4E4cjEn4lJZb4qcGf4fxFtUA2f9DnDNAzBA==}
+  /@vitest/coverage-c8@0.31.0(vitest@0.31.0):
+    resolution: {integrity: sha512-h72qN1D962AO7UefQVulm9JFP5ACS7OfhCdBHioXU8f7ohH/+NTZCgAqmgcfRNHHO/8wLFxx+93YVxhodkEJVA==}
     peerDependencies:
       vitest: '>=0.30.0 <1'
     dependencies:
+      '@ampproject/remapping': 2.2.1
       c8: 7.13.0
+      magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.2
-      vitest: 0.30.1(happy-dom@9.8.4)(sass@1.62.0)
+      vitest: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
     dev: true
 
-  /@vitest/expect@0.30.1:
-    resolution: {integrity: sha512-c3kbEtN8XXJSeN81iDGq29bUzSjQhjES2WR3aColsS4lPGbivwLtas4DNUe0jD9gg/FYGIteqOenfU95EFituw==}
+  /@vitest/expect@0.31.0:
+    resolution: {integrity: sha512-Jlm8ZTyp6vMY9iz9Ny9a0BHnCG4fqBa8neCF6Pk/c/6vkUk49Ls6UBlgGAU82QnzzoaUs9E/mUhq/eq9uMOv/g==}
     dependencies:
-      '@vitest/spy': 0.30.1
-      '@vitest/utils': 0.30.1
+      '@vitest/spy': 0.31.0
+      '@vitest/utils': 0.31.0
       chai: 4.3.7
     dev: true
 
-  /@vitest/runner@0.30.1:
-    resolution: {integrity: sha512-W62kT/8i0TF1UBCNMRtRMOBWJKRnNyv9RrjIgdUryEe0wNpGZvvwPDLuzYdxvgSckzjp54DSpv1xUbv4BQ0qVA==}
+  /@vitest/runner@0.31.0:
+    resolution: {integrity: sha512-H1OE+Ly7JFeBwnpHTrKyCNm/oZgr+16N4qIlzzqSG/YRQDATBYmJb/KUn3GrZaiQQyL7GwpNHVZxSQd6juLCgw==}
     dependencies:
-      '@vitest/utils': 0.30.1
+      '@vitest/utils': 0.31.0
       concordance: 5.0.4
       p-limit: 4.0.0
       pathe: 1.1.0
     dev: true
 
-  /@vitest/snapshot@0.30.1:
-    resolution: {integrity: sha512-fJZqKrE99zo27uoZA/azgWyWbFvM1rw2APS05yB0JaLwUIg9aUtvvnBf4q7JWhEcAHmSwbrxKFgyBUga6tq9Tw==}
+  /@vitest/snapshot@0.31.0:
+    resolution: {integrity: sha512-5dTXhbHnyUMTMOujZPB0wjFjQ6q5x9c8TvAsSPUNKjp1tVU7i9pbqcKPqntyu2oXtmVxKbuHCqrOd+Ft60r4tg==}
     dependencies:
       magic-string: 0.30.0
       pathe: 1.1.0
       pretty-format: 27.5.1
     dev: true
 
-  /@vitest/spy@0.30.1:
-    resolution: {integrity: sha512-YfJeIf37GvTZe04ZKxzJfnNNuNSmTEGnla2OdL60C8od16f3zOfv9q9K0nNii0NfjDJRt/CVN/POuY5/zTS+BA==}
+  /@vitest/spy@0.31.0:
+    resolution: {integrity: sha512-IzCEQ85RN26GqjQNkYahgVLLkULOxOm5H/t364LG0JYb3Apg0PsYCHLBYGA006+SVRMWhQvHlBBCyuByAMFmkg==}
     dependencies:
       tinyspy: 2.1.0
     dev: true
 
-  /@vitest/utils@0.30.1:
-    resolution: {integrity: sha512-/c8Xv2zUVc+rnNt84QF0Y0zkfxnaGhp87K2dYJMLtLOIckPzuxLVzAtFCicGFdB4NeBHNzTRr1tNn7rCtQcWFA==}
+  /@vitest/utils@0.31.0:
+    resolution: {integrity: sha512-kahaRyLX7GS1urekRXN2752X4gIgOGVX4Wo8eDUGUkTWlGpXzf5ZS6N9RUUS+Re3XEE8nVGqNyxkSxF5HXlGhQ==}
     dependencies:
       concordance: 5.0.4
       loupe: 2.3.6
       pretty-format: 27.5.1
+    dev: true
+
+  /@volar/language-core@1.4.1:
+    resolution: {integrity: sha512-EIY+Swv+TjsWpxOxujjMf1ZXqOjg9MT2VMXZ+1dKva0wD8W0L6EtptFFcCJdBbcKmGMFkr57Qzz9VNMWhs3jXQ==}
+    dependencies:
+      '@volar/source-map': 1.4.1
+    dev: true
+
+  /@volar/source-map@1.4.1:
+    resolution: {integrity: sha512-bZ46ad72dsbzuOWPUtJjBXkzSQzzSejuR3CT81+GvTEI2E994D8JPXzM3tl98zyCNnjgs4OkRyliImL1dvJ5BA==}
+    dependencies:
+      muggle-string: 0.2.2
+    dev: true
+
+  /@volar/typescript@1.4.1(typescript@5.0.4):
+    resolution: {integrity: sha512-phTy6p9yG6bgMIKQWEeDOi/aeT0njZsb1a/G1mrEuDsLmAn24Le4gDwSsGNhea6Uhu+3gdpUZn2PmZXa+WG2iQ==}
+    peerDependencies:
+      typescript: '*'
+    dependencies:
+      '@volar/language-core': 1.4.1
+      typescript: 5.0.4
+    dev: true
+
+  /@volar/vue-language-core@1.6.3:
+    resolution: {integrity: sha512-e9OTDCPa8Wuh0ORhD4z++qTIcrsrqcI9waspr93YcQCq6j+Q+JTFuy7HBSQgyezSAsP6x1WWokKVk4fWWDJQOw==}
+    dependencies:
+      '@volar/language-core': 1.4.1
+      '@volar/source-map': 1.4.1
+      '@vue/compiler-dom': 3.3.0-beta.3
+      '@vue/compiler-sfc': 3.3.0-beta.3
+      '@vue/reactivity': 3.3.0-beta.3
+      '@vue/shared': 3.3.0-beta.3
+      minimatch: 9.0.0
+      muggle-string: 0.2.2
+      vue-template-compiler: 2.7.14
+    dev: true
+
+  /@volar/vue-typescript@1.6.3(typescript@5.0.4):
+    resolution: {integrity: sha512-Dz29Qym33P1MSZDTZJ6PPLN1TLQfkX+g2pRnHqLCsFdSUu4yWYnElBURCn5WJkekxV/v+k2T43aur2RCSY3Ovg==}
+    peerDependencies:
+      typescript: '*'
+    dependencies:
+      '@volar/typescript': 1.4.1(typescript@5.0.4)
+      '@volar/vue-language-core': 1.6.3
+      typescript: 5.0.4
     dev: true
 
   /@vue/compiler-core@3.2.47:
@@ -7461,11 +7597,27 @@ packages:
       estree-walker: 2.0.2
       source-map: 0.6.1
 
+  /@vue/compiler-core@3.3.0-beta.3:
+    resolution: {integrity: sha512-mv2rPo4JHou6ebm7+U/wO1HpA6W1zDfTqbt4fqjoXrMwU4DWNgRcLKTXG6G3cXV4mOe+2YgWspfxEzo7fPTMKg==}
+    dependencies:
+      '@babel/parser': 7.21.4
+      '@vue/shared': 3.3.0-beta.3
+      estree-walker: 2.0.2
+      source-map-js: 1.0.2
+    dev: true
+
   /@vue/compiler-dom@3.2.47:
     resolution: {integrity: sha512-dBBnEHEPoftUiS03a4ggEig74J2YBZ2UIeyfpcRM2tavgMWo4bsEfgCGsu+uJIL/vax9S+JztH8NmQerUo7shQ==}
     dependencies:
       '@vue/compiler-core': 3.2.47
       '@vue/shared': 3.2.47
+
+  /@vue/compiler-dom@3.3.0-beta.3:
+    resolution: {integrity: sha512-e7VpjN9wYiuJdJos6Uoe501CzdMkfaEr/27Ks4Ss7Irtcj5YA/S1OROZ35Xl2Pc3ctx6beq5RpcOvnMqh0hcaA==}
+    dependencies:
+      '@vue/compiler-core': 3.3.0-beta.3
+      '@vue/shared': 3.3.0-beta.3
+    dev: true
 
   /@vue/compiler-sfc@3.2.47:
     resolution: {integrity: sha512-rog05W+2IFfxjMcFw10tM9+f7i/+FFpZJJ5XHX72NP9eC2uRD+42M3pYcQqDXVYoj74kHMSEdQ/WmCjt8JFksQ==}
@@ -7481,11 +7633,33 @@ packages:
       postcss: 8.4.23
       source-map: 0.6.1
 
+  /@vue/compiler-sfc@3.3.0-beta.3:
+    resolution: {integrity: sha512-6shZNooetShjSMHJvgVoE0EM8pOMV5vnrzsHoCU06stzV+kqRJQpbN7xf2s9wK2fgHMIBSMINrM9AuZiQnNCJg==}
+    dependencies:
+      '@babel/parser': 7.21.4
+      '@vue/compiler-core': 3.3.0-beta.3
+      '@vue/compiler-dom': 3.3.0-beta.3
+      '@vue/compiler-ssr': 3.3.0-beta.3
+      '@vue/reactivity-transform': 3.3.0-beta.3
+      '@vue/shared': 3.3.0-beta.3
+      estree-walker: 2.0.2
+      magic-string: 0.30.0
+      postcss: 8.4.23
+      source-map-js: 1.0.2
+    dev: true
+
   /@vue/compiler-ssr@3.2.47:
     resolution: {integrity: sha512-wVXC+gszhulcMD8wpxMsqSOpvDZ6xKXSVWkf50Guf/S+28hTAXPDYRTbLQ3EDkOP5Xz/+SY37YiwDquKbJOgZw==}
     dependencies:
       '@vue/compiler-dom': 3.2.47
       '@vue/shared': 3.2.47
+
+  /@vue/compiler-ssr@3.3.0-beta.3:
+    resolution: {integrity: sha512-egJ0lEVAod3Hpnw96cJ/0a9qv5f5h5/VCBpKYT8scqkzoMsikh8AJant2omokBCL/Ut5UAMLVQlA5b66+2Ys/g==}
+    dependencies:
+      '@vue/compiler-dom': 3.3.0-beta.3
+      '@vue/shared': 3.3.0-beta.3
+    dev: true
 
   /@vue/devtools-api@6.5.0:
     resolution: {integrity: sha512-o9KfBeaBmCKl10usN4crU53fYtC1r7jJwdGKjPT24t348rHxgfpZ0xL3Xm/gLUYnc0oTp8LAmrxOeLyu6tbk2Q==}
@@ -7500,10 +7674,26 @@ packages:
       estree-walker: 2.0.2
       magic-string: 0.25.9
 
+  /@vue/reactivity-transform@3.3.0-beta.3:
+    resolution: {integrity: sha512-aM3TgBca9QMMu/9B9ASRVvckeZpAdJO9nmQh5UCznhoDYjVxQPS+sCQvH6TLOjPB1MDQMVQYg4ZiPqfVVo7NbA==}
+    dependencies:
+      '@babel/parser': 7.21.4
+      '@vue/compiler-core': 3.3.0-beta.3
+      '@vue/shared': 3.3.0-beta.3
+      estree-walker: 2.0.2
+      magic-string: 0.30.0
+    dev: true
+
   /@vue/reactivity@3.2.47:
     resolution: {integrity: sha512-7khqQ/75oyyg+N/e+iwV6lpy1f5wq759NdlS1fpAhFXa8VeAIKGgk2E/C4VF59lx5b+Ezs5fpp/5WsRYXQiKxQ==}
     dependencies:
       '@vue/shared': 3.2.47
+
+  /@vue/reactivity@3.3.0-beta.3:
+    resolution: {integrity: sha512-9VjWfWgZJ18YXEkfnDfZr33RyLBa6zc0RARLkMqMApWvM26eusZAZ4hhyxlgODBU/mEFk4XOGIAtwwSQedA0MQ==}
+    dependencies:
+      '@vue/shared': 3.3.0-beta.3
+    dev: true
 
   /@vue/runtime-core@3.2.47:
     resolution: {integrity: sha512-RZxbLQIRB/K0ev0K9FXhNbBzT32H9iRtYbaXb0ZIz2usLms/D55dJR2t6cIEUn6vyhS3ALNvNthI+Q95C+NOpA==}
@@ -7529,6 +7719,10 @@ packages:
 
   /@vue/shared@3.2.47:
     resolution: {integrity: sha512-BHGyyGN3Q97EZx0taMQ+OLNuZcW3d37ZEVmEAyeoA9ERdGvm9Irc/0Fua8SNyOtV1w6BS4q25wbMzJujO9HIfQ==}
+
+  /@vue/shared@3.3.0-beta.3:
+    resolution: {integrity: sha512-st1SnB/Bkbb9TsieeI4TRX9TqHYIR5wvIma3ZtEben55EYSWa1q5u2BhTNgABSdH+rv3Xwfrvpwh5PmCw6Y53g==}
+    dev: true
 
   /@vue/test-utils@2.3.2(vue@3.2.47):
     resolution: {integrity: sha512-hJnVaYhbrIm0yBS0+e1Y0Sj85cMyAi+PAbK4JHqMRUZ6S622Goa+G7QzkRSyvCteG8wop7tipuEbHoZo26wsSA==}
@@ -8770,6 +8964,10 @@ packages:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
     engines: {node: '>=10'}
 
+  /chroma-js@2.4.2:
+    resolution: {integrity: sha512-U9eDw6+wt7V8z5NncY2jJfZa+hUH8XEj8FQHgFJTrUFnJfXYf4Ml4adI2vXZOjqRDpFWtYVWypDfZwnJ+HIR4A==}
+    dev: true
+
   /chrome-trace-event@1.0.3:
     resolution: {integrity: sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==}
     engines: {node: '>=6.0'}
@@ -9559,6 +9757,10 @@ packages:
   /dateformat@4.6.3:
     resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
     dev: false
+
+  /de-indent@1.0.2:
+    resolution: {integrity: sha512-e/1zu3xH5MQryN2zdVaF0OrdNLUbvWxzMbi+iNA6Bky7l1RoP8a2fIbRocyHclXt/arDrrR6lL3TqFD9pMQTsg==}
+    dev: true
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -13911,6 +14113,13 @@ packages:
     dependencies:
       brace-expansion: 2.0.1
 
+  /minimatch@9.0.0:
+    resolution: {integrity: sha512-0jJj8AvgKqWN05mrwuqi8QYKx1WmYSUoKSxu5Qhs9prezTz10sxAHGNZe9J9cqIJzta8DWsleh2KaVaLl6Ru2w==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
+
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
@@ -14038,6 +14247,10 @@ packages:
 
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
+  /muggle-string@0.2.2:
+    resolution: {integrity: sha512-YVE1mIJ4VpUMqZObFndk9CJu6DBJR/GB13p3tXuNbwD4XExaI5EOuRl6BHeIDxIqXZVxSfAC+y6U1Z/IxCfKUg==}
+    dev: true
 
   /murmurhash-js@1.0.0:
     resolution: {integrity: sha512-TvmkNhkv8yct0SVBSy+o8wYzXjE4Zz3PCesbfs8HiCXXdcTuocApFv11UWlNFWKYsP2okqrhb7JNlSm9InBhIw==}
@@ -17857,8 +18070,8 @@ packages:
     resolution: {integrity: sha512-+/cS2AM9l6p72IBs2uolHbGsBUztLs0WslqNgFaTXtmMksTNUOhh8p08xtA/fa03UGlWEC6/EJoeV95/QDXa2A==}
     dev: true
 
-  /tinypool@0.4.0:
-    resolution: {integrity: sha512-2ksntHOKf893wSAH4z/+JbPpi92esw8Gn9N2deXX+B0EO92hexAVI9GIZZPx7P5aYo5KULfeOSt3kMOmSOy6uA==}
+  /tinypool@0.5.0:
+    resolution: {integrity: sha512-paHQtnrlS1QZYKF/GnLoOM/DN9fqaGOFbCbxzAhwniySnzl9Ebk8w73/dd34DAhe/obUbPAOldTyYXQZxnPBPQ==}
     engines: {node: '>=14.0.0'}
     dev: true
 
@@ -18586,8 +18799,8 @@ packages:
       vfile-message: 3.1.4
     dev: true
 
-  /vite-node@0.30.1(@types/node@18.15.13)(sass@1.62.0):
-    resolution: {integrity: sha512-vTikpU/J7e6LU/8iM3dzBo8ZhEiKZEKRznEMm+mJh95XhWaPrJQraT/QsT2NWmuEf+zgAoMe64PKT7hfZ1Njmg==}
+  /vite-node@0.31.0(@types/node@18.15.13)(sass@1.62.0):
+    resolution: {integrity: sha512-8x1x1LNuPvE2vIvkSB7c1mApX5oqlgsxzHQesYF7l5n1gKrEmrClIiZuOFbFDQcjLsmcWSwwmrWrcGWm9Fxc/g==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
     dependencies:
@@ -18670,8 +18883,8 @@ packages:
       - terser
     dev: true
 
-  /vitest@0.30.1(happy-dom@9.8.4)(sass@1.62.0):
-    resolution: {integrity: sha512-y35WTrSTlTxfMLttgQk4rHcaDkbHQwDP++SNwPb+7H8yb13Q3cu2EixrtHzF27iZ8v0XCciSsLg00RkPAzB/aA==}
+  /vitest@0.31.0(happy-dom@9.8.4)(sass@1.62.0):
+    resolution: {integrity: sha512-JwWJS9p3GU9GxkG7eBSmr4Q4x4bvVBSswaCFf1PBNHiPx00obfhHRJfgHcnI0ffn+NMlIh9QGvG75FlaIBdKGA==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
     peerDependencies:
@@ -18704,11 +18917,11 @@ packages:
       '@types/chai': 4.3.4
       '@types/chai-subset': 1.3.3
       '@types/node': 18.15.13
-      '@vitest/expect': 0.30.1
-      '@vitest/runner': 0.30.1
-      '@vitest/snapshot': 0.30.1
-      '@vitest/spy': 0.30.1
-      '@vitest/utils': 0.30.1
+      '@vitest/expect': 0.31.0
+      '@vitest/runner': 0.31.0
+      '@vitest/snapshot': 0.31.0
+      '@vitest/spy': 0.31.0
+      '@vitest/utils': 0.31.0
       acorn: 8.8.2
       acorn-walk: 8.2.0
       cac: 6.7.14
@@ -18720,13 +18933,12 @@ packages:
       magic-string: 0.30.0
       pathe: 1.1.0
       picocolors: 1.0.0
-      source-map: 0.6.1
       std-env: 3.3.2
       strip-literal: 1.0.1
       tinybench: 2.4.0
-      tinypool: 0.4.0
+      tinypool: 0.5.0
       vite: 4.3.1(@types/node@18.15.13)(sass@1.62.0)
-      vite-node: 0.30.1(@types/node@18.15.13)(sass@1.62.0)
+      vite-node: 0.31.0(@types/node@18.15.13)(sass@1.62.0)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less
@@ -18846,6 +19058,25 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.5.0
       vue: 3.2.47
+    dev: true
+
+  /vue-template-compiler@2.7.14:
+    resolution: {integrity: sha512-zyA5Y3ArvVG0NacJDkkzJuPQDF8RFeRlzV2vLeSnhSpieO6LK2OVbdLPi5MPPs09Ii+gMO8nY4S3iKQxBxDmWQ==}
+    dependencies:
+      de-indent: 1.0.2
+      he: 1.2.0
+    dev: true
+
+  /vue-tsc@1.6.3(typescript@5.0.4):
+    resolution: {integrity: sha512-q7l27j0eSJgyGat0khetrvoeaAHieRZFnf8WAJyKvB3eF0AxmLqfs4ahwZhaojBJjZ/lAXZa+Xt8EX54KzQ34w==}
+    hasBin: true
+    peerDependencies:
+      typescript: '*'
+    dependencies:
+      '@volar/vue-language-core': 1.6.3
+      '@volar/vue-typescript': 1.6.3(typescript@5.0.4)
+      semver: 7.5.0
+      typescript: 5.0.4
     dev: true
 
   /vue@3.2.47:

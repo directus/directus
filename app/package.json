@@ -25,7 +25,8 @@
 		"build-storybook": "storybook build",
 		"dev": "vite --clearScreen false",
 		"storybook": "storybook dev -p 6006",
-		"test": "vitest --watch=false"
+		"test": "vitest --watch=false",
+		"typecheck": "vue-tsc --noEmit -p tsconfig.json"
 	},
 	"devDependencies": {
 		"@babel/core": "7.21.4",
@@ -66,6 +67,7 @@
 		"@tinymce/tinymce-vue": "5.1.0",
 		"@turf/meta": "6.5.0",
 		"@types/base-64": "1.0.0",
+		"@types/chroma-js": "2.4.0",
 		"@types/codemirror": "5.60.7",
 		"@types/color": "3.0.3",
 		"@types/diacritics": "1.3.1",
@@ -90,6 +92,7 @@
 		"base-64": "1.0.0",
 		"c8": "7.13.0",
 		"caret-pos": "2.0.0",
+		"chroma-js": "2.4.2",
 		"codemirror": "5.65.12",
 		"color": "4.2.3",
 		"cropperjs": "1.5.13",
@@ -126,10 +129,11 @@
 		"tinymce": "6.4.1",
 		"typescript": "5.0.4",
 		"vite": "4.3.1",
-		"vitest": "0.30.1",
+		"vitest": "0.31.0",
 		"vue": "3.2.47",
 		"vue-i18n": "9.2.2",
 		"vue-router": "4.1.6",
+		"vue-tsc": "1.6.3",
 		"vuedraggable": "4.1.0",
 		"webpack": "5.80.0",
 		"wellknown": "0.5.0"

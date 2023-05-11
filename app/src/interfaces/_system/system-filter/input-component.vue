@@ -15,7 +15,7 @@
 		:value="value"
 		:style="{ width }"
 		placeholder="--"
-		@input="emitValue($event.target.value)"
+		@input="emitValue(($event.target as HTMLInputElement).value)"
 	/>
 	<v-select
 		v-else-if="is === 'select'"
@@ -35,7 +35,7 @@
 			:value="value"
 			:style="{ width }"
 			placeholder="--"
-			@input="emitValue($event.target.value)"
+			@input="emitValue(($event.target as HTMLInputElement).value)"
 		/>
 		<v-menu
 			ref="dateTimeMenu"
@@ -75,8 +75,8 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType, ref, onMounted } from 'vue';
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type Choice = {
@@ -85,91 +85,77 @@ type Choice = {
 	children?: Choice[];
 };
 
-export default defineComponent({
-	props: {
-		is: {
-			type: String,
-			required: true,
-		},
-		type: {
-			type: String,
-			required: true,
-		},
-		value: {
-			type: [String, Number, Object, Boolean, Array] as PropType<string | number | Record<string, any> | boolean>,
-			default: null,
-		},
-		focus: {
-			type: Boolean,
-			default: true,
-		},
-		choices: {
-			type: Array as PropType<Choice[]>,
-			default: () => [],
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const inputEl = ref<HTMLElement>();
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		is: string;
+		type: string;
+		value: string | number | Record<string, unknown> | boolean | null;
+		focus?: boolean;
+		choices?: Choice[];
+	}>(),
+	{ focus: true, choices: () => [] }
+);
 
-		const dateTimeMenu = ref();
+const emit = defineEmits<{
+	(e: 'input', value: string | number | Record<string, unknown> | boolean | null): void;
+}>();
 
-		const displayValue = computed(() => {
-			if (props.value === null) return null;
-			if (props.value === undefined) return null;
+const inputEl = ref<HTMLElement>();
+const { t } = useI18n();
 
-			if (typeof props.value === 'string' && props.value.length > 25) {
-				return props.value.substring(0, 22) + '...';
-			}
+const dateTimeMenu = ref();
 
-			return props.value;
-		});
+const displayValue = computed(() => {
+	if (props.value === null) return null;
+	if (props.value === undefined) return null;
 
-		const width = computed(() => {
-			return (props.value?.toString().length || 2) + 1 + 'ch';
-		});
+	if (typeof props.value === 'string' && props.value.length > 25) {
+		return props.value.substring(0, 22) + '...';
+	}
 
-		const inputPattern = computed(() => {
-			switch (props.type) {
-				case 'integer':
-				case 'bigInteger':
-					return '[+-]?[0-9]+';
-				case 'decimal':
-				case 'float':
-					return '[+-]?[0-9]+\\.?[0-9]*';
-				case 'uuid':
-					return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
-				default:
-					return '';
-			}
-		});
-
-		onMounted(() => {
-			if (props.focus) inputEl.value?.focus();
-		});
-
-		return { displayValue, width, t, emitValue, inputEl, inputPattern, dateTimeMenu };
-
-		function emitValue(val: unknown) {
-			if (val === '') {
-				return emit('input', null);
-			}
-
-			if (
-				typeof val === 'string' &&
-				(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix)) ||
-					/^{{\s*?\S+?\s*?}}$/.test(val))
-			) {
-				return emit('input', val);
-			}
-
-			if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
-				return emit('input', val);
-			}
-		}
-	},
+	return props.value;
 });
+
+const width = computed(() => {
+	return (props.value?.toString().length || 2) + 1 + 'ch';
+});
+
+const inputPattern = computed(() => {
+	switch (props.type) {
+		case 'integer':
+		case 'bigInteger':
+			return '[+-]?[0-9]+';
+		case 'decimal':
+		case 'float':
+			return '[+-]?[0-9]+\\.?[0-9]*';
+		case 'uuid':
+			return '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}';
+		default:
+			return '';
+	}
+});
+
+onMounted(() => {
+	if (props.focus) inputEl.value?.focus();
+});
+
+function emitValue(val: string) {
+	if (val === '') {
+		return emit('input', null);
+	}
+
+	if (
+		typeof val === 'string' &&
+		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => val.startsWith(prefix)) ||
+			/^{{\s*?\S+?\s*?}}$/.test(val))
+	) {
+		return emit('input', val);
+	}
+
+	if (typeof val !== 'string' || new RegExp(inputPattern.value).test(val)) {
+		return emit('input', val);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

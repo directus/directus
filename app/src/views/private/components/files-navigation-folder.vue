@@ -126,12 +126,17 @@ import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FolderTarget } from '@/types/folders';
 
-const props = defineProps<{
-	folder: Folder;
-	clickHandler: (target: FolderTarget) => void;
-	currentFolder?: string;
-	actionsDisabled?: boolean;
-}>();
+const props = withDefaults(
+	defineProps<{
+		folder: Folder;
+		currentFolder?: string;
+		actionsDisabled?: boolean;
+		clickHandler: (target: FolderTarget) => void;
+	}>(),
+	{
+		clickHandler: () => undefined,
+	}
+);
 
 const { t } = useI18n();
 

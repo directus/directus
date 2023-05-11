@@ -19,7 +19,6 @@ import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
 import * as exceptions from './exceptions/index.js';
-import { BaseException } from '@directus/exceptions';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -31,6 +30,7 @@ import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
+import { sanitizeError } from './utils/sanitize-error.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -433,10 +433,9 @@ class FlowManager {
 		} catch (error) {
 			let data;
 
-			if (error instanceof BaseException) {
-				data = { message: error.message, code: error.code, extensions: error.extensions, status: error.status };
-			} else if (error instanceof Error) {
-				data = { message: error.message };
+			if (error instanceof Error) {
+				// make sure we dont expose the stack trace
+				data = sanitizeError(error);
 			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data
 				data = isValidJSON(error) ? parseJSON(error) : error;

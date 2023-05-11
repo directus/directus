@@ -19,11 +19,9 @@ import FieldDetailAdvancedDisplay from './field-detail-advanced-display.vue';
 import FieldDetailAdvancedValidation from './field-detail-advanced-validation.vue';
 import FieldDetailAdvancedConditions from './field-detail-advanced-conditions.vue';
 
-interface Props {
+defineProps<{
 	currentTab: string;
-}
-
-defineProps<Props>();
+}>();
 </script>
 
 <style scoped>
