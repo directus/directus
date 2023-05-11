@@ -965,6 +965,42 @@ importers:
         specifier: 9.1.5
         version: 9.1.5
 
+  packages/data:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/data-driver-postgres:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
   packages/exceptions:
     devDependencies:
       '@directus/tsconfig':
