@@ -82,7 +82,8 @@
 
 .codex-editor .ce-popover__item-icon {
 	background: var(--background-page);
-	border-color: var(--background-normal-alt);
+	border: var(--border-width) solid var(--border-normal);
+	box-shadow: none;
 }
 
 .codex-editor .ce-popover__item-icon svg {
