@@ -100,11 +100,6 @@ class Uploader {
 }
 
 export class AttachesTool extends BaseAttachesTool {
-	config: any;
-	uploader: Uploader;
-	data: any;
-	nodes: any;
-
 	constructor(params: {
 		config: { uploader: any };
 		block: { save: () => Promise<any> };
