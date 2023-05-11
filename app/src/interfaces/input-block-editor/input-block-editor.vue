@@ -157,6 +157,7 @@ async function emitValue(context: EditorJS.API, _event: CustomEvent) {
 		}
 
 		if (isEqual(result.blocks, props.value?.blocks)) return;
+
 		emit('input', result);
 	} catch (err: any) {
 		unexpectedError(err);
