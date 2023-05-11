@@ -70,8 +70,8 @@ function formatChanges(changes: Change[]) {
 			refUserContent.push(`[${change.commit}](https://github.com/${REPO}/commit/${change.commit})`);
 		}
 
-		if (change.githubInfo?.links.user) {
-			refUserContent.push(`by ${change.githubInfo.links.user}`);
+		if (change.githubInfo?.user) {
+			refUserContent.push(`by @${change.githubInfo.user}`);
 		}
 
 		if (refUserContent.length > 0) {
