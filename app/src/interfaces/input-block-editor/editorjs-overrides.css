@@ -76,7 +76,7 @@
 }
 
 .codex-editor .ce-popover__item--confirmation,
-.codex-editor .ce-popover__item--confirmation:hover{
+.codex-editor .ce-popover__item--confirmation:hover {
 	background: var(--danger-alt) !important;
 }
 
@@ -317,9 +317,15 @@
 	padding: 3px 0;
 }
 
-.codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox-check {
+.codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check {
 	background: var(--primary);
 	border-color: var(--primary);
+}
+
+/* Checkbox color when hovered. We have to use !important here because the specificity of the default styling is higher */
+.codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox:hover .cdx-checklist__item-checkbox-check {
+	background: var(--primary-125) !important;
+	border-color: var(--primary-125) !important;
 }
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
