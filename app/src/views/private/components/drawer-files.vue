@@ -34,7 +34,6 @@ const props = withDefaults(defineProps<{ collection?: string; folder?: string; f
 const { t } = useI18n();
 
 const drawerProps = {
-	sidebarResizeable: true,
 	sidebarLabel: t('folders'),
 };
 
