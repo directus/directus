@@ -1,6 +1,6 @@
 {
 	"name": "@directus/pressure",
-	"version": "1.0.0",
+	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
