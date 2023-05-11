@@ -1,6 +1,5 @@
 /**
  * All types which are used within the data packages
- * A type which ends with "Node" means that it doesn't have anything nested - it's the end of a brunch of the tree.
  */
 
 /**
@@ -70,15 +69,17 @@ type NestedNode = {
 };
 
 /**
- * Shared attributes used by nested item/collection nodes
- * @typeParam alias - a custom name other than the field name
- * @typeParam collection - name of the collection within the datastore
- * @typeParam fields - fields to select from the referenced collection
+ * A nested item of a foreign collection
+ * @typeParam type - set to 'item'
  */
 export type NestedItemNode = {
 	type: 'item';
 } & NestedNode;
 
+/**
+ * A nested foreign collection
+ * @typeParam type - set to 'collection'
+ */
 export type NestedCollectionNode = {
 	type: 'collection';
 	// Modifiers and groups coming soon
