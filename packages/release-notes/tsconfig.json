@@ -1,26 +1,8 @@
 {
+	"extends": "@directus/tsconfig/node18-esm.json",
 	"compilerOptions": {
-		"lib": ["es2022"],
 		"module": "CommonJS",
-		"target": "es2022",
-		"strict": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "Node",
-		"allowUnusedLabels": false,
-		"allowUnreachableCode": false,
-		"exactOptionalPropertyTypes": true,
-		"noFallthroughCasesInSwitch": true,
-		"noImplicitOverride": true,
-		"noImplicitReturns": true,
-		"noPropertyAccessFromIndexSignature": true,
-		"noUncheckedIndexedAccess": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"checkJs": true,
-		"allowSyntheticDefaultImports": true,
-		"declaration": true,
+		"verbatimModuleSyntax": false,
 		"outDir": "dist"
 	},
 	"include": ["src"]
