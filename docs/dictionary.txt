@@ -96,12 +96,17 @@ autoscaling
 AWS
 backend
 Base64
+Blackbox
 buildout
 camelCase
 Capterra
 Cardgroup
 cardinality
 CDNs?
+Changesets
+changeset
+changelogs
+CLA
 CLI
 CloudFront
 Cloudinary's
@@ -116,6 +121,7 @@ composables
 config-options
 CORS
 CPUs?
+create-directus-extension
 cron
 Cron
 CRON
@@ -137,6 +143,7 @@ DDoS
 destructured
 Dev
 devs
+Devtools
 DigitalOcean
 DigitalOcean's
 directus
@@ -173,6 +180,7 @@ G2
 Gantt
 gcloud
 GCP
+GCS
 GDPR
 geo-coordinates
 geospatial
@@ -234,6 +242,7 @@ MiB
 middleware
 misconfiguration
 misconfigurations
+mixins
 Mongo
 monorepo's
 more_horiz

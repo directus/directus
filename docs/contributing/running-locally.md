@@ -186,7 +186,7 @@ To debug the API, we recommend to use [Visual Studio Code](https://code.visualst
 }
 ```
 
-2. Make sure that you have caching disabled as it otherwise returns the cached response. To disable this, goto your `.env` file in the API and set `CACHE_ENABLED` to `false`.
+2. Make sure that you have caching disabled as it otherwise returns the cached response. To disable this, go to your `.env` file in the API and set `CACHE_ENABLED` to `false`.
 
 3. In the `tsconfig.json`, set `sourceMap` to true.
 
