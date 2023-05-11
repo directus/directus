@@ -1,0 +1,6 @@
+[build.environment]
+	NODE_VERSION = "18"
+
+[build]
+	publish = "storybook-static"
+	command = "pnpm --filter @directus/app^... build && pnpm -F @directus/app build-storybook"
