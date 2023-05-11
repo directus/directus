@@ -348,10 +348,15 @@
 
 /* Attaches */
 
-.cdx-attaches--with-file .cdx-attaches__file-icon {
+.codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon {
 	padding: 5px;
 	background: var(--background-normal-alt);
 	border-radius: var(--border-radius);
+	margin-right: 12px;
+}
+
+.codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
+	margin-right: 0;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__title {
