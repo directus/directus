@@ -1,4 +1,4 @@
-import { REPO } from './constants';
+import { REPO, VERSIONS_TITLE } from './constants';
 import { Change, Package, PackageVersion, Type } from './types';
 
 export function generateMarkdown(
@@ -26,7 +26,7 @@ export function generateMarkdown(
 	}
 
 	if (packageVersions.length > 0) {
-		markdownOutput += '\n\n### Published Versions\n';
+		markdownOutput += `\n\n### ${VERSIONS_TITLE}\n`;
 	}
 
 	for (const { name, version } of packageVersions) {

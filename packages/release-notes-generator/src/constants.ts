@@ -15,3 +15,5 @@ export const UNTYPED_PACKAGES: Record<string, string> = {
 };
 
 export const PACKAGE_ORDER = ['@directus/app', '@directus/api'];
+
+export const VERSIONS_TITLE = 'Published Versions';
