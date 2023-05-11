@@ -55,6 +55,9 @@ importers:
       '@directus/format-title':
         specifier: 10.0.0
         version: 10.0.0
+      '@directus/pressure':
+        specifier: workspace:*
+        version: link:../packages/pressure
       '@directus/schema':
         specifier: workspace:*
         version: link:../packages/schema
@@ -604,6 +607,9 @@ importers:
       '@types/base-64':
         specifier: 1.0.0
         version: 1.0.0
+      '@types/chroma-js':
+        specifier: 2.4.0
+        version: 2.4.0
       '@types/codemirror':
         specifier: 5.60.7
         version: 5.60.7
@@ -676,6 +682,9 @@ importers:
       caret-pos:
         specifier: 2.0.0
         version: 2.0.0
+      chroma-js:
+        specifier: 2.4.2
+        version: 2.4.2
       codemirror:
         specifier: 5.65.12
         version: 5.65.12
@@ -905,6 +914,42 @@ importers:
         specifier: 9.1.5
         version: 9.1.5
 
+  packages/data:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/data-driver-postgres:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
   packages/exceptions:
     devDependencies:
       '@directus/tsconfig':
@@ -1017,6 +1062,46 @@ importers:
         specifier: 0.31.0
         version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
+  packages/pressure:
+    dependencies:
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/express':
+        specifier: 4.17.17
+        version: 4.17.17
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
+  packages/random:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@vitest/coverage-c8':
+        specifier: 0.31.0
+        version: 0.31.0(vitest@0.31.0)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
+
   packages/schema:
     dependencies:
       knex:
@@ -1054,6 +1139,9 @@ importers:
       '@directus/tsconfig':
         specifier: 0.0.7
         version: 0.0.7
+      '@types/node':
+        specifier: 18.15.13
+        version: 18.15.13
       '@vitest/coverage-c8':
         specifier: 0.31.0
         version: 0.31.0(vitest@0.31.0)
@@ -6668,6 +6756,10 @@ packages:
     resolution: {integrity: sha512-KnRanxnpfpjUTqTCXslZSEdLfXExwgNxYPdiO2WGUj8+HDjFi8R3k5RVKPeSCzLjCcshCAtVO2QBbVuAV4kTnw==}
     dev: true
 
+  /@types/chroma-js@2.4.0:
+    resolution: {integrity: sha512-JklMxityrwjBTjGY2anH8JaTx3yjRU3/sEHSblLH1ba5lqcSh1LnImXJZO5peJfXyqKYWjHTGy4s5Wz++hARrw==}
+    dev: true
+
   /@types/codemirror@5.60.7:
     resolution: {integrity: sha512-QXIC+RPzt/1BGSuD6iFn6UMC9TDp+9hkOANYNPVsjjrDdzKphfRkwQDKGp2YaC54Yhz0g6P5uYTCCibZZEiMAA==}
     dependencies:
@@ -8871,6 +8963,10 @@ packages:
   /chownr@2.0.0:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
     engines: {node: '>=10'}
+
+  /chroma-js@2.4.2:
+    resolution: {integrity: sha512-U9eDw6+wt7V8z5NncY2jJfZa+hUH8XEj8FQHgFJTrUFnJfXYf4Ml4adI2vXZOjqRDpFWtYVWypDfZwnJ+HIR4A==}
+    dev: true
 
   /chrome-trace-event@1.0.3:
     resolution: {integrity: sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==}

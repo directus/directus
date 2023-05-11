@@ -58,12 +58,10 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.test.js",
-		"!**/__*__/"
+		"dist"
 	],
 	"scripts": {
-		"build": "tsc --build && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
+		"build": "tsc --project tsconfig.prod.json && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=false tsx watch --clear-screen=false src/start.ts",
 		"test": "vitest --watch=false"
@@ -76,6 +74,7 @@
 		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
+		"@directus/pressure": "workspace:*",
 		"@directus/schema": "workspace:*",
 		"@directus/specs": "workspace:*",
 		"@directus/storage": "workspace:*",
