@@ -371,7 +371,7 @@
 /* tc module */
 
 .codex-editor .tc-wrap {
-	--color-background: var(--v-list-item-color-hover);
+	--color-background: var(--v-list-item-background-color-active);
 	--color-border: var(--border-normal);
 	--color-background-hover: var(--v-list-item-background-color-hover);
 }
