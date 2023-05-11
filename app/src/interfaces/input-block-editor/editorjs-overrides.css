@@ -317,6 +317,11 @@
 	padding: 3px 0;
 }
 
+/* Ripple effect when enabling a checkbox */
+.codex-editor .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check::before {
+	background-color: var(--primary);
+}
+
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox .cdx-checklist__item-checkbox-check {
 	background: var(--primary);
 	border-color: var(--primary);
