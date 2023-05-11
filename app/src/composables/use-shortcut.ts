@@ -9,25 +9,27 @@ export const keyMap: Record<string, string> = {
 
 export const systemKeys = ['meta', 'shift', 'alt', 'backspace', 'delete', 'tab', 'capslock', 'enter'];
 
-const keysdown: Set<string> = new Set([]);
+const keysDown: Set<string> = new Set([]);
 const handlers: Record<string, ShortcutHandler[]> = {};
 
 document.body.addEventListener('keydown', (event: KeyboardEvent) => {
 	if (event.repeat || !event.key) return;
 
-	keysdown.add(mapKeys(event));
+	keysDown.add(mapKeys(event));
 	callHandlers(event);
 });
 
 document.body.addEventListener('keyup', (event: KeyboardEvent) => {
 	if (event.repeat || !event.key) return;
-	keysdown.clear();
+	keysDown.clear();
 });
 
 export function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
-	reference: Ref<HTMLElement | undefined> | Ref<ComponentPublicInstance | undefined> = ref(document.body)
+	reference: Ref<HTMLElement | undefined> | Ref<ComponentPublicInstance | undefined> = ref(
+		document.body
+	) as Ref<HTMLElement>
 ): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;
@@ -83,12 +85,12 @@ function callHandlers(event: KeyboardEvent) {
 	Object.entries(handlers).forEach(([key, value]) => {
 		const keys = key.split('+');
 
-		for (key of keysdown) {
+		for (key of keysDown) {
 			if (keys.includes(key) === false) return;
 		}
 
 		for (key of keys) {
-			if (keysdown.has(key) === false) return;
+			if (keysDown.has(key) === false) return;
 		}
 
 		for (let i = 0; i < value.length; i++) {

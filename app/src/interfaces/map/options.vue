@@ -1,6 +1,6 @@
 <template>
 	<div class="form-grid">
-		<div v-if="!nativeGeometryType && field.type !== 'csv'" class="field half-left">
+		<div v-if="!nativeGeometryType && field?.type !== 'csv'" class="field half-left">
 			<div class="type-label">{{ t('interfaces.map.geometry_type') }}</div>
 			<v-select
 				v-model="geometryType"
@@ -16,104 +16,86 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, defineComponent, PropType, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
-import { GEOMETRY_TYPES } from '@directus/constants';
-import { Field, GeometryType, GeometryOptions } from '@directus/types';
-import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import { Map, CameraOptions } from 'maplibre-gl';
+<script setup lang="ts">
 import { useAppStore } from '@/stores/app';
 import { useSettingsStore } from '@/stores/settings';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
+import { GEOMETRY_TYPES } from '@directus/constants';
+import { Field, GeometryOptions, GeometryType } from '@directus/types';
+import { CameraOptions, Map } from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import type { Ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		field: {
-			type: Object as PropType<Field>,
-			default: null,
-		},
-		value: {
-			type: Object as PropType<GeometryOptions & { defaultView?: CameraOptions }>,
-			default: null,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = defineProps<{
+	collection: string;
+	field?: Field;
+	value?: GeometryOptions & { defaultView?: CameraOptions };
+}>();
 
-		const nativeGeometryType = computed(() => (props.field?.type.split('.')[1] as GeometryType) ?? 'Point');
-		const geometryType = ref<GeometryType>(nativeGeometryType.value ?? props.value?.geometryType ?? 'Point');
-		const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
+const emit = defineEmits(['input']);
 
-		const settingsStore = useSettingsStore();
+const { t } = useI18n();
 
-		watch(() => props.field?.type, watchType);
-		watch(nativeGeometryType, watchNativeType);
-		watch([geometryType, defaultView], input, { immediate: true });
+const nativeGeometryType = computed(() => (props.field?.type.split('.')[1] as GeometryType) ?? 'Point');
+const geometryType = ref<GeometryType>(nativeGeometryType.value ?? props.value?.geometryType ?? 'Point');
+const defaultView = ref<CameraOptions | undefined>(props.value?.defaultView);
 
-		function watchType(type: string | undefined) {
-			if (type === 'csv') geometryType.value = 'Point';
-		}
+const settingsStore = useSettingsStore();
 
-		function watchNativeType(type: GeometryType) {
-			geometryType.value = type;
-		}
+watch(() => props.field?.type, watchType);
+watch(nativeGeometryType, watchNativeType);
+watch([geometryType, defaultView], input, { immediate: true });
 
-		function input() {
-			emit('input', {
-				defaultView,
-				geometryType: geometryType.value,
-			});
-		}
+function watchType(type: string | undefined) {
+	if (type === 'csv') geometryType.value = 'Point';
+}
 
-		const mapContainer = ref<HTMLElement | null>(null);
-		let map: Map;
+function watchNativeType(type: GeometryType) {
+	geometryType.value = type;
+}
 
-		const mapboxKey = settingsStore.settings?.mapbox_key;
-		const basemaps = getBasemapSources();
-		const appStore = useAppStore();
-		const { basemap } = toRefs(appStore);
+function input() {
+	emit('input', {
+		defaultView,
+		geometryType: geometryType.value,
+	});
+}
 
-		const style = computed(() => {
-			const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
-			return getStyleFromBasemapSource(source);
-		});
+const mapContainer: Ref<HTMLElement | null> = ref(null);
+let map: Map;
 
-		onMounted(() => {
-			map = new Map({
-				container: mapContainer.value!,
-				style: style.value,
-				...(defaultView.value || {}),
-				...(mapboxKey ? { accessToken: mapboxKey } : {}),
-			});
+const mapboxKey = settingsStore.settings?.mapbox_key;
+const basemaps = getBasemapSources();
+const appStore = useAppStore();
+const { basemap } = toRefs(appStore);
 
-			map.on('moveend', () => {
-				defaultView.value = {
-					center: map.getCenter(),
-					zoom: map.getZoom(),
-					bearing: map.getBearing(),
-					pitch: map.getPitch(),
-				};
-			});
-		});
+const style = computed(() => {
+	const source = basemaps.find((source) => source.name == basemap.value) ?? basemaps[0];
+	return getStyleFromBasemapSource(source);
+});
 
-		onUnmounted(() => {
-			map.remove();
-		});
+onMounted(() => {
+	map = new Map({
+		container: mapContainer.value!,
+		style: style.value,
+		...(defaultView.value || {}),
+		...(mapboxKey ? { accessToken: mapboxKey } : {}),
+	});
 
-		return {
-			t,
-			nativeGeometryType,
-			GEOMETRY_TYPES,
-			geometryType,
-			mapContainer,
+	map.on('moveend', () => {
+		defaultView.value = {
+			center: map.getCenter(),
+			zoom: map.getZoom(),
+			bearing: map.getBearing(),
+			pitch: map.getPitch(),
 		};
-	},
+	});
+});
+
+onUnmounted(() => {
+	map.remove();
 });
 </script>
 

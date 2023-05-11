@@ -2040,6 +2040,8 @@ operations:
     to: A
     to_placeholder: Añada la dirección del correo electrónico y presionar Enter...
     body: Cuerpo
+    template: Plantilla
+    data: Datos
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios

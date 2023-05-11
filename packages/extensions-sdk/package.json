@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "9.25.2",
+	"version": "10.0.0",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"type": "module",
@@ -25,11 +25,10 @@
 	},
 	"files": [
 		"dist",
-		"templates",
-		"!**/*.test.{js,d.ts}"
+		"templates"
 	],
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
 		"test": "vitest --watch=false"
 	},
@@ -61,14 +60,15 @@
 		"@directus/tsconfig": "0.0.7",
 		"@types/fs-extra": "11.0.1",
 		"@types/inquirer": "9.0.3",
-		"@vitest/coverage-c8": "0.30.1",
+		"@vitest/coverage-c8": "0.31.0",
 		"typescript": "5.0.4",
-		"vitest": "0.30.1"
+		"vitest": "0.31.0"
 	},
 	"engines": {
 		"node": ">=12.20.0"
 	},
 	"publishConfig": {
 		"access": "public"
-	}
+	},
+	"license": "MIT"
 }

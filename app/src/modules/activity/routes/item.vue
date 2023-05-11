@@ -8,7 +8,7 @@
 			</v-notice>
 		</div>
 
-		<div v-else class="content">
+		<div v-else-if="item" class="content">
 			<!-- @TODO add final design -->
 			<p class="type-label">{{ t('user') }}:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
@@ -45,17 +45,18 @@
 	</v-drawer>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { i18n } from '@/lang';
-import { defineComponent, computed, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+<script setup lang="ts">
 import api from '@/api';
-import { userName } from '@/utils/user-name';
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { i18n } from '@/lang';
+import { userName } from '@/utils/user-name';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 type ActivityRecord = {
 	user: {
+		id: string;
 		email: string;
 		first_name: string;
 		last_name: string;
@@ -70,75 +71,68 @@ type ActivityRecord = {
 	item: string;
 };
 
-export default defineComponent({
-	name: 'ActivityDetail',
-	props: {
-		primaryKey: {
-			type: String,
-			required: true,
-		},
-	},
-	setup(props) {
-		const { t, te } = useI18n();
+const props = defineProps<{
+	primaryKey: string;
+}>();
 
-		const router = useRouter();
+const { t, te } = useI18n();
 
-		const isOpen = useDialogRoute();
+const router = useRouter();
 
-		const item = ref<ActivityRecord>();
-		const loading = ref(false);
-		const error = ref<any>(null);
+const isOpen = useDialogRoute();
 
-		const openItemLink = computed(() => {
-			if (!item.value || item.value.collection.startsWith('directus_') || item.value.action === 'delete') return;
-			return `/content/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
+const item = ref<ActivityRecord>();
+const loading = ref(false);
+const error = ref<any>(null);
+
+const openItemLink = computed(() => {
+	if (!item.value || item.value.collection.startsWith('directus_') || item.value.action === 'delete') return;
+	return `/content/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
+});
+
+watch(() => props.primaryKey, loadActivity, { immediate: true });
+
+async function loadActivity() {
+	loading.value = true;
+
+	try {
+		const response = await api.get(`/activity/${props.primaryKey}`, {
+			params: {
+				fields: [
+					'user.id',
+					'user.email',
+					'user.first_name',
+					'user.last_name',
+					'action',
+					'timestamp',
+					'ip',
+					'user_agent',
+					'origin',
+					'collection',
+					'item',
+				],
+			},
 		});
 
-		watch(() => props.primaryKey, loadActivity, { immediate: true });
+		item.value = response.data.data;
 
-		return { t, isOpen, item, loading, error, close, openItemLink, userName };
-
-		async function loadActivity() {
-			loading.value = true;
-
-			try {
-				const response = await api.get(`/activity/${props.primaryKey}`, {
-					params: {
-						fields: [
-							'user.id',
-							'user.email',
-							'user.first_name',
-							'user.last_name',
-							'action',
-							'timestamp',
-							'ip',
-							'user_agent',
-							'origin',
-							'collection',
-							'item',
-						],
-					},
-				});
-
-				item.value = response.data.data;
-
-				if (item.value) {
-					if (te(`field_options.directus_activity.${item.value.action}`))
-						item.value.action_translated = t(`field_options.directus_activity.${item.value.action}`);
-					item.value.timestamp = new Date(item.value.timestamp).toLocaleString(i18n.global.locale.value);
-				}
-			} catch (err: any) {
-				error.value = err;
-			} finally {
-				loading.value = false;
+		if (item.value) {
+			if (te(`field_options.directus_activity.${item.value.action}`)) {
+				item.value.action_translated = t(`field_options.directus_activity.${item.value.action}`);
 			}
-		}
 
-		function close() {
-			router.push('/activity');
+			item.value.timestamp = new Date(item.value.timestamp).toLocaleString(i18n.global.locale.value);
 		}
-	},
-});
+	} catch (err: any) {
+		error.value = err;
+	} finally {
+		loading.value = false;
+	}
+}
+
+function close() {
+	router.push('/activity');
+}
 </script>
 
 <style lang="scss" scoped>

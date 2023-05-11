@@ -84,122 +84,92 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, computed, nextTick } from 'vue';
-import { useUserStore } from '@/stores/user';
+<script setup lang="ts">
 import { useTFASetup } from '@/composables/use-tfa-setup';
+import { useUserStore } from '@/stores/user';
 import { User } from '@directus/types';
+import { computed, nextTick, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		primaryKey: {
-			type: String,
-			default: null,
-		},
+const props = defineProps<{
+	value: string | null;
+	primaryKey?: string;
+}>();
+
+const { t } = useI18n();
+
+const userStore = useUserStore();
+const enableActive = ref(false);
+const disableActive = ref(false);
+
+const inputOTP = ref<any>(null);
+
+const isCurrentUser = computed(() => (userStore.currentUser as User)?.id === props.primaryKey);
+
+const {
+	generateTFA,
+	enableTFA,
+	disableTFA,
+	adminDisableTFA,
+	loading,
+	password,
+	tfaEnabled,
+	tfaGenerated,
+	secret,
+	otp,
+	error,
+	canvasID,
+} = useTFASetup(!!props.value);
+
+watch(
+	() => props.value,
+	() => {
+		tfaEnabled.value = !!props.value;
 	},
-	setup(props) {
-		const { t } = useI18n();
+	{ immediate: true }
+);
 
-		const userStore = useUserStore();
-		const enableActive = ref(false);
-		const disableActive = ref(false);
-
-		const inputOTP = ref<any>(null);
-
-		const isCurrentUser = computed(() => (userStore.currentUser as User)?.id === props.primaryKey);
-
-		const {
-			generateTFA,
-			enableTFA,
-			disableTFA,
-			adminDisableTFA,
-			loading,
-			password,
-			tfaEnabled,
-			tfaGenerated,
-			secret,
-			otp,
-			error,
-			canvasID,
-		} = useTFASetup(!!props.value);
-
-		watch(
-			() => props.value,
-			() => {
-				tfaEnabled.value = !!props.value;
-			},
-			{ immediate: true }
-		);
-
-		watch(
-			() => tfaGenerated.value,
-			async (generated) => {
-				if (generated) {
-					await nextTick();
-					(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
-				}
-			}
-		);
-
-		return {
-			t,
-			tfaEnabled,
-			tfaGenerated,
-			generateTFA,
-			cancelAndClose,
-			enable,
-			toggle,
-			password,
-			enableActive,
-			disableActive,
-			loading,
-			canvasID,
-			secret,
-			disable,
-			otp,
-			error,
-			isCurrentUser,
-			inputOTP,
-		};
-
-		async function enable() {
-			const success = await enableTFA();
-			enableActive.value = !success;
-
-			if (!success) {
-				(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
-			}
+watch(
+	() => tfaGenerated.value,
+	async (generated) => {
+		if (generated) {
+			await nextTick();
+			(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
 		}
+	}
+);
 
-		async function disable() {
-			const success = await (isCurrentUser.value ? disableTFA() : adminDisableTFA(props.primaryKey));
-			disableActive.value = !success;
-		}
+async function enable() {
+	const success = await enableTFA();
+	enableActive.value = !success;
 
-		function toggle() {
-			if (tfaEnabled.value === false) {
-				enableActive.value = true;
-			} else {
-				disableActive.value = true;
-			}
-		}
+	if (!success) {
+		(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
+	}
+}
 
-		function cancelAndClose() {
-			tfaGenerated.value = false;
-			enableActive.value = false;
-			disableActive.value = false;
-			password.value = '';
-			otp.value = '';
-			secret.value = '';
-			error.value = null;
-		}
-	},
-});
+async function disable() {
+	const success = await (isCurrentUser.value ? disableTFA() : adminDisableTFA(props.primaryKey!));
+	disableActive.value = !success;
+}
+
+function toggle() {
+	if (tfaEnabled.value === false) {
+		enableActive.value = true;
+	} else {
+		disableActive.value = true;
+	}
+}
+
+function cancelAndClose() {
+	tfaGenerated.value = false;
+	enableActive.value = false;
+	disableActive.value = false;
+	password.value = '';
+	otp.value = '';
+	secret.value = '';
+	error.value = null;
+}
 </script>
 
 <style lang="scss" scoped>

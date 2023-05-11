@@ -16,15 +16,14 @@ readTime: 7 min read
 
 :::tip Before You Begin
 
-We recommend you try the [Quickstart Guide](/getting-started/quickstart.md) to get an overview of the platform.
+We recommend you try the [Quickstart Guide](/getting-started/quickstart) to get an overview of the platform.
 
 :::
 
 :::tip Learn More
 
 To manage users, role and permissions programmatically via the API, please see our API guides on
-[users](/reference/system/users.md), [roles](/reference/system/roles.md), and
-[permissions](/reference/system/permissions.md).
+[users](/reference/system/users), [roles](/reference/system/roles), and [permissions](/reference/system/permissions).
 
 :::
 
@@ -35,7 +34,7 @@ within a relational database. If you're already familiar with these concepts, fe
 
 ### Users
 
-Remember, [users are data](/reference/system/users.md). They are simply rows in a `users` data table. It may be easy to
+Remember, [users are data](/reference/system/users). They are simply rows in a `users` data table. It may be easy to
 forget this if you are new to working with data models, as the term _users_ can create a warm place in our hearts which
 distinguishes or elevates it above and beyond term _"data"_. But from the perspective of the data model, that's not the
 case. Users are still just data.
@@ -59,8 +58,8 @@ other entity that can login and interact with the database.
 In many cases, your project will have multiple users doing the same thing _(managers, writers, subscribers, etc)_. If we
 assigned permissions directly to the user, we would have to configure the same permissions over and over, which makes it
 tedious to change configurations for all users doing the same job and also leads to a higher chance of misconfiguration.
-This problem is an example of [data duplication](/configuration/data-model.md#avoid-data-duplication). To avoid this, we
-create roles, configure the role's permissions once, then assign the role to users as desired.
+This problem is an example of [data duplication](/app/data-model#avoid-data-duplication). To avoid this, we create
+roles, configure the role's permissions once, then assign the role to users as desired.
 
 Regardless of your project, your SQL database will _always_ need an administrator role and a public role. In addition,
 you may need any number of custom roles.
@@ -118,9 +117,9 @@ It is common to have multiple, complex business rules in a project.
 While you have full reign to configure these using SQL, Directus also provides a complete system to configure and manage
 users, roles, and permissions without writing a single line of SQL. The process has three key steps.
 
-1. [Create a Role](/configuration/users-roles-permissions/roles.md#create-a-role)
-2. [Configure its Permissions](/configuration/users-roles-permissions/permissions.md#configure-role-permissions)
-3. [Assign Role to User](/configuration/users-roles-permissions/roles.md#assign-role-to-user)
+1. [Create a Role](/app/users-roles-permissions/roles#create-a-role)
+2. [Configure its Permissions](/app/users-roles-permissions/permissions#configure-role-permissions)
+3. [Assign Role to User](/app/users-roles-permissions/roles#assign-role-to-user)
 
 :::tip No Artificial Limits
 
@@ -140,10 +139,10 @@ optional. You may configure your own system as desired.
 
 ![Users in the Directus Data Studio](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/users-20220807A.webp)
 
-Within the Data Studio, users are managed within the [User Directory](/app/user-directory.md). However, there are some
+Within the Data Studio, users are managed within the [User Directory](/app/user-directory). However, there are some
 controls available to assign users to roles in **Settings > Roles and Permissions**.
 
-To learn more, please see our guide on [users](/configuration/users-roles-permissions/users.md).
+To learn more, please see our guide on [users](/app/users-roles-permissions/users).
 
 ## Directus Roles
 
@@ -159,7 +158,7 @@ The public role comes with all access permissions turned off by default, but thi
 Remember, any access permissions granted to this role will apply to everyone, including unauthenticated web traffic _and
 all existing users_. If you wish to keep the project private, simply keep all permissions turned off.
 
-To learn more, see our guide on [roles](/configuration/users-roles-permissions/roles.md).
+To learn more, see our guide on [roles](/app/users-roles-permissions/roles).
 
 ## Directus Permissions
 
@@ -170,20 +169,19 @@ Directus offers an extremely granular, yet easy to configure permissions system.
 as desired.
 
 There are two other key points to note about Directus. First, the term
-[custom access permissions](/configuration/users-roles-permissions/permissions.md#configure-custom-permissions) is used
-in place of [business rules](#business-rules), however the concept is the same. Second, instead of the standard CRUD
-permissions, Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of
-permission, share, defines whether a user has permissions to perform [data sharing](/app/content/shares.md) on items in
-a collection.
+[custom access permissions](/app/users-roles-permissions/permissions#configure-custom-permissions) is used in place of
+[business rules](#business-rules), however the concept is the same. Second, instead of the standard CRUD permissions,
+Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of permission, share,
+defines whether a user has permissions to perform [data sharing](/app/content/shares) on items in a collection.
 
-To learn more, see our guide on [permissions](/configuration/users-roles-permissions/permissions.md).
+To learn more, see our guide on [permissions](/app/users-roles-permissions/permissions).
 
 ## Workflows
 
 ![Workflows in the Directus](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/workflows-20220909/workflows-20220909B.webp)
 
 Workflows are a way to setup structured stages to content authoring and data management. They are created primarily with
-custom access permissions, but can be enhanced with email notifications, custom [Interfaces](/extensions/interfaces.md)
-as well as [flows](/configuration/flows.md). Directus supports endlessly configurable workflows.
+custom access permissions, but can be enhanced with email notifications, custom [Interfaces](/extensions/interfaces) as
+well as [flows](/app/flows). Directus supports endlessly configurable workflows.
 
-To learn more, see our recipe on [basic workflows](/cookbook/permissions/basic-workflows.md).
+To learn more, see our recipe on [Content Approval Workflows](/guides/headless-cms/approval-workflows).

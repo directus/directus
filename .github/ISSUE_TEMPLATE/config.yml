@@ -1,10 +1,10 @@
 blank_issues_enabled: false
 contact_links:
   - name: Request a new feature
-    url: https://github.com/directus/directus/discussions/new?category=feature-requests
+    url: https://github.com/directus/directus/discussions/new
     about: Share your ideas on how to make Directus better.
   - name: Suggest improvements for the docs
-    url: https://github.com/directus/directus/discussions/new?category=docs-suggestions
+    url: https://github.com/directus/directus/discussions/new
     about: Share your ideas on how to improve the documentation of Directus.
   - name: Ask a question
     url: https://directus.chat/

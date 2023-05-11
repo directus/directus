@@ -1,3 +1,4 @@
+
 <template>
 	<v-notice v-if="!relationInfo" type="warning">
 		{{ t('relationship_not_setup') }}
@@ -34,7 +35,7 @@
 				</v-button>
 
 				<v-button
-					v-if="!disabled && enableCreate && createAllowed && updateAllowed"
+					v-if="!disabled && enableCreate && createAllowed"
 					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
 					rounded
 					icon
@@ -71,7 +72,7 @@
 					<router-link
 						v-if="enableLink"
 						v-tooltip="t('navigate_to_item')"
-						:to="getLinkForItem(item)"
+						:to="getLinkForItem(item)!"
 						class="item-link"
 						:class="{ disabled: item.$type === 'created' }"
 					>
@@ -79,7 +80,7 @@
 					</router-link>
 
 					<v-icon
-						v-if="!disabled && updateAllowed"
+						v-if="!disabled && (deleteAllowed || isLocalItem(item))"
 						v-tooltip="t(getDeselectTooltip(item))"
 						class="deselect"
 						:name="getDeselectIcon(item)"
@@ -113,6 +114,7 @@
 						<v-list-item
 							block
 							clickable
+							:disabled="disabled"
 							:dense="totalItemCount > 4"
 							:class="{ deleted: element.$type === 'deleted' }"
 							@click="editItem(element)"
@@ -128,7 +130,7 @@
 							<router-link
 								v-if="enableLink"
 								v-tooltip="t('navigate_to_item')"
-								:to="getLinkForItem(element)"
+								:to="getLinkForItem(element)!"
 								class="item-link"
 								:class="{ disabled: element.$type === 'created' }"
 								@click.stop
@@ -136,7 +138,7 @@
 								<v-icon name="launch" />
 							</router-link>
 							<v-icon
-								v-if="!disabled && updateAllowed"
+								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
 								v-tooltip="t(getDeselectTooltip(element))"
 								class="deselect"
 								:name="getDeselectIcon(element)"
@@ -161,7 +163,7 @@
 					</template>
 				</template>
 				<template v-else>
-					<v-button v-if="enableCreate && createAllowed && updateAllowed" :disabled="disabled" @click="createItem">
+					<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="createItem">
 						{{ t('create_new') }}
 					</v-button>
 					<v-button v-if="enableSelect && updateAllowed" :disabled="disabled" @click="selectModalActive = true">
@@ -174,7 +176,7 @@
 		</div>
 
 		<drawer-item
-			:disabled="disabled"
+			:disabled="disabled || (!updateAllowed && currentlyEditing !== '+')"
 			:active="currentlyEditing !== null"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -196,27 +198,26 @@
 </template>
 
 <script setup lang="ts">
+import { Sort } from '@/components/v-table/types';
+import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationO2M } from '@/composables/use-relation-o2m';
-import { useRelationMultiple, RelationQueryMultiple, DisplayItem } from '@/composables/use-relation-multiple';
+import { useRelationPermissionsO2M } from '@/composables/use-relation-permissions';
+import { useFieldsStore } from '@/stores/fields';
+import { LAYOUTS } from '@/types/interfaces';
+import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 import { parseFilter } from '@/utils/parse-filter';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
+import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SearchInput from '@/views/private/components/search-input.vue';
-import DrawerItem from '@/views/private/components/drawer-item.vue';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
-import { Sort } from '@/components/v-table/types';
 import Draggable from 'vuedraggable';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { isEmpty, clamp, get, isNil } from 'lodash';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { useFieldsStore } from '@/stores/fields';
-import { LAYOUTS } from '@/types/interfaces';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
-import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 
 const props = withDefaults(
 	defineProps<{
@@ -337,9 +338,11 @@ const {
 	loading,
 	selected,
 	isItemSelected,
-	localDelete,
+	isLocalItem,
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
+
+const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2M(relationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -411,13 +414,13 @@ const allowDrag = computed(
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (localDelete(item)) return 'delete';
+	if (isLocalItem(item)) return 'delete';
 	return 'close';
 }
 
 function getDeselectTooltip(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (localDelete(item)) return 'delete_item';
+	if (isLocalItem(item)) return 'delete_item';
 	return 'remove_item';
 }
 
@@ -565,29 +568,6 @@ function getLinkForItem(item: DisplayItem) {
 
 	return null;
 }
-
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	return !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'create' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
-});
-
-const updateAllowed = computed(() => {
-	const admin = userStore.currentUser?.role.admin_access === true;
-	if (admin) return true;
-
-	return !!permissionsStore.permissions.find(
-		(permission) =>
-			permission.action === 'update' && permission.collection === relationInfo.value?.relatedCollection.collection
-	);
-});
 </script>
 
 <style lang="scss">

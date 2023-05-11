@@ -2,13 +2,13 @@
 	<div
 		data-dropzone
 		class="v-upload"
-		:class="{ dragging, uploading }"
+		:class="{ dragging: dragging && fromUser, uploading }"
 		@dragenter.prevent="onDragEnter"
 		@dragover.prevent
 		@dragleave.prevent="onDragLeave"
 		@drop.stop.prevent="onDrop"
 	>
-		<template v-if="dragging">
+		<template v-if="dragging && fromUser">
 			<v-icon class="upload-icon" x-large name="file_upload" />
 			<p class="type-label">{{ t('drop_to_upload') }}</p>
 		</template>
@@ -27,7 +27,7 @@
 
 		<template v-else>
 			<div class="actions">
-				<v-button v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
+				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
 					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
 					<v-icon name="file_upload" />
 				</v-button>
@@ -41,12 +41,19 @@
 				>
 					<v-icon name="folder_open" />
 				</v-button>
-				<v-button v-if="fromUrl" v-tooltip="t('import_from_url')" icon rounded secondary @click="activeDialog = 'url'">
+				<v-button
+					v-if="fromUrl && fromUser"
+					v-tooltip="t('import_from_url')"
+					icon
+					rounded
+					secondary
+					@click="activeDialog = 'url'"
+				>
 					<v-icon name="link" />
 				</v-button>
 			</div>
 
-			<p class="type-label">{{ t('drag_file_here') }}</p>
+			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
 				<drawer-collection
@@ -85,20 +92,22 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
-import { uploadFiles } from '@/utils/upload-files';
-import { uploadFile } from '@/utils/upload-file';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
 import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { uploadFile } from '@/utils/upload-file';
+import { uploadFiles } from '@/utils/upload-files';
+import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import { Filter } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	multiple?: boolean;
 	preset?: Record<string, any>;
 	fileId?: string;
+	/** In case that the user isn't allowed to upload files */
+	fromUser?: boolean;
 	fromUrl?: boolean;
 	fromLibrary?: boolean;
 	folder?: string;
@@ -108,6 +117,7 @@ const props = withDefaults(defineProps<Props>(), {
 	multiple: false,
 	preset: () => ({}),
 	fileId: undefined,
+	fromUser: true,
 	fromUrl: false,
 	fromLibrary: false,
 	folder: undefined,
@@ -239,7 +249,7 @@ function useDragging() {
 
 		const files = event.dataTransfer?.files;
 
-		if (files) {
+		if (files && props.fromUser) {
 			upload(files);
 		}
 	}
@@ -248,7 +258,9 @@ function useDragging() {
 function useSelection() {
 	return { setSelection };
 
-	async function setSelection(selection: string[]) {
+	async function setSelection(selection: (string | number)[] | null) {
+		if (!selection) return;
+
 		if (props.multiple) {
 			const filesResponse = await api.get(`/files`, {
 				params: {

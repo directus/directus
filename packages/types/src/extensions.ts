@@ -28,12 +28,12 @@ import type { PanelConfig } from './panels.js';
 import type { Relation } from './relations.js';
 import type { SchemaOverview } from './schema.js';
 
-export type AppExtensionType = typeof APP_EXTENSION_TYPES[number];
-export type ApiExtensionType = typeof API_EXTENSION_TYPES[number];
-export type HybridExtensionType = typeof HYBRID_EXTENSION_TYPES[number];
-export type BundleExtensionType = typeof BUNDLE_EXTENSION_TYPES[number];
-export type ExtensionType = typeof EXTENSION_TYPES[number];
-export type NestedExtensionType = typeof NESTED_EXTENSION_TYPES[number];
+export type AppExtensionType = (typeof APP_EXTENSION_TYPES)[number];
+export type ApiExtensionType = (typeof API_EXTENSION_TYPES)[number];
+export type HybridExtensionType = (typeof HYBRID_EXTENSION_TYPES)[number];
+export type BundleExtensionType = (typeof BUNDLE_EXTENSION_TYPES)[number];
+export type ExtensionType = (typeof EXTENSION_TYPES)[number];
+export type NestedExtensionType = (typeof NESTED_EXTENSION_TYPES)[number];
 
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 

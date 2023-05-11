@@ -8,57 +8,52 @@
 	/>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
+<script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		includeSystem: {
-			type: Boolean,
-			default: false,
-		},
-		includeSingleton: {
-			type: Boolean,
-			default: true,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		includeSystem?: boolean;
+		includeSingleton?: boolean;
+	}>(),
+	{ includeSingleton: true }
+);
 
-		const collectionsStore = useCollectionsStore();
+defineEmits<{
+	(e: 'input', value: string | null): void;
+}>();
 
-		const collections = computed(() => {
-			let collections = collectionsStore.collections;
+const { t } = useI18n();
 
-			if (!props.includeSingleton) {
-				collections = collections.filter((collection) => collection?.meta?.singleton === false);
-			}
+const collectionsStore = useCollectionsStore();
 
-			return [
-				...collections.filter((collection) => collection.collection.startsWith('directus_') === false),
-				...(props.includeSystem ? collectionsStore.crudSafeSystemCollections : []),
-			];
-		});
+const collections = computed(() => {
+	let collections = collectionsStore.collections;
 
-		const items = computed(() => {
-			return collections.value.map((collection) => ({
+	if (!props.includeSingleton) {
+		collections = collections.filter((collection) => collection?.meta?.singleton === false);
+	}
+
+	return [
+		...collections.filter((collection) => collection.collection.startsWith('directus_') === false),
+		...(props.includeSystem ? collectionsStore.crudSafeSystemCollections : []),
+	];
+});
+
+const items = computed(() => {
+	return collections.value.reduce<{ text: string; value: string }[]>((acc, collection) => {
+		if (collection.type !== 'alias') {
+			acc.push({
 				text: collection.name,
 				value: collection.collection,
-			}));
-		});
+			});
+		}
 
-		return { items, t };
-	},
+		return acc;
+	}, []);
 });
 </script>

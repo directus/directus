@@ -105,10 +105,7 @@
 	</private-view>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref, toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
-
+<script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -117,146 +114,111 @@ import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../../components/navigation.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 
-export default defineComponent({
-	name: 'RolesItem',
-	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoSidebarDetail, PermissionsOverview, UsersInvite },
-	props: {
-		primaryKey: {
-			type: String,
-			required: true,
-		},
-		permissionKey: {
-			type: String,
-			default: null,
-		},
-		lastAdminRoleId: {
-			type: String,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	primaryKey: string;
+	permissionKey?: string;
+	lastAdminRoleId?: string;
+}>();
 
-		const router = useRouter();
+const { t } = useI18n();
 
-		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
-		const serverStore = useServerStore();
-		const userInviteModalActive = ref(false);
-		const { primaryKey } = toRefs(props);
+const router = useRouter();
 
-		const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
+const userStore = useUserStore();
+const permissionsStore = usePermissionsStore();
+const serverStore = useServerStore();
+const userInviteModalActive = ref(false);
+const { primaryKey } = toRefs(props);
 
-		const { edits, hasEdits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
-			ref('directus_roles'),
-			primaryKey,
-			{ deep: { users: { _limit: 0 } } }
-		);
+const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-		const confirmDelete = ref(false);
+const { edits, hasEdits, item, saving, loading, save, remove, deleting, isBatch } = useItem(
+	ref('directus_roles'),
+	primaryKey,
+	{ deep: { users: { _limit: 0 } } }
+);
 
-		const adminEnabled = computed(() => {
-			const values = {
-				...item.value,
-				...edits.value,
-			} as Record<string, any>;
+const confirmDelete = ref(false);
 
-			return !!values.admin_access;
-		});
+const adminEnabled = computed(() => {
+	const values = {
+		...item.value,
+		...edits.value,
+	} as Record<string, any>;
 
-		const appAccess = computed(() => {
-			const values = {
-				...item.value,
-				...edits.value,
-			} as Record<string, any>;
-
-			return !!values.app_access;
-		});
-
-		useShortcut('meta+s', () => {
-			if (hasEdits.value) saveAndStay();
-		});
-
-		const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-		const canInviteUsers = computed(() => {
-			if (serverStore.auth.disableDefault === true) return false;
-
-			const isAdmin = !!userStore.currentUser?.role?.admin_access;
-			if (isAdmin) return true;
-
-			const usersCreatePermission = permissionsStore.permissions.find(
-				(permission) => permission.collection === 'directus_users' && permission.action === 'create'
-			);
-
-			const rolesReadPermission = permissionsStore.permissions.find(
-				(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
-			);
-
-			return !!usersCreatePermission && !!rolesReadPermission;
-		});
-
-		return {
-			t,
-			item,
-			loading,
-			error,
-			edits,
-			hasEdits,
-			saving,
-			saveAndQuit,
-			deleteAndQuit,
-			confirmDelete,
-			deleting,
-			isBatch,
-			adminEnabled,
-			userInviteModalActive,
-			appAccess,
-			confirmLeave,
-			leaveTo,
-			discardAndLeave,
-			canInviteUsers,
-			revisionsDrawerDetailRef,
-		};
-
-		/**
-		 * @NOTE
-		 * The userStore contains the information about the role of the current user. We want to
-		 * update the userstore to make sure the role information is accurate with the latest changes
-		 * in case we're changing the current user's role
-		 */
-
-		async function saveAndStay() {
-			await save();
-			await userStore.hydrate();
-			revisionsDrawerDetailRef.value?.refresh?.();
-		}
-
-		async function saveAndQuit() {
-			await save();
-			await userStore.hydrate();
-			router.push(`/settings/roles`);
-		}
-
-		async function deleteAndQuit() {
-			await remove();
-			edits.value = {};
-			router.replace(`/settings/roles`);
-		}
-
-		function discardAndLeave() {
-			if (!leaveTo.value) return;
-			edits.value = {};
-			confirmLeave.value = false;
-			router.push(leaveTo.value);
-		}
-	},
+	return !!values.admin_access;
 });
+
+const appAccess = computed(() => {
+	const values = {
+		...item.value,
+		...edits.value,
+	} as Record<string, any>;
+
+	return !!values.app_access;
+});
+
+useShortcut('meta+s', () => {
+	if (hasEdits.value) saveAndStay();
+});
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+
+const canInviteUsers = computed(() => {
+	if (serverStore.auth.disableDefault === true) return false;
+
+	const isAdmin = !!userStore.currentUser?.role?.admin_access;
+	if (isAdmin) return true;
+
+	const usersCreatePermission = permissionsStore.permissions.find(
+		(permission) => permission.collection === 'directus_users' && permission.action === 'create'
+	);
+
+	const rolesReadPermission = permissionsStore.permissions.find(
+		(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
+	);
+
+	return !!usersCreatePermission && !!rolesReadPermission;
+});
+
+/**
+ * @NOTE
+ * The userStore contains the information about the role of the current user. We want to
+ * update the userstore to make sure the role information is accurate with the latest changes
+ * in case we're changing the current user's role
+ */
+
+async function saveAndStay() {
+	await save();
+	await userStore.hydrate();
+	revisionsDrawerDetailRef.value?.refresh?.();
+}
+
+async function saveAndQuit() {
+	await save();
+	await userStore.hydrate();
+	router.push(`/settings/roles`);
+}
+
+async function deleteAndQuit() {
+	await remove();
+	edits.value = {};
+	router.replace(`/settings/roles`);
+}
+
+function discardAndLeave() {
+	if (!leaveTo.value) return;
+	edits.value = {};
+	confirmLeave.value = false;
+	router.push(leaveTo.value);
+}
 </script>
 
 <style lang="scss" scoped>

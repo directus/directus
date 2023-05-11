@@ -14,7 +14,7 @@ const path = computed(() => route.path);
 <template>
 	<Layout>
 		<template #doc-footer-before>
-			<ArticleFeedback :key="path" :url="path" :title="title" />
+			<ArticleFeedback :url="path" :title="title" />
 		</template>
 	</Layout>
 </template>

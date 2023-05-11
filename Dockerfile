@@ -46,9 +46,6 @@ ENV \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
-RUN npm install -g pnpm
-RUN pnpm install
-
 COPY --from=builder --chown=node:node /directus/dist .
 
 CMD : \

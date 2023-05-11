@@ -1124,6 +1124,9 @@ triggers:
 operations:
   log:
     message: Tin nhắn
+  mail:
+    template: Mẫu
+    data: Dữ liệu
   notification:
     recipient: Người dùng
     message: Tin nhắn

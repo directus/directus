@@ -1478,6 +1478,8 @@ operations:
     payload: Muatan
   log:
     message: Pesan
+  mail:
+    template: Templat
   notification:
     recipient: Pengguna
     message: Pesan

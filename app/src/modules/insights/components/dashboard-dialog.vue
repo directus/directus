@@ -29,83 +29,74 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { defineComponent, ref, reactive, PropType, watch } from 'vue';
-import { useInsightsStore } from '@/stores/insights';
 import { router } from '@/router';
+import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
-import { useI18n } from 'vue-i18n';
+import { unexpectedError } from '@/utils/unexpected-error';
 import { isEqual } from 'lodash';
+import { reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	name: 'DashboardDialog',
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
-		dashboard: {
-			type: Object as PropType<Dashboard>,
-			default: null,
-		},
-	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = defineProps<{
+	modelValue?: boolean;
+	dashboard?: Dashboard;
+}>();
 
-		const insightsStore = useInsightsStore();
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: boolean): void;
+}>();
 
-		const values = reactive({
-			name: props.dashboard?.name ?? null,
-			icon: props.dashboard?.icon ?? 'dashboard',
-			color: props.dashboard?.color ?? null,
-			note: props.dashboard?.note ?? null,
-		});
+const { t } = useI18n();
 
-		watch(
-			() => props.modelValue,
-			(newValue, oldValue) => {
-				if (isEqual(newValue, oldValue) === false) {
-					values.name = props.dashboard?.name ?? null;
-					values.icon = props.dashboard?.icon ?? 'dashboard';
-					values.color = props.dashboard?.color ?? null;
-					values.note = props.dashboard?.note ?? null;
-				}
-			}
-		);
+const insightsStore = useInsightsStore();
 
-		const saving = ref(false);
-
-		return { values, cancel, saving, save, t };
-
-		function cancel() {
-			emit('update:modelValue', false);
-		}
-
-		async function save() {
-			saving.value = true;
-
-			try {
-				if (props.dashboard) {
-					await api.patch(`/dashboards/${props.dashboard.id}`, values, { params: { fields: ['id'] } });
-					await insightsStore.hydrate();
-				} else {
-					const response = await api.post('/dashboards', values, { params: { fields: ['id'] } });
-					await insightsStore.hydrate();
-					router.push(`/insights/${response.data.data.id}`);
-				}
-
-				emit('update:modelValue', false);
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				saving.value = false;
-			}
-		}
-	},
+const values = reactive({
+	name: props.dashboard?.name ?? null,
+	icon: props.dashboard?.icon ?? 'dashboard',
+	color: props.dashboard?.color ?? null,
+	note: props.dashboard?.note ?? null,
 });
+
+watch(
+	() => props.modelValue,
+	(newValue, oldValue) => {
+		if (isEqual(newValue, oldValue) === false) {
+			values.name = props.dashboard?.name ?? null;
+			values.icon = props.dashboard?.icon ?? 'dashboard';
+			values.color = props.dashboard?.color ?? null;
+			values.note = props.dashboard?.note ?? null;
+		}
+	}
+);
+
+const saving = ref(false);
+
+function cancel() {
+	emit('update:modelValue', false);
+}
+
+async function save() {
+	saving.value = true;
+
+	try {
+		if (props.dashboard) {
+			await api.patch(`/dashboards/${props.dashboard.id}`, values, { params: { fields: ['id'] } });
+			await insightsStore.hydrate();
+		} else {
+			const response = await api.post('/dashboards', values, { params: { fields: ['id'] } });
+			await insightsStore.hydrate();
+			router.push(`/insights/${response.data.data.id}`);
+		}
+
+		emit('update:modelValue', false);
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		saving.value = false;
+	}
+}
 </script>
 
 <style scoped>
