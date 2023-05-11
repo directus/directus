@@ -58,32 +58,20 @@ function formatPackages(packages: Package[]) {
 
 function formatChanges(changes: Change[]) {
 	return changes.map((change) => {
-		let ref;
-
-		if (change.githubInfo?.links.pull) {
-			ref = change.githubInfo.links.pull;
-		} else if (change.githubInfo?.links.commit) {
-			ref = change.githubInfo.links.commit;
-		} else if (change.commit) {
-			ref = `[${change.commit}](https://github.com/${REPO}/commit/${change.commit})`;
-		}
-
-		let user;
-
-		if (change.githubInfo?.links.user) {
-			user = `by ${change.githubInfo.links.user}`;
-		}
-
 		let refUser = '';
 
 		const refUserContent = [];
 
-		if (ref) {
-			refUserContent.push(ref);
+		if (change.githubInfo?.links.pull) {
+			refUserContent.push(change.githubInfo.links.pull);
+		} else if (change.githubInfo?.links.commit) {
+			refUserContent.push(change.githubInfo.links.commit);
+		} else if (change.commit) {
+			refUserContent.push(`[${change.commit}](https://github.com/${REPO}/commit/${change.commit})`);
 		}
 
-		if (user) {
-			refUserContent.push(user);
+		if (change.githubInfo?.links.user) {
+			refUserContent.push(`by ${change.githubInfo.links.user}`);
 		}
 
 		if (refUserContent.length > 0) {
