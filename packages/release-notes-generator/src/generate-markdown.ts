@@ -13,7 +13,7 @@ export function generateMarkdown(
 		dateStyle: 'long',
 	}).format(date);
 
-	let markdownOutput = `## ${mainVersion} (${dateString})`;
+	let markdownOutput = `## v${mainVersion} (${dateString})`;
 
 	for (const { title, packages } of types) {
 		markdownOutput += `\n\n### ${title}\n`;
