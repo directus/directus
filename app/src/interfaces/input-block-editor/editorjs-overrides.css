@@ -33,6 +33,10 @@
 	fill: var(--primary) !important;
 }
 
+.codex-editor .cdx-settings-button--active {
+	color: var(--primary);
+}
+
 .codex-editor .ce-toolbar .ce-toolbox__button svg,
 .codex-editor .ce-toolbar .ce-toolbox__button:hover svg {
 	fill: var(--foreground-normal);
