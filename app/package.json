@@ -22,7 +22,7 @@
 	],
 	"scripts": {
 		"build": "vite build",
-		"build-storybook": "storybook build",
+		"build-storybook": "NODE_OPTIONS=--max_old_space_size=8192 storybook build",
 		"dev": "vite --clearScreen false",
 		"storybook": "storybook dev -p 6006",
 		"test": "vitest --watch=false",
