@@ -122,6 +122,7 @@ import { ref } from 'vue';
 import { useFolders, Folder } from '@/composables/use-folders';
 import api from '@/api';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
+import NavigationFolder from '@/views/private/components/files-navigation-folder.vue';
 import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FolderTarget } from '@/types/folders';
