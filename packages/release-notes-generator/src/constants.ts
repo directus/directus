@@ -9,6 +9,8 @@ export const TYPE_MAP: Record<VersionType, string> = {
 	none: '📎 Misc.',
 };
 
+export const FILTERED_PACKAGES = ['directus'];
+
 export const UNTYPED_PACKAGES: Record<string, string> = {
 	docs: '📝 Documentation',
 	'tests-blackbox': '🧪 Blackbox Tests',

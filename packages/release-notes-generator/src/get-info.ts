@@ -2,7 +2,7 @@ import { getInfo as getGithubInfo } from '@changesets/get-github-info';
 import { execSync } from 'node:child_process';
 import { existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
-import { PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from './constants';
+import { FILTERED_PACKAGES, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from './constants';
 import { Change, ChangesetsWithoutId, Package, PackageInfo, PackageVersion, Type } from './types';
 
 export async function getInfo(changesets: ChangesetsWithoutId) {
@@ -38,6 +38,10 @@ export async function getInfo(changesets: ChangesetsWithoutId) {
 
 		for (const { type, name } of releases) {
 			const change: Change = { summary, commit, githubInfo };
+
+			if (FILTERED_PACKAGES.includes(name)) {
+				continue;
+			}
 
 			const untypedPackage = UNTYPED_PACKAGES[name];
 
