@@ -391,9 +391,8 @@ allow the live preview feature.
 Add your URL as the **Preview URL** in the collection settings and select the `ID`. For example, the preview URL of a
 posts collection running on localhost:3000 will be `http://localhost:3000/posts/ID`.
 
-After configuring your preview URL, toggle the **"Enable Preview**" option at the top of the page. Whenever you make
-changes to the data in your collection and save them, you should see a live preview of the item on the right-hand side
-of the screen.
+Now, click **"Enable Preview**" option at the top of the page. Whenever you make changes to the data in your
+collection and save them, you should see a live preview of the item on the right-hand side of the screen.
 
 :::tip Preview on Different Screen Sizes
 
