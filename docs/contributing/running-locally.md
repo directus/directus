@@ -148,11 +148,50 @@ If you encounter errors during this installation process, make sure your node ve
 At this point you are ready to start working on Directus! Before diving in however, it's worth reading through the
 introduction to [Contributing](/contributing/introduction).
 
-::: tip Debugging
+### Debugging The App
 
-Check our Wiki for a [guide](https://github.com/directus/directus/wiki/debugging) on debugging the app and API.
+There are several ways to debug the app but the easiest way to do it is with the
+[Vue Devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/ljjemllljcmogpfapbkkighbhhppjdbg). It's
+recommended to use the Vue Devtools with Chrome.
 
+::: tip Computed Debugging 
+To debug computed properties, it can be helpful to have a look at this [Vue Guide](https://v3.vuejs.org/guide/reactivity-computed-watchers.html#computed-debugging).
 :::
+### Debugging The API in VS Code
+
+To debug the API, we recommend to use [Visual Studio Code](https://code.visualstudio.com/) with it's built in debugger.
+
+1. First you need to setup the config for the debugger. Create the following file
+`./directus/api/.vscode/launch.json` and paste in the following structure.
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "type": "node",
+          "request": "launch",
+          "name": "Debug Api",
+          "skipFiles": [
+              "<node_internals>/**"
+          ],
+          "cwd": "${workspaceFolder}/api",
+          "runtimeExecutable": "pnpm",
+          "runtimeArgs": [
+              "run",
+              "dev"
+          ],
+      }
+  ]
+}
+```
+
+2. Make sure that you have caching disabled as it otherwise returns the cached response. To disable this, go to your `.env` file in the API and set `CACHE_ENABLED` to `false`.
+
+3. In the `tsconfig.json`, set `sourceMap` to true.
+
+4. Now you can start the API by going to the debugger view in VS Code, select to debug the API and press `Start Debugging`.
+This runs the API and allows you to set breakpoints.
 
 ## 9. Running tests
 
