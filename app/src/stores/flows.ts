@@ -1,6 +1,6 @@
-import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { fetchAll } from '@/utils/fetch-all';
 import { FlowRaw } from '@directus/types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
@@ -23,11 +23,9 @@ export const useFlowsStore = defineStore('flowsStore', () => {
 			flows.value = [];
 		} else {
 			try {
-				const response = await api.get<any>('/flows', {
-					params: { limit: -1, fields: ['*', 'operations.*'] },
+				flows.value = await fetchAll('/flows', {
+					params: { fields: ['*', 'operations.*'] },
 				});
-
-				flows.value = response.data.data;
 			} catch {
 				flows.value = [];
 			}

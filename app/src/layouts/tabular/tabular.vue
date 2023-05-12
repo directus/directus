@@ -141,11 +141,11 @@
 						/>
 					</div>
 
-					<div v-if="loading === false && items.length >= 25" class="per-page">
+					<div v-if="loading === false && (items.length >= 25 || limit < 25)" class="per-page">
 						<span>{{ t('per_page') }}</span>
 						<v-select
 							:model-value="`${limit}`"
-							:items="['25', '50', '100', '250', '500', ' 1000']"
+							:items="pageSizes"
 							inline
 							@update:model-value="limitWritable = +$event"
 						/>
@@ -180,6 +180,7 @@ export default {
 <script lang="ts" setup>
 import { HeaderRaw } from '@/components/v-table/types';
 import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
+import { usePageSize } from '@/composables/use-page-size';
 import { useShortcut } from '@/composables/use-shortcut';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
@@ -263,6 +264,14 @@ useShortcut(
 
 const permissionsStore = usePermissionsStore();
 const userStore = useUserStore();
+
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
+	[25, 50, 100, 250, 500, 1000],
+	(value) => String(value),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
 
 const showManualSort = computed(() => {
 	if (!props.sortField) return false;
