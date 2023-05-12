@@ -73,6 +73,11 @@ export class ServerService {
 			info['flows'] = {
 				execAllowedModules: env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [],
 			};
+
+			info['queryLimit'] = {
+				default: env['QUERY_LIMIT_DEFAULT'],
+				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,
+			};
 		}
 
 		if (this.accountability?.admin === true) {

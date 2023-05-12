@@ -1907,6 +1907,15 @@ export class GraphQLService {
 						},
 					}),
 				},
+				queryLimit: {
+					type: new GraphQLObjectType({
+						name: 'server_info_query_limit',
+						fields: {
+							default: { type: GraphQLInt },
+							max: { type: GraphQLInt },
+						},
+					}),
+				},
 			});
 		}
 

@@ -56,8 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
+import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Role } from '@directus/types';
@@ -127,7 +127,7 @@ async function fetchRoles() {
 	loading.value = true;
 
 	try {
-		const response = await api.get(`/roles`, {
+		const response = await fetchAll<any[]>(`/roles`, {
 			params: {
 				limit: -1,
 				fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
@@ -151,7 +151,7 @@ async function fetchRoles() {
 				description: t('public_description'),
 				id: 'public',
 			},
-			...response.data.data.map((role: any) => {
+			...response.map((role: any) => {
 				return {
 					...translate(role),
 					count: role.users[0]?.count.id || 0,
