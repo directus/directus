@@ -1,5 +1,6 @@
 import { getInfo } from '@changesets/get-github-info';
 import type { NewChangesetWithCommit } from '@changesets/types';
+import { TYPE_MAP } from './constants';
 
 type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (...args: any) => Promise<infer R> ? R : any;
 
@@ -14,7 +15,8 @@ export type Package = {
 	changes: Change[];
 };
 
-export type Type = { title: string; packages: Package[] };
+type TypeValues = (typeof TYPE_MAP)[keyof typeof TYPE_MAP];
+export type Type = { title: TypeValues; packages: Package[] };
 
 export type PackageVersion = {
 	name: string;

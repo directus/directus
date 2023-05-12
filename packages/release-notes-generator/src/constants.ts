@@ -13,11 +13,11 @@ export const UNTYPED_PACKAGES: Record<string, string> = {
 
 export const PACKAGE_ORDER = ['@directus/app', '@directus/api'];
 
-export const TYPE_MAP: Record<VersionType, string> = {
+export const TYPE_MAP = {
 	major: '⚠️ Potential Breaking Changes',
 	minor: '✨ New Features & Improvements',
 	patch: '🐛 Bug Fixes & Optimizations',
 	none: '📎 Misc.',
-};
+} as const satisfies Record<VersionType, string>;
 
 export const VERSIONS_TITLE = '📦 Published Versions';
