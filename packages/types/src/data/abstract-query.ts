@@ -1,134 +1,151 @@
-/**
- * All types which are used within the data packages
- */
+/** The root of the abstract query */
+export interface AbstractQuery {
+	/** Marked as entrypoint of the query */
+	root: true;
 
-/**
- * The root of the abstract query
- * @typeParam type - set to "root"
- * @typeParam collection - name of the collection within the datastore
- * @typeParam datastore - place where the data is stored
- * @typeParam fields - all fields to select in the query
- */
-export type AbstractQuery = {
-	type: 'root';
-	collection: string;
+	/** Place where the data is stored */
 	datastore: string;
-	fields: FieldTypes[];
-};
 
-/**
- * A group of all possible field types
- */
-export type FieldTypes = Field | Func | ForeignItem | ForeignCollection;
-
-/**
- * The root of the abstract query
- * @typeParam type - set to "field"
- * @typeParam key - the name of the attribute
- * @typeParam alias - a custom name for the field
- * @typeParam distinct - to return only different values
- */
-export type Field = {
-	type: 'field';
-	key: string;
-	alias?: string;
-	distinct?: boolean;
-};
-
-/**
- * The root of the abstract query
- * @typeParam type - set to "field"
- * @typeParam key - the name of the attribute
- * @typeParam alias - a custom name for the field
- * @typeParam distinct - to return only different values
- */
-export type Func = {
-	type: 'function';
-	fn: 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second' | 'count' | 'json';
-	target: Field | Func;
-	alias?: string;
-};
-
-/**
- * Shared attributes used by nested item/collection nodes
- * @typeParam alias - a custom name other than the field name
- * @typeParam collection - name of the collection within the datastore
- * @typeParam fields - fields to select from the referenced collection
- */
-type ForeignReference = {
-	alias?: string;
+	/** Name of the collection within the datastore */
 	collection: string;
-	fields: FieldTypes[];
-	meta: MetaInformation;
-};
 
-/**
- * Technical information which describes a relation between collections.
- * Needed to perform the nested queries and merge them together.
- * @typeParam datastore - the datastore where the data is stored, can be the same as the root query or a different one
- * @typeParam foreignIdentifierField - the name of the field which identifies an item in referred collection
- * @typeParam referenceField - the field in the root collection which holds the value of the foreign identifier. It's used to merge the foreign data into the root results.
- * @typeParam relationType - the type of the relation between the collections. Can be 'm2o', 'o2m' or 'a2o'
- */
-type MetaInformation = {
-	// TODO: change some/all to string arrays for composite keys
-	datastore: string;
-	foreignIdentifierField: string;
-	referenceField: string;
-	relationType: 'm2o' | 'o2m' | 'a2o';
-};
+	/** All fields to select in the query */
+	fieldNodes: AbstractQueryFieldNode[];
 
-/**
- * An related item stored in a foreign collection.
- * It can be stored in the same database or a different one.
- * @typeParam type - set to 'item'
- */
-export type ForeignItem = {
-	type: 'item';
-} & ForeignReference;
+	// modifiers?: {
+	// 	limit?: AbstractQueryNodeLimit;
+	// 	filter?: AbstractQueryFilterNode[];
+	// };
+}
 
-/**
- * A related foreign collection.
- * It can be stored in the same database or a different one.
- * @typeParam type - set to 'collection'
- * @typeParam modifiers - optional attributes to customize the query results
- */
-export type ForeignCollection = {
-	type: 'collection';
+type AbstractQueryNodeType = 'primitive' | 'fn' | 'm2o' | 'o2m' | 'a2o' | 'o2a';
+
+interface AbstractQueryNode {
+	/** the type of the node */
+	type: AbstractQueryNodeType;
+}
+
+/** A group of all possible field types */
+export type AbstractQueryFieldNode =
+	| AbstractQueryFieldNodePrimitive
+	| AbstractQueryFieldNodeFn
+	| AbstractQueryFieldNodeRelated;
+
+/** Generic primitive value read from the datastore field */
+export interface AbstractQueryFieldNodePrimitive extends AbstractQueryNode {
+	type: 'primitive';
+
+	/** the name of the attribute */
+	field: string;
+}
+
+export type AbstractQueryFn = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
+
+export interface AbstractQueryFieldNodeFn extends AbstractQueryNode {
+	type: 'fn';
+
+	fn: AbstractQueryFn;
+
+	targetNode: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
+
+	args?: (string | number | boolean)[];
+}
+
+export interface AbstractQueryFieldNodeRelatedBase {
+	fieldNodes: AbstractQueryFieldNode[];
+
 	modifiers?: Modifiers;
-} & ForeignReference;
+}
+
+export type AbstractQueryFieldNodeRelated = AbstractQueryFieldNodeRelatedMany | AbstractQueryFieldNodeRelatedAny;
+
+interface AbstractQueryFieldNodeRelatedJoinMany {
+	current: {
+		fields: string[];
+	};
+
+	external: {
+		datastore?: string;
+		collection: string;
+		fields: string[];
+	};
+}
+
+interface AbstractQueryFieldNodeRelatedJoinAny {
+	current: {
+		collectionField: string;
+		fields: string[];
+	};
+
+	external: {
+		datastore?: string;
+		fields: string[];
+	};
+}
+
+export interface AbstractQueryFieldNodeRelatedBase {
+	fieldNodes: AbstractQueryFieldNode[];
+
+	modifiers?: Modifiers;
+}
+
+export interface AbstractQueryFieldNodeRelatedManyToOne extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
+	type: 'm2o';
+
+	join: AbstractQueryFieldNodeRelatedJoinMany;
+}
+
+export interface AbstractQueryFieldNodeRelatedOneToMany extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
+	type: 'o2m';
+
+	join: AbstractQueryFieldNodeRelatedJoinMany;
+}
+
+export interface AbstractQueryFieldNodeRelatedAnyToOne extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
+	type: 'a2o';
+
+	join: AbstractQueryFieldNodeRelatedJoinAny;
+}
+
+export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
+	type: 'o2a';
+
+	join: AbstractQueryFieldNodeRelatedJoinAny;
+}
+
+// =================================================================================================
 
 /**
  * Optional attributes to customize the query results
  * @typeParam sort - Specifies the order of the results
  * @typeParam limit - Specifies the maximum amount of returning results
  */
-export type Modifiers = {
-	limit?: Limit;
-	offset?: Offset;
-	sort?: Sort;
-	filter?: LogicalOperation | ConditionalOperation;
-};
+export interface Modifiers {
+	limit?: AbstractQueryNodeLimit;
+	offset?: AbstractQueryNodeOffset;
+	sort?: AbstractQueryNodeSort;
+	filter?: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
+}
 
 /**
  * Specifies the maximum amount of returning results
  * @typeParam type - set to 'limit'
  * @typeParam value - the limit value
  */
-type Limit = {
+interface AbstractQueryNodeLimit {
 	type: 'limit';
 	value: number;
-};
+}
 
 /**
  * Specifies the number of items to skip before returning results
  * @typeParam type - set to 'offset'
  * @typeParam value - the offset value
  */
-type Offset = {
+interface AbstractQueryNodeOffset {
 	type: 'offset';
 	value: number;
-};
+}
 
 /**
  * Specifies the order of the results
@@ -136,11 +153,11 @@ type Offset = {
  * @typeParam direction - 'ascending' or 'descending'
  * @typeParam target - the node on which the sorting should be applied
  */
-type Sort = {
+interface AbstractQueryNodeSort {
 	type: 'sort';
 	direction: 'ascending' | 'descending';
-	target: Field | Func | ForeignItem;
-};
+	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn | AbstractQueryFieldNodeRelated;
+}
 
 /**
  * Used to create logical operations
@@ -169,11 +186,11 @@ type Sort = {
  * }
  * ```
  */
-export type LogicalOperation = {
+export interface AbstractQueryNodeLogical {
 	type: 'logical';
-	operator: '_and' | '_or' | '_not' | '_all' | '_some' | '_none';
-	children: (LogicalOperation | ConditionalOperation)[];
-};
+	operator: 'and' | 'or' | 'not';
+	childNodes: (AbstractQueryNodeLogical | AbstractQueryNodeCondition)[];
+}
 
 /**
  * Used to create conditional operations
@@ -191,20 +208,30 @@ export type LogicalOperation = {
  * }
  * ```
  */
-export type ConditionalOperation = {
+export interface AbstractQueryNodeCondition {
 	type: 'condition';
-	target: Field | Func | ForeignItem;
+	targetNode:
+		| AbstractQueryFieldNodePrimitive
+		| AbstractQueryFieldNodeFn
+		| AbstractQueryFieldNodeRelatedManyToOne
+		| AbstractQueryFieldNodeRelatedAnyToOne;
 	operation:
-		| '_eq'
-		| '_lt'
-		| '_lte'
-		| '_gt'
-		| '_gte'
-		| '_in'
-		| '_contains'
-		| '_starts_with'
-		| '_end_with'
-		| '_intersects'
-		| '_intersects_bbox';
+		| 'eq'
+		| 'lt'
+		| 'lte'
+		| 'gt'
+		| 'gte'
+		| 'in'
+		| 'contains'
+		| 'starts_with'
+		| 'end_with'
+		| 'intersects'
+		| 'intersects_bbox';
 	value: string | number | boolean;
-};
+}
+
+/**
+ * Questions:
+ * - 	Should we support "Distinct", if so where does it live (field level vs collection level)
+ * -  Rethink every / some
+ */
