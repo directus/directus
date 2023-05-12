@@ -13,13 +13,13 @@ export type AbstractQuery = {
 	type: 'root';
 	collection: string;
 	datastore: string;
-	fields: Field[];
+	fields: FieldTypes[];
 };
 
 /**
  * A group of all possible field types
  */
-export type Field = FieldNode | FunctionNode | NestedItemNode | NestedCollectionNode;
+export type FieldTypes = Field | Func | ForeignItem | ForeignCollection;
 
 /**
  * The root of the abstract query
@@ -28,7 +28,7 @@ export type Field = FieldNode | FunctionNode | NestedItemNode | NestedCollection
  * @typeParam alias - a custom name for the field
  * @typeParam distinct - to return only different values
  */
-export type FieldNode = {
+export type Field = {
 	type: 'field';
 	key: string;
 	alias?: string;
@@ -42,10 +42,10 @@ export type FieldNode = {
  * @typeParam alias - a custom name for the field
  * @typeParam distinct - to return only different values
  */
-export type FunctionNode = {
+export type Func = {
 	type: 'function';
 	fn: 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second' | 'count' | 'json';
-	target: FieldNode | FunctionNode;
+	target: Field | Func;
 	alias?: string;
 };
 
@@ -55,10 +55,10 @@ export type FunctionNode = {
  * @typeParam collection - name of the collection within the datastore
  * @typeParam fields - fields to select from the referenced collection
  */
-type NestedNode = {
+type ForeignReference = {
 	alias?: string;
 	collection: string;
-	fields: Field[];
+	fields: FieldTypes[];
 	meta: MetaInformation;
 };
 
@@ -68,6 +68,7 @@ type NestedNode = {
  * @typeParam datastore - the datastore where the data is stored, can be the same as the root query or a different one
  * @typeParam foreignIdentifierField - the name of the field which identifies an item in referred collection
  * @typeParam referenceField - the field in the root collection which holds the value of the foreign identifier. It's used to merge the foreign data into the root results.
+ * @typeParam relationType - the type of the relation between the collections. Can be 'm2o', 'o2m' or 'a2o'
  */
 type MetaInformation = {
 	// TODO: change some/all to string arrays for composite keys
@@ -78,21 +79,24 @@ type MetaInformation = {
 };
 
 /**
- * A nested item of a foreign collection
+ * An related item stored in a foreign collection.
+ * It can be stored in the same database or a different one.
  * @typeParam type - set to 'item'
  */
-export type NestedItemNode = {
+export type ForeignItem = {
 	type: 'item';
-} & NestedNode;
+} & ForeignReference;
 
 /**
- * A nested foreign collection
+ * A related foreign collection.
+ * It can be stored in the same database or a different one.
  * @typeParam type - set to 'collection'
+ * @typeParam modifiers - optional attributes to customize the query results
  */
-export type NestedCollectionNode = {
+export type ForeignCollection = {
 	type: 'collection';
 	modifiers?: Modifiers;
-} & NestedNode;
+} & ForeignReference;
 
 /**
  * Optional attributes to customize the query results
@@ -100,9 +104,9 @@ export type NestedCollectionNode = {
  * @typeParam limit - Specifies the maximum amount of returning results
  */
 export type Modifiers = {
-	limit?: LimitNode;
-	offset?: OffsetNode;
-	sort?: SortNode;
+	limit?: Limit;
+	offset?: Offset;
+	sort?: Sort;
 	filter?: LogicalOperation | ConditionalOperation;
 };
 
@@ -111,7 +115,7 @@ export type Modifiers = {
  * @typeParam type - set to 'limit'
  * @typeParam value - the limit value
  */
-type LimitNode = {
+type Limit = {
 	type: 'limit';
 	value: number;
 };
@@ -121,7 +125,7 @@ type LimitNode = {
  * @typeParam type - set to 'offset'
  * @typeParam value - the offset value
  */
-type OffsetNode = {
+type Offset = {
 	type: 'offset';
 	value: number;
 };
@@ -132,10 +136,10 @@ type OffsetNode = {
  * @typeParam direction - 'ascending' or 'descending'
  * @typeParam target - the node on which the sorting should be applied
  */
-type SortNode = {
+type Sort = {
 	type: 'sort';
 	direction: 'ascending' | 'descending';
-	target: FieldNode | FunctionNode | NestedItemNode;
+	target: Field | Func | ForeignItem;
 };
 
 /**
@@ -189,7 +193,7 @@ export type LogicalOperation = {
  */
 export type ConditionalOperation = {
 	type: 'condition';
-	target: FieldNode | FunctionNode | NestedItemNode;
+	target: Field | Func | ForeignItem;
 	operation:
 		| '_eq'
 		| '_lt'
