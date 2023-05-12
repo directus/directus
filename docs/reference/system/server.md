@@ -181,6 +181,12 @@ If rate-limiter is enabled, amount of allowed points per duration
 `rateLimit.duration` **number**\
 If rate-limiter is enabled, duration in seconds in which points are counted
 
+`queryLimit.default` **number**\
+The default query limit used when not defined in the API request
+
+`queryLimit.max` **number**\
+The maximum query limit accepted on API requests
+
 Admin users also get the following information:
 
 `directus.version` **string**\
