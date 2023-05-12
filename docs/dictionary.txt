@@ -103,9 +103,10 @@ Capterra
 Cardgroup
 cardinality
 CDNs?
-Changesets
-changeset
 changelogs
+changeset
+changesets
+Changesets
 CLA
 CLI
 CloudFront
