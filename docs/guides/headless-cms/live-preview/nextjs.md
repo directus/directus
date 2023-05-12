@@ -98,3 +98,46 @@ returned with the `Location` header pointing to the path of the corresponding pa
 Learn more about [draft mode](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode) from the
 Next.js documentation
 
+## Fetch Post Data with Draft Mode Enabled
+
+To enable draft mode while fetching post data, modify the `pages.tsx` file located in the `app/posts/[id]` directory
+with the following code:
+
+```js
+import { getPostById, getAllPosts } from '@/lib/directus';
+import { draftMode } from 'next/headers'; // [!code ++]
+
+export default async function Post({ params: { id } }: { params: { id: string } }) {
+	const { isEnabled } = draftMode(); // [!code ++]
+
+	const post = await getPostById(id);
+	if (!post) {
+		return null;
+	}
+
+	const { title, body } = post;
+
+	return (
+		<article>
+			<h1>{title}</h1>
+			<p>{body}</p>
+			{isEnabled && <p>(Draft Mode)</p>} // [!code ++]
+		</article>
+	);
+}
+
+export async function generateStaticParams() {
+	const posts = await getAllPosts();
+
+	return posts.map((post) => ({
+		id: String(post.id),
+	}));
+}
+```
+
+The `draftMode` function is imported from the `next/headers` module and determines whether or not draft mode is
+currently enabled. If `isEnabled` is true, then the code will show the text "(Draft Mode)" inside a paragraph element.
+
+Run `npm run dev` and visit your preview URL `http:/<your-site>/api/draft?secret=MY_SECRET_TOKEN&id=ID`, you should be
+able to see the preview of your content.
+
