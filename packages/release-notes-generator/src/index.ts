@@ -2,9 +2,9 @@ import type { ChangelogFunctions, GetDependencyReleaseLine, GetReleaseLine } fro
 import { existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import { MAIN_PACKAGE } from './constants';
-import { generateMarkdown } from './generate-markdown';
-import { getInfo } from './get-info';
-import { getPackages } from './get-packages';
+import { getInfo } from './info';
+import { generateMarkdown } from './markdown';
+import { getPackageVersion, getPackages } from './packages';
 import { ChangesetsWithoutId } from './types';
 
 const changesets: ChangesetsWithoutId = new Map();
@@ -34,7 +34,7 @@ async function run() {
 
 	const workspacePackages = await getPackages();
 
-	const mainVersion = workspacePackages.find((p) => p.manifest.name === MAIN_PACKAGE)?.manifest.version;
+	const mainVersion = getPackageVersion(workspacePackages, MAIN_PACKAGE);
 
 	if (!mainVersion) {
 		throw new Error(`Couldn't get main version ('${MAIN_PACKAGE}' package)`);

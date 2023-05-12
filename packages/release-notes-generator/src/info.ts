@@ -2,6 +2,7 @@ import { getInfo as getGithubInfo } from '@changesets/get-github-info';
 import type { Project } from '@pnpm/find-workspace-packages';
 import { FILTERED_PACKAGES, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from './constants';
 import type { Change, ChangesetsWithoutId, Package, PackageVersion, Type } from './types';
+import { getPackageVersion } from './packages';
 
 export async function getInfo(changesets: ChangesetsWithoutId, workspacePackages: Project[]) {
 	const types: Type[] = [];
@@ -28,7 +29,7 @@ export async function getInfo(changesets: ChangesetsWithoutId, workspacePackages
 			const untypedPackage = UNTYPED_PACKAGES[name];
 
 			if (!untypedPackage && !packageVersions.has(name)) {
-				const version = workspacePackages.find((p) => p.manifest.name === name)?.manifest.version;
+				const version = getPackageVersion(workspacePackages, name);
 
 				if (version) {
 					packageVersions.set(name, version);
@@ -52,14 +53,6 @@ export async function getInfo(changesets: ChangesetsWithoutId, workspacePackages
 				}
 
 				continue;
-			}
-
-			if (!packageVersions.has(name)) {
-				const version = workspacePackages.find((p) => p.manifest.name === name)?.manifest.version;
-
-				if (version) {
-					packageVersions.set(name, version);
-				}
 			}
 
 			const typeTitle = TYPE_MAP[type];

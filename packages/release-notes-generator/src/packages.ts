@@ -1,5 +1,5 @@
 import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
-import { findWorkspacePackagesNoCheck } from '@pnpm/find-workspace-packages';
+import { Project, findWorkspacePackagesNoCheck } from '@pnpm/find-workspace-packages';
 
 export async function getPackages() {
 	const workspaceRoot = await findWorkspaceDir(process.cwd());
@@ -9,4 +9,8 @@ export async function getPackages() {
 	}
 
 	return findWorkspacePackagesNoCheck(workspaceRoot);
+}
+
+export function getPackageVersion(packages: Project[], name: string) {
+	return packages.find((p) => p.manifest.name === name)?.manifest.version;
 }
