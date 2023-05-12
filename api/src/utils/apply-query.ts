@@ -15,8 +15,9 @@ import { clone, isPlainObject } from 'lodash-es';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
 import { InvalidQueryException } from '../exceptions/invalid-query.js';
+import type { AliasMap } from './get-column-path.js';
+import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
-import { AliasMap, getColumnPath } from './get-column-path.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { stripFunction } from './strip-function.js';
 
@@ -356,8 +357,9 @@ export function applyFilter(
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
 				// permission checks, as {} already matches full permissions.
-				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0))
+				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
 					continue;
+				}
 
 				value.forEach((subFilter: Record<string, any>) => {
 					addJoins(dbQuery, subFilter, collection);
@@ -764,12 +766,23 @@ export async function applySearch(
 				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
 			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
 				const number = Number(searchQuery);
-				if (!isNaN(number)) this.orWhere({ [`${collection}.${name}`]: number });
+
+				// only cast finite base10 numeric values
+				if (validateNumber(searchQuery, number)) {
+					this.orWhere({ [`${collection}.${name}`]: number });
+				}
 			} else if (field.type === 'uuid' && validate(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
 			}
 		});
 	});
+}
+
+function validateNumber(value: string, parsed: number) {
+	if (isNaN(parsed) || !Number.isFinite(parsed)) return false;
+	// casting parsed value back to string should be equal the original value
+	// (prevent unintended number parsing, e.g. String(7) !== "ob111")
+	return String(parsed) === value;
 }
 
 export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate, collection: string): void {

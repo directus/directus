@@ -1,11 +1,12 @@
+import { useTranslationStrings } from '@/composables/use-translation-strings';
 import { setLanguage } from '@/lang/set-language';
-import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
-import { useLatencyStore } from '@/stores/latency';
-import { useInsightsStore } from '@/stores/insights';
 import { useFlowsStore } from '@/stores/flows';
+import { useInsightsStore } from '@/stores/insights';
+import { useLatencyStore } from '@/stores/latency';
+import { useNotificationsStore } from '@/stores/notifications';
 import { usePermissionsStore } from '@/stores/permissions';
 import { usePresetsStore } from '@/stores/presets';
 import { useRelationsStore } from '@/stores/relations';
@@ -14,6 +15,7 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { useNotificationsStore } from '@/stores/notifications';
+import { getBasemapSources } from '@/utils/geometry/basemap';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
 
 type GenericStore = {
@@ -67,14 +69,15 @@ export async function hydrate(): Promise<void> {
 		 */
 		await userStore.hydrate();
 
+		const currentUser = userStore.currentUser;
+
 		let lang = 'en-US';
-		if (serverStore.info?.project?.default_language) lang = serverStore.info.project.default_language;
 
 		if (userStore.currentUser && 'language' in userStore.currentUser && userStore.currentUser?.language) {
 			lang = userStore.currentUser?.language;
 		}
 
-		if (userStore.currentUser?.role) {
+		if (currentUser?.role) {
 			await Promise.all([permissionsStore.hydrate(), fieldsStore.hydrate({ skipTranslation: true })]);
 
 			const hydratedStores = ['userStore', 'permissionsStore', 'fieldsStore'];

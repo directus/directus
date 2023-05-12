@@ -131,7 +131,7 @@ archive_confirm_count: >-
   Brak zaznaczonych elementów | Czy na pewno chcesz zarchiwizować ten element? | Czy na pewno chcesz zarchiwizować te {count} elementy?
 reset_system_permissions_to: 'Resetuj uprawnienia systemowe:'
 reset_system_permissions_copy: Ta akcja nadpisze wszelkie uprawnienia niestandardowe, które mogły być zastosowane do kolekcji systemowych. Czy jesteś pewien?
-the_following_are_minimum_permissions: Poniższe uprawnienia są wymagane, gdy "Dostęp do aplikacji" jest włączony.
+the_following_are_minimum_permissions: Następujące minimalne uprawnienia są stosowane automatycznie, gdy "Dostęp do aplikacji" jest włączony. Możesz przyznać dodatkowe uprawnienia w razie potrzeby, ale nie możesz zmniejszyć uprawnień poniżej tego poziomu.
 app_access_minimum: Minimalny dostęp do aplikacji
 recommended_defaults: Zalecane ustawienia domyślne
 unarchive: Przywróć z archiwum
@@ -297,6 +297,7 @@ m2m_relationship: Relacja wiele do wielu
 m2a_relationship: Relacja wiele do każdego
 invalid_item: Niepoprawny element
 require_confirmation: Wymagaj potwierdzenia
+dialog: Dialog
 modal: Okno
 confirmation_dialog: Okno potwierdzenia
 confirmation_description: Opis potwierdzenia
@@ -323,6 +324,7 @@ field_key: Klucz pola
 finish_setup: Zakończ konfigurację
 dismiss: Anuluj
 toggle_raw_editor: Przełącz edytor
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Wartość surowa
 copy_raw_value: Kopiuj wartość surową
 copy_raw_value_success: Skopiowano
@@ -1144,6 +1146,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Wskazówka
+    avif: AVIF
     mapping: Mapowanie
     basemaps: Podstawowe
     basemaps_raster: Raster
@@ -1561,6 +1564,7 @@ interfaces:
     allow_none_label: Zezwól na brak zaznaczenia
     choices_name_placeholder: Wprowadź nazwę...
     choices_value_placeholder: Wprowadź wartość...
+    preview_threshold: Próg podglądu
   select-multiple-dropdown:
     select-multiple-dropdown: Rozwijanie menu listy (Wielokrotnego wyboru)
     description: Wybierz wiele wartości z listy rozwijanej
@@ -1765,6 +1769,7 @@ interfaces:
     remove_token: Usuń token
   system-raw-editor:
     system-raw-editor: Edycja bezpośrednia
+    description: Zezwalaj na wprowadzanie wartości szablonów surowych lub muszlowych
 displays:
   translations:
     translations: Tłumaczenia
@@ -2102,6 +2107,8 @@ operations:
     to: Do
     to_placeholder: Dodaj adresy e-mail i naciśnij enter...
     body: Treść
+    template: Szablon
+    data: Dane
   notification:
     name: Wyślij powiadomienie
     description: Wyślij powiadomienie w aplikacji do jednego lub więcej użytkowników
@@ -2119,6 +2126,7 @@ operations:
     headers: Nagłówki
     header: Nagłówek
     header_placeholder: Autoryzacja...
+    value_placeholder: Berer eyJbGciOi...
   sleep:
     name: Uśpienie
     description: Poczekaj określoną liczbę milisekund
@@ -2132,7 +2140,10 @@ operations:
     flows: Przepływy
     flow: Przepływ
     data: Dane
+    iteration_mode: Tryb iteracji
+    iteration_mode_note: Tryb powtarzania nad tablicami.
     serial: Seryjny
     parallel: Równoległy
     batch: Partia
     batch_size: Rozmiar partii
+    cache: Cache

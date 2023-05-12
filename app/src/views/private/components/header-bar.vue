@@ -16,7 +16,9 @@
 			<div class="title">
 				<slot name="title">
 					<slot name="title:prepend" />
-					<h1 class="type-title">{{ title }}</h1>
+					<h1 class="type-title">
+						<v-text-overflow :text="title" placement="bottom">{{ title }}</v-text-overflow>
+					</h1>
 					<slot name="title:append" />
 				</slot>
 			</div>
@@ -36,57 +38,46 @@
 	</header>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
+<script lang="ts" setup>
+import { ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
 
-export default defineComponent({
-	components: { HeaderBarActions },
-	props: {
-		title: {
-			type: String,
-			default: null,
-		},
-		showSidebarToggle: {
-			type: Boolean,
-			default: false,
-		},
-		primaryActionIcon: {
-			type: String,
-			default: 'menu',
-		},
-		small: {
-			type: Boolean,
-			default: false,
-		},
-		shadow: {
-			type: Boolean,
-			default: true,
-		},
+withDefaults(
+	defineProps<{
+		title?: string;
+		showSidebarToggle?: boolean;
+		primaryActionIcon?: string;
+		small?: boolean;
+		shadow?: boolean;
+	}>(),
+	{
+		primaryActionIcon: 'menu',
+		shadow: true,
+	}
+);
+
+defineEmits<{
+	(e: 'primary'): void;
+	(e: 'toggle:sidebar'): void;
+}>();
+
+const headerEl = ref<Element>();
+
+const collapsed = ref(false);
+
+const observer = new IntersectionObserver(
+	([e]) => {
+		collapsed.value = e.boundingClientRect.y === -1;
 	},
-	emits: ['primary', 'toggle:sidebar'],
-	setup() {
-		const headerEl = ref<Element>();
+	{ threshold: [1] }
+);
 
-		const collapsed = ref(false);
+onMounted(() => {
+	observer.observe(headerEl.value as HTMLElement);
+});
 
-		const observer = new IntersectionObserver(
-			([e]) => {
-				collapsed.value = e.boundingClientRect.y === -1;
-			},
-			{ threshold: [1] }
-		);
-
-		onMounted(() => {
-			observer.observe(headerEl.value as HTMLElement);
-		});
-
-		onUnmounted(() => {
-			observer.disconnect();
-		});
-
-		return { headerEl, collapsed };
-	},
+onUnmounted(() => {
+	observer.disconnect();
 });
 </script>
 
@@ -138,7 +129,6 @@ export default defineComponent({
 		&.full {
 			margin-right: 12px;
 			padding-right: 0;
-
 			@media (min-width: 600px) {
 				margin-right: 20px;
 				padding-right: 20px;

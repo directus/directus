@@ -18,8 +18,8 @@ with the admin option enabled can manage Settings within the app.
 
 [Fields](#fields) that do not map directly to an actual database column are called "alias" fields. For example,
 presentation fields (such as dividers and groups) and certain relational types that display data stored elsewhere (such
-as [One-to-Many (O2M)](/configuration/data-model/relationships#one-to-many-o2m) and
-[Many-to-Many (M2M)](/configuration/data-model/relationships#many-to-many-m2m)).
+as [One-to-Many (O2M)](/app/data-model/relationships#one-to-many-o2m) and
+[Many-to-Many (M2M)](/app/data-model/relationships#many-to-many-m2m)).
 
 ## API
 
@@ -41,8 +41,7 @@ tracks the event type, user, timestamp, IP address, user-agent, and any associat
 Collections are containers for specific types of Items and contain any number of fields. Each collection represents a
 **table** in your database. By default, the [title formatter](#title-formatter) is used to display any existing database
 table names as human-readable collection titles. There are also "folder" collections that are
-[exclusively used for organizational purposes](/configuration/data-model#sorting-grouping), and don't hold any data
-themselves.
+[exclusively used for organizational purposes](/app/data-model#sorting-grouping), and don't hold any data themselves.
 
 Collections can be organized in any way that is appropriate for your project. You can architect them platform-specific
 (e.g., _pages_ of a website), or in a more platform-agnostic way (e.g., raw _customers_ of your business). While there's
@@ -55,10 +54,10 @@ unique value that is used to reference the Collection's items throughout the dat
 
 ### Relevant Guides
 
-- [Creating a Collection](/configuration/data-model#creating-a-collection)
-- [Configuring a Collection](/configuration/data-model#configuring-a-collection)
-- [Deleting a Collection](/configuration/data-model#deleting-a-collection)
-- [Adjusting a Collection Layout](/configuration/data-model#adjusting-a-collection-layout)
+- [Creating a Collection](/app/data-model#creating-a-collection)
+- [Configuring a Collection](/app/data-model#configuring-a-collection)
+- [Deleting a Collection](/app/data-model#deleting-a-collection)
+- [Adjusting a Collection Layout](/app/data-model#adjusting-a-collection-layout)
 
 ## Dashboards
 
@@ -283,7 +282,7 @@ file, asset storage, and any custom extensions. Projects are the highest level o
 
 - [Creating a Project](/self-hosted/quickstart)
 - [Configuring a Project](/self-hosted/config-options)
-- [Adjusting Project Settings](/configuration/project-settings)
+- [Adjusting Project Settings](/app/project-settings)
 - [Upgrading a Project](/self-hosted/upgrades-migrations)
 - [Backing-up a Project](/self-hosted/upgrades-migrations#backing-up-a-project)
 - [Migrating a Project](/self-hosted/upgrades-migrations#migrating-a-project)
@@ -294,7 +293,7 @@ file, asset storage, and any custom extensions. Projects are the highest level o
 The platform allows you to group Items within different Collections. But often times it is important to "link" items
 across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship, a crucial
 concept within any _relational_ database. There are several different types of relationships, each serving a specific
-purpose. [Learn more about Relationships](/configuration/data-model/relationships).
+purpose. [Learn more about Relationships](/app/data-model/relationships).
 
 ## Revisions
 
@@ -316,11 +315,11 @@ There is also a "Public" role that determines access for unauthenticated access.
 
 ### Relevant Guides
 
-- [Creating a Role](/configuration/users-roles-permissions#creating-a-role)
-- [Configuring a Role](/configuration/users-roles-permissions#configure-a-role)
-- [Configuring Role Permissions](/configuration/users-roles-permissions#configure-permissions)
-- [Configuring System Permissions](/configuration/users-roles-permissions#configure-system-permissions)
-- [Deleting a Role](/configuration/users-roles-permissions#deleting-a-role)
+- [Creating a Role](/app/users-roles-permissions#creating-a-role)
+- [Configuring a Role](/app/users-roles-permissions#configure-a-role)
+- [Configuring Role Permissions](/app/users-roles-permissions#configure-permissions)
+- [Configuring System Permissions](/app/users-roles-permissions#configure-system-permissions)
+- [Deleting a Role](/app/users-roles-permissions#deleting-a-role)
 
 ## Singleton
 

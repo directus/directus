@@ -131,7 +131,6 @@ archive_confirm_count: >-
   لا توجد عناصر محددة | هل أنت متأكد من أنك تريد أرشفة هذا العنصر؟ | هل أنت متأكد من أنك تريد أرشفة هذه العناصر {count}؟
 reset_system_permissions_to: 'إعادة تعيين صلاحيات النظام إلى:'
 reset_system_permissions_copy: سيؤدي هذا الإجراء إلى الكتابة فوق أي صلاحيات مخصصة ربما تكون قد طبقت على مجموعات النظام. هل أنت متأكد؟
-the_following_are_minimum_permissions: فيما يلي الحد الأدنى من الأذونات المطلوبة عند تمكين "الوصول إلى التطبيق". يمكنك تمديد الصلاحيات إلى ما بعد هذا، ولكن ليس أدناه.
 app_access_minimum: الحد الأدنى للوصول إلى التطبيق
 recommended_defaults: الإعدادات الافتراضية الافضل
 unarchive: إزالة من الأرشيف
@@ -245,6 +244,7 @@ float: عشري
 integer: رقم صحيح
 json: JSON
 xml: XML
+yaml: YAML
 string: نص
 text: نص
 time: الوقت
@@ -1652,6 +1652,8 @@ operations:
     to: إلى
     to_placeholder: إضافة عناوين البريد الإلكتروني واضغط على إدخال...
     body: النص
+    template: قالب
+    data: البيانات
   notification:
     name: إرسال إشعار
     description: إرسال إشعار داخل التطبيق إلى واحد أو أكثر من المستخدمين

@@ -1,12 +1,12 @@
-import { defineDisplay } from '@directus/utils';
-import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { getFieldsFromTemplate } from '@directus/utils';
-import { getRelatedCollection } from '@/utils/get-related-collection';
-import DisplayRelatedValues from './related-values.vue';
-import { useFieldsStore } from '@/stores/fields';
-import { get, set } from 'lodash';
-import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { useExtension } from '@/composables/use-extension';
+import { useFieldsStore } from '@/stores/fields';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { getRelatedCollection } from '@/utils/get-related-collection';
+import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import type { Field } from '@directus/types';
+import { defineDisplay, getFieldsFromTemplate } from '@directus/utils';
+import { get, set } from 'lodash';
+import DisplayRelatedValues from './related-values.vue';
 
 type Options = {
 	template: string;
@@ -21,7 +21,7 @@ export default defineDisplay({
 	options: ({ editing, relations }) => {
 		const relatedCollection = relations.o2m?.collection ?? relations.m2o?.related_collection;
 
-		const displayTemplateMeta =
+		const displayTemplateMeta: Partial<Field['meta']> =
 			editing === '+'
 				? {
 						interface: 'presentation-notice',

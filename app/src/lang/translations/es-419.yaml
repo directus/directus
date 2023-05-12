@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Ningún registro seleccionado | ¿Estas seguro de querer archivar este registro? | ¿Estas seguro de querer archivar estos {count} registros?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
-the_following_are_minimum_permissions: Estos son los permisos mínimos requeridos cuando "Acceso a la App" está activado. Puedes ampliar los permisos un poco más, pero no menos que esto.
 app_access_minimum: Minimo Acceso a la Aplicación
 recommended_defaults: Recomendado preestablecidos
 unarchive: Desarchivar
@@ -2041,6 +2040,8 @@ operations:
     to: A
     to_placeholder: Añada la dirección del correo electrónico y presionar Enter...
     body: Cuerpo
+    template: Plantilla
+    data: Datos
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios

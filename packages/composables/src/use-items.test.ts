@@ -4,9 +4,8 @@ import type { AxiosRequestConfig } from 'axios';
 import { isEqual } from 'lodash-es';
 import { afterEach, expect, test, vi } from 'vitest';
 import { computed, ref, unref } from 'vue';
-
-import { useItems } from './use-items.js';
 import { useCollection } from './use-collection.js';
+import { useItems } from './use-items.js';
 
 const mockData = { id: 1 };
 const mockCountData = { count: 2 };

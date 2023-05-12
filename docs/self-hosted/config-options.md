@@ -446,6 +446,20 @@ RATE_LIMITER_REDIS_PORT=6379
 RATE_LIMITER_REDIS_DB=0
 ```
 
+### Pressure-based rate limiter
+
+This rate-limiter prevents the API from accepting new requests while the server is experiencing high load. This continuously monitors the current event loop and memory usage, and error out requests with a 503 early when the system is overloaded.
+
+| Variable                                      | Description                                                         | Default Value |
+|-----------------------------------------------|---------------------------------------------------------------------|---------------|
+| `PRESSURE_LIMITER_ENABLED`                    | Whether or not to enable pressure-based rate limiting on the API.   | `true`        |
+| `PRESSURE_LIMITER_SAMPLE_INTERVAL`            | The time window for measuring pressure in ms.                       | `250`         |
+| `PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION` | The maximum allowed utilization where `1` is 100% loop utilization. | `0.99`        |
+| `PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY`       | The maximum amount of time the current loop can be delayed in ms.   | `500`         |
+| `PRESSURE_LIMITER_MAX_MEMORY_RSS`             | The maximum allowed memory Resident Set Size (RSS) in bytes.        | `false`       |
+| `PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED`       | The maximum allowed heap usage in bytes.                            | `false`       |
+| `PRESSURE_LIMITER_RETRY_AFTER`                | Sets the `Retry-After` header when the rate limiter is triggered.   | `false`       |
+
 ## Cache
 
 Directus has a built-in data-caching option. Enabling this will cache the output of requests (based on the current user
@@ -979,11 +993,11 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 
 ### AWS SES (`ses`)
 
-| Variable                                   | Description                  | Default Value |
-| ------------------------------------------ | ---------------------------- | ------------- |
+| Variable                                   | Description                 | Default Value |
+| ------------------------------------------ | --------------------------- | ------------- |
 | `EMAIL_SES_CREDENTIALS__ACCESS_KEY_ID`     | Your AWS SES access key ID. | --            |
-| `EMAIL_SES_CREDENTIALS__SECRET_ACCESS_KEY` | Your AWS SES secret key.     | --            |
-| `EMAIL_SES_REGION`                         | Your AWS SES region.         | --            |
+| `EMAIL_SES_CREDENTIALS__SECRET_ACCESS_KEY` | Your AWS SES secret key.    | --            |
+| `EMAIL_SES_REGION`                         | Your AWS SES region.        | --            |
 
 ## Admin Account
 

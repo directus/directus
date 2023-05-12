@@ -13,12 +13,13 @@
 </template>
 
 <script lang="ts" setup>
+import { RevisionsByDate } from '@/types/revisions';
 import { ref } from 'vue';
 
 import RevisionItem from './revision-item.vue';
 
 interface Props {
-	group: Record<string, any>;
+	group: RevisionsByDate;
 }
 
 defineProps<Props>();

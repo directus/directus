@@ -12,18 +12,11 @@
 	</private-view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent } from 'vue';
-import FilesNavigation from '../components/navigation.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 
-export default defineComponent({
-	components: { FilesNavigation },
-	setup() {
-		const { t } = useI18n();
-		return { t };
-	},
-});
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>

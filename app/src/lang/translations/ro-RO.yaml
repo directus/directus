@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
 reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
-the_following_are_minimum_permissions: Acestea sunt permisiunile minim necesare pentru activarea opțiunii "Acces aplicații". Puteți extinde aceste permisiuni, dar nu le puteți restrânge.
 app_access_minimum: Minimul necesar pt. acces aplicație
 recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
@@ -1790,6 +1789,9 @@ triggers:
 operations:
   log:
     message: Mesaj
+  mail:
+    template: Șablon
+    data: Date
   notification:
     recipient: Utilizator
     message: Mesaj

@@ -1,11 +1,11 @@
 <template>
 	<span v-if="simple" class="rating simple">
-		<v-icon small name="star" />
+		<v-icon small name="star" filled />
 		{{ value }}
 	</span>
 	<div v-else v-tooltip.bottom.start="value" class="rating detailed">
 		<div class="active" :style="ratingPercentage">
-			<v-icon v-for="index in starCount" :key="index" small name="star" />
+			<v-icon v-for="index in starCount" :key="index" small name="star" filled />
 		</div>
 		<div class="inactive">
 			<v-icon v-for="index in starCount" :key="index" small name="star" />
@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
 const starCount = computed(() => {
 	if (props.interfaceOptions === null) return 5;
 
-	return Math.ceil(props.interfaceOptions.maxValue ?? 5);
+	return Math.ceil(props.interfaceOptions?.maxValue ?? 5);
 });
 
 const ratingPercentage = computed(() => ({

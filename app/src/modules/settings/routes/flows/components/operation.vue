@@ -265,8 +265,10 @@ function pointerup() {
 		!moving.value &&
 		((down === 'reject' && (!props.panel.reject || panelsToBeDeleted.value.includes(props.panel.reject))) ||
 			(down === 'resolve' && (!props.panel.resolve || panelsToBeDeleted.value.includes(props.panel.resolve))))
-	)
+	) {
 		emit('create', props.panel.id, down);
+	}
+
 	moving.value = false;
 	down = undefined;
 	if (rafId) window.cancelAnimationFrame(rafId);

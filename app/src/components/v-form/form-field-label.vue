@@ -9,7 +9,14 @@
 			/>
 			<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
 			<v-text-overflow :text="field.name" />
-			<v-icon v-if="field.meta?.required === true" class="required" :class="{ 'has-badge': badge }" sup name="star" />
+			<v-icon
+				v-if="field.meta?.required === true"
+				class="required"
+				:class="{ 'has-badge': badge }"
+				sup
+				name="star"
+				filled
+			/>
 			<v-chip v-if="badge" x-small>{{ badge }}</v-chip>
 			<v-icon
 				v-if="!disabled && rawEditorEnabled"
@@ -28,10 +35,10 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/types';
+import type { FormField } from './types';
 
 interface Props {
-	field: Field;
+	field: FormField;
 	toggle: (event: Event) => any;
 	batchMode?: boolean;
 	batchActive?: boolean;
