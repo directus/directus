@@ -55,7 +55,10 @@ async function run() {
 		earlyExit();
 	}
 
-	generateMarkdown(mainVersion, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(mainVersion, types, untypedPackages, packageVersions);
+
+	const divider = '==============================================================';
+	process.stdout.write(`${divider}\n${markdown}\n${divider}\n`);
 }
 
 process.on('beforeExit', async () => {
@@ -64,8 +67,7 @@ process.on('beforeExit', async () => {
 });
 
 function earlyExit(): never {
-	// eslint-disable-next-line no-console
-	console.log('No (processable) changesets found: Skipping generation of release notes');
+	process.stdout.write('No (processable) changesets found: Skipping generation of release notes\n');
 	process.exit();
 }
 

@@ -4,7 +4,14 @@ import { FILTERED_PACKAGES, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } fr
 import type { Change, ChangesetsWithoutId, Package, PackageVersion, Type } from './types';
 import { getPackageVersion } from './packages';
 
-export async function getInfo(changesets: ChangesetsWithoutId, workspacePackages: Project[]) {
+export async function getInfo(
+	changesets: ChangesetsWithoutId,
+	workspacePackages: Project[]
+): Promise<{
+	types: Type[];
+	untypedPackages: Package[];
+	packageVersions: PackageVersion[];
+}> {
 	const types: Type[] = [];
 	const untypedPackages: Package[] = [];
 	const packageVersions = new Map<string, string>();
@@ -101,7 +108,7 @@ export async function getInfo(changesets: ChangesetsWithoutId, workspacePackages
 	return { types, untypedPackages, packageVersions: sortedPackageVersions };
 }
 
-function sortPackages(a: Package | PackageVersion, b: Package | PackageVersion) {
+function sortPackages(a: Package | PackageVersion, b: Package | PackageVersion): number {
 	const indexOfA = PACKAGE_ORDER.indexOf(a.name);
 	const indexOfB = PACKAGE_ORDER.indexOf(b.name);
 	if (indexOfA >= 0 && indexOfB >= 0) return indexOfA - indexOfB;

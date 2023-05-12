@@ -6,43 +6,37 @@ export function generateMarkdown(
 	types: Type[],
 	untypedPackages: Package[],
 	packageVersions: PackageVersion[]
-) {
+): string {
 	const date = new Date();
 
 	const dateString = new Intl.DateTimeFormat('en-US', {
 		dateStyle: 'long',
 	}).format(date);
 
-	let markdownOutput = `## v${mainVersion} (${dateString})`;
+	let output = `## v${mainVersion} (${dateString})`;
 
 	for (const { title, packages } of types) {
-		markdownOutput += `\n\n### ${title}\n`;
-		markdownOutput += formatPackages(packages);
+		output += `\n\n### ${title}\n`;
+		output += formatPackages(packages);
 	}
 
 	for (const { name, changes } of untypedPackages) {
-		markdownOutput += `\n\n### ${name}\n\n`;
-		markdownOutput += formatChanges(changes).join('\n');
+		output += `\n\n### ${name}\n\n`;
+		output += formatChanges(changes).join('\n');
 	}
 
 	if (packageVersions.length > 0) {
-		markdownOutput += `\n\n### ${VERSIONS_TITLE}\n`;
+		output += `\n\n### ${VERSIONS_TITLE}\n`;
 	}
 
 	for (const { name, version } of packageVersions) {
-		markdownOutput += `\n- \`${name}@${version}\``;
+		output += `\n- \`${name}@${version}\``;
 	}
 
-	const divider = '==============================================================';
-	// eslint-disable-next-line no-console
-	console.log(divider);
-	// eslint-disable-next-line no-console
-	console.log(markdownOutput);
-	// eslint-disable-next-line no-console
-	console.log(divider);
+	return output;
 }
 
-function formatPackages(packages: Package[]) {
+function formatPackages(packages: Package[]): string {
 	let output = '';
 
 	for (const { name, changes } of packages) {
@@ -56,7 +50,7 @@ function formatPackages(packages: Package[]) {
 	return output;
 }
 
-function formatChanges(changes: Change[]) {
+function formatChanges(changes: Change[]): string[] {
 	return changes.map((change) => {
 		let refUser = '';
 
