@@ -47,3 +47,54 @@ specify the Preview URL for your Next.js project by selecting ID from the dropdo
 
 Make sure to replace “MY_SECRET_TOKEN’ with the secret you want in your Next.js project and save your changes.
 
+## Set Up Draft Mode in Next.js
+
+By default, when rendering content from Directus to a live site using static rendering, changes made to an existing
+collection or adding new content require rebuilding the entire site for the changes to take effect. With Draft Mode
+enabled, pages can be rendered at request time instead of build time.
+
+In your Next.js application, create a route handler such as `app/api/draft/route.ts` and include the following code:
+
+```js
+import { draftMode } from 'next/headers';
+
+export async function GET(request: Request) {
+	const { searchParams } = new URL(request.url);
+	const secret = searchParams.get('secret');
+	const id = searchParams.get('id');
+
+	if (secret !== 'MY_SECRET_TOKEN') {
+		return new Response('Invalid token', { status: 401 });
+	}
+
+	if (!id) {
+		return new Response('Missing id', { status: 401 });
+	}
+
+	const post = await getPostById(id);
+
+	if (!post) {
+		return new Response('Invalid id', { status: 401 });
+	}
+
+	draftMode().enable();
+
+	return new Response(null, {
+		status: 307,
+		headers: {
+			Location: `/posts/${post.id}`,
+		},
+	});
+}
+```
+
+This code sets the `secret` variable to "MY_SECRET_TOKEN" and validates whether the `secret` parameter in the request
+matches the `secret` variable. It also validates the `id` parameter and retrieves the corresponding `post`. In case of
+an invalid `id` or `post`, an error response is returned.
+
+The function `draftMode().enable()` is called to activate draft mode, and a response with a status code of 307 is
+returned with the `Location` header pointing to the path of the corresponding page.
+
+Learn more about [draft mode](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode) from the
+Next.js documentation
+
