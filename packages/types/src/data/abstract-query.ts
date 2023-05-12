@@ -103,7 +103,7 @@ export type Modifiers = {
 	limit?: LimitNode;
 	offset?: OffsetNode;
 	sort?: SortNode;
-	filter?: LogicalNode | ConditionNode;
+	filter?: LogicalOperation | ConditionalOperation;
 };
 
 /**
@@ -141,22 +141,53 @@ type SortNode = {
 /**
  * Used to create logical operations
  * @typeParam type - set to 'sort'
- * @typeParam direction - 'ascending' or 'descending'
- * @typeParam target - the node on which the sorting should be applied
+ * @typeParam operator - the logical operator to use
+ * @typeParam children - left and right side of the operation.
+ * @example
+ * ```
+ * {
+ * 	type: 'logical',
+ * 	operator: '_and',
+ * 	children: [
+ * 		{
+ * 			type: 'condition',
+ * 			operation: '_eq',
+ * 			target: { type: 'field', key: 'a' }
+ * 			value: 5
+ * 		},
+ * 		{
+ * 			type: 'condition',
+ * 			operation: '_lt',
+ * 			target: { type: 'field', key: 'b' }
+ * 			value: 5
+ * 		}
+ *  ]
+ * }
+ * ```
  */
-export type LogicalNode = {
+export type LogicalOperation = {
 	type: 'logical';
 	operator: '_and' | '_or' | '_not' | '_all' | '_some' | '_none';
-	children: (LogicalNode | ConditionNode)[];
+	children: (LogicalOperation | ConditionalOperation)[];
 };
 
 /**
- * Used to create logical operations
- * @typeParam type - set to 'sort'
- * @typeParam direction - 'ascending' or 'descending'
+ * Used to create conditional operations
+ * @typeParam type - set to 'condition'
  * @typeParam target - the node on which the sorting should be applied
+ * @typeParam operation - the operation to perform on the target
+ * @typeParam value - the conditional value. Might be also a function or sub query in the future
+ * @example
+ * ```
+ * {
+ * 		type: 'condition',
+ * 		operation: '_lt',
+ *		target: { type: 'field', key: 'b' }
+ * 		value: 5
+ * }
+ * ```
  */
-export type ConditionNode = {
+export type ConditionalOperation = {
 	type: 'condition';
 	target: FieldNode | FunctionNode | NestedItemNode;
 	operation:
