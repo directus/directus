@@ -40,8 +40,8 @@ To create an Item, follow these steps.
 
 ::: tip Singletons
 
-If the collection is configured as a [Singleton](/app/data-model/collections#collection-setup) in the data
-model settings, the App will skip step two above and automatically open the Item Page.
+If the collection is configured as a [Singleton](/app/data-model/collections#collection-setup) in the data model
+settings, the App will skip step two above and automatically open the Item Page.
 
 :::
 
@@ -108,8 +108,8 @@ To archive an Item, follow these steps.
 
 ::: warning Requires Configuration
 
-Requires an [Archive field](/app/data-model/collections#archive) to be configured within the Collection's data
-model settings.
+Requires an [Archive field](/app/data-model/collections#archive) to be configured within the Collection's data model
+settings.
 
 :::
 
@@ -190,5 +190,30 @@ To delete an Item, follow these steps.
 
 If you wish to remove an Item from view or use without fully deleting it, consider
 [archiving the Item](#archive-an-item) instead.
+
+:::
+
+## Live Preview an Item
+
+Live preview allows you to preview your content changes without having to publish them. To preview an Item, follow these
+steps:
+
+1. Navigate to **Settings** > **Data Model** and choose the Collection.
+2. Add the **"Preview URL"** in the "Preview URL" section.
+3. Go to the Content Module and select the Collection.
+4. Choose the Item you want to preview.
+5. Toggle **"Enable Preview"** at the top of the page.
+6. Make changes to your Item and save. The preview will appear on the right side of your screen.
+
+:::tip Preview URL Format
+
+The format of the preview URL in Directus is: `http://your-directus-url/collection/ID`
+
+:::
+
+:::tip
+
+Replace `your-directus-url` with the URL of your Directus instance and `collection` with the name of the collection that
+the item belongs to.
 
 :::
