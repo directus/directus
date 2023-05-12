@@ -385,14 +385,18 @@ This action is permanent and irreversible. Please proceed with caution.
 The live preview feature allows users to instantly preview draft content without publishing or manually refreshing the
 browser.
 
-To enable this feature, navigate to the "Settings" menu and select "Data Model." Choose the collection you want to allow
-the live preview feature.
+To enable this feature, navigate to the **Settings** menu and select **Data Model.** Choose the collection you want to
+allow the live preview feature.
 
-Add your URL as the preview URL in the collection settings and select the `ID`. For example, the preview URL of a posts
-collection running on localhost:3000 will be `http://localhost:3000/posts/ID`.
+Add your URL as the **Preview URL** in the collection settings and select the `ID`. For example, the preview URL of a
+posts collection running on localhost:3000 will be `http://localhost:3000/posts/ID`.
 
-After configuring your preview URL, toggle the "Enable Preview" option at the top of the page. Whenever you make changes
-to the data in your collection and save them, you should see a live preview of the item on the right-hand side of the
-screen.
+After configuring your preview URL, toggle the **"Enable Preview**" option at the top of the page. Whenever you make
+changes to the data in your collection and save them, you should see a live preview of the item on the right-hand side
+of the screen.
 
-Click on the "Dimensions Display" icon to preview your content on desktop or mobile screens.
+:::tip Preview on Different Screen Sizes
+
+Toggle the **"Dimensions Display"** icon to preview your content on desktop or mobile screens.
+
+:::
