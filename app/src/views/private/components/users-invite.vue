@@ -13,7 +13,7 @@
 						<div class="type-label">{{ t('emails') }}</div>
 						<v-textarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 					</div>
-					<div v-if="role === null" class="field">
+					<div v-if="!role" class="field">
 						<div class="type-label">{{ t('role') }}</div>
 						<v-select v-model="roleSelected" :items="roles" />
 					</div>
@@ -118,7 +118,7 @@ async function loadRoles() {
 		value: role.id,
 	}));
 
-	if (roles.value.length > 0 && roleSelected.value === null) {
+	if (roles.value.length > 0 && !roleSelected.value) {
 		roleSelected.value = roles.value[0].value;
 	}
 }
