@@ -32,7 +32,7 @@
 
 			<v-card-actions>
 				<v-button secondary @click="$emit('update:modelValue', false)">{{ t('cancel') }}</v-button>
-				<v-button :disabled="emails === null || emails.length === 0" :loading="loading" @click="inviteUsers">
+				<v-button :disabled="emails.length === 0" :loading="loading" @click="inviteUsers">
 					{{ t('invite') }}
 				</v-button>
 			</v-card-actions>
