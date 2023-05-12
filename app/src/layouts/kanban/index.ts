@@ -1,6 +1,7 @@
 import api, { addTokenToURL } from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
@@ -26,6 +27,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
+		const { info: serverInfo } = useServerStore();
 
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
@@ -409,6 +411,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return null;
 			});
 
+			const limit = serverInfo.queryLimit?.max && serverInfo.queryLimit.max !== -1 ? serverInfo.queryLimit.max : 100;
+
 			const {
 				items: relationalGroupsItems,
 				loading: groupsLoading,
@@ -417,7 +421,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				getItems: getGroups,
 			} = useItems(groupsCollection, {
 				sort,
-				limit: ref(100),
+				limit: ref(limit),
 				page: ref(1),
 				fields: groupFieldsToLoad,
 				filter: ref({}),
