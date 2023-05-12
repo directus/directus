@@ -91,45 +91,129 @@ delete_translation_string_copy: >-
 invite_users: ユーザーを招待
 invite: 招待する
 email_already_invited: このメールアドレス ({email}) は招待済みです
+subject: 件名
 inbox: 受信トレイ
 emails: メールアドレス
+connection_excellent: 優れた接続
+connection_good: 良好な接続
+connection_fair: まずまずの接続
+connection_poor: 弱い接続
+primary: プライマリ
 rename_folder: フォルダ名の変更
 delete_folder: フォルダーの削除
+prefix: 接頭辞
+suffix: 接尾辞
 reset_bookmark: ブックマークをリセット
 update_bookmark: ブックマークを更新
 delete_bookmark: ブックマークを削除
 delete_bookmark_copy: >-
   "{bookmark}" ブックマークを削除してもよろしいですか？この操作は元に戻せません。
+delete_personal_bookmark: 個人のブックマークを削除
+delete_role_bookmark: ブックマークを削除
+delete_global_bookmark: グローバルブックマークを削除
 logoutReason:
   SIGN_OUT: ログアウト
   SESSION_EXPIRED: セッションが期限切れです
+public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
+admin_description: App/APIへアクセス制限の無い初期管理者のロール
 not_allowed: 許可されていない
 directus_version: Directus Version
+node_version: Node バージョン
+node_uptime: Node 稼働時間
 os_type: OS 種類
 os_version: OSバージョン
 os_uptime: OS 稼働時間
 os_totalmem: OS メモリ
 archive: アーカイブ
 archive_confirm: この項目をアーカイブしてよろしいですか？
+archive_confirm_count: >-
+  アイテムが選択されていません|このアイテムを削除してもよろしいですか? | {count} 件のアイテムを削除してもよろしいですか?
+reset_system_permissions_to: 'システム権限のリセット:'
+reset_system_permissions_copy: このアクションはシステム接続に適用された可能性のあるカスタム権限を上書きします。よろしいですか？
+the_following_are_minimum_permissions: '「Appアクセス」を有効にすると、ミニマム権限が自動的に設定されます。権限設定は後から追加できますが、ミニマム権限より減らすことはできません。'
+app_access_minimum: Appアクセスの最小値
 recommended_defaults: 推奨されるデフォルト値
 unarchive: アーカイブから戻す
+unarchive_confirm: この項目をアーカイブしてよろしいですか？
+nested_files_folders_will_be_moved: ネスト（入れ子）になっているファイルやフォルダーは、1階層上に移動します。
+validation_errors_notice: '無効な値があります:'
 validationError:
   eq: 値は {valid} でなければなりません
   neq: 値は {invalid} にすることはできません
   in: 値は {valid} のいずれかでなければなりません
+  nin: いづれか {invalid} の値にすることはできません
+  contains: 値は {substring} を含む必要があります
+  ncontains: 値は {substring} を含むことはできません
+  gt: 値は {valid} より大きい必要があります
+  gte: 値は {valid} 以上の必要があります
+  lt: 値は {valid} より小さい必要があります
+  lte: 値は {valid} 以下の必要があります
+  empty: 値は空白にできません
+  nempty: 値は空白にできません
+  null: 値は null の必要があります
+  nnull: 値は Null 値にできません
   required: 必須項目です
   unique: 他と重複しない値である必要があります
+  regex: 値のフォーマットが正しくありません
+all_access: すべてのアクセス
 no_access: アクセスなし
 use_custom: カスタムを使う
+nullable: Null 値を許容
+allow_null_value: Null 値を許容する
+allow_multiple: 複数を許可する
+allow_multiple_to_be_open: 複数開くことを許可する
+enter_value_to_replace_nulls: このフィールド内に Null値 を置き換える新しい値を入力してください。
 field_standard: 標準
+field_presentation: エイリアス
 field_file: 1つのファイル
 field_files: 複数のファイル
+field_m2o: M2O 関係
+field_m2a: M2A 関係
+field_o2m: O2M 関係
+field_m2m: M2M 関係
 field_translations: 翻訳
+field_group: フィールドグループ
+item_permissions: 項目の権限
+field_permissions: フィールドの権限
+field_validation: フィールドの検証
+field_presets: フィールド プリセット
+permissions_for_role: '{role} ロールのアイテム は{action} ことができます'
+fields_for_role: '{role} ロールのフィールド は{action} ことができます'
+validation_for_role: 'フィールド {action} は、 {role} ロールに準じます'
+presets_for_role: "フィールド値のデフォルトは、{role} ロールです\n"
+presentation_and_aliases: エイリアス
+revision_post_create: 作成時の見え方はこの通りです
+revision_post_update: 更新後の見え方はこの通りです
+changes_made: このリビジョンによる具体的な変更点です
+no_relational_data: リレーショナルデータはここへ含まれません
+junction_field_location: ジャンクションフィールドのロケーション
+top: 上部
+bottom: 下部
+hide_field: 項目を非表示
+hide_field_on_detail: 詳細項目を非表示
+show_field_on_detail: 詳細項目を表示
 delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
+field_create_success: '作成フィールド: "{field}"'
+field_update_success: '更新されたフィールド: "{field}"'
+duplicate_where_to: このフィールドをどこに複製しますか？
 language: 言語
+language_placeholder: 言語を選択...
+aggregate_function: 集計機能
+aggregate_precision: 集計精度
+group_aggregation: グループ集計
+group_precision: グループ精度
+global: グローバル
+admins_have_all_permissions: 管理者はすべての権限を持っています
 camera: カメラ
+show_zero: ゼロを表示
+create_in_advanced_field_creation_mode: アドバンスドモードでフィールドを作成
+continue_in_advanced_field_creation_mode: アドバンスドフィールド作成モードで続ける
+validation: バリデーション
+sum: 合計
+avg: 平均
+count: カウント
 min: 最小
 max: 最大
 exposure: 露出度
@@ -138,81 +222,195 @@ iso: ISO
 focal_length: レンズ焦点距離
 schema_setup_key: この項目はデータベースの列名及びAPIキーとして使用されます
 create_field: 新規項目の追加
+creating_new_field: '新規フィールド ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: 設定のリセット
+hidden_field: 項目を非表示
 hidden_on_detail: 詳細に表示しない
 disabled_editing_value: 項目の編集を無効にする
 key: キー
+alias: エイリアス
+bigInteger: 整数
 boolean: 真偽値
 date: 日付
+date_range: 期間
 datetime: DateTime
 dateTime: DateTime
+precision: 精度
 decimal: Decimal
 float: Float
 integer: 整数
 json: JSON
+xml: XML
+yaml: YAML
 string: 文字列
 text: テキスト
 time: 時刻
 timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
+geometry: 国や地域 (全て)
+geometry.Point: ポイント
+geometry.LineString: 単一線分
+geometry.Polygon: ポリゴン
+geometry.MultiPoint: マルチポイント
+not_available_for_type: このタイプでは利用できません
+create_translations: 翻訳を作成
 auto_refresh: 自動更新
 refresh_interval: 更新間隔
+no_refresh: 更新しない
+refresh_interval_seconds: リフレッシュすぐに | 毎秒 | 毎 {seconds} 秒ごと
+refresh_interval_minutes: 毎分 | {minutes} 分ごと
 auto_generate: 自動生成
+this_will_auto_setup_fields_relations: 自動的にすべての必須フィールドとリレーションを設定します。
 click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
 click_to_manage_translated_fields: >-
   翻訳されたフィールドはまだありません。ここをクリックして作成してください。| 翻訳されたフィールドが1つあります。 ここをクリックして管理します。| {count} 項が翻訳されています。ここをクリックして管理します。
 fields_group: フィールドグループ
 no_collections_found: コレクションが見つかりません
+new_data_alert: '以下をデータモデル内に作成します：'
+search_collection: コレクションを検索...
+search_field: フィールドを検索...
 new_field: '新規フィールド'
 new_collection: '新しいコレクション'
+add_m2o_to_collection: '「{collection}」に多対一を追加'
+add_o2m_to_collection: '「{collection}」に一対多を追加'
+add_m2m_to_collection: '「{collection}」に多対多を追加'
+choose_a_type: タイプを選択...
+determined_by_relationship: 関係に基づく決定
 add_note: ユーザーに有益な注釈を追加...
+add_link: リンクを追加
+custom_link: カスタムリンク
 default_value: 初期値
+standard_field: 標準フィールド
 single_file: 1つのファイル
 multiple_files: 複数のファイル
+m2o_relationship: 多対一のリレーションシップ
+o2m_relationship: 一対多のリレーションシップ
+m2m_relationship: 多対多のリレーションシップ
+m2a_relationship: 多対多のリレーションシップ
+invalid_item: 無効なアイテム
+require_confirmation: 確認が必要
+dialog: ダイアログ
+modal: モーダル
+confirmation_dialog: 確認ダイアログ
+confirmation_description: 確認の説明
+confirmation_input_fields: 入力確認用フィールド
 next: 次
 field_name: 項目名
 translations: 翻訳
 no_translations: 翻訳なし
+left_to_right: 左から右
+right_to_left: 右から左
 note: 備考
 enter_a_value: 値を入力...
+enter_a_placeholder: プレースホルダを入力...
 length: 長さ
+soft_length: 緩い制限
+precision_scale: 精度とスケール
 readonly: 読取り専用
 unique: 単一
 updated_on: 更新日時
 updated_by: 最後に更新したユーザー
 primary_key: プライマリーキー
+foreign_key: 外部キー
+field_key: フィールドキー
+finish_setup: 設定終了
+dismiss: とりやめる
+toggle_raw_editor: 行編集の切り替え
 raw_value: 値を加工しない
+copy_raw_value: 行をコピー
+copy_raw_value_success: コピー
+copy_raw_value_fail: コピー失敗
+paste_raw_value: 行を貼り付け
+paste_raw_value_success: 貼り付け
+paste_raw_value_fail: 貼り付けに失敗
+view_raw_value: 行の値
+edit_raw_value: 行を編集
+enter_raw_value: 値を入力...
+clear_value: 値をクリア
+clear_changes: 変更をクリア
+clear_items: 項目をクリア
+reset_to_default: 初期設定に戻す
+undo_changes: 変更を取消
 notifications: 通知
+show_all_activity: すべてのアクティビティを表示
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
+confirm_revert: 再確認
+confirm_revert_body: 選択した状態へ戻す
+display: ディスプレイ
+settings_update_success: 設定が更新されました
 title: タイトル
+revision_delta_created: 作成
+revision_delta_created_externally: 外部で作成
+revision_delta_updated: '1フィールド更新 |  {count} フィールド更新'
+revision_delta_deleted: 削除済み
+revision_delta_reverted: 復元済
+revision_delta_update_message: 項目は更新済ですが、セキュリティーにより値は非表示です
 revision_delta_other: 履歴
+revision_delta_by: '{date} by {user}'
+presentation_text_values_cannot_be_reimported: "テキストを使用しますが、値は再インポートできません"
+download_page_as_csv: 'CSV 形式でダウンロード'
 private_user: 非公開ユーザー
+creation_preview: 作成プレビュー
 revision_preview: 履歴のプレビュー
+updates_made: 更新済み
 leave_comment: コメントを残す...
+post_comment_success: コメントを投稿
+post_comment_updated: コメントを更新
 item_create_success: 作成されたアイテム|作成されたアイテム
 item_update_success: 更新されたアイテム | 更新されたアイテム
 item_delete_success: 削除されたアイテム|削除されたアイテム
 this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
+translations_collection: 翻訳コレクション
 languages_collection: 言語コレクション
+import_data_input_placeholder: CSV または JSON
+import_data_button: インポートを開始
+import_data_indeterminate: データをインポート中...
+import_data_success: '{filename} からデータをインポートしました'
+import_data_error: このファイルのデータ構造はコレクションと一致しません
 label_import: インポート
+label_export: エクスポート
 import_export: インポート / エクスポート
 format: 書式
+last_page: 最終ページ
 last_access: 最後にアクセスした日時
+fill_template: テンプレート値で埋める
 a_unique_table_name: 重複しない名前をつけてください
 a_unique_column_name: 重複しない名前をつけてください
+enable_custom_values: カスタム値を有効にする
 submit: 送信
 move_to_folder: フォルダに移動
 move: 移動
+system: システム
+add_field_related: 関連するコレクションにフィールドを追加
+interface_label: インターフェイス
 today: 今日
 yesterday: 昨日
 delete_comment: コメントの削除
+delete_share: 共有を削除
 functions:
   year: 年
   month: 月
+  week: 週
+  day: 日
+  weekday: 平日
+  hour: 時
+  minute: 分
+  second: 秒
+  count: 回数
+date-fns_date: PPP
+date-fns_time: 'a h:mm:ss'
+date-fns_time_no_seconds: 'a hh:mm'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
 minutes: 分
 hours: 時間
 month: 月
@@ -231,18 +429,26 @@ months:
   october: 10月
   november: 11月
   december: 12月
+drag_mode: ドラッグモード
 cancel_crop: トリミングをキャンセル
+original: オリジナル
 url: URL
 import_label: インポート
 file_details: ファイルの詳細
+dimensions: ディメンション
 size: サイズ
+created: 作成
 modified: 修正されました
+checksum: チェックサム
 owner: 所有者
 edited_by: '編集者:'
 folder: フォルダ
+zoom: 拡大
 download: ダウンロード
 open: 開く
 open_in_new_window: 新しいウィンドウで開く
+open_folder: '「{folder}」フォルダを開く'
+foreground_color: 前景色
 background_color: 背景色
 upload_from_device: デバイスからファイルをアップロード
 choose_from_library: ライブラリから選択
@@ -252,6 +458,16 @@ replace_from_library: ライブラリからファイルを置き換え
 replace_from_url: URLからファイルを置き換え
 no_file_selected: ファイルが選択されていません
 download_file: ファイルをダウンロード
+open_file_in_tab: 新規タブで開く
+start_export: エクスポートを開始
+not_available_for_local_downloads: ローカルダウンロードはできません
+exporting_all_items_in_collection: '{collection} 内のすべての{total} アイテムをエクスポート中'
+exporting_limited_items_in_collection: '{collection} 内のすべての{total} アイテムから{limit} をエクスポート中'
+exporting_no_items_to_export: エクスポートするアイテムがありません。エクスポートの設定を見直して下さい。
+exporting_download_hint: 完了すると、自動的にこの {format} ファイルがデバイスへダウンロードされます。
+exporting_batch_hint: このエクスポートのバッチ処理が完了すると、 {format} ファイルはファイルライブラリへ保存されます。
+exporting_batch_hint_forced: アイテム数が多いため、このエクスポートはバッチ処理の必要があります。 完了すると、 {format} ファイルがファイルライブラリへ保存されます。
+collection_key: コレクション
 name: 名前
 primary_key_field: プライマリーキー
 type: タイプ
@@ -261,38 +477,85 @@ created_on: 作成日時
 creating_collection_info: コレクション名（半角英数字を推奨）と投稿を識別するプライマリーキーを設定しましょう。
 creating_collection_system: オプションフィールドの有効化および名称の変更ができます。
 auto_increment_integer: 整数を自動生成
+auto_increment_big_integer: 整数を自動生成
 generated_uuid: UUIDを生成
 manual_string: 値を手動で入力する
 save_and_create_new: 保存して新規作成
 save_and_stay: 保存してページに留まる
 save_as_copy: 複製として保存
 add_existing: 既存を追加
+creating_items: アイテムの作成
+enable_create_button: 作成ボタンを有効化
+selecting_items: アイテムの選択
+enable_select_button: 選択ボタンを有効化
+allow_duplicates: 重複を許可
 comments: コメント
+no_comments: コメントがありません
+click_to_expand: クリックして展開
+select_item: アイテムの選択
 no_items: アイテムがありません
+search_items: アイテムを検索...
 disabled: 無効
 information: インフォメーション
 report_bug: 不具合の報告
 request_feature: 機能リクエスト
+request_body: リクエスト本文
+interface_not_found: 'インターフェイス "{interface}" が見つかりません'
+operation_not_found: 'オペレーション "{operation}" が見つかりません'
+reset_interface: インターフェースをリセット
+display_not_found: ' 表示"{display}" が見つかりません'
 reset_display: 表示をリセット
+list-m2a: ' (M2A)ビルダー'
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
+no_items_copy: このコレクションにはまだ項目がありません
 file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
 no_files_copy: まだファイルがありません。
+user_count: 'ユーザーなし | 1ユーザー | {count} ユーザー'
+no_users_copy: このロールのユーザーがいません
+webhooks_count: 'Webhook 無し | 1つのWebhook | {count} つのWebhook'
+no_webhooks_copy: Webhookがまだ設定されていません。作成して始めましょう。
+no_notifications: 通知なし
+no_notifications_copy: すべて確認済み
+activity_log: 操作ログ
+all_items: 全アイテム
+any: すべて
 csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
+no_collections_copy: コレクションはまだありません。システム管理者にお問い合わせ下さい。
+relationship_not_setup: 正しく関係が設定されていません
+display_template_not_setup: 表示テンプレートのオプションが間違っています
+collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
+select_a_collection: コレクションを選択
+select_a_field: フィールドを選択
+active: 有効
+move_to: 移動中...
 copy: コピー
+copy_to: コピー中...
 no_other_dashboards_copy: 他のダッシュボードはまだありません。
+inactive: 無効
 users: ユーザー
 activity: 操作履歴
+activity_item: アクティビティアイテム
+action: アクション
 ip_address: IPアドレス
 user_agent: ユーザーエージェント
 webhooks: Webhook
+min_value: 最小値
+max_value: 最大値
+automatic: 自動
 field_width: 入力欄幅
+add_filter: フィルターを追加
 user_directory: ユーザーディレクトリ
 documentation: ドキュメンテーション
+sidebar: サイドバー
+charset: 文字コード
+second: 秒
+file_moved: ファイルを移動しました
 collection_created: コレクションが作成されました
 modified_on: 修正日時
+card_size: カードサイズ
 sort_field: フィールドの並べ替え
 add_sort_field: Sort フィールドを追加
 sort: 並べ替え
@@ -301,71 +564,245 @@ remove: 削除
 toggle_manual_sorting: 手動ソートを有効にする
 bookmark_doesnt_exist: ブックマークは存在しません
 bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。
+bookmark_doesnt_exist_cta: コレクションに戻る
+select_an_item: アイテムを選択
+edit: 編集
+enabled: 有効化
+disable_tfa: 2要素認証を無効化
+admin_disable_tfa_text: このユーザーの2要素認証を無効にしてよろしいですか？
+tfa_setup: 2要素認証を設定
+tfa_scan_code: 認証アプリのコードをスキャンして2要素認証の設定を完了します
+enter_otp_to_disable_tfa: 2要素認証の無効化にOTP（ワンタイムパスワード）を入力
+create_account: アカウントを作成
+account_created_successfully: アカウントの作成に成功しました
+auto_fill: 自動入力
+corresponding_field: 対応するフィールド
 errors:
   COLLECTION_NOT_FOUND: "コレクションが存在しません"
+  FIELD_NOT_FOUND: フィールドが見つかりません
   FORBIDDEN: アクセス禁止
   INVALID_CREDENTIALS: ユーザー名またはパスワードが間違っています
   INVALID_OTP: ワンタイムパスワードが間違っています
+  INVALID_PROVIDER: ユーザーは別の認証プロバイダに属しています
   INVALID_QUERY: 無効なクエリー
+  INVALID_CONFIG: 無効な設定
+  INVALID_TOKEN: 無効なトークン
+  INVALID_IP: IPアドレスが許可されていません
+  INVALID_USER: ユーザー認証に失敗しました
   ITEM_LIMIT_REACHED: アイテムの上限に達しました
   ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
+  CONTAINS_NULL_VALUES: フィールドに null 値が含まれています
+  UNPROCESSABLE_ENTITY: 処理できないエンティティ
   INTERNAL_SERVER_ERROR: 予期しないエラーが発生しました
+  NOT_NULL_VIOLATION: 値は Null 値にできません
+  ILLEGAL_ASSET_TRANSFORMATION: 画像ソースが大きすぎるためプレビューできません
+  VALUE_TOO_LONG: 値が長すぎます
+  VALUE_OUT_OF_RANGE: 値が範囲外です
+  INVALID_FOREIGN_KEY: 無効な外部キー
   UNKNOWN: 予期しないエラーが発生しました
+  SERVICE_UNAVAILABLE: サービスは利用できません
+  UNSUPPORTED_MEDIA_TYPE: サポート外のメディア種別
+  TOKEN_EXPIRED: トークンが期限切れです
+  RANGE_NOT_SATISFIABLE: 無効な範囲
+  METHOD_NOT_ALLOWED: 許可されていないメソッド
+  REQUESTS_EXCEEDED: リクエストの上限に達しました
+security: セキュリティ
+value_hashed: 値が安全にハッシュされました
 bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
 edit_bookmark: ブックマークを編集
+edit_personal_bookmark: 個人のブックマークを編集
+edit_role_bookmark: ロールブックマークを編集
+edit_global_bookmark: グローバルブックマークを編集
+cannot_edit_role_bookmarks: ロールブックマークを編集できません
+cannot_edit_global_bookmarks: グローバルブックマークを編集できません
 bookmarks: ブックマーク
 presets: プリセット
 unexpected_error: 予期しないエラーが発生しました
+unexpected_error_copy: 予期せぬエラーが発生しました。しばらくたってからもう一度お試しください。
+copy_details: 詳細をコピー
+no_app_access: アプリにアクセスできません
+no_app_access_copy: このユーザーは管理者用アプリを使用できません
+password_reset_sent: アカウントをお持ちの場合は、パスワードをリセットするための安全なリンクを送信しました。
+password_reset_successful: パスワードをリセットしました
 back: 戻る
+filter: 絞り込み
+edit_image: 画像を編集
+editing_image: 画像を編集
+square: 正方形
+free: 無料
+flip_horizontal: 水平方向に反転
+flip_vertical: 垂直方向に反転
+aspect_ratio: アスペクト比
 rotate: 回転
 all_users: すべてのユーザー
+delete_collection: コレクションを削除
+update_collection_success: コレクションを更新
+delete_collection_success: コレクションを削除
+make_collection_visible: コレクションを公開
+make_collection_hidden: コレクションを非表示
+make_folder_visible: フォルダを表示
+make_folder_hidden: フォルダを非表示
 goto_collection_content: コンテンツを表示
 one_item: '1 つのアイテム'
+visible_collections: 表示中のコレクション
+hidden_collections: 非表示のコレクション
+show_hidden_collections: 非表示コレクションを表示
+hide_hidden_collections: 非表示コレクションを非表示
+show_header: ヘッダーを表示
+unmanaged_collections: 未設定のコレクション
+system_collections: システムコレクション
+placeholder: プレースホルダー
 icon_left: 左側に表示するアイコン
 icon_right: 右側に表示するアイコン
+count_other_revisions: '{count} その他のリビジョン'
 font: フォント
+sans_serif: サンセリフ
+serif: セリフ
+monospace: 等幅フォント
+divider: 区切り線
 color: 色
+circle: サークル
+empty_item: 空のアイテム
+log_in_with: '{provider} でログイン'
+conditional_styles: 条件付きスタイル
+advanced_settings: 詳細設定
 advanced_filter: 高度なフィルタ
+delete_advanced_filter: フィルターを削除
+change_advanced_filter_operator: オペレーターを変更
+advanced: 詳細設定
 operators:
+  eq: 同等
+  neq: 等しくない
   lt: より少ない
   gt: より大きい
   lte: より少ないまたは等しい
   gte: より大きいまたは等しい
+  in: のひとつ
+  nin: のひとつではない
+  null: Null です
+  nnull: Null でない
   contains: 含む
   ncontains: 含まない
+  icontains: 含む (無関係)
+  starts_with: 前方一致
+  nstarts_with: 前方一致でない
+  ends_with: 後方一致
+  nends_with: 後方一致でない
+  between: 間である
+  nbetween: 間でない
   empty: 空
+  nempty: 空でない
+  all: 含まれるキー
+  has: 含まれるいくつかのキー
+custom_validation_message: カスタムバリデーションメッセージ
 loading: 読み込み中...
+drop_to_upload: ドロップしてアップロード
+item: アイテム
+items: アイテム
+upload_file: ファイルをアップロード
+upload_file_indeterminate: ファイルをアップロード中...
+upload_file_success: ファイルをアップロードしました
 upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
 upload_files_success: '{count} 個のファイルがアップロードされました'
+upload_pending: アップロード待ち
 drag_file_here: ここにファイルをドラッグ & ドロップ
 click_to_browse: クリックしてローカルフォルダを参照
+interface_options: インターフェースオプション
 layout_options: レイアウト設定
+rows: 行
+columns: 列
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
 value_unique: 他と重複しない値である必要があります
 all_activity: すべてのアクティビティ
 create_item: アイテムの作成
+display_template: テンプレートを表示
+language_display_template: 言語表示テンプレート
+translations_display_template: 翻訳表示テンプレート
+n_items_selected: 'アイテムが選択されていません | 1アイテム選択| {n} アイテム選択'
+per_page: ページごと
 all_files: すべてのファイル
 my_files: マイファイル
 recent_files: 最近使用したファイル
 create_folder: フォルダを作成
+edit_folder: フォルダーを編集
 folder_name: フォルダ名...
+folder_key: フォルダキー...
 add_file: ファイルを追加する
+replace_file: ファイルを置換
 no_results: 結果なし
+no_results_copy: 検索フィルターを調整またはクリアして結果を表示します
+no_visible_fields: 空のフォーム
+no_visible_fields_copy: このフォームには表示する項目がありません
+clear_filters: 絞り込みをクリア
 saves_automatically: 変更は自動的に保存されます
+role: ロール
+edit_role: ロールを編集
+rule: ルール
 user: ユーザー
 no_presets: プリセットがありません
 no_presets_copy: プリセットやブックマークはまだ保存されていません。
 no_presets_cta: プリセットを追加
+presets_only: プリセットのみ
 create: 作成
+on_create: 作成時
 on_update: 更新時
 read: 読取り
 update: 更新
+delete: 削除
 select_fields: 入力欄の選択
+format_text: テキストの書式設定
+format_value: 値の書式設定
+operator: オペレーター
+bold: 太字
+toggle: 切り替え
+icon_on: アイコン オン
+icon_off: アイコン オフ
+label: ラベル
+flows: フロー
+flow: フロー
+select_a_flow: フローを選択
+run_flow_confirm: このフローを実行しますか？
+run_flow_on_current_collection: 現在のコレクションでフローを実行
+run_flow_on_current: 現在のアイテムでフローを実行
+run_flow_on_current_edited_confirm: フローを実行するとこのアイテムは更新される可能性があります。実行しますか？
+run_flow_on_selected: 項目を1つ以上選択してください | 選択項目の実行フロー | {n}つの選択項目の実行フロー
+run_flow: フローを実行
+run_flow_success: フロー "{flow}" の実行に成功しました
+field_name_placeholder: フィールド名を入力
+field_key_placeholder: フィールドキーを入力...
+trigger: トリガー
+trigger_options: トリガーオプション
+view_trigger: トリガーを表示
+create_trigger: トリガーを作成
+trigger_setup: トリガーを設定
+change_trigger: トリガーを変更
+flow_delete_confirm: フロー「{flow}」を削除しますか？この操作は元に戻せません。
+set_flow_active: フローを有効に設定
+set_flow_inactive: フローを無効に設定
+edit_flow: フローを編集
+delete_flow: フローを削除
+no_other_flows_copy: まだフローがありません
+no_flows: フローがありません
+no_flows_copy: まだフローがありません
+create_flow: フローを作成
+creating_new_flow: フローを新規作成
+updating_flow: フローを更新
+flow_setup: フローを設定
 flow_name: 名前
+flow_tracking: アクティビティとログのトラッキング
+flow_tracking_all: アクティビティとログをトラッキング
+flow_tracking_activity: アクティビティのみトラッキング
+flow_tracking_null: 何もトラッキングしない
+start_flow: フローを開始
+stop_flow: フローを停止
+create_operation: 操作を作成
+edit_operation: 操作を編集
+code: コード
+operation_options: 操作オプション
 dashboard: ダッシュボード
 dashboard_delete_confirm: このダッシュボードを削除してよろしいですか？この操作を取り消すことはできません。
 edit_dashboard: ダッシュボードを編集
@@ -374,16 +811,64 @@ no_dashboards: ダッシュボードがありません
 no_dashboards_copy: ダッシュボードが作成されていません。
 create_dashboard: ダッシュボードを作成
 dashboard_name: ダッシュボード名
+accountability: 責任
+details: 詳細
 full_screen: 全画面表示
+full_text_search: テキスト全体検索
+edit_panels: パネルを編集
+center_align: 中央揃え
+left_align: 左揃え
+right_align: 右揃え
+fit_to_screen: 画面に合わせる
+image_url: 画像のURL
+alt_text: 代替テキスト
+media: メディア
+quality: 品質
 width: 幅
 height: 高さ
+source: 参照元
+url_placeholder: URLを入力...
+display_text: テキストを表示
+display_text_placeholder: 表示テキストを入力...
+interface_group_text_and_numbers: テキストと数値
+interface_group_selection: 選択
+interface_group_relational: 関連
+interface_group_presentation: プレゼンテーション
+interface_group_groups: グループ
+interface_group_other: その他
+tooltip: ヒント
+tooltip_placeholder: ヒントを入力中...
+unlimited: 無制限
+open_link_in: リンクを開く
+new_tab: 新しいタブ
+current_tab: 現在のタブ
+save_image: 画像を保存
+save_media: メディアを保存
 wysiwyg_options:
   aligncenter: 中央揃え
   alignjustify: 両端揃え
   alignleft: 左揃え
+  alignnone: Noneを許可
+  alignright: 右揃え
+  forecolor: 前景色
   backcolor: 背景色
+  bold: 太字
+  italic: 斜体
+  underline: 下線
+  strikethrough: 取り消し線
+  subscript: 定期購入
+  superscript: 上付き
+  codeblock: コード
+  blockquote: 引用
+  bullist: 箇条書きリスト
+  numlist: 番号付きリスト
   hr: 水平線
+  link: リンクの追加/編集
+  unlink: リンクを削除
+  media: メディアの追加/編集
+  image: 画像の追加/編集
   copy: コピー
+  cut: 切り取り
   paste: ペースト
   heading: 見出し
   h1: 見出し 1
@@ -393,28 +878,88 @@ wysiwyg_options:
   h5: 見出し 5
   h6: 見出し6
   fontselect: フォントを選択
+  fontsizeselect: 文字サイズを選択
+  indent: インデント
+  outdent: インデント解除
+  undo: 元に戻す
+  redo: やり直す
   remove: 削除
+  removeformat: フォーマットを削除
   selectall: すべて
   table: テーブル
+  visualaid: 非表示の要素を表示
+  source_code: ソースコードを編集
   fullscreen: 全画面表示
   directionality: 方向
+dropdown: ドロップダウン
 choices: 選択項目
+choices_option_configured_incorrectly: 設定に誤りがあります
 deselect: 選択解除
+deselect_all: 全て選択解除
+other: その他...
+adding_user: ユーザーを追加
+unknown_user: 不明なユーザー
 creating_in: '{collection} のアイテム作成'
 editing_in: '{collection} のアイテムを編集中'
+viewing_in: '{collection} のアイテムを表示'
+creating_unit: '{unit} を作成中'
+editing_unit: '{unit} を編集'
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
+no_options_available: 利用できるオプションなし
 settings_data_model: データモデル
 settings_permissions: 役割・権限
 settings_project: プロジェクト設定
 settings_webhooks: Webhook
+settings_flows: フロー
 settings_presets: プリセットとブックマーク
+settings_translation_strings: 翻訳文字列
+one_or_more_options_are_missing: 1つ以上のオプションがありません
+scope: 適用範囲
+actions: 操作
+select: 選択...
 layout: レイアウト
+tree_view: ツリービュー
+changes_are_permanent: 後で変更できません
+preset_name_placeholder: 空欄の場合デフォルトで機能します...
+preset_search_placeholder: 検索クエリ
 editing_preset: プリセットを編集
+layout_preview: レイアウトプレビュー
 layout_setup: レイアウト設定
+data: データ
+unsaved_changes: 未保存の変更
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
+discard_all_changes: すべての変更を破棄
+discard_changes_copy: 全ての変更を破棄しますか？
+show_x_axis: X軸を表示
+show_y_axis: Y軸を表示
 keep_editing: 編集を続ける
+page_help_collections_overview: '**コレクションの概要** — アクセスできるすべてのコレクション一覧です'
+page_help_collections_collection: >-
+  **アイテムを参照** — アクセスできるすべての {collection} アイテム一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
+page_help_collections_item: >-
+  **アイテムの詳細** — アイテムを表示および管理するためのフォーム。このサイドバーには、リビジョンと埋め込みコメントの全履歴も含まれます。
+page_help_activity_collection: >-
+  **アクティビティをブラウズ** — ユーザーのシステムとコンテンツアクティビティの包括的なリスト。
+page_help_docs_global: >-
+  **ドキュメントの概要** — このプロジェクトのバージョンとスキーマに特化したドキュメント。
+page_help_files_collection: >-
+  **ファイルのライブラリー** — このプロジェクトにアップロードされたすべてのファイルアセットを一覧です。 カスタムレイアウト、フィルター、並べ替えを好きに組み合わせブックマークしておくと、すばやくアクセスできます。
+page_help_files_item: >-
+  **ファイルの詳細** — ファイルメタデータの管理、元のアセットの編集、アクセス設定の更新のためのフォーム。
 page_help_settings_project: "**プロジェクトの設定** — プロジェクト全体の設定です。"
+page_help_settings_datamodel_collections: >-
+  **データモデル: コレクション** — 利用可能なすべてのコレクション一覧です。表示、非表示、システムコレクション、および追加可能な管理されていないデータベーステーブルを含みます。
+page_help_settings_datamodel_fields: >-
+  **データモデル: コレクション** — このコレクションとそのフィールドを管理するためのフォーム。
+page_help_settings_roles_collection: '**ロールの検索** — 管理者、公開およびカスタムユーザーロールの一覧です。'
+page_help_settings_roles_item: "**ロールの詳細** : ロールの権限とその他の設定を管理します。"
+page_help_settings_presets_collection: >-
+  **プリセットの検索** — プリセットの一覧です。ユーザー、ロール、ブックマーク、デフォルトのビューなどを含みます。
+page_help_settings_presets_item: >-
+  *プリセットの詳細** — ブックマーク、デフォルトコレクションのプリセットを管理するフォームです。
+page_help_settings_webhooks_collection: '**Webhooksを検索** — プロジェクト内にあるWebhookの一覧です。'
+page_help_settings_webhooks_item: '**Webhookの詳細** — プロジェクトのWebhookを作成と管理するためのフォーム。'
 add_new: 新規追加
 create_new: 新規作成
 all: すべて
@@ -425,35 +970,68 @@ collections: コレクション
 content: コンテンツ
 singleton: シングルトン
 singleton_label: シングルオブジェクトに設定する
+directus_collection:
+  directus_presets: コレクションのデフォルトとブックマークのプリセット
+  directus_relations: リレーションシップの構成とメタデータ
+  directus_revisions: すべてのアクティビティのスナップショット
+  directus_roles: システムユーザーの権限グループ
+  directus_sessions: セッション情報
+  directus_settings: プロジェクト設定オプション
+  directus_shares: 外部共有されたアイテムをトラッキング
+  directus_users: プラットフォームのシステムユーザー
+  directus_webhooks: イベントベースの HTTP リクエスト設定
 fields:
   directus_activity:
+    item: プライマリキーを作成
+    action: アクション
+    collection: コレクション
+    timestamp: アクション オン
+    user: アクション担当
     comment: コメント
     user_agent: ユーザーエージェント
+    origin: オリジン
     ip: IPアドレス
     revisions: 履歴
   directus_collections:
+    collection: コレクション
     icon: アイコン
     note: 備考
     color: 色
+    display_template: テンプレートを表示
     hidden: 非表示
     singleton: シングルトン
+    translations: コレクション名の翻訳
+    archive_app_filter: アプリフィルタをアーカイブ
+    archive_value: アーカイブ値
+    unarchive_value: アーカイブしていない値
     sort_field: フィールドの並べ替え
+    accountability: アクティビティとリビジョンのトラッキング
+    archive_field: アーカイブフィールド
+    item_duplication_fields: アイテム複製のフィールド
   directus_files:
+    $thumbnail: サムネイル
     title: タイトル
     description: 説明
     tags: タグ
     location: 場所
+    storage: ストレージ
     filename_disk: ファイル名 (ディスク)
     filename_download: ファイル名 (ダウンロード)
+    metadata: メタデータ
     type: MIMEタイプ
     filesize: ファイルサイズ
+    modified_by: 変更者
     modified_on: 修正日時
     created_on: 作成日時
     created_by: 作成したユーザー
     embed: 埋め込む
+    uploaded_by: 更新者
     folder: フォルダ
     width: 幅
+    uploaded_on: 更新日
     height: 高さ
+    charset: 文字コード
+    duration: 期間
   directus_users:
     first_name: 名
     last_name: 姓
@@ -464,12 +1042,34 @@ fields:
     title: タイトル
     description: 説明
     tags: タグ
+    user_preferences: ユーザー設定
     language: 言語
     theme: テーマ
+    theme_auto: 自動 (システムベース)
+    theme_light: ライトモード
+    theme_dark: ダークモード
+    tfa_secret: 2要素認証
+    admin_options: 管理者オプション
     status: ステータス
+    status_draft: 下書き
+    status_invited: 招待済み
+    status_active: 有効
+    status_suspended: 停止済み
+    status_archived: アーカイブ済み
+    role: ロール
     token: トークン
+    provider: プロバイダー
+    external_identifier: 外部ID
+    last_page: 最終ページ
     last_access: 最後にアクセスした日時
+    email_notifications: Eメール通知
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    mapping: マッピング
     project_name: プロジェクト名
     project_url: プロジェクトの URL
     project_color: プロジェクトの色
@@ -477,6 +1077,7 @@ fields:
     module_bar: モジュールバー
   directus_shares:
     name: 名前
+    role: ロール
     password: パスワード
   directus_fields:
     note: 備考
@@ -494,24 +1095,93 @@ fields:
     value: 値
     collections: コレクション
 field_options:
+  directus_settings:
+    project_logo_note: ホワイト 40x40 SVG/PNG
+    public_note_placeholder: マークダウンに対応する公開メッセージ
+    security_divider_title: セキュリティ
+    auth_password_policy:
+      none_text: なし – 推奨されません
+      weak_text: 弱い – 8文字以上
+      strong_text: 強い – 大文字/小文字/数字/記号
+    storage_asset_presets:
+      fit_label: 自動調整
+      upscaling: アップスケーリング
+      fit:
+        contain_text: 含まれる(アスペクト比を維持)
+        cover_text: カバー (強制的に正確なサイズ)
+        fit_text: 内側に合わせる
+        outside_text: 外側に合わせる
+    additional_transforms: 追加の変換
+    transforms_note: 明瞭なメソッド名と引数の詳細についてhttps://sharp.pixelplumbing.com/api-constructor を参照してください
+    mapbox_key: Mapboxアクセストークン
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: ベースマップ
+    basemaps_name_placeholder: ベースマップ名を入力してください...
+    basemaps_raster: ラスター
+    basemaps_tile: ラスター TileJSON
+    basemaps_style: マップボックスのスタイル
+    files_divider_title: ファイルとサムネイル画像
+    overrides_divider_title: アプリの上書き
   directus_activity:
+    login: ログイン
     create: 作成
     update: 更新
+    delete: 削除
   directus_collections:
+    track_activity_revisions: アクティビティとリビジョンをトラッキング
+    only_track_activity: アクティビティのみトラッキング
+    do_not_track_anything: 何もトラッキングしない
     collection_setup: コレクションの作成
+    note_placeholder: このコレクションの説明...
+    hidden_label: アプリ内で非表示
     singleton: シングルオブジェクトに設定する
     language: 言語
     translation: 翻訳
+    translation_placeholder: 翻訳を入力...
+    collection_name: コレクション名
+    singular_unit: 単一単位
+    plural_unit: 複数単位
     archive_divider: アーカイブ
+    archive_field_placeholder: フィールドを選択...
+    archive_app_filter: アプリアーカイブフィルタを有効にする
+    archive_value: アーカイブ時の値設定...
+    unarchive_value: アーカイブ解除時の値設定...
     sort_divider: 並べ替え
+    sort_field: フィールドを選択...
+    accountability_divider: 責任
+    duplication_divider: 複製
+  directus_files:
+    title: 唯一無二なタイトル...
+    description: オプションの説明...
+    location: オプションのロケーション...
+    storage_divider: ファイル名
+    filename_disk: ディスクストレージ上の名前...
+    filename_download: ダウンロード時の名前...
   directus_roles:
+    name: このロールの唯一無二な名前...
+    description: このロールの説明...
+    ip_access: 許可するIPアドレスを追加します。空欄の場合全てのIPアドレスが許可されます。
     fields:
       icon_name: アイコン
       name_name: 名前
+      name_placeholder: タイトルを入力...
     collections_name: コレクション
+  directus_users:
+    preferences_divider: ユーザー設定
+    dropdown_auto: 自動 (システムベース)
+    dropdown_light: ライトモード
+    dropdown_dark: ダークモード
+    admin_divider: 管理者オプション
+    status_dropdown_draft: 下書き
+    status_dropdown_active: 有効
+    status_dropdown_suspended: 停止済み
+    status_dropdown_archived: アーカイブ済み
   directus_webhooks:
+    status_options_active: 有効
+    status_options_inactive: 無効
     actions_create: 作成
     actions_update: 更新
+    actions_delete: 削除
     headers:
       value: 値
 no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
@@ -521,21 +1191,42 @@ save_current_datetime: 現在の日付/時刻を保存
 inline: インライン
 comment: コメント
 referential_action_set_null: '{field} フィールドを Null にする'
+creating_webhook: Webhookの作成
+default_label: デフォルト
+delete_label: 削除
+delete_are_you_sure: >-
+  この操作は元に戻すことはできません。続行しますか？
 delete_field_are_you_sure: >-
   このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
 description: 説明
 done: 完了
 duplicate: 複製
+limit: リミット
 email: メールアドレス
 embed: 埋め込む
+fallback_icon: フォールバックアイコン
+field: フィールド | フィールド
 file: ファイル
 file_library: ファイルライブラリー
 forgot_password: パスワード忘れ
 hidden: 非表示
+hidden_in_group: 非表示の{group} 
 icon: アイコン
 info: 情報
+normal: 正常
 success: 成功
 warning: 注意
+danger: 危険
+colors:
+  purple: 紫
+  blue: 青
+  green: 緑
+  yellow: 黄
+  orange: 橙
+  red: 赤
+  black: 黒
+  gray: グレー
+  white: 白
 junction_collection: 中継コレクション
 latency: 待ち時間
 login: ログイン
@@ -550,11 +1241,13 @@ relationship: 関連
 reset: リセット
 reset_password: パスワードリセット
 revisions: 履歴
+no_logs: まだログはありません
 revert: 元に戻す
 save: 保存
 schema: スキーマ
 search: 検索
 select_existing: 既存から選択
+select_field_type: フィールドタイプを選択
 select_interface: インターフェースを選択してください
 settings: 設定
 sign_in: サインイン
@@ -562,38 +1255,129 @@ sign_out: サインアウト
 sign_out_confirm: サインアウトしてもよろしいですか？
 something_went_wrong: 問題が発生しました
 sort_direction: ソート順
+export_location: エクスポート場所
+export_started: エクスポートを開始しました
+export_started_copy: エクスポートを開始しました。ダウンロードの準備ができ次第通知されます。
+sort_asc: 昇順に並べ替え
+sort_desc: 降順に並べ替え
+disable_sort: 並べ替えを無効化
+template: テンプレート
+require_value_to_be_set: 作成時に値を設定する必要があります
 translation: 翻訳
+translation_placeholder: 翻訳を入力...
 value: 値
+view_project: プロジェクトを表示
+report_error: レポートのエラー
+start: 開始
 table: テーブル
+list: 一覧
+search_filter: 検索フィルター
+enable_search_filter: 検索とフィルターを有効化
+item_link: アイテムリンク
+show_link_to_item: アイテムへのリンクを表示
+navigate_to_item: アイテムに移動
+undo_removed_item: 削除されたアイテムを元に戻す
+remove_item: アイテムを消去
+delete_item: アイテムを削除
 interfaces:
   filter:
+    name: 絞り込み
+    description: フィルターオブジェクトを設定
+    add_filter: フィルターを追加
+    add_group: And / Or グループ
+    add_value: 値を追加
+    logic_type_and: および
+    logic_type_or: または
     all: すべて
+    any: すべて
+    and: と
+    of_the_following: 以下の
+    no_rules: 設定されたルールはありません
+  group-accordion:
+    start: 開始
+  presentation-links:
+    primary: プライマリ
+  input-code:
+    code: コード
   system-collections:
     collections: コレクション
   select-color:
     color: 色
   datetime:
     set_to_now: 現在時刻を設定
+  system-fields:
+    select_a_collection: コレクションを選択
+  system-display-template:
+    display-template: テンプレートを表示
+    description: 静的テキストと動的フィールド値をミックス
+    collection_field: コレクションのフィールド
+    collection_field_not_setup: コレクションのフィールドオプション設定に誤りがあります
+    select_a_collection: コレクションを選択
+  presentation-divider:
+    divider: 区切り線
+    description: ラベルと項目をセクションに分割
+    title_placeholder: タイトルを入力するか、空白のままの場合行だけが表示されます...
+    inline_title: インラインタイトル
+    inline_title_label: 行内にタイトルを表示
+    margin_top: 上の余白
+    margin_top_label: 上の余白を増やす
   select-dropdown:
+    description: ドロップダウンから値を選択
+    choices_placeholder: 選択肢を追加
+    allow_other: その他を許可
+    allow_other_label: 他の値を許可
+    allow_none: Noneを許可
+    allow_none_label: 選択なしを許可
+    choices_name_placeholder: 名前を入力...
     choices_value_placeholder: 値を入力...
+    preview_threshold: しきい値をプレビュー
+  select-multiple-dropdown:
+    select-multiple-dropdown: ドロップダウン(複数)
+    description: ドロップダウンから複数の値を選択
   file:
     file: ファイル
+    description: ファイルを選択またはアップロード
   files:
     files: ファイル
+    description: 複数のファイルを選択またはアップロード
   input-hash:
     hash: ハッシュ値
+    description: ハッシュ化する値を入力してください
+    masked: マスク
+    masked_label: 入力値を非表示にする
   select-icon:
     icon: アイコン
+    description: ドロップダウンからアイコンを選択
+    search_for_icon: アイコンを検索...
+  file-image:
+    image: 画像
+    description: 画像を選択またはアップロード
+    crop: 合わせて切り抜き
+    crop_label: 必要に応じて画像を切り抜き
+  select-dropdown-m2o:
+    display_template: テンプレートを表示
+  input-rich-text-md:
+    edit: 編集
+  map:
+    zoom: 拡大
   system-folder:
     folder: フォルダ
   list:
     sort: 並べ替え
   tags:
     tags: タグ
+  input:
+    mask: マスク
+  boolean:
+    toggle: 切り替え
+    label_default: 有効化
   translations:
+    display_template: テンプレートを表示
     no_collection: コレクションがありません
   user:
     user: ユーザー
+    modes:
+      dropdown: ドロップダウン
   system-token:
     system-token: トークン
 displays:
@@ -601,10 +1385,13 @@ displays:
     translations: 翻訳
   boolean:
     boolean: 真偽値
+    icon_on: アイコン オン
+    icon_off: アイコン オフ
   color:
     color: 色
   datetime:
     format: 書式
+    suffix: 接尾辞
   file:
     file: ファイル
   filesize:
@@ -612,11 +1399,19 @@ displays:
   formatted-value:
     format: 書式
     font: フォント
+    font_serif: セリフ
+    font_monospace: 等幅フォント
+    bold: 太字
+    italic: 斜体
+    prefix: 接頭辞
+    suffix: 接尾辞
     color: 色
     icon: アイコン
     text: テキスト
   icon:
     icon: アイコン
+  image:
+    circle: サークル
   labels:
     choices_value_placeholder: 値を入力...
   user:
@@ -636,7 +1431,12 @@ layouts:
     comfortable: 広め
     compact: コンパクト
     cozy: 普通
+  kanban:
+    advanced: 詳細設定
 both: 両方
+panels:
+  label:
+    name: ラベル
 operations:
   log:
     message: メッセージ
@@ -645,3 +1445,6 @@ operations:
     message: メッセージ
   request:
     url: URL
+  trigger:
+    flows: フロー
+    flow: フロー
