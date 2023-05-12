@@ -20,7 +20,6 @@ content instead of the published content.
 By adding a preview URL and setting up your Next.js application, you can instantly see live changes made to your
 collection inside of Directus.
 
-
 ## Before You Start
 
 You will need:
@@ -141,3 +140,10 @@ currently enabled. If `isEnabled` is true, then the code will show the text "(Dr
 Run `npm run dev` and visit your preview URL `http:/<your-site>/api/draft?secret=MY_SECRET_TOKEN&id=ID`, you should be
 able to see the preview of your content.
 
+## Preview Content in Directus
+
+Go over to an item in your collection and toggle "Enable Preview" at the top of the page. Whenever you create or edit an
+item in your collection and “click” save, you should see a live preview of the item on the right-hand side of the
+screen.
+
+Clicking on the "Dimensions Display" icon also lets you preview your content on desktop and mobile screens.
