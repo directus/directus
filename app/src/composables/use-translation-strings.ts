@@ -1,10 +1,11 @@
-import { ref, Ref, computed, ComputedRef } from 'vue';
+import { ref, Ref, computed, ComputedRef, watch } from 'vue';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Language, i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import { useSettingsStore } from '@/stores/settings';
 import api from '@/api';
+import { debounce } from 'lodash';
 
 export type Translation = {
 	language: string;
@@ -43,23 +44,47 @@ let translationStrings: Ref<RawTranslation[] | null> | null = null;
 let error: Ref<any> | null = null;
 let allLanguagesLoaded = false;
 
-export function useTranslationStrings(): UsableTranslationStrings {
+export function useTranslationStrings(search?: Ref<string>): UsableTranslationStrings {
 	if (loading === null) loading = ref(false);
 	if (error === null) error = ref(null);
 	if (translationStrings === null) translationStrings = ref<RawTranslation[] | null>(null);
 	const updating = ref(false);
+	const internalSearch = ref('');
 	const usersStore = useUserStore();
 
+	if (search) {
+		watch(
+			search,
+			debounce((val: string) => {
+				internalSearch.value = val;
+			}, 250)
+		);
+	}
+
+	const filteredStrings = computed(() => {
+		if (internalSearch.value && translationStrings?.value) {
+			return translationStrings.value.filter(({ key, value, language }) => {
+				return (
+					key.includes(internalSearch.value) ||
+					value.includes(internalSearch.value) ||
+					language.includes(internalSearch.value)
+				);
+			});
+		}
+
+		return translationStrings?.value ?? [];
+	});
+
 	const translationKeys = computed(() => {
-		if (!translationStrings || !translationStrings.value) return [];
-		return Array.from(new Set(translationStrings.value.map(({ key }) => key))).sort();
+		if (!filteredStrings.value) return [];
+		return Array.from(new Set(filteredStrings.value.map(({ key }) => key))).sort();
 	});
 
 	const translationMap = computed(() => {
 		const result: Record<string, Translation[]> = {};
 
-		if (translationStrings && translationStrings.value) {
-			for (const { key, value, language } of translationStrings.value) {
+		if (filteredStrings.value) {
+			for (const { key, value, language } of filteredStrings.value) {
 				if (!(key in result)) result[key] = [];
 				result[key].push({ language, translation: value } as Translation);
 			}
@@ -69,9 +94,9 @@ export function useTranslationStrings(): UsableTranslationStrings {
 	});
 
 	const displayTranslationStrings = computed(() => {
-		if (!translationStrings || !translationStrings.value) return [];
+		if (!filteredStrings.value) return [];
 
-		const translationObject = translationStrings.value.reduce(
+		const translationObject = filteredStrings.value.reduce(
 			(acc: Record<string, Translation[]>, { key, value, language }: RawTranslation) => {
 				if (!acc[key]) acc[key] = [];
 				acc[key].push({ language, translation: value });

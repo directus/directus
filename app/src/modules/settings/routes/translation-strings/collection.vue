@@ -1,14 +1,22 @@
 <template>
-	<private-view :title="t('settings_translation_strings')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
-
+	<private-view :title="t('settings_translation_strings')" :header-shadow="true">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
 				<v-icon name="translate" />
 			</v-button>
 		</template>
 
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+		</template>
+
+		<template #actions:prepend>
+			<layout-actions-tabular :showing-count="showingCount"></layout-actions-tabular>
+		</template>
+
 		<template #actions>
+			<search-input v-model="search" :collection="collection" :show-filter="false" />
+
 			<v-button v-tooltip.bottom="t('create_translation_string')" rounded icon @click="openTranslationStringDrawer">
 				<v-icon name="add" />
 			</v-button>
@@ -84,7 +92,7 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { HeaderRaw as TableHeader } from '@/components/v-table/types';
@@ -92,8 +100,17 @@ import SettingsNavigation from '../../components/navigation.vue';
 import { DisplayTranslationString, useTranslationStrings } from '@/composables/use-translation-strings';
 import TranslationStringsDrawer from './translation-strings-drawer.vue';
 import TranslationStringsTooltip from './translation-strings-tooltip.vue';
+import { useExtension } from '@/composables/use-extension';
+import SearchInput from '@/views/private/components/search-input.vue';
+import { Filter } from '@directus/types';
+import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 
 const { t } = useI18n();
+
+const collection = 'directus_translation_strings';
+
+const search = ref<string>('');
+const filter = ref<Filter>({});
 
 const tableHeaders: TableHeader[] = [
 	{
@@ -102,6 +119,15 @@ const tableHeaders: TableHeader[] = [
 		sortable: false,
 		width: 250,
 		align: 'left',
+		field: {
+			display: 'raw',
+			displayOptions: null,
+			interface: 'input',
+			interfaceOptions: null,
+			type: 'string',
+			collection,
+			field: 'key',
+		},
 	},
 	{
 		text: t('translations'),
@@ -109,6 +135,15 @@ const tableHeaders: TableHeader[] = [
 		sortable: false,
 		width: 800,
 		align: 'left',
+		field: {
+			display: 'translations',
+			displayOptions: {},
+			interface: 'translations',
+			interfaceOptions: null,
+			type: 'alias',
+			collection,
+			field: 'translations',
+		},
 	},
 ];
 
@@ -118,7 +153,7 @@ const limit = ref<number>(25);
 const page = ref<number>(1);
 const loading = ref<boolean>(true);
 
-const { translationKeys, displayTranslationStrings, loadAllTranslations } = useTranslationStrings();
+const { translationKeys, displayTranslationStrings, loadAllTranslations } = useTranslationStrings(search);
 
 onMounted(() => {
 	loadAllTranslations().then(() => {
@@ -137,6 +172,10 @@ const tableItems = computed(() => {
 	const offset = (page.value - 1) * limit.value;
 	const pageKeys = translationKeys.value.slice(offset, offset + limit.value);
 	return displayTranslationStrings.value.filter((ts) => ts.key && pageKeys.includes(ts.key));
+});
+
+const showingCount = computed(() => {
+	return formatCollectionItemsCount(tableItems.value.length, page.value, limit.value);
 });
 
 function openTranslationStringDrawer({ item }: { item?: DisplayTranslationString }) {
@@ -168,9 +207,8 @@ function toPage(newPage: number) {
 	--v-button-color-hover-disabled: var(--primary);
 }
 .translation-strings {
-	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-left: var(--content-padding);
+	padding-right: var(--content-padding);
 }
 
 .search-input {
