@@ -192,7 +192,7 @@ type Item = {
 };
 
 interface Props {
-	role: string | null;
+	role?: string | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
