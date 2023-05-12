@@ -27,7 +27,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info_outline" :title="t('information')" close>
+			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_translation_strings_collection')" class="page-description"></div>
 			</sidebar-detail>
 		</template>
@@ -47,7 +47,9 @@
 					item-key="key"
 					:items="tableItems"
 					:loading="loading"
+					:show-resize="true"
 					@click:row="openTranslationStringDrawer"
+					@update:headers="updateHeaders"
 				>
 					<template #[`item.key`]="{ item }">
 						<span class="key">
@@ -100,9 +102,7 @@ import SettingsNavigation from '../../components/navigation.vue';
 import { DisplayTranslationString, useTranslationStrings } from '@/composables/use-translation-strings';
 import TranslationStringsDrawer from './translation-strings-drawer.vue';
 import TranslationStringsTooltip from './translation-strings-tooltip.vue';
-import { useExtension } from '@/composables/use-extension';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Filter } from '@directus/types';
 import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
 
 const { t } = useI18n();
@@ -110,9 +110,8 @@ const { t } = useI18n();
 const collection = 'directus_translation_strings';
 
 const search = ref<string>('');
-const filter = ref<Filter>({});
 
-const tableHeaders: TableHeader[] = [
+const tableHeaders = ref<TableHeader[]>([
 	{
 		text: t('key'),
 		value: 'key',
@@ -133,7 +132,7 @@ const tableHeaders: TableHeader[] = [
 		text: t('translations'),
 		value: 'translations',
 		sortable: false,
-		width: 800,
+		width: 250,
 		align: 'left',
 		field: {
 			display: 'translations',
@@ -145,7 +144,7 @@ const tableHeaders: TableHeader[] = [
 			field: 'translations',
 		},
 	},
-];
+]);
 
 const isTranslationStringDrawerOpen = ref<boolean>(false);
 const editingTranslationString = ref<DisplayTranslationString | null>(null);
@@ -177,6 +176,10 @@ const tableItems = computed(() => {
 const showingCount = computed(() => {
 	return formatCollectionItemsCount(tableItems.value.length, page.value, limit.value);
 });
+
+function updateHeaders(headers: TableHeader[]) {
+	tableHeaders.value = headers;
+}
 
 function openTranslationStringDrawer({ item }: { item?: DisplayTranslationString }) {
 	editingTranslationString.value = item ? item : null;
