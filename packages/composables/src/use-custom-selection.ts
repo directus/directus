@@ -64,19 +64,19 @@ export function useCustomSelectionMultiple(
 		currentValues,
 		(newValue) => {
 			if (newValue === null) return;
-			if (Array.isArray(newValue) === false) return;
+			if (!Array.isArray(newValue)) return;
 			if (items.value === null) return;
 
 			(newValue as string[]).forEach((value) => {
 				if (items.value === null) return;
 				const values = items.value.map((item) => item.value);
-				const existsInValues = values.includes(value) === true;
+				const existsInValues = values.includes(value);
 
-				if (existsInValues === false) {
+				if (!existsInValues) {
 					const other = otherValues.value.map((o) => o.value);
-					const existsInOtherValues = other.includes(value) === true;
+					const existsInOtherValues = other.includes(value);
 
-					if (existsInOtherValues === false) {
+					if (!existsInOtherValues) {
 						addOtherValue(value);
 					}
 				}
@@ -118,9 +118,11 @@ export function useCustomSelectionMultiple(
 				return otherValue;
 			});
 
-			const newEmitValue = [...valueWithoutPrevious, newValue];
-
-			emit(newEmitValue);
+			if (valueWithoutPrevious.length === currentValues.value?.length) {
+				emit(valueWithoutPrevious);
+			} else {
+				emit([...valueWithoutPrevious, newValue]);
+			}
 		}
 	}
 }

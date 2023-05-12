@@ -1,10 +1,10 @@
 {
 	"name": "@directus/composables",
-	"version": "10.0.0",
+	"version": "10.0.1",
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
 		"test": "vitest --watch=false"
 	},
@@ -23,8 +23,7 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.test.{js,d.ts}"
+		"dist"
 	],
 	"publishConfig": {
 		"access": "public"

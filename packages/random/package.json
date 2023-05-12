@@ -1,0 +1,36 @@
+{
+	"name": "@directus/random",
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
+	},
+	"description": "Set of random-utilities for use in tests",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/random"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "0.0.7",
+		"@vitest/coverage-c8": "0.31.0",
+		"typescript": "5.0.4",
+		"vitest": "0.31.0"
+	}
+}

@@ -23,6 +23,8 @@ type UsableFolders = {
 	openFolders: Ref<string[] | null>;
 };
 
+export const openFoldersInitial = ['root'];
+
 let loading: Ref<boolean> | null = null;
 let folders: Ref<Folder[] | null> | null = null;
 let nestedFolders: Ref<Folder[] | null> | null = null;
@@ -35,7 +37,7 @@ export function useFolders(): UsableFolders {
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
-	if (openFolders === null) openFolders = ref(['root']);
+	if (openFolders === null) openFolders = ref(openFoldersInitial);
 
 	if (folders.value === null && loading.value === false) {
 		fetchFolders();

@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import FilesNavigation from '../components/navigation.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 
 const { t } = useI18n();
 </script>
