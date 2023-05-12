@@ -399,7 +399,10 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
-				if (!isEqual(sanitizeColumn(existingColumn), hookAdjustedField.schema)) {
+				// Sanitize column only when applying snapshot diff
+				const columnToCompare = opts?.bypassLimits ? sanitizeColumn(existingColumn) : existingColumn;
+
+				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
 						await this.knex.schema.alterTable(collection, (table) => {
 							if (!hookAdjustedField.schema) return;
