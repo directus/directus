@@ -450,10 +450,12 @@ RATE_LIMITER_REDIS_DB=0
 
 ### Pressure-based rate limiter
 
-This rate-limiter prevents the API from accepting new requests while the server is experiencing high load. This continuously monitors the current event loop and memory usage, and error out requests with a 503 early when the system is overloaded.
+This rate-limiter prevents the API from accepting new requests while the server is experiencing high load. This
+continuously monitors the current event loop and memory usage, and error out requests with a 503 early when the system
+is overloaded.
 
 | Variable                                      | Description                                                         | Default Value |
-|-----------------------------------------------|---------------------------------------------------------------------|---------------|
+| --------------------------------------------- | ------------------------------------------------------------------- | ------------- |
 | `PRESSURE_LIMITER_ENABLED`                    | Whether or not to enable pressure-based rate limiting on the API.   | `true`        |
 | `PRESSURE_LIMITER_SAMPLE_INTERVAL`            | The time window for measuring pressure in ms.                       | `250`         |
 | `PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION` | The maximum allowed utilization where `1` is 100% loop utilization. | `0.99`        |
@@ -946,6 +948,26 @@ Alternatively, you can provide the individual connection parameters:
 | `MESSENGER_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
 | `MESSENGER_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
 | `MESSENGER_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
+
+<sup>[1]</sup> `redis` should be used in load-balanced installations of Directus
+
+## Synchronization
+
+| Variable                    | Description                                                             | Default Value |
+| --------------------------- | ----------------------------------------------------------------------- | ------------- |
+| `SYNCHRONIZATION_STORE`     | One of `memory`, `redis`<sup>[1]</sup>                                  | `memory`      |
+| `SYNCHRONIZATION_NAMESPACE` | How to scope the channels in Redis                                      | `directus`    |
+| `SYNCHRONIZATION_REDIS`     | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
+
+Alternatively, you can provide the individual connection parameters:
+
+| Variable                         | Description                                                   | Default Value |
+| -------------------------------- | ------------------------------------------------------------- | ------------- |
+| `SYNCHRONIZATION_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
+| `SYNCHRONIZATION_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
+| `SYNCHRONIZATION_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
+| `SYNCHRONIZATION_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
+| `SYNCHRONIZATION_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
 
 <sup>[1]</sup> `redis` should be used in load-balanced installations of Directus
 
