@@ -29,3 +29,19 @@ If you're looking to implement a feature request that hasn't been converted to a
 team through a comment on the feature request before starting work. There's probably a good reason it isn't
 ready-to-be-implemented yet (unknown timelines, conflicts with other projects, blockers, etc). By collaborating early,
 we ensure your PR can be merged as efficiently as possible!
+
+## Copyright License Agreement (CLA)
+
+All code contributors are required to sign the Contributor License Agreement (CLA). When you start a pull request, a
+GitHub Action will prompt you to review the CLA and sign it by adding your name to
+[contributors.yml](https://github.com/directus/directus/blob/main/contributors.yml). To clarify the intellectual
+property rights in the project and any Contributions, Directus requires that You accept the
+[Contributor License Agreement](https://github.com/directus/directus/blob/main/cla.md). This license is for Your
+protection as a contributor as well as the protection of Directus, recipients of software distributed or made available
+by Directus, and other contributors; it does not change your rights to use your own Contributions for any other purpose.
+
+## Changesets
+
+To properly generate changelogs and determine the right version number after a change is merged, we rely on
+[changesets](https://github.com/changesets/changesets). Each pull request should include a changeset that describes
+whether the change is a patch/minor/major version bump, and describe what the change is.

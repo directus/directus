@@ -129,6 +129,13 @@ on changes automatically.
 
 :::
 
+::: tip  Component Library
+
+Directus comes shipped with it's own [Vue Component Library and Storybook]((https://components.directus.io)) that you can use to enrich your extensions.
+These components can be used in any of the "app extensions", including Interfaces, Displays, Modules, Layouts, and Panels.
+
+:::
+
 ## Publishing your Extension
 
 To make an extension available to all Directus users, you can publish the npm package created by
