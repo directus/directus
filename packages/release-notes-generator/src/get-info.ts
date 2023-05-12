@@ -1,30 +1,12 @@
 import { getInfo as getGithubInfo } from '@changesets/get-github-info';
-import { execSync } from 'node:child_process';
-import { existsSync, unlinkSync } from 'node:fs';
-import { join } from 'node:path';
+import type { Project } from '@pnpm/find-workspace-packages';
 import { FILTERED_PACKAGES, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from './constants';
-import { Change, ChangesetsWithoutId, Package, PackageInfo, PackageVersion, Type } from './types';
+import type { Change, ChangesetsWithoutId, Package, PackageVersion, Type } from './types';
 
-export async function getInfo(changesets: ChangesetsWithoutId) {
+export async function getInfo(changesets: ChangesetsWithoutId, workspacePackages: Project[]) {
 	const types: Type[] = [];
 	const untypedPackages: Package[] = [];
 	const packageVersions = new Map<string, string>();
-
-	const packageInfo: PackageInfo[] = JSON.parse(String(execSync('pnpm m ls --json --depth=-1')));
-
-	const mainVersion = packageInfo.find((p) => p.name === 'directus')?.version;
-
-	if (!mainVersion) {
-		throw new Error(`Couldn't get main version`);
-	}
-
-	for (const localPackage of packageInfo) {
-		const changelogPath = join(localPackage.path, 'CHANGELOG.md');
-
-		if (existsSync(changelogPath)) {
-			unlinkSync(changelogPath);
-		}
-	}
 
 	for (const { summary, commit, releases } of changesets.values()) {
 		let githubInfo;
@@ -45,6 +27,18 @@ export async function getInfo(changesets: ChangesetsWithoutId) {
 
 			const untypedPackage = UNTYPED_PACKAGES[name];
 
+			if (!untypedPackage && !packageVersions.has(name)) {
+				const version = workspacePackages.find((p) => p.manifest.name === name)?.manifest.version;
+
+				if (version) {
+					packageVersions.set(name, version);
+				}
+			}
+
+			if (!summary) {
+				continue;
+			}
+
 			if (untypedPackage) {
 				const packageInUntypedPackages = untypedPackages.find((p) => p.name === untypedPackage);
 
@@ -61,7 +55,7 @@ export async function getInfo(changesets: ChangesetsWithoutId) {
 			}
 
 			if (!packageVersions.has(name)) {
-				const version = packageInfo.find((p) => p.name === name)?.version;
+				const version = workspacePackages.find((p) => p.manifest.name === name)?.manifest.version;
 
 				if (version) {
 					packageVersions.set(name, version);
@@ -95,17 +89,7 @@ export async function getInfo(changesets: ChangesetsWithoutId) {
 	});
 
 	for (const { packages } of types) {
-		packages.sort((a, b) => {
-			const indexOfA = PACKAGE_ORDER.indexOf(a.name);
-			const indexOfB = PACKAGE_ORDER.indexOf(b.name);
-			if (indexOfA >= 0 && indexOfB >= 0) return indexOfA - indexOfB;
-
-			if (indexOfA >= 0) {
-				return -1;
-			}
-
-			return 0;
-		});
+		packages.sort(sortPackages);
 	}
 
 	const untypedPackagesOrder = Object.values(UNTYPED_PACKAGES);
@@ -119,17 +103,19 @@ export async function getInfo(changesets: ChangesetsWithoutId) {
 		version,
 	}));
 
-	sortedPackageVersions.sort((a, b) => {
-		const indexOfA = PACKAGE_ORDER.indexOf(a.name);
-		const indexOfB = PACKAGE_ORDER.indexOf(b.name);
-		if (indexOfA >= 0 && indexOfB >= 0) return indexOfA - indexOfB;
-
-		if (indexOfA >= 0) {
-			return -1;
-		}
-
-		return 0;
-	});
+	sortedPackageVersions.sort(sortPackages);
 
 	return { types, untypedPackages, packageVersions: sortedPackageVersions };
+}
+
+function sortPackages(a: Package | PackageVersion, b: Package | PackageVersion) {
+	const indexOfA = PACKAGE_ORDER.indexOf(a.name);
+	const indexOfB = PACKAGE_ORDER.indexOf(b.name);
+	if (indexOfA >= 0 && indexOfB >= 0) return indexOfA - indexOfB;
+
+	if (indexOfA >= 0) {
+		return -1;
+	}
+
+	return 0;
 }

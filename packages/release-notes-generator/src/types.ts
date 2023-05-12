@@ -20,10 +20,3 @@ export type PackageVersion = {
 	name: string;
 	version: string;
 };
-
-export type PackageInfo = {
-	name: string;
-	version: string;
-	path: string;
-	private: boolean;
-};
