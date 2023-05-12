@@ -9,13 +9,14 @@
 		<div class="folders">
 			<v-item-group v-model="openFolders" scope="files-navigation" multiple>
 				<v-list-group
-					to="/files"
-					:active="currentFolder === null"
+					clickable
+					:active="!currentFolder && !currentSpecial"
 					value="root"
 					scope="files-navigation"
 					exact
 					disable-groupable-parent
 					:arrow-placement="nestedFolders && nestedFolders.length > 0 ? 'after' : false"
+					@click="onClick({})"
 				>
 					<template #activator>
 						<v-list-item-icon>
@@ -29,8 +30,10 @@
 					<navigation-folder
 						v-for="folder in nestedFolders"
 						:key="folder.id"
+						:click-handler="onClick"
 						:folder="folder"
 						:current-folder="currentFolder"
+						:actions-disabled="actionsDisabled"
 					/>
 				</v-list-group>
 			</v-item-group>
@@ -38,21 +41,21 @@
 
 		<v-divider />
 
-		<v-list-item to="/files/all">
+		<v-list-item clickable :active="currentSpecial === 'all'" @click="onClick({ special: 'all' })">
 			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('all_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/mine">
+		<v-list-item clickable :active="currentSpecial === 'mine'" @click="onClick({ special: 'mine' })">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('my_files')" />
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item to="/files/recent">
+		<v-list-item clickable :active="currentSpecial === 'recent'" @click="onClick({ special: 'recent' })">
 			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
 			<v-list-item-content>
 				<v-text-overflow :text="t('recent_files')" />
@@ -62,32 +65,54 @@
 </template>
 
 <script setup lang="ts">
-import { Folder, useFolders } from '@/composables/use-folders';
-import { isEqual } from 'lodash';
-import { watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import NavigationFolder from './navigation-folder.vue';
+import { ref, watch } from 'vue';
+import { useFolders, openFoldersInitial } from '@/composables/use-folders';
+import NavigationFolder from './files-navigation-folder.vue';
+import { isEqual } from 'lodash';
+import { useRouter } from 'vue-router';
+import { SpecialFolder, FolderTarget } from '@/types/folders';
+
+const router = useRouter();
 
 const props = defineProps<{
 	currentFolder?: string;
+	currentSpecial?: SpecialFolder;
+	customTargetHandler?: (target: FolderTarget) => void;
+	localOpenFolders?: boolean;
+	actionsDisabled?: boolean;
 }>();
 
 const { t } = useI18n();
 
-const { nestedFolders, folders, loading, openFolders } = useFolders();
+const { nestedFolders, folders, loading, openFolders: sharedOpenFolders } = useFolders();
+const openFolders = props.localOpenFolders ? ref(openFoldersInitial) : sharedOpenFolders;
 
-setOpenFolders();
+watch([() => props.currentFolder, loading], setOpenFolders, { immediate: true });
 
-watch(() => props.currentFolder, setOpenFolders);
+function onClick(target: FolderTarget) {
+	if (props.customTargetHandler) {
+		props.customTargetHandler(target);
+	} else {
+		const path = ['files'];
+		if (target.folder) path.push('folders', target.folder);
+
+		if (target.special) {
+			path.push(target.special);
+		}
+
+		router.push(`/${path.join('/')}`);
+	}
+}
 
 function setOpenFolders() {
-	if (!folders.value) return [];
-	if (!openFolders?.value) return [];
+	if (!folders.value) return;
+	if (!openFolders?.value) return;
 
 	const shouldBeOpen: string[] = [];
-	const folder = folders.value.find((folder: Folder) => folder.id === props.currentFolder);
+	const folder = folders.value.find((folder) => folder.id === props.currentFolder);
 
-	if (folder && folder.parent) parseFolder(folder.parent);
+	if (folder?.parent) parseFolder(folder.parent);
 
 	const newOpenFolders = [...openFolders.value];
 
@@ -105,7 +130,7 @@ function setOpenFolders() {
 		if (!folders.value) return;
 		shouldBeOpen.push(id);
 
-		const folder = folders.value.find((folder: Folder) => folder.id === id);
+		const folder = folders.value.find((folder) => folder.id === id);
 
 		if (folder && folder.parent) {
 			parseFolder(folder.parent);

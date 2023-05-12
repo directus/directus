@@ -84,6 +84,7 @@ os_type: Gerð stýrikerfis
 os_version: Útgáfa stýrikerfis
 os_uptime: Uppitími stýrikerfis
 os_totalmem: OS Minni
+archive: Geymsla
 all_access: Allur Aðgangur
 no_access: Enginn Aðgangur
 use_custom: Nota Sérsniðið
@@ -116,6 +117,9 @@ text: Texti
 time: Tími
 timestamp: Tímastimpill
 geometry.Point: Punktur
+auto_refresh: Sjálfkrafa Endurhlaða
+search_collection: Leit Safn...
+search_field: Leit Reitur...
 add_link: Bæta við Hlekk
 custom_link: Sérsniðinn Hlekkur
 default_value: Sjálfgefið Gildi
@@ -140,6 +144,7 @@ title: Titill
 revision_delta_deleted: Eytt
 revision_delta_reverted: Snúið í fyrra horf
 updates_made: Uppfærslur Gerðar
+import_export: Flytja inn/út
 last_page: Síðasta Síða
 last_access: Síðasta Aðgengi
 submit: Senda inn
@@ -160,6 +165,22 @@ functions:
   minute: Mínútur
   second: Sekúndur
   count: Talning
+year: Ár
+select_all: Velja Allt
+months:
+  january: Janúar
+  february: Febrúar
+  march: Mars
+  april: Apríl
+  may: Maí
+  june: Júní
+  july: Júlí
+  august: Ágúst
+  september: September
+  october: Október
+  november: Nóvember
+  december: Desember
+original: Upprunalegt
 size: Stærð
 owner: Eigandi
 folder: Mappa
@@ -171,27 +192,36 @@ download_file: Niðurhala Skrá
 name: Nafn
 primary_key_field: Aðal Lykill Reitur
 type: Týpa
+created_by: Búið til Af
+created_on: Búið til Þann
 save_and_create_new: Vista og Búa til Nýtt
 save_as_copy: Vista sem Afrit
 comments: Athugasemdir
 no_items: Engir hlutir
+search_items: Leita að hlutum...
 disabled: Óvirkt
 information: Upplýsingar
 report_bug: Tilkynna Galla
 reset_interface: Endursetja Viðmót
+no_notifications: Engar Tilkynningar
+activity_log: Virkni Skrá
+all_items: Allir Hlutir
 copy: Afrita
 copy_to: Afrita Til...
 users: Notendur
 activity: Virkni
 action: Aðgerð
 origin: Uppruni
+automatic: Sjálfvirkt
 field_width: Reitur Breidd
 add_filter: Bæta við Síu
 upper_limit: Efri mörk...
 lower_limit: Neðri mörk...
+user_directory: Notendur Safn
 documentation: Skjalfesting
 sidebar: Hliðarvalmynd
 duration: Tímalengd
+card_size: Spjald Stærð
 sort: Flokka
 status: Staða
 remove: Fjarlægja
@@ -202,12 +232,39 @@ errors:
   INVALID_CREDENTIALS: Rangt notendanafn eða lykilorð
 security: Öryggi
 create_bookmark: Búa til Bókamerki
+unexpected_error: Óvænt Villa
 filter: Sía
 free: Frjálst
 rotate: Snúa
 all_users: Allir Notendur
+icon_left: Íkon Vinstri
+icon_right: Íkon Hægri
+font: Letur
+divider: Aðskilja
+color: Litur
+circle: Hringur
+operators:
+  ends_with: Endar með
+  between: Er á milli
+  empty: Er tómt
+  nempty: Er ekki tómt
+loading: Hleður...
+rows: Raðir
+columns: Dálkar
+collection_setup: Safn Uppstilling
+create_item: Búa til Hlut
+no_results: Engar Niðurstöður
+role: Hlutverk
+rule: Regla
+user: Notandi
 create: Búa til
+read: Lesa
+update: Uppfæra
+delete: Eyða
 bold: Feitletrað
+label: Merki
+flows: Flæðir
+flow: Flæði
 flow_name: Nafn
 start_flow: Byrja Flæði
 stop_flow: Stoppa Flæði
@@ -222,6 +279,8 @@ image_url: Mynd Url
 quality: Gæði
 width: Breidd
 height: Hæð
+interface_group_groups: Hópar
+interface_group_other: Annað
 new_tab: Nýr Flipi
 current_tab: Núverandi Flipi
 save_image: Vista Mynd
@@ -235,6 +294,7 @@ wysiwyg_options:
   codeblock: Kóði
   unlink: Fjarlægja Hlekk
   copy: Afrita
+  cut: Klippa
   heading: Fyrirsögn
   h1: Fyrirsögn 1
   h2: Fyrirsögn 2
@@ -253,9 +313,12 @@ wysiwyg_options:
   table: Tafla
 dropdown: Fellilisti
 choices: Val
+deselect_all: Afvelja Allt
 other: Annað...
 unknown_user: Óþekktur Notandi
+settings_flows: Flæðir
 select: Velja...
+layout: Framsetning
 tree_view: Tré Sýn
 data: Gögn
 unsaved_changes: Óvistaðar Breytingar
@@ -269,8 +332,10 @@ cancel: Hætta við
 content: Efni
 fields:
   directus_activity:
+    comment: Athugasemd
     origin: Uppruni
   directus_collections:
+    collection: Safn
     icon: Íkon
     note: Minnispunktur
     color: Litur
@@ -278,6 +343,7 @@ fields:
   directus_files:
     title: Titill
     description: Lýsing
+    tags: Merki
     location: Staðsetning
     filesize: Skráarstærð
     modified_on: Breytt Þann
@@ -311,25 +377,35 @@ fields:
     last_access: Síðasta Aðgengi
   directus_settings:
     project_name: Verkefni Nafn
+    custom_css: Sérsniðið CSS
   directus_shares:
     name: Nafn
+    role: Hlutverk
     password: Lykilorð
   directus_fields:
     note: Minnispunktur
+    display_template: Sniðmát
   directus_roles:
     name: Hlutverks Nafn
     description: Lýsing
   directus_webhooks:
     name: Nafn
     status: Staða
+    header: Haus
+    value: Gildi
 field_options:
   directus_settings:
     security_divider_title: Öryggi
   directus_activity:
     login: Skrá inn
     create: Búa til
+    update: Uppfæra
+    delete: Eyða
   directus_collections:
+    collection_setup: Safn Uppstilling
     language: Tungumál
+    collection_name: Safn Nafn
+    archive_divider: Geymsla
     sort_divider: Flokka
   directus_roles:
     fields:
@@ -340,7 +416,10 @@ field_options:
   directus_users:
     preferences_divider: Notandi Stillingar
     status_dropdown_draft: Drög
+    status_dropdown_active: Virkt
   directus_webhooks:
+    status_options_active: Virkt
+    status_options_inactive: Óvirkt
     actions_create: Búa til
     actions_update: Uppfæra
     actions_delete: Eyða
@@ -348,10 +427,16 @@ field_options:
     headers:
       header: Haus
 do_nothing: Gera Ekkert
+comment: Athugasemd
 share_copy_link: Afrita Hlekk
+delete_label: Eyða
 description: Lýsing
 email: Tölvupóstur
+file_library: Skjöl Safn
 password: Lykilorð
+search: Leita
+settings: Stillingar
+template: Sniðmát
 table: Tafla
 list: Listi
 interfaces:
@@ -361,11 +446,19 @@ interfaces:
     all: Allt
   presentation-links:
     primary: Aðal
+  select-multiple-checkbox:
+    allow_other: Leyfa Annað
+  select-multiple-checkbox-tree:
+    show_all: Sýna Allt
   input-code:
     code: Kóði
   select-color:
     color: Litur
+  presentation-divider:
+    divider: Aðskilja
   select-dropdown:
+    allow_other: Leyfa Annað
+    allow_none: Leyfa Ekkert
     choices_value_placeholder: Skráðu Gildi...
   file:
     file: Skrá
@@ -389,6 +482,8 @@ interfaces:
     folder: Mappa
   list:
     sort: Flokka
+  tags:
+    tags: Merki
   input-multiline:
     textarea: Textasvæði
   input-translated-string:
@@ -520,6 +615,8 @@ triggers:
 operations:
   condition:
     name: Ástand
+  item-create:
+    name: Búa til Gögn
   item-read:
     name: Lesa Gögn
   log:
@@ -528,6 +625,7 @@ operations:
     name: Senda Tölvupóst
     to: Til
     body: Líkami
+    template: Sniðmát
   notification:
     name: Senda Tilkynningu
     recipient: Notandi

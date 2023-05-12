@@ -1,0 +1,28 @@
+{
+	"name": "@directus/release-notes-generator",
+	"private": true,
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
+	},
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"devDependencies": {
+		"@changesets/types": "5.2.1",
+		"@directus/tsconfig": "0.0.7",
+		"@types/node": "18.15.13",
+		"@vitest/coverage-c8": "0.31.0",
+		"typescript": "5.0.4",
+		"vitest": "0.31.0"
+	},
+	"dependencies": {
+		"@changesets/get-github-info": "^0.5.2"
+	}
+}
