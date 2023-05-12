@@ -47,12 +47,7 @@
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ t('per_page') }}</span>
-					<v-select
-						:model-value="`${limit}`"
-						:items="['25', '50', '100', '250', '500', '1000']"
-						inline
-						@update:model-value="limitWritable = +$event"
-					/>
+					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -81,6 +76,7 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
 import { Collection } from '@/types/collections';
 import { useElementSize, useSync } from '@directus/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
@@ -141,6 +137,14 @@ const mainElement = inject<Ref<Element | undefined>>('main-element');
 const layoutElement = ref<HTMLElement>();
 
 const { width } = useElementSize(layoutElement);
+
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
+	[25, 50, 100, 250, 500, 1000],
+	(value) => String(value),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
 
 watch(
 	() => props.page,
