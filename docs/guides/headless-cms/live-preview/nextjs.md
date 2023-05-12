@@ -147,3 +147,11 @@ item in your collection and “click” save, you should see a live preview of t
 screen.
 
 Clicking on the "Dimensions Display" icon also lets you preview your content on desktop and mobile screens.
+
+## Next Steps
+
+Through this guide, you have successfully set up the live preview feature in Directus for your Next.js project using
+draft mode.
+
+Share the preview URL with your team members, stakeholders, or clients to allow them to see how the changes made in your
+collection would look like.
