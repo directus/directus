@@ -54,10 +54,14 @@ export interface AbstractQueryFieldNodeFn extends AbstractQueryNode {
 export interface AbstractQueryFieldNodeRelatedBase {
 	fieldNodes: AbstractQueryFieldNode[];
 
-	modifiers?: Modifiers;
+	modifiers?: AbstractQueryModifiers;
 }
 
-export type AbstractQueryFieldNodeRelated = AbstractQueryFieldNodeRelatedMany | AbstractQueryFieldNodeRelatedAny;
+export type AbstractQueryFieldNodeRelated =
+	| AbstractQueryFieldNodeRelatedManyToOne
+	| AbstractQueryFieldNodeRelatedOneToMany
+	| AbstractQueryFieldNodeRelatedAnyToOne
+	| AbstractQueryFieldNodeRelatedOneToAny;
 
 interface AbstractQueryFieldNodeRelatedJoinMany {
 	current: {
@@ -81,12 +85,6 @@ interface AbstractQueryFieldNodeRelatedJoinAny {
 		datastore?: string;
 		fields: string[];
 	};
-}
-
-export interface AbstractQueryFieldNodeRelatedBase {
-	fieldNodes: AbstractQueryFieldNode[];
-
-	modifiers?: Modifiers;
 }
 
 export interface AbstractQueryFieldNodeRelatedManyToOne extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
@@ -120,7 +118,7 @@ export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryNode
  * @typeParam sort - Specifies the order of the results
  * @typeParam limit - Specifies the maximum amount of returning results
  */
-export interface Modifiers {
+export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
 	offset?: AbstractQueryNodeOffset;
 	sort?: AbstractQueryNodeSort;
@@ -156,7 +154,11 @@ interface AbstractQueryNodeOffset {
 interface AbstractQueryNodeSort {
 	type: 'sort';
 	direction: 'ascending' | 'descending';
-	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn | AbstractQueryFieldNodeRelated;
+	target:
+		| AbstractQueryFieldNodePrimitive
+		| AbstractQueryFieldNodeFn
+		| AbstractQueryFieldNodeRelatedManyToOne
+		| AbstractQueryFieldNodeRelatedAnyToOne;
 }
 
 /**
@@ -168,17 +170,17 @@ interface AbstractQueryNodeSort {
  * ```
  * {
  * 	type: 'logical',
- * 	operator: '_and',
+ * 	operator: 'and',
  * 	children: [
  * 		{
  * 			type: 'condition',
- * 			operation: '_eq',
+ * 			operation: 'eq',
  * 			target: { type: 'field', key: 'a' }
  * 			value: 5
  * 		},
  * 		{
  * 			type: 'condition',
- * 			operation: '_lt',
+ * 			operation: 'lt',
  * 			target: { type: 'field', key: 'b' }
  * 			value: 5
  * 		}
@@ -202,7 +204,7 @@ export interface AbstractQueryNodeLogical {
  * ```
  * {
  * 		type: 'condition',
- * 		operation: '_lt',
+ * 		operation: 'lt',
  *		target: { type: 'field', key: 'b' }
  * 		value: 5
  * }
@@ -226,12 +228,13 @@ export interface AbstractQueryNodeCondition {
 		| 'starts_with'
 		| 'end_with'
 		| 'intersects'
-		| 'intersects_bbox';
+		| 'intersects_bounding_box';
 	value: string | number | boolean;
 }
 
 /**
  * Questions:
- * - 	Should we support "Distinct", if so where does it live (field level vs collection level)
- * -  Rethink every / some
+ * - Should we support "Distinct", if so where does it live (field level vs collection level)
+ * - Rethink every / some
+ * - Should logical "not" be a node with a single child?
  */
