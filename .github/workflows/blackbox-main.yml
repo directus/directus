@@ -1,6 +1,9 @@
 name: Blackbox Tests
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
@@ -13,7 +16,7 @@ on:
       - .github/workflows/blackbox-main.yml
 
 concurrency:
-  group: blackbox-main
+  group: blackbox-main-fix-sanitize-column
   cancel-in-progress: true
 
 env:
