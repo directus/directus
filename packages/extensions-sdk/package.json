@@ -43,7 +43,6 @@
 		"@rollup/plugin-replace": "5.0.2",
 		"@rollup/plugin-terser": "0.4.1",
 		"@rollup/plugin-virtual": "3.0.1",
-		"@vue/compiler-sfc": "3.2.47",
 		"chalk": "5.2.0",
 		"commander": "10.0.1",
 		"esbuild": "0.17.17",
