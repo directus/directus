@@ -1057,6 +1057,9 @@ importers:
       '@rollup/plugin-virtual':
         specifier: 3.0.1
         version: 3.0.1(rollup@3.20.7)
+      '@vitejs/plugin-vue':
+        specifier: 4.2.3
+        version: 4.2.3(vite@4.3.1)(vue@3.3.2)
       chalk:
         specifier: 5.2.0
         version: 5.2.0
@@ -1087,9 +1090,12 @@ importers:
       rollup-plugin-styles:
         specifier: 4.0.0
         version: 4.0.0(rollup@3.20.7)
-      rollup-plugin-vue:
-        specifier: 6.0.0
-        version: 6.0.0(@vue/compiler-sfc@3.3.2)
+      vite:
+        specifier: 4.3.1
+        version: 4.3.1(@types/node@18.15.13)(sass@1.62.0)
+      vue:
+        specifier: 3.3.2
+        version: 3.3.2
     devDependencies:
       '@directus/tsconfig':
         specifier: 0.0.7
@@ -7688,7 +7694,6 @@ packages:
     dependencies:
       vite: 4.3.1(@types/node@18.15.13)(sass@1.62.0)
       vue: 3.3.2
-    dev: true
 
   /@vitest/coverage-c8@0.31.0(vitest@0.31.0):
     resolution: {integrity: sha512-h72qN1D962AO7UefQVulm9JFP5ACS7OfhCdBHioXU8f7ohH/+NTZCgAqmgcfRNHHO/8wLFxx+93YVxhodkEJVA==}
@@ -10742,10 +10747,6 @@ packages:
     engines: {node: '>=4.0'}
     dev: true
 
-  /estree-walker@0.6.1:
-    resolution: {integrity: sha512-SqmZANLWS0mnatqbSfRP5g8OXZC12Fgg1IwNtLsyHDzJizORW4khDfjPqJZsemPWBB2uqykUah5YpQ6epsqC/w==}
-    dev: false
-
   /estree-walker@2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
 
@@ -11785,6 +11786,7 @@ packages:
 
   /hash-sum@2.0.0:
     resolution: {integrity: sha512-WdZTbAByD+pHfl/g9QSsBIIwy8IT+EsPiKDs0KNX+zSHhdDLFKdZu0BQHljvO+0QI/BasbMSUa8wYNCZTvhslg==}
+    dev: true
 
   /hashring@3.2.0:
     resolution: {integrity: sha512-xCMovURClsQZ+TR30icCZj+34Fq1hs0y6YCASD6ZqdRfYRybb5Iadws2WS+w09mGM/kf9xyA5FCdJQGcgcraSA==}
@@ -12003,7 +12005,6 @@ packages:
 
   /immutable@4.3.0:
     resolution: {integrity: sha512-0AOCmOip+xgJwEVTQj1EfiDDOkPmuyllDuTuEX+DDXUgapLAsBIfkg3sxCYyCEA8mQqZrrxPUGjcOQ2JS3WLkg==}
-    dev: true
 
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -16913,25 +16914,6 @@ packages:
       tslib: 2.5.0
     dev: false
 
-  /rollup-plugin-vue@6.0.0(@vue/compiler-sfc@3.3.2):
-    resolution: {integrity: sha512-oVvUd84d5u73M2HYM3XsMDLtZRIA/tw2U0dmHlXU2UWP5JARYHzh/U9vcxaN/x/9MrepY7VH3pHFeOhrWpxs/Q==}
-    peerDependencies:
-      '@vue/compiler-sfc': '*'
-    dependencies:
-      '@vue/compiler-sfc': 3.3.2
-      debug: 4.3.4
-      hash-sum: 2.0.0
-      rollup-pluginutils: 2.8.2
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /rollup-pluginutils@2.8.2:
-    resolution: {integrity: sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==}
-    dependencies:
-      estree-walker: 0.6.1
-    dev: false
-
   /rollup@3.20.7:
     resolution: {integrity: sha512-P7E2zezKSLhWnTz46XxjSmInrbOCiul1yf+kJccMxT56vxjHwCbDfoLbiqFgu+WQoo9ij2PkraYaBstgB2prBA==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
@@ -17028,7 +17010,6 @@ packages:
       chokidar: 3.5.3
       immutable: 4.3.0
       source-map-js: 1.0.2
-    dev: true
 
   /sax@1.2.4:
     resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
@@ -19004,7 +18985,6 @@ packages:
       sass: 1.62.0
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /vitepress@1.0.0-alpha.73(@algolia/client-search@4.17.0):
     resolution: {integrity: sha512-BWK7b5yYxdA3SeBnUV+ly8vJU2MFcQhjooycLDc2AsSd07uGp+WO6J6gBmjwHuOz5hgcNa+/VxGWKKwBycdbnA==}
