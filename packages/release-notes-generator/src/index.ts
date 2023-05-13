@@ -1,10 +1,10 @@
 import type { ChangelogFunctions, GetDependencyReleaseLine, GetReleaseLine } from '@changesets/types';
 import { appendFileSync } from 'node:fs';
 import { MAIN_PACKAGE } from './constants';
-import { getInfo } from './info';
-import { generateMarkdown } from './markdown';
-import { processPackages } from './packages';
 import type { ChangesetsWithoutId } from './types';
+import { generateMarkdown } from './utils/generate-markdown';
+import { getInfo } from './utils/get-info';
+import { processPackages } from './utils/process-packages';
 
 const changesets: ChangesetsWithoutId = new Map();
 
@@ -49,13 +49,14 @@ async function run() {
 
 	const githubOutput = process.env['GITHUB_OUTPUT'];
 
+	// Set output if running inside a GitHub workflow
 	if (githubOutput) {
-		const content = [
+		const outputs = [
 			`DIRECTUS_MAIN_VERSION=${mainVersion}`,
-			`DIRECTUS_RELEASE_NOTES=${markdown.replace(/\n/g, '\\n')}`,
+			`DIRECTUS_RELEASE_NOTES<<EOF_RELEASE_NOTES\n${markdown}\nEOF_RELEASE_NOTES`,
 		];
 
-		appendFileSync(githubOutput, content.join('\n'));
+		appendFileSync(githubOutput, `${outputs.join('\n')}\n`);
 	}
 }
 

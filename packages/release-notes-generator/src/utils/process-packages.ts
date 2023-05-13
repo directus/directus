@@ -2,8 +2,9 @@ import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
 import { Project, findWorkspacePackagesNoCheck } from '@pnpm/find-workspace-packages';
 import { existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
-import { MAIN_PACKAGE, PACKAGE_ORDER, UNTYPED_PACKAGES } from './constants';
-import type { Package, PackageVersion } from './types';
+import { MAIN_PACKAGE, PACKAGE_ORDER, UNTYPED_PACKAGES } from '../constants';
+import type { PackageVersion } from '../types';
+import { sortByExternalOrder } from './sort';
 
 export async function processPackages(): Promise<{
 	mainVersion: string | undefined;
@@ -45,7 +46,7 @@ export async function processPackages(): Promise<{
 		version,
 	}))
 		.filter(({ name }) => ![MAIN_PACKAGE, ...Object.keys(UNTYPED_PACKAGES)].includes(name))
-		.sort(sortPackages);
+		.sort(sortByExternalOrder(PACKAGE_ORDER, 'name'));
 
 	return { mainVersion, packageVersions };
 }
@@ -58,16 +59,4 @@ async function getPackages(): Promise<Project[]> {
 	}
 
 	return findWorkspacePackagesNoCheck(workspaceRoot);
-}
-
-export function sortPackages(a: Package | PackageVersion, b: Package | PackageVersion): number {
-	const indexOfA = PACKAGE_ORDER.indexOf(a.name);
-	const indexOfB = PACKAGE_ORDER.indexOf(b.name);
-	if (indexOfA >= 0 && indexOfB >= 0) return indexOfA - indexOfB;
-
-	if (indexOfA >= 0) {
-		return -1;
-	}
-
-	return 0;
 }

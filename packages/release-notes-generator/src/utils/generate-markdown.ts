@@ -1,5 +1,5 @@
-import { REPO, VERSIONS_TITLE } from './constants';
-import type { Change, Package, PackageVersion, Type, UntypedPackage } from './types';
+import { REPO, VERSIONS_TITLE } from '../constants';
+import type { Change, Package, PackageVersion, Type, UntypedPackage } from '../types';
 
 export function generateMarkdown(
 	mainVersion: string,

@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
-import { generateMarkdown } from './markdown';
-import type { Change, PackageVersion, Type, UntypedPackage } from './types';
+import type { Change, PackageVersion, Type, UntypedPackage } from '../types';
+import { generateMarkdown } from './generate-markdown';
 
 const mainVersion = '10.0.0';
 

@@ -1,7 +1,7 @@
 import { getInfo as getGithubInfo } from '@changesets/get-github-info';
-import { MAIN_PACKAGE, REPO, TYPE_MAP, UNTYPED_PACKAGES } from './constants';
-import { sortPackages } from './packages';
-import type { Change, ChangesetsWithoutId, Type, UntypedPackage } from './types';
+import { MAIN_PACKAGE, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from '../constants';
+import type { Change, ChangesetsWithoutId, Type, UntypedPackage } from '../types';
+import { sortByExternalOrder, sortByObjectValues } from './sort';
 
 export async function getInfo(changesets: ChangesetsWithoutId): Promise<{
 	types: Type[];
@@ -67,7 +67,7 @@ export async function getInfo(changesets: ChangesetsWithoutId): Promise<{
 	types.sort(sortByObjectValues(TYPE_MAP, 'title'));
 
 	for (const { packages } of types) {
-		packages.sort(sortPackages);
+		packages.sort(sortByExternalOrder(PACKAGE_ORDER, 'name'));
 	}
 
 	untypedPackages.sort(sortByObjectValues(UNTYPED_PACKAGES, 'name'));
@@ -77,9 +77,4 @@ export async function getInfo(changesets: ChangesetsWithoutId): Promise<{
 
 function isUntypedPackage(name: string): name is keyof typeof UNTYPED_PACKAGES {
 	return Object.prototype.hasOwnProperty.call(UNTYPED_PACKAGES, name);
-}
-
-function sortByObjectValues<T, O extends Record<any, T[K]>, K extends keyof T>(object: O, key: K) {
-	const order = Object.values(object);
-	return (a: T, b: T) => order.indexOf(a[key]) - order.indexOf(b[key]);
 }
