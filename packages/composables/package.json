@@ -34,13 +34,13 @@
 		"@types/lodash-es": "4.17.7",
 		"@vitest/coverage-c8": "0.31.0",
 		"@vue/test-utils": "2.3.2",
-		"axios": "1.3.6",
 		"typescript": "5.0.4",
 		"vitest": "0.31.0"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"axios": "1.3.6",
 		"lodash-es": "4.17.21",
 		"nanoid": "4.0.2",
 		"vue": "3.2.47"
