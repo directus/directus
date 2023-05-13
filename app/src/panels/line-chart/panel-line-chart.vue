@@ -4,7 +4,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction } from '@/types/panels';
 import type { Filter } from '@directus/types';
