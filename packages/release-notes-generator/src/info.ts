@@ -1,20 +1,14 @@
 import { getInfo as getGithubInfo } from '@changesets/get-github-info';
-import type { Project } from '@pnpm/find-workspace-packages';
-import { FILTERED_PACKAGES, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from './constants';
-import type { Change, ChangesetsWithoutId, Package, PackageVersion, Type } from './types';
-import { getPackageVersion } from './packages';
+import { MAIN_PACKAGE, REPO, TYPE_MAP, UNTYPED_PACKAGES } from './constants';
+import { sortPackages } from './packages';
+import type { Change, ChangesetsWithoutId, Type, UntypedPackage } from './types';
 
-export async function getInfo(
-	changesets: ChangesetsWithoutId,
-	workspacePackages: Project[]
-): Promise<{
+export async function getInfo(changesets: ChangesetsWithoutId): Promise<{
 	types: Type[];
-	untypedPackages: Package[];
-	packageVersions: PackageVersion[];
+	untypedPackages: UntypedPackage[];
 }> {
 	const types: Type[] = [];
-	const untypedPackages: Package[] = [];
-	const packageVersions = new Map<string, string>();
+	const untypedPackages: UntypedPackage[] = [];
 
 	for (const { summary, commit, releases } of changesets.values()) {
 		let githubInfo;
@@ -29,32 +23,20 @@ export async function getInfo(
 		for (const { type, name } of releases) {
 			const change: Change = { summary, commit, githubInfo };
 
-			if (FILTERED_PACKAGES.includes(name)) {
+			if (name === MAIN_PACKAGE || !summary) {
 				continue;
 			}
 
-			const untypedPackage = UNTYPED_PACKAGES[name];
+			if (isUntypedPackage(name)) {
+				const untypedPackageName = UNTYPED_PACKAGES[name];
 
-			if (!untypedPackage && !packageVersions.has(name)) {
-				const version = getPackageVersion(workspacePackages, name);
-
-				if (version) {
-					packageVersions.set(name, version);
-				}
-			}
-
-			if (!summary) {
-				continue;
-			}
-
-			if (untypedPackage) {
-				const packageInUntypedPackages = untypedPackages.find((p) => p.name === untypedPackage);
+				const packageInUntypedPackages = untypedPackages.find((p) => p.name === untypedPackageName);
 
 				if (packageInUntypedPackages) {
 					packageInUntypedPackages.changes.push(change);
 				} else {
 					untypedPackages.push({
-						name: untypedPackage,
+						name: untypedPackageName,
 						changes: [change],
 					});
 				}
@@ -82,40 +64,22 @@ export async function getInfo(
 		}
 	}
 
-	const typeOrder = Object.values(TYPE_MAP);
-
-	types.sort((a, b) => {
-		return typeOrder.indexOf(a.title) - typeOrder.indexOf(b.title);
-	});
+	types.sort(sortByObjectValues(TYPE_MAP, 'title'));
 
 	for (const { packages } of types) {
 		packages.sort(sortPackages);
 	}
 
-	const untypedPackagesOrder = Object.values(UNTYPED_PACKAGES);
+	untypedPackages.sort(sortByObjectValues(UNTYPED_PACKAGES, 'name'));
 
-	untypedPackages.sort((a, b) => {
-		return untypedPackagesOrder.indexOf(a.name) - untypedPackagesOrder.indexOf(b.name);
-	});
-
-	const sortedPackageVersions: PackageVersion[] = Array.from(packageVersions, ([name, version]) => ({
-		name,
-		version,
-	}));
-
-	sortedPackageVersions.sort(sortPackages);
-
-	return { types, untypedPackages, packageVersions: sortedPackageVersions };
+	return { types, untypedPackages };
 }
 
-function sortPackages(a: Package | PackageVersion, b: Package | PackageVersion): number {
-	const indexOfA = PACKAGE_ORDER.indexOf(a.name);
-	const indexOfB = PACKAGE_ORDER.indexOf(b.name);
-	if (indexOfA >= 0 && indexOfB >= 0) return indexOfA - indexOfB;
+function isUntypedPackage(name: string): name is keyof typeof UNTYPED_PACKAGES {
+	return Object.prototype.hasOwnProperty.call(UNTYPED_PACKAGES, name);
+}
 
-	if (indexOfA >= 0) {
-		return -1;
-	}
-
-	return 0;
+function sortByObjectValues<T, O extends Record<any, T[K]>, K extends keyof T>(object: O, key: K) {
+	const order = Object.values(object);
+	return (a: T, b: T) => order.indexOf(a[key]) - order.indexOf(b[key]);
 }

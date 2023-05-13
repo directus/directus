@@ -1,10 +1,10 @@
 import { REPO, VERSIONS_TITLE } from './constants';
-import type { Change, Package, PackageVersion, Type } from './types';
+import type { Change, Package, PackageVersion, Type, UntypedPackage } from './types';
 
 export function generateMarkdown(
 	mainVersion: string,
 	types: Type[],
-	untypedPackages: Package[],
+	untypedPackages: UntypedPackage[],
 	packageVersions: PackageVersion[]
 ): string {
 	const date = new Date();
@@ -16,13 +16,17 @@ export function generateMarkdown(
 	let output = `## v${mainVersion} (${dateString})`;
 
 	for (const { title, packages } of types) {
-		output += `\n\n### ${title}\n`;
-		output += formatPackages(packages);
+		if (packages.length > 0) {
+			output += `\n\n### ${title}\n`;
+			output += formatPackages(packages);
+		}
 	}
 
 	for (const { name, changes } of untypedPackages) {
-		output += `\n\n### ${name}\n\n`;
-		output += formatChanges(changes).join('\n');
+		if (changes.length > 0) {
+			output += `\n\n### ${name}\n\n`;
+			output += formatChanges(changes).join('\n');
+		}
 	}
 
 	if (packageVersions.length > 0) {
@@ -40,11 +44,13 @@ function formatPackages(packages: Package[]): string {
 	let output = '';
 
 	for (const { name, changes } of packages) {
-		output += `\n- **${name}**\n`;
+		if (changes.length > 0) {
+			output += `\n- **${name}**\n`;
 
-		output += formatChanges(changes)
-			.map((change) => `  ${change}`)
-			.join('\n');
+			output += formatChanges(changes)
+				.map((change) => `  ${change}`)
+				.join('\n');
+		}
 	}
 
 	return output;

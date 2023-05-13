@@ -4,12 +4,10 @@ export const REPO = 'directus/directus';
 
 export const MAIN_PACKAGE = 'directus';
 
-export const FILTERED_PACKAGES = ['directus'];
-
-export const UNTYPED_PACKAGES: Record<string, string> = {
+export const UNTYPED_PACKAGES = {
 	docs: '📝 Documentation',
 	'tests-blackbox': '🧪 Blackbox Tests',
-};
+} as const satisfies Record<string, string>;
 
 export const PACKAGE_ORDER = ['@directus/app', '@directus/api'];
 

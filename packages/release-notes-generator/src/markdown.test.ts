@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest';
 import { generateMarkdown } from './markdown';
-import type { Change, Package, PackageVersion, Type } from './types';
+import type { Change, PackageVersion, Type, UntypedPackage } from './types';
 
 const mainVersion = '10.0.0';
 
@@ -30,7 +30,7 @@ const types: Type[] = [
 	},
 ];
 
-const untypedPackages: Package[] = [{ name: '📝 Documentation', changes: [change] }];
+const untypedPackages: UntypedPackage[] = [{ name: '📝 Documentation', changes: [change] }];
 const packageVersions: PackageVersion[] = [{ name: '@directus/api', version: '10.0.0' }];
 
 test('#generateMarkdown', () => {
