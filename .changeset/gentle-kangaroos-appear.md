@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Added missing translation for presentation-notice interface
+Added missing translation in presentation-notice interface
