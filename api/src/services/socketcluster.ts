@@ -5,7 +5,7 @@ import SC from 'socketcluster-client';
 // import logger from '../logger.js';
 
 function genToken() {
-	return JWT.sign({ type: 'service' }, process.env.SECRET, {
+	return JWT.sign({ type: 'service' }, process.env.NEURON_SOCKET_SECRET, {
 		expiresIn: '1 year',
 	});
 }
