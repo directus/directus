@@ -13,6 +13,7 @@ function genToken() {
 const socketcluster = {
 	async connect() {
 		const socketConfig = {
+			secret: process.env.NEURON_SOCKET_SECRET,
 			hostname: process.env.NEURON_SOCKET_HOSTNAME,
 			port: process.env.NEURON_SOCKET_PORT,
 			secure: process.env.NEURON_SOCKET_SECURE === 'true',
@@ -39,6 +40,8 @@ const socketcluster = {
 			},
 			// codecEngine:  SocketCodecEngine
 		};
+
+		console.log('connecting to socket:', options);
 
 		// logger.info('will connect to socketcluster...', options);
 
