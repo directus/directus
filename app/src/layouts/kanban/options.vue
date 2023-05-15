@@ -116,7 +116,7 @@ export default {
 };
 </script>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useSync } from '@directus/extensions-sdk';
 import { useI18n } from 'vue-i18n';
 
