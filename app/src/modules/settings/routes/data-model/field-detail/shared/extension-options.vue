@@ -64,7 +64,7 @@ const extensionInfo = useExtension(type, extension);
 const usesCustomComponent = computed(() => {
 	if (!extensionInfo.value) return false;
 
-	return extensionInfo.value.options && 'render' in extensionInfo.value.options;
+	return extensionInfo.value.options && 'setup' in extensionInfo.value.options;
 });
 
 const optionsFields = computed(() => {
