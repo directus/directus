@@ -131,6 +131,7 @@ archive_confirm_count: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
 reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
+the_following_are_minimum_permissions: Die folgenden Mindestberechtigungen werden automatisch angewendet, wenn "App-Zugriff" aktiviert ist. Sie können bei Bedarf zusätzliche Berechtigungen erteilen, aber Sie können die Berechtigungen nicht unter dieses Niveau reduzieren.
 app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
@@ -181,6 +182,7 @@ permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
+presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der Syntax "detailed" konfiguriert werden.'
 presentation_and_aliases: Darstellung & Aliase
 revision_post_create: So sah dieses Element bei der Erstellung aus.
 revision_post_update: So sieht dieses Element nach der Überarbeitung aus.
@@ -295,7 +297,12 @@ o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
 m2a_relationship: n:x-Beziehung (Many to Any)
 invalid_item: Ungültiges Element
+require_confirmation: Bestätigung erforderlich
+dialog: Dialog
 modal: Modal
+confirmation_dialog: Bestätigungsdialog
+confirmation_description: Beschreibung der Bestätigung
+confirmation_input_fields: Bestätigung der Eingabefelder
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
@@ -314,6 +321,7 @@ updated_on: Geändert am
 updated_by: Geändert von
 primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
+field_key: Feldschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
 toggle_raw_editor: Raw-Editor umschalten
@@ -524,6 +532,7 @@ create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
+no_singleton_relations: Relationen zu Singletons werden nicht unterstützt
 display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
 collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
@@ -662,6 +671,7 @@ one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
+delete_collection_peer_dependencies: Die folgenden Felder werden ebenfalls gelöscht, da sie sich auf die aktuelle Kollektion beziehen.
 collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
@@ -787,8 +797,15 @@ label: Label
 flows: Flows
 flow: Flow
 select_a_flow: Flow auswählen
+run_flow_confirm: Sind Sie sicher, dass Sie diesen Flow ausführen wollen?
+run_flow_on_current_collection: Flow in der aktuellen Kollektion ausführen
+run_flow_on_current: Flow beim aktuellen Element ausführen
 run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
+run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
+run_flow: Flow ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
+field_name_placeholder: Feldnamen eingeben...
+field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger
 trigger_options: Auslöse-Optionen
 view_trigger: Auslöser anzeigen
@@ -1130,6 +1147,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Zuordnung
     basemaps: Basiskarte
     basemaps_raster: Raster
@@ -1423,12 +1441,14 @@ export_started: Export gestartet
 export_started_copy: Der Export hat begonnen. Du wirst benachrichtigt, wenn die Datei zum Download bereit ist.
 sort_asc: Aufsteigend sortieren
 sort_desc: Absteigend sortieren
+disable_sort: Sortierung deaktivieren
 template: Vorlage
 require_value_to_be_set: Wert muss bei Erstellung gesetzt werden
 translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 table: Tabelle
@@ -1586,6 +1606,9 @@ interfaces:
     many-to-one: n:1
     description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
+  collection-item-dropdown:
+    collection-item-dropdown: Dropdown für Kollektion Elemente
+    description: Auswahl eines Elements aus einer Sammlung im JSON-Format
   input-rich-text-md:
     markdown: Markdown
     description: Markdown eingeben und Vorschau anzeigen
@@ -1627,6 +1650,7 @@ interfaces:
   system-folder:
     folder: Ordner
     description: Ordner auswählen
+    field_hint: Standardordner für hochgeladene Dateien ohne Angabe eines Ordners. Vorhandene Dateien sind davon nicht betroffen.
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
@@ -1986,6 +2010,7 @@ panels:
     description: Liniendiagramm zum Vergleich der Änderung eines Feldes
     disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist.
     disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist.
+    show_marker: Tooltip-Marker anzeigen
     curve_type: Kurventyp
     smooth: Weich
     straight: Gerade
@@ -2090,6 +2115,8 @@ operations:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
+    recipient_placeholder: Eine UUID eingeben...
+    recipient_note: Benutzer UUID hinzufügen und Enter drücken...
     message: Nachricht
   request:
     name: Webhook / Anfrage URL
@@ -2121,3 +2148,4 @@ operations:
     parallel: Parallel
     batch: Stapel
     batch_size: Stapelgröße
+    cache: Cache

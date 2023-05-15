@@ -12,6 +12,7 @@ import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '@/types/insights';
 import escapeStringRegexp from 'escape-string-regexp';
 import { useExtensions } from '@/extensions';
+import { fetchAll } from '@/utils/fetch-all';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
@@ -110,14 +111,12 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		) {
 			try {
 				const [dashboardsResponse, panelsResponse] = await Promise.all([
-					api.get<any>('/dashboards', {
-						params: { limit: -1, fields: ['*'], sort: ['name'] },
-					}),
-					api.get('/panels', { params: { limit: -1, fields: ['*'], sort: ['dashboard'] } }),
+					fetchAll<any>('/dashboards', { params: { fields: ['*'], sort: ['name'] } }),
+					fetchAll<any>('/panels', { params: { fields: ['*'], sort: ['dashboard'] } }),
 				]);
 
-				dashboards.value = dashboardsResponse.data.data;
-				panels.value = panelsResponse.data.data;
+				dashboards.value = dashboardsResponse;
+				panels.value = panelsResponse;
 			} catch {
 				dashboards.value = [];
 				panels.value = [];
