@@ -1,4 +1,16 @@
-/** The root of the abstract query */
+/**
+ * The root of the abstract query.
+ * @example
+ * The following query get all fields from the articles collection out of a PostgresSQL database
+ * ```
+ * const query: AbstractQuery = {
+ *	root: true,
+ *	datastore: 'postgres',
+ *	collection: 'articles',
+ *	fieldNodes: [],
+ * };
+ * ```
+ */
 export interface AbstractQuery {
 	/** Marked as entrypoint of the query */
 	root: true;
@@ -31,7 +43,16 @@ export type AbstractQueryFieldNode =
 	| AbstractQueryFieldNodeFn
 	| AbstractQueryFieldNodeRelated;
 
-/** Generic primitive value read from the datastore field */
+/**
+ * Generic primitive value read from the datastore field
+ * @example
+ * ```
+ * const primitiveField: AbstractQueryFieldNodePrimitive = {
+ * 	type: 'primitive',
+ * 	field: 'attribute_xy'
+ * }
+ * ```
+ */
 export interface AbstractQueryFieldNodePrimitive extends AbstractQueryNode {
 	type: 'primitive';
 
@@ -41,6 +62,20 @@ export interface AbstractQueryFieldNodePrimitive extends AbstractQueryNode {
 
 export type AbstractQueryFn = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
 
+/**
+ * Used to apply a function to a specific field.
+ * @example
+ * ```
+ * const functionNode: AbstractQueryFieldNodeFn = {
+ * 	type: 'fn',
+ *  fn: 'year',
+ * 	targetNode: {
+ * 		type: 'primitive',
+ * 		field: 'date_created'
+ *  }
+ * }
+ * ```
+ */
 export interface AbstractQueryFieldNodeFn extends AbstractQueryNode {
 	type: 'fn';
 
@@ -63,11 +98,27 @@ export type AbstractQueryFieldNodeRelated =
 	| AbstractQueryFieldNodeRelatedAnyToOne
 	| AbstractQueryFieldNodeRelatedOneToAny;
 
+/**
+ * Used to build a relational query for m2o and o2m relations.
+ * @example
+ * ```
+ * const functionNode = {
+ * 	current: {
+ * 		fields: ['id']
+ *  },
+ * 	external: {
+ * 		datastore: 'mongodb',
+ * 		collection: 'some-collection',
+ * }
+ * ```
+ */
 interface AbstractQueryFieldNodeRelatedJoinMany {
+	/** the field of the current collection which has the relational value to an external collection or item */
 	current: {
 		fields: string[];
 	};
 
+	/** the external collection or item which should be pulled/joined/merged into the current collection */
 	external: {
 		datastore?: string;
 		collection: string;
