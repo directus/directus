@@ -17,14 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, toRefs } from 'vue';
-import { render } from 'micromustache';
-import { omit } from 'lodash';
 import { useItem } from '@/composables/use-item';
-import { getFieldsFromTemplate } from '@directus/utils';
-import { Query } from '@directus/types';
 import { useCollection } from '@directus/composables';
 import { RELATIONAL_TYPES } from '@directus/constants';
+import { Query } from '@directus/types';
+import { getFieldsFromTemplate } from '@directus/utils';
+import { omit } from 'lodash';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
 
 type Link = {
 	icon: string;
@@ -66,7 +66,11 @@ const fullItem = computed(() => {
 	const itemValue = item.value ?? {};
 
 	for (const field of fields.value) {
-		if (field.meta?.special?.some((special) => RELATIONAL_TYPES.includes(special))) continue;
+		if (
+			field.meta?.special?.some((special) => RELATIONAL_TYPES.includes(special as (typeof RELATIONAL_TYPES)[number]))
+		) {
+			continue;
+		}
 
 		itemValue[field.field] = values.value[field.field];
 	}

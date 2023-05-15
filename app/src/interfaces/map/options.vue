@@ -24,6 +24,7 @@ import { GEOMETRY_TYPES } from '@directus/constants';
 import { Field, GeometryOptions, GeometryType } from '@directus/types';
 import { CameraOptions, Map } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import type { Ref } from 'vue';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -62,7 +63,7 @@ function input() {
 	});
 }
 
-const mapContainer = ref<HTMLElement | null>(null);
+const mapContainer: Ref<HTMLElement | null> = ref(null);
 let map: Map;
 
 const mapboxKey = settingsStore.settings?.mapbox_key;

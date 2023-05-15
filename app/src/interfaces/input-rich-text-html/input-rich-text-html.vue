@@ -23,8 +23,8 @@
 			</span>
 		</template>
 		<v-dialog v-model="linkDrawerOpen">
-			<v-card class="card">
-				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
+			<v-card>
+				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
 					<div class="grid">
 						<div class="field">
@@ -513,14 +513,5 @@ function setFocus(val: boolean) {
 	padding: var(--content-padding);
 	padding-top: 0;
 	padding-bottom: var(--content-padding);
-}
-
-.card {
-	overflow: auto;
-
-	.card-title {
-		margin-bottom: 24px;
-		font-size: 24px;
-	}
 }
 </style>

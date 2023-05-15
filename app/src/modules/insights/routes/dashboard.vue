@@ -387,7 +387,7 @@ const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
 
 const refreshInterval = computed({
 	get() {
-		return unref(refreshIntervals)[props.primaryKey];
+		return unref(refreshIntervals)[props.primaryKey] ?? null;
 	},
 	set(val) {
 		refreshIntervals.value = assign({}, unref(refreshIntervals), { [props.primaryKey]: val });

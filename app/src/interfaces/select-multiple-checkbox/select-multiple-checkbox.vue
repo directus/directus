@@ -73,9 +73,9 @@ type Option = {
 
 const props = withDefaults(
 	defineProps<{
-		value?: string[];
+		value: string[] | null;
 		disabled?: boolean;
-		choices?: Option[];
+		choices: Option[];
 		allowOther?: boolean;
 		width?: string;
 		iconOn?: string;
@@ -98,17 +98,17 @@ const { t } = useI18n();
 const { choices, value } = toRefs(props);
 const showAll = ref(false);
 
-const hideChoices = computed(() => props.choices.length > props.itemsShown);
+const hideChoices = computed(() => props.choices!.length > props.itemsShown);
 
 const choicesDisplayed = computed(() => {
 	if (showAll.value || hideChoices.value === false) {
 		return props.choices;
 	}
 
-	return props.choices.slice(0, props.itemsShown);
+	return props.choices!.slice(0, props.itemsShown);
 });
 
-const hiddenCount = computed(() => props.choices.length - props.itemsShown);
+const hiddenCount = computed(() => props.choices!.length - props.itemsShown);
 
 const gridClass = computed(() => {
 	if (choices?.value === undefined) return null;

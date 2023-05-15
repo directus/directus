@@ -1,0 +1,289 @@
+---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikues
+avatar: Avatar
+application: Aplikacion
+default_provider: Default
+method: Metodë
+published: Publikuar
+draft: Draft
+archived: Arkivuar
+modules: Module
+module_bar: Shiriti i Moduleve
+logs: Regjistrime
+reset_width: Rikthe Gjerësinë
+tile_size: Madhësia e Mozaikut
+edit_field: Modifiko Fushën
+conditions: Kushte
+location: Vendndodhja
+condition_rules: Rregullat e Kushteve
+input: Input
+maps: Harta
+switch_user: Ndërro Përdoruesin
+item_creation: Krijimi i Artikullit
+item_revision: Rishikimi i Artikullit
+enter_a_name: Shkruaj një Emër...
+duplicate_field: Dupliko Fushën
+half_width: Gjerësi e Gjysmës
+full_width: Gjerësi e Plotë
+group: Grup
+export_items: Eksporto Artikujt
+and: Dhe
+or: Ose
+init: Init
+dataset_too_large_currently_showing_n_items: Seti i të dhënave është shumë i madh. Tani po shfaqen {n} artikujt e parë.
+modifier: Modifikues
+custom: Personalizuar
+hook: Kancë
+fill_width: Plotëso Gjerësinë
+field_name_translations: Përkthimet e Emrit të Fushës
+enter_password_to_enable_tfa: Shkruaj fjalëkalimin për të aktivizuar Autentikimin me dy Faktorë
+add_field: Shto Fushë
+role_name: Emri i Rolit
+branch: Dega
+leaf: Gjethe
+indeterminate: Indeterminuar
+edit_collection: Modifiko Koleksionin
+exclusive: Ekskluzive
+children: Fëmijë
+db_only_click_to_configure: 'Vetëm Baza e të Dhënave: Kliko për të Konfiguruar'
+show_active_items: Shfaq Artikujt Aktivë
+show_archived_items: Shfaq Artikujt e Arkivuar
+show_all_items: Shfaq të gjithë Artikujt
+edited: Vlera e Modifikuar
+required: E domosdoshme
+required_for_app_access: E domosdoshme për Qasjen në Aplikacion
+requires_value: Kërkon vlerë
+create_preset: Krijo Parametrat e Paracaktuar
+create_panel: Krijo Panel
+create_role: Krijo Rol
+create_user: Krijo Përdorues
+message: Mesazh
+delete_panel: Fshi Panelin
+create_webhook: Krijo Webhook
+create_translation_string: Krijo Stringun e Përkthimit
+no_translation_string: Nuk ka Stringje Përkthimi
+no_translation_string_copy: Nuk ka stringje përkthimi akoma.
+translation_string_key_placeholder: Çelësi i stringut të përkthimit...
+translation_string_translations_placeholder: Shto një përkthim të ri
+edit_translation_string: Modifiko Stringun e Përkthimit
+delete_translation_string_copy: >-
+  A je i sigurt që dëshiron të fshish stringun e përkthimit "{key}"? Ky veprim nuk mund të zhbëhet.
+invite_users: Fto Përdorues
+invite: Fto
+email_already_invited: Email-i "{email}" është ftuar tashmë
+subject: Subjekt
+inbox: Inbox
+emails: Email-e
+connection_excellent: Lidhje e Shkëlqyer
+connection_good: Lidhje e Mirë
+connection_fair: Lidhje e Mjaftueshme
+connection_poor: Lidhje e Dobët
+primary: Primar
+rename_folder: Riemërto Dosjen
+delete_folder: Fshi Dosjen
+prefix: Prefiks
+suffix: Sufiks
+reset_bookmark: Rikthe Shënuesin
+update_bookmark: Përditëso Shënuesin
+delete_bookmark: Fshi Shënuesin
+delete_bookmark_copy: >-
+  A je i sigurt që dëshiron të fshish shënuesin "{bookmark}"? Ky veprim nuk mund të zhbëhet.
+delete_personal_bookmark: Fshi Shënuesin Personal
+delete_role_bookmark: Fshi Shënuesin e Rolit
+delete_global_bookmark: Fshi Shënuesin Global
+logoutReason:
+  SIGN_OUT: Dalje nga Sistemi
+  SESSION_EXPIRED: Seanca ka skaduar
+public_label: Publik
+public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
+admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
+not_allowed: Nuk lejohet
+directus_version: Versioni i Directus
+node_version: Versioni i Node
+node_uptime: Kohëzgjatja e Node
+os_type: Lloji i OS
+os_version: Versioni i OS
+os_uptime: Kohëzgjatja e OS
+os_totalmem: Memoria e OS
+archive: Arkivo
+archive_confirm: A jeni të sigurtë që doni të arkivoni këtë artikull?
+archive_confirm_count: >-
+  Nuk janë zgjedhur artikuj | A jeni të sigurtë që doni të arkivoni këtë artikull? | A jeni të sigurtë që doni të arkivoni këto {count} artikuj?
+reset_system_permissions_to: 'Rikthe lejet e sistemit në:'
+reset_system_permissions_copy: Ky veprim do të mbishkruajë çdo leje të personalizuar që mund të keni aplikuar në koleksionet e sistemit. A jeni të sigurt?
+the_following_are_minimum_permissions: Lejet minimale të mëposhtme aplikohen automatikisht kur "Qasja në Aplikacion" është aktivizuar. Mund të akordoni leje shtesë nëse është e nevojshme, por nuk mund të zvogëloni lejet nën këtë nivel.
+app_access_minimum: Qasja Minimale në Aplikacion
+recommended_defaults: Vlerat e Rekomanduara të Paracaktuara
+unarchive: Çarkivo
+unarchive_confirm: A jeni të sigurtë që doni të çarkivoni këtë artikull?
+nested_files_folders_will_be_moved: Skedarët dhe dosjet e brendshme do të lëvizin një nivel lart.
+validation_errors_notice: 'Fushat e mëposhtme kanë vlera të pavlefshme:'
+validationError:
+  eq: Vlera duhet të jetë {valid}
+  neq: Vlera nuk mund të jetë {invalid}
+  in: Vlera duhet të jetë një nga {valid}
+  nin: Vlera nuk mund të jetë një nga {invalid}
+  contains: Vlera duhet të përmbajë {substring}
+  ncontains: Vlera nuk mund të përmbajë {substring}
+  gt: Vlera duhet të jetë më e madhe se {valid}
+  gte: Vlera duhet të jetë më e madhe ose e barabartë me {valid}
+  lt: Vlera duhet të jetë më e vogël se {valid}
+  lte: Vlera duhet të jetë më e vogël ose e barabartë me {valid}
+  empty: Vlera duhet të jetë bosh
+  nempty: Vlera nuk mund të jetë bosh
+  null: Vlera duhet të jetë null
+  nnull: Vlera nuk mund të jetë null
+  required: Vlera është e nevojshme
+  unique: Vlera duhet të jetë unike
+  regex: Vlera nuk ka formatin e duhur
+all_access: Qasje e Plote
+no_access: Pa Qasje
+use_custom: Përdor të personalizuar
+nullable: I vlefshëm për null
+allow_null_value: Lejo vlerën NULL
+allow_multiple: Lejo të shumta
+allow_multiple_to_be_open: Lejo të shumta të hapura
+enter_value_to_replace_nulls: Ju lutem shkruani një vlerë të re për të zëvendësuar NULL-at aktuale brenda kësaj fushe.
+field_standard: Standarde
+field_presentation: Prezantim & Pseudonime
+field_file: Skedar i Vetëm
+field_files: Skedarë të Shumtë
+field_m2o: M2O Marrëdhënie
+field_m2a: M2A Marrëdhënie
+field_o2m: O2M Marrëdhënie
+field_m2m: M2M Marrëdhënie
+field_translations: Përkthime
+field_group: Grup Fushe
+item_permissions: Lejet e Artikullit
+field_permissions: Lejet e Fushës
+field_validation: Vleftësim i Fushës
+field_presets: Parametrat e Paracaktuar të Fushës
+permissions_for_role: 'Artikujt që Roli {role} mund të {action}.'
+fields_for_role: 'Fushat që Roli {role} mund të {action}.'
+validation_for_role: 'Rregullat e {action} të fushës që Roli {role} duhet të zbatojë.'
+presets_for_role: 'Vlerat e paracaktuara të fushës për Rolin {role}.'
+presets_field_warning: 'Parametrat e paracaktuar të marrëdhënies për fushën "{field}" duhet të konfigurohen me sint.'
+presentation_and_aliases: Prezantim & Pseudonime
+revision_post_create: Ja si dukej ky artikull kur u krijua.
+revision_post_update: Ja si dukej ky artikull pas përditësimit.
+changes_made: Më poshtë janë ndryshimet specifike të bëra në këtë rishikim.
+no_relational_data: Mbani mend se të dhënat në lidhje nuk janë përfshirë këtu.
+junction_field_location: Vendndodhja e Fushave të Nyjes
+top: Lart
+bottom: Poshtë
+hide_field: Fshihe Fushën
+hide_field_on_detail: Fsheh Fushën në Detaj
+show_field_on_detail: Shfaq Fushën në Detaj
+delete_field: Fshihe Fushën
+fields_and_layout: Fushat & Sistemi
+field_create_success: 'U krijua Fusha: "{field}"'
+field_update_success: 'U përditësua Fusha: "{field}"'
+duplicate_where_to: Ku dëshironi të përsërisni këtë fushë?
+language: Gjuha
+language_placeholder: Zgjidhni një gjuhë...
+aggregate_function: Funksioni i Grupimit
+aggregate_precision: Saktësia e Grupimit
+group_aggregation: Grupimi i Grupit
+group_precision: Saktësia e Grupit
+global: Global
+admins_have_all_permissions: Administratorët kanë të gjitha lejet
+camera: Kamera
+show_zero: Shfaq Zero
+create_in_advanced_field_creation_mode: Krijo Fushën në Modalitetin e Avancuar të Krijimit të Fushës
+continue_in_advanced_field_creation_mode: Vazhdo në Modalitetin e Avancuar të Krijimit të Fushës
+validation: Vleftësim
+sum: Shuma
+sum_distinct: Shuma Distinkte
+avg: Mesatarja
+avg_distinct: Mesatarja Distinkte
+count: Numri
+count_distinct: Numri Distinkt
+min: Min
+max: Max
+exposure: Ekspozimi
+shutter: Shutter
+iso: ISO
+focal_length: Gjatësia Fokale
+schema_setup_key: Emri i kolonës së databazës dhe kyçi i API për këtë fushë
+create_field: Krijo Fushë
+creating_new_field: 'Fushë e Re ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Rivendos Preferencat e Faqes
+hidden_field: Fushë e Fshehur
+hidden_on_detail: Fshehur në Detaj
+disabled_editing_value: Çaktivizo modifikimin e vlerës
+key: Çelës
+alias: Pseudonim
+bigInteger: Big Integer
+boolean: Boolean
+date: Datë
+date_range: Gama e Datave
+datetime: Datëkohë
+dateTime: Datëkohë
+precision: Saktësi
+decimal: Decimal
+float: Float
+integer: Integer
+json: JSON
+xml: XML
+yaml: YAML
+string: String
+text: Tekst
+time: Kohë
+timestamp: Kohëshënimi
+uuid: UUID
+functions:
+  count: Numri
+errors:
+  NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
+value_unique: Vlera duhet të jetë unike
+fields:
+  directus_users:
+    language: Gjuha
+  directus_settings:
+    module_bar: Shiriti i Moduleve
+  directus_fields:
+    translation: Përkthimet e Emrit të Fushës
+  directus_roles:
+    name: Emri i Rolit
+field_options:
+  directus_collections:
+    language: Gjuha
+    archive_divider: Arkivo
+interfaces:
+  presentation-links:
+    primary: Primar
+displays:
+  boolean:
+    boolean: Boolean
+  datetime:
+    suffix: Sufiks
+  formatted-value:
+    prefix: Prefiks
+    suffix: Sufiks
+    text: Tekst
+operations:
+  log:
+    message: Mesazh
+  notification:
+    message: Mesazh

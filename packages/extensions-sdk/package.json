@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "10.0.0",
+	"version": "10.1.0",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"type": "module",
@@ -25,11 +25,10 @@
 	},
 	"files": [
 		"dist",
-		"templates",
-		"!**/*.test.{js,d.ts}"
+		"templates"
 	],
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
 		"test": "vitest --watch=false"
 	},
