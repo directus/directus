@@ -68,7 +68,7 @@ const usesCustomComponent = computed(() => {
 });
 
 const optionsFields = computed(() => {
-	if (!selectedInterface.value?.options || usesCustomComponent.value === true) return [];
+	if (!selectedInterface.value?.options || usesCustomComponent.value) return [];
 
 	let optionsObjectOrArray;
 
