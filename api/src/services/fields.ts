@@ -400,7 +400,8 @@ export class FieldsService {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
 				// Sanitize column only when applying snapshot diff
-				const columnToCompare = opts?.bypassLimits ? sanitizeColumn(existingColumn) : existingColumn;
+				const columnToCompare =
+					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
