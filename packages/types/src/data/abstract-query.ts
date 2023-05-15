@@ -1,7 +1,7 @@
 /**
  * The root of the abstract query.
  * @example
- * The following query get all fields from the articles collection out of a PostgresSQL database
+ * As a basic example let's say you want to query all fields from the articles collection out of a PostgresSQL database.
  * ```
  * const query: AbstractQuery = {
  *	root: true,
@@ -10,6 +10,8 @@
  *	fieldNodes: [],
  * };
  * ```
+ * Of course, you can also query only specific fields by selecting them in the `fieldNodes` array.
+ * It's also possible to query data from another datastore by adding a `fieldNode` of type `AbstractQueryFieldNodeRelated`.
  */
 export interface AbstractQuery {
 	/** Marked as entrypoint of the query */
@@ -32,12 +34,20 @@ export interface AbstractQuery {
 
 type AbstractQueryNodeType = 'primitive' | 'fn' | 'm2o' | 'o2m' | 'a2o' | 'o2a';
 
+/**
+ * All nodes which can be used within the `fieldNodes` array of the `AbstractQuery` have a type attribute.
+ * With this in place it can easily be determined how to technically handle this field.
+ * @see `AbstractQueryNodeType` for all possible types.
+ */
 interface AbstractQueryNode {
 	/** the type of the node */
 	type: AbstractQueryNodeType;
 }
 
-/** A group of all possible field types */
+/**
+ * The A group of all possible field types.
+ * This can be used within the `fieldNodes` array of the `AbstractQuery`.
+ */
 export type AbstractQueryFieldNode =
 	| AbstractQueryFieldNodePrimitive
 	| AbstractQueryFieldNodeFn
@@ -46,8 +56,10 @@ export type AbstractQueryFieldNode =
 /**
  * Generic primitive value read from the datastore field
  * @example
+ * Let's say you want the engine to only return the `id` field of the collection in question:
+ * For that you would create a node like the following and add it to the `fieldNodes` of the query.
  * ```
- * const primitiveField: AbstractQueryFieldNodePrimitive = {
+ * const primitiveField = {
  * 	type: 'primitive',
  * 	field: 'attribute_xy'
  * }
@@ -63,10 +75,12 @@ export interface AbstractQueryFieldNodePrimitive extends AbstractQueryNode {
 export type AbstractQueryFn = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
 
 /**
- * Used to apply a function to a specific field.
+ * Used to apply a function to a specific field before returning it.
  * @example
+ * There are several functions available.
+ * Let's say you want to only return the year of a date field:
  * ```
- * const functionNode: AbstractQueryFieldNodeFn = {
+ * const functionNode = {
  * 	type: 'fn',
  *  fn: 'year',
  * 	targetNode: {
@@ -86,12 +100,19 @@ export interface AbstractQueryFieldNodeFn extends AbstractQueryNode {
 	args?: (string | number | boolean)[];
 }
 
+/**
+ * This is a basic interface for all relational field types.
+ */
 export interface AbstractQueryFieldNodeRelatedBase {
 	fieldNodes: AbstractQueryFieldNode[];
 
+	/** Regardless of the type of the relationship, it always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers?: AbstractQueryModifiers;
 }
 
+/**
+ * With those Used to build a relational query for m2o and o2m relations.
+ */
 export type AbstractQueryFieldNodeRelated =
 	| AbstractQueryFieldNodeRelatedManyToOne
 	| AbstractQueryFieldNodeRelatedOneToMany
