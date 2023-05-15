@@ -276,6 +276,9 @@ export interface AbstractQueryNodeCondition {
 		| 'intersects'
 		| 'intersects_bounding_box';
 
+	/** the above operations can be negated by setting the following attribute to true. */
+	negation: boolean;
+
 	/** the conditional value. Might be also a function or sub query in the future */
 	value: string | number | boolean;
 }
@@ -284,5 +287,5 @@ export interface AbstractQueryNodeCondition {
  * Questions:
  * - Should we support "Distinct", if so where does it live (field level vs collection level)
  * - Rethink every / some
- * - Should logical "not" be a node with a single child?
+ * - Should logical "not" be a node with a single child? --> it's seems easier to work with a boolean flag here - see 'negation' onAbstractQueryNodeCondition
  */
