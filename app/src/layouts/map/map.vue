@@ -63,29 +63,7 @@
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
 					<span>{{ t('limit') }}</span>
-					<v-select
-						:model-value="limit"
-						:items="[
-							{
-								text: n(100),
-								value: 100,
-							},
-							{
-								text: n(1000),
-								value: 1000,
-							},
-							{
-								text: n(10000),
-								value: 10000,
-							},
-							{
-								text: n(100000),
-								value: 100000,
-							},
-						]"
-						inline
-						@update:model-value="limitWritable = +$event"
-					/>
+					<v-select :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -99,6 +77,7 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
 import { useSync } from '@directus/composables';
 import { GeometryOptions } from '@directus/types';
 import { useI18n } from 'vue-i18n';
@@ -144,6 +123,14 @@ const { t, n } = useI18n();
 
 const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
 const limitWritable = useSync(props, 'limit', emit);
+
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<{ text: string; value: number }>(
+	[100, 1000, 10000, 100000],
+	(value) => ({ text: n(value), value }),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
 </script>
 
 <style lang="scss" scoped>

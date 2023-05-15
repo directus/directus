@@ -1,6 +1,7 @@
 import api from '@/api';
 import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
+import { useServerStore } from '@/stores/server';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
@@ -38,6 +39,7 @@ export default defineLayout<LayoutOptions>({
 		const calendar = ref<Calendar>();
 
 		const appStore = useAppStore();
+		const { info } = useServerStore();
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
@@ -108,12 +110,14 @@ export default defineLayout<LayoutOptions>({
 			return fields;
 		});
 
+		const limit = info.queryLimit?.max && info.queryLimit.max !== -1 ? info.queryLimit.max : 10000;
+
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
 				sort: computed(() => [primaryKeyField.value?.field || '']),
 				page: ref(1),
-				limit: ref(10000),
+				limit: ref(limit),
 				fields: queryFields,
 				filter: filterWithCalendarView,
 				search: search,

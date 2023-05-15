@@ -65,6 +65,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
+import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Permission } from '@directus/types';
 import { orderBy } from 'lodash';
@@ -117,7 +118,7 @@ function usePermissions() {
 		loading.value = true;
 
 		try {
-			const params: any = { filter: { role: {} }, limit: -1 };
+			const params: any = { filter: { role: {} } };
 
 			if (props.role === null) {
 				params.filter.role = { _null: true };
@@ -125,9 +126,7 @@ function usePermissions() {
 				params.filter.role = { _eq: props.role };
 			}
 
-			const response = await api.get('/permissions', { params });
-
-			permissions.value = response.data.data;
+			permissions.value = await fetchAll('/permissions', { params });
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {

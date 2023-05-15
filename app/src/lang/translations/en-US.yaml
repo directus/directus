@@ -456,6 +456,7 @@ checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
+folders: Folders
 zoom: Zoom
 download: Download
 open: Open
@@ -1782,6 +1783,27 @@ interfaces:
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+  input-block-editor:
+    input-block-editor: Block Editor
+    description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: List
+      embed: Embed
+      paragraph: Paragraph
+      code: Code
+      image: Image
+      attaches: Attaches
+      table: Table
+      quote: Quote
+      underline: Underline
+      inlinecode: Inline Code
+      delimiter: Delimiter
+      checklist: Checklist
+      toggle: Toggle Block
+      alignment: Alignment
+      raw: Raw HTML
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
