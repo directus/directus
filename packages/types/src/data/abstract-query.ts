@@ -221,7 +221,7 @@ export interface AbstractQueryNodeCondition {
 		| 'in'
 		| 'contains'
 		| 'starts_with'
-		| 'end_with'
+		| 'ends_with'
 		| 'intersects'
 		| 'intersects_bounding_box';
 
