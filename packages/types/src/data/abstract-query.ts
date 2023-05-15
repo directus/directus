@@ -115,8 +115,6 @@ export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryNode
 
 /**
  * Optional attributes to customize the query results
- * @typeParam sort - Specifies the order of the results
- * @typeParam limit - Specifies the maximum amount of returning results
  */
 export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
@@ -127,8 +125,6 @@ export interface AbstractQueryModifiers {
 
 /**
  * Specifies the maximum amount of returning results
- * @typeParam type - set to 'limit'
- * @typeParam value - the limit value
  */
 interface AbstractQueryNodeLimit {
 	type: 'limit';
@@ -137,8 +133,6 @@ interface AbstractQueryNodeLimit {
 
 /**
  * Specifies the number of items to skip before returning results
- * @typeParam type - set to 'offset'
- * @typeParam value - the offset value
  */
 interface AbstractQueryNodeOffset {
 	type: 'offset';
@@ -147,13 +141,14 @@ interface AbstractQueryNodeOffset {
 
 /**
  * Specifies the order of the results
- * @typeParam type - set to 'sort'
- * @typeParam direction - 'ascending' or 'descending'
- * @typeParam target - the node on which the sorting should be applied
  */
 interface AbstractQueryNodeSort {
 	type: 'sort';
+
+	/** the desired order */
 	direction: 'ascending' | 'descending';
+
+	/** the node on which the sorting should be applied */
 	target:
 		| AbstractQueryFieldNodePrimitive
 		| AbstractQueryFieldNodeFn
@@ -163,25 +158,22 @@ interface AbstractQueryNodeSort {
 
 /**
  * Used to create logical operations
- * @typeParam type - set to 'sort'
- * @typeParam operator - the logical operator to use
- * @typeParam children - left and right side of the operation.
  * @example
  * ```
  * {
  * 	type: 'logical',
  * 	operator: 'and',
- * 	children: [
+ * 	childNodes: [
  * 		{
  * 			type: 'condition',
  * 			operation: 'eq',
- * 			target: { type: 'field', key: 'a' }
+ * 			targetNode: { type: 'field', field: 'a' }
  * 			value: 5
  * 		},
  * 		{
  * 			type: 'condition',
  * 			operation: 'lt',
- * 			target: { type: 'field', key: 'b' }
+ * 			targetNode: { type: 'field', field: 'b' }
  * 			value: 5
  * 		}
  *  ]
@@ -190,33 +182,36 @@ interface AbstractQueryNodeSort {
  */
 export interface AbstractQueryNodeLogical {
 	type: 'logical';
+
 	operator: 'and' | 'or' | 'not';
+
+	/** the values for the the operation. At least two need to be provided. */
 	childNodes: (AbstractQueryNodeLogical | AbstractQueryNodeCondition)[];
 }
 
 /**
  * Used to create conditional operations
- * @typeParam type - set to 'condition'
- * @typeParam target - the node on which the sorting should be applied
- * @typeParam operation - the operation to perform on the target
- * @typeParam value - the conditional value. Might be also a function or sub query in the future
  * @example
  * ```
  * {
  * 		type: 'condition',
  * 		operation: 'lt',
- *		target: { type: 'field', key: 'b' }
+ *		targetNode: { type: 'field', field: 'b' }
  * 		value: 5
  * }
  * ```
  */
 export interface AbstractQueryNodeCondition {
 	type: 'condition';
+
+	/** the node on which the condition should be applied */
 	targetNode:
 		| AbstractQueryFieldNodePrimitive
 		| AbstractQueryFieldNodeFn
 		| AbstractQueryFieldNodeRelatedManyToOne
 		| AbstractQueryFieldNodeRelatedAnyToOne;
+
+	/** the operation to perform on the target */
 	operation:
 		| 'eq'
 		| 'lt'
@@ -229,6 +224,8 @@ export interface AbstractQueryNodeCondition {
 		| 'end_with'
 		| 'intersects'
 		| 'intersects_bounding_box';
+
+	/** the conditional value. Might be also a function or sub query in the future */
 	value: string | number | boolean;
 }
 
