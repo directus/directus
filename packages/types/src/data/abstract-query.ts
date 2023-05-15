@@ -183,7 +183,7 @@ export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryNode
 	join: AbstractQueryFieldNodeRelatedJoinAny;
 }
 
-// =================================================================================================
+// ======================================== Modifiers =========================================================
 
 /**
  * Optional attributes to customize the query results
@@ -195,10 +195,14 @@ export interface AbstractQueryModifiers {
 	filter?: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
 }
 
+interface AbstractQueryModifierNode {
+	type: 'limit' | 'offset' | 'sort' | 'filter' | 'logical' | 'condition';
+}
+
 /**
  * Specifies the maximum amount of returning results
  */
-interface AbstractQueryNodeLimit {
+interface AbstractQueryNodeLimit extends AbstractQueryModifierNode {
 	type: 'limit';
 	value: number;
 }
@@ -206,7 +210,7 @@ interface AbstractQueryNodeLimit {
 /**
  * Specifies the number of items to skip before returning results
  */
-interface AbstractQueryNodeOffset {
+interface AbstractQueryNodeOffset extends AbstractQueryModifierNode {
 	type: 'offset';
 	value: number;
 }
@@ -214,7 +218,7 @@ interface AbstractQueryNodeOffset {
 /**
  * Specifies the order of the results
  */
-interface AbstractQueryNodeSort {
+interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
 	type: 'sort';
 
 	/** the desired order */
@@ -252,7 +256,7 @@ interface AbstractQueryNodeSort {
  * }
  * ```
  */
-export interface AbstractQueryNodeLogical {
+export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
 
 	operator: 'and' | 'or' | 'not';
@@ -273,7 +277,7 @@ export interface AbstractQueryNodeLogical {
  * }
  * ```
  */
-export interface AbstractQueryNodeCondition {
+export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	type: 'condition';
 
 	/** the node on which the condition should be applied */
