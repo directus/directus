@@ -156,7 +156,7 @@
 	</v-menu>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';

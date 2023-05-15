@@ -31,7 +31,7 @@
 	</public-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import { jwtPayload } from '@/utils/jwt-payload';
