@@ -20,7 +20,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Revision } from '@/types/revisions';
 import { userName } from '@/utils/user-name';
 import { format } from 'date-fns';

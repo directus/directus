@@ -17,7 +17,7 @@
 	</transition-group>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
 import { toRefs } from 'vue';
 import NotificationItem from './notification-item.vue';
