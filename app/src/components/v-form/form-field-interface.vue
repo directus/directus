@@ -14,7 +14,7 @@
 				:autofocus="disabled !== true && autofocus"
 				:disabled="disabled"
 				:loading="loading"
-				:value="modelValue === undefined ? field.schema?.default_value : modelValue"
+				:value="value"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"
@@ -34,7 +34,7 @@
 
 		<interface-system-raw-editor
 			v-else-if="rawEditorEnabled && rawEditorActive"
-			:value="modelValue === undefined ? field.schema?.default_value : modelValue"
+			:value="value"
 			:type="field.type"
 			@input="$emit('update:modelValue', $event)"
 		/>
@@ -95,6 +95,10 @@ const componentName = computed(() => {
 		? `interface-${props.field.meta.interface}`
 		: `interface-${getDefaultInterfaceForType(props.field.type!)}`;
 });
+
+const value = computed(() =>
+	props.modelValue === undefined ? props.field.schema?.default_value ?? null : props.modelValue
+);
 </script>
 
 <style lang="scss" scoped>
