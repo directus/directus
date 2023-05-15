@@ -40,7 +40,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Revision } from '@/types/revisions';
 import { useSync } from '@directus/composables';
 import { isEqual } from 'lodash';

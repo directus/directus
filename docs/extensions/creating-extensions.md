@@ -172,6 +172,14 @@ To install an extension locally, you have to move the output from the `dist/` fo
 `./extensions/<extension-folder>/<extension-name>/` folder. `<extension-folder>` has to be replaced by the extension
 type in plural form (e.g. interfaces). `<extension-name>` should be replaced with the name of your extension.
 
+### Local Bundle Extension
+
+Bundles require a slightly different method of deployment. There is no dedicated `<extension-folder>/` but instead you create your extension folder in the extension root and prefix the name with `directus-extension-`.
+
+To install a bundle locally, you have to move both the contents of the `dist/` folder and the `package.json` file into your project's
+`./extensions/directus-extension-<extension-name>/` folder. `<extension-name>` should be replaced with the name of your extension.
+
+
 ::: warning Configurable Folders
 
 The path to the built extension as well as the extensions directory are configurable and may be located elsewhere.

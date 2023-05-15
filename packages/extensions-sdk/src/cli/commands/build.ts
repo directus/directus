@@ -21,6 +21,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replaceDefault from '@rollup/plugin-replace';
 import terserDefault from '@rollup/plugin-terser';
 import virtualDefault from '@rollup/plugin-virtual';
+import vueDefault from '@vitejs/plugin-vue';
 import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
@@ -29,14 +30,13 @@ import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputO
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuildDefault from 'rollup-plugin-esbuild';
 import stylesDefault from 'rollup-plugin-styles';
-import vueDefault from 'rollup-plugin-vue';
 import type { Format, RollupConfig, RollupMode } from '../types.js';
+import { getFileExt } from '../utils/file.js';
 import { clear, log } from '../utils/logger.js';
 import tryParseJson from '../utils/try-parse-json.js';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
 import loadConfig from './helpers/load-config.js';
 import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
-import { getFileExt } from '../utils/file.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -517,7 +517,7 @@ function getRollupOptions({
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
-			mode === 'browser' ? (vue({ preprocessStyles: true }) as Plugin) : null,
+			mode === 'browser' ? vue({ isProduction: true }) : null,
 			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
 			...plugins,
