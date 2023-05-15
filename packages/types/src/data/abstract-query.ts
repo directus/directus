@@ -26,10 +26,8 @@ export interface AbstractQuery {
 	/** All fields to select in the query */
 	fieldNodes: AbstractQueryFieldNode[];
 
-	// modifiers?: {
-	// 	limit?: AbstractQueryNodeLimit;
-	// 	filter?: AbstractQueryFilterNode[];
-	// };
+	/** Optional attributes to perform a fine granular query */
+	modifiers?: AbstractQueryModifiers;
 }
 
 type AbstractQueryNodeType = 'primitive' | 'fn' | 'm2o' | 'o2m' | 'a2o' | 'o2a';
@@ -196,7 +194,7 @@ export interface AbstractQueryModifiers {
 }
 
 interface AbstractQueryModifierNode {
-	type: 'limit' | 'offset' | 'sort' | 'filter' | 'logical' | 'condition';
+	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition';
 }
 
 /**
@@ -233,8 +231,11 @@ interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
 }
 
 /**
- * Used to create logical operations
+ * Used to create logical operations.
  * @example
+ * Let's say you want to only return rows where two conditions are true.
+ * First condition that some field value needs to be qual to a provided value and another condition that one field is less than another provided value.
+ * This would look like this:
  * ```
  * {
  * 	type: 'logical',
@@ -250,7 +251,40 @@ interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
  * 			type: 'condition',
  * 			operation: 'lt',
  * 			targetNode: { type: 'field', field: 'b' }
+ * 			value: 28
+ * 		}
+ *  ]
+ * }
+ * ```
+ * It is also possible to nest conditions with the logical operator.
+ * ```
+ * {
+ * 	type: 'logical',
+ * 	operator: 'and',
+ * 	childNodes: [
+ * 		{
+ * 			type: 'condition',
+ * 			operation: 'eq',
+ * 			targetNode: { type: 'field', field: 'a' }
  * 			value: 5
+ * 		},
+ * 		{
+ * 			type: 'logical',
+ * 			operator: 'and',
+ * 			childNodes: [
+ * 				{
+ * 					type: 'condition',
+ * 					operation: 'eq',
+ * 					targetNode: { type: 'field', field: 'b' }
+ * 					value: 'something'
+ * 				},
+ * 				{
+ * 					type: 'condition',
+ * 					operation: 'gt',
+ * 					targetNode: { type: 'field', field: 'c' }
+ * 					value: true
+ * 				}
+ * 			],
  * 		}
  *  ]
  * }
@@ -261,12 +295,12 @@ export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 
 	operator: 'and' | 'or' | 'not';
 
-	/** the values for the the operation. At least two need to be provided. */
+	/** the values for the the operation. */
 	childNodes: (AbstractQueryNodeLogical | AbstractQueryNodeCondition)[];
 }
 
 /**
- * Used to create conditional operations
+ * Used to set conditions on a query. The item in question needs to match all conditions to be returned.
  * @example
  * ```
  * {
