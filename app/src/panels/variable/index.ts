@@ -29,7 +29,6 @@ export default definePanel({
 						placeholder: t('field_name_placeholder'),
 					},
 				},
-				schema: null,
 			},
 			{
 				name: t('type'),
@@ -42,7 +41,6 @@ export default definePanel({
 						choices: translate(FIELD_TYPES_SELECT),
 					},
 				},
-				schema: null,
 			},
 			{
 				name: t('default_value'),
@@ -53,7 +51,6 @@ export default definePanel({
 					readonly: !panel.options?.type,
 					width: 'half',
 				},
-				schema: {},
 			},
 			{
 				name: t('interface_label'),
@@ -66,7 +63,6 @@ export default definePanel({
 						typeField: 'type',
 					},
 				},
-				schema: null,
 			},
 			{
 				name: t('options'),

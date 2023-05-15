@@ -23,7 +23,6 @@ export default defineInterface({
 					interface: 'system-folder',
 					note: '$t:interfaces.system-folder.field_hint',
 				},
-				schema: {},
 			},
 			{
 				field: 'template',
@@ -39,7 +38,7 @@ export default defineInterface({
 				field: 'enableCreate',
 				name: '$t:creating_items',
 				schema: {
-					default_value: 'true',
+					default_value: true,
 				},
 				meta: {
 					interface: 'boolean',
@@ -53,7 +52,7 @@ export default defineInterface({
 				field: 'enableSelect',
 				name: '$t:selecting_items',
 				schema: {
-					default_value: 'true',
+					default_value: true,
 				},
 				meta: {
 					interface: 'boolean',
@@ -72,7 +71,7 @@ export default defineInterface({
 					width: 'half',
 				},
 				schema: {
-					default_value: '15',
+					default_value: 15,
 				},
 			},
 		];
