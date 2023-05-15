@@ -129,7 +129,7 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { Sort, Header } from '@/components/v-table/types';
 import { router } from '@/router';

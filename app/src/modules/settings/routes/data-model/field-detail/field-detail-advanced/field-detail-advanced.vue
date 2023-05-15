@@ -10,7 +10,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import FieldDetailAdvancedSchema from './field-detail-advanced-schema.vue';
 import FieldDetailAdvancedRelationship from './field-detail-advanced-relationship.vue';
 import FieldDetailAdvancedField from './field-detail-advanced-field.vue';
