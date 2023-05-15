@@ -72,7 +72,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useElementSize } from '@directus/composables';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { useTitle } from '@/composables/use-title';
