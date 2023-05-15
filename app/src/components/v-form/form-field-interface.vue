@@ -52,7 +52,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
 
-interface Props {
+const props = defineProps<{
 	field: FormField;
 	batchMode?: boolean;
 	batchActive?: boolean;
@@ -64,20 +64,7 @@ interface Props {
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
 	direction?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	batchMode: false,
-	batchActive: false,
-	primaryKey: null,
-	modelValue: undefined,
-	loading: false,
-	disabled: false,
-	autofocus: false,
-	rawEditorEnabled: false,
-	rawEditorActive: false,
-	direction: undefined,
-});
+}>();
 
 defineEmits(['update:modelValue', 'setFieldValue']);
 
