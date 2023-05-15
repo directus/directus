@@ -19,7 +19,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { Revision } from '@/types/revisions';
 import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';

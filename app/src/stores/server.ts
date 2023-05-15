@@ -49,6 +49,10 @@ export type Info = {
 	flows?: {
 		execAllowedModules: string[];
 	};
+	queryLimit?: {
+		default: number;
+		max: number;
+	};
 };
 
 export type Auth = {
@@ -64,6 +68,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		os: undefined,
 		rateLimit: undefined,
 		flows: undefined,
+		queryLimit: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -88,16 +93,14 @@ export const useServerStore = defineStore('serverStore', () => {
 	});
 
 	const hydrate = async (options?: HydrateOptions) => {
-		const [serverInfoResponse, authResponse] = await Promise.all([
-			api.get(`/server/info`, { params: { limit: -1 } }),
-			api.get('/auth'),
-		]);
+		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.directus = serverInfoResponse.data.data?.directus;
 		info.node = serverInfoResponse.data.data?.node;
 		info.os = serverInfoResponse.data.data?.os;
 		info.flows = serverInfoResponse.data.data?.flows;
+		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
