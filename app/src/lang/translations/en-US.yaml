@@ -1664,6 +1664,7 @@ interfaces:
     notice: Notice
     description: Display a short notice
     text: Enter notice content here...
+    no_text: No text configured...
   list-o2m:
     one-to-many: One to Many
     description: Select multiple related items

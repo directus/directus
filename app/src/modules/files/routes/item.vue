@@ -114,17 +114,10 @@
 		</template>
 
 		<div class="file-item">
-			<div class="preview">
-				<file-preview
-					v-if="isBatch === false && item"
-					:src="fileSrc"
-					:mime="item.type"
-					:width="item.width"
-					:height="item.height"
-					:title="item.title"
-				/>
+			<div v-if="isBatch === false && item" class="preview">
+				<file-preview :src="fileSrc" :mime="item.type" :width="item.width" :height="item.height" :title="item.title" />
 
-				<button v-if="isBatch === false && item" class="replace-toggle" @click="replaceFileDialogActive = true">
+				<button class="replace-toggle" @click="replaceFileDialogActive = true">
 					{{ t('replace_file') }}
 				</button>
 			</div>
