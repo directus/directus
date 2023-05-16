@@ -84,6 +84,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { cloneArraysWithStringIndexes } from '@/utils/clone-objects';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
@@ -91,7 +92,7 @@ import FilePreview from '@/views/private/components/file-preview.vue';
 import { useCollection } from '@directus/composables';
 import { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
-import { isEmpty, merge, set } from 'lodash';
+import { cloneDeepWith, isEmpty, merge, set } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -279,7 +280,7 @@ function useItem() {
 			if (isActive) {
 				if (props.primaryKey !== '+') fetchItem();
 				if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
-				internalEdits.value = props.edits ?? {};
+				internalEdits.value = cloneDeepWith(props.edits, cloneArraysWithStringIndexes) ?? {};
 			} else {
 				loading.value = false;
 				initialValues.value = null;
@@ -385,7 +386,7 @@ function useRelation() {
 	function setRelationEdits(edits: any) {
 		if (!props.junctionField) return;
 
-		internalEdits.value[props.junctionField] = edits;
+		internalEdits.value[props.junctionField] = cloneDeepWith(props.edits, cloneArraysWithStringIndexes);
 	}
 }
 
