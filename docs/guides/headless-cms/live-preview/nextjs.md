@@ -35,16 +35,17 @@ Directus
 
 ## Configure Live Preview URL in Directus
 
-Go into your Directus instance, create a new collection, and give it a name such as "Posts". Add the necessary fields to
-your collection, such as "Title" and "Content."
-
-> Skip to the next step if you already have a collection with the necessary fields.
+In your Directus instance, create a new `Posts` collection. Add `title` and `content` fields to your collection.
 
 Navigate to Settings -> Data Model and select the collection you want to configure. In the "Preview URL" section,
 specify the Preview URL for your Next.js project by selecting ID from the dropdown and entering a URL in this format:
 `http:/<your-site>/api/draft?secret=MY_SECRET_TOKEN&id=ID`
 
-Make sure to replace “MY_SECRET_TOKEN’ with the secret you want in your Next.js project and save your changes.
+<video title="Configure live preview URL" autoplay playsinline muted loop controls>
+	<source src="https://marketing.directus.app/assets/5e10c4ac-4629-47ae-8c4c-8579945b1e26.mp4" type="video/mp4" />
+</video>
+
+Make sure to replace `MY_SECRET_TOKEN` with the secret you want in your Next.js project and save your changes.
 
 ## Set Up Draft Mode in Next.js
 
@@ -52,7 +53,7 @@ By default, when rendering content from Directus to a live site using static ren
 collection or adding new content require rebuilding the entire site for the changes to take effect. With Draft Mode
 enabled, pages can be rendered at request time instead of build time.
 
-In your Next.js application, create a route handler such as `app/api/draft/route.ts` and include the following code:
+In your Next.js application, create a route handler file at `app/api/draft/route.ts` and include the following code:
 
 ```js
 import { draftMode } from 'next/headers';
@@ -87,7 +88,7 @@ export async function GET(request: Request) {
 }
 ```
 
-This code sets the `secret` variable to "MY_SECRET_TOKEN" and validates whether the `secret` parameter in the request
+This code sets the `secret` variable to `MY_SECRET_TOKEN` and validates whether the `secret` parameter in the request
 matches the `secret` variable. It also validates the `id` parameter and retrieves the corresponding `post`. In case of
 an invalid `id` or `post`, an error response is returned.
 
@@ -142,9 +143,12 @@ able to see the preview of your content.
 
 ## Preview Content in Directus
 
-Go over to an item in your collection and toggle "Enable Preview" at the top of the page. Whenever you create or edit an
-item in your collection and “click” save, you should see a live preview of the item on the right-hand side of the
-screen.
+In an item page, toggle "Enable Preview" at the top of the page. Whenever you create or edit an item in your collection
+and “click” save, you should see a live preview of the item on the right-hand side of the screen.
+
+<video title="Enable Preview Mode in Directus" autoplay playsinline muted loop controls>
+	<source src="https://marketing.directus.app/assets/f3a670e7-df86-4d04-84a7-589e21ddf841.mp4" type="video/mp4" />
+</video>
 
 Clicking on the "Dimensions Display" icon also lets you preview your content on desktop and mobile screens.
 
@@ -152,4 +156,5 @@ Clicking on the "Dimensions Display" icon also lets you preview your content on 
 
 Through this guide, you have successfully set up the live preview feature in Directus for your Next.js project.
 
-Share the preview URL with your team members, stakeholders, or clients to allow them to see how content changes would look like.
+Share the preview URL with your team members, stakeholders, or clients to allow them to see how content changes would
+look like.
