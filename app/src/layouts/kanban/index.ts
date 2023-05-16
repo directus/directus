@@ -74,10 +74,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			group: (field) => {
 				if (
 					field.meta?.options &&
-					Object.keys(field.meta?.options).includes('choices') &&
+					Object.keys(field.meta.options).includes('choices') &&
 					['string', 'integer', 'float', 'bigInteger'].includes(field.type)
 				) {
-					return Object.keys(field.meta?.options).includes('choices');
+					return Object.keys(field.meta.options).includes('choices');
 				}
 
 				const relation = relationsStore.relations.find(
