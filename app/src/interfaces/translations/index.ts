@@ -70,7 +70,7 @@ export default defineInterface({
 				name: '$t:interfaces.translations.user_language',
 				type: 'string',
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',
