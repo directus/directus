@@ -380,7 +380,7 @@ This action is permanent and irreversible. Please proceed with caution.
 
 :::
 
-## Live Preview a Collection
+## Set Up Live Preview For a Collection
 
 The live preview feature allows users to instantly preview draft content without publishing or manually refreshing the
 browser.
@@ -391,11 +391,12 @@ allow the live preview feature.
 Add your URL as the **Preview URL** in the collection settings and select the `ID`. For example, the preview URL of a
 posts collection running on localhost:3000 will be `http://localhost:3000/posts/ID`.
 
-Now, click **"Enable Preview**" option at the top of the page. Whenever you make changes to the data in your
-collection and save them, you should see a live preview of the item on the right-hand side of the screen.
+<video title="Set live preview URL" autoplay playsinline muted loop controls>
+	<source src="https://marketing.directus.app/assets/6d6bc718-ceb9-4e55-9a2d-d377156da7f9.mp4" type="video/mp4" />
+</video>
 
-:::tip Preview on Different Screen Sizes
+:::tip Preview URL
 
-Toggle the **"Dimensions Display"** icon to preview your content on desktop or mobile screens.
+You can set up any URL pattern with dynamic values derived from the specific items you wish to preview
 
 :::
