@@ -3,4 +3,4 @@
 "@directus/schema": patch
 ---
 
-Fixed default values for interfaces & display
+Fixed default values for interfaces & displays
