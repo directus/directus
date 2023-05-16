@@ -504,8 +504,8 @@ enable_select_button: Enable Select Button
 allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
-click_to_expand: Click to Expand
-click_to_collapse: Click to Collapse
+expand: Expand
+collapse: Collapse
 select_item: Select Item
 no_items: No items
 search_items: Search items...
