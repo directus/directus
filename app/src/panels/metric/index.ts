@@ -201,7 +201,7 @@ export default definePanel({
 				type: 'boolean',
 				name: '$t:abbreviate_value',
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',
@@ -220,7 +220,7 @@ export default definePanel({
 					},
 				},
 				schema: {
-					default_value: '0',
+					default_value: 0,
 				},
 			},
 			{
