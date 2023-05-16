@@ -40,7 +40,7 @@ describe('/assets', () => {
 				{ requestHeaderAccept: 'image/avif,image/webp,image/*,*/*;q=0.8', responseHeaderContentType: 'image/avif' },
 				{ requestHeaderAccept: 'image/avif', responseHeaderContentType: 'image/avif' },
 				{ requestHeaderAccept: 'image/webp', responseHeaderContentType: 'image/webp' },
-				{ requestHeaderAccept: '*/*', responseHeaderContentType: 'image/jpeg' },
+				{ requestHeaderAccept: '*/*', responseHeaderContentType: 'image/png' }, // Expect to return png as original image is png
 			])('with "$requestHeaderAccept" Accept request header', ({ requestHeaderAccept, responseHeaderContentType }) => {
 				describe.each(storages)('Storage: %s', (storage) => {
 					it.each(vendors)('%s', async (vendor) => {
