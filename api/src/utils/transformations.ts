@@ -46,8 +46,8 @@ function getFormat(
 			return acceptFormat;
 		}
 
-		if (fileType !== 'png') {
-			return 'jpg';
+		if (['avif', 'webp', 'tiff'].includes(fileType)) {
+			return 'png';
 		}
 	}
 
