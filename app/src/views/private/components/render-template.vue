@@ -28,10 +28,11 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
+import { cloneArraysWithStringIndexes } from '@/utils/clone-objects';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
-import { get } from 'lodash';
+import { cloneDeepWith, get } from 'lodash';
 import { computed, ref } from 'vue';
 
 interface Props {
@@ -65,17 +66,31 @@ const parts = computed(() =>
 			let fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
 			let fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
 			let fieldKeyAfter = fieldKey.split('.').slice(-1)[0];
+			let clonedItem = cloneDeepWith(props.item, cloneArraysWithStringIndexes);
+			clonedItem = extractEdits(clonedItem);
 
 			// Try getting the value from the item, return some question marks if it doesn't exist
-			let value = get(props.item, fieldKeyBefore);
+			let value = get(clonedItem, fieldKeyBefore);
 
-			return Array.isArray(value) ? handleArray(fieldKeyBefore, fieldKeyAfter) : handleObject(fieldKey);
+			return Array.isArray(value) ? handleArray(clonedItem, fieldKeyBefore, fieldKeyAfter) : handleObject(clonedItem, fieldKey);
 		})
 		.map((p) => p ?? null)
 );
 
-function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
-	const value = get(props.item, fieldKeyBefore);
+function extractEdits(item: Record<string, any>) {
+	if (!item || typeof item !== 'object') return item;
+
+	let changes = item;
+	if (changes.hasOwnProperty('create') && changes.hasOwnProperty('update')) {
+		changes = changes.create?.concat(changes.update);
+	}
+
+	Object.keys(changes).forEach(key => changes[key] = extractEdits(changes[key]));
+	return changes;
+}
+
+function handleArray(item: Record<string, any>, fieldKeyBefore: string, fieldKeyAfter: string) {
+	const value = get(item, fieldKeyBefore);
 
 	let field: Field | null = props.fields?.find((field) => field.field === fieldKeyBefore) ?? null;
 
@@ -112,7 +127,7 @@ function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
 	};
 }
 
-function handleObject(fieldKey: string) {
+function handleObject(item: Record<string, any>, fieldKey: string) {
 	let field: Field | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
 
 	if (props.collection) {
@@ -134,7 +149,7 @@ function handleObject(fieldKey: string) {
 			.join('.');
 	}
 
-	const value = get(props.item, fieldKey);
+	const value = get(item, fieldKey);
 
 	if (value === undefined) return null;
 
