@@ -15,6 +15,8 @@
 				:disabled="disabled"
 				:loading="loading"
 				:value="value"
+				:batchMode="batchMode"
+				:batchActive="batchActive"
 				:width="(field.meta && field.meta.width) || 'full'"
 				:type="field.type"
 				:collection="field.collection"
