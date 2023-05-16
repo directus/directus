@@ -386,7 +386,7 @@ function useRelation() {
 	function setRelationEdits(edits: any) {
 		if (!props.junctionField) return;
 
-		internalEdits.value[props.junctionField] = cloneDeepWith(props.edits, cloneArraysWithStringIndexes);
+		internalEdits.value[props.junctionField] = cloneDeepWith(edits, cloneArraysWithStringIndexes);
 	}
 }
 
