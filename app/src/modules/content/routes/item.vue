@@ -214,7 +214,7 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, ref, unref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 

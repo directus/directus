@@ -38,7 +38,7 @@
 	</header>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
 
@@ -186,7 +186,7 @@ onUnmounted(() => {
 	}
 
 	&.collapsed.shadow {
-		box-shadow: 0 4px 7px -4px rgb(0 0 0 / 0.2);
+		box-shadow: var(--header-shadow);
 
 		.title-container {
 			.headline {

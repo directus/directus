@@ -42,7 +42,7 @@
 	</v-badge>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';

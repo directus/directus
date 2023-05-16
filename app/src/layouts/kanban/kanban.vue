@@ -107,7 +107,7 @@ export default {
 };
 </script>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { ref } from 'vue';
@@ -204,7 +204,7 @@ function saveChanges() {
 			flex-direction: column;
 			width: 320px;
 			padding: 8px 0;
-			background-color: var(--background-subdued);
+			background-color: var(--background-normal);
 			border: var(--border-width) solid var(--border-normal);
 			border-radius: var(--border-radius);
 			margin-right: 20px;
