@@ -3,7 +3,7 @@
 	"version": "10.0.0",
 	"type": "module",
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch"
 	},
 	"description": "Shared types for Directus",
@@ -37,8 +37,8 @@
 		"knex": "2.4.2",
 		"pino": "8.11.0",
 		"typescript": "5.0.4",
-		"vue": "3.2.47",
-		"vue-router": "4.1.6",
+		"vue": "3.3.2",
+		"vue-router": "4.2.0",
 		"zod": "3.21.4"
 	}
 }

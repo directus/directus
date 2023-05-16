@@ -131,6 +131,7 @@ archive_confirm_count: >-
   Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
 reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
+the_following_are_minimum_permissions: Le seguenti autorizzazioni minime vengono applicate automaticamente quando è abilitato l'accesso all'applicazione. Puoi concedere permessi aggiuntivi se necessario, ma non puoi ridurre i permessi al di sotto di questo livello.
 app_access_minimum: Accesso App Minimo
 recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
@@ -2145,3 +2146,4 @@ operations:
     parallel: Parallela
     batch: A gruppi
     batch_size: Dimensione dei gruppi
+    cache: Cache

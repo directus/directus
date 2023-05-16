@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useServerStore } from '@/stores/server';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -16,6 +17,7 @@ type UseRevisionsOptions = {
 
 export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | string>, options?: UseRevisionsOptions) {
 	const { t } = useI18n();
+	const { info } = useServerStore();
 
 	const revisions = ref<Revision[] | null>(null);
 	const revisionsByDate = ref<RevisionsByDate[] | null>(null);
@@ -32,7 +34,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 		if (typeof unref(primaryKey) === 'undefined') return;
 
 		loading.value = true;
-		const pageSize = 100;
+		const pageSize = info.queryLimit?.max && info.queryLimit.max !== -1 ? Math.min(100, info.queryLimit.max) : 100;
 
 		try {
 			const filter: Filter = {

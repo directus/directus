@@ -10,22 +10,20 @@
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
 		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
-			<div ref="moduleNavEl" class="module-nav alt-colors">
+			<v-nav
+				class="module-nav alt-colors"
+				resizeable
+				:min-width="moduleNavMinWidth"
+				:max-width="moduleNavMaxWidth"
+				:width="moduleNavWidth"
+				@update:width="updateModuleNavWidth"
+			>
 				<project-info />
 
 				<div class="module-nav-content">
 					<slot name="navigation" />
 				</div>
-
-				<div
-					class="module-nav-resize-handle"
-					:class="{ active: handleHover }"
-					@pointerenter="handleHover = true"
-					@pointerleave="handleHover = false"
-					@pointerdown.self="onResizeHandlePointerDown"
-					@dblclick="resetModuleNavWidth"
-				/>
-			</div>
+			</v-nav>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
@@ -74,17 +72,15 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import { useEventListener } from '@/composables/use-event-listener';
 import { useLocalStorage } from '@/composables/use-local-storage';
 import { useTitle } from '@/composables/use-title';
 import { useWindowSize } from '@/composables/use-window-size';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
-import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';
-import { computed, onMounted, provide, ref, toRefs, watch } from 'vue';
+import { computed, provide, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
@@ -114,21 +110,11 @@ const { width: windowWidth } = useWindowSize();
 const { width: contentWidth } = useElementSize(contentEl);
 const { width: sidebarWidth } = useElementSize(sidebarEl);
 
-const moduleNavEl = ref<HTMLElement>();
-
-const { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp } =
-	useModuleNavResize();
-
-useEventListener(window, 'pointermove', onPointerMove);
-useEventListener(window, 'pointerup', onPointerUp);
-
-const { data } = useLocalStorage('module-nav-width');
-
-onMounted(() => {
-	if (!data.value) return;
-	if (Number.isNaN(data.value)) return;
-	moduleNavEl.value!.style.width = `${data.value}px`;
-});
+const { data: localStorageModuleNavWidth } = useLocalStorage('module-nav-width');
+const moduleNavMinWidth = 220;
+const moduleNavMaxWidth = ref();
+const moduleNavWidth = ref(localStorageModuleNavWidth.value);
+const moduleNavCurrentWidth = ref();
 
 const { title } = toRefs(props);
 const navOpen = ref(false);
@@ -157,82 +143,36 @@ router.afterEach(() => {
 
 useTitle(title);
 
-function useModuleNavResize() {
-	const handleHover = ref<boolean>(false);
-	const dragging = ref<boolean>(false);
-	const dragStartX = ref<number>(0);
-	const dragStartWidth = ref<number>(0);
-	const currentWidth = ref<number | null>(null);
-	const currentWidthLimit = ref<number>(0);
-	const rafId = ref<number | null>(null);
+function updateModuleNavWidth(width: number) {
+	moduleNavCurrentWidth.value = width;
 
-	watch(
-		currentWidth,
-		debounce((newVal) => {
-			if (newVal === 220) {
-				data.value = null;
-			} else {
-				data.value = newVal;
-			}
-		}, 300)
-	);
-
-	watch(
-		[windowWidth, contentWidth, sidebarWidth],
-		() => {
-			if (windowWidth.value > 1260) {
-				// 590 = minimum content width, 60 = module bar width, and dynamic side bar width
-				currentWidthLimit.value = windowWidth.value - (590 + 60 + sidebarWidth.value);
-			} else if (windowWidth.value > 960) {
-				// 590 = minimum content width, 60 = module bar width, 60 = side bar width
-				currentWidthLimit.value = windowWidth.value - (590 + 60 + 60);
-			} else {
-				// first 60 = module bar width, second 60 = room for overlay
-				currentWidthLimit.value = windowWidth.value - (60 + 60);
-			}
-
-			if (currentWidth.value && currentWidth.value > currentWidthLimit.value) {
-				currentWidth.value = Math.max(220, currentWidthLimit.value);
-				moduleNavEl.value!.style.width = `${currentWidth.value}px`;
-			}
-		},
-		{ immediate: true }
-	);
-
-	return { handleHover, onResizeHandlePointerDown, resetModuleNavWidth, onPointerMove, onPointerUp };
-
-	function onResizeHandlePointerDown(event: PointerEvent) {
-		dragging.value = true;
-		dragStartX.value = event.pageX;
-		dragStartWidth.value = moduleNavEl.value!.offsetWidth;
-	}
-
-	function resetModuleNavWidth() {
-		currentWidth.value = 220;
-		moduleNavEl.value!.style.width = `220px`;
-	}
-
-	function onPointerMove(event: PointerEvent) {
-		if (!dragging.value) return;
-
-		rafId.value = window.requestAnimationFrame(() => {
-			currentWidth.value = Math.max(220, dragStartWidth.value + (event.pageX - dragStartX.value));
-			if (currentWidth.value >= currentWidthLimit.value) currentWidth.value = currentWidthLimit.value;
-			if (currentWidth.value > 220 && currentWidth.value <= 230) currentWidth.value = 220; // snap when nearing min width
-			moduleNavEl.value!.style.width = `${currentWidth.value}px`;
-		});
-	}
-
-	function onPointerUp() {
-		if (dragging.value === true) {
-			dragging.value = false;
-
-			if (rafId.value) {
-				window.cancelAnimationFrame(rafId.value);
-			}
-		}
+	if (width === moduleNavMinWidth) {
+		localStorageModuleNavWidth.value = null;
+	} else {
+		localStorageModuleNavWidth.value = width;
 	}
 }
+
+watch(
+	[windowWidth, contentWidth, sidebarWidth],
+	() => {
+		if (windowWidth.value > 1260) {
+			// 590 = minimum content width, 60 = module bar width, and dynamic side bar width
+			moduleNavMaxWidth.value = windowWidth.value - (590 + 60 + sidebarWidth.value);
+		} else if (windowWidth.value > 960) {
+			// 590 = minimum content width, 60 = module bar width, 60 = side bar width
+			moduleNavMaxWidth.value = windowWidth.value - (590 + 60 + 60);
+		} else {
+			// first 60 = module bar width, second 60 = room for overlay
+			moduleNavMaxWidth.value = windowWidth.value - (60 + 60);
+		}
+
+		if (moduleNavCurrentWidth.value && moduleNavCurrentWidth.value > moduleNavMaxWidth.value) {
+			moduleNavWidth.value = Math.max(220, moduleNavMaxWidth.value);
+		}
+	},
+	{ immediate: true }
+);
 
 function openSidebar(event: PointerEvent) {
 	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
@@ -305,31 +245,6 @@ function openSidebar(event: PointerEvent) {
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;
-			}
-		}
-
-		.module-nav-resize-handle {
-			position: absolute;
-			top: 0;
-			right: -2px;
-			bottom: 0;
-			width: 4px;
-			z-index: 3;
-			background-color: var(--primary);
-			cursor: ew-resize;
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
-			transition-delay: 0;
-			user-select: none;
-			touch-action: none;
-
-			&:hover,
-			&:active {
-				opacity: 1;
-			}
-
-			&.active {
-				transition-delay: var(--slow);
 			}
 		}
 
