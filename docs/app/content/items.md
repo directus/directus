@@ -205,15 +205,6 @@ steps:
 5. Toggle **"Enable Preview"** at the top of the page.
 6. Make changes to your Item and save. The preview will appear on the right side of your screen.
 
-:::tip Preview URL Format
-
-The format of the preview URL in Directus is: `http://your-directus-url/collection/ID`
-
-:::
-
-:::tip
-
-Replace `your-directus-url` with the URL of your Directus instance and `collection` with the name of the collection that
-the item belongs to.
-
-:::
+<video title="Live Preview an Item" autoplay playsinline muted loop controls>
+	<source src="https://marketing.directus.app/assets/48140637-b543-47c1-bad4-71e72b751c44.mp4" type="video/mp4" />
+</video>
