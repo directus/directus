@@ -35,7 +35,7 @@ function getFormat(
 	format: TransformationSet['transformationParams']['format'],
 	acceptFormat: TransformationSet['acceptFormat']
 ): TransformationFormat {
-	const fileType = file.type?.split('/')[1] as TransformationFormat;
+	const fileType = file.type?.split('/')[1] as TransformationFormat | undefined;
 
 	if (format) {
 		if (format !== 'auto') {
@@ -46,12 +46,12 @@ function getFormat(
 			return acceptFormat;
 		}
 
-		if (['avif', 'webp', 'tiff'].includes(fileType)) {
+		if (fileType && ['avif', 'webp', 'tiff'].includes(fileType)) {
 			return 'png';
 		}
 	}
 
-	return fileType;
+	return fileType || 'jpg';
 }
 
 /**

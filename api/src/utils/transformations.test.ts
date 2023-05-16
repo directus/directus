@@ -121,7 +121,7 @@ describe('resolvePreset', () => {
 		expect(output).toStrictEqual([['toFormat', 'jpg', { quality: undefined }]]);
 	});
 
-	test('Resolve auto format (accept header)', () => {
+	test('Resolve auto format (with accept header)', () => {
 		const transformationParams: TransformationParams = {
 			format: 'auto',
 		};
@@ -131,7 +131,19 @@ describe('resolvePreset', () => {
 		expect(output).toStrictEqual([['toFormat', 'avif', { quality: undefined }]]);
 	});
 
-	test('Resolve auto format (png)', () => {
+	test('Resolve auto format (format with transparency support)', () => {
+		const transformationParams: TransformationParams = {
+			format: 'auto',
+		};
+
+		const inputFileAvif = { ...inputFile, type: 'image/avif' };
+
+		const output = resolvePreset({ transformationParams }, inputFileAvif);
+
+		expect(output).toStrictEqual([['toFormat', 'png', { quality: undefined }]]);
+	});
+
+	test('Resolve auto format (original type)', () => {
 		const transformationParams: TransformationParams = {
 			format: 'auto',
 		};
