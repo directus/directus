@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix invalid field types in grouping for kanban layout
+Fixed invalid field types in grouping for kanban layout
