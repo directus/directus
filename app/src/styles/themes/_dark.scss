@@ -33,6 +33,10 @@
 	--card-shadow-color: 0, 0, 0;
 	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 	--overlay-color: rgba(0, 0, 0, 0.9);
+	
+	--header-shadow: 0 4px 7px -4px rgb(var(--black) / 0.2);
+	--navigation-shadow: 0px 0px 12px var(--black);
+	--sidebar-shadow: var(--navigation-shadow);
 
 	--module-background: var(--background-page);
 	--module-background-alt: var(--background-normal);

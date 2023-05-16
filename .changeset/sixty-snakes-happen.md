@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix deselecting options for kanban layout
+Fixed deselecting options for kanban layout
