@@ -543,10 +543,10 @@ function useFileUpload() {
 			loading: true,
 		});
 
+		const preset = props.folder ? { folder: props.folder } : undefined;
+
 		await uploadFiles(files, {
-			preset: {
-				folder: props.folder,
-			},
+			preset,
 			onProgressChange: (progress) => {
 				const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 

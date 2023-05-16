@@ -93,7 +93,7 @@
 	</v-drawer>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
