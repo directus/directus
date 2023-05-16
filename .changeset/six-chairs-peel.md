@@ -3,4 +3,4 @@
 "tests-blackbox": patch
 ---
 
-Sanitize column only when applying snapshot diff
+Sanitized column only when applying snapshot diff

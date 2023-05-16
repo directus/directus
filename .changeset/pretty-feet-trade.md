@@ -2,4 +2,4 @@
 "@directus/composables": patch
 ---
 
-Add `axios` as a dependency to `@directus/composables`
+Added `axios` as a dependency to `@directus/composables`
