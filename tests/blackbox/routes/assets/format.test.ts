@@ -8,13 +8,8 @@ import * as common from '@common/index';
 const assetsDirectory = [__dirname, '..', '..', 'assets'];
 const storages = ['local', 'minio'];
 
-const imageFile = {
-	name: 'directus.png',
-	type: 'image/png',
-	filesize: '7136',
-};
-
-const imageFilePath = path.join(...assetsDirectory, imageFile.name);
+const imageFilePng = path.join(...assetsDirectory, 'directus.png');
+const imageFileAvif = path.join(...assetsDirectory, 'directus.avif');
 
 describe('/assets', () => {
 	describe('GET /assets/:id', () => {
@@ -27,7 +22,7 @@ describe('/assets', () => {
 							.post('/files')
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 							.field('storage', storage)
-							.attach('file', createReadStream(imageFilePath));
+							.attach('file', createReadStream(imageFilePng));
 
 						// Action
 						const response = await request(getUrl(vendor))
@@ -54,7 +49,7 @@ describe('/assets', () => {
 							.post('/files')
 							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
 							.field('storage', storage)
-							.attach('file', createReadStream(imageFilePath));
+							.attach('file', createReadStream(imageFileAvif));
 
 						// Action
 						const response = await request(getUrl(vendor))
