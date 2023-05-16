@@ -52,6 +52,6 @@ export class RevisionsService extends ItemsService {
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		return await super.updateMany(keys, data, this.setDefaultOptions(opts));
+		return super.updateMany(keys, data, this.setDefaultOptions(opts));
 	}
 }
