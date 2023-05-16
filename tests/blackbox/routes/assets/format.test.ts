@@ -31,7 +31,7 @@ describe('/assets', () => {
 
 						// Assert
 						expect(response.statusCode).toBe(200);
-						expect(response.headers['content-type']).toBe('image/jpeg'); // Expect fallback to jpg as default
+						expect(response.headers['content-type']).toBe('image/png'); // Expect fallback to png for image format with transparency support
 					});
 				});
 			});
