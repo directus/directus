@@ -160,7 +160,7 @@
 		"tsx": "3.12.6",
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
-		"vm2": "3.9.17",
+		"vm2": "3.9.18",
 		"wellknown": "0.5.0"
 	},
 	"devDependencies": {
