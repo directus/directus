@@ -78,5 +78,5 @@ export type TransformationParams = {
 
 export type TransformationSet = {
 	transformationParams: TransformationParams;
-	acceptFormat: TransformationFormat | undefined;
+	acceptFormat?: TransformationFormat | undefined;
 };

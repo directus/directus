@@ -35,7 +35,7 @@ function getFormat(
 	format: TransformationSet['transformationParams']['format'],
 	acceptFormat: TransformationSet['acceptFormat']
 ): TransformationFormat {
-	const fileType = file.type!.split('/')[1] as TransformationFormat;
+	const fileType = file.type?.split('/')[1] as TransformationFormat;
 
 	if (format) {
 		if (format !== 'auto') {
