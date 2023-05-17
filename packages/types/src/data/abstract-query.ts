@@ -1,26 +1,12 @@
-/**
- * The root of the abstract query.
- * @example
- * As a basic example let's say you want to query all fields from the articles collection out of a PostgresSQL database.
- * ```
- * const query: AbstractQuery = {
- *	root: true,
- *	datastore: 'postgres',
- *	collection: 'articles',
- *	fieldNodes: [],
- * };
- * ```
- * Of course, you can also query only specific fields by selecting them in the `fieldNodes` array.
- * It's also possible to query data from another datastore by adding a `fieldNode` of type `AbstractQueryFieldNodeRelated`.
- */
+/** The root query to be executed */
 export interface AbstractQuery {
 	/** Marked as entrypoint of the query */
 	root: true;
 
-	/** Place where the data is stored */
+	/** Location where the data is stored */
 	datastore: string;
 
-	/** Name of the collection within the datastore */
+	/** Name of the collection entrypoint within the datastore */
 	collection: string;
 
 	/** All fields to select in the query */
@@ -57,7 +43,7 @@ export type AbstractQueryFieldNode =
  * Let's say you want the engine to only return the `id` field of the collection in question:
  * For that you would create a node like the following and add it to the `fieldNodes` of the query.
  * ```
- * const primitiveField = {
+ * const primitiveField: AbstractQueryFieldNodePrimitive = {
  * 	type: 'primitive',
  * 	field: 'attribute_xy'
  * }
@@ -77,14 +63,13 @@ export type AbstractQueryFn = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'h
  * @example
  * There are several functions available.
  * Let's say you want to only return the year of a date field:
- * ```
- * const functionNode = {
+ * ```js
+ * const functionNode: AbstractQueryFieldNodeFn = {
  * 	type: 'fn',
- *  fn: 'year',
+ * 	fn: 'year',
  * 	targetNode: {
- * 		type: 'primitive',
- * 		field: 'date_created'
- *  }
+ * 	type: 'primitive',
+ * 	field: 'date_created'
  * }
  * ```
  */
