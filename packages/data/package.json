@@ -18,7 +18,8 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": "./dist/index.js",
-		"./package.json": "./package.json"
+		"./package.json": "./package.json",
+		"./types": "./dist/types/index.js"
 	},
 	"main": "dist/index.js",
 	"files": [
