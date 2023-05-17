@@ -61,6 +61,12 @@ pnpm --filter tests-blackbox exec docker compose up --detach --wait
 pnpm --workspace-root test:blackbox
 ```
 
+Subsequent test runs can be issued with the following command, if only modifications to the blackbox tests themselves have been made:
+
+```bash
+pnpm --filter tests-blackbox test
+```
+
 #### Testing Specific Database Vendors
 
 Provide a CSV of database vendors via the `TEST_DB` environment variable to target only a specific subset:
