@@ -10,13 +10,14 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.26.1",
+		"@directus/release-notes-generator": "workspace:*",
 		"@typescript-eslint/eslint-plugin": "5.59.0",
 		"@typescript-eslint/parser": "5.59.0",
 		"eslint": "8.38.0",
 		"eslint-config-prettier": "8.8.0",
 		"eslint-plugin-jest": "27.2.1",
 		"eslint-plugin-prettier": "4.2.1",
-		"eslint-plugin-vue": "9.11.0",
+		"eslint-plugin-vue": "9.12.0",
 		"prettier": "2.8.7"
 	},
 	"packageManager": "pnpm@8.3.1",

@@ -107,6 +107,9 @@ delete_bookmark_copy: >-
   Is jy seker jy wil die "{bookmark}" boekmerk uitvee? Hierdie aksie kan nie ongedaan gemaak word nie.
 delete_personal_bookmark: Wis Persoonlike Boekmerk Uit
 delete_role_bookmark: Wis Rolboekmerk Uit
+directus_version: Directus Version
+node_version: Node Version
+os_version: OS Version
 field_translations: Vertalings
 language: Taal
 create_field: Skep Veld

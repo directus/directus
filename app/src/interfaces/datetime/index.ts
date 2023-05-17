@@ -29,7 +29,7 @@ export default defineInterface({
 					interface: 'boolean',
 				},
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 			},
 			{
@@ -41,7 +41,7 @@ export default defineInterface({
 					interface: 'boolean',
 				},
 				schema: {
-					default_value: 'true',
+					default_value: true,
 				},
 			},
 		];

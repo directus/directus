@@ -66,7 +66,7 @@ export default defineInterface({
 				},
 			},
 			schema: {
-				default_value: 'false',
+				default_value: false,
 			},
 		},
 		{
@@ -81,7 +81,7 @@ export default defineInterface({
 				},
 			},
 			schema: {
-				default_value: 'false',
+				default_value: false,
 			},
 		},
 		{
