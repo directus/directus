@@ -984,13 +984,23 @@ importers:
         version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
   packages/data-driver-postgres:
+    dependencies:
+      pg:
+        specifier: 8.10.0
+        version: 8.10.0
     devDependencies:
+      '@directus/data':
+        specifier: workspace:*
+        version: link:../data
       '@directus/tsconfig':
         specifier: 0.0.7
         version: 0.0.7
       '@types/node':
         specifier: 18.15.13
         version: 18.15.13
+      '@types/pg':
+        specifier: 8.6.6
+        version: 8.6.6
       '@vitest/coverage-c8':
         specifier: 0.31.0
         version: 0.31.0(vitest@0.31.0)
@@ -7705,6 +7715,14 @@ packages:
   /@types/parse-json@4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
     dev: false
+
+  /@types/pg@8.6.6:
+    resolution: {integrity: sha512-O2xNmXebtwVekJDD+02udOncjVcMZQuTEQEMpKJ0ZRf5E7/9JJX3izhKUcUifBkyKpljyUM6BTgy2trmviKlpw==}
+    dependencies:
+      '@types/node': 18.15.13
+      pg-protocol: 1.6.0
+      pg-types: 2.2.0
+    dev: true
 
   /@types/prettier@2.7.2:
     resolution: {integrity: sha512-KufADq8uQqo1pYKVIYzfKbJfBAc0sOeXqGbFaSpv8MRmC/zXgowNZmFcbngndGk922QDmOASEXUZCaY48gs4cg==}

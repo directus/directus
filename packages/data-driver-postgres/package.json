@@ -28,10 +28,15 @@
 		"access": "public"
 	},
 	"devDependencies": {
+		"@directus/data": "workspace:*",
 		"@directus/tsconfig": "0.0.7",
 		"@types/node": "18.15.13",
+		"@types/pg": "8.6.6",
 		"@vitest/coverage-c8": "0.31.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.0"
+	},
+	"dependencies": {
+		"pg": "8.10.0"
 	}
 }
