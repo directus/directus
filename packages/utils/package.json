@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "10.0.0",
+	"version": "10.0.2",
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
@@ -47,7 +47,7 @@
 		"lodash-es": "4.17.21",
 		"micromustache": "8.0.3",
 		"tmp": "0.2.1",
-		"vue": "3.2.47"
+		"vue": "3.3.2"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",

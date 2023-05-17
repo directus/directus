@@ -1,5 +1,6 @@
 import api from '@/api';
 import { useUserStore } from '@/stores/user';
+import { fetchAll } from '@/utils/fetch-all';
 import { Preset } from '@directus/types';
 import { cloneDeep, merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
@@ -144,31 +145,28 @@ export const usePresetsStore = defineStore({
 
 			const values = await Promise.all([
 				// All user saved bookmarks and presets
-				api.get(`/presets`, {
+				fetchAll<any>(`/presets`, {
 					params: {
 						'filter[user][_eq]': id,
-						limit: -1,
 					},
 				}),
 				// All role saved bookmarks and presets
-				api.get(`/presets`, {
+				fetchAll<any>(`/presets`, {
 					params: {
 						'filter[role][_eq]': role.id,
 						'filter[user][_null]': true,
-						limit: -1,
 					},
 				}),
 				// All global saved bookmarks and presets
-				api.get(`/presets`, {
+				fetchAll<any>(`/presets`, {
 					params: {
 						'filter[role][_null]': true,
 						'filter[user][_null]': true,
-						limit: -1,
 					},
 				}),
 			]);
 
-			const presets = values.map((response) => response.data.data).flat();
+			const presets = values.flat();
 
 			// Inject system defaults if they don't exist
 			for (const systemCollection of Object.keys(systemDefaults)) {

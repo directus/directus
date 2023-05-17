@@ -165,7 +165,7 @@
 	</component>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import UsersInvite from '@/views/private/components/users-invite.vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -181,7 +181,6 @@ import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { Role } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
@@ -191,13 +190,7 @@ type Item = {
 	[field: string]: any;
 };
 
-interface Props {
-	role: string | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	role: null,
-});
+const props = defineProps<{ role?: string }>();
 
 const { t } = useI18n();
 
@@ -220,7 +213,7 @@ const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 const { breadcrumb, title } = useBreadcrumb();
 
 const roleFilter = computed(() => {
-	if (props.role !== null) {
+	if (props.role) {
 		return {
 			_and: [
 				{
@@ -238,7 +231,7 @@ const roleFilter = computed(() => {
 const canInviteUsers = computed(() => {
 	if (serverStore.auth.disableDefault === true) return false;
 
-	const isAdmin = !!userStore.currentUser?.role?.admin_access;
+	const isAdmin = !!userStore.currentUser?.role.admin_access;
 	if (isAdmin) return true;
 
 	const usersCreatePermission = permissionsStore.permissions.find(
@@ -323,7 +316,7 @@ function useBreadcrumb() {
 
 	const title = computed(() => {
 		if (!props.role) return t('user_directory');
-		return roles.value?.find((role: Role) => role.id === props.role)?.name;
+		return roles.value?.find((role) => role.id === props.role)?.name;
 	});
 
 	return { breadcrumb, title };

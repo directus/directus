@@ -14,6 +14,7 @@ export interface LayoutConfig<Options = any, Query = any> {
 	};
 	smallHeader?: boolean;
 	headerShadow?: boolean;
+	sidebarShadow?: boolean;
 	setup: (props: LayoutProps<Options, Query>, ctx: LayoutContext) => Record<string, unknown>;
 }
 

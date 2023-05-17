@@ -4,8 +4,10 @@
 (A|a)utocomplete
 (A|a)xios
 (B|b)ackend
+(B|b)ackend-as-a-(S|s)ervice
 (B|b)alancer
 (B|b)asemap
+(B|b)lackbox
 (B|b)ugfixes
 (C|)ancelling
 (C|c)ancelled
@@ -96,12 +98,18 @@ autoscaling
 AWS
 backend
 Base64
+Blackbox
 buildout
 camelCase
 Capterra
 Cardgroup
 cardinality
 CDNs?
+changelogs
+changeset
+changesets
+Changesets
+CLA
 CLI
 CloudFront
 Cloudinary's
@@ -116,6 +124,7 @@ composables
 config-options
 CORS
 CPUs?
+create-directus-extension
 cron
 Cron
 CRON
@@ -137,6 +146,7 @@ DDoS
 destructured
 Dev
 devs
+Devtools
 DigitalOcean
 DigitalOcean's
 directus
@@ -173,6 +183,7 @@ G2
 Gantt
 gcloud
 GCP
+GCS
 GDPR
 geo-coordinates
 geospatial
@@ -234,6 +245,7 @@ MiB
 middleware
 misconfiguration
 misconfigurations
+mixins
 Mongo
 monorepo's
 more_horiz

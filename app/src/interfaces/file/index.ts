@@ -22,9 +22,6 @@ export default defineInterface({
 				interface: 'system-folder',
 				note: '$t:interfaces.system-folder.field_hint',
 			},
-			schema: {
-				default_value: undefined,
-			},
 		},
 	],
 	recommendedDisplays: ['file'],

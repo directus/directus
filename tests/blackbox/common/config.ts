@@ -72,6 +72,7 @@ const directusConfig = {
 	CACHE_SCHEMA: 'true',
 	CACHE_ENABLED: 'false',
 	RATE_LIMITER_ENABLED: 'false',
+	PRESSURE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: logLevel,
 	SERVE_APP: 'false',
 	DB_EXCLUDE_TABLES: 'knex_migrations,knex_migrations_lock,spatial_ref_sys,sysdiagrams',

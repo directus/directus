@@ -704,6 +704,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     basemaps: Bazmapoj
     basemaps_style: Mapbox-stilo
     mapbox_placeholder: pk.eyJ1Ijo.....
@@ -881,6 +882,7 @@ sign_in: Ensaluti
 sign_out: Elsaluti
 sign_out_confirm: Ĉu vi certas, ke vi volas elsaluti?
 export_started: Eksporto komencita
+disable_sort: Malŝalti ordigadon
 template: Ŝablono
 translation: Traduko
 translation_placeholder: Entajpu tradukon...

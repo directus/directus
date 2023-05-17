@@ -114,17 +114,10 @@
 		</template>
 
 		<div class="file-item">
-			<div class="preview">
-				<file-preview
-					v-if="isBatch === false && item"
-					:src="fileSrc"
-					:mime="item.type"
-					:width="item.width"
-					:height="item.height"
-					:title="item.title"
-				/>
+			<div v-if="isBatch === false && item" class="preview">
+				<file-preview :src="fileSrc" :mime="item.type" :width="item.width" :height="item.height" :title="item.title" />
 
-				<button v-if="isBatch === false && item" class="replace-toggle" @click="replaceFileDialogActive = true">
+				<button class="replace-toggle" @click="replaceFileDialogActive = true">
 					{{ t('replace_file') }}
 				</button>
 			</div>
@@ -181,7 +174,7 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
@@ -201,7 +194,7 @@ import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FilesNavigation from '../components/navigation.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import ReplaceFile from '../components/replace-file.vue';
 import FilesNotFound from './not-found.vue';
 

@@ -521,7 +521,7 @@ no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
 no_webhooks_copy: 아직 웹훅이 구성되지 않았습니다. 아래 버튼을 통해 시작해 보세요.
 no_notifications: 알림 없음
-no_notifications_copy: 당신은 모두 잡혔습니다!
+no_notifications_copy: 모든 알림을 확인하셨습니다!
 activity_log: 활동 기록
 all_items: 전체 내용
 any: 모두
@@ -699,34 +699,34 @@ delete_advanced_filter: 필터 삭제
 change_advanced_filter_operator: 연산자 변경
 advanced: 고급의
 operators:
-  eq: 같음
-  neq: 같지 않음
-  lt: 미만
-  gt: 보다 큰
-  lte: 보다 작거나 같음
-  gte: 보다 크거나 같음
-  in: 중 하나이다
-  nin: 다음 중 하나가 아님
+  eq: '이(가) 같음 : '
+  neq: '이(가) 같지 않음 :'
+  lt: '이(가) 작음 :'
+  gt: '이(가) 더 큼 :'
+  lte: '이(가) 작거나 같음 :'
+  gte: '이(가) 크거나 같음:'
+  in: '이(가) 중 하나 :'
+  nin: '이(가) 다음 중 하나가 아님 :'
   null: "null"
   nnull: null이 아님
-  contains: 포함
-  ncontains: 포함하지 않음
-  icontains: 포함(무감각)
-  starts_with: 시작
-  nstarts_with: 로 시작하지 않음
-  ends_with: 로 끝나다
-  nends_with: 로 끝나지 않는다
-  between: 사이에
-  nbetween: 사이가 아님
+  contains: '이(가) 포함 :'
+  ncontains: '이(가) 포함하지 않음 :'
+  icontains: '이(가) 포함(구분) :'
+  starts_with: '이(가) 시작 :'
+  nstarts_with: '이(가) 다음으로 시작하지 않음 :'
+  ends_with: '이(가) 다음으로 끝남 :'
+  nends_with: '이(가) 다음으로 끝나지 않음 :'
+  between: '이(가) 사이임 :'
+  nbetween: '이(가) 사이가 아님 :'
   empty: 비었다
-  nempty: 비어 있지 않음
-  all: 다음 키를 포함합니다.
-  has: 다음 키 중 일부를 포함합니다.
-  intersects: 교차
-  nintersects: 교차하지 않음
-  intersects_bbox: 교차 경계 상자
-  nintersects_bbox: 경계 상자와 교차하지 않음
-  regex: RegExp와 일치
+  nempty: 이(가) 비어 있지 않음
+  all: '이(가) 이 키를 포함 : '
+  has: '이(가) 이 키중 일부를 포함 : '
+  intersects: '이(가) 교차함 :'
+  nintersects: '이(가) 교차하지 않음 :'
+  intersects_bbox: 이(가) 경계 상자와 교차함
+  nintersects_bbox: 이(가) 경계 상자와 교차하지 않음
+  regex: '이(가) 정규표현식과 일치 :'
 custom_validation_message: 사용자 지정 유효성 검사 메시지
 loading: 로드 중...
 drop_to_upload: 드롭하여 업로드
@@ -789,7 +789,7 @@ format_value: 형식 값
 abbreviate_value: 약어 값
 operator: 운영자
 bold: 굵게
-toggle: 비녀장
+toggle: 토글
 icon_on: 아이콘 켜기
 icon_off: 아이콘 끄기
 label: 상표
@@ -816,9 +816,9 @@ set_flow_active: 플로우을 활성으로 설정
 set_flow_inactive: 플로우을 비활성으로 설정
 edit_flow: 플로우 편집
 delete_flow: 플로우 삭제
-no_other_flows_copy: 아직 다른 플로우이 없습니다.
+no_other_flows_copy: 아직 다른 플로우가 없습니다.
 no_flows: 플로우 없음
-no_flows_copy: 아직 플로우이 없습니다.
+no_flows_copy: 아직 플로우가 없습니다.
 create_flow: 플로우 작성
 creating_new_flow: 새 플로우 만들기
 updating_flow: 플로우 업데이트 중...
@@ -1335,7 +1335,7 @@ start_collapsed: 축소 시작
 block: 차단하다
 inline: 인라인
 comment: 코멘트
-shares: 주식
+shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
@@ -1448,7 +1448,6 @@ translation: 번역
 translation_placeholder: 번역을 입력하세요...
 value: 값
 view_project: 프로젝트 보기
-weeks: { }
 report_error: 오류 신고
 start: 시작
 table: 테이블
@@ -1706,7 +1705,7 @@ interfaces:
     search_placeholder: 검색...
     new_translation_string: 새 번역 문자열
   boolean:
-    toggle: 비녀장
+    toggle: 토글
     description: 켜기와 끄기 간 전환
     color_on: 컬러 온
     color_off: 색상 끄기
@@ -2148,3 +2147,4 @@ operations:
     parallel: 평행한
     batch: 일괄
     batch_size: 배치 크기
+    cache: 캐시

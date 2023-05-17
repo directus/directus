@@ -131,6 +131,7 @@ archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
 reset_system_permissions_to: 'Réinitialiser les autorisations système:'
 reset_system_permissions_copy: Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du système. Êtes-vous sûr ?
+the_following_are_minimum_permissions: Les autorisations minimales suivantes sont automatiquement appliquées lorsque "Accès à l'application" est activé. Vous pouvez accorder des autorisations plus élevées si nécessaire, mais vous ne pouvez pas réduire les permissions en dessous de ce niveau.
 app_access_minimum: Autorisation minimale requise pour accéder à l'application
 recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
@@ -181,6 +182,7 @@ permissions_for_role: 'Éléments que le rôle {role} peut {action}.'
 fields_for_role: 'Champs dont l''action « {action} » peut être effectué par le rôle {role} .'
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
+presets_field_warning: 'Les préréglages relationnels pour le champ "{field}" doivent être configurés avec la syntaxe "détaillée".'
 presentation_and_aliases: Présentation & Alias
 revision_post_create: Voici à quoi ressemblait cet élément lors de sa création.
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
@@ -530,6 +532,7 @@ create_collection: Créer une collection
 no_collections_copy_admin: Vous n'avez pas encore de collection. Cliquez sur le bouton ci-dessous pour commencer.
 no_collections_copy: Vous n'avez pas encore de Collections. Veuillez contacter votre administrateur système.
 relationship_not_setup: La relation n'a pas été configurée correctement
+no_singleton_relations: Les relations avec les Singletons ne sont pas prises en charge
 display_template_not_setup: L'option d'affichage du modèle est mal configurée
 collection_field_not_setup: L'option de champ de collection est mal configurée
 select_a_collection: Sélectionner une collection
@@ -668,6 +671,7 @@ one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer la collection "{collection}" ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
 delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer le dossier "{folder}" ? Les dossiers imbriqués et les collections seront déplacés à la racine.
+delete_collection_peer_dependencies: Les champs suivants seront également supprimés, car ils sont liés à la collection actuelle.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -794,11 +798,11 @@ flows: Flux
 flow: Flux
 select_a_flow: Sélectionner un flux
 run_flow_confirm: Êtes-vous sûr(e) de vouloir exécuter ce flux ?
-run_flow_on_current_collection: Lancer ce flux sur la collection actuelle
-run_flow_on_current: Lancer le flux sur l'élément actuel
+run_flow_on_current_collection: Exécuter ce flux sur la collection actuelle
+run_flow_on_current: Exécuter le flux sur l'élément actuel
 run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
 run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur l'élément sélectionné | Exécuter le flux sur les {n} éléments sélectionnés
-run_flow: Lancer le flux
+run_flow: Exécuter le flux
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
 field_name_placeholder: Saisir un nom de champ...
 field_key_placeholder: Saisir un identifiant de champ...
@@ -1143,6 +1147,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Cartographie
     basemaps: Cartes de base
     basemaps_raster: Raster
@@ -1443,6 +1448,7 @@ translation: Traduction
 translation_placeholder: Entrez une nouvelle traduction...
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 start: Début
 table: Tableau
@@ -2056,7 +2062,7 @@ triggers:
     item_only: Page de l'élément uniquement
     collection_page: Page de la collection
     require_selection: Sélection obligatoire
-a_flow_uuid: Choisir un flux à lancer...
+a_flow_uuid: Choisir un flux à exécuter...
 any_string_or_json: Toute chaîne de caractères ou JSON...
 item_payload_placeholder: C'est le JSON utilisé pour mettre à jour les valeurs des champs de l'élément...
 operation_variables_note: Vous pouvez accéder aux données de flux à l'aide de variables telles que **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** et **{'{'}{'{'}$accountability{'}'}{'}'}**, ou faire référence à des opérations précédentes à l'aide de **{'{'}{'{'}operation_key{'}'}{'}'}**.'
@@ -2142,3 +2148,4 @@ operations:
     parallel: En parallèle
     batch: Par lots
     batch_size: Taille de chaque lot
+    cache: Cache
