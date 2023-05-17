@@ -49,7 +49,7 @@ export default defineInterface({
 					interface: 'boolean',
 				},
 				schema: {
-					default_value: 'true',
+					default_value: true,
 				},
 			},
 			{
@@ -61,7 +61,7 @@ export default defineInterface({
 					interface: 'boolean',
 				},
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 			},
 			{
@@ -74,9 +74,6 @@ export default defineInterface({
 					options: {
 						placeholder: '$t:interfaces.input-code.placeholder',
 					},
-				},
-				schema: {
-					default_value: null,
 				},
 			},
 		];

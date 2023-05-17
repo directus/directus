@@ -3,5 +3,5 @@
 ## Usage
 
 ```
-GITHUB_TOKEN=<your-token> pnpm exec changeset version
+GITHUB_TOKEN=<token> pnpm changeset version
 ```

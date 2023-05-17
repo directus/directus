@@ -23,6 +23,8 @@
 		"vitest": "0.31.0"
 	},
 	"dependencies": {
-		"@changesets/get-github-info": "^0.5.2"
+		"@changesets/get-github-info": "0.5.2",
+		"@pnpm/find-workspace-dir": "6.0.0",
+		"@pnpm/find-workspace-packages": "6.0.7"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/composables",
-	"version": "10.0.1",
+	"version": "10.0.2",
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
@@ -43,6 +43,6 @@
 		"axios": "1.3.6",
 		"lodash-es": "4.17.21",
 		"nanoid": "4.0.2",
-		"vue": "3.2.47"
+		"vue": "3.3.2"
 	}
 }

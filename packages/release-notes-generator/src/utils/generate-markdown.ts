@@ -1,62 +1,62 @@
-import { REPO, VERSIONS_TITLE } from './constants';
-import { Change, Package, PackageVersion, Type } from './types';
+import { REPO, VERSIONS_TITLE } from '../constants';
+import type { Change, Package, PackageVersion, Type, UntypedPackage } from '../types';
 
 export function generateMarkdown(
 	mainVersion: string,
 	types: Type[],
-	untypedPackages: Package[],
+	untypedPackages: UntypedPackage[],
 	packageVersions: PackageVersion[]
-) {
+): string {
 	const date = new Date();
 
 	const dateString = new Intl.DateTimeFormat('en-US', {
 		dateStyle: 'long',
 	}).format(date);
 
-	let markdownOutput = `## v${mainVersion} (${dateString})`;
+	let output = `## v${mainVersion} (${dateString})`;
 
 	for (const { title, packages } of types) {
-		markdownOutput += `\n\n### ${title}\n`;
-		markdownOutput += formatPackages(packages);
+		if (packages.length > 0) {
+			output += `\n\n### ${title}\n`;
+			output += formatPackages(packages);
+		}
 	}
 
 	for (const { name, changes } of untypedPackages) {
-		markdownOutput += `\n\n### ${name}\n\n`;
-		markdownOutput += formatChanges(changes).join('\n');
+		if (changes.length > 0) {
+			output += `\n\n### ${name}\n\n`;
+			output += formatChanges(changes).join('\n');
+		}
 	}
 
 	if (packageVersions.length > 0) {
-		markdownOutput += `\n\n### ${VERSIONS_TITLE}\n`;
+		output += `\n\n### ${VERSIONS_TITLE}\n`;
 	}
 
 	for (const { name, version } of packageVersions) {
-		markdownOutput += `\n- \`${name}@${version}\``;
-	}
-
-	const divider = '==============================================================';
-	// eslint-disable-next-line no-console
-	console.log(divider);
-	// eslint-disable-next-line no-console
-	console.log(markdownOutput);
-	// eslint-disable-next-line no-console
-	console.log(divider);
-}
-
-function formatPackages(packages: Package[]) {
-	let output = '';
-
-	for (const { name, changes } of packages) {
-		output += `\n- **${name}**\n`;
-
-		output += formatChanges(changes)
-			.map((change) => `  ${change}`)
-			.join('\n');
+		output += `\n- \`${name}@${version}\``;
 	}
 
 	return output;
 }
 
-function formatChanges(changes: Change[]) {
+function formatPackages(packages: Package[]): string {
+	let output = '';
+
+	for (const { name, changes } of packages) {
+		if (changes.length > 0) {
+			output += `\n- **${name}**\n`;
+
+			output += formatChanges(changes)
+				.map((change) => `  ${change}`)
+				.join('\n');
+		}
+	}
+
+	return output;
+}
+
+function formatChanges(changes: Change[]): string[] {
 	return changes.map((change) => {
 		let refUser = '';
 
