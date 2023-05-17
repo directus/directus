@@ -4,9 +4,9 @@ export interface AbstractQuery {
 	root: true;
 
 	/** Location where the data is stored */
-	datastore: string;
+	store: string;
 
-	/** Name of the collection entrypoint within the datastore */
+	/** Name of the collection entrypoint within the store */
 	collection: string;
 
 	/** All fields to select in the query */
@@ -38,7 +38,7 @@ export type AbstractQueryFieldNode =
 	| AbstractQueryFieldNodeRelated;
 
 /**
- * Generic primitive value read from the datastore field
+ * Generic primitive value read from the store field
  * @example
  * Let's say you want the engine to only return the `id` field of the collection in question:
  * For that you would create a node like the following and add it to the `fieldNodes` of the query.
@@ -111,7 +111,7 @@ export type AbstractQueryFieldNodeRelated =
  * 		fields: ['id']
  *  },
  * 	external: {
- * 		datastore: 'mongodb',
+ * 		store: 'mongodb',
  * 		collection: 'some-collection',
  * }
  * ```
@@ -124,7 +124,7 @@ interface AbstractQueryFieldNodeRelatedJoinMany {
 
 	/** the external collection or item which should be pulled/joined/merged into the current collection */
 	external: {
-		datastore?: string;
+		store?: string;
 		collection: string;
 		fields: string[];
 	};
@@ -137,7 +137,7 @@ interface AbstractQueryFieldNodeRelatedJoinAny {
 	};
 
 	external: {
-		datastore?: string;
+		store?: string;
 		fields: string[];
 	};
 }
