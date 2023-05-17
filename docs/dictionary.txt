@@ -297,7 +297,6 @@ pre-defined
 pre-existing
 pre-formatted
 pre-installed
-pre-populated
 programmatically
 Programmatically
 ProgressEvent
@@ -351,7 +350,6 @@ superset
 Superset
 SVG
 TablePlus
-Teardown
 tfa
 TFA
 TileJSON
