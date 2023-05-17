@@ -328,7 +328,7 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 }
 
 /**
- * Questions:
+ * @TODO
  * - Should we support "Distinct", if so where does it live (field level vs collection level)
  * - Rethink every / some
  * - Should logical "not" be a node with a single child? --> it's seems easier to work with a boolean flag here - see 'negation' onAbstractQueryNodeCondition
