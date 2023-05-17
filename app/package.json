@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "10.1.0",
+	"version": "10.2.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"type": "module",
@@ -66,7 +66,7 @@
 		"@pinia/testing": "0.1.0",
 		"@popperjs/core": "2.11.7",
 		"@rollup/plugin-yaml": "4.0.1",
-		"@sindresorhus/slugify": "2.2.0",
+		"@sindresorhus/slugify": "2.2.1",
 		"@storybook/addon-actions": "7.0.6",
 		"@storybook/addon-backgrounds": "7.0.6",
 		"@storybook/addon-docs": "7.0.6",

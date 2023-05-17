@@ -8,7 +8,12 @@
 	</v-info>
 
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen }">
-		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
+		<aside
+			id="navigation"
+			role="navigation"
+			aria-label="Module Navigation"
+			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
+		>
 			<module-bar />
 			<v-nav
 				class="module-nav alt-colors"
@@ -49,7 +54,7 @@
 			role="contentinfo"
 			class="alt-colors"
 			aria-label="Module Sidebar"
-			:class="{ 'is-open': sidebarOpen }"
+			:class="{ 'is-open': sidebarOpen, 'has-shadow': sidebarShadow }"
 			@click="openSidebar"
 		>
 			<div class="flex-container">
@@ -96,9 +101,15 @@ interface Props {
 	title?: string | null;
 	smallHeader?: boolean;
 	headerShadow?: boolean;
+	sidebarShadow?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), { title: null, smallHeader: false, headerShadow: true });
+const props = withDefaults(defineProps<Props>(), {
+	title: null,
+	smallHeader: false,
+	headerShadow: true,
+	sidebarShadow: false,
+});
 
 const { t } = useI18n();
 
@@ -223,6 +234,9 @@ function openSidebar(event: PointerEvent) {
 		&.is-open {
 			transform: translateX(0);
 		}
+		&.has-shadow {
+			box-shadow: var(--navigation-shadow);
+		}
 
 		&:not(.is-open) {
 			.module-nav-resize-handle {
@@ -308,6 +322,9 @@ function openSidebar(event: PointerEvent) {
 
 		&.is-open {
 			transform: translateX(0);
+		}
+		&.has-shadow {
+			box-shadow: var(--sidebar-shadow);
 		}
 
 		.flex-container {
