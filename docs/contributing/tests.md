@@ -1,21 +1,18 @@
-# Running Tests
+# Tests
 
-> Tests ensure that the platform functions as expected when the existing codebase is modified. For more details on
-> writing of tests, please refer to the following links.
+> Tests ensure that the platform functions as expected when the existing codebase is modified.
 
-- [App unit tests](/contributing/tests/app-unit-tests)
-- [API unit tests](/contributing/tests/api-unit-tests)
-- [Blackbox tests](/contributing/tests/blackbox-tests)
+## Running Tests
 
-## Running app unit tests
+### Running App Unit Tests
 
 Run `pnpm --filter app test`.
 
-## Running API unit tests
+### Running API Unit Tests
 
 Run `pnpm --filter api test`.
 
-## Running blackbox tests
+### Running Blackbox Tests
 
 Install [Docker](https://docs.docker.com/get-docker/) and ensure that the service is running.
 
@@ -34,7 +31,7 @@ docker compose -f tests-blackbox/docker-compose.yml up -d --wait
 pnpm test:blackbox
 ```
 
-### Testing a specific database
+#### Testing a Specific Database
 
 Provide a csv of database drivers in the `TEST_DB` environment variable to test specific databases:
 
@@ -42,14 +39,22 @@ Provide a csv of database drivers in the `TEST_DB` environment variable to test 
 TEST_DB=cockroachdb pnpm test:blackbox
 ```
 
-### Using an existing Directus instance
+#### Using an Existing Directus Instance
 
-The test suite will spin up a fresh copy of the Directus API from the current build. To use an already running copy of
-Directus, set the `TEST_LOCAL` flag:
+Normally, the test suite will spin up a fresh copy of the Directus API built from the current repository state. To use
+an already running copy of Directus instead, set the `TEST_LOCAL` flag:
 
 ```bash
 TEST_DB=cockroachdb TEST_LOCAL=true pnpm test:blackbox
 ```
 
-This will use `localhost:8055` as the URL for every test. Note: make sure to connect your local Directus database
-instance to the test database container found in docker-compose in this folder.
+Note: The tests expect the instance running at `localhost:8055`. Make sure to connect the instance to the test database
+container found in the `tests-blackbox/docker-compose.yml` file.
+
+## Working on Tests
+
+<Card
+  title="Blackbox Tests"
+  h="2"
+  text="Learn how to write and add new blackbox tests."
+  url="/contributing/tests/blackbox-tests" />
