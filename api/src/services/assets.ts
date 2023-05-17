@@ -17,7 +17,7 @@ import { RangeNotSatisfiableException } from '../exceptions/range-not-satisfiabl
 import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, File, Transformation, TransformationParams } from '../types/index.js';
+import type { AbstractServiceOptions, File, Transformation, TransformationSet } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
@@ -35,7 +35,7 @@ export class AssetsService {
 
 	async getAsset(
 		id: string,
-		transformation: TransformationParams,
+		transformation: TransformationSet,
 		range?: Range
 	): Promise<{ stream: Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();

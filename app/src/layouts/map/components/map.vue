@@ -151,7 +151,7 @@ function setupMap() {
 		map.on('select.enable', () => (selectMode.value = true));
 		map.on('select.disable', () => (selectMode.value = false));
 
-		map.on('select.end', (event: MapLayerMouseEvent) => {
+		map.on('select.end', (event: MapLayerMouseEvent & { alt: unknown }) => {
 			const ids = event.features?.map((f) => f.id);
 			emit('featureselect', { ids, replace: !event.alt });
 		});

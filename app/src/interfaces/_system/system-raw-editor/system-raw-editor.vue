@@ -4,14 +4,14 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
+import { parseJSON } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
-import { parseJSON } from '@directus/utils';
 
 const props = withDefaults(
 	defineProps<{
@@ -42,7 +42,7 @@ const codemirrorEl = ref<HTMLTextAreaElement | null>();
 let codemirror: CodeMirror.Editor | null;
 let previousContent: string | null = null;
 
-const isMultiLine = computed(() => ['text', 'json'].includes(props.type));
+const isMultiLine = computed(() => ['text', 'json'].includes(props.type!));
 
 onMounted(async () => {
 	if (codemirrorEl.value) {

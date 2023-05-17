@@ -6,9 +6,9 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="mergeFilters(filter, folderTypeFilter)"
+		:filter="mergeFilters(filter, folderFilter)"
 		:filter-user="filter"
-		:filter-system="folderTypeFilter"
+		:filter-system="folderFilter"
 		:search="search"
 		collection="directus_files"
 		:reset-preset="resetPreset"
@@ -116,7 +116,7 @@
 			</template>
 
 			<template #navigation>
-				<files-navigation :current-folder="folder" />
+				<files-navigation :current-folder="folder" :current-special="special" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
@@ -173,7 +173,7 @@
 				<export-sidebar-detail
 					collection="directus_files"
 					:layout-query="layoutQuery"
-					:filter="mergeFilters(filter, folderTypeFilter)"
+					:filter="mergeFilters(filter, folderFilter)"
 					:search="search"
 					@refresh="refresh"
 				/>
@@ -201,19 +201,18 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
+import { getFolderFilter } from '@/utils/get-folder-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { subDays } from 'date-fns';
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
-import FilesNavigation from '../components/navigation.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 
 type Item = {
 	[field: string]: any;
@@ -245,50 +244,8 @@ const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
 const { breadcrumb, title } = useBreadcrumb();
 
-const folderTypeFilter = computed(() => {
-	const filterParsed: Filter = {
-		_and: [
-			{
-				type: {
-					_nnull: true,
-				},
-			},
-		],
-	};
-
-	if (props.special === null) {
-		if (props.folder !== null) {
-			filterParsed._and.push({
-				folder: {
-					_eq: props.folder,
-				},
-			});
-		} else {
-			filterParsed._and.push({
-				folder: {
-					_null: true,
-				},
-			});
-		}
-	}
-
-	if (props.special === 'mine' && userStore.currentUser) {
-		filterParsed._and.push({
-			uploaded_by: {
-				_eq: userStore.currentUser.id,
-			},
-		});
-	}
-
-	if (props.special === 'recent') {
-		filterParsed._and.push({
-			uploaded_on: {
-				_gt: subDays(new Date(), 5).toISOString(),
-			},
-		});
-	}
-
-	return filterParsed;
+const folderFilter = computed(() => {
+	return getFolderFilter(props.folder, props.special, userStore?.currentUser?.id);
 });
 
 const { layoutWrapper } = useLayout(layout);

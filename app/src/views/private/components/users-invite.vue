@@ -13,14 +13,14 @@
 						<div class="type-label">{{ t('emails') }}</div>
 						<v-textarea v-model="emails" :nullable="false" placeholder="admin@example.com, user@example.com..." />
 					</div>
-					<div v-if="role === null" class="field">
+					<div v-if="!role" class="field">
 						<div class="type-label">{{ t('role') }}</div>
 						<v-select v-model="roleSelected" :items="roles" />
 					</div>
 					<v-notice v-if="uniqueValidationErrors.length > 0" class="field" type="danger">
 						<div v-for="(err, i) in uniqueValidationErrors" :key="i">
-							<template v-if="err.extensions.invalid">
-								{{ t('email_already_invited', { email: err.extensions.invalid }) }}
+							<template v-if="(err as any).extensions.invalid">
+								{{ t('email_already_invited', { email: (err as any).extensions.invalid }) }}
 							</template>
 							<template v-else-if="i === 0">
 								{{ t('validationError.unique') }}
@@ -32,7 +32,7 @@
 
 			<v-card-actions>
 				<v-button secondary @click="$emit('update:modelValue', false)">{{ t('cancel') }}</v-button>
-				<v-button :disabled="emails === null || emails.length === 0" :loading="loading" @click="inviteUsers">
+				<v-button :disabled="emails.length === 0" :loading="loading" @click="inviteUsers">
 					{{ t('invite') }}
 				</v-button>
 			</v-card-actions>
@@ -40,12 +40,12 @@
 	</v-dialog>
 </template>
 
-<script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { ref, watch } from 'vue';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { APIError } from '@/types/error';
+<script setup lang="ts">
 import api from '@/api';
+import { APIError } from '@/types/error';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	modelValue: boolean;
@@ -118,7 +118,7 @@ async function loadRoles() {
 		value: role.id,
 	}));
 
-	if (roles.value.length > 0 && roleSelected.value === null) {
+	if (roles.value.length > 0 && !roleSelected.value) {
 		roleSelected.value = roles.value[0].value;
 	}
 }

@@ -1,9 +1,9 @@
 {
 	"name": "@directus/storage-driver-s3",
-	"version": "10.0.0",
+	"version": "10.0.2",
 	"type": "module",
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
 		"test": "vitest --watch=false"
 	},
@@ -22,8 +22,7 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
+		"dist"
 	],
 	"publishConfig": {
 		"access": "public"
@@ -38,8 +37,8 @@
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",
 		"@ngneat/falso": "6.4.0",
-		"@vitest/coverage-c8": "0.30.1",
+		"@vitest/coverage-c8": "0.31.0",
 		"typescript": "5.0.4",
-		"vitest": "0.30.1"
+		"vitest": "0.31.0"
 	}
 }

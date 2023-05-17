@@ -5,7 +5,9 @@
 		v-model:selection="layoutSelection"
 		v-model:layout-options="localOptions"
 		v-model:layout-query="localQuery"
-		:filter="layoutFilter"
+		:filter="mergeFilters(presetFilter, filter)"
+		:filter-user="presetFilter"
+		:filter-system="filter"
 		:search="search"
 		:collection="collection"
 		select-mode
@@ -16,15 +18,20 @@
 			:title="t('select_item')"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
+			v-bind="drawerProps"
 			@cancel="cancel"
 		>
+			<template v-for="(_, slot) of $slots" #[slot]="scope">
+				<slot :name="slot" v-bind="scope" />
+			</template>
+
 			<template #subtitle>
-				<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+				<v-breadcrumb :items="[{ name: collectionInfo!.name, disabled: true }]" />
 			</template>
 
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon secondary disabled>
-					<v-icon :name="collectionInfo.icon" :color="collectionInfo.color" />
+					<v-icon :name="collectionInfo!.icon" :color="collectionInfo!.color" />
 				</v-button>
 			</template>
 
@@ -41,11 +48,11 @@
 			<div class="layout">
 				<component :is="`layout-${localLayout}`" v-bind="layoutState">
 					<template #no-results>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 
 					<template #no-items>
-						<v-info :title="t('item_count', 0)" :icon="collectionInfo.icon" center />
+						<v-info :title="t('item_count', 0)" :icon="collectionInfo!.icon" center />
 					</template>
 				</component>
 			</div>
@@ -53,7 +60,7 @@
 	</component>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -61,6 +68,8 @@ import { useCollection, useLayout } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import type { Props as VDrawerProps } from '@/components/v-drawer.vue';
+import { mergeFilters } from '@directus/utils';
 
 const props = withDefaults(
 	defineProps<{
@@ -69,6 +78,7 @@ const props = withDefaults(
 		collection: string;
 		multiple?: boolean;
 		filter?: Filter;
+		drawerProps?: VDrawerProps;
 	}>(),
 	{
 		selection: () => [],
@@ -109,20 +119,6 @@ const layoutSelection = computed<any>({
 });
 
 const { layoutWrapper } = useLayout(layout);
-
-const layoutFilter = computed({
-	get() {
-		if (!props.filter) return presetFilter.value;
-		if (!presetFilter.value) return props.filter;
-
-		return {
-			_and: [props.filter, presetFilter.value],
-		};
-	},
-	set(newFilter: Filter | null) {
-		presetFilter.value = newFilter;
-	},
-});
 
 function useActiveState() {
 	const localActive = ref(false);

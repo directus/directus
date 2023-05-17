@@ -102,11 +102,11 @@
 			</template>
 		</drawer-item>
 
-		<drawer-collection
+		<drawer-files
 			v-if="!disabled"
 			v-model:active="selectModalActive"
 			:collection="relationInfo.relatedCollection.collection"
-			:selection="selectedPrimaryKeys"
+			:folder="folder"
 			:filter="customFilter"
 			multiple
 			@input="onSelect"
@@ -132,7 +132,7 @@ import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/compo
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
@@ -337,8 +337,8 @@ function onUpload(files: Record<string, any>[]) {
 	select(fileIds);
 }
 
-function onSelect(selected: string[]) {
-	select(selected.filter((id) => selectedPrimaryKeys.value.includes(id) === false));
+function onSelect(selected: (string | number)[] | null) {
+	select(selected!.filter((id) => selectedPrimaryKeys.value.includes(id) === false));
 }
 
 const downloadName = computed(() => {
@@ -366,19 +366,11 @@ function getFilename(junctionRow: Record<string, any>) {
 }
 
 const customFilter = computed(() => {
+	if (!relationInfo.value) return;
+
 	const filter: Filter = {
 		_and: [],
 	};
-
-	if (props.folder) {
-		filter._and.push({
-			folder: {
-				id: { _eq: props.folder },
-			},
-		});
-	}
-
-	if (!relationInfo.value) return filter;
 
 	const reverseRelation = `$FOLLOW(${relationInfo.value.junctionCollection.collection},${relationInfo.value.junctionField.field})`;
 

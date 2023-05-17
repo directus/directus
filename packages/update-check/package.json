@@ -1,9 +1,9 @@
 {
 	"name": "@directus/update-check",
-	"version": "10.0.0",
+	"version": "10.0.1",
 	"type": "module",
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
 		"test": "vitest --watch=false"
 	},
@@ -22,8 +22,7 @@
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
+		"dist"
 	],
 	"publishConfig": {
 		"access": "public"
@@ -36,8 +35,8 @@
 		"@directus/tsconfig": "0.0.7",
 		"@ngneat/falso": "6.4.0",
 		"@types/semver": "7.3.13",
-		"@vitest/coverage-c8": "0.30.1",
+		"@vitest/coverage-c8": "0.31.0",
 		"typescript": "5.0.4",
-		"vitest": "0.30.1"
+		"vitest": "0.31.0"
 	}
 }

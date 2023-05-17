@@ -90,16 +90,16 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { computed, ref, useSlots } from 'vue';
+<script setup lang="ts">
+import { i18n } from '@/lang/';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import { ShowSelect } from '@directus/types';
-import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
+import { clone, forEach, pick } from 'lodash';
+import { computed, ref, useSlots } from 'vue';
+import Draggable from 'vuedraggable';
 import TableHeader from './table-header.vue';
 import TableRow from './table-row.vue';
-import { clone, forEach, pick } from 'lodash';
-import { i18n } from '@/lang/';
-import Draggable from 'vuedraggable';
-import { hideDragImage } from '@/utils/hide-drag-image';
+import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 
 const HeaderDefaults: Header = {
 	text: '',
@@ -107,6 +107,7 @@ const HeaderDefaults: Header = {
 	align: 'left',
 	sortable: true,
 	width: null,
+	description: null,
 };
 
 interface Props {
@@ -203,7 +204,7 @@ const internalHeaders = computed({
 });
 
 // In case the sort prop isn't used, we'll use this local sort state as a fallback.
-// This allows the table to allow inline sorting on column ootb without the need for
+// This allows the table to allow inline sorting on column out of the box without the need for
 const internalSort = computed<Sort>(
 	() =>
 		props.sort ?? {
@@ -244,7 +245,7 @@ const someItemsSelected = computed<boolean>(() => {
 	return props.modelValue.length > 0 && allItemsSelected.value === false;
 });
 
-const columnStyle = computed<string>(() => {
+const columnStyle = computed<{ header: string; rows: string }>(() => {
 	return {
 		header: generate('auto'),
 		rows: generate(),

@@ -131,6 +131,7 @@ archive_confirm_count: >-
   No hay elementos seleccionados | ¿Estás seguro que quieres archivar este elemento? | ¿Estás seguro que quieres archivar estos {count} elementos?
 reset_system_permissions_to: 'Restablecer los permisos del sistema a:'
 reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que hayas aplicado a las colecciones del sistema. ¿Estás seguro?
+the_following_are_minimum_permissions: Los siguientes permisos mínimos se aplican automáticamente cuando "Acceso a aplicación" está habilitado. Puede conceder permisos adicionales si es necesario, pero no puede reducir los permisos por debajo de este nivel.
 app_access_minimum: Acceso mínimo a la aplicación
 recommended_defaults: Valores por defecto recomendados
 unarchive: Desarchivar
@@ -2145,3 +2146,4 @@ operations:
     parallel: Paralelo
     batch: Lote
     batch_size: Tamaño del lote
+    cache: Caché

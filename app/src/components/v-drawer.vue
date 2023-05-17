@@ -20,9 +20,11 @@
 			<div class="content">
 				<v-overlay v-if="$slots.sidebar" absolute />
 
-				<nav v-if="$slots.sidebar" class="sidebar">
-					<slot name="sidebar" />
-				</nav>
+				<v-nav v-if="$slots.sidebar" class="sidebar" :resizeable="sidebarResizeable" :max-width="sidebarMaxWidth">
+					<div class="sidebar-content">
+						<slot name="sidebar" />
+					</div>
+				</v-nav>
 
 				<main ref="mainEl" class="main">
 					<header-bar
@@ -71,13 +73,15 @@ import { useI18n } from 'vue-i18n';
 import { ref, computed, provide } from 'vue';
 import HeaderBar from '@/views/private/components/header-bar.vue';
 import { i18n } from '@/lang';
+import VNav from './v-nav.vue';
 
-interface Props {
+export interface Props {
 	title: string;
 	subtitle?: string | null;
 	modelValue?: boolean;
 	persistent?: boolean;
 	icon?: string;
+	sidebarResizeable?: boolean;
 	sidebarLabel?: string;
 	cancelable?: boolean;
 	headerShadow?: boolean;
@@ -104,6 +108,9 @@ const localActive = ref(false);
 const mainEl = ref<Element>();
 
 provide('main-element', mainEl);
+
+// Half of the space of the drawer (856 / 2 = 428)
+const sidebarMaxWidth = 428;
 
 const internalActive = computed({
 	get() {
@@ -133,9 +140,14 @@ body {
 	background-color: var(--background-page);
 
 	.cancel {
+		display: none;
 		position: absolute;
 		top: 32px;
 		left: -76px;
+
+		@media (min-width: 960px) {
+			display: inline-flex;
+		}
 	}
 
 	.spacer {
@@ -172,14 +184,18 @@ body {
 
 			@media (min-width: 960px) {
 				position: relative;
-				z-index: 2;
 				display: block;
-				flex-basis: 220px;
 				flex-shrink: 0;
 				width: 220px;
 				height: 100%;
 				height: auto;
 				background-color: var(--background-normal);
+			}
+
+			.sidebar-content {
+				height: 100%;
+				overflow-x: hidden;
+				overflow-y: auto;
 			}
 		}
 
@@ -214,6 +230,8 @@ body {
 }
 
 .mobile-sidebar {
+	position: relative;
+	z-index: 2;
 	margin: var(--content-padding);
 
 	nav {

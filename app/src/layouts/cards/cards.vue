@@ -1,6 +1,6 @@
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || itemCount > 0">
+		<template v-if="loading || itemCount! > 0">
 			<cards-header
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
@@ -13,9 +13,9 @@
 			<div class="grid" :class="{ 'single-row': isSingleRow }">
 				<card
 					v-for="item in items"
-					:key="item[primaryKeyField.field]"
+					:key="item[primaryKeyField!.field]"
 					v-model="selectionWritable"
-					:item-key="primaryKeyField.field"
+					:item-key="primaryKeyField!.field"
 					:crop="imageFit === 'crop'"
 					:icon="icon"
 					:file="imageSource ? item[imageSource] : null"
@@ -47,12 +47,7 @@
 
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ t('per_page') }}</span>
-					<v-select
-						:model-value="`${limit}`"
-						:items="['25', '50', '100', '250', '500', '1000']"
-						inline
-						@update:model-value="limitWritable = +$event"
-					/>
+					<v-select :model-value="`${limit}`" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -81,6 +76,7 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
 import { Collection } from '@/types/collections';
 import { useElementSize, useSync } from '@directus/composables';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
@@ -93,7 +89,7 @@ const props = withDefaults(
 	defineProps<{
 		collection: string;
 		items: Item[];
-		selection: Item[];
+		selection: (number | string)[];
 		selectMode: boolean;
 		readonly: boolean;
 		limit: number;
@@ -106,7 +102,7 @@ const props = withDefaults(
 		page: number;
 		toPage: (newPage: number) => void;
 		getLinkForItem: (item: Record<string, any>) => string | undefined;
-		fieldsInCollection: Item[];
+		fieldsInCollection: Field[];
 		selectAll: () => void;
 		resetPresetAndRefresh: () => Promise<void>;
 		sort: string[];
@@ -142,9 +138,17 @@ const layoutElement = ref<HTMLElement>();
 
 const { width } = useElementSize(layoutElement);
 
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
+	[25, 50, 100, 250, 500, 1000],
+	(value) => String(value),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
+
 watch(
 	() => props.page,
-	() => mainElement.value?.scrollTo({ top: 0, behavior: 'smooth' })
+	() => mainElement!.value?.scrollTo({ top: 0, behavior: 'smooth' })
 );
 
 watch(width, () => {

@@ -231,7 +231,7 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { getPublicURL } from '@/utils/get-root-path';
@@ -242,6 +242,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
+import type { AxiosProgressEvent } from 'axios';
 import { debounce } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -333,7 +334,7 @@ watch(
 
 const format = ref('csv');
 const location = ref('download');
-const folder = ref<string>();
+const folder = ref<string | null>(null);
 
 const lockedToFiles = computed(() => {
 	const toBeDownloaded = exportSettings.limit ?? itemCount.value;
@@ -460,8 +461,8 @@ function useUpload() {
 
 		try {
 			await api.post(`/utils/import/${collection.value}`, formData, {
-				onUploadProgress: (progressEvent: ProgressEvent) => {
-					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+				onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+					const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total!);
 					progress.value = percentCompleted;
 					importing.value = percentCompleted === 100 ? true : false;
 				},
@@ -508,7 +509,7 @@ function exportDataLocal() {
 	const url = getPublicURL() + endpoint.substring(1);
 
 	let params: Record<string, unknown> = {
-		access_token: api.defaults.headers.common['Authorization'].substring(7),
+		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: format.value,
 	};
 

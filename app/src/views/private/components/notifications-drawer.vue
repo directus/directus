@@ -52,21 +52,20 @@
 	</v-drawer>
 </template>
 
-<script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useAppStore } from '@/stores/app';
-import { useUserStore } from '@/stores/user';
-import { useNotificationsStore } from '@/stores/notifications';
-import { useCollectionsStore } from '@/stores/collections';
-import { storeToRefs } from 'pinia';
-import { Notification } from '@directus/types';
+<script setup lang="ts">
 import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import { Item } from '@directus/types';
-import { useRouter } from 'vue-router';
-import { parseISO } from 'date-fns';
+import { useAppStore } from '@/stores/app';
+import { useCollectionsStore } from '@/stores/collections';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useUserStore } from '@/stores/user';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { Item, Notification } from '@directus/types';
+import { parseISO } from 'date-fns';
+import { storeToRefs } from 'pinia';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 const { t } = useI18n();
 const appStore = useAppStore();
@@ -91,6 +90,7 @@ const tableHeaders = ref<TableHeader[]>([
 		sortable: false,
 		width: 300,
 		align: 'left',
+		description: null,
 	},
 	{
 		text: t('timestamp'),
@@ -98,6 +98,7 @@ const tableHeaders = ref<TableHeader[]>([
 		sortable: false,
 		width: 180,
 		align: 'left',
+		description: null,
 	},
 ]);
 

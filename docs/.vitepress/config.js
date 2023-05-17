@@ -604,12 +604,12 @@ function sidebar() {
 					text: 'Introduction',
 				},
 				{
-					link: '/contributing/codebase-overview',
-					text: 'Codebase Overview',
-				},
-				{
 					link: '/contributing/running-locally',
 					text: 'Running Locally',
+				},
+				{
+					link: '/contributing/codebase-overview',
+					text: 'Codebase Overview',
 				},
 				{
 					link: '/contributing/tests',
@@ -622,14 +622,6 @@ function sidebar() {
 							text: 'Blackbox Tests',
 						},
 					],
-				},
-				{
-					link: '/contributing/github-ci',
-					text: 'GitHub CI',
-				},
-				{
-					link: '/contributing/translations',
-					text: 'Translating the App',
 				},
 			],
 		},

@@ -50,12 +50,13 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { addTokenToURL } from '@/api';
 import { useAppStore } from '@/stores/app';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
+import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { Ref, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -80,7 +81,7 @@ const avatarURL = computed<string | null>(() => {
 const avatarError: Ref<null | Event> = ref(null);
 
 const userProfileLink = computed<string>(() => {
-	const id = userStore.currentUser?.id;
+	const id = (userStore.currentUser as User).id;
 	return `/users/${id}`;
 });
 

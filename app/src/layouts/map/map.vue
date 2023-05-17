@@ -20,11 +20,11 @@
 
 		<transition name="fade">
 			<div
-				v-if="itemPopup.item"
+				v-if="itemPopup!.item"
 				class="popup"
-				:style="{ top: itemPopup.position.y + 'px', left: itemPopup.position.x + 'px' }"
+				:style="{ top: itemPopup!.position!.y + 'px', left: itemPopup!.position!.x + 'px' }"
 			>
-				<render-template :template="template" :item="itemPopup.item" :collection="collection" />
+				<render-template :template="template" :item="itemPopup!.item" :collection="collection" />
 			</div>
 		</transition>
 
@@ -50,7 +50,7 @@
 			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 		</transition>
 
-		<template v-if="loading || itemCount > 0">
+		<template v-if="loading || itemCount! > 0">
 			<div class="footer">
 				<div v-if="totalPages > 1" class="pagination">
 					<v-pagination
@@ -63,29 +63,7 @@
 				</div>
 				<div class="mapboxgl-ctrl-dropdown">
 					<span>{{ t('limit') }}</span>
-					<v-select
-						:model-value="limit"
-						:items="[
-							{
-								text: n(100),
-								value: 100,
-							},
-							{
-								text: n(1000),
-								value: 1000,
-							},
-							{
-								text: n(10000),
-								value: 10000,
-							},
-							{
-								text: n(100000),
-								value: 100000,
-							},
-						]"
-						inline
-						@update:model-value="limitWritable = +$event"
-					/>
+					<v-select :model-value="limit" :items="pageSizes" inline @update:model-value="limitWritable = +$event" />
 				</div>
 			</div>
 		</template>
@@ -99,10 +77,11 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { usePageSize } from '@/composables/use-page-size';
+import { useSync } from '@directus/composables';
+import { GeometryOptions } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import MapComponent from './components/map.vue';
-import { useSync } from '@directus/composables';
-import { GeometryOptions, Item } from '@directus/types';
 
 const props = withDefaults(
 	defineProps<{
@@ -121,7 +100,7 @@ const props = withDefaults(
 		page: number;
 		toPage: (newPage: number) => void;
 		limit: number;
-		selection?: Item[];
+		selection?: (string | number)[];
 		error?: any;
 		geojsonError?: string;
 		geometryOptions?: GeometryOptions;
@@ -144,6 +123,14 @@ const { t, n } = useI18n();
 
 const cameraOptionsWritable = useSync(props, 'cameraOptions', emit);
 const limitWritable = useSync(props, 'limit', emit);
+
+const { sizes: pageSizes, selected: selectedSize } = usePageSize<{ text: string; value: number }>(
+	[100, 1000, 10000, 100000],
+	(value) => ({ text: n(value), value }),
+	props.limit
+);
+
+limitWritable.value = selectedSize;
 </script>
 
 <style lang="scss" scoped>

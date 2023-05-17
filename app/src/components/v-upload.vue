@@ -56,11 +56,10 @@
 			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<drawer-collection
-					collection="directus_files"
+				<drawer-files
 					:active="activeDialog === 'choose'"
 					:multiple="multiple"
-					:filter="filterByFolder"
+					:folder="folder"
 					@update:active="activeDialog = null"
 					@input="setSelection"
 				/>
@@ -92,15 +91,14 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed } from 'vue';
-import { uploadFiles } from '@/utils/upload-files';
-import { uploadFile } from '@/utils/upload-file';
-import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import api from '@/api';
 import emitter, { Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Filter } from '@directus/types';
+import { uploadFile } from '@/utils/upload-file';
+import { uploadFiles } from '@/utils/upload-files';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 interface Props {
 	multiple?: boolean;
@@ -133,11 +131,6 @@ const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
-
-const filterByFolder = computed(() => {
-	if (!props.folder) return undefined;
-	return { folder: { id: { _eq: props.folder } } } as Filter;
-});
 
 function validFiles(files: FileList) {
 	if (files.length === 0) return false;
@@ -258,7 +251,9 @@ function useDragging() {
 function useSelection() {
 	return { setSelection };
 
-	async function setSelection(selection: string[]) {
+	async function setSelection(selection: (string | number)[] | null) {
+		if (!selection) return;
+
 		if (props.multiple) {
 			const filesResponse = await api.get(`/files`, {
 				params: {

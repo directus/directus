@@ -1,6 +1,6 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { PermissionsAction } from '@directus/shared/types';
+import { PermissionsAction } from '@directus/types';
 import { computed, Ref } from 'vue';
 import { RelationM2A } from './use-relation-m2a';
 import { RelationM2M } from './use-relation-m2m';
