@@ -2,6 +2,8 @@
 
 > Tests ensure that the platform continues to work as intended when the existing codebase is modified.
 
+The current test strategy for Directus consists of `Blackbox Tests` testing the overall functionality of the platform as well as `Unit Tests` testing individual parts of the codebase.
+
 ## Running Tests
 
 ### Running Unit Tests
