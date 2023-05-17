@@ -1,60 +1,73 @@
 # Tests
 
-> Tests ensure that the platform functions as expected when the existing codebase is modified.
+> Tests ensure that the platform continues to work as intended when the existing codebase is modified.
 
 ## Running Tests
 
-### Running App Unit Tests
+### Running Unit Tests
 
-Run `pnpm --filter app test`.
+Use the following command to perform unit tests of all packages:
+```bash
+pnpm --workspace-root test
+```
 
-### Running API Unit Tests
+Use one of the following commands to perform more specific actions with unit tests (mix and match as desired):
 
-Run `pnpm --filter api test`.
+```bash
+# Run tests for a specific package (for example only in the API / App package)
+pnpm --filter api test
+pnpm --filter app test
+
+# Start tests in watch mode
+pnpm --filter api test -- --watch
+
+# Enable coverage report
+pnpm --filter api test -- --coverage
+
+# Run specific test files using a filter pattern
+pnpm --filter api test -- app.test.ts
+pnpm --filter api test -- utils
+```
 
 ### Running Blackbox Tests
 
-Install [Docker](https://docs.docker.com/get-docker/) and ensure that the service is running.
+Install [Docker](https://docs.docker.com/get-docker/) and ensure that the service is up and running.
 
-Run the following from the project's root directory.
+Run the following commands to start the blackbox tests:
 
 ```bash
-# Ensure that you are testing on the lastest codebase
-pnpm build
+# Ensure that you are testing against the lastest state of the codebase
+pnpm --workspace-root build
 
 # Clean up in case you ran the tests before
-docker compose -f tests-blackbox/docker-compose.yml down -v
-# Start the necessary containers
-docker compose -f tests-blackbox/docker-compose.yml up -d --wait
+pnpm --filter tests-blackbox exec docker compose down --volumes
+# Start the containers required for the tests
+pnpm --filter tests-blackbox exec docker compose up --detach --wait
 
 # Run the tests
-pnpm test:blackbox
+pnpm --workspace-root test:blackbox
 ```
 
-#### Testing a Specific Database
+#### Testing Specific Database Vendors
 
-Provide a csv of database drivers in the `TEST_DB` environment variable to test specific databases:
+Provide a CSV of database vendors via the `TEST_DB` environment variable to target only a specific subset:
 
 ```bash
-TEST_DB=cockroachdb pnpm test:blackbox
+# Example targeting multiple vendors
+TEST_DB=cockroachdb,postgres pnpm --workspace-root test:blackbox
+
+# Example targeting a single vendor
+TEST_DB=sqlite3 pnpm --workspace-root test:blackbox
 ```
 
 #### Using an Existing Directus Instance
 
-Normally, the test suite will spin up a fresh copy of the Directus API built from the current repository state. To use
-an already running copy of Directus instead, set the `TEST_LOCAL` flag:
+Normally, the test suite will spin up a fresh copy of the Directus API built from the current state of the codebase. To use
+an already running instance of Directus instead, enable the `TEST_LOCAL` flag:
 
 ```bash
-TEST_DB=cockroachdb TEST_LOCAL=true pnpm test:blackbox
+TEST_DB=cockroachdb TEST_LOCAL=true pnpm --workspace-root test:blackbox
 ```
 
 Note: The tests expect the instance running at `localhost:8055`. Make sure to connect the instance to the test database
 container found in the `tests-blackbox/docker-compose.yml` file.
-
-## Working on Tests
-
-<Card
-  title="Blackbox Tests"
-  h="2"
-  text="Learn how to write and add new blackbox tests."
-  url="/contributing/tests/blackbox-tests" />

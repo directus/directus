@@ -614,14 +614,6 @@ function sidebar() {
 				{
 					link: '/contributing/tests',
 					text: 'Tests',
-					collapsible: true,
-					collapsed: true,
-					items: [
-						{
-							link: '/contributing/tests/blackbox-tests',
-							text: 'Blackbox Tests',
-						},
-					],
 				},
 			],
 		},
