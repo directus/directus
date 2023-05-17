@@ -6,7 +6,7 @@
 
 ### Running Unit Tests
 
-Use the following command to perform unit tests of all packages:
+Use the following command to perform unit tests in all packages:
 ```bash
 pnpm --workspace-root test
 ```
@@ -28,6 +28,17 @@ pnpm --filter api test -- --coverage
 pnpm --filter api test -- app.test.ts
 pnpm --filter api test -- utils
 ```
+
+:::tip Relative Commands
+
+If you are already in a directory of a specific package, you may omit the `--filter` flag in `pnpm` commands since the commands will be executed relative to the current directory.
+
+```bash
+# Run API tests, from within the "/api" directory
+pnpm test
+```
+
+:::
 
 ### Running Blackbox Tests
 
