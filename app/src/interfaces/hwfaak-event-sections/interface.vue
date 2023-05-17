@@ -45,10 +45,10 @@
 import { useI18n } from 'vue-i18n';
 import { defineComponent, PropType, watch, computed, ref } from 'vue';
 import { isEqual, sortBy } from 'lodash';
-import { Field } from '@directus/shared/types';
+import { Field } from '@directus/types';
 import { i18n } from '@/lang';
 import api from '@/api';
-import { useCollection } from '@directus/shared/composables';
+import { useCollection } from '@directus/composables';
 import { useCollectionsStore } from '@/stores/collections';
 import { useRelationsStore } from '@/stores/relations';
 import { useFieldsStore } from '@/stores/fields';
@@ -156,6 +156,7 @@ export default defineComponent({
 					.map((item, index) => ({ ...item, index }));
 			},
 		});
+
 		const activeItem = computed(() => (activeIndex.value !== null ? tableItems.value[activeIndex.value] : null));
 
 		const tableRowHeight = computed<number>(() => {

@@ -51,6 +51,7 @@ const props = withDefaults(
 	}>(),
 	{
 		showHeader: false,
+		// eslint-disable-next-line vue/require-valid-default-prop
 		data: () => [],
 		precision: 'hour',
 		color: cssVar('--primary'),

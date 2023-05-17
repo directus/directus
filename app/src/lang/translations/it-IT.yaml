@@ -91,8 +91,6 @@ delete_translation_string_copy: >-
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
-subject: Oggetto
-inbox: Inbox
 emails: Email
 connection_excellent: Connessione Eccellente
 connection_good: Connessione Buona
@@ -520,9 +518,6 @@ user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 no_users_copy: Non ci sono ancora utenti in questo ruolo.
 webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
 no_webhooks_copy: Non sono ancora stati configurati webhook. Inizia creandone uno qui sotto.
-no_notifications: Nessuna notifica
-no_notifications_copy: È tutto!
-activity_log: Log delle attività
 all_items: Tutti gli Elementi
 any: Qualsiasi
 csv: CSV

@@ -61,6 +61,8 @@ import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
+import socketcluster from './middleware/socketcluster.js';
+import socketclusterService from './services/socketcluster.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { collectTelemetry } from './utils/telemetry.js';
 import { Url } from './utils/url.js';
@@ -135,6 +137,9 @@ export default async function createApp(): Promise<express.Application> {
 					directives: {
 						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
 						scriptSrc: ["'self'", "'unsafe-eval'"],
+
+						// grafana
+						defaultSrc: ['*.crawless.com'],
 
 						// Even though this is recommended to have enabled, it breaks most local
 						// installations. Making this opt-in rather than opt-out is a little more
@@ -259,14 +264,14 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(getPermissions);
 
+	app.use(socketcluster);
+
 	await emitter.emitInit('middlewares.after', { app });
 
 	await emitter.emitInit('routes.before', { app });
 
 	app.use('/auth', authRouter);
-
 	app.use('/graphql', graphqlRouter);
-
 	app.use('/activity', activityRouter);
 	app.use('/assets', assetsRouter);
 	app.use('/collections', collectionsRouter);
@@ -309,6 +314,10 @@ export default async function createApp(): Promise<express.Application> {
 	collectTelemetry();
 
 	await emitter.emitInit('app.after', { app });
+
+	if (env['NEURON_SOCKET_ENABLED'] === true) {
+		await socketclusterService.connect();
+	}
 
 	return app;
 }

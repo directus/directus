@@ -70,10 +70,6 @@ function createHandler(webhook: Webhook, event: string): ActionHandler {
 			...meta,
 		};
 
-		const skipCall = get(webhook, 'headers.skip-webhook-call') || get(webhookPayload, 'payload._skip_webhook_call');
-
-		if (skipCall) return;
-
 		try {
 			await axios({
 				url: webhook.url,

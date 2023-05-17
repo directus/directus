@@ -139,6 +139,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 								: `${this.eventScope}.create`,
 							payload,
 							{
+								event: `${this.eventScope}.create`,
 								collection: this.collection,
 							},
 							{
@@ -273,7 +274,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						: `${this.eventScope}.create`,
 				meta: {
 					payload,
-					key: primaryKey,
+					item: primaryKey,
+					action: 'create',
+					event: `${this.eventScope}.create`,
 					collection: this.collection,
 				},
 				context: {
@@ -579,7 +582,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							: `${this.eventScope}.update`,
 						payload,
 						{
-							keys,
+							item: keys,
+							action: 'update',
+							event: `${this.eventScope}.update`,
 							collection: this.collection,
 						},
 						{
@@ -732,7 +737,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						: `${this.eventScope}.update`,
 				meta: {
 					payload,
-					keys,
+					item: keys,
+					action: 'update',
+					event: `${this.eventScope}.update`,
 					collection: this.collection,
 				},
 				context: {
@@ -873,6 +880,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				this.eventScope === 'items' ? ['items.delete', `${this.collection}.items.delete`] : `${this.eventScope}.delete`,
 				keys,
 				{
+					item: keys,
+					action: 'delete',
+					event: `${this.eventScope}.delete`,
 					collection: this.collection,
 				},
 				{
