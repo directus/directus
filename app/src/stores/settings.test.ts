@@ -1,11 +1,11 @@
 import api from '@/api';
-import { Settings } from '@directus/types';
-import { createTestingPinia } from '@pinia/testing';
 import * as notifyUtil from '@/utils/notify';
 import * as unexpectedErrorUtil from '@/utils/unexpected-error';
+import { Settings } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
 import { AxiosRequestConfig } from 'axios';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeAll, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
 
 beforeEach(() => {
 	setActivePinia(
