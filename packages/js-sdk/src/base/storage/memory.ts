@@ -5,9 +5,11 @@ export class MemoryStorage extends BaseStorage {
 
 	get(key: string): string | null {
 		const k = this.key(key);
+
 		if (k in this.values) {
 			return this.values[k]!;
 		}
+
 		return null;
 	}
 

@@ -1,9 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { Auth, Directus, MemoryStorage, Transport } from '../../src';
 import { test } from '../utils';
+import { describe, expect } from 'vitest';
 
 describe('auth', function () {
 	test(`static auth should validate token`, async (url, nock) => {
@@ -34,11 +31,12 @@ describe('auth', function () {
 			beforeRequest: async (config) => {
 				await auth.refreshIfExpired();
 				const token = auth.storage.auth_token;
-				const bearer = token
-					? token.startsWith(`Bearer `)
-						? String(auth.storage.auth_token)
-						: `Bearer ${auth.storage.auth_token}`
-					: '';
+
+				let bearer = '';
+
+				if (token) {
+					bearer = token.startsWith(`Bearer `) ? String(auth.storage.auth_token) : `Bearer ${auth.storage.auth_token}`;
+				}
 
 				return {
 					...config,
@@ -131,17 +129,22 @@ describe('auth', function () {
 			});
 
 		const sdk = new Directus(url);
+
+		let failed: false | string = false;
+
 		try {
 			await sdk.auth.login({
 				email: 'invalid@email.com',
 				password: 'invalid_password',
 			});
-			fail('Should have thrown due to error response');
+
+			failed = 'Should have thrown due to error response';
 		} catch {
 			//
 		}
 
 		expect(await sdk.auth.token).toBeNull();
+		expect(failed).toBe(false);
 	});
 
 	test(`invalid static token should not set the token`, async (url, nock) => {
@@ -162,13 +165,17 @@ describe('auth', function () {
 			});
 
 		const sdk = new Directus(url);
+
+		let failed: false | string = false;
+
 		try {
 			await sdk.auth.static('token');
-			fail('Should have thrown due to error response');
+			failed = 'Should have thrown due to error response';
 		} catch {
 			//
 		}
 
 		expect(await sdk.auth.token).toBeNull();
+		expect(failed).toBe(false);
 	});
 });

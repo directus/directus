@@ -3,9 +3,11 @@ import { BaseStorage } from './base';
 export class LocalStorage extends BaseStorage {
 	get(key: string): string | null {
 		const value = localStorage.getItem(this.key(key));
+
 		if (value !== null) {
 			return value;
 		}
+
 		return null;
 	}
 

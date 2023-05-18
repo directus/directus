@@ -1,26 +1,26 @@
-/**
- * @jest-environment node
- */
-
 import nock from 'nock';
 
 import { Transport } from '../../src/base/transport';
 import { TransportResponse, TransportError } from '../../src/transport';
+import { describe, expect, it, vi } from 'vitest';
 
 describe('default transport', function () {
 	const URL = 'http://localhost';
 	nock.disableNetConnect();
 
-	function expectResponse<T>(response: TransportResponse<T>, expected: Partial<TransportResponse<T>>) {
+	function expectResponse<T extends any[]>(response: TransportResponse<T>, expected: Partial<TransportResponse<T>>) {
 		if (expected.status) {
 			expect(response.status).toBe(expected.status);
 		}
+
 		if (expected.statusText) {
 			expect(response.statusText).toBe(expected.statusText);
 		}
+
 		if (expected.data) {
 			expect(response.data).toMatchObject<T | T[]>(expected.data);
 		}
+
 		if (expected.headers) {
 			expect(response.headers).toMatchObject(expected.headers);
 		}
@@ -33,6 +33,7 @@ describe('default transport', function () {
 
 			const transport = new Transport({ url: URL }) as any;
 			const response = await transport[method](route);
+
 			expectResponse(response, {
 				status: 200,
 			});
@@ -44,16 +45,21 @@ describe('default transport', function () {
 
 			const transport = new Transport({ url: URL }) as any;
 
+			let failed = false;
+
 			try {
 				await transport[method](route);
-				fail();
+				failed = true;
 			} catch (err: any) {
 				expect(err).toBeInstanceOf(TransportError);
 			}
+
+			expect(failed).toBe(false);
 		});
 
 		it(`${method} should carry response error information`, async function () {
 			const route = `/${method}/403/error`;
+
 			(nock(URL) as any)[method](route).reply(403, {
 				errors: [
 					{
@@ -67,9 +73,11 @@ describe('default transport', function () {
 
 			const transport = new Transport({ url: URL }) as any;
 
+			let failed = false;
+
 			try {
 				await transport[method](route);
-				fail();
+				failed = true;
 			} catch (err: any) {
 				const terr = err as TransportError;
 				expect(terr).toBeInstanceOf(TransportError);
@@ -79,6 +87,8 @@ describe('default transport', function () {
 				expect(terr.errors[0]?.message).toBe('You don\'t have permission access to "contacts" collection.');
 				expect(terr.errors[0]?.extensions?.code).toBe('FORBIDDEN');
 			}
+
+			expect(failed).toBe(false);
 		});
 
 		it('get should throw non response errors', async function () {
@@ -86,10 +96,11 @@ describe('default transport', function () {
 			(nock(URL) as any)[method](route).replyWithError('Random error');
 
 			const transport = new Transport({ url: URL }) as any;
+			let failed = false;
 
 			try {
 				await transport[method](route);
-				fail();
+				failed = true;
 			} catch (err: any) {
 				const terr = err as TransportError;
 				expect(terr).toBeInstanceOf(TransportError);
@@ -98,6 +109,8 @@ describe('default transport', function () {
 				expect(terr.parent).not.toBeUndefined();
 				expect(terr.parent?.message).toBe('Random error');
 			}
+
+			expect(failed).toBe(false);
 		});
 	});
 
@@ -108,14 +121,17 @@ describe('default transport', function () {
 
 	it('non axios errors are set in parent', async function () {
 		const transport = new Transport({ url: URL });
-		const mock = jest.spyOn(transport, 'beforeRequest');
+		const mock = vi.spyOn(transport, 'beforeRequest');
+
 		mock.mockImplementation(() => {
 			throw new Error('this is not an axios error');
 		});
 
+		let failed = false;
+
 		try {
 			await transport.get('/route');
-			fail();
+			failed = true;
 		} catch (err: any) {
 			const terr = err as TransportError;
 			expect(terr).toBeInstanceOf(TransportError);
@@ -124,5 +140,7 @@ describe('default transport', function () {
 			expect(terr.parent).not.toBeUndefined();
 			expect(terr.parent?.message).toBe('this is not an axios error');
 		}
+
+		expect(failed).toBe(false);
 	});
 });

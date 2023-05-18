@@ -25,6 +25,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 
 	async readOne<Q extends QueryOne<T>>(id: ID, query?: Q, options?: ItemsOptions): Promise<OneItem<T, Q>> {
 		if (`${id}` === '') throw new EmptyParamError('id');
+
 		const response = await this.transport.get<OneItem<T, Q>>(`${this.endpoint}/${encodeURI(id as string)}`, {
 			params: query,
 			...options?.requestOptions,

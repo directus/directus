@@ -32,6 +32,7 @@ export class Auth extends IAuth {
 
 		if (options?.staticToken) {
 			this.staticToken = options?.staticToken;
+
 			this.updateStorage<'StaticToken'>({
 				access_token: this.staticToken,
 				expires: null,
@@ -57,6 +58,7 @@ export class Auth extends IAuth {
 					this._refreshPromise = undefined;
 				}
 			}
+
 			return this._storage.auth_token;
 		})();
 	}
@@ -91,6 +93,7 @@ export class Auth extends IAuth {
 			} finally {
 				this._refreshPromise = undefined;
 			}
+
 			return;
 		}
 
@@ -166,6 +169,7 @@ export class Auth extends IAuth {
 
 	async logout(): Promise<void> {
 		let refresh_token: string | undefined;
+
 		if (this.mode === 'json') {
 			refresh_token = this._storage.auth_refresh_token || undefined;
 		}

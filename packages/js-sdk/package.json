@@ -47,7 +47,8 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"license": "MIT",
 	"dependencies": {
-		"axios": "^0.27.2"
+		"axios": "^0.27.2",
+		"jsdom": "^22.0.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",

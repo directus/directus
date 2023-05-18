@@ -11,9 +11,11 @@ export class AssetsHandler {
 
 	async readOne(id: ID): Promise<any> {
 		if (`${id}` === '') throw new EmptyParamError('id');
+
 		const response = await this.transport.get(`/assets/${id}`, {
 			responseType: 'stream',
 		});
+
 		return response.raw;
 	}
 }

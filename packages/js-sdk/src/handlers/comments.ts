@@ -17,9 +17,11 @@ export class CommentsHandler<T> {
 
 	async update(comment_activity_id: ID, comment: string): Promise<ActivityItem<T>> {
 		if (`${comment_activity_id}` === '') throw new EmptyParamError('comment_activity_id');
+
 		const response = await this.transport.patch(`/activity/comment/${encodeURI(comment_activity_id as string)}`, {
 			comment,
 		});
+
 		return response.data;
 	}
 

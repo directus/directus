@@ -18,6 +18,7 @@ export class MeHandler<T> {
 		const response = await this._transport.get<T>('/users/me', {
 			params: query,
 		});
+
 		return response.data!;
 	}
 
@@ -25,6 +26,7 @@ export class MeHandler<T> {
 		const response = await this._transport.patch<T>(`/users/me`, data, {
 			params: query,
 		});
+
 		return response.data!;
 	}
 }

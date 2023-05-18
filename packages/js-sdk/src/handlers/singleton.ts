@@ -17,6 +17,7 @@ export class SingletonHandler<T> implements ISingleton<T> {
 		const item = await this.transport.get<OneItem<T, Q>>(`${this.endpoint}`, {
 			params: query,
 		});
+
 		return item.data;
 	}
 

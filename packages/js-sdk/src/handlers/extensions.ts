@@ -17,6 +17,7 @@ export class ExtensionEndpoint implements ITransport {
 		if (path.startsWith('/')) {
 			path = path.substr(1);
 		}
+
 		return `/custom/${this.name}/${path}`;
 	}
 

@@ -28,9 +28,11 @@ export abstract class BaseStorage extends IStorage {
 
 	get auth_expires(): number | null {
 		const value = this.get(Keys.Expires);
+
 		if (value === null) {
 			return null;
 		}
+
 		return parseInt(value);
 	}
 
@@ -44,9 +46,11 @@ export abstract class BaseStorage extends IStorage {
 
 	get auth_expires_at(): number | null {
 		const value = this.get(Keys.ExpiresAt);
+
 		if (value === null) {
 			return null;
 		}
+
 		return parseInt(value);
 	}
 

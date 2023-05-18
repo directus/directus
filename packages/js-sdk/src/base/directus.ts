@@ -86,9 +86,9 @@ export class Directus<T extends TypeMap, IAuthHandler extends IAuth = Auth> impl
 			}
 		}
 
-		if (this._options?.transport && this._options?.transport instanceof ITransport)
+		if (this._options?.transport && this._options?.transport instanceof ITransport) {
 			this._transport = this._options.transport;
-		else {
+		} else {
 			this._transport = new Transport({
 				url: this.url,
 				...this._options?.transport,
@@ -98,6 +98,7 @@ export class Directus<T extends TypeMap, IAuthHandler extends IAuth = Auth> impl
 					}
 
 					const token = this.storage.auth_token;
+
 					const bearer = token
 						? token.startsWith(`Bearer `)
 							? String(this.storage.auth_token)
@@ -115,18 +116,20 @@ export class Directus<T extends TypeMap, IAuthHandler extends IAuth = Auth> impl
 					if (!(this._options?.transport instanceof ITransport) && this._options?.transport?.beforeRequest) {
 						return this._options?.transport?.beforeRequest(authenticatedConfig);
 					}
+
 					return authenticatedConfig;
 				},
 			});
 		}
 
 		if (this._options?.auth && this._options?.auth instanceof IAuth) this._auth = this._options.auth;
-		else
+		else {
 			this._auth = new Auth({
 				transport: this._transport,
 				storage: this._storage,
 				...this._options?.auth,
 			} as AuthOptions) as unknown as IAuthHandler;
+		}
 	}
 
 	get url() {
@@ -198,9 +201,11 @@ export class Directus<T extends TypeMap, IAuthHandler extends IAuth = Auth> impl
 	get users(): UsersHandler<TypeOf<T, 'directus_users'>> {
 		return this._users || (this._users = new UsersHandler<TypeOf<T, 'directus_users'>>(this.transport));
 	}
+
 	get settings(): SettingsHandler<TypeOf<T, 'directus_settings'>> {
 		return this._settings || (this._settings = new SettingsHandler<TypeOf<T, 'directus_settings'>>(this.transport));
 	}
+
 	get server(): ServerHandler {
 		return this._server || (this._server = new ServerHandler(this.transport));
 	}

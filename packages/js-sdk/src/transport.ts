@@ -43,16 +43,19 @@ export abstract class ITransport {
 		data?: P,
 		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
+
 	abstract post<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
 		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
+
 	abstract put<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
 		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>>;
+
 	abstract patch<T = any, P = any, R = any>(
 		path: string,
 		data?: P,
