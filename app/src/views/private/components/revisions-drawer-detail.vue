@@ -119,7 +119,7 @@ defineExpose({
 .external {
 	margin-left: 20px;
 	color: var(--foreground-subdued);
-	font-style: italic∏;
+	font-style: italic;
 }
 
 .other {
