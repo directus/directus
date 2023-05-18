@@ -210,8 +210,8 @@ type Query {
 ```graphql
 query {
 	server_info {
-		directus {
-			version
+		project {
+			project_name
 		}
 	}
 }
