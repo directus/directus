@@ -1,21 +1,9 @@
 import api from '@/api';
-import prettyBytes from 'pretty-bytes';
-import prettyMS from 'pretty-ms';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 
 type ServerInfo = {
 	directus: {
 		version: string;
-	};
-	node: {
-		version: string;
-		uptime: number;
-	};
-	os: {
-		type: string;
-		version: string;
-		uptime: number;
-		totalmem: number;
 	};
 };
 
@@ -24,16 +12,6 @@ type UsableProjectInfo = {
 	parsedInfo: ComputedRef<{
 		directus: {
 			version: string;
-		};
-		node: {
-			version: string;
-			uptime: string;
-		};
-		os: {
-			type: string;
-			version: string;
-			uptime: string;
-			totalmem: string;
 		};
 	} | null>;
 	loading: Ref<boolean>;
@@ -51,16 +29,6 @@ export function useProjectInfo(): UsableProjectInfo {
 		return {
 			directus: {
 				version: info.value.directus.version,
-			},
-			node: {
-				version: info.value.node.version,
-				uptime: prettyMS(info.value.node.uptime * 1000),
-			},
-			os: {
-				type: info.value.os.type,
-				version: info.value.os.version,
-				uptime: prettyMS(info.value.os.uptime * 1000),
-				totalmem: prettyBytes(info.value.os.totalmem),
 			},
 		};
 	});

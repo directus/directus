@@ -192,24 +192,6 @@ Admin users also get the following information:
 `directus.version` **string**\
 Current version of Directus used.
 
-`node.version` **string**\
-Current version of Node used.
-
-`node.uptime` **integer**\
-How long the current process has been running.
-
-`os.type` **string**\
-What type of operation system is used.
-
-`os.version` **string**\
-What version of the operation system is used.
-
-`os.uptime` **string**\
-How long the operating system has been up.
-
-`os.totalmem` **string**\
-How much memory is available on the operating system.
-
 ### REST API
 
 ```

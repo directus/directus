@@ -1931,38 +1931,6 @@ export class GraphQLService {
 						},
 					}),
 				},
-				node: {
-					type: new GraphQLObjectType({
-						name: 'server_info_node',
-						fields: {
-							version: {
-								type: GraphQLString,
-							},
-							uptime: {
-								type: GraphQLInt,
-							},
-						},
-					}),
-				},
-				os: {
-					type: new GraphQLObjectType({
-						name: 'server_info_os',
-						fields: {
-							type: {
-								type: GraphQLString,
-							},
-							version: {
-								type: GraphQLString,
-							},
-							uptime: {
-								type: GraphQLInt,
-							},
-							totalmem: {
-								type: GraphQLInt,
-							},
-						},
-					}),
-				},
 			});
 		}
 

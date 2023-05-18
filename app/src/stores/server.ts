@@ -30,16 +30,6 @@ export type Info = {
 	directus?: {
 		version: string;
 	};
-	node?: {
-		version: string;
-		uptime: number;
-	};
-	os?: {
-		type: string;
-		version: string;
-		uptime: number;
-		totalmem: number;
-	};
 	rateLimit?:
 		| false
 		| {
@@ -64,8 +54,6 @@ export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
 		directus: undefined,
-		node: undefined,
-		os: undefined,
 		rateLimit: undefined,
 		flows: undefined,
 		queryLimit: undefined,
@@ -97,8 +85,6 @@ export const useServerStore = defineStore('serverStore', () => {
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.directus = serverInfoResponse.data.data?.directus;
-		info.node = serverInfoResponse.data.data?.node;
-		info.os = serverInfoResponse.data.data?.os;
 		info.flows = serverInfoResponse.data.data?.flows;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
@@ -130,8 +116,6 @@ export const useServerStore = defineStore('serverStore', () => {
 	const dehydrate = () => {
 		info.project = null;
 		info.directus = undefined;
-		info.node = undefined;
-		info.os = undefined;
 
 		auth.providers = [];
 		auth.disableDefault = false;

@@ -345,8 +345,6 @@ describe('dehydrate action', () => {
 
 		expect(serverStore.info.project).toEqual(null);
 		expect(serverStore.info.directus).toEqual(undefined);
-		expect(serverStore.info.node).toEqual(undefined);
-		expect(serverStore.info.os).toEqual(undefined);
 		expect(serverStore.auth.providers).toEqual([]);
 		expect(serverStore.auth.disableDefault).toEqual(false);
 	});
