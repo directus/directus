@@ -135,7 +135,6 @@
 		"nanoid": "4.0.2",
 		"p-queue": "7.3.4",
 		"pinia": "2.0.36",
-		"pretty-bytes": "6.1.0",
 		"pretty-ms": "8.0.0",
 		"qrcode": "1.5.1",
 		"react": "18",
