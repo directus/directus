@@ -62,7 +62,7 @@ let apiGetSpy: SpyInstance;
 let replaceQueueSpy: SpyInstance;
 let setLanguageSpy: SpyInstance;
 
-beforeAll(() => {
+beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
 	replaceQueueSpy = vi.spyOn(apiFunctions, 'replaceQueue').mockResolvedValue();
 	setLanguageSpy = vi.spyOn(setLanguageDefault, 'setLanguage').mockResolvedValue(true);

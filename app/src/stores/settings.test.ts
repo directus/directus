@@ -98,7 +98,7 @@ vi.mock('@/api', () => {
 
 let apiGetSpy: SpyInstance;
 
-beforeAll(() => {
+beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
 });
 
