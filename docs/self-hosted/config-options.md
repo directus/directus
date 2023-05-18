@@ -207,6 +207,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`                         |
 | `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                          | `100`                        |
 | `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                          | `-1`                         |
+| `QUERY_PARSER_ARRAY_LIMIT` | The maximum size of an array in query parameters. | `20`  |
 | `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                              | `User-agent: *\nDisallow: /` |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
