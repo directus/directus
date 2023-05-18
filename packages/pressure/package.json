@@ -31,9 +31,9 @@
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "0.0.7",
 		"@types/express": "4.17.17",
-		"@vitest/coverage-c8": "0.31.0",
+		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"vitest": "0.31.1"
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*"
