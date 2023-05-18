@@ -31,16 +31,6 @@ const mockServerInfo: Info = {
 	directus: {
 		version: '10.10.10',
 	},
-	node: {
-		version: '20.0.0',
-		uptime: 123,
-	},
-	os: {
-		type: 'Test OS',
-		version: '10.10.10',
-		uptime: 10000,
-		totalmem: 12345678,
-	},
 };
 
 const mockAuthProviders: Auth['providers'] = [
