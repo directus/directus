@@ -34,7 +34,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 		if (typeof unref(primaryKey) === 'undefined') return;
 
 		loading.value = true;
-		const pageSize = info.queryLimit?.max && info.queryLimit.max !== -1 ? Math.min(100, info.queryLimit.max) : 100;
+		const pageSize = info.queryLimit?.max && info.queryLimit.max !== -1 ? Math.min(10, info.queryLimit.max) : 10;
 
 		try {
 			const filter: Filter = {
