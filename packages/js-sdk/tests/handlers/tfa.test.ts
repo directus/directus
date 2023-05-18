@@ -1,9 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { describe, expect } from 'vitest';
 
 describe('tfa', function () {
 	test(`generate`, async (url, nock) => {
@@ -22,11 +19,13 @@ describe('tfa', function () {
 		const data = await sdk.users.me.tfa.generate('password1234');
 
 		expect(scope.pendingMocks().length).toBe(0);
+
 		expect(data).toStrictEqual({
 			secret: 'supersecret',
 			otpauth_url: 'https://example.com',
 		});
 	});
+
 	test(`enable`, async (url, nock) => {
 		const scope = nock()
 			.post('/users/me/tfa/enable', {

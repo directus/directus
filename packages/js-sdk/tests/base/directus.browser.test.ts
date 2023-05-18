@@ -1,8 +1,5 @@
-/**
- * @jest-environment jsdom
- */
-
 import { Directus, LocalStorage, MemoryStorage } from '../../src/base';
+import { describe, expect, it } from 'vitest';
 
 describe('browser sdk', function () {
 	it('has storage', function () {

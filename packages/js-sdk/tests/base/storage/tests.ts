@@ -1,4 +1,5 @@
 import { IStorage } from '../../../src/storage';
+import { beforeEach, test, expect } from 'vitest';
 
 export function createStorageTests(createStorage: () => IStorage) {
 	return function (): void {
@@ -9,14 +10,14 @@ export function createStorageTests(createStorage: () => IStorage) {
 			}
 		});
 
-		it('set returns the same value', async function () {
+		test('set returns the same value', async function () {
 			const storage = createStorage();
 
 			const value = storage.set('value', '1234');
 			expect(value).toBe('1234');
 		});
 
-		it('get returns previously set items', async function () {
+		test('get returns previously set items', async function () {
 			const storage = createStorage();
 
 			storage.set('value1', '1234');
@@ -32,14 +33,14 @@ export function createStorageTests(createStorage: () => IStorage) {
 			expect(value3).toBe('false');
 		});
 
-		it('get returns null for missing items', async function () {
+		test('get returns null for missing items', async function () {
 			const storage = createStorage();
 
 			const value = storage.get('value');
 			expect(value).toBeNull();
 		});
 
-		it('delete removes items and returns it', async function () {
+		test('delete removes items and returns it', async function () {
 			const storage = createStorage();
 
 			let value = storage.get('abobrinha');
@@ -55,14 +56,14 @@ export function createStorageTests(createStorage: () => IStorage) {
 			expect(value).toBeNull();
 		});
 
-		it('delete returns null if removing an unknown key', async function () {
+		test('delete returns null if removing an unknown key', async function () {
 			const storage = createStorage();
 
 			const value = storage.delete('unknown');
 			expect(value).toBeNull();
 		});
 
-		it('can get and set auth_token', async function () {
+		test('can get and set auth_token', async function () {
 			const storage = createStorage();
 
 			expect(storage.auth_token).toBeNull();
@@ -74,7 +75,7 @@ export function createStorageTests(createStorage: () => IStorage) {
 			expect(storage.auth_token).toBeNull();
 		});
 
-		it('can get and set auth_expires', async function () {
+		test('can get and set auth_expires', async function () {
 			const storage = createStorage();
 
 			expect(storage.auth_expires).toBeNull();

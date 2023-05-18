@@ -1,9 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { describe, expect } from 'vitest';
 
 describe('fields', function () {
 	test(`update one`, async (url, nock) => {
@@ -12,6 +9,7 @@ describe('fields', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+
 		await sdk.fields.updateOne('posts', 'title', {
 			meta: {
 				required: true,
@@ -22,9 +20,7 @@ describe('fields', function () {
 	});
 
 	test(`check ManyItems return type for readAll`, async (url, nock) => {
-		nock()
-			.get('/fields')
-			.reply(200, { data: [] });
+		nock().get('/fields').reply(200, { data: [] });
 
 		const sdk = new Directus(url);
 		const response = await sdk.fields.readAll();
@@ -33,13 +29,11 @@ describe('fields', function () {
 	});
 
 	test(`check ManyItems return type for readMany`, async (url, nock) => {
-		nock()
-			.get('/fields/posts')
-			.reply(200, { data: [] });
+		nock().get('/fields/posts').reply(200, { data: [] });
 
 		const sdk = new Directus(url);
 		const response = await sdk.fields.readMany('posts');
-		console.log(response);
+		// console.log(response);
 
 		expect(Array.isArray(response.data)).toBe(true);
 	});

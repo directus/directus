@@ -1,7 +1,3 @@
-/**
- * @jest-environment node
- */
-
 import { Auth } from '../../src/base/auth';
 import { ItemsHandler } from '../../src/base/items';
 import { Transport } from '../../src/base/transport';
@@ -27,6 +23,7 @@ import { test } from '../utils';
 import { InvitesHandler } from '../../src/handlers/invites';
 import { TFAHandler } from '../../src/handlers/tfa';
 import { MeHandler } from '../../src/handlers/me';
+import { describe, expect, it } from 'vitest';
 
 describe('sdk', function () {
 	const sdk = new Directus('http://example.com');
@@ -146,6 +143,7 @@ describe('sdk', function () {
 				{ id: 2, title: 'My second post' },
 			],
 		});
+
 		expect(scope.pendingMocks().length).toBe(0);
 	});
 
@@ -173,6 +171,7 @@ describe('sdk', function () {
 		expect(response.data).toMatchObject({
 			users: [{ email: 'someone@example.com' }, { email: 'someone.else@example.com' }],
 		});
+
 		expect(scope.pendingMocks().length).toBe(0);
 	});
 });

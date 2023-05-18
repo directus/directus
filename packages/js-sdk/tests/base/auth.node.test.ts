@@ -1,9 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { describe, expect } from 'vitest';
 
 describe('auth (node)', function () {
 	test(`sets default auth mode to json`, async (url) => {
@@ -23,6 +20,7 @@ describe('auth (node)', function () {
 			});
 
 		const sdk = new Directus(url);
+
 		const loginPromise = sdk.auth.login({
 			email: 'wolfulus@gmail.com',
 			password: 'password',

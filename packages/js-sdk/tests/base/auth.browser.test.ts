@@ -1,9 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { describe, expect, beforeEach, afterEach } from 'vitest';
 
 describe('auth (browser)', function () {
 	beforeEach(() => {

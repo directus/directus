@@ -1,9 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { describe, expect } from 'vitest';
 
 describe('relations', function () {
 	test(`update one`, async (url, nock) => {
@@ -12,6 +9,7 @@ describe('relations', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+
 		await sdk.relations.updateOne('posts', 'title', {
 			meta: {
 				required: true,

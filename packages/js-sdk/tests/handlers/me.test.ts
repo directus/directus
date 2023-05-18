@@ -1,9 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { describe, expect } from 'vitest';
 
 describe('profile', function () {
 	test(`read`, async (url, nock) => {
@@ -24,6 +21,7 @@ describe('profile', function () {
 			.reply(200, {});
 
 		const sdk = new Directus(url);
+
 		await sdk.users.me.update({
 			email: 'other@email.com',
 			untyped_field: 12345,

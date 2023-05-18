@@ -1,5 +1,6 @@
 import nock, { back, BackMode } from 'nock';
 import { setImmediate, setTimeout, clearImmediate } from 'timers';
+import { it, vi } from 'vitest';
 import argon2 from 'argon2';
 
 export const URL = process.env.TEST_URL || 'http://localhost';
@@ -20,6 +21,7 @@ export function test(name: string, test: Test, settings?: TestSettings): void {
 		nock.cleanAll();
 
 		const scope = () => nock(settings?.url || URL);
+
 		if (settings?.fixture) {
 			await back(settings.fixture, async () => {
 				await test(settings?.url || URL, scope);
@@ -52,37 +54,42 @@ export async function timers(
 		setImmediate: setImmediate,
 	};
 
-	jest.useFakeTimers();
-	jest.setSystemTime(new Date(initial));
+	vi.useFakeTimers();
+	vi.setSystemTime(new Date(initial));
 
 	let travel = 0;
 
 	try {
 		const tick = async (ms: number) => {
 			travel += ms;
-			await Promise.resolve().then(() => jest.advanceTimersByTime(ms));
+			await Promise.resolve().then(() => vi.advanceTimersByTime(ms));
 		};
+
 		const skip = async (func: () => Promise<void>, date = false) => {
-			jest.useRealTimers();
+			vi.useRealTimers();
+
 			try {
 				await func();
 			} finally {
 				if (date) {
-					jest.setSystemTime(initial + travel);
+					vi.setSystemTime(initial + travel);
 				}
-				jest.useFakeTimers();
+
+				vi.useFakeTimers();
 			}
 		};
+
 		const flush = () =>
 			new Promise<void>((resolve) => {
-				jest.runAllTicks();
+				vi.runAllTicks();
 
 				originals.setImmediate(resolve);
 			});
+
 		const sleep = (ms: number) =>
 			new Promise<void>((resolve) => {
 				travel += ms;
-				jest.advanceTimersByTime(travel);
+				vi.advanceTimersByTime(travel);
 				originals.setTimeout(resolve, ms);
 			});
 
@@ -93,16 +100,19 @@ export async function timers(
 			sleep,
 		});
 	} finally {
-		jest.clearAllTimers();
-		jest.useRealTimers();
+		vi.clearAllTimers();
+		vi.useRealTimers();
 	}
 }
 
 export function generateHash(stringToHash: string): Promise<string> {
 	const buffer = 'string' as unknown as Buffer;
 	const argon2HashConfigOptions = { test: 'test', associatedData: buffer }; // Disallow the HASH_RAW option, see https://github.com/directus/directus/discussions/7670#discussioncomment-1255805
+
 	// test, if specified, must be passed as a Buffer to argon2.hash, see https://github.com/ranisalt/node-argon2/wiki/Options#test
-	if ('test' in argon2HashConfigOptions)
+	if ('test' in argon2HashConfigOptions) {
 		argon2HashConfigOptions.associatedData = Buffer.from(argon2HashConfigOptions.associatedData);
+	}
+
 	return argon2.hash(stringToHash, argon2HashConfigOptions);
 }

@@ -1,10 +1,7 @@
-/**
- * @jest-environment node
- */
-
 import { Blog } from './blog.d';
 import { Directus, ItemsOptions, EmptyParamError } from '../src';
 import { test } from './utils';
+import { describe, expect } from 'vitest';
 
 describe('items', function () {
 	test(`should throw EmptyParamError when using empty string as id`, async (url, _nock) => {
@@ -131,6 +128,7 @@ describe('items', function () {
 			});
 
 		const sdk = new Directus<Blog>(url);
+
 		const items = await sdk.items('posts').readByQuery({
 			fields: ['id', 'title'],
 		});
@@ -157,6 +155,7 @@ describe('items', function () {
 			});
 
 		const sdk = new Directus<Blog>(url);
+
 		const item = await sdk.items('posts').createOne({
 			title: 'New post',
 			body: 'This is a new post',
@@ -192,6 +191,7 @@ describe('items', function () {
 			});
 
 		const sdk = new Directus<Blog>(url);
+
 		const items = await sdk.items('posts').createMany([
 			{
 				title: 'New post 2',
@@ -233,6 +233,7 @@ describe('items', function () {
 			});
 
 		const sdk = new Directus<Blog>(url);
+
 		const item = await sdk.items('posts').updateOne(1, {
 			title: 'Updated post',
 			body: 'Updated post content',
@@ -267,6 +268,7 @@ describe('items', function () {
 			});
 
 		const sdk = new Directus<Blog>(url);
+
 		const items = await sdk.items('posts').updateMany([1, 2], {
 			title: 'Updated post',
 			body: 'Updated post content',
@@ -309,6 +311,7 @@ describe('items', function () {
 			});
 
 		const sdk = new Directus<Blog>(url);
+
 		const items = await sdk.items('posts').updateBatch([
 			{
 				id: 1,
@@ -356,19 +359,24 @@ describe('items', function () {
 
 		expect(scope.pendingMocks().length).toBe(0);
 	});
+
 	test('should passthrough additional headers', async (url, nock) => {
 		const postData = {
 			title: 'New post',
 			body: 'This is a new post',
 			published: false,
 		};
+
 		const id = 3;
+
 		const expectedData = {
 			id,
 			...postData,
 		};
+
 		const headerName = 'X-Custom-Header';
 		const headerValue = 'Custom header value';
+
 		const customOptions: ItemsOptions = {
 			requestOptions: {
 				headers: {
@@ -376,6 +384,7 @@ describe('items', function () {
 				},
 			},
 		};
+
 		nock()
 			.post('/items/posts')
 			// check if custom header is present

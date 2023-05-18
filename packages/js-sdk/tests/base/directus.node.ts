@@ -1,8 +1,5 @@
-/**
- * @jest-environment node
- */
-
 import { Directus, MemoryStorage } from '../../src/base';
+import { describe, expect, it } from 'vitest';
 
 describe('node sdk', function () {
 	const sdk = new Directus('http://example.com');

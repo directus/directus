@@ -1,9 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { Directus } from '../../src';
 import { test } from '../utils';
+import { describe, expect } from 'vitest';
 
 describe('comments', function () {
 	test(`creates comments`, async (url, nock) => {
@@ -23,6 +20,7 @@ describe('comments', function () {
 			});
 
 		const sdk = new Directus(url);
+
 		const item = await sdk.activity.comments.create({
 			collection: 'posts',
 			item: '1',

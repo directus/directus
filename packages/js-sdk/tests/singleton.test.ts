@@ -1,9 +1,6 @@
-/**
- * @jest-environment node
- */
-
 import { Directus } from '../src';
 import { test } from './utils';
+import { describe, expect } from 'vitest';
 
 type Settings = {
 	url: string;
@@ -57,6 +54,7 @@ describe('singleton', function () {
 			});
 
 		const sdk = new Directus<MyWebsite>(url);
+
 		const settings = await sdk.singleton('settings').update({
 			title: 'New Website Title',
 		});
