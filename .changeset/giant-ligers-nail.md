@@ -4,4 +4,4 @@
 "docs": patch
 ---
 
-Removed server info
+Removed unnecessary disclosure of server info
