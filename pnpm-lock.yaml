@@ -989,17 +989,17 @@ importers:
         specifier: 0.0.7
         version: 0.0.7
       '@types/node':
-        specifier: 18.15.13
-        version: 18.15.13
+        specifier: 18.16.12
+        version: 18.16.12
       '@vitest/coverage-c8':
-        specifier: 0.31.0
-        version: 0.31.0(vitest@0.31.0)
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.31.0
-        version: 0.31.0
+        specifier: 0.31.1
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/exceptions:
     devDependencies:
