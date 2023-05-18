@@ -1256,14 +1256,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.31.0
-        version: 0.31.0(vitest@0.31.0)
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.31.0
-        version: 0.31.0
+        specifier: 0.31.1
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-cloudinary:
     dependencies:
