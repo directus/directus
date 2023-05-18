@@ -327,7 +327,7 @@ const sort = ref<Sort>();
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
-		limit: (props.layout !== LAYOUTS.TABLE && !relationInfo?.value?.sortField) ? limit.value : -1,
+		limit: (props.layout === LAYOUTS.TABLE || !relationInfo?.value?.sortField) ? limit.value : -1,
 		page: page.value,
 		fields: fields.value || ['id'],
 	};

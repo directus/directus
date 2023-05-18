@@ -108,7 +108,7 @@
 				</v-list>
 			</v-menu>
 
-			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+			<v-pagination v-if="!relationInfo?.sortField && pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
 		</div>
 
 		<drawer-collection
@@ -228,7 +228,7 @@ watch([limit], () => {
 
 const query = computed<RelationQueryMultiple>(() => ({
 	fields: fields.value,
-	limit: limit.value,
+	limit: (!relationInfo?.value?.sortField) ? limit.value : -1,
 	page: page.value,
 }));
 
@@ -456,7 +456,6 @@ const createCollections = computed(() => {
 
 const allowDrag = computed(
 	() =>
-		totalItemCount.value <= limit.value &&
 		relationInfo.value?.sortField !== undefined &&
 		!props.disabled &&
 		updateAllowed.value

@@ -169,7 +169,7 @@
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="!relationInfo?.sortField && pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
 				</template>
 			</div>
 		</div>
@@ -299,7 +299,7 @@ const sort = ref<Sort>();
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
-		limit: limit.value,
+		limit: (props.layout === LAYOUTS.TABLE || !relationInfo?.value?.sortField) ? limit.value : -1,
 		page: page.value,
 		fields: fields.value || ['id'],
 	};
@@ -408,7 +408,7 @@ const spacings = {
 const tableRowHeight = computed(() => spacings[props.tableSpacing] ?? spacings.cozy);
 
 const allowDrag = computed(
-	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled
+	() => relationInfo.value?.sortField !== undefined && !props.disabled
 );
 
 function getDeselectIcon(item: DisplayItem) {
