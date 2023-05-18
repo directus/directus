@@ -4,4 +4,4 @@
 "docs": patch
 ---
 
-Removed OS info
+Removed server info
