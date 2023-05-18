@@ -1305,8 +1305,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@google-cloud/storage':
-        specifier: 6.9.5
-        version: 6.9.5
+        specifier: 6.10.1
+        version: 6.10.1
     devDependencies:
       '@directus/tsconfig':
         specifier: 0.0.7
@@ -1315,14 +1315,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.31.0
-        version: 0.31.0(vitest@0.31.0)
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.31.0
-        version: 0.31.0
+        specifier: 0.31.1
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-local:
     dependencies:
@@ -5714,8 +5714,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /@google-cloud/storage@6.9.5:
-    resolution: {integrity: sha512-fcLsDA8YKcGuqvhk0XTjJGVpG9dzs5Em8IcUjSjspYvERuHYqMy9CMChWapSjv3Lyw//exa3mv4nUxPlV93BnA==}
+  /@google-cloud/storage@6.10.1:
+    resolution: {integrity: sha512-EtLlT0YbXtrbUxaNbEfTyTytrjELtl4i42flf8COg+Hu5+apdNjsFO9XEY39wshxAuVjLf4fCSm7GTSW+BD3gQ==}
     engines: {node: '>=12'}
     dependencies:
       '@google-cloud/paginator': 3.0.7
