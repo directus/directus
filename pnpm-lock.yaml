@@ -1277,8 +1277,8 @@ importers:
         specifier: 7.3.4
         version: 7.3.4
       undici:
-        specifier: 5.22.0
-        version: 5.22.0
+        specifier: 5.22.1
+        version: 5.22.1
     devDependencies:
       '@directus/tsconfig':
         specifier: 0.0.7
@@ -1287,14 +1287,14 @@ importers:
         specifier: 6.4.0
         version: 6.4.0
       '@vitest/coverage-c8':
-        specifier: 0.31.0
-        version: 0.31.0(vitest@0.31.0)
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
-        specifier: 0.31.0
-        version: 0.31.0
+        specifier: 0.31.1
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -20069,6 +20069,13 @@ packages:
 
   /undici@5.22.0:
     resolution: {integrity: sha512-fR9RXCc+6Dxav4P9VV/sp5w3eFiSdOjJYsbtWfd4s5L5C4ogyuVpdKIVHeW0vV1MloM65/f7W45nR9ZxwVdyiA==}
+    engines: {node: '>=14.0'}
+    dependencies:
+      busboy: 1.6.0
+    dev: false
+
+  /undici@5.22.1:
+    resolution: {integrity: sha512-Ji2IJhFXZY0x/0tVBXeQwgPlLWw13GVzpsWPQ3rV50IFMMof2I55PZZxtm4P6iNq+L5znYN9nSTAq0ZyE6lSJw==}
     engines: {node: '>=14.0'}
     dependencies:
       busboy: 1.6.0
