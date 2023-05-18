@@ -1,0 +1,74 @@
+{
+	"name": "@directus/sdk",
+	"version": "10.3.3",
+	"description": "The official Directus SDK for use in JavaScript!",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/js-sdk"
+	},
+	"main": "dist/sdk.cjs.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": {
+				"node": "./index.mjs",
+				"default": "./dist/sdk.bundler.js"
+			},
+			"require": "./dist/sdk.cjs.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"module": "dist/sdk.bundler.js",
+	"unpkg": "dist/sdk.esm.min.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"index.mjs"
+	],
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
+	},
+	"keywords": [
+		"api",
+		"client",
+		"cms",
+		"directus",
+		"headless",
+		"javascript",
+		"node",
+		"sdk"
+	],
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"license": "MIT",
+	"dependencies": {
+		"axios": "^0.27.2"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "0.0.7",
+		"@types/node": "^18.0.3",
+		"@typescript-eslint/eslint-plugin": "^5.30.5",
+		"@typescript-eslint/parser": "^5.30.5",
+		"argon2": "0.28.7",
+		"dotenv": "16.0.1",
+		"eslint": "^8.19.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"jest": "28.1.3",
+		"jest-environment-jsdom": "28.1.3",
+		"lint-staged": "^13.0.3",
+		"nock": "13.2.9",
+		"prettier": "^2.7.1",
+		"simple-git-hooks": "^2.8.0",
+		"ts-jest": "28.0.7",
+		"ts-node": "10.9.1",
+		"tslib": "^2.4.0",
+		"typescript": "4.7.4",
+		"vitest": "0.31.0"
+	}
+}
