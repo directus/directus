@@ -220,12 +220,6 @@ Link to Map Field
 	<source src="https://cdn.directus.io/docs/v9/app-guide/layouts/Layouts-20221205/kanban-layout-20221205A.mp4" type="video/mp4" />
 </video>
 
-:::info Availability
-
-The Kanban Layout is only available in Directus Cloud and Enterprise Self-Hosted projects.
-
-:::
-
 This Layout is ideal for Collections that serve as project management tools or to-do lists, where each Item represents a
 task, because it groups Items onto columns according to their status _(e.g. "Not Started", "In Progress", "Under
 Review", "Complete", or any other status defined)_. The following controls are available.

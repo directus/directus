@@ -55,7 +55,7 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 	};
 
 	async function hydrate() {
-		const response = await api.get<any>(`/collections`, { params: { limit: -1 } });
+		const response = await api.get<any>(`/collections`);
 
 		const rawCollections: CollectionRaw[] = response.data.data;
 

@@ -16,7 +16,9 @@
 			<div class="title">
 				<slot name="title">
 					<slot name="title:prepend" />
-					<h1 class="type-title">{{ title }}</h1>
+					<h1 class="type-title">
+						<v-text-overflow :text="title" placement="bottom">{{ title }}</v-text-overflow>
+					</h1>
 					<slot name="title:append" />
 				</slot>
 			</div>
@@ -36,7 +38,7 @@
 	</header>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
 
@@ -127,7 +129,6 @@ onUnmounted(() => {
 		&.full {
 			margin-right: 12px;
 			padding-right: 0;
-
 			@media (min-width: 600px) {
 				margin-right: 20px;
 				padding-right: 20px;

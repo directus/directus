@@ -101,7 +101,7 @@ export default defineInterface({
 				field: 'enableCreate',
 				name: '$t:creating_items',
 				schema: {
-					default_value: 'true',
+					default_value: true,
 				},
 				meta: {
 					interface: 'boolean',
@@ -115,7 +115,7 @@ export default defineInterface({
 				field: 'enableSelect',
 				name: '$t:selecting_items',
 				schema: {
-					default_value: 'true',
+					default_value: true,
 				},
 				meta: {
 					interface: 'boolean',
@@ -134,7 +134,7 @@ export default defineInterface({
 					width: 'half',
 				},
 				schema: {
-					default_value: '15',
+					default_value: 15,
 				},
 			},
 			{
@@ -162,7 +162,7 @@ export default defineInterface({
 				field: 'enableSearchFilter',
 				name: '$t:search_filter',
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',
@@ -187,7 +187,7 @@ export default defineInterface({
 				field: 'enableLink',
 				name: '$t:item_link',
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',

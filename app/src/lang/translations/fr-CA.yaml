@@ -131,6 +131,7 @@ archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
 reset_system_permissions_to: 'Réinitialiser les autorisations système:'
 reset_system_permissions_copy: Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du système. Êtes-vous sûr ?
+the_following_are_minimum_permissions: Les autorisations minimales suivantes sont automatiquement appliquées lorsque "Accès à l'application" est activé. Vous pouvez accorder des autorisations supplémentaires si nécessaire, mais vous ne pouvez pas réduire les permissions en dessous de ce niveau.
 app_access_minimum: Autorisation minimale requise pour accéder à l'application
 recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
@@ -295,7 +296,7 @@ o2m_relationship: Relation Un à plusieurs
 m2m_relationship: Relation Plusieurs à plusieurs
 m2a_relationship: Relation Many-to-Any
 invalid_item: Élément invalide
-require_confirmation: Afficher une confirmation
+require_confirmation: Confirmation de suppression
 dialog: Fenêtre
 modal: Modal
 confirmation_dialog: Fenêtre de confirmation

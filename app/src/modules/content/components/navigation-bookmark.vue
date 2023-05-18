@@ -85,7 +85,7 @@
 	</v-list-item>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';

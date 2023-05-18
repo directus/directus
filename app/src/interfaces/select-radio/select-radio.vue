@@ -92,7 +92,9 @@ const gridClass = computed(() => {
 	return 'grid-1';
 });
 
-const { otherValue, usesOtherValue } = useCustomSelection(value, choices, (value) => emit('input', value));
+const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>
+	emit('input', value)
+);
 
 const customIcon = computed(() => {
 	if (!otherValue.value) return 'add';

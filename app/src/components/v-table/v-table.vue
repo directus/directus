@@ -90,7 +90,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { i18n } from '@/lang/';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { ShowSelect } from '@directus/types';

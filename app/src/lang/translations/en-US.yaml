@@ -186,6 +186,7 @@ permissions_for_role: 'Items the {role} Role can {action}.'
 fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
+presets_field_warning: 'Relational presets for field "{field}" should be configured with the "detailed" syntax.'
 presentation_and_aliases: Presentation & Aliases
 revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
@@ -454,6 +455,7 @@ checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
+folders: Folders
 zoom: Zoom
 download: Download
 open: Open
@@ -1662,6 +1664,7 @@ interfaces:
     notice: Notice
     description: Display a short notice
     text: Enter notice content here...
+    no_text: No text configured...
   list-o2m:
     one-to-many: One to Many
     description: Select multiple related items
@@ -1762,6 +1765,27 @@ interfaces:
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+  input-block-editor:
+    input-block-editor: Block Editor
+    description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: List
+      embed: Embed
+      paragraph: Paragraph
+      code: Code
+      image: Image
+      attaches: Attaches
+      table: Table
+      quote: Quote
+      underline: Underline
+      inlinecode: Inline Code
+      delimiter: Delimiter
+      checklist: Checklist
+      toggle: Toggle Block
+      alignment: Alignment
+      raw: Raw HTML
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.

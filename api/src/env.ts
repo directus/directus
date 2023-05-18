@@ -29,6 +29,8 @@ const allowedEnvironmentVars = [
 	'GRAPHQL_INTROSPECTION',
 	'MAX_BATCH_MUTATION',
 	'LOGGER_.+',
+	'QUERY_LIMIT_MAX',
+	'QUERY_LIMIT_DEFAULT',
 	'ROBOTS_TXT',
 	// server
 	'SERVER_.+',
@@ -205,6 +207,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
+	QUERY_LIMIT_DEFAULT: 100,
 	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
@@ -305,6 +308,14 @@ const defaults: Record<string, any> = {
 
 	FLOWS_EXEC_ALLOWED_MODULES: false,
 	FLOWS_ENV_ALLOW_LIST: false,
+
+	PRESSURE_LIMITER_ENABLED: true,
+	PRESSURE_LIMITER_SAMPLE_INTERVAL: 250,
+	PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION: 0.99,
+	PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY: 500,
+	PRESSURE_LIMITER_MAX_MEMORY_RSS: false,
+	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: false,
+	PRESSURE_LIMITER_RETRY_AFTER: false,
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
