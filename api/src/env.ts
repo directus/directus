@@ -31,6 +31,7 @@ const allowedEnvironmentVars = [
 	'LOGGER_.+',
 	'QUERY_LIMIT_MAX',
 	'QUERY_LIMIT_DEFAULT',
+	'QUERY_PARSER_ARRAY_LIMIT',
 	'ROBOTS_TXT',
 	// server
 	'SERVER_.+',
@@ -206,6 +207,7 @@ const defaults: Record<string, any> = {
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
 	QUERY_LIMIT_DEFAULT: 100,
+	QUERY_PARSER_ARRAY_LIMIT: 20,
 	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
