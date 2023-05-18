@@ -78,12 +78,6 @@ export class ServerService {
 			};
 		}
 
-		if (this.accountability?.admin === true) {
-			info['directus'] = {
-				version,
-			};
-		}
-
 		return info;
 	}
 

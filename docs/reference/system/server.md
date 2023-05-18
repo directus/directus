@@ -187,11 +187,6 @@ The default query limit used when not defined in the API request
 `queryLimit.max` **number**\
 The maximum query limit accepted on API requests
 
-Admin users also get the following information:
-
-`directus.version` **string**\
-Current version of Directus used.
-
 ### REST API
 
 ```

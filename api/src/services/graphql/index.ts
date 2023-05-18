@@ -1919,21 +1919,6 @@ export class GraphQLService {
 			});
 		}
 
-		if (this.accountability?.admin === true) {
-			ServerInfo.addFields({
-				directus: {
-					type: new GraphQLObjectType({
-						name: 'server_info_directus',
-						fields: {
-							version: {
-								type: GraphQLString,
-							},
-						},
-					}),
-				},
-			});
-		}
-
 		/** Globally available query */
 		schemaComposer.Query.addFields({
 			extensions: {

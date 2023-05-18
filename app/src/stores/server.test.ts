@@ -28,9 +28,6 @@ const mockServerInfo: Info = {
 		public_note: null,
 		custom_css: null,
 	},
-	directus: {
-		version: '10.10.10',
-	},
 };
 
 const mockAuthProviders: Auth['providers'] = [
@@ -334,7 +331,6 @@ describe('dehydrate action', () => {
 		serverStore.dehydrate();
 
 		expect(serverStore.info.project).toEqual(null);
-		expect(serverStore.info.directus).toEqual(undefined);
 		expect(serverStore.auth.providers).toEqual([]);
 		expect(serverStore.auth.disableDefault).toEqual(false);
 	});

@@ -27,9 +27,6 @@ export type Info = {
 		public_note: string | null;
 		custom_css: string | null;
 	};
-	directus?: {
-		version: string;
-	};
 	rateLimit?:
 		| false
 		| {
@@ -53,7 +50,6 @@ export type Auth = {
 export const useServerStore = defineStore('serverStore', () => {
 	const info = reactive<Info>({
 		project: null,
-		directus: undefined,
 		rateLimit: undefined,
 		flows: undefined,
 		queryLimit: undefined,
@@ -84,7 +80,6 @@ export const useServerStore = defineStore('serverStore', () => {
 		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
 
 		info.project = serverInfoResponse.data.data?.project;
-		info.directus = serverInfoResponse.data.data?.directus;
 		info.flows = serverInfoResponse.data.data?.flows;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 
@@ -115,7 +110,6 @@ export const useServerStore = defineStore('serverStore', () => {
 
 	const dehydrate = () => {
 		info.project = null;
-		info.directus = undefined;
 
 		auth.providers = [];
 		auth.disableDefault = false;
