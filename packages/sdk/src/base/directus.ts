@@ -24,7 +24,7 @@ import { Transport } from './transport';
 import { Auth } from './auth';
 import { IStorage } from '../storage';
 import { LocalStorage, MemoryStorage, StorageOptions } from './storage';
-import { TypeMap, TypeOf, PartialBy } from '../types';
+import { TypeOf, PartialBy } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
 import { ISingleton } from '../singleton';
 import { SingletonHandler } from '../handlers/singleton';
@@ -37,7 +37,7 @@ export type DirectusOptions<IAuthHandler extends IAuth = Auth> = {
 	storage?: IStorage | DirectusStorageOptions;
 };
 
-export class Directus<T extends TypeMap, IAuthHandler extends IAuth = Auth> implements IDirectus<T> {
+export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> implements IDirectus<T> {
 	private _url: string;
 	private _options?: DirectusOptions<IAuthHandler>;
 	private _auth: IAuthHandler;
