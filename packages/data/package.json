@@ -2,6 +2,7 @@
 	"name": "@directus/data",
 	"version": "0.0.1",
 	"description": "Data storage abstraction layer for Directus",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

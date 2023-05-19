@@ -2,6 +2,7 @@
 	"name": "@directus/random",
 	"version": "0.1.0",
 	"description": "Set of random-utilities for use in tests",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

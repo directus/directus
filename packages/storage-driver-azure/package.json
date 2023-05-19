@@ -2,6 +2,7 @@
 	"name": "@directus/storage-driver-azure",
 	"version": "10.0.2",
 	"description": "Azure file storage abstraction for `@directus/storage`",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

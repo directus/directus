@@ -3,14 +3,12 @@
 	"version": "10.1.0",
 	"description": "OpenAPI Specification of the Directus API",
 	"homepage": "https://directus.io",
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/specs"
 	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "BUSL-1.1",
 	"author": "Nils Twelker",
 	"type": "module",

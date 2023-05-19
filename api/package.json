@@ -22,9 +22,6 @@
 		"vue"
 	],
 	"homepage": "https://directus.io",
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

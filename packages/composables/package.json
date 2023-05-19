@@ -2,6 +2,7 @@
 	"name": "@directus/composables",
 	"version": "10.0.2",
 	"description": "Shared Vue composables for Directus use",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",

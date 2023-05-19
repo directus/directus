@@ -3,9 +3,6 @@
 	"version": "10.1.1",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
