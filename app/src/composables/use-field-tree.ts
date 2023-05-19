@@ -172,10 +172,7 @@ export function useFieldTree(
 		if (!node) {
 			node = root
 				?.reduce<FieldNode[]>((acc, node) => {
-					if (node.group === true && node.children && node.children.length > 0) {
-						acc.push(...node.children);
-					}
-
+					extractFieldsFromGroup(node, acc);
 					return acc;
 				}, [])
 				.find((node) => node.field === field);
@@ -187,6 +184,13 @@ export function useFieldTree(
 			return getNodeAtPath(path, node.children);
 		} else {
 			return node;
+		}
+	}
+
+	function extractFieldsFromGroup(node: FieldNode, nodes: FieldNode[]) {
+		if (node.group === true && node.children && node.children.length > 0) {
+			nodes.push(...node.children);
+			node.children.forEach((child) => extractFieldsFromGroup(child, nodes));
 		}
 	}
 
