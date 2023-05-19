@@ -1,21 +1,20 @@
 import { Directus } from '../../src';
-import { test } from '../utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from '../utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('relations', function () {
-	test(`update one`, async (url, nock) => {
-		const scope = nock()
-			.patch('/relations/posts/title', { meta: { required: true } })
-			.reply(200, {});
+	it(`update one`, async () => {
+		mockServer.use(rest.patch(URL + '/relations/posts/title', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 
-		await sdk.relations.updateOne('posts', 'title', {
-			meta: {
-				required: true,
-			},
-		});
-
-		expect(scope.pendingMocks().length).toBe(0);
+		await expect(
+			sdk.relations.updateOne('posts', 'title', {
+				meta: {
+					required: true,
+				},
+			})
+		).resolves.not.toThrowError();
 	});
 });

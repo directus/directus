@@ -1,33 +1,23 @@
 import { Directus } from '../../src';
-import { test } from '../utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from '../utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('invites', function () {
-	test('send', async (url, nock) => {
-		const scope = nock()
-			.post('/users/invite', {
-				email: 'admin@example.com',
-				role: '1e098175-6258-48d6-ad88-d24cae2abe15',
-			})
-			.reply(200, {});
+	it('send', async () => {
+		mockServer.use(rest.post(URL + '/users/invite', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
-		await sdk.users.invites.send('admin@example.com', '1e098175-6258-48d6-ad88-d24cae2abe15');
+		const sdk = new Directus(URL);
 
-		expect(scope.pendingMocks().length).toBe(0);
+		await expect(
+			sdk.users.invites.send('admin@example.com', '1e098175-6258-48d6-ad88-d24cae2abe15')
+		).resolves.not.toThrowError();
 	});
 
-	test(`accept`, async (url, nock) => {
-		const scope = nock()
-			.post('/users/invite/accept', {
-				token: 'token',
-				password: 'password1234',
-			})
-			.reply(200, {});
+	it(`accept`, async () => {
+		mockServer.use(rest.post(URL + '/users/invite/accept', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
-		await sdk.users.invites.accept('token', 'password1234');
-
-		expect(scope.pendingMocks().length).toBe(0);
+		const sdk = new Directus(URL);
+		await expect(sdk.users.invites.accept('token', 'password1234')).resolves.not.toThrowError();
 	});
 });

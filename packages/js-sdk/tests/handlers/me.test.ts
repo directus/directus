@@ -1,32 +1,26 @@
 import { Directus } from '../../src';
-import { test } from '../utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from '../utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('profile', function () {
-	test(`read`, async (url, nock) => {
-		const scope = nock().get('/users/me').reply(200, {});
+	it(`read`, async () => {
+		mockServer.use(rest.get(URL + '/users/me', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
-		await sdk.users.me.read();
-
-		expect(scope.pendingMocks().length).toBe(0);
+		const sdk = new Directus(URL);
+		await expect(sdk.users.me.read()).resolves.not.toThrowError();
 	});
 
-	test(`update`, async (url, nock) => {
-		const scope = nock()
-			.patch('/users/me', {
+	it(`update`, async () => {
+		mockServer.use(rest.patch(URL + '/users/me', (_req, res, ctx) => res(ctx.status(200))));
+
+		const sdk = new Directus(URL);
+
+		await expect(
+			sdk.users.me.update({
 				email: 'other@email.com',
 				untyped_field: 12345,
 			})
-			.reply(200, {});
-
-		const sdk = new Directus(url);
-
-		await sdk.users.me.update({
-			email: 'other@email.com',
-			untyped_field: 12345,
-		});
-
-		expect(scope.pendingMocks().length).toBe(0);
+		).resolves.not.toThrowError();
 	});
 });

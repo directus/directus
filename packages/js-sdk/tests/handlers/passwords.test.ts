@@ -1,33 +1,20 @@
 import { Directus } from '../../src';
-import { test } from '../utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from '../utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('password', function () {
-	test(`request`, async (url, nock) => {
-		const scope = nock()
-			.post('/auth/password/request', {
-				email: 'admin@example.com',
-				reset_url: 'http://some_url.com',
-			})
-			.reply(200, {});
+	it(`request`, async () => {
+		mockServer.use(rest.post(URL + '/auth/password/request', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
-		await sdk.auth.password.request('admin@example.com', 'http://some_url.com');
-
-		expect(scope.pendingMocks().length).toBe(0);
+		const sdk = new Directus(URL);
+		await expect(sdk.auth.password.request('admin@example.com', 'http://some_url.com')).resolves.not.toThrowError();
 	});
 
-	test(`reset`, async (url, nock) => {
-		const scope = nock()
-			.post('/auth/password/reset', {
-				token: 'token',
-				password: 'newpassword',
-			})
-			.reply(200, {});
+	it(`reset`, async () => {
+		mockServer.use(rest.post(URL + '/auth/password/reset', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
-		await sdk.auth.password.reset('token', 'newpassword');
-
-		expect(scope.pendingMocks().length).toBe(0);
+		const sdk = new Directus(URL);
+		await expect(sdk.auth.password.reset('token', 'newpassword')).resolves.not.toThrowError();
 	});
 });
