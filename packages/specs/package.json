@@ -3,7 +3,6 @@
 	"version": "10.1.0",
 	"description": "OpenAPI Specification of the Directus API",
 	"homepage": "https://directus.io",
-	"type": "module",
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
@@ -14,6 +13,7 @@
 	},
 	"license": "BUSL-1.1",
 	"author": "Nils Twelker",
+	"type": "module",
 	"exports": {
 		".": "./index.js",
 		"./package.json": "./package.json"

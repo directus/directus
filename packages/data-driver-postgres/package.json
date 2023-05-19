@@ -1,12 +1,6 @@
 {
 	"name": "@directus/data-driver-postgres",
 	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
-	},
 	"description": "Data storage abstraction layer for Postgres",
 	"repository": {
 		"type": "git",
@@ -16,6 +10,7 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -24,6 +19,11 @@
 	"files": [
 		"dist"
 	],
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
+	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",

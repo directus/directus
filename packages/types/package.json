@@ -1,11 +1,6 @@
 {
 	"name": "@directus/types",
 	"version": "10.0.1",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch"
-	},
 	"description": "Shared types for Directus",
 	"repository": {
 		"type": "git",
@@ -15,6 +10,7 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -23,6 +19,10 @@
 	"files": [
 		"dist"
 	],
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch"
+	},
 	"devDependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",

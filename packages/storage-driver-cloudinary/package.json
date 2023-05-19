@@ -1,12 +1,6 @@
 {
 	"name": "@directus/storage-driver-cloudinary",
 	"version": "10.0.2",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
-	},
 	"description": "Cloudinary file storage abstraction for `@directus/storage`",
 	"repository": {
 		"type": "git",
@@ -16,6 +10,7 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -24,6 +19,11 @@
 	"files": [
 		"dist"
 	],
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
+	},
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
