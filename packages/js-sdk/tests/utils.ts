@@ -1,7 +1,8 @@
 import nock, { back, BackMode } from 'nock';
-import { setImmediate, setTimeout, clearImmediate } from 'timers';
-import { it, vi } from 'vitest';
+import { setImmediate, setTimeout } from 'timers';
+import { afterAll, beforeAll, afterEach, vi } from 'vitest';
 import argon2 from 'argon2';
+import { setupServer } from 'msw/node';
 
 export const URL = process.env.TEST_URL || 'http://localhost';
 export const MODE = process.env.TEST_MODE || 'dryrun';
@@ -16,29 +17,16 @@ export type TestSettings = {
 	fixture?: string;
 };
 
-export function test(name: string, test: Test, settings?: TestSettings): void {
-	it(name, async () => {
-		nock.cleanAll();
+export const mockServer = setupServer();
 
-		const scope = () => nock(settings?.url || URL);
+// Start server before all tests
+beforeAll(() => mockServer.listen({ onUnhandledRequest: 'warn' }));
 
-		if (settings?.fixture) {
-			await back(settings.fixture, async () => {
-				await test(settings?.url || URL, scope);
-			});
-		} else {
-			await test(settings?.url || URL, scope);
-		}
+//  Close server after all tests
+afterAll(() => mockServer.close());
 
-		// `clearImmediate` doesn't exist in the jsdom environment and nock throws ReferenceError
-		if (typeof global.clearImmediate !== 'function') {
-			global.clearImmediate = clearImmediate;
-		}
-
-		nock.abortPendingRequests();
-		nock.cleanAll();
-	});
-}
+// Reset handlers after each test `important for test isolation`
+afterEach(() => mockServer.resetHandlers());
 
 export async function timers(
 	func: (opts: {
