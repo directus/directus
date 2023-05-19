@@ -43,16 +43,11 @@ describe('default transport', function () {
 
 			const transport = new Transport({ url: URL }) as any;
 
-			let failed = false;
-
 			try {
-				await transport[method](route);
-				failed = true;
+				await expect(transport[method](route)).rejects.toThrowError();
 			} catch (err: any) {
 				expect(err).toBeInstanceOf(TransportError);
 			}
-
-			expect(failed).toBe(false);
 		});
 
 		it(`${method} should carry response error information`, async function () {
@@ -78,11 +73,8 @@ describe('default transport', function () {
 
 			const transport = new Transport({ url: URL }) as any;
 
-			let failed = false;
-
 			try {
-				await transport[method](route);
-				failed = true;
+				await expect(transport[method](route)).rejects.toThrowError();
 			} catch (err: any) {
 				const terr = err as TransportError;
 				expect(terr).toBeInstanceOf(TransportError);
@@ -92,8 +84,6 @@ describe('default transport', function () {
 				expect(terr.errors[0]?.message).toBe('You don\'t have permission access to "contacts" collection.');
 				expect(terr.errors[0]?.extensions?.code).toBe('FORBIDDEN');
 			}
-
-			expect(failed).toBe(false);
 		});
 
 		// I am unsure how to mock this with msw
@@ -133,11 +123,8 @@ describe('default transport', function () {
 			throw new Error('this is not an axios error');
 		});
 
-		let failed = false;
-
 		try {
-			await transport.get('/route');
-			failed = true;
+			await expect(transport.get('/route')).rejects.toThrowError();
 		} catch (err: any) {
 			const terr = err as TransportError;
 			expect(terr).toBeInstanceOf(TransportError);
@@ -146,7 +133,5 @@ describe('default transport', function () {
 			expect(terr.parent).not.toBeUndefined();
 			expect(terr.parent?.message).toBe('this is not an axios error');
 		}
-
-		expect(failed).toBe(false);
 	});
 });
