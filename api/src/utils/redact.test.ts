@@ -1,6 +1,6 @@
+import { REDACTED_TEXT } from '@directus/constants';
 import { merge } from 'lodash-es';
 import { expect, test } from 'vitest';
-import { REDACTED_TEXT } from '../constants.js';
 import { redact } from './redact.js';
 
 const input = {

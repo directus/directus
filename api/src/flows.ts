@@ -1,4 +1,4 @@
-import { Action } from '@directus/constants';
+import { Action, REDACTED_TEXT } from '@directus/constants';
 import * as sharedExceptions from '@directus/exceptions';
 import type {
 	Accountability,
@@ -14,7 +14,6 @@ import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
 import { schedule, validate } from 'node-cron';
-import { REDACTED_TEXT } from './constants.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
