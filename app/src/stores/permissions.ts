@@ -1,8 +1,8 @@
-import api from '@/api';
-import { Permission } from '@directus/types';
-import { deepMap } from '@directus/utils';
+import { fetchAll } from '@/utils/fetch-all';
 import { parseFilter } from '@/utils/parse-filter';
 import { parsePreset } from '@/utils/parse-preset';
+import { Permission } from '@directus/types';
+import { deepMap } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
 
@@ -15,17 +15,17 @@ export const usePermissionsStore = defineStore({
 		async hydrate() {
 			const userStore = useUserStore();
 
-			const response = await api.get('/permissions', {
+			const permissions = await fetchAll<Permission>('/permissions', {
 				params: { filter: { role: { _eq: userStore.currentUser!.role.id } } },
 			});
 
-			const fields = getNestedDynamicVariableFieldsInPresets(response.data.data);
+			const fields = getNestedDynamicVariableFieldsInPresets(permissions);
 
 			if (fields.length > 0) {
 				await userStore.hydrateAdditionalFields(fields);
 			}
 
-			this.permissions = response.data.data.map((rawPermission: Permission) => {
+			this.permissions = permissions.map((rawPermission) => {
 				if (rawPermission.permissions) {
 					rawPermission.permissions = parseFilter(rawPermission.permissions);
 				}
@@ -43,7 +43,7 @@ export const usePermissionsStore = defineStore({
 
 			function getNestedDynamicVariableFieldsInPresets(rawPermissions: Permission[]) {
 				const fields: string[] = [];
-				const rawPermissionsWithPresets = rawPermissions.filter((rawPermission: Permission) => rawPermission.presets);
+				const rawPermissionsWithPresets = rawPermissions.filter((rawPermission) => rawPermission.presets);
 
 				for (const rawPermissions of rawPermissionsWithPresets) {
 					deepMap(rawPermissions.presets, (value) => {
