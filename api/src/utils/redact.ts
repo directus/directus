@@ -8,7 +8,7 @@ type Paths = string[][];
  * @param input Input object in which values should be redacted.
  * @param paths Nested array of object paths to be redacted (supports `*` for shallow matching, `**` for deep matching).
  * @param replacement Replacement the values are redacted by.
- * @returns Redact function.
+ * @returns Redacted object.
  */
 export function redact<T extends UnknownObject>(input: T, paths: Paths, replacement: string): T {
 	const wildcardChars = ['*', '**'];
