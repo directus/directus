@@ -32,7 +32,7 @@
 	"devDependencies": {
 		"@changesets/types": "5.2.1",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "20.2.0",
+		"@types/node": "18.16.12",
 		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
