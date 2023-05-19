@@ -471,7 +471,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			async function addGroup(title: string) {
 				if (groupTitle.value === null || !groupsCollection.value) return;
 
-				await api.post(`${getEndpoint(groupsCollection.value)}`, {
+				await api.post(getEndpoint(groupsCollection.value), {
 					[groupTitle.value]: title,
 				});
 

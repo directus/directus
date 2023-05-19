@@ -224,7 +224,7 @@ export const useFieldDetailStore = defineStore({
 				}
 
 				for (const collection of Object.keys(this.items)) {
-					await api.post(`${getEndpoint(collection)}`, this.items[collection]);
+					await api.post(getEndpoint(collection), this.items[collection]);
 				}
 
 				await fieldsStore.hydrate();

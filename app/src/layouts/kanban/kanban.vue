@@ -50,7 +50,7 @@
 						@change="change(group, $event)"
 					>
 						<template #item="{ element }">
-							<router-link :to="`${getItemRoute(element.id)}`" class="item">
+							<router-link :to="getItemRoute(element.id)" class="item">
 								<div v-if="element.title" class="title">{{ element.title }}</div>
 								<img v-if="element.image" class="image" :src="element.image" />
 								<div v-if="element.text" class="text">{{ element.text }}</div>

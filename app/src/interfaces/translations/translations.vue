@@ -292,7 +292,7 @@ function useLanguages() {
 
 		try {
 			languages.value = await fetchAll<Record<string, any>[]>(
-				`${getEndpoint(relationInfo.value.relatedCollection.collection)}`,
+				getEndpoint(relationInfo.value.relatedCollection.collection),
 				{
 					params: {
 						fields: Array.from(fields),
