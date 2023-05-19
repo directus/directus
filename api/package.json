@@ -2,7 +2,6 @@
 	"name": "@directus/api",
 	"version": "10.2.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
-	"type": "module",
 	"keywords": [
 		"directus",
 		"realtime",
@@ -23,9 +22,6 @@
 		"vue"
 	],
 	"homepage": "https://directus.io",
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -50,6 +46,7 @@
 			"url": "https://github.com/benhaynes"
 		}
 	],
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./*": "./dist/*.js",

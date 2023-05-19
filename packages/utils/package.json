@@ -1,14 +1,8 @@
 {
 	"name": "@directus/utils",
 	"version": "10.0.2",
-	"type": "module",
-	"sideEffects": false,
-	"scripts": {
-		"build": "tsc --project browser/tsconfig.prod.json && tsc --project node/tsconfig.prod.json && tsc --project shared/tsconfig.prod.json",
-		"dev": "concurrently \"tsc --watch --project browser/tsconfig.json\" \"tsc --watch --project node/tsconfig.json\" \"tsc --watch --project shared/tsconfig.json\"",
-		"test": "vitest --watch=false"
-	},
 	"description": "Utilities shared between the Directus packages",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -17,6 +11,8 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"sideEffects": false,
+	"type": "module",
 	"exports": {
 		".": {
 			"types": "./dist/shared/index.d.ts",
@@ -36,8 +32,10 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
+	"scripts": {
+		"build": "tsc --project browser/tsconfig.prod.json && tsc --project node/tsconfig.prod.json && tsc --project shared/tsconfig.prod.json",
+		"dev": "concurrently \"tsc --watch --project browser/tsconfig.json\" \"tsc --watch --project node/tsconfig.json\" \"tsc --watch --project shared/tsconfig.json\"",
+		"test": "vitest --watch=false"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",

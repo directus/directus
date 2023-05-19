@@ -1,13 +1,8 @@
 {
 	"name": "@directus/pressure",
 	"version": "1.0.1",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
-	},
 	"description": "Pressure based rate limiter",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -16,6 +11,7 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -24,8 +20,13 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
+	},
+	"dependencies": {
+		"@directus/utils": "workspace:*"
 	},
 	"devDependencies": {
 		"@directus/random": "workspace:*",
@@ -34,8 +35,5 @@
 		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
-	},
-	"dependencies": {
-		"@directus/utils": "workspace:*"
 	}
 }

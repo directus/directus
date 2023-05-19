@@ -485,10 +485,6 @@ importers:
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   app:
-    dependencies:
-      '@directus/composables':
-        specifier: workspace:*
-        version: link:../packages/composables
     devDependencies:
       '@babel/core':
         specifier: 7.21.8
@@ -496,6 +492,9 @@ importers:
       '@babel/preset-env':
         specifier: 7.21.5
         version: 7.21.5(@babel/core@7.21.8)
+      '@directus/composables':
+        specifier: workspace:*
+        version: link:../packages/composables
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants

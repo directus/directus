@@ -3,7 +3,6 @@
 	"version": "10.2.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
-	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -12,6 +11,7 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.html",
 		"./package.json": "./package.json"
@@ -31,6 +31,7 @@
 	"devDependencies": {
 		"@babel/core": "7.21.8",
 		"@babel/preset-env": "7.21.5",
+		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
@@ -152,11 +153,5 @@
 		"vuedraggable": "4.1.0",
 		"webpack": "5.83.1",
 		"wellknown": "0.5.0"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"dependencies": {
-		"@directus/composables": "workspace:*"
 	}
 }

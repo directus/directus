@@ -3,17 +3,15 @@
 	"version": "10.1.1",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
-	"type": "module",
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/extensions-sdk"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
 	"author": "Nicola Krumschmidt",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./cli": "./dist/cli/index.js",
@@ -67,9 +65,5 @@
 	},
 	"engines": {
 		"node": ">=12.20.0"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"license": "MIT"
+	}
 }
