@@ -1,7 +1,7 @@
 {
 	"name": "@directus/sdk",
 	"version": "10.3.3",
-	"description": "The official Directus SDK for use in JavaScript!",
+	"description": "The official Directus SDK for use in JavaScript",
 	"keywords": [
 		"api",
 		"client",
@@ -12,14 +12,13 @@
 		"node",
 		"sdk"
 	],
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/sdk"
 	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
