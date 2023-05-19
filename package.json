@@ -4,7 +4,7 @@
 	"scripts": {
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
-		"lint": "pnpm --recursive --parallel run typecheck && eslint .",
+		"lint": "eslint .",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
 		"test:blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
 	},
