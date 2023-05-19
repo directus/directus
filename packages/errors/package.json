@@ -27,6 +27,7 @@
 	],
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"@types/node": "20.2.1",
 		"@vitest/coverage-c8": "0.31.1",
 		"tsup": "6.7.0",
 		"typescript": "5.0.4",
