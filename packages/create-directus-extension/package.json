@@ -6,7 +6,6 @@
 		"directus",
 		"extensions"
 	],
-	"type": "module",
 	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
@@ -20,6 +19,7 @@
 		"Joonas Palosuo <joonas.palosuo@gmail.com>",
 		"Rijk van Zanten <rijkvanzanten@me.com>"
 	],
+	"type": "module",
 	"exports": {
 		".": "./lib/index.js",
 		"./package.json": "./package.json"
