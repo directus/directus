@@ -23,7 +23,7 @@
 	"scripts": {
 		"build": "vite build",
 		"build-storybook": "storybook build",
-		"dev": "vite --clearScreen false",
+		"dev": "vite",
 		"storybook": "storybook dev -p 6006",
 		"test": "vitest --watch=false",
 		"typecheck": "vue-tsc --noEmit -p tsconfig.json"
