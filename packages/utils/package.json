@@ -47,10 +47,10 @@
 		"lodash-es": "4.17.21",
 		"micromustache": "8.0.3",
 		"tmp": "0.2.1",
-		"vue": "3.3.2"
+		"vue": "3.3.4"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.1",
 		"@types/lodash-es": "4.17.7",
