@@ -102,7 +102,7 @@ describe('auth', function () {
 
 	it(`invalid credentials token should not set the token`, async () => {
 		mockServer.use(
-			rest.get(URL + '/users/me', (_req, res, ctx) =>
+			rest.post(URL + '/auth/login', (_req, res, ctx) =>
 				res(
 					ctx.status(401),
 					ctx.json({
@@ -121,21 +121,14 @@ describe('auth', function () {
 
 		const sdk = new Directus(URL);
 
-		let failed: false | string = false;
-
-		try {
-			await sdk.auth.login({
+		await expect(
+			sdk.auth.login({
 				email: 'invalid@email.com',
 				password: 'invalid_password',
-			});
-
-			failed = 'Should have thrown due to error response';
-		} catch {
-			//
-		}
+			})
+		).rejects.toThrowError();
 
 		expect(await sdk.auth.token).toBeNull();
-		expect(failed).toBe(false);
 	});
 
 	it(`invalid static token should not set the token`, async () => {
@@ -159,16 +152,8 @@ describe('auth', function () {
 
 		const sdk = new Directus(URL);
 
-		let failed: false | string = false;
-
-		try {
-			await sdk.auth.static('token');
-			failed = 'Should have thrown due to error response';
-		} catch {
-			//
-		}
+		await expect(sdk.auth.static('token')).rejects.toThrowError();
 
 		expect(await sdk.auth.token).toBeNull();
-		expect(failed).toBe(false);
 	});
 });
