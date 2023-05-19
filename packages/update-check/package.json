@@ -28,15 +28,15 @@
 		"access": "public"
 	},
 	"dependencies": {
-		"semver": "7.5.0",
-		"undici": "5.22.0"
+		"semver": "7.5.1",
+		"undici": "5.22.1"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",
 		"@ngneat/falso": "6.4.0",
-		"@types/semver": "7.3.13",
-		"@vitest/coverage-c8": "0.31.0",
+		"@types/semver": "7.5.0",
+		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"vitest": "0.31.1"
 	}
 }

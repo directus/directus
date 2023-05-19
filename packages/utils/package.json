@@ -41,9 +41,9 @@
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
-		"date-fns": "2.29.3",
+		"date-fns": "2.30.0",
 		"fs-extra": "11.1.1",
-		"joi": "17.9.1",
+		"joi": "17.9.2",
 		"lodash-es": "4.17.21",
 		"micromustache": "8.0.3",
 		"tmp": "0.2.1",
@@ -54,11 +54,11 @@
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.1",
 		"@types/lodash-es": "4.17.7",
-		"@types/node": "18.15.13",
+		"@types/node": "18.16.12",
 		"@types/tmp": "0.2.3",
-		"@vitest/coverage-c8": "0.31.0",
+		"@vitest/coverage-c8": "0.31.1",
 		"concurrently": "8.0.1",
 		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"vitest": "0.31.1"
 	}
 }
