@@ -1,1 +1,1 @@
-export const createError = (num) => {};
+export const createError = () => {};

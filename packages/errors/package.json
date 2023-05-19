@@ -4,8 +4,7 @@
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
-		"build": "esbuild src/index.ts --bundle --format=esm --platform=node --minify --outfile=dist/index.js",
-		"typecheck": "tsc --noEmit",
+		"build": "tsup src/index.ts --format=esm --dts",
 		"test": "vitest --watch=false"
 	},
 	"description": "Create consistent error objects around the codebase",
@@ -26,9 +25,9 @@
 		"dist"
 	],
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@vitest/coverage-c8": "0.31.1",
-		"esbuild": "0.17.19",
+		"tsup": "6.7.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	}
