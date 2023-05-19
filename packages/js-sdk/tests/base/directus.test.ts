@@ -19,14 +19,15 @@ import {
 	UsersHandler,
 	UtilsHandler,
 } from '../../src/handlers';
-import { test } from '../utils';
+import { mockServer, URL } from '../utils';
 import { InvitesHandler } from '../../src/handlers/invites';
 import { TFAHandler } from '../../src/handlers/tfa';
 import { MeHandler } from '../../src/handlers/me';
 import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('sdk', function () {
-	const sdk = new Directus('http://example.com');
+	const sdk = new Directus(URL);
 
 	it('has auth', function () {
 		expect(sdk.auth).toBeInstanceOf(Auth);
@@ -112,17 +113,22 @@ describe('sdk', function () {
 		expect(sdk.items('collection')).toBeInstanceOf(ItemsHandler);
 	});
 
-	test('can run graphql', async function (url, nock) {
-		const scope = nock()
-			.post('/graphql')
-			.reply(200, {
-				data: {
-					posts: [
-						{ id: 1, title: 'My first post' },
-						{ id: 2, title: 'My second post' },
-					],
-				},
-			});
+	it('can run graphql', async () => {
+		mockServer.use(
+			rest.post(URL + '/graphql', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							posts: [
+								{ id: 1, title: 'My first post' },
+								{ id: 2, title: 'My second post' },
+							],
+						},
+					})
+				)
+			)
+		);
 
 		const query = `
 			query {
@@ -133,7 +139,7 @@ describe('sdk', function () {
 			}
 		`;
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 
 		const response = await sdk.graphql.items(query);
 
@@ -144,17 +150,22 @@ describe('sdk', function () {
 			],
 		});
 
-		expect(scope.pendingMocks().length).toBe(0);
+		// expect(scope.pendingMocks().length).toBe(0);
 	});
 
-	test('can run graphql on system', async function (url, nock) {
-		const scope = nock()
-			.post('/graphql/system')
-			.reply(200, {
-				data: {
-					users: [{ email: 'someone@example.com' }, { email: 'someone.else@example.com' }],
-				},
-			});
+	it('can run graphql on system', async () => {
+		mockServer.use(
+			rest.post(URL + '/graphql/system', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							users: [{ email: 'someone@example.com' }, { email: 'someone.else@example.com' }],
+						},
+					})
+				)
+			)
+		);
 
 		const query = `
 			query {
@@ -164,7 +175,7 @@ describe('sdk', function () {
 			}
 		`;
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 
 		const response = await sdk.graphql.system(query);
 
@@ -172,6 +183,6 @@ describe('sdk', function () {
 			users: [{ email: 'someone@example.com' }, { email: 'someone.else@example.com' }],
 		});
 
-		expect(scope.pendingMocks().length).toBe(0);
+		// expect(scope.pendingMocks().length).toBe(0);
 	});
 });

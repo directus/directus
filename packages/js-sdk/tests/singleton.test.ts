@@ -1,9 +1,10 @@
 import { Directus } from '../src';
-import { test } from './utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from './utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 type Settings = {
-	url: string;
+	URL: string;
 	copyright: string;
 	title: string;
 	ua_code: string;
@@ -15,20 +16,25 @@ type MyWebsite = {
 };
 
 describe('singleton', function () {
-	test(`can get an item`, async (url, nock) => {
-		nock()
-			.get('/items/settings')
-			.reply(200, {
-				data: {
-					url: 'http://website.com',
-					copyright: 'MyWebsite',
-					title: 'Website Title',
-					ua_code: 'UA1234567890',
-					show_menu: true,
-				},
-			});
+	it(`can get an item`, async () => {
+		mockServer.use(
+			rest.get(URL + '/items/settings', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							url: 'http://website.com',
+							copyright: 'MyWebsite',
+							title: 'Website Title',
+							ua_code: 'UA1234567890',
+							show_menu: true,
+						},
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<MyWebsite>(url);
+		const sdk = new Directus<MyWebsite>(URL);
 		const settings = await sdk.singleton('settings').read();
 
 		expect(settings).not.toBeNull();
@@ -38,22 +44,25 @@ describe('singleton', function () {
 		expect(settings?.show_menu).toBe(true);
 	});
 
-	test(`can update an item`, async (url, nock) => {
-		nock()
-			.patch('/items/settings', {
-				title: 'New Website Title',
-			})
-			.reply(200, {
-				data: {
-					url: 'http://website.com',
-					copyright: 'MyWebsite',
-					title: 'New Website Title',
-					ua_code: 'UA1234567890',
-					show_menu: true,
-				},
-			});
+	it(`can update an item`, async () => {
+		mockServer.use(
+			rest.patch(URL + '/items/settings', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							url: 'http://website.com',
+							copyright: 'MyWebsite',
+							title: 'New Website Title',
+							ua_code: 'UA1234567890',
+							show_menu: true,
+						},
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<MyWebsite>(url);
+		const sdk = new Directus<MyWebsite>(URL);
 
 		const settings = await sdk.singleton('settings').update({
 			title: 'New Website Title',

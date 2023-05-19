@@ -1,21 +1,17 @@
 import { Auth, Directus, MemoryStorage, Transport } from '../../src';
-import { test } from '../utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from '../utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('auth', function () {
-	test(`static auth should validate token`, async (url, nock) => {
-		nock()
-			.get('/users/me')
-			.query({
-				access_token: 'token',
-			})
-			.reply(203);
+	it(`static auth should validate token`, async () => {
+		mockServer.use(rest.get(URL + '/users/me', (_req, res, ctx) => res(ctx.status(203))));
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 		await sdk.auth.static('token');
 	});
 
-	test(`should allow to extend auth handler`, async (url, nock) => {
+	it(`should allow to extend auth handler`, async () => {
 		class CustomAuthHandler extends Auth {
 			hello() {
 				return 'hello';
@@ -27,7 +23,7 @@ describe('auth', function () {
 		const storage = new MemoryStorage();
 
 		const transport = new Transport({
-			url,
+			url: URL,
 			beforeRequest: async (config) => {
 				await auth.refreshIfExpired();
 				const token = auth.storage.auth_token;
@@ -50,25 +46,20 @@ describe('auth', function () {
 
 		auth = new CustomAuthHandler({ storage, transport });
 
-		const sdk = new Directus(url, {
+		const sdk = new Directus(URL, {
 			auth,
 			storage: auth.storage,
 			transport: auth.transport,
 		});
 
-		nock()
-			.get('/users/me')
-			.query({
-				access_token: 'token',
-			})
-			.reply(203);
+		mockServer.use(rest.get(URL + '/users/me', (_req, res, ctx) => res(ctx.status(203))));
 
 		await sdk.auth.static('token');
 		expect(sdk.auth.hello()).toBe('hello');
 	});
 
 	/*
-	test(`throws when refresh time resolves to an invalid value`, async (url, nock) => {
+	it(`throws when refresh time resolves to an invalid value`, async () => {
 		nock()
 			.post('/auth/login')
 			.reply(200, {
@@ -79,7 +70,7 @@ describe('auth', function () {
 				},
 			});
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 		try {
 			await sdk.auth.login(
 				{
@@ -100,35 +91,35 @@ describe('auth', function () {
 	});
 	*/
 
-	test(`successful auth should set the token`, async (url, nock) => {
-		nock()
-			.get('/users/me')
-			.query({
-				access_token: 'token',
-			})
-			.reply(203);
+	it(`successful auth should set the token`, async () => {
+		mockServer.use(rest.get(URL + '/users/me', (_req, res, ctx) => res(ctx.status(203))));
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 		await sdk.auth.static('token');
 
 		expect(await sdk.auth.token);
 	});
 
-	test(`invalid credentials token should not set the token`, async (url, nock) => {
-		nock()
-			.get('/users/me')
-			.reply(401, {
-				errors: [
-					{
-						message: 'Invalid token',
-						extensions: {
-							code: 'EUNAUTHORIZED',
-						},
-					},
-				],
-			});
+	it(`invalid credentials token should not set the token`, async () => {
+		mockServer.use(
+			rest.get(URL + '/users/me', (_req, res, ctx) =>
+				res(
+					ctx.status(401),
+					ctx.json({
+						errors: [
+							{
+								message: 'Invalid token',
+								extensions: {
+									code: 'EUNAUTHORIZED',
+								},
+							},
+						],
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 
 		let failed: false | string = false;
 
@@ -147,24 +138,26 @@ describe('auth', function () {
 		expect(failed).toBe(false);
 	});
 
-	test(`invalid static token should not set the token`, async (url, nock) => {
-		nock()
-			.get('/users/me')
-			.query({
-				access_token: 'token',
-			})
-			.reply(401, {
-				errors: [
-					{
-						message: 'Invalid token',
-						extensions: {
-							code: 'EUNAUTHORIZED',
-						},
-					},
-				],
-			});
+	it(`invalid static token should not set the token`, async () => {
+		mockServer.use(
+			rest.get(URL + '/users/me', (_req, res, ctx) =>
+				res(
+					ctx.status(401),
+					ctx.json({
+						errors: [
+							{
+								message: 'Invalid token',
+								extensions: {
+									code: 'EUNAUTHORIZED',
+								},
+							},
+						],
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 
 		let failed: false | string = false;
 

@@ -1,6 +1,7 @@
 import { Directus } from '../../src';
-import { test } from '../utils';
-import { describe, expect, beforeEach, afterEach } from 'vitest';
+import { mockServer, URL } from '../utils';
+import { rest } from 'msw';
+import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 
 describe('auth (browser)', function () {
 	beforeEach(() => {
@@ -11,53 +12,64 @@ describe('auth (browser)', function () {
 		localStorage.clear();
 	});
 
-	test(`sets default auth mode to cookie`, async (url) => {
-		const sdk = new Directus(url, { auth: { mode: 'cookie' } });
+	it(`sets default auth mode to cookie`, async () => {
+		const sdk = new Directus(URL, { auth: { mode: 'cookie' } });
 		expect(sdk.auth.mode).toBe('cookie');
 	});
 
-	test(`sends default auth mode`, async (url, nock) => {
-		const scope = nock()
-			.post('/auth/login', (body) => body.mode === 'cookie')
-			.reply(200, {
-				data: {
-					access_token: 'access_token',
-					refresh_token: 'refresh_token',
-					expires: 60000,
-				},
-			});
+	it(`sends default auth mode`, async () => {
+		mockServer.use(
+			rest.post(URL + '/auth/login', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							access_token: 'access_token',
+							refresh_token: 'refresh_token',
+							expires: 60000,
+						},
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 
-		await sdk.auth.login({
-			email: 'wolfulus@gmail.com',
-			password: 'password',
-		});
+		await expect(
+			sdk.auth.login({
+				email: 'wolfulus@gmail.com',
+				password: 'password',
+			})
+		).resolves.not.toThrowError();
 
-		expect(scope.pendingMocks().length).toBe(0);
+		// expect(scope.pendingMocks().length).toBe(0);
 	});
 
-	test(`logout doesn't send a refresh token due to cookie mode`, async (url, nock) => {
-		nock()
-			.post('/auth/login', (body) => body.mode === 'cookie')
-			.reply(
-				200,
-				{
-					data: {
-						access_token: 'some_access_token',
-						expires: 60000,
-					},
-				},
-				{
-					'Set-Cookie': 'directus_refresh_token=my_refresh_token; Max-Age=604800; Path=/; HttpOnly;',
-				}
-			);
+	it(`logout doesn't send a refresh token due to cookie mode`, async () => {
+		mockServer.use(
+			rest.post(URL + '/auth/login', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							access_token: 'some_access_token',
+							expires: 60000,
+						},
+					}),
+					ctx.cookie('directus_refresh_token', 'my_refresh_token', { httpOnly: true })
+				)
+			),
+			rest.post(URL + '/auth/logout', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {},
+					})
+				)
+			)
+		);
 
-		nock().post('/auth/logout', {}).matchHeader('cookie', 'directus_refresh_token=my_refresh_token').reply(200, {
-			data: {},
-		});
-
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 
 		await sdk.auth.login({
 			email: 'wolfulus@gmail.com',

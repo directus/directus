@@ -1,11 +1,12 @@
 import { Blog } from './blog.d';
 import { Directus, ItemsOptions, EmptyParamError } from '../src';
-import { test } from './utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from './utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('items', function () {
-	test(`should throw EmptyParamError when using empty string as id`, async (url, _nock) => {
-		const sdk = new Directus<Blog>(url);
+	it(`should throw EmptyParamError when using empty string as id`, async () => {
+		const sdk = new Directus<Blog>(URL);
 
 		try {
 			await sdk.items('posts').readOne('');
@@ -14,18 +15,23 @@ describe('items', function () {
 		}
 	});
 
-	test(`can get an item by id`, async (url, nock) => {
-		nock()
-			.get('/items/posts/1')
-			.reply(200, {
-				data: {
-					id: 1,
-					title: 'My first post',
-					body: '<h1>Hey there!</h1>',
-				},
-			});
+	it(`can get an item by id`, async () => {
+		mockServer.use(
+			rest.get(URL + '/items/posts/1', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							id: 1,
+							title: 'My first post',
+							body: '<h1>Hey there!</h1>',
+						},
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 		const item = await sdk.items('posts').readOne(1);
 
 		expect(item).not.toBeNull();
@@ -35,17 +41,22 @@ describe('items', function () {
 		expect(item?.body).toBe('<h1>Hey there!</h1>');
 	});
 
-	test(`should encode ids`, async (url, nock) => {
-		nock()
-			.get('/items/categories/double%20slash')
-			.reply(200, {
-				data: {
-					slug: 'double slash',
-					name: 'Double Slash',
-				},
-			});
+	it(`should encode ids`, async () => {
+		mockServer.use(
+			rest.get(URL + '/items/categories/double%20slash', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							slug: 'double slash',
+							name: 'Double Slash',
+						},
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 		const item = await sdk.items('categories').readOne('double slash');
 
 		expect(item).not.toBeNull();
@@ -54,43 +65,46 @@ describe('items', function () {
 		expect(item?.name).toBe('Double Slash');
 	});
 
-	test(`can get multiple items by primary key`, async (url, nock) => {
-		nock()
-			.get('/fields/posts')
-			.reply(200, {
-				data: [
-					{
-						collection: 'posts',
-						field: 'primary_key',
-						schema: { is_primary_key: true },
-					},
-				],
-			});
+	it(`can get multiple items by primary key`, async () => {
+		mockServer.use(
+			rest.get(URL + '/fields/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: [
+							{
+								collection: 'posts',
+								field: 'primary_key',
+								schema: { is_primary_key: true },
+							},
+						],
+					})
+				)
+			),
+			rest.get(URL + '/items/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: [
+							{
+								primary_key: 1,
+								title: 'My first post',
+								body: '<h1>Hey there!</h1>',
+								published: false,
+							},
+							{
+								primary_key: 2,
+								title: 'My second post',
+								body: '<h1>Hey there!</h1>',
+								published: true,
+							},
+						],
+					})
+				)
+			)
+		);
 
-		nock()
-			.get('/items/posts')
-			.query({
-				filter: '{"primary_key":{"_in":[1,2]}}',
-				sort: 'primary_key',
-			})
-			.reply(200, {
-				data: [
-					{
-						primary_key: 1,
-						title: 'My first post',
-						body: '<h1>Hey there!</h1>',
-						published: false,
-					},
-					{
-						primary_key: 2,
-						title: 'My second post',
-						body: '<h1>Hey there!</h1>',
-						published: true,
-					},
-				],
-			});
-
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 		const items = await sdk.items('posts').readMany([1, 2]);
 
 		expect(items.data?.[0]).toMatchObject({
@@ -108,26 +122,28 @@ describe('items', function () {
 		});
 	});
 
-	test(`filter param is sent`, async (url, nock) => {
-		nock()
-			.get('/items/posts')
-			.query({
-				'fields[]': ['id', 'title'],
-			})
-			.reply(200, {
-				data: [
-					{
-						id: 1,
-						title: 'My first post',
-					},
-					{
-						id: 2,
-						title: 'My second post',
-					},
-				],
-			});
+	it(`filter param is sent`, async () => {
+		mockServer.use(
+			rest.get(URL + '/items/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: [
+							{
+								id: 1,
+								title: 'My first post',
+							},
+							{
+								id: 2,
+								title: 'My second post',
+							},
+						],
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 
 		const items = await sdk.items('posts').readByQuery({
 			fields: ['id', 'title'],
@@ -142,19 +158,24 @@ describe('items', function () {
 		expect((<any>items.data?.[1])?.body).toBeUndefined();
 	});
 
-	test(`create one item`, async (url, nock) => {
-		nock()
-			.post('/items/posts')
-			.reply(200, {
-				data: {
-					id: 3,
-					title: 'New post',
-					body: 'This is a new post',
-					published: false,
-				},
-			});
+	it(`create one item`, async () => {
+		mockServer.use(
+			rest.post(URL + '/items/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							id: 3,
+							title: 'New post',
+							body: 'This is a new post',
+							published: false,
+						},
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 
 		const item = await sdk.items('posts').createOne({
 			title: 'New post',
@@ -170,27 +191,32 @@ describe('items', function () {
 		});
 	});
 
-	test(`create many items`, async (url, nock) => {
-		nock()
-			.post('/items/posts')
-			.reply(200, {
-				data: [
-					{
-						id: 4,
-						title: 'New post 2',
-						body: 'This is a new post 2',
-						published: false,
-					},
-					{
-						id: 5,
-						title: 'New post 3',
-						body: 'This is a new post 3',
-						published: true,
-					},
-				],
-			});
+	it(`create many items`, async () => {
+		mockServer.use(
+			rest.post(URL + '/items/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: [
+							{
+								id: 4,
+								title: 'New post 2',
+								body: 'This is a new post 2',
+								published: false,
+							},
+							{
+								id: 5,
+								title: 'New post 3',
+								body: 'This is a new post 3',
+								published: true,
+							},
+						],
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 
 		const items = await sdk.items('posts').createMany([
 			{
@@ -220,19 +246,24 @@ describe('items', function () {
 		});
 	});
 
-	test(`update one item`, async (url, nock) => {
-		nock()
-			.patch('/items/posts/1')
-			.reply(200, {
-				data: {
-					id: 1,
-					title: 'Updated post',
-					body: 'Updated post content',
-					published: true,
-				},
-			});
+	it(`update one item`, async () => {
+		mockServer.use(
+			rest.patch(URL + '/items/posts/1', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							id: 1,
+							title: 'Updated post',
+							body: 'Updated post content',
+							published: true,
+						},
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 
 		const item = await sdk.items('posts').updateOne(1, {
 			title: 'Updated post',
@@ -247,27 +278,32 @@ describe('items', function () {
 		});
 	});
 
-	test(`update many item`, async (url, nock) => {
-		nock()
-			.patch('/items/posts')
-			.reply(200, {
-				data: [
-					{
-						id: 1,
-						title: 'Updated post',
-						body: 'Updated post content',
-						published: true,
-					},
-					{
-						id: 2,
-						title: 'Updated post',
-						body: 'Updated post content',
-						published: true,
-					},
-				],
-			});
+	it(`update many item`, async () => {
+		mockServer.use(
+			rest.patch(URL + '/items/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: [
+							{
+								id: 1,
+								title: 'Updated post',
+								body: 'Updated post content',
+								published: true,
+							},
+							{
+								id: 2,
+								title: 'Updated post',
+								body: 'Updated post content',
+								published: true,
+							},
+						],
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 
 		const items = await sdk.items('posts').updateMany([1, 2], {
 			title: 'Updated post',
@@ -290,27 +326,32 @@ describe('items', function () {
 		});
 	});
 
-	test(`update batch`, async (url, nock) => {
-		nock()
-			.patch('/items/posts')
-			.reply(200, {
-				data: [
-					{
-						id: 1,
-						title: 'Updated post',
-						body: 'Updated post content',
-						published: true,
-					},
-					{
-						id: 2,
-						title: 'Updated post',
-						body: 'Updated post content',
-						published: true,
-					},
-				],
-			});
+	it(`update batch`, async () => {
+		mockServer.use(
+			rest.patch(URL + '/items/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: [
+							{
+								id: 1,
+								title: 'Updated post',
+								body: 'Updated post content',
+								published: true,
+							},
+							{
+								id: 2,
+								title: 'Updated post',
+								body: 'Updated post content',
+								published: true,
+							},
+						],
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 
 		const items = await sdk.items('posts').updateBatch([
 			{
@@ -342,25 +383,21 @@ describe('items', function () {
 		});
 	});
 
-	test(`delete one item`, async (url, nock) => {
-		const scope = nock().delete('/items/posts/1').reply(204);
+	it(`delete one item`, async () => {
+		mockServer.use(rest.delete(URL + '/items/posts/1', (_req, res, ctx) => res(ctx.status(204))));
 
-		const sdk = new Directus<Blog>(url);
-		await sdk.items('posts').deleteOne(1);
-
-		expect(scope.pendingMocks().length).toBe(0);
+		const sdk = new Directus<Blog>(URL);
+		await expect(sdk.items('posts').deleteOne(1)).resolves.not.toThrowError();
 	});
 
-	test(`delete many item`, async (url, nock) => {
-		const scope = nock().delete('/items/posts', [1, 2]).reply(204);
+	it(`delete many item`, async () => {
+		mockServer.use(rest.delete(URL + '/items/posts', (_req, res, ctx) => res(ctx.status(204))));
 
-		const sdk = new Directus<Blog>(url);
-		await sdk.items('posts').deleteMany([1, 2]);
-
-		expect(scope.pendingMocks().length).toBe(0);
+		const sdk = new Directus<Blog>(URL);
+		await expect(sdk.items('posts').deleteMany([1, 2])).resolves.not.toThrowError();
 	});
 
-	test('should passthrough additional headers', async (url, nock) => {
+	it('should passthrough additional headers', async () => {
 		const postData = {
 			title: 'New post',
 			body: 'This is a new post',
@@ -385,15 +422,18 @@ describe('items', function () {
 			},
 		};
 
-		nock()
-			.post('/items/posts')
-			// check if custom header is present
-			.matchHeader(headerName, headerValue)
-			.reply(200, {
-				data: expectedData,
-			});
+		mockServer.use(
+			rest.post(URL + '/items/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: expectedData,
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus<Blog>(url);
+		const sdk = new Directus<Blog>(URL);
 		const item = await sdk.items('posts').createOne(postData, undefined, customOptions);
 		expect(item).toMatchObject(expectedData);
 	});

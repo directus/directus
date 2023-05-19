@@ -16,7 +16,7 @@ import {
 	UsersHandler,
 } from './handlers';
 
-import { IItems } from './items';
+import { IItems, Item } from './items';
 import { ITransport } from './transport';
 import { UtilsHandler } from './handlers/utils';
 import { IStorage } from './storage';
@@ -65,6 +65,6 @@ export interface IDirectus<T extends TypeMap> extends IDirectusBase {
 	readonly users: UsersHandler<TypeOf<T, 'directus_users'>>;
 	readonly settings: SettingsHandler<TypeOf<T, 'directus_settings'>>;
 
-	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I>;
-	singleton<C extends string, I = TypeOf<T, C>>(collection: C): ISingleton<I>;
+	items<C extends string, I extends Item>(collection: C): IItems<I>;
+	singleton<C extends string, I extends Item>(collection: C): ISingleton<I>;
 }

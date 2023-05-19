@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { Directus, MemoryStorage } from '../../src/base';
 import { describe, expect, it } from 'vitest';
 
