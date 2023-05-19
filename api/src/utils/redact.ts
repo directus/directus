@@ -10,7 +10,7 @@ type Paths = string[][];
  * @param replacement Replacement the values are redacted by.
  * @returns Redacted object.
  */
-export function redact<T extends UnknownObject>(input: T, paths: Paths, replacement: string): T {
+export function redact(input: UnknownObject, paths: Paths, replacement: string): UnknownObject {
 	const wildcardChars = ['*', '**'];
 
 	const clone = structuredClone(input);
