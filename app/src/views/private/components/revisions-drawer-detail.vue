@@ -130,5 +130,6 @@ defineExpose({
 
 .v-pagination {
 	justify-content: center;
+	margin-top: 24px;
 }
 </style>
