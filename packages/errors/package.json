@@ -26,6 +26,7 @@
 		"dist"
 	],
 	"devDependencies": {
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "20.2.1",
 		"@vitest/coverage-c8": "0.31.1",

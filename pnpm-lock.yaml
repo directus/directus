@@ -994,6 +994,9 @@ importers:
 
   packages/errors:
     devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
