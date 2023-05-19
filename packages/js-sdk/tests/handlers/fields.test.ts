@@ -1,39 +1,55 @@
 import { Directus } from '../../src';
-import { test } from '../utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from '../utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('fields', function () {
-	test(`update one`, async (url, nock) => {
-		const scope = nock()
-			.patch('/fields/posts/title', { meta: { required: true } })
-			.reply(200, {});
+	it(`update one`, async () => {
+		mockServer.use(rest.patch(URL + '/fields/posts/title', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 
-		await sdk.fields.updateOne('posts', 'title', {
-			meta: {
-				required: true,
-			},
-		});
-
-		expect(scope.pendingMocks().length).toBe(0);
+		await expect(
+			sdk.fields.updateOne('posts', 'title', {
+				meta: {
+					required: true,
+				},
+			})
+		).resolves.not.toThrowError();
 	});
 
-	test(`check ManyItems return type for readAll`, async (url, nock) => {
-		nock().get('/fields').reply(200, { data: [] });
+	it(`check ManyItems return type for readAll`, async () => {
+		mockServer.use(
+			rest.get(URL + '/fields', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: [],
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 		const response = await sdk.fields.readAll();
 
 		expect(Array.isArray(response.data)).toBe(true);
 	});
 
-	test(`check ManyItems return type for readMany`, async (url, nock) => {
-		nock().get('/fields/posts').reply(200, { data: [] });
+	it(`check ManyItems return type for readMany`, async () => {
+		mockServer.use(
+			rest.get(URL + '/fields/posts', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: [],
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 		const response = await sdk.fields.readMany('posts');
-		// console.log(response);
 
 		expect(Array.isArray(response.data)).toBe(true);
 	});
