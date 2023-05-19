@@ -24,9 +24,6 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
-	},
 	"dependencies": {
 		"semver": "7.5.1",
 		"undici": "5.22.1"

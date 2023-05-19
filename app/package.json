@@ -153,9 +153,6 @@
 		"webpack": "5.83.1",
 		"wellknown": "0.5.0"
 	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"dependencies": {
 		"@directus/composables": "workspace:*"
 	}

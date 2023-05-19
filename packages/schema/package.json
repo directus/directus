@@ -47,8 +47,5 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"typescript": "5.0.4"
-	},
-	"publishConfig": {
-		"access": "public"
 	}
 }

@@ -36,9 +36,6 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
-	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"date-fns": "2.30.0",

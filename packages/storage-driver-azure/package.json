@@ -24,9 +24,6 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
-	},
 	"dependencies": {
 		"@azure/storage-blob": "12.14.0",
 		"@directus/storage": "workspace:*",

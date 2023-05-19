@@ -40,9 +40,6 @@
 		"swagger-cli": "4.0.4",
 		"swagger-ui-watcher": "2.1.13"
 	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"watch": {
 		"build": {
 			"patterns": [

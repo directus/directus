@@ -23,9 +23,6 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
-	},
 	"devDependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
