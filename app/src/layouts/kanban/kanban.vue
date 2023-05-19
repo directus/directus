@@ -50,7 +50,7 @@
 						@change="change(group, $event)"
 					>
 						<template #item="{ element }">
-							<router-link :to="`${collection}/${element.id}`" class="item">
+							<router-link :to="`${getItemRoute(element.id)}`" class="item">
 								<div v-if="element.title" class="title">{{ element.title }}</div>
 								<img v-if="element.image" class="image" :src="element.image" />
 								<div v-if="element.text" class="text">{{ element.text }}</div>
@@ -155,6 +155,16 @@ const { t } = useI18n();
 
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
+
+function getItemRoute(primaryKey: string | number) {
+	if (!props.collection) return '';
+
+	const route = props.collection.startsWith('directus_')
+		? props.collection.substring(9)
+		: `content/${props.collection}`;
+
+	return `/${route}/${primaryKey}`;
+}
 
 function openEditGroup(group: Group) {
 	editDialogOpen.value = group.id;
