@@ -349,8 +349,8 @@ importers:
         version: 16.1.0
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../packages/tsconfig
       '@directus/types':
         specifier: workspace:*
         version: link:../packages/types
@@ -910,8 +910,8 @@ importers:
         version: 3.3.4
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -938,8 +938,8 @@ importers:
         version: 3.21.4
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -959,8 +959,8 @@ importers:
   packages/data:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: 18.16.12
         version: 18.16.12
@@ -977,8 +977,8 @@ importers:
   packages/data-driver-postgres:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: 18.16.12
         version: 18.16.12
@@ -995,8 +995,8 @@ importers:
   packages/exceptions:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -1089,8 +1089,8 @@ importers:
         version: 3.3.4
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/fs-extra':
         specifier: 11.0.1
         version: 11.0.1
@@ -1117,8 +1117,8 @@ importers:
         specifier: workspace:*
         version: link:../random
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/express':
         specifier: 4.17.17
         version: 4.17.17
@@ -1135,8 +1135,8 @@ importers:
   packages/random:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
@@ -1163,8 +1163,8 @@ importers:
         specifier: 5.2.1
         version: 5.2.1
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: 20.2.0
         version: 20.2.0
@@ -1185,8 +1185,8 @@ importers:
         version: 2.4.2(mysql@2.18.1)(pg@8.11.0)(sqlite3@5.1.6)(tedious@16.1.0)
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1198,8 +1198,8 @@ importers:
         version: 0.27.2
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: ^18.0.3
         version: 18.16.12
@@ -1247,8 +1247,8 @@ importers:
   packages/storage:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: 18.16.12
         version: 18.16.12
@@ -1275,8 +1275,8 @@ importers:
         version: link:../utils
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0
@@ -1306,8 +1306,8 @@ importers:
         version: 5.22.1
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0
@@ -1334,8 +1334,8 @@ importers:
         version: 6.10.1
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0
@@ -1359,8 +1359,8 @@ importers:
         version: link:../utils
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0
@@ -1393,8 +1393,8 @@ importers:
         version: link:../utils
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0
@@ -1408,6 +1408,8 @@ importers:
         specifier: 0.31.1
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
+  packages/tsconfig: {}
+
   packages/types:
     devDependencies:
       '@directus/constants':
@@ -1417,8 +1419,8 @@ importers:
         specifier: workspace:*
         version: link:../schema
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/express':
         specifier: 4.17.17
         version: 4.17.17
@@ -1460,8 +1462,8 @@ importers:
         version: 5.22.1
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@ngneat/falso':
         specifier: 6.4.0
         version: 6.4.0
@@ -1506,8 +1508,8 @@ importers:
         version: 3.3.4
     devDependencies:
       '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
+        specifier: workspace:*
+        version: link:../tsconfig
       '@directus/types':
         specifier: workspace:*
         version: link:../types
@@ -4498,10 +4500,6 @@ packages:
   /@directus/format-title@10.0.0:
     resolution: {integrity: sha512-iMXP8yQb0UKAMGRHAY7IkNXEGdUqQDvlu1aAkPARYah4lMhEU8E5KgkXdOCPQaxt6Wy0gXb7DPMjeSlKyBKCxg==}
     engines: {node: '>=6.0.0'}
-
-  /@directus/tsconfig@0.0.7:
-    resolution: {integrity: sha512-0h9GOyLFl1ylcZYLi3zNik+/DorFTtywsJl7RIVsy9pdL1cL/jewKT9L0yShDvbmN/kenPSlXC8qmqmz1NPhHA==}
-    dev: true
 
   /@discoveryjs/json-ext@0.5.7:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}

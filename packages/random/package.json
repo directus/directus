@@ -28,7 +28,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"

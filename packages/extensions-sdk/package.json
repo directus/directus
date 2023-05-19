@@ -58,7 +58,7 @@
 		"vue": "3.3.4"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@types/fs-extra": "11.0.1",
 		"@types/inquirer": "9.0.3",
 		"@vitest/coverage-c8": "0.31.1",
