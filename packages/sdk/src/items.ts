@@ -113,16 +113,23 @@ type DeepPathToObject<
 	  }
 	: never;
 
-type TreeBranch<T, Path extends string, Val = Record<string, never>, NT = NonNullable<T>> = NT extends (infer U)[]
+type TreeBranch<
+	T,
+	Path extends string,
+	Val = Record<string, never>,
+	NT extends Record<string, any> = NonNullable<T>
+> = NT extends (infer U)[]
 	? (ArrayTreeBranch<Extract<U, Record<string, unknown>>, Path, Val> | Exclude<U, Record<string, unknown>>)[]
 	: IsUnion<T> extends true
 	? DeepPathToObject<Path, Extract<T, Record<string, unknown>>, Val> | Exclude<T, Record<string, unknown>>
 	: DeepPathToObject<Path, NT, Val>;
 
-type ArrayTreeBranch<U, Path extends string, Val = Record<string, never>, NU = NonNullable<U>> = Extract<
-	NU,
-	Record<string, unknown>
-> extends infer OB
+type ArrayTreeBranch<
+	U,
+	Path extends string,
+	Val = Record<string, never>,
+	NU extends Record<string, any> = NonNullable<U>
+> = Extract<NU, Record<string, unknown>> extends infer OB extends Record<string, any>
 	? Val extends (infer _)[]
 		? DeepPathToObject<Path, OB, Val[number]>
 		: DeepPathToObject<Path, OB, Val>

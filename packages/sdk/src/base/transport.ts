@@ -37,7 +37,7 @@ export class Transport extends ITransport {
 	protected async request<T = any, R = any>(
 		method: TransportMethods,
 		path: string,
-		data?: Record<string, any>,
+		data?: any,
 		options?: Omit<TransportOptions, 'url'>
 	): Promise<TransportResponse<T, R>> {
 		try {
