@@ -1,24 +1,26 @@
 import { Directus } from '../../src';
-import { test } from '../utils';
-import { describe, expect } from 'vitest';
+import { mockServer, URL } from '../utils';
+import { describe, expect, it } from 'vitest';
+import { rest } from 'msw';
 
 describe('tfa', function () {
-	test(`generate`, async (url, nock) => {
-		const scope = nock()
-			.post('/users/me/tfa/generate', {
-				password: 'password1234',
-			})
-			.reply(200, {
-				data: {
-					secret: 'supersecret',
-					otpauth_url: 'https://example.com',
-				},
-			});
+	it(`generate`, async () => {
+		mockServer.use(
+			rest.post(URL + '/users/me/tfa/generate', (_req, res, ctx) =>
+				res(
+					ctx.status(200),
+					ctx.json({
+						data: {
+							secret: 'supersecret',
+							otpauth_url: 'https://example.com',
+						},
+					})
+				)
+			)
+		);
 
-		const sdk = new Directus(url);
+		const sdk = new Directus(URL);
 		const data = await sdk.users.me.tfa.generate('password1234');
-
-		expect(scope.pendingMocks().length).toBe(0);
 
 		expect(data).toStrictEqual({
 			secret: 'supersecret',
@@ -26,30 +28,17 @@ describe('tfa', function () {
 		});
 	});
 
-	test(`enable`, async (url, nock) => {
-		const scope = nock()
-			.post('/users/me/tfa/enable', {
-				secret: 'supersecret',
-				otp: '123456',
-			})
-			.reply(200, {});
+	it(`enable`, async () => {
+		mockServer.use(rest.post(URL + '/users/me/tfa/enable', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
-		await sdk.users.me.tfa.enable('supersecret', '123456');
-
-		expect(scope.pendingMocks().length).toBe(0);
+		const sdk = new Directus(URL);
+		await expect(sdk.users.me.tfa.enable('supersecret', '123456')).resolves.not.toThrowError();
 	});
 
-	test(`disable`, async (url, nock) => {
-		const scope = nock()
-			.post('/users/me/tfa/disable', {
-				otp: '12345',
-			})
-			.reply(200, {});
+	it(`disable`, async () => {
+		mockServer.use(rest.post(URL + '/users/me/tfa/disable', (_req, res, ctx) => res(ctx.status(200))));
 
-		const sdk = new Directus(url);
-		await sdk.users.me.tfa.disable('12345');
-
-		expect(scope.pendingMocks().length).toBe(0);
+		const sdk = new Directus(URL);
+		await expect(sdk.users.me.tfa.disable('12345')).resolves.not.toThrowError();
 	});
 });

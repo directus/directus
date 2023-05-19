@@ -1,4 +1,3 @@
-import nock, { back, BackMode } from 'nock';
 import { setImmediate, setTimeout } from 'timers';
 import { afterAll, beforeAll, afterEach, vi } from 'vitest';
 import argon2 from 'argon2';
@@ -7,20 +6,10 @@ import { setupServer } from 'msw/node';
 export const URL = process.env.TEST_URL || 'http://localhost';
 export const MODE = process.env.TEST_MODE || 'dryrun';
 
-back.fixtures = `${__dirname}/fixtures`;
-back.setMode(MODE as BackMode);
-
-export type Test = (url: string, nock: () => nock.Scope) => Promise<void>;
-
-export type TestSettings = {
-	url?: string;
-	fixture?: string;
-};
-
 export const mockServer = setupServer();
 
 // Start server before all tests
-beforeAll(() => mockServer.listen({ onUnhandledRequest: 'warn' }));
+beforeAll(() => mockServer.listen({ onUnhandledRequest: 'error' }));
 
 //  Close server after all tests
 afterAll(() => mockServer.close());
