@@ -1,31 +1,57 @@
-import type { File, Transformation, TransformationParams } from '../types/index.js';
+import type { File, Transformation, TransformationFormat, TransformationSet } from '../types/index.js';
 
-export function resolvePreset(input: TransformationParams, file: File): Transformation[] {
-	const transforms = input.transforms ? [...input.transforms] : [];
+export function resolvePreset({ transformationParams, acceptFormat }: TransformationSet, file: File): Transformation[] {
+	const transforms = transformationParams.transforms ? [...transformationParams.transforms] : [];
 
-	if (input.format || input.quality) {
+	if (transformationParams.format || transformationParams.quality) {
 		transforms.push([
 			'toFormat',
-			input.format || (file.type!.split('/')[1] as any),
+			getFormat(file, transformationParams.format, acceptFormat),
 			{
-				quality: input.quality ? Number(input.quality) : undefined,
+				quality: transformationParams.quality ? Number(transformationParams.quality) : undefined,
 			},
 		]);
 	}
 
-	if (input.width || input.height) {
+	if (transformationParams.width || transformationParams.height) {
 		transforms.push([
 			'resize',
 			{
-				width: input.width ? Number(input.width) : undefined,
-				height: input.height ? Number(input.height) : undefined,
-				fit: input.fit,
-				withoutEnlargement: input.withoutEnlargement ? Boolean(input.withoutEnlargement) : undefined,
+				width: transformationParams.width ? Number(transformationParams.width) : undefined,
+				height: transformationParams.height ? Number(transformationParams.height) : undefined,
+				fit: transformationParams.fit,
+				withoutEnlargement: transformationParams.withoutEnlargement
+					? Boolean(transformationParams.withoutEnlargement)
+					: undefined,
 			},
 		]);
 	}
 
 	return transforms;
+}
+
+function getFormat(
+	file: File,
+	format: TransformationSet['transformationParams']['format'],
+	acceptFormat: TransformationSet['acceptFormat']
+): TransformationFormat {
+	const fileType = file.type?.split('/')[1] as TransformationFormat | undefined;
+
+	if (format) {
+		if (format !== 'auto') {
+			return format;
+		}
+
+		if (acceptFormat) {
+			return acceptFormat;
+		}
+
+		if (fileType && ['avif', 'webp', 'tiff'].includes(fileType)) {
+			return 'png';
+		}
+	}
+
+	return fileType || 'jpg';
 }
 
 /**

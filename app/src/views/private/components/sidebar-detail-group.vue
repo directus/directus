@@ -4,7 +4,7 @@
 	</v-item-group>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { nextTick, ref, watch } from 'vue';
 
 const props = defineProps<{

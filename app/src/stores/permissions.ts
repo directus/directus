@@ -16,7 +16,7 @@ export const usePermissionsStore = defineStore({
 			const userStore = useUserStore();
 
 			const response = await api.get('/permissions', {
-				params: { limit: -1, filter: { role: { _eq: userStore.currentUser!.role.id } } },
+				params: { filter: { role: { _eq: userStore.currentUser!.role.id } } },
 			});
 
 			const fields = getNestedDynamicVariableFieldsInPresets(response.data.data);

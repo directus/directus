@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "10.0.0",
+	"version": "10.0.1",
 	"description": "Utility for extracting information about existing DB schema",
 	"type": "module",
 	"keywords": [
@@ -38,7 +38,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --build",
+		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch"
 	},
 	"dependencies": {

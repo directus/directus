@@ -33,12 +33,12 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
-import api from '@/api';
-import FolderPickerListItem from './folder-picker-list-item.vue';
+<script setup lang="ts">
+import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import FolderPickerListItem from './folder-picker-list-item.vue';
 
 type FolderRaw = {
 	id: string;
@@ -112,14 +112,16 @@ async function fetchFolders() {
 	loading.value = true;
 
 	try {
-		const response = await api.get(`/folders`, {
+		folders.value = await fetchAll<{
+			id: string;
+			name: string;
+			parent: string | null;
+		}>(`/folders`, {
 			params: {
 				limit: -1,
 				sort: 'name',
 			},
 		});
-
-		folders.value = response.data.data;
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {

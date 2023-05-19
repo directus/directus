@@ -23,7 +23,6 @@ export default definePanel({
 					placeholder: '$t:field_name_placeholder',
 				},
 			},
-			schema: null,
 		},
 		{
 			field: 'collection',

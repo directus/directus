@@ -199,7 +199,7 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -387,7 +387,7 @@ const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
 
 const refreshInterval = computed({
 	get() {
-		return unref(refreshIntervals)[props.primaryKey];
+		return unref(refreshIntervals)[props.primaryKey] ?? null;
 	},
 	set(val) {
 		refreshIntervals.value = assign({}, unref(refreshIntervals), { [props.primaryKey]: val });
