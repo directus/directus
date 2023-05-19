@@ -50,7 +50,7 @@
 						@change="change(group, $event)"
 					>
 						<template #item="{ element }">
-							<router-link :to="getItemRoute(element.id)" class="item">
+							<router-link :to="getItemRoute(collection, element.id)" class="item">
 								<div v-if="element.title" class="title">{{ element.title }}</div>
 								<img v-if="element.image" class="image" :src="element.image" />
 								<div v-if="element.text" class="text">{{ element.text }}</div>
@@ -110,6 +110,7 @@ export default {
 <script setup lang="ts">
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { getItemRoute } from '@/utils/get-item-route';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -155,16 +156,6 @@ const { t } = useI18n();
 
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
-
-function getItemRoute(primaryKey: string | number) {
-	if (!props.collection) return '';
-
-	const route = props.collection.startsWith('directus_')
-		? props.collection.substring(9)
-		: `content/${props.collection}`;
-
-	return `/${route}/${primaryKey}`;
-}
 
 function openEditGroup(group: Group) {
 	editDialogOpen.value = group.id;
