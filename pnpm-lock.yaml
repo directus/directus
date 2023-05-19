@@ -1000,8 +1000,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@types/node':
-        specifier: 20.2.1
-        version: 20.2.1
+        specifier: 18.16.12
+        version: 18.16.12
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)

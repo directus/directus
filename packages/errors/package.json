@@ -28,7 +28,7 @@
 	"devDependencies": {
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "20.2.1",
+		"@types/node": "18.16.12",
 		"@vitest/coverage-c8": "0.31.1",
 		"tsup": "6.7.0",
 		"typescript": "5.0.4",
