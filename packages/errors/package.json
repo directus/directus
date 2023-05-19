@@ -5,6 +5,7 @@
 	"sideEffects": false,
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest --watch=false"
 	},
 	"description": "Create consistent error objects around the codebase",
