@@ -91,7 +91,7 @@ Note: The tests expect the instance running at `localhost:8055`. Make sure to co
 container found in the `tests-blackbox/docker-compose.yml` file.
 
 ## Writing Unit Tests
-Unit Tests are written throughout the codebase in a vite-native unit test framework called [Vitetest](https://vitest.dev). 
+Unit Tests are written throughout the codebase in a vite native unit test framework called [Vitest](https://vitest.dev). 
 
 ### Example
 ```

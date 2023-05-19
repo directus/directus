@@ -380,6 +380,8 @@ varchar
 Vercel
 viewability
 VitePress
+(V|v)itest
+(V|v)ite
 volta
 VPC
 Vue
