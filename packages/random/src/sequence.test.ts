@@ -1,5 +1,5 @@
 import { beforeEach, test, expect } from 'vitest';
-import { randomIntBetween } from './integer.js';
+import { randomInteger } from './integer.js';
 import { randomSequence } from './sequence.js';
 import { randomArray } from './array.js';
 
@@ -10,7 +10,7 @@ let sample: {
 
 beforeEach(() => {
 	sample = {
-		length: randomIntBetween(0, 15),
+		length: randomInteger(0, 15),
 		characters: randomArray(['abcdefg', 'hijklmnop', 'qrstuvwxyz', '0123456789']),
 	};
 });
