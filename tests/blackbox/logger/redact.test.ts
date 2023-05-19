@@ -116,8 +116,8 @@ describe('Logger Redact Tests', () => {
 								});
 
 								for (const log of [logs, logsGql]) {
-									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(1);
+									expect((log.match(/"cookie":"--redacted--"/g) || []).length).toBe(0);
+									expect((log.match(/"set-cookie":"--redacted--"/g) || []).length).toBe(1);
 								}
 							} else {
 								expect(response.body).toMatchObject({
@@ -129,8 +129,8 @@ describe('Logger Redact Tests', () => {
 								});
 
 								for (const log of [logs, logsGql]) {
-									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(0);
-									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+									expect((log.match(/"cookie":"--redacted--"/g) || []).length).toBe(0);
+									expect((log.match(/"set-cookie":"--redacted--"/g) || []).length).toBe(0);
 								}
 							}
 
@@ -229,8 +229,8 @@ describe('Logger Redact Tests', () => {
 								});
 
 								for (const log of [logs, logsGql]) {
-									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(1);
-									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(1);
+									expect((log.match(/"cookie":"--redacted--"/g) || []).length).toBe(1);
+									expect((log.match(/"set-cookie":"--redacted--"/g) || []).length).toBe(1);
 								}
 							} else {
 								expect(response.body).toMatchObject({
@@ -242,8 +242,8 @@ describe('Logger Redact Tests', () => {
 								});
 
 								for (const log of [logs, logsGql]) {
-									expect((log.match(/"cookie":"--redact--"/g) || []).length).toBe(1);
-									expect((log.match(/"set-cookie":"--redact--"/g) || []).length).toBe(0);
+									expect((log.match(/"cookie":"--redacted--"/g) || []).length).toBe(1);
+									expect((log.match(/"set-cookie":"--redacted--"/g) || []).length).toBe(0);
 								}
 							}
 

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "10.0.0",
+	"version": "10.0.1",
 	"description": "Utility for extracting information about existing DB schema",
 	"type": "module",
 	"keywords": [
@@ -45,7 +45,7 @@
 		"knex": "2.4.2"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"typescript": "5.0.4"
 	},
 	"publishConfig": {

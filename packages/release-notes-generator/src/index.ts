@@ -1,10 +1,10 @@
 import type { ChangelogFunctions, GetDependencyReleaseLine, GetReleaseLine } from '@changesets/types';
-import { execSync } from 'node:child_process';
-import { existsSync, unlinkSync } from 'node:fs';
-import { join } from 'node:path';
-import { generateMarkdown } from './generate-markdown';
-import { getInfo } from './get-info';
-import { ChangesetsWithoutId, PackageInfo } from './types';
+import { appendFileSync } from 'node:fs';
+import { MAIN_PACKAGE } from './constants';
+import type { ChangesetsWithoutId } from './types';
+import { generateMarkdown } from './utils/generate-markdown';
+import { getInfo } from './utils/get-info';
+import { processPackages } from './utils/process-packages';
 
 const changesets: ChangesetsWithoutId = new Map();
 
@@ -16,40 +16,58 @@ const getReleaseLine: GetReleaseLine = async (changeset) => {
 };
 
 const getDependencyReleaseLine: GetDependencyReleaseLine = async () => {
-	// Update of dependencies not included in the release notes
+	// Cannot be used since there's no way to get the affected dependency
 	return '';
-};
-
-const defaultChangelogFunctions: ChangelogFunctions = {
-	getReleaseLine,
-	getDependencyReleaseLine,
-};
-
-const run = async () => {
-	const packageInfo: PackageInfo[] = JSON.parse(String(execSync('pnpm m ls --json --depth=-1')));
-
-	const mainVersion = packageInfo.find((p) => p.name === 'directus')?.version;
-
-	if (!mainVersion) {
-		throw new Error(`Couldn't get main version`);
-	}
-
-	// Clean-up changelog files in favor of release notes
-	for (const localPackage of packageInfo) {
-		const changelogPath = join(localPackage.path, 'CHANGELOG.md');
-
-		if (existsSync(changelogPath)) {
-			unlinkSync(changelogPath);
-		}
-	}
-
-	const { types, untypedPackages, packageVersions } = await getInfo(changesets);
-	generateMarkdown(mainVersion, types, untypedPackages, packageVersions);
 };
 
 process.on('beforeExit', async () => {
 	await run();
 	process.exit();
 });
+
+async function run() {
+	const { mainVersion, packageVersions } = await processPackages();
+
+	if (changesets.size === 0) {
+		earlyExit();
+	}
+
+	if (!mainVersion) {
+		throw new Error(`Couldn't get main version ('${MAIN_PACKAGE}' package)`);
+	}
+
+	const { types, untypedPackages } = await getInfo(changesets);
+
+	if (types.length === 0 && untypedPackages.length === 0 && packageVersions.length === 0) {
+		earlyExit();
+	}
+
+	const markdown = generateMarkdown(mainVersion, types, untypedPackages, packageVersions);
+
+	const divider = '==============================================================';
+	process.stdout.write(`${divider}\n${markdown}\n${divider}\n`);
+
+	const githubOutput = process.env['GITHUB_OUTPUT'];
+
+	// Set output if running inside a GitHub workflow
+	if (githubOutput) {
+		const outputs = [
+			`DIRECTUS_MAIN_VERSION=${mainVersion}`,
+			`DIRECTUS_RELEASE_NOTES<<EOF_RELEASE_NOTES\n${markdown}\nEOF_RELEASE_NOTES`,
+		];
+
+		appendFileSync(githubOutput, `${outputs.join('\n')}\n`);
+	}
+}
+
+function earlyExit(): never {
+	process.stdout.write('No (processable) changesets found: Skipping generation of release notes\n');
+	process.exit();
+}
+
+const defaultChangelogFunctions: ChangelogFunctions = {
+	getReleaseLine,
+	getDependencyReleaseLine,
+};
 
 export default defaultChangelogFunctions;

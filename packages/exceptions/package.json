@@ -29,12 +29,12 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
-		"@vitest/coverage-c8": "0.31.0",
-		"joi": "17.9.1",
+		"@vitest/coverage-c8": "0.31.1",
+		"joi": "17.9.2",
 		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"vitest": "0.31.1"
 	}
 }

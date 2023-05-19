@@ -1,6 +1,6 @@
 {
 	"name": "@directus/pressure",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
@@ -29,11 +29,11 @@
 	},
 	"devDependencies": {
 		"@directus/random": "workspace:*",
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@types/express": "4.17.17",
-		"@vitest/coverage-c8": "0.31.0",
+		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"vitest": "0.31.1"
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*"

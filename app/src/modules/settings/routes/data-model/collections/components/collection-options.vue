@@ -29,6 +29,51 @@
 					</template>
 				</v-list-item>
 
+				<template v-if="collection.type === 'alias' || hasNestedCollections">
+					<v-divider />
+
+					<v-list-item
+						:active="collection.meta?.collapse === 'open'"
+						clickable
+						@click="update({ meta: { collapse: 'open' } })"
+					>
+						<v-list-item-icon>
+							<v-icon name="folder_open" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('start_open') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item
+						:active="collection.meta?.collapse === 'closed'"
+						clickable
+						@click="update({ meta: { collapse: 'closed' } })"
+					>
+						<v-list-item-icon>
+							<v-icon name="folder" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('start_collapsed') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-list-item
+						:active="collection.meta?.collapse === 'locked'"
+						clickable
+						@click="update({ meta: { collapse: 'locked' } })"
+					>
+						<v-list-item-icon>
+							<v-icon name="folder_lock" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('always_open') }}
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-divider />
+				</template>
+
 				<v-list-item clickable class="danger" @click="deleteActive = true">
 					<v-list-item-icon>
 						<v-icon name="delete" />
@@ -75,15 +120,17 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { computed, ref } from 'vue';
-import { Collection } from '@/types/collections';
 import { useCollectionsStore } from '@/stores/collections';
-import { useRelationsStore } from '@/stores/relations';
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
+import { Collection } from '@/types/collections';
+import type { DeepPartial } from '@directus/types';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type Props = {
 	collection: Collection;
+	hasNestedCollections: boolean;
 };
 
 const props = withDefaults(defineProps<Props>(), {});
@@ -111,10 +158,6 @@ const peerDependencies = computed(() => {
 		}));
 });
 
-async function update(updates: Partial<Collection>) {
-	await collectionsStore.updateCollection(props.collection.collection, updates);
-}
-
 function useDelete() {
 	const deleting = ref(false);
 	const deleteActive = ref(false);
@@ -135,6 +178,10 @@ function useDelete() {
 			deleting.value = false;
 		}
 	}
+}
+
+async function update(updates: DeepPartial<Collection>) {
+	await collectionsStore.updateCollection(props.collection.collection, updates);
 }
 </script>
 
