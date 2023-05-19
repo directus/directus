@@ -54,7 +54,6 @@
 		"@types/node": "^18.0.3",
 		"@typescript-eslint/eslint-plugin": "^5.30.5",
 		"@typescript-eslint/parser": "^5.30.5",
-		"argon2": "0.28.7",
 		"dotenv": "16.0.1",
 		"jsdom": "^22.0.0",
 		"msw": "^1.2.1",

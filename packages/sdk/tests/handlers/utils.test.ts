@@ -1,7 +1,5 @@
-import argon2 from 'argon2';
 import { Directus } from '../../src';
 import { mockServer, URL } from '../utils';
-import { generateHash } from '../utils';
 import { describe, expect, it } from 'vitest';
 import { rest } from 'msw';
 
@@ -20,38 +18,39 @@ describe('utils', function () {
 	});
 
 	it(`hash generate`, async () => {
+		const HASH = '$argon2i$v=19$m=16,t=2,p=1$YXNkYXNkYXNkYQ$q1exR8e4IRDiD1TR3rGB6g';
+
 		mockServer.use(
 			rest.options(URL + '/utils/hash/generate', (_r, res, ctx) => res(ctx.status(200))),
 			rest.post(URL + '/utils/hash/generate', async (req, res, ctx) => {
-				const { string } = await req.json();
-				return res(ctx.status(200), ctx.json({ data: await generateHash(string) }));
+				return res(ctx.status(200), ctx.json({ data: HASH }));
 			})
 		);
 
 		const sdk = new Directus(URL);
 		const hash = await sdk.utils.hash.generate('wolfulus');
 
-		expect(hash?.slice(0, 7)).toBe('$argon2');
+		expect(hash).toBe(HASH);
 	});
 
 	it(`hash verify`, async () => {
+		const HASH = '$argon2i$v=19$m=16,t=2,p=1$YXNkYXNkYXNkYQ$q1exR8e4IRDiD1TR3rGB6g';
+
 		mockServer.use(
 			rest.options(URL + '/utils/hash/generate', (_r, res, ctx) => res(ctx.status(200))),
 			rest.post(URL + '/utils/hash/generate', async (req, res, ctx) => {
-				const { string } = await req.json();
-				return res(ctx.status(200), ctx.json({ data: await generateHash(string) }));
+				return res(ctx.status(200), ctx.json({ data: HASH }));
 			}),
 			rest.options(URL + '/utils/hash/verify', (_r, res, ctx) => res(ctx.status(200))),
-			rest.post(URL + '/utils/hash/verify', async (req, res, ctx) => {
-				const { hash, string } = await req.json();
-				return res(ctx.status(200), ctx.json({ data: await argon2.verify(hash, string) }));
+			rest.post(URL + '/utils/hash/verify', async (_r, res, ctx) => {
+				return res(ctx.status(200), ctx.json({ data: true }));
 			})
 		);
 
 		const sdk = new Directus(URL);
 		const hash = await sdk.utils.hash.generate('wolfulus');
 
-		expect(hash?.slice(0, 7)).toBe('$argon2');
+		expect(hash).toBe(HASH);
 
 		const result = await sdk.utils.hash.verify('wolfulus', hash || '');
 
