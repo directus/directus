@@ -17,14 +17,14 @@
 	"devDependencies": {
 		"@changesets/types": "5.2.1",
 		"@directus/tsconfig": "0.0.7",
-		"@types/node": "18.15.13",
-		"@vitest/coverage-c8": "0.31.0",
+		"@types/node": "20.2.0",
+		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"vitest": "0.31.1"
 	},
 	"dependencies": {
 		"@changesets/get-github-info": "0.5.2",
 		"@pnpm/find-workspace-dir": "6.0.0",
-		"@pnpm/find-workspace-packages": "6.0.7"
+		"@pnpm/find-workspace-packages": "6.0.8"
 	}
 }
