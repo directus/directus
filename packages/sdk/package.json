@@ -2,6 +2,16 @@
 	"name": "@directus/sdk",
 	"version": "10.3.3",
 	"description": "The official Directus SDK for use in JavaScript!",
+	"keywords": [
+		"api",
+		"client",
+		"cms",
+		"directus",
+		"headless",
+		"javascript",
+		"node",
+		"sdk"
+	],
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
@@ -10,7 +20,8 @@
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/sdk"
 	},
-	"main": "dist/sdk.cjs.js",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
@@ -22,8 +33,9 @@
 		},
 		"./package.json": "./package.json"
 	},
-	"module": "dist/sdk.bundler.js",
+	"main": "dist/sdk.cjs.js",
 	"unpkg": "dist/sdk.esm.min.js",
+	"module": "dist/sdk.bundler.js",
 	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
@@ -34,18 +46,6 @@
 		"dev": "tsc --watch",
 		"test": "vitest --watch=false"
 	},
-	"keywords": [
-		"api",
-		"client",
-		"cms",
-		"directus",
-		"headless",
-		"javascript",
-		"node",
-		"sdk"
-	],
-	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
-	"license": "MIT",
 	"dependencies": {
 		"axios": "^0.27.2"
 	},
