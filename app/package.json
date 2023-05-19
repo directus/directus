@@ -23,7 +23,7 @@
 	"scripts": {
 		"build": "vite build",
 		"build-storybook": "storybook build",
-		"dev": "vite --clearScreen false",
+		"dev": "vite",
 		"storybook": "storybook dev -p 6006",
 		"test": "vitest --watch=false",
 		"typecheck": "vue-tsc --noEmit -p tsconfig.json"
@@ -135,7 +135,6 @@
 		"nanoid": "4.0.2",
 		"p-queue": "7.3.4",
 		"pinia": "2.1.1",
-		"pretty-bytes": "6.1.0",
 		"pretty-ms": "8.0.0",
 		"qrcode": "1.5.3",
 		"react": "18",
