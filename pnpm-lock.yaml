@@ -1113,43 +1113,6 @@ importers:
         specifier: 0.31.0
         version: 0.31.0(happy-dom@9.8.4)(sass@1.62.0)
 
-  packages/js-sdk:
-    dependencies:
-      axios:
-        specifier: ^0.27.2
-        version: 0.27.2
-    devDependencies:
-      '@directus/tsconfig':
-        specifier: 0.0.7
-        version: 0.0.7
-      '@types/node':
-        specifier: ^18.0.3
-        version: 18.15.13
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.30.5
-        version: 5.30.5(@typescript-eslint/parser@5.30.5)(eslint@8.38.0)(typescript@4.7.4)
-      '@typescript-eslint/parser':
-        specifier: ^5.30.5
-        version: 5.30.5(eslint@8.38.0)(typescript@4.7.4)
-      argon2:
-        specifier: 0.28.7
-        version: 0.28.7
-      dotenv:
-        specifier: 16.0.1
-        version: 16.0.1
-      jsdom:
-        specifier: ^22.0.0
-        version: 22.0.0
-      msw:
-        specifier: ^1.2.1
-        version: 1.2.1(typescript@4.7.4)
-      typescript:
-        specifier: 4.7.4
-        version: 4.7.4
-      vitest:
-        specifier: 0.31.0
-        version: 0.31.0(jsdom@22.0.0)
-
   packages/pressure:
     dependencies:
       '@directus/utils':
@@ -1233,6 +1196,43 @@ importers:
       typescript:
         specifier: 5.0.4
         version: 5.0.4
+
+  packages/sdk:
+    dependencies:
+      axios:
+        specifier: ^0.27.2
+        version: 0.27.2
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 0.0.7
+        version: 0.0.7
+      '@types/node':
+        specifier: ^18.0.3
+        version: 18.15.13
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^5.30.5
+        version: 5.30.5(@typescript-eslint/parser@5.30.5)(eslint@8.38.0)(typescript@4.7.4)
+      '@typescript-eslint/parser':
+        specifier: ^5.30.5
+        version: 5.30.5(eslint@8.38.0)(typescript@4.7.4)
+      argon2:
+        specifier: 0.28.7
+        version: 0.28.7
+      dotenv:
+        specifier: 16.0.1
+        version: 16.0.1
+      jsdom:
+        specifier: ^22.0.0
+        version: 22.0.0
+      msw:
+        specifier: ^1.2.1
+        version: 1.2.1(typescript@4.7.4)
+      typescript:
+        specifier: 4.7.4
+        version: 4.7.4
+      vitest:
+        specifier: 0.31.0
+        version: 0.31.0(jsdom@22.0.0)
 
   packages/specs:
     dependencies:
