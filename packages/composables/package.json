@@ -29,7 +29,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.7",
 		"@vitest/coverage-c8": "0.31.1",
