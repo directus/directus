@@ -1,3 +1,9 @@
+/**
+ * Return string of given length comprised of characters of given character set
+ *
+ * @param length - Length of the string to generate
+ * @param characters - Character set to use
+ */
 export const randomSequence = (length: number, characters: string) => {
 	let result = '';
 
