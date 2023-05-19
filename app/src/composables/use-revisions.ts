@@ -100,7 +100,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 							},
 							activity: {
 								action: {
-									_eq: 'create',
+									_eq: Action.CREATE,
 								},
 							},
 						},
