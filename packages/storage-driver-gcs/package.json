@@ -33,7 +33,7 @@
 		"@google-cloud/storage": "6.10.1"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "6.4.0",
 		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",

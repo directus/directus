@@ -29,7 +29,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.7",
 		"@vitest/coverage-c8": "0.31.1",
@@ -43,6 +43,6 @@
 		"axios": "1.4.0",
 		"lodash-es": "4.17.21",
 		"nanoid": "4.0.2",
-		"vue": "3.3.2"
+		"vue": "3.3.4"
 	}
 }

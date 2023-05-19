@@ -16,7 +16,7 @@
 	],
 	"devDependencies": {
 		"@changesets/types": "5.2.1",
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@types/node": "20.2.0",
 		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",

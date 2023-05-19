@@ -32,7 +32,7 @@
 		"undici": "5.22.1"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "6.4.0",
 		"@types/semver": "7.5.0",
 		"@vitest/coverage-c8": "0.31.1",

@@ -55,10 +55,10 @@
 		"rollup-plugin-esbuild": "5.0.0",
 		"rollup-plugin-styles": "4.0.0",
 		"vite": "4.3.7",
-		"vue": "3.3.2"
+		"vue": "3.3.4"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@types/fs-extra": "11.0.1",
 		"@types/inquirer": "9.0.3",
 		"@vitest/coverage-c8": "0.31.1",

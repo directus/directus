@@ -28,7 +28,7 @@
 		"access": "public"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"typescript": "5.0.4"
 	},
 	"dependencies": {
