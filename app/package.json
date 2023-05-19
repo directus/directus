@@ -31,6 +31,7 @@
 	"devDependencies": {
 		"@babel/core": "7.21.8",
 		"@babel/preset-env": "7.21.5",
+		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
@@ -152,8 +153,5 @@
 		"vuedraggable": "4.1.0",
 		"webpack": "5.83.1",
 		"wellknown": "0.5.0"
-	},
-	"dependencies": {
-		"@directus/composables": "workspace:*"
 	}
 }
