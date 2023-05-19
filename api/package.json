@@ -160,9 +160,7 @@
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
 		"vm2": "3.9.18",
-		"wellknown": "0.5.0",
-		"wild-wild-parser": "3.4.0",
-		"wild-wild-path": "3.6.0"
+		"wellknown": "0.5.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "0.0.7",

@@ -35,11 +35,6 @@ import { sanitizeError } from './utils/sanitize-error.js';
 
 let flowManager: FlowManager | undefined;
 
-const redactLogs = redact(
-	['**.headers.authorization', '**.headers.cookie', '**.query.access_token', '**.payload.password'],
-	REDACTED_TEXT
-);
-
 export function getFlowManager(): FlowManager {
 	if (flowManager) {
 		return flowManager;
@@ -369,7 +364,16 @@ class FlowManager {
 					item: flow.id,
 					data: {
 						steps: steps,
-						data: redactLogs(omit(keyedData, '$accountability.permissions')), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
+						data: redact(
+							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
+							[
+								['**', 'headers', 'authorization'],
+								['**', 'headers', 'cookie'],
+								['**', 'query', 'access_token'],
+								['**', 'payload', 'password'],
+							],
+							REDACTED_TEXT
+						),
 					},
 				});
 			}

@@ -42,15 +42,15 @@ const input = {
 };
 
 test('should not mutate input', () => {
-	const redactInput = redact(['$trigger'], REDACTED_TEXT);
+	const result = redact(input, [['$trigger']], REDACTED_TEXT);
 
-	expect(redactInput(input)).not.toBe(input);
+	expect(result).not.toBe(input);
 });
 
 test('should support single level path', () => {
-	const redactInput = redact(['$trigger'], REDACTED_TEXT);
+	const result = redact(input, [['$trigger']], REDACTED_TEXT);
 
-	expect(redactInput(input)).toEqual(
+	expect(result).toEqual(
 		merge({}, input, {
 			$trigger: REDACTED_TEXT,
 		})
@@ -58,9 +58,9 @@ test('should support single level path', () => {
 });
 
 test('should support multi level path', () => {
-	const redactInput = redact(['$trigger.payload.password'], REDACTED_TEXT);
+	const result = redact(input, [['$trigger', 'payload', 'password']], REDACTED_TEXT);
 
-	expect(redactInput(input)).toEqual(
+	expect(result).toEqual(
 		merge({}, input, {
 			$trigger: {
 				payload: { password: REDACTED_TEXT },
@@ -70,9 +70,9 @@ test('should support multi level path', () => {
 });
 
 test('should support wildcard path', () => {
-	const redactInput = redact(['*.payload'], REDACTED_TEXT);
+	const result = redact(input, [['*', 'payload']], REDACTED_TEXT);
 
-	expect(redactInput(input)).toEqual(
+	expect(result).toEqual(
 		merge({}, input, {
 			$trigger: {
 				payload: REDACTED_TEXT,
@@ -82,9 +82,9 @@ test('should support wildcard path', () => {
 });
 
 test('should support deep path', () => {
-	const redactInput = redact(['**.password'], REDACTED_TEXT);
+	const result = redact(input, [['**', 'password']], REDACTED_TEXT);
 
-	expect(redactInput(input)).toMatchObject(
+	expect(result).toMatchObject(
 		merge({}, input, {
 			$trigger: {
 				payload: {
@@ -108,9 +108,17 @@ test('should support deep path', () => {
 });
 
 test('should support multiple paths', () => {
-	const redactInput = redact(['$trigger.key', '*.payload.email', '**.password'], REDACTED_TEXT);
+	const result = redact(
+		input,
+		[
+			['$trigger', 'key'],
+			['*', 'payload', 'email'],
+			['**', 'password'],
+		],
+		REDACTED_TEXT
+	);
 
-	expect(redactInput(input)).toEqual(
+	expect(result).toEqual(
 		merge({}, input, {
 			$trigger: {
 				key: REDACTED_TEXT,
