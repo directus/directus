@@ -34,7 +34,7 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 		if (typeof unref(primaryKey) === 'undefined') return;
 
 		loading.value = true;
-		const pageSize = info.queryLimit?.max && info.queryLimit.max !== -1 ? Math.min(100, info.queryLimit.max) : 100;
+		const pageSize = info.queryLimit?.max && info.queryLimit.max !== -1 ? Math.min(10, info.queryLimit.max) : 10;
 
 		try {
 			const filter: Filter = {
@@ -88,44 +88,46 @@ export function useRevisions(collection: Ref<string>, primaryKey: Ref<number | s
 				},
 			});
 
-			const createdResponse = await api.get(`/revisions`, {
-				params: {
-					filter: {
-						collection: {
-							_eq: unref(collection),
-						},
-						item: {
-							_eq: unref(primaryKey),
-						},
-						activity: {
-							action: {
-								_eq: 'create',
+			if (!created.value) {
+				const createdResponse = await api.get(`/revisions`, {
+					params: {
+						filter: {
+							collection: {
+								_eq: unref(collection),
+							},
+							item: {
+								_eq: unref(primaryKey),
+							},
+							activity: {
+								action: {
+									_eq: Action.CREATE,
+								},
 							},
 						},
+						sort: '-id',
+						limit: 1,
+						fields: [
+							'id',
+							'data',
+							'delta',
+							'collection',
+							'item',
+							'activity.action',
+							'activity.timestamp',
+							'activity.user.id',
+							'activity.user.email',
+							'activity.user.first_name',
+							'activity.user.last_name',
+							'activity.ip',
+							'activity.user_agent',
+							'activity.origin',
+						],
+						meta: ['filter_count'],
 					},
-					sort: '-id',
-					limit: 1,
-					fields: [
-						'id',
-						'data',
-						'delta',
-						'collection',
-						'item',
-						'activity.action',
-						'activity.timestamp',
-						'activity.user.id',
-						'activity.user.email',
-						'activity.user.first_name',
-						'activity.user.last_name',
-						'activity.ip',
-						'activity.user_agent',
-						'activity.origin',
-					],
-					meta: ['filter_count'],
-				},
-			});
+				});
 
-			created.value = createdResponse.data.data?.[0];
+				created.value = createdResponse.data.data?.[0];
+			}
 
 			const revisionsGroupedByDate = groupBy(
 				response.data.data.filter((revision: any) => !!revision.activity),
