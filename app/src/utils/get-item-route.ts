@@ -5,7 +5,6 @@
  * @param primaryKey - Primary key of item
  * @returns - URL route for the item
  */
-
 export function getItemRoute(collection: string | null, primaryKey: string | number) {
 	if (collection === null) return '';
 
