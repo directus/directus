@@ -20,7 +20,7 @@ import { IItems, Item } from './items';
 import { ITransport } from './transport';
 import { UtilsHandler } from './handlers/utils';
 import { IStorage } from './storage';
-import { TypeMap, TypeOf } from './types';
+import { TypeOf } from './types';
 import { GraphQLHandler } from './handlers/graphql';
 import { ISingleton } from './singleton';
 
@@ -50,7 +50,7 @@ export interface IDirectusBase {
 	readonly graphql: GraphQLHandler;
 }
 
-export interface IDirectus<T extends TypeMap> extends IDirectusBase {
+export interface IDirectus<T extends Item> extends IDirectusBase {
 	readonly activity: ActivityHandler<TypeOf<T, 'directus_activity'>>;
 	readonly assets: AssetsHandler;
 	readonly collections: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
