@@ -8,7 +8,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
-		"directory": "packages/js-sdk"
+		"directory": "packages/sdk"
 	},
 	"main": "dist/sdk.cjs.js",
 	"exports": {
