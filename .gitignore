@@ -45,5 +45,6 @@ TODO
 /tests/blackbox/uploads
 /tests/blackbox/server-log-*
 /packages/extensions-sdk/temp-extension-*
+/packages/types/docs
 *.db
 ts-errors.yaml

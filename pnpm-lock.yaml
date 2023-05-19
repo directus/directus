@@ -1433,6 +1433,12 @@ importers:
       pino:
         specifier: 8.14.1
         version: 8.14.1
+      typedoc:
+        specifier: 0.24.7
+        version: 0.24.7(typescript@5.0.4)
+      typedoc-plugin-zod:
+        specifier: 1.0.2
+        version: 1.0.2(typedoc@0.24.7)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -14202,6 +14208,10 @@ packages:
     engines: {node: '>=16.14'}
     dev: true
 
+  /lunr@2.3.9:
+    resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
+    dev: true
+
   /magic-string@0.27.0:
     resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
     engines: {node: '>=12'}
@@ -14372,6 +14382,12 @@ packages:
       react: '>= 0.14.0'
     dependencies:
       react: 18.0.0
+    dev: true
+
+  /marked@4.3.0:
+    resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
+    engines: {node: '>= 12'}
+    hasBin: true
     dev: true
 
   /marked@5.0.2:
@@ -19362,6 +19378,28 @@ packages:
   /typedarray@0.0.7:
     resolution: {integrity: sha512-ueeb9YybpjhivjbHP2LdFDAjbS948fGEPj+ACAMs4xCMmh72OCOMQWBQKlaN4ZNQ04yfLSDLSx1tGRIoWimObQ==}
 
+  /typedoc-plugin-zod@1.0.2(typedoc@0.24.7):
+    resolution: {integrity: sha512-83JOctc7wyUJfKiFjXuqjL2DF/b5hOd0xdwMmMwtLs9sIWSAsqqntoO3yFB0aY+phRnzkV0z31SXtwR7gYBDmw==}
+    peerDependencies:
+      typedoc: 0.23.x || 0.24.x
+    dependencies:
+      typedoc: 0.24.7(typescript@5.0.4)
+    dev: true
+
+  /typedoc@0.24.7(typescript@5.0.4):
+    resolution: {integrity: sha512-zzfKDFIZADA+XRIp2rMzLe9xZ6pt12yQOhCr7cD7/PBTjhPmMyMvGrkZ2lPNJitg3Hj1SeiYFNzCsSDrlpxpKw==}
+    engines: {node: '>= 14.14'}
+    hasBin: true
+    peerDependencies:
+      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x
+    dependencies:
+      lunr: 2.3.9
+      marked: 4.3.0
+      minimatch: 9.0.0
+      shiki: 0.14.2
+      typescript: 5.0.4
+    dev: true
+
   /typescript@5.0.4:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
     engines: {node: '>=12.20'}
@@ -19988,7 +20026,7 @@ packages:
     dependencies:
       '@types/chai': 4.3.5
       '@types/chai-subset': 1.3.3
-      '@types/node': 20.2.0
+      '@types/node': 18.16.12
       '@vitest/expect': 0.31.1
       '@vitest/runner': 0.31.1
       '@vitest/snapshot': 0.31.1

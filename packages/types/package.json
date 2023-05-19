@@ -36,6 +36,8 @@
 		"geojson": "0.5.0",
 		"knex": "2.4.2",
 		"pino": "8.14.1",
+		"typedoc": "0.24.7",
+		"typedoc-plugin-zod": "1.0.2",
 		"typescript": "5.0.4",
 		"vue": "3.3.4",
 		"vue-router": "4.2.0",
