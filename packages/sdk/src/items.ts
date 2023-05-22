@@ -1,16 +1,17 @@
+import { Transport } from './transport';
 import {
+	EmptyParamError,
+	FieldType,
+	ID,
 	IItems,
 	Item,
-	QueryOne,
-	QueryMany,
-	OneItem,
-	ManyItems,
 	ItemInput,
 	ItemsOptions,
-	EmptyParamError,
+	ManyItems,
+	OneItem,
+	QueryMany,
+	QueryOne,
 } from './types';
-import { Transport } from './transport';
-import { ID, FieldType } from './types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
 	protected transport: Transport;

@@ -1,5 +1,5 @@
-import { ItemInput, QueryOne } from '../types';
 import { Transport } from '../transport';
+import { ItemInput, QueryOne } from '../types';
 import { TFAHandler } from './tfa';
 
 export class MeHandler<T> {

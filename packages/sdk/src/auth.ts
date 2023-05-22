@@ -1,6 +1,6 @@
 import { PasswordsHandler } from './handlers/passwords';
-import { IStorage } from './types';
 import { Transport } from './transport';
+import { IStorage } from './types';
 
 export type AuthCredentials = {
 	email: string;

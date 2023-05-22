@@ -1,9 +1,8 @@
 /**
  * Settings handler
  */
-import { Item } from '../types';
 import { Transport } from '../transport';
-import { SettingType, DefaultType } from '../types';
+import { DefaultType, Item, SettingType } from '../types';
 import { SingletonHandler } from './singleton';
 
 export type SettingItem<T = DefaultType> = SettingType & T;

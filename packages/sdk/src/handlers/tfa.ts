@@ -1,5 +1,5 @@
 import { Transport } from '../transport';
-import { TfaType, DefaultType } from '../types';
+import { DefaultType, TfaType } from '../types';
 
 type TfaItem<T = DefaultType> = TfaType & T;
 export class TFAHandler {

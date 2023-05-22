@@ -1,7 +1,6 @@
-import { Comment, ID } from '../types';
 import { Transport } from '../transport';
+import { Comment, EmptyParamError, ID } from '../types';
 import { ActivityItem } from './activity';
-import { EmptyParamError } from '../types';
 
 export class CommentsHandler<T> {
 	private transport: Transport;

@@ -4,7 +4,7 @@
 
 import { ItemsHandler } from '../items';
 import { Transport } from '../transport';
-import { FolderType, DefaultType } from '../types';
+import { DefaultType, FolderType } from '../types';
 
 export type FolderItem<T = DefaultType> = FolderType & T;
 

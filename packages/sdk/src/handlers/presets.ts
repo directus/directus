@@ -4,7 +4,7 @@
 
 import { ItemsHandler } from '../items';
 import { Transport } from '../transport';
-import { PresetType, DefaultType } from '../types';
+import { DefaultType, PresetType } from '../types';
 
 export type PresetItem<T = DefaultType> = PresetType & T;
 

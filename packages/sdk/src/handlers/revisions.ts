@@ -4,7 +4,7 @@
 
 import { ItemsHandler } from '../items';
 import { Transport } from '../transport';
-import { RevisionType, DefaultType } from '../types';
+import { DefaultType, RevisionType } from '../types';
 
 export type RevisionItem<T = DefaultType> = RevisionType & T;
 

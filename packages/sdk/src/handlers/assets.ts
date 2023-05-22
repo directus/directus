@@ -1,6 +1,5 @@
-import { EmptyParamError } from '../types';
 import { Transport } from '../transport';
-import { ID } from '../types';
+import { EmptyParamError, ID } from '../types';
 
 export class AssetsHandler {
 	private transport: Transport;

@@ -4,7 +4,7 @@
 
 import { ItemsHandler } from '../items';
 import { Transport } from '../transport';
-import { PermissionType, DefaultType } from '../types';
+import { DefaultType, PermissionType } from '../types';
 
 export type PermissionItem<T = DefaultType> = PermissionType & T;
 

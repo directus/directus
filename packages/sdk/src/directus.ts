@@ -6,6 +6,7 @@ import {
 	FieldsHandler,
 	FilesHandler,
 	FoldersHandler,
+	GraphQLHandler,
 	PermissionsHandler,
 	PresetsHandler,
 	RelationsHandler,
@@ -13,18 +14,14 @@ import {
 	RolesHandler,
 	ServerHandler,
 	SettingsHandler,
+	SingletonHandler,
 	UsersHandler,
 	UtilsHandler,
 } from './handlers';
-import { IItems, Item } from './types';
-import { TransportOptions, Transport } from './transport';
 import { ItemsHandler } from './items';
-import { IStorage } from './types';
 import { LocalStorage, MemoryStorage, StorageOptions } from './storage';
-import { TypeOf, PartialBy } from './types';
-import { GraphQLHandler } from './handlers/graphql';
-import { ISingleton } from './types';
-import { SingletonHandler } from './handlers/singleton';
+import { Transport, TransportOptions } from './transport';
+import { IItems, ISingleton, IStorage, Item, PartialBy, TypeOf } from './types';
 
 export type DirectusStorageOptions = StorageOptions & { mode?: 'LocalStorage' | 'MemoryStorage' };
 

@@ -4,7 +4,7 @@
 
 import { ItemsHandler } from '../items';
 import { Transport } from '../transport';
-import { RoleType, DefaultType } from '../types';
+import { DefaultType, RoleType } from '../types';
 
 export type RoleItem<T = DefaultType> = RoleType & T;
 

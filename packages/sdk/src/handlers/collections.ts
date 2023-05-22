@@ -2,9 +2,8 @@
  * Collections handler
  */
 
-import { ManyItems, OneItem, ItemInput, QueryOne, EmptyParamError } from '../types';
 import { Transport } from '../transport';
-import { CollectionType, DefaultType } from '../types';
+import { CollectionType, DefaultType, EmptyParamError, ItemInput, ManyItems, OneItem, QueryOne } from '../types';
 
 export type CollectionItem<T = DefaultType> = CollectionType & T;
 

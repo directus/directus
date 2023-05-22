@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, ResponseType } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, ResponseType } from 'axios';
 import { ItemMetadata } from './types';
 
 export class Transport {

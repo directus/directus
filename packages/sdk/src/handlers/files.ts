@@ -3,9 +3,8 @@
  */
 
 import { ItemsHandler } from '../items';
-import { OneItem, ItemInput } from '../types';
 import { Transport } from '../transport';
-import { FileType, DefaultType } from '../types';
+import { DefaultType, FileType, ItemInput, OneItem } from '../types';
 
 export type FileItem<T = DefaultType> = FileType & T;
 

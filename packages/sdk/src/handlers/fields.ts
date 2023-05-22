@@ -2,9 +2,8 @@
  * Fields handler
  */
 
-import { ManyItems, OneItem, ItemInput, EmptyParamError, DefaultItem } from '../types';
 import { Transport } from '../transport';
-import { FieldType, DefaultType, ID } from '../types';
+import { DefaultItem, DefaultType, EmptyParamError, FieldType, ID, ItemInput, ManyItems, OneItem } from '../types';
 
 export type FieldItem<T = DefaultType> = FieldType & T;
 
