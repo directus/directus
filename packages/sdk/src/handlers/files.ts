@@ -2,8 +2,8 @@
  * Files handler
  */
 
-import { ItemsHandler } from '../base/items';
-import { OneItem, ItemInput } from '../items';
+import { ItemsHandler } from '../items';
+import { OneItem, ItemInput } from '../types';
 import { Transport } from '../transport';
 import { FileType, DefaultType } from '../types';
 

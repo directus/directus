@@ -1,7 +1,7 @@
 /**
  * Relations handler
  */
-import { ManyItems, OneItem, ItemInput, EmptyParamError, Item } from '../items';
+import { ManyItems, OneItem, ItemInput, EmptyParamError, Item } from '../types';
 import { Transport } from '../transport';
 import { RelationType, DefaultType, ID } from '../types';
 

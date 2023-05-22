@@ -2,7 +2,7 @@
  * Activity handler
  */
 
-import { ItemsHandler } from '../base/items';
+import { ItemsHandler } from '../items';
 import { Transport } from '../transport';
 import { ActivityType, DefaultType } from '../types';
 import { CommentsHandler } from './comments';

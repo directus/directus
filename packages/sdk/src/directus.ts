@@ -1,4 +1,4 @@
-import { IAuth, AuthOptions } from './auth';
+import { Auth, AuthOptions } from './auth';
 import {
 	ActivityHandler,
 	AssetsHandler,
@@ -16,29 +16,28 @@ import {
 	UsersHandler,
 	UtilsHandler,
 } from './handlers';
-import { IItems, Item } from './items';
+import { IItems, Item } from './types';
 import { TransportOptions, Transport } from './transport';
-import { ItemsHandler } from './base/items';
-import { Auth } from './base/auth';
-import { IStorage } from './storage';
-import { LocalStorage, MemoryStorage, StorageOptions } from './base/storage';
+import { ItemsHandler } from './items';
+import { IStorage } from './types';
+import { LocalStorage, MemoryStorage, StorageOptions } from './storage';
 import { TypeOf, PartialBy } from './types';
 import { GraphQLHandler } from './handlers/graphql';
-import { ISingleton } from './singleton';
+import { ISingleton } from './types';
 import { SingletonHandler } from './handlers/singleton';
 
 export type DirectusStorageOptions = StorageOptions & { mode?: 'LocalStorage' | 'MemoryStorage' };
 
-export type DirectusOptions<IAuthHandler extends IAuth = Auth> = {
-	auth?: IAuthHandler | PartialBy<AuthOptions, 'transport' | 'storage'>;
+export type DirectusOptions = {
+	auth?: Auth | PartialBy<AuthOptions, 'transport' | 'storage'>;
 	transport?: Transport | Partial<TransportOptions>;
 	storage?: IStorage | DirectusStorageOptions;
 };
 
-export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> {
+export class Directus<T extends Item> {
 	private _url: string;
-	private _options?: DirectusOptions<IAuthHandler>;
-	private _auth: IAuthHandler;
+	private _options?: DirectusOptions;
+	private _auth: Auth;
 	private _transport: Transport;
 	private _storage: IStorage;
 	private _assets?: AssetsHandler;
@@ -66,7 +65,7 @@ export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> {
 		[collection: string]: SingletonHandler<any>;
 	};
 
-	constructor(url: string, options?: DirectusOptions<IAuthHandler>) {
+	constructor(url: string, options?: DirectusOptions) {
 		this._url = url;
 		this._options = options;
 		this._items = {};
@@ -122,13 +121,13 @@ export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> {
 			});
 		}
 
-		if (this._options?.auth && this._options?.auth instanceof IAuth) this._auth = this._options.auth;
+		if (this._options?.auth && this._options?.auth instanceof Auth) this._auth = this._options.auth;
 		else {
 			this._auth = new Auth({
 				transport: this._transport,
 				storage: this._storage,
 				...this._options?.auth,
-			} as AuthOptions) as unknown as IAuthHandler;
+			} as AuthOptions);
 		}
 	}
 
@@ -136,7 +135,7 @@ export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> {
 		return this._url;
 	}
 
-	get auth(): IAuthHandler {
+	get auth(): Auth {
 		return this._auth;
 	}
 

@@ -2,7 +2,7 @@
  * Folders handler
  */
 
-import { ItemsHandler } from '../base/items';
+import { ItemsHandler } from '../items';
 import { Transport } from '../transport';
 import { FolderType, DefaultType } from '../types';
 

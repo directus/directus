@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, ResponseType } from 'axios';
-import { ItemMetadata } from './items';
+import { ItemMetadata } from './types';
 
 export class Transport {
 	private axios: AxiosInstance;

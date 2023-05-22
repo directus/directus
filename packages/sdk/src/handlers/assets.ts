@@ -1,4 +1,4 @@
-import { EmptyParamError } from '../items';
+import { EmptyParamError } from '../types';
 import { Transport } from '../transport';
 import { ID } from '../types';
 

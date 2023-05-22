@@ -1,7 +1,7 @@
 /**
  * Settings handler
  */
-import { Item } from '../items';
+import { Item } from '../types';
 import { Transport } from '../transport';
 import { SettingType, DefaultType } from '../types';
 import { SingletonHandler } from './singleton';

@@ -2,7 +2,7 @@
  * Collections handler
  */
 
-import { ManyItems, OneItem, ItemInput, QueryOne, EmptyParamError } from '../items';
+import { ManyItems, OneItem, ItemInput, QueryOne, EmptyParamError } from '../types';
 import { Transport } from '../transport';
 import { CollectionType, DefaultType } from '../types';
 

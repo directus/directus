@@ -2,7 +2,7 @@
  * Users handler
  */
 
-import { ItemsHandler } from '../base/items';
+import { ItemsHandler } from '../items';
 import { Transport } from '../transport';
 import { DefaultType, UserType } from '../types';
 import { InvitesHandler } from './invites';

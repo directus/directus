@@ -1,4 +1,4 @@
-import { IStorage } from '../../storage';
+import { IStorage } from '../types';
 
 export type StorageOptions = {
 	prefix?: string;

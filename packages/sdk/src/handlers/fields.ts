@@ -2,7 +2,7 @@
  * Fields handler
  */
 
-import { ManyItems, OneItem, ItemInput, EmptyParamError, DefaultItem } from '../items';
+import { ManyItems, OneItem, ItemInput, EmptyParamError, DefaultItem } from '../types';
 import { Transport } from '../transport';
 import { FieldType, DefaultType, ID } from '../types';
 
