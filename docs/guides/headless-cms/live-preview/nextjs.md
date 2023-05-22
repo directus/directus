@@ -7,9 +7,17 @@ author_override:
 author: Esther Agbaje
 ---
 
+
 # Set Up Live Preview With Next.js
 
 > {{ $frontmatter.description }}
+
+:::tip Author: {{$frontmatter.author}}
+
+**Directus Version:** {{$frontmatter.directus_version}}
+
+:::
+
 
 Directus' Live Preview feature allows you to show changes in your website collection before publishing and without the need to refresh the browser.
 
