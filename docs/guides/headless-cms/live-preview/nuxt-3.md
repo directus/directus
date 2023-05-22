@@ -83,11 +83,11 @@ Create a `[id].vue` file that will the single items:
 Navigate to Settings -> Data Model and select the `posts` collection. In the "Preview URL" section, specify the Preview URL for your Nuxt project by selecting ID from the dropdown and entering a URL in this format:
 `http://your-website-url/ID?preview=true`
 
-![Data Studio configuration for Posts collection. The Preview URL is filled in with the dynamic ID and preview true quer parameter.](https://marketing.directus.app/assets/6ce322ac-03b1-4555-a7cf-0f33a1d941a7)
+![Data Studio configuration for Posts collection. The Preview URL is filled in with the dynamic ID and preview true query parameter.](https://marketing.directus.app/assets/6ce322ac-03b1-4555-a7cf-0f33a1d941a7)
 
 ## Set Up Preview Plugin
 
-Nuxt 2 had a Preview mode feature, but it has not yet been included in Nuxt 3. A preview mode plugin for Nuxt 3 can be created using [this snippet](https://github.com/nuxt/nuxt/discussions/18407) from GitHub user JonathanDoelan. 
+Nuxt 2 had a Preview mode feature, but it has not yet been included in Nuxt 3. A preview mode plugin for Nuxt 3 can be created using [this snippet](https://github.com/nuxt/nuxt/discussions/18407) from GitHub user `JonathanDoelan`.
 
 Create a `plugins/preview.js` file:
 
@@ -101,12 +101,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       refreshNuxtData();
     });
   }
-  
+
   return { provide: { preview } };
 });
 ```
 
-This plugin checks for the use of a `preview=true` URL parameter. If present, it waits for the page to finish loading and re-fetches all data dynamically, even if the page is statically-built. 
+This plugin checks for the use of a `preview=true` URL parameter. If present, it waits for the page to finish loading and re-fetches all data dynamically, even if the page is statically-built.
 
 ## Fetch Post Data With The `$preview` Helper
 
