@@ -25,6 +25,8 @@ export function md(str: string, options: Options = { target: '_self' }): string 
 	return dompurify.sanitize(
 		marked(str, {
 			renderer,
+			headerIds: false,
+			mangle: false,
 		}),
 		{ ADD_ATTR: ['target'] }
 	);

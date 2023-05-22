@@ -169,15 +169,15 @@
 
 						<p>
 							<template v-if="lockedToFiles">
-								{{ t('exporting_batch_hint_forced', { format }) }}
+								{{ t('exporting_batch_hint_forced', { format: t(format) }) }}
 							</template>
 
 							<template v-else-if="location === 'files'">
-								{{ t('exporting_batch_hint', { format }) }}
+								{{ t('exporting_batch_hint', { format: t(format) }) }}
 							</template>
 
 							<template v-else>
-								{{ t('exporting_download_hint', { format }) }}
+								{{ t('exporting_download_hint', { format: t(format) }) }}
 							</template>
 						</p>
 					</div>
