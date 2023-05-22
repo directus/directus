@@ -216,12 +216,13 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
-import { computed, ref, unref, toRefs, watch, onBeforeUnmount } from 'vue';
+<script setup lang="ts">
+import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
@@ -234,10 +235,9 @@ import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
 import { useRouter } from 'vue-router';
+import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
-import LivePreview from '../components/live-preview.vue';
-import { useLocalStorage } from '@/composables/use-local-storage';
 
 interface Props {
 	collection: string;

@@ -365,6 +365,8 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_date_short: 'd. MMM'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d. MMM
+minutes: Minutit
+hours: Tundi
 month: Kuu
 year: Aasta
 select_all: Vali Kõik
@@ -455,8 +457,11 @@ no_files_copy: Faile pole.
 user_count: 'Kasutajaid pole | Üks kasutaja | {count} kasutajat'
 no_users_copy: Selles rollis pole ühtegi kasutajat.
 webhooks_count: 'Webhooke ei leitud | Üks webhook | {count} webhooki'
+no_notifications: Teavitusi ei ole
+no_notifications_copy: Kõik on ajakohane!
 activity_log: Tegevuste logi
 all_items: Kõik kirjed
+any: Ükskõik milline
 csv: CSV
 no_collections: Andmekogusid pole
 create_collection: Loo kogu
@@ -466,6 +471,7 @@ relationship_not_setup: Seos pole korrektselt seadistatud
 display_template_not_setup: Vaadete mall on seadistamata
 collection_field_not_setup: Andmekogu väli on valesti seadistatud
 select_a_collection: Vali andmekogu
+select_a_field: Vali väli
 active: aktiivne
 move_to: Teisalda...
 copy: Kopeeri
@@ -476,7 +482,9 @@ activity: Tegevus
 action: Tegevus
 ip_address: IP aadress
 user_agent: Kasutaja agent
+origin: Päritolu
 webhooks: Webhooks
+decimals: Komakohad
 min_value: Min väärtus
 max_value: Maksimaalne väärtus
 automatic: Automaatne
@@ -507,6 +515,7 @@ select_an_item: Vali kirje...
 edit: Muuda
 enabled: lubatud
 disable_tfa: Keela 2FA
+tfa_setup: Seadista 2FA
 tfa_scan_code: Kaheastmeliseks autoriseerimiseks skaneeri kood autoriseerimise äpist.
 enter_otp_to_disable_tfa: Sisesta OTP, et keelata 2FA
 create_account: Loo konto
@@ -521,6 +530,7 @@ errors:
   INVALID_OTP: Vale ühekordne parool
   INVALID_PAYLOAD: Vigane päring
   INVALID_QUERY: Vigane päring
+  INVALID_TOKEN: Vigane luba
   INVALID_IP: Host või IP aadress pole lubatud
   ITEM_LIMIT_REACHED: Kirjete limiit sai täis
   ITEM_NOT_FOUND: Kirjet ei leitud
@@ -530,7 +540,9 @@ errors:
   CONTAINS_NULL_VALUES: Väli sisaldab tühje väärtusi
   INTERNAL_SERVER_ERROR: Ootamatu viga
   NOT_NULL_VIOLATION: Väärtus ei saa olla null
+  VALUE_OUT_OF_RANGE: Väärtus lubatud vahemikust väljas
   UNKNOWN: Ootamatu viga
+  SERVICE_UNAVAILABLE: Teenus pole saadaval
   UNSUPPORTED_MEDIA_TYPE: Failitüüp pole toetatud
 security: Turvalisus
 value_hashed: Väärtus salastati
@@ -833,6 +845,7 @@ fields:
     user: Tegevuse sooritas
     comment: Kommentaar
     user_agent: Kasutaja agent
+    origin: Päritolu
     ip: IP aadress
     revisions: Versioonid
   directus_collections:
@@ -1058,6 +1071,7 @@ interfaces:
     name: Filter
     add_filter: Lisa filter
     all: Kõik
+    any: Ükskõik milline
   presentation-links:
     presentation-links: Nuppude lingid
     links: Lingid

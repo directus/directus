@@ -131,6 +131,7 @@ archive_confirm_count: >-
   هیچ موردی انتخاب نشده | آیا مطمئن هستید که می‌خواهید این مورد را بایگانی کنید؟ | آیا مطمئن هستید که می‌خواهید این {count} مورد را بایگانی کنید؟
 reset_system_permissions_to: 'بازنشانی مجوزهای سیستم به:'
 reset_system_permissions_copy: این عمل، مجوزهای سفارشی که ممکن است برای مجموعه‌های سیستمی اعمال کرده باشید را بازنویسی می کند. مطمئن هستید؟
+the_following_are_minimum_permissions: هنگامی‌که «دسترسی به برنامه» فعال باشد، حداقل مجوزهای زیر به‌طور خودکار اعمال می‌شوند. در صورت نیاز می‌توانید مجوزهای اضافی بدهید، اما نمی‌توانید مجوزها را کمتر از این سطح کاهش دهید.
 app_access_minimum: حداقل مجوزها برای دسترسی به برنامه
 recommended_defaults: پیش‌فرض‌های مورد تأیید
 unarchive: خارج کردن از بایگانی
@@ -295,12 +296,12 @@ o2m_relationship: رابطه یک-به-چند
 m2m_relationship: رابطه چند-به-چند
 m2a_relationship: رابطه یک-به-هر-مجموعه-ای
 invalid_item: آیتمِ نامعتبر
-require_confirmation: در انتظار تأیید ایمیل ها
+require_confirmation: نیاز به تأیید رایانامه
 dialog: گفتگو
 modal: مودال
 confirmation_dialog: تایید
 confirmation_description: تایید شرح
-confirmation_input_fields: تایید فیلد ورودی
+confirmation_input_fields: کادر ورودی تأیید
 next: بعدی
 field_name: نام فیلد
 translations: ترجمه‌ها
@@ -319,10 +320,11 @@ updated_on: به روزرسانی شده در
 updated_by: به روزرسانی شده توسط
 primary_key: کلید اصلی
 foreign_key: کلید خارجی
-field_key: کلید API فیلد
+field_key: کلید کادر
 finish_setup: پایان راه‌اندازی
 dismiss: نادیده گرفتن
 toggle_raw_editor: تغییر به ویرایشگر Raw
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: مقدار خام
 copy_raw_value: کپی مقدار خام
 copy_raw_value_success: کپی شد
@@ -465,6 +467,8 @@ download_file: دانلود فایل
 open_file_in_tab: فایل را در تب جدید باز کنید
 start_export: شروع برون بری
 not_available_for_local_downloads: برای دانلودهای محلی در دسترس نیست
+exporting_all_items_in_collection: برون‌بری {total} مورد از {collection}.
+exporting_limited_items_in_collection: برون بری حداقل {limit} از مجموع {total} مورد از {collection}.
 exporting_no_items_to_export: موردی برای برون بری وجود ندارد پیکربندی برون بری را در زیر تنظیم کنید.
 exporting_download_hint: پس از تکمیل، این فایل {format} به طور خودکار در دستگاه شما دانلود می شود.
 exporting_batch_hint: این برون بری به صورت دسته‌ای پردازش می‌شود و پس از تکمیل، فایل {format} در کتابخانه فایل ذخیره می‌شود.
@@ -501,7 +505,7 @@ disabled: غیرفعال شده
 information: اطلاعات
 report_bug: گزارش باگ
 request_feature: درخواست قابلیت جدید
-request_body: Request Body
+request_body: درخواست به body
 interface_not_found: 'رابط "{interface}" یافت نشد.'
 operation_not_found: 'عملیات "{operation}" یافت نشد.'
 reset_interface: بازنشانی رابط
@@ -512,36 +516,37 @@ item_count: 'بدون مقدار | يک آیتم | {count} آیتم'
 no_items_copy: هنوز هیچ آیتمی در این مجموعه وجود ندارد.
 file_count: 'بدون فایل | یک فایل | {count} فایل'
 no_files_copy: فایلی برای نمایش موجود نمیباشد.
-user_count: 'No Users | One User | {count} Users'
+user_count: 'بدون کاربر | یک کاربر | {count} کاربر'
 no_users_copy: این نقش، هنوز به هیچ کاربری تعلق نگرفته است.
-webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
-no_webhooks_copy: هنوز هیچ وب هوکی پیکربندی نشده است. با ایجاد یکی از زیر شروع کنید.
+webhooks_count: 'هیچ وب‌هوک | یک وب‌هوک | {count} وب‌هوک'
+no_webhooks_copy: تاکنون هیچ وب‌هوکی پیکربندی نشده | جهت شروع یکی به پایین اضافه کنید.
 no_notifications: اعلانی موجود نیست
 no_notifications_copy: شما همه اعلانها و پیامها را دیده اید!
 activity_log: لاگ فعالیت ها
-all_items: تمام موارد
+all_items: همۀ موارد
 any: هرکدام
 csv: CSV
 no_collections: مجموعه ای وجود ندارد
-create_collection: ایجاد مجموعه
+create_collection: ساخت مجموعه
 no_collections_copy_admin: شما هنوز هیچ مجموعه ای ندارید. برای شروع روی دکمه زیر کلیک کنید.
 no_collections_copy: شما هنوز هیچ مجموعه ای ندارید. لطفا با سرپرست سیستم خود تماس بگیرید.
 relationship_not_setup: این رابطه به درستی پیکربندی نشده است
+no_singleton_relations: Relationships to Singletons are not supported
 display_template_not_setup: گزینه نمایش قالب اشتباه پیکربندی شده است
 collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
-select_a_collection: انتخاب یک کالکشن
-select_a_field: انتخاب یک فیلد
+select_a_collection: انتخاب یک مجموعه
+select_a_field: انتخاب یک کادر
 active: فعال
 move_to: انتقال به...
 copy: کپی
-copy_to: رونوشت در...
+copy_to: رونوشت به...
 no_other_dashboards_copy: شما هنوز داشبورد دیگری ندارید.
-inactive: غیر فعال
+inactive: غیرفعال
 users: کاربران
 activity: فعالیت‌ها
-activity_item: مورد فعالیت
+activity_item: گزارش فعالیت‌ها
 action: فعالیت
-ip_address: آدرس IP
+ip_address: نشانی IP
 user_agent: عامل کاربر
 origin: مبدأ
 webhooks: وب‌هوک‌ها
@@ -578,7 +583,7 @@ edit: ویرایش
 enabled: فعال شده
 disable_tfa: غیرفعالسازی احراز هویت دو عاملی
 admin_disable_tfa_text: آیا مطمئن هستید که می‌خواهید رمز دو مرحله ای را برای این کاربر غیرفعال کنید؟
-tfa_setup: تنظیمات 2FA
+tfa_setup: پیکربندی 2FA
 tfa_scan_code: کد را در نرم افزار احراز هویت خود، برای اتمام تنظیمات احراز هویت دو عاملی، اسکن کنید
 enter_otp_to_disable_tfa: پسورد یکبار مصرف خود را برای غیرفعالسازی احراز هویت دو عاملیِ خود، وارد کنید
 create_account: ساخت حساب کاربری
@@ -612,7 +617,7 @@ errors:
   VALUE_OUT_OF_RANGE: مقدار، خارج از محدوده است
   INVALID_FOREIGN_KEY: کلید خارجی نامعتبر است
   UNKNOWN: خطای غیر منتظره
-  GRAPHQL_VALIDATION_EXCEPTION: استثنا اعتبار سنجی GraphQL
+  GRAPHQL_VALIDATION_EXCEPTION: استثناء اعتبار سنجی GraphQL
   SERVICE_UNAVAILABLE: سرویس در دسترس نیست
   UNSUPPORTED_MEDIA_TYPE: رسانه پشتیبانی نشده
   UNEXPECTED_RESPONSE: پاسخ غیر منتظره
@@ -665,6 +670,7 @@ one_filtered_item: '۱ آیتم فیلتر شده'
 delete_collection_are_you_sure: >-
   آیا مطمئن هستید که می خواهید مجموعه "{collection}" را حذف کنید؟ با این کار مجموعه و همه موارد موجود در آن حذف می شود. این عمل دائمی است.
 delete_folder_are_you_sure: آیا مطمئن هستید که می خواهید پوشه "{folder}" را حذف کنید؟ پوشه ها و مجموعه های تو در تو به بالاترین سطح منتقل می شوند.
+delete_collection_peer_dependencies: The following fields will be deleted as well, as they are related to the current collection.
 collections_shown: مجموعه های نشان داده شده
 visible_collections: مجموعه های هویدا
 hidden_collections: مجموعه های پنهان
@@ -781,22 +787,22 @@ select_fields: انتخاب فیلدها
 format_text: قالب بندی متن
 format_value: مقدار قالب
 abbreviate_value: مقدار اختصاری
-operator: اپراتور
+operator: عملگر
 bold: توپُر
 toggle: تغییر وضعیت
 icon_on: آیکن روشن
 icon_off: آیکن خاموش
-label: برچسب
-flows: اتوماسیون‌ها
-flow: اتوماسیون
-select_a_flow: انتخاب یک اتوماسیون
-run_flow_confirm: آیا مطمئنید که می خواهید این اتصال را برقرار کنید؟
-run_flow_on_current_collection: اجرای اتوماسیون در مجموعه فعلی
-run_flow_on_current: اجرای اتوماسیون در مجموعه فعلی
-run_flow_on_current_edited_confirm: این مورد ممکن است توسط این اتوماسیون به‌ روزرسانی شود، آیا مطمئن هستید که می‌خواهید آن را اجرا کنید؟
-run_flow_on_selected: ابتدا یک یا چند مورد را انتخاب کنید | اجرای اتوماسیون بر روی 1 مورد انتخاب شده | اتوماسیون را روی {n} مورد انتخابی اجرا کنید
-run_flow: اجرای اتوماسیون
-run_flow_success: اتوماسیون "{flow}" با موفقیت اجرا شد
+label: عنوان
+flows: جریان‌ها
+flow: جریان
+select_a_flow: انتخاب یک جریان
+run_flow_confirm: آیا از اجرای این جریان اطمینان دارید؟
+run_flow_on_current_collection: اجرای جریان در مجموعه فعلی
+run_flow_on_current: اجرای جریان در مجموعه فعلی
+run_flow_on_current_edited_confirm: این مورد ممکن است توسط این جریان به‌روزرسانی شود، آیا از اجرای آن اطمینان دارید؟
+run_flow_on_selected: ابتدا یک یا چند مورد را انتخاب کنید | اجرای جریان روی 1 مورد انتخاب شده | اجرای {n} مورد روی جریان
+run_flow: اجرای جریان
+run_flow_success: جریان"{flow}" با موفقیت اجرا شد
 field_name_placeholder: ورود نام فیلد...
 field_key_placeholder: ورود کلید فیلد...
 trigger: راه‌انداز
@@ -805,32 +811,32 @@ view_trigger: مشاهده محرک
 create_trigger: ایجاد راه‌انداز
 trigger_setup: نصب راه‌انداز
 change_trigger: تغییر راه‌انداز
-flow_delete_confirm: آیا مطمئن هستید که می‌خواهید فیلد {flow} را حذف کنید؟ این عملیات قابل بازگردانی نیست.
-set_flow_active: تنظیم اتوماسیون به فعال
-set_flow_inactive: برگشت Flow به غیر‌فعال
-edit_flow: ویرایش Flow
-delete_flow: پاک‌کردن Flow
-no_other_flows_copy: هنوز هیچ Flow تنظیم نشده است.
-no_flows: بدون Flows
-no_flows_copy: هنوز هیچ Flow تنظیم نشده است.
-create_flow: ایجاد Flow
-creating_new_flow: ساخت Flow جدید
-updating_flow: ویرایش Flow
-flow_setup: تنظیم Flow
+flow_delete_confirm: آیا از پاک کردن جریان {flow} اطمینان دارید؟ این رویداد غیرقابل بازگردانی است.
+set_flow_active: تنظیم جریان به فعال
+set_flow_inactive: بازگردانی جریان به غیرفعال
+edit_flow: ویرایش جریان
+delete_flow: حذف جریان
+no_other_flows_copy: شما هنوز هیچ جریان دیگری ندارید.
+no_flows: بدون جریان
+no_flows_copy: شما هنوز هیچ جریانی ندارید.
+create_flow: ساخت جریان
+creating_new_flow: ساخت جریان تازه
+updating_flow: در حال به‌روزرسانی جریان
+flow_setup: پیکربندی جریان
 flow_name: نام
-flow_tracking: مشاهده Log ها و فعالیت ها
-flow_tracking_all: مشاهده فعالیت ها و لاگ ها
-flow_tracking_activity: فقط مشاهده فعالیت ها
+flow_tracking: پیگرد رخدادها و فعالیت‌ها
+flow_tracking_all: پیگرد فعالیت و رخدادها
+flow_tracking_activity: فقط پیگرد فعالیت‌ها
 flow_tracking_null: هیچ چیز را پیگیری نکن
-start_flow: شروع Flow
-stop_flow: توقف Flow
+start_flow: شروع جریان
+stop_flow: توقف جریان
 create_operation: ساخت اپراتور
 edit_operation: ویرایش اپراتور
 code: کد
 operation_options: تنظیمات اپراتور
 operation_name: نام اپراتور...
 operation_key: شناسه مرجع...
-operation_key_unique_error: کلیدهای عملیاتی منحصر به فرد Flow
+operation_key_unique_error: کلیدهای عملیاتی باید در یک جریان منحصر به فرد باشند
 operation_handle_resolve: 'تصمیم: برای افزودن کلیک کنید یا برای مسیریابی مجدد بکشید'
 operation_handle_reject: 'رد کردن: برای افزودن کلیک کنید یا برای مسیریابی مجدد بکشید'
 insights: بینش های داده ای
@@ -854,7 +860,7 @@ no_dashboards_copy: هنوز هیچ پیشخوانی ندارید.
 create_dashboard: ایجاد پیشخوان جدید
 dashboard_name: نام پیشخوان
 no_data: داده‌ای موجود نیست
-no_data_in_flow: هیچ داده ای در این Flow تولید یا به آن دسترسی پیدا نکرد
+no_data_in_flow: هیچ داده ای در این جریان تولید یا به آن دسترسی پیدا نکرد
 accountability: مسئوليت
 payload: ظرفیت یا Payload
 details: جزئیات
@@ -1006,8 +1012,8 @@ page_help_settings_presets_item: >-
   **جزئیات از پیش تعیین شده** - فرمی برای مدیریت بوکمارک ها و از پیش تنظیم های مجموعه پیش فرض.
 page_help_settings_webhooks_collection: '**مرور Webhooks** - فهرستی از تمام وبک هوک های داخل پروژه.'
 page_help_settings_webhooks_item: '** جزئیات وب هوک ** - فرمی برای ایجاد و مدیریت وب هوک های پروژه.'
-page_help_settings_flows_collection: '**مرور Flows** - همه Flows های داخل پروژه را فهرست می کند.'
-page_help_settings_flows_item: '**جزئیات Flow ** - فضای کاری برای مدیریت یک یا چند عملیات.'
+page_help_settings_flows_collection: '**مرور جریان‌ها** - همه جریان‌های داخل پروژه را فهرست می کند.'
+page_help_settings_flows_item: '**جزئیات جریان** - محیط کاری برای مدیریت یک یا چند عملیات.'
 page_help_settings_translation_strings_collection: '**مرور رشته‌های ترجمه** - همه رشته‌های ترجمه را در پروژه فهرست می‌کند.'
 page_help_users_collection: '**دایرکتوری کاربر** - لیست تمامی کاربران سیستم در این پروژه.'
 page_help_users_item: >-
@@ -1036,11 +1042,11 @@ directus_collection:
   directus_dashboards: داشبوردهای درون ماژول Insights
   directus_fields: پیکربندی فیلد اضافی و ابرداده
   directus_files: فراداده برای همه Assets های فایل مدیریت شده
-  directus_flows: اتوماسیون Flow
+  directus_flows: خودکارسازی جریان‌ها
   directus_folders: دایرکتوری های مجازی برای فایل ها فراهم می کند
   directus_migrations: از چه نسخه ای از پایگاه داده استفاده می کنید
   directus_notifications: اعلانهای ارسالی به کاربر
-  directus_operations: عملیاتی که در اتوماسیون اجرا می شوند
+  directus_operations: عملیاتی که در جریان‌ها اجرا می شوند
   directus_panels: پنل‌های مجزا در داشبوردها
   directus_permissions: دسترسی به اجازه های این نقش
   directus_presets: تنظیمات پیش‌فرض برای مجموعه و بوکمارک‌ها
@@ -1140,6 +1146,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: نقشه برداری
     basemaps: Basemap
     basemaps_raster: Raster
@@ -1148,6 +1155,8 @@ fields:
     mapbox_key: کلید دسترسی Mapbox
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: انتساب
+    attribution_placeholder: '© OpenStreetMap contributors'
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: تحولات اضافی
     project_name: نام پروژه
     project_descriptor: درباره پروژه
@@ -1179,8 +1188,8 @@ fields:
     password: رمز عبور
     date_start: تاریخ شروع
     date_end: تاریخ پایان
-    max_uses: حداکثر استفاده
-    times_used: زمان استفاده شده
+    max_uses: حدأکثر استفاده
+    times_used: بار استفاده شده
   directus_fields:
     collection: نام مجموعه
     icon: آیکن مجموعه
@@ -1215,6 +1224,7 @@ field_options:
   directus_settings:
     project_name_placeholder: پروژه من...
     project_color_note: نماد برگه ورود
+    project_logo_note: White 40x40 SVG/PNG
     public_note_placeholder: یک پیام کوتاه و عمومی که از قالب بندی علامت گذاری پشتیبانی می کند...
     security_divider_title: امنیت
     auth_password_policy:
@@ -1312,8 +1322,10 @@ field_options:
       header: سربرگ Header
       value: مقدار
       add: اضافه کردن Header
+no_fields_in_collection: 'There are no fields in "{collection}" yet'
 no_value: بدون مقدار
 do_nothing: کاری انجام نشود
+generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: ذخیره نقش کاربر فعلی
 save_current_user_role: ذخیره نقش کاربر فعلی
 save_current_datetime: ذخیره تاریخ و ساعت فعلی
@@ -1324,6 +1336,8 @@ block: بلوک
 inline: درون خطی
 comment: نظر
 shares: اشتراک‌گذاری
+unlimited_usage: Unlimited usage
+uses_left: No uses left | 1 use left | {n} uses left
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
 expired: منقضی شده
@@ -1333,6 +1347,8 @@ share_item: اشتراک گذاری مورد
 shared_with_you: موردی با شما به اشتراک گذاشته شد
 shared_enter_passcode: برای ادامه رمز خود را وارد نمائید
 shared_leave_blank_for_unlimited: (خالی به معنی بدون محدودیت.)
+shared_times_remaining: This link can only be used {n} times
+shared_last_remaining: This link can only be used once
 shared_uses_left: برای امنیت بیشتر، این صفحه مشترک با تعداد محدودی بازدید پیکربندی شده است. در حال حاضر {n} بازدید باقی مانده است، پس از آن، صفحه دیگر قابل دسترسی نخواهد بود.
 share_access_page: دسترسی به صفحه Shared
 share_access_not_found: این صفحه به اشتراک گذاشته شده وجود ندارد یا قبلاً از حداکثر تعداد مجاز استفاده فراتر رفته است.
@@ -1346,8 +1362,13 @@ relational_triggers: رابطه محرک ها یا Triggers
 referential_action_field_label_m2o: در حال حذف {collection}...
 referential_action_field_label_o2m: در حال لغو {collection}
 referential_action_no_action: جلوگیری از حذف
+referential_action_cascade: Delete the {collection} item (cascade)
+referential_action_set_null: Nullify the {field} field
+referential_action_set_default: Set {field} to its default value
 choose_action: انتخاب فعالیت
 continue_label: ادامه
+continue_as: >-
+  {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: 'نقشِ {role}'
 creating_webhook: ساخت وب هوک
 default_label: پیش‌فرض
@@ -1363,10 +1384,12 @@ limit: محدوده
 email: ایمیل
 embed: درج
 fallback_icon: آیکن بازگشتی
+field: Field | Fields
 file: فایل
 file_library: مجموعه فایلها
 forgot_password: فراموشی رمز عبور
 hidden: مخفی
+hidden_in_group: Hidden in {group}
 icon: آیکن
 info: اطلاعات
 normal: عادی
@@ -1414,7 +1437,10 @@ something_went_wrong: مشکلی پیش آمد.
 sort_direction: جهت مرتب سازی
 export_location: برون‌برد مکان‌ها
 export_started: برون بری آغاز شد
+export_started_copy: Your export has started. You'll be notified when it's ready to download.
+sort_asc: Sort Ascending
 sort_desc: مرتب‌سازی نزولی
+disable_sort: Disable Sorting
 template: پوسته
 require_value_to_be_set: مقدار لازم برای تنظیم هنگام ایجاد
 translation: ترجمه
@@ -1477,6 +1503,7 @@ interfaces:
     show_more: 'نمایش {count} بیشتر'
     items_shown: آیتمهای نشان داده شده
   select-multiple-checkbox-tree:
+    name: Checkboxes (Tree)
     description: بین چند گزینه از طریق جعبه انتخاب تودرتو
     value_combining: ترکیب مقدار
     value_combining_note: زمانی که انتخاب‌های تودرتو انجام می‌شوند، مقداری را کنترل می‌کند.
@@ -1484,7 +1511,9 @@ interfaces:
     show_selected: نمایش موارد انتخاب شده
   input-code:
     code: کد
+    description: Write or share code snippets
     line_number: شمارۀ سطرها
+    line_wrapping: Line Wrapping
     placeholder: کد را اینجا وارد کنید...
   system-collection:
     collection: کالکشن یا مجموعه
@@ -1507,17 +1536,20 @@ interfaces:
     description: تاریخ و زمان را وارد نمایید
     include_seconds: درج ثانیه ها
     set_to_now: تنظیم به اکنون
-    use_24: از قالب 24 ساعته استفاده کنید
+    use_24: استفاده از قالب 24 ساعته
     placeholder: انتخاب یک تاریخ و زمان...
   system-fields:
     select_a_collection: انتخاب یک کالکشن
     no_fields: بدون فیلد
   system-display-template:
     display-template: نمایش الگو
+    description: Mix static text and dynamic field values
+    collection_field: Collection field
     collection_field_not_setup: گزینه مجموعه فیلد به اشتباه پیکربندی شده است
     select_a_collection: انتخاب یک کالکشن
   presentation-divider:
     divider: جدا کننده
+    description: Label and divide fields into sections
     title_placeholder: یک عنوان وارد نمائید یا خالی رها کنید
     inline_title: عنوان درون خطی
     inline_title_label: نمایش عنوان داخل خط
@@ -1544,35 +1576,71 @@ interfaces:
     description: انتخاب یا آپلود موارد بیشتر
   input-hash:
     hash: هش
+    description: Enter a value to be hashed
+    masked: Masked
+    masked_label: Hide the true values
   select-icon:
     icon: آیکن
+    description: انتخاب آیکن از منوی آبشاری
+    search_for_icon: جستجو برای آیکون ها...
   file-image:
     image: عکس
+    description: Select or upload an image
     crop: تناسب با برش تصویر
     crop_label: برش تصویر در صورت نیاز
   system-interface:
     interface: رابط کاربری
     description: انتخاب یک رابط موجود
+    placeholder: Select an interface...
   system-interface-options:
     interface-options: تنظیمات رابط
+    description: A modal for selecting options of an interface
   list-m2m:
     many-to-many: چندتا به چندتا
     description: انتخاب چندین آیتم تقاطعی مرتبط
+    columns_configure_notice: You can configure the columns after creating this field.
+    display_template_configure_notice: You can configure the display template after creating this field.
   select-dropdown-m2o:
     many-to-one: چندتا به یکی
     description: انتخاب یک آیتم مرتبط
     display_template: نمایش الگو
+  collection-item-dropdown:
+    collection-item-dropdown: Collection Item Dropdown
+    description: Select an item from a collection in JSON format
   input-rich-text-md:
     markdown: مارک‌داون
+    description: Enter and preview markdown
     edit: ویرایش
     preview: پيش نمايش
+    editorFont: Editor Font
+    previewFont: Preview Font
     customSyntax: بلوک‌های سفارشی
+    customSyntax_label: Add custom syntax types
+    customSyntax_add: Add custom syntax
+    box: Block / Inline
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
   map:
     map: نقشه
     description: یک موقعیت را روی نقشه انتخاب کنید
     zoom: بزرگنمايی
+    geometry_type: Geometry Type
+    geometry_format: Geometry Format
+    default_view: Default View
+    invalid_options: Invalid options
+    invalid_format: Invalid format ({format})
+    unexpected_geometry: Expected {expected}, got {got}.
+    fit_bounds: Fit view to data
+    native: Native
+    geojson: GeoJSON
+    lnglat: Longitude, Latitude
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Click to select {geometry}
   presentation-notice:
     notice: اطلاعیه
+    description: Display a short notice
+    text: Enter notice content here...
   list-o2m:
     one-to-many: یک به چند
     description: انتخاب چندین آیتم مرتبط
@@ -1580,6 +1648,7 @@ interfaces:
   system-folder:
     folder: پوشه
     description: یک پوشه انتخاب کنید
+    field_hint: Default folder for uploaded files without a folder specified. Does not affect existing files.
     root_name: پوشه اصلی مجموعه فایلها
     system_default: پیش فرض سیستم
   select-radio:
@@ -1587,13 +1656,16 @@ interfaces:
     description: یکی از چندین گزینه را انتخاب کنید
   list:
     repeater: تکرار شونده
+    description: Create multiple entries of the same structure
     edit_fields: ویرایش فیلدها
     add_label: 'برچسب "ساخت مورد جدید"'
     sort: مرتب سازی
     sort_placeholder: دستی
+    field_note_placeholder: Enter field note...
+    incompatible_data: The current data is not compatible with the repeater interface and will be overridden when adding items to the repeater
   slider:
     slider: اسلایدر
-    description: با استفاده از یک نوار لغزنده یک عدد را انتخاب کنید
+    description: یک عدد را با استفاده از نوار متحرک انتخاب کنید
     always_show_value: همیشه مقدار را نمایش بده
   tags:
     tags: برچسب ها
@@ -1605,66 +1677,142 @@ interfaces:
     capitalization: حروف بزرگ
     uppercase: تبدیل به حروف بزرگ
     lowercase: تبدیل به حروف کوچک
+    auto_formatter: Use Title Auto-Formatter
     alphabetize: الفبایی
+    alphabetize_label: Force Alphabetical Order
+    add_tags: Add a tag and press Enter...
   input:
     input: ورودی
+    description: Manually enter a value
+    trim: Trim
+    trim_label: Trim the start and end
+    mask: Masked
+    mask_label: Hide the real value
+    clear: Cleared Value
+    clear_label: Save as empty string
+    minimum_value: Minimum Value
     maximum_value: حداکثر مقدار
+    step_interval: Step Interval
+    slug: Slugify
+    slug_label: Make entered value URL safe
   input-multiline:
     textarea: کادر متنی
+    description: Enter multiline plain-text
   input-translated-string:
     input-translated-string: رشته‌های ترجمه شده
+    description: Select or add translation string
     search_placeholder: جست‌وجو...
+    new_translation_string: New Translation String
   boolean:
     toggle: تغییر وضعیت
+    description: Switch between on and off
+    color_on: Color On
+    color_off: Color Off
+    label_placeholder: Enter a label...
     label_default: فعال شده
   translations:
     display_template: نمایش الگو
     no_collection: بدون مجموعه
+    toggle_split_view: Toggle Split View
     enable: فعال سازی
+    user_language: Use Current User Language
     default_language: زبان پیش‎فرض
+    language_field: Language Indicator Field
+    language_direction_field: Language Direction Field
+  list-o2m-tree-view:
+    description: Tree view for nested recursive one-to-many items
+    recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: کاربر
+    description: Select an existing directus user
+    select_mode: Select Mode
     modes:
+      auto: Auto
       dropdown: لیست کشویی
+      modal: مودال
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: A rich-text editor writing HTML content
     toolbar: نوار ابزار
     custom_formats: نوع سفارشی
+    options_override: Options Override
+    folder_note: Folder for uploaded files. Does not affect existing files.
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
+  input-autocomplete-api:
+    input-autocomplete-api: Autocomplete Input (API)
+    description: A search typeahead for external API values.
+    results_path: Results Path
+    value_path: Value Path
+    text_path: Text Path
+    trigger: Trigger
+    rate: امتیاز
+  group-raw:
+    name: Raw Group
+    description: Render the fields as-is
   group-detail:
+    name: Detail Group
+    description: Render the fields as a collapsable section
+    show_header: Show Group Header
     header_icon: آیکن سربرگ
     header_color: رنگ هدر
+    start_open: Start Open
+    start_closed: Start Closed
   system-token:
     system-token: توکن
+    description: Manage static access token
+    placeholder: Click "Generate Token" to create a new static access token
+    value_securely_saved: Value Securely Saved
+    generate: Generate Token
     regenerate: بازسازی توکن
+    generate_success_copy: Make sure to backup and copy the token above. For security reasons, you will not be able to view the token again after saving and navigate off this page.
     remove_token: حذف توکن
   system-raw-editor:
-    system-raw-editor: ویرایشگر Raw
+    system-raw-editor: ویرایشگر خام
+    description: Allow entering of raw or mustache templating values
 displays:
   translations:
     translations: ترجمه‌ها
+    description: Preview translations
     enable: فعال سازی
+    user_language: Use Current User Language
     default_language: زبان پیش‎فرض
+    language_field: Language Indicator Field
   boolean:
     boolean: بولین
+    description: Display on and off states
+    label_on: Label On
+    label_on_placeholder: Enter an on label...
+    label_off: Label Off
+    label_off_placeholder: Enter an off label...
     icon_on: آیکن روشن
     icon_off: آیکن خاموش
+    color_on: Color On
+    color_off: Color Off
   collection:
     collection: کالکشن یا مجموعه
     description: نمایش یک مجموعه
     icon_label: نماد مجموعه را نشان دهید
   color:
     color: رنگ
-    description: نمایش یک نقطه رنگی
+    description: نمایش یک نسخه قالب بندی شده از متن
     default_color: رنگ پیش فرض
   datetime:
     datetime: تاریخ و زمان
     description: نمایش مقادیر مربوط به زمان
     format: فرمت
+    format_note: >-
+      فرمت سفارش پذیرنده __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ می‌باشد
     long: بلند
     short: کوتاه
+    relative: پیوسته
+    relative_label: 'نمایش زمان نسبی، برای نمونه: 5 دقیقه پیش'
     suffix: پسوند
     suffix_label: نمایش نشانگر نسبی
+    suffix_note: از واژه‌هایی مانند "در" و "پیش" استفاده می کند
     strict: سخت گیرانه
-    strict_label: از واحدهای سخت گیرانه استفاده کنید
+    strict_label: استفاده از واحدهای مطلق
+    strict_note: واژه‌هایی مانند "تقریباً"، "بیش از"، "کمتر از" را حذف می‌کند
     round: گرد
     round_note: یک تابع گِرد را برای استفاده انتخاب کنید
     down: پایین
@@ -1682,20 +1830,27 @@ displays:
     format: فرمت
     format_label: فرمت خودکار
     font: فونت
+    font_sans_serif: بدون دندانه
     font_serif: فونت Serif
     font_monospace: فونت Monospace
     bold: توپُر
-    bold_label: از سبک توپُر استفاده کنید
+    bold_label: استفاده از سبک توپُر
     italic: ایتالیک
-    italic_label: از سبک کج استفاده کنید
+    italic_label: استفاده از سبک خمیده
     prefix: پيشوند
+    prefix_label: متن ابتدایی
     suffix: پسوند
+    suffix_label: متن انتهایی
     color: رنگ
     background: پس زمینه
     icon: آیکن
     border: حاشیه
     border_label: نمایش حاشیه
     text: متن
+    text_placeholder: نادیده گرفتن مقدار اختیاری...
+  formatted-json-value:
+    formatted-json-value: Formatted JSON value
+    description: Display a formatted version of the object
   icon:
     icon: آیکن
     description: نمایش یک آیکن
@@ -1715,17 +1870,25 @@ displays:
     show_as_dot: نمایش به عنوان نقطه
     choices_value_placeholder: یک مقدار را وارد کنید...
     choices_text_placeholder: ورود یک نوشته...
+  mime-type:
+    mime-type: MIME Type
+    description: Show the MIME-Type of a file
+    extension_only: Extension Only
+    extension_only_label: Only show the file extension
   rating:
     rating: رتبه بندی
+    description: Visualize a number as stars relative to the max-value
     simple: ساده
     simple_label: نمایش ستاره ها در قالبی ساده
+  raw:
+    raw: Raw Value
   related-values:
     related-values: مقادیر مرتبط
     description: نمایش مقادیر مرتبط
     display_template_configure_notice: پس از ایجاد این فیلد می توانید قالب نمایش را پیکربندی کنید
   user:
     user: کاربر
-    description: نمایش یک کاربر از پنل
+    description: Send an in-app notification to one or more users
     avatar: آواتار
     name: نام
     both: هردو
@@ -1744,28 +1907,66 @@ layouts:
     spacing: فاصله‌گذاری
     comfortable: راحت
     compact: جمع و جور
+    cozy: راحت
   calendar:
     calendar: تقویم
+    start_date_field: کادر تاریخ شروع
+    end_date_field: کادر تاریخ اتمام
     optional: اختیاری
+    first_day: اولین روز هفته
   map:
     map: نقشه
+    basemap: نقشه اصلی
     layers: لایه‌ها
     cluster_options: تنظیمات کلاسترینگ
+    cluster: دسته‌بندی داده‌‌های نزدیک
+    cluster_radius: شعاع دسته‌بندی
     cluster_minpoints: حداقل اندازه کلاستر
+    cluster_maxzoom: حداکثر همگرایی جهت دسته‌بندی
+    field: کادر میدان جغرافیایی
+    invalid_geometry: رسم هندسی اشتباه
     find_location: پیدا کردن موفعیت...
+    default_template: در حال استفاده مجموعه پیشفرض...
+    no_compatible_fields: کادرهای سازگار وجود ندارد
   kanban:
+    name: تابلوی راهنما
+    group_field: گروه‌بندی بر اساس
+    group_field_placeholder: کادر جهت گروه‌بندی بر اساس...
+    group_title: عنوان گروه
+    group_title_placeholder: کادر برای عناوین گروه...
+    title: عنوان تابلو
+    title_placeholder: کادر عنوان اختیاری...
+    text: متن تابلو
+    text_placeholder: کادر متن اختیاری...
+    date: تاریخ تابلو
+    date_placeholder: کادر تاریخ اختیاری...
+    tags: برچسب‌های تابلو
+    tags_placeholder: کادر برچسب‌های اختیاری...
+    user: تابلو کاربر
+    user_placeholder: کادر اختیاری کاربر...
+    image: تصویر تابلو
+    image_placeholder: کادر تصویر اختیاری...
     crop: برش
     advanced: پیشرفته
+    edit_group: ویرایش گروه
+    delete_group: حذف گروه
+    add_group: افزودن گروه
+    add_group_placeholder: یک عنوان تازه برای گروه وارد کنید...
+    show_ungrouped: نمایش گروه‌بندی نشده
     show: نمایش
+    no_group: بدون گروه
+    not_all_loaded: فقط می‌توان 1000 مورد اول را بارگیری کرد.
 horizontal: افقی
 vertical: عمودی
 x_axis: محور افقی
 y_axis: محور عمودی
+y_axis_function: تابع Y-Axis
 show_x_only: نمایش در محور افقی
 show_y_only: نمایش در محور عمودی
 show_data_label: نمایش داده برچسب
 both: هردو
 show_axis_labels: نمایش برچسب های محوری
+function: تابع
 half_circle: چرخه نصف
 full_circle: چرخه کامل
 stroke_width: خط عرضی
@@ -1776,8 +1977,10 @@ broad: گسترده
 show_labels: نمایش برچسب
 right: راست
 left: چپ
+donut: بخش‌بندی
 panels:
   metric:
+    name: معیار
     description: یک مقدار را بر اساس یک پرس و جو نشان دهید
     field: فیلد
   time_series:
@@ -1785,6 +1988,8 @@ panels:
     description: نمودار خطی را بر اساس مقادیر در طول زمان ارائه دهید
     date_field: فیلد تاریخ
     value_field: مقدار فیلد
+    fill_type: نوع انباشت
+    curve_type: نوع منحنی
   label:
     name: برچسب
     description: نمایش چند نوشته
@@ -1808,6 +2013,7 @@ panels:
     step_line: خط مرحله ای
   meter:
     name: متر
+    description: شمارنده برای ردیابی مقادیر
   piechart:
     name: نمودار پای یا دونات
     description: نمودار دایره ای که نسبت گروه ها را روی یک ستون نشان می دهد
@@ -1823,24 +2029,48 @@ triggers:
   common:
     response_body: متن پاسخ
     response_body_all: همه داده‌ها
+    response_body_last: داده‌های آخرین عملیات
+  event:
+    name: هوک رویداد
   webhook:
     name: وب‌هوک
+    description: روی درخواست های ورودی HTTP اجرا می‌شود
     method: شیوه یا متود
+    async: ناهمگام
+  operation:
+    name: جریان دیگر
+    description: کارگذاری شده توسط جریان دیگر جهت زنجیره سازی
+    preview: اجرا شده توسط عملگری در یک جریان دیگر
   schedule:
+    name: زمان‌بندی (CRON)
+    description: در مقاطع منظم زمانی فعال می شود
     cron: بازه زمانی
   manual:
     name: دستی
+    description: در اجراهای دستی روی مجموعه‌های انتخاب شده اجرا می‌شود
+    collection_only: فقط برگه مجموعه‌
+    collection_page: برگه مجموعه
+    require_selection: نیاز به انتخاب دارد
+a_flow_uuid: یک جریان را جهت راه‌اندازی انتخاب کنید...
+any_string_or_json: Json یا هر رشته‌ای...
+item_payload_placeholder: این JSON برای به‌روزرسانی مقادیر فیلد به‌کارگیری می‌شود...
 operations:
   condition:
     name: شرط
+    description: مسیریابی یک جریان بر اساس منطق If / Else
   exec:
     name: خواندن داده
     description: خواندن داده از پایگاه داده
+    modules: 'می‌توان از **ماژول‌های Node** مقابل به‌کارگیری کرد:'
   item-create:
     name: ایجاد داده
+    description: ساخت موارد در پایگاه‌داده
     payload: ظرفیت یا Payload
+    emit_events: انتشار رویدادها
   item-delete:
     name: پاک کردن داده
+    description: حذف موارد از پایگاه‌داده
+    emit_events: انتشار رویدادها
     key: ID ها
     query: کوئری
   item-read:
@@ -1848,27 +2078,61 @@ operations:
     description: خواندن آیتم‌ها از پایگاه داده
     key: ID ها
     query: کوئری
+    emit_events: انتشار رویدادها
   item-update:
-    name: Trigger Flow
-    description: این داده ها را به Flow دیگری منتقل کنید
+    name: به‌روزرسانی داده
+    description: به‌روزرسانی موارد در پایگاه‌داده
     emit_events: انتشار رویدادها
     key: ID ها
     payload: ظرفیت یا Payload
     query: کوئری
   log:
+    name: ذخیره رخداد در کنسول
+    description: خروجی چیزی به کنسول
     message: پیام
+    message_placeholder: یک پیام جهت نمایش در کنسول وارد کنید...
   mail:
+    name: فرستادن رایانامه
+    description: فرستادن رایانامه به یک یا چند نفر
+    to: به
+    to_placeholder: نشانی‌های رایانامه را وارد کرده و اینتر بزنید...
+    body: متن
     template: پوسته
     data: داده Data
   notification:
+    name: فرستادن اعلان
+    description: فرستادن اعلان درون برنامه‌ای برای یک یا چند کاربر
     recipient: کاربر
+    recipient_placeholder: یک UUID وارد کنید...
+    recipient_note: UUID کاربر را وارد و اینتر بزنید...
     message: پیام
   request:
+    name: وب‌هوک / درخواست URL
+    description: "ساخت یک درخواست به URL"
     url: URL
+    url_placeholder: https://example.com/example
     method: شیوه یا متود
     data: داده Data
+    headers: هدرها (Headers)
     header: سربرگ
+    header_placeholder: احراز هویت...
+    value_placeholder: شامل eyJhbGciOi...
+  sleep:
+    name: وقفه
+    description: بر اساس عدد مقابل به میلی‌ثانیه صبر کنید
+    milliseconds: میلی‌ثانیه
+  transform:
+    name: انتقال بار
+    description: تغییر حامل JSON جریان
   trigger:
-    flows: اتوماسیون‌ها
-    flow: اتوماسیون
+    name: راه‌اندازی جریان
+    description: انتقال این داده به یک جریان دیگر
+    flows: جریان‌ها
+    flow: جریان
     data: داده Data
+    iteration_mode: حالت تکرار
+    iteration_mode_note: حالتی برای تکرار در آرایه‌ها.
+    serial: سریال
+    parallel: موازی
+    batch: دسته
+    batch_size: اندازه دسته

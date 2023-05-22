@@ -8,7 +8,12 @@
 	</v-info>
 
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
-		<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
+		<aside
+			id="navigation"
+			role="navigation"
+			aria-label="Module Navigation"
+			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
+		>
 			<module-bar />
 			<div ref="moduleNavEl" class="module-nav alt-colors">
 				<project-info />
@@ -48,7 +53,7 @@
 			role="contentinfo"
 			class="alt-colors"
 			aria-label="Module Sidebar"
-			:class="{ 'is-open': sidebarOpen }"
+			:class="{ 'is-open': sidebarOpen, 'has-shadow': sidebarShadow }"
 			@click="openSidebar"
 		>
 			<div class="flex-container">
@@ -71,14 +76,14 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { useElementSize, useSync } from '@directus/composables';
-import { useResize } from '@/composables/use-resize';
+<script setup lang="ts">
 import { useLocalStorage } from '@/composables/use-local-storage';
+import { useResize } from '@/composables/use-resize';
 import { useTitle } from '@/composables/use-title';
 import { useWindowSize } from '@/composables/use-window-size';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
+import { useElementSize, useSync } from '@directus/composables';
 import { storeToRefs } from 'pinia';
 import { computed, provide, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -97,6 +102,7 @@ interface Props {
 	smallHeader?: boolean;
 	headerShadow?: boolean;
 	splitView?: boolean;
+	sidebarShadow?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -104,6 +110,7 @@ const props = withDefaults(defineProps<Props>(), {
 	smallHeader: false,
 	splitView: false,
 	headerShadow: true,
+	sidebarShadow: false,
 });
 
 const emit = defineEmits(['update:splitView']);
@@ -303,6 +310,9 @@ function openSidebar(event: PointerEvent) {
 		&.is-open {
 			transform: translateX(0);
 		}
+		&.has-shadow {
+			box-shadow: var(--navigation-shadow);
+		}
 
 		&:not(.is-open) {
 			.module-nav-resize-handle {
@@ -325,31 +335,6 @@ function openSidebar(event: PointerEvent) {
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;
-			}
-		}
-
-		.module-nav-resize-handle {
-			position: absolute;
-			top: 0;
-			right: -2px;
-			bottom: 0;
-			width: 4px;
-			z-index: 3;
-			background-color: var(--primary);
-			cursor: ew-resize;
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
-			transition-delay: 0;
-			user-select: none;
-			touch-action: none;
-
-			&:hover,
-			&:active {
-				opacity: 1;
-			}
-
-			&.active {
-				transition-delay: var(--slow);
 			}
 		}
 
@@ -463,6 +448,9 @@ function openSidebar(event: PointerEvent) {
 
 		&.is-open {
 			transform: translateX(0);
+		}
+		&.has-shadow {
+			box-shadow: var(--sidebar-shadow);
 		}
 
 		.flex-container {

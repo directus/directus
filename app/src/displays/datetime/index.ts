@@ -66,7 +66,7 @@ export default defineDisplay({
 					},
 				},
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 			},
 		];
@@ -107,7 +107,7 @@ export default defineDisplay({
 						note: '$t:displays.datetime.suffix_note',
 					},
 					schema: {
-						default_value: 'true',
+						default_value: true,
 					},
 				},
 				{
@@ -123,7 +123,7 @@ export default defineDisplay({
 						note: '$t:displays.datetime.strict_note',
 					},
 					schema: {
-						default_value: 'false',
+						default_value: false,
 					},
 				},
 				{

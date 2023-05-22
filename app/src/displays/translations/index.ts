@@ -147,7 +147,7 @@ export default defineDisplay({
 				name: '$t:displays.translations.user_language',
 				type: 'string',
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 				meta: {
 					interface: 'boolean',

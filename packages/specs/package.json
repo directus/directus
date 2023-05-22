@@ -1,19 +1,17 @@
 {
 	"name": "@directus/specs",
-	"version": "10.0.0",
+	"version": "10.1.0",
 	"description": "OpenAPI Specification of the Directus API",
 	"homepage": "https://directus.io",
-	"type": "module",
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/specs"
 	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "BUSL-1.1",
 	"author": "Nils Twelker",
+	"type": "module",
 	"exports": {
 		".": "./index.js",
 		"./package.json": "./package.json"
@@ -39,9 +37,6 @@
 		"openapi-types": "12.1.0",
 		"swagger-cli": "4.0.4",
 		"swagger-ui-watcher": "2.1.13"
-	},
-	"publishConfig": {
-		"access": "public"
 	},
 	"watch": {
 		"build": {
