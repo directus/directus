@@ -1,13 +1,13 @@
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { QueryOne, OneItem, ItemInput, Item } from '../items';
 import { ISingleton } from '../singleton';
 
 export class SingletonHandler<T extends Item> implements ISingleton<T> {
 	protected collection: string;
-	protected transport: ITransport;
+	protected transport: Transport;
 	protected endpoint: string;
 
-	constructor(collection: string, transport: ITransport) {
+	constructor(collection: string, transport: Transport) {
 		this.collection = collection;
 		this.transport = transport;
 		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;

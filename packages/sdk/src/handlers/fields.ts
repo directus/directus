@@ -3,14 +3,14 @@
  */
 
 import { ManyItems, OneItem, ItemInput, EmptyParamError, DefaultItem } from '../items';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { FieldType, DefaultType, ID } from '../types';
 
 export type FieldItem<T = DefaultType> = FieldType & T;
 
 export class FieldsHandler<T = FieldItem> {
-	transport: ITransport;
-	constructor(transport: ITransport) {
+	transport: Transport;
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 

@@ -1,11 +1,11 @@
 import { EmptyParamError } from '../items';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { ID } from '../types';
 
 export class AssetsHandler {
-	private transport: ITransport;
+	private transport: Transport;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 

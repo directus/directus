@@ -3,7 +3,7 @@
  */
 
 import { ItemsHandler } from '../base/items';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { DefaultType, UserType } from '../types';
 import { InvitesHandler } from './invites';
 import { MeHandler } from './me';
@@ -14,7 +14,7 @@ export class UsersHandler<T = DefaultType> extends ItemsHandler<UserItem<T>> {
 	private _invites?: InvitesHandler;
 	private _me?: MeHandler<UserItem<T>>;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		super('directus_users', transport);
 	}
 

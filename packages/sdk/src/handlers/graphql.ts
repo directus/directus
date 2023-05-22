@@ -1,9 +1,9 @@
-import { ITransport, TransportResponse } from '../transport';
+import { Transport, TransportResponse } from '../transport';
 
 export class GraphQLHandler {
-	private transport: ITransport;
+	private transport: Transport;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 

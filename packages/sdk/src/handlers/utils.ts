@@ -2,13 +2,13 @@
  * Utils handler
  */
 
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { ID } from '../types';
 
 export class UtilsHandler {
-	private transport: ITransport;
+	private transport: Transport;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 

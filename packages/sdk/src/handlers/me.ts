@@ -1,12 +1,12 @@
 import { ItemInput, QueryOne } from '../items';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { TFAHandler } from './tfa';
 
 export class MeHandler<T> {
-	private _transport: ITransport;
+	private _transport: Transport;
 	private _tfa?: TFAHandler;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		this._transport = transport;
 	}
 

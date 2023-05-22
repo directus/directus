@@ -1,11 +1,11 @@
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { TfaType, DefaultType } from '../types';
 
 type TfaItem<T = DefaultType> = TfaType & T;
 export class TFAHandler {
-	private transport: ITransport;
+	private transport: Transport;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 

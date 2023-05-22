@@ -2,7 +2,7 @@
  * Server handler
  */
 
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 
 export type ServerInfo = {
 	project: {
@@ -20,14 +20,14 @@ export type ServerInfo = {
 };
 
 export class ServerHandler {
-	private transport: ITransport;
+	private transport: Transport;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 
 	async ping(): Promise<'pong'> {
-		return (await this.transport.get<any, 'pong'>('/server/ping')).raw;
+		return (await this.transport.get<'pong'>('/server/ping')).raw;
 	}
 
 	async info(): Promise<ServerInfo> {

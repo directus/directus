@@ -4,13 +4,13 @@
 
 import { ItemsHandler } from '../base/items';
 import { OneItem, ItemInput } from '../items';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { FileType, DefaultType } from '../types';
 
 export type FileItem<T = DefaultType> = FileType & T;
 
 export class FilesHandler<T = DefaultType> extends ItemsHandler<FileItem<T>> {
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		super('directus_files', transport);
 	}
 

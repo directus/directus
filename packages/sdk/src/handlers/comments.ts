@@ -1,12 +1,12 @@
 import { Comment, ID } from '../types';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { ActivityItem } from './activity';
 import { EmptyParamError } from '../items';
 
 export class CommentsHandler<T> {
-	private transport: ITransport;
+	private transport: Transport;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 

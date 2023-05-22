@@ -1,6 +1,6 @@
 import { IStorage } from './storage';
-import { ITransport } from './transport';
 import { PasswordsHandler } from './handlers/passwords';
+import { Transport } from './transport';
 
 export type AuthCredentials = {
 	email: string;
@@ -25,7 +25,7 @@ export type AuthOptions = {
 	autoRefresh?: boolean;
 	msRefreshBeforeExpires?: number;
 	staticToken?: string;
-	transport: ITransport;
+	transport: Transport;
 	storage: IStorage;
 };
 

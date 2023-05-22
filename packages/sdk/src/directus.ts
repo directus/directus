@@ -17,12 +17,12 @@ import {
 } from './handlers';
 
 import { IItems, Item } from './items';
-import { ITransport } from './transport';
 import { UtilsHandler } from './handlers/utils';
 import { IStorage } from './storage';
 import { TypeOf } from './types';
 import { GraphQLHandler } from './handlers/graphql';
 import { ISingleton } from './singleton';
+import { Transport } from './transport';
 
 export type DirectusTypes = {
 	activity: undefined;
@@ -44,7 +44,7 @@ export interface IDirectusBase {
 	readonly url: string;
 	readonly auth: IAuth;
 	readonly storage: IStorage;
-	readonly transport: ITransport;
+	readonly transport: Transport;
 	readonly server: ServerHandler;
 	readonly utils: UtilsHandler;
 	readonly graphql: GraphQLHandler;

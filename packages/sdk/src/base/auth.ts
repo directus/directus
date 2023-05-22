@@ -1,7 +1,7 @@
 import { IAuth, AuthCredentials, AuthResult, AuthToken, AuthOptions, AuthTokenType } from '../auth';
 import { PasswordsHandler } from '../handlers/passwords';
 import { IStorage } from '../storage';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 
 export type AuthStorage<T extends AuthTokenType = 'DynamicToken'> = {
 	access_token: T extends 'DynamicToken' | 'StaticToken' ? string : null;
@@ -15,7 +15,7 @@ export class Auth extends IAuth {
 	staticToken = '';
 
 	private _storage: IStorage;
-	private _transport: ITransport;
+	private _transport: Transport;
 	private passwords?: PasswordsHandler;
 
 	private _refreshPromise?: Promise<AuthResult | false>;
@@ -45,7 +45,7 @@ export class Auth extends IAuth {
 		return this._storage;
 	}
 
-	get transport(): ITransport {
+	get transport(): Transport {
 		return this._transport;
 	}
 

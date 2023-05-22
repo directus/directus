@@ -1,9 +1,9 @@
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 
 export class PasswordsHandler {
-	private transport: ITransport;
+	private transport: Transport;
 
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 

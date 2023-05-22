@@ -3,14 +3,14 @@
  */
 
 import { ManyItems, OneItem, ItemInput, QueryOne, EmptyParamError } from '../items';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { CollectionType, DefaultType } from '../types';
 
 export type CollectionItem<T = DefaultType> = CollectionType & T;
 
 export class CollectionsHandler<T = CollectionItem> {
-	transport: ITransport;
-	constructor(transport: ITransport) {
+	transport: Transport;
+	constructor(transport: Transport) {
 		this.transport = transport;
 	}
 

@@ -1,4 +1,3 @@
-import { ITransport } from '../transport';
 import {
 	IItems,
 	Item,
@@ -10,14 +9,15 @@ import {
 	ItemsOptions,
 	EmptyParamError,
 } from '../items';
+import { Transport } from '../transport';
 import { ID, FieldType } from '../types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
-	protected transport: ITransport;
+	protected transport: Transport;
 	protected endpoint: string;
 	protected collection: string;
 
-	constructor(collection: string, transport: ITransport) {
+	constructor(collection: string, transport: Transport) {
 		this.collection = collection;
 		this.transport = transport;
 		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;

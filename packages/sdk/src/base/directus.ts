@@ -18,9 +18,8 @@ import {
 	UtilsHandler,
 } from '../handlers';
 import { IItems, Item } from '../items';
-import { ITransport, TransportOptions } from '../transport';
+import { TransportOptions, Transport } from '../transport';
 import { ItemsHandler } from './items';
-import { Transport } from './transport';
 import { Auth } from './auth';
 import { IStorage } from '../storage';
 import { LocalStorage, MemoryStorage, StorageOptions } from './storage';
@@ -33,7 +32,7 @@ export type DirectusStorageOptions = StorageOptions & { mode?: 'LocalStorage' | 
 
 export type DirectusOptions<IAuthHandler extends IAuth = Auth> = {
 	auth?: IAuthHandler | PartialBy<AuthOptions, 'transport' | 'storage'>;
-	transport?: ITransport | Partial<TransportOptions>;
+	transport?: Transport | Partial<TransportOptions>;
 	storage?: IStorage | DirectusStorageOptions;
 };
 
@@ -41,7 +40,7 @@ export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> impleme
 	private _url: string;
 	private _options?: DirectusOptions<IAuthHandler>;
 	private _auth: IAuthHandler;
-	private _transport: ITransport;
+	private _transport: Transport;
 	private _storage: IStorage;
 	private _assets?: AssetsHandler;
 	private _activity?: ActivityHandler<TypeOf<T, 'directus_activity'>>;
@@ -86,7 +85,7 @@ export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> impleme
 			}
 		}
 
-		if (this._options?.transport && this._options?.transport instanceof ITransport) {
+		if (this._options?.transport && this._options?.transport instanceof Transport) {
 			this._transport = this._options.transport;
 		} else {
 			this._transport = new Transport({
@@ -115,7 +114,7 @@ export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> impleme
 						},
 					};
 
-					if (!(this._options?.transport instanceof ITransport) && this._options?.transport?.beforeRequest) {
+					if (!(this._options?.transport instanceof Transport) && this._options?.transport?.beforeRequest) {
 						return this._options?.transport?.beforeRequest(authenticatedConfig);
 					}
 
@@ -146,7 +145,7 @@ export class Directus<T extends Item, IAuthHandler extends IAuth = Auth> impleme
 		return this._storage;
 	}
 
-	get transport(): ITransport {
+	get transport(): Transport {
 		return this._transport;
 	}
 

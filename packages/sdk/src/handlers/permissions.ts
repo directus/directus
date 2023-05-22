@@ -3,13 +3,13 @@
  */
 
 import { ItemsHandler } from '../base/items';
-import { ITransport } from '../transport';
+import { Transport } from '../transport';
 import { PermissionType, DefaultType } from '../types';
 
 export type PermissionItem<T = DefaultType> = PermissionType & T;
 
 export class PermissionsHandler<T = DefaultType> extends ItemsHandler<PermissionItem<T>> {
-	constructor(transport: ITransport) {
+	constructor(transport: Transport) {
 		super('directus_permissions', transport);
 	}
 }
