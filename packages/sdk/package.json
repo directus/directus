@@ -41,8 +41,8 @@
 		"index.mjs"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsup",
+		"dev": "tsup --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -55,6 +55,7 @@
 		"jsdom": "22.0.0",
 		"msw": "1.2.1",
 		"typescript": "5.0.4",
-		"vitest": "0.31.1"
+		"vitest": "0.31.1",
+		"tsup": "6.7.0"
 	}
 }
