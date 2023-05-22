@@ -1,4 +1,3 @@
-
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, ResponseType } from 'axios';
 import { ItemMetadata } from './items';
 
@@ -90,31 +89,47 @@ export class Transport {
 	}
 
 	async get<T = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T>> {
-		return await this.request('get', path, undefined, options);
+		return this.request('get', path, undefined, options);
 	}
 
 	async head<T = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T>> {
-		return await this.request('head', path, undefined, options);
+		return this.request('head', path, undefined, options);
 	}
 
 	async options<T = any>(path: string, options?: TransportRequestOptions): Promise<TransportResponse<T>> {
-		return await this.request('options', path, undefined, options);
+		return this.request('options', path, undefined, options);
 	}
 
-	async delete<T = any, D = any>(path: string, data?: D, options?: TransportRequestOptions): Promise<TransportResponse<T>> {
-		return await this.request('delete', path, data, options);
+	async delete<T = any, D = any>(
+		path: string,
+		data?: D,
+		options?: TransportRequestOptions
+	): Promise<TransportResponse<T>> {
+		return this.request('delete', path, data, options);
 	}
 
-	async put<T = any, D = any>(path: string, data?: D, options?: TransportRequestOptions): Promise<TransportResponse<T>> {
-		return await this.request('put', path, data, options);
+	async put<T = any, D = any>(
+		path: string,
+		data?: D,
+		options?: TransportRequestOptions
+	): Promise<TransportResponse<T>> {
+		return this.request('put', path, data, options);
 	}
 
-	async post<T = any, D = any>(path: string, data?: D, options?: TransportRequestOptions): Promise<TransportResponse<T>> {
-		return await this.request('post', path, data, options);
+	async post<T = any, D = any>(
+		path: string,
+		data?: D,
+		options?: TransportRequestOptions
+	): Promise<TransportResponse<T>> {
+		return this.request('post', path, data, options);
 	}
 
-	async patch<T = any, D = any>(path: string, data?: D, options?: TransportRequestOptions): Promise<TransportResponse<T>> {
-		return await this.request('patch', path, data, options);
+	async patch<T = any, D = any>(
+		path: string,
+		data?: D,
+		options?: TransportRequestOptions
+	): Promise<TransportResponse<T>> {
+		return this.request('patch', path, data, options);
 	}
 }
 
