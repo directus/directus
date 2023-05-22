@@ -34,3 +34,5 @@ export type JsonValue = null | string | number | boolean | JsonValue[] | { [key:
 export type GenericString<T> = T extends string ? string : T;
 
 export type Plural<T extends string> = `${T}s`;
+
+export type UnknownObject = Record<string | number | symbol, unknown>;

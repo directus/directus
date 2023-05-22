@@ -50,7 +50,7 @@
 						@change="change(group, $event)"
 					>
 						<template #item="{ element }">
-							<router-link :to="`${collection}/${element.id}`" class="item">
+							<router-link :to="getItemRoute(collection, element.id)" class="item">
 								<div v-if="element.title" class="title">{{ element.title }}</div>
 								<img v-if="element.image" class="image" :src="element.image" />
 								<div v-if="element.text" class="text">{{ element.text }}</div>
@@ -110,6 +110,7 @@ export default {
 <script setup lang="ts">
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { getItemRoute } from '@/utils/get-item-route';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';

@@ -3,7 +3,7 @@ const props = defineProps({
 	title: { type: String, required: true },
 	h: { type: String, required: false, default: '2' },
 	text: { type: String, required: true },
-	icon: { type: String, required: false, default: null },
+	icon: { type: String, required: false, default: "/icons/card_link.svg" },
 	url: { type: String, required: false, default: null },
 });
 
@@ -25,7 +25,7 @@ const headerType = 'h' + props.h;
 
 <style scoped>
 .card {
-	border: 1px solid var(--vp-c-divider);
+	border: 2px solid var(--vp-c-brand-light);
 	border-radius: 8px;
 	transition: border-color 0.25s, background-color 0.25s;
 	padding: 1.5rem;
@@ -35,6 +35,7 @@ const headerType = 'h' + props.h;
 	gap: 1.5em;
 	margin-top: 1em;
 	margin-bottom: 1em;
+	box-shadow: 0 0 4px var(--vp-c-brand-light) ;
 }
 
 .card p {
@@ -45,7 +46,9 @@ const headerType = 'h' + props.h;
 }
 
 .card:hover {
-	border-color: var(--vp-c-brand);
+	border: 2px solid var(--vp-c-brand);
+	box-shadow: 0 0 8px var(--vp-c-brand) ;
+	text-decoration: underline;
 }
 .icon {
 	width: 44px;
@@ -55,9 +58,7 @@ img {
 	width: auto;
 	border-radius: 0 !important;
 }
-.card:hover {
-	text-decoration: none;
-}
+
 .vp-doc h2 {
 	padding-top: 0;
 	margin: 0;
