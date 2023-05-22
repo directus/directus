@@ -273,11 +273,14 @@ export async function applyDiff(
 
 			if (diff?.[0]?.kind === DiffKind.NEW) {
 				try {
-					await relationsService.createOne({
-						...(diff[0] as DiffNew<Relation>).rhs,
-						collection,
-						field
-					}, mutationOptions);
+					await relationsService.createOne(
+						{
+							...(diff[0] as DiffNew<Relation>).rhs,
+							collection,
+							field
+						}, 
+						mutationOptions
+					);
 				} catch (err) {
 					logger.error(`Failed to create relation "${collection}.${field}"`);
 					throw err;
