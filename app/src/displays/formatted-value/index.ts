@@ -45,7 +45,7 @@ export default defineDisplay({
 					},
 				},
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 			},
 			{
@@ -78,7 +78,7 @@ export default defineDisplay({
 					},
 				},
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 			},
 			{
@@ -93,7 +93,7 @@ export default defineDisplay({
 					},
 				},
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 			},
 			{
@@ -161,7 +161,7 @@ export default defineDisplay({
 					},
 				},
 				schema: {
-					default_value: 'false',
+					default_value: false,
 				},
 			},
 			{

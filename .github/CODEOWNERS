@@ -1,1 +1,2 @@
-docs/* @phazonoverload 
+/docs/**/*.md @phazonoverload
+/docs/.vitepress/* @phazonoverload

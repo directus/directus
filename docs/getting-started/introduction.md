@@ -59,6 +59,15 @@ Extensive configuration options are also available as global variables in the co
 authentication method, caching details, default file storage location (local, S3, google, etc.) for digital assets, emails,
 _and much more._
 
+### What Do Teams Use Directus For?
+
+- [Headless CMS](https://directus.io/headless-cms)
+- [Learning Management System](https://directus.io/headless-cms) 
+- [Product Inventory Management](https://directus.io/studio)
+- [No-Code Data Platform](https://directus.io/studio)
+- [Backend-as-a-Service](https://directus.io/engine) 
+- [Full API-Based Data Architecture](https://directus.io/engine)
+
 :::tip Ready to dive in?
 
 Get a project running in minutes. Learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
