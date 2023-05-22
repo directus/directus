@@ -1,4 +1,3 @@
-import { useTranslationStrings } from '@/composables/use-translation-strings';
 import { setLanguage } from '@/lang/set-language';
 import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
@@ -14,7 +13,6 @@ import { useRequestsStore } from '@/stores/requests';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
-import { useNotificationsStore } from '@/stores/notifications';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
 
@@ -51,7 +49,6 @@ export async function hydrate(): Promise<void> {
 
 	const appStore = useAppStore();
 	const userStore = useUserStore();
-	const serverStore = useServerStore();
 	const permissionsStore = usePermissionsStore();
 	const fieldsStore = useFieldsStore();
 
