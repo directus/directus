@@ -277,8 +277,8 @@ export async function applyDiff(
 						{
 							...(diff[0] as DiffNew<Relation>).rhs,
 							collection,
-							field
-						}, 
+							field,
+						},
 						mutationOptions
 					);
 				} catch (err) {
