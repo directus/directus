@@ -1,4 +1,4 @@
-import { IStorage } from '../../../src/storage';
+import { IStorage } from '../../../src/types';
 import { beforeEach, test, expect } from 'vitest';
 
 export function createStorageTests(createStorage: () => IStorage) {

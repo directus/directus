@@ -1,7 +1,7 @@
-import { Auth } from '../../src/base/auth';
-import { ItemsHandler } from '../../src/base/items';
-import { Transport } from '../../src/base/transport';
-import { Directus } from '../../src/base';
+import { Auth } from '../../src/auth';
+import { ItemsHandler } from '../../src/items';
+import { Transport } from '../../src/transport';
+import { Directus } from '../../src/directus';
 import {
 	ActivityHandler,
 	CollectionsHandler,

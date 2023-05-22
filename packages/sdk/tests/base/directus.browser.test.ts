@@ -1,4 +1,5 @@
-import { Directus, LocalStorage, MemoryStorage } from '../../src/base';
+import { Directus } from '../../src/directus';
+import { LocalStorage, MemoryStorage } from '../../src/storage';
 import { describe, expect, it } from 'vitest';
 
 describe('browser sdk', function () {

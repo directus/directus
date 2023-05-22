@@ -1,4 +1,4 @@
-import { Directus } from '../../src';
+import { Directus } from '../../src/directus';
 import { mockServer, URL } from '../utils';
 import { rest } from 'msw';
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';

@@ -1,4 +1,4 @@
-import { Transport } from '../../src/base/transport';
+import { Transport } from '../../src/transport';
 import { TransportResponse, TransportError } from '../../src/transport';
 import { describe, expect, it, vi } from 'vitest';
 import { mockServer, URL } from '../utils';

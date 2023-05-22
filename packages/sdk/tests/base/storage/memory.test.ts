@@ -1,4 +1,4 @@
-import { MemoryStorage } from '../../../src/base/storage';
+import { MemoryStorage } from '../../../src/storage';
 import { createStorageTests } from './tests';
 import { describe } from 'vitest';
 

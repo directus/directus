@@ -1,5 +1,6 @@
 // @vitest-environment node
-import { Directus, MemoryStorage } from '../../src/base';
+import { MemoryStorage } from '../../src/storage';
+import { Directus } from '../../src/directus';
 import { describe, expect, it } from 'vitest';
 
 describe('node sdk', function () {
