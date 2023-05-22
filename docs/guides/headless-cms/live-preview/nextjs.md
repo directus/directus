@@ -11,8 +11,7 @@ author: Esther Agbaje
 
 > {{ $frontmatter.description }}
 
-Live preview lets users see changes in their collection before publishing it and without the need to refresh the
-browser.
+Directus' Live Preview feature allows you to show changes in your website collection before publishing and without the need to refresh the browser.
 
 [Next.js](https://nextjs.org/) Draft Mode feature renders pages on request instead of build time and fetches draft
 content instead of the published content.
@@ -27,19 +26,19 @@ You will need:
 - A Directus project. The easiest way to get started with Directus is with our
   [managed Directus Cloud service](https://directus.cloud). You can also self-host Directus.
 - A Next.js application.
-- Some knowledge of React.js and Next.js
+- Some knowledge of React.js and Next.js.
 
 If you're just getting started with Next.js and Directus, reference our
-[guide](https://docs.directus.io/guides/headless-cms/build-static-website/next-13.html) to set up Next.js 13 with
+[guide](/guides/headless-cms/build-static-website/next-13.html) to set up Next.js 13 with
 Directus
 
 ## Configure Live Preview URL in Directus
 
-In your Directus instance, create a new `Posts` collection. Add `title` and `content` fields to your collection.
+In your Directus project, create a new `Posts` collection. Add `title` and `content` fields to your collection.
 
 Navigate to Settings -> Data Model and select the collection you want to configure. In the "Preview URL" section,
 specify the Preview URL for your Next.js project by selecting ID from the dropdown and entering a URL in this format:
-`http:/<your-site>/api/draft?secret=MY_SECRET_TOKEN&id=ID`
+`http://<your-site>/api/draft?secret=MY_SECRET_TOKEN&id=ID`
 
 <video title="Configure live preview URL" autoplay playsinline muted loop controls>
 	<source src="https://marketing.directus.app/assets/5e10c4ac-4629-47ae-8c4c-8579945b1e26.mp4" type="video/mp4" />
@@ -157,4 +156,4 @@ Clicking on the "Dimensions Display" icon also lets you preview your content on 
 Through this guide, you have successfully set up the live preview feature in Directus for your Next.js project.
 
 Share the preview URL with your team members, stakeholders, or clients to allow them to see how content changes would
-look like.
+look.
