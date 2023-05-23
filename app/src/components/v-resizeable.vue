@@ -3,6 +3,7 @@
 		<slot />
 
 		<div
+			v-if="wrapperIsVisible"
 			class="grab-bar"
 			:class="{ active, 'always-show': options?.alwaysShowHandle }"
 			@pointerenter="active = true"
@@ -16,10 +17,7 @@
 </template>
 
 <script setup lang="ts">
-// TODO
-// - Hide "grab-bar" if wrapper itself is not in viewport
-//   Ref: https://github.com/directus/directus/pull/12050
-
+import { useElementVisibility } from '@vueuse/core';
 import { useEventListener } from '@/composables/use-event-listener';
 import { clamp } from 'lodash';
 import { computed, ref, watch } from 'vue';
@@ -55,6 +53,7 @@ const emit = defineEmits<{
 }>();
 
 const wrapper = ref<HTMLDivElement>();
+const wrapperIsVisible = useElementVisibility(wrapper);
 
 const target = computed(() => {
 	const firstChild = wrapper.value?.firstElementChild;

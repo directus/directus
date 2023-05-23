@@ -702,6 +702,9 @@ importers:
       '@vue/test-utils':
         specifier: 2.3.2
         version: 2.3.2(vue@3.3.4)
+      '@vueuse/core':
+        specifier: 10.1.2
+        version: 10.1.2(vue@3.3.4)
       apexcharts:
         specifier: 3.40.0
         version: 3.40.0
