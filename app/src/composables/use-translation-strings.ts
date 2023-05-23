@@ -3,7 +3,6 @@ import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpola
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Language, i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
-import { useSettingsStore } from '@/stores/settings';
 import api from '@/api';
 import { debounce } from 'lodash';
 
@@ -212,8 +211,6 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 		updating.value = true;
 
 		try {
-			const settingsStore = useSettingsStore();
-			await settingsStore.updateSettings({ translation_strings: strings }, false);
 			const { currentUser } = useUserStore();
 
 			const language =
