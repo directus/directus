@@ -242,7 +242,7 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 			},
 		});
 
-		return response.data.data.translations ?? [];
+		return response.data.data ?? [];
 	}
 
 	async function fetchAllTranslationStrings(): Promise<RawTranslation[]> {
