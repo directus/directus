@@ -79,26 +79,6 @@ export class ServerService {
 			};
 		}
 
-		if (this.accountability?.admin === true) {
-			const { osType, osVersion } = getOSInfo();
-
-			info['directus'] = {
-				version,
-			};
-
-			info['node'] = {
-				version: process.versions.node,
-				uptime: Math.round(process.uptime()),
-			};
-
-			info['os'] = {
-				type: osType,
-				version: osVersion,
-				uptime: Math.round(os.uptime()),
-				totalmem: os.totalmem(),
-			};
-		}
-
 		if (this.accountability?.user) {
 			if (toBoolean(env['WEBSOCKETS_ENABLED'])) {
 				info['websocket'] = {};
