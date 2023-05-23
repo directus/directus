@@ -3,7 +3,7 @@
 		<slot />
 
 		<div
-			v-if="wrapperIsVisible"
+			v-if="wrapperIsVisible && !isMobile"
 			class="grab-bar"
 			:class="{ active, 'always-show': options?.alwaysShowHandle }"
 			@pointerenter="active = true"
