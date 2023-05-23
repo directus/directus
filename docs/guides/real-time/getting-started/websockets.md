@@ -67,9 +67,7 @@ connection.addEventListener('error', function(error) {
 Open `index.html` in your browser and open the Developer Tools. You should see the `onopen` event logged in the console.
 
 ## Authenticate Your Connection
-Once a connection is opened, and after a short period, you will see a message sent over the connection with an authentication failure. 
-
-As soon as the connection is opened, send your first message, which must include authentication details:
+Once a connection is opened, you have to send a message to authenticate your session. If you don't, you'll receive a message indicating there was an authentication failure.
 
 ```js
 connection.addEventListener('open', function() {
@@ -85,8 +83,31 @@ You should immediately receive a message in return to confirm. The connection is
 
 [Learn more about WebSocket authentication here.](/guides/real-time/authentication)
 
+## Create a Subscription
+After subscribing to collections over your connection, you will receive new messages whenever items in the collection are created, updated, or deleted. 
+
+At the bottom of your `<script>`, create a new function which subscribes to a collection:
+
+```js
+function subscribe() {
+	connection.send(JSON.stringify({
+		type: 'subscribe',
+		collection: 'messages',
+		query: { fields: ['*'] }
+	}));
+};
+```
+
+Save your file, refresh your browser, and open your browser console. Run this function by typing:
+
+```js
+subscribe();
+```
+
+You will receive a message in response to confirm the subscription has been initialized. Then, new messages will be sent when there’s an update on the collection.
+
 ## Create Item
-At the bottom of your `<script>`, create a new function that sends a message over the connection with a `create` action:
+Create a new function that sends a message over the connection with a `create` action:
 
 ```js
 function createItem(text, user) {
@@ -127,23 +148,6 @@ function readLatestItem() {
 ```
 
 Send the message over the connection by entering `readLatestItem()` your browser console. You will receive a message with the result of your query on the collection. 
-
-## Subscribe To Changes
-After subscribing to collections over your connection, you will receive new messages whenever items in the collection are created, updated, or deleted. 
-
-Create a new function for subscribing to updates, and then run it from your browser console: 
-
-```js
-function subscribe() {
-	connection.send(JSON.stringify({
-		type: 'subscribe',
-		collection: 'messages',
-		query: { fields: ['*'] }
-	}));
-};
-```
-
-You will receive a message in response to confirm the subscription has been initialized. Then, new messages will be sent when there’s an update on the collection.
 
 ## Pings To Keep Connection Active 
 You may have noticed that, periodically, you will receive a message with a type of `ping`. This serves two purposes:
@@ -194,6 +198,16 @@ In this guide, you have successfully created a new WebSocket connection, authent
 				console.log({ event: 'onerror', error });
 			});
 
+			function subscribe() {
+				connection.send(JSON.stringify({
+					type: 'subscribe',
+					collection: 'messages',
+					query: {
+						fields: ['*']
+					}
+				}));
+			};
+
 			function createItem(text, user) {
 				connection.send(JSON.stringify({
 					type: 'items',
@@ -209,16 +223,6 @@ In this guide, you have successfully created a new WebSocket connection, authent
 					collection: 'messages',
 					action: 'read',
 					query: { limit: 1, sort: '-date_created' }
-				}));
-			};
-
-			function subscribe() {
-				connection.send(JSON.stringify({
-					type: 'subscribe',
-					collection: 'messages',
-					query: {
-						fields: ['*']
-					}
 				}));
 			};
 		</script>
