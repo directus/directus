@@ -45,9 +45,6 @@
 		"dev": "tsup --watch",
 		"test": "vitest --watch=false"
 	},
-	"dependencies": {
-		"axios": "0.27.2"
-	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",

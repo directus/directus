@@ -20,14 +20,14 @@ import {
 } from './handlers';
 import { ItemsHandler } from './items';
 import { LocalStorage, MemoryStorage, StorageOptions } from './storage';
-import { Transport, TransportOptions } from './transport';
-import { IItems, ISingleton, IStorage, Item, PartialBy, TypeOf } from './types';
+import { Transport } from './transport';
+import { IItems, ISingleton, IStorage, Item, PartialBy, TransportOptions, TypeOf } from './types';
 
 export type DirectusStorageOptions = StorageOptions & { mode?: 'LocalStorage' | 'MemoryStorage' };
 
 export type DirectusOptions = {
 	auth?: Auth | PartialBy<AuthOptions, 'transport' | 'storage'>;
-	transport?: Transport | Partial<TransportOptions>;
+	transport?: Partial<TransportOptions>;
 	storage?: IStorage | DirectusStorageOptions;
 };
 
@@ -80,43 +80,41 @@ export class Directus<T extends Item> {
 			}
 		}
 
-		if (this._options?.transport && this._options?.transport instanceof Transport) {
-			this._transport = this._options.transport;
-		} else {
-			this._transport = new Transport({
-				url: this.url,
-				...this._options?.transport,
-				beforeRequest: async (config) => {
-					if (this._url.indexOf('/auth/refresh') === -1 && config.method?.toLowerCase() !== 'post') {
-						await this._auth.refreshIfExpired();
+		this._transport = new Transport({
+			url: this.url,
+			...this._options?.transport,
+			beforeRequest: async (config) => {
+				if (this._url.indexOf('/auth/refresh') === -1 && config.method?.toLowerCase() !== 'post') {
+					await this._auth.refreshIfExpired();
+				}
+
+				const token = this.storage.auth_token;
+
+				let bearer = '';
+
+				if (token) {
+					if (!token.startsWith('Bearer ')) {
+						bearer = 'Bearer ';
 					}
 
-					const token = this.storage.auth_token;
+					bearer += String(this.storage.auth_token);
+				}
 
-					let bearer = '';
+				const authenticatedConfig = {
+					...config,
+					headers: {
+						Authorization: bearer,
+						...config.headers,
+					},
+				};
 
-					if (token) {
-						bearer = token.startsWith(`Bearer `)
-							? String(this.storage.auth_token)
-							: `Bearer ${this.storage.auth_token}`;
-					}
+				if (!(this._options?.transport instanceof Transport) && this._options?.transport?.beforeRequest) {
+					return this._options?.transport?.beforeRequest(authenticatedConfig);
+				}
 
-					const authenticatedConfig = {
-						...config,
-						headers: {
-							Authorization: bearer,
-							...config.headers,
-						},
-					};
-
-					if (!(this._options?.transport instanceof Transport) && this._options?.transport?.beforeRequest) {
-						return this._options?.transport?.beforeRequest(authenticatedConfig);
-					}
-
-					return authenticatedConfig;
-				},
-			});
-		}
+				return authenticatedConfig;
+			},
+		});
 
 		if (this._options?.auth && this._options?.auth instanceof Auth) this._auth = this._options.auth;
 		else {

@@ -1,5 +1,3 @@
-import { TransportRequestOptions } from './transport';
-
 export type ID = number | string;
 
 export type DefaultType = {
@@ -790,3 +788,44 @@ export interface ISingleton<T extends Item> {
 	read<Q extends QueryOne<T>>(query?: Q): Promise<OneItem<T, Q>>;
 	update<Q extends QueryOne<T>>(item: ItemInput<T>, query?: Q): Promise<OneItem<T, Q>>;
 }
+
+export type TransportMethods = 'get' | 'delete' | 'head' | 'options' | 'post' | 'put' | 'patch' | 'search';
+
+export type ResponseType = 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream';
+
+export type TransportRequestOptions = {
+	params?: Record<string, any>;
+	headers?: Record<string, string | null>;
+	responseType?: ResponseType;
+	credentials?: RequestCredentials;
+	onUploadProgress?: ((progressEvent: any) => void) | undefined;
+};
+
+export type RequestConfig = TransportRequestOptions & {
+	url: string | URL;
+	method: TransportMethods;
+	body?: string;
+	onUploadProgress?: ((progressEvent: any) => void) | undefined;
+};
+
+export type TransportOptions = {
+	url: string;
+	beforeRequest?: (config: RequestConfig) => Promise<RequestConfig>;
+};
+
+export type TransportErrorDescription = {
+	message?: string;
+	extensions?: Record<string, any> & {
+		code?: string;
+	};
+};
+
+export type TransportResponse<T, R = any> = {
+	raw: R;
+	data?: T;
+	meta?: ItemMetadata;
+	errors?: TransportErrorDescription[];
+	status: number;
+	statusText?: string;
+	headers: any;
+};

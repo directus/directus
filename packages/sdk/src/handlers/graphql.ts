@@ -1,4 +1,5 @@
-import { Transport, TransportResponse } from '../transport';
+import { Transport } from '../transport';
+import { TransportResponse } from '../types';
 
 export class GraphQLHandler {
 	private transport: Transport;

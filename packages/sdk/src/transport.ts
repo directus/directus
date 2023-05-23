@@ -1,27 +1,20 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, ResponseType } from 'axios';
-import { ItemMetadata } from './types';
+import {
+	RequestConfig,
+	TransportErrorDescription,
+	TransportMethods,
+	TransportOptions,
+	TransportRequestOptions,
+	TransportResponse,
+} from './types';
 
 export class Transport {
-	private axios: AxiosInstance;
-	private config: TransportOptions;
-
-	constructor(config: TransportOptions) {
-		this.config = config;
-
-		this.axios = axios.create({
-			baseURL: this.config.url,
-			params: this.config.params,
-			headers: this.config.headers,
-			onUploadProgress: this.config.onUploadProgress,
-			maxBodyLength: this.config.maxBodyLength,
-			maxContentLength: this.config.maxContentLength,
-			withCredentials: true,
-		});
-
-		if (this.config?.beforeRequest) this.beforeRequest = this.config.beforeRequest;
+	constructor(private config: TransportOptions) {
+		if (this.config?.beforeRequest) {
+			this.beforeRequest = this.config.beforeRequest;
+		}
 	}
 
-	async beforeRequest(config: AxiosRequestConfig): Promise<AxiosRequestConfig> {
+	async beforeRequest(config: RequestConfig): Promise<RequestConfig> {
 		return config;
 	}
 
@@ -29,38 +22,96 @@ export class Transport {
 		return this.config.url;
 	}
 
+	private serializeParams(params: Record<string, any>) {
+		// TODO serialize params better
+		const result = Object.fromEntries(
+			Object.entries(params).map((item) => {
+				if (typeof item[1] === 'object' && !Array.isArray(item[1])) {
+					return [item[0], JSON.stringify(item[1])];
+				}
+
+				return item;
+			})
+		);
+
+		return new URLSearchParams(result).toString();
+	}
+
 	protected async request<T = any, R = any>(
 		method: TransportMethods,
 		path: string,
 		data?: any,
-		options?: Omit<TransportOptions, 'url'>
+		options?: TransportRequestOptions
 	): Promise<TransportResponse<T, R>> {
 		try {
-			let config: AxiosRequestConfig = {
+			let config: RequestConfig = {
 				method,
-				url: path,
-				data: data,
+				url: new URL(path, this.config.url),
 				params: options?.params,
-				headers: options?.headers,
+				headers: options?.headers ?? {},
 				responseType: options?.responseType,
-				onUploadProgress: options?.onUploadProgress,
 			};
 
 			config = await this.beforeRequest(config);
 
-			const response = await this.axios.request<any>(config);
+			if (config.params) {
+				config.url =
+					(typeof config.url === 'string' ? config.url : config.url.toString()) +
+					(config.params ? '?' + this.serializeParams(config.params) : '');
+			}
+
+			const response = await fetch(config.url, {
+				method: config.method,
+				body: data ? JSON.stringify(data) : null,
+				credentials: config?.credentials,
+				headers: {
+					'Content-Type': 'application/json',
+					...config.headers,
+				},
+			});
+
+			const responseText = await response.text();
+			let isJsonResponse = true;
+			let result: any = responseText;
+
+			try {
+				result = JSON.parse(responseText);
+			} catch (e) {
+				isJsonResponse = false;
+			}
+
+			if (response.status >= 400) {
+				throw new TransportError<T, R>(null, {
+					raw: result,
+					status: response.status,
+					statusText: response.statusText,
+					headers: response.headers,
+					data: isJsonResponse ? result.data : undefined,
+					meta: isJsonResponse ? result.meta : undefined,
+					errors: isJsonResponse ? result.errors : undefined,
+				});
+			}
+
+			if (!isJsonResponse) {
+				return {
+					raw: result,
+					status: response.status,
+					statusText: response.statusText,
+					headers: response.headers,
+				};
+			}
 
 			const content = {
-				raw: response.data as any,
+				raw: result,
 				status: response.status,
 				statusText: response.statusText,
 				headers: response.headers,
-				data: response.data.data,
-				meta: response.data.meta,
-				errors: response.data.errors,
+				data: result.data,
+				meta: result.meta,
+				errors: result.errors,
 			};
 
-			if (response.data.errors) {
+			if (result.errors && result.errors.length > 0) {
 				throw new TransportError<T, R>(null, content);
 			}
 
@@ -68,20 +119,6 @@ export class Transport {
 		} catch (err: any) {
 			if (!err || err instanceof Error === false) {
 				throw err;
-			}
-
-			if (axios.isAxiosError(err)) {
-				const data = err.response?.data as any;
-
-				throw new TransportError<T>(err as AxiosError, {
-					raw: err.response?.data,
-					status: err.response?.status,
-					statusText: err.response?.statusText,
-					headers: err.response?.headers,
-					data: data?.data,
-					meta: data?.meta,
-					errors: data?.errors,
-				});
 			}
 
 			throw new TransportError<T>(err as Error);
@@ -132,39 +169,6 @@ export class Transport {
 		return this.request('patch', path, data, options);
 	}
 }
-
-export type TransportErrorDescription = {
-	message?: string;
-	extensions?: Record<string, any> & {
-		code?: string;
-	};
-};
-
-export type TransportResponse<T, R = any> = {
-	raw: R;
-	data?: T;
-	meta?: ItemMetadata;
-	errors?: TransportErrorDescription[];
-	status: number;
-	statusText?: string;
-	headers: any;
-};
-
-export type TransportMethods = 'get' | 'delete' | 'head' | 'options' | 'post' | 'put' | 'patch' | 'search';
-
-export type TransportRequestOptions = {
-	params?: any;
-	headers?: any;
-	responseType?: ResponseType;
-	onUploadProgress?: ((progressEvent: any) => void) | undefined;
-	maxBodyLength?: number;
-	maxContentLength?: number;
-};
-
-export type TransportOptions = TransportRequestOptions & {
-	url: string;
-	beforeRequest?: (config: AxiosRequestConfig) => Promise<AxiosRequestConfig>;
-};
 
 export class TransportError<T = any, R = any> extends Error {
 	public readonly errors: TransportErrorDescription[];
