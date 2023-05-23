@@ -66,7 +66,7 @@
 				:secondary="livePreviewMode === null"
 				@click="toggleSplitView"
 			>
-				<v-icon :name="livePreviewMode === null ? 'visibility' : 'visibility_off'" outline />
+				<v-icon name="visibility" outline />
 			</v-button>
 
 			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
