@@ -309,6 +309,10 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 		action: 'read',
 	},
 	{
+		collection: 'directus_translation_strings',
+		action: 'read',
+	},
+	{
 		collection: 'directus_shares',
 		action: 'read',
 		permissions: {

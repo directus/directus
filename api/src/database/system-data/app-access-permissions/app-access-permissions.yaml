@@ -57,6 +57,9 @@
 - collection: directus_settings
   action: read
 
+- collection: directus_translation_strings
+  action: read
+
 - collection: directus_notifications
   action: read
   permissions:
