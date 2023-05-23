@@ -168,9 +168,10 @@ const defaults = computed(() => {
 
 const fieldsWithNames = computed(() =>
 	props.fields?.map((field) => {
+		const name = field.name ?? field.field!;
 		return {
 			...field,
-			name: formatTitle(field.name ?? field.field!),
+			name: name.startsWith('$t:') ? name : formatTitle(name),
 		};
 	})
 );
