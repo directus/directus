@@ -103,7 +103,7 @@ function toggleAll() {
 
 function useComputedGroup() {
 	const groupFields = ref<Field[]>(limitFields());
-	const groupValues = ref<Record<string, any>>({});
+	const groupValues = ref<Record<string, any>>(props.values);
 
 	watch(
 		() => props.fields,
