@@ -300,7 +300,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (shouldClearCache(this.cache, opts, this.collection)) {
-			await this.cache!.clear();
+			await this.cache.clear();
 		}
 
 		return primaryKey;
@@ -347,7 +347,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		if (shouldClearCache(this.cache, opts, this.collection)) {
-			await this.cache!.clear();
+			await this.cache.clear();
 		}
 
 		return primaryKeys;
@@ -532,7 +532,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			});
 		} finally {
 			if (shouldClearCache(this.cache, opts, this.collection)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 		}
 
@@ -722,7 +722,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (shouldClearCache(this.cache, opts, this.collection)) {
-			await this.cache!.clear();
+			await this.cache.clear();
 		}
 
 		if (opts.emitEvents !== false) {
@@ -811,7 +811,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (shouldClearCache(this.cache, opts, this.collection)) {
-			await this.cache!.clear();
+			await this.cache.clear();
 		}
 
 		return primaryKeys;
@@ -909,7 +909,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (shouldClearCache(this.cache, opts, this.collection)) {
-			await this.cache!.clear();
+			await this.cache.clear();
 		}
 
 		if (opts.emitEvents !== false) {

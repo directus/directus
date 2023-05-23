@@ -177,7 +177,7 @@ export class CollectionsService {
 			return payload.collection;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -227,7 +227,7 @@ export class CollectionsService {
 			return collections;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -410,7 +410,7 @@ export class CollectionsService {
 			return collectionKey;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -467,7 +467,7 @@ export class CollectionsService {
 			});
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -517,7 +517,7 @@ export class CollectionsService {
 			return collectionKeys;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -653,7 +653,7 @@ export class CollectionsService {
 			return collectionKey;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -701,7 +701,7 @@ export class CollectionsService {
 			return collectionKeys;
 		} finally {
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {

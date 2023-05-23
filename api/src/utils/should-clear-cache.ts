@@ -9,7 +9,11 @@ import type { MutationOptions } from '../types/items.js';
  * @param opts Mutation options
  * @param collection Collection name to check if cache purging should be ignored
  */
-export function shouldClearCache(cache: Keyv<any> | null, opts?: MutationOptions, collection?: string): boolean {
+export function shouldClearCache(
+	cache: Keyv<any> | null,
+	opts?: MutationOptions,
+	collection?: string
+): cache is Keyv<any> {
 	const env = getEnv();
 
 	if (collection && env['CACHE_AUTO_PURGE_IGNORE_LIST'].includes(collection)) {

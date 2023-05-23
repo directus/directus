@@ -342,7 +342,7 @@ export class FieldsService {
 			}
 
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -465,7 +465,7 @@ export class FieldsService {
 			}
 
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
@@ -631,7 +631,7 @@ export class FieldsService {
 			}
 
 			if (shouldClearCache(this.cache, opts)) {
-				await this.cache!.clear();
+				await this.cache.clear();
 			}
 
 			if (opts?.autoPurgeSystemCache !== false) {
