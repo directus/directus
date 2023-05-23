@@ -51,7 +51,7 @@
 					:default-width="590"
 					:min-width="590"
 					:max-width="maxWithMain"
-					:window-width="windowWidth"
+					is-toggled-on-mobile
 					:disabled="!splitViewWritable"
 					:options="mainResizeOptions"
 					@dragging="(value) => (isDraggingSplitView = value)"
