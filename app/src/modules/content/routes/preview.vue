@@ -31,6 +31,6 @@ const previewURL = computed(() => {
 });
 
 function closePopup() {
-	(window as any).close();
+	window.close();
 }
 </script>

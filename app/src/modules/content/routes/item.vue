@@ -435,8 +435,8 @@ watch(saving, (newVal, oldVal) => {
 	if (newVal === true || oldVal === false) return;
 
 	try {
-		(window as any).refreshLivePreview();
-		if (popupWindow) (popupWindow as any).refreshLivePreview();
+		window.refreshLivePreview();
+		if (popupWindow) popupWindow.refreshLivePreview();
 	} catch (error) {
 		// noop
 	}
