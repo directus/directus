@@ -126,7 +126,6 @@ const isTranslationStringDrawerOpen = ref<boolean>(false);
 const editingTranslationString = ref<DisplayTranslationString | null>(null);
 
 const translations = computed(() => {
-	// console.log(translationKeys.value);
 	const keys = translationKeys.value ?? [];
 	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
 
