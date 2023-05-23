@@ -96,6 +96,12 @@
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+declare global {
+	interface Window {
+		refreshLivePreview: () => void;
+	}
+}
+
 interface Props {
 	url: string;
 	inPopup?: boolean;
@@ -148,7 +154,7 @@ function onIframeLoad() {
 	isRefreshing.value = false;
 }
 
-(window as any).refreshLivePreview = refresh;
+window.refreshLivePreview = refresh;
 
 onMounted(() => {
 	if (!resizeHandle.value) return;
