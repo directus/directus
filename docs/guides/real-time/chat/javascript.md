@@ -52,8 +52,8 @@ The first form will handle user login and the second will handle new message sub
 Inside of the `<script>`, create a `url` variable being sure to replace `your-directus-url` with your project’s URL:
 
 ```js
-const url = 'wss://your-directus-url/websocket'
-let connection
+const url = 'wss://your-directus-url/websocket';
+let connection;
 ```
 
 The `connection` variable will later contain a WebSocket instance.
@@ -62,12 +62,12 @@ Finally, create event listeners which are triggered on the form submissions:
 
 ```js
 document.querySelector('#login').onsubmit = function(event) {
-	event.preventDefault()
-}
+	event.preventDefault();
+};
 
 document.querySelector('#new').onsubmit = function(event) {
-	event.preventDefault()
-}
+	event.preventDefault();
+};
 ```
 
 ## Establish WebSocket Connection
@@ -75,14 +75,14 @@ document.querySelector('#new').onsubmit = function(event) {
 Within the `#login` form submit event handler, extract the `email` and `password` values from the form:
 
 ```js
-const email = event.target.elements.email.value
-const password = event.target.elements.password.value
+const email = event.target.elements.email.value;
+const password = event.target.elements.password.value;
 ```
 
 Create a new WebSocket, which will immediately attempt connection:
 
 ```js
-connection = new WebSocket(url)
+connection = new WebSocket(url);
 ```
 
 On connection, you must [send an authentication message before the timeout](/guides/real-time/authentication). Add an event handler for the connection's `open` event:
@@ -93,8 +93,8 @@ connection.onopen = function() {
 		type: 'auth', 
 		email, 
 		password 
-	}))
-}
+	}));
+};
 ```
 
 ## Subscribe To Messages
@@ -103,16 +103,16 @@ In a WebSocket connection, all data sent from the server will trigger the connec
 
 ```js
 connection.onmessage = function(message) {
-	receiveMessage(message)
-}
+	receiveMessage(message);
+};
 ```
 
 At the bottom of your `<script>`, create the `receiveMessage` function:
 
 ```js
 function receiveMessage(message) {
-	const data = JSON.parse(message.data)
-}
+	const data = JSON.parse(message.data);
+};
 ```
 
 As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the `Messages` collection. Add this inside of the `receiveMessage` function:
@@ -126,15 +126,15 @@ if (data.type == 'auth' && data.status == 'ok') {
 			fields: ['*', 'user_created.first_name'], 
 			sort: 'date_created' 
 		} 
-	}))
-}
+	}));
+};
 ```
 
 When a subscription is started, a message will be sent to confirm. Add this inside of the `receiveMessage` function:
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
-	console.log('subscription started')
+	console.log('subscription started');
 }
 ```
 
@@ -145,16 +145,16 @@ Within the `#new` form submit event handler, send a new message to create the it
 
 ```js
 document.querySelector('#new').onsubmit = function(event) {
-	event.preventDefault()
-		const text = event.target.elements.text.value // [!code ++]
-		connection.send(JSON.stringify({ // [!code ++]
-			type: 'items', // [!code ++]
-			collection: 'messages', // [!code ++]
-			action: 'create', // [!code ++]
-			data: { text } // [!code ++]
-		})) // [!code ++]
-	document.querySelector('#text').value = '' // [!code ++]
-}
+	event.preventDefault();
+	const text = event.target.elements.text.value; // [!code ++]
+	connection.send(JSON.stringify({ // [!code ++]
+		type: 'items', // [!code ++]
+		collection: 'messages', // [!code ++]
+		action: 'create', // [!code ++]
+		data: { text } // [!code ++]
+	})); // [!code ++]
+	document.querySelector('#text').value = ''; // [!code ++]
+};
 ```
 
 *Refresh your browser, login, and submit a new message. Check the `Messages` collection in your Directus project and you should see a new item.* 
@@ -166,18 +166,18 @@ At the bottom of your `<script>`, create an `addMessageToList` function:
 
 ```js
 function addMessageToList(message) {
-	const li = document.createElement('li')
-	li.setAttribute('id', message.id)
-	li.textContent = `${message.user_created.first_name}: ${message.text}`
-	document.querySelector('ol').appendChild(li)
-}
+	const li = document.createElement('li');
+	li.setAttribute('id', message.id);
+	li.textContent = `${message.user_created.first_name}: ${message.text}`;
+	document.querySelector('ol').appendChild(li);
+};
 ```
 
 In your `receiveMessage` function, listen for new `create` events on the `Messages` collection:
 
 ```js
 if (data.type == 'subscription' && data.event == 'create') {
-	addMessageToList(data.payload[0])
+	addMessageToList(data.payload[0]);
 }
 ```
 
@@ -191,9 +191,9 @@ Replace the `console.log()` you created when the subscription is initialized:
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
-	console.log('subscription started') // [!code --]
+	console.log('subscription started'); // [!code --]
 	for (const message of data.payload) { // [!code ++]
-		addMessageToList(message) // [!code ++]
+		addMessageToList(message); // [!code ++]
 	} // [!code ++]
 }
 ```
@@ -232,66 +232,66 @@ This guide covers authentication, item creation, and subscription using WebSocke
 		</form>
 
 		<script>
-		const url = 'wss://your-directus-url/websocket'
-		let connection
+		const url = 'wss://your-directus-url/websocket';
+		let connection;
 
 		document.querySelector('#login').onsubmit = function(event) {
-			event.preventDefault()
-			const email = event.target.elements.email.value
-			const password = event.target.elements.password.value
-			connection = new WebSocket(url)
+			event.preventDefault();
+			const email = event.target.elements.email.value;
+			const password = event.target.elements.password.value;
+			connection = new WebSocket(url);
 			connection.onopen = function() {
 				connection.send(JSON.stringify({ 
 					type: 'auth', 
 					email, 
 					password 
-				}))
-			}
+				}));
+			};
 			connection.onmessage = function(message) {
-				receiveMessage(message)
-			}
-		}
+				receiveMessage(message);
+			};
+		};
 
 		document.querySelector('#new').onsubmit = function(event) {
-		event.preventDefault()
-			const text = event.target.elements.text.value
+			event.preventDefault();
+			const text = event.target.elements.text.value;
 			connection.send(JSON.stringify({
 				type: 'items',
 				collection: 'messages',
 				action: 'create',
 				data: { text }
-			}))
-			document.querySelector('#text').value = ''
-		}
+			}));
+			document.querySelector('#text').value = '';
+		};
 
 		function receiveMessage(message) {
-			const data = JSON.parse(message.data)
+			const data = JSON.parse(message.data);
 			if (data.type == 'auth' && data.status == 'ok') {
 				connection.send(JSON.stringify({ 
 					type: 'subscribe', 
 					collection: 'messages', 
 					query: { 
-					fields: ['*', 'user_created.first_name'], 
-					sort: 'date_created' 
-				} 
-				}))
+						fields: ['*', 'user_created.first_name'], 
+						sort: 'date_created' 
+					} 
+				}));
 			}
 			if (data.type == 'subscription' && data.event == 'init') {
 				for (const message of data.payload) { 
-					addMessageToList(message) 
+					addMessageToList(message); 
 				} 
 			}
 			if (data.type == 'subscription' && data.event == 'create') {
-				addMessageToList(data.payload[0])
+				addMessageToList(data.payload[0]);
 			}
-		}
+		};
 
 		function addMessageToList(message) {
-			const li = document.createElement('li')
-			li.setAttribute('id', message.id)
-			li.textContent = `${message.user_created.first_name}: ${message.text}`
-			document.querySelector('ol').appendChild(li)
-		}
+			const li = document.createElement('li');
+			li.setAttribute('id', message.id);
+			li.textContent = `${message.user_created.first_name}: ${message.text}`;
+			document.querySelector('ol').appendChild(li);
+		};
 		</script>
 	</body>
 </html>

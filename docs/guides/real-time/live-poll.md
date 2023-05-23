@@ -30,7 +30,7 @@ Create a `vote.html` file and open it in your code editor. Add the following:
 		</div>
 		<p></p>
 		<script>
-			const directusUrl = 'https://your-directus-url'
+			const directusUrl = 'https://your-directus-url';
 			async function vote(choice) {
 				await fetch(`${directusUrl}/items/votes`, {
 					method: 'POST',
@@ -38,8 +38,8 @@ Create a `vote.html` file and open it in your code editor. Add the following:
 					headers: {
 						'Content-Type': 'application/json',
 					},
-				})
-			}
+				});
+			};
 		</script>
 	</body>
 </html>
@@ -74,24 +74,24 @@ Also create a `results.html` file and open it in your editor. Add the following:
 			const access_token = 'your-access-token'
 
 			socket.onopen = function () {
-				console.log({ event: 'onopen' })
+				console.log({ event: 'onopen' });
 				socket.send(
 					JSON.stringify({
 						type: 'auth',
 						access_token,
 					})
-				)
-			}
+				);
+			};
 
 			socket.onmessage = function (message) {
-				const data = JSON.parse(message.data)
+				const data = JSON.parse(message.data);
 				if (data.type == 'auth' && data.status == 'ok') {
 				}
 				if (data.type == 'subscription' && data.event == 'init') {
 				}
 				if(data.type == 'subscription' && data.event == 'create') {
 				}
-			}
+			};
 		</script>
 	</body>
 </html>
@@ -106,7 +106,7 @@ Make sure to replace `your-directus-url` with your project’s URL, and `your-ac
 At the bottom of your `<script>`, initialize a pie chart which will have two segments:
 
 ```js
-const ctx = document.getElementById('chart')
+const ctx = document.getElementById('chart');
 const chart = new Chart(ctx, {
 	type: 'pie',
 	data: {
@@ -119,7 +119,7 @@ const chart = new Chart(ctx, {
 			}
 		]
 	}
-})
+});
 ```
 
 Load `results.html` in your browser. Don’t worry that nothing is displayed yet - the chart has no data so it can’t render. 
@@ -134,10 +134,10 @@ if (data.type == 'auth' && data.status == 'ok') {
 		type: 'subscribe',	// [!code	++]
 		collection: 'votes',	// [!code	++]
 		query: {	// [!code	++]
-				aggregate: { count: 'choice' },	// [!code	++]
-				groupBy: ['choice'],	// [!code	++]
+			aggregate: { count: 'choice' },	// [!code	++]
+			groupBy: ['choice'],	// [!code	++]
 		}	// [!code	++]
-	}))	// [!code	++]
+	}));	// [!code	++]
 }
 ```
 
@@ -148,10 +148,10 @@ A message is sent over the connection when a connection is initialized with data
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
 	for(const item of data.payload) {	// [!code	++]
-		chart.data.labels.push(item.choice)	// [!code	++]
-	chart.data.datasets[0].data.push(item.count.choice)	// [!code	++]
+		chart.data.labels.push(item.choice);	// [!code	++]
+		chart.data.datasets[0].data.push(item.count.choice);	// [!code	++]
 	}	// [!code	++]
-	chart.update()	// [!code	++]
+	chart.update();	// [!code	++]
 }
 ```
 
@@ -165,10 +165,10 @@ When a new vote is cast, update the chart’s dataset and update it:
 
 ```js
 if(data.type == 'subscription' && data.event == 'create') {
-  const vote = data.payload[0] // [!code  ++]
-  const itemToUpdate = chart.data.labels.indexOf(vote.choice) // [!code  ++]
-  chart.data.datasets[0].data[itemToUpdate]++ // [!code  ++]
-  chart.update() // [!code  ++]
+  const vote = data.payload[0]; // [!code  ++]
+  const itemToUpdate = chart.data.labels.indexOf(vote.choice); // [!code  ++]
+  chart.data.datasets[0].data[itemToUpdate]++; // [!code  ++]
+  chart.update(); // [!code  ++]
 }
 ```
 
@@ -205,8 +205,8 @@ There are many ways to improve the project built in this guide:
 					headers: {
 						'Content-Type': 'application/json',
 					},
-				})
-				document.body.innerHTML = 'Vote cast'
+				});
+				document.body.innerHTML = 'Vote cast';
 			}
 		</script>
 	</body>
@@ -221,21 +221,21 @@ There are many ways to improve the project built in this guide:
 		<canvas id="chart"></canvas>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
-			const socket = new WebSocket('wss://your-directus-url/websocket')
-			const access_token = 'your-access-token'
+			const socket = new WebSocket('wss://your-directus-url/websocket');
+			const access_token = 'your-access-token';
 
 			socket.onopen = function () {
-				console.log({ event: 'onopen' })
+				console.log({ event: 'onopen' });
 				socket.send(
 					JSON.stringify({
 						type: 'auth',
 						access_token,
 					})
-				)
-			}
+				);
+			};
 
 			socket.onmessage = function (message) {
-				const data = JSON.parse(message.data)
+				const data = JSON.parse(message.data);
 				if (data.type == 'auth' && data.status == 'ok') {
 					socket.send(JSON.stringify({
 						type: 'subscribe',
@@ -244,26 +244,26 @@ There are many ways to improve the project built in this guide:
 								aggregate: { count: 'choice' },
 								groupBy: ['choice'],
 						}
-					}))
+					}));
 				}
 
 				if (data.type == 'subscription' && data.event == 'init') {
 					for(const item of data.payload) {
-						chart.data.labels.push(item.choice)
-						chart.data.datasets[0].data.push(item.count.choice)
+						chart.data.labels.push(item.choice);
+						chart.data.datasets[0].data.push(item.count.choice);
 					}
-					chart.update()
+					chart.update();
 				}
 
 				if(data.type == 'subscription' && data.event == 'create') {
-					const vote = data.payload[0]
-					const itemToUpdate = chart.data.labels.indexOf(vote.choice) 
-					chart.data.datasets[0].data[itemToUpdate]++ 
-					chart.update() 
+					const vote = data.payload[0];
+					const itemToUpdate = chart.data.labels.indexOf(vote.choice); 
+					chart.data.datasets[0].data[itemToUpdate]++;
+					chart.update();
 				}
 			}
 
-			const ctx = document.getElementById('chart')
+			const ctx = document.getElementById('chart');
 			const chart = new Chart(ctx, {
 				type: 'pie',
 				data: {
@@ -274,7 +274,7 @@ There are many ways to improve the project built in this guide:
 						backgroundColor: ['#4f46e5', '#f472b6']
 					}]
 				}
-			})
+			});
 		</script>
 	</body>
 </html>

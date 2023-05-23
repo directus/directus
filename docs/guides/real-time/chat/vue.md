@@ -44,7 +44,7 @@ Create a new Role called `Users`, and give Create and Read access to the `Messag
 
 	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	<script>
-		const { createApp } = Vue
+		const { createApp } = Vue;
 		createApp({
 			data() {
 				return {
@@ -52,7 +52,7 @@ Create a new Role called `Users`, and give Create and Read access to the `Messag
 			},
 			methods: {
 			}
-		}).mount('#app')
+		}).mount('#app');
 	</script>	
 </body>
 ```
@@ -131,7 +131,7 @@ Within the `loginSubmit` method, create a new WebSocket, which will immediately 
 
 ```js
 loginSubmit() { 
-	this.connection = new WebSocket(this.url) // [!code ++]
+	this.connection = new WebSocket(this.url); // [!code ++]
 },
 ```
 
@@ -139,8 +139,8 @@ On connection, you must [send an authentication message before the timeout](/gui
 
 ```js
 loginSubmit() { 
-	this.connection = new WebSocket(this.url) 
-	this.connection.onopen = () => this.authenticate(this.form) // [!code ++]
+	this.connection = new WebSocket(this.url); 
+	this.connection.onopen = () => this.authenticate(this.form); // [!code ++]
 },
 ```
 
@@ -148,8 +148,8 @@ Then, create a new `authenticate` method:
 
 ```js
 authenticate(opts) {
-	const { email, password } = opts
-	this.connection.send(JSON.stringify({  type: 'auth', email, password }))
+	const { email, password } = opts;
+	this.connection.send(JSON.stringify({  type: 'auth', email, password }));
 },
 ```
 
@@ -159,9 +159,9 @@ In a WebSocket connection, all data sent from the server will trigger the connec
 
 ```js
 loginSubmit() {
-	this.connection = new WebSocket(this.url)
-	this.connection.onopen = () => this.authenticate(this.login)
-	this.connection.onmessage = message => this.receiveMessage(message) // [!code ++]
+	this.connection = new WebSocket(this.url);
+	this.connection.onopen = () => this.authenticate(this.login);
+	this.connection.onmessage = message => this.receiveMessage(message); // [!code ++]
 },
 ```
 
@@ -169,7 +169,7 @@ Then, create a new `receiveMessage` method:
 
 ```js
 receiveMessage(message) {
-	const data = JSON.parse(message.data)
+	const data = JSON.parse(message.data);
 }
 ```
 
@@ -177,7 +177,7 @@ As soon as you have successfully authenticated, a message will be sent. When thi
 
 ```js
 receiveMessage(message) {
-	const data = JSON.parse(message.data)
+	const data = JSON.parse(message.data);
 	if (data.type == 'auth' && data.status == 'ok') { // [!code ++]
 		connection.send(JSON.stringify({ // [!code ++]
 			type: 'subscribe', // [!code ++]
@@ -186,7 +186,7 @@ receiveMessage(message) {
 				fields: ['*', 'user_created.first_name'], // [!code ++]
 				sort: 'date_created' // [!code ++]
 			} // [!code ++]
-		})) // [!code ++]
+		})); // [!code ++]
 	} // [!code ++]
 }
 ```
@@ -195,7 +195,7 @@ When a subscription is started, a message will be sent to confirm. Add this insi
 
 ```js
 receiveMessage(message) {
-	const data = JSON.parse(message.data)
+	const data = JSON.parse(message.data);
 	if (data.type == 'auth' && data.status == 'ok') { 
 		this.connection.send(JSON.stringify({ 
 			type: 'subscribe', 
@@ -204,10 +204,10 @@ receiveMessage(message) {
 				fields: ['*', 'user_created.first_name'], 
 				sort: 'date_created' 
 			} 
-		})) 
+		})) ;
 	} 
 	if (data.type == 'subscription' && data.event == 'init') { // [!code ++]
-		console.log('subscription started') // [!code ++]
+		console.log('subscription started'); // [!code ++]
 	} // [!code ++]
 }
 ```
@@ -252,8 +252,8 @@ messageSubmit() {
 		collection: 'messages', // [!code ++]
 		action: 'create', // [!code ++]
 		data: { text: this.messages.new } // [!code ++]
-	})) // [!code ++]
-	this.messages.new = '' // [!code ++]
+	})); // [!code ++]
+	this.messages.new = ''; // [!code ++]
 }
 ```
 
@@ -267,7 +267,7 @@ In your `receiveMessage` function, listen for new `create` events on the `Messag
 
 ```js
 if (data.type == 'subscription' && data.event == 'create') {
-	this.messages.history.push(data.payload[0])
+	this.messages.history.push(data.payload[0]);
 }
 ```
 
@@ -291,9 +291,9 @@ Replace the `console.log()` you created when the subscription is initialized:
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
-	console.log('subscription started') // [!code --]
+	console.log('subscription started'); // [!code --]
 	for (const message of data.payload) { // [!code ++]
-		this.messages.history.push(message) // [!code ++]
+		this.messages.history.push(message); // [!code ++]
 	} // [!code ++]
 }
 ```
@@ -354,9 +354,9 @@ This guide covers authentication, item creation, and subscription using WebSocke
 			},
 			methods: {
 				loginSubmit() { 
-					this.connection = new WebSocket(this.url) 
-					this.connection.onopen = () => this.authenticate(this.form) 
-					this.connection.onmessage = message => this.receiveMessage(message)
+					this.connection = new WebSocket(this.url); 
+					this.connection.onopen = () => this.authenticate(this.form); 
+					this.connection.onmessage = message => this.receiveMessage(message);
 				}, 
 				messageSubmit() { 
 					this.connection.send(JSON.stringify({ 
@@ -364,15 +364,15 @@ This guide covers authentication, item creation, and subscription using WebSocke
 						collection: 'messages', 
 						action: 'create', 
 						data: { text: this.messages.new } 
-					})) 
-					this.messages.new = ''
+					})); 
+					this.messages.new = '';
 				},
 				authenticate(opts) {
-					const { email, password } = opts
-					this.connection.send(JSON.stringify({	type: 'auth', email, password }))
+					const { email, password } = opts;
+					this.connection.send(JSON.stringify({	type: 'auth', email, password }));
 				},
 				receiveMessage(message) {
-					const data = JSON.parse(message.data)
+					const data = JSON.parse(message.data);
 					if (data.type == 'auth' && data.status == 'ok') { 
 						this.connection.send(JSON.stringify({ 
 							type: 'subscribe', 
@@ -381,15 +381,15 @@ This guide covers authentication, item creation, and subscription using WebSocke
 								fields: ['*', 'user_created.first_name'], 
 								sort: 'date_created' 
 							} 
-						})) 
+						})); 
 					} 
 					if (data.type == 'subscription' && data.event == 'init') { 
 						for (const message of data.payload) { 
-							this.messages.history.push(message) 
+							this.messages.history.push(message); 
 						} 
 					} 
 					if (data.type == 'subscription' && data.event == 'create') {
-						this.messages.history.push(data.payload[0])
+						this.messages.history.push(data.payload[0]);
 					}
 				}
 			}

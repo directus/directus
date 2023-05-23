@@ -26,9 +26,9 @@ Create an `index.html` file and open it in your code editor. Add the following b
 <html>
 	<body>
 		<script>
-			const url = 'wss://your-directus-url/websocket'
-			const access_token = 'your-access-token'
-			const collection = 'messages'
+			const url = 'wss://your-directus-url/websocket';
+			const access_token = 'your-access-token';
+			const collection = 'messages';
 		</script>
 	</body>
 </html>
@@ -40,27 +40,27 @@ Make sure to replace `your-directus-url` and `your-access-token` with your proje
 At the bottom of your `<script>`, add the following code to establish a new WebSocket connection:
 
 ```js
-const connection = new WebSocket(url)
+const connection = new WebSocket(url);
 ```
 
 To add some feedback, add the following event handlers below your `connection` variable:
 
 ```js
 connection.onopen = function() {
-	console.log({ event: 'onopen' })
+	console.log({ event: 'onopen' });
 }
 
 connection.onmessage = function(message) {
-	const { data } = JSON.parse(message)
-	console.log({ event: 'onmessage', data })
+	const { data } = JSON.parse(message);
+	console.log({ event: 'onmessage', data });
 }
 
 connection.onclose = function() {
-	console.log({ event: 'onclose' })
+	console.log({ event: 'onclose' });
 }
     
 connection.onerror = function(error) {
-	console.log({ event: 'onerror', error })
+	console.log({ event: 'onerror', error });
 }
 ```
 
@@ -72,13 +72,13 @@ Once a connection is opened, and after a short period, you will see a message se
 As soon as the connection is opened, send your first message, which must include authentication details:
 
 ```js
-	connection.onopen = function() {
-	console.log({ event: 'onopen' })
+connection.onopen = function() {
+	console.log({ event: 'onopen' });
 	connection.send(JSON.stringify({ // [!code ++]
 		type: 'auth', // [!code ++]
 		access_token // [!code ++]
-	})) // [!code ++]
-	}
+	})); // [!code ++]
+};
 ```
 
 You should immediately receive a message in return to confirm. The connection is now authenticated and will remain open, ready to send and receive data.
@@ -95,16 +95,16 @@ function createItem(text, user) {
 		collection: 'messages',
 		action: 'create',
 		data: { text, user }
-	}))
-}
+	}));
+};
 ```
 
 Save your file, refresh your browser, and open your browser console. Create a few new items by using your new function directly in the console:
 
 ```js
-createItem('Hello World!', 'Ben')
-createItem('Hello Universe!', 'Rijk')
-createItem('Hello Everyone Everywhere All At Once!', 'Kevin')
+createItem('Hello World!', 'Ben');
+createItem('Hello Universe!', 'Rijk');
+createItem('Hello Everyone Everywhere All At Once!', 'Kevin');
 ```
 
 Every time you create an item, you will receive a message in response with the new item as created in your Directus collection. 
@@ -122,8 +122,8 @@ function readLatestItem() {
 		collection: 'messages',
 		action: 'read',
 		query: { limit: 1, sort: '-date_created' }
-	}))
-}
+	}));
+};
 ```
 
 Send the message over the connection by entering `readLatestItem()` your browser console. You will receive a message with the result of your query on the collection. 
@@ -139,8 +139,8 @@ function subscribe() {
 		type: 'subscribe',
 		collection: 'messages',
 		query: { fields: ['*'] }
-	}))
-}
+	}));
+};
 ```
 
 You will receive a message in response to confirm the subscription has been initialized. Then, new messages will be sent when there’s an update on the collection.
@@ -169,30 +169,30 @@ In this guide, you have successfully created a new WebSocket connection, authent
 		<script>
 			const url = 'wss://your-directus-url/websocket';
 			const access_token = 'your-access-token';
-		 const collection = 'messages';
+		 	const collection = 'messages';
 
-			const connection = new WebSocket(url)
+			const connection = new WebSocket(url);
 
 			connection.onopen = function() {
 				console.log({ event: 'onopen' })
 				connection.send(JSON.stringify({
 					type: 'auth',
 					access_token
-				}))
-			}
+				}));
+			};
 
 			connection.onmessage = function(message) {
-				const data = JSON.parse(message.data)
-				console.log({ event: 'onmessage', data })
-			}
+				const data = JSON.parse(message.data);
+				console.log({ event: 'onmessage', data });
+			};
 
 			connection.onclose = function() {
-				console.log({ event: 'onclose' })
-			}
+				console.log({ event: 'onclose' });
+			};
 					
 			connection.onerror = function(error) {
-				console.log({ event: 'onerror', error })
-			}
+				console.log({ event: 'onerror', error });
+			};
 
 			function createItem(text, user) {
 				connection.send(JSON.stringify({
@@ -200,8 +200,8 @@ In this guide, you have successfully created a new WebSocket connection, authent
 					collection: 'messages',
 					action: 'create',
 					data: { text, user }
-				}))
-			}
+				}));
+			};
 
 			function readLatestItem() {
 				connection.send(JSON.stringify({
@@ -209,8 +209,8 @@ In this guide, you have successfully created a new WebSocket connection, authent
 					collection: 'messages',
 					action: 'read',
 					query: { limit: 1, sort: '-date_created' }
-				}))
-			}
+				}));
+			};
 
 			function subscribe() {
 				connection.send(JSON.stringify({
@@ -219,8 +219,8 @@ In this guide, you have successfully created a new WebSocket connection, authent
 					query: {
 						fields: ['*']
 					}
-				}))
-			}
+				}));
+			};
 		</script>
 	</body>
 </html>
