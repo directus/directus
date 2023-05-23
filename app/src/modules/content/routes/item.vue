@@ -370,7 +370,7 @@ const disabledOptions = computed(() => {
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
-const { templateData: previewData } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
+const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
 
 const previewURL = computed(() => {
 	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData);
@@ -431,12 +431,13 @@ function toggleSplitView() {
 	}
 }
 
-watch(saving, (newVal, oldVal) => {
+watch(saving, async (newVal, oldVal) => {
 	if (newVal === true || oldVal === false) return;
 
 	try {
-		window.refreshLivePreview();
-		if (popupWindow) popupWindow.refreshLivePreview();
+		await fetchTemplateValues();
+		window.refreshLivePreview(previewURL.value);
+		if (popupWindow) popupWindow.refreshLivePreview(previewURL.value);
 	} catch (error) {
 		// noop
 	}

@@ -2,11 +2,12 @@ import api from '@/api';
 import { Collection } from '@/types/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
-import { computed, Ref, ref, watch } from 'vue';
+import { Ref, computed, ref, watch } from 'vue';
 
 type UsableTemplateData = {
 	templateData: Ref<Record<string, any> | undefined>;
 	loading: Ref<boolean>;
+	fetchTemplateValues: () => Promise<void>;
 	error: Ref<any>;
 };
 
@@ -31,7 +32,7 @@ export function useTemplateData(
 
 	watch([collection, primaryKey], fetchTemplateValues, { immediate: true });
 
-	return { templateData, loading, error };
+	return { templateData, loading, error, fetchTemplateValues };
 
 	async function fetchTemplateValues() {
 		if (

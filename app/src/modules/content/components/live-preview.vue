@@ -98,7 +98,7 @@ import { useI18n } from 'vue-i18n';
 
 declare global {
 	interface Window {
-		refreshLivePreview: () => void;
+		refreshLivePreview: (url: string | null) => void;
 	}
 }
 
@@ -141,11 +141,11 @@ function toggleFullscreen() {
 
 const frameEl = ref<HTMLIFrameElement>();
 
-function refresh() {
+function refresh(url: string | null) {
 	if (!frameEl.value) return;
 
 	// this is technically a self-assignment, but it works to refresh the iframe
-	const newSrc = frameEl.value.src;
+	const newSrc = url || frameEl.value.src;
 	frameEl.value.src = newSrc;
 	isRefreshing.value = true;
 }
