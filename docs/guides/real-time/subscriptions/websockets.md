@@ -15,8 +15,8 @@ Send the following message over your WebSocket connection to start a subscriptio
 
 ```json
 {
-  "type": "subscribe",
-  "collection": "messages"
+	"type": "subscribe",
+	"collection": "messages"
 }
 ```
 
@@ -24,8 +24,8 @@ In return, you will receive a message to confirm that your subscription has been
 
 ```json
 {
-  "type": "subscription",
-  "event": "init"
+	"type": "subscription",
+	"event": "init"
 }
 ```
 
@@ -35,9 +35,9 @@ When a change happens to an item in a collection with an active subscription, it
 
 ```json
 {
-  "type": "subscription",
-  "event": "create",
-  "payload": [...]
+	"type": "subscription",
+	"event": "create",
+	"payload": [...]
 }
 ```
 
@@ -53,9 +53,9 @@ If you only want to return specific fields on subscription events, add the `quer
 
 ```json
 {
-  "type": "subscribe",
-  "collection": "messages",
-  "query": { "fields": ["text"] }
+	"type": "subscribe",
+	"collection": "messages",
+	"query": { "fields": ["text"] }
 }
 ```
 
@@ -67,9 +67,9 @@ You can have multiple ongoing CRUD operations and subscriptions at a time. When 
 
 ```json
 {
-  "type": "subscribe",
-  "collection": "messages",
-  "uid": "any-string-value"
+	"type": "subscribe",
+	"collection": "messages",
+	"uid": "any-string-value"
 }
 ```
 
@@ -77,10 +77,10 @@ When you receive responses, the same `uid` will be included as a property:
 
 ```json
 {
-  "type": "subscription",
-  "event": "create",
-  "payload": [...],
-  "uid": "any-string-value"
+	"type": "subscription",
+	"event": "create",
+	"payload": [...],
+	"uid": "any-string-value"
 }
 ```
 
@@ -92,8 +92,8 @@ To stop change events being sent from a specific subscription, send the followin
 
 ```json
 {
-  "type": "unsubscribe",
-  "uid": "identifier"
+	"type": "unsubscribe",
+	"uid": "identifier"
 }
 ```
 

@@ -40,8 +40,8 @@ Your first message must include authentication details and be sent before the ti
 
 ```json
 { 
-  "type": "auth", 
-  "access_token": "your-access-token" 
+	"type": "auth", 
+	"access_token": "your-access-token" 
 }
 ```
 
@@ -49,9 +49,9 @@ Your first message must include authentication details and be sent before the ti
 
 ```json
 { 
-  "type": "auth", 
-  "email": "user@email.com", 
-  "password": "your-password" 
+	"type": "auth", 
+	"email": "user@email.com", 
+	"password": "your-password" 
 }
 ```
 
@@ -59,8 +59,8 @@ Your first message must include authentication details and be sent before the ti
 
 ```json
 {
-  "type": "auth", 
-  "refresh_token": "token" 
+	"type": "auth", 
+	"refresh_token": "token" 
 }
 ```
 
@@ -68,9 +68,9 @@ On successful authentication you’ll receive a confirmation message. This messa
 
 ```json
 {
-  "type": "auth",
-  "status": "ok",
-  "refresh_token": "a-token-to-use-later"
+	"type": "auth",
+	"status": "ok",
+	"refresh_token": "a-token-to-use-later"
 }
 ```
 
@@ -103,11 +103,11 @@ const client = createClient({
 ```js
 import { createClient } from 'graphql-ws';
 const client = createClient({
-  url: 'ws://your-directus-url/graphql',
-  keepAlive: 30000,
-  connectionParams: async () => {
-    return { access_token: 'MY_TOKEN' };
-  }
+	url: 'ws://your-directus-url/graphql',
+	keepAlive: 30000,
+	connectionParams: async () => {
+		return { access_token: 'MY_TOKEN' };
+	}
 });
 ```
 

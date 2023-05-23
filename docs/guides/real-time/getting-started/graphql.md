@@ -58,12 +58,12 @@ After subscribing to collections over your connection, you will real-data change
 client.subscribe(
 	{
 		query: `
-        subscription {
-          messages_mutated {
-            id,
-            text
-          }
-        }`,
+				subscription {
+					messages_mutated {
+						id,
+						text
+					}
+				}`,
 	},
 	{
 		next: ({ data }) => {

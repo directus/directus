@@ -22,15 +22,15 @@ Finally in the Directus Data Studio, create a static access token for the user, 
 Create an `index.html` file and open it in your code editor. Add the following boilerplate code:
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <body>
-    <script>
-      const url = 'wss://your-directus-url/websocket'
-      const access_token = 'your-access-token'
-      const collection = 'messages'
-    </script>
-  </body>
+	<body>
+		<script>
+			const url = 'wss://your-directus-url/websocket'
+			const access_token = 'your-access-token'
+			const collection = 'messages'
+		</script>
+	</body>
 </html>
 ```
 
@@ -47,20 +47,20 @@ To add some feedback, add the following event handlers below your `connection` v
 
 ```js
 connection.onopen = function() {
-  console.log({ event: 'onopen' })
+	console.log({ event: 'onopen' })
 }
 
 connection.onmessage = function(message) {
-  const { data } = JSON.parse(message)
-  console.log({ event: 'onmessage', data })
+	const { data } = JSON.parse(message)
+	console.log({ event: 'onmessage', data })
 }
 
 connection.onclose = function() {
-  console.log({ event: 'onclose' })
+	console.log({ event: 'onclose' })
 }
     
 connection.onerror = function(error) {
-  console.log({ event: 'onerror', error })
+	console.log({ event: 'onerror', error })
 }
 ```
 
@@ -72,13 +72,13 @@ Once a connection is opened, and after a short period, you will see a message se
 As soon as the connection is opened, send your first message, which must include authentication details:
 
 ```js
-connection.onopen = function() {
-  console.log({ event: 'onopen' })
-  connection.send(JSON.stringify({ // [!code ++]
-    type: 'auth', // [!code ++]
-    access_token // [!code ++]
-  })) // [!code ++]
-}
+	connection.onopen = function() {
+	console.log({ event: 'onopen' })
+	connection.send(JSON.stringify({ // [!code ++]
+		type: 'auth', // [!code ++]
+		access_token // [!code ++]
+	})) // [!code ++]
+	}
 ```
 
 You should immediately receive a message in return to confirm. The connection is now authenticated and will remain open, ready to send and receive data.
@@ -90,12 +90,12 @@ At the bottom of your `<script>`, create a new function that sends a message ove
 
 ```js
 function createItem(text, user) {
-  connection.send(JSON.stringify({
-    type: 'items',
-    collection: 'messages',
-    action: 'create',
-    data: { text, user }
-  }))
+	connection.send(JSON.stringify({
+		type: 'items',
+		collection: 'messages',
+		action: 'create',
+		data: { text, user }
+	}))
 }
 ```
 
@@ -117,12 +117,12 @@ You can use your connection to perform all CRUD actions by using `type: 'items'`
 
 ```js
 function readLatestItem() {
-  connection.send(JSON.stringify({
-    type: 'items',
-    collection: 'messages',
-    action: 'read',
-    query: { limit: 1, sort: '-date_created' }
-  }))
+	connection.send(JSON.stringify({
+		type: 'items',
+		collection: 'messages',
+		action: 'read',
+		query: { limit: 1, sort: '-date_created' }
+	}))
 }
 ```
 
@@ -135,11 +135,11 @@ Create a new function for subscribing to updates, and then run it from your brow
 
 ```js
 function subscribe() {
-  connection.send(JSON.stringify({
-    type: 'subscribe',
-    collection: 'messages',
-    query: { fields: ['*'] }
-  }))
+	connection.send(JSON.stringify({
+		type: 'subscribe',
+		collection: 'messages',
+		query: { fields: ['*'] }
+	}))
 }
 ```
 
@@ -163,65 +163,65 @@ In this guide, you have successfully created a new WebSocket connection, authent
 
 ## Full Code Sample
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <body>
-    <script>
-      const url = 'wss://your-directus-url/websocket';
-      const access_token = 'your-access-token';
+	<body>
+		<script>
+			const url = 'wss://your-directus-url/websocket';
+			const access_token = 'your-access-token';
 		 const collection = 'messages';
 
-      const connection = new WebSocket(url)
+			const connection = new WebSocket(url)
 
-      connection.onopen = function() {
-        console.log({ event: 'onopen' })
-        connection.send(JSON.stringify({
-          type: 'auth',
-          access_token
-        }))
-      }
+			connection.onopen = function() {
+				console.log({ event: 'onopen' })
+				connection.send(JSON.stringify({
+					type: 'auth',
+					access_token
+				}))
+			}
 
-      connection.onmessage = function(message) {
-        const data = JSON.parse(message.data)
-        console.log({ event: 'onmessage', data })
-      }
+			connection.onmessage = function(message) {
+				const data = JSON.parse(message.data)
+				console.log({ event: 'onmessage', data })
+			}
 
-      connection.onclose = function() {
-        console.log({ event: 'onclose' })
-      }
-          
-      connection.onerror = function(error) {
-        console.log({ event: 'onerror', error })
-      }
+			connection.onclose = function() {
+				console.log({ event: 'onclose' })
+			}
+					
+			connection.onerror = function(error) {
+				console.log({ event: 'onerror', error })
+			}
 
-      function createItem(text, user) {
-        connection.send(JSON.stringify({
-          type: 'items',
-          collection: 'messages',
-          action: 'create',
-          data: { text, user }
-        }))
-      }
+			function createItem(text, user) {
+				connection.send(JSON.stringify({
+					type: 'items',
+					collection: 'messages',
+					action: 'create',
+					data: { text, user }
+				}))
+			}
 
-      function readLatestItem() {
-        connection.send(JSON.stringify({
-          type: 'items',
-          collection: 'messages',
-          action: 'read',
-          query: { limit: 1, sort: '-date_created' }
-        }))
-      }
+			function readLatestItem() {
+				connection.send(JSON.stringify({
+					type: 'items',
+					collection: 'messages',
+					action: 'read',
+					query: { limit: 1, sort: '-date_created' }
+				}))
+			}
 
-      function subscribe() {
-        connection.send(JSON.stringify({
-          type: 'subscribe',
-          collection: 'messages',
-          query: {
-            fields: ['*']
-          }
-        }))
-      }
-    </script>
-  </body>
+			function subscribe() {
+				connection.send(JSON.stringify({
+					type: 'subscribe',
+					collection: 'messages',
+					query: {
+						fields: ['*']
+					}
+				}))
+			}
+		</script>
+	</body>
 </html>
 ```

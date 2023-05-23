@@ -21,28 +21,28 @@ Create a new Role called `Users`, and give Create and Read access to the `Messag
 Create an `index.html` file and open it in your code editor:
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <body>
-  <form id="login">
-    <label for="email">Email</label>
-    <input type="email" id="email">
-    <label for="password">Password</label>
-    <input type="password" id="password">
-    <input type="submit">
-  </form>
+	<form id="login">
+		<label for="email">Email</label>
+		<input type="email" id="email">
+		<label for="password">Password</label>
+		<input type="password" id="password">
+		<input type="submit">
+	</form>
 
-  <ol></ol>
+	<ol></ol>
 
-  <form id="new">
-    <label for="message">Message</label>
-    <input type="text" id="text">
-    <input type="submit">
-  </form>
+	<form id="new">
+		<label for="message">Message</label>
+		<input type="text" id="text">
+		<input type="submit">
+	</form>
 
-  <script>
-    
-  </script>
+	<script>
+
+	</script>
 </body>
 </html>
 ```
@@ -62,11 +62,11 @@ Finally, create event listeners which are triggered on the form submissions:
 
 ```js
 document.querySelector('#login').onsubmit = function(event) {
-  event.preventDefault()
+	event.preventDefault()
 }
 
 document.querySelector('#new').onsubmit = function(event) {
-  event.preventDefault()
+	event.preventDefault()
 }
 ```
 
@@ -89,11 +89,11 @@ On connection, you must [send an authentication message before the timeout](/gui
 
 ```js
 connection.onopen = function() {
-  connection.send(JSON.stringify({ 
-    type: 'auth', 
-    email, 
-    password 
-  }))
+	connection.send(JSON.stringify({ 
+		type: 'auth', 
+		email, 
+		password 
+	}))
 }
 ```
 
@@ -103,7 +103,7 @@ In a WebSocket connection, all data sent from the server will trigger the connec
 
 ```js
 connection.onmessage = function(message) {
-  receiveMessage(message)
+	receiveMessage(message)
 }
 ```
 
@@ -111,7 +111,7 @@ At the bottom of your `<script>`, create the `receiveMessage` function:
 
 ```js
 function receiveMessage(message) {
-  const data = JSON.parse(message.data)
+	const data = JSON.parse(message.data)
 }
 ```
 
@@ -119,14 +119,14 @@ As soon as you have successfully authenticated, a message will be sent. When thi
 
 ```js
 if (data.type == 'auth' && data.status == 'ok') {
-  connection.send(JSON.stringify({ 
-    type: 'subscribe', 
-    collection: 'messages', 
-    query: { 
-      fields: ['*', 'user_created.first_name'], 
-      sort: 'date_created' 
-    } 
-  }))
+	connection.send(JSON.stringify({ 
+		type: 'subscribe', 
+		collection: 'messages', 
+		query: { 
+			fields: ['*', 'user_created.first_name'], 
+			sort: 'date_created' 
+		} 
+	}))
 }
 ```
 
@@ -134,7 +134,7 @@ When a subscription is started, a message will be sent to confirm. Add this insi
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
-  console.log('subscription started')
+	console.log('subscription started')
 }
 ```
 
@@ -145,15 +145,15 @@ Within the `#new` form submit event handler, send a new message to create the it
 
 ```js
 document.querySelector('#new').onsubmit = function(event) {
-  event.preventDefault()
-  const text = event.target.elements.text.value // [!code ++]
-  connection.send(JSON.stringify({ // [!code ++]
-    type: 'items', // [!code ++]
-    collection: 'messages', // [!code ++]
-    action: 'create', // [!code ++]
-    data: { text } // [!code ++]
-  })) // [!code ++]
-  document.querySelector('#text').value = '' // [!code ++]
+	event.preventDefault()
+		const text = event.target.elements.text.value // [!code ++]
+		connection.send(JSON.stringify({ // [!code ++]
+			type: 'items', // [!code ++]
+			collection: 'messages', // [!code ++]
+			action: 'create', // [!code ++]
+			data: { text } // [!code ++]
+		})) // [!code ++]
+	document.querySelector('#text').value = '' // [!code ++]
 }
 ```
 
@@ -166,10 +166,10 @@ At the bottom of your `<script>`, create an `addMessageToList` function:
 
 ```js
 function addMessageToList(message) {
-  const li = document.createElement('li')
-  li.setAttribute('id', message.id)
-  li.textContent = `${message.user_created.first_name}: ${message.text}`
-  document.querySelector('ol').appendChild(li)
+	const li = document.createElement('li')
+	li.setAttribute('id', message.id)
+	li.textContent = `${message.user_created.first_name}: ${message.text}`
+	document.querySelector('ol').appendChild(li)
 }
 ```
 
@@ -177,7 +177,7 @@ In your `receiveMessage` function, listen for new `create` events on the `Messag
 
 ```js
 if (data.type == 'subscription' && data.event == 'create') {
-  addMessageToList(data.payload[0])
+	addMessageToList(data.payload[0])
 }
 ```
 
@@ -191,10 +191,10 @@ Replace the `console.log()` you created when the subscription is initialized:
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
-  console.log('subscription started') // [!code --]
-  for (const message of data.payload) { // [!code ++]
-    addMessageToList(message) // [!code ++]
-  } // [!code ++]
+	console.log('subscription started') // [!code --]
+	for (const message of data.payload) { // [!code ++]
+		addMessageToList(message) // [!code ++]
+	} // [!code ++]
 }
 ```
 
@@ -212,87 +212,87 @@ This guide covers authentication, item creation, and subscription using WebSocke
 ## Full Code Sample
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<body>
-  <form id="login">
-    <label for="email">Email</label>
-    <input type="email" id="email">
-    <label for="password">Password</label>
-    <input type="password" id="password">
-    <input type="submit">
-  </form>
+	<body>
+		<form id="login">
+			<label for="email">Email</label>
+			<input type="email" id="email">
+			<label for="password">Password</label>
+			<input type="password" id="password">
+			<input type="submit">
+		</form>
 
-  <ol></ol>
+		<ol></ol>
 
-  <form id="new">
-    <label for="message">Message</label>
-    <input type="text" id="text">
-    <input type="submit">
-  </form>
+		<form id="new">
+			<label for="message">Message</label>
+			<input type="text" id="text">
+			<input type="submit">
+		</form>
 
-  <script>
-    const url = 'wss://your-directus-url/websocket'
-    let connection
+		<script>
+		const url = 'wss://your-directus-url/websocket'
+		let connection
 
-    document.querySelector('#login').onsubmit = function(event) {
-      event.preventDefault()
-      const email = event.target.elements.email.value
-      const password = event.target.elements.password.value
-      connection = new WebSocket(url)
-      connection.onopen = function() {
-        connection.send(JSON.stringify({ 
-          type: 'auth', 
-          email, 
-          password 
-        }))
-      }
-      connection.onmessage = function(message) {
-        receiveMessage(message)
-      }
-    }
+		document.querySelector('#login').onsubmit = function(event) {
+			event.preventDefault()
+			const email = event.target.elements.email.value
+			const password = event.target.elements.password.value
+			connection = new WebSocket(url)
+			connection.onopen = function() {
+				connection.send(JSON.stringify({ 
+					type: 'auth', 
+					email, 
+					password 
+				}))
+			}
+			connection.onmessage = function(message) {
+				receiveMessage(message)
+			}
+		}
 
-    document.querySelector('#new').onsubmit = function(event) {
-      event.preventDefault()
-      const text = event.target.elements.text.value
-      connection.send(JSON.stringify({
-        type: 'items',
-        collection: 'messages',
-        action: 'create',
-        data: { text }
-      }))
-      document.querySelector('#text').value = ''
-    }
+		document.querySelector('#new').onsubmit = function(event) {
+		event.preventDefault()
+			const text = event.target.elements.text.value
+			connection.send(JSON.stringify({
+				type: 'items',
+				collection: 'messages',
+				action: 'create',
+				data: { text }
+			}))
+			document.querySelector('#text').value = ''
+		}
 
-    function receiveMessage(message) {
-      const data = JSON.parse(message.data)
-      if (data.type == 'auth' && data.status == 'ok') {
-        connection.send(JSON.stringify({ 
-          type: 'subscribe', 
-          collection: 'messages', 
-          query: { 
-            fields: ['*', 'user_created.first_name'], 
-            sort: 'date_created' 
-          } 
-        }))
-      }
-      if (data.type == 'subscription' && data.event == 'init') {
-        for (const message of data.payload) { 
-          addMessageToList(message) 
-        } 
-      }
-      if (data.type == 'subscription' && data.event == 'create') {
-        addMessageToList(data.payload[0])
-      }
-    }
+		function receiveMessage(message) {
+			const data = JSON.parse(message.data)
+			if (data.type == 'auth' && data.status == 'ok') {
+				connection.send(JSON.stringify({ 
+					type: 'subscribe', 
+					collection: 'messages', 
+					query: { 
+					fields: ['*', 'user_created.first_name'], 
+					sort: 'date_created' 
+				} 
+				}))
+			}
+			if (data.type == 'subscription' && data.event == 'init') {
+				for (const message of data.payload) { 
+					addMessageToList(message) 
+				} 
+			}
+			if (data.type == 'subscription' && data.event == 'create') {
+				addMessageToList(data.payload[0])
+			}
+		}
 
-    function addMessageToList(message) {
-      const li = document.createElement('li')
-      li.setAttribute('id', message.id)
-      li.textContent = `${message.user_created.first_name}: ${message.text}`
-      document.querySelector('ol').appendChild(li)
-    }
-  </script>
-</body>
+		function addMessageToList(message) {
+			const li = document.createElement('li')
+			li.setAttribute('id', message.id)
+			li.textContent = `${message.user_created.first_name}: ${message.text}`
+			document.querySelector('ol').appendChild(li)
+		}
+		</script>
+	</body>
 </html>
 ```

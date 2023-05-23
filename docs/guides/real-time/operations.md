@@ -19,10 +19,10 @@ The GraphQL Subscriptions specification does not support CRUD operations. This g
 
 ```json
 {
-  "type": "items",
-  "action": "read",
-  "collection": "your_collection_name",
-  "id": "single_item_id"
+	"type": "items",
+	"action": "read",
+	"collection": "your_collection_name",
+	"id": "single_item_id"
 }
 ```
 
@@ -30,8 +30,8 @@ In return, you will receive a message with the specified item:
 
 ```json
 {
-  "type": "items",
-  "data": { ... }
+	"type": "items",
+	"data": { ... }
 }
 ```
 
@@ -43,10 +43,10 @@ Instead of using an `id` property, you can use an `ids` property with an array o
 
 ```json
 {
-  "type": "items",
-  "action": "create",
-  "collection": "your_collection_name",
-  "data": { ... }
+	"type": "items",
+	"action": "create",
+	"collection": "your_collection_name",
+	"data": { ... }
 }
 ```
 
@@ -54,8 +54,8 @@ In return, you will receive a message with the newly-created item:
 
 ```json
 {
-  "type": "items",
-  "data": { ... }
+	"type": "items",
+	"data": { ... }
 }
 ```
 
@@ -67,11 +67,11 @@ Instead of using an object as the value of `data`, you can provide an array of o
 
 ```json
 {
-  "type": "items",
-  "action": "update",
-  "collection": "your_collection_name",
-  "id": "single_item_id",
-  "data": { ... }
+	"type": "items",
+	"action": "update",
+	"collection": "your_collection_name",
+	"id": "single_item_id",
+	"data": { ... }
 }
 ```
 
@@ -79,9 +79,9 @@ Regardless of how many items are updated, the `payload` in the returned data wil
 
 ```json
 {
-  "type": "subscription",
-  "event": "update",
-  "payload": [...]
+	"type": "subscription",
+	"event": "update",
+	"payload": [...]
 }
 ```
 
@@ -93,10 +93,10 @@ Instead of using an `id` property, you can use an `ids` property with an array o
 
 ```json
 {
-  "type": "items",
-  "action": "delete",
-  "collection": "your_collection_name",
-  "id": "single_item_id"
+	"type": "items",
+	"action": "delete",
+	"collection": "your_collection_name",
+	"id": "single_item_id"
 }
 ```
 
@@ -104,9 +104,9 @@ Regardless of how many items are updated, the `payload` in the returned data wil
 
 ```json
 {
-  "type": "items",
-  "event": "delete",
-  "payload": ["single_item_id", "single_item_id_2"]
+	"type": "items",
+	"event": "delete",
+	"payload": ["single_item_id", "single_item_id_2"]
 }
 ```
 
@@ -128,13 +128,13 @@ All messages sent over WebSockets can optionally include a `uid` property with a
 
 ```json
 {
-  "type": "items",
-  "action": "read",
-  "collection": "your_collection_name",
-  "query": { 
-    "sort": "date_created"
-  },
-  "uid": "sorted_latest_first"
+	"type": "items",
+	"action": "read",
+	"collection": "your_collection_name",
+	"query": { 
+		"sort": "date_created"
+	},
+	"uid": "sorted_latest_first"
 }
 ```
 
@@ -143,8 +143,8 @@ The response will include the same `uid`:
 
 ```json
 {
-  "type": "items",
-  "data": { ... },
-  "uid": "sorted_latest_first"
+	"type": "items",
+	"data": { ... },
+	"uid": "sorted_latest_first"
 }
 ```
