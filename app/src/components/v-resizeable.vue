@@ -1,6 +1,6 @@
 <template>
 	<div v-if="!disabled" ref="wrapper" class="resize-wrapper">
-		<slot height="100%" />
+		<slot />
 
 		<div
 			class="grab-bar"
@@ -19,12 +19,10 @@
 // TODO
 // - Hide "grab-bar" if wrapper itself is not in viewport
 //   Ref: https://github.com/directus/directus/pull/12050
-// - Move debounce to parent
 
 import { useEventListener } from '@/composables/use-event-listener';
 import { clamp } from 'lodash';
 import { computed, ref, watch } from 'vue';
-import { debounce } from 'lodash';
 
 type SnapZone = {
 	snapPos: number;
@@ -88,15 +86,12 @@ watch(
 	{ immediate: true }
 );
 
-watch(
-	internalWidth,
-	debounce((newVal) => {
-		emit('update:width', newVal);
-	}, 300)
-);
+watch(internalWidth, (width) => {
+	emit('update:width', width);
+});
 
-watch(dragging, (newVal) => {
-	emit('dragging', newVal);
+watch(dragging, (dragging) => {
+	emit('dragging', dragging);
 });
 
 function resetWidth() {

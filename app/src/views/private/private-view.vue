@@ -102,8 +102,9 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
 import { useElementSize, useSync } from '@directus/composables';
+import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';
-import { computed, provide, ref, toRefs } from 'vue';
+import { computed, provide, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
@@ -148,31 +149,29 @@ const { data: localStorageModuleWidth } = useLocalStorage<{
 	main?: number;
 }>('module-width', {});
 
-const navWidth = computed({
-	get() {
-		const val = localStorageModuleWidth.value?.nav;
-		return val && !Number.isNaN(val) ? Number(val) : 220;
-	},
-	set(value) {
+const navWidth = ref(getWidth(localStorageModuleWidth.value?.nav, 220));
+
+watch(
+	navWidth,
+	debounce((value) => {
 		localStorageModuleWidth.value = {
 			...(localStorageModuleWidth.value ?? {}),
 			nav: value,
 		};
-	},
-});
+	}, 300)
+);
 
-const mainWidth = computed({
-	get() {
-		const val = localStorageModuleWidth.value?.main;
-		return val && !Number.isNaN(val) ? Number(val) : 590;
-	},
-	set(value) {
+const mainWidth = ref(getWidth(localStorageModuleWidth.value?.main, 590));
+
+watch(
+	mainWidth,
+	debounce((value) => {
 		localStorageModuleWidth.value = {
 			...(localStorageModuleWidth.value ?? {}),
 			main: value,
 		};
-	},
-});
+	}, 300)
+);
 
 const maxWithNav = computed(() => {
 	const useMainWidth = props.splitView ? mainWidth.value : 590;
@@ -268,6 +267,10 @@ function openSidebar(event: MouseEvent) {
 	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
 		sidebarOpen.value = true;
 	}
+}
+
+function getWidth(input: unknown, fallback: number): number {
+	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
 </script>
 
