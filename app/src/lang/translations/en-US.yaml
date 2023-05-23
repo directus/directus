@@ -119,13 +119,6 @@ public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Version
-os_uptime: OS Uptime
-os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
@@ -472,9 +465,9 @@ download_file: Download File
 open_file_in_tab: Open file in new tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
-exporting_all_items_in_collection: Exporting all {total} items within {collection}.
+exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
 exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
-exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
+exporting_no_items_to_export: No items to export. Adjust the exporting configuration.
 exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
 exporting_batch_hint: This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
 exporting_batch_hint_forced:
