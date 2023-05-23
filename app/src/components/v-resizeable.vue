@@ -83,14 +83,14 @@ useEventListener(window, 'pointerup', onPointerUp);
 watch(
 	[windowWidth, internalWidth, target],
 	([_windowWidth, width, target]) => {
-		if (target) {
-			if (isMobile.value) {
-				target.style.width = '100%';
-				target.style.display = 'none';
-			} else {
-				target.style.width = `${width}px`;
-				target.style.display = 'block';
-			}
+		if (!target) return;
+
+		if (isMobile.value) {
+			target.style.width = '100%';
+			target.style.display = 'none';
+		} else {
+			target.style.width = `${width}px`;
+			target.style.display = 'block';
 		}
 	},
 	{ immediate: true }
