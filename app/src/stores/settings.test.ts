@@ -3,7 +3,6 @@ import * as notifyUtil from '@/utils/notify';
 import * as unexpectedErrorUtil from '@/utils/unexpected-error';
 import { Settings } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
-import { AxiosRequestConfig } from 'axios';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
 import { useSettingsStore } from './settings';
@@ -37,7 +36,6 @@ const mockSettings: Settings = {
 	mapbox_key: null,
 	module_bar: [],
 	project_descriptor: null,
-	translation_strings: [],
 	default_language: 'en-US',
 	custom_aspect_ratios: null,
 };
@@ -49,7 +47,7 @@ const mockShareUser = { share: 'a6eff2c1-d26b-43b2-bafd-84bb58c3b8ce', role: { a
 vi.mock('@/api', () => {
 	return {
 		default: {
-			get: (path: string, _config?: AxiosRequestConfig<any>) => {
+			get: (path: string) => {
 				if (path === '/settings') {
 					return Promise.resolve({
 						data: {
