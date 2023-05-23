@@ -140,7 +140,7 @@ On connection, you must [send an authentication message before the timeout](/gui
 ```js
 loginSubmit() { 
 	this.connection = new WebSocket(this.url); 
-	this.connection.onopen = () => this.authenticate(this.form); // [!code ++]
+	this.connection.addEventListener('open', this.authenticate(this.form)); // [!code ++]
 },
 ```
 
@@ -160,8 +160,8 @@ In a WebSocket connection, all data sent from the server will trigger the connec
 ```js
 loginSubmit() {
 	this.connection = new WebSocket(this.url);
-	this.connection.onopen = () => this.authenticate(this.login);
-	this.connection.onmessage = message => this.receiveMessage(message); // [!code ++]
+	this.connection.addEventListener('open', this.authenticate(this.login));
+	this.connection.addEventListener('message', message => this.receiveMessage(message)); // [!code ++]
 },
 ```
 
@@ -355,8 +355,8 @@ This guide covers authentication, item creation, and subscription using WebSocke
 			methods: {
 				loginSubmit() { 
 					this.connection = new WebSocket(this.url); 
-					this.connection.onopen = () => this.authenticate(this.form); 
-					this.connection.onmessage = message => this.receiveMessage(message);
+					this.connection.addEventListener('open', this.authenticate(this.form)); 
+					this.connection.addEventListener('message', message => this.receiveMessage(message));
 				}, 
 				messageSubmit() { 
 					this.connection.send(JSON.stringify({ 

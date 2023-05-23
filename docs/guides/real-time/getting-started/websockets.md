@@ -46,22 +46,22 @@ const connection = new WebSocket(url);
 To add some feedback, add the following event handlers below your `connection` variable:
 
 ```js
-connection.onopen = function() {
+connection.addEventListener('open', function() {
 	console.log({ event: 'onopen' });
-}
+});
 
-connection.onmessage = function(message) {
+connection.addEventListener('message', function(message) {
 	const { data } = JSON.parse(message);
 	console.log({ event: 'onmessage', data });
-}
+});
 
-connection.onclose = function() {
+connection.addEventListener('close', function() {
 	console.log({ event: 'onclose' });
-}
+});
     
-connection.onerror = function(error) {
+connection.addEventListener('error', function(error) {
 	console.log({ event: 'onerror', error });
-}
+});
 ```
 
 Open `index.html` in your browser and open the Developer Tools. You should see the `onopen` event logged in the console.
@@ -72,13 +72,13 @@ Once a connection is opened, and after a short period, you will see a message se
 As soon as the connection is opened, send your first message, which must include authentication details:
 
 ```js
-connection.onopen = function() {
+connection.addEventListener('open', function() {
 	console.log({ event: 'onopen' });
 	connection.send(JSON.stringify({ // [!code ++]
 		type: 'auth', // [!code ++]
 		access_token // [!code ++]
 	})); // [!code ++]
-};
+});
 ```
 
 You should immediately receive a message in return to confirm. The connection is now authenticated and will remain open, ready to send and receive data.
@@ -173,26 +173,26 @@ In this guide, you have successfully created a new WebSocket connection, authent
 
 			const connection = new WebSocket(url);
 
-			connection.onopen = function() {
+			connection.addEventListener('open', function() {
 				console.log({ event: 'onopen' })
 				connection.send(JSON.stringify({
 					type: 'auth',
 					access_token
 				}));
-			};
+			});
 
-			connection.onmessage = function(message) {
+			connection.addEventListener('message', function(message) {
 				const data = JSON.parse(message.data);
 				console.log({ event: 'onmessage', data });
-			};
+			});
 
-			connection.onclose = function() {
+			connection.addEventListener('close', function() {
 				console.log({ event: 'onclose' });
-			};
+			});
 					
-			connection.onerror = function(error) {
+			connection.addEventListener('error', function(error) {
 				console.log({ event: 'onerror', error });
-			};
+			});
 
 			function createItem(text, user) {
 				connection.send(JSON.stringify({

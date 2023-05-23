@@ -134,7 +134,7 @@ event handler for the connection's `open` event:
 ```js
 const loginSubmit = (event) => {
 	connectionRef.current = new WebSocket(url);
-	connectionRef.current.onopen = () => authenticate(formValue); // [!code ++]
+	connectionRef.current.addEventListener('open', authenticate(formValue)); // [!code ++]
 };
 ```
 
@@ -155,8 +155,8 @@ In a WebSocket connection, all data sent from the server will trigger the connec
 ```js
 const loginSubmit = (event) => {
 	connectionRef.current = new WebSocket(url);
-	connectionRef.current.onopen = () => authenticate(formValue);
-	connectionRef.current.onmessage = (message) => receiveMessage(message); // [!code ++]
+	connectionRef.current.addEventListener('open', authenticate(formValue));
+	connectionRef.current.addEventListener('message', (message) => receiveMessage(message)); // [!code ++]
 };
 ```
 
@@ -344,8 +344,8 @@ export default function App() {
 	const loginSubmit = (event) => {
 		event.preventDefault();
 		connectionRef.current = new WebSocket(url);
-		connectionRef.current.onopen = () => authenticate(formValue);
-		connectionRef.current.onmessage = (message) => receiveMessage(message);
+		connectionRef.current.addEventListener('open', authenticate(formValue));
+		connectionRef.current.addEventListener('message', (message) => receiveMessage)(message);
 	};
 
 	const receiveMessage = (message) => {

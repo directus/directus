@@ -61,13 +61,13 @@ The `connection` variable will later contain a WebSocket instance.
 Finally, create event listeners which are triggered on the form submissions:
 
 ```js
-document.querySelector('#login').onsubmit = function(event) {
+document.querySelector('#login').addEventListener('open', function(event) {
 	event.preventDefault();
-};
+});
 
-document.querySelector('#new').onsubmit = function(event) {
+document.querySelector('#new').addEventListener('submit', function(event) {
 	event.preventDefault();
-};
+});
 ```
 
 ## Establish WebSocket Connection
@@ -88,23 +88,23 @@ connection = new WebSocket(url);
 On connection, you must [send an authentication message before the timeout](/guides/real-time/authentication). Add an event handler for the connection's `open` event:
 
 ```js
-connection.onopen = function() {
+connection.addEventListener('open', function() {
 	connection.send(JSON.stringify({ 
 		type: 'auth', 
 		email, 
 		password 
 	}));
-};
+});
 ```
 
 ## Subscribe To Messages
 
-In a WebSocket connection, all data sent from the server will trigger the connection’s `message` event. Underneath the `connection.onopen` function, add the following:
+In a WebSocket connection, all data sent from the server will trigger the connection’s `message` event. Underneath the `open` event handler, add the following:
 
 ```js
-connection.onmessage = function(message) {
+connection.addEventListener('message', function(message) {
 	receiveMessage(message);
-};
+});
 ```
 
 At the bottom of your `<script>`, create the `receiveMessage` function:
@@ -144,7 +144,7 @@ if (data.type == 'subscription' && data.event == 'init') {
 Within the `#new` form submit event handler, send a new message to create the item in your Directus collection:
 
 ```js
-document.querySelector('#new').onsubmit = function(event) {
+document.querySelector('#new').addEventListener('submit', function(event) {
 	event.preventDefault();
 	const text = event.target.elements.text.value; // [!code ++]
 	connection.send(JSON.stringify({ // [!code ++]
@@ -154,7 +154,7 @@ document.querySelector('#new').onsubmit = function(event) {
 		data: { text } // [!code ++]
 	})); // [!code ++]
 	document.querySelector('#text').value = ''; // [!code ++]
-};
+});
 ```
 
 *Refresh your browser, login, and submit a new message. Check the `Messages` collection in your Directus project and you should see a new item.* 
@@ -235,24 +235,24 @@ This guide covers authentication, item creation, and subscription using WebSocke
 		const url = 'wss://your-directus-url/websocket';
 		let connection;
 
-		document.querySelector('#login').onsubmit = function(event) {
+		document.querySelector('#login').addEventListener('submit', function(event) {
 			event.preventDefault();
 			const email = event.target.elements.email.value;
 			const password = event.target.elements.password.value;
 			connection = new WebSocket(url);
-			connection.onopen = function() {
+			connection.addEventListener('open', function() {
 				connection.send(JSON.stringify({ 
 					type: 'auth', 
 					email, 
 					password 
 				}));
-			};
-			connection.onmessage = function(message) {
+			});
+			connection.addEventListener('message', function(message) {
 				receiveMessage(message);
-			};
-		};
+			});
+		});
 
-		document.querySelector('#new').onsubmit = function(event) {
+		document.querySelector('#new').addEventListener('submit', function(event) {
 			event.preventDefault();
 			const text = event.target.elements.text.value;
 			connection.send(JSON.stringify({
@@ -262,7 +262,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
 				data: { text }
 			}));
 			document.querySelector('#text').value = '';
-		};
+		});
 
 		function receiveMessage(message) {
 			const data = JSON.parse(message.data);

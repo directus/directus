@@ -25,12 +25,15 @@ Create a `vote.html` file and open it in your code editor. Add the following:
 <html>
 	<body>
 		<div id="options">
-			<button id="cat" onclick="vote('cats')">Cats</button>
-			<button id="dog" onclick="vote('dogs')">Dogs</button>
+			<button id="cat">Cats</button>
+			<button id="dog">Dogs</button>
 		</div>
 		<p></p>
 		<script>
 			const directusUrl = 'https://your-directus-url';
+			document.querySelector('#cat').addEventListener('click', vote('cats'))
+			document.querySelector('#dog').addEventListener('click', vote('dogs'))
+
 			async function vote(choice) {
 				await fetch(`${directusUrl}/items/votes`, {
 					method: 'POST',
@@ -73,7 +76,7 @@ Also create a `results.html` file and open it in your editor. Add the following:
 			const socket = new WebSocket('wss://your-directus-url/websocket')
 			const access_token = 'your-access-token'
 
-			socket.onopen = function () {
+			socket.addEventListener('open', function () {
 				console.log({ event: 'onopen' });
 				socket.send(
 					JSON.stringify({
@@ -81,9 +84,9 @@ Also create a `results.html` file and open it in your editor. Add the following:
 						access_token,
 					})
 				);
-			};
+			});
 
-			socket.onmessage = function (message) {
+			socket.addEventListener('message', function (message) {
 				const data = JSON.parse(message.data);
 				if (data.type == 'auth' && data.status == 'ok') {
 				}
@@ -91,7 +94,7 @@ Also create a `results.html` file and open it in your editor. Add the following:
 				}
 				if(data.type == 'subscription' && data.event == 'create') {
 				}
-			};
+			});
 		</script>
 	</body>
 </html>
@@ -192,12 +195,15 @@ There are many ways to improve the project built in this guide:
 <html>
 	<body>
 		<div id="options">
-			<button id="cat" onclick="vote('cats')">Cats</button>
-			<button id="dog" onclick="vote('dogs')">Dogs</button>
+			<button id="cat">Cats</button>
+			<button id="dog">Dogs</button>
 		</div>
 		<p></p>
 		<script>
-			const directusUrl = 'https://your-directus-url'
+			const directusUrl = 'https://your-directus-url';
+			document.querySelector('#cat').addEventListener('click', vote('cats'))
+			document.querySelector('#dog').addEventListener('click', vote('dogs'))
+
 			async function vote(choice) {
 				await fetch(`${directusUrl}/items/votes`, {
 					method: 'POST',
@@ -206,8 +212,7 @@ There are many ways to improve the project built in this guide:
 						'Content-Type': 'application/json',
 					},
 				});
-				document.body.innerHTML = 'Vote cast';
-			}
+			};
 		</script>
 	</body>
 </html>
@@ -224,7 +229,7 @@ There are many ways to improve the project built in this guide:
 			const socket = new WebSocket('wss://your-directus-url/websocket');
 			const access_token = 'your-access-token';
 
-			socket.onopen = function () {
+			socket.addEventListener('open', function () {
 				console.log({ event: 'onopen' });
 				socket.send(
 					JSON.stringify({
@@ -232,9 +237,9 @@ There are many ways to improve the project built in this guide:
 						access_token,
 					})
 				);
-			};
+			});
 
-			socket.onmessage = function (message) {
+			socket.addEventListener('message', function (message) {
 				const data = JSON.parse(message.data);
 				if (data.type == 'auth' && data.status == 'ok') {
 					socket.send(JSON.stringify({
@@ -261,7 +266,7 @@ There are many ways to improve the project built in this guide:
 					chart.data.datasets[0].data[itemToUpdate]++;
 					chart.update();
 				}
-			}
+			});
 
 			const ctx = document.getElementById('chart');
 			const chart = new Chart(ctx, {
