@@ -60,6 +60,14 @@
 	border-radius: var(--border-radius);
 }
 
+.codex-editor .ce-popover-item__title {
+	color: var(--foreground-normal);
+}
+
+.codex-editor .ce-popover-item:not(.ce-popover-item--confirmation):hover {
+	background: var(--v-list-background-color-hover);
+}
+
 .codex-editor .ce-popover__item--focused {
 	--webkit-box-shadow: none;
 	box-shadow: none;
@@ -274,6 +282,7 @@
 	padding: 0;
 	line-height: inherit;
 }
+
 .codex-editor .ce-paragraph[data-placeholder]:empty::before {
 	color: var(--foreground-subdued);
 }
