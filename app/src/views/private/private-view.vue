@@ -15,13 +15,21 @@
 			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
 		>
 			<module-bar />
-			<div ref="moduleNavEl" class="module-nav alt-colors">
-				<project-info />
+			<v-resizeable
+				v-model:width="navWidth"
+				:default-width="220"
+				:min-width="220"
+				:max-width="maxWithNav"
+				:options="navResizeOptions"
+			>
+				<div class="module-nav alt-colors">
+					<project-info />
 
-				<div class="module-nav-content">
-					<slot name="navigation" />
+					<div class="module-nav-content">
+						<slot name="navigation" />
+					</div>
 				</div>
-			</div>
+			</v-resizeable>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
@@ -38,9 +46,19 @@
 			</header-bar>
 
 			<div class="content-wrapper">
-				<main ref="mainEl">
-					<slot />
-				</main>
+				<v-resizeable
+					v-model:width="mainWidth"
+					:default-width="590"
+					:min-width="590"
+					:max-width="maxWithMain"
+					:disabled="!splitViewWritable"
+					:options="mainResizeOptions"
+					@dragging="(value) => (isDraggingSplitView = value)"
+				>
+					<main>
+						<slot />
+					</main>
+				</v-resizeable>
 
 				<div v-if="splitView" id="split-content" :class="{ 'is-dragging': isDraggingSplitView }">
 					<slot name="splitView" />
@@ -77,8 +95,8 @@
 </template>
 
 <script setup lang="ts">
+import VResizeable, { ResizeableOptions } from '@/components/v-resizeable.vue';
 import { useLocalStorage } from '@/composables/use-local-storage';
-import { useResize } from '@/composables/use-resize';
 import { useTitle } from '@/composables/use-title';
 import { useWindowSize } from '@/composables/use-window-size';
 import { useAppStore } from '@/stores/app';
@@ -97,21 +115,19 @@ import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 
-interface Props {
-	title?: string | null;
-	smallHeader?: boolean;
-	headerShadow?: boolean;
-	splitView?: boolean;
-	sidebarShadow?: boolean;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	title: null,
-	smallHeader: false,
-	splitView: false,
-	headerShadow: true,
-	sidebarShadow: false,
-});
+const props = withDefaults(
+	defineProps<{
+		title?: string | null;
+		smallHeader?: boolean;
+		headerShadow?: boolean;
+		splitView?: boolean;
+		sidebarShadow?: boolean;
+	}>(),
+	{
+		title: null,
+		headerShadow: true,
+	}
+);
 
 const emit = defineEmits(['update:splitView']);
 
@@ -123,26 +139,23 @@ const { title } = toRefs(props);
 const splitViewWritable = useSync(props, 'splitView', emit);
 
 const contentEl = ref<HTMLElement>();
-const mainEl = ref<HTMLElement>();
 const sidebarEl = ref<Element>();
 const { width: windowWidth } = useWindowSize();
 const { width: sidebarWidth } = useElementSize(sidebarEl);
 
-const moduleNavEl = ref<HTMLElement>();
-
-const { data } = useLocalStorage<{
+const { data: localStorageModuleWidth } = useLocalStorage<{
 	nav?: number;
 	main?: number;
 }>('module-width', {});
 
 const navWidth = computed({
 	get() {
-		const val = data.value?.nav;
+		const val = localStorageModuleWidth.value?.nav;
 		return val && !Number.isNaN(val) ? Number(val) : 220;
 	},
 	set(value) {
-		data.value = {
-			...(data.value ?? {}),
+		localStorageModuleWidth.value = {
+			...(localStorageModuleWidth.value ?? {}),
 			nav: value,
 		};
 	},
@@ -150,12 +163,12 @@ const navWidth = computed({
 
 const mainWidth = computed({
 	get() {
-		const val = data.value?.main;
+		const val = localStorageModuleWidth.value?.main;
 		return val && !Number.isNaN(val) ? Number(val) : 590;
 	},
 	set(value) {
-		data.value = {
-			...(data.value ?? {}),
+		localStorageModuleWidth.value = {
+			...(localStorageModuleWidth.value ?? {}),
 			main: value,
 		};
 	},
@@ -189,7 +202,7 @@ const maxWithMain = computed(() => {
 	}
 });
 
-const navResizeOptions = computed(() => {
+const navResizeOptions = computed<ResizeableOptions>(() => {
 	return {
 		snapZones: [
 			{ width: 20, snapPos: 220 },
@@ -204,9 +217,9 @@ const navResizeOptions = computed(() => {
 	};
 });
 
-useResize(moduleNavEl, ref(220), maxWithNav, ref(220), navWidth, ref(true), navResizeOptions);
+const isDraggingSplitView = ref(false);
 
-const mainResizeOptions = computed(() => {
+const mainResizeOptions = computed<ResizeableOptions>(() => {
 	return {
 		snapZones: [
 			{
@@ -225,16 +238,6 @@ const mainResizeOptions = computed(() => {
 	};
 });
 
-const { dragging: isDraggingSplitView } = useResize(
-	mainEl,
-	ref(590),
-	maxWithMain,
-	ref(590),
-	mainWidth,
-	splitViewWritable,
-	mainResizeOptions
-);
-
 const navOpen = ref(false);
 const userStore = useUserStore();
 const appStore = useAppStore();
@@ -249,7 +252,7 @@ const notificationsPreviewActive = ref(false);
 const { sidebarOpen, fullScreen } = storeToRefs(appStore);
 
 const theme = computed(() => {
-	return userStore.currentUser?.theme || 'auto';
+	return userStore.currentUser && 'theme' in userStore.currentUser ? userStore.currentUser.theme : 'auto';
 });
 
 provide('main-element', contentEl);
@@ -261,7 +264,7 @@ router.afterEach(() => {
 
 useTitle(title);
 
-function openSidebar(event: PointerEvent) {
+function openSidebar(event: MouseEvent) {
 	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
 		sidebarOpen.value = true;
 	}
@@ -314,12 +317,6 @@ function openSidebar(event: PointerEvent) {
 			box-shadow: var(--navigation-shadow);
 		}
 
-		&:not(.is-open) {
-			.module-nav-resize-handle {
-				display: none;
-			}
-		}
-
 		.module-nav {
 			position: relative;
 			display: inline-block;
@@ -341,12 +338,6 @@ function openSidebar(event: PointerEvent) {
 		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
-
-			&:not(.is-open) {
-				.module-nav-resize-handle {
-					display: block;
-				}
-			}
 		}
 	}
 
@@ -369,31 +360,6 @@ function openSidebar(event: PointerEvent) {
 
 		main {
 			display: contents;
-		}
-
-		.module-main-resize-handle {
-			position: absolute;
-			top: 0;
-			right: -2px;
-			bottom: 0;
-			width: 4px;
-			z-index: 3;
-			background-color: var(--primary);
-			cursor: ew-resize;
-			opacity: 0;
-			transition: opacity var(--fast) var(--transition);
-			transition-delay: 0;
-			user-select: none;
-			touch-action: none;
-
-			&:hover,
-			&:active {
-				opacity: 1;
-			}
-
-			&.active {
-				transition-delay: var(--slow);
-			}
 		}
 
 		/* Offset for partially visible sidebar */

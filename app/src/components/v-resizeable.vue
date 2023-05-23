@@ -1,0 +1,216 @@
+<template>
+	<div v-if="!disabled" ref="wrapper" class="resize-wrapper">
+		<slot height="100%" />
+
+		<div
+			class="grab-bar"
+			:class="{ active, 'always-show': options?.alwaysShowHandle }"
+			@pointerenter="active = true"
+			@pointerleave="active = false"
+			@pointerdown.self="onPointerDown"
+			@dblclick="resetWidth"
+		/>
+	</div>
+
+	<slot v-else />
+</template>
+
+<script setup lang="ts">
+// TODO
+// - Hide "grab-bar" if wrapper itself is not in viewport
+//   Ref: https://github.com/directus/directus/pull/12050
+// - Move debounce to parent
+
+import { useEventListener } from '@/composables/use-event-listener';
+import { clamp } from 'lodash';
+import { computed, ref, watch } from 'vue';
+import { debounce } from 'lodash';
+
+type SnapZone = {
+	snapPos: number;
+	width: number;
+	onSnap?: () => void;
+	onPointerUp?: () => void;
+};
+
+export type ResizeableOptions = { snapZones?: SnapZone[]; alwaysShowHandle?: boolean };
+
+const props = withDefaults(
+	defineProps<{
+		width: number;
+		defaultWidth?: number;
+		minWidth?: number;
+		maxWidth?: number;
+		disabled?: boolean;
+		options?: ResizeableOptions;
+	}>(),
+	{
+		defaultWidth: (props) => props.width,
+		minWidth: (props) => props.width,
+		maxWidth: Infinity,
+	}
+);
+
+const emit = defineEmits<{
+	'update:width': [value: number];
+	dragging: [value: boolean];
+}>();
+
+const wrapper = ref<HTMLDivElement>();
+
+const target = computed(() => {
+	const firstChild = wrapper.value?.firstElementChild;
+
+	if (firstChild instanceof HTMLElement && !firstChild?.classList.contains('grab-bar')) {
+		return firstChild;
+	}
+
+	return undefined;
+});
+
+const internalWidth = ref(props.width);
+const active = ref(false);
+const dragging = ref(false);
+let dragStartX = 0;
+let dragStartWidth = 0;
+let animationFrameID: number | null = null;
+
+useEventListener(window, 'pointermove', onPointerMove);
+useEventListener(window, 'pointerup', onPointerUp);
+
+watch(
+	[internalWidth, target],
+	([width, target]) => {
+		if (target) {
+			target.style.width = `${width}px`;
+		}
+	},
+	{ immediate: true }
+);
+
+watch(
+	internalWidth,
+	debounce((newVal) => {
+		emit('update:width', newVal);
+	}, 300)
+);
+
+watch(dragging, (newVal) => {
+	emit('dragging', newVal);
+});
+
+function resetWidth() {
+	internalWidth.value = props.defaultWidth;
+}
+
+function onPointerDown(event: PointerEvent) {
+	if (target.value) {
+		dragging.value = true;
+		dragStartX = event.pageX;
+		dragStartWidth = target.value.offsetWidth;
+	}
+}
+
+function onPointerMove(event: PointerEvent) {
+	if (!dragging.value) return;
+
+	animationFrameID = window.requestAnimationFrame(() => {
+		const newWidth = clamp(dragStartWidth + (event.pageX - dragStartX), props.minWidth, props.maxWidth);
+
+		const snapZones = props.options?.snapZones;
+
+		if (Array.isArray(snapZones)) {
+			for (const zone of snapZones) {
+				if (Math.abs(newWidth - zone.snapPos) < zone.width) {
+					internalWidth.value = zone.snapPos;
+
+					if (zone.onSnap) zone.onSnap();
+					return;
+				}
+			}
+		}
+
+		internalWidth.value = newWidth;
+	});
+}
+
+function onPointerUp() {
+	if (!dragging.value) return;
+
+	dragging.value = false;
+
+	const snapZones = props.options?.snapZones;
+
+	if (Array.isArray(snapZones)) {
+		for (const zone of snapZones) {
+			if (Math.abs(props.width - zone.snapPos) < zone.width) {
+				if (zone.onPointerUp) zone.onPointerUp();
+				break;
+			}
+		}
+	}
+
+	if (animationFrameID) {
+		window.cancelAnimationFrame(animationFrameID);
+	}
+}
+</script>
+
+<style lang="scss" scoped>
+.resize-wrapper {
+	position: relative;
+	max-height: 100%;
+
+	.grab-bar {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 4px;
+		z-index: 10;
+		background-color: var(--primary);
+		cursor: ew-resize;
+		opacity: 0;
+		transform: translate(50%, 0);
+		transition: opacity var(--fast) var(--transition);
+		transition-delay: 0;
+		user-select: none;
+		touch-action: none;
+
+		&:hover,
+		&:active {
+			opacity: 1;
+		}
+
+		&.active {
+			transition-delay: var(--slow);
+		}
+
+		&.always-show {
+			opacity: 1;
+			transition: background-color var(--fast) var(--transition);
+			background-color: transparent;
+
+			&::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				right: 1px;
+				bottom: 0;
+				left: 1px;
+				background-color: var(--background-normal-alt);
+				transition: background-color var(--fast) var(--transition);
+			}
+
+			&:hover,
+			&:active {
+				background-color: var(--primary);
+
+				&::before {
+					background-color: var(--primary);
+				}
+			}
+		}
+	}
+}
+</style>
