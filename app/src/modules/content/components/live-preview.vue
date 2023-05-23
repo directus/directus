@@ -18,7 +18,7 @@
 				rounded
 				secondary
 				:disabled="isRefreshing"
-				@click="refresh"
+				@click="refresh(null)"
 			>
 				<v-progress-circular v-if="isRefreshing" indeterminate x-small />
 				<v-icon v-else small name="refresh" />
