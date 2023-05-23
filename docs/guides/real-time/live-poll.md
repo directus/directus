@@ -150,7 +150,7 @@ A message is sent over the connection when a connection is initialized with data
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
-	for(const item of data.payload) {	// [!code	++]
+	for (const item of data.payload) {	// [!code	++]
 		chart.data.labels.push(item.choice);	// [!code	++]
 		chart.data.datasets[0].data.push(item.count.choice);	// [!code	++]
 	}	// [!code	++]
@@ -167,7 +167,7 @@ Refresh the page, and you should see the chart update with the initial values.
 When a new vote is cast, update the chart’s dataset and update it:
 
 ```js
-if(data.type == 'subscription' && data.event == 'create') {
+if (data.type == 'subscription' && data.event == 'create') {
   const vote = data.payload[0]; // [!code  ++]
   const itemToUpdate = chart.data.labels.indexOf(vote.choice); // [!code  ++]
   chart.data.datasets[0].data[itemToUpdate]++; // [!code  ++]
@@ -253,14 +253,14 @@ There are many ways to improve the project built in this guide:
 				}
 
 				if (data.type == 'subscription' && data.event == 'init') {
-					for(const item of data.payload) {
+					for (const item of data.payload) {
 						chart.data.labels.push(item.choice);
 						chart.data.datasets[0].data.push(item.count.choice);
 					}
 					chart.update();
 				}
 
-				if(data.type == 'subscription' && data.event == 'create') {
+				if (data.type == 'subscription' && data.event == 'create') {
 					const vote = data.payload[0];
 					const itemToUpdate = chart.data.labels.indexOf(vote.choice); 
 					chart.data.datasets[0].data[itemToUpdate]++;
