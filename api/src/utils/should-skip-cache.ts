@@ -36,10 +36,12 @@ export function shouldSkipCache(req: Request): boolean {
 
 		const path = url.parse(req.originalUrl).pathname;
 
+		if (!path) return false;
+
 		for (const collection of env['CACHE_AUTO_PURGE_IGNORE_LIST']) {
 			const ignoredPath = getEndpoint(collection);
 
-			if (path?.startsWith(ignoredPath)) {
+			if (path.startsWith(ignoredPath)) {
 				return true;
 			}
 		}
