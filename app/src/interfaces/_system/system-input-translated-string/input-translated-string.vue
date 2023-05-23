@@ -31,7 +31,7 @@
 				</v-input>
 			</template>
 
-			<div v-if="searchValue !== null || translations.length >= 25" class="search">
+			<div v-if="searchValue !== null || filteredTranslationKeys.length >= 25" class="search">
 				<v-input
 					class="search-input"
 					type="text"
@@ -48,7 +48,7 @@
 
 			<v-list :loading="loading">
 				<v-list-item
-					v-for="translationKey in translations"
+					v-for="translationKey in filteredTranslationKeys"
 					:key="translationKey"
 					class="translation-key"
 					:class="{ selected: localValue && translationKey === localValueWithoutPrefix }"
@@ -125,7 +125,7 @@ const isTranslationStringDrawerOpen = ref<boolean>(false);
 
 const editingTranslationString = ref<DisplayTranslationString | null>(null);
 
-const translations = computed(() => {
+const filteredTranslationKeys = computed(() => {
 	const keys = translationKeys.value ?? [];
 	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
 
