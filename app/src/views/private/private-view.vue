@@ -51,6 +51,7 @@
 					:default-width="590"
 					:min-width="590"
 					:max-width="maxWithMain"
+					:window-width="windowWidth"
 					:disabled="!splitViewWritable"
 					:options="mainResizeOptions"
 					@dragging="(value) => (isDraggingSplitView = value)"

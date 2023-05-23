@@ -20,7 +20,7 @@
 import { useElementVisibility } from '@vueuse/core';
 import { useEventListener } from '@/composables/use-event-listener';
 import { clamp } from 'lodash';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, toRef, watch } from 'vue';
 
 type SnapZone = {
 	snapPos: number;
@@ -37,6 +37,7 @@ const props = withDefaults(
 		defaultWidth?: number;
 		minWidth?: number;
 		maxWidth?: number;
+		windowWidth?: number;
 		disabled?: boolean;
 		options?: ResizeableOptions;
 	}>(),
@@ -51,6 +52,10 @@ const emit = defineEmits<{
 	'update:width': [value: number];
 	dragging: [value: boolean];
 }>();
+
+const windowWidth = toRef(props, 'windowWidth');
+
+const isMobile = computed(() => windowWidth.value && windowWidth.value < 600);
 
 const wrapper = ref<HTMLDivElement>();
 const wrapperIsVisible = useElementVisibility(wrapper);
@@ -76,10 +81,16 @@ useEventListener(window, 'pointermove', onPointerMove);
 useEventListener(window, 'pointerup', onPointerUp);
 
 watch(
-	[internalWidth, target],
-	([width, target]) => {
+	[windowWidth, internalWidth, target],
+	([_windowWidth, width, target]) => {
 		if (target) {
-			target.style.width = `${width}px`;
+			if (isMobile.value) {
+				target.style.width = '100%';
+				target.style.display = 'none';
+			} else {
+				target.style.width = `${width}px`;
+				target.style.display = 'block';
+			}
 		}
 	},
 	{ immediate: true }
