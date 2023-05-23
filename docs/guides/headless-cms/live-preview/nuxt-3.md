@@ -54,7 +54,7 @@ Create an `index.vue` file to load all of the items in the posts collection:
 </script>
 ```
 
-Create a `[id].vue` file that will the single items:
+Create a `[id].vue` file that will load for single items in the collection:
 
 ```html
 <template>
@@ -64,17 +64,17 @@ Create a `[id].vue` file that will the single items:
 </template>
 
 <script setup>
-  const { $directus } = useNuxtApp()
-  const route = useRoute()
+  const { $directus } = useNuxtApp();
+  const route = useRoute();
 
   const { data: post } = await useAsyncData('post', () => {
-    return $directus.items('posts').readOne(route.params.id)
-  })
+    return $directus.items('posts').readOne(route.params.id);
+  });
 
   if (!post.value) throw createError({
     statusCode: 404,
     statusMessage: 'Post Not Found'
-  })
+  });
 </script>
 ```
 
@@ -114,24 +114,24 @@ In `[id].vue`, access the new `$preview` helper and re-fetch data if `$preview` 
 
 ```js
 <script setup>
-  const { $directus } = useNuxtApp() // [!code --]
-  const { $directus, $preview } = useNuxtApp() // [!code ++]
-  const route = useRoute()
+  const { $directus } = useNuxtApp(); // [!code --]
+  const { $directus, $preview } = useNuxtApp(); // [!code ++]
+  const route = useRoute();
 
   if($preview) { // [!code ++]
     const { data: post } = await useAsyncData('post', () => { // [!code ++]
-      return $directus.items('posts').readOne(route.params.id) // [!code ++]
-    }) // [!code ++]
+      return $directus.items('posts').readOne(route.params.id); // [!code ++]
+    }); // [!code ++]
   } // [!code ++]
 
   const { data: post } = await useAsyncData('post', () => {
-    return $directus.items('posts').readOne(route.params.id)
-  })
+    return $directus.items('posts').readOne(route.params.id);
+  });
 
   if (!post.value) throw createError({
     statusCode: 404,
     statusMessage: 'Post Not Found'
-  })
+  });
 </script>
 ```
 
@@ -139,9 +139,6 @@ In `[id].vue`, access the new `$preview` helper and re-fetch data if `$preview` 
 
 In an item page, toggle "Enable Preview" at the top of the page. Whenever you create or edit an item in your collection
 and “click” save, you should see a live preview of the item on the right-hand side of the screen.
-
-<!-- VIDEO -->
-
 
 <video title="Enable Preview Mode in Directus" autoplay playsinline muted loop controls>
 	<source src="https://marketing.directus.app/assets/4aa9a902-1724-4c3b-b7ef-66265215df7b.mp4" type="video/mp4" />
