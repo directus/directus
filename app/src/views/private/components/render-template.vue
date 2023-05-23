@@ -29,6 +29,7 @@
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { cloneArraysWithStringIndexes } from '@/utils/clone-objects';
+import { extractEdits } from '@/utils/extract-edits-from-item';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
@@ -76,18 +77,6 @@ const parts = computed(() =>
 		})
 		.map((p) => p ?? null)
 );
-
-function extractEdits(item: Record<string, any>) {
-	if (!item || typeof item !== 'object') return item;
-
-	let changes = item;
-	if (changes.hasOwnProperty('create') && changes.hasOwnProperty('update')) {
-		changes = changes.create?.concat(changes.update);
-	}
-
-	Object.keys(changes).forEach(key => changes[key] = extractEdits(changes[key]));
-	return changes;
-}
 
 function handleArray(item: Record<string, any>, fieldKeyBefore: string, fieldKeyAfter: string) {
 	const value = get(item, fieldKeyBefore);
