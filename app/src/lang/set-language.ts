@@ -32,17 +32,18 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 	}
 
-	if (currentUser) {
-		try {
+	try {
+		if (currentUser) {
 			await loadLanguageTranslationStrings(lang);
-			collectionsStore.translateCollections();
-			fieldsStore.translateFields();
-
-			await loadDateFNSLocale(lang);
-		} catch {
-			// eslint-disable-next-line no-console
-			console.error('Failed loading translations');
 		}
+
+		collectionsStore.translateCollections();
+		fieldsStore.translateFields();
+
+		await loadDateFNSLocale(lang);
+	} catch {
+		// eslint-disable-next-line no-console
+		console.error('Failed loading translations');
 	}
 
 	return true;
