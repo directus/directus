@@ -372,7 +372,7 @@ export function applyFilter(
 
 			if (
 				filterPath.length > 1 ||
-				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]!.fields[key]!.type === 'alias')
+				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
 			) {
 				const hasMultiRelational = addJoin({
 					path: filterPath,
@@ -429,7 +429,7 @@ export function applyFilter(
 
 			if (
 				filterPath.length > 1 ||
-				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]!.fields[key]!.type === 'alias')
+				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
 			) {
 				if (!relation) continue;
 
