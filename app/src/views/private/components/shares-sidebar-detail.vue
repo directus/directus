@@ -74,7 +74,7 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
 import { getRootPath } from '@/utils/get-root-path';

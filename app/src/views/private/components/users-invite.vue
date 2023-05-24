@@ -40,7 +40,7 @@
 	</v-dialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { APIError } from '@/types/error';
 import { unexpectedError } from '@/utils/unexpected-error';

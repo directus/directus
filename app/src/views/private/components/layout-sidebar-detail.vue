@@ -15,7 +15,7 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import { useSync } from '@directus/composables';

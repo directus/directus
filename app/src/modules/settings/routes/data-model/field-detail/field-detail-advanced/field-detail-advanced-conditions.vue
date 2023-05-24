@@ -11,6 +11,7 @@ import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';
 import { useExtension } from '@/composables/use-extension';
+import { isVueComponent } from '@directus/utils';
 
 const { t } = useI18n();
 
@@ -99,10 +100,7 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 const selectedInterface = useExtension('interface', interfaceId);
 
 const optionDefaults = computed(() => {
-	if (!selectedInterface.value || !selectedInterface.value.options) return [];
-
-	// Indicates a custom vue component is used for the interface options
-	if ('render' in selectedInterface.value.options) return [];
+	if (!selectedInterface.value?.options || isVueComponent(selectedInterface.value.options)) return [];
 
 	let optionsObjectOrArray;
 

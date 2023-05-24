@@ -4,8 +4,10 @@
 (A|a)utocomplete
 (A|a)xios
 (B|b)ackend
+(B|b)ackend-as-a-(S|s)ervice
 (B|b)alancer
 (B|b)asemap
+(B|b)lackbox
 (B|b)ugfixes
 (C|)ancelling
 (C|c)ancelled

@@ -22,7 +22,7 @@
 	</v-menu>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Revision } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';

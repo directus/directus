@@ -611,6 +611,10 @@ function sidebar() {
 					link: '/contributing/codebase-overview',
 					text: 'Codebase Overview',
 				},
+				{
+					link: '/contributing/tests',
+					text: 'Tests',
+				},
 			],
 		},
 		{
