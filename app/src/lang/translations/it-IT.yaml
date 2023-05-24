@@ -1459,6 +1459,8 @@ navigate_to_item: Vai all'elemento
 undo_removed_item: Annulla la rimozione dell'elemento
 remove_item: Rimuovi l'elemento
 delete_item: Elimina l'elemento
+single_selection: Selezione singola
+single_selection_button: Abilita la selezione singola
 interfaces:
   filter:
     name: Filtro

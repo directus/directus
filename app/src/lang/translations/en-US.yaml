@@ -1478,6 +1478,8 @@ navigate_to_item: Navigate to Item
 undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
+single_selection: Single selection
+single_selection_button: Enable single selection
 interfaces:
   filter:
     name: Filter

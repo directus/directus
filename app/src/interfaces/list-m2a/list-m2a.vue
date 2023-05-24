@@ -15,7 +15,7 @@
 
 			<draggable
 				:force-fallback="true"
-				:model-value="displayItems"
+				:model-value="(!singleSelection) ? displayItems : singleSelectionDisplayItems"
 				item-key="$index"
 				:set-data="hideDragImage"
 				:disabled="!allowDrag"
@@ -113,11 +113,11 @@
 
 		<drawer-collection
 			v-if="!disabled && selectingFrom"
-			multiple
+			:multiple=!singleSelection
 			:active="!!selectingFrom"
 			:collection="selectingFrom"
 			:filter="customFilter"
-			@input="select($event!, selectingFrom ?? undefined)"
+			@input="selectItems($event!, selectingFrom ?? undefined)"
 			@update:active="selectingFrom = null"
 		/>
 
@@ -164,6 +164,7 @@ const props = withDefaults(
 		enableSelect?: boolean;
 		limit?: number;
 		allowDuplicates?: boolean;
+		singleSelection?: boolean;
 	}>(),
 	{
 		value: () => [],
@@ -172,6 +173,7 @@ const props = withDefaults(
 		enableSelect: true,
 		limit: 15,
 		allowDuplicates: false,
+		singleSelection: false
 	}
 );
 
@@ -252,6 +254,13 @@ function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
 	if (isLocalItem(item)) return 'delete';
 	return 'close';
+}
+
+const singleSelectionDisplayItems = computed(() => displayItems.value.filter(item => item.$type !== 'deleted'));
+
+function selectItems(items: (string | number)[], collection?: string) {
+	if (props.singleSelection) remove(...displayItems.value);
+	select(items, collection);
 }
 
 function sortItems(items: DisplayItem[]) {

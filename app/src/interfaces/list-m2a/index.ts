@@ -63,6 +63,20 @@ export default defineInterface({
 				width: 'half',
 			},
 		},
+		{
+            field: 'singleSelection',
+            name: '$t:single_selection',
+            schema: {
+                default_value: false,
+            },
+            meta: {
+                interface: 'boolean',
+                options: {
+                    label: '$t:single_selection_button',
+                },
+                width: 'half',
+            },
+        },
 	],
 	preview: PreviewSVG,
 });
