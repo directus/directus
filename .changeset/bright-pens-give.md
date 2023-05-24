@@ -3,4 +3,4 @@
 '@directus/api': minor
 ---
 
-Added synchronization accross horizontally scaled instances to schedule flows and hooks
+Added synchronization across horizontally scaled instances to schedule flows and hooks
