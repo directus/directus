@@ -67,6 +67,8 @@
 (W|w)alkthrough
 (W|w)ebhook.?
 (W|w)ebhooks?
+(W|w)ebSocket
+(W|w)ebSockets
 [0-9]*(KB|MB|GB|K|px|pm|am)
 [0-9]*[Kk]i?B
 [0-9]*x[0-9]*
@@ -309,6 +311,7 @@ readonly
 readTime
 rebase
 reconfigurations
+reconnection
 reframe
 REKT
 relationally
@@ -371,6 +374,8 @@ upscaled
 upvotes
 userbase
 uuid
+UID
+UIDs
 UUID
 UUIDs
 UUIDv4
