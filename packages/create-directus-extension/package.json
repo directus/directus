@@ -6,7 +6,6 @@
 		"directus",
 		"extensions"
 	],
-	"type": "module",
 	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
@@ -20,6 +19,7 @@
 		"Joonas Palosuo <joonas.palosuo@gmail.com>",
 		"Rijk van Zanten <rijkvanzanten@me.com>"
 	],
+	"type": "module",
 	"exports": {
 		".": "./lib/index.js",
 		"./package.json": "./package.json"
@@ -35,6 +35,6 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
-		"inquirer": "9.1.5"
+		"inquirer": "9.2.4"
 	}
 }

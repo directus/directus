@@ -3,6 +3,7 @@ import { router } from '@/router';
 import { useAppStore } from '@/stores/app';
 import { useServerStore } from '@/stores/server';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
+import { getItemRoute } from '@/utils/get-item-route';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
@@ -176,11 +177,7 @@ export default defineLayout<LayoutOptions>({
 					} else {
 						const primaryKey = info.event.id;
 
-						const route = collection.value.startsWith('directus_')
-							? collection.value.substring(9)
-							: `content/${collection.value}`;
-
-						router.push(`/${route}/${primaryKey}`);
+						router.push(getItemRoute(collection.value, primaryKey));
 					}
 				},
 				async eventChange(info) {

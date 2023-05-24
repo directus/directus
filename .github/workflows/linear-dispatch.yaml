@@ -7,7 +7,7 @@ jobs:
   create_issue:
     runs-on: ubuntu-latest
     steps:
-      - uses: rijkvanzanten/gh-action-linear@v0.3.1
+      - uses: rijkvanzanten/gh-action-linear@v0.3.2
         with:
           github-repo: ${{ github.event.client_payload.github.payload.repository.full_name }}
           github-issue: ${{ github.event.client_payload.github.payload.issue.number }}
