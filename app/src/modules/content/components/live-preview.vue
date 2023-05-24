@@ -78,21 +78,19 @@
 					'transform-origin': zoom >= 1 ? 'top left' : 'center center',
 				}"
 			>
-				<iframe
-					id="frame"
-					ref="frameEl"
-					width="100%"
-					height="100%"
-					:src="url"
-					frameborder="0"
-					@load="onIframeLoad"
-				></iframe>
+				<transition-group name="fade">
+					<iframe v-show="!isLoading" id="frame" key="frame" ref="frameEl" :src="url" @load="onIframeLoad" />
+					<div v-show="isLoading" key="loader" class="loader">
+						<v-progress-circular large indeterminate :delay="1000" />
+					</div>
+				</transition-group>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
+import vProgressCircular from '@/components/v-progress-circular.vue';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -102,14 +100,14 @@ declare global {
 	}
 }
 
-interface Props {
+defineProps<{
 	url: string;
 	inPopup?: boolean;
-}
+}>();
 
-defineProps<Props>();
-
-const emit = defineEmits(['new-window']);
+const emit = defineEmits<{
+	'new-window': [];
+}>();
 
 const { t } = useI18n();
 
@@ -120,7 +118,8 @@ const height = ref<number>();
 const zoom = ref<number>(1);
 const displayWidth = ref<number>();
 const displayHeight = ref<number>();
-const isRefreshing = ref<boolean>(false);
+const isRefreshing = ref(false);
+const isLoading = ref(true);
 
 const resizeHandle = ref<HTMLDivElement>();
 
@@ -144,14 +143,17 @@ const frameEl = ref<HTMLIFrameElement>();
 function refresh(url: string | null) {
 	if (!frameEl.value) return;
 
+	isRefreshing.value = true;
+	isLoading.value = true;
+
 	// this is technically a self-assignment, but it works to refresh the iframe
 	const newSrc = url || frameEl.value.src;
 	frameEl.value.src = newSrc;
-	isRefreshing.value = true;
 }
 
 function onIframeLoad() {
 	isRefreshing.value = false;
+	isLoading.value = false;
 }
 
 window.refreshLivePreview = refresh;
@@ -239,8 +241,29 @@ onMounted(() => {
 		padding: 60px;
 		perspective: 1000px;
 
+		.fade-enter-active,
+		.fade-leave-active {
+			transition: opacity var(--slow) var(--transition);
+		}
+		.fade-enter-from,
+		.fade-leave-to {
+			opacity: 0;
+		}
+
+		#frame {
+			width: 100%;
+			height: 100%;
+			border: 0;
+		}
+
+		.loader {
+			height: 100%;
+			width: 100%;
+			display: grid;
+			place-items: center;
+		}
+
 		.resize-handle {
-			resize: both;
 			overflow: hidden;
 			box-shadow: 0px 4px 12px -4px rgba(0, 0, 0, 0.2);
 		}

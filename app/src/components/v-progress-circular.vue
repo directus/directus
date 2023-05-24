@@ -1,5 +1,5 @@
 <template>
-	<div class="v-progress-circular" :class="sizeClass">
+	<div class="v-progress-circular" :class="{ ...(sizeClass && { [sizeClass]: true }), visible: isVisible }">
 		<svg
 			class="circle"
 			viewBox="0 0 30 30"
@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
 interface Props {
 	/** If set to true displays no value but spins indefinitely */
@@ -39,6 +39,7 @@ interface Props {
 	large?: boolean;
 	/** Renders the progress circular larger */
 	xLarge?: boolean;
+	delay?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -47,6 +48,24 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 defineEmits(['animationiteration']);
+
+const isVisible = ref(false);
+
+let timer: ReturnType<typeof setTimeout> | undefined;
+
+onMounted(() => {
+	if (props.delay) {
+		timer = setTimeout(() => {
+			isVisible.value = true;
+		}, props.delay);
+	} else {
+		isVisible.value = true;
+	}
+});
+
+onBeforeUnmount(() => {
+	clearTimeout(timer);
+});
 
 const sizeClass = useSizeClass(props);
 
@@ -70,10 +89,18 @@ body {
 .v-progress-circular {
 	position: relative;
 	display: flex;
+	opacity: 0;
+	visibility: hidden;
 	align-items: center;
 	justify-content: center;
 	width: var(--v-progress-circular-size);
 	height: var(--v-progress-circular-size);
+	transition: opacity 2s var(--transition);
+
+	&.visible {
+		visibility: visible;
+		opacity: 1;
+	}
 
 	&.x-small {
 		--v-progress-circular-size: 12px;
