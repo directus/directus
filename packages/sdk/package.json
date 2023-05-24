@@ -1,0 +1,60 @@
+{
+	"name": "@directus/sdk",
+	"version": "10.3.3",
+	"description": "The official Directus SDK for use in JavaScript",
+	"keywords": [
+		"api",
+		"client",
+		"cms",
+		"directus",
+		"headless",
+		"javascript",
+		"node",
+		"sdk"
+	],
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/sdk"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": {
+				"node": "./index.mjs",
+				"default": "./dist/sdk.bundler.js"
+			},
+			"require": "./dist/sdk.cjs.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"main": "dist/sdk.cjs.js",
+	"unpkg": "dist/sdk.esm.min.js",
+	"module": "dist/sdk.bundler.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"index.mjs"
+	],
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
+	},
+	"dependencies": {
+		"axios": "0.27.2"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@types/node": "18.16.12",
+		"@vitest/coverage-c8": "0.31.1",
+		"jsdom": "22.0.0",
+		"msw": "1.2.1",
+		"typescript": "5.0.4",
+		"vitest": "0.31.1"
+	}
+}

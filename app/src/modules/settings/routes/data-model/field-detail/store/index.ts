@@ -13,6 +13,7 @@ import * as alterations from './alterations';
 import { getLocalTypeForField } from '@/utils/get-local-type';
 import api from '@/api';
 import { useExtensions } from '@/extensions';
+import { getEndpoint } from '@directus/utils';
 
 export function syncFieldDetailStoreProperty(path: string, defaultValue?: any) {
 	const fieldDetailStore = useFieldDetailStore();
@@ -223,7 +224,7 @@ export const useFieldDetailStore = defineStore({
 				}
 
 				for (const collection of Object.keys(this.items)) {
-					await api.post(`/items/${collection}`, this.items[collection]);
+					await api.post(getEndpoint(collection), this.items[collection]);
 				}
 
 				await fieldsStore.hydrate();
