@@ -33,6 +33,7 @@
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
+				ref="headerBarEl"
 				:small="smallHeader || splitView"
 				:shadow="headerShadow || splitView"
 				show-sidebar-toggle
@@ -103,6 +104,7 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
 import { useElementSize, useSync } from '@directus/composables';
+import { useEventListener } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed, provide, ref, toRefs, watch } from 'vue';
@@ -141,7 +143,27 @@ const { title } = toRefs(props);
 const splitViewWritable = useSync(props, 'splitView', emit);
 
 const contentEl = ref<HTMLElement>();
+const headerBarEl = ref();
 const sidebarEl = ref<Element>();
+
+watch(splitViewWritable, () => {
+	if (!headerBarEl.value || !contentEl.value) return;
+
+	const previousOverflowY = contentEl.value.style.overflowY;
+	contentEl.value.style.overflowY = 'hidden';
+
+	useEventListener(
+		headerBarEl.value,
+		'transitionend',
+		() => {
+			if (contentEl.value) {
+				contentEl.value.style.overflowY = previousOverflowY;
+			}
+		},
+		{ once: true }
+	);
+});
+
 const { width: windowWidth } = useWindowSize();
 const { width: sidebarWidth } = useElementSize(sidebarEl);
 
