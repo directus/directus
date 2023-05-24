@@ -74,12 +74,22 @@
 					width: width ? `${width}px` : '100%',
 					height: height ? `${height}px` : '100%',
 					resize: fullscreen ? 'none' : 'both',
-					transform: `scale(${zoom}) ${!fullscreen ? `rotateX(${rotateX}deg) rotateY(${rotateY}deg)` : ''}`,
-					'transform-origin': zoom >= 1 ? 'top left' : 'center center',
+					...(zoom < 1 && { transform: `scale(${zoom})` }),
+					overflow: zoom > 1 ? 'auto' : 'hidden',
 				}"
 			>
 				<transition-group name="fade">
-					<iframe v-show="!isLoading" id="frame" key="frame" ref="frameEl" :src="url" @load="onIframeLoad" />
+					<iframe
+						v-show="!isLoading"
+						id="frame"
+						key="frame"
+						ref="frameEl"
+						:src="url"
+						:style="{
+							...(zoom > 1 && { transform: `scale(${zoom})`, 'transform-origin': 'top left' }),
+						}"
+						@load="onIframeLoad"
+					/>
 					<div v-show="isLoading" key="loader" class="loader">
 						<v-progress-circular large indeterminate :delay="1000" />
 					</div>
@@ -111,8 +121,6 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const rotateX = ref<number>(0);
-const rotateY = ref<number>(0);
 const width = ref<number>();
 const height = ref<number>();
 const zoom = ref<number>(1);
@@ -238,8 +246,7 @@ onMounted(() => {
 		position: relative;
 		display: grid;
 		place-items: center;
-		padding: 60px;
-		perspective: 1000px;
+		padding: 48px;
 
 		.fade-enter-active,
 		.fade-leave-active {
@@ -264,7 +271,6 @@ onMounted(() => {
 		}
 
 		.resize-handle {
-			overflow: hidden;
 			box-shadow: 0px 4px 12px -4px rgba(0, 0, 0, 0.2);
 		}
 	}
