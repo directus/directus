@@ -3,7 +3,7 @@
 		<slot />
 
 		<div
-			v-if="wrapperIsVisible && !isMobile"
+			v-if="wrapperIsVisible"
 			class="grab-bar"
 			:class="{ active, 'always-show': options?.alwaysShowHandle }"
 			@pointerenter="active = true"
@@ -21,7 +21,7 @@ import { useEventListener } from '@/composables/use-event-listener';
 import { useElementSize } from '@directus/composables';
 import { useElementVisibility } from '@vueuse/core';
 import { clamp } from 'lodash';
-import { computed, inject, ref, unref, watch } from 'vue';
+import { computed, inject, ref, watch } from 'vue';
 
 type SnapZone = {
 	snapPos: number;
@@ -38,7 +38,6 @@ const props = withDefaults(
 		defaultWidth?: number;
 		minWidth?: number;
 		maxWidth?: number;
-		isToggledOnMobile?: boolean;
 		disabled?: boolean;
 		options?: ResizeableOptions;
 	}>(),
@@ -46,7 +45,6 @@ const props = withDefaults(
 		defaultWidth: (props) => props.width,
 		minWidth: (props) => props.width,
 		maxWidth: Infinity,
-		isToggledOnMobile: false,
 	}
 );
 
@@ -56,9 +54,7 @@ const emit = defineEmits<{
 }>();
 
 const mainElement = inject('main-element', ref<Element>());
-const mainElementSize = useElementSize(mainElement);
-
-const isMobile = computed(() => props.isToggledOnMobile && unref(mainElementSize.width) < 600);
+const { width: mainElementWidth } = useElementSize(mainElement);
 
 const wrapper = ref<HTMLDivElement>();
 const wrapperIsVisible = useElementVisibility(wrapper);
@@ -84,17 +80,11 @@ useEventListener(window, 'pointermove', onPointerMove);
 useEventListener(window, 'pointerup', onPointerUp);
 
 watch(
-	[mainElementSize.width, internalWidth, target],
+	[mainElementWidth, internalWidth, target],
 	([_mainElementWidth, width, target]) => {
 		if (!target) return;
 
-		if (isMobile.value) {
-			target.style.width = 'auto';
-			target.style.display = 'none';
-		} else {
-			target.style.width = `${width}px`;
-			target.style.display = 'block';
-		}
+		target.style.width = `${width}px`;
 	},
 	{ immediate: true }
 );

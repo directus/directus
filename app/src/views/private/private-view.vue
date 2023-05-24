@@ -52,12 +52,11 @@
 					:default-width="590"
 					:min-width="590"
 					:max-width="maxWithMain"
-					is-toggled-on-mobile
 					:disabled="!splitViewWritable"
 					:options="mainResizeOptions"
 					@dragging="(value) => (isDraggingSplitView = value)"
 				>
-					<main>
+					<main v-if="contentWidth >= 600 || !splitViewWritable">
 						<slot />
 					</main>
 				</v-resizeable>
@@ -166,6 +165,7 @@ watch(splitViewWritable, () => {
 
 const { width: windowWidth } = useWindowSize();
 const { width: sidebarWidth } = useElementSize(sidebarEl);
+const { width: contentWidth } = useElementSize(contentEl);
 
 const { data: localStorageModuleWidth } = useLocalStorage<{
 	nav?: number;
