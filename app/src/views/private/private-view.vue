@@ -56,7 +56,7 @@
 					:options="mainResizeOptions"
 					@dragging="(value) => (isDraggingSplitView = value)"
 				>
-					<main v-if="contentWidth >= 600 || !splitViewWritable">
+					<main v-show="contentWidth >= 600 || !splitViewWritable">
 						<slot />
 					</main>
 				</v-resizeable>
