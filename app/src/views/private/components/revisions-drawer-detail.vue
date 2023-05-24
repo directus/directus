@@ -4,7 +4,7 @@
 		icon="change_history"
 		:badge="!loading && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 	>
-		<v-progress-linear v-if="loading" indeterminate />
+		<v-progress-linear v-if="!revisions && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">
 			<div class="content">{{ t('no_revisions') }}</div>
@@ -22,7 +22,7 @@
 					{{ t('revision_delta_created_externally') }}
 				</div>
 			</template>
-			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="2" />
+			<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 		</template>
 
 		<revisions-drawer
@@ -130,5 +130,6 @@ defineExpose({
 
 .v-pagination {
 	justify-content: center;
+	margin-top: 24px;
 }
 </style>
