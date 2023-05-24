@@ -3,7 +3,7 @@
 		<slot />
 
 		<div
-			v-if="wrapperIsVisible && targetIsVisible"
+			v-if="targetIsVisible"
 			class="grab-bar"
 			:class="{ active, 'always-show': options?.alwaysShowHandle }"
 			@pointerenter="active = true"
@@ -57,7 +57,6 @@ const mainElement = inject('main-element', ref<Element>());
 const { width: mainElementWidth } = useElementSize(mainElement);
 
 const wrapper = ref<HTMLDivElement>();
-const wrapperIsVisible = useElementVisibility(wrapper);
 
 const target = computed(() => {
 	const firstChild = wrapper.value?.firstElementChild;
