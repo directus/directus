@@ -117,8 +117,8 @@ const searchValue = ref<string | null>(null);
 
 const { loading, translationKeys, translationMap, loadAllTranslations } = useTranslationStrings();
 
-onMounted(() => {
-	loadAllTranslations();
+onMounted(async () => {
+	await loadAllTranslations();
 });
 
 const isTranslationStringDrawerOpen = ref<boolean>(false);
