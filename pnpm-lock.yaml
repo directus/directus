@@ -85,9 +85,6 @@ importers:
       '@directus/storage-driver-s3':
         specifier: workspace:*
         version: link:../packages/storage-driver-s3
-      '@directus/update-check':
-        specifier: workspace:*
-        version: link:../packages/update-check
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -867,37 +864,9 @@ importers:
       '@directus/api':
         specifier: workspace:*
         version: link:../api
-      boxen:
-        specifier: 7.1.0
-        version: 7.1.0
-      chalk:
-        specifier: 5.2.0
-        version: 5.2.0
-      find-cache-dir:
-        specifier: 4.0.0
-        version: 4.0.0
-      node-fetch-cache:
-        specifier: 3.1.3
-        version: 3.1.3
-    devDependencies:
-      '@directus/tsconfig':
+      '@directus/update-check':
         specifier: workspace:*
-        version: link:../packages/tsconfig
-      '@npm/types':
-        specifier: 1.0.2
-        version: 1.0.2
-      '@types/find-cache-dir':
-        specifier: 3.2.1
-        version: 3.2.1
-      '@types/node-fetch-cache':
-        specifier: 3.0.0
-        version: 3.0.0
-      tsup:
-        specifier: 6.7.0
-        version: 6.7.0(typescript@5.0.4)
-      typescript:
-        specifier: 5.0.4
-        version: 5.0.4
+        version: link:../packages/update-check
 
   docs:
     dependencies:
@@ -1487,31 +1456,37 @@ importers:
 
   packages/update-check:
     dependencies:
-      semver:
-        specifier: 7.5.1
-        version: 7.5.1
-      undici:
-        specifier: 5.22.1
-        version: 5.22.1
+      '@directus/api':
+        specifier: workspace:*
+        version: link:../../api
+      boxen:
+        specifier: 7.1.0
+        version: 7.1.0
+      chalk:
+        specifier: 5.2.0
+        version: 5.2.0
+      find-cache-dir:
+        specifier: 4.0.0
+        version: 4.0.0
+      node-fetch-cache:
+        specifier: 3.1.3
+        version: 3.1.3
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@ngneat/falso':
-        specifier: 6.4.0
-        version: 6.4.0
-      '@types/semver':
-        specifier: 7.5.0
-        version: 7.5.0
-      '@vitest/coverage-c8':
-        specifier: 0.31.1
-        version: 0.31.1(vitest@0.31.1)
+      '@npm/types':
+        specifier: 1.0.2
+        version: 1.0.2
+      '@types/find-cache-dir':
+        specifier: 3.2.1
+        version: 3.2.1
+      '@types/node-fetch-cache':
+        specifier: 3.0.0
+        version: 3.0.0
       typescript:
         specifier: 5.0.4
         version: 5.0.4
-      vitest:
-        specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/utils:
     dependencies:
