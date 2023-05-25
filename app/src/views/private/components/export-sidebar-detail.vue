@@ -114,7 +114,14 @@
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('limit') }}</p>
-					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="t('unlimited')" />
+					<v-input
+						v-model="exportSettings.limit"
+						type="number"
+						:min="queryLimitMax === Infinity ? -1 : 0"
+						:max="queryLimitMax"
+						:step="1"
+						:placeholder="queryLimitMax === Infinity && t('unlimited')"
+					/>
 				</div>
 
 				<div class="field half-left">
@@ -234,6 +241,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -286,8 +294,13 @@ const fileExtension = computed(() => {
 
 const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
 
+const { info } = useServerStore();
+
+const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
+const queryLimitDefault = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
+
 const exportSettings = reactive({
-	limit: props.layoutQuery?.limit ?? 25,
+	limit: props.layoutQuery?.limit ?? queryLimitDefault,
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
@@ -306,7 +319,7 @@ watch(
 watch(
 	() => props.layoutQuery,
 	() => {
-		exportSettings.limit = props.layoutQuery?.limit ?? 25;
+		exportSettings.limit = props.layoutQuery?.limit ?? queryLimitDefault;
 
 		if (props.layoutQuery?.fields) {
 			exportSettings.fields = props.layoutQuery?.fields;
@@ -344,6 +357,10 @@ const lockedToFiles = computed(() => {
 watch(
 	() => exportSettings.limit,
 	() => {
+		if (exportSettings.limit === null && queryLimitMax !== Infinity) {
+			exportSettings.limit = 0;
+		}
+
 		if (lockedToFiles.value) {
 			location.value = 'files';
 		}
