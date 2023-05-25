@@ -2,7 +2,7 @@ import express from 'express';
 import { ForbiddenException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { TranslationService } from '../services/index.js';
+import { TranslationsService } from '../services/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import type { PrimaryKey } from '@directus/types';
 
