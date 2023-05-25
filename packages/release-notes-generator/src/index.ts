@@ -1,16 +1,28 @@
 import type { ChangelogFunctions, GetDependencyReleaseLine, GetReleaseLine } from '@changesets/types';
 import { appendFileSync } from 'node:fs';
 import { MAIN_PACKAGE } from './constants';
-import type { ChangesetsWithoutId } from './types';
+import type { Changesets } from './types';
 import { generateMarkdown } from './utils/generate-markdown';
 import { getInfo } from './utils/get-info';
 import { processPackages } from './utils/process-packages';
 
-const changesets: ChangesetsWithoutId = new Map();
+const summaryRegex =
+	/\n*(?:::: info\n(?<=^::: info\n)\n*([\s\S]*)(?<!\n)\n*$(?=\n::: *$)\n::: *$)?\n*([\s\S]*)(?<!\n)\n*$/m;
+
+const changesets: Changesets = new Map();
 
 const getReleaseLine: GetReleaseLine = async (changeset) => {
-	const { id, ...rest } = changeset;
-	changesets.set(id, rest);
+	const { id, summary, ...rest } = changeset;
+
+	if (changesets.has(id)) {
+		return '';
+	}
+
+	const match = summary.match(summaryRegex);
+	const info = match?.[1];
+	const finalSummary = match?.[2] || '';
+
+	changesets.set(id, { summary: finalSummary, info, ...rest });
 
 	return '';
 };
@@ -36,13 +48,13 @@ async function run() {
 		throw new Error(`Couldn't get main version ('${MAIN_PACKAGE}' package)`);
 	}
 
-	const { types, untypedPackages } = await getInfo(changesets);
+	const { types, untypedPackages, info } = await getInfo(changesets);
 
 	if (types.length === 0 && untypedPackages.length === 0 && packageVersions.length === 0) {
 		earlyExit();
 	}
 
-	const markdown = generateMarkdown(mainVersion, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(mainVersion, info, types, untypedPackages, packageVersions);
 
 	const divider = '==============================================================';
 	process.stdout.write(`${divider}\n${markdown}\n${divider}\n`);

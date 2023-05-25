@@ -3,6 +3,7 @@ import type { Change, Package, PackageVersion, Type, UntypedPackage } from '../t
 
 export function generateMarkdown(
 	mainVersion: string,
+	info: string[],
 	types: Type[],
 	untypedPackages: UntypedPackage[],
 	packageVersions: PackageVersion[]
@@ -14,6 +15,10 @@ export function generateMarkdown(
 	}).format(date);
 
 	let output = `## v${mainVersion} (${dateString})`;
+
+	for (const value of info) {
+		output += `\n\n${value}`;
+	}
 
 	for (const { title, packages } of types) {
 		if (packages.length > 0) {
