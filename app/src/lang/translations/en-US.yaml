@@ -465,9 +465,9 @@ download_file: Download File
 open_file_in_tab: Open file in new tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
-exporting_all_items_in_collection: Exporting all {total} items within {collection}.
+exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
 exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
-exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
+exporting_no_items_to_export: No items to export. Adjust the exporting configuration.
 exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
 exporting_batch_hint: This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
 exporting_batch_hint_forced:
@@ -626,6 +626,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Invalid range
   METHOD_NOT_ALLOWED: Method not allowed
   REQUESTS_EXCEEDED: Requests limit reached
+  CONTENT_TOO_LARGE: Submitted item/file is too large
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -1285,6 +1286,7 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
+    preview_divider: Preview
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1342,6 +1344,14 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+live_preview:
+  enable: Enable Preview
+  disable: Disable Preview
+  change_size: Change Display Dimensions
+  refresh: Refresh Preview
+  new_window: Open in New Window
+  close_window: Open in Split View
+  toggle_3d: Toggle 3D
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
