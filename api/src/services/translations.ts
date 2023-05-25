@@ -1,9 +1,9 @@
 import type { Item, PrimaryKey } from '@directus/types';
 import getDatabase from '../database/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
-import { ItemsService } from './items.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { validateKeys } from '../utils/validate-keys.js';
-import { env } from 'process';
+import { ItemsService } from './items.js';
 
 export class TranslationsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -58,7 +58,7 @@ export class TranslationsService extends ItemsService {
 			return primaryKeys;
 		});
 
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+		if (shouldClearCache(this.cache, opts)) {
 			await this.cache.clear();
 		}
 
