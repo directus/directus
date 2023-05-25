@@ -153,6 +153,9 @@ CACHE_ENABLED=false
 # Automatically purge the cache on create, update, and delete actions. [false]
 # CACHE_AUTO_PURGE=true
 
+# List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled. ["directus_activity,directus_presets"]
+# CACHE_AUTO_PURGE_IGNORE_LIST="directus_activity,directus_presets"
+
 # memory | redis | memcache
 CACHE_STORE=memory
 
