@@ -107,7 +107,6 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		fileStream.on('limit', () => {
 			const error = new ContentTooLargeException(`Uploaded file is too large`);
-			fileStream.emit('error', error);
 			next(error);
 		});
 

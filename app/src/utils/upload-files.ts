@@ -16,17 +16,19 @@ export async function uploadFiles(
 	const progressForFiles = files.map(() => 0);
 
 	try {
-		const uploadedFiles = await Promise.all(
-			files.map((file, index) =>
-				uploadFile(file, {
-					...options,
-					onProgressChange: (percentage: number) => {
-						progressForFiles[index] = percentage;
-						progressHandler(progressForFiles);
-					},
-				})
+		const uploadedFiles = (
+			await Promise.all(
+				files.map((file, index) =>
+					uploadFile(file, {
+						...options,
+						onProgressChange: (percentage: number) => {
+							progressForFiles[index] = percentage;
+							progressHandler(progressForFiles);
+						},
+					})
+				)
 			)
-		);
+		).filter((v) => v);
 
 		if (options?.notifications) {
 			notify({
