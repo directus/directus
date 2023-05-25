@@ -246,7 +246,7 @@ import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import type { AxiosProgressEvent } from 'axios';
-import { debounce } from 'lodash';
+import { debounce, pick } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -371,7 +371,7 @@ const getItemCount = debounce(async () => {
 		const count = await api
 			.get(getEndpoint(collection.value), {
 				params: {
-					...exportSettings,
+					...pick(exportSettings, ['search', 'filter']),
 					aggregate,
 				},
 			})
