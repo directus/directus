@@ -368,22 +368,22 @@ const getItemCount = debounce(async () => {
 					count: ['*'],
 			  };
 
-		const count = await api
-			.get(getEndpoint(collection.value), {
-				params: {
-					...pick(exportSettings, ['search', 'filter']),
-					aggregate,
-				},
-			})
-			.then((response) => {
-				if (response.data.data?.[0]?.count) {
-					return Number(response.data.data[0].count);
-				}
+		const response = await api.get(getEndpoint(collection.value), {
+			params: {
+				...pick(exportSettings, ['search', 'filter']),
+				aggregate,
+			},
+		});
 
-				if (response.data.data?.[0]?.countDistinct) {
-					return Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
-				}
-			});
+		let count;
+
+		if (response.data.data?.[0]?.count) {
+			count = Number(response.data.data[0].count);
+		}
+
+		if (response.data.data?.[0]?.countDistinct) {
+			count = Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
+		}
 
 		itemCount.value = count;
 	} finally {
