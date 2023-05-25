@@ -143,8 +143,8 @@ describe('Flows Schedule Hook Tests', () => {
 			).body.data[0].count.id;
 
 			// Assert
-			expect(redisRunCount).toBe(5);
-			expect(memoryRunCount).toBe(5);
+			expect(parseInt(redisRunCount)).toBe(5);
+			expect(parseInt(memoryRunCount)).toBe(5);
 		});
 	});
 });

@@ -3,7 +3,7 @@
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view v-else :title="title">
+	<private-view v-else v-model:splitView="splitView" :split-view-min-width="310" :title="title">
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
@@ -57,6 +57,18 @@
 		</template>
 
 		<template #actions>
+			<v-button
+				v-if="previewURL"
+				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
+				rounded
+				icon
+				class="action-preview"
+				:secondary="livePreviewMode === null"
+				@click="toggleSplitView"
+			>
+				<v-icon name="visibility" outline />
+			</v-button>
+
 			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
@@ -173,53 +185,44 @@
 			</v-card>
 		</v-dialog>
 
+		<template #splitView>
+			<LivePreview v-if="previewURL" :url="previewURL" @new-window="livePreviewMode = 'popup'" />
+		</template>
+
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
-			<revisions-drawer-detail
-				v-if="
-					isNew === false &&
-					loading === false &&
-					internalPrimaryKey &&
-					revisionsAllowed &&
-					accountabilityScope === 'all'
-				"
-				ref="revisionsDrawerDetailRef"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:scope="accountabilityScope"
-				@revert="revert"
-			/>
-			<comments-sidebar-detail
-				v-if="isNew === false && loading === false && internalPrimaryKey"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-			/>
-			<shares-sidebar-detail
-				v-if="isNew === false && loading === false && internalPrimaryKey"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:allowed="shareAllowed"
-			/>
-			<flow-sidebar-detail
-				v-if="isNew === false && loading === false && internalPrimaryKey"
-				location="item"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:has-edits="hasEdits"
-				@refresh="refresh"
-			/>
+			<template v-if="isNew === false && loading === false && internalPrimaryKey">
+				<revisions-drawer-detail
+					v-if="revisionsAllowed && accountabilityScope === 'all'"
+					ref="revisionsDrawerDetailRef"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:scope="accountabilityScope"
+					@revert="revert"
+				/>
+				<comments-sidebar-detail :collection="collection" :primary-key="internalPrimaryKey" />
+				<shares-sidebar-detail :collection="collection" :primary-key="internalPrimaryKey" :allowed="shareAllowed" />
+				<flow-sidebar-detail
+					location="item"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:has-edits="hasEdits"
+					@refresh="refresh"
+				/>
+			</template>
 		</template>
 	</private-view>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, unref, toRefs } from 'vue';
+import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
@@ -232,6 +235,7 @@ import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
 import { useRouter } from 'vue-router';
+import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 
@@ -278,7 +282,7 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey);
 
-const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
+const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
 const isSavable = computed(() => {
 	if (saveAllowed.value === false) return false;
@@ -362,6 +366,85 @@ const disabledOptions = computed(() => {
 	if (!createAllowed.value) return ['save-and-add-new', 'save-as-copy'];
 	if (isNew.value) return ['save-as-copy'];
 	return [];
+});
+
+const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
+
+const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
+
+const previewURL = computed(() => {
+	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData);
+
+	return displayValue.value || null;
+});
+
+const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
+
+const splitView = computed({
+	get() {
+		if (!collectionInfo.value?.meta?.preview_url) return false;
+
+		return livePreviewMode.value === 'split';
+	},
+	set(value) {
+		livePreviewMode.value = value ? 'split' : null;
+	},
+});
+
+let popupWindow: Window | null = null;
+
+watch(
+	[livePreviewMode, previewURL],
+	([mode, url]) => {
+		if (mode !== 'popup' || !url) {
+			if (popupWindow) popupWindow.close();
+			return;
+		}
+
+		const targetUrl = window.location.href + (window.location.href.endsWith('/') ? 'preview' : '/preview');
+
+		popupWindow = window.open(
+			targetUrl,
+			'live-preview',
+			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes'
+		);
+
+		if (popupWindow) {
+			const timer = setInterval(() => {
+				if (!popupWindow?.closed) return;
+
+				clearInterval(timer);
+				popupWindow = null;
+
+				if (livePreviewMode.value === 'popup') livePreviewMode.value = 'split';
+			}, 1000);
+		}
+	},
+	{ immediate: true }
+);
+
+function toggleSplitView() {
+	if (livePreviewMode.value === null) {
+		livePreviewMode.value = 'split';
+	} else {
+		livePreviewMode.value = null;
+	}
+}
+
+watch(saving, async (newVal, oldVal) => {
+	if (newVal === true || oldVal === false) return;
+
+	try {
+		await fetchTemplateValues();
+		window.refreshLivePreview(previewURL.value);
+		if (popupWindow) popupWindow.refreshLivePreview(previewURL.value);
+	} catch (error) {
+		// noop
+	}
+});
+
+onBeforeUnmount(() => {
+	if (popupWindow) popupWindow.close();
 });
 
 function navigateBack() {

@@ -87,6 +87,9 @@ export class FilesService extends ItemsService {
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
+
+			await this.deleteOne(primaryKey);
+
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 

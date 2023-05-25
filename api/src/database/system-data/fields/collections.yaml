@@ -100,6 +100,22 @@ fields:
               placeholder: $t:field_options.directus_collections.translation_placeholder
     width: full
 
+  - field: preview_divider
+    special:
+      - alias
+      - no-data
+    interface: presentation-divider
+    options:
+      icon: preview
+      title: $t:field_options.directus_collections.preview_divider
+    width: full
+
+  - field: preview_url
+    interface: system-display-template
+    options:
+      collectionField: collection
+    width: full
+
   - field: archive_divider
     special:
       - alias
