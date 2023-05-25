@@ -107,7 +107,7 @@ import { formatCollectionItemsCount } from '@/utils/format-collection-items-coun
 
 const { t } = useI18n();
 
-const collection = 'directus_translation_strings';
+const collection = 'directus_translations';
 
 const search = ref<string>('');
 
