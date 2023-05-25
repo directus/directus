@@ -1,6 +1,7 @@
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
+import bytes from 'bytes';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
@@ -34,7 +35,14 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		};
 	}
 
-	const busboy = Busboy({ headers, defParamCharset: 'utf8' });
+	const busboy = Busboy({
+		headers,
+		defParamCharset: 'utf8',
+		limits: {
+			fileSize: env['ASSETS_MAX_UPLOAD_SIZE'] ? bytes(env['ASSETS_MAX_UPLOAD_SIZE'] as string) : undefined,
+		},
+	});
+
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
@@ -87,6 +95,12 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		// Clear the payload for the next to-be-uploaded file
 		payload = {};
+
+		fileStream.on('limit', () => {
+			const error = new Error(`Uploaded file is too large`);
+			fileStream.emit('error', error);
+			next(error);
+		});
 
 		try {
 			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
