@@ -55,18 +55,6 @@
 		</template>
 
 		<template #actions>
-			<v-button
-				v-if="previewURL"
-				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
-				rounded
-				icon
-				class="action-preview"
-				:secondary="livePreviewMode === null"
-				@click="toggleSplitView"
-			>
-				<v-icon name="visibility" outline />
-			</v-button>
-
 			<v-dialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
@@ -122,7 +110,7 @@
 			:autofocus="isNew"
 			:loading="loading"
 			:initial-values="item"
-			:fields="fields"
+			collection="directus_translations"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
 		/>
@@ -139,10 +127,6 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
-
-		<template #splitView>
-			<LivePreview v-if="previewURL" :url="previewURL" @new-window="livePreviewMode = 'popup'" />
-		</template>
 
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
@@ -299,85 +283,6 @@ const disabledOptions = computed(() => {
 	return [];
 });
 
-const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
-
-const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
-
-const previewURL = computed(() => {
-	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData);
-
-	return displayValue.value || null;
-});
-
-const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
-
-const splitView = computed({
-	get() {
-		if (!collectionInfo.value?.meta?.preview_url) return false;
-
-		return livePreviewMode.value === 'split';
-	},
-	set(value) {
-		livePreviewMode.value = value ? 'split' : null;
-	},
-});
-
-let popupWindow: Window | null = null;
-
-watch(
-	[livePreviewMode, previewURL],
-	([mode, url]) => {
-		if (mode !== 'popup' || !url) {
-			if (popupWindow) popupWindow.close();
-			return;
-		}
-
-		const targetUrl = window.location.href + (window.location.href.endsWith('/') ? 'preview' : '/preview');
-
-		popupWindow = window.open(
-			targetUrl,
-			'live-preview',
-			'width=900,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes'
-		);
-
-		if (popupWindow) {
-			const timer = setInterval(() => {
-				if (!popupWindow?.closed) return;
-
-				clearInterval(timer);
-				popupWindow = null;
-
-				if (livePreviewMode.value === 'popup') livePreviewMode.value = 'split';
-			}, 1000);
-		}
-	},
-	{ immediate: true }
-);
-
-function toggleSplitView() {
-	if (livePreviewMode.value === null) {
-		livePreviewMode.value = 'split';
-	} else {
-		livePreviewMode.value = null;
-	}
-}
-
-watch(saving, async (newVal, oldVal) => {
-	if (newVal === true || oldVal === false) return;
-
-	try {
-		await fetchTemplateValues();
-		window.refreshLivePreview(previewURL.value);
-		if (popupWindow) popupWindow.refreshLivePreview(previewURL.value);
-	} catch (error) {
-		// noop
-	}
-});
-
-onBeforeUnmount(() => {
-	if (popupWindow) popupWindow.close();
-});
-
 function navigateBack() {
 	const backState = router.options.history.state.back;
 
@@ -405,7 +310,6 @@ async function saveAndQuit() {
 
 	try {
 		await save();
-		if (props.singleton === false) router.push(`/content/directus_translations`);
 	} catch {
 		// Save shows unexpected error dialog
 	}
