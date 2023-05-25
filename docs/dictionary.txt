@@ -369,6 +369,7 @@ unpaused
 unselectable
 upscaled
 upvotes
+upsert
 userbase
 uuid
 UUID
