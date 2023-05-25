@@ -67,17 +67,17 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	// TODO fix this at the service level
 	// temporary fix for missing permissions https://github.com/directus/directus/issues/18654
-	const sanitizedQuery = { ...req.sanitizedQuery, limit: -1 };
+	const temporaryQuery = { ...req.sanitizedQuery, limit: -1 };
 
 	if (req.singleton) {
-		result = await service.readSingleton(sanitizedQuery);
+		result = await service.readSingleton(temporaryQuery);
 	} else if (req.body.keys) {
-		result = await service.readMany(req.body.keys, sanitizedQuery);
+		result = await service.readMany(req.body.keys, temporaryQuery);
 	} else {
-		result = await service.readByQuery(sanitizedQuery);
+		result = await service.readByQuery(temporaryQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_permissions', sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_permissions', temporaryQuery);
 
 	res.locals['payload'] = { data: result, meta };
 	return next();
