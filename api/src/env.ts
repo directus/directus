@@ -110,6 +110,7 @@ const allowedEnvironmentVars = [
 
 	// files
 	'FILES_MAX_UPLOAD_SIZE',
+	'FILES_CONTENT_TYPE_ALLOW_LIST',
 
 	// assets
 	'ASSETS_CACHE_TTL',
@@ -315,6 +316,8 @@ const defaults: Record<string, any> = {
 	PRESSURE_LIMITER_MAX_MEMORY_RSS: false,
 	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: false,
 	PRESSURE_LIMITER_RETRY_AFTER: false,
+
+	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
