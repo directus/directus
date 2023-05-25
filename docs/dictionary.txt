@@ -62,6 +62,7 @@
 (U|u)nfilterable
 (U|u)nlink
 (U|u)tils?
+(U|u)psert
 (URI|URIs)
 (URL|url)
 (W|w)alkthrough
@@ -369,7 +370,6 @@ unpaused
 unselectable
 upscaled
 upvotes
-upsert
 userbase
 uuid
 UUID
