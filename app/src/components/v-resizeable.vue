@@ -1,5 +1,10 @@
 <template>
-	<div v-if="!disabled" ref="wrapper" class="resize-wrapper">
+	<div
+		v-if="!disabled"
+		ref="wrapper"
+		class="resize-wrapper"
+		:class="{ transition: !dragging && !options?.disableTransition }"
+	>
 		<slot />
 
 		<div
@@ -12,49 +17,46 @@
 			@dblclick="resetWidth"
 		/>
 	</div>
-
 	<slot v-else />
 </template>
 
 <script setup lang="ts">
-import { useEventListener } from '@/composables/use-event-listener';
-import { useElementSize } from '@directus/composables';
-import { useElementVisibility } from '@vueuse/core';
+import { useSync } from '@directus/composables';
+import { useElementVisibility, useEventListener } from '@vueuse/core';
 import { clamp } from 'lodash';
-import { computed, inject, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 type SnapZone = {
 	snapPos: number;
 	width: number;
+	direction?: 'left' | 'right';
 	onSnap?: () => void;
 	onPointerUp?: () => void;
 };
 
-export type ResizeableOptions = { snapZones?: SnapZone[]; alwaysShowHandle?: boolean };
+export type ResizeableOptions = { snapZones?: SnapZone[]; alwaysShowHandle?: boolean; disableTransition?: boolean };
 
 const props = withDefaults(
 	defineProps<{
 		width: number;
-		defaultWidth?: number;
 		minWidth?: number;
 		maxWidth?: number;
+		defaultWidth?: number;
 		disabled?: boolean;
 		options?: ResizeableOptions;
 	}>(),
 	{
-		defaultWidth: (props) => props.width,
 		minWidth: (props) => props.width,
 		maxWidth: Infinity,
+		defaultWidth: (props) => props.minWidth ?? props.width,
 	}
 );
 
 const emit = defineEmits<{
 	'update:width': [value: number];
 	dragging: [value: boolean];
+	transitionEnd: [];
 }>();
-
-const mainElement = inject('main-element', ref<Element>());
-const { width: mainElementWidth } = useElementSize(mainElement);
 
 const wrapper = ref<HTMLDivElement>();
 
@@ -70,29 +72,36 @@ const target = computed(() => {
 
 const targetIsVisible = useElementVisibility(target);
 
-const internalWidth = ref(props.width);
 const active = ref(false);
 const dragging = ref(false);
 let dragStartX = 0;
 let dragStartWidth = 0;
-let animationFrameID: number | null = null;
+let previousX = 0;
+let animationFrameID: number;
+let previousCursor: string;
 
 useEventListener(window, 'pointermove', onPointerMove);
 useEventListener(window, 'pointerup', onPointerUp);
 
+useEventListener(target, 'transitionend', (event: TransitionEvent) => {
+	if (event.target === target.value && event.propertyName === 'width') {
+		emit('transitionEnd');
+	}
+});
+
+const internalWidth = useSync(props, 'width', emit);
+
 watch(
-	[mainElementWidth, internalWidth, target],
-	([_mainElementWidth, width, target]) => {
+	[internalWidth, target, () => props.maxWidth],
+	([width, target, maxWidth]) => {
 		if (!target) return;
 
-		target.style.width = `${width}px`;
+		const finalWidth = width > maxWidth ? maxWidth : width;
+
+		target.style.width = `${finalWidth}px`;
 	},
 	{ immediate: true }
 );
-
-watch(internalWidth, (width) => {
-	emit('update:width', width);
-});
 
 watch(dragging, (dragging) => {
 	emit('dragging', dragging);
@@ -105,8 +114,11 @@ function resetWidth() {
 function onPointerDown(event: PointerEvent) {
 	if (target.value) {
 		dragging.value = true;
+		previousCursor = document.body.style.cursor;
+		document.body.style.cursor = 'ew-resize';
 		dragStartX = event.pageX;
 		dragStartWidth = target.value.offsetWidth;
+		previousX = event.pageX;
 	}
 }
 
@@ -119,8 +131,20 @@ function onPointerMove(event: PointerEvent) {
 		const snapZones = props.options?.snapZones;
 
 		if (Array.isArray(snapZones)) {
+			let direction;
+
+			if (event.pageX < previousX) {
+				direction = 'left';
+			} else if (event.pageX > previousX) {
+				direction = 'right';
+			}
+
+			previousX = event.pageX;
+
 			for (const zone of snapZones) {
-				if (Math.abs(newWidth - zone.snapPos) < zone.width) {
+				if (zone.direction && !direction) return;
+
+				if ((!zone.direction || zone.direction === direction) && Math.abs(newWidth - zone.snapPos) < zone.width) {
 					internalWidth.value = zone.snapPos;
 
 					if (zone.onSnap) zone.onSnap();
@@ -137,6 +161,7 @@ function onPointerUp() {
 	if (!dragging.value) return;
 
 	dragging.value = false;
+	document.body.style.cursor = previousCursor;
 
 	const snapZones = props.options?.snapZones;
 
@@ -159,6 +184,12 @@ function onPointerUp() {
 .resize-wrapper {
 	position: relative;
 	max-height: 100%;
+
+	&.transition {
+		:slotted(:first-child) {
+			transition: width var(--slow) var(--transition);
+		}
+	}
 
 	.grab-bar {
 		position: absolute;

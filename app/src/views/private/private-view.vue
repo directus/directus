@@ -17,10 +17,11 @@
 			<module-bar />
 			<v-resizeable
 				v-model:width="navWidth"
-				:default-width="220"
-				:min-width="220"
-				:max-width="maxWithNav"
+				:min-width="SIZES.minModuleNavWidth"
+				:max-width="maxWidthNav"
 				:options="navResizeOptions"
+				@dragging="(value) => (isDraggingNav = value)"
+				@transition-end="resetContentOverflowX"
 			>
 				<div class="module-nav alt-colors">
 					<project-info />
@@ -49,19 +50,18 @@
 			<div class="content-wrapper">
 				<v-resizeable
 					v-model:width="mainWidth"
-					:default-width="590"
-					:min-width="590"
-					:max-width="maxWithMain"
+					:min-width="SIZES.minContentWidth"
+					:max-width="maxWidthMain"
 					:disabled="!splitViewWritable"
 					:options="mainResizeOptions"
-					@dragging="(value) => (isDraggingSplitView = value)"
+					@dragging="(value) => (isDraggingMain = value)"
 				>
-					<main v-show="contentWidth >= 600 || !splitViewWritable">
+					<main v-show="showMain">
 						<slot />
 					</main>
 				</v-resizeable>
 
-				<div v-if="splitView" id="split-content" :class="{ 'is-dragging': isDraggingSplitView }">
+				<div v-if="splitView" id="split-content" :class="{ 'is-dragging': isDraggingMain }">
 					<slot name="splitView" />
 				</div>
 			</div>
@@ -118,17 +118,27 @@ import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 
+const SIZES = {
+	moduleBarWidth: 60,
+	minModuleNavWidth: 220,
+	minContentWidth: 590,
+	collapsedSidebarWidth: 60,
+	overlaySpace: 60,
+} as const;
+
 const props = withDefaults(
 	defineProps<{
 		title?: string | null;
 		smallHeader?: boolean;
 		headerShadow?: boolean;
 		splitView?: boolean;
+		splitViewMinWidth?: number;
 		sidebarShadow?: boolean;
 	}>(),
 	{
 		title: null,
 		headerShadow: true,
+		splitViewMinWidth: 0,
 	}
 );
 
@@ -145,34 +155,78 @@ const contentEl = ref<HTMLElement>();
 const headerBarEl = ref();
 const sidebarEl = ref<Element>();
 
+let navTransitionTimer: ReturnType<typeof setTimeout>;
+let previousContentOverflowX: string | null = null;
+
+const resetContentOverflowX = () => {
+	if (previousContentOverflowX !== null && contentEl.value) {
+		contentEl.value.style.overflowY = previousContentOverflowX;
+		previousContentOverflowX = null;
+	}
+
+	clearTimeout(navTransitionTimer);
+};
+
 watch(splitViewWritable, () => {
 	if (!headerBarEl.value || !contentEl.value) return;
 
-	const previousOverflowY = contentEl.value.style.overflowY;
+	previousContentOverflowX = contentEl.value.style.overflowX;
+	contentEl.value.style.overflowX = 'hidden';
+	navTransitionTimer = setTimeout(resetContentOverflowX, 1500);
+
+	const previousContentOverflowY = contentEl.value.style.overflowY;
 	contentEl.value.style.overflowY = 'hidden';
 
-	useEventListener(
-		headerBarEl.value,
-		'transitionend',
-		() => {
-			if (contentEl.value) {
-				contentEl.value.style.overflowY = previousOverflowY;
-			}
-		},
-		{ once: true }
-	);
+	let headerBarTransitionTimer: ReturnType<typeof setTimeout>;
+	let cleanupListener: () => void;
+
+	const resetContentOverflowY = () => {
+		if (contentEl.value) {
+			contentEl.value.style.overflowY = previousContentOverflowY;
+		}
+
+		clearTimeout(headerBarTransitionTimer);
+		cleanupListener();
+	};
+
+	headerBarTransitionTimer = setTimeout(resetContentOverflowY, 1500);
+	cleanupListener = useEventListener(headerBarEl.value, 'transitionend', resetContentOverflowY);
 });
 
 const { width: windowWidth } = useWindowSize();
 const { width: sidebarWidth } = useElementSize(sidebarEl);
-const { width: contentWidth } = useElementSize(contentEl);
+
+const showMain = computed(() => {
+	if (!splitViewWritable.value) {
+		return true;
+	}
+
+	let remainigPlace;
+
+	if (windowWidth.value >= 1260) {
+		remainigPlace =
+			windowWidth.value - SIZES.moduleBarWidth - SIZES.minModuleNavWidth - SIZES.minContentWidth - sidebarWidth.value;
+	} else if (windowWidth.value >= 960) {
+		remainigPlace =
+			windowWidth.value -
+			SIZES.moduleBarWidth -
+			SIZES.minModuleNavWidth -
+			SIZES.minContentWidth -
+			SIZES.collapsedSidebarWidth;
+	} else {
+		// split view
+		remainigPlace = windowWidth.value - SIZES.minContentWidth;
+	}
+
+	return remainigPlace >= props.splitViewMinWidth;
+});
 
 const { data: localStorageModuleWidth } = useLocalStorage<{
 	nav?: number;
 	main?: number;
 }>('module-width', {});
 
-const navWidth = ref(getWidth(localStorageModuleWidth.value?.nav, 220));
+const navWidth = ref(getWidth(localStorageModuleWidth.value?.nav, SIZES.minModuleNavWidth));
 
 watch(
 	navWidth,
@@ -184,7 +238,7 @@ watch(
 	}, 300)
 );
 
-const mainWidth = ref(getWidth(localStorageModuleWidth.value?.main, 590));
+const mainWidth = ref(getWidth(localStorageModuleWidth.value?.main, SIZES.minContentWidth));
 
 watch(
 	mainWidth,
@@ -196,67 +250,74 @@ watch(
 	}, 300)
 );
 
-const maxWithNav = computed(() => {
-	const useMainWidth = props.splitView ? mainWidth.value : 590;
+const isDraggingNav = ref(false);
 
-	if (windowWidth.value > 1260) {
-		// 590 = minimum content width, 60 = module bar width, and dynamic side bar width
-		return windowWidth.value - (useMainWidth + 60 + sidebarWidth.value);
-	} else if (windowWidth.value > 960) {
-		// 590 = minimum content width, 60 = module bar width, 60 = side bar width
-		return windowWidth.value - (useMainWidth + 60 + 60);
+const maxWidthNav = computed(() => {
+	const splitViewMinWidth = splitViewWritable.value ? props.splitViewMinWidth : 0;
+	const useMainWidth = showMain.value ? SIZES.minContentWidth + splitViewMinWidth : SIZES.minContentWidth;
+
+	let maxWidth;
+
+	if (windowWidth.value >= 1260) {
+		maxWidth = windowWidth.value - SIZES.moduleBarWidth - useMainWidth - sidebarWidth.value;
+	} else if (windowWidth.value >= 960) {
+		maxWidth = windowWidth.value - SIZES.moduleBarWidth - useMainWidth - SIZES.collapsedSidebarWidth;
 	} else {
-		// first 60 = module bar width, second 60 = room for overlay
-		return windowWidth.value - (60 + 60);
+		maxWidth = windowWidth.value - SIZES.moduleBarWidth + SIZES.overlaySpace;
 	}
+
+	return Math.max(maxWidth, SIZES.minModuleNavWidth);
 });
 
-const maxWithMain = computed(() => {
-	if (windowWidth.value > 1260) {
-		// dynamic module nav width, 60 = module bar width, and dynamic side bar width
-		return windowWidth.value - (navWidth.value + 60 + sidebarWidth.value);
-	} else if (windowWidth.value > 960) {
-		// dynamic module nav width, 60 = module bar width, 60 = side bar width
-		return windowWidth.value - (navWidth.value + 60 + 60);
+const maxWidthMain = computed(() => {
+	const splitViewMinWidth = splitViewWritable.value ? props.splitViewMinWidth : 0;
+
+	let maxWidth;
+
+	if (windowWidth.value >= 1260) {
+		maxWidth = windowWidth.value - SIZES.moduleBarWidth - navWidth.value - splitViewMinWidth - sidebarWidth.value;
+	} else if (windowWidth.value >= 960) {
+		maxWidth =
+			windowWidth.value - SIZES.moduleBarWidth - navWidth.value - splitViewMinWidth - SIZES.collapsedSidebarWidth;
 	} else {
-		// first 60 = module bar width, second 60 = room for overlay
-		return windowWidth.value - (60 + 60);
+		// split view
+		maxWidth = windowWidth.value - splitViewMinWidth;
 	}
+
+	return Math.max(maxWidth, SIZES.minContentWidth);
 });
 
 const navResizeOptions = computed<ResizeableOptions>(() => {
 	return {
 		snapZones: [
-			{ width: 20, snapPos: 220 },
+			{ width: 40, snapPos: SIZES.minModuleNavWidth, direction: 'left' },
 			{
-				width: 100,
-				snapPos: maxWithNav.value,
-				onPointerUp: () => {
-					if (splitViewWritable.value === true) splitViewWritable.value = false;
-				},
+				width: 40,
+				snapPos: maxWidthNav.value,
+				direction: 'right',
 			},
 		],
 	};
 });
 
-const isDraggingSplitView = ref(false);
+const isDraggingMain = ref(false);
 
 const mainResizeOptions = computed<ResizeableOptions>(() => {
 	return {
 		snapZones: [
 			{
-				width: 100,
-				snapPos: maxWithMain.value,
-				onPointerUp: () => {
-					splitViewWritable.value = false;
-				},
+				width: 40,
+				snapPos: SIZES.minContentWidth,
+				direction: 'left',
 			},
 			{
-				width: 20,
-				snapPos: maxWithMain.value / 2,
+				width: 40,
+				snapPos: maxWidthMain.value,
+				direction: 'right',
 			},
 		],
 		alwaysShowHandle: true,
+		disableTransition: isDraggingNav.value,
 	};
 });
 

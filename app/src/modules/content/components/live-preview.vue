@@ -1,5 +1,5 @@
 <template>
-	<div class="live-preview" :class="{ fullscreen }">
+	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen }">
 		<div class="header">
 			<v-button
 				v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
@@ -66,34 +66,29 @@
 				<v-icon small name="devices" />
 			</v-button>
 		</div>
-		<div class="iframe-view">
-			<div
-				ref="resizeHandle"
-				class="resize-handle"
-				:style="{
-					width: width ? `${width}px` : '100%',
-					height: height ? `${height}px` : '100%',
-					resize: fullscreen ? 'none' : 'both',
-					...(zoom < 1 && { transform: `scale(${zoom})` }),
-					overflow: zoom > 1 ? 'auto' : 'hidden',
-				}"
-			>
-				<iframe
-					id="frame"
-					ref="frameEl"
-					:src="url"
+		<div class="container">
+			<div class="iframe-view" :style="iframeViewStyle">
+				<div
+					ref="resizeHandle"
+					class="resize-handle"
 					:style="{
-						...(zoom > 1 && { transform: `scale(${zoom})`, 'transform-origin': 'top left' }),
+						width: width ? `${width}px` : '100%',
+						height: height ? `${height}px` : '100%',
+						resize: fullscreen ? 'none' : 'both',
+						transform: `scale(${zoom})`,
+						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
 					}"
-					@load="onIframeLoad"
-				/>
+				>
+					<iframe id="frame" ref="frameEl" :src="url" @load="onIframeLoad" />
+				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { useElementSize } from '@directus/composables';
+import { CSSProperties, computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 declare global {
@@ -121,6 +116,39 @@ const displayHeight = ref<number>();
 const isRefreshing = ref(false);
 
 const resizeHandle = ref<HTMLDivElement>();
+const livePreviewEl = ref<HTMLElement>();
+
+const livePreviewSize = useElementSize(livePreviewEl);
+
+const iframeViewStyle = computed(() => {
+	const style: CSSProperties = {};
+
+	if (zoom.value <= 1) {
+		style.placeItems = 'center';
+	}
+
+	if (zoom.value > 1 && width.value && height.value) {
+		const paddingWidth = (livePreviewSize.width.value - width.value * zoom.value) / 2;
+		const paddingLeft = Math.max((livePreviewSize.width.value - width.value * zoom.value) / 2, 48);
+		style.paddingLeft = `${paddingLeft}px`;
+
+		if (paddingWidth < 48) {
+			const iframeViewWidth = 48 + width.value * zoom.value + 48;
+			style.width = `${iframeViewWidth}px`;
+		}
+
+		const paddingHeight = (livePreviewSize.height.value - 44 - height.value * zoom.value) / 2;
+		const paddingTop = Math.max(paddingHeight, 48);
+		style.paddingTop = `${paddingTop}px`;
+
+		if (paddingHeight < 48) {
+			const iframeViewHeight = 48 + height.value * zoom.value + 48;
+			style.height = `${iframeViewHeight}px`;
+		}
+	}
+
+	return style;
+});
 
 const fullscreen = computed(() => {
 	return width.value === undefined && height.value === undefined;
@@ -228,13 +256,17 @@ onMounted(() => {
 		}
 	}
 
-	.iframe-view {
+	.container {
 		width: 100%;
 		height: calc(100% - 44px);
 		overflow: auto;
-		position: relative;
+	}
+
+	.iframe-view {
+		width: 100%;
+		height: 100%;
+		overflow: auto;
 		display: grid;
-		place-items: center;
 		padding: 48px;
 
 		#frame {
@@ -244,6 +276,7 @@ onMounted(() => {
 		}
 
 		.resize-handle {
+			overflow: hidden;
 			box-shadow: 0px 4px 12px -4px rgba(0, 0, 0, 0.2);
 		}
 	}

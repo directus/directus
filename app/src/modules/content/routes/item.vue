@@ -3,7 +3,7 @@
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view v-else v-model:splitView="splitView" :title="title">
+	<private-view v-else v-model:splitView="splitView" :split-view-min-width="310" :title="title">
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
