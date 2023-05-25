@@ -232,6 +232,9 @@ importers:
       mime-types:
         specifier: 2.1.35
         version: 2.1.35
+      minimatch:
+        specifier: 9.0.1
+        version: 9.0.1
       ms:
         specifier: 2.1.3
         version: 2.1.3
@@ -251,8 +254,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       openapi3-ts:
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 4.1.2
+        version: 4.1.2
       openid-client:
         specifier: 5.4.2
         version: 5.4.2
@@ -702,6 +705,9 @@ importers:
       '@vue/test-utils':
         specifier: 2.3.2
         version: 2.3.2(vue@3.3.4)
+      '@vueuse/core':
+        specifier: 10.1.2
+        version: 10.1.2(vue@3.3.4)
       apexcharts:
         specifier: 3.40.0
         version: 3.40.0
@@ -1230,8 +1236,8 @@ importers:
   packages/specs:
     dependencies:
       openapi3-ts:
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 4.1.2
+        version: 4.1.2
     devDependencies:
       npm-watch:
         specifier: 0.11.0
@@ -15033,7 +15039,6 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
-    dev: true
 
   /minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
@@ -15762,8 +15767,8 @@ packages:
     resolution: {integrity: sha512-XpeCy01X6L5EpP+6Hc3jWN7rMZJ+/k1lwki/kTmWzbVhdPie3jd5O2ZtedEx8Yp58icJ0osVldLMrTB/zslQXA==}
     dev: true
 
-  /openapi3-ts@3.2.0:
-    resolution: {integrity: sha512-/ykNWRV5Qs0Nwq7Pc0nJ78fgILvOT/60OxEmB3v7yQ8a8Bwcm43D4diaYazG/KBn6czA+52XYy931WFLMCUeSg==}
+  /openapi3-ts@4.1.2:
+    resolution: {integrity: sha512-B7gOkwsYMZO7BZXwJzXCuVagym2xhqsrilVvV0dnq2Di4+iLUXKVX9gOK23ZqaAHZOwABXN0QTdW8QnkUTX6DA==}
     dependencies:
       yaml: 2.2.2
     dev: false

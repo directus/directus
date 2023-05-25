@@ -1,11 +1,14 @@
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
+import bytes from 'bytes';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
+import { minimatch } from 'minimatch';
 import path from 'path';
 import env from '../env.js';
+import { ContentTooLargeException } from '../exceptions/content-too-large.js';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -34,7 +37,14 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		};
 	}
 
-	const busboy = Busboy({ headers, defParamCharset: 'utf8' });
+	const busboy = Busboy({
+		headers,
+		defParamCharset: 'utf8',
+		limits: {
+			fileSize: env['FILES_MAX_UPLOAD_SIZE'] ? bytes(env['FILES_MAX_UPLOAD_SIZE'] as string) : undefined,
+		},
+	});
+
 	const savedFiles: PrimaryKey[] = [];
 	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
@@ -69,6 +79,13 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			return busboy.emit('error', new InvalidPayloadException(`File is missing filename`));
 		}
 
+		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
+
+		if (mimeTypeAllowed === false) {
+			return busboy.emit('error', new InvalidPayloadException(`File is of invalid content type`));
+		}
+
 		fileCount++;
 
 		if (!existingPrimaryKey) {
@@ -87,6 +104,11 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 
 		// Clear the payload for the next to-be-uploaded file
 		payload = {};
+
+		fileStream.on('limit', () => {
+			const error = new ContentTooLargeException(`Uploaded file is too large`);
+			next(error);
+		});
 
 		try {
 			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
