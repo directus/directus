@@ -242,14 +242,14 @@ function navigateBack() {
 		return;
 	}
 
-	router.push(`/content/directus_translations`);
+	router.push(`/settings/translations`);
 }
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
 			name: collectionInfo.value?.name,
-			to: `/content/directus_translations`,
+			to: `/settings/translations`,
 		},
 	]);
 
@@ -261,6 +261,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
+		router.push(`/settings/translations`);
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -276,7 +277,7 @@ async function saveAndStay() {
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-			router.replace(`/content/directus_translations/${encodeURIComponent(newPrimaryKey)}`);
+			router.replace(`/settings/translations/${encodeURIComponent(newPrimaryKey)}`);
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -292,7 +293,7 @@ async function saveAndAddNew() {
 		if (isNew.value === true) {
 			refresh();
 		} else {
-			router.push(`/content/directus_translations/+`);
+			router.push(`/settings/translations/+`);
 		}
 	} catch {
 		// Save shows unexpected error dialog
@@ -302,7 +303,7 @@ async function saveAndAddNew() {
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
-		if (newPrimaryKey) router.replace(`/content/directus_translations/${encodeURIComponent(newPrimaryKey)}`);
+		if (newPrimaryKey) router.replace(`/settings/translations/${encodeURIComponent(newPrimaryKey)}`);
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -312,7 +313,7 @@ async function deleteAndQuit() {
 	try {
 		await remove();
 		edits.value = {};
-		router.replace(`/content/directus_translations`);
+		router.replace(`/settings/translations`);
 	} catch {
 		// `remove` will show the unexpected error dialog
 	}
