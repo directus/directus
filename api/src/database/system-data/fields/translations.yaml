@@ -1,0 +1,16 @@
+table: directus_translations
+
+fields:
+  - field: id
+    hidden: true
+    sort: 1
+  - field: key
+    width: half
+    sort: 2
+  - field: language
+    interface: system-language
+    width: half
+    sort: 3
+  - field: value
+    interface: input-multiline
+    sort: 4
