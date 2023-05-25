@@ -1,25 +1,7 @@
 <template>
 	<content-not-found v-if="error" />
 
-	<private-view v-else :title="title">
-		<template v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === true" #title>
-			<h1 class="type-title">
-				{{ collectionInfo!.name }}
-			</h1>
-		</template>
-
-		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
-			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
-
-			<h1 v-else class="type-title">
-				<render-template
-					:collection="collectionInfo.collection"
-					:item="templateData"
-					:template="collectionInfo.meta.display_template"
-				/>
-			</h1>
-		</template>
-
+	<private-view v-else :title="primaryKey === '+' ? t('create_translation_string') : t('edit_translation_string')">
 		<template #title-outer:prepend>
 			<v-button
 				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
@@ -155,12 +137,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useLocalStorage } from '@/composables/use-local-storage';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useTitle } from '@/composables/use-title';
@@ -182,7 +163,7 @@ const props = withDefaults(defineProps<Props>(), {
 	primaryKey: null,
 });
 
-const { t, te } = useI18n();
+const { t } = useI18n();
 
 const router = useRouter();
 
@@ -235,36 +216,6 @@ const isSavable = computed(() => {
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
-
-const title = computed(() => {
-	if (te(`collection_names_singular.directus_translations`)) {
-		return isNew.value
-			? t('creating_unit', { unit: t(`collection_names_singular.directus_translations`) })
-			: t('editing_unit', { unit: t(`collection_names_singular.directus_translations`) });
-	}
-
-	return isNew.value
-		? t('creating_in', { collection: collectionInfo.value?.name })
-		: t('editing_in', { collection: collectionInfo.value?.name });
-});
-
-const tabTitle = computed(() => {
-	let tabTitle = (collectionInfo.value?.name || '') + ' | ';
-
-	if (collectionInfo.value && collectionInfo.value.meta) {
-		if (collectionInfo.value.meta.singleton === true) {
-			return tabTitle + collectionInfo.value.name;
-		} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
-			const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
-
-			if (displayValue.value !== undefined) return tabTitle + displayValue.value;
-		}
-	}
-
-	return tabTitle + title.value;
-});
-
-useTitle(tabTitle);
 
 useShortcut('meta+s', saveAndStay, form);
 useShortcut('meta+shift+s', saveAndAddNew, form);

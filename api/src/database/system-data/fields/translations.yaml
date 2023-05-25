@@ -7,6 +7,10 @@ fields:
   - field: key
     width: half
     sort: 2
+    interface: input
+    options:
+      font: monospace
+      slug: true
   - field: language
     interface: system-language
     width: half
