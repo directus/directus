@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Prevented formatting translation strings before translation
+Translated field names in collection dialog
