@@ -682,9 +682,10 @@ purposes, collection of additional metadata must be configured:
 
 ### Upload Limits
 
-| Variable                | Description                                                         | Default Value |
-| ----------------------- | ------------------------------------------------------------------- | ------------- |
-| `FILES_MAX_UPLOAD_SIZE` | Maximum file upload size allowed. For example `10mb`, `1gb`, `10kb` |               |
+| Variable                     | Description                                                                      | Default Value |
+| ---------------------------- | -------------------------------------------------------------------------------- | ------------- |
+| `FILES_MAX_UPLOAD_SIZE`      | Maximum file upload size allowed. For example `10mb`, `1gb`, `10kb`              |               |
+| `FILES_MIME_TYPE_ALLOW_LIST` | Allow list of mime types that are allowed to be uploaded. Supports `glob` syntax | `*/*`         |
 
 ## Assets
 
