@@ -5,6 +5,7 @@ import bytes from 'bytes';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
+import { minimatch } from 'minimatch';
 import path from 'path';
 import env from '../env.js';
 import { ContentTooLargeException } from '../exceptions/content-too-large.js';
@@ -76,6 +77,13 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 	busboy.on('file', async (_fieldname, fileStream, { filename, mimeType }) => {
 		if (!filename) {
 			return busboy.emit('error', new InvalidPayloadException(`File is missing filename`));
+		}
+
+		const allowedPatterns = toArray(env['FILES_MIME_TYPE_ALLOW_LIST'] as string | string[]);
+		const mimeTypeAllowed = allowedPatterns.some((pattern) => minimatch(mimeType, pattern));
+
+		if (mimeTypeAllowed === false) {
+			return busboy.emit('error', new InvalidPayloadException(`File is of invalid content type`));
 		}
 
 		fileCount++;
