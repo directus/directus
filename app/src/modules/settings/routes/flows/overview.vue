@@ -129,7 +129,7 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { Sort, Header } from '@/components/v-table/types';
 import { router } from '@/router';
@@ -245,6 +245,7 @@ async function toggleFlowStatusById(id: string, value: string) {
 		await api.patch(`/flows/${id}`, {
 			status: value === 'active' ? 'inactive' : 'active',
 		});
+
 		await flowsStore.hydrate();
 	} catch (error) {
 		unexpectedError(error as Error);

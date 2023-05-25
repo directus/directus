@@ -51,6 +51,7 @@ export async function down(knex: Knex): Promise<void> {
 
 	for (const { id, special } of fields) {
 		let parsedSpecial;
+
 		try {
 			parsedSpecial = toArray(special);
 		} catch {

@@ -62,168 +62,137 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, provide, watch } from 'vue';
+<script setup lang="ts">
+import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
+import { fetchAll } from '@/utils/fetch-all';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Permission } from '@directus/types';
+import { orderBy } from 'lodash';
+import { computed, provide, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { appMinimalPermissions, appRecommendedPermissions } from '../../app-permissions';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
-import { Permission } from '@directus/types';
-import api from '@/api';
-import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { orderBy } from 'lodash';
 
-export default defineComponent({
-	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
-	props: {
-		role: {
-			type: String,
-			default: null,
-		},
-		permission: {
-			// the permission row primary key in case we're on the permission detail modal view
-			type: String,
-			default: null,
-		},
-		appAccess: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	role?: string;
+	// the permission row primary key in case we're on the permission detail modal view
+	permission?: string;
+	appAccess?: boolean;
+}>();
 
-		const collectionsStore = useCollectionsStore();
+const { t } = useI18n();
 
-		const regularCollections = computed(() => collectionsStore.databaseCollections);
+const collectionsStore = useCollectionsStore();
 
-		const systemCollections = computed(() =>
-			orderBy(
-				collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
-				'name'
-			)
-		);
+const regularCollections = computed(() => collectionsStore.databaseCollections);
 
-		const systemVisible = ref(false);
+const systemCollections = computed(() =>
+	orderBy(
+		collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true),
+		'name'
+	)
+);
 
-		const { permissions, loading, fetchPermissions, refreshPermission, refreshing } = usePermissions();
+const systemVisible = ref(false);
 
-		const { resetActive, resetSystemPermissions, resetting, resetError } = useReset();
+const { permissions, fetchPermissions, refreshing } = usePermissions();
 
-		fetchPermissions();
+const { resetActive, resetSystemPermissions, resetting } = useReset();
 
-		watch(() => props.permission, fetchPermissions, { immediate: true });
+fetchPermissions();
 
-		provide('refresh-permissions', fetchPermissions);
+watch(() => props.permission, fetchPermissions, { immediate: true });
 
-		return {
-			t,
-			systemVisible,
-			regularCollections,
-			systemCollections,
-			permissions,
-			loading,
-			fetchPermissions,
-			refreshPermission,
-			refreshing,
-			resetActive,
-			resetSystemPermissions,
-			resetting,
-			resetError,
-			appMinimalPermissions,
-		};
+provide('refresh-permissions', fetchPermissions);
 
-		function usePermissions() {
-			const permissions = ref<Permission[]>([]);
-			const loading = ref(false);
-			const refreshing = ref<number[]>([]);
+function usePermissions() {
+	const permissions = ref<Permission[]>([]);
+	const loading = ref(false);
+	const refreshing = ref<number[]>([]);
 
-			return { permissions, loading, fetchPermissions, refreshPermission, refreshing };
+	return { permissions, loading, fetchPermissions, refreshPermission, refreshing };
 
-			async function fetchPermissions() {
-				loading.value = true;
+	async function fetchPermissions() {
+		loading.value = true;
 
-				try {
-					const params: any = { filter: { role: {} }, limit: -1 };
+		try {
+			const params: any = { filter: { role: {} } };
 
-					if (props.role === null) {
-						params.filter.role = { _null: true };
-					} else {
-						params.filter.role = { _eq: props.role };
-					}
-
-					const response = await api.get('/permissions', { params });
-
-					permissions.value = response.data.data;
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					loading.value = false;
-				}
+			if (props.role === null) {
+				params.filter.role = { _null: true };
+			} else {
+				params.filter.role = { _eq: props.role };
 			}
 
-			async function refreshPermission(id: number) {
-				if (refreshing.value.includes(id) === false) {
-					refreshing.value.push(id);
-				}
+			permissions.value = await fetchAll('/permissions', { params });
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			loading.value = false;
+		}
+	}
 
-				try {
-					const response = await api.get(`/permissions/${id}`);
-
-					permissions.value = permissions.value.map((permission) => {
-						if (permission.id === id) return response.data.data;
-						return permission;
-					});
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
-				}
-			}
+	async function refreshPermission(id: number) {
+		if (refreshing.value.includes(id) === false) {
+			refreshing.value.push(id);
 		}
 
-		function useReset() {
-			const resetActive = ref<string | boolean>(false);
-			const resetting = ref(false);
-			const resetError = ref<any>(null);
+		try {
+			const response = await api.get(`/permissions/${id}`);
 
-			return { resetActive, resetSystemPermissions, resetting, resetError };
-
-			async function resetSystemPermissions(useRecommended: boolean) {
-				resetting.value = true;
-
-				const toBeDeleted = permissions.value
-					.filter((permission) => permission.collection.startsWith('directus_'))
-					.map((permission) => permission.id);
-
-				try {
-					if (toBeDeleted.length > 0) {
-						await api.delete(`/permissions`, { data: toBeDeleted });
-					}
-
-					if (props.role !== null && props.appAccess === true && useRecommended === true) {
-						await api.post(
-							'/permissions',
-							appRecommendedPermissions.map((permission) => ({
-								...permission,
-								role: props.role,
-							}))
-						);
-					}
-
-					await fetchPermissions();
-
-					resetActive.value = false;
-				} catch (err: any) {
-					resetError.value = err;
-				} finally {
-					resetting.value = false;
-				}
-			}
+			permissions.value = permissions.value.map((permission) => {
+				if (permission.id === id) return response.data.data;
+				return permission;
+			});
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 		}
-	},
-});
+	}
+}
+
+function useReset() {
+	const resetActive = ref<string | boolean>(false);
+	const resetting = ref(false);
+	const resetError = ref<any>(null);
+
+	return { resetActive, resetSystemPermissions, resetting, resetError };
+
+	async function resetSystemPermissions(useRecommended: boolean) {
+		resetting.value = true;
+
+		const toBeDeleted = permissions.value
+			.filter((permission) => permission.collection.startsWith('directus_'))
+			.map((permission) => permission.id);
+
+		try {
+			if (toBeDeleted.length > 0) {
+				await api.delete(`/permissions`, { data: toBeDeleted });
+			}
+
+			if (props.role !== null && props.appAccess === true && useRecommended === true) {
+				await api.post(
+					'/permissions',
+					appRecommendedPermissions.map((permission) => ({
+						...permission,
+						role: props.role,
+					}))
+				);
+			}
+
+			await fetchPermissions();
+
+			resetActive.value = false;
+		} catch (err: any) {
+			resetError.value = err;
+		} finally {
+			resetting.value = false;
+		}
+	}
+}
 </script>
 
 <style lang="scss" scoped>

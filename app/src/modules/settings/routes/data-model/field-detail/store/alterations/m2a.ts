@@ -96,6 +96,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	const fieldsStore = useFieldsStore();
 
 	const currentCollection = state.collection!;
+
 	const currentCollectionPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
 
@@ -105,11 +106,13 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	set(updates, 'relations.o2m.field', `${currentCollection}_${currentCollectionPrimaryKeyField}`);
 	set(updates, 'relations.m2o.collection', junctionName);
 	set(updates, 'relations.m2o.field', 'item');
+
 	set(
 		updates,
 		'relations.m2o.meta.one_allowed_collections',
 		getCurrent('relations.m2o.meta.one_allowed_collections') ?? []
 	);
+
 	set(updates, 'relations.m2o.meta.one_collection_field', 'collection');
 }
 

@@ -4,14 +4,14 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
+import { parseJSON } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
-import { parseJSON } from '@directus/utils';
 
 const props = withDefaults(
 	defineProps<{
@@ -40,8 +40,9 @@ const { width } = useWindowSize();
 
 const codemirrorEl = ref<HTMLTextAreaElement | null>();
 let codemirror: CodeMirror.Editor | null;
+let previousContent: string | null = null;
 
-const isMultiLine = computed(() => ['text', 'json'].includes(props.type));
+const isMultiLine = computed(() => ['text', 'json'].includes(props.type!));
 
 onMounted(async () => {
 	if (codemirrorEl.value) {
@@ -73,6 +74,7 @@ onMounted(async () => {
 				if (typedNewLine) return cancel();
 
 				const pastedNewLine = origin === 'paste' && typeof text === 'object' && text.length > 1;
+
 				if (pastedNewLine) {
 					const newText = text.join(' ');
 					if (!update) return;
@@ -84,8 +86,14 @@ onMounted(async () => {
 		}
 
 		codemirror.on('change', (doc, { origin }) => {
-			if (origin === 'setValue') return;
 			const content = doc.getValue();
+
+			// prevent duplicate emits with same content
+			if (content === previousContent) return;
+			previousContent = content;
+
+			if (origin === 'setValue') return;
+
 			if (typeof props.value === 'object') {
 				try {
 					emit('input', content !== '' ? parseJSON(content) : null);

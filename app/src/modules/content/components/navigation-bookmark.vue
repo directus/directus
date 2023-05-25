@@ -85,7 +85,7 @@
 	</v-list-item>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
@@ -126,11 +126,13 @@ const name = computed(() => translate(props.bookmark.bookmark));
 
 function useEditBookmark() {
 	const editActive = ref(false);
+
 	const editValue = reactive({
 		name: props.bookmark.bookmark,
 		icon: props.bookmark?.icon ?? 'bookmark',
 		color: props.bookmark?.color ?? null,
 	});
+
 	const editSaving = ref(false);
 
 	return { editActive, editValue, editSave, editSaving, editCancel };

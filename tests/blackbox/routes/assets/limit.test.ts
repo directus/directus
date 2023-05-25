@@ -7,11 +7,13 @@ import * as common from '@common/index';
 
 const assetsDirectory = [__dirname, '..', '..', 'assets'];
 const storages = ['local', 'minio'];
+
 const imageFile = {
 	name: 'directus.png',
 	type: 'image/png',
 	filesize: '7136',
 };
+
 const imageFilePath = path.join(...assetsDirectory, imageFile.name);
 
 describe('/assets', () => {
@@ -24,6 +26,7 @@ describe('/assets', () => {
 						async (vendor) => {
 							// Setup
 							const count = Number(config.envs[vendor].ASSETS_TRANSFORM_MAX_CONCURRENT);
+
 							const uploadedFileID = (
 								await request(getUrl(vendor))
 									.post('/files')
@@ -60,6 +63,7 @@ describe('/assets', () => {
 						async (vendor) => {
 							// Setup
 							const attempts = 100;
+
 							const uploadedFileID = (
 								await request(getUrl(vendor))
 									.post('/files')
@@ -82,6 +86,7 @@ describe('/assets', () => {
 							// Assert
 							const unavailableCount = responses.filter((response) => response.statusCode === 503).length;
 							expect(unavailableCount).toBeGreaterThanOrEqual(1);
+
 							expect(responses.filter((response) => response.statusCode === 200).length).toBe(
 								attempts - unavailableCount
 							);

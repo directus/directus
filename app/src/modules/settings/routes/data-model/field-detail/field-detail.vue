@@ -38,8 +38,8 @@
 	</v-drawer>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
+<script setup lang="ts">
+import { ref, computed, toRefs, watch } from 'vue';
 import { LocalType } from '@directus/types';
 import { useFieldDetailStore } from './store/';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
@@ -55,87 +55,79 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { storeToRefs } from 'pinia';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export default defineComponent({
-	name: 'FieldDetail',
-	components: { FieldDetailSimple, FieldDetailAdvanced, FieldDetailAdvancedTabs, FieldDetailAdvancedActions },
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		field: {
-			type: String,
-			required: true,
-		},
-		type: {
-			type: String as PropType<LocalType>,
-			default: null,
-		},
+const props = withDefaults(
+	defineProps<{
+		collection: string;
+		field: string;
+		type: LocalType | null;
+	}>(),
+	{
+		type: null,
+	}
+);
+
+const { collection, field, type } = toRefs(props);
+
+const search = ref<string | null>(null);
+
+const isOpen = useDialogRoute();
+
+const fieldDetail = useFieldDetailStore();
+
+const { editing } = storeToRefs(fieldDetail);
+
+watch(
+	field,
+	() => {
+		fieldDetail.startEditing(collection.value, field.value, type.value ?? undefined);
 	},
-	setup(props) {
-		const { collection } = toRefs(props);
+	{ immediate: true }
+);
 
-		const search = ref<string | null>(null);
+const collectionsStore = useCollectionsStore();
+const fieldsStore = useFieldsStore();
+const router = useRouter();
+const { t } = useI18n();
 
-		const isOpen = useDialogRoute();
-
-		const fieldDetail = useFieldDetailStore();
-
-		const { editing } = storeToRefs(fieldDetail);
-
-		watch(
-			() => props.field,
-			() => fieldDetail.startEditing(props.collection, props.field, props.type),
-			{ immediate: true }
-		);
-
-		const collectionsStore = useCollectionsStore();
-		const fieldsStore = useFieldsStore();
-		const router = useRouter();
-		const { t } = useI18n();
-
-		const collectionInfo = computed(() => {
-			return collectionsStore.getCollection(collection.value);
-		});
-
-		const simple = ref(props.type === null);
-
-		const title = computed(() => {
-			const existingField = fieldsStore.getField(props.collection, props.field);
-			const fieldName = existingField?.name || formatTitle(fieldDetail.field.name || '');
-
-			if (props.field === '+' && fieldName === '') {
-				return t('creating_new_field', { collection: collectionInfo.value?.name });
-			} else {
-				return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
-			}
-		});
-
-		const currentTab = ref(['schema']);
-
-		const showAdvanced = computed(() => {
-			return editing.value !== '+' || !simple.value;
-		});
-
-		return { search, simple, cancel, collectionInfo, t, title, save, isOpen, currentTab, showAdvanced };
-
-		async function cancel() {
-			await router.push(`/settings/data-model/${props.collection}`);
-			fieldDetail.$reset();
-		}
-
-		async function save() {
-			try {
-				await fieldDetail.save();
-			} catch (err: any) {
-				unexpectedError(err);
-				return;
-			}
-			router.push(`/settings/data-model/${props.collection}`);
-			fieldDetail.$reset();
-		}
-	},
+const collectionInfo = computed(() => {
+	return collectionsStore.getCollection(collection.value);
 });
+
+const simple = ref(props.type === null);
+
+const title = computed(() => {
+	const existingField = fieldsStore.getField(props.collection, props.field);
+	const fieldName = existingField?.name || formatTitle(fieldDetail.field.name || '');
+
+	if (props.field === '+' && fieldName === '') {
+		return t('creating_new_field', { collection: collectionInfo.value?.name });
+	} else {
+		return t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
+	}
+});
+
+const currentTab = ref(['schema']);
+
+const showAdvanced = computed(() => {
+	return editing.value !== '+' || !simple.value;
+});
+
+async function cancel() {
+	await router.push(`/settings/data-model/${props.collection}`);
+	fieldDetail.$reset();
+}
+
+async function save() {
+	try {
+		await fieldDetail.save();
+	} catch (err: any) {
+		unexpectedError(err);
+		return;
+	}
+
+	router.push(`/settings/data-model/${props.collection}`);
+	fieldDetail.$reset();
+}
 </script>
 
 <style lang="scss" scoped>

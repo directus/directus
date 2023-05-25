@@ -47,9 +47,11 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 
 async function copyError() {
 	const error = props.error?.response?.data || props.error;
+
 	const isCopied = await copyToClipboard(
 		JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2)
 	);
+
 	if (!isCopied) return;
 	copied.value = true;
 }

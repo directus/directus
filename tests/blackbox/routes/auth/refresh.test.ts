@@ -60,6 +60,7 @@ describe('Authentication Refresh Tests', () => {
 
 							// Assert
 							expect(response.statusCode).toBe(200);
+
 							if (mode === 'cookie') {
 								expect(response.body).toMatchObject({
 									data: {
@@ -78,6 +79,7 @@ describe('Authentication Refresh Tests', () => {
 							}
 
 							expect(gqlResponse.statusCode).toBe(200);
+
 							expect(gqlResponse.body).toMatchObject({
 								data: {
 									[mutationKey]: {
@@ -153,6 +155,7 @@ describe('Authentication Refresh Tests', () => {
 
 							// Assert
 							expect(response.statusCode).toBe(200);
+
 							if (mode === 'cookie') {
 								expect(response.body).toMatchObject({
 									data: {
@@ -171,6 +174,7 @@ describe('Authentication Refresh Tests', () => {
 							}
 
 							expect(gqlResponse.statusCode).toBe(200);
+
 							expect(gqlResponse.body).toMatchObject({
 								data: {
 									[mutationKey]: {

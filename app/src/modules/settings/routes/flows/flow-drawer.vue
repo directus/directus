@@ -23,7 +23,7 @@
 					<div class="field half">
 						<div class="type-label">
 							{{ t('flow_name') }}
-							<v-icon v-tooltip="t('required')" class="required" name="star" sup />
+							<v-icon v-tooltip="t('required')" class="required" name="star" sup filled />
 						</div>
 						<v-input v-model="values.name" autofocus :placeholder="t('flow_name')" />
 					</div>
@@ -118,7 +118,7 @@
 	</v-drawer>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';

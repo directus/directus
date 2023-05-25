@@ -1,5 +1,5 @@
 <template>
-	<div :key="field.field" class="field" :class="[field.meta?.width || 'full', { invalid: validationError }]">
+	<div class="field" :class="[field.meta?.width || 'full', { invalid: validationError }]">
 		<v-menu v-if="field.hideLabel !== true" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle, active }">
 				<form-field-label
@@ -31,7 +31,7 @@
 				@paste-raw="pasteRaw"
 			/>
 		</v-menu>
-		<div v-else-if="['full', 'fill'].includes(field.meta?.width) === false" class="label-spacer" />
+		<div v-else-if="['full', 'fill'].includes(field.meta?.width ?? '') === false" class="label-spacer" />
 
 		<form-field-interface
 			:autofocus="autofocus"
@@ -71,20 +71,21 @@
 </template>
 
 <script setup lang="ts">
-import { Field, ValidationError } from '@directus/types';
+import { useClipboard } from '@/composables/use-clipboard';
+import { formatFieldFunction } from '@/utils/format-field-function';
+import { ValidationError } from '@directus/types';
+import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FormFieldInterface from './form-field-interface.vue';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
-import { formatFieldFunction } from '@/utils/format-field-function';
-import { useClipboard } from '@/composables/use-clipboard';
 import FormFieldRawEditor from './form-field-raw-editor.vue';
-import { parseJSON } from '@directus/utils';
+import type { FormField } from './types';
 
 interface Props {
-	field: Field;
+	field: FormField;
 	batchMode?: boolean;
 	batchActive?: boolean;
 	disabled?: boolean;
@@ -145,7 +146,7 @@ const validationPrefix = computed(() => {
 	if (!props.validationError) return null;
 
 	if (props.validationError.field.includes('(') && props.validationError.field.includes(')')) {
-		return formatFieldFunction(props.field.collection, props.validationError.field) + ': ';
+		return formatFieldFunction(props.field.collection!, props.validationError.field) + ': ';
 	}
 
 	return null;
@@ -179,11 +180,13 @@ function useRaw() {
 	async function pasteRaw() {
 		const pastedValue = await pasteFromClipboard();
 		if (!pastedValue) return;
+
 		try {
 			internalValue.value = parseJSON(pastedValue);
 		} catch (e) {
 			internalValue.value = pastedValue;
 		}
+
 		emitValue(internalValue.value);
 	}
 
@@ -193,6 +196,7 @@ function useRaw() {
 function useComputedValues() {
 	const defaultValue = computed<any>(() => props.field?.schema?.default_value);
 	const internalValue = ref<any>(getInternalValue());
+
 	const isEdited = computed(
 		() => props.modelValue !== undefined && isEqual(props.modelValue, props.initialValue) === false
 	);
@@ -201,6 +205,7 @@ function useComputedValues() {
 		() => props.modelValue,
 		() => {
 			const newVal = getInternalValue();
+
 			if (!isEqual(internalValue.value, newVal)) {
 				internalValue.value = newVal;
 			}

@@ -3,7 +3,6 @@ import { toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { Readable } from 'node:stream';
-import os from 'os';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
@@ -15,7 +14,6 @@ import { rateLimiter } from '../middleware/rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
-import { getOSInfo } from '../utils/get-os-info.js';
 import { version } from '../utils/package.js';
 import { SettingsService } from './settings.js';
 
@@ -60,6 +58,7 @@ export class ServerService {
 			} else {
 				info['rateLimit'] = false;
 			}
+
 			if (env['RATE_LIMITER_GLOBAL_ENABLED']) {
 				info['rateLimitGlobal'] = {
 					points: env['RATE_LIMITER_GLOBAL_POINTS'],
@@ -72,25 +71,10 @@ export class ServerService {
 			info['flows'] = {
 				execAllowedModules: env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [],
 			};
-		}
 
-		if (this.accountability?.admin === true) {
-			const { osType, osVersion } = getOSInfo();
-
-			info['directus'] = {
-				version,
-			};
-
-			info['node'] = {
-				version: process.versions.node,
-				uptime: Math.round(process.uptime()),
-			};
-
-			info['os'] = {
-				type: osType,
-				version: osVersion,
-				uptime: Math.round(os.uptime()),
-				totalmem: os.totalmem(),
+			info['queryLimit'] = {
+				default: env['QUERY_LIMIT_DEFAULT'],
+				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,
 			};
 		}
 
@@ -147,6 +131,7 @@ export class ServerService {
 					logger.warn(
 						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`
 					);
+
 					data.status = 'warn';
 					continue;
 				}
@@ -199,7 +184,8 @@ export class ServerService {
 			checks[`${client}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 			if (
-				checks[`${client}:responseTime`]![0]!.observedValue! > checks[`${client}:responseTime`]![0]!.threshold! &&
+				Number(checks[`${client}:responseTime`]![0]!.observedValue!) >
+					checks[`${client}:responseTime`]![0]!.threshold! &&
 				checks[`${client}:responseTime`]![0]!.status !== 'error'
 			) {
 				checks[`${client}:responseTime`]![0]!.status = 'warn';
@@ -357,6 +343,7 @@ export class ServerService {
 			for (const location of toArray(env['STORAGE_LOCATIONS'])) {
 				const disk = storage.location(location);
 				const envThresholdKey = `STORAGE_${location}_HEALTHCHECK_THRESHOLD`.toUpperCase();
+
 				checks[`storage:${location}:responseTime`] = [
 					{
 						status: 'ok',
@@ -372,6 +359,7 @@ export class ServerService {
 				try {
 					await disk.write(`health-${checkID}`, Readable.from(['check']));
 					const fileStream = await disk.read(`health-${checkID}`);
+
 					fileStream.on('data', async () => {
 						fileStream.destroy();
 						await disk.delete(`health-${checkID}`);
@@ -384,7 +372,7 @@ export class ServerService {
 					checks[`storage:${location}:responseTime`]![0]!.observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`]![0]!.observedValue! >
+						Number(checks[`storage:${location}:responseTime`]![0]!.observedValue!) >
 							checks[`storage:${location}:responseTime`]![0]!.threshold! &&
 						checks[`storage:${location}:responseTime`]![0]!.status !== 'error'
 					) {

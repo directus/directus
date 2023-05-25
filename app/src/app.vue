@@ -20,85 +20,79 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, toRefs, watch, computed, onMounted, onUnmounted, StyleValue } from 'vue';
-import { useAppStore } from '@/stores/app';
-import { useUserStore } from '@/stores/user';
-import { useServerStore } from '@/stores/server';
-import { startIdleTracking, stopIdleTracking } from './idle';
+<script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
-
+import { useAppStore } from '@/stores/app';
+import { useServerStore } from '@/stores/server';
+import { useUserStore } from '@/stores/user';
 import { setFavicon } from '@/utils/set-favicon';
 import { User } from '@directus/types';
+import { StyleValue, computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { startIdleTracking, stopIdleTracking } from './idle';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const appStore = useAppStore();
-		const userStore = useUserStore();
-		const serverStore = useServerStore();
+const appStore = useAppStore();
+const userStore = useUserStore();
+const serverStore = useServerStore();
 
-		const { hydrating } = toRefs(appStore);
+const { hydrating } = toRefs(appStore);
 
-		const brandStyle = computed(() => {
-			return {
-				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
-			} as StyleValue;
-		});
-
-		onMounted(() => startIdleTracking());
-		onUnmounted(() => stopIdleTracking());
-
-		watch(
-			[() => serverStore.info?.project?.project_color ?? null, () => serverStore.info?.project?.project_logo ?? null],
-			() => {
-				const hasCustomLogo = !!serverStore.info?.project?.project_logo;
-				setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
-			},
-			{ immediate: true }
-		);
-
-		watch(
-			() => (userStore.currentUser as User)?.theme,
-			(theme) => {
-				document.body.classList.remove('dark');
-				document.body.classList.remove('light');
-				document.body.classList.remove('auto');
-
-				if (theme) {
-					document.body.classList.add(theme);
-					document
-						.querySelector('head meta[name="theme-color"]')
-						?.setAttribute('content', theme === 'light' ? '#ffffff' : '#263238');
-				} else {
-					// Default to auto mode
-					document.body.classList.add('auto');
-				}
-			},
-			{ immediate: true }
-		);
-
-		watch(
-			() => serverStore.info?.project?.project_name,
-			(projectName) => {
-				document.title = projectName || 'Directus';
-			},
-			{ immediate: true }
-		);
-
-		const customCSS = computed(() => {
-			return serverStore.info?.project?.custom_css || '';
-		});
-
-		const error = computed(() => appStore.error);
-
-		useSystem();
-
-		return { t, hydrating, brandStyle, error, customCSS };
-	},
+const brandStyle = computed(() => {
+	return {
+		'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
+	} as StyleValue;
 });
+
+onMounted(() => startIdleTracking());
+onUnmounted(() => stopIdleTracking());
+
+watch(
+	[() => serverStore.info?.project?.project_color ?? null, () => serverStore.info?.project?.project_logo ?? null],
+	() => {
+		const hasCustomLogo = !!serverStore.info?.project?.project_logo;
+		setFavicon(serverStore.info?.project?.project_color, hasCustomLogo);
+	},
+	{ immediate: true }
+);
+
+watch(
+	() => (userStore.currentUser as User)?.theme,
+	(theme) => {
+		document.body.classList.remove('dark');
+		document.body.classList.remove('light');
+		document.body.classList.remove('auto');
+
+		if (theme) {
+			document.body.classList.add(theme);
+
+			document
+				.querySelector('head meta[name="theme-color"]')
+				?.setAttribute('content', theme === 'light' ? '#ffffff' : '#263238');
+		} else {
+			// Default to auto mode
+			document.body.classList.add('auto');
+		}
+	},
+	{ immediate: true }
+);
+
+watch(
+	() => serverStore.info?.project?.project_name,
+	(projectName) => {
+		document.title = projectName || 'Directus';
+	},
+	{ immediate: true }
+);
+
+const customCSS = computed(() => {
+	return serverStore.info?.project?.custom_css || '';
+});
+
+const error = computed(() => appStore.error);
+
+useSystem();
 </script>
 
 <style lang="scss" scoped>

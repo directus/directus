@@ -1,43 +1,40 @@
 {
 	"name": "@directus/update-check",
-	"version": "9.23.4",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --build",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
-	},
+	"version": "10.0.1",
 	"description": "Check if an update is available for a given package",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/update-check"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
+		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"semver": "7.3.8",
-		"undici": "5.21.0"
+		"semver": "7.5.1",
+		"undici": "5.22.1"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
+		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "6.4.0",
-		"@types/semver": "7.3.13",
-		"@vitest/coverage-c8": "0.29.3",
-		"typescript": "4.9.5",
-		"vitest": "0.29.3"
+		"@types/semver": "7.5.0",
+		"@vitest/coverage-c8": "0.31.1",
+		"typescript": "5.0.4",
+		"vitest": "0.31.1"
 	}
 }

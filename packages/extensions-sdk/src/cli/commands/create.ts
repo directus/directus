@@ -16,7 +16,7 @@ import type {
 } from '@directus/types';
 import { isIn } from '@directus/utils';
 import chalk from 'chalk';
-import execa from 'execa';
+import { execa } from 'execa';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
@@ -40,6 +40,7 @@ export default async function create(type: string, name: string, options: Create
 			).join(', ')}.`,
 			'error'
 		);
+
 		process.exit(1);
 	}
 
@@ -124,6 +125,7 @@ async function createLocalExtension({
 			).join(', ')}.`,
 			'error'
 		);
+
 		process.exit(1);
 	}
 
@@ -133,6 +135,7 @@ async function createLocalExtension({
 	await copyTemplate(type, targetPath, 'src', language);
 
 	const host = `^${getSdkVersion()}`;
+
 	const options: ExtensionOptions = isIn(type, HYBRID_EXTENSION_TYPES)
 		? {
 				type,
@@ -146,6 +149,7 @@ async function createLocalExtension({
 				source: `src/index.${languageToShort(language)}`,
 				host,
 		  };
+
 	const packageManifest = getPackageManifest(name, options, await getExtensionDevDeps(type, language));
 
 	await fse.writeJSON(path.join(targetPath, 'package.json'), packageManifest, { spaces: '\t' });
@@ -166,6 +170,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 		icon: 'extension',
 		version: '1.0.0',
 		keywords: ['directus', 'directus-extension', `directus-custom-${options.type}`],
+		type: 'module',
 		[EXTENSION_PKG_KEY]: options,
 		scripts: {
 			build: 'directus-extension build',

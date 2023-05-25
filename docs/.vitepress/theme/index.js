@@ -1,7 +1,8 @@
 import DefaultTheme from 'vitepress/theme';
-import { createHead } from '@vueuse/head';
+import { createHead } from '@unhead/vue';
 
 import Layout from './DocLayout.vue';
+import Card from '../components/Card.vue';
 
 import './vars.css';
 import './overrides.css';
@@ -14,5 +15,6 @@ export default {
 		DefaultTheme.enhanceApp(ctx);
 		const head = createHead();
 		ctx.app.use(head);
+		ctx.app.component('Card', Card);
 	},
 };

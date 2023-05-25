@@ -1,6 +1,7 @@
 import { defineInterface } from '@directus/utils';
-import RepeaterOptions from './options.vue';
+import { ComponentOptions } from 'vue';
 import InterfaceList from './list.vue';
+import RepeaterOptions from './options.vue';
 import PreviewSVG from './preview.svg?raw';
 
 export default defineInterface({
@@ -11,6 +12,6 @@ export default defineInterface({
 	component: InterfaceList,
 	types: ['json'],
 	group: 'selection',
-	options: RepeaterOptions,
+	options: RepeaterOptions as ComponentOptions,
 	preview: PreviewSVG,
 });

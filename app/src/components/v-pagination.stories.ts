@@ -1,4 +1,5 @@
 import VPagination from './v-pagination.vue';
+
 document.body.classList.add('light');
 
 export default {
@@ -15,6 +16,7 @@ const Template = (args) => ({
 });
 
 export const Primary = Template.bind({});
+
 Primary.args = {
 	length: 7,
 	totalVisible: 4,

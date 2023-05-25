@@ -1,11 +1,12 @@
 import type { SchemaOverview } from '@directus/types';
-import knex from 'knex';
 import type { Knex } from 'knex';
+import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, MockedFunction, SpyInstance, vi } from 'vitest';
-import { ItemsService, MailService, UsersService } from './index.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import type { MockedFunction, SpyInstance } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -122,12 +123,15 @@ describe('Integration Tests', () => {
 			checkUniqueEmailsSpy = vi
 				.spyOn(UsersService.prototype as any, 'checkUniqueEmails')
 				.mockImplementation(() => vi.fn());
+
 			checkPasswordPolicySpy = vi
 				.spyOn(UsersService.prototype as any, 'checkPasswordPolicy')
 				.mockResolvedValue(() => vi.fn());
+
 			checkRemainingAdminExistenceSpy = vi
 				.spyOn(UsersService.prototype as any, 'checkRemainingAdminExistence')
 				.mockResolvedValue(() => vi.fn());
+
 			checkRemainingActiveAdminSpy = vi
 				.spyOn(UsersService.prototype as any, 'checkRemainingActiveAdmin')
 				.mockResolvedValue(() => vi.fn());
@@ -255,9 +259,11 @@ describe('Integration Tests', () => {
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
 						`You can't change the "${field}" value manually.`
 					);
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
@@ -370,9 +376,11 @@ describe('Integration Tests', () => {
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
 						`You can't change the "${field}" value manually.`
 					);
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);
@@ -505,9 +513,11 @@ describe('Integration Tests', () => {
 					}
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
 						`You can't change the "${field}" value manually.`
 					);
+
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadException);
 				}
 			);

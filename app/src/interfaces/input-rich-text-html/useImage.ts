@@ -163,6 +163,7 @@ export default function useImage(
 		if (!url.includes(getPublicURL() + 'assets/')) {
 			return url;
 		}
+
 		try {
 			const parsedUrl = new URL(url);
 			const params = new URLSearchParams(parsedUrl.search);

@@ -48,6 +48,7 @@ export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boo
 		await runMigrations(database, 'latest');
 	}
 
+	await database.destroy();
 	logger.info('Done');
 	process.exit(0);
 }

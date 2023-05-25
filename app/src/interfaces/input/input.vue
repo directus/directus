@@ -23,8 +23,8 @@
 				v-if="(percentageRemaining !== null && percentageRemaining <= 20) || softLength"
 				class="remaining"
 				:class="{
-					warning: percentageRemaining < 10,
-					danger: percentageRemaining < 5,
+					warning: percentageRemaining! < 10,
+					danger: percentageRemaining! < 5,
 				}"
 			>
 				{{ charsRemaining }}
@@ -34,122 +34,66 @@
 	</v-input>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: [String, Number],
-			default: null,
-		},
-		type: {
-			type: String,
-			default: null,
-		},
-		clear: {
-			type: Boolean,
-			default: false,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		masked: {
-			type: Boolean,
-			default: false,
-		},
-		iconLeft: {
-			type: String,
-			default: null,
-		},
-		iconRight: {
-			type: String,
-			default: null,
-		},
-		trim: {
-			type: Boolean,
-			default: false,
-		},
-		font: {
-			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
-			default: 'sans-serif',
-		},
-		length: {
-			type: Number,
-			default: null,
-		},
-		softLength: {
-			type: Number,
-			default: undefined,
-		},
-		dbSafe: {
-			type: Boolean,
-			default: false,
-		},
-		autofocus: {
-			type: Boolean,
-			default: false,
-		},
+const props = withDefaults(
+	defineProps<{
+		value: string | number | null;
+		type?: string;
+		clear?: boolean;
+		disabled?: boolean;
+		placeholder?: string;
+		masked?: boolean;
+		iconLeft?: string;
+		iconRight?: string;
+		trim?: boolean;
+		font?: 'sans-serif' | 'serif' | 'monospace';
+		length?: number;
+		softLength?: number;
+		dbSafe?: boolean;
+		autofocus?: boolean;
+		slug?: boolean;
+		min?: number;
+		max?: number;
+		step?: number;
+		direction?: string;
+	}>(),
+	{
+		font: 'sans-serif',
+		step: 1,
+	}
+);
 
-		slug: {
-			type: Boolean,
-			default: false,
-		},
-		min: {
-			type: Number,
-			default: undefined,
-		},
-		max: {
-			type: Number,
-			default: undefined,
-		},
-		step: {
-			type: Number,
-			default: 1,
-		},
-		direction: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const charsRemaining = computed(() => {
-			if (typeof props.value === 'number') return null;
+defineEmits(['input']);
 
-			if (!props.length && !props.softLength) return null;
-			if (!props.value && !props.softLength) return null;
-			if (!props.value && props.softLength) return props.softLength;
-			if (props.softLength) return +props.softLength - props.value.length;
-			if (props.length) return +props.length - props.value.length;
-			return null;
-		});
+const charsRemaining = computed(() => {
+	if (typeof props.value === 'number') return null;
 
-		const percentageRemaining = computed(() => {
-			if (typeof props.value === 'number') return null;
+	if (!props.length && !props.softLength) return null;
+	if (!props.value && !props.softLength) return null;
+	if (!props.value && props.softLength) return props.softLength;
+	if (props.softLength) return +props.softLength - props.value!.length;
+	if (props.length) return +props.length - props.value!.length;
+	return null;
+});
 
-			if (!props.length && !props.softLength) return null;
-			if (!props.value) return 100;
+const percentageRemaining = computed(() => {
+	if (typeof props.value === 'number') return null;
 
-			if (props.softLength) return 100 - (props.value.length / +props.softLength) * 100;
-			if (props.length) return 100 - (props.value.length / +props.length) * 100;
+	if (!props.length && !props.softLength) return null;
+	if (!props.value) return 100;
 
-			return 100;
-		});
+	if (props.softLength) return 100 - (props.value.length / +props.softLength) * 100;
+	if (props.length) return 100 - (props.value.length / +props.length) * 100;
 
-		const inputType = computed(() => {
-			if (props.masked) return 'password';
-			if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type)) return 'number';
-			return 'text';
-		});
+	return 100;
+});
 
-		return { inputType, charsRemaining, percentageRemaining };
-	},
+const inputType = computed(() => {
+	if (props.masked) return 'password';
+	if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type!)) return 'number';
+	return 'text';
 });
 </script>
 

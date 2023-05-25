@@ -1,45 +1,42 @@
 {
 	"name": "@directus/storage-driver-s3",
-	"version": "9.24.0",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --build",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
-	},
+	"version": "10.0.2",
 	"description": "S3 file storage abstraction for `@directus/storage`",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
 		"directory": "packages/storage-driver-s3"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0",
+	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
 	"files": [
-		"dist",
-		"!**/*.d.ts?(.map)"
+		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@aws-sdk/abort-controller": "3.292.0",
-		"@aws-sdk/client-s3": "3.292.0",
-		"@aws-sdk/lib-storage": "3.292.0",
+		"@aws-sdk/abort-controller": "3.329.0",
+		"@aws-sdk/client-s3": "3.332.0",
+		"@aws-sdk/lib-storage": "3.332.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.6",
+		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "6.4.0",
-		"@vitest/coverage-c8": "0.29.3",
-		"typescript": "4.9.5",
-		"vitest": "0.29.3"
+		"@vitest/coverage-c8": "0.31.1",
+		"typescript": "5.0.4",
+		"vitest": "0.31.1"
 	}
 }

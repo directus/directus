@@ -1,30 +1,27 @@
 <template>
 	<div class="presentation-notice">
 		<v-notice :icon="icon" :type="color">
-			<div v-md="text" />
+			<div v-md="text ?? t('interfaces.presentation-notice.no_text')" />
 		</v-notice>
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		color: {
-			type: String,
-			default: 'normal',
-		},
-		icon: {
-			type: String,
-			default: 'info',
-		},
-		text: {
-			type: String,
-			default: 'No text configured...',
-		},
-	},
-});
+const { t } = useI18n();
+
+withDefaults(
+	defineProps<{
+		color?: string;
+		icon?: string;
+		text?: string;
+	}>(),
+	{
+		color: 'normal',
+		icon: 'info',
+	}
+);
 </script>
 
 <style lang="scss" scoped>

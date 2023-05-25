@@ -34,6 +34,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const relations = await service.readAll(req.params['collection']);
 
 		res.locals['payload'] = { data: relations || null };
@@ -156,6 +157,7 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.deleteOne(req.params['collection']!, req.params['field']!);
 		return next();
 	}),

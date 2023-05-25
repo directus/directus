@@ -15,6 +15,7 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 	const displayItems = ref([]);
 
 	const primaryKey = computed(() => fieldStore.getPrimaryKeyFieldForCollection(collection.value)?.field ?? '');
+
 	const displayTemplate = computed(() => {
 		if (template.value) return template.value;
 
@@ -22,6 +23,7 @@ export default function useDisplayItems(collection: Ref<string>, template: Ref<s
 
 		return displayTemplate || `{{ ${primaryKey.value || 'id'} }}`;
 	});
+
 	const requiredFields = computed(() => {
 		if (!displayTemplate.value || !collection.value) return [];
 		return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), collection.value);

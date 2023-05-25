@@ -8,40 +8,28 @@
 	/>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
+<script setup lang="ts">
 import availableLanguages from '@/lang/available-languages.yaml';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		value: {
-			type: String,
-			default: null,
-		},
-		includeProjectDefault: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['input'],
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	value: string | null;
+	disabled?: boolean;
+	includeProjectDefault?: boolean;
+}>();
 
-		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
-			text: value,
-			value: key as string | null,
-		}));
+defineEmits<{
+	(e: 'input', value: string | null): void;
+}>();
 
-		if (props.includeProjectDefault) {
-			languages.splice(0, 0, { text: t('fields.directus_settings.default_language'), value: null });
-		}
+const { t } = useI18n();
 
-		return { t, languages };
-	},
-});
+const languages = Object.entries(availableLanguages).map(([key, value]) => ({
+	text: value,
+	value: key as string | null,
+}));
+
+if (props.includeProjectDefault) {
+	languages.splice(0, 0, { text: t('fields.directus_settings.default_language'), value: null });
+}
 </script>

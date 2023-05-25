@@ -23,9 +23,9 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import api from '@/api';
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import FilePreview from '@/views/private/components/file-preview.vue';
 import { nanoid } from 'nanoid';
@@ -40,73 +40,64 @@ type File = {
 	title: string;
 };
 
-export default defineComponent({
-	components: { FilePreview },
-	props: {
-		id: {
-			type: String,
-			required: true,
-		},
-		modelValue: {
-			type: Boolean,
-			default: undefined,
-		},
+const props = defineProps<{
+	id: string;
+	modelValue?: boolean;
+}>();
+
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: boolean): void;
+}>();
+
+const localActive = ref(false);
+
+const internalActive = computed({
+	get() {
+		return props.modelValue === undefined ? localActive.value : props.modelValue;
 	},
-	emits: ['update:modelValue'],
-	setup(props, { emit }) {
-		const localActive = ref(false);
-
-		const internalActive = computed({
-			get() {
-				return props.modelValue === undefined ? localActive.value : props.modelValue;
-			},
-			set(newActive: boolean) {
-				localActive.value = newActive;
-				emit('update:modelValue', newActive);
-			},
-		});
-
-		const loading = ref(false);
-		const file = ref<File | null>(null);
-		const cacheBuster = ref(nanoid());
-
-		const fileSrc = computed(() => {
-			return getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster.value}`;
-		});
-
-		watch(
-			[() => props.id, internalActive],
-			([newID, newActive]) => {
-				if (newActive && newID) {
-					fetchFile();
-				}
-			},
-			{ immediate: true }
-		);
-
-		return { internalActive, cacheBuster, loading, file, fileSrc };
-
-		async function fetchFile() {
-			cacheBuster.value = nanoid();
-
-			loading.value = true;
-
-			try {
-				const response = await api.get(`/files/${props.id}`, {
-					params: {
-						fields: ['type', 'width', 'height', 'title'],
-					},
-				});
-
-				file.value = response.data.data;
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
-		}
+	set(newActive: boolean) {
+		localActive.value = newActive;
+		emit('update:modelValue', newActive);
 	},
 });
+
+const loading = ref(false);
+const file = ref<File | null>(null);
+const cacheBuster = ref(nanoid());
+
+const fileSrc = computed(() => {
+	return getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster.value}`;
+});
+
+watch(
+	[() => props.id, internalActive],
+	([newID, newActive]) => {
+		if (newActive && newID) {
+			fetchFile();
+		}
+	},
+	{ immediate: true }
+);
+
+async function fetchFile() {
+	cacheBuster.value = nanoid();
+
+	loading.value = true;
+
+	try {
+		const response = await api.get(`/files/${props.id}`, {
+			params: {
+				fields: ['type', 'width', 'height', 'title'],
+			},
+		});
+
+		file.value = response.data.data;
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
 </script>
 
 <style lang="scss" scoped>

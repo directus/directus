@@ -5,52 +5,43 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from 'vue';
-import Color from 'color';
+<script setup lang="ts">
 import { isHex } from '@/utils/is-hex';
+import { cssVar } from '@directus/utils/browser';
+import Color from 'color';
+import { computed } from 'vue';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		defaultColor: {
-			type: String,
-			default: '#B0BEC5',
-			validator: (value: string) => value === null || isHex(value) || value.startsWith('var(--'),
-		},
+const props = defineProps({
+	value: {
+		type: String,
+		default: null,
 	},
-	setup(props) {
-		const displayValue = computed(() => {
-			return props.value;
-		});
-
-		const styles = computed(() => {
-			const defaultColor = props.defaultColor?.startsWith('var(') ? getVar(props.defaultColor) : props.defaultColor;
-			const value = props.value?.startsWith('var(') ? getVar(props.value) : props.value;
-
-			const style: Record<string, any> = { 'background-color': defaultColor };
-
-			if (value !== null) style['background-color'] = value;
-
-			const pageColorString = getVar('var(--background-page)');
-
-			const pageColorRGB = Color(pageColorString);
-			const colorRGB = value === null ? Color(defaultColor) : Color(value);
-
-			if (colorRGB.contrast(pageColorRGB) < 1.1) style['border'] = '1px solid var(--border-normal)';
-
-			return style;
-		});
-
-		return { displayValue, styles };
-
-		function getVar(cssVar: string) {
-			return getComputedStyle(document.body).getPropertyValue(cssVar.slice(4, -1)).trim();
-		}
+	defaultColor: {
+		type: String,
+		default: '#B0BEC5',
+		validator: (value: string) => value === null || isHex(value) || value.startsWith('var(--'),
 	},
+});
+
+const styles = computed(() => {
+	const defaultColor = props.defaultColor?.startsWith('var(')
+		? cssVar(props.defaultColor.slice(4, -1))
+		: props.defaultColor;
+
+	const value = props.value?.startsWith('var(') ? cssVar(props.value.slice(4, -1)) : props.value;
+
+	const style: Record<string, any> = { 'background-color': defaultColor };
+
+	if (value !== null) style['background-color'] = value;
+
+	const pageColorString = cssVar('--background-page');
+
+	const pageColorRGB = Color(pageColorString);
+	const colorRGB = value === null ? Color(defaultColor) : Color(value);
+
+	if (colorRGB.contrast(pageColorRGB) < 1.1) style['border'] = '1px solid var(--border-normal)';
+
+	return style;
 });
 </script>
 

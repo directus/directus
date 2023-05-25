@@ -47,6 +47,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 
 	function parseMaxLength(rawColumn: RawColumn) {
 		const max_length = Number(rawColumn.max_length);
+
 		if (Number.isNaN(max_length) || rawColumn.max_length === null || rawColumn.max_length === undefined) {
 			return null;
 		}
@@ -180,6 +181,7 @@ export default class MSSQL implements SchemaInspector {
 				TABLE_CATALOG: this.knex.client.database(),
 				TABLE_SCHEMA: this.schema,
 			});
+
 		return records.map(({ TABLE_NAME }) => TABLE_NAME);
 	}
 
@@ -233,6 +235,7 @@ export default class MSSQL implements SchemaInspector {
 				TABLE_SCHEMA: this.schema,
 			})
 			.first();
+
 		return (result && result.count === 1) || false;
 	}
 

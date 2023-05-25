@@ -16,10 +16,15 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref, inject, computed } from 'vue';
-import { render } from 'micromustache';
+<script setup lang="ts">
+import { useItem } from '@/composables/use-item';
+import { useCollection } from '@directus/composables';
+import { RELATIONAL_TYPES } from '@directus/constants';
+import { Query } from '@directus/types';
+import { getFieldsFromTemplate } from '@directus/utils';
 import { omit } from 'lodash';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
 
 type Link = {
 	icon: string;
@@ -28,35 +33,64 @@ type Link = {
 	url?: string;
 };
 
-export default defineComponent({
-	props: {
-		links: {
-			type: Array as PropType<Link[]>,
-			default: null,
-		},
-	},
-	setup(props) {
-		const values = inject('values', ref<Record<string, any>>({}));
+type Props = {
+	links: Link[];
+	collection: string;
+	primaryKey: string;
+};
 
-		const linksParsed = computed(() => {
-			return props.links.map((link) => {
-				const parsedLink = omit<Record<string, any>>(link, ['url']);
-				const linkValue = render(link.url ?? '', values.value);
+const props = withDefaults(defineProps<Props>(), {
+	links: () => [],
+});
 
-				if (linkValue.startsWith('/')) {
-					parsedLink.to = linkValue;
-				} else {
-					parsedLink.href = linkValue;
-				}
+const values = inject('values', ref<Record<string, any>>({}));
 
-				return parsedLink;
-			});
-		});
+const { collection, primaryKey } = toRefs(props);
 
-		return {
-			linksParsed,
-		};
-	},
+const query = computed(() => {
+	const fields = new Set();
+
+	props.links.forEach((link) => {
+		getFieldsFromTemplate(link.url ?? '').forEach((field) => fields.add(field));
+	});
+
+	return {
+		fields: Array.from(fields),
+	} as Query;
+});
+
+const { item } = useItem(collection, primaryKey, query);
+const { fields } = useCollection(collection);
+
+const fullItem = computed(() => {
+	const itemValue = item.value ?? {};
+
+	for (const field of fields.value) {
+		if (
+			field.meta?.special?.some((special) => RELATIONAL_TYPES.includes(special as (typeof RELATIONAL_TYPES)[number]))
+		) {
+			continue;
+		}
+
+		itemValue[field.field] = values.value[field.field];
+	}
+
+	return itemValue;
+});
+
+const linksParsed = computed(() => {
+	return props.links.map((link) => {
+		const parsedLink = omit<Record<string, any>>(link, ['url']);
+		const linkValue = render(link.url ?? '', fullItem.value ?? {});
+
+		if (linkValue.startsWith('/')) {
+			parsedLink.to = linkValue;
+		} else {
+			parsedLink.href = linkValue;
+		}
+
+		return parsedLink;
+	});
 });
 </script>
 

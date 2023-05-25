@@ -97,7 +97,7 @@
 	</thead>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref, useSlots } from 'vue';
 import { ShowSelect } from '@directus/types';
@@ -233,6 +233,7 @@ function onMouseMove(event: PointerEvent) {
 	if (resizing.value === true) {
 		const newWidth = resizeStartWidth.value + (event.pageX - resizeStartX.value);
 		const currentHeaders = clone(props.headers);
+
 		const newHeaders = currentHeaders.map((existing: Header) => {
 			if (existing.value === resizeHeader.value?.value) {
 				return {
@@ -243,6 +244,7 @@ function onMouseMove(event: PointerEvent) {
 
 			return existing;
 		});
+
 		emit('update:headers', newHeaders);
 	}
 }

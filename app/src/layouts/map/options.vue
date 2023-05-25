@@ -37,64 +37,37 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, toRefs } from 'vue';
-
+<script setup lang="ts">
 import { useAppStore } from '@/stores/app';
 import { getBasemapSources } from '@/utils/geometry/basemap';
-import { GeometryOptions, Item } from '@directus/types';
 import { useSync } from '@directus/composables';
+import { GeometryOptions, Item } from '@directus/types';
+import { toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	inheritAttrs: false,
-	props: {
-		collection: {
-			type: String,
-			required: true,
-		},
-		geometryFields: {
-			type: Array as PropType<Item[]>,
-			required: true,
-		},
-		geometryField: {
-			type: String,
-			default: undefined,
-		},
-		geometryOptions: {
-			type: Object as PropType<GeometryOptions>,
-			default: undefined,
-		},
-		clusterData: {
-			type: Boolean,
-			default: undefined,
-		},
-		displayTemplate: {
-			type: String as string | undefined,
-			default: undefined,
-		},
-	},
-	emits: ['update:geometryField', 'update:autoLocationFilter', 'update:clusterData'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = defineProps<{
+	collection: string;
+	geometryFields: Item[];
+	geometryField?: string;
+	geometryOptions?: GeometryOptions;
+	clusterData?: boolean;
+	displayTemplate?: string;
+}>();
 
-		const appStore = useAppStore();
+const emit = defineEmits<{
+	(e: 'update:geometryField', geometryField: string): void;
+	(e: 'update:clusterData', clusterData: boolean): void;
+	(e: 'update:displayTemplate', displayTemplate: string): void;
+}>();
 
-		const geometryFieldWritable = useSync(props, 'geometryField', emit);
-		const clusterDataWritable = useSync(props, 'clusterData', emit);
-		const displayTemplateWritable = useSync(props, 'displayTemplate', emit);
+const { t } = useI18n();
 
-		const basemaps = getBasemapSources();
-		const { basemap } = toRefs(appStore);
+const appStore = useAppStore();
 
-		return {
-			t,
-			geometryFieldWritable,
-			clusterDataWritable,
-			displayTemplateWritable,
-			basemaps,
-			basemap,
-		};
-	},
-});
+const geometryFieldWritable = useSync(props, 'geometryField', emit);
+const clusterDataWritable = useSync(props, 'clusterData', emit);
+const displayTemplateWritable = useSync(props, 'displayTemplate', emit);
+
+const basemaps = getBasemapSources();
+const { basemap } = toRefs(appStore);
 </script>

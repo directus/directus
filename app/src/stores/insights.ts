@@ -12,6 +12,7 @@ import { computed, reactive, ref, unref } from 'vue';
 import { Dashboard } from '@/types/insights';
 import escapeStringRegexp from 'escape-string-regexp';
 import { useExtensions } from '@/extensions';
+import { fetchAll } from '@/utils/fetch-all';
 
 export type CreatePanel = Partial<Panel> &
 	Pick<Panel, 'id' | 'width' | 'height' | 'position_x' | 'position_y' | 'type' | 'options'>;
@@ -110,13 +111,12 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		) {
 			try {
 				const [dashboardsResponse, panelsResponse] = await Promise.all([
-					api.get<any>('/dashboards', {
-						params: { limit: -1, fields: ['*'], sort: ['name'] },
-					}),
-					api.get('/panels', { params: { limit: -1, fields: ['*'], sort: ['dashboard'] } }),
+					fetchAll<any>('/dashboards', { params: { fields: ['*'], sort: ['name'] } }),
+					fetchAll<any>('/panels', { params: { fields: ['*'], sort: ['dashboard'] } }),
 				]);
-				dashboards.value = dashboardsResponse.data.data;
-				panels.value = panelsResponse.data.data;
+
+				dashboards.value = dashboardsResponse;
+				panels.value = panelsResponse;
 			} catch {
 				dashboards.value = [];
 				panels.value = [];
@@ -174,9 +174,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			if (lastLoaded.length > MAX_CACHE_SIZE) {
 				const removed = lastLoaded.shift();
+
 				const removedPanels = unref(panels)
 					.filter((panel) => panel.dashboard === removed)
 					.map(({ id }) => id);
+
 				data.value = omit(data.value, ...removedPanels);
 			}
 		}
@@ -189,12 +191,15 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			.map(({ options }) => options.field)
 			.filter((fieldName) => typeof fieldName === 'string' && fieldName.length > 0);
 	}
+
 	function hasEmptyRelation(panel: Pick<Panel, 'options' | 'type'>) {
 		const stringOptions = JSON.stringify(panel.options);
+
 		for (const relationVar of emptyRelations()) {
 			const fieldRegex = new RegExp(`{{\\s*?${escapeStringRegexp(relationVar)}\\s*?}}`);
 			if (fieldRegex.test(stringOptions)) return true;
 		}
+
 		return false;
 	}
 
@@ -338,12 +343,14 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 		 * decide whether or not to reload the data
 		 */
 		let oldQuery;
+
 		if ('options' in panelEdits) {
 			// Edits not yet applied
 			const panel = unref(panelsWithEdits).find((panel) => panel.id === id);
 
 			if (panel) {
 				const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
+
 				oldQuery = panelType.query?.(
 					applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
 				);
@@ -370,9 +377,11 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 			// This panel has the edits applied
 			const panel = unref(panelsWithEdits).find((panel) => panel.id === id)!;
 			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type)!;
+
 			const newQuery = panelType.query?.(
 				applyOptionsData(panelEdits.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
 			);
+
 			if (JSON.stringify(oldQuery) !== JSON.stringify(newQuery)) loadPanelData(panel);
 
 			// Clear relational variable cache if collection was changed
@@ -465,6 +474,7 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 		// Find all panels that are using this variable in their options
 		const regex = new RegExp(`{{\\s*?${escapeStringRegexp(field)}\\s*?}}`);
+
 		const needReload = unref(panelsWithEdits).filter((panel) => {
 			if (panel.id in unref(data) === false) return false;
 
@@ -474,12 +484,15 @@ export const useInsightsStore = defineStore('insightsStore', () => {
 
 			const panelType = unref(panelTypes).find((panelType) => panelType.id === panel.type);
 			if (!panelType) return false;
+
 			const oldQuery = panelType.query?.(
 				applyOptionsData(panel.options ?? {}, unref(variables), panelType.skipUndefinedKeys)
 			);
+
 			const newQuery = panelType.query?.(
 				applyOptionsData(panel.options ?? {}, unref(newVariables), panelType.skipUndefinedKeys)
 			);
+
 			return JSON.stringify(oldQuery) !== JSON.stringify(newQuery);
 		});
 

@@ -38,6 +38,7 @@ export class AuthorizationService {
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
+
 		this.payloadService = new PayloadService('directus_permissions', {
 			knex: this.knex,
 			schema: this.schema,
@@ -236,11 +237,14 @@ export class AuthorizationService {
 											parentCollection,
 											parentField
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
+
 								return result;
 							}
+
 							// Filter value is not a filter, so we should skip it
 							return result;
 						}
@@ -249,6 +253,7 @@ export class AuthorizationService {
 							(result[collection] || (result[collection] = new Set())).add(filterKey);
 							// add virtual relation to the required permissions
 							const { relation } = getRelationInfo([], collection, filterKey);
+
 							if (relation?.collection && relation?.field) {
 								(result[relation.collection] || (result[relation.collection] = new Set())).add(relation.field);
 							}
@@ -303,6 +308,7 @@ export class AuthorizationService {
 
 								parentCollection =
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
+
 								(result[parentCollection] || (result[parentCollection] = new Set())).add(filterKey);
 							}
 
@@ -321,6 +327,7 @@ export class AuthorizationService {
 														parentCollection,
 														filterKey
 													);
+
 													result = mergeRequiredFieldPermissions(result, requiredPermissions);
 												}
 											}
@@ -332,6 +339,7 @@ export class AuthorizationService {
 											parentCollection,
 											filterKey
 										);
+
 										result = mergeRequiredFieldPermissions(result, requiredPermissions);
 									}
 								}
@@ -352,6 +360,7 @@ export class AuthorizationService {
 						current[collection] = new Set([...current[collection]!, ...child[collection]!]);
 					}
 				}
+
 				return current;
 			}
 

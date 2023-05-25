@@ -76,9 +76,9 @@
 </template>
 
 <script setup lang="ts">
-import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
-import { usePermissionsStore } from '@/stores/permissions';
+import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
+import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { useCollectionsStore } from '@/stores/collections';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { parseFilter } from '@/utils/parse-filter';
@@ -135,6 +135,7 @@ const customFilter = computed(() => {
 const { t } = useI18n();
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
+
 const value = computed({
 	get: () => props.value ?? null,
 	set: (value) => {
@@ -170,6 +171,7 @@ const query = computed<RelationQuerySingle>(() => ({
 }));
 
 const { update, remove, displayItem, loading } = useRelationSingle(value, query, relationInfo);
+const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const currentPrimaryKey = computed<string | number>(() => {
 	if (!displayItem.value || !props.value || !relationInfo.value) return '+';
@@ -214,30 +216,19 @@ const selection = computed<(number | string)[]>(() => {
 	if (typeof props.value === 'object' && pkField in props.value) {
 		return [props.value[pkField]];
 	}
+
 	return [props.value];
 });
 
-function onSelection(selection: (number | string)[]) {
-	if (selection.length === 0) {
+function onSelection(selection: (number | string)[] | null) {
+	if (selection!.length === 0) {
 		remove();
 	} else {
-		update(selection[0]);
+		update(selection![0]);
 	}
 
 	selectModalActive.value = false;
 }
-
-const { hasPermission } = usePermissionsStore();
-
-const createAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-	return hasPermission(relationInfo.value.relatedCollection.collection, 'create');
-});
-
-const updateAllowed = computed(() => {
-	if (!relationInfo.value) return false;
-	return hasPermission(relationInfo.value.relatedCollection.collection, 'update');
-});
 </script>
 
 <style lang="scss" scoped>

@@ -16,16 +16,16 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { readableMimeType } from '@/utils/readable-mime-type';
+<script setup lang="ts">
 import { addTokenToURL } from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import { computed, ref } from 'vue';
 
 interface Props {
 	mime: string;
-	width?: number;
-	height?: number;
+	width?: number | null;
+	height?: number | null;
 	src: string;
 	title: string;
 	inModal?: boolean;
@@ -58,7 +58,7 @@ const type = computed<'image' | 'video' | 'audio' | string>(() => {
 const isSVG = computed(() => props.mime.includes('svg'));
 
 const maxHeight = computed(() => Math.min(props.height ?? 528, 528) + 'px');
-const isSmall = computed(() => props.height < 528);
+const isSmall = computed(() => props.height && props.height < 528);
 
 const authenticatedSrc = computed(() => addTokenToURL(getRootPath() + props.src));
 </script>

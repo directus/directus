@@ -75,6 +75,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Setup
 					const fieldName = 'flag_image';
+
 					const response = await request(getUrl(vendor))
 						.get(`/items/${localCollectionStates}`)
 						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
@@ -145,6 +146,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response2.statusCode).toEqual(200);
+
 					expect(response2.body.data).toEqual(
 						expect.objectContaining({
 							field: fieldName,
@@ -176,6 +178,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response2.statusCode).toEqual(200);
+
 					expect(response2.body.data).toEqual(
 						expect.objectContaining({
 							field: fieldName,
@@ -218,6 +221,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(200);
 					expect(response2.statusCode).toEqual(200);
+
 					expect(response2.body.data).toEqual(
 						expect.objectContaining({
 							field: fieldName,
@@ -228,6 +232,36 @@ describe.each(common.PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 							collection: localCollectionCountries,
 						})
 					);
+				});
+			});
+
+			describe('can update meta only without schema changes for relational field', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const fieldName = 'country_id';
+
+					const payload = (
+						await request(getUrl(vendor))
+							.get(`/fields/${localCollectionStates}/${fieldName}`)
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					).body.data;
+
+					payload.meta.options = { template: 'updated' };
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.patch(`/fields/${localCollectionStates}/${fieldName}`)
+						.send(payload)
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					const response2 = await request(getUrl(vendor))
+						.get(`/fields/${localCollectionStates}/${fieldName}`)
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toEqual(200);
+					expect(response2.statusCode).toEqual(200);
+					expect(response2.body.data).toEqual(payload);
 				});
 			});
 		});

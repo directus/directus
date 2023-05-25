@@ -1,9 +1,12 @@
 <template>
 	<sidebar-detail :title="t('logs')" icon="fact_check" :badge="revisionsCount">
-		<div v-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
+		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
+
+		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
 
 		<v-detail
 			v-for="group in revisionsByDate"
+			v-else
 			:key="group.dateFormatted"
 			:label="group.dateFormatted"
 			class="revisions-date-group"
@@ -18,6 +21,8 @@
 				</div>
 			</div>
 		</v-detail>
+
+		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 	</sidebar-detail>
 
 	<v-drawer
@@ -77,12 +82,12 @@
 	</v-drawer>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
 import { useExtensions } from '@/extensions';
 import type { FlowRaw } from '@directus/types';
 import { Action } from '@directus/constants';
-import { computed, ref, toRefs, unref } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 
@@ -103,11 +108,20 @@ const usedTrigger = computed(() => {
 	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
 });
 
-const { revisionsByDate, revisionsCount } = useRevisions(
+const page = ref<number>(1);
+
+const { revisionsByDate, revisionsCount, loading, pagesCount, refresh } = useRevisions(
 	ref('directus_flows'),
 	computed(() => unref(flow).id),
 	{
 		action: Action.RUN,
+	}
+);
+
+watch(
+	() => page.value,
+	(newPage) => {
+		refresh(newPage);
 	}
 );
 
@@ -160,6 +174,10 @@ const steps = computed(() => {
 </script>
 
 <style lang="scss" scoped>
+.v-progress-linear {
+	margin: 24px 0;
+}
+
 .content {
 	padding: var(--content-padding);
 }
@@ -288,5 +306,10 @@ const steps = computed(() => {
 	margin-left: 2px;
 	color: var(--foreground-subdued);
 	font-style: italic;
+}
+
+.v-pagination {
+	justify-content: center;
+	margin-top: 24px;
 }
 </style>

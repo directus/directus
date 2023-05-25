@@ -347,10 +347,12 @@ export class AuthenticationService {
 		if (record.share_id) {
 			tokenPayload.share = record.share_id;
 			tokenPayload.role = record.share_role;
+
 			tokenPayload.share_scope = {
 				collection: record.share_collection,
 				item: record.share_item,
 			};
+
 			tokenPayload.app_access = false;
 			tokenPayload.admin_access = false;
 

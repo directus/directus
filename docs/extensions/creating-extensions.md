@@ -10,7 +10,7 @@ readTime: 5 min read
 The easiest way to start developing extensions is to use the `create-directus-extension` utility:
 
 ```bash
-npm init directus-extension
+npm init directus-extension@latest
 ```
 
 After specifying the name of the extension, the type of the extension and the programming language you want to use, the
@@ -83,7 +83,7 @@ to your specific needs. This can be done by creating a `extension.config.js` fil
 with the following content:
 
 ```js
-module.exports = {
+export default {
 	plugins: [],
 };
 ```
@@ -129,6 +129,13 @@ on changes automatically.
 
 :::
 
+::: tip  Component Library
+
+Directus comes shipped with it's own [Vue Component Library and Storybook]((https://components.directus.io)) that you can use to enrich your extensions.
+These components can be used in any of the "app extensions", including Interfaces, Displays, Modules, Layouts, and Panels.
+
+:::
+
 ## Publishing your Extension
 
 To make an extension available to all Directus users, you can publish the npm package created by
@@ -164,6 +171,14 @@ copying those files into a specific extensions folder.
 To install an extension locally, you have to move the output from the `dist/` folder into your project's
 `./extensions/<extension-folder>/<extension-name>/` folder. `<extension-folder>` has to be replaced by the extension
 type in plural form (e.g. interfaces). `<extension-name>` should be replaced with the name of your extension.
+
+### Local Bundle Extension
+
+Bundles require a slightly different method of deployment. There is no dedicated `<extension-folder>/` but instead you create your extension folder in the extension root and prefix the name with `directus-extension-`.
+
+To install a bundle locally, you have to move both the contents of the `dist/` folder and the `package.json` file into your project's
+`./extensions/directus-extension-<extension-name>/` folder. `<extension-name>` should be replaced with the name of your extension.
+
 
 ::: warning Configurable Folders
 

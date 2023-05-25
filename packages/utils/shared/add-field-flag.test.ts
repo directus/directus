@@ -8,7 +8,9 @@ describe('addFieldFlag', () => {
 			field: 'some_field',
 			type: 'string',
 		};
+
 		addFieldFlag(field, 'cast-timestamp');
+
 		expect(field.meta).toEqual({
 			special: ['cast-timestamp'],
 		});
@@ -20,7 +22,9 @@ describe('addFieldFlag', () => {
 			type: 'string',
 			meta: { special: null },
 		};
+
 		addFieldFlag(field, 'cast-timestamp');
+
 		expect(field.meta).toEqual({
 			special: ['cast-timestamp'],
 		});
@@ -32,7 +36,9 @@ describe('addFieldFlag', () => {
 			type: 'string',
 			meta: { special: ['cast-datetime'] },
 		};
+
 		addFieldFlag(field, 'cast-timestamp');
+
 		expect(field.meta).toEqual({
 			special: ['cast-datetime', 'cast-timestamp'],
 		});
@@ -44,7 +50,9 @@ describe('addFieldFlag', () => {
 			type: 'string',
 			meta: { special: ['cast-datetime', 'cast-timestamp'] },
 		};
+
 		addFieldFlag(field, 'cast-datetime');
+
 		expect(field.meta).toEqual({
 			special: ['cast-datetime', 'cast-timestamp'],
 		});

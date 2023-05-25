@@ -175,6 +175,7 @@ export function useFieldTree(
 					if (node.group === true && node.children && node.children.length > 0) {
 						acc.push(...node.children);
 					}
+
 					return acc;
 				}, [])
 				.find((node) => node.field === field);

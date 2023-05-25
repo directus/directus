@@ -213,6 +213,7 @@ describe('#write', () => {
 	let mockWriteStream: PassThrough;
 	let mockCreateWriteStream: Mock;
 	let mockSave: Mock;
+
 	let mockFile: {
 		createWriteStream: Mock;
 		save: Mock;

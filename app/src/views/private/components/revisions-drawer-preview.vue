@@ -10,23 +10,15 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType } from 'vue';
 import { Revision } from '@/types/revisions';
 
-export default defineComponent({
-	props: {
-		revision: {
-			type: Object as PropType<Revision>,
-			required: true,
-		},
-	},
-	setup() {
-		const { t } = useI18n();
-		return { t };
-	},
-});
+defineProps<{
+	revision: Revision;
+}>();
+
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>

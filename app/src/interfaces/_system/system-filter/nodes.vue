@@ -30,15 +30,16 @@
 								include-functions
 								:include-relations="includeRelations"
 								:relational-field-selectable="relationalFieldSelectable"
-								@select-field="updateField(index, $event)"
+								:allow-select-all="false"
+								@add="updateField(index, $event[0])"
 							/>
 						</v-menu>
 						<v-select
 							inline
 							class="comparator"
 							placement="bottom-start"
-							:model-value="filterInfo[index].comparator"
-							:items="getCompareOptions(filterInfo[index].field)"
+							:model-value="(filterInfo[index] as FilterInfoField).comparator"
+							:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
 							@update:model-value="updateComparator(index, $event)"
 						/>
 						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
@@ -98,12 +99,20 @@
 	</draggable>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { useSync } from '@directus/composables';
-import { FieldFilter, FieldFilterOperator, Filter, LogicalFilterAND, LogicalFilterOR, Type } from '@directus/types';
+import {
+	FieldFilter,
+	FieldFilterOperator,
+	FieldFunction,
+	Filter,
+	LogicalFilterAND,
+	LogicalFilterOR,
+	Type,
+} from '@directus/types';
 import { getFilterOperatorsForType, getOutputTypeForFunction, toArray } from '@directus/utils';
 import { get } from 'lodash';
 import { computed, toRefs } from 'vue';
@@ -112,21 +121,21 @@ import Draggable from 'vuedraggable';
 import InputGroup from './input-group.vue';
 import { fieldToFilter, getComparator, getField, getNodeName } from './utils';
 
-type FilterInfo =
-	| {
-			id: number;
-			isField: true;
-			name: string;
-			node: Filter;
-			field: string;
-			comparator: string;
-	  }
-	| {
-			id: number;
-			isField: false;
-			name: string;
-			node: Filter;
-	  };
+type FilterInfo = {
+	id: number;
+	isField: false;
+	name: string;
+	node: Filter;
+};
+
+type FilterInfoField = {
+	id: number;
+	isField: true;
+	name: string;
+	node: Filter;
+	field: string;
+	comparator: string;
+};
 
 interface Props {
 	filter: Filter[];
@@ -156,22 +165,22 @@ const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const { t } = useI18n();
 
-const filterInfo = computed<FilterInfo[]>({
+const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 	get() {
 		return props.filter.map((node, id) => {
 			const name = getNodeName(node);
 			const isField = name.startsWith('_') === false;
 
 			return isField
-				? {
+				? ({
 						id,
 						isField,
 						name,
 						field: getField(node),
 						comparator: getComparator(node),
 						node,
-				  }
-				: { id, name, isField, node };
+				  } as FilterInfoField)
+				: ({ id, name, isField, node } as FilterInfo);
 		});
 	},
 	set(newVal) {
@@ -273,6 +282,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 			} else {
 				update(null);
 			}
+
 			break;
 		default:
 			// avoid setting value as string 'true'/'false' when switching from null/empty operators
@@ -281,6 +291,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 			} else {
 				update(Array.isArray(value) ? value[0] : value);
 			}
+
 			break;
 	}
 
@@ -327,7 +338,7 @@ function getCompareOptions(name: string) {
 	let type: Type;
 
 	if (name.includes('(') && name.includes(')')) {
-		const functionName = name.split('(')[0];
+		const functionName = name.split('(')[0] as FieldFunction;
 		type = getOutputTypeForFunction(functionName);
 	} else {
 		const fieldInfo = fieldsStore.getField(props.collection, name);
@@ -336,6 +347,7 @@ function getCompareOptions(name: string) {
 		// Alias uses the foreign key type
 		if (type === 'alias') {
 			const relations = relationsStore.getRelationsForField(props.collection, name);
+
 			if (relations[0]) {
 				type = fieldsStore.getField(relations[0].collection, relations[0].field)?.type || 'unknown';
 			}

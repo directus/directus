@@ -119,24 +119,14 @@ public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Version
-os_uptime: OS Uptime
-os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
   No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count}
   items?
 reset_system_permissions_to: 'Reset System Permissions to:'
-reset_system_permissions_copy:
-  This action will overwrite any custom permissions you may have applied to the system collections. Are you sure?
-the_following_are_minimum_permissions:
-  The following are minimum permissions required when "App Access" is enabled. You can extend permissions beyond this,
-  but not below.
+reset_system_permissions_copy: This action will overwrite any custom permissions you may have applied to the system collections. Are you sure?
+the_following_are_minimum_permissions: The following minimum permissions are automatically applied when "App Access" is enabled. You can grant additional permissions if needed, but you cannot reduce permissions below this level.
 app_access_minimum: App Access Minimum
 recommended_defaults: Recommended Defaults
 unarchive: Unarchive
@@ -187,6 +177,7 @@ permissions_for_role: 'Items the {role} Role can {action}.'
 fields_for_role: 'Fields the {role} Role can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
+presets_field_warning: 'Relational presets for field "{field}" should be configured with the "detailed" syntax.'
 presentation_and_aliases: Presentation & Aliases
 revision_post_create: Here is what this item looked like when it was created.
 revision_post_update: Here is what this item looked like after the update.
@@ -363,7 +354,7 @@ revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
+presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 private_user: Private User
 creation_preview: Creation Preview
@@ -455,6 +446,7 @@ checksum: Checksum
 owner: Owner
 edited_by: Edited by
 folder: Folder
+folders: Folders
 zoom: Zoom
 download: Download
 open: Open
@@ -473,12 +465,11 @@ download_file: Download File
 open_file_in_tab: Open file in new tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
-exporting_all_items_in_collection: Exporting all {total} items within {collection}.
+exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
 exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
-exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
+exporting_no_items_to_export: No items to export. Adjust the exporting configuration.
 exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
-exporting_batch_hint:
-  This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
+exporting_batch_hint: This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
 exporting_batch_hint_forced:
   Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will
   be saved to the File Library.
@@ -506,7 +497,8 @@ enable_select_button: Enable Select Button
 allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
-click_to_expand: Click to Expand
+expand: Expand
+collapse: Collapse
 select_item: Select Item
 no_items: No items
 search_items: Search items...
@@ -1028,8 +1020,7 @@ page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webho
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
 page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
 page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
-page_help_settings_translation_strings_collection:
-  '**Browse Translation Strings** — Lists all translation strings within the project.'
+page_help_settings_translation_strings_collection: '**Browse Translation Strings** — Lists all translation strings within the project.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
@@ -1172,8 +1163,7 @@ fields:
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: Attribution
     attribution_placeholder: © OpenStreetMap contributors
-    transforms_note:
-      The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     additional_transforms: Additional Transformations
     project_name: Project Name
     project_descriptor: Project Descriptor
@@ -1257,8 +1247,7 @@ field_options:
         fit_text: Fit inside
         outside_text: Fit outside
     additional_transforms: Additional Transformations
-    transforms_note:
-      The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
     mapbox_key: Mapbox Access Token
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Basemaps
@@ -1296,6 +1285,7 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
+    preview_divider: Preview
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1353,6 +1343,14 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+live_preview:
+  enable: Enable Preview
+  disable: Disable Preview
+  change_size: Change Display Dimensions
+  refresh: Refresh Preview
+  new_window: Open in New Window
+  close_window: Open in Split View
+  toggle_3d: Toggle 3D
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
@@ -1371,8 +1369,7 @@ shared_uses_left:
   For added security, this shared page has been configured with a limited number of views. There are currently {n} views
   remaining, after which, the page will no longer be accessible.
 share_access_page: Access Shared Page
-share_access_not_found:
-  This shared page either does not exist or has already exceeded the maximum number of allowed uses.
+share_access_not_found: This shared page either does not exist or has already exceeded the maximum number of allowed uses.
 share_access_not_found_desc: Please contact an authorized user of this project to request access.
 share_access_not_found_title: Unknown Share Page
 share_copy_link: Copy Link
@@ -1663,6 +1660,7 @@ interfaces:
     notice: Notice
     description: Display a short notice
     text: Enter notice content here...
+    no_text: No text configured...
   list-o2m:
     one-to-many: One to Many
     description: Select multiple related items
@@ -1763,6 +1761,27 @@ interfaces:
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+  input-block-editor:
+    input-block-editor: Block Editor
+    description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: List
+      embed: Embed
+      paragraph: Paragraph
+      code: Code
+      image: Image
+      attaches: Attaches
+      table: Table
+      quote: Quote
+      underline: Underline
+      inlinecode: Inline Code
+      delimiter: Delimiter
+      checklist: Checklist
+      toggle: Toggle Block
+      alignment: Alignment
+      raw: Raw HTML
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
@@ -2134,6 +2153,8 @@ operations:
     to: To
     to_placeholder: Add e-mail addresses and press enter...
     body: Body
+    template: Template
+    data: Data
   notification:
     name: Send Notification
     description: Send an in-app notification to one or more users
@@ -2143,7 +2164,7 @@ operations:
     message: Message
   request:
     name: Webhook / Request URL
-    description: "Make a request to a URL"
+    description: 'Make a request to a URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Method
@@ -2171,3 +2192,4 @@ operations:
     parallel: Parallel
     batch: Batch
     batch_size: Batch Size
+    cache: Cache

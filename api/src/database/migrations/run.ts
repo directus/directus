@@ -5,9 +5,11 @@ import { orderBy } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
+import { flushCaches } from '../../cache.js';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
+import getModuleDefault from '../../utils/get-module-default.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -15,11 +17,13 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	let migrationFiles = await fse.readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
+
 	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
 	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
-	customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
+
+	customMigrationFiles = customMigrationFiles.filter((file: string) => /\.(c|m)?js$/.test(file));
 
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
 
@@ -29,6 +33,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	].sort((a, b) => (a.version! > b.version! ? 1 : -1));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));
+
 	if (migrations.length > migrationKeys.size) {
 		throw new Error('Migration keys collide! Please ensure that every migration uses a unique key.');
 	}
@@ -75,6 +80,8 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		await up(database);
 		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
+
+		await flushCaches(true);
 	}
 
 	async function down() {
@@ -98,12 +105,17 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		await down(database);
 		await database('directus_migrations').delete().where({ version: migration.version });
+
+		await flushCaches(true);
 	}
 
 	async function latest() {
+		let needsCacheFlush = false;
+
 		for (const migration of migrations) {
 			if (migration.completed === false) {
-				const { up } = await import(`file://${migration.file}`);
+				needsCacheFlush = true;
+				const { up } = getModuleDefault(await import(`file://${migration.file}`));
 
 				if (log) {
 					logger.info(`Applying ${migration.name}...`);
@@ -112,6 +124,10 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 				await up(database);
 				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');
 			}
+		}
+
+		if (needsCacheFlush) {
+			await flushCaches(true);
 		}
 	}
 }

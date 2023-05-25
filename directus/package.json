@@ -1,8 +1,7 @@
 {
 	"name": "directus",
-	"version": "9.24.0",
+	"version": "10.1.1",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
-	"type": "module",
 	"keywords": [
 		"directus",
 		"realtime",
@@ -23,15 +22,12 @@
 		"vue"
 	],
 	"homepage": "https://directus.io",
-	"bugs": {
-		"url": "https://github.com/directus/directus/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0-only",
+	"license": "BUSL-1.1",
 	"author": {
 		"name": "Monospace Inc",
 		"email": "info@monospace.io",
@@ -49,6 +45,7 @@
 			"url": "https://github.com/benhaynes"
 		}
 	],
+	"type": "module",
 	"exports": {
 		"./package.json": "./package.json"
 	},

@@ -165,8 +165,10 @@ function generateFields(updates: StateUpdates, state: State, { getCurrent }: Hel
 	const junctionCurrent = getCurrent('relations.o2m.field');
 	const junctionRelated = getCurrent('relations.m2o.field');
 	const relatedCollection = getCurrent('relations.m2o.related_collection');
+
 	const relatedPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection) ?? getCurrent('collections.related.fields[0]');
+
 	const sort = getCurrent('relations.o2m.meta.sort_field');
 
 	if (junctionCollection && junctionCurrent && fieldExists(junctionCollection, junctionCurrent) === false) {
@@ -218,6 +220,7 @@ export function setDefaults(updates: StateUpdates, state: State, { getCurrent }:
 	const fieldsStore = useFieldsStore();
 
 	const currentCollection = state.collection!;
+
 	const currentCollectionPrimaryKeyField =
 		fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)?.field ?? 'id';
 

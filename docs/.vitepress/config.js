@@ -147,68 +147,6 @@ gtag('config', 'UA-24637628-7');
 	},
 });
 
-// function sidebarCookbooks() {
-// 	return [
-// {
-// 	text: 'The Cookbook',
-// 	items: [{ text: 'Add a Recipe', link: '/cookbook/add-a-recipe' }],
-// },
-// {
-// 	text: 'Projects',
-// 	collapsible: true,
-// 	collapsed: true,
-// 	items: [{ text: 'Intro', link: '/cookbook/intro' }],
-// },
-// {
-// 	text: 'Integrations',
-// 	collapsible: true,
-// 	collapsed: true,
-// 	items: [],
-// },
-// {
-// 	text: 'Data Models',
-// 	collapsible: true,
-// 	collapsed: true,
-// 	items: [
-// 		{ text: 'Build Content with M2A', link: '/cookbook/data-models/build-content-with-m2a' },
-// 		{ text: 'Content Hierarchies', link: '/cookbook/data-models/recursive-content-hierarchies' },
-// 	],
-// },
-// {
-// 	text: 'Permissions',
-// 	collapsible: true,
-// 	collapsed: true,
-// 	items: [
-// 		{ text: 'Basic Workflows', link: '/cookbook/permissions/basic-workflows' },
-// 		// { text: 'Configure User registration', link: '/cookbook/permissions/configure-user-registration' },
-// 		// { text: 'Multi-Sig Data Access', link: '/cookbook/permissions/multi-sig-data-access' },
-// 	],
-// },
-// {
-// 	text: 'Flows',
-// 	collapsible: true,
-// 	collapsed: true,
-// 	items: [
-// 		{ text: 'For Loops', link: '/cookbook/flows/flows-for-loop' },
-// 		{ text: 'Slugify Text with Run Script', link: '/cookbook/flows/slugify-text-with-run-script' },
-// 		// { text: 'Generate Work Reports', link: '/cookbook/flows/generate-work-reports' },
-// 	],
-// },
-// {
-// 	text: 'Websockets',
-// 	collapsible: true,
-// 	collapsed: true,
-// 	items: [{ text: 'Intro', link: '/cookbook/intro' }],
-// },
-// {
-// 	text: 'Insights',
-// 	collapsible: true,
-// 	collapsed: true,
-// 	items: [{ text: 'Intro', link: '/cookbook/intro' }],
-// },
-// 	];
-// }
-
 function sidebar() {
 	return [
 		{
@@ -245,7 +183,7 @@ function sidebar() {
 			],
 		},
 		{
-			text: 'App Guide',
+			text: 'Data Studio App',
 			collapsible: true,
 			collapsed: true,
 			items: [
@@ -305,211 +243,104 @@ function sidebar() {
 					link: '/app/import-export',
 					text: 'Import / Export',
 				},
-			],
-		},
-		{
-			text: 'Configuration',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				// {
-				// 	type: 'page',
-				// 	link: '/configuration/overview',
-				// 	title: 'Overview',
-				// },
 				{
-					link: '/configuration/project-settings',
+					link: '/app/project-settings',
 					text: 'Project Settings',
 				},
 				{
-					link: '/configuration/data-model',
+					link: '/app/data-model',
 					text: 'Data Model',
 					items: [
 						{
-							link: '/configuration/data-model/collections',
+							link: '/app/data-model/collections',
 							text: 'Collections',
 						},
 						{
-							link: '/configuration/data-model/fields',
+							link: '/app/data-model/fields',
 							text: 'Fields',
 							collapsible: true,
 							collapsed: true,
 							items: [
 								{
-									link: '/configuration/data-model/fields/text-numbers',
+									link: '/app/data-model/fields/text-numbers',
 									text: 'Text & Numbers',
 								},
 								{
-									link: '/configuration/data-model/fields/selection',
+									link: '/app/data-model/fields/selection',
 									text: 'Selection',
 								},
 								{
-									link: '/configuration/data-model/fields/relational',
+									link: '/app/data-model/fields/relational',
 									text: 'Relational',
 								},
 								{
-									link: '/configuration/data-model/fields/presentation',
+									link: '/app/data-model/fields/presentation',
 									text: 'Presentation',
 								},
 								{
-									link: '/configuration/data-model/fields/groups',
+									link: '/app/data-model/fields/groups',
 									text: 'Groups',
 								},
 								{
-									link: '/configuration/data-model/fields/other',
+									link: '/app/data-model/fields/other',
 									text: 'Other',
 								},
 							],
 						},
 						{
-							link: '/configuration/data-model/relationships',
+							link: '/app/data-model/relationships',
 							text: 'Relationships',
 						},
 					],
 				},
 				{
-					link: '/configuration/users-roles-permissions',
+					link: '/app/users-roles-permissions',
 					text: 'Users, Roles & Permissions',
 					items: [
 						{
-							link: '/configuration/users-roles-permissions/users',
+							link: '/app/users-roles-permissions/users',
 							text: 'Users',
 						},
 						{
-							link: '/configuration/users-roles-permissions/roles',
+							link: '/app/users-roles-permissions/roles',
 							text: 'Roles',
 						},
 						{
-							link: '/configuration/users-roles-permissions/permissions',
+							link: '/app/users-roles-permissions/permissions',
 							text: 'Permissions',
 						},
 					],
 				},
 				{
-					link: '/configuration/presets-bookmarks',
+					link: '/app/presets-bookmarks',
 					text: 'Presets & Bookmarks',
 				},
 				{
-					link: '/configuration/translation-strings',
+					link: '/app/translation-strings',
 					text: 'Translation Strings',
 				},
 				{
-					link: '/configuration/webhooks',
+					link: '/app/webhooks',
 					text: 'Webhooks',
 				},
 				{
-					link: '/configuration/flows',
+					link: '/app/flows',
 					text: 'Flows',
 					collapsible: false,
 					items: [
 						{
-							link: '/configuration/flows/triggers',
+							link: '/app/flows/triggers',
 							text: 'Triggers',
 						},
 						{
-							link: '/configuration/flows/operations',
+							link: '/app/flows/operations',
 							text: 'Operations',
 						},
 					],
 				},
 				{
-					link: '/configuration/activity-log',
+					link: '/app/activity-log',
 					text: 'Activity Log',
-				},
-				// {
-				// 	link: '/configuration/security',
-				// 	text: 'Security*',
-				// 	type: 'page',
-				// },
-				// {
-				// 	link: '/configuration/localization',
-				// 	text: 'Localization*',
-				// 	type: 'page',
-				// },
-				// {
-				// 	link: '/configuration/faq',
-				// 	text: 'Frequently Asked Questions*',
-				// 	type: 'page',
-				// },
-			],
-		},
-		{
-			text: 'Cookbook',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{ text: 'Personal Portfolio Using M2A', link: '/cookbook/data-models/personal-portfolio-using-m2a.md' },
-				{ text: 'Build a Content Hierarchy', link: '/cookbook/data-models/build-a-content-hierarchy' },
-				{ text: 'Content Approval Workflows', link: '/cookbook/permissions/basic-workflows' },
-				{ text: 'Flows For Loops', link: '/cookbook/flows/flows-for-loop' },
-				{ text: 'Slugify Text with Run Script', link: '/cookbook/flows/slugify-text-with-run-script' },
-				{
-					text: 'Trigger Static Site Builds',
-					items: [
-						{
-							text: 'Netlify',
-							link: '/cookbook/flows/trigger-static-site-build-netlify',
-						},
-						{
-							text: 'Vercel',
-							link: '/cookbook/flows/trigger-static-site-build-vercel',
-						},
-					],
-				},
-				{
-					text: 'Scheduling Content',
-					items: [
-						{ text: 'Static Sites', link: '/cookbook/flows/scheduling-content-static-sites' },
-						{ text: 'Dynamic Sites', link: '/cookbook/flows/scheduling-content-dynamic-sites' },
-					],
-				},
-				{
-					text: 'Schema Migration',
-					items: [
-						{ text: 'Hoppscotch', link: '/cookbook/migration/hoppscotch' },
-						{ text: 'Node.js', link: '/cookbook/migration/node' },
-					],
-				},
-			],
-		},
-		{
-			text: 'Use Cases',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{
-					text: 'Headless CMS',
-					items: [
-						{
-							text: 'Introduction',
-							link: '/use-cases/headless-cms/introduction',
-						},
-						{
-							text: 'Concepts',
-							link: '/use-cases/headless-cms/concepts',
-						},
-						{
-							text: 'Guides',
-							items: [
-								{
-									text: 'Build a Website With Next.js',
-									link: '/use-cases/headless-cms/build-website-next-13',
-								},
-								{
-									text: 'Build a Website With Nuxt.js',
-									link: '/use-cases/headless-cms/build-website-nuxt-3',
-								},
-								{
-									text: 'Create Re-Usable Page Components',
-									link: '/use-cases/headless-cms/create-reusable-page-components-using-m2a',
-								},
-								{
-									text: 'Security Best Practices',
-									link: '/use-cases/headless-cms/security',
-								},
-							],
-						},
-					],
 				},
 			],
 		},
@@ -637,6 +468,74 @@ function sidebar() {
 			],
 		},
 		{
+			text: 'Guides',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Flows',
+					items: [
+						{ text: 'For Loops In Flows', link: '/guides/flows/flows-for-loop' },
+						{ text: 'Slugify Text With Flows', link: '/guides/flows/slugify-text-with-run-script' },
+					],
+				},
+				{
+					text: 'Headless CMS',
+					items: [
+						{ text: 'Content Approval Workflows', link: '/guides/headless-cms/approval-workflows' },
+						{
+							text: 'Re-Usable Page Components',
+							link: '/guides/headless-cms/reusable-components',
+						},
+						{
+							link: '/guides/headless-cms/schedule-content/index.html',
+							text: 'Scheduling Future Content',
+						},
+						{
+							link: '/guides/headless-cms/trigger-static-builds/index.html',
+							text: 'Trigger Static Site Builds',
+						},
+						{
+							text: 'Build a Static Website',
+							link: '/guides/headless-cms/build-static-website/index.html',
+						},
+            {
+							text: 'Set Up Live Preview',
+							link: '/guides/headless-cms/live-preview/index.html',
+						},
+					],
+				},
+				{
+					link: '/guides/migration/index.html',
+					text: 'Schema Migration',
+				},
+			],
+		},
+		{
+			text: 'Use Cases',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Headless CMS',
+					items: [
+						{
+							text: 'Introduction',
+							link: '/use-cases/headless-cms/introduction',
+						},
+						{
+							text: 'Concepts',
+							link: '/use-cases/headless-cms/concepts',
+						},
+						{
+							text: 'Security Best Practices',
+							link: '/use-cases/headless-cms/security',
+						},
+					],
+				},
+			],
+		},
+		{
 			text: 'Extensions',
 			collapsible: true,
 			collapsed: true,
@@ -709,51 +608,16 @@ function sidebar() {
 					text: 'Introduction',
 				},
 				{
-					link: '/contributing/codebase-overview',
-					text: 'Codebase Overview',
-				},
-				{
 					link: '/contributing/running-locally',
 					text: 'Running Locally',
 				},
 				{
-					link: '/contributing/github-ci',
-					text: 'GitHub CI',
+					link: '/contributing/codebase-overview',
+					text: 'Codebase Overview',
 				},
 				{
-					link: '/contributing/translations',
-					text: 'Translating the App',
-				},
-			],
-		},
-		{
-			text: 'Directus Cloud',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{
-					link: '/cloud/overview',
-					text: 'Overview',
-				},
-				{
-					link: '/cloud/accounts',
-					text: 'Accounts',
-				},
-				{
-					link: '/cloud/teams',
-					text: 'Teams',
-				},
-				{
-					link: '/cloud/projects',
-					text: 'Projects',
-				},
-				{
-					link: '/cloud/glossary',
-					text: 'Glossary',
-				},
-				{
-					link: '/cloud/exclusives',
-					text: 'Exclusives',
+					link: '/contributing/tests',
+					text: 'Tests',
 				},
 			],
 		},

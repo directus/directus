@@ -1,4 +1,6 @@
+import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
+import type { Accountability, Field, Permission, Relation, SchemaOverview, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
@@ -8,19 +10,17 @@ import type {
 	ReferenceObject,
 	SchemaObject,
 	TagObject,
-} from 'openapi3-ts';
-import type { Accountability, Field, Permission, Relation, SchemaOverview, Type } from '@directus/types';
-import { version } from '../utils/package.js';
+} from 'openapi3-ts/oas30';
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import type { AbstractServiceOptions, Collection } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
+import { version } from '../utils/package.js';
 import { CollectionsService } from './collections.js';
 import { FieldsService } from './fields.js';
 import { GraphQLService } from './graphql/index.js';
 import { RelationsService } from './relations.js';
-import formatTitle from '@directus/format-title';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -188,12 +188,12 @@ class OASSpecsService implements SpecificationSubService {
 
 							if (hasPermission) {
 								if ('parameters' in pathItem) {
-									paths[path][method] = {
+									paths[path]![method as keyof PathItemObject] = {
 										...operation,
 										parameters: [...(pathItem.parameters ?? []), ...(operation?.parameters ?? [])],
 									};
 								} else {
-									paths[path][method] = operation;
+									paths[path]![method as keyof PathItemObject] = operation;
 								}
 							}
 						}
@@ -204,7 +204,9 @@ class OASSpecsService implements SpecificationSubService {
 				const detailBase = cloneDeep(spec.paths['/items/{collection}/{id}']);
 				const collection = tag['x-collection'];
 
-				for (const method of ['post', 'get', 'patch', 'delete']) {
+				const methods: (keyof PathItemObject)[] = ['post', 'get', 'patch', 'delete'];
+
+				for (const method of methods) {
 					const hasPermission =
 						this.accountability?.admin === true ||
 						!!permissions.find(
@@ -216,8 +218,8 @@ class OASSpecsService implements SpecificationSubService {
 						if (!paths[`/items/${collection}`]) paths[`/items/${collection}`] = {};
 						if (!paths[`/items/${collection}/{id}`]) paths[`/items/${collection}/{id}`] = {};
 
-						if (listBase[method]) {
-							paths[`/items/${collection}`][method] = mergeWith(
+						if (listBase?.[method]) {
+							paths[`/items/${collection}`]![method] = mergeWith(
 								cloneDeep(listBase[method]),
 								{
 									description: listBase[method].description.replace('item', collection + ' item'),
@@ -273,8 +275,8 @@ class OASSpecsService implements SpecificationSubService {
 							);
 						}
 
-						if (detailBase[method]) {
-							paths[`/items/${collection}/{id}`][method] = mergeWith(
+						if (detailBase?.[method]) {
+							paths[`/items/${collection}/{id}`]![method] = mergeWith(
 								cloneDeep(detailBase[method]),
 								{
 									description: detailBase[method].description.replace('item', collection + ' item'),
@@ -439,6 +441,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			if (relationType === 'm2o') {
 				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.related_collection);
+
 				const relatedPrimaryKeyField = fields.find(
 					(field) => field.collection === relation.related_collection && field.schema?.is_primary_key
 				);
@@ -455,6 +458,7 @@ class OASSpecsService implements SpecificationSubService {
 				];
 			} else if (relationType === 'o2m') {
 				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.collection);
+
 				const relatedPrimaryKeyField = fields.find(
 					(field) => field.collection === relation.collection && field.schema?.is_primary_key
 				);
@@ -462,6 +466,7 @@ class OASSpecsService implements SpecificationSubService {
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;
 
 				propertyObject.type = 'array';
+
 				propertyObject.items = {
 					oneOf: [
 						{
@@ -476,6 +481,7 @@ class OASSpecsService implements SpecificationSubService {
 				const relatedTags = tags.filter((tag) => relation.meta!.one_allowed_collections!.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';
+
 				propertyObject.items = {
 					oneOf: [
 						{

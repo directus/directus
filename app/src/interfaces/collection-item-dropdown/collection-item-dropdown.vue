@@ -22,7 +22,7 @@
 			v-model:active="selectDrawerOpen"
 			:collection="selectedCollection"
 			:selection="value?.key ? [value.key] : []"
-			:filter="filter"
+			:filter="filter!"
 			@input="onSelection"
 			@update:active="selectDrawerOpen = false"
 		/>
@@ -95,6 +95,7 @@ const displayTemplate = computed(() => {
 
 	return displayTemplate || `{{ ${primaryKey.value || ''} }}`;
 });
+
 const requiredFields = computed(() => {
 	if (!displayTemplate.value || !unref(selectedCollection)) return [];
 	return adjustFieldsForDisplays(getFieldsFromTemplate(displayTemplate.value), unref(selectedCollection));
@@ -131,7 +132,7 @@ async function getDisplayItem() {
 	}
 }
 
-function onSelection(selectedIds: (number | string)[]) {
+function onSelection(selectedIds: (number | string)[] | null) {
 	selectDrawerOpen.value = false;
 	value.value = { key: Array.isArray(selectedIds) ? selectedIds[0] : null, collection: unref(selectedCollection) };
 }

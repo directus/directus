@@ -90,6 +90,7 @@ router.get(
 					app_access: false,
 				},
 			};
+
 			res.locals['payload'] = { data: user };
 			return next();
 		}
@@ -124,6 +125,7 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		if (req.path.endsWith('me')) return next();
+
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -170,7 +172,7 @@ router.patch(
 		}
 
 		const service = new UsersService({ schema: req.schema });
-		await service.updateOne(req.accountability.user, { last_page: req.body.last_page });
+		await service.updateOne(req.accountability.user, { last_page: req.body.last_page }, { autoPurgeCache: false });
 
 		return next();
 	}),
@@ -293,6 +295,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.inviteUser(req.body.email, req.body.role, req.body.invite_url || null);
 		return next();
 	}),
@@ -309,10 +312,12 @@ router.post(
 	asyncHandler(async (req, _res, next) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
+
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.acceptInvite(req.body.token, req.body.password);
 		return next();
 	}),
@@ -339,6 +344,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await authService.verifyPassword(req.accountability.user, req.body.password);
 
 		const { url, secret } = await service.generateTFA(req.accountability.user);
@@ -369,6 +375,7 @@ router.post(
 			const rolesService = new RolesService({
 				schema: req.schema,
 			});
+
 			const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
 			if (role && role.enforce_tfa) {
@@ -423,6 +430,7 @@ router.post(
 			const rolesService = new RolesService({
 				schema: req.schema,
 			});
+
 			const role = (await rolesService.readOne(req.accountability.role)) as Role;
 
 			if (role && role.enforce_tfa) {

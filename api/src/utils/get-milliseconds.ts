@@ -8,5 +8,6 @@ export function getMilliseconds(value: unknown, fallback = undefined): number | 
 	if ((typeof value !== 'string' && typeof value !== 'number') || value === '') {
 		return fallback;
 	}
+
 	return ms(String(value)) ?? fallback;
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-import { inquirer } from 'inquirer';
+import inquirer from 'inquirer';
 import { EXTENSION_LANGUAGES, EXTENSION_TYPES, BUNDLE_EXTENSION_TYPES } from '@directus/constants';
 import { create } from '@directus/extensions-sdk/cli';
 

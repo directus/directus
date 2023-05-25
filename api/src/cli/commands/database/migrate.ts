@@ -15,6 +15,7 @@ export default async function migrate(direction: 'latest' | 'up' | 'down'): Prom
 		} else {
 			logger.info('Database up to date');
 		}
+
 		database.destroy();
 		process.exit();
 	} catch (err: any) {

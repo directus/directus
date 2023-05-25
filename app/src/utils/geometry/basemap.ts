@@ -10,7 +10,7 @@ export type BasemapSource = {
 	attribution?: string;
 };
 
-const defaultBasemap: BasemapSource = {
+export const defaultBasemap: BasemapSource = {
 	name: 'OpenStreetMap',
 	type: 'raster',
 	url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -40,13 +40,16 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 		const style: Style = { ...baseStyle };
 		const source: RasterSource = { type: 'raster' };
 		if (basemap.attribution) source.attribution = basemap.attribution;
+
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);
 			source.tileSize = basemap.tileSize || 512;
 		}
+
 		if (basemap.type == 'tile') {
 			source.url = basemap.url;
 		}
+
 		style.layers = [{ id: basemap.name, source: basemap.name, type: 'raster' }];
 		style.sources = { [basemap.name]: source };
 		return style;
@@ -56,34 +59,46 @@ export function getStyleFromBasemapSource(basemap: BasemapSource): Style | strin
 function expandUrl(url: string): string[] {
 	const urls = [];
 	let match = /\{([a-z])-([a-z])\}/.exec(url);
+
 	if (match) {
 		// char range
 		const startCharCode = match[1].charCodeAt(0);
 		const stopCharCode = match[2].charCodeAt(0);
 		let charCode;
+
 		for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
 			urls.push(url.replace(match[0], String.fromCharCode(charCode)));
 		}
+
 		return urls;
 	}
+
 	match = /\{(\d+)-(\d+)\}/.exec(url);
+
 	if (match) {
 		// number range
 		const stop = parseInt(match[2], 10);
+
 		for (let i = parseInt(match[1], 10); i <= stop; i++) {
 			urls.push(url.replace(match[0], i.toString()));
 		}
+
 		return urls;
 	}
+
 	match = /\{(([a-z0-9]+)(,([a-z0-9]+))+)\}/.exec(url);
+
 	if (match) {
 		// csv
 		const subdomains = match[1].split(',');
+
 		for (const subdomain of subdomains) {
 			urls.push(url.replace(match[0], subdomain));
 		}
+
 		return urls;
 	}
+
 	urls.push(url);
 	return urls;
 }

@@ -40,101 +40,91 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref, watchEffect } from 'vue';
-import { useSync } from '@directus/composables';
+<script setup lang="ts">
 import { Revision } from '@/types/revisions';
+import { useSync } from '@directus/composables';
+import { isEqual } from 'lodash';
+import { computed, ref, watchEffect } from 'vue';
+import { useI18n } from 'vue-i18n';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
-import { isEqual } from 'lodash';
 
-export default defineComponent({
-	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
-	props: {
-		revisions: {
-			type: Array as PropType<Revision[]>,
-			required: true,
-		},
-		current: {
-			type: [Number, String],
-			default: null,
-		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['revert', 'update:active', 'update:current'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = defineProps<{
+	revisions: Revision[];
+	current: number | null;
+	active: boolean;
+}>();
 
-		const internalActive = useSync(props, 'active', emit);
-		const internalCurrent = useSync(props, 'current', emit);
+const emit = defineEmits<{
+	(e: 'revert', value: Record<string, unknown>): void;
+	(e: 'update:active', value: boolean): void;
+	(e: 'update:current', value: number | string): void;
+}>();
 
-		const currentTab = ref(['updates_made']);
+const { t } = useI18n();
 
-		const title = computed(() => {
-			return currentRevision.value?.activity.action === 'create' ? t('item_creation') : t('item_revision');
-		});
+const internalActive = useSync(props, 'active', emit);
+const internalCurrent = useSync(props, 'current', emit);
 
-		const currentRevision = computed(() => {
-			return props.revisions.find((revision) => revision.id === props.current);
-		});
+const currentTab = ref(['updates_made']);
 
-		const previousRevision = computed<Revision | undefined>(() => {
-			const currentIndex = props.revisions.findIndex((revision) => revision.id === props.current);
-
-			// This is assuming props.revisions is in chronological order from newest to oldest
-			return props.revisions[currentIndex + 1];
-		});
-
-		const tabs = computed(() => {
-			return currentRevision.value?.activity.action === 'create'
-				? [
-						{
-							text: t('creation_preview'),
-							value: 'revision_preview',
-						},
-				  ]
-				: [
-						{
-							text: t('updates_made'),
-							value: 'updates_made',
-						},
-						{
-							text: t('revision_preview'),
-							value: 'revision_preview',
-						},
-				  ];
-		});
-
-		const hasPastRevision = computed(() => {
-			return currentRevision.value?.activity.action !== 'create' ? true : false;
-		});
-
-		watchEffect(() => (currentTab.value = [tabs.value[0].value]));
-
-		return { t, internalActive, internalCurrent, title, currentRevision, currentTab, tabs, hasPastRevision, revert };
-
-		function revert() {
-			if (!currentRevision.value) return;
-
-			const revertToValues: Record<string, any> = {};
-
-			for (const [field, newValue] of Object.entries(currentRevision.value.delta)) {
-				const previousValue = previousRevision.value?.data[field] ?? null;
-				if (isEqual(newValue, previousValue)) continue;
-				revertToValues[field] = previousValue;
-			}
-
-			emit('revert', revertToValues);
-
-			internalActive.value = false;
-		}
-	},
+const title = computed(() => {
+	return currentRevision.value?.activity.action === 'create' ? t('item_creation') : t('item_revision');
 });
+
+const currentRevision = computed(() => {
+	return props.revisions.find((revision) => revision.id === props.current)!;
+});
+
+const previousRevision = computed<Revision | undefined>(() => {
+	const currentIndex = props.revisions.findIndex((revision) => revision.id === props.current);
+
+	// This is assuming props.revisions is in chronological order from newest to oldest
+	return props.revisions[currentIndex + 1];
+});
+
+const tabs = computed(() => {
+	return currentRevision.value?.activity.action === 'create'
+		? [
+				{
+					text: t('creation_preview'),
+					value: 'revision_preview',
+				},
+		  ]
+		: [
+				{
+					text: t('updates_made'),
+					value: 'updates_made',
+				},
+				{
+					text: t('revision_preview'),
+					value: 'revision_preview',
+				},
+		  ];
+});
+
+const hasPastRevision = computed(() => {
+	return currentRevision.value?.activity.action !== 'create';
+});
+
+watchEffect(() => (currentTab.value = [tabs.value[0].value]));
+
+function revert() {
+	if (!currentRevision.value) return;
+
+	const revertToValues: Record<string, any> = {};
+
+	for (const [field, newValue] of Object.entries(currentRevision.value.delta)) {
+		const previousValue = previousRevision.value?.data[field] ?? null;
+		if (isEqual(newValue, previousValue)) continue;
+		revertToValues[field] = previousValue;
+	}
+
+	emit('revert', revertToValues);
+
+	internalActive.value = false;
+}
 </script>
 
 <style lang="scss" scoped>

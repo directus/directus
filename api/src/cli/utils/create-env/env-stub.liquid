@@ -43,6 +43,10 @@ PUBLIC_URL="/"
 # Whether or not to enable GraphQL Introspection [true]
 # GRAPHQL_INTROSPECTION=true
 
+# Limit the maximum amount of items that can get requested in one query.
+# QUERY_LIMIT_DEFAULT=100
+# QUERY_LIMIT_MAX=Infinity
+
 # The maximum number of items for batch mutations when creating, updating and deleting. ["Infinity"]
 # MAX_BATCH_MUTATION="Infinity"
 
@@ -148,6 +152,9 @@ CACHE_ENABLED=false
 
 # Automatically purge the cache on create, update, and delete actions. [false]
 # CACHE_AUTO_PURGE=true
+
+# List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled. ["directus_activity,directus_presets"]
+# CACHE_AUTO_PURGE_IGNORE_LIST="directus_activity,directus_presets"
 
 # memory | redis | memcache
 CACHE_STORE=memory

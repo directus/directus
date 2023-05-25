@@ -53,6 +53,7 @@ export const useSettingsStore = defineStore({
 					fields: ['translation_strings'],
 				},
 			});
+
 			const { translation_strings } = response.data.data;
 			if (this.settings) this.settings.translation_strings = translation_strings;
 			return translation_strings;

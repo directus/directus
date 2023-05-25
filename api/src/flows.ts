@@ -1,3 +1,4 @@
+import { Action, REDACTED_TEXT } from '@directus/constants';
 import * as sharedExceptions from '@directus/exceptions';
 import type {
 	Accountability,
@@ -8,13 +9,10 @@ import type {
 	OperationHandler,
 	SchemaOverview,
 } from '@directus/types';
-import { Action } from '@directus/constants';
 import { applyOptionsData, isValidJSON, parseJSON, toArray } from '@directus/utils';
-import fastRedact from 'fast-redact';
 import type { Knex } from 'knex';
 import { omit, pick } from 'lodash-es';
 import { get } from 'micromustache';
-import { schedule, validate } from 'node-cron';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
@@ -22,22 +20,19 @@ import * as exceptions from './exceptions/index.js';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
-import * as services from './services/index.js';
 import { FlowsService } from './services/flows.js';
+import * as services from './services/index.js';
 import { RevisionsService } from './services/revisions.js';
 import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
+import { redact } from './utils/redact.js';
+import { sanitizeError } from './utils/sanitize-error.js';
+import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
 let flowManager: FlowManager | undefined;
-
-const redactLogs = fastRedact({
-	censor: '--redacted--',
-	paths: ['*.headers.authorization', '*.access_token', '*.headers.cookie'],
-	serialize: false,
-});
 
 export function getFlowManager(): FlowManager {
 	if (flowManager) {
@@ -120,7 +115,11 @@ class FlowManager {
 		return handler(data, context);
 	}
 
-	public async runWebhookFlow(id: string, data: unknown, context: Record<string, unknown>): Promise<unknown> {
+	public async runWebhookFlow(
+		id: string,
+		data: unknown,
+		context: Record<string, unknown>
+	): Promise<{ result: unknown; cacheEnabled: boolean }> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
 			throw new exceptions.ForbiddenException();
@@ -180,6 +179,7 @@ class FlowManager {
 						);
 
 					events.forEach((event) => emitter.onFilter(event, handler));
+
 					this.triggerHandlers.push({
 						id: flow.id,
 						events: events.map((event) => ({ type: 'filter', name: event, handler })),
@@ -193,14 +193,15 @@ class FlowManager {
 						});
 
 					events.forEach((event) => emitter.onAction(event, handler));
+
 					this.triggerHandlers.push({
 						id: flow.id,
 						events: events.map((event) => ({ type: 'action', name: event, handler })),
 					});
 				}
 			} else if (flow.trigger === 'schedule') {
-				if (validate(flow.options['cron'])) {
-					const task = schedule(flow.options['cron'], async () => {
+				if (validateCron(flow.options['cron'])) {
+					const job = scheduleSynchronizedJob(flow.id, flow.options['cron'], async () => {
 						try {
 							await this.executeFlow(flow);
 						} catch (error: any) {
@@ -208,7 +209,7 @@ class FlowManager {
 						}
 					});
 
-					this.triggerHandlers.push({ id: flow.id, events: [{ type: flow.trigger, task }] });
+					this.triggerHandlers.push({ id: flow.id, events: [{ type: flow.trigger, job }] });
 				} else {
 					logger.warn(`Couldn't register cron trigger. Provided cron is invalid: ${flow.options['cron']}`);
 				}
@@ -217,16 +218,22 @@ class FlowManager {
 
 				this.operationFlowHandlers[flow.id] = handler;
 			} else if (flow.trigger === 'webhook') {
-				const handler = (data: unknown, context: Record<string, unknown>) => {
+				const method = flow.options?.['method'] ?? 'GET';
+
+				const handler = async (data: unknown, context: Record<string, unknown>) => {
+					let cacheEnabled = true;
+
+					if (method === 'GET') {
+						cacheEnabled = flow.options['cacheEnabled'] !== false;
+					}
+
 					if (flow.options['async']) {
 						this.executeFlow(flow, data, context);
-						return undefined;
+						return { result: undefined, cacheEnabled };
 					} else {
-						return this.executeFlow(flow, data, context);
+						return { result: await this.executeFlow(flow, data, context), cacheEnabled };
 					}
 				};
-
-				const method = flow.options?.['method'] ?? 'GET';
 
 				// Default return to $last for webhooks
 				flow.options['return'] = flow.options['return'] ?? '$last';
@@ -272,7 +279,7 @@ class FlowManager {
 
 	private async unload(): Promise<void> {
 		for (const trigger of this.triggerHandlers) {
-			trigger.events.forEach((event) => {
+			for (const event of trigger.events) {
 				switch (event.type) {
 					case 'filter':
 						emitter.offFilter(event.name, event.handler);
@@ -281,10 +288,10 @@ class FlowManager {
 						emitter.offAction(event.name, event.handler);
 						break;
 					case 'schedule':
-						event.task.stop();
+						await event.job.stop();
 						break;
 				}
-			});
+			}
 		}
 
 		this.triggerHandlers = [];
@@ -356,7 +363,16 @@ class FlowManager {
 					item: flow.id,
 					data: {
 						steps: steps,
-						data: redactLogs(omit(keyedData, '$accountability.permissions')), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
+						data: redact(
+							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
+							[
+								['**', 'headers', 'authorization'],
+								['**', 'headers', 'cookie'],
+								['**', 'query', 'access_token'],
+								['**', 'payload', 'password'],
+							],
+							REDACTED_TEXT
+						),
 					},
 				});
 			}
@@ -421,8 +437,8 @@ class FlowManager {
 			let data;
 
 			if (error instanceof Error) {
-				// If the error is instance of Error, use the message of it as the error data
-				data = { message: error.message };
+				// make sure we dont expose the stack trace
+				data = sanitizeError(error);
 			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data
 				data = isValidJSON(error) ? parseJSON(error) : error;

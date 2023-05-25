@@ -2,7 +2,8 @@ import type { PermissionsAction, Query } from '@directus/types';
 import type Keyv from 'keyv';
 import { clearSystemCache, getCache } from '../cache.js';
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions/index.js';
-import { ItemsService, QueryOptions } from '../services/items.js';
+import type { QueryOptions } from '../services/items.js';
+import { ItemsService } from '../services/items.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { filterItems } from '../utils/filter-items.js';
 
@@ -81,36 +82,66 @@ export class PermissionsService extends ItemsService {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions) {
 		const res = await super.createOne(data, opts);
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
 		return res;
 	}
 
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.createMany(data, opts);
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
 		return res;
 	}
 
 	override async updateBatch(data: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.updateBatch(data, opts);
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
 		return res;
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions) {
 		const res = await super.updateMany(keys, data, opts);
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
 		return res;
 	}
 
 	override async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions) {
 		const res = await super.upsertMany(payloads, opts);
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
 		return res;
 	}
 
 	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions) {
 		const res = await super.deleteMany(keys, opts);
 		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
+
 		return res;
 	}
 }

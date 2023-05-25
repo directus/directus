@@ -1,6 +1,6 @@
+import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
 import { addFieldFlag, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -8,11 +8,11 @@ import type { Knex } from 'knex';
 import { isEqual, isNil } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
-import { getHelpers, Helpers } from '../database/helpers/index.js';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
 import { translateDatabaseError } from '../exceptions/database/translate.js';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { ItemsService } from '../services/items.js';
@@ -22,6 +22,7 @@ import getDefaultValue from '../utils/get-default-value.js';
 import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { RelationsService } from './relations.js';
 
 export class FieldsService {
@@ -196,6 +197,7 @@ export class FieldsService {
 			});
 
 			if (!permissions || !permissions.fields) throw new ForbiddenException();
+
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
 				if (allowedFields.includes(field) === false) throw new ForbiddenException();
@@ -268,6 +270,7 @@ export class FieldsService {
 
 			// Add flag for specific database type overrides
 			const flagToAdd = this.helpers.date.fieldFlagForField(field.type);
+
 			if (flagToAdd) {
 				addFieldFlag(field, flagToAdd);
 			}
@@ -338,7 +341,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -396,7 +399,11 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
 
-				if (!isEqual(sanitizeColumn(existingColumn), hookAdjustedField.schema)) {
+				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
+				const columnToCompare =
+					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
+
+				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
 						await this.knex.schema.alterTable(collection, (table) => {
 							if (!hookAdjustedField.schema) return;
@@ -457,7 +464,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -623,7 +630,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 

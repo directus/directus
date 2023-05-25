@@ -10,6 +10,7 @@ export default defineInterface({
 	component: InterfaceGroupDivider,
 	hideLabel: true,
 	hideLoader: true,
+	autoKey: true,
 	types: ['alias'],
 	localTypes: ['group'],
 	group: 'group',

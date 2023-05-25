@@ -1,8 +1,11 @@
+import { REDACTED_TEXT } from '@directus/constants';
+import { Writable } from 'node:stream';
+import { pino } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 const REFRESH_TOKEN_COOKIE_NAME = 'directus_refresh_token';
 
-vi.mock('./env', async () => {
+vi.doMock('./env', async () => {
 	const MOCK_ENV = {
 		AUTH_PROVIDERS: 'ranger,monospace',
 		AUTH_RANGER_DRIVER: 'oauth2',
@@ -11,16 +14,14 @@ vi.mock('./env', async () => {
 		LOG_LEVEL: 'info',
 		LOG_STYLE: 'raw',
 	};
+
 	return {
 		default: MOCK_ENV,
 		getEnv: () => MOCK_ENV,
 	};
 });
 
-import { Writable } from 'node:stream';
-import { pino } from 'pino';
-import { REDACT_TEXT } from './constants.js';
-import { httpLoggerOptions } from './logger.js';
+const { httpLoggerOptions } = await import('./logger.js');
 
 const logOutput = vi.fn();
 
@@ -41,6 +42,7 @@ afterEach(() => {
 describe('req.headers.authorization', () => {
 	test('Should redact bearer token in Authorization header', () => {
 		const instance = pino(httpLoggerOptions, stream);
+
 		instance.info({
 			req: {
 				headers: {
@@ -48,10 +50,11 @@ describe('req.headers.authorization', () => {
 				},
 			},
 		});
+
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					authorization: REDACT_TEXT,
+					authorization: REDACTED_TEXT,
 				},
 			},
 		});
@@ -61,6 +64,7 @@ describe('req.headers.authorization', () => {
 describe('req.headers.cookie', () => {
 	test('Should redact refresh token when there is only one entry', () => {
 		const instance = pino(httpLoggerOptions, stream);
+
 		instance.info({
 			req: {
 				headers: {
@@ -68,10 +72,11 @@ describe('req.headers.cookie', () => {
 				},
 			},
 		});
+
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					cookie: REDACT_TEXT,
+					cookie: REDACTED_TEXT,
 				},
 			},
 		});
@@ -79,6 +84,7 @@ describe('req.headers.cookie', () => {
 
 	test('Should redact refresh token with multiple entries', () => {
 		const instance = pino(httpLoggerOptions, stream);
+
 		instance.info({
 			req: {
 				headers: {
@@ -86,10 +92,11 @@ describe('req.headers.cookie', () => {
 				},
 			},
 		});
+
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					cookie: REDACT_TEXT,
+					cookie: REDACTED_TEXT,
 				},
 			},
 		});
@@ -99,6 +106,7 @@ describe('req.headers.cookie', () => {
 describe('res.headers', () => {
 	test('Should redact refresh token when there is only one entry', () => {
 		const instance = pino(httpLoggerOptions, stream);
+
 		instance.info({
 			res: {
 				headers: {
@@ -106,10 +114,11 @@ describe('res.headers', () => {
 				},
 			},
 		});
+
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			res: {
 				headers: {
-					'set-cookie': REDACT_TEXT,
+					'set-cookie': REDACTED_TEXT,
 				},
 			},
 		});
@@ -117,6 +126,7 @@ describe('res.headers', () => {
 
 	test('Should redact refresh token with multiple entries', () => {
 		const instance = pino(httpLoggerOptions, stream);
+
 		instance.info({
 			res: {
 				headers: {
@@ -129,10 +139,11 @@ describe('res.headers', () => {
 				},
 			},
 		});
+
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			res: {
 				headers: {
-					'set-cookie': REDACT_TEXT,
+					'set-cookie': REDACTED_TEXT,
 				},
 			},
 		});

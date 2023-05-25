@@ -1,7 +1,7 @@
-import { defineInterface } from '@directus/utils';
-import InterfaceTranslations from './translations.vue';
 import { useFieldsStore } from '@/stores/fields';
+import { defineInterface } from '@directus/utils';
 import PreviewSVG from './preview.svg?raw';
+import InterfaceTranslations from './translations.vue';
 
 export default defineInterface({
 	id: 'translations',
@@ -25,6 +25,7 @@ export default defineInterface({
 				value: field.field,
 			}));
 		}
+
 		return [
 			{
 				field: 'languageField',

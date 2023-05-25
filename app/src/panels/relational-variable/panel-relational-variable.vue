@@ -36,7 +36,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useInsightsStore } from '@/stores/insights';
@@ -60,6 +60,7 @@ const props = withDefaults(defineProps<Props>(), {});
 /*const emit = */ defineEmits(['input']);
 
 const insightsStore = useInsightsStore();
+
 const value = computed({
 	get() {
 		const val = insightsStore.getVariable(props.field);
@@ -73,14 +74,18 @@ const value = computed({
 });
 
 const selectModalOpen = ref(false);
+
 function onSelection(data: (number | string)[]) {
 	selectModalOpen.value = false;
+
 	if (!Array.isArray(data) || data.length === 0) {
 		value.value = [];
 		return;
 	}
+
 	if (props.multiple) {
 		const items = Array.from(new Set(data.concat(value.value)));
+
 		if (items.length > props.limit) {
 			unexpectedError(new Error('More items selected than the allowed limit'));
 			value.value = items.slice(0, props.limit);

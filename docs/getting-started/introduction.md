@@ -59,6 +59,15 @@ Extensive configuration options are also available as global variables in the co
 authentication method, caching details, default file storage location (local, S3, google, etc.) for digital assets, emails,
 _and much more._
 
+### What Do Teams Use Directus For?
+
+- [Headless CMS](https://directus.io/headless-cms)
+- [Learning Management System](https://directus.io/headless-cms) 
+- [Product Inventory Management](https://directus.io/studio)
+- [No-Code Data Platform](https://directus.io/studio)
+- [Backend-as-a-Service](https://directus.io/engine) 
+- [Full API-Based Data Architecture](https://directus.io/engine)
+
 :::tip Ready to dive in?
 
 Get a project running in minutes. Learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
@@ -171,7 +180,7 @@ Get a Project running in minutes. Learn Directus hands-on in the [Quickstart Gui
 **Directus is a simple, data-first solution to complex problems with no downsides.**
 
 Directus was created in 2004 and has been slowly, iteratively improved on for a long time. The core team has carefully
-thought through the app, beginning to end, and strives to make this platform is an all-benefit and no downside
+thought through the app, beginning to end, and strives to make this platform an all-benefit and no downside
 experience. It is also plug-and-play, so you're free to link or remove it anytime, with zero impact on your data. You
 have no vendor lock-in whatsoever, _your data is yours_. There are no artificial data limits _(e.g. limits on users or
 roles)_.
@@ -196,8 +205,7 @@ The following core principles guide this platform:
 **Directus Cloud is the fastest and easiest way to get your Directus Projects going.**
 
 Cloud architecture can be complicated and resource-intensive. Directus Cloud provides scalable, optimized storage and
-infrastructure, and automatic updates so developers can focus on the app's core business logic. Directus Cloud also
-offers [Cloud Exclusive Extensions](/cloud/glossary#cloud-exclusives), enhancing Directus Core with even more features.
+infrastructure, and automatic updates so developers can focus on the app's core business logic.
 
 With your free Directus Cloud account, you can set up Teams to organize Projects, Project billing, and other Team
 Members however you need. You'll be able to get a Project running in about 90 seconds. Then as Project growth changes

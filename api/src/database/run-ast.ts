@@ -7,7 +7,8 @@ import env from '../env.js';
 import { PayloadService } from '../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
-import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query.js';
+import type { ColumnSortRecord } from '../utils/apply-query.js';
+import applyQuery, { applyLimit, applySort, generateAlias } from '../utils/apply-query.js';
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../utils/get-column-path.js';
 import { getColumn } from '../utils/get-column.js';
@@ -249,7 +250,7 @@ async function getDBQuery(
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
 
-	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
+	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : Number(env['QUERY_LIMIT_DEFAULT']);
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
@@ -266,6 +267,7 @@ async function getDBQuery(
 
 	if (queryCopy.sort) {
 		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, table, aliasMap, true);
+
 		if (sortResult) {
 			sortRecords = sortResult.sortRecords;
 			hasMultiRelationalSort = sortResult.hasMultiRelationalSort;
@@ -300,6 +302,7 @@ async function getDBQuery(
 				}
 
 				const sortAlias = `sort_${generateAlias()}`;
+
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
 					const originalCollectionName = getCollectionFromAlias(alias!, aliasMap);
@@ -313,6 +316,7 @@ async function getDBQuery(
 					orderByString += `?? ${sortRecord.order}`;
 					orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
 				}
+
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 			});
 
@@ -332,6 +336,7 @@ async function getDBQuery(
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
+
 					sortRecord.column = getColumn(knex, alias!, field!, false, schema, {
 						originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
 					}) as any;
@@ -469,7 +474,7 @@ function mergeWithParentItems(
 
 			if (nestedNode.query.page && nestedNode.query.page > 1) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					(nestedNode.query.limit ?? 100) * (nestedNode.query.page - 1)
+					(nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT'])) * (nestedNode.query.page - 1)
 				);
 			}
 
@@ -478,7 +483,10 @@ function mergeWithParentItems(
 			}
 
 			if (nestedNode.query.limit !== -1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
+					0,
+					nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT'])
+				);
 			}
 
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {
@@ -495,6 +503,7 @@ function mergeWithParentItems(
 				if (a[column] === b[column]) return 0;
 				if (a[column] === null) return 1;
 				if (b[column] === null) return -1;
+
 				if (order === 'asc') {
 					return a[column] < b[column] ? -1 : 1;
 				} else {

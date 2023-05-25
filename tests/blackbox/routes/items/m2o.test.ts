@@ -73,6 +73,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						collection: localCollectionCountries,
 						item: createCountry(pkType),
 					});
+
 					const state = createState(pkType);
 					state.country_id = insertedCountry.id;
 					const insertedState = await CreateItem(vendor, { collection: localCollectionStates, item: state });
@@ -104,12 +105,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					expect(response.body.data).toMatchObject({ country_id: insertedCountry.id });
 
 					expect(gqlResponse.statusCode).toEqual(200);
+
 					expect(gqlResponse.body.data).toMatchObject({
 						[localCollectionStates]: [{ country_id: { id: String(insertedCountry.id) } }],
 					});
 				});
 			});
 		});
+
 		describe('GET /:collection', () => {
 			describe('filters', () => {
 				describe('on top level', () => {
@@ -117,6 +120,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Setup
 						const state = createState(pkType);
 						state.name = 'state-m2o-top-' + uuid();
+
 						const insertedState = await CreateItem(vendor, {
 							collection: localCollectionStates,
 							item: state,
@@ -176,9 +180,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionStates].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionStates][0]).toMatchObject({
 							id: String(insertedState.id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
@@ -189,10 +195,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						// Setup
 						const country = createCountry(pkType);
 						country.name = 'country-m2o-' + uuid();
+
 						const insertedCountry = await CreateItem(vendor, {
 							collection: localCollectionCountries,
 							item: country,
 						});
+
 						const state = createState(pkType);
 						state.name = 'state-m2o-' + uuid();
 						state.country_id = insertedCountry.id;
@@ -248,9 +256,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionStates].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionStates][0]).toMatchObject({
 							id: String(insertedState.id),
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse.body.data).toEqual(gqlResponse2.body.data);
 					});
@@ -327,11 +337,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionStates].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionStates][0]).toMatchObject({
 							name: states[0].name,
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse2.body.data[localCollectionStates].length).toBe(1);
+
 						expect(gqlResponse2.body.data[localCollectionStates][0]).toMatchObject({
 							name: states[1].name,
 						});
@@ -348,10 +361,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const country = createCountry(pkType);
 							country.name = 'country-m2o-fn-' + uuid();
 							country.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
+
 							const insertedCountry = await CreateItem(vendor, {
 								collection: localCollectionCountries,
 								item: country,
 							});
+
 							const state = createState(pkType);
 							state.name = 'state-m2o-fn-' + uuid();
 							state.country_id = insertedCountry.id;
@@ -422,11 +437,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionStates].length).toBe(1);
+
 						expect(gqlResponse.body.data[localCollectionStates][0]).toMatchObject({
 							name: states[0].name,
 						});
+
 						expect(gqlResponse2.statusCode).toBe(200);
 						expect(gqlResponse2.body.data[localCollectionStates].length).toBe(1);
+
 						expect(gqlResponse2.body.data[localCollectionStates][0]).toMatchObject({
 							name: states[1].name,
 						});
@@ -507,6 +525,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionStates]).toEqual(
 								gqlResponse2.body.data[localCollectionStates].reverse()
 							);
@@ -574,11 +593,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.name.slice(-1));
@@ -588,14 +609,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
 								gqlResponse2.body.data[localCollectionStates]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.name.slice(-1));
@@ -614,10 +638,12 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const country = createCountry(pkType);
 								country.name = 'country-m2o-sort-' + val;
+
 								const insertedCountry = await CreateItem(vendor, {
 									collection: localCollectionCountries,
 									item: country,
 								});
+
 								const state = createState(pkType);
 								state.name = 'state-m2o-sort-' + uuid();
 								state.country_id = insertedCountry.id;
@@ -678,6 +704,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionStates]).toEqual(
 								gqlResponse2.body.data[localCollectionStates].reverse()
 							);
@@ -749,11 +776,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.country_id.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.country_id.name.slice(-1));
@@ -763,14 +792,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
 								gqlResponse2.body.data[localCollectionStates]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.country_id.name.slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.country_id.name.slice(-1));
@@ -792,9 +824,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const state = createState(pkType);
 								state.name = 'state-m2o-top-sort-fn-' + uuid();
+
 								state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
 									.slice(0, 19);
+
 								states.push(state);
 							}
 
@@ -857,6 +891,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionStates]).toEqual(
 								gqlResponse2.body.data[localCollectionStates].reverse()
 							);
@@ -928,11 +963,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.test_datetime_year.toString().slice(-1));
@@ -942,14 +979,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
 								gqlResponse2.body.data[localCollectionStates]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.test_datetime_func.year.toString().slice(-1));
@@ -968,13 +1008,16 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							for (const val of sortValues) {
 								const country = createCountry(pkType);
 								country.name = 'country-m2o-sort-fn-' + uuid();
+
 								country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
 									.slice(0, 19);
+
 								const insertedCountry = await CreateItem(vendor, {
 									collection: localCollectionCountries,
 									item: country,
 								});
+
 								const state = createState(pkType);
 								state.name = 'state-m2o-sort-fn-' + uuid();
 								state.country_id = insertedCountry.id;
@@ -1035,6 +1078,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates].length).toBe(5);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionStates]).toEqual(
 								gqlResponse2.body.data[localCollectionStates].reverse()
 							);
@@ -1110,11 +1154,13 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.data.length).toBe(expectedLength);
 							expect(response2.statusCode).toEqual(200);
 							expect(response.body.data).not.toEqual(response2.body.data);
+
 							expect(
 								response.body.data.map((item: any) => {
 									return parseInt(item.country_id.test_datetime_year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								response2.body.data.map((item: any) => {
 									return parseInt(item.country_id.test_datetime_year.toString().slice(-1));
@@ -1124,14 +1170,17 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.statusCode).toEqual(200);
 							expect(gqlResponse.body.data[localCollectionStates].length).toBe(expectedLength);
 							expect(gqlResponse2.statusCode).toEqual(200);
+
 							expect(gqlResponse.body.data[localCollectionStates]).not.toEqual(
 								gqlResponse2.body.data[localCollectionStates]
 							);
+
 							expect(
 								gqlResponse.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.country_id.test_datetime_func.year.toString().slice(-1));
 								})
 							).toEqual(expectedAsc);
+
 							expect(
 								gqlResponse2.body.data[localCollectionStates].map((item: any) => {
 									return parseInt(item.country_id.test_datetime_func.year.toString().slice(-1));
@@ -1166,7 +1215,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									.post(`/items/${localCollectionStates}`)
 									.send(states)
 									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 								const mutationKey = `create_${localCollectionStates}_items`;
+
 								const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
 									mutation: {
 										[mutationKey]: {
@@ -1196,6 +1247,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const count = Number(config.envs[vendor].MAX_BATCH_MUTATION) / 2 + 1;
 								const states: any[] = [];
 								const states2: any[] = [];
+
 								for (let i = 0; i < count; i++) {
 									states.push(createState(pkType));
 									states[i].country_id = createCountry(pkType);
@@ -1209,7 +1261,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									.post(`/items/${localCollectionStates}`)
 									.send(states)
 									.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
 								const mutationKey = `create_${localCollectionStates}_items`;
+
 								const gqlResponse = await requestGraphQL(getUrl(vendor), false, common.USER.ADMIN.TOKEN, {
 									mutation: {
 										[mutationKey]: {
@@ -1224,12 +1278,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
+
 								expect(response.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
 
 								expect(gqlResponse.statusCode).toBe(200);
 								expect(gqlResponse.body.errors).toBeDefined();
+
 								expect(gqlResponse.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
@@ -1253,16 +1309,20 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								for (let i = 0; i < count; i++) {
 									const state: any = createState(pkType);
 									state.name = `max_batch_mutation_${i.toString().padStart(3, '0')}`;
+
 									if (i >= countCreate) {
 										state.country_id = createCountry(pkType);
 									}
+
 									statesID.push((await CreateItem(vendor, { collection: localCollectionStates, item: state })).id);
 
 									const state2: any = createState(pkType);
 									state2.name = `max_batch_mutation_gql_${i.toString().padStart(3, '0')}`;
+
 									if (i >= countCreate) {
 										state2.country_id = createCountry(pkType);
 									}
+
 									statesID2.push((await CreateItem(vendor, { collection: localCollectionStates, item: state2 })).id);
 								}
 
@@ -1339,16 +1399,20 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								for (let i = 0; i < count; i++) {
 									const state: any = createState(pkType);
 									state.name = `max_batch_mutation_${i.toString().padStart(3, '0')}`;
+
 									if (i >= countCreate) {
 										state.country_id = createCountry(pkType);
 									}
+
 									statesID.push((await CreateItem(vendor, { collection: localCollectionStates, item: state })).id);
 
 									const state2: any = createState(pkType);
 									state2.name = `max_batch_mutation_gql_${i.toString().padStart(3, '0')}`;
+
 									if (i >= countCreate) {
 										state2.country_id = createCountry(pkType);
 									}
+
 									statesID2.push((await CreateItem(vendor, { collection: localCollectionStates, item: state2 })).id);
 								}
 
@@ -1404,12 +1468,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
+
 								expect(response.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
 
 								expect(gqlResponse.statusCode).toBe(200);
 								expect(gqlResponse.body.errors).toBeDefined();
+
 								expect(gqlResponse.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
@@ -1514,12 +1580,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								// Assert
 								expect(response.statusCode).toBe(400);
 								expect(response.body.errors).toBeDefined();
+
 								expect(response.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);
 
 								expect(gqlResponse.statusCode).toBe(200);
 								expect(gqlResponse.body.errors).toBeDefined();
+
 								expect(gqlResponse.body.errors[0].message).toBe(
 									`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 								);

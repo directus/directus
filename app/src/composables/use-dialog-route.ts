@@ -7,6 +7,7 @@ export function useDialogRoute(): Ref<boolean> {
 	const isOpen = ref(false);
 
 	let resolveGuard: () => void;
+
 	const leaveGuard: Promise<void> = new Promise((resolve) => {
 		resolveGuard = resolve;
 	});

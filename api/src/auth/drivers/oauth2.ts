@@ -4,7 +4,8 @@ import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
 import flatten from 'flat';
 import jwt from 'jsonwebtoken';
-import { Client, errors, generators, Issuer } from 'openid-client';
+import type { Client } from 'openid-client';
+import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
@@ -121,6 +122,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				{ code: payload['code'], state: payload['state'] },
 				{ code_verifier: payload['codeVerifier'], state: generators.codeChallenge(payload['codeVerifier']) }
 			);
+
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
 		} catch (e) {
 			throw handleError(e);
@@ -157,7 +159,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{},
+				{ auth_data: userPayload.auth_data ?? null },
 				{
 					identifier,
 					provider: this.config['provider'],
@@ -198,6 +200,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
+
 			throw e;
 		}
 
@@ -222,6 +225,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		if (authData?.['refreshToken']) {
 			try {
 				const tokenSet = await this.client.refresh(authData['refreshToken']);
+
 				// Update user refreshToken if provided
 				if (tokenSet.refresh_token) {
 					await this.usersService.updateOne(user.id, {
@@ -268,6 +272,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const provider = getAuthProvider(providerName) as OAuth2AuthDriver;
 			const codeVerifier = provider.generateCodeVerifier();
 			const prompt = !!req.query['prompt'];
+
 			const token = jwt.sign(
 				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
 				env['SECRET'] as string,
@@ -295,6 +300,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 		},
 		respond
 	);
+
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
@@ -335,6 +341,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
+
 				authResponse = await authenticationService.login(providerName, {
 					code: req.query['code'],
 					codeVerifier: verifier,

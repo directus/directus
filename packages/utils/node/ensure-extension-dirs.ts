@@ -9,6 +9,7 @@ export async function ensureExtensionDirs(
 ): Promise<void> {
 	for (const extensionType of types) {
 		const dirPath = path.resolve(extensionsPath, pluralize(extensionType));
+
 		try {
 			await fse.ensureDir(dirPath);
 		} catch {

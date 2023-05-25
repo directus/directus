@@ -64,9 +64,11 @@ export class LDAPAuthDriver extends AuthDriver {
 		const clientConfig = typeof config['client'] === 'object' ? config['client'] : {};
 
 		this.bindClient = ldap.createClient({ url: clientUrl, reconnect: true, ...clientConfig });
+
 		this.bindClient.on('error', (err: Error) => {
 			logger.warn(err);
 		});
+
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = config;
 	}
@@ -318,6 +320,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
+
 			throw e;
 		}
 
@@ -331,6 +334,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		return new Promise((resolve, reject) => {
 			const clientConfig = typeof this.config['client'] === 'object' ? this.config['client'] : {};
+
 			const client = ldap.createClient({
 				url: this.config['clientUrl'],
 				...clientConfig,
@@ -347,6 +351,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				} else {
 					resolve();
 				}
+
 				client.destroy();
 			});
 		});
@@ -375,6 +380,7 @@ const handleError = (e: Error) => {
 	) {
 		return new InvalidCredentialsException();
 	}
+
 	return new ServiceUnavailableException('Service returned unexpected error', {
 		service: 'ldap',
 		message: e.message,

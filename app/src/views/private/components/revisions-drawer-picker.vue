@@ -22,76 +22,68 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, watch, ref } from 'vue';
+<script setup lang="ts">
 import { Revision } from '@/types/revisions';
-import { useSync } from '@directus/composables';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
+import { useSync } from '@directus/composables';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
 	value: number;
 };
 
-export default defineComponent({
-	props: {
-		revisions: {
-			type: Array as PropType<Revision[]>,
-			required: true,
-		},
-		current: {
-			type: Number,
-			required: true,
-		},
-	},
-	emits: ['update:current'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = defineProps<{
+	revisions: Revision[];
+	current: number | null;
+}>();
 
-		const internalCurrent = useSync(props, 'current', emit);
+const emit = defineEmits<{
+	(e: 'update:current', value: number): void;
+}>();
 
-		const options = ref<Option[] | null>(null);
+const { t } = useI18n();
 
-		watch(
-			() => props.revisions,
-			async () => {
-				const newOptions = [];
+const internalCurrent = useSync(props, 'current', emit);
 
-				for (const revision of props.revisions) {
-					const date = await getFormattedDate(revision);
-					let user = t('private_user');
+const options = ref<Option[]>([]);
 
-					if (typeof revision.activity.user === 'object') {
-						const userInfo = revision.activity.user;
-						user = userName(userInfo);
-					}
+watch(
+	() => props.revisions,
+	async () => {
+		const newOptions = [];
 
-					const text = String(t('revision_delta_by', { date, user }));
-					const value = revision.id;
-					newOptions.push({ text, value });
-				}
+		for (const revision of props.revisions) {
+			const date = await getFormattedDate(revision);
+			let user = t('private_user');
 
-				options.value = newOptions;
-			},
-			{ immediate: true }
-		);
+			if (typeof revision.activity.user === 'object') {
+				const userInfo = revision.activity.user;
+				user = userName(userInfo);
+			}
 
-		const selectedOption = computed(() => {
-			return options.value?.find((option) => option.value === internalCurrent.value);
-		});
-
-		return { internalCurrent, options, selectedOption };
-
-		async function getFormattedDate(revision: Revision) {
-			const date = localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_date_short')));
-			const time = localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_time')));
-
-			return `${date} (${time})`;
+			const text = String(t('revision_delta_by', { date, user }));
+			const value = revision.id;
+			newOptions.push({ text, value });
 		}
+
+		options.value = newOptions;
 	},
+	{ immediate: true }
+);
+
+const selectedOption = computed(() => {
+	return options.value.find((option) => option.value === internalCurrent.value);
 });
+
+async function getFormattedDate(revision: Revision) {
+	const date = localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_date_short')));
+	const time = localizedFormat(new Date(revision!.activity.timestamp), String(t('date-fns_time')));
+
+	return `${date} (${time})`;
+}
 </script>
 
 <style lang="scss" scoped>

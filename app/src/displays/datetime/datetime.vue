@@ -2,7 +2,7 @@
 	<span class="datetime">{{ displayValue }}</span>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
 import { localizedFormat } from '@/utils/localized-format';
@@ -73,6 +73,7 @@ watch(
 			displayValue.value = relativeFormat(newValue);
 		} else {
 			let format;
+
 			if (props.format === 'long') {
 				format = `${t('date-fns_date')} ${t('date-fns_time')}`;
 				if (props.type === 'date') format = String(t('date-fns_date'));

@@ -44,4 +44,6 @@ TODO
 /api/extensions
 /tests/blackbox/uploads
 /tests/blackbox/server-log-*
+/packages/extensions-sdk/temp-extension-*
 *.db
+ts-errors.yaml

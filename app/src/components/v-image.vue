@@ -2,7 +2,7 @@
 	<img ref="imageElement" :src="srcData" v-bind="attrsWithoutSrc" />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 import { omit } from 'lodash';
 import api from '@/api';
@@ -19,6 +19,7 @@ const imageElement = ref<HTMLImageElement>();
 
 const emptyPixel =
 	'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+
 const srcData = ref<string>(emptyPixel);
 
 const observer = new IntersectionObserver((entries, observer) => {
@@ -31,6 +32,7 @@ const observer = new IntersectionObserver((entries, observer) => {
 		loadImage();
 	}
 });
+
 watch(
 	() => props.src,
 	() => {

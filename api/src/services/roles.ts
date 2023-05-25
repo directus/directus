@@ -41,6 +41,7 @@ export class RolesService extends ItemsService {
 		const usersThatWereInRoleBefore = (await this.knex.select('id').from('directus_users').where('role', '=', key)).map(
 			(user) => user.id
 		);
+
 		const usersThatAreRemoved = usersThatWereInRoleBefore.filter((id) =>
 			Array.isArray(users) ? userKeys.includes(id) === false : users.delete.includes(id) === true
 		);
