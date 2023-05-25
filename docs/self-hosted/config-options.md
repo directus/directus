@@ -680,6 +680,12 @@ purposes, collection of additional metadata must be configured:
 
 <sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
 
+### Upload Limits
+
+| Variable                | Description                                                         | Default Value |
+| ----------------------- | ------------------------------------------------------------------- | ------------- |
+| `FILES_MAX_UPLOAD_SIZE` | Maximum file upload size allowed. For example `10mb`, `1gb`, `10kb` |               |
+
 ## Assets
 
 | Variable                                 | Description                                                                                                                         | Default Value |
