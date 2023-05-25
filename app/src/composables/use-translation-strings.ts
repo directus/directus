@@ -5,6 +5,7 @@ import { Language, i18n } from '@/lang';
 import { useUserStore } from '@/stores/user';
 import api from '@/api';
 import { debounce } from 'lodash';
+import { getCurrentLanguage } from '@/utils/get-current-language';
 
 export type Translation = {
 	language: string;
@@ -158,13 +159,7 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 		error.value = null;
 
 		try {
-			let language;
-
-			if (usersStore.currentUser && 'language' in usersStore.currentUser && usersStore.currentUser.language) {
-				language = usersStore.currentUser.language;
-			} else {
-				language = 'en-US';
-			}
+			const language = getCurrentLanguage();
 
 			const rawTranslationStrings = await fetchTranslationStrings(language);
 
@@ -216,10 +211,7 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 		updating.value = true;
 
 		try {
-			const { currentUser } = useUserStore();
-
-			const language =
-				currentUser && 'language' in currentUser && currentUser.language ? currentUser.language : 'en-US';
+			const language = getCurrentLanguage();
 
 			const localeMessages: Record<string, any> = strings
 				.filter(({ language: lang }) => lang === language)
