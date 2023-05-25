@@ -300,10 +300,10 @@ const { primaryKeyField, fields, info: collectionInfo } = useCollection(collecti
 const { info } = useServerStore();
 
 const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
-const queryLimitDefault = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
+const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
 
 const exportSettings = reactive({
-	limit: props.layoutQuery?.limit ?? queryLimitDefault,
+	limit: props.layoutQuery?.limit ?? defaultLimit,
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
@@ -322,7 +322,7 @@ watch(
 watch(
 	() => props.layoutQuery,
 	() => {
-		exportSettings.limit = props.layoutQuery?.limit ?? queryLimitDefault;
+		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
 
 		if (props.layoutQuery?.fields) {
 			exportSettings.fields = props.layoutQuery?.fields;
@@ -360,6 +360,7 @@ const lockedToFiles = computed(() => {
 watch(
 	() => exportSettings.limit,
 	() => {
+		// Replace by 0 if user deletes value in limit input field
 		if (exportSettings.limit === null && queryLimitMax !== Infinity) {
 			exportSettings.limit = 0;
 		}
