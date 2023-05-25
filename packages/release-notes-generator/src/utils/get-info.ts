@@ -1,16 +1,16 @@
 import { getInfo as getGithubInfo } from '@changesets/get-github-info';
 import { MAIN_PACKAGE, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from '../constants';
-import type { Change, Changesets, Type, UntypedPackage } from '../types';
+import type { Change, Changesets, Info, Type, UntypedPackage } from '../types';
 import { sortByExternalOrder, sortByObjectValues } from './sort';
 
 export async function getInfo(changesets: Changesets): Promise<{
 	types: Type[];
 	untypedPackages: UntypedPackage[];
-	info: string[];
+	info: Info[];
 }> {
 	const types: Type[] = [];
 	const untypedPackages: UntypedPackage[] = [];
-	const info: string[] = [];
+	const info: Info[] = [];
 
 	for (const { summary, info: changeInfo, commit, releases } of changesets.values()) {
 		if (changeInfo) {

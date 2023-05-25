@@ -6,7 +6,9 @@ type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (...a
 
 type GithubInfo = AsyncReturnType<typeof getInfo>;
 
-export type Changesets = Map<string, Omit<NewChangesetWithCommit, 'id'> & { info: string | undefined }>;
+export type Info = string;
+
+export type Changesets = Map<string, Omit<NewChangesetWithCommit, 'id'> & { info: Info | undefined }>;
 
 export type Change = { summary: string; commit: string | undefined; githubInfo: GithubInfo | undefined };
 

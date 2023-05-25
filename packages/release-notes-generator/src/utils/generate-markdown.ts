@@ -1,9 +1,9 @@
 import { REPO, VERSIONS_TITLE } from '../constants';
-import type { Change, Package, PackageVersion, Type, UntypedPackage } from '../types';
+import type { Change, Info, Package, PackageVersion, Type, UntypedPackage } from '../types';
 
 export function generateMarkdown(
 	mainVersion: string,
-	info: string[],
+	info: Info[],
 	types: Type[],
 	untypedPackages: UntypedPackage[],
 	packageVersions: PackageVersion[]
