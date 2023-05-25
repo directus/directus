@@ -7,6 +7,7 @@ import express from 'express';
 import Joi from 'joi';
 import path from 'path';
 import env from '../env.js';
+import { ContentTooLargeException } from '../exceptions/content-too-large.js';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -97,7 +98,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		payload = {};
 
 		fileStream.on('limit', () => {
-			const error = new Error(`Uploaded file is too large`);
+			const error = new ContentTooLargeException(`Uploaded file is too large`);
 			fileStream.emit('error', error);
 			next(error);
 		});
