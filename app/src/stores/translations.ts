@@ -1,3 +1,4 @@
+import api from '@/api';
 import { i18n } from '@/lang';
 import { fetchAll } from '@/utils/fetch-all';
 import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpolated-translation';
@@ -5,7 +6,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { defineStore } from 'pinia';
 import { ref, unref, watch } from 'vue';
 
-interface Translation {
+export interface Translation {
 	language: string;
 	key: string;
 	value: string;
@@ -13,7 +14,7 @@ interface Translation {
 
 export const useTranslationsStore = defineStore('translations', () => {
 	const loading = ref(false);
-	const translations = ref<Translation[]>();
+	const translations = ref<Translation[]>([]);
 	const lang = ref<string>('en-US');
 
 	const loadTranslations = async (newLang = unref(lang)) => {
@@ -37,6 +38,11 @@ export const useTranslationsStore = defineStore('translations', () => {
 		}
 	};
 
+	const create = async (translation: Translation) => {
+		await api.post('/translations', translation);
+		await loadTranslations();
+	};
+
 	watch(translations, (newTranslations) => {
 		const localeMessages = newTranslations?.reduce(
 			(result: Record<string, string>, { key, value }: { key: string; value: string }) => {
@@ -51,5 +57,5 @@ export const useTranslationsStore = defineStore('translations', () => {
 		}
 	});
 
-	return { loadTranslations };
+	return { loading, translations, loadTranslations, create };
 });
