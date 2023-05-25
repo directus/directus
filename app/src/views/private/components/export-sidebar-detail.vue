@@ -53,7 +53,7 @@
 			</template>
 
 			<div class="field full">
-				<v-button small full-width @click="exportDialogActive = true">
+				<v-button small full-width @click="openExportDialog">
 					{{ t('export_items') }}
 				</v-button>
 
@@ -138,7 +138,10 @@
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p>
-							<template v-if="exportSettings.limit === 0 || itemCount === 0">
+							<template v-if="itemCountLoading">
+								{{ t('loading') }}
+							</template>
+							<template v-else-if="exportSettings.limit === 0 || itemCount === 0">
 								{{ t('exporting_no_items_to_export') }}
 							</template>
 							<template
@@ -388,10 +391,10 @@ const getItemCount = debounce(async () => {
 	}
 }, 250);
 
-getItemCount();
-
 watch(exportSettings, () => {
-	getItemCount();
+	if (exportDialogActive.value) {
+		getItemCount();
+	}
 });
 
 watch(primaryKeyField, (newVal) => {
@@ -426,6 +429,11 @@ const sortField = computed({
 });
 
 const exporting = ref(false);
+
+function openExportDialog() {
+	getItemCount();
+	exportDialogActive.value = true;
+}
 
 function onChange(event: Event) {
 	const files = (event.target as HTMLInputElement)?.files;
