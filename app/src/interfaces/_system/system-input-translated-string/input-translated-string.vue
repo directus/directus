@@ -59,9 +59,6 @@
 						<v-icon name="translate" />
 					</v-list-item-icon>
 					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
-					<v-list-item-icon class="info">
-						<TranslationStringsTooltip :translations="translationMap[translationKey]" hide-display-text />
-					</v-list-item-icon>
 				</v-list-item>
 				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDrawer">
 					<v-list-item-icon>
@@ -74,21 +71,23 @@
 			</v-list>
 		</v-menu>
 
-		<TranslationStringsDrawer
-			:model-value="isTranslationStringDrawerOpen"
-			:translation-string="editingTranslationString"
-			@close-drawer="closeDrawer"
-			@saved-key="setValue(`${translationPrefix}${$event}`)"
+		<DrawerItem
+			v-model:active="isTranslationStringDrawerOpen"
+			collection="directus_translations"
+			primary-key="+"
+			@input="create"
 		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTranslationStrings, DisplayTranslationString } from '@/composables/use-translation-strings';
-import TranslationStringsDrawer from '@/modules/settings/routes/translation-strings/translation-strings-drawer.vue';
-import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
+import { useTranslationsStore } from '@/stores/translations';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { storeToRefs } from 'pinia';
+import { unref } from 'vue';
+import type { Translation } from '@/stores/translations';
 
 const translationPrefix = '$t:';
 
@@ -115,18 +114,14 @@ const hasValidKey = ref<boolean>(false);
 const isFocused = ref<boolean>(false);
 const searchValue = ref<string | null>(null);
 
-const { loading, translationKeys, translationMap, loadAllTranslations } = useTranslationStrings();
+const translationsStore = useTranslationsStore();
 
-onMounted(async () => {
-	await loadAllTranslations();
-});
+const { translations, loading } = storeToRefs(translationsStore);
 
 const isTranslationStringDrawerOpen = ref<boolean>(false);
 
-const editingTranslationString = ref<DisplayTranslationString | null>(null);
-
 const filteredTranslationKeys = computed(() => {
-	const keys = translationKeys.value ?? [];
+	const keys = unref(translations).map(({ key }) => key);
 	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
 
 	if (filteredKeys.length > 100) {
@@ -145,6 +140,10 @@ const localValue = computed<string | null>({
 		emit('input', val);
 	},
 });
+
+const create = async (item: Translation) => {
+	await translationsStore.create(item);
+};
 
 watch(
 	() => props.value,
@@ -182,11 +181,6 @@ function checkKeyValidity() {
 function openNewTranslationStringDrawer() {
 	menuEl.value.deactivate();
 	isTranslationStringDrawerOpen.value = true;
-}
-
-function closeDrawer() {
-	editingTranslationString.value = null;
-	isTranslationStringDrawerOpen.value = false;
 }
 </script>
 
