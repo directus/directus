@@ -50,10 +50,27 @@
 		"./package.json": "./package.json"
 	},
 	"bin": {
-		"directus": "cli.js"
+		"directus": "dist/cli.js"
+	},
+	"scripts": {
+		"build": "tsup-node src/cli.ts --format=esm",
+		"dev": "tsup-node src/cli.ts --format=esm --watch"
 	},
 	"dependencies": {
 		"@directus/api": "workspace:*"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@npm/types": "1.0.2",
+		"@types/find-cache-dir": "3.2.1",
+		"@types/node": "18.16.12",
+		"@types/node-fetch-cache": "3.0.0",
+		"boxen": "7.1.0",
+		"chalk": "5.2.0",
+		"find-cache-dir": "4.0.0",
+		"node-fetch-cache": "3.1.3",
+		"tsup": "6.7.0",
+		"typescript": "5.0.4"
 	},
 	"engines": {
 		"node": ">=18.0.0"
