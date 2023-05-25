@@ -6,8 +6,7 @@ import { generateMarkdown } from './utils/generate-markdown';
 import { getInfo } from './utils/get-info';
 import { processPackages } from './utils/process-packages';
 
-const summaryRegex =
-	/\n*(?:::: info\n(?<=^::: info\n)\n*([\s\S]*)(?<!\n)\n*$(?=\n::: *$)\n::: *$)?\n*([\s\S]*)(?<!\n)\n*$/m;
+const summaryRegex = /(?:::: info\n(?<=^::: info\n)\n*([\s\S]*)(?<!\n)\n*$(?=\n:::$)\n:::$)?\n*([\s\S]*)/m;
 
 const changesets: Changesets = new Map();
 
