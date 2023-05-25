@@ -201,24 +201,23 @@ const showMain = computed(() => {
 		return true;
 	}
 
-	let remainigPlace;
+	let remainingWidth;
 
 	if (windowWidth.value >= 1260) {
-		remainigPlace =
+		remainingWidth =
 			windowWidth.value - SIZES.moduleBarWidth - SIZES.minModuleNavWidth - SIZES.minContentWidth - sidebarWidth.value;
 	} else if (windowWidth.value >= 960) {
-		remainigPlace =
+		remainingWidth =
 			windowWidth.value -
 			SIZES.moduleBarWidth -
 			SIZES.minModuleNavWidth -
 			SIZES.minContentWidth -
 			SIZES.collapsedSidebarWidth;
 	} else {
-		// split view
-		remainigPlace = windowWidth.value - SIZES.minContentWidth;
+		remainingWidth = windowWidth.value - SIZES.minContentWidth;
 	}
 
-	return remainigPlace >= props.splitViewMinWidth;
+	return remainingWidth >= props.splitViewMinWidth;
 });
 
 const { data: localStorageModuleWidth } = useLocalStorage<{
