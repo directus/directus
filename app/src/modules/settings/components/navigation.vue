@@ -56,8 +56,8 @@ const navItems = [
 	},
 	{
 		icon: 'translate',
-		name: t('settings_translation_strings'),
-		to: `/settings/translation-strings`,
+		name: t('settings_translations'),
+		to: `/settings/translations`,
 	},
 	{
 		icon: 'anchor',

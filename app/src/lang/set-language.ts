@@ -1,16 +1,16 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useTranslationsStore } from '@/stores/translations';
+import { useUserStore } from '@/stores/user';
+import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
-import { useTranslationStrings } from '@/composables/use-translation-strings';
-import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
-import { useUserStore } from '@/stores/user';
 
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 	const { currentUser } = useUserStore();
-	const { loadLanguageTranslationStrings } = useTranslationStrings();
+	const translationsStore = useTranslationsStore();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
 		// eslint-disable-next-line no-console
@@ -34,7 +34,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 
 	try {
 		if (currentUser) {
-			await loadLanguageTranslationStrings(lang);
+			await translationsStore.loadTranslations(lang);
 		}
 
 		collectionsStore.translateCollections();

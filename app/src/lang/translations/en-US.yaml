@@ -966,7 +966,7 @@ settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Presets & Bookmarks
-settings_translation_strings: Translation Strings
+settings_translations: Custom Translations
 one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 actions: Actions
