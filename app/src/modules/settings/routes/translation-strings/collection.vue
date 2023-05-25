@@ -154,10 +154,10 @@ const loading = ref<boolean>(true);
 
 const { translationKeys, displayTranslationStrings, loadAllTranslations } = useTranslationStrings(search);
 
-onMounted(() => {
-	loadAllTranslations().then(() => {
-		loading.value = false;
-	});
+onMounted(async () => {
+	await loadAllTranslations();
+
+	loading.value = false;
 });
 
 const totalPages = computed(() => {
