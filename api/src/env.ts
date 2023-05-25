@@ -107,6 +107,10 @@ const allowedEnvironmentVars = [
 	'STORAGE_.+_HEALTHCHECK_THRESHOLD',
 	// metadata
 	'FILE_METADATA_ALLOW_LIST',
+
+	// files
+	'FILES_MAX_UPLOAD_SIZE',
+
 	// assets
 	'ASSETS_CACHE_TTL',
 	'ASSETS_TRANSFORM_MAX_CONCURRENT',

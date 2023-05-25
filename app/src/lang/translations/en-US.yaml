@@ -626,6 +626,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Invalid range
   METHOD_NOT_ALLOWED: Method not allowed
   REQUESTS_EXCEEDED: Requests limit reached
+  CONTENT_TOO_LARGE: Submitted item/file is too large
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...

@@ -30,7 +30,7 @@
 						:fields="[
 							{
 								field: 'language',
-								name: '$t:language',
+								name: t('language'),
 								type: 'string',
 								schema: {
 									default_value: 'en-US',
@@ -42,7 +42,7 @@
 							},
 							{
 								field: 'translation',
-								name: '$t:field_options.directus_collections.collection_name',
+								name: t('field_options.directus_collections.collection_name'),
 								type: 'string',
 								meta: {
 									interface: 'input',

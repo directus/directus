@@ -53,7 +53,7 @@
 			</template>
 
 			<div class="field full">
-				<v-button small full-width @click="exportDialogActive = true">
+				<v-button small full-width @click="openExportDialog">
 					{{ t('export_items') }}
 				</v-button>
 
@@ -145,7 +145,10 @@
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p>
-							<template v-if="exportSettings.limit === 0 || itemCount === 0">
+							<template v-if="itemCountLoading">
+								{{ t('loading') }}
+							</template>
+							<template v-else-if="exportSettings.limit === 0 || itemCount === 0">
 								{{ t('exporting_no_items_to_export') }}
 							</template>
 							<template
@@ -251,7 +254,7 @@ import { useCollection } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import type { AxiosProgressEvent } from 'axios';
-import { debounce } from 'lodash';
+import { debounce, pick } from 'lodash';
 import { computed, reactive, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -382,22 +385,22 @@ const getItemCount = debounce(async () => {
 					count: ['*'],
 			  };
 
-		const count = await api
-			.get(getEndpoint(collection.value), {
-				params: {
-					...exportSettings,
-					aggregate,
-				},
-			})
-			.then((response) => {
-				if (response.data.data?.[0]?.count) {
-					return Number(response.data.data[0].count);
-				}
+		const response = await api.get(getEndpoint(collection.value), {
+			params: {
+				...pick(exportSettings, ['search', 'filter']),
+				aggregate,
+			},
+		});
 
-				if (response.data.data?.[0]?.countDistinct) {
-					return Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
-				}
-			});
+		let count;
+
+		if (response.data.data?.[0]?.count) {
+			count = Number(response.data.data[0].count);
+		}
+
+		if (response.data.data?.[0]?.countDistinct) {
+			count = Number(response.data.data[0].countDistinct[primaryKeyField.value!.field]);
+		}
 
 		itemCount.value = count;
 	} finally {
@@ -405,10 +408,10 @@ const getItemCount = debounce(async () => {
 	}
 }, 250);
 
-getItemCount();
-
 watch(exportSettings, () => {
-	getItemCount();
+	if (exportDialogActive.value) {
+		getItemCount();
+	}
 });
 
 watch(primaryKeyField, (newVal) => {
@@ -443,6 +446,11 @@ const sortField = computed({
 });
 
 const exporting = ref(false);
+
+function openExportDialog() {
+	getItemCount();
+	exportDialogActive.value = true;
+}
 
 function onChange(event: Event) {
 	const files = (event.target as HTMLInputElement)?.files;
