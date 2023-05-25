@@ -5,9 +5,9 @@ import { ItemsService } from './items.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { env } from 'process';
 
-export class TranslationStringsService extends ItemsService {
+export class TranslationsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
-		super('directus_translation_strings', options);
+		super('directus_translations', options);
 
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
@@ -42,7 +42,7 @@ export class TranslationStringsService extends ItemsService {
 	 */
 	override async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeys = await this.knex.transaction(async (trx) => {
-			const service = new TranslationStringsService({
+			const service = new TranslationsService({
 				accountability: this.accountability,
 				schema: this.schema,
 				knex: trx,

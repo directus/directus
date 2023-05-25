@@ -35,7 +35,7 @@ function transformStringsOldFormat(newStrings: NewTranslationString[]): OldTrans
 }
 
 export async function up(knex: Knex): Promise<void> {
-	await knex.schema.createTable('directus_translation_strings', (table) => {
+	await knex.schema.createTable('directus_translations', (table) => {
 		table.increments('id', { primaryKey: true });
 		table.string('language').notNullable();
 		table.string('key').notNullable();
@@ -51,13 +51,13 @@ export async function up(knex: Knex): Promise<void> {
 		const newTranslationStrings = transformStringsNewFormat(parsedTranslationStrings);
 
 		for (const item of newTranslationStrings) {
-			await knex('directus_translation_strings').insert(item);
+			await knex('directus_translations').insert(item);
 		}
 	}
 }
 
 export async function down(knex: Knex): Promise<void> {
-	const data = await knex.select('language', 'key', 'value').from('directus_translation_strings');
+	const data = await knex.select('language', 'key', 'value').from('directus_translations');
 	const settingsId = await knex.select('id').from('directus_settings').first();
 
 	if (settingsId?.id && data) {
@@ -70,5 +70,5 @@ export async function down(knex: Knex): Promise<void> {
 			});
 	}
 
-	await knex.schema.dropTable('directus_translation_strings');
+	await knex.schema.dropTable('directus_translations');
 }

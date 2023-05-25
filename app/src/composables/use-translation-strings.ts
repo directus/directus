@@ -158,8 +158,13 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 		error.value = null;
 
 		try {
-			const language =
-				usersStore.currentUser && 'language' in usersStore.currentUser ? usersStore.currentUser.language : 'en-US';
+			let language;
+
+			if (usersStore.currentUser && 'language' in usersStore.currentUser && usersStore.currentUser.language) {
+				language = usersStore.currentUser.language;
+			} else {
+				language = 'en-US';
+			}
 
 			const rawTranslationStrings = await fetchTranslationStrings(language);
 
@@ -186,7 +191,7 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 			newTranslations.push({ key: translation.key, language, value });
 		}
 
-		await api.post(`/translation-strings/${encodeURIComponent(translation.key)}`, newTranslations);
+		await api.post(`/translations/${encodeURIComponent(translation.key)}`, newTranslations);
 
 		translationStrings.value = translationStrings.value
 			.filter(({ key }) => key !== translation.key)
@@ -202,7 +207,7 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 
 		if (translationKeys.value.includes(translationKey)) {
 			translationStrings.value = translationStrings.value.filter(({ key }) => key !== translationKey);
-			await api.delete(`/translation-strings/${encodeURIComponent(translationKey)}`);
+			await api.delete(`/translations/${encodeURIComponent(translationKey)}`);
 			await updateLocaleStrings(translationStrings.value);
 		}
 	}
@@ -232,7 +237,7 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 	}
 
 	async function fetchTranslationStrings(lang: Language): Promise<RawTranslation[]> {
-		const response = await api.get(`/translation-strings`, {
+		const response = await api.get(`/translations`, {
 			params: {
 				fields: ['language', 'key', 'value'],
 				filter: {
@@ -246,7 +251,7 @@ export function useTranslationStrings(search?: Ref<string>): UsableTranslationSt
 	}
 
 	async function fetchAllTranslationStrings(): Promise<RawTranslation[]> {
-		const response = await api.get(`/translation-strings`, {
+		const response = await api.get(`/translations`, {
 			params: { fields: ['language', 'key', 'value'], limit: -1 },
 		});
 

@@ -2,14 +2,14 @@ import express from 'express';
 import { ForbiddenException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
-import { TranslationStringsService } from '../services/index.js';
+import { TranslationService } from '../services/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import type { PrimaryKey } from '@directus/types';
 
 const router = express.Router();
 
 const readHandler = asyncHandler(async (req, res, next) => {
-	const service = new TranslationStringsService({
+	const service = new TranslationsService({
 		accountability: req.accountability,
 		schema: req.schema,
 	});
@@ -27,7 +27,7 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get('/', readHandler, respond);
 
 const upsertHandler = asyncHandler(async (req, res, next) => {
-	const service = new TranslationStringsService({
+	const service = new TranslationsService({
 		accountability: req.accountability,
 		schema: req.schema,
 	});
@@ -74,7 +74,7 @@ router.patch('/:key', upsertHandler, respond);
 router.delete(
 	'/:key',
 	asyncHandler(async (req, _res, next) => {
-		const service = new TranslationStringsService({
+		const service = new TranslationsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
