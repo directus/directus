@@ -233,7 +233,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Date
 date_range: Date Range
-translation_key_placeholder: articles.title.placeholder
+translation_key_placeholder: articles.title.placeholder...
 datetime: DateTime
 dateTime: DateTime
 precision: Precision
