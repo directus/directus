@@ -1474,6 +1474,9 @@ importers:
       node-fetch-cache:
         specifier: 3.1.3
         version: 3.1.3
+      semver:
+        specifier: 7.5.1
+        version: 7.5.1
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1487,6 +1490,9 @@ importers:
       '@types/node-fetch-cache':
         specifier: 3.0.0
         version: 3.0.0
+      '@types/semver':
+        specifier: 7.5.0
+        version: 7.5.0
       typescript:
         specifier: 5.0.4
         version: 5.0.4
