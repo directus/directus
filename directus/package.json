@@ -53,7 +53,8 @@
 		"directus": "cli.js"
 	},
 	"dependencies": {
-		"@directus/api": "workspace:*"
+		"@directus/api": "workspace:*",
+		"@directus/update-check": "workspace:*"
 	},
 	"engines": {
 		"node": ">=18.0.0"
