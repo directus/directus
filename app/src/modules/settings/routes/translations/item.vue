@@ -143,9 +143,6 @@ import { useI18n } from 'vue-i18n';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
-import { useTemplateData } from '@/composables/use-template-data';
-import { useTitle } from '@/composables/use-title';
-import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
@@ -197,8 +194,6 @@ const {
 	refresh,
 	validationErrors,
 } = useItem(ref('directus_translations'), primaryKey);
-
-const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
 const isSavable = computed(() => {
 	if (hasEdits.value === true) return true;
