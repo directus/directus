@@ -15,13 +15,11 @@
 				v-if="modelValue"
 				clickable
 				class="icon-empty"
-				:class="{ 'no-filter': !showFilter }"
 				name="close"
 				@click.stop="$emit('update:modelValue', null)"
 			/>
 
 			<v-icon
-				v-if="showFilter"
 				v-tooltip.bottom="t('filter')"
 				clickable
 				class="icon-filter"
@@ -51,17 +49,11 @@ import { isObject } from 'lodash';
 import { Ref, computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue: string | null;
-		collection: string;
-		filter?: Filter | null;
-		showFilter?: boolean;
-	}>(),
-	{
-		showFilter: true,
-	}
-);
+const props = defineProps<{
+	modelValue: string | null;
+	collection: string;
+	filter?: Filter | null;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: string | null): void;
@@ -186,9 +178,6 @@ function emitValue() {
 
 		&:hover {
 			--v-icon-color: var(--danger);
-		}
-		&.no-filter {
-			margin-right: 8px;
 		}
 	}
 
