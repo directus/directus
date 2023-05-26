@@ -12,7 +12,6 @@ fields:
     interface: input
     options:
       font: monospace
-      slug: true
       placeholder: '$t:translation_key_placeholder'
   - field: language
     interface: system-language
