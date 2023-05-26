@@ -4,7 +4,7 @@
 	<private-view v-else :title="primaryKey === '+' ? t('create_translation_string') : t('edit_translation_string')">
 		<template #title-outer:prepend>
 			<v-button
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
+				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
 				class="header-icon"
 				rounded
 				icon
@@ -30,7 +30,7 @@
 
 		<template #headline>
 			<v-breadcrumb
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
+				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
 				:items="[{ name: t('content'), to: '/content' }]"
 			/>
 			<v-breadcrumb v-else :items="breadcrumb" />
@@ -199,7 +199,7 @@ const isSavable = computed(() => {
 	if (hasEdits.value === true) return true;
 
 	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
-		return !!edits.value?.[primaryKeyField.value.field];
+		return !!edits.value?.[primaryKeyField.value!.field];
 	}
 
 	if (isNew.value === true) {
@@ -219,7 +219,15 @@ const internalPrimaryKey = computed(() => {
 	if (unref(loading)) return '+';
 	if (unref(isNew)) return '+';
 
-	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)?.field] ?? '+';
+	if (unref(isSingleton)) {
+		const pkField = unref(primaryKeyField)?.field;
+
+		if (pkField) {
+			return unref(item)?.[pkField] ?? '+';
+		} else {
+			return '+';
+		}
+	}
 
 	return props.primaryKey;
 });
