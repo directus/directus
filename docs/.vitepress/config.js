@@ -454,6 +454,10 @@ function sidebar() {
 					text: 'Shares',
 				},
 				{
+					link: '/reference/system/translations',
+					text: 'Custom Translations',
+				},
+				{
 					link: '/reference/system/users',
 					text: 'Users',
 				},

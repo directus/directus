@@ -1,7 +1,6 @@
 <template>
 	<component
 		:is="layoutWrapper"
-		v-if="currentCollection"
 		ref="layoutRef"
 		v-slot="{ layoutState }"
 		v-model:selection="selection"
@@ -10,22 +9,24 @@
 		:filter-user="filter"
 		:filter="filter"
 		:search="search"
-		:collection="collection"
+		collection="directus_translations"
+		:reset-preset="resetPreset"
 		:clear-filters="clearFilters"
 	>
 		<private-view
-			:title="t('settings_presets')"
+			:title="t('settings_translations')"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
+			:sidebar-shadow="currentLayout?.sidebarShadow"
 		>
-			<template #headline>
-				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
-			</template>
-
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded icon exact disabled>
-					<v-icon name="bookmark" />
+					<v-icon name="translate" />
 				</v-button>
+			</template>
+
+			<template #headline>
+				<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 			</template>
 
 			<template #actions:prepend>
@@ -33,19 +34,11 @@
 			</template>
 
 			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
+				<search-input v-model="search" v-model:filter="filter" collection="directus_translations" />
 
 				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">
-						<v-button
-							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
-							:disabled="batchDeleteAllowed !== true"
-							rounded
-							icon
-							class="action-delete"
-							secondary
-							@click="on"
-						>
+						<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary @click="on">
 							<v-icon name="delete" outline />
 						</v-button>
 					</template>
@@ -66,23 +59,16 @@
 
 				<v-button
 					v-if="selection.length > 0"
-					v-tooltip.bottom="batchEditAllowed ? t('edit') : t('not_allowed')"
+					v-tooltip.bottom="t('edit')"
 					rounded
 					icon
 					secondary
-					:disabled="batchEditAllowed === false"
 					@click="batchEditActive = true"
 				>
 					<v-icon name="edit" outline />
 				</v-button>
 
-				<v-button
-					v-tooltip.bottom="createAllowed ? t('create_preset') : t('not_allowed')"
-					rounded
-					icon
-					to="/settings/presets/+"
-					:disabled="createAllowed === false"
-				>
+				<v-button v-tooltip.bottom="t('create_custom_translation')" rounded icon :to="addNewLink">
 					<v-icon name="add" />
 				</v-button>
 			</template>
@@ -93,7 +79,7 @@
 
 			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_results')" icon="bookmark" center>
+					<v-info :title="t('no_results')" icon="search" center>
 						{{ t('no_results_copy') }}
 
 						<template #append>
@@ -103,11 +89,11 @@
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('no_presets')" icon="bookmark" center>
-						{{ t('no_presets_copy') }}
+					<v-info :title="t('no_custom_translations')" :icon="currentCollection!.icon" center>
+						{{ t('no_custom_translations_copy') }}
 
-						<template v-if="createAllowed" #append>
-							<v-button :to="`/settings/presets/+`">{{ t('create_preset') }}</v-button>
+						<template #append>
+							<v-button :to="`/settings/translations/+`">{{ t('create_custom_translation') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -116,18 +102,33 @@
 			<drawer-batch
 				v-model:active="batchEditActive"
 				:primary-keys="selection"
-				:collection="collection"
-				@refresh="drawerBatchRefresh"
+				collection="directus_translations"
+				@refresh="batchRefresh"
 			/>
 
 			<template #sidebar>
-				<presets-info-sidebar-detail />
+				<sidebar-detail icon="info" :title="t('information')" close>
+					<div v-md="t('page_help_settings_translations_collection')" class="page-description" />
+				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout || 'tabular'}`" v-bind="layoutState" />
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
-				<export-sidebar-detail :collection="collection" :filter="filter" :search="search" @refresh="refresh" />
+				<export-sidebar-detail
+					collection="directus_translations"
+					:filter="filter"
+					:search="search"
+					:layout-query="layoutQuery"
+					@download="download"
+					@refresh="refresh"
+				/>
+				<flow-sidebar-detail
+					location="collection"
+					collection="directus_translations"
+					:selection="selection"
+					@refresh="batchRefresh"
+				/>
 			</template>
 
 			<v-dialog :model-value="deleteError !== null">
@@ -146,33 +147,46 @@
 </template>
 
 <script setup lang="ts">
+import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
-import { usePermissionsStore } from '@/stores/permissions';
-import { usePresetsStore } from '@/stores/presets';
-import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail.vue';
+import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SettingsNavigation from '../../../components/navigation.vue';
-import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
+import SettingsNavigation from '../../components/navigation.vue';
 
-const layout = ref('tabular');
-const collection = ref('directus_presets');
-const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
+type Item = {
+	[field: string]: any;
+};
+
+const props = defineProps<{
+	bookmark?: string;
+	archive?: string;
+}>();
 
 const { t } = useI18n();
 
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
 const layoutRef = ref();
 
-const { selection } = useSelection();
-const { info: currentCollection } = useCollection(collection);
+const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
+
+const selection = ref<Item[]>([]);
+const { info: currentCollection } = useCollection('directus_translations');
+
+const addNewLink = computed<string>(() => {
+	return `/settings/translations/+`;
+});
+
+const { layout, layoutOptions, layoutQuery, filter, search, resetPreset, refreshInterval } = usePreset(
+	ref('directus_translations'),
+	bookmarkID
+);
 
 const { layoutWrapper } = useLayout(layout);
 
@@ -180,23 +194,17 @@ const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActiv
 
 const currentLayout = useExtension('layout', layout);
 
-const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
-
-const presetsStore = usePresetsStore();
-
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
 }
 
-async function drawerBatchRefresh() {
-	selection.value = [];
-	await refresh();
+async function download() {
+	await layoutRef.value?.state?.download?.();
 }
 
-function useSelection() {
-	const selection = ref<number[]>([]);
-
-	return { selection };
+async function batchRefresh() {
+	selection.value = [];
+	await refresh();
 }
 
 function useBatch() {
@@ -212,9 +220,12 @@ function useBatch() {
 	async function batchDelete() {
 		deleting.value = true;
 
+		const batchPrimaryKeys = selection.value;
+
 		try {
-			const batchPrimaryKeys = selection.value;
-			await presetsStore.delete(batchPrimaryKeys);
+			await api.delete(`/translations`, {
+				data: batchPrimaryKeys,
+			});
 
 			selection.value = [];
 			await refresh();
@@ -232,55 +243,15 @@ function clearFilters() {
 	filter.value = null;
 	search.value = null;
 }
-
-function usePermissions() {
-	const batchEditAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === collection.value
-		);
-
-		return !!updatePermissions;
-	});
-
-	const batchDeleteAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === collection.value
-		);
-
-		return !!deletePermissions;
-	});
-
-	const createAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === collection.value
-		);
-
-		return !!createPermissions;
-	});
-
-	return { batchEditAllowed, batchDeleteAllowed, createAllowed };
-}
 </script>
 
 <style lang="scss" scoped>
-.header-icon {
-	--v-button-background-color-disabled: var(--primary-10);
-	--v-button-color-disabled: var(--primary);
-	--v-button-background-color-hover-disabled: var(--primary-25);
-	--v-button-color-hover-disabled: var(--primary);
-}
-
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
 	--v-button-color-hover: var(--white) !important;
+}
+
+.header-icon {
+	--v-button-color-disabled: var(--foreground-normal);
 }
 </style>

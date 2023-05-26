@@ -1,0 +1,27 @@
+table: directus_translations
+
+fields:
+  - field: id
+    hidden: true
+    sort: 1
+    special:
+      - uuid
+  - field: key
+    width: half
+    sort: 2
+    required: true
+    interface: input
+    options:
+      font: monospace
+      placeholder: '$t:translation_key_placeholder'
+  - field: language
+    interface: system-language
+    width: half
+    sort: 3
+    required: true
+  - field: value
+    interface: input-multiline
+    sort: 4
+    required: true
+    options:
+      placeholder: '$t:enter_a_value'
