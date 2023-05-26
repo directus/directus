@@ -39,8 +39,12 @@ export const useTranslationsStore = defineStore('translations', () => {
 	};
 
 	const create = async (translation: Translation) => {
-		await api.post('/translations', translation);
-		await loadTranslations();
+		try {
+			await api.post('/translations', translation);
+			await loadTranslations();
+		} catch (err: any) {
+			unexpectedError(err);
+		}
 	};
 
 	watch(translations, (newTranslations) => {
