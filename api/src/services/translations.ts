@@ -15,7 +15,7 @@ export class TranslationsService extends ItemsService {
 	}
 
 	private async translationKeyExists(key: string, language: string) {
-		const result = await this.knex.select('').from(this.collection).where({ key, language });
+		const result = await this.knex.select('id').from(this.collection).where({ key, language });
 		return result.length > 0;
 	}
 

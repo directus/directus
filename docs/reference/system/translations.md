@@ -10,7 +10,7 @@ pageClass: page-reference
 
 ## The Translations Object
 
-`id` **integer**\
+`id` **uuid**\
 Primary key of the translations
 
 `key` **string**\
@@ -25,7 +25,7 @@ The translation value.
 ```json
 {
 	"data": {
-		"id": 1,
+		"id": "c4346aa4-81a8-4885-b3a8-f647e4f6f769",
 		"key": "Test",
 		"language": "en-US",
 		"value": "Test"

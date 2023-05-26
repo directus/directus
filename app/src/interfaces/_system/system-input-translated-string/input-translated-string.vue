@@ -168,6 +168,7 @@ const localValue = computed<string | null>({
 
 const create = async (item: Translation) => {
 	await translationsStore.create(item);
+	await fetchTranslationsKeys();
 };
 
 watch(
