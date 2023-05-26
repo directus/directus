@@ -1462,9 +1462,6 @@ importers:
 
   packages/update-check:
     dependencies:
-      '@directus/api':
-        specifier: workspace:*
-        version: link:../../api
       boxen:
         specifier: 7.1.0
         version: 7.1.0
