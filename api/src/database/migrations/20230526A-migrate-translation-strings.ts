@@ -41,7 +41,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').primary().notNullable();
 		table.string('language').notNullable();
 		table.string('key').notNullable();
-		table.string('value').notNullable();
+		table.text('value').notNullable();
 	});
 
 	const data = await knex.select('translation_strings', 'id').from('directus_settings').first();
