@@ -1,5 +1,5 @@
 <template>
-	<div class="translation-strings-display">
+	<div class="custom-translations-display">
 		<v-menu class="menu" show-arrow>
 			<template #activator="{ toggle, deactivate, active }">
 				<v-icon
@@ -91,7 +91,7 @@ const clicked = (toggleTooltip: () => void) => {
 .v-list {
 	width: 300px;
 }
-.translation-strings-display {
+.custom-translations-display {
 	display: flex;
 	align-items: center;
 

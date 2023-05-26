@@ -68,7 +68,7 @@
 					<v-icon name="edit" outline />
 				</v-button>
 
-				<v-button v-tooltip.bottom="t('create_item')" rounded icon :to="addNewLink">
+				<v-button v-tooltip.bottom="t('create_custom_translation')" rounded icon :to="addNewLink">
 					<v-icon name="add" />
 				</v-button>
 			</template>
@@ -89,11 +89,11 @@
 				</template>
 
 				<template #no-items>
-					<v-info :title="t('item_count', 0)" :icon="currentCollection!.icon" center>
-						{{ t('no_items_copy') }}
+					<v-info :title="t('no_custom_translations')" :icon="currentCollection!.icon" center>
+						{{ t('no_custom_translations_copy') }}
 
 						<template #append>
-							<v-button :to="`/settings/translations/+`">{{ t('create_item') }}</v-button>
+							<v-button :to="`/settings/translations/+`">{{ t('create_custom_translation') }}</v-button>
 						</template>
 					</v-info>
 				</template>
@@ -108,10 +108,7 @@
 
 			<template #sidebar>
 				<sidebar-detail icon="info" :title="t('information')" close>
-					<div
-						v-md="t('page_help_collections_collection', { collection: currentCollection!.name })"
-						class="page-description"
-					/>
+					<div v-md="t('page_help_settings_translations_collection')" class="page-description" />
 				</sidebar-detail>
 				<layout-sidebar-detail v-model="layout">
 					<component :is="`layout-options-${layout || 'tabular'}`" v-bind="layoutState" />

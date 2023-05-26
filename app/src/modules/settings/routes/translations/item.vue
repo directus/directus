@@ -1,7 +1,7 @@
 <template>
 	<content-not-found v-if="error" />
 
-	<private-view v-else :title="primaryKey === '+' ? t('create_translation_string') : t('edit_translation_string')">
+	<private-view v-else :title="primaryKey === '+' ? t('create_custom_translation') : t('edit_custom_translation')">
 		<template #title-outer:prepend>
 			<v-button
 				v-if="collectionInfo?.meta && collectionInfo.meta.singleton === true"
@@ -112,7 +112,7 @@
 
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
-				<div v-md="t('page_help_collections_item')" class="page-description" />
+				<div v-md="t('page_help_settings_translations_item')" class="page-description" />
 			</sidebar-detail>
 			<template v-if="isNew === false && loading === false && internalPrimaryKey">
 				<revisions-drawer-detail

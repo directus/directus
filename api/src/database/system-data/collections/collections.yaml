@@ -14,42 +14,55 @@ data:
   - collection: directus_activity
     note: $t:directus_collection.directus_activity
     accountability: null
+
   - collection: directus_collections
     icon: list_alt
     note: $t:directus_collection.directus_collections
+
   - collection: directus_fields
     icon: input
     note: $t:directus_collection.directus_fields
+
   - collection: directus_files
     icon: folder
     note: $t:directus_collection.directus_files
     display_template: '{{ $thumbnail }} {{ title }}'
+
   - collection: directus_folders
     note: $t:directus_collection.directus_folders
     display_template: '{{ name }}'
+
   - collection: directus_migrations
     note: $t:directus_collection.directus_migrations
+
   - collection: directus_permissions
     icon: admin_panel_settings
     note: $t:directus_collection.directus_permissions
+
   - collection: directus_presets
     icon: bookmark
     note: $t:directus_collection.directus_presets
     accountability: null
+
   - collection: directus_relations
     icon: merge_type
     note: $t:directus_collection.directus_relations
+
   - collection: directus_revisions
     note: $t:directus_collection.directus_revisions
     accountability: null
+
   - collection: directus_roles
     icon: supervised_user_circle
     note: $t:directus_collection.directus_roles
+
   - collection: directus_sessions
     note: $t:directus_collection.directus_sessions
+
   - collection: directus_settings
     singleton: true
     note: $t:directus_collection.directus_settings
+
   - collection: directus_users
     archive_field: status
     archive_value: archived
@@ -57,18 +70,28 @@ data:
     icon: people_alt
     note: $t:directus_collection.directus_users
     display_template: '{{ first_name }} {{ last_name }}'
+
   - collection: directus_webhooks
     note: $t:directus_collection.directus_webhooks
+
   - collection: directus_dashboards
     note: $t:directus_collection.directus_dashboards
+
   - collection: directus_panels
     note: $t:directus_collection.directus_panels
+
   - collection: directus_notifications
     note: $t:directus_collection.directus_notifications
+
   - collection: directus_shares
     icon: share
     note: $t:directus_collection.directus_shares
+
   - collection: directus_flows
     note: $t:directus_collection.directus_flows
+
   - collection: directus_operations
     note: $t:directus_collection.directus_operations
+
+  - collection: directus_translations
+    note: $t:directus_collection.directus_translations

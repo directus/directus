@@ -60,22 +60,22 @@
 					</v-list-item-icon>
 					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
 					<v-list-item-icon class="info">
-						<translation-strings-tooltip :translation-key="translationKey" />
+						<custom-translations-tooltip :translation-key="translationKey" />
 					</v-list-item-icon>
 				</v-list-item>
-				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDrawer">
+				<v-list-item class="new-custom-translation" clickable @click="openNewCustomTranslationDrawer">
 					<v-list-item-icon>
 						<v-icon name="add" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('interfaces.input-translated-string.new_translation_string') }}
+						{{ t('interfaces.input-translated-string.new_custom_translation') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
 
 		<DrawerItem
-			v-model:active="isTranslationStringDrawerOpen"
+			v-model:active="isCustomTranslationDrawerOpen"
 			collection="directus_translations"
 			primary-key="+"
 			@input="create"
@@ -91,7 +91,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { computed, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import TranslationStringsTooltip from './translation-strings-tooltip.vue';
+import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 
 const translationPrefix = '$t:';
 
@@ -103,10 +103,10 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	value: () => null,
+	value: null,
 	autofocus: false,
 	disabled: false,
-	placeholder: () => null,
+	placeholder: null,
 });
 
 const emit = defineEmits(['input']);
@@ -122,7 +122,7 @@ const loading = ref(false);
 const translationsKeys = ref<string[]>([]);
 const translationsStore = useTranslationsStore();
 
-const isTranslationStringDrawerOpen = ref<boolean>(false);
+const isCustomTranslationDrawerOpen = ref<boolean>(false);
 
 const fetchTranslationsKeys = async () => {
 	loading.value = true;
@@ -204,9 +204,9 @@ function checkKeyValidity() {
 	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
 }
 
-function openNewTranslationStringDrawer() {
+function openNewCustomTranslationDrawer() {
 	menuEl.value.deactivate();
-	isTranslationStringDrawerOpen.value = true;
+	isCustomTranslationDrawerOpen.value = true;
 }
 </script>
 
@@ -289,7 +289,7 @@ function openNewTranslationStringDrawer() {
 	}
 }
 
-.new-translation-string {
+.new-custom-translation {
 	--v-list-item-color-hover: var(--primary-125);
 
 	color: var(--primary);
