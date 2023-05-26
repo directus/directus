@@ -143,6 +143,7 @@ import { useI18n } from 'vue-i18n';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
+import { refreshCurrentLanguage } from '@/lang/refresh-current-language';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
@@ -264,6 +265,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
+		await refreshCurrentLanguage();
 		router.push(`/settings/translations`);
 	} catch {
 		// Save shows unexpected error dialog
@@ -275,6 +277,7 @@ async function saveAndStay() {
 
 	try {
 		const savedItem: Record<string, any> = await save();
+		await refreshCurrentLanguage();
 
 		revisionsDrawerDetailRef.value?.refresh?.();
 
@@ -292,6 +295,7 @@ async function saveAndAddNew() {
 
 	try {
 		await save();
+		await refreshCurrentLanguage();
 
 		if (isNew.value === true) {
 			refresh();
@@ -315,6 +319,8 @@ async function saveAsCopyAndNavigate() {
 async function deleteAndQuit() {
 	try {
 		await remove();
+		await refreshCurrentLanguage();
+
 		edits.value = {};
 		router.replace(`/settings/translations`);
 	} catch {
@@ -334,11 +340,13 @@ function discardAndStay() {
 	confirmLeave.value = false;
 }
 
-function revert(values: Record<string, any>) {
+async function revert(values: Record<string, any>) {
 	edits.value = {
 		...edits.value,
 		...values,
 	};
+
+	await refreshCurrentLanguage();
 }
 </script>
 
