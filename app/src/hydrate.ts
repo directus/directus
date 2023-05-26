@@ -15,7 +15,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
-import { getCurrentLanguage } from './utils/get-current-language';
+import { getCurrentLanguage } from '@/lang/get-current-language';
 
 type GenericStore = {
 	$id: string;
