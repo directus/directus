@@ -18,7 +18,6 @@ export const useSettingsStore = defineStore({
 			if (!userStore.currentUser || 'share' in userStore.currentUser) return;
 
 			const response = await api.get(`/settings`);
-
 			this.settings = response.data.data;
 		},
 
