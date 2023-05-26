@@ -455,7 +455,7 @@ function sidebar() {
 				},
 				{
 					link: '/reference/system/translations',
-					text: 'Translation Strings',
+					text: 'Custom Translations',
 				},
 				{
 					link: '/reference/system/users',
