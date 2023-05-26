@@ -10,7 +10,7 @@ pageClass: page-reference
 
 ## The Translations Object
 
-`id` **integer**\
+`id` **uuid**\
 Primary key of the translations
 
 `key` **string**\
