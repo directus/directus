@@ -32,7 +32,7 @@ export type ComputedQuery = {
 	search: Ref<Query['search']> | ComputedRef<Query['search']> | WritableComputedRef<Query['search']>;
 	filter: Ref<Query['filter']> | ComputedRef<Query['filter']> | WritableComputedRef<Query['filter']>;
 	page: Ref<Query['page']> | WritableComputedRef<Query['page']>;
-	deep?: Ref<Query['deep']> | WritableComputedRef<Query['deep']>;
+	deep?: Ref<Query['deep']> | ComputedRef<Query['deep']> | WritableComputedRef<Query['deep']>;
 };
 
 export function useItems(collection: Ref<string | null>, query: ComputedQuery): UsableItems {
