@@ -1,21 +1,6 @@
 import type { ChangelogFunctions, GetDependencyReleaseLine, GetReleaseLine } from '@changesets/types';
 import type { Changesets } from '../types';
 
-/**
- * Finds text inside an info box with the following pattern and
- * extract it seperately from the normal changeset text:
- *
- * ```md
- * ::: info
- * <my-info-text>
- * :::
- *
- * <usual-changeset-text>
- * ```
- *
- */
-const summaryRegex = /(?:::: info\n+([\s\S]*)(?<!\n)\n+:::$\n*)?([\s\S]*)/m;
-
 export function processReleaseLines(): { defaultChangelogFunctions: ChangelogFunctions; changesets: Changesets } {
 	const changesets: Changesets = new Map();
 
@@ -26,11 +11,18 @@ export function processReleaseLines(): { defaultChangelogFunctions: ChangelogFun
 			return '';
 		}
 
-		const match = summary.match(summaryRegex);
-		const info = match?.[1];
-		const finalSummary = match?.[2] || '';
+		// Find text inside a notice box with the following pattern and
+		// extract it from the normal changeset summary:
+		//
+		//   ::: notice
+		//   <my-notice>
+		//   :::
+		//
+		//   <normal-changeset-summary>
+		const finalSummary = summary.replace(/^::: notice\n[\s\S]*^:::$/m, '').trim();
+		const notice = summary.match(/::: notice\n+([\s\S]*)(?<!\n)\n+:::$/m)?.[1];
 
-		changesets.set(id, { summary: finalSummary, info, ...rest });
+		changesets.set(id, { summary: finalSummary, notice, ...rest });
 
 		return '';
 	};

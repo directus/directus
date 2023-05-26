@@ -2,8 +2,8 @@ import { appendFileSync } from 'node:fs';
 import { MAIN_PACKAGE } from './constants';
 import { generateMarkdown } from './utils/generate-markdown';
 import { getInfo } from './utils/get-info';
-import { processReleaseLines } from './utils/process-release-lines';
 import { processPackages } from './utils/process-packages';
+import { processReleaseLines } from './utils/process-release-lines';
 
 const { defaultChangelogFunctions, changesets } = processReleaseLines();
 
@@ -23,13 +23,13 @@ async function run() {
 		throw new Error(`Couldn't get main version ('${MAIN_PACKAGE}' package)`);
 	}
 
-	const { types, untypedPackages, info } = await getInfo(changesets);
+	const { types, untypedPackages, notices } = await getInfo(changesets);
 
 	if (types.length === 0 && untypedPackages.length === 0 && packageVersions.length === 0) {
 		earlyExit();
 	}
 
-	const markdown = generateMarkdown(mainVersion, info, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(mainVersion, notices, types, untypedPackages, packageVersions);
 
 	const divider = '==============================================================';
 	process.stdout.write(`${divider}\n${markdown}\n${divider}\n`);

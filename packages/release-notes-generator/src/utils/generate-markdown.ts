@@ -1,9 +1,9 @@
 import { REPO, VERSIONS_TITLE } from '../constants';
-import type { Change, Info, Package, PackageVersion, Type, UntypedPackage } from '../types';
+import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types';
 
 export function generateMarkdown(
 	mainVersion: string,
-	info: Info[],
+	notices: Notice[],
 	types: Type[],
 	untypedPackages: UntypedPackage[],
 	packageVersions: PackageVersion[]
@@ -16,8 +16,8 @@ export function generateMarkdown(
 
 	let output = `## v${mainVersion} (${dateString})`;
 
-	for (const value of info) {
-		output += `\n\n${value}`;
+	for (const notice of notices) {
+		output += `\n\n${formatNotice(notice)}`;
 	}
 
 	for (const { title, packages } of types) {
@@ -45,6 +45,18 @@ export function generateMarkdown(
 	return output;
 }
 
+function formatNotice(notice: Notice): string {
+	let output = '';
+
+	output += formatChange(notice.change, false);
+	output += notice.notice;
+
+	return output
+		.split('\n')
+		.map((line) => `> ${line}`)
+		.join('\n');
+}
+
 function formatPackages(packages: Package[]): string {
 	let output = '';
 
@@ -62,29 +74,30 @@ function formatPackages(packages: Package[]): string {
 }
 
 function formatChanges(changes: Change[]): string[] {
-	return changes.map((change) => {
-		let refUser = '';
+	return changes.map((change) => `- ${formatChange(change)}`);
+}
 
-		const refUserContent = [];
+function formatChange(change: Change, includeUser = true): string {
+	let refUser = '';
+	const refUserContent = [];
 
-		if (change.githubInfo?.links.pull) {
-			refUserContent.push(change.githubInfo.links.pull);
-		} else if (change.githubInfo?.links.commit) {
-			refUserContent.push(change.githubInfo.links.commit);
-		} else if (change.commit) {
-			refUserContent.push(`[${change.commit}](https://github.com/${REPO}/commit/${change.commit})`);
-		}
+	if (change.githubInfo?.links.pull) {
+		refUserContent.push(change.githubInfo.links.pull);
+	} else if (change.githubInfo?.links.commit) {
+		refUserContent.push(change.githubInfo.links.commit);
+	} else if (change.commit) {
+		refUserContent.push(`[${change.commit}](https://github.com/${REPO}/commit/${change.commit})`);
+	}
 
-		if (change.githubInfo?.user) {
-			refUserContent.push(`by @${change.githubInfo.user}`);
-		}
+	if (includeUser && change.githubInfo?.user) {
+		refUserContent.push(`by @${change.githubInfo.user}`);
+	}
 
-		if (refUserContent.length > 0) {
-			refUser = ' (';
-			refUser += refUserContent.join(' ');
-			refUser += ')';
-		}
+	if (refUserContent.length > 0) {
+		refUser = ' (';
+		refUser += refUserContent.join(' ');
+		refUser += ')';
+	}
 
-		return `- ${change.summary}${refUser}`;
-	});
+	return `${change.summary}${refUser}`;
 }
