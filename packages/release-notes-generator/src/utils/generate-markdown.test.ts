@@ -1,11 +1,9 @@
-import { expect, test, vi } from 'vitest';
+import { expect, test } from 'vitest';
 import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types';
 import { generateMarkdown } from './generate-markdown';
 
-const mainVersion = '10.0.0';
-
-const change: Change = {
-	summary: 'Increased Directus Magic',
+const change1: Change = {
+	summary: 'Made Directus even more magical',
 	commit: 'abcd123',
 	githubInfo: {
 		user: '@directus',
@@ -18,71 +16,103 @@ const change: Change = {
 	},
 };
 
+const change2: Change = {
+	summary: 'Improved some things a little',
+	commit: 'efgh456',
+	githubInfo: {
+		user: '@directus',
+		pull: 1,
+		links: {
+			commit: '[`efgh456`](https://github.com/directus/directus/commit/efgh456)',
+			pull: '[#2](https://github.com/directus/directus/pull/2)',
+			user: '[@directus](https://github.com/directus)',
+		},
+	},
+};
+
 const types: Type[] = [
 	{
 		title: '✨ New Features & Improvements',
 		packages: [
 			{
 				name: '@directus/api',
-				changes: [change],
+				changes: [change1],
+			},
+		],
+	},
+	{
+		title: '🐛 Bug Fixes & Optimizations',
+		packages: [
+			{
+				name: '@directus/app',
+				changes: [change2],
 			},
 		],
 	},
 ];
 
-const untypedPackages: UntypedPackage[] = [{ name: '📝 Documentation', changes: [change] }];
-const packageVersions: PackageVersion[] = [{ name: '@directus/api', version: '10.0.0' }];
+const untypedPackages: UntypedPackage[] = [{ name: '📝 Documentation', changes: [change2] }];
 
-const date = new Date(2023, 4, 12);
-vi.setSystemTime(date);
+const packageVersions: PackageVersion[] = [
+	{ name: '@directus/api', version: '10.0.0' },
+	{ name: '@directus/app', version: '10.0.0' },
+];
 
 test('should generate basic release notes', () => {
-	const notice: Notice[] = [];
+	const notices: Notice[] = [];
 
-	const markdown = generateMarkdown(mainVersion, notice, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
 
 	expect(markdown).toMatchInlineSnapshot(`
-		"## v10.0.0 (May 12, 2023)
-
-		### ✨ New Features & Improvements
+		"### ✨ New Features & Improvements
 
 		- **@directus/api**
-		  - Increased Directus Magic ([#1](https://github.com/directus/directus/pull/1) by @@directus)
+		  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @@directus)
+
+		### 🐛 Bug Fixes & Optimizations
+
+		- **@directus/app**
+		  - Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @@directus)
 
 		### 📝 Documentation
 
-		- Increased Directus Magic ([#1](https://github.com/directus/directus/pull/1) by @@directus)
+		- Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @@directus)
 
 		### 📦 Published Versions
 
-		- \`@directus/api@10.0.0\`"
+		- \`@directus/api@10.0.0\`
+		- \`@directus/app@10.0.0\`"
 	`);
 });
 
 test('should generate release notes with notice', () => {
-	const notice: Notice[] = [{ notice: 'This is an example notice.', change }];
+	const notices: Notice[] = [{ notice: 'This is an example notice.', change: change1 }];
 
-	const markdown = generateMarkdown(mainVersion, notice, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
 
 	expect(markdown).toMatchInlineSnapshot(`
-		"## v10.0.0 (May 12, 2023)
+		"### ⚠️ Potential Breaking Changes
 
-		### ⚠️ Potential Breaking Changes
-
-		**Increased Directus Magic ([#1](https://github.com/directus/directus/pull/1))**
+		**Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1))**
 		This is an example notice.
 
 		### ✨ New Features & Improvements
 
 		- **@directus/api**
-		  - Increased Directus Magic ([#1](https://github.com/directus/directus/pull/1) by @@directus)
+		  - Made Directus even more magical ([#1](https://github.com/directus/directus/pull/1) by @@directus)
+
+		### 🐛 Bug Fixes & Optimizations
+
+		- **@directus/app**
+		  - Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @@directus)
 
 		### 📝 Documentation
 
-		- Increased Directus Magic ([#1](https://github.com/directus/directus/pull/1) by @@directus)
+		- Improved some things a little ([#2](https://github.com/directus/directus/pull/2) by @@directus)
 
 		### 📦 Published Versions
 
-		- \`@directus/api@10.0.0\`"
+		- \`@directus/api@10.0.0\`
+		- \`@directus/app@10.0.0\`"
 	`);
 });

@@ -29,7 +29,7 @@ async function run() {
 		earlyExit();
 	}
 
-	const markdown = generateMarkdown(mainVersion, notices, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(notices, types, untypedPackages, packageVersions);
 
 	const divider = '==============================================================';
 	process.stdout.write(`${divider}\n${markdown}\n${divider}\n`);
