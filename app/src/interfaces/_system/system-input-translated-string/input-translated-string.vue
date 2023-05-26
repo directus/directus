@@ -59,6 +59,9 @@
 						<v-icon name="translate" />
 					</v-list-item-icon>
 					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
+					<v-list-item-icon class="info">
+						<translation-strings-tooltip :translation-key="translationKey" />
+					</v-list-item-icon>
 				</v-list-item>
 				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDrawer">
 					<v-list-item-icon>
@@ -81,13 +84,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import type { Translation } from '@/stores/translations';
 import { useTranslationsStore } from '@/stores/translations';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { storeToRefs } from 'pinia';
-import { unref } from 'vue';
-import type { Translation } from '@/stores/translations';
+import { computed, ref, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import TranslationStringsTooltip from './translation-strings-tooltip.vue';
 
 const translationPrefix = '$t:';
 
