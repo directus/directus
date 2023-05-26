@@ -1,7 +1,9 @@
 import type { Knex } from 'knex';
 import { set } from 'lodash-es';
+import { v4 as uuid } from 'uuid';
 
 type NewTranslationString = {
+	id: string;
 	key: string;
 	value: string;
 	language: string;
@@ -17,7 +19,7 @@ function transformStringsNewFormat(oldStrings: OldTranslationString[]): NewTrans
 		if (!item.key || !item.translations) return result;
 
 		for (const [language, value] of Object.entries(item.translations)) {
-			result.push({ key: item.key, language, value });
+			result.push({ id: uuid(), key: item.key, language, value });
 		}
 
 		return result;
