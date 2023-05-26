@@ -510,6 +510,9 @@ importers:
       '@directus/format-title':
         specifier: 10.0.0
         version: 10.0.0
+      '@directus/themes':
+        specifier: workspace:*
+        version: link:../packages/themes
       '@directus/types':
         specifier: workspace:*
         version: link:../packages/types
@@ -1421,6 +1424,9 @@ importers:
       '@sinclair/typebox':
         specifier: 0.28.13
         version: 0.28.13
+      defu:
+        specifier: 6.1.2
+        version: 6.1.2
       pinia:
         specifier: 2.1.1
         version: 2.1.1(typescript@5.0.4)(vue@3.3.4)
@@ -10643,7 +10649,6 @@ packages:
 
   /defu@6.1.2:
     resolution: {integrity: sha512-+uO4+qr7msjNNWKYPHqN/3+Dx3NFkmIzayk2L1MyZQlvgZb/J1A0fo410dpKrN2SnqFjt8n4JL8fDJE0wIgjFQ==}
-    dev: true
 
   /del@6.1.1:
     resolution: {integrity: sha512-ua8BhapfP0JUJKC/zV9yHHDW/rDoDxP4Zhn3AkA6/xT6gY7jYXJiaeyBZznYVujhZZET+UgcbZiQ7sN3WqcImg==}

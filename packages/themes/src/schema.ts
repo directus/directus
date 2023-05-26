@@ -15,7 +15,7 @@ const FontFamily = Type.String();
 
 export const ThemeSchema = Type.Object({
 	name: Type.String(),
-	type: Type.Union([Type.Literal('light'), Type.Literal('dark')]),
+	appearance: Type.Union([Type.Literal('light'), Type.Literal('dark')]),
 	rules: Type.Object({
 		foreground: Color,
 

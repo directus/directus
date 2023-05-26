@@ -1,27 +1,37 @@
+import { defu } from 'defu';
 import { defineStore } from 'pinia';
-import { reactive } from 'vue';
+import { computed, reactive, ref, unref } from 'vue';
 import type { Theme } from './schema.js';
 import darkDefault from './themes/dark/default.js';
 import lightDefault from './themes/light/default.js';
 
 export const useThemeStore = defineStore('themes', () => {
-	const current = reactive({
+	const currentAppearance = ref<'light' | 'dark'>('light');
+
+	const currentTheme = reactive({
 		dark: darkDefault.name,
 		light: lightDefault.name,
 	});
 
 	const themes = reactive({
-		dark: [] as Theme[],
+		dark: [darkDefault] as Theme[],
 		light: [lightDefault] as Theme[],
 	});
 
 	const registerTheme = (theme: Theme) => {
-		if (theme.type === 'dark') {
+		if (theme.appearance === 'dark') {
 			themes.dark.push(theme);
 		} else {
 			themes.light.push(theme);
 		}
 	};
 
-	return { themes, registerTheme, current };
+	const rules = computed(() => {
+		const appearance = unref(currentAppearance);
+		const theme = themes[appearance].find(({ name }) => name === currentTheme[unref(currentAppearance)]);
+
+		return defu(theme?.rules, lightDefault.rules);
+	});
+
+	return { themes, registerTheme, currentTheme, currentAppearance, rules };
 });

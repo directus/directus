@@ -41,6 +41,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
+import { useThemeStore } from '@directus/themes';
+import { storeToRefs } from 'pinia';
+
+const themesStore = useThemeStore();
+const { rules } = storeToRefs(themesStore);
 
 withDefaults(
 	defineProps<{
@@ -163,6 +168,7 @@ onUnmounted(() => {
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
+				color: v-bind('rules["header.foreground"]');
 			}
 
 			:deep(.type-title) {

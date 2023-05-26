@@ -2,7 +2,7 @@ import { defineTheme } from '../../define-theme.js';
 
 export default defineTheme({
 	name: 'Directus Default (Dark)',
-	type: 'dark',
+	appearance: 'dark',
 	rules: {
 		foreground: '#000',
 		'header.foreground': '#fff',

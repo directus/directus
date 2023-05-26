@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@sinclair/typebox": "0.28.13",
+		"defu": "6.1.2",
 		"pinia": "2.1.1",
 		"vue": "3.3.4"
 	}
