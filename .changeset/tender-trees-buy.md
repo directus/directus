@@ -4,4 +4,8 @@
 "@directus/types": minor
 ---
 
-Added a new `/translations` endpoint that's used for managing custom translations strings within the platform. This replaces the previous `translation_strings` field in `directus_settings`
+Improve custom translations management and performance
+
+::: notice
+This replaces the previous `translation_strings` field in `directus_settings` with a new `/translations` endpoint
+:::
