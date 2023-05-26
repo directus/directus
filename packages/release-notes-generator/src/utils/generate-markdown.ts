@@ -1,5 +1,7 @@
-import { REPO, VERSIONS_TITLE } from '../constants';
+import { NOTICE_TYPE, REPO, VERSIONS_TITLE } from '../constants';
 import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types';
+
+type Section = Type & { notices: Notice[] };
 
 export function generateMarkdown(
 	mainVersion: string,
@@ -8,6 +10,21 @@ export function generateMarkdown(
 	untypedPackages: UntypedPackage[],
 	packageVersions: PackageVersion[]
 ): string {
+	let foundNoticeSection = false;
+
+	let sections: Section[] = types.map((type) => {
+		if (type.title === NOTICE_TYPE) {
+			foundNoticeSection = true;
+			return { title: type.title, packages: type.packages, notices };
+		}
+
+		return { title: type.title, packages: type.packages, notices: [] };
+	});
+
+	if (!foundNoticeSection) {
+		sections = [{ title: NOTICE_TYPE, packages: [], notices }, ...sections];
+	}
+
 	const date = new Date();
 
 	const dateString = new Intl.DateTimeFormat('en-US', {
@@ -16,13 +33,18 @@ export function generateMarkdown(
 
 	let output = `## v${mainVersion} (${dateString})`;
 
-	for (const notice of notices) {
-		output += `\n\n${formatNotice(notice)}`;
-	}
+	for (const { title, packages, notices } of sections) {
+		if (packages.length > 0 || notices.length > 0) {
+			output += `\n\n### ${title}`;
+		}
 
-	for (const { title, packages } of types) {
+		if (notices.length > 0) {
+			output += '\n\n';
+			output += formatNotices(notices);
+		}
+
 		if (packages.length > 0) {
-			output += `\n\n### ${title}\n`;
+			output += '\n\n';
 			output += formatPackages(packages);
 		}
 	}
@@ -45,32 +67,31 @@ export function generateMarkdown(
 	return output;
 }
 
-function formatNotice(notice: Notice): string {
-	let output = '';
+function formatNotices(notices: Notice[]): string {
+	const noticesOutput = notices.map((notice) => {
+		let noticeOutput = `**${formatChange(notice.change, false)}**`;
+		return (noticeOutput += `\n${notice.notice}`);
+	});
 
-	output += formatChange(notice.change, false);
-	output += notice.notice;
-
-	return output
-		.split('\n')
-		.map((line) => `> ${line}`)
-		.join('\n');
+	return noticesOutput.join('\n\n');
 }
 
 function formatPackages(packages: Package[]): string {
-	let output = '';
+	const packagesOutput = packages.map(({ name, changes }) => {
+		let packageOutput = '';
 
-	for (const { name, changes } of packages) {
 		if (changes.length > 0) {
-			output += `\n- **${name}**\n`;
+			packageOutput += `- **${name}**\n`;
 
-			output += formatChanges(changes)
+			packageOutput += formatChanges(changes)
 				.map((change) => `  ${change}`)
 				.join('\n');
 		}
-	}
 
-	return output;
+		return packageOutput;
+	});
+
+	return packagesOutput.join('\n');
 }
 
 function formatChanges(changes: Change[]): string[] {
