@@ -1,9 +1,9 @@
 import type { Item, PrimaryKey } from '@directus/types';
 import getDatabase from '../database/index.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
-import { shouldClearCache } from '../utils/should-clear-cache.js';
-import { validateKeys } from '../utils/validate-keys.js';
 import { ItemsService } from './items.js';
+import { InvalidPayloadException } from '../index.js';
+import type { AbstractServiceOptions } from '../types/services.js';
+import type { MutationOptions } from '../types/items.js';
 
 export class TranslationsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -14,54 +14,34 @@ export class TranslationsService extends ItemsService {
 		this.schema = options.schema;
 	}
 
-	/**
-	 * Upsert a single translation
-	 */
-	override async upsertOne(payload: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		validateKeys(this.schema, this.collection, 'language', payload['language']);
-		validateKeys(this.schema, this.collection, 'key', payload['key']);
-
-		const primaryKey = await this.knex
-			.select('id')
-			.from(this.collection)
-			.where({
-				language: payload['language'],
-				key: payload['key'],
-			})
-			.first();
-
-		if (primaryKey) {
-			return await this.updateOne(primaryKey as PrimaryKey, payload, opts);
-		} else {
-			return await this.createOne(payload, opts);
-		}
+	private async translationKeyExists(key: string, language: string) {
+		const result = await this.knex.select('').from(this.collection).where({ key, language });
+		return result.length > 0;
 	}
 
-	/**
-	 * Upsert multiple translations
-	 */
-	override async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeys = await this.knex.transaction(async (trx) => {
-			const service = new TranslationsService({
-				accountability: this.accountability,
-				schema: this.schema,
-				knex: trx,
-			});
-
-			const primaryKeys: PrimaryKey[] = [];
-
-			for (const payload of payloads) {
-				const primaryKey = await service.upsertOne(payload, { ...(opts || {}), autoPurgeCache: false });
-				primaryKeys.push(primaryKey);
-			}
-
-			return primaryKeys;
-		});
-
-		if (shouldClearCache(this.cache, opts)) {
-			await this.cache.clear();
+	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (await this.translationKeyExists(data['key'], data['language'])) {
+			throw new InvalidPayloadException('Duplicate key/language combination.');
 		}
 
-		return primaryKeys;
+		return await super.createOne(data, opts);
+	}
+
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		if (keys.length > 0 && 'key' in data && 'language' in data) {
+			throw new InvalidPayloadException('Duplicate key/language combination.');
+		} else if ('key' in data || 'language' in data) {
+			const items = await this.readMany(keys);
+
+			for (const item of items) {
+				const updatedData = { ...item, ...data };
+
+				if (await this.translationKeyExists(updatedData['key'], updatedData['language'])) {
+					throw new InvalidPayloadException('Duplicate key/language combination.');
+				}
+			}
+		}
+
+		return await super.updateMany(keys, data, opts);
 	}
 }
