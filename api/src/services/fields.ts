@@ -13,7 +13,6 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
 import { translateDatabaseError } from '../exceptions/database/translate.js';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { ItemsService } from '../services/items.js';
@@ -23,6 +22,7 @@ import getDefaultValue from '../utils/get-default-value.js';
 import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { RelationsService } from './relations.js';
 
 export class FieldsService {
@@ -341,7 +341,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -464,7 +464,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -630,7 +630,7 @@ export class FieldsService {
 				await this.helpers.schema.postColumnChange();
 			}
 
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 

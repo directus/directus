@@ -1,23 +1,30 @@
 <template>
-	<ValueNull v-if="!displayedTranslation && !hideDisplayText" />
-	<div v-else class="translation-strings-display">
-		<span v-if="!hideDisplayText" class="translation-display-text">{{ displayedTranslation!.translation }}</span>
-		<v-menu class="menu" show-arrow :disabled="!sortedTranslations || sortedTranslations.length === 0">
+	<div class="custom-translations-display">
+		<v-menu class="menu" show-arrow>
 			<template #activator="{ toggle, deactivate, active }">
 				<v-icon
-					v-tooltip.bottom="sortedTranslations && sortedTranslations.length === 0 && t('no_translations')"
-					:small="!hideDisplayText"
+					v-tooltip.bottom="translations && translations.length === 0 && t('translations')"
+					:small="false"
 					class="icon"
 					:class="{ active }"
 					name="info"
 					tabindex="-1"
-					@click.stop="toggle"
+					@click.stop="clicked(toggle)"
 					@blur="deactivate"
 				></v-icon>
 			</template>
 
 			<v-list class="translations">
-				<v-list-item v-for="item in sortedTranslations" :key="item.language">
+				<v-list-item v-if="translations.length === 0">
+					<v-list-item-content>
+						<div class="header">
+							<div class="lang">
+								{{ t('loading') }}
+							</div>
+						</div>
+					</v-list-item-content>
+				</v-list-item>
+				<v-list-item v-for="item in translations" v-else :key="item.language">
 					<v-list-item-content>
 						<div class="header">
 							<div class="lang">
@@ -25,8 +32,8 @@
 								{{ item.language }}
 							</div>
 						</div>
-						<ValueNull v-if="!item.translation" />
-						<div v-else class="translation-item-text">{{ item.translation }}</div>
+						<ValueNull v-if="!item.value" />
+						<div v-else class="translation-item-text">{{ item.value }}</div>
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -35,44 +42,56 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { Translation } from '@/stores/translations';
+import { fetchAll } from '@/utils/fetch-all';
+import { Ref, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useUserStore } from '@/stores/user';
-import { TranslationString } from '@/composables/use-translation-strings';
-import { sortBy } from 'lodash';
 
 interface Props {
-	translations?: TranslationString['translations'];
-	hideDisplayText?: boolean;
+	translationKey: string;
 }
 
-const props = withDefaults(defineProps<Props>(), { translations: () => null, hideDisplayText: false });
+const props = defineProps<Props>();
 
-const sortedTranslations = computed(() => {
-	if (!props.translations) return [];
-	return sortBy(props.translations, ['language']);
-});
+const translations: Ref<Translation[]> = ref([]);
+const loading = ref(false);
 
 const { t } = useI18n();
 
-const { currentUser } = useUserStore();
+const fetchTranslation = async () => {
+	loading.value = true;
 
-const displayedTranslation = computed(() => {
-	if (!sortedTranslations.value || sortedTranslations.value.length === 0) return null;
-
-	if (currentUser && 'id' in currentUser) {
-		return sortedTranslations.value.find((val) => val.language === currentUser.language) ?? sortedTranslations.value[0];
+	try {
+		translations.value = await fetchAll(`/translations`, {
+			params: {
+				fields: ['language', 'key', 'value'],
+				sort: ['language'],
+				filter: {
+					key: { _eq: props.translationKey },
+				},
+			},
+		});
+	} catch {
+		// Ignored
+	} finally {
+		loading.value = false;
 	}
+};
 
-	return sortedTranslations.value[0];
-});
+const clicked = (toggleTooltip: () => void) => {
+	toggleTooltip();
+
+	if (!loading.value && translations.value.length === 0) {
+		fetchTranslation();
+	}
+};
 </script>
 
 <style lang="scss" scoped>
 .v-list {
 	width: 300px;
 }
-.translation-strings-display {
+.custom-translations-display {
 	display: flex;
 	align-items: center;
 
