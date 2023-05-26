@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest';
-import type { Change, Info, PackageVersion, Type, UntypedPackage } from '../types';
+import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types';
 import { generateMarkdown } from './generate-markdown';
 
 const mainVersion = '10.0.0';
@@ -37,9 +37,9 @@ const date = new Date(2023, 4, 12);
 vi.setSystemTime(date);
 
 test('should generate basic release notes', () => {
-	const info: Info[] = [];
+	const notice: Notice[] = [];
 
-	const markdown = generateMarkdown(mainVersion, info, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(mainVersion, notice, types, untypedPackages, packageVersions);
 
 	expect(markdown).toMatchInlineSnapshot(`
 		"## v10.0.0 (May 12, 2023)
@@ -59,18 +59,18 @@ test('should generate basic release notes', () => {
 	`);
 });
 
-test('should generate release notes with info', () => {
-	const info: Info[] = ['This is an example info.', 'Another one which is\nmultiline.'];
+test('should generate release notes with notice', () => {
+	const notice: Notice[] = [{ notice: 'This is an example notice.', change }];
 
-	const markdown = generateMarkdown(mainVersion, info, types, untypedPackages, packageVersions);
+	const markdown = generateMarkdown(mainVersion, notice, types, untypedPackages, packageVersions);
 
 	expect(markdown).toMatchInlineSnapshot(`
 		"## v10.0.0 (May 12, 2023)
 
-		This is an example info.
+		### ⚠️ Potential Breaking Changes
 
-		Another one which is
-		multiline.
+		**Increased Directus Magic ([#1](https://github.com/directus/directus/pull/1))**
+		This is an example notice.
 
 		### ✨ New Features & Improvements
 

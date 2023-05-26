@@ -39,12 +39,12 @@ test('should process release lines', async () => {
 	});
 });
 
-test('should extract info from summary', async () => {
+test('should extract notice from summary', async () => {
 	const { defaultChangelogFunctions, changesets } = processReleaseLines();
 
 	const changeset: NewChangesetWithCommit = {
 		id: 'random-changeset-name',
-		summary: '::: info\nInfo text\n:::\n\nSummary text',
+		summary: '::: notice\nInfo text\n:::\n\nSummary text',
 		commit: 'abcdefg',
 		releases: [
 			{
@@ -64,7 +64,7 @@ test('should extract info from summary', async () => {
 		key: 'random-changeset-name',
 		value: {
 			commit: 'abcdefg',
-			info: 'Info text',
+			notice: 'Info text',
 			releases: [
 				{
 					name: 'directus',
