@@ -119,7 +119,7 @@ class FlowManager {
 		id: string,
 		data: unknown,
 		context: Record<string, unknown>
-	): Promise<{ result: unknown; cacheEnabled: boolean }> {
+	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
 			throw new exceptions.ForbiddenException();
@@ -240,7 +240,7 @@ class FlowManager {
 
 				this.webhookFlowHandlers[`${method}-${flow.id}`] = handler;
 			} else if (flow.trigger === 'manual') {
-				const handler = (data: unknown, context: Record<string, unknown>) => {
+				const handler = async (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
 					const targetCollection = (data as Record<string, any>)?.['body'].collection;
 
@@ -261,9 +261,9 @@ class FlowManager {
 
 					if (flow.options['async']) {
 						this.executeFlow(flow, data, context);
-						return undefined;
+						return { result: undefined };
 					} else {
-						return this.executeFlow(flow, data, context);
+						return { result: await this.executeFlow(flow, data, context) };
 					}
 				};
 
