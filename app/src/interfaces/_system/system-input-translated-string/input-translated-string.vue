@@ -86,8 +86,9 @@
 <script setup lang="ts">
 import type { Translation } from '@/stores/translations';
 import { useTranslationsStore } from '@/stores/translations';
+import { fetchAll } from '@/utils/fetch-all';
+import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { storeToRefs } from 'pinia';
 import { computed, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TranslationStringsTooltip from './translation-strings-tooltip.vue';
@@ -117,14 +118,35 @@ const hasValidKey = ref<boolean>(false);
 const isFocused = ref<boolean>(false);
 const searchValue = ref<string | null>(null);
 
+const loading = ref(false);
+const translationsKeys = ref<string[]>([]);
 const translationsStore = useTranslationsStore();
-
-const { translations, loading } = storeToRefs(translationsStore);
 
 const isTranslationStringDrawerOpen = ref<boolean>(false);
 
+const fetchTranslationsKeys = async () => {
+	loading.value = true;
+
+	try {
+		const response: { key: string }[] = await fetchAll(`/translations`, {
+			params: {
+				fields: ['key'],
+				groupBy: ['key'],
+			},
+		});
+
+		translationsKeys.value = response.map((t) => t.key);
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+};
+
+fetchTranslationsKeys();
+
 const filteredTranslationKeys = computed(() => {
-	const keys = unref(translations).map(({ key }) => key);
+	const keys = unref(translationsKeys);
 	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
 
 	if (filteredKeys.length > 100) {
