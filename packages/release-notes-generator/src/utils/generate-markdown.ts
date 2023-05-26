@@ -33,10 +33,10 @@ export function generateMarkdown(
 
 	output.push(formatPackageVersions(packageVersions));
 
-	return output.join('\n\n');
+	return output.filter((o) => o).join('\n\n');
 }
 
-function formatSections(sections: Section[]): string | undefined {
+function formatSections(sections: Section[]): string {
 	const output = [];
 
 	for (const { title, packages, notices } of sections) {
@@ -59,7 +59,7 @@ function formatSections(sections: Section[]): string | undefined {
 		output.push(lines);
 	}
 
-	return output.length > 0 ? output.join('\n\n') : undefined;
+	return output.join('\n\n');
 }
 
 function formatNotices(notices: Notice[]): string {
@@ -89,7 +89,7 @@ function formatPackages(packages: Package[]): string {
 	return output.join('\n');
 }
 
-function formatUntypedPackages(untypedPackages: UntypedPackage[]): string | undefined {
+function formatUntypedPackages(untypedPackages: UntypedPackage[]): string {
 	const output = [];
 
 	for (const { name, changes } of untypedPackages) {
@@ -103,7 +103,7 @@ function formatUntypedPackages(untypedPackages: UntypedPackage[]): string | unde
 		output.push(lines);
 	}
 
-	return output.length > 0 ? output.join('\n\n') : undefined;
+	return output.join('\n\n');
 }
 
 function formatChanges(changes: Change[]): string[] {
@@ -135,7 +135,7 @@ function formatChange(change: Change, includeUser = true): string {
 	return `${change.summary}${refUser}`;
 }
 
-function formatPackageVersions(packageVersions: PackageVersion[]): string | undefined {
+function formatPackageVersions(packageVersions: PackageVersion[]): string {
 	let lines = '';
 
 	if (packageVersions.length > 0) {
@@ -146,5 +146,5 @@ function formatPackageVersions(packageVersions: PackageVersion[]): string | unde
 		lines += `\n- \`${name}@${version}\``;
 	}
 
-	return lines || undefined;
+	return lines;
 }
