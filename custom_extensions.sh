@@ -47,7 +47,7 @@ skip_extensions="payments-api payments-hook payments-module services-module orde
 
 # Skip payment extension
 if [ -z "$PAYMENT_EXTENSION" ]; then
-	skip_extensions="payment ${skip_extensions}"
+	skip_extensions="payment recaptcha ${skip_extensions}"
 fi
 # Corresponding migrations to skip
 skip_migrations="add-chat add-saved-searches add-collaboration"
