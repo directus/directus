@@ -43,8 +43,12 @@ ls -la
 
 # Extensions to skip (these belong to different control scripts)
 # These are payment, chat, leads and collaboration extensions
-skip_extensions="payment payments-api payments-hook payments-module services-module orders-module chat chat-display dashboard leads areas saved-searches area-hook hide-modules collab-hook marketplace-filters workflows-defaults extended-api"
+skip_extensions="payments-api payments-hook payments-module services-module orders-module chat chat-display dashboard leads areas saved-searches area-hook hide-modules collab-hook marketplace-filters workflows-defaults extended-api"
 
+# Skip payment extension
+if [ -z "$PAYMENT_EXTENSION" ]; then
+	skip_extensions="payment ${skip_extensions}"
+fi
 # Corresponding migrations to skip
 skip_migrations="add-chat add-saved-searches add-collaboration"
 
