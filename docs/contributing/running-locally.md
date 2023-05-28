@@ -65,7 +65,7 @@ to spin up a test database.
 ### Upload/Extensions Folder
 
 If you are using the local storage driver, your files will upload to `/api/uploads`. If you are locally developing
-extensions from the extensions folder, that folder should located at `/api/extensions`.
+extensions from the extensions folder, that folder should be located at `/api/extensions`.
 
 ## 6. Initialize the database
 
