@@ -47,7 +47,7 @@ docker_build:
   retry: 2
   script:
     - export IMAGE_TAG=${CI_COMMIT_TAG:-latest}
-    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}"  .
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG --build-arg SSH_PRIVATE_KEY="${SSH_PRIVATE_KEY}" --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}" --build-arg CI_API_V4_URL="${CI_API_V4_URL}" --build-arg GITLAB_PIPELINE_TOKEN="${GITLAB_PIPELINE_TOKEN}" --build-arg CUSTOM_EXTENSION=1 --build-arg CHAT_EXTENSION=1 .
     - docker push $IMAGE_NAME:$IMAGE_TAG
   #    - 'curl --user $KEEL_USERNAME:$KEEL_PASSWORD -X POST -H "Content-Type: application/json" --data "{\"name\":\"${IMAGE_NAME}\",\"tag\":\"${IMAGE_TAG}\"}" $KEEL_WEBHOOK --insecure'
   tags:
