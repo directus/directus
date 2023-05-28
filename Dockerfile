@@ -102,7 +102,7 @@ RUN chmod +x ./chat_extensions.sh
 RUN chmod +x ./leads_extensions.sh
 RUN chmod +x ./crawless_colab_extensions.sh
 
-RUN #if [[ -z "$CUSTOM_EXTENSION" ]] ; then echo "Custom extension disabled" ; else ./custom_extensions.sh ; fi
+RUN if [[ -z "$CUSTOM_EXTENSION" ]] ; then echo "Custom extension disabled" ; else ./custom_extensions.sh ; fi
 RUN if [[ -z "$PAYMENT_EXTENSION" ]] ; then echo "Payment extension disabled" ; else ./payment_extensions.sh ; fi
 RUN if [[ -z "$CHAT_EXTENSION" ]] ; then echo "Chat extension disabled" ; else ./chat_extensions.sh ; fi
 RUN if [[ -z "$LEAD_EXTENSION" ]] ; then echo "Lead extension disabled" ; else ./leads_extensions.sh ; fi
