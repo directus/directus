@@ -106,5 +106,4 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 
 ## Tests (`/tests`)
 
-Tests are maintained on a per-package base. This folder contains the platform-wide (end-to-end) tests like
-[Blackbox](https://github.com/directus/directus/tree/main/tests/blackbox).
+Tests are maintained on a per-package base. This folder contains the platform-wide (end-to-end) tests. See [Tests](/contributing/tests) for more information.
