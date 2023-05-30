@@ -80,14 +80,6 @@ create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
-create_translation_string: Créer une traduction
-no_translation_string: Aucune traduction
-no_translation_string_copy: Il n'y a pas encore de traduction.
-translation_string_key_placeholder: Traduction de la clé...
-translation_string_translations_placeholder: Ajouter une nouvelle traduction
-edit_translation_string: Modifier la traduction
-delete_translation_string_copy: >-
-  Êtes-vous sûr de vouloir supprimer la traduction "{key}" ? Cette action ne peut pas être annulée.
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
@@ -118,13 +110,6 @@ public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
 admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
 not_allowed: Non autorisé
-directus_version: Version de Directus
-node_version: Version de Node
-node_uptime: Temps de disponibilité du nœud
-os_type: Type d'OS
-os_version: Version de l'OS
-os_uptime: Temps de disponibilité de l'OS
-os_totalmem: Mémoire de l'OS
 archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
@@ -182,6 +167,7 @@ permissions_for_role: 'Éléments que le rôle {role} peut {action}.'
 fields_for_role: 'Champs dont l''action « {action} » peut être effectué par le rôle {role} .'
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
+presets_field_warning: 'Les préréglages relationnels pour le champ "{field}" doivent être configurés avec la syntaxe "détaillée".'
 presentation_and_aliases: Présentation & Alias
 revision_post_create: Voici à quoi ressemblait cet article lors de sa création.
 revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour.
@@ -357,7 +343,7 @@ revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
-presentation_text_values_cannot_be_reimported: "Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées."
+presentation_text_values_cannot_be_reimported: 'Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées.'
 download_page_as_csv: 'Télécharger la page au format CSV'
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
@@ -497,7 +483,6 @@ enable_select_button: Activer le bouton de sélection
 allow_duplicates: Autoriser les doublons
 comments: Commentaires
 no_comments: Pas encore de commentaires
-click_to_expand: Cliquer pour agrandir
 select_item: Sélectionner un élément
 no_items: Aucun élément
 search_items: Rechercher des éléments...
@@ -531,6 +516,7 @@ create_collection: Créer une collection
 no_collections_copy_admin: Vous n'avez pas encore de collection. Cliquez sur le bouton ci-dessous pour commencer.
 no_collections_copy: Vous n'avez pas encore de Collections. Veuillez contacter votre administrateur système.
 relationship_not_setup: La relation n'a pas été configurée correctement
+no_singleton_relations: Les relations avec les Singletons ne sont pas prises en charge
 display_template_not_setup: L'option d'affichage du modèle est mal configurée
 collection_field_not_setup: L'option de champ de collection est mal configurée
 select_a_collection: Sélectionner une collection
@@ -669,6 +655,7 @@ one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer la collection "{collection}" ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
 delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer le dossier "{folder}" ? Les dossiers imbriqués et les collections seront déplacés à la racine.
+delete_collection_peer_dependencies: Les champs suivants seront également supprimés, car ils sont liés à la collection actuelle.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -962,7 +949,6 @@ settings_project: Paramètres du projet
 settings_webhooks: Webhooks
 settings_flows: Flux
 settings_presets: Préréglages et favoris
-settings_translation_strings: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
 scope: Utilisateurs ou rôles
 actions: Actions
@@ -1012,7 +998,6 @@ page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste to
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
 page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
 page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
-page_help_settings_translation_strings_collection: '**Parcourir les de traductions** — Liste toutes les traductions du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
@@ -1144,6 +1129,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Cartographie
     basemaps: Cartes de base
     basemaps_raster: Raster
@@ -1275,6 +1261,7 @@ field_options:
     sort_field: Choisissez un champ...
     accountability_divider: Traçabilité
     duplication_divider: Duplication
+    preview_divider: Prévisualiser
   directus_files:
     title: Un titre unique...
     description: Une description optionnelle...
@@ -1332,6 +1319,8 @@ start_collapsed: Commencer à réduire
 block: Bloc
 inline: En ligne
 comment: Commentaire
+live_preview:
+  new_window: Ouvrir dans une nouvelle fenêtre
 shares: Partages
 unlimited_usage: Utilisation illimitée
 uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
@@ -1699,7 +1688,6 @@ interfaces:
     input-translated-string: Chaînes traduites
     description: Sélectionner ou ajouter une traduction
     search_placeholder: Rechercher...
-    new_translation_string: Nouvelle traduction
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
@@ -1736,6 +1724,16 @@ interfaces:
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
     imageToken: Jeton d'accès statique
     imageToken_label: Le jeton d’accès statique est ajouté à l’URL des ressources
+  input-block-editor:
+    tools: Barre d’outils
+    tools_options:
+      header: En-tête
+      nestedlist: Liste
+      embed: Encapsulation
+      code: Code
+      image: Image
+      table: Tableau
+      underline: Souligner
   input-autocomplete-api:
     input-autocomplete-api: Autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.
@@ -2115,7 +2113,7 @@ operations:
     message: Message
   request:
     name: Webhook / URL de requête
-    description: "Envoyer une requête à une URL"
+    description: 'Envoyer une requête à une URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Méthode
@@ -2143,3 +2141,4 @@ operations:
     parallel: En parallèle
     batch: Par lots
     batch_size: Taille de chaque lot
+    cache: Cache
