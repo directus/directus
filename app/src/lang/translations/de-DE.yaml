@@ -80,14 +80,6 @@ create_user: Benutzer erstellen
 message: Nachricht
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
-create_translation_string: Übersetzungselement erstellen
-no_translation_string: Keine Übersetzung
-no_translation_string_copy: Es existiert noch keine Übersetzung.
-translation_string_key_placeholder: Schlüssel für Übersetzungselement...
-translation_string_translations_placeholder: Neue Übersetzung hinzufügen
-edit_translation_string: Übersetzungselement editieren
-delete_translation_string_copy: >-
-  Soll das Übersetzungselement "{key}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
@@ -118,13 +110,6 @@ public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
-directus_version: Directus-Version
-node_version: NodeJS-Version
-node_uptime: Server-Betriebszeit
-os_type: Betriebssystem
-os_version: Betriebssystem-Version
-os_uptime: System-Betriebszeit
-os_totalmem: Arbeitsspeicher
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
 archive_confirm_count: >-
@@ -358,7 +343,7 @@ revision_delta_reverted: Zurückgesetzt
 revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
-presentation_text_values_cannot_be_reimported: "Verwendet Präsentationstext, Werte können nicht neu importiert werden."
+presentation_text_values_cannot_be_reimported: 'Verwendet Präsentationstext, Werte können nicht neu importiert werden.'
 download_page_as_csv: 'Als CSV herunterladen'
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
@@ -498,7 +483,6 @@ enable_select_button: Knopf zum Auswählen aktivieren
 allow_duplicates: Duplikate erlauben
 comments: Kommentare
 no_comments: Noch keine Kommentare
-click_to_expand: Zum Erweitern klicken
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen...
@@ -965,7 +949,6 @@ settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Vorlagen & Lesezeichen
-settings_translation_strings: Übersetzungselemente
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Bereich
 actions: Aktionen
@@ -1015,7 +998,6 @@ page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung 
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
 page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
 page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
-page_help_settings_translation_strings_collection: '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -1279,6 +1261,7 @@ field_options:
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
+    preview_divider: Vorschau
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1336,6 +1319,8 @@ start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
+live_preview:
+  new_window: In neuem Fenster öffnen
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
@@ -1448,7 +1433,6 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 start: Start
 table: Tabelle
@@ -1704,7 +1688,6 @@ interfaces:
     input-translated-string: Übersetzte Elemente
     description: Übersetzungselement auswählen oder hinzufügen
     search_placeholder: Suchen...
-    new_translation_string: Neues Übersetzungelement
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
@@ -1741,6 +1724,16 @@ interfaces:
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     imageToken: Statisches Zugriffstoken
     imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
+  input-block-editor:
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: Liste
+      embed: Einbetten
+      code: Code
+      image: Bild
+      table: Tabelle
+      underline: Unterstrichen
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
     description: Auto-Complete bei der Suche von externen API-Werten.
@@ -2120,7 +2113,7 @@ operations:
     message: Nachricht
   request:
     name: Webhook / Anfrage URL
-    description: "Eine Anfrage an eine URL senden"
+    description: 'Eine Anfrage an eine URL senden'
     url: URL
     url_placeholder: https://example.com/example
     method: Methode
