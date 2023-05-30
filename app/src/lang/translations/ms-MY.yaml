@@ -275,6 +275,9 @@ interfaces:
     files: Fail-fail
   tags:
     tags: Tag
+  input-block-editor:
+    tools_options:
+      embed: Benamkan
 displays:
   collection:
     collection: Koleksi
