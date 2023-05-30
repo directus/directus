@@ -80,14 +80,6 @@ create_user: 创建用户
 message: 消息
 delete_panel: 删除面板
 create_webhook: 创建网络钩子
-create_translation_string: 创建翻译字符串
-no_translation_string: 空
-no_translation_string_copy: 目前没有翻译字符串。
-translation_string_key_placeholder: 翻译字符串键..
-translation_string_translations_placeholder: 添加新翻译
-edit_translation_string: 编辑翻译字符串
-delete_translation_string_copy: >-
-  您确定要删除翻译字符串"{key}" 吗? 此操作无法撤消。
 invite_users: 邀请用户
 invite: 邀请
 email_already_invited: 电子邮件 "{email}" 已被邀请
@@ -118,13 +110,6 @@ public_label: 公开
 public_description: 设置哪些API无需身份验证。
 admin_description: 不受限制的 App/ API 访问权限的初始管理角色
 not_allowed: 不允许
-directus_version: Directus 版本
-node_version: Node 版本
-node_uptime: Node 运行时间
-os_type: 系统类型
-os_version: 系统版本
-os_uptime: 系统运行时间
-os_totalmem: 系统内存
 archive: 存档
 archive_confirm: 您确定要归档所选吗？
 archive_confirm_count: >-
@@ -210,7 +195,7 @@ show_zero: 显示0
 create_in_advanced_field_creation_mode: 在高级模式下创建字段
 continue_in_advanced_field_creation_mode: 在高级字段创建模式中继续
 validation: 验证
-sum: Sum
+sum: 求和
 sum_distinct: Sum Distinct
 avg: 平均值
 avg_distinct: Average Distinct
@@ -245,10 +230,10 @@ integer: Integer
 json: JSON
 xml: XML
 yaml: YAML
-string: String
+string: 字符串
 text: 文本
 time: 时间
-timestamp: Timestamp
+timestamp: 时间戳
 uuid: UUID
 hash: Hash
 geometry: 几何要素(全部)
@@ -355,7 +340,7 @@ revision_delta_reverted: Reverted
 revision_delta_update_message: 此字段已更新，但由于安全原因，其值被隐藏。
 revision_delta_other: 修订版本
 revision_delta_by: '由 {user} 于 {date}'
-presentation_text_values_cannot_be_reimported: "仅包含当前页面中展示的字段和数据，且无法被重新导入"
+presentation_text_values_cannot_be_reimported: '仅包含当前页面中展示的字段和数据，且无法被重新导入'
 download_page_as_csv: '导出当前页面数据为CSV格式'
 private_user: 私人用户
 creation_preview: 创建预览
@@ -495,7 +480,6 @@ enable_select_button: 启用选择按钮
 allow_duplicates: 允许重复项
 comments: 注释
 no_comments: 暂无注释
-click_to_expand: 单击展开
 select_item: 选择条目
 no_items: 无条目
 search_items: 搜索条目...
@@ -960,7 +944,6 @@ settings_project: 项目设置
 settings_webhooks: Webhook
 settings_flows: 流程
 settings_presets: 预设&书签
-settings_translation_strings: 翻译字符串
 one_or_more_options_are_missing: 缺少一个或多个选项
 scope: 范围
 actions: 操作
@@ -1010,7 +993,6 @@ page_help_settings_webhooks_collection: '**Browse Webhooks** - 列出项目内�
 page_help_settings_webhooks_item: '**Webhook Detail** - 用于创建和管理项目webhooks的表格。'
 page_help_settings_flows_collection: '**Browse Webhooks** - 列出项目内的所有流。'
 page_help_settings_flows_item: '**流程详情** - 管理一个或多个操作面板的工作空间。'
-page_help_settings_translation_strings_collection: '**浏览翻译字符串** - 列出项目中的所有翻译字符串。'
 page_help_users_collection: '**用户目录** - 列出此项目中的所有系统用户。'
 page_help_users_item: >-
   **用户详细信息** - 管理您的帐户信息，或查看其他用户的详细信息。
@@ -1273,6 +1255,7 @@ field_options:
     sort_field: 选择字段...
     accountability_divider: 访问控制
     duplication_divider: 复制
+    preview_divider: 预览
   directus_files:
     title: 唯一的标题...
     description: 可选描述...
@@ -1330,6 +1313,8 @@ start_collapsed: 默认收起
 block: 阻止
 inline: 内联
 comment: 注释
+live_preview:
+  new_window: 在新窗口中打开
 shares: 共享
 unlimited_usage: 无限使用
 uses_left: 无剩余使用次数 | 仅剩1次使用次数 | 还有 {n} 次使用次数
@@ -1691,13 +1676,12 @@ interfaces:
     slug: Slugify
     slug_label: 使输入的 URL 安全
   input-multiline:
-    textarea: Textarea
+    textarea: 文本区域
     description: 输入多行纯文本
   input-translated-string:
     input-translated-string: 已翻译的字符串
     description: 选择或添加翻译字符串
     search_placeholder: 搜索...
-    new_translation_string: 新翻译字符串
   boolean:
     toggle: 切换
     description: 开启或关闭
@@ -1734,6 +1718,16 @@ interfaces:
     folder_note: 用于上传文件的文件夹。不影响现有文件。
     imageToken: 静态访问令牌
     imageToken_label: 静态访问令牌已被附加到资源的 URL
+  input-block-editor:
+    tools: 工具栏
+    tools_options:
+      header: 报头
+      nestedlist: 列表
+      embed: 嵌入
+      code: 代码
+      image: 图片
+      table: 表
+      underline: 下划线
   input-autocomplete-api:
     input-autocomplete-api: 自动完成 Input (API)
     description: 一个事先搜索的外部API
@@ -2113,7 +2107,7 @@ operations:
     message: 消息
   request:
     name: 互联网钩子 / 请求 URL
-    description: "向一个 URL 地址发出请求"
+    description: '向一个 URL 地址发出请求'
     url: URl
     url_placeholder: https://example.com/example
     method: 方法
