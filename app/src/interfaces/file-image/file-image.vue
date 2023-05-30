@@ -186,7 +186,7 @@ async function imageErrorHandler() {
 }
 
 function onUpload(image: any) {
-	if (image) update(image.id);
+	if (image?.id) update(image.id);
 }
 
 function deselect() {
