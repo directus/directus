@@ -80,14 +80,6 @@ create_user: Krijo Përdorues
 message: Mesazh
 delete_panel: Fshi Panelin
 create_webhook: Krijo Webhook
-create_translation_string: Krijo Stringun e Përkthimit
-no_translation_string: Nuk ka Stringje Përkthimi
-no_translation_string_copy: Nuk ka stringje përkthimi akoma.
-translation_string_key_placeholder: Çelësi i stringut të përkthimit...
-translation_string_translations_placeholder: Shto një përkthim të ri
-edit_translation_string: Modifiko Stringun e Përkthimit
-delete_translation_string_copy: >-
-  A je i sigurt që dëshiron të fshish stringun e përkthimit "{key}"? Ky veprim nuk mund të zhbëhet.
 invite_users: Fto Përdorues
 invite: Fto
 email_already_invited: Email-i "{email}" është ftuar tashmë
@@ -118,13 +110,6 @@ public_label: Publik
 public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
 admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
 not_allowed: Nuk lejohet
-directus_version: Versioni i Directus
-node_version: Versioni i Node
-node_uptime: Kohëzgjatja e Node
-os_type: Lloji i OS
-os_version: Versioni i OS
-os_uptime: Kohëzgjatja e OS
-os_totalmem: Memoria e OS
 archive: Arkivo
 archive_confirm: A jeni të sigurtë që doni të arkivoni këtë artikull?
 archive_confirm_count: >-
