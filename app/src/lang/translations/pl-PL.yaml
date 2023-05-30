@@ -80,14 +80,6 @@ create_user: Utwórz użytkownika
 message: Wiadomość
 delete_panel: Usuń panel
 create_webhook: Stwórz webhook
-create_translation_string: Utwórz tłumaczenia
-no_translation_string: Brak tłumaczeń
-no_translation_string_copy: Nie ma jeszcze żadnych tłumaczeń.
-translation_string_key_placeholder: Klucz tłumaczenia...
-translation_string_translations_placeholder: Dodaj nowe tłumaczenie
-edit_translation_string: Edytuj tłumaczenia
-delete_translation_string_copy: >-
-  Czy na pewno chcesz usunąć tłumaczenia "{key}"? Tej akcji nie można cofnąć.
 invite_users: Zaproś użytkowników
 invite: Zaproś
 email_already_invited: E-mail "{email}" został już zaproszony
@@ -118,13 +110,6 @@ public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
 not_allowed: Niedozwolone
-directus_version: Wersja aplikacji Directus
-node_version: Wersja Node
-node_uptime: Czas aktywności Node
-os_type: Typ Systemu
-os_version: Wersja Systemu
-os_uptime: Czas pracy systemu
-os_totalmem: Pamięć Systemu
 archive: Archiwum
 archive_confirm: Jesteś pewien, że chcesz zarchiwizować ten element?
 archive_confirm_count: >-
@@ -357,7 +342,7 @@ revision_delta_reverted: Odwrócony
 revision_delta_update_message: To pole zostało zaktualizowane, ale jego wartość jest ukrywana ze względów bezpieczeństwa.
 revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
-presentation_text_values_cannot_be_reimported: "Używa tekstu prezentacji, wartości nie mogą być ponownie zaimportowane."
+presentation_text_values_cannot_be_reimported: 'Używa tekstu prezentacji, wartości nie mogą być ponownie zaimportowane.'
 download_page_as_csv: 'Pobierz stronę jako CSV'
 private_user: Prywatny Użytkownik
 creation_preview: Podgląd tworzenia
@@ -497,7 +482,6 @@ enable_select_button: Włącz przycisk wyboru
 allow_duplicates: Zezwalaj na duplikaty
 comments: Komentarze
 no_comments: Brak komentarzy
-click_to_expand: Kliknij, aby rozwinąć
 select_item: Wybierz element
 no_items: Brak elementów
 search_items: Szukaj elementów...
@@ -964,7 +948,6 @@ settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_flows: Przepływy
 settings_presets: Szablony i zakładki
-settings_translation_strings: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
 scope: Zakres
 actions: Akcje
@@ -1014,7 +997,6 @@ page_help_settings_webhooks_collection: '**Przeglądaj Webhooks** — zawiera li
 page_help_settings_webhooks_item: '**Szczegóły Webhook** — Formularz do tworzenia i zarządzania webhookami projektu.'
 page_help_settings_flows_collection: '**Przeglądaj Przepływy ** — Listy wszystkich Przepływów w ramach projektu.'
 page_help_settings_flows_item: '**Szczegóły przepływu** — Obszar roboczy do zarządzania jedną lub większą liczbą operacji.'
-page_help_settings_translation_strings_collection: '**Przeglądaj Tłumaczenie** — Wyświetla wszystkie ciągi tłumaczeń w projekcie.'
 page_help_users_collection: '**Katalog Użytkowników** — Lista wszystkich użytkowników systemu w tym projekcie.'
 page_help_users_item: >-
   **Szczegóły użytkownika** — Zarządzaj informacjami o koncie lub zobacz szczegóły innych użytkowników.
@@ -1278,6 +1260,7 @@ field_options:
     sort_field: Wybierz pole...
     accountability_divider: Odpowiedzialność
     duplication_divider: Duplikacja
+    preview_divider: Podgląd
   directus_files:
     title: Unikalny tytuł...
     description: Opcjonalny opis...
@@ -1335,6 +1318,8 @@ start_collapsed: Rozpocznij zwinięty
 block: Zablokuj
 inline: W lini
 comment: Komentarz
+live_preview:
+  new_window: Otwórz w nowym oknie
 shares: Udostępnienia
 unlimited_usage: Nieograniczone użycie
 uses_left: Brak pozostałych zastosowań | 1 zastosowanie | {n} zastosowań pozostało
@@ -1702,7 +1687,6 @@ interfaces:
     input-translated-string: Przetłumaczone ciągi
     description: Wybierz lub dodaj tłumaczenia
     search_placeholder: Szukaj...
-    new_translation_string: Nowe tłumaczenia
   boolean:
     toggle: Przełącz
     description: Przełącz między włącz/wyłącz
@@ -1739,6 +1723,16 @@ interfaces:
     folder_note: Folder dla przesłanych plików. Nie ma wpływu na istniejące pliki.
     imageToken: Statyczny token dostępu
     imageToken_label: Statyczny token dostępu jest dołączony do adresu URL aktywów
+  input-block-editor:
+    tools: Pasek narzędzi
+    tools_options:
+      header: Nagłówek
+      nestedlist: Lista
+      embed: Osadzony
+      code: Kod
+      image: Obraz
+      table: Tabela
+      underline: Podkreślenie
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Typ wyszukiwania dla zewnętrznych wartości API.
@@ -2118,7 +2112,7 @@ operations:
     message: Wiadomość
   request:
     name: Webhook / URL żądania
-    description: "Złóż prośbę do adresu URL"
+    description: 'Złóż prośbę do adresu URL'
     url: Adres URL
     url_placeholder: https://przyklad.com/przykład
     method: Metoda
