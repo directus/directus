@@ -239,4 +239,4 @@ for more information on what to include for OracleDB.
 
 ## Requirements
 
-It can be easy to under-provision resources to run a self-hosted instance of Directus. For Directus' container resources, the required minimum system requirements are 1x 0.25 vCPU / 512 MB, although the recommended minumum is 2x 1 vCPU / 2GB. 
+It can be easy to under-provision resources to run a self-hosted instance of Directus. For Directus' container resources, the required minimum system requirements are 1x 0.25 vCPU / 512 MB, although the recommended minimum is 2x 1 vCPU / 2GB.
