@@ -79,14 +79,6 @@ create_user: Luo käyttäjä
 message: Viesti
 delete_panel: Poista paneeli
 create_webhook: Luo webhook
-create_translation_string: Luo käännös
-no_translation_string: Ei käännöksiä
-no_translation_string_copy: Ei vielä käännöksiä.
-translation_string_key_placeholder: Käännöksen merkkijonoavain...
-translation_string_translations_placeholder: Lisää käännös
-edit_translation_string: Muokkaa käännöstä
-delete_translation_string_copy: >-
-  Haluatko poistaa käännöksen "{key}"? Tätä toimintoa ei voi kumota.
 invite_users: Kutsu käyttäjiä
 invite: Kutsu
 email_already_invited: Sähköposti "{email}" on jo kutsuttu
@@ -117,13 +109,6 @@ public_label: Julkinen
 public_description: Määrittää mitä API-tietoja on saatavilla ilman autentikointia.
 admin_description: Alkuperäinen hallinnollinen rooli rajoittamattomalla App/API-käyttöoikeudella.
 not_allowed: Ei sallittu
-directus_version: Directus-versio
-node_version: Node-versio
-node_uptime: Node-käynnissäoloaika
-os_type: Käyttöjärjestelmätyyppi
-os_version: Käyttöjärjestelmäversio
-os_uptime: Käyttöjärjestelmän käynnissäoloaika
-os_totalmem: Käyttöjärjestelmämuisti
 archive: Arkistoi
 archive_confirm: Oletko varma, että haluat arkistoida tämän kohteen?
 archive_confirm_count: >-
@@ -348,7 +333,7 @@ revision_delta_reverted: Palautettu
 revision_delta_update_message: Tätä kenttää on päivitetty, mutta sen arvo piilotetaan turvallisuussyistä.
 revision_delta_other: Versio
 revision_delta_by: '{date} käyttäjältä {user}'
-presentation_text_values_cannot_be_reimported: "Käyttää esitystekstiä, arvoja ei voida tuoda uudelleen."
+presentation_text_values_cannot_be_reimported: 'Käyttää esitystekstiä, arvoja ei voida tuoda uudelleen.'
 download_page_as_csv: 'Lataa CSV:nä'
 private_user: Yksityinen käyttäjä
 creation_preview: Luomisen esikatselu
@@ -488,7 +473,6 @@ enable_select_button: Ota käyttöön valintanappula
 allow_duplicates: Salli kaksoiskappaleet
 comments: Kommentit
 no_comments: Ei vielä kommentteja
-click_to_expand: Klikkaa laajentaaksesi
 select_item: Valitse kohde
 no_items: Ei kohteita
 search_items: Hae kohteita...
@@ -1203,6 +1187,7 @@ field_options:
     sort_field: Valitse kenttä...
     accountability_divider: Vastuuvelvollisuus
     duplication_divider: Monistus
+    preview_divider: Esikatselu
   directus_files:
     title: Yksilöllinen otsikko...
     description: Valinnainen kuvaus...
@@ -1260,6 +1245,8 @@ start_collapsed: Aloita tiivistettynä
 block: Estä
 inline: Rivitetty
 comment: Kommentti
+live_preview:
+  new_window: Avaa uudessa ikkunassa
 relational_triggers: Relatiiviset käynnistimet
 referential_action_no_action: Estä poisto
 choose_action: Valitse toiminto
@@ -1574,6 +1561,16 @@ interfaces:
     custom_formats: Mukautetut muodot
     options_override: Valintojen ohitus
     folder_note: Ladattujen tiedostojen kansio. Ei vaikuta olemassa oleviin tiedostoihin.
+  input-block-editor:
+    tools: Työkalupalkki
+    tools_options:
+      header: Ylätunniste
+      nestedlist: Lista
+      embed: Upota
+      code: Koodi
+      image: Kuva
+      table: Taulukko
+      underline: Alleviivaus
   input-autocomplete-api:
     input-autocomplete-api: Automaattitäydennyskenttä (API)
     description: Ulkoisia API-arvoja koskeva ennakoiva hakutyyppi.
