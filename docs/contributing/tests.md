@@ -4,9 +4,8 @@
 
 The current test strategy for Directus consists of `Blackbox Tests` testing the overall functionality of the platform as well as `Unit Tests` testing individual parts of the codebase.
 
-## Running Tests
 
-### Running Unit Tests
+## Running Unit Tests
 
 Use the following command to perform unit tests in all packages:
 ```bash
@@ -42,7 +41,7 @@ pnpm test
 
 :::
 
-### Running Blackbox Tests
+## Running Blackbox Tests
 
 Install [Docker](https://docs.docker.com/get-docker/) and ensure that the service is up and running.
 
@@ -67,7 +66,7 @@ Subsequent test runs can be issued with the following command, if only modificat
 pnpm --filter tests-blackbox test
 ```
 
-#### Testing Specific Database Vendors
+### Testing Specific Database Vendors
 
 Provide a CSV of database vendors via the `TEST_DB` environment variable to target only a specific subset:
 
@@ -79,7 +78,7 @@ TEST_DB=cockroachdb,postgres pnpm --workspace-root test:blackbox
 TEST_DB=sqlite3 pnpm --workspace-root test:blackbox
 ```
 
-#### Using an Existing Directus Instance
+### Using an Existing Directus Instance
 
 Normally, the test suite will spin up a fresh copy of the Directus API built from the current state of the codebase. To use
 an already running instance of Directus instead, enable the `TEST_LOCAL` flag:
@@ -90,3 +89,87 @@ TEST_DB=cockroachdb TEST_LOCAL=true pnpm --workspace-root test:blackbox
 
 Note: The tests expect the instance running at `localhost:8055`. Make sure to connect the instance to the test database
 container found in the `tests-blackbox/docker-compose.yml` file.
+
+## Writing Unit Tests
+Unit Tests are written throughout the codebase in a vite native unit test framework called [Vitest](https://vitest.dev). 
+
+### Example
+```
+/directus/api/src/utils/get-date-formatted.test.ts
+```
+```ts
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+
+import { getDateFormatted } from './get-date-formatted.js';
+
+beforeEach(() => {
+	vi.useFakeTimers();
+});
+
+afterEach(() => {
+	vi.useRealTimers();
+});
+
+function getUtcDateForString(date: string) {
+	const now = new Date(date);
+
+	// account for timezone difference depending on the machine where this test is ran
+	const timezoneOffsetInMinutes = now.getTimezoneOffset();
+	const timezoneOffsetInMilliseconds = timezoneOffsetInMinutes * 60 * 1000;
+	const nowUTC = new Date(now.valueOf() + timezoneOffsetInMilliseconds);
+
+	return nowUTC;
+}
+
+test.each([
+	{ utc: '2023-01-01T01:23:45.678Z', expected: '20230101-12345' },
+	{ utc: '2023-01-11T01:23:45.678Z', expected: '20230111-12345' },
+	{ utc: '2023-11-01T01:23:45.678Z', expected: '20231101-12345' },
+	{ utc: '2023-11-11T12:34:56.789Z', expected: '20231111-123456' },
+	{ utc: '2023-06-01T01:23:45.678Z', expected: '20230601-12345' },
+	{ utc: '2023-06-11T12:34:56.789Z', expected: '20230611-123456' },
+])('should format $utc into "$expected"', ({ utc, expected }) => {
+	const nowUTC = getUtcDateForString(utc);
+
+	vi.setSystemTime(nowUTC);
+
+	expect(getDateFormatted()).toBe(expected);
+});
+```
+
+## Writing Blackbox Tests
+
+### Example
+
+```
+/directus/tests/blackbox/routes/server/ping.test.ts
+```
+
+```ts
+import { getUrl } from '@common/config';
+import request from 'supertest';
+import vendors from '@common/get-dbs-to-test';
+import { requestGraphQL } from '@common/transport';
+
+describe('/server', () => {
+	describe('GET /ping', () => {
+		it.each(vendors)('%s', async (vendor) => {
+			// Action
+			const response = await request(getUrl(vendor))
+				.get('/server/ping')
+				.expect('Content-Type', /text\/html/)
+				.expect(200);
+
+			const gqlResponse = await requestGraphQL(getUrl(vendor), true, null, {
+				query: {
+					server_ping: true,
+				},
+			});
+
+			// Assert
+			expect(response.text).toBe('pong');
+			expect(gqlResponse.body.data.server_ping).toBe('pong');
+		});
+	});
+});
+```
