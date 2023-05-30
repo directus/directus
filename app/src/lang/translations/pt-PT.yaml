@@ -79,14 +79,6 @@ create_user: Criar utilizador
 message: Mensagem
 delete_panel: Apagar painel
 create_webhook: Criar webhook
-create_translation_string: Criar tradução
-no_translation_string: Sem traduções
-no_translation_string_copy: Ainda não existem traduções.
-translation_string_key_placeholder: Chave da tradução...
-translation_string_translations_placeholder: Adicionar nova tradução
-edit_translation_string: Editar String de Tradução
-delete_translation_string_copy: >-
-  Tem a certeza que pretende eliminar o texto de tradução "{key}"? Esta ação não pode ser revertida.
 invite_users: Convidar utlizadores
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
@@ -115,13 +107,6 @@ logoutReason:
 public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
 not_allowed: Não permitido
-directus_version: Versão do Directus
-node_version: Versão do Node.js
-node_uptime: Tempo de atividade do Node.js
-os_type: Tipo do Sistema Operativo
-os_version: Versão do Sistema Operativo
-os_uptime: Tempo de atividade do Sistema Operativo
-os_totalmem: Memória utilizada
 archive: Arquivar
 archive_confirm: Tem a certeza que pretende arquivar este documento?
 archive_confirm_count: >-
@@ -432,7 +417,6 @@ selecting_items: Selecionar itens
 enable_select_button: Ativar o botão Selecionar
 comments: Comentários
 no_comments: Ainda não há comentários
-click_to_expand: Clique para expandir
 select_item: Selecionar item
 no_items: Não existem documentos
 search_items: Procurar documentos...
@@ -849,6 +833,8 @@ save_current_datetime: Guardar data/hora atual
 block: Bloquear
 inline: Em linha
 comment: Comentário
+live_preview:
+  new_window: Abrir numa Nova Janela
 share_copy_link_error: Não foi possível copiar a hiperligação
 relational_triggers: Gatilhos Relacionais
 referential_action_field_label_m2o: Ao Eliminar de {collection}...
@@ -928,6 +914,9 @@ interfaces:
     default_language: Idioma Padrão
   user:
     user: Utilizador
+  input-block-editor:
+    tools_options:
+      table: Tabela
   system-token:
     system-token: Token
     value_securely_saved: Valor Guardado em Segurança
