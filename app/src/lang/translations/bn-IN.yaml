@@ -80,14 +80,6 @@ create_user: ব্যবহারকারী তৈরি করুন
 message: বার্তা
 delete_panel: প্যানেল মুছুন
 create_webhook: ওয়েবহুক তৈরি করুন
-create_translation_string: অনুবাদ স্ট্রিং তৈরি করুন
-no_translation_string: কোন অনুবাদ স্ট্রিং নেই
-no_translation_string_copy: এখনও কোন অনুবাদ স্ট্রিং নেই।
-translation_string_key_placeholder: অনুবাদ স্ট্রিং-এর চাবি...
-translation_string_translations_placeholder: নতুন অনুবাদ যোগ করুন
-edit_translation_string: অনুবাদ স্ট্রিং সম্পাদনা করুন
-delete_translation_string_copy: >-
-  আপনি কি সত্যিই অনুবাদ স্ট্রিং "{key}" মুছতে চান? এই ক্রিয়াটি আর পূর্বাবস্থায় ফিরিয়ে আনা যাবে না।
 invite_users: ব্যবহারকারীদের আমন্ত্রণ জানান
 invite: আমন্ত্রণ করুন
 email_already_invited: এই ইমেলটিতে "{email}" ইতিমধ্যেই আমন্ত্রণ জানানো হয়েছে৷
@@ -116,13 +108,6 @@ public_label: সার্বজনীন
 public_description: এটা নিয়ন্ত্রণ করে প্রমাণীকরণ ছাড়া কোন কোন API ডেটা উপলব্ধ।
 admin_description: অনিয়ন্ত্রিত অ্যাপ/এপিআই অ্যাক্সেস সহ প্রাথমিক প্রশাসনিক ভূমিকা।
 not_allowed: অনুমতি নেই
-directus_version: ডাইরেক্টাস সংস্করণ
-node_version: নোড সংস্করণ
-node_uptime: নোড আপটাইম
-os_type: কোন OS
-os_version: OS সংস্করণ
-os_uptime: ওএস আপটাইম
-os_totalmem: ওএস মেমোরি
 archive: সংরক্ষণাগার
 archive_confirm: আপনি কি নিশ্চিত যে আপনি এই আইটেমটি সংরক্ষণাগারে পাঠাতে চান?
 archive_confirm_count: >-
