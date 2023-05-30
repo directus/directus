@@ -1,6 +1,6 @@
 # Auto-closes issues marked as "Needs More Info" after 7 days of no response
 
-name: 'Close stale issues and PRs'
+name: 'Close stale issues'
 on:
   schedule:
     - cron: '30 1 * * *'
