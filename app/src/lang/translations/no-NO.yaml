@@ -80,14 +80,6 @@ create_user: Opprett bruker
 message: Melding
 delete_panel: Slett panel
 create_webhook: Lag Webhook
-create_translation_string: Opprett oversettelsestekst
-no_translation_string: Ingen oversettelse tekst
-no_translation_string_copy: Det finnes ingen oversettelsestekst ennå.
-translation_string_key_placeholder: Oversettelse tekst nøkkel...
-translation_string_translations_placeholder: Legg til ny oversettelse
-edit_translation_string: Rediger oversettelsestekst
-delete_translation_string_copy: >-
-  Er du sikker på at du har lyst til å slette oversettelsesstrenga "{key}"? Handlingen kan ikke angres.
 invite_users: Invitere brukere
 invite: Inviter
 email_already_invited: E-postadressen "{email}" er allerede invitert
@@ -116,13 +108,6 @@ logoutReason:
 public_label: Offentlig
 public_description: Kontrollerer hvilke API-data som er tilgjengelige uten å autentisere.
 not_allowed: Ikke tillatt
-directus_version: Directus versjon
-node_version: Node versjon
-node_uptime: Node oppetid
-os_type: OS Type
-os_version: OS versjon
-os_uptime: OS oppetid
-os_totalmem: OS minne
 archive: Arkiv
 archive_confirm: Er du sikker på at du vil arkivere dette elementet?
 archive_confirm_count: >-
@@ -439,7 +424,6 @@ selecting_items: Velg elementer
 allow_duplicates: Tillat duplikater
 comments: Kommentarer
 no_comments: Ingen kommentarer ennå
-click_to_expand: Klikk for å utvide
 select_item: Velg element
 no_items: Ingen elementer
 search_items: Søk etter elementer...
@@ -740,6 +724,8 @@ field_options:
     headers:
       value: Verdi
 comment: Kommenter
+live_preview:
+  new_window: Åpne i nytt vindu
 delete_field_are_you_sure: >-
   Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
 description: Beskrivelse
@@ -819,6 +805,10 @@ interfaces:
     tags: Etiketter
   boolean:
     label_default: Aktivert
+  input-block-editor:
+    tools_options:
+      embed: Embed
+      table: Tabell
 displays:
   translations:
     translations: Oversettelser
