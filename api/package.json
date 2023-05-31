@@ -68,6 +68,7 @@
 		"@aws-sdk/client-ses": "3.332.0",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
+		"@directus/errors": "workspace:*",
 		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",

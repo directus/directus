@@ -49,6 +49,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../packages/errors
       '@directus/exceptions':
         specifier: workspace:*
         version: link:../packages/exceptions
@@ -1008,6 +1011,12 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@types/node':
         specifier: 18.16.12
         version: 18.16.12
