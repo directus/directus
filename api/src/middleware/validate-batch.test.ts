@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { validateBatch } from './validate-batch.js';
 import '../../src/types/express.d.ts';
 import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
-import { FailedValidationException } from '@directus/exceptions';
+import { FailedValidationError } from '@directus/errors';
 import { vi, beforeEach, test, expect } from 'vitest';
 
 let mockRequest: Partial<Request & { token?: string }>;
@@ -80,7 +80,7 @@ test(`Doesn't allow both query and keys in a batch delete`, async () => {
 	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationError);
 });
 
 test(`Requires 'data' on batch update`, async () => {
@@ -94,7 +94,7 @@ test(`Requires 'data' on batch update`, async () => {
 	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationError);
 });
 
 test(`Calls next when all is well`, async () => {
