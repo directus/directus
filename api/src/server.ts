@@ -20,7 +20,6 @@ import {
 } from './websocket/controllers/index.js';
 import { startWebSocketHandlers } from './websocket/handlers/index.js';
 import { toBoolean } from './utils/to-boolean.js';
-import * as pkg from './utils/package.js';
 
 export let SERVER_ONLINE = true;
 
