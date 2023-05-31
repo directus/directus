@@ -3,7 +3,8 @@ import Busboy from 'busboy';
 import type { RequestHandler } from 'express';
 import express from 'express';
 import { load as loadYaml } from 'js-yaml';
-import { InvalidPayloadException, UnsupportedMediaTypeException } from '../exceptions/index.js';
+import { UnsupportedMediaTypeError } from '../errors/unsupported-media-type.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import logger from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { SchemaService } from '../services/schema.js';
@@ -35,7 +36,7 @@ const schemaMultipartHandler: RequestHandler = (req, res, next) => {
 	}
 
 	if (!req.is('multipart/form-data')) {
-		throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+		throw new UnsupportedMediaTypeError({ mediaType: req.headers['content-type']!, where: 'Content-Type header' });
 	}
 
 	const headers = req.headers['content-type']

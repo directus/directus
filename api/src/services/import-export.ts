@@ -18,10 +18,10 @@ import { file as createTmpFile } from 'tmp-promise';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
+import { UnsupportedMediaTypeError } from '../errors/unsupported-media-type.js';
 import {
 	InvalidPayloadException,
-	ServiceUnavailableException,
-	UnsupportedMediaTypeException
+	ServiceUnavailableException
 } from '../exceptions/index.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
@@ -29,9 +29,6 @@ import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
-
-type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
-
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
@@ -65,7 +62,7 @@ export class ImportService {
 			case 'application/vnd.ms-excel':
 				return await this.importCSV(collection, stream);
 			default:
-				throw new UnsupportedMediaTypeException(`Can't import files of type "${mimetype}"`);
+				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
 	}
 

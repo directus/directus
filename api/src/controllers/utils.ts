@@ -1,10 +1,10 @@
-import { ForbiddenError } from '@directus/errors';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
 import { flushCaches } from '../cache.js';
-import { InvalidPayloadException, InvalidQueryException, UnsupportedMediaTypeException } from '../exceptions/index.js';
+import { ForbiddenError, UnsupportedMediaTypeError } from '../errors/index.js';
+import { InvalidPayloadException, InvalidQueryException } from '../exceptions/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
@@ -103,7 +103,7 @@ router.post(
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		if (req.is('multipart/form-data') === false) {
-			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+			throw new UnsupportedMediaTypeError({ mediaType: req.headers['content-type']!, where: 'Content-Type header' });
 		}
 
 		const service = new ImportService({
