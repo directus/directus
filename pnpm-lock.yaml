@@ -1557,6 +1557,9 @@ importers:
         specifier: 3.3.4
         version: 3.3.4
     devDependencies:
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig

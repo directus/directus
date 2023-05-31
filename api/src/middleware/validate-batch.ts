@@ -1,4 +1,5 @@
-import { FailedValidationException } from '@directus/exceptions';
+import { FailedValidationError } from '@directus/errors';
+import { joiValidationErrorItemToErrorExtensions } from '@directus/utils';
 import Joi from 'joi';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -46,7 +47,7 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 		const { error } = batchSchema.validate(req.body);
 
 		if (error) {
-			throw new FailedValidationException(error.details[0]!);
+			throw new FailedValidationError(joiValidationErrorItemToErrorExtensions(error.details[0]!));
 		}
 
 		return next();
