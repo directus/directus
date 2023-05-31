@@ -33,6 +33,7 @@
 		"@babel/preset-env": "7.21.5",
 		"@directus/composables": "workspace:*",
 		"@directus/constants": "workspace:*",
+		"@directus/errors": "workspace:*",
 		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
