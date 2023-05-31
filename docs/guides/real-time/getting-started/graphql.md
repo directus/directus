@@ -11,7 +11,7 @@ You can connect to a Directus project and get updates on data held in a collecti
 This guide will show you how to get started with subscribing to data using GraphQL. GraphQL is framework-agnostic, so
 you can apply the same set of steps in your stack of choice.
 
-> GraphQL Subcriptions are read-only. This means you can't run `create`, `update`, or `delete` operations over a
+> GraphQL Subscriptions are read-only. This means you can't run `create`, `update`, or `delete` operations over a
 > connection. However, you can still use standard GraphQL queries to achieve this.
 
 ## Before You Begin
