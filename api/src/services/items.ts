@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { ForbiddenError } from '@directus/errors';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
@@ -10,7 +11,7 @@ import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import { translateDatabaseError } from '../exceptions/database/translate.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -401,7 +402,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (records === null) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const filteredRecords =
@@ -453,7 +454,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const results = await this.readByQuery(queryWithKey, opts);
 
 		if (results.length === 0) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		return results[0]!;

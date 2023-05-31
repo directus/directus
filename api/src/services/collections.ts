@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type { SchemaInspector, Table } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
@@ -13,7 +14,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import { FieldsService } from '../services/fields.js';
 import { ItemsService } from '../services/items.js';
 import type {
@@ -59,7 +60,7 @@ export class CollectionsService {
 	 */
 	async createOne(payload: RawCollection, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (!payload.collection) throw new InvalidPayloadException(`"collection" is required`);
@@ -332,7 +333,7 @@ export class CollectionsService {
 	async readOne(collectionKey: string): Promise<Collection> {
 		const result = await this.readMany([collectionKey]);
 
-		if (result.length === 0) throw new ForbiddenException();
+		if (result.length === 0) throw new ForbiddenError();
 
 		return result[0]!;
 	}
@@ -351,7 +352,7 @@ export class CollectionsService {
 
 				for (const collectionKey of collectionKeys) {
 					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-						throw new ForbiddenException();
+						throw new ForbiddenError();
 					}
 				}
 			}
@@ -366,7 +367,7 @@ export class CollectionsService {
 	 */
 	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -433,7 +434,7 @@ export class CollectionsService {
 	 */
 	async updateBatch(data: Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (!Array.isArray(data)) {
@@ -492,7 +493,7 @@ export class CollectionsService {
 	 */
 	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -541,7 +542,7 @@ export class CollectionsService {
 	 */
 	async deleteOne(collectionKey: string, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -552,7 +553,7 @@ export class CollectionsService {
 			const collectionToBeDeleted = collections.find((collection) => collection.collection === collectionKey);
 
 			if (!!collectionToBeDeleted === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			await this.knex.transaction(async (trx) => {
@@ -676,7 +677,7 @@ export class CollectionsService {
 	 */
 	async deleteMany(collectionKeys: string[], opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];

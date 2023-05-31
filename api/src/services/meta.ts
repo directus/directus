@@ -1,7 +1,7 @@
+import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
-import { ForbiddenException } from '../exceptions/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { applyFilter, applySearch } from '../utils/apply-query.js';
 
@@ -44,7 +44,7 @@ export class MetaService {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
-			if (!permissionsRecord) throw new ForbiddenException();
+			if (!permissionsRecord) throw new ForbiddenError();
 
 			const permissions = permissionsRecord.permissions ?? {};
 
@@ -66,7 +66,7 @@ export class MetaService {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
-			if (!permissionsRecord) throw new ForbiddenException();
+			if (!permissionsRecord) throw new ForbiddenError();
 
 			const permissions = permissionsRecord.permissions ?? {};
 

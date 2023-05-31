@@ -1,7 +1,8 @@
+import { ForbiddenError } from '@directus/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import env from '../env.js';
-import { ForbiddenException, InvalidCredentialsException } from '../exceptions/index.js';
+import { InvalidCredentialsException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
@@ -120,7 +121,7 @@ export class SharesService extends ItemsService {
 	 * if you have read access to that particular share
 	 */
 	async invite(payload: { emails: string[]; share: PrimaryKey }) {
-		if (!this.accountability?.user) throw new ForbiddenException();
+		if (!this.accountability?.user) throw new ForbiddenError();
 
 		const share = await this.readOne(payload.share, { fields: ['collection'] });
 

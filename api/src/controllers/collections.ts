@@ -1,5 +1,5 @@
+import { isDirectusError } from '@directus/errors';
 import { Router } from 'express';
-import { ForbiddenException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { CollectionsService } from '../services/collections.js';
@@ -90,7 +90,7 @@ router.patch(
 			const collections = await collectionsService.readMany(collectionKeys);
 			res.locals['payload'] = { data: collections || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
 				return next();
 			}
 
@@ -116,7 +116,7 @@ router.patch(
 			const collection = await collectionsService.readOne(req.params['collection']!);
 			res.locals['payload'] = { data: collection || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
 				return next();
 			}
 

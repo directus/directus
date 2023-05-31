@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { queue } from 'async';
@@ -18,10 +19,9 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import {
-	ForbiddenException,
 	InvalidPayloadException,
 	ServiceUnavailableException,
-	UnsupportedMediaTypeException,
+	UnsupportedMediaTypeException
 } from '../exceptions/index.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
@@ -44,7 +44,7 @@ export class ImportService {
 	}
 
 	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
-		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenException();
+		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenError();
 
 		const createPermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'create'
@@ -55,7 +55,7 @@ export class ImportService {
 		);
 
 		if (this.accountability?.admin !== true && (!createPermissions || !updatePermissions)) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		switch (mimetype) {

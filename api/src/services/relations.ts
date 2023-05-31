@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import type { ForeignKey, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/types';
@@ -10,7 +11,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemRelationRows } from '../database/system-data/relations/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -49,7 +50,7 @@ export class RelationsService {
 
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
 		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const metaReadQuery: Query = {
@@ -80,18 +81,18 @@ export class RelationsService {
 	async readOne(collection: string, field: string): Promise<Relation> {
 		if (this.accountability && this.accountability.admin !== true) {
 			if (this.hasReadAccess === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			const permissions = this.accountability.permissions?.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
-			if (!permissions || !permissions.fields) throw new ForbiddenException();
+			if (!permissions || !permissions.fields) throw new ForbiddenError();
 
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
-				if (allowedFields.includes(field) === false) throw new ForbiddenException();
+				if (allowedFields.includes(field) === false) throw new ForbiddenError();
 			}
 		}
 
@@ -121,7 +122,7 @@ export class RelationsService {
 		const results = await this.filterForbidden(stitched);
 
 		if (results.length === 0) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		return results[0]!;
@@ -132,7 +133,7 @@ export class RelationsService {
 	 */
 	async createOne(relation: Partial<Relation>, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (!relation.collection) {
@@ -252,7 +253,7 @@ export class RelationsService {
 		opts?: MutationOptions
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (collection in this.schema.collections === false) {
@@ -362,7 +363,7 @@ export class RelationsService {
 	 */
 	async deleteOne(collection: string, field: string, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (collection in this.schema.collections === false) {

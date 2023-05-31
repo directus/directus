@@ -1,5 +1,6 @@
+import { ForbiddenError } from '@directus/errors';
 import type { Query } from '@directus/types';
-import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
+import { UnprocessableEntityException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';
@@ -27,7 +28,7 @@ export class RolesService extends ItemsService {
 	private async checkForOtherAdminUsers(key: PrimaryKey, users: Alterations | Item[]): Promise<void> {
 		const role = await this.knex.select('admin_access').from('directus_roles').where('id', '=', key).first();
 
-		if (!role) throw new ForbiddenException();
+		if (!role) throw new ForbiddenError();
 
 		// The users that will now be in this new non-admin role
 		let userKeys: PrimaryKey[] = [];

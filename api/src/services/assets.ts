@@ -11,7 +11,6 @@ import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { ForbiddenException } from '../exceptions/forbidden.js';
 import { IllegalAssetTransformation } from '../exceptions/illegal-asset-transformation.js';
 import { RangeNotSatisfiableException } from '../exceptions/range-not-satisfiable.js';
 import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
@@ -21,6 +20,7 @@ import type { AbstractServiceOptions, File, Transformation, TransformationSet } 
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
+import { ForbiddenError } from '@directus/errors';
 
 export class AssetsService {
 	knex: Knex;
@@ -54,7 +54,7 @@ export class AssetsService {
 		 */
 		const isValidUUID = validateUUID(id, 4);
 
-		if (isValidUUID === false) throw new ForbiddenException();
+		if (isValidUUID === false) throw new ForbiddenError();
 
 		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
@@ -62,11 +62,11 @@ export class AssetsService {
 
 		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
 
-		if (!file) throw new ForbiddenException();
+		if (!file) throw new ForbiddenError();
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
-		if (!exists) throw new ForbiddenException();
+		if (!exists) throw new ForbiddenError();
 
 		if (range) {
 			const missingRangeLimits = range.start === undefined && range.end === undefined;

@@ -1,4 +1,5 @@
 import { Action, FUNCTIONS } from '@directus/constants';
+import { ForbiddenError } from '@directus/errors';
 import type { BaseException } from '@directus/exceptions';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
@@ -48,7 +49,7 @@ import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions/index.js';
+import { GraphQLValidationException, InvalidPayloadException } from '../../exceptions/index.js';
 import { getExtensionManager } from '../../extensions.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
@@ -87,6 +88,7 @@ import { GraphQLHash } from './types/hash.js';
 import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
+import processError from './utils/process-error.js';
 import processError from './utils/process-error.js';
 
 const validationRules = Array.from(specifiedRules);
@@ -2327,7 +2329,7 @@ export class GraphQLService {
 				type: GraphQLVoid,
 				resolve: async () => {
 					if (this.accountability?.admin !== true) {
-						throw new ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					const { cache } = getCache();

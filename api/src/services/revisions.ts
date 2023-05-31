@@ -1,4 +1,5 @@
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError } from '@directus/errors';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 
@@ -10,7 +11,7 @@ export class RevisionsService extends ItemsService {
 	async revert(pk: PrimaryKey): Promise<void> {
 		const revision = await super.readOne(pk);
 
-		if (!revision) throw new ForbiddenException();
+		if (!revision) throw new ForbiddenError();
 
 		if (!revision['data']) throw new InvalidPayloadException(`Revision doesn't contain data to revert to`);
 

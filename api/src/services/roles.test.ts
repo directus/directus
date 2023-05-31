@@ -4,7 +4,9 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction, SpyInstance } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
+import { UnprocessableEntityException } from '../exceptions/index.js';
+import { ForbiddenError } from '@directus/errors';
+
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => {
@@ -154,7 +156,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
@@ -236,7 +238,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
@@ -354,7 +356,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
@@ -411,7 +413,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
@@ -480,7 +482,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
@@ -533,7 +535,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
@@ -602,7 +604,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
@@ -681,7 +683,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();
@@ -762,7 +764,7 @@ describe('Integration Tests', () => {
 								await promise;
 							} catch (err: any) {
 								expect(err.message).toBe(`You don't have permission to access this.`);
-								expect(err).toBeInstanceOf(ForbiddenException);
+								expect(err).toBeInstanceOf(ForbiddenError);
 							}
 
 							expect(superUpdateOne).toHaveBeenCalled();

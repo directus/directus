@@ -1,4 +1,5 @@
 import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
+import { ForbiddenError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
@@ -14,7 +15,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
 import { translateDatabaseError } from '../exceptions/database/translate.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import { ItemsService } from '../services/items.js';
 import { PayloadService } from '../services/payload.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
@@ -61,7 +62,7 @@ export class FieldsService {
 		let fields: FieldMeta[];
 
 		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
@@ -161,7 +162,7 @@ export class FieldsService {
 			});
 
 			if (collection && collection in allowedFieldsInCollection === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			return result.filter((field) => {
@@ -189,18 +190,18 @@ export class FieldsService {
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
 		if (this.accountability && this.accountability.admin !== true) {
 			if (this.hasReadAccess === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			const permissions = this.accountability.permissions!.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
-			if (!permissions || !permissions.fields) throw new ForbiddenException();
+			if (!permissions || !permissions.fields) throw new ForbiddenError();
 
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
-				if (allowedFields.includes(field) === false) throw new ForbiddenException();
+				if (allowedFields.includes(field) === false) throw new ForbiddenError();
 			}
 		}
 
@@ -221,7 +222,7 @@ export class FieldsService {
 			// Do nothing
 		}
 
-		if (!column && !fieldInfo) throw new ForbiddenException();
+		if (!column && !fieldInfo) throw new ForbiddenError();
 
 		const type = getLocalType(column, fieldInfo);
 
@@ -250,7 +251,7 @@ export class FieldsService {
 		opts?: MutationOptions
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
@@ -362,7 +363,7 @@ export class FieldsService {
 
 	async updateField(collection: string, field: RawField, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
@@ -485,7 +486,7 @@ export class FieldsService {
 
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();

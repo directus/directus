@@ -1,5 +1,6 @@
 import { Action, REDACTED_TEXT } from '@directus/constants';
 import * as sharedExceptions from '@directus/exceptions';
+import { ForbiddenError } from '@directus/errors';
 import type {
 	Accountability,
 	ActionHandler,
@@ -122,7 +123,7 @@ class FlowManager {
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
-			throw new exceptions.ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const handler = this.webhookFlowHandlers[id];
@@ -246,17 +247,17 @@ class FlowManager {
 
 					if (!targetCollection) {
 						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (enabledCollections.length === 0) {
 						logger.warn(`There is no collections configured for this manual trigger`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (!enabledCollections.includes(targetCollection)) {
 						logger.warn(`Specified collection must be one of: ${enabledCollections.join(', ')}.`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (flow.options['async']) {

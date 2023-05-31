@@ -1,14 +1,10 @@
+import { ForbiddenError } from '@directus/errors';
 import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
 import { flushCaches } from '../cache.js';
-import {
-	ForbiddenException,
-	InvalidPayloadException,
-	InvalidQueryException,
-	UnsupportedMediaTypeException,
-} from '../exceptions/index.js';
+import { InvalidPayloadException, InvalidQueryException, UnsupportedMediaTypeException } from '../exceptions/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
@@ -177,7 +173,7 @@ router.post(
 	'/cache/clear',
 	asyncHandler(async (req, res) => {
 		if (req.accountability?.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		await flushCaches(true);

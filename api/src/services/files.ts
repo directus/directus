@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import encodeURL from 'encodeurl';
@@ -14,7 +15,7 @@ import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
+import { InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
@@ -264,7 +265,7 @@ export class FilesService extends ItemsService {
 		);
 
 		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		let fileResponse;
@@ -325,7 +326,7 @@ export class FilesService extends ItemsService {
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		await super.deleteMany(keys);

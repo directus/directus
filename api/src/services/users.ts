@@ -1,4 +1,4 @@
-import { FailedValidationError } from '@directus/errors';
+import { FailedValidationError, ForbiddenError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import { getSimpleHash, joiValidationErrorItemToErrorExtensions, toArray } from '@directus/utils';
 import jwt from 'jsonwebtoken';
@@ -7,7 +7,7 @@ import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
-import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
+import { InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -391,7 +391,7 @@ export class UsersService extends ItemsService {
 			scope: string;
 		};
 
-		if (scope !== 'invite') throw new ForbiddenException();
+		if (scope !== 'invite') throw new ForbiddenError();
 
 		const user = await this.getUserByEmail(email);
 
@@ -416,7 +416,7 @@ export class UsersService extends ItemsService {
 
 		if (user?.status !== 'active') {
 			await stall(STALL_TIME, timeStart);
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
@@ -460,7 +460,7 @@ export class UsersService extends ItemsService {
 			hash: string;
 		};
 
-		if (scope !== 'password-reset' || !hash) throw new ForbiddenException();
+		if (scope !== 'password-reset' || !hash) throw new ForbiddenError();
 
 		const opts: MutationOptions = {};
 
@@ -473,7 +473,7 @@ export class UsersService extends ItemsService {
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'active' || hash !== getSimpleHash('' + user.password)) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		// Allow unauthenticated update
