@@ -162,6 +162,7 @@
 		"wellknown": "0.5.0"
 	},
 	"devDependencies": {
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
