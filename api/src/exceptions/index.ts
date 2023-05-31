@@ -1,6 +1,4 @@
-export * from './forbidden.js';
 export * from './graphql-validation.js';
-export * from './hit-rate-limit.js';
 export * from './illegal-asset-transformation.js';
 export * from './invalid-config.js';
 export * from './invalid-credentials.js';
@@ -15,7 +13,7 @@ export * from './range-not-satisfiable.js';
 export * from './route-not-found.js';
 export * from './service-unavailable.js';
 export * from './token-expired.js';
+export * from './unexpected-response.js';
 export * from './unprocessable-entity.js';
 export * from './unsupported-media-type.js';
 export * from './user-suspended.js';
-export * from './unexpected-response.js';

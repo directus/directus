@@ -1,11 +1,12 @@
-import { FailedValidationError, ForbiddenError } from '@directus/errors';
 import type { Query } from '@directus/types';
-import { getSimpleHash, joiValidationErrorItemToErrorExtensions, toArray } from '@directus/utils';
+import { getSimpleHash, toArray } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
+import { ForbiddenError } from '../errors/forbidden.js';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
 import { InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';

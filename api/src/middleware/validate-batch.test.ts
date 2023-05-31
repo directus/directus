@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import { validateBatch } from './validate-batch.js';
 import '../../src/types/express.d.ts';
 import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
-import { FailedValidationError } from '@directus/errors';
+import { FailedValidationError } from '@directus/validation';
 import { vi, beforeEach, test, expect } from 'vitest';
 
 let mockRequest: Partial<Request & { token?: string }>;

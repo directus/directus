@@ -38,6 +38,7 @@
 		"@directus/format-title": "10.0.0",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"@directus/validation": "workspace:*",
 		"@editorjs/attaches": "1.3.0",
 		"@editorjs/checklist": "1.5.0",
 		"@editorjs/code": "2.8.0",

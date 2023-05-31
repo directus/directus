@@ -1,4 +1,3 @@
-import { FailedValidationError, ForbiddenError } from '@directus/errors';
 import type {
 	Accountability,
 	Aggregate,
@@ -8,11 +7,13 @@ import type {
 	Query,
 	SchemaOverview,
 } from '@directus/types';
-import { joiValidationErrorItemToErrorExtensions, validatePayload } from '@directus/utils';
+import { validatePayload } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';
 import getDatabase from '../database/index.js';
+import { ForbiddenError } from '../errors/forbidden.js';
 import type {
 	AST,
 	AbstractServiceOptions,

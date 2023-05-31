@@ -1,3 +1,3 @@
-import { createError } from '../create-error.js';
+import { createError } from '@directus/errors';
 
 export const ContentTooLargeError = createError('CONTENT_TOO_LARGE', 'Uploaded content is too large.', 413);

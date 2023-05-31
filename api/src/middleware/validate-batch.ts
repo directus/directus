@@ -1,5 +1,4 @@
-import { FailedValidationError } from '@directus/errors';
-import { joiValidationErrorItemToErrorExtensions } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import asyncHandler from '../utils/async-handler.js';

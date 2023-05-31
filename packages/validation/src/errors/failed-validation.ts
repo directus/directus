@@ -1,6 +1,6 @@
 import type { FilterOperator } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { createError } from '../create-error.js';
+import { createError } from '@directus/errors';
 
 export interface FailedValidationErrorExtensions {
 	field: string;
