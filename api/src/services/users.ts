@@ -1,6 +1,6 @@
-import { FailedValidationException } from '@directus/exceptions';
+import { FailedValidationError } from '@directus/errors';
 import type { Query } from '@directus/types';
-import { getSimpleHash, toArray } from '@directus/utils';
+import { getSimpleHash, joiValidationErrorItemToErrorExtensions, toArray } from '@directus/utils';
 import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
@@ -86,14 +86,16 @@ export class UsersService extends ItemsService {
 
 		for (const password of passwords) {
 			if (!regex.test(password)) {
-				throw new FailedValidationException({
-					message: `Provided password doesn't match password policy`,
-					path: ['password'],
-					type: 'custom.pattern.base',
-					context: {
-						value: password,
-					},
-				});
+				throw new FailedValidationError(
+					joiValidationErrorItemToErrorExtensions({
+						message: `Provided password doesn't match password policy`,
+						path: ['password'],
+						type: 'custom.pattern.base',
+						context: {
+							value: password,
+						},
+					})
+				);
 			}
 		}
 	}
