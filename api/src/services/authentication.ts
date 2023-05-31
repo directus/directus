@@ -1,5 +1,5 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
 import { Action } from '@directus/constants';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
@@ -9,12 +9,8 @@ import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import {
-	InvalidCredentialsException,
-	InvalidOTPException,
-	InvalidProviderException,
-	UserSuspendedException,
-} from '../exceptions/index.js';
+import { UserSuspendedError } from '../errors/index.js';
+import { InvalidCredentialsException, InvalidOTPException, InvalidProviderException } from '../exceptions/index.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -123,7 +119,7 @@ export class AuthenticationService {
 
 			if (user?.status === 'suspended') {
 				await stall(STALL_TIME, timeStart);
-				throw new UserSuspendedException();
+				throw new UserSuspendedError();
 			} else {
 				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();
@@ -311,7 +307,7 @@ export class AuthenticationService {
 
 			if (record.user_status === 'suspended') {
 				await stall(STALL_TIME, timeStart);
-				throw new UserSuspendedException();
+				throw new UserSuspendedError();
 			} else {
 				await stall(STALL_TIME, timeStart);
 				throw new InvalidCredentialsException();

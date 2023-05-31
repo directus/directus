@@ -15,4 +15,3 @@ export * from './service-unavailable.js';
 export * from './unexpected-response.js';
 export * from './unprocessable-entity.js';
 export * from './unsupported-media-type.js';
-export * from './user-suspended.js';
