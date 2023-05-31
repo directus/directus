@@ -450,10 +450,12 @@ RATE_LIMITER_REDIS_DB=0
 
 ### Pressure-based rate limiter
 
-This rate-limiter prevents the API from accepting new requests while the server is experiencing high load. This continuously monitors the current event loop and memory usage, and error out requests with a 503 early when the system is overloaded.
+This rate-limiter prevents the API from accepting new requests while the server is experiencing high load. This
+continuously monitors the current event loop and memory usage, and error out requests with a 503 early when the system
+is overloaded.
 
 | Variable                                      | Description                                                         | Default Value |
-|-----------------------------------------------|---------------------------------------------------------------------|---------------|
+| --------------------------------------------- | ------------------------------------------------------------------- | ------------- |
 | `PRESSURE_LIMITER_ENABLED`                    | Whether or not to enable pressure-based rate limiting on the API.   | `true`        |
 | `PRESSURE_LIMITER_SAMPLE_INTERVAL`            | The time window for measuring pressure in ms.                       | `250`         |
 | `PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION` | The maximum allowed utilization where `1` is 100% loop utilization. | `0.99`        |
@@ -487,21 +489,22 @@ than you would cache database content. To learn more, see [Assets](#assets).
 
 :::
 
-| Variable                          | Description                                                                                                             | Default Value    |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`                   | Whether or not data caching is enabled.                                                                                 | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>         | How long the data cache is persisted.                                                                                   | `5m`             |
-| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`              |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the data cache on `create`, `update`, and `delete` actions.                                         | `false`          |
-| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --               |
-| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`           |
-| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`           |
-| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                                                            | `directus-cache` |
-| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                                                 | `memory`         |
-| `CACHE_STATUS_HEADER`             | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --               |
-| `CACHE_VALUE_MAX_SIZE`            | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false            |
-| `CACHE_SKIP_ALLOWED`              | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                 | false            |
-| `CACHE_HEALTHCHECK_THRESHOLD`     | Healthcheck timeout threshold in ms.                                                                                    | `150`            |
+| Variable                                     | Description                                                                                                             | Default Value                        |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                 | `false`                              |
+| `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                   | `5m`                                 |
+| `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`                                  |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on `create`, `update`, and `delete` actions.                                         | `false`                              |
+| `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                      | `directus_activity,directus_presets` |
+| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
+| `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
+| `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`                               |
+| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `directus-cache`                     |
+| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                                                 | `memory`                             |
+| `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --                                   |
+| `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false                                |
+| `CACHE_SKIP_ALLOWED`                         | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                 | false                                |
+| `CACHE_HEALTHCHECK_THRESHOLD`                | Healthcheck timeout threshold in ms.                                                                                    | `150`                                |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -512,9 +515,12 @@ so you configure it using human readable values (like `2 days`, `7 hrs`, `5m`).
 <sup>[2]</sup> `CACHE_AUTO_PURGE` allows you to keep the Directus API real-time, while still getting the performance
 benefits on quick subsequent reads.
 
-<sup>[3]</sup> Not affected by the `CACHE_ENABLED` value.
+<sup>[3]</sup> The cache has to be manually cleared when requiring to access updated results for collections in
+`CACHE_AUTO_PURGE_IGNORE_LIST`.
 
-<sup>[4]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
+<sup>[4]</sup> Not affected by the `CACHE_ENABLED` value.
+
+<sup>[5]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
 Instead, you can use the above `CACHE_STORE` environment variable to use either `memcache` or `redis` as the cache
 store. Based on the chosen `CACHE_STORE`, you must also provide the following configurations:
 
@@ -673,6 +679,13 @@ purposes, collection of additional metadata must be configured:
 | `FILE_METADATA_ALLOW_LIST` | A comma-separated list of metadata keys to collect during file upload. Use `*` for all<sup>[1]</sup>. | ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO |
 
 <sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
+
+### Upload Limits
+
+| Variable                     | Description                                                                      | Default Value |
+| ---------------------------- | -------------------------------------------------------------------------------- | ------------- |
+| `FILES_MAX_UPLOAD_SIZE`      | Maximum file upload size allowed. For example `10mb`, `1gb`, `10kb`              | --            |
+| `FILES_MIME_TYPE_ALLOW_LIST` | Allow list of mime types that are allowed to be uploaded. Supports `glob` syntax | `*/*`         |
 
 ## Assets
 
@@ -946,6 +959,26 @@ Alternatively, you can provide the individual connection parameters:
 | `MESSENGER_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
 | `MESSENGER_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
 | `MESSENGER_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
+
+<sup>[1]</sup> `redis` should be used in load-balanced installations of Directus
+
+## Synchronization
+
+| Variable                    | Description                                                             | Default Value |
+| --------------------------- | ----------------------------------------------------------------------- | ------------- |
+| `SYNCHRONIZATION_STORE`     | One of `memory`, `redis`<sup>[1]</sup>                                  | `memory`      |
+| `SYNCHRONIZATION_NAMESPACE` | How to scope the channels in Redis                                      | `directus`    |
+| `SYNCHRONIZATION_REDIS`     | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
+
+Alternatively, you can provide the individual connection parameters:
+
+| Variable                         | Description                                                   | Default Value |
+| -------------------------------- | ------------------------------------------------------------- | ------------- |
+| `SYNCHRONIZATION_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
+| `SYNCHRONIZATION_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
+| `SYNCHRONIZATION_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
+| `SYNCHRONIZATION_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
+| `SYNCHRONIZATION_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
 
 <sup>[1]</sup> `redis` should be used in load-balanced installations of Directus
 
