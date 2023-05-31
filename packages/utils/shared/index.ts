@@ -23,6 +23,7 @@ export * from './is-dynamic-variable.js';
 export * from './is-object.js';
 export * from './is-valid-json.js';
 export * from './is-vue-component.js';
+export * from './joi-to-error-extensions.js';
 export * from './merge-filters.js';
 export * from './move-in-array.js';
 export * from './normalize-path.js';
