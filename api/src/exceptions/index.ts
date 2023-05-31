@@ -1,7 +1,6 @@
 export * from './graphql-validation.js';
 export * from './illegal-asset-transformation.js';
 export * from './invalid-config.js';
-export * from './invalid-ip.js';
 export * from './invalid-otp.js';
 export * from './invalid-payload.js';
 export * from './invalid-provider.js';
