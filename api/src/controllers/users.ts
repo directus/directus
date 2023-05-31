@@ -172,7 +172,7 @@ router.patch(
 		}
 
 		const service = new UsersService({ schema: req.schema });
-		await service.updateOne(req.accountability.user, { last_page: req.body.last_page });
+		await service.updateOne(req.accountability.user, { last_page: req.body.last_page }, { autoPurgeCache: false });
 
 		return next();
 	}),

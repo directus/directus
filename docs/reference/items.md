@@ -464,9 +464,13 @@ mutation {
 
 Delete multiple existing items.
 
+### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
 ### Request Body
 
-An array of item primary keys.
+An array of item primary keys or an object containing either `keys` or `query` to select what items to update.
 
 ### Returns
 
@@ -485,7 +489,24 @@ DELETE /items/articles
 ```
 
 ```json
+// Array of primary keys
 [15, 16, 21]
+
+// OR Object containing keys
+{
+	"keys": [15, 16, 21]
+}
+
+// OR Object containing query
+{
+	"query": {
+		"filter": {
+			"status": {
+				"_eq": "draft"
+			}
+		}
+	}
+}
 ```
 
 ### GraphQL

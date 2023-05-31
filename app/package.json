@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "10.2.0",
+	"version": "10.3.0",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -101,6 +101,7 @@
 		"@types/wellknown": "0.5.4",
 		"@vitejs/plugin-vue": "4.2.3",
 		"@vue/test-utils": "2.3.2",
+		"@vueuse/core": "10.1.2",
 		"apexcharts": "3.40.0",
 		"axios": "1.4.0",
 		"babel-loader": "9",

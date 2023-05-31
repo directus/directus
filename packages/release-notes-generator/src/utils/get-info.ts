@@ -1,16 +1,18 @@
 import { getInfo as getGithubInfo } from '@changesets/get-github-info';
 import { MAIN_PACKAGE, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from '../constants';
-import type { Change, ChangesetsWithoutId, Type, UntypedPackage } from '../types';
+import type { Change, Changesets, Notice, Type, UntypedPackage } from '../types';
 import { sortByExternalOrder, sortByObjectValues } from './sort';
 
-export async function getInfo(changesets: ChangesetsWithoutId): Promise<{
+export async function getInfo(changesets: Changesets): Promise<{
 	types: Type[];
 	untypedPackages: UntypedPackage[];
+	notices: Notice[];
 }> {
 	const types: Type[] = [];
 	const untypedPackages: UntypedPackage[] = [];
+	const notices: Notice[] = [];
 
-	for (const { summary, commit, releases } of changesets.values()) {
+	for (const { summary, notice, commit, releases } of changesets.values()) {
 		let githubInfo;
 
 		if (commit) {
@@ -20,9 +22,13 @@ export async function getInfo(changesets: ChangesetsWithoutId): Promise<{
 			});
 		}
 
-		for (const { type, name } of releases) {
-			const change: Change = { summary, commit, githubInfo };
+		const change: Change = { summary, commit, githubInfo };
 
+		if (notice) {
+			notices.push({ notice, change });
+		}
+
+		for (const { type, name } of releases) {
 			if (name === MAIN_PACKAGE || !summary) {
 				continue;
 			}
@@ -72,7 +78,7 @@ export async function getInfo(changesets: ChangesetsWithoutId): Promise<{
 
 	untypedPackages.sort(sortByObjectValues(UNTYPED_PACKAGES, 'name'));
 
-	return { types, untypedPackages };
+	return { types, untypedPackages, notices };
 }
 
 function isUntypedPackage(name: string): name is keyof typeof UNTYPED_PACKAGES {
