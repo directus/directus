@@ -1,8 +1,7 @@
+import { HitRateLimitError } from '@directus/errors';
 import type { RequestHandler } from 'express';
-import ms from 'ms';
 import type { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
 import env from '../env.js';
-import { HitRateLimitException } from '../exceptions/index.js';
 import logger from '../logger.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -27,7 +26,7 @@ if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 			if (rateLimiterRes instanceof Error) throw rateLimiterRes;
 
 			res.set('Retry-After', String(Math.round(rateLimiterRes.msBeforeNext / 1000)));
-			throw new HitRateLimitException(`Too many requests, retry after ${ms(rateLimiterRes.msBeforeNext)}.`, {
+			throw new HitRateLimitError({
 				limit: +env['RATE_LIMITER_GLOBAL_POINTS'],
 				reset: new Date(Date.now() + rateLimiterRes.msBeforeNext),
 			});
