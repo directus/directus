@@ -1,4 +1,4 @@
-import { FailedValidationException } from '@directus/exceptions';
+import { FailedValidationError } from '@directus/errors';
 import type {
 	Accountability,
 	Aggregate,
@@ -8,15 +8,15 @@ import type {
 	Query,
 	SchemaOverview,
 } from '@directus/types';
-import { validatePayload } from '@directus/utils';
+import { joiValidationErrorItemToErrorExtensions, validatePayload } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { ForbiddenException } from '../exceptions/index.js';
 import type {
-	AbstractServiceOptions,
 	AST,
+	AbstractServiceOptions,
 	FieldNode,
 	FunctionFieldNode,
 	Item,
@@ -574,12 +574,12 @@ export class AuthorizationService {
 			}
 		}
 
-		const validationErrors: FailedValidationException[] = [];
+		const validationErrors: InstanceType<typeof FailedValidationError>[] = [];
 
 		validationErrors.push(
 			...flatten(
 				validatePayload(permission.validation!, payloadWithPresets).map((error) =>
-					error.details.map((details) => new FailedValidationException(details))
+					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)))
 				)
 			)
 		);
