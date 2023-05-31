@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/exceptions';
+import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
@@ -388,7 +388,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof BaseException) {
+					if (isDirectusError(error)) {
 						reason = error.code;
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);

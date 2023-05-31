@@ -1,5 +1,5 @@
 import * as validator from '@authenio/samlify-node-xmllint';
-import { BaseException } from '@directus/exceptions';
+import { isDirectusError } from '@directus/errors';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
@@ -179,7 +179,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				if (relayState) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof BaseException) {
+					if (isDirectusError(error)) {
 						reason = error.code;
 					} else {
 						logger.warn(error, `[SAML] Unexpected error during SAML login`);
