@@ -61,6 +61,7 @@
 (U|u)narchiving
 (U|u)nfilterable
 (U|u)nlink
+(U|u)psert
 (U|u)tils?
 (URI|URIs)
 (URL|url)
@@ -382,9 +383,12 @@ UUIDv4
 UX
 v[0-9]{1,2}
 varchar
+vCPU
 Vercel
 viewability
 VitePress
+(V|v)itest
+(V|v)ite
 volta
 VPC
 Vue

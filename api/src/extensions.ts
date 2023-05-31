@@ -39,7 +39,6 @@ import virtualDefault from '@rollup/plugin-virtual';
 import chokidar, { FSWatcher } from 'chokidar';
 import express, { Router } from 'express';
 import { clone, escapeRegExp } from 'lodash-es';
-import { schedule, validate } from 'node-cron';
 import { readdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
@@ -57,6 +56,7 @@ import type { EventHandler } from './types/index.js';
 import getModuleDefault from './utils/get-module-default.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
+import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 import { Url } from './utils/url.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
@@ -281,7 +281,7 @@ class ExtensionManager {
 	}
 
 	private async unload(): Promise<void> {
-		this.unregisterApiExtensions();
+		await this.unregisterApiExtensions();
 
 		this.apiEmitter.offAll();
 
@@ -434,7 +434,7 @@ class ExtensionManager {
 
 				const config = getModuleDefault(hookInstance);
 
-				this.registerHook(config);
+				this.registerHook(config, hook.name);
 
 				this.apiExtensions.push({ path: hookPath });
 			} catch (error: any) {
@@ -517,8 +517,8 @@ class ExtensionManager {
 
 				const configs = getModuleDefault(bundleInstances);
 
-				for (const { config } of configs.hooks) {
-					this.registerHook(config);
+				for (const { config, name } of configs.hooks) {
+					this.registerHook(config, name);
 				}
 
 				for (const { config, name } of configs.endpoints) {
@@ -537,7 +537,9 @@ class ExtensionManager {
 		}
 	}
 
-	private registerHook(register: HookConfig): void {
+	private registerHook(register: HookConfig, name: string): void {
+		let scheduleIndex = 0;
+
 		const registerFunctions = {
 			filter: (event: string, handler: FilterHandler) => {
 				emitter.onFilter(event, handler);
@@ -567,8 +569,8 @@ class ExtensionManager {
 				});
 			},
 			schedule: (cron: string, handler: ScheduleHandler) => {
-				if (validate(cron)) {
-					const task = schedule(cron, async () => {
+				if (validateCron(cron)) {
+					const job = scheduleSynchronizedJob(`${name}:${scheduleIndex}`, cron, async () => {
 						if (this.options.schedule) {
 							try {
 								await handler();
@@ -578,9 +580,11 @@ class ExtensionManager {
 						}
 					});
 
+					scheduleIndex++;
+
 					this.hookEvents.push({
 						type: 'schedule',
-						task,
+						job,
 					});
 				} else {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
@@ -639,7 +643,7 @@ class ExtensionManager {
 		flowManager.addOperation(config.id, config.handler);
 	}
 
-	private unregisterApiExtensions(): void {
+	private async unregisterApiExtensions(): Promise<void> {
 		for (const event of this.hookEvents) {
 			switch (event.type) {
 				case 'filter':
@@ -652,7 +656,7 @@ class ExtensionManager {
 					emitter.offInit(event.name, event.handler);
 					break;
 				case 'schedule':
-					event.task.stop();
+					await event.job.stop();
 					break;
 			}
 		}

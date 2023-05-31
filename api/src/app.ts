@@ -34,6 +34,7 @@ import schemaRouter from './controllers/schema.js';
 import serverRouter from './controllers/server.js';
 import settingsRouter from './controllers/settings.js';
 import sharesRouter from './controllers/shares.js';
+import translationsRouter from './controllers/translations.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import webhooksRouter from './controllers/webhooks.js';
@@ -142,11 +143,10 @@ export default async function createApp(): Promise<express.Application> {
 						upgradeInsecureRequests: null,
 
 						// These are required for MapLibre
-						// https://cdn.directus.io is required for images/videos in the official docs
 						workerSrc: ["'self'", 'blob:'],
 						childSrc: ["'self'", 'blob:'],
-						imgSrc: ["'self'", 'data:', 'blob:', 'https://cdn.directus.io'],
-						mediaSrc: ["'self'", 'https://cdn.directus.io'],
+						imgSrc: ["'self'", 'data:', 'blob:'],
+						mediaSrc: ["'self'"],
 						connectSrc: ["'self'", 'https://*'],
 					},
 				},
@@ -282,6 +282,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
+	app.use('/translations', translationsRouter);
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);

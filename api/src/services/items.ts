@@ -1,5 +1,5 @@
-import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import { Action } from '@directus/constants';
+import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
@@ -20,6 +20,7 @@ import type {
 	PrimaryKey,
 } from '../types/index.js';
 import getASTFromQuery from '../utils/get-ast-from-query.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
@@ -253,7 +254,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
 
 					if (childrenRevisions.length > 0) {
-						await revisionsService.updateMany(childrenRevisions, { parent: revision }, { bypassLimits: true });
+						await revisionsService.updateMany(childrenRevisions, { parent: revision });
 					}
 
 					if (opts.onRevisionCreate) {
@@ -298,7 +299,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		}
 
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts.autoPurgeCache !== false) {
+		if (shouldClearCache(this.cache, opts, this.collection)) {
 			await this.cache.clear();
 		}
 
@@ -345,7 +346,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		}
 
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts.autoPurgeCache !== false) {
+		if (shouldClearCache(this.cache, opts, this.collection)) {
 			await this.cache.clear();
 		}
 
@@ -530,7 +531,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				}
 			});
 		} finally {
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts, this.collection)) {
 				await this.cache.clear();
 			}
 		}
@@ -697,7 +698,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						)
 					).filter((revision) => revision.delta);
 
-					const revisionIDs = await revisionsService.createMany(revisions, { bypassLimits: true });
+					const revisionIDs = await revisionsService.createMany(revisions);
 
 					for (let i = 0; i < revisionIDs.length; i++) {
 						const revisionID = revisionIDs[i]!;
@@ -712,7 +713,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 							// with all other revisions on the current level as regular "flat" updates, and
 							// nested revisions as children of this first "root" item.
 							if (childrenRevisions.length > 0) {
-								await revisionsService.updateMany(childrenRevisions, { parent: revisionID }, { bypassLimits: true });
+								await revisionsService.updateMany(childrenRevisions, { parent: revisionID });
 							}
 						}
 					}
@@ -720,7 +721,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts.autoPurgeCache !== false) {
+		if (shouldClearCache(this.cache, opts, this.collection)) {
 			await this.cache.clear();
 		}
 
@@ -809,7 +810,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKeys;
 		});
 
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts.autoPurgeCache !== false) {
+		if (shouldClearCache(this.cache, opts, this.collection)) {
 			await this.cache.clear();
 		}
 
@@ -907,7 +908,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+		if (shouldClearCache(this.cache, opts, this.collection)) {
 			await this.cache.clear();
 		}
 

@@ -93,8 +93,8 @@
 
 			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
-					<v-info :title="t('no_presets')" icon="bookmark" center>
-						{{ t('no_presets_copy') }}
+					<v-info :title="t('no_results')" icon="bookmark" center>
+						{{ t('no_results_copy') }}
 
 						<template #append>
 							<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
