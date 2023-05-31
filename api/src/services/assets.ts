@@ -11,6 +11,7 @@ import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
+import { ForbiddenError } from '../errors/index.js';
 import { IllegalAssetTransformation } from '../exceptions/illegal-asset-transformation.js';
 import { RangeNotSatisfiableException } from '../exceptions/range-not-satisfiable.js';
 import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
@@ -20,7 +21,6 @@ import type { AbstractServiceOptions, File, Transformation, TransformationSet } 
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
-import { ForbiddenError } from '@directus/errors';
 
 export class AssetsService {
 	knex: Knex;

@@ -1,7 +1,7 @@
-import { HitRateLimitError } from '@directus/errors';
 import type { RequestHandler } from 'express';
 import type { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
 import env from '../env.js';
+import { HitRateLimitError } from '../errors/index.js';
 import logger from '../logger.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import asyncHandler from '../utils/async-handler.js';

@@ -1,4 +1,3 @@
-import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
@@ -11,6 +10,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
+import { ForbiddenError } from '../errors/index.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import type {
 	AbstractServiceOptions,

@@ -4,8 +4,8 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction, SpyInstance } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ForbiddenError } from '../errors/index.js';
 import { UnprocessableEntityException } from '../exceptions/index.js';
-import { ForbiddenError } from '@directus/errors';
 
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
 

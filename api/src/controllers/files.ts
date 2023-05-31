@@ -1,4 +1,4 @@
-import { ContentTooLargeError, isDirectusError } from '@directus/errors';
+import { isDirectusError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
@@ -9,6 +9,7 @@ import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
 import env from '../env.js';
+import { ContentTooLargeError } from '../errors/index.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';

@@ -1,5 +1,4 @@
 import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
-import { ForbiddenError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
@@ -14,6 +13,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
+import { ForbiddenError } from '../errors/index.js';
 import { translateDatabaseError } from '../exceptions/database/translate.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import { ItemsService } from '../services/items.js';

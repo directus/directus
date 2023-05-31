@@ -1,9 +1,9 @@
-import { ForbiddenError } from '@directus/errors';
 import type { Diff } from 'deep-diff';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import { ForbiddenError } from '../errors/index.js';
 import type { Collection } from '../types/collection.js';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot.js';
 import { applyDiff } from '../utils/apply-diff.js';

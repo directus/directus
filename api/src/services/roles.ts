@@ -1,5 +1,5 @@
-import { ForbiddenError } from '@directus/errors';
 import type { Query } from '@directus/types';
+import { ForbiddenError } from '../errors/index.js';
 import { UnprocessableEntityException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';

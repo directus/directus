@@ -1,4 +1,3 @@
-import { ForbiddenError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import encodeURL from 'encodeurl';
@@ -15,6 +14,7 @@ import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
+import { ForbiddenError } from '../errors/index.js';
 import { InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';

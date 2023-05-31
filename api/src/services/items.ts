@@ -1,5 +1,4 @@
 import { Action } from '@directus/constants';
-import { ForbiddenError } from '@directus/errors';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
@@ -10,6 +9,7 @@ import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
+import { ForbiddenError } from '../errors/index.js';
 import { translateDatabaseError } from '../exceptions/database/translate.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import type {

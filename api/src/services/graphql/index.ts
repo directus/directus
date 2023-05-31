@@ -1,5 +1,5 @@
 import { Action, FUNCTIONS } from '@directus/constants';
-import { ForbiddenError } from '@directus/errors';
+import { ForbiddenError } from '../../errors/index.js';
 import type { BaseException } from '@directus/exceptions';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';

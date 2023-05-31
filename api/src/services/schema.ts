@@ -1,7 +1,7 @@
-import { ForbiddenError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
+import { ForbiddenError } from '../errors/index.js';
 import type {
 	AbstractServiceOptions,
 	Snapshot,

@@ -1,5 +1,6 @@
-import { ForbiddenError, isDirectusError } from '@directus/errors';
+import { isDirectusError } from '@directus/errors';
 import express from 'express';
+import { ForbiddenError } from '../errors/index.js';
 import { RouteNotFoundException } from '../exceptions/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';

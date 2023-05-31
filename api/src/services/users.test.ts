@@ -1,10 +1,10 @@
-import { ForbiddenError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction, SpyInstance } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ForbiddenError } from '../errors/index.js';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import { ItemsService, MailService, UsersService } from './index.js';

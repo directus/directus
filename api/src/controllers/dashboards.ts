@@ -1,5 +1,5 @@
+import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ForbiddenError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';

@@ -1,9 +1,9 @@
-import { ForbiddenError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
+import { ForbiddenError } from '../errors/index.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
 
