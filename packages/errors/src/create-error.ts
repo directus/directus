@@ -1,5 +1,24 @@
-export const createError = <T = void>(code: string, message: string | ((extensions: T) => string), status = 500) => {
-	class DirectusError extends Error {
+export interface DirectusError<T = void> extends Error {
+	extensions?: T;
+	code: string;
+	status: number;
+}
+
+export interface DirectusErrorConstructor<T = void> {
+	new (
+		...[extensions, options]: T extends void
+			? [extensions?: T, options?: ErrorOptions]
+			: [extensions: T, options?: ErrorOptions]
+	): DirectusError<T>;
+	readonly prototype: DirectusError<T>;
+}
+
+export const createError = <T = void>(
+	code: string,
+	message: string | ((extensions: T) => string),
+	status = 500
+): DirectusErrorConstructor<T> => {
+	return class extends Error implements DirectusError<T> {
 		override name = 'DirectusError';
 		extensions?: T;
 		code = code.toUpperCase();
@@ -22,7 +41,5 @@ export const createError = <T = void>(code: string, message: string | ((extensio
 		override toString() {
 			return `${this.name} [${this.code}]: ${this.message}`;
 		}
-	}
-
-	return DirectusError;
+	};
 };
