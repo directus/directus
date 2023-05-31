@@ -90,7 +90,7 @@ export function redact(input: UnknownObject, paths: Paths, replacement: string):
 /**
  * Extract values from Error objects for use with JSON.stringify()
  */
-export function errorReplacer(_key: string, value: any) {
+export function errorReplacer(_key: string, value: unknown) {
 	if (value instanceof Error) {
 		return {
 			name: value.name,
