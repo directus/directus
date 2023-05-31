@@ -1,3 +1,4 @@
+import { ContentTooLargeError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import { toArray } from '@directus/utils';
 import Busboy from 'busboy';
@@ -8,7 +9,6 @@ import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
 import env from '../env.js';
-import { ContentTooLargeException } from '../exceptions/content-too-large.js';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -106,7 +106,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		payload = {};
 
 		fileStream.on('limit', () => {
-			const error = new ContentTooLargeException(`Uploaded file is too large`);
+			const error = new ContentTooLargeError();
 			next(error);
 		});
 
