@@ -1,8 +1,9 @@
-import { ForbiddenError, isDirectusError } from '@directus/errors';
+import { isDirectusError } from '@directus/errors';
+import { InvalidCredentialsError, ForbiddenError  } from '../errors/index.js';
 import type { Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { InvalidCredentialsException, InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -97,7 +98,7 @@ router.get(
 		}
 
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const service = new UsersService({
@@ -144,7 +145,7 @@ router.patch(
 	'/me',
 	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const service = new UsersService({
@@ -165,7 +166,7 @@ router.patch(
 	'/me/track/page',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.body.last_page) {
@@ -329,7 +330,7 @@ router.post(
 	'/me/tfa/generate/',
 	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.body.password) {
@@ -360,7 +361,7 @@ router.post(
 	'/me/tfa/enable/',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.body.secret) {
@@ -419,7 +420,7 @@ router.post(
 	'/me/tfa/disable',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.body.otp) {
@@ -479,7 +480,7 @@ router.post(
 	'/:pk/tfa/disable',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.accountability.admin || !req.params['pk']) {

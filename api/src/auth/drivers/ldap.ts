@@ -9,12 +9,12 @@ import env from '../../env.js';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import {
 	InvalidConfigException,
-	InvalidCredentialsException,
 	InvalidPayloadException,
 	InvalidProviderException,
 	ServiceUnavailableException,
 	UnexpectedResponseException,
 } from '../../exceptions/index.js';
+import { InvalidCredentialsError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -94,7 +94,7 @@ export class LDAPAuthDriver extends AuthDriver {
 						if (err) {
 							const error = handleError(err);
 
-							if (error instanceof InvalidCredentialsException) {
+							if (error instanceof InvalidCredentialsError) {
 								reject(new InvalidConfigException('Invalid bind user', { provider }));
 							} else {
 								reject(error);
@@ -224,7 +224,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload['identifier']) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		await this.validateBindClient();
@@ -241,7 +241,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		);
 
 		if (!userInfo?.dn) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		let userRole;
@@ -292,7 +292,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		if (!userInfo) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const userPayload = {
@@ -329,7 +329,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	async verify(user: User, password?: string): Promise<void> {
 		if (!user.external_identifier || !password) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		return new Promise((resolve, reject) => {
@@ -367,7 +367,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
 
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 	}
 }
@@ -378,7 +378,7 @@ const handleError = (e: Error) => {
 		e instanceof ldap.InvalidCredentialsError ||
 		e instanceof ldap.InsufficientAccessRightsError
 	) {
-		return new InvalidCredentialsException();
+		return new InvalidCredentialsError();
 	}
 
 	return new ServiceUnavailableException('Service returned unexpected error', {

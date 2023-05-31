@@ -9,8 +9,8 @@ import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { UserSuspendedError } from '../errors/index.js';
-import { InvalidCredentialsException, InvalidOTPException, InvalidProviderException } from '../exceptions/index.js';
+import { InvalidCredentialsError, UserSuspendedError } from '../errors/index.js';
+import { InvalidOTPException, InvalidProviderException } from '../exceptions/index.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -122,7 +122,7 @@ export class AuthenticationService {
 				throw new UserSuspendedError();
 			} else {
 				await stall(STALL_TIME, timeStart);
-				throw new InvalidCredentialsException();
+				throw new InvalidCredentialsError();
 			}
 		} else if (user.provider !== providerName) {
 			await stall(STALL_TIME, timeStart);
@@ -255,7 +255,7 @@ export class AuthenticationService {
 		const timeStart = performance.now();
 
 		if (!refreshToken) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const record = await this.knex
@@ -299,7 +299,7 @@ export class AuthenticationService {
 			.first();
 
 		if (!record || (!record.share_id && !record.user_id)) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (record.user_id && record.user_status !== 'active') {
@@ -310,7 +310,7 @@ export class AuthenticationService {
 				throw new UserSuspendedError();
 			} else {
 				await stall(STALL_TIME, timeStart);
-				throw new InvalidCredentialsException();
+				throw new InvalidCredentialsError();
 			}
 		}
 
@@ -446,7 +446,7 @@ export class AuthenticationService {
 			.first();
 
 		if (!user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const provider = getAuthProvider(user.provider);

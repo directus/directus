@@ -5,7 +5,8 @@ import Joi from 'joi';
 import { performance } from 'perf_hooks';
 import { COOKIE_OPTIONS } from '../../constants.js';
 import env from '../../env.js';
-import { InvalidCredentialsException, InvalidPayloadException } from '../../exceptions/index.js';
+import { InvalidCredentialsError } from '../../errors/index.js';
+import { InvalidPayloadException } from '../../exceptions/index.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import type { User } from '../../types/index.js';
@@ -17,7 +18,7 @@ import { AuthDriver } from '../auth.js';
 export class LocalAuthDriver extends AuthDriver {
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload['email']) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const user = await this.knex
@@ -27,7 +28,7 @@ export class LocalAuthDriver extends AuthDriver {
 			.first();
 
 		if (!user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		return user.id;
@@ -35,7 +36,7 @@ export class LocalAuthDriver extends AuthDriver {
 
 	async verify(user: User, password?: string): Promise<void> {
 		if (!user.password || !(await argon2.verify(user.password, password as string))) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 	}
 

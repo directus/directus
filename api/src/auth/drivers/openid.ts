@@ -11,9 +11,9 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
+import { InvalidCredentialsError } from '../../errors/index.js';
 import {
 	InvalidConfigException,
-	InvalidCredentialsException,
 	InvalidProviderException,
 	InvalidTokenException,
 	ServiceUnavailableException,
@@ -126,7 +126,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	override async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload['code'] || !payload['codeVerifier'] || !payload['state']) {
 			logger.warn('[OpenID] No code, codeVerifier or state in payload');
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		let tokenSet;
@@ -165,7 +165,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		if (!identifier) {
 			logger.warn(`[OpenID] Failed to find user identifier for provider "${provider}"`);
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const userPayload = {
@@ -205,7 +205,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
 			logger.warn(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		// Run hook so the end user has the chance to augment the
@@ -285,7 +285,7 @@ const handleError = (e: any) => {
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
 		logger.trace(e, `[OpenID] Unknown RP error`);
-		return new InvalidCredentialsException();
+		return new InvalidCredentialsError();
 	}
 
 	logger.trace(e, `[OpenID] Unknown error`);
@@ -345,7 +345,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
-				throw new InvalidCredentialsException();
+				throw new InvalidCredentialsError();
 			}
 
 			const { verifier, redirect, prompt } = tokenData;

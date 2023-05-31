@@ -1,8 +1,7 @@
-import { ForbiddenError } from '@directus/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import env from '../env.js';
-import { InvalidCredentialsException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidCredentialsError } from '../errors/index.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
@@ -68,11 +67,11 @@ export class SharesService extends ItemsService {
 			.first();
 
 		if (!record) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (record.share_password && !(await argon2.verify(record.share_password, payload['password']))) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		await this.knex('directus_shares')

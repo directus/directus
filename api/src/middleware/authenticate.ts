@@ -4,7 +4,7 @@ import { isEqual } from 'lodash-es';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { InvalidCredentialsException } from '../exceptions/index.js';
+import { InvalidCredentialsError } from '../errors/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import isDirectusJWT from '../utils/is-directus-jwt.js';
@@ -74,7 +74,7 @@ export const handler = async (req: Request, _res: Response, next: NextFunction) 
 				.first();
 
 			if (!user) {
-				throw new InvalidCredentialsException();
+				throw new InvalidCredentialsError();
 			}
 
 			req.accountability.user = user.id;
