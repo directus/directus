@@ -69,7 +69,6 @@
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
-		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/pressure": "workspace:*",
