@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/exceptions';
+import { isDirectusError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
@@ -16,7 +16,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 
 	const errors = toArray(err);
 
-	if (errors.some((err) => err instanceof BaseException === false)) {
+	if (errors.some((err) => isDirectusError(err) === false)) {
 		res.status(500);
 	} else {
 		let status = errors[0].status;
@@ -40,7 +40,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 			};
 		}
 
-		if (err instanceof BaseException) {
+		if (isDirectusError(err)) {
 			logger.debug(err);
 
 			res.status(err.status);
