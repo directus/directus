@@ -1,12 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { expect, test, vi } from 'vitest';
-import {
-	InvalidTokenException,
-	ServiceUnavailableException,
-	TokenExpiredException,
-} from '../../src/exceptions/index.js';
 import type { DirectusTokenPayload } from '../../src/types/index.js';
 import { verifyAccessJWT, verifyJWT } from '../../src/utils/jwt.js';
+import { TokenExpiredError } from '../errors/index.js';
+import { InvalidTokenException, ServiceUnavailableException } from '../exceptions/index.js';
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
 const secret = 'test-secret';
@@ -23,9 +20,9 @@ test('Returns the payload of a correctly signed token', () => {
 	expect(result['iat']).toBeTypeOf('number');
 });
 
-test('Throws TokenExpiredException when token used has expired', () => {
+test('Throws TokenExpiredError when token used has expired', () => {
 	const token = jwt.sign({ ...payload, exp: new Date().getTime() / 1000 - 500 }, secret, options);
-	expect(() => verifyJWT(token, secret)).toThrow(TokenExpiredException);
+	expect(() => verifyJWT(token, secret)).toThrow(TokenExpiredError);
 });
 
 const InvalidTokenCases = {

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { InvalidTokenException, ServiceUnavailableException, TokenExpiredException } from '../exceptions/index.js';
+import { TokenExpiredError } from '../errors/index.js';
+import { InvalidTokenException, ServiceUnavailableException } from '../exceptions/index.js';
 import type { DirectusTokenPayload } from '../types/index.js';
 
 export function verifyJWT(token: string, secret: string): Record<string, any> {
@@ -11,7 +12,7 @@ export function verifyJWT(token: string, secret: string): Record<string, any> {
 		}) as Record<string, any>;
 	} catch (err) {
 		if (err instanceof jwt.TokenExpiredError) {
-			throw new TokenExpiredException();
+			throw new TokenExpiredError();
 		} else if (err instanceof jwt.JsonWebTokenError) {
 			throw new InvalidTokenException('Token invalid.');
 		} else {

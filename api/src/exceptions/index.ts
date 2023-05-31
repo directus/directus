@@ -12,7 +12,6 @@ export * from './method-not-allowed.js';
 export * from './range-not-satisfiable.js';
 export * from './route-not-found.js';
 export * from './service-unavailable.js';
-export * from './token-expired.js';
 export * from './unexpected-response.js';
 export * from './unprocessable-entity.js';
 export * from './unsupported-media-type.js';
