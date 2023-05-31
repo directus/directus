@@ -1,4 +1,4 @@
-import { isDirectusError } from '@directus/errors';
+import { BaseException } from '@directus/exceptions';
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
@@ -11,7 +11,6 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
-import { InvalidCredentialsError } from '../../errors/index.js';
 import {
 	InvalidConfigException,
 	InvalidProviderException,
@@ -388,7 +387,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (isDirectusError(error)) {
+					if (error instanceof BaseException) {
 						reason = error.code;
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);

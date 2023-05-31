@@ -11,13 +11,8 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
-import { InvalidCredentialsError } from '../../errors/index.js';
-import {
-	InvalidConfigException,
-	InvalidProviderException,
-	InvalidTokenException,
-	ServiceUnavailableException,
-} from '../../exceptions/index.js';
+import { InvalidCredentialsError, InvalidProviderError } from '../../errors/index.js';
+import { InvalidConfigException, InvalidTokenException, ServiceUnavailableException } from '../../exceptions/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -198,7 +193,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
 				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
-				throw new InvalidProviderException();
+				throw new InvalidProviderError();
 			}
 
 			throw e;

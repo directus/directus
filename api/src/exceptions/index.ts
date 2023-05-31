@@ -3,7 +3,6 @@ export * from './illegal-asset-transformation.js';
 export * from './invalid-config.js';
 export * from './invalid-otp.js';
 export * from './invalid-payload.js';
-export * from './invalid-provider.js';
 export * from './invalid-query.js';
 export * from './invalid-token.js';
 export * from './method-not-allowed.js';

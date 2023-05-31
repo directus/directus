@@ -10,11 +10,10 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import {
 	InvalidConfigException,
 	InvalidPayloadException,
-	InvalidProviderException,
 	ServiceUnavailableException,
 	UnexpectedResponseException,
 } from '../../exceptions/index.js';
-import { InvalidCredentialsError } from '../../errors/index.js';
+import { InvalidCredentialsError, InvalidProviderError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -318,7 +317,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		} catch (e) {
 			if (e instanceof RecordNotUniqueException) {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');
-				throw new InvalidProviderException();
+				throw new InvalidProviderError();
 			}
 
 			throw e;
