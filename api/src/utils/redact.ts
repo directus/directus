@@ -1,6 +1,5 @@
 import type { UnknownObject } from '@directus/types';
 import { isObject } from '@directus/utils';
-import { errorReplacer } from './error-replacer.js';
 
 type Paths = string[][];
 
@@ -86,4 +85,20 @@ export function redact(input: UnknownObject, paths: Paths, replacement: string):
 			}
 		}
 	}
+}
+
+/**
+ * Extract values from Error objects for use with JSON.stringify()
+ */
+export function errorReplacer(_key: string, value: any) {
+	if (value instanceof Error) {
+		return {
+			name: value.name,
+			message: value.message,
+			stack: value.stack,
+			cause: value.cause,
+		};
+	}
+
+	return value;
 }
