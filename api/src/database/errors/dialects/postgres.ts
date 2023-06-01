@@ -1,7 +1,11 @@
-import { ContainsNullValuesError, InvalidForeignKeyException, ValueTooLongError } from '../../../errors/index.js';
-import { NotNullViolationException } from '../../../errors/not-null-violation.js';
-import { RecordNotUniqueException } from '../../../errors/record-not-unique.js';
-import { ValueOutOfRangeException } from '../../../errors/value-out-of-range.js';
+import {
+	ContainsNullValuesError,
+	InvalidForeignKeyError,
+	NotNullViolationError,
+	RecordNotUniqueError,
+	ValueOutOfRangeError,
+	ValueTooLongError,
+} from '../../../errors/index.js';
 import type { PostgresError } from './types.js';
 
 enum PostgresErrorCodes {
@@ -39,12 +43,10 @@ function uniqueViolation(error: PostgresError) {
 
 	const collection = table;
 	const field = matches[0].slice(1, -1);
-	const invalid = matches[1]!.slice(1, -1);
 
-	return new RecordNotUniqueException(field, {
+	return new RecordNotUniqueError({
 		collection,
 		field,
-		invalid,
 	});
 }
 
@@ -56,12 +58,10 @@ function numericValueOutOfRange(error: PostgresError) {
 
 	const collection = matches[0].slice(1, -1);
 	const field = null;
-	const invalid = matches[2]!.slice(1, -1);
 
-	return new ValueOutOfRangeException(field, {
+	return new ValueOutOfRangeError({
 		collection,
 		field,
-		invalid,
 	});
 }
 
@@ -93,7 +93,7 @@ function notNullViolation(error: PostgresError) {
 		return new ContainsNullValuesError({ collection: table, field: column });
 	}
 
-	return new NotNullViolationException(column, {
+	return new NotNullViolationError({
 		collection: table,
 		field: column,
 	});
@@ -109,11 +109,9 @@ function foreignKeyViolation(error: PostgresError) {
 
 	const collection = table;
 	const field = matches[0].slice(1, -1);
-	const invalid = matches[1]!.slice(1, -1);
 
-	return new InvalidForeignKeyException(field, {
+	return new InvalidForeignKeyError({
 		collection,
 		field,
-		invalid,
 	});
 }

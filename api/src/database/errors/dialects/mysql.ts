@@ -1,7 +1,11 @@
-import { ContainsNullValuesError, InvalidForeignKeyException, ValueTooLongError } from '../../../errors/index.js';
-import { NotNullViolationException } from '../../../errors/not-null-violation.js';
-import { RecordNotUniqueException } from '../../../errors/record-not-unique.js';
-import { ValueOutOfRangeException } from '../../../errors/value-out-of-range.js';
+import {
+	ContainsNullValuesError,
+	InvalidForeignKeyError,
+	NotNullViolationError,
+	RecordNotUniqueError,
+	ValueOutOfRangeError,
+	ValueTooLongError,
+} from '../../../errors/index.js';
 import type { MySQLError } from './types.js';
 
 enum MySQLErrorCodes {
@@ -59,12 +63,9 @@ function uniqueViolation(error: MySQLError) {
 			field = indexName?.slice(collection.length + 1, -7);
 		}
 
-		const invalid = matches[0]?.slice(1, -1);
-
-		return new RecordNotUniqueException(field, {
+		return new RecordNotUniqueError({
 			collection,
 			field,
-			invalid,
 		});
 	} else {
 		/** MySQL 5.7 style error message */
@@ -78,12 +79,9 @@ function uniqueViolation(error: MySQLError) {
 			field = indexName?.slice(collection.length + 1, -7);
 		}
 
-		const invalid = matches[0]?.slice(1, -1);
-
-		return new RecordNotUniqueException(field, {
+		return new RecordNotUniqueError({
 			collection,
 			field,
-			invalid,
 		});
 	}
 }
@@ -100,7 +98,7 @@ function numericValueOutOfRange(error: MySQLError) {
 	const collection = tickMatches[0]?.slice(1, -1);
 	const field = quoteMatches[0]?.slice(1, -1);
 
-	return new ValueOutOfRangeException(field, {
+	return new ValueOutOfRangeError({
 		collection,
 		field,
 	});
@@ -136,7 +134,7 @@ function notNullViolation(error: MySQLError) {
 	const collection = tickMatches[0]?.slice(1, -1);
 	const field = quoteMatches[0]?.slice(1, -1);
 
-	return new NotNullViolationException(field, {
+	return new NotNullViolationError({
 		collection,
 		field,
 	});
@@ -153,12 +151,10 @@ function foreignKeyViolation(error: MySQLError) {
 
 	const collection = tickMatches[1]!.slice(1, -1)!;
 	const field = tickMatches[3]!.slice(1, -1)!;
-	const invalid = parenMatches[1]!.slice(1, -1)!;
 
-	return new InvalidForeignKeyException(field, {
+	return new InvalidForeignKeyError({
 		collection,
 		field,
-		invalid,
 	});
 }
 

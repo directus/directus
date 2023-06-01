@@ -1,7 +1,9 @@
-import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
-import { InvalidForeignKeyException } from '../../../errors/invalid-foreign-key.js';
-import { NotNullViolationException } from '../../../errors/not-null-violation.js';
-import { RecordNotUniqueException } from '../../../errors/record-not-unique.js';
+import {
+	ContainsNullValuesError,
+	InvalidForeignKeyError,
+	NotNullViolationError,
+	RecordNotUniqueError,
+} from '../../../errors/index.js';
 import type { SQLiteError } from './types.js';
 
 // NOTE:
@@ -19,7 +21,7 @@ export function extractError(error: SQLiteError): SQLiteError | Error {
 
 		if (!table || !column) return error;
 
-		return new RecordNotUniqueException(column, {
+		return new RecordNotUniqueError({
 			collection: table,
 			field: column,
 		});
@@ -31,7 +33,7 @@ export function extractError(error: SQLiteError): SQLiteError | Error {
 		 * SQLite doesn't return any useful information in it's foreign key constraint failed error, so
 		 * we can't extract the table/column/value accurately
 		 */
-		return new InvalidForeignKeyException(null);
+		return new InvalidForeignKeyError({ collection: null, field: null });
 	}
 
 	return error;
@@ -52,7 +54,7 @@ function notNullConstraint(error: SQLiteError) {
 			return new ContainsNullValuesError({ collection: table, field: column });
 		}
 
-		return new NotNullViolationException(column, {
+		return new NotNullViolationError({
 			collection: table,
 			field: column,
 		});

@@ -1,15 +1,28 @@
 import { createError } from '@directus/errors';
 
 export interface InvalidForeignKeyErrorExtensions {
-	field: string;
+	collection: string | null;
+	field: string | null;
 }
 
-export class InvalidForeignKeyException extends BaseException {
-	constructor(field: string | null, extensions?: Extensions) {
-		if (field) {
-			super(`Invalid foreign key in field "${field}".`, 400, 'INVALID_FOREIGN_KEY', extensions);
-		} else {
-			super(`Invalid foreign key.`, 400, 'INVALID_FOREIGN_KEY', extensions);
-		}
+export const messageConstructor = ({ collection, field }: InvalidForeignKeyErrorExtensions) => {
+	let message = 'Invalid foreign key';
+
+	if (field) {
+		message += ` for field "${field}"`;
 	}
-}
+
+	if (collection) {
+		message += ` in collection "${collection}"`;
+	}
+
+	message += `.`;
+
+	return message;
+};
+
+export const InvalidForeignKeyError = createError<InvalidForeignKeyErrorExtensions>(
+	'INVALID_FOREIGN_KEY',
+	messageConstructor,
+	400
+);

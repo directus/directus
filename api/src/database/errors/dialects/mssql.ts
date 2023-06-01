@@ -1,7 +1,11 @@
-import { ContainsNullValuesError, InvalidForeignKeyException, ValueTooLongError } from '../../../errors/index.js';
-import { NotNullViolationException } from '../../../errors/not-null-violation.js';
-import { RecordNotUniqueException } from '../../../errors/record-not-unique.js';
-import { ValueOutOfRangeException } from '../../../errors/value-out-of-range.js';
+import {
+	ContainsNullValuesError,
+	InvalidForeignKeyError,
+	NotNullViolationError,
+	RecordNotUniqueError,
+	ValueOutOfRangeError,
+	ValueTooLongError,
+} from '../../../errors/index.js';
 
 import getDatabase from '../../index.js';
 import type { MSSQLError } from './types.js';
@@ -81,12 +85,9 @@ async function uniqueViolation(error: MSSQLError) {
 		field = constraintUsage?.field;
 	}
 
-	const invalid = parenMatches[parenMatches.length - 1]?.slice(1, -1);
-
-	return new RecordNotUniqueException(field, {
+	return new RecordNotUniqueError({
 		collection,
 		field,
-		invalid,
 	});
 }
 
@@ -111,12 +112,10 @@ function numericValueOutOfRange(error: MSSQLError) {
 	const field = null;
 
 	const parts = error.message.split(' ');
-	const invalid = parts[parts.length - 1]!.slice(0, -1);
 
-	return new ValueOutOfRangeException(field, {
+	return new ValueOutOfRangeError({
 		collection,
 		field,
-		invalid,
 	});
 }
 
@@ -154,7 +153,7 @@ function notNullViolation(error: MSSQLError) {
 		return new ContainsNullValuesError({ collection, field });
 	}
 
-	return new NotNullViolationException(field, {
+	return new NotNullViolationError({
 		collection,
 		field,
 	});
@@ -179,7 +178,7 @@ function foreignKeyViolation(error: MSSQLError) {
 	const collection = underscoreParts[1]!;
 	const field = underscoreParts[2]!;
 
-	return new InvalidForeignKeyException(field, {
+	return new InvalidForeignKeyError({
 		collection,
 		field,
 	});

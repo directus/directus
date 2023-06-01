@@ -1,4 +1,4 @@
-import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
+import { ContainsNullValuesError } from '../../../errors/index.js';
 import type { OracleError } from './types.js';
 
 enum OracleErrorCodes {
