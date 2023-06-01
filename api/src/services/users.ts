@@ -7,8 +7,9 @@ import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import { ForbiddenError } from '../errors/forbidden.js';
+import { UnprocessableContentError } from '../errors/index.js';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
-import { InvalidPayloadException, UnprocessableEntityException } from '../exceptions/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -114,7 +115,7 @@ export class UsersService extends ItemsService {
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't remove the last admin user from the role.`);
+			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the role` });
 		}
 	}
 
@@ -134,7 +135,7 @@ export class UsersService extends ItemsService {
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't change the active status of the last admin user.`);
+			throw new UnprocessableContentError({ reason: `You can't change the active status of the last admin user` });
 		}
 	}
 

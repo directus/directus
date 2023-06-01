@@ -10,4 +10,8 @@ export const messageConstructor = ({ range }: RangeNotSatisfiableErrorExtensions
 	return `Range ${rangeString} is invalid or the file's size doesn't match the requested range.`;
 };
 
-export const RangeNotSatisfiableError = createError('RANGE_NOT_SATISFIABLE', messageConstructor, 416);
+export const RangeNotSatisfiableError = createError<RangeNotSatisfiableErrorExtensions>(
+	'RANGE_NOT_SATISFIABLE',
+	messageConstructor,
+	416
+);

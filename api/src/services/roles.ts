@@ -1,6 +1,5 @@
 import type { Query } from '@directus/types';
-import { ForbiddenError } from '../errors/index.js';
-import { UnprocessableEntityException } from '../exceptions/index.js';
+import { ForbiddenError, UnprocessableContentError } from '../errors/index.js';
 import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';
@@ -22,7 +21,10 @@ export class RolesService extends ItemsService {
 			.first();
 
 		const otherAdminRolesCount = +(otherAdminRoles?.count || 0);
-		if (otherAdminRolesCount === 0) throw new UnprocessableEntityException(`You can't delete the last admin role.`);
+
+		if (otherAdminRolesCount === 0) {
+			throw new UnprocessableContentError({ reason: `You can't delete the last admin role` });
+		}
 	}
 
 	private async checkForOtherAdminUsers(key: PrimaryKey, users: Alterations | Item[]): Promise<void> {
@@ -65,7 +67,7 @@ export class RolesService extends ItemsService {
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't remove the last admin user from the admin role.`);
+			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the admin role` });
 		}
 
 		return;

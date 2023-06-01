@@ -4,8 +4,7 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction, SpyInstance } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ForbiddenError } from '../errors/index.js';
-import { UnprocessableEntityException } from '../exceptions/index.js';
+import { ForbiddenError, UnprocessableContentError } from '../errors/index.js';
 
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
 
@@ -165,9 +164,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -247,9 +244,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -365,9 +360,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 				});
@@ -422,9 +415,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 
 						it('having a removed user', async () => {
@@ -491,9 +482,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -544,9 +533,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 
 						it('having a removed user', async () => {
@@ -613,9 +600,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 
@@ -692,9 +677,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 
 						it('having a removed user', async () => {
@@ -773,9 +756,7 @@ describe('Integration Tests', () => {
 								`You can't remove the last admin user from the admin role.`
 							);
 
-							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(
-								UnprocessableEntityException
-							);
+							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
 						});
 					});
 				});
