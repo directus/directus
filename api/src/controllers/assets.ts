@@ -6,7 +6,8 @@ import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { InvalidQueryException, RangeNotSatisfiableException } from '../exceptions/index.js';
+import { RangeNotSatisfiableError } from '../errors/index.js';
+import { InvalidQueryException } from '../exceptions/index.js';
 import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
@@ -172,12 +173,12 @@ router.get(
 
 				if (rangeParts[1]) {
 					range.start = Number(rangeParts[1]);
-					if (Number.isNaN(range.start)) throw new RangeNotSatisfiableException(range);
+					if (Number.isNaN(range.start)) throw new RangeNotSatisfiableError({ range });
 				}
 
 				if (rangeParts[2]) {
 					range.end = Number(rangeParts[2]);
-					if (Number.isNaN(range.end)) throw new RangeNotSatisfiableException(range);
+					if (Number.isNaN(range.end)) throw new RangeNotSatisfiableError({ range });
 				}
 			}
 		}

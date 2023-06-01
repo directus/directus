@@ -11,9 +11,8 @@ import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { ForbiddenError } from '../errors/index.js';
+import { ForbiddenError, RangeNotSatisfiableError } from '../errors/index.js';
 import { IllegalAssetTransformation } from '../exceptions/illegal-asset-transformation.js';
-import { RangeNotSatisfiableException } from '../exceptions/range-not-satisfiable.js';
 import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
@@ -75,7 +74,7 @@ export class AssetsService {
 			const endUnderflow = range.end !== undefined && range.end <= 0;
 
 			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
-				throw new RangeNotSatisfiableException(range);
+				throw new RangeNotSatisfiableError({ range });
 			}
 
 			const lastByte = file.filesize - 1;
