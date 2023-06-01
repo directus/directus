@@ -1,7 +1,6 @@
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ForbiddenError } from '../errors/index.js';
-import { RouteNotFoundException } from '../exceptions/index.js';
+import { ForbiddenError, RouteNotFoundError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -20,7 +19,7 @@ router.post(
 		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 		if (req.singleton) {
-			throw new RouteNotFoundException(req.path);
+			throw new RouteNotFoundError({ path: req.path });
 		}
 
 		const service = new ItemsService(req.collection, {
@@ -171,7 +170,7 @@ router.patch(
 		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 		if (req.singleton) {
-			throw new RouteNotFoundException(req.path);
+			throw new RouteNotFoundError({ path: req.path });
 		}
 
 		const service = new ItemsService(req.collection, {
