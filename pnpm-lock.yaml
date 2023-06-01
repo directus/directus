@@ -988,6 +988,9 @@ importers:
       pg:
         specifier: 8.10.0
         version: 8.10.0
+      pg-query-stream:
+        specifier: ^4.5.0
+        version: 4.5.0(pg@8.10.0)
     devDependencies:
       '@directus/data':
         specifier: workspace:*
@@ -15745,6 +15748,14 @@ packages:
   /pg-connection-string@2.5.0:
     resolution: {integrity: sha512-r5o/V/ORTA6TmUnyWZR9nCj1klXCO2CEKNRlVuJptZe85QuhFayC7WeMic7ndayT5IRIR0S0xFxFi2ousartlQ==}
 
+  /pg-cursor@2.10.0(pg@8.10.0):
+    resolution: {integrity: sha512-azXIjeIGBwlv/icYyuki5xJYfVSXeirGn4+mvAmYTB8SY0gS1xhluc2CENnq1JrcVSA81lWZgtqc1GAAhH/UuQ==}
+    peerDependencies:
+      pg: ^8
+    dependencies:
+      pg: 8.10.0
+    dev: false
+
   /pg-int8@1.0.1:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
     engines: {node: '>=4.0.0'}
@@ -15758,6 +15769,15 @@ packages:
 
   /pg-protocol@1.6.0:
     resolution: {integrity: sha512-M+PDm637OY5WM307051+bsDia5Xej6d9IR4GwJse1qA1DIhiKlksvrneZOYQq42OM+spubpcNYEo2FcKQrDk+Q==}
+
+  /pg-query-stream@4.5.0(pg@8.10.0):
+    resolution: {integrity: sha512-9slxIXMssuqKUVyCtuVU5/pr2+RLTKva5VE90PFzi6Mi8o3crbyZQvReoWJimgm9c1zY2+Jv3lvYYsqvaKmQ4g==}
+    peerDependencies:
+      pg: ^8
+    dependencies:
+      pg: 8.10.0
+      pg-cursor: 2.10.0(pg@8.10.0)
+    dev: false
 
   /pg-types@2.2.0:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}

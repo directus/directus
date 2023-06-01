@@ -327,6 +327,11 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	value: string | number | boolean;
 }
 
+export interface ParameterizedSQLStatement {
+	statement: string;
+	values: (string | number | boolean)[];
+}
+
 /**
  * @TODO
  * - Should we support "Distinct", if so where does it live (field level vs collection level)

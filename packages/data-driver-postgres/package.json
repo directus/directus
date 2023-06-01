@@ -37,6 +37,7 @@
 		"vitest": "0.31.0"
 	},
 	"dependencies": {
-		"pg": "8.10.0"
+		"pg": "8.10.0",
+		"pg-query-stream": "^4.5.0"
 	}
 }
