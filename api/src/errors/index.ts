@@ -13,3 +13,4 @@ export { UnexpectedResponseError } from './unexpected-response.js';
 export { UnprocessableContentError } from './unprocessable-content.js';
 export { UnsupportedMediaTypeError } from './unsupported-media-type.js';
 export { UserSuspendedError } from './user-suspended.js';
+export { IllegalAssetTransformationError } from './illegal-asset-transformation.js';

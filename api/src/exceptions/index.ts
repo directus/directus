@@ -1,5 +1,4 @@
 export * from './graphql-validation.js';
-export * from './illegal-asset-transformation.js';
 export * from './invalid-config.js';
 export * from './invalid-payload.js';
 export * from './invalid-query.js';

@@ -12,7 +12,7 @@ import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import { ForbiddenError, RangeNotSatisfiableError } from '../errors/index.js';
-import { IllegalAssetTransformation } from '../exceptions/illegal-asset-transformation.js';
+import { IllegalAssetTransformationError } from '../errors/index.js';
 import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
@@ -141,9 +141,8 @@ export class AssetsService {
 				width > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] ||
 				height > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']
 			) {
-				throw new IllegalAssetTransformation(
-					`Image is too large to be transformed, or image size couldn't be determined.`
-				);
+				logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
+				throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
 			}
 
 			const { queue, process } = sharp.counters();
