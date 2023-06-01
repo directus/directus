@@ -1,7 +1,7 @@
 import { ContainsNullValuesError, InvalidForeignKeyException, ValueTooLongError } from '../../../errors/index.js';
 import { NotNullViolationException } from '../../../errors/not-null-violation.js';
 import { RecordNotUniqueException } from '../../../errors/record-not-unique.js';
-import { ValueOutOfRangeException } from '../../../exceptions/database/value-out-of-range.js';
+import { ValueOutOfRangeException } from '../../../errors/value-out-of-range.js';
 
 import getDatabase from '../../index.js';
 import type { MSSQLError } from './types.js';
