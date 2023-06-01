@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken';
 import { expect, test, vi } from 'vitest';
 import type { DirectusTokenPayload } from '../../src/types/index.js';
 import { verifyAccessJWT, verifyJWT } from '../../src/utils/jwt.js';
-import { TokenExpiredError } from '../errors/index.js';
-import { InvalidTokenException, ServiceUnavailableException } from '../exceptions/index.js';
+import { TokenExpiredError, InvalidTokenError } from '../errors/index.js';
+import { ServiceUnavailableException } from '../exceptions/index.js';
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
 const secret = 'test-secret';
@@ -33,7 +33,7 @@ const InvalidTokenCases = {
 
 Object.entries(InvalidTokenCases).forEach(([title, token]) =>
 	test(`Throws InvalidTokenError - ${title}`, () => {
-		expect(() => verifyJWT(token, secret)).toThrow(InvalidTokenException);
+		expect(() => verifyJWT(token, secret)).toThrow(InvalidTokenError);
 	})
 );
 
@@ -50,10 +50,10 @@ test(`Throws ServiceUnavailableException for unexpected error from jsonwebtoken`
 const RequiredEntries: Array<keyof DirectusTokenPayload> = ['role', 'app_access', 'admin_access'];
 
 RequiredEntries.forEach((entry) => {
-	test(`Throws InvalidTokenException if ${entry} not defined`, () => {
+	test(`Throws InvalidTokenError if ${entry} not defined`, () => {
 		const { [entry]: _entryName, ...rest } = payload;
 		const token = jwt.sign(rest, secret, options);
-		expect(() => verifyAccessJWT(token, secret)).toThrow(InvalidTokenException);
+		expect(() => verifyAccessJWT(token, secret)).toThrow(InvalidTokenError);
 	});
 });
 

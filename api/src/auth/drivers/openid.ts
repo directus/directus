@@ -14,9 +14,9 @@ import { RecordNotUniqueException } from '../../exceptions/database/record-not-u
 import {
 	InvalidConfigException,
 	InvalidProviderException,
-	InvalidTokenException,
 	ServiceUnavailableException,
 } from '../../exceptions/index.js';
+import  { InvalidTokenError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -272,7 +272,7 @@ const handleError = (e: any) => {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
 			logger.trace(e, `[OpenID] Invalid grant`);
-			return new InvalidTokenException();
+			return new InvalidTokenError();
 		}
 
 		// Server response error
@@ -378,7 +378,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
-				if (error instanceof InvalidTokenException && !prompt) {
+				if (error instanceof InvalidTokenError && !prompt) {
 					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
 				}
 
