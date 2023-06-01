@@ -1,9 +1,7 @@
-import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
-import { InvalidForeignKeyException } from '../../../errors/invalid-foreign-key.js';
+import { ContainsNullValuesError, InvalidForeignKeyException, ValueTooLongError } from '../../../errors/index.js';
 import { NotNullViolationException } from '../../../exceptions/database/not-null-violation.js';
 import { RecordNotUniqueException } from '../../../exceptions/database/record-not-unique.js';
 import { ValueOutOfRangeException } from '../../../exceptions/database/value-out-of-range.js';
-import { ValueTooLongException } from '../../../errors/value-too-long.js';
 
 import getDatabase from '../../index.js';
 import type { MSSQLError } from './types.js';
@@ -134,7 +132,7 @@ function valueLimitViolation(error: MSSQLError) {
 	const collection = bracketMatches[0].slice(1, -1);
 	const field = quoteMatches[1]!.slice(1, -1);
 
-	return new ValueTooLongException(field, {
+	return new ValueTooLongError({
 		collection,
 		field,
 	});

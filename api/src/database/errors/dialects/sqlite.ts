@@ -5,8 +5,8 @@ import { RecordNotUniqueException } from '../../../exceptions/database/record-no
 import type { SQLiteError } from './types.js';
 
 // NOTE:
-// - Sqlite doesn't have varchar with length support, so no ValueTooLongException
-// - Sqlite doesn't have a max range for numbers, so no ValueOutOfRangeException
+// - Sqlite doesn't have varchar with length support, so no ValueTooLongError
+// - Sqlite doesn't have a max range for numbers, so no ValueOutOfRangeError
 
 export function extractError(error: SQLiteError): SQLiteError | Error {
 	if (error.message.includes('SQLITE_CONSTRAINT: NOT NULL')) {
