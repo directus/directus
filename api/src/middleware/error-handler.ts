@@ -4,7 +4,7 @@ import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { MethodNotAllowedException } from '../exceptions/index.js';
+import { MethodNotAllowedError } from '../errors/index.js';
 import logger from '../logger.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
@@ -53,8 +53,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				},
 			});
 
-			if (err instanceof MethodNotAllowedException) {
-				res.header('Allow', err.extensions['allow'].join(', '));
+			if (err instanceof MethodNotAllowedError) {
+				res.header('Allow', err.extensions.allowed.join(', '));
 			}
 		} else {
 			logger.error(err);

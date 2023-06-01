@@ -2,13 +2,14 @@ import { parseJSON } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import type { DocumentNode } from 'graphql';
 import { getOperationAST, parse, Source } from 'graphql';
-import { InvalidPayloadException, InvalidQueryException, MethodNotAllowedException } from '../exceptions/index.js';
+import { InvalidPayloadException, InvalidQueryException } from '../exceptions/index.js';
+import { MethodNotAllowedError } from '../errors/index.js';
 import type { GraphQLParams } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
 export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (req.method !== 'GET' && req.method !== 'POST') {
-		throw new MethodNotAllowedException('GraphQL only supports GET and POST requests.', { allow: ['GET', 'POST'] });
+		throw new MethodNotAllowedError({ allowed: ['GET', 'POST'], current: req.method });
 	}
 
 	let query: string | null = null;
@@ -50,10 +51,11 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 
 	const operationAST = getOperationAST(document, operationName);
 
-	// You can only do `query` through GET
+	// Mutations can't happen through GET requests
 	if (req.method === 'GET' && operationAST?.operation !== 'query') {
-		throw new MethodNotAllowedException(`Can only perform a ${operationAST?.operation} from a POST request.`, {
-			allow: ['POST'],
+		throw new MethodNotAllowedError({
+			allowed: ['POST'],
+         current: 'GET',
 		});
 	}
 
