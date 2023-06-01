@@ -1,6 +1,4 @@
 import { Action, FUNCTIONS } from '@directus/constants';
-import { ForbiddenError } from '../../errors/index.js';
-import type { BaseException } from '@directus/exceptions';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
@@ -49,7 +47,8 @@ import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { GraphQLValidationException, InvalidPayloadException } from '../../exceptions/index.js';
+import { ForbiddenError } from '../../errors/index.js';
+import { InvalidPayloadException } from '../../exceptions/index.js';
 import { getExtensionManager } from '../../extensions.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
@@ -81,6 +80,7 @@ import { TFAService } from '../tfa.js';
 import { UsersService } from '../users.js';
 import { UtilsService } from '../utils.js';
 import { WebhooksService } from '../webhooks.js';
+import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
 import { GraphQLBigInt } from './types/bigint.js';
 import { GraphQLDate } from './types/date.js';
 import { GraphQLGeoJSON } from './types/geojson.js';
@@ -88,7 +88,6 @@ import { GraphQLHash } from './types/hash.js';
 import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
-import processError from './utils/process-error.js';
 import processError from './utils/process-error.js';
 
 const validationRules = Array.from(specifiedRules);
@@ -139,7 +138,7 @@ export class GraphQLService {
 		);
 
 		if (validationErrors.length > 0) {
-			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
+			throw new GraphQLValidationError({ errors: validationErrors });
 		}
 
 		let result: ExecutionResult;
@@ -153,7 +152,7 @@ export class GraphQLService {
 				operationName,
 			});
 		} catch (err: any) {
-			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
+			throw new GraphQLExecutionError({ errors: [err.message] });
 		}
 
 		const formattedResult: FormattedExecutionResult = {};
