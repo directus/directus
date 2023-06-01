@@ -285,47 +285,322 @@ show_all_activity: Shfaq të Gjithë Aktivitetin
 page_not_found: Faqe nuk u Gjet
 page_not_found_body: Faqja që kërkoni nuk duket të ekzistojë.
 confirm_revert: Konfirmo Rikthimin
+confirm_revert_body: Kjo do të rikthejë artikullin në gjendjen e zgjedhur.
+display: Shfaq
+settings_update_success: Cilësimet u përditësuan
+title: Titulli
+revision_delta_created: U krijua
+revision_delta_created_externally: U krijua Jashtë
+revision_delta_updated: '''Përditësoi 1 Fushë | Përditësoi {count} Fusha'''
+revision_delta_deleted: U fshi
+revision_delta_reverted: U rikthye
+revision_delta_update_message: Kjo fushë është përditësuar por vlera e saj është e fshehur për arsye sigurie.
+revision_delta_other: Rishikim
+revision_delta_by: '{date} nga {user}'
+presentation_text_values_cannot_be_reimported: 'Përdor tekst prezantimi, vlerat nuk mund të rimportohen.'
+download_page_as_csv: 'Shkarko Faqen si CSV'''
+private_user: Përdorues Privat
+creation_preview: Parapamje e Krijimit
+revision_preview: Parapamje e Rishikimit
+updates_made: Përditësime të Bëra
+leave_comment: Lë një koment...
+post_comment_success: Komenti u postua
+post_comment_updated: Komenti u përditësua
+item_create_success: Artikulli u Krijua | Artikujt u Krijuan
+item_update_success: Artikulli u Përditësua | Artikujt u Përditësuan
+item_delete_success: Artikulli u Fshi | Artikujt u Fshinë
+this_collection: Kjo Koleksion
+related_collection: Koleksion i Lidhur
+related_collections: Koleksione të Lidhura
+translations_collection: Koleksion i Përkthimeve
+languages_collection: Koleksion i Gjuhëve
+import_data_input_placeholder: CSV ose JSON...
+import_data_button: Filloni Importimin
+import_data_indeterminate: Importimi i të Dhënave...
+import_data_success: Të dhënat u importuan me sukses nga {filename}
+import_data_error: Struktura e të dhënave të këtij dokumenti nuk përputhet me koleksionin.
+label_import: Importo
+label_export: Eksporto
+import_export: Importo / Eksporto
+format: Format
+last_page: Faqja e Fundit
+last_access: Qasja e Fundit
+fill_template: Plotësoni me Vlerën e Shabllonit
+a_unique_table_name: Një emër unik të tryezës...
+a_unique_column_name: Një emër unik kolone...
+enable_custom_values: Aktivizo vlerat e personalizuara
+submit: Dorëzo
+move_to_folder: Zhvendos në Dosje
+move: Zhvendos
+system: Sistemi
+add_field_related: Shto Fushë në Koleksionin e Lidhur
+interface_label: Ndërfaqe
+today: Sot
+yesterday: Dje
+delete_comment: Fshi Komentin
+delete_share: Fshi Ndarjen
 functions:
+  year: Viti
+  month: Muaji
+  week: Java
+  day: Dita
+  weekday: Dita e Javës
+  hour: Ora
+  minute: Minuta
+  second: Sekonda
   count: Numri
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: Minuta
+hours: Orë
+month: Muaj
+year: Vit
+select_all: Zgjidh Të Gjitha
+months:
+  january: Janar
+  february: Shkurt
+  march: Mars
+  april: Prill
+  may: Maj
+  june: Qershor
+  july: Korrik
+  august: Gusht
+  september: Shtator
+  october: Tetor
+  november: Nëntor
+  december: Dhjetor
+drag_mode: Mënyra e Tërheqjes
+cancel_crop: Anulo Kopshtin
+original: Origjinal
+url: URL
+import_label: Importo
+file_details: Detajet e Skedarit
+dimensions: Dimensionet
+size: Madhësia
+created: U krijua
+modified: Modifikuar
+checksum: Checksum
+owner: Pronari
+edited_by: Redaktuar nga
+folder: Dosje
+folders: Dosjet
+zoom: Zmadho
+download: Shkarko
+open: Hap
+open_in_new_window: Hap në Dritare të Re
+open_folder: Hap dosjen "{folder}"
+foreground_color: Ngjyra e Paraplanit
+background_color: Ngjyra e Prapaplanit
+upload_from_device: Ngarko Skedar nga Pajisja
+choose_from_library: Zgjidh Skedar nga Biblioteka
+import_from_url: Importo Skedar nga URL
+replace_from_device: Zëvendëso Skedarin nga Pajisja
+replace_from_library: Zëvendëso Skedarin nga Biblioteka
+replace_from_url: Zëvendëso Skedarin nga URL
+no_file_selected: Asnjë Skedar i Zgjedhur
+download_file: Shkarko Skedarin
+open_file_in_tab: Hap skedarin në skedë të re
+start_export: Filloni Eksportimin
+not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
+exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
+exporting_limited_items_in_collection: Eksportimi i {limit} nga {total} artikujve brenda {collection}.
+exporting_no_items_to_export: Asnjë artikull për t'u eksportuar. Rregulloni konfigurimin e eksportimit.
+exporting_download_hint: Kur të përfundojë, ky skedar {format} do të shkarkohet automatikisht në pajisjen tuaj.
+exporting_batch_hint: Ky eksport do të përpunohet në grupe, dhe kur të përfundojë, skedari {format} do të ruhet në Bibliotekën e Skedarëve.
+exporting_batch_hint_forced: Për shkak të numrit të madh të artikujve, ky eksport duhet të përpunohet në grupe, dhe kur të përfundojë, skedari {format} do të ruhet në Bibliotekën e Skedarëve.
+collection_key: Kyçi i Koleksionit
+name: Emri
+primary_key_field: Fusha e Kyçit Primar
+type: Lloji
+creating_new_collection: Duke Krijuar Koleksion të Ri
+created_by: Krijuar Nga
+created_on: Krijuar Më
+creating_collection_info: Emërto koleksionin dhe vendos "çelësin" e tij unik...
+creating_collection_system: Aktivizo dhe riemërto çdo fushë opcionale.
+auto_increment_integer: Integer me rritje automatike
+auto_increment_big_integer: Big Integer me rritje automatike
+generated_uuid: UUID i Gjeneruar
+manual_string: String i Vendosur Manualisht
+save_and_create_new: Ruaj dhe Krijo të Ri
+save_and_stay: Ruaj dhe Qëndro
+save_as_copy: Ruaj si Kopje
+add_existing: Shto Ekzistuese
+creating_items: Krijim i Artikujve
+enable_create_button: Aktivizo Butonin e Krijimit
+selecting_items: Zgjedhja e Artikujve
+enable_select_button: Aktivizo Butonin e Zgjedhjes
+allow_duplicates: Lejo Kopjet
+comments: Komente
+no_comments: Ende nuk ka komente
+expand: Zgjero
+collapse: Tkurre
+select_item: Zgjidh Artikull
+no_items: Asnjë artikull
+search_items: Kërko artikuj...
+disabled: I Çaktivizuar
+information: Informacion
+report_bug: Raporto Defekt
+request_feature: Kërko Karakteristikë
+request_body: Kërko Trupin
+interface_not_found: 'Ndërfaqja "{interface}" nuk u gjet.'
+operation_not_found: 'Operacioni "{operation}" nuk u gjet.'
+reset_interface: Riaktivizo Ndërfaqen
+display_not_found: 'Shfaqja "{display}" nuk u gjet.'
+reset_display: Riaktivizo Shfaqjen
+list-m2a: Ndërtues (M2A)
+item_count: 'Asnjë Artikull | Një Artikull | {count} Artikuj'
+no_items_copy: Ende nuk ka artikuj në këtë koleksion.
+file_count: 'Asnjë Skedar | Një Skedar | {count} Skedarë'
+no_files_copy: Këtu nuk ka skedarë.
+user_count: 'Asnjë Përdorues | Një Përdorues | {count} Përdorues'
+no_users_copy: Ende nuk ka përdorues në këtë rol.
+webhooks_count: 'Asnjë Webhook | Një Webhook | {count} Webhooks'
+no_webhooks_copy: Ende nuk është konfiguruar asnjë webhook. Filloni duke krijuar një më poshtë.
+no_notifications: Asnjë Njoftim
+no_notifications_copy: Ju jeni përditësuar plotësisht!
+activity_log: Regjistri i Aktivitetit
+all_items: Të gjitha Artikujt
+any: Çdo
+csv: CSV
+no_collections: Asnjë Koleksion
+create_collection: Krijo Koleksion
+no_collections_copy_admin: Ju nuk keni asnjë Koleksion ende. Klikoni butonin më poshtë për të filluar.
+no_collections_copy: Ju nuk keni asnjë Koleksion ende. Ju lutemi kontaktoni administratorin e sistemit.
+relationship_not_setup: Marrëdhënia nuk është konfiguruar siç duhet
+no_singleton_relations: Marrëdhëniet me Singleton nuk mbështeten
+display_template_not_setup: Opsioni i shabllonit të shfaqjes është konfiguruar gabim
+collection_field_not_setup: Opsioni i fushës së koleksionit është konfiguruar gabim
+select_a_collection: Zgjidh një Koleksion
+select_a_field: Zgjidh një Fushë
+active: Aktiv
+move_to: Zhvendos në...
+copy: Kopjo
+copy_to: Kopjo në...
+no_other_dashboards_copy: Ju nuk keni asnjë Dashboard tjetër ende.
+inactive: Joaktiv
+users: Përdorues
+activity: Aktivitet
+activity_item: Artikull Aktiviteti
+action: Veprim
+ip_address: Adresa IP
+user_agent: Agjenti i Përdoruesit
+origin: Origjina
+webhooks: Webhooks
+decimals: Decimale
+value_decimals: Vlera Decimale
+min_value: Vlera Minimale
+max_value: Vlera Maksimale
+automatic: Automatik
+field_width: Gjerësia e Fushës
+add_filter: Shto Filter
+upper_limit: Kufi i sipërm...
+lower_limit: Kufi i poshtëm...
+user_directory: Drejtoria e Përdoruesit
+documentation: Dokumentacion
+sidebar: Shtyllë Anësore
+duration: Kohëzgjatje
+charset: Set Karakteresh
+second: sekondë
+file_moved: Skedari u Zhvendos
 errors:
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
 value_unique: Vlera duhet të jetë unike
+flow_name: Emri
+wysiwyg_options:
+  forecolor: Ngjyra e Paraplanit
+  backcolor: Ngjyra e Prapaplanit
+  selectall: Zgjidh Të Gjitha
+settings_webhooks: Webhooks
 fields:
+  directus_activity:
+    origin: Origjina
   directus_collections:
     note: Shënim
+  directus_files:
+    title: Titulli
+    created_on: Krijuar Më
+    created_by: Krijuar Nga
+    folder: Dosje
+    charset: Set Karakteresh
+    duration: Kohëzgjatje
   directus_users:
+    title: Titulli
     language: Gjuha
+    status_active: Aktiv
+    last_page: Faqja e Fundit
+    last_access: Qasja e Fundit
   directus_settings:
     module_bar: Shiriti i Moduleve
+  directus_shares:
+    name: Emri
   directus_fields:
     note: Shënim
     translation: Përkthimet e Emrit të Fushës
   directus_roles:
     name: Emri i Rolit
+  directus_webhooks:
+    name: Emri
 field_options:
   directus_collections:
     language: Gjuha
     archive_divider: Arkivo
+  directus_roles:
+    fields:
+      name_name: Emri
+  directus_users:
+    status_dropdown_active: Aktiv
+  directus_webhooks:
+    status_options_active: Aktiv
+    status_options_inactive: Joaktiv
+live_preview:
+  new_window: Hap në Dritare të Re
 interfaces:
+  filter:
+    add_filter: Shto Filter
+    any: Çdo
   presentation-links:
     primary: Primar
+  system-fields:
+    select_a_collection: Zgjidh një Koleksion
+  system-display-template:
+    collection_field_not_setup: Opsioni i fushës së koleksionit është konfiguruar gabim
+    select_a_collection: Zgjidh një Koleksion
   select-dropdown:
     choices_value_placeholder: Shkruaj një vlerë...
+  map:
+    zoom: Zmadho
+  system-folder:
+    folder: Dosje
 displays:
   translations:
     translations: Përkthimet
   boolean:
     boolean: Boolean
   datetime:
+    format: Format
     suffix: Sufiks
   formatted-value:
+    format: Format
     prefix: Prefiks
     suffix: Sufiks
     text: Tekst
   labels:
     choices_value_placeholder: Shkruaj një vlerë...
+  user:
+    name: Emri
+layouts:
+  cards:
+    title: Titulli
 operations:
   log:
     message: Mesazh
   notification:
     message: Mesazh
+  request:
+    url: URL
