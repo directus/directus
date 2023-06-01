@@ -11,9 +11,12 @@ import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { ForbiddenError, RangeNotSatisfiableError } from '../errors/index.js';
-import { IllegalAssetTransformationError } from '../errors/index.js';
-import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
+import {
+	ForbiddenError,
+	IllegalAssetTransformationError,
+	RangeNotSatisfiableError,
+	ServiceUnavailableError,
+} from '../errors/index.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, File, Transformation, TransformationSet } from '../types/index.js';
@@ -148,8 +151,9 @@ export class AssetsService {
 			const { queue, process } = sharp.counters();
 
 			if (queue + process > env['ASSETS_TRANSFORM_MAX_CONCURRENT']) {
-				throw new ServiceUnavailableException('Server too busy', {
+				throw new ServiceUnavailableError({
 					service: 'files',
+					reason: 'Server too busy',
 				});
 			}
 

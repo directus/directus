@@ -6,12 +6,10 @@ import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { InvalidCredentialsError, InvalidProviderError, UnexpectedResponseError } from '../../errors/index.js';
-import { RecordNotUniqueException } from '../../errors/record-not-unique.js';
+import { InvalidCredentialsError, InvalidProviderError, RecordNotUniqueError, ServiceUnavailableError, UnexpectedResponseError } from '../../errors/index.js';
 import {
 	InvalidConfigException,
 	InvalidPayloadException,
-	ServiceUnavailableException,
 } from '../../exceptions/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
@@ -20,6 +18,8 @@ import { UsersService } from '../../services/users.js';
 import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { AuthDriver } from '../auth.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { AuthDriver } from '../auth.js';
 
@@ -315,7 +315,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (e instanceof RecordNotUniqueException) {
+			if (e instanceof RecordNotUniqueError) {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}
@@ -380,9 +380,9 @@ const handleError = (e: Error) => {
 		return new InvalidCredentialsError();
 	}
 
-	return new ServiceUnavailableException('Service returned unexpected error', {
+	return new ServiceUnavailableError({
 		service: 'ldap',
-		message: e.message,
+		reason: `Service returned unexpected error: ${e.message}`,
 	});
 };
 

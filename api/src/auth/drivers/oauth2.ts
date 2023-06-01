@@ -10,9 +10,8 @@ import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { RecordNotUniqueException } from '../../errors/record-not-unique.js';
-import { InvalidCredentialsError, InvalidProviderError, InvalidTokenError } from '../../errors/index.js';
-import { InvalidConfigException, ServiceUnavailableException } from '../../exceptions/index.js';
+import { InvalidCredentialsError, InvalidProviderError, InvalidTokenError, RecordNotUniqueError } from '../../errors/index.js';
+import { InvalidConfigException, ServiceUnavailableError } from '../../exceptions/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -190,8 +189,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		try {
 			await this.usersService.createOne(updatedUserPayload);
-		} catch (e) {
-			if (e instanceof RecordNotUniqueException) {
+			if (e instanceof RecordNotUniqueError) {
 				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}
@@ -244,9 +242,9 @@ const handleError = (e: any) => {
 
 		// Server response error
 		logger.trace(e, `[OAuth2] Unknown OP error`);
-		return new ServiceUnavailableException('Service returned unexpected response', {
+		return new ServiceUnavailableError({
 			service: 'oauth2',
-			message: e.error_description,
+			reason: `Service returned unexpected response: ${e.error_description}`,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error

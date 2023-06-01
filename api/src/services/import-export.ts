@@ -17,9 +17,8 @@ import { file as createTmpFile } from 'tmp-promise';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenError } from '../errors/index.js';
-import { UnsupportedMediaTypeError } from '../errors/unsupported-media-type.js';
-import { InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
+import { ForbiddenError, ServiceUnavailableError, UnsupportedMediaTypeError } from '../errors/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
@@ -372,6 +371,6 @@ export class ExportService {
 			return toYAML(input);
 		}
 
-		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });
+		throw new ServiceUnavailableError({ service: 'export', reason: `Illegal export type used: "${format}"` });
 	}
 }

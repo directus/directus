@@ -14,8 +14,8 @@ import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenError } from '../errors/index.js';
-import { InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
+import { ForbiddenError, ServiceUnavailableError } from '../errors/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
@@ -91,7 +91,7 @@ export class FilesService extends ItemsService {
 
 			await this.deleteOne(primaryKey);
 
-			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
+			throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
 		}
 
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
@@ -278,8 +278,9 @@ export class FilesService extends ItemsService {
 			});
 		} catch (err: any) {
 			logger.warn(err, `Couldn't fetch file from URL "${importURL}"`);
-			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+			throw new ServiceUnavailableError({
 				service: 'external-file',
+				reason: `Couldn't fetch file from url "${importURL}"`,
 			});
 		}
 

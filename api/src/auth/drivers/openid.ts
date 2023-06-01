@@ -1,4 +1,3 @@
-import { BaseException } from '@directus/exceptions';
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
@@ -10,13 +9,13 @@ import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { RecordNotUniqueException } from '../../errors/record-not-unique.js';
 import {
-	InvalidConfigException,
-	InvalidProviderException,
-	ServiceUnavailableException,
-} from '../../exceptions/index.js';
-import  { InvalidTokenError } from '../../errors/index.js';
+	InvalidTokenError,
+	RecordNotUniqueError,
+	ServiceUnavailableError,
+	InvalidCredentialsError,
+} from '../../errors/index.js';
+import { InvalidConfigException, InvalidProviderException } from '../../exceptions/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -223,7 +222,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (e instanceof RecordNotUniqueException) {
+			if (e instanceof RecordNotUniqueError) {
 				logger.warn(e, '[OpenID] Failed to register user. User not unique');
 				throw new InvalidProviderException();
 			}
@@ -277,9 +276,9 @@ const handleError = (e: any) => {
 
 		// Server response error
 		logger.trace(e, `[OpenID] Unknown OP error`);
-		return new ServiceUnavailableException('Service returned unexpected response', {
+		return new ServiceUnavailableError({
 			service: 'openid',
-			message: e.error_description,
+			reason: `Service returned unexpected response: ${e.error_description}`,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error

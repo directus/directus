@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { TokenExpiredError, InvalidTokenError } from '../errors/index.js';
-import { ServiceUnavailableException } from '../exceptions/index.js';
+import { InvalidTokenError, TokenExpiredError } from '../errors/index.js';
+import { ServiceUnavailableError } from '../exceptions/index.js';
 import type { DirectusTokenPayload } from '../types/index.js';
 
 export function verifyJWT(token: string, secret: string): Record<string, any> {
@@ -16,7 +16,7 @@ export function verifyJWT(token: string, secret: string): Record<string, any> {
 		} else if (err instanceof jwt.JsonWebTokenError) {
 			throw new InvalidTokenError();
 		} else {
-			throw new ServiceUnavailableException(`Couldn't verify token.`, { service: 'jwt' });
+			throw new ServiceUnavailableError({ service: 'jwt', reason: `Couldn't verify token.` });
 		}
 	}
 

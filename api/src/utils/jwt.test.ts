@@ -3,7 +3,7 @@ import { expect, test, vi } from 'vitest';
 import type { DirectusTokenPayload } from '../../src/types/index.js';
 import { verifyAccessJWT, verifyJWT } from '../../src/utils/jwt.js';
 import { TokenExpiredError, InvalidTokenError } from '../errors/index.js';
-import { ServiceUnavailableException } from '../exceptions/index.js';
+import { ServiceUnavailableError } from '../errors/index.js';
 
 const payload: DirectusTokenPayload = { role: null, app_access: false, admin_access: false };
 const secret = 'test-secret';
@@ -37,13 +37,13 @@ Object.entries(InvalidTokenCases).forEach(([title, token]) =>
 	})
 );
 
-test(`Throws ServiceUnavailableException for unexpected error from jsonwebtoken`, () => {
+test(`Throws ServiceUnavailableError for unexpected error from jsonwebtoken`, () => {
 	const mock = vi.spyOn(jwt, 'verify').mockImplementation(() => {
 		throw new Error();
 	});
 
 	const token = jwt.sign(payload, secret, options);
-	expect(() => verifyJWT(token, secret)).toThrow(ServiceUnavailableException);
+	expect(() => verifyJWT(token, secret)).toThrow(ServiceUnavailableError);
 	mock.mockRestore();
 });
 
