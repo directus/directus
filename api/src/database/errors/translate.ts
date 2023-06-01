@@ -1,4 +1,4 @@
-import getDatabase, { getDatabaseClient } from '../../database/index.js';
+import getDatabase, { getDatabaseClient } from '../index.js';
 import emitter from '../../emitter.js';
 import { extractError as mssql } from './dialects/mssql.js';
 import { extractError as mysql } from './dialects/mysql.js';

@@ -1,9 +1,9 @@
-import { ContainsNullValuesException } from '../contains-null-values.js';
-import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
-import { NotNullViolationException } from '../not-null-violation.js';
-import { RecordNotUniqueException } from '../record-not-unique.js';
-import { ValueOutOfRangeException } from '../value-out-of-range.js';
-import { ValueTooLongException } from '../value-too-long.js';
+import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
+import { InvalidForeignKeyException } from '../../../errors/invalid-foreign-key.js';
+import { NotNullViolationException } from '../../../exceptions/database/not-null-violation.js';
+import { RecordNotUniqueException } from '../../../exceptions/database/record-not-unique.js';
+import { ValueOutOfRangeException } from '../../../exceptions/database/value-out-of-range.js';
+import { ValueTooLongException } from '../../../errors/value-too-long.js';
 import type { PostgresError } from './types.js';
 
 enum PostgresErrorCodes {
@@ -92,7 +92,7 @@ function notNullViolation(error: PostgresError) {
 	if (!column) return error;
 
 	if (error.message.endsWith('contains null values')) {
-		return new ContainsNullValuesException(column, { collection: table, field: column });
+		return new ContainsNullValuesError({ collection: table, field: column });
 	}
 
 	return new NotNullViolationException(column, {

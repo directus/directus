@@ -1,9 +1,9 @@
-import { ContainsNullValuesException } from '../contains-null-values.js';
-import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
-import { NotNullViolationException } from '../not-null-violation.js';
-import { RecordNotUniqueException } from '../record-not-unique.js';
-import { ValueOutOfRangeException } from '../value-out-of-range.js';
-import { ValueTooLongException } from '../value-too-long.js';
+import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
+import { InvalidForeignKeyException } from '../../../errors/invalid-foreign-key.js';
+import { NotNullViolationException } from '../../../exceptions/database/not-null-violation.js';
+import { RecordNotUniqueException } from '../../../exceptions/database/record-not-unique.js';
+import { ValueOutOfRangeException } from '../../../exceptions/database/value-out-of-range.js';
+import { ValueTooLongException } from '../../../errors/value-too-long.js';
 import type { MySQLError } from './types.js';
 
 enum MySQLErrorCodes {
@@ -173,7 +173,8 @@ function containsNullValues(error: MySQLError) {
 
 	if (!tickMatches) return error;
 
+	const collection = tickMatches[0]!.slice(1, -1)!;
 	const field = tickMatches[1]!.slice(1, -1)!;
 
-	return new ContainsNullValuesException(field);
+	return new ContainsNullValuesError({ collection, field });
 }

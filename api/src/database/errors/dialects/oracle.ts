@@ -1,4 +1,4 @@
-import { ContainsNullValuesException } from '../contains-null-values.js';
+import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
 import type { OracleError } from './types.js';
 
 enum OracleErrorCodes {
@@ -15,14 +15,14 @@ export function extractError(error: OracleError): OracleError | Error {
 	}
 }
 
-function containsNullValues(error: OracleError): OracleError | ContainsNullValuesException {
+function containsNullValues(error: OracleError): OracleError | InstanceType<typeof ContainsNullValuesError> {
 	const betweenQuotes = /"([^"]+)"/g;
 	const matches = error.message.match(betweenQuotes);
 
 	if (!matches) return error;
 
-	const collection = matches[0].slice(1, -1);
+	const collection = matches[0]!.slice(1, -1);
 	const field = matches[1]!.slice(1, -1);
 
-	return new ContainsNullValuesException(field, { collection, field });
+	return new ContainsNullValuesError({ collection, field });
 }

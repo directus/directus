@@ -1,10 +1,11 @@
-import getDatabase from '../../../database/index.js';
-import { ContainsNullValuesException } from '../contains-null-values.js';
-import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
-import { NotNullViolationException } from '../not-null-violation.js';
-import { RecordNotUniqueException } from '../record-not-unique.js';
-import { ValueOutOfRangeException } from '../value-out-of-range.js';
-import { ValueTooLongException } from '../value-too-long.js';
+import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
+import { InvalidForeignKeyException } from '../../../errors/invalid-foreign-key.js';
+import { NotNullViolationException } from '../../../exceptions/database/not-null-violation.js';
+import { RecordNotUniqueException } from '../../../exceptions/database/record-not-unique.js';
+import { ValueOutOfRangeException } from '../../../exceptions/database/value-out-of-range.js';
+import { ValueTooLongException } from '../../../errors/value-too-long.js';
+
+import getDatabase from '../../index.js';
 import type { MSSQLError } from './types.js';
 
 enum MSSQLErrorCodes {
@@ -152,7 +153,7 @@ function notNullViolation(error: MSSQLError) {
 	const field = quoteMatches[0].slice(1, -1);
 
 	if (error.message.includes('Cannot insert the value NULL into column')) {
-		return new ContainsNullValuesException(field, { collection, field });
+		return new ContainsNullValuesError({ collection, field });
 	}
 
 	return new NotNullViolationException(field, {

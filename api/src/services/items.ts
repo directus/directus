@@ -10,7 +10,7 @@ import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import { ForbiddenError } from '../errors/index.js';
-import { translateDatabaseError } from '../exceptions/database/translate.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import type {
 	AbstractService,

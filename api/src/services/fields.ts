@@ -14,7 +14,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
 import { ForbiddenError } from '../errors/index.js';
-import { translateDatabaseError } from '../exceptions/database/translate.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import { ItemsService } from '../services/items.js';
 import { PayloadService } from '../services/payload.js';

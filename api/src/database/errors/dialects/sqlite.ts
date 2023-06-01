@@ -1,7 +1,7 @@
-import { ContainsNullValuesException } from '../contains-null-values.js';
-import { InvalidForeignKeyException } from '../invalid-foreign-key.js';
-import { NotNullViolationException } from '../not-null-violation.js';
-import { RecordNotUniqueException } from '../record-not-unique.js';
+import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
+import { InvalidForeignKeyException } from '../../../errors/invalid-foreign-key.js';
+import { NotNullViolationException } from '../../../exceptions/database/not-null-violation.js';
+import { RecordNotUniqueException } from '../../../exceptions/database/record-not-unique.js';
 import type { SQLiteError } from './types.js';
 
 // NOTE:
@@ -49,7 +49,7 @@ function notNullConstraint(error: SQLiteError) {
 		// start with _knex_temp. The best we can do in this case is check for that, and use it to
 		// decide between NotNullViolation and ContainsNullValues
 		if (table.startsWith('_knex_temp_alter')) {
-			return new ContainsNullValuesException(column);
+			return new ContainsNullValuesError({ collection: table, field: column });
 		}
 
 		return new NotNullViolationException(column, {

@@ -1,10 +1,8 @@
-import { BaseException } from '@directus/exceptions';
+import { createError } from '@directus/errors';
 
-type Extensions = {
-	collection: string;
+export interface InvalidForeignKeyErrorExtensions {
 	field: string;
-	invalid?: string;
-};
+}
 
 export class InvalidForeignKeyException extends BaseException {
 	constructor(field: string | null, extensions?: Extensions) {
