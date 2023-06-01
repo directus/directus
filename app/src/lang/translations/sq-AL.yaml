@@ -237,17 +237,68 @@ text: Tekst
 time: Kohë
 timestamp: Kohëshënimi
 uuid: UUID
+dialog: Dialog
+modal: Modal
+confirmation_dialog: Dialog i Konfirmimit
+confirmation_description: Përshkrimi i Konfirmimit
+confirmation_input_fields: Fushat e Hyrjes së Konfirmimit
+next: Vazhdo
+field_name: Emri i Fushës
+translations: Përkthimet
+no_translations: Pa Përkthime
+left_to_right: Nga e Majta në të Djathtë
+right_to_left: Nga e Djathta në të Majtë
+note: Shënim
+enter_a_value: Shkruaj një vlerë...
+enter_a_placeholder: Shkruaj një vendmbajtës...
+length: Gjatësi
+soft_length: Kufi i Butë
+precision_scale: Saktësi & Shkallë
+readonly: Vetëm Lexim
+unique: Unike
+updated_on: Përditësuar më
+updated_by: Përditësuar nga
+primary_key: Çelësi Kryesor
+foreign_key: Çelësi i Huaj
+field_key: Çelësi i Fushës
+finish_setup: Përfundo Konfigurimin
+dismiss: Anulo
+toggle_raw_editor: Ndërrimi i Editorit të Papërpunuar
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Vlera e Papërpunuar
+copy_raw_value: Kopjo Vlerën e Papërpunuar
+copy_raw_value_success: Kopjuar
+copy_raw_value_fail: Kopjimi Dështoi
+paste_raw_value: Vlerën e Papërpunuar
+paste_raw_value_success: Ngjitur
+paste_raw_value_fail: Ngjitja Dështoi
+view_raw_value: Shiko Vlerën e Papërpunuar
+edit_raw_value: Modifiko Vlerën e Papërpunuar
+enter_raw_value: Shkruaj vlerën e papërpunuar...
+clear_value: Vlerën
+clear_changes: Pastroni Ndryshimet
+clear_items: Artikujt
+reset_to_default: Kthehu në Parametrat e Paracaktuar
+undo_changes: Anulo Ndryshimet
+notifications: Njoftimet
+show_all_activity: Shfaq të Gjithë Aktivitetin
+page_not_found: Faqe nuk u Gjet
+page_not_found_body: Faqja që kërkoni nuk duket të ekzistojë.
+confirm_revert: Konfirmo Rikthimin
 functions:
   count: Numri
 errors:
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
 value_unique: Vlera duhet të jetë unike
 fields:
+  directus_collections:
+    note: Shënim
   directus_users:
     language: Gjuha
   directus_settings:
     module_bar: Shiriti i Moduleve
   directus_fields:
+    note: Shënim
     translation: Përkthimet e Emrit të Fushës
   directus_roles:
     name: Emri i Rolit
@@ -258,7 +309,11 @@ field_options:
 interfaces:
   presentation-links:
     primary: Primar
+  select-dropdown:
+    choices_value_placeholder: Shkruaj një vlerë...
 displays:
+  translations:
+    translations: Përkthimet
   boolean:
     boolean: Boolean
   datetime:
@@ -267,6 +322,8 @@ displays:
     prefix: Prefiks
     suffix: Sufiks
     text: Tekst
+  labels:
+    choices_value_placeholder: Shkruaj një vlerë...
 operations:
   log:
     message: Mesazh
