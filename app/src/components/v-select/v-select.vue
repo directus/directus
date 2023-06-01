@@ -9,7 +9,12 @@
 		:placement="placement"
 	>
 		<template #activator="{ toggle, active }">
-			<div v-if="inline" class="inline-display" :class="{ placeholder: !displayValue, label, active }" @click="toggle">
+			<div
+				v-if="inline"
+				class="inline-display"
+				:class="{ placeholder: !displayValue, label, active, disabled }"
+				@click="toggle"
+			>
 				<slot name="preview">{{ displayValue || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
 			</div>
@@ -139,7 +144,7 @@ import SelectListItem from './select-list-item.vue';
 import { Option } from './types';
 
 type ItemsRaw = (string | any)[];
-type InputValue = string[] | string | null;
+type InputValue = string[] | string | number | null;
 
 interface Props {
 	/** The items that should be selectable */
@@ -398,7 +403,10 @@ function useDisplayValue() {
 .inline-display {
 	width: max-content;
 	padding-right: 18px;
-	cursor: pointer;
+
+	&:not(.disabled) {
+		cursor: pointer;
+	}
 }
 
 .inline-display.label {

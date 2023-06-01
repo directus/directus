@@ -13,7 +13,7 @@ type Paths = string[][];
 export function redact(input: UnknownObject, paths: Paths, replacement: string): UnknownObject {
 	const wildcardChars = ['*', '**'];
 
-	const clone = structuredClone(input);
+	const clone = JSON.parse(JSON.stringify(input, errorReplacer));
 	const visited = new WeakSet<UnknownObject>();
 	traverse(clone, paths);
 
@@ -85,4 +85,20 @@ export function redact(input: UnknownObject, paths: Paths, replacement: string):
 			}
 		}
 	}
+}
+
+/**
+ * Extract values from Error objects for use with JSON.stringify()
+ */
+export function errorReplacer(_key: string, value: unknown) {
+	if (value instanceof Error) {
+		return {
+			name: value.name,
+			message: value.message,
+			stack: value.stack,
+			cause: value.cause,
+		};
+	}
+
+	return value;
 }

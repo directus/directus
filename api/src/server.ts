@@ -1,4 +1,3 @@
-import { isUpToDate } from '@directus/update-check';
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';
 import type { Request } from 'express';
@@ -13,7 +12,6 @@ import emitter from './emitter.js';
 import env from './env.js';
 import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
-import * as pkg from './utils/package.js';
 
 export let SERVER_ONLINE = true;
 
@@ -139,16 +137,6 @@ export async function startServer(): Promise<void> {
 
 	server
 		.listen(port, host, () => {
-			isUpToDate(pkg.name, pkg.version)
-				.then((update) => {
-					if (update) {
-						logger.warn(`Update available: ${pkg.version} -> ${update}`);
-					}
-				})
-				.catch(() => {
-					// No need to log/warn here. The update message is only an informative nice-to-have
-				});
-
 			logger.info(`Server started at http://${host}:${port}`);
 
 			emitter.emitAction(

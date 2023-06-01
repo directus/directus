@@ -197,6 +197,7 @@ function useUpload() {
 			}
 		} catch (err: any) {
 			unexpectedError(err);
+			emit('input', null);
 		} finally {
 			uploading.value = false;
 			done.value = 0;
