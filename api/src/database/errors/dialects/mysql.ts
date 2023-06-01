@@ -1,5 +1,5 @@
 import { ContainsNullValuesError, InvalidForeignKeyException, ValueTooLongError } from '../../../errors/index.js';
-import { NotNullViolationException } from '../../../exceptions/database/not-null-violation.js';
+import { NotNullViolationException } from '../../../errors/not-null-violation.js';
 import { RecordNotUniqueException } from '../../../exceptions/database/record-not-unique.js';
 import { ValueOutOfRangeException } from '../../../exceptions/database/value-out-of-range.js';
 import type { MySQLError } from './types.js';

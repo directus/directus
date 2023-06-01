@@ -1,6 +1,6 @@
 import { ContainsNullValuesError } from '../../../errors/contains-null-values.js';
 import { InvalidForeignKeyException } from '../../../errors/invalid-foreign-key.js';
-import { NotNullViolationException } from '../../../exceptions/database/not-null-violation.js';
+import { NotNullViolationException } from '../../../errors/not-null-violation.js';
 import { RecordNotUniqueException } from '../../../exceptions/database/record-not-unique.js';
 import type { SQLiteError } from './types.js';
 
