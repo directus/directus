@@ -6,14 +6,13 @@ import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
+import { InvalidCredentialsError, InvalidProviderError, UnexpectedResponseError } from '../../errors/index.js';
 import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import {
 	InvalidConfigException,
 	InvalidPayloadException,
 	ServiceUnavailableException,
-	UnexpectedResponseException,
 } from '../../exceptions/index.js';
-import { InvalidCredentialsError, InvalidProviderError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -107,7 +106,8 @@ export class LDAPAuthDriver extends AuthDriver {
 				res.on('end', (result: LDAPResult | null) => {
 					// Handle edge case where authenticated bind user cannot read their own DN
 					if (result?.status === 0) {
-						reject(new UnexpectedResponseException('Failed to find bind user record'));
+						logger.warn('Failed to find bind user record');
+						reject(new UnexpectedResponseError());
 					}
 				});
 			});

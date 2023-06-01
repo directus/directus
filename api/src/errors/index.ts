@@ -9,5 +9,7 @@ export { InvalidTokenError } from './invalid-token.js';
 export { MethodNotAllowedError } from './method-not-allowed.js';
 export { RangeNotSatisfiableError } from './range-not-satisfiable.js';
 export { TokenExpiredError } from './token-expired.js';
+export { UnexpectedResponseError } from './unexpected-response.js';
 export { UnsupportedMediaTypeError } from './unsupported-media-type.js';
 export { UserSuspendedError } from './user-suspended.js';
+
