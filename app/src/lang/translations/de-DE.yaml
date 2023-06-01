@@ -80,6 +80,10 @@ create_user: Benutzer erstellen
 message: Nachricht
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
+create_custom_translation: Benutzerdefinierte Übersetzung erstellen
+edit_custom_translation: Benutzerdefinierte Übersetzung bearbeiten
+no_custom_translations: Keine benutzerdefinierten Übersetzungen
+no_custom_translations_copy: Es gibt aktuell noch keine benutzerdefinierten Übersetzungen.
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
@@ -223,6 +227,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 date_range: Zeitspanne
+translation_key_placeholder: Schlüssel eingeben...
 datetime: Datum mit Uhrzeit
 dateTime: Datum mit Uhrzeit
 precision: Präzision
@@ -435,6 +440,7 @@ checksum: Prüfsumme
 owner: Besitzer
 edited_by: Editiert von
 folder: Ordner
+folders: Ordner
 zoom: Zoom
 download: Herunterladen
 open: Öffnen
@@ -483,6 +489,8 @@ enable_select_button: Knopf zum Auswählen aktivieren
 allow_duplicates: Duplikate erlauben
 comments: Kommentare
 no_comments: Noch keine Kommentare
+expand: Ausklappen
+collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen...
@@ -610,6 +618,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   REQUESTS_EXCEEDED: Anfragelimit erreicht
+  CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
 security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
@@ -949,6 +958,7 @@ settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Vorlagen & Lesezeichen
+settings_translations: Benutzerdefinierte Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Bereich
 actions: Aktionen
@@ -998,6 +1008,8 @@ page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung 
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
 page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
 page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
+page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchsuchen ** — Listet alle benutzerdefinierten Übersetzungen im Projekt auf.'
+page_help_settings_translations_item: '**Benutzerdefinierte Übersetzungen-Detail** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -1041,6 +1053,7 @@ directus_collection:
   directus_shares: Verfolgen von extern freigegebenen Elementen
   directus_users: Systembenutzer für die Plattform
   directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
+  directus_translations: Benutzerdefinierte Übersetzungen
 fields:
   directus_activity:
     item: Item-Primärschlüssel
@@ -1320,7 +1333,13 @@ block: Blockieren
 inline: Inline
 comment: Kommentar
 live_preview:
+  enable: Vorschau aktivieren
+  disable: Vorschau deaktivieren
+  change_size: Display-Auflösung ändern
+  refresh: Vorschau aktualisieren
   new_window: In neuem Fenster öffnen
+  close_window: In geteilter Ansicht öffnen
+  toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
@@ -1627,6 +1646,7 @@ interfaces:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
     text: Inhalt der Anmerkung eingeben...
+    no_text: Kein Text gesetzt...
   list-o2m:
     one-to-many: 1:n
     description: Mehrere verwandte Elemente auswählen
@@ -1688,6 +1708,7 @@ interfaces:
     input-translated-string: Übersetzte Elemente
     description: Übersetzungselement auswählen oder hinzufügen
     search_placeholder: Suchen...
+    new_custom_translation: Neue benutzerdefinierte Übersetzung
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
