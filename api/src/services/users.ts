@@ -8,7 +8,7 @@ import getDatabase from '../database/index.js';
 import env from '../env.js';
 import { ForbiddenError } from '../errors/forbidden.js';
 import { UnprocessableContentError } from '../errors/index.js';
-import { RecordNotUniqueException } from '../exceptions/database/record-not-unique.js';
+import { RecordNotUniqueException } from '../errors/record-not-unique.js';
 import { InvalidPayloadException } from '../exceptions/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';

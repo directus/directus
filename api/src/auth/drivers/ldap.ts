@@ -7,7 +7,7 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
 import { InvalidCredentialsError, InvalidProviderError, UnexpectedResponseError } from '../../errors/index.js';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
+import { RecordNotUniqueException } from '../../errors/record-not-unique.js';
 import {
 	InvalidConfigException,
 	InvalidPayloadException,
