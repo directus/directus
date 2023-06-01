@@ -10,7 +10,7 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import { InvalidCredentialsError, InvalidProviderError, UserSuspendedError } from '../errors/index.js';
-import { InvalidOTPException } from '../exceptions/index.js';
+import { InvalidOtpError } from '../errors/index.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -163,7 +163,7 @@ export class AuthenticationService {
 		if (user.tfa_secret && !otp) {
 			emitStatus('fail');
 			await stall(STALL_TIME, timeStart);
-			throw new InvalidOTPException(`"otp" is required`);
+			throw new InvalidOtpError();
 		}
 
 		if (user.tfa_secret && otp) {
@@ -173,7 +173,7 @@ export class AuthenticationService {
 			if (otpValid === false) {
 				emitStatus('fail');
 				await stall(STALL_TIME, timeStart);
-				throw new InvalidOTPException(`"otp" is invalid`);
+				throw new InvalidOtpError();
 			}
 		}
 
