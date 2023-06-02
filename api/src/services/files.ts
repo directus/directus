@@ -303,7 +303,7 @@ export class FilesService extends ItemsService {
 	 */
 	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data.type) {
-			throw new InvalidPayloadError(`"type" is required`);
+			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
 		const key = await super.createOne(data, opts);

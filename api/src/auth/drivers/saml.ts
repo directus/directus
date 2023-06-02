@@ -7,8 +7,7 @@ import { COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { InvalidCredentialsError, InvalidProviderError } from '../../errors/index.js';
-import { RecordNotUniqueException } from '../../errors/record-not-unique.js';
+import { InvalidCredentialsError, InvalidProviderError, RecordNotUniqueError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -86,7 +85,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		try {
 			return await this.usersService.createOne(updatedUserPayload);
 		} catch (error) {
-			if (error instanceof RecordNotUniqueException) {
+			if (error instanceof RecordNotUniqueError) {
 				logger.warn(error, '[SAML] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}

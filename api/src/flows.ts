@@ -1,5 +1,4 @@
 import { Action, REDACTED_TEXT } from '@directus/constants';
-import * as sharedExceptions from '@directus/exceptions';
 import type {
 	Accountability,
 	ActionHandler,
@@ -17,7 +16,6 @@ import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
 import { ForbiddenError } from './errors/index.js';
-import * as exceptions from './exceptions/index.js';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -414,7 +412,6 @@ class FlowManager {
 		try {
 			let result = await handler(options, {
 				services,
-				exceptions: { ...exceptions, ...sharedExceptions },
 				env,
 				database: getDatabase(),
 				logger,

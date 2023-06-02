@@ -250,10 +250,9 @@ export class UsersService extends ItemsService {
 
 			if (data['email']) {
 				if (keys.length > 1) {
-					throw new RecordNotUniqueException('email', {
+					throw new RecordNotUniqueError({
 						collection: 'directus_users',
 						field: 'email',
-						invalid: data['email'],
 					});
 				}
 

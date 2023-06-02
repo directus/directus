@@ -49,12 +49,12 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				message: err.message,
 				extensions: {
 					code: err.code,
-					...err.extensions,
+					...(err.extensions ?? {}),
 				},
 			});
 
 			if (err instanceof MethodNotAllowedError) {
-				res.header('Allow', err.extensions.allowed.join(', '));
+				res.header('Allow', (err as InstanceType<typeof MethodNotAllowedError>).extensions.allowed.join(', '));
 			}
 		} else {
 			logger.error(err);

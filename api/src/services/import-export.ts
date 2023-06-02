@@ -17,7 +17,12 @@ import { file as createTmpFile } from 'tmp-promise';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError, UnsupportedMediaTypeError } from '../errors/index.js';
+import {
+	ForbiddenError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+	UnsupportedMediaTypeError,
+} from '../errors/index.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
