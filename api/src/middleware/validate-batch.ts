@@ -1,6 +1,6 @@
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadError } from '../errors/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
@@ -15,7 +15,7 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 			return next();
 		}
 
-		if (!req.body) throw new InvalidPayloadException('Payload in body is required');
+		if (!req.body) throw new InvalidPayloadError({ reason: 'Payload in body is required' });
 
 		if (['update', 'delete'].includes(scope) && Array.isArray(req.body)) {
 			return next();

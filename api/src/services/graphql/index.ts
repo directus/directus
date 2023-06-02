@@ -48,7 +48,7 @@ import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
 import { ForbiddenError } from '../../errors/index.js';
-import { InvalidPayloadException } from '../../exceptions/index.js';
+import { InvalidPayloadError } from '../../errors/index.js';
 import { getExtensionManager } from '../../extensions.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
@@ -2083,7 +2083,9 @@ export class GraphQLService {
 					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 					if (!currentRefreshToken) {
-						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+						throw new InvalidPayloadError({
+							reason: `"refresh_token" is required in either the JSON payload or Cookie`,
+						});
 					}
 
 					const result = await authenticationService.refresh(currentRefreshToken);
@@ -2129,7 +2131,9 @@ export class GraphQLService {
 					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 					if (!currentRefreshToken) {
-						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+						throw new InvalidPayloadError({
+							reason: `"refresh_token" is required in either the JSON payload or Cookie`,
+						});
 					}
 
 					await authenticationService.logout(currentRefreshToken);
@@ -2157,7 +2161,7 @@ export class GraphQLService {
 					try {
 						await service.requestPasswordReset(args['email'], args['reset_url'] || null);
 					} catch (err: any) {
-						if (err instanceof InvalidPayloadException) {
+						if (err instanceof InvalidPayloadError) {
 							throw err;
 						}
 					}
@@ -2250,7 +2254,7 @@ export class GraphQLService {
 					const otpValid = await service.verifyOTP(this.accountability.user, args['otp']);
 
 					if (otpValid === false) {
-						throw new InvalidPayloadException(`"otp" is invalid`);
+						throw new InvalidPayloadError({ reason: `"otp" is invalid` });
 					}
 
 					await service.disableTFA(this.accountability.user);
@@ -2266,7 +2270,7 @@ export class GraphQLService {
 					const { nanoid } = await import('nanoid');
 
 					if (args['length'] && Number(args['length']) > 500) {
-						throw new InvalidPayloadException(`"length" can't be more than 500 characters`);
+						throw new InvalidPayloadError({ reason: `"length" can't be more than 500 characters` });
 					}
 
 					return nanoid(args['length'] ? Number(args['length']) : 32);

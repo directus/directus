@@ -1,7 +1,7 @@
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadError } from '../errors/index.js';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -84,7 +84,7 @@ router.post(
 		const { error } = newRelationSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		await service.createOne(req.body);
@@ -129,7 +129,7 @@ router.patch(
 		const { error } = updateRelationSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		await service.updateOne(req.params['collection']!, req.params['field']!, req.body);

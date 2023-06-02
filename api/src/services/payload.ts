@@ -10,8 +10,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import { ForbiddenError } from '../errors/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import type {
 	AbstractServiceOptions,
 	ActionEventParams,
@@ -335,7 +334,7 @@ export class PayloadService {
 							const parsedDate = parseISO(value);
 
 							if (!isValid(parsedDate)) {
-								throw new InvalidPayloadException(`Invalid Date format in field "${dateColumn.field}"`);
+								throw new InvalidPayloadError({ reason: `Invalid Date format in field "${dateColumn.field}"` });
 							}
 
 							payload[name] = parsedDate;
@@ -345,7 +344,7 @@ export class PayloadService {
 							const parsedDate = parseISO(value);
 
 							if (!isValid(parsedDate)) {
-								throw new InvalidPayloadException(`Invalid DateTime format in field "${dateColumn.field}"`);
+								throw new InvalidPayloadError({ reason: `Invalid DateTime format in field "${dateColumn.field}"` });
 							}
 
 							payload[name] = parsedDate;
@@ -408,17 +407,17 @@ export class PayloadService {
 			const relatedCollection = payload[relation.meta.one_collection_field];
 
 			if (!relatedCollection) {
-				throw new InvalidPayloadException(
-					`Can't update nested record "${relation.collection}.${relation.field}" without field "${relation.collection}.${relation.meta.one_collection_field}" being set`
-				);
+				throw new InvalidPayloadError({
+					reason: `Can't update nested record "${relation.collection}.${relation.field}" without field "${relation.collection}.${relation.meta.one_collection_field}" being set`,
+				});
 			}
 
 			const allowedCollections = relation.meta.one_allowed_collections;
 
 			if (allowedCollections.includes(relatedCollection) === false) {
-				throw new InvalidPayloadException(
-					`"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`
-				);
+				throw new InvalidPayloadError({
+					reason: `"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`,
+				});
 			}
 
 			const itemsService = new ItemsService(relatedCollection, {
@@ -701,7 +700,7 @@ export class PayloadService {
 			else {
 				const alterations = field as Alterations;
 				const { error } = nestedUpdateSchema.validate(alterations);
-				if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
+				if (error) throw new InvalidPayloadError({ reason: `Invalid one-to-many update structure: ${error.message}` });
 
 				if (alterations.create) {
 					const sortField = relation.meta.sort_field;

@@ -3,7 +3,7 @@ import express from 'express';
 import Joi from 'joi';
 import { COOKIE_OPTIONS, UUID_REGEX } from '../constants.js';
 import env from '../env.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -32,7 +32,7 @@ router.post(
 		const { error } = sharedLoginSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		const { accessToken, refreshToken, expires } = await service.login(req.body);
@@ -62,7 +62,7 @@ router.post(
 		const { error } = sharedInviteSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		await service.invite(req.body);

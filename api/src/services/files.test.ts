@@ -3,7 +3,7 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction, SpyInstance } from 'vitest';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadError } from '../errors/index.js';
 import { FilesService, ItemsService } from './index.js';
 
 describe('Integration Tests', () => {
@@ -34,7 +34,7 @@ describe('Integration Tests', () => {
 				superCreateOne = vi.spyOn(ItemsService.prototype, 'createOne').mockReturnValue(Promise.resolve(1));
 			});
 
-			it('throws InvalidPayloadException when "type" is not provided', async () => {
+			it('throws InvalidPayloadError when "type" is not provided', async () => {
 				try {
 					await service.createOne({
 						title: 'Test File',
@@ -42,7 +42,7 @@ describe('Integration Tests', () => {
 						filename_download: 'test_file',
 					});
 				} catch (err: any) {
-					expect(err).toBeInstanceOf(InvalidPayloadException);
+					expect(err).toBeInstanceOf(InvalidPayloadError);
 					expect(err.message).toBe('"type" is required');
 				}
 

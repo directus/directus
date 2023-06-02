@@ -3,8 +3,7 @@ import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenError } from '../errors/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
 
 export class UtilsService {
@@ -26,7 +25,7 @@ export class UtilsService {
 		const sortField = sortFieldResponse?.sort_field;
 
 		if (!sortField) {
-			throw new InvalidPayloadException(`Collection "${collection}" doesn't have a sort field.`);
+			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't have a sort field` });
 		}
 
 		if (this.accountability?.admin !== true) {

@@ -6,11 +6,15 @@ import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { InvalidCredentialsError, InvalidProviderError, RecordNotUniqueError, ServiceUnavailableError, UnexpectedResponseError } from '../../errors/index.js';
 import {
-	InvalidConfigException,
-	InvalidPayloadException,
-} from '../../exceptions/index.js';
+	InvalidCredentialsError,
+	InvalidProviderError,
+	RecordNotUniqueError,
+	ServiceUnavailableError,
+	UnexpectedResponseError,
+	InvalidPayloadError,
+} from '../../errors/index.js';
+import { InvalidConfigException } from '../../exceptions/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -18,8 +22,6 @@ import { UsersService } from '../../services/users.js';
 import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
-import { getMilliseconds } from '../../utils/get-milliseconds.js';
-import { AuthDriver } from '../auth.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
 import { AuthDriver } from '../auth.js';
 
@@ -422,7 +424,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 			const { error } = loginSchema.validate(req.body);
 
 			if (error) {
-				throw new InvalidPayloadException(error.message);
+				throw new InvalidPayloadError({ reason: error.message });
 			}
 
 			const mode = req.body.mode || 'json';

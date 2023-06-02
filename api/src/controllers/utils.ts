@@ -3,8 +3,7 @@ import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
 import { flushCaches } from '../cache.js';
-import { ForbiddenError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
@@ -35,7 +34,7 @@ router.post(
 	'/hash/generate',
 	asyncHandler(async (req, res) => {
 		if (!req.body?.string) {
-			throw new InvalidPayloadException(`"string" is required`);
+			throw new InvalidPayloadError({ reason: `"string" is required` });
 		}
 
 		const hash = await generateHash(req.body.string);
@@ -48,11 +47,11 @@ router.post(
 	'/hash/verify',
 	asyncHandler(async (req, res) => {
 		if (!req.body?.string) {
-			throw new InvalidPayloadException(`"string" is required`);
+			throw new InvalidPayloadError({ reason: `"string" is required` });
 		}
 
 		if (!req.body?.hash) {
-			throw new InvalidPayloadException(`"hash" is required`);
+			throw new InvalidPayloadError({ reason: `"hash" is required` });
 		}
 
 		const result = await argon2.verify(req.body.hash, req.body.string);
@@ -71,7 +70,7 @@ router.post(
 	collectionExists,
 	asyncHandler(async (req, res) => {
 		const { error } = SortSchema.validate(req.body);
-		if (error) throw new InvalidPayloadException(error.message);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		const service = new UtilsService({
 			accountability: req.accountability,
@@ -145,11 +144,11 @@ router.post(
 	collectionExists,
 	asyncHandler(async (req, _res, next) => {
 		if (!req.body.query) {
-			throw new InvalidPayloadException(`"query" is required.`);
+			throw new InvalidPayloadError({ reason: `"query" is required` });
 		}
 
 		if (!req.body.format) {
-			throw new InvalidPayloadException(`"format" is required.`);
+			throw new InvalidPayloadError({ reason: `"format" is required` });
 		}
 
 		const service = new ExportService({

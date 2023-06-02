@@ -8,14 +8,13 @@ import type { Knex } from 'knex';
 import { isEqual, isNil } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenError } from '../errors/index.js';
-import { translateDatabaseError } from '../database/errors/translate.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import { ItemsService } from '../services/items.js';
 import { PayloadService } from '../services/payload.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
@@ -266,7 +265,9 @@ export class FieldsService {
 
 			// Check if field already exists, either as a column, or as a row in directus_fields
 			if (exists) {
-				throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
+				throw new InvalidPayloadError({
+					reason: `Field "${field.field}" already exists in collection "${collection}"`,
+				});
 			}
 
 			// Add flag for specific database type overrides
@@ -394,7 +395,7 @@ export class FieldsService {
 					this.schema.collections[collection]!.fields[field.field]?.type === 'alias') &&
 				hookAdjustedField.type !== (this.schema.collections[collection]!.fields[field.field]?.type ?? 'alias')
 			) {
-				throw new InvalidPayloadException('Alias type cannot be changed');
+				throw new InvalidPayloadError({ reason: 'Alias type cannot be changed' });
 			}
 
 			if (hookAdjustedField.schema) {
@@ -680,7 +681,7 @@ export class FieldsService {
 		} else if (KNEX_TYPES.includes(field.type as (typeof KNEX_TYPES)[number])) {
 			column = table[field.type as (typeof KNEX_TYPES)[number]](field.field);
 		} else {
-			throw new InvalidPayloadException(`Illegal type passed: "${field.type}"`);
+			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
 		if (field.schema?.default_value !== undefined) {

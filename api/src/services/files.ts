@@ -14,8 +14,7 @@ import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenError, ServiceUnavailableError } from '../errors/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '../errors/index.js';
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
@@ -304,7 +303,7 @@ export class FilesService extends ItemsService {
 	 */
 	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data.type) {
-			throw new InvalidPayloadException(`"type" is required`);
+			throw new InvalidPayloadError(`"type" is required`);
 		}
 
 		const key = await super.createOne(data, opts);

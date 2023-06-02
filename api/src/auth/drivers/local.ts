@@ -5,8 +5,7 @@ import Joi from 'joi';
 import { performance } from 'perf_hooks';
 import { COOKIE_OPTIONS } from '../../constants.js';
 import env from '../../env.js';
-import { InvalidCredentialsError } from '../../errors/index.js';
-import { InvalidPayloadException } from '../../exceptions/index.js';
+import { InvalidCredentialsError, InvalidPayloadError } from '../../errors/index.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import type { User } from '../../types/index.js';
@@ -81,7 +80,7 @@ export function createLocalAuthRouter(provider: string): Router {
 
 			if (error) {
 				await stall(STALL_TIME, timeStart);
-				throw new InvalidPayloadException(error.message);
+				throw new InvalidPayloadError({ reason: error.message });
 			}
 
 			const mode = req.body.mode || 'json';

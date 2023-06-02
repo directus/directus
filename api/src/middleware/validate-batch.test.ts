@@ -1,9 +1,9 @@
-import type { Request, Response } from 'express';
-import { validateBatch } from './validate-batch.js';
-import '../../src/types/express.d.ts';
-import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
 import { FailedValidationError } from '@directus/validation';
-import { vi, beforeEach, test, expect } from 'vitest';
+import type { Request, Response } from 'express';
+import { beforeEach, expect, test, vi } from 'vitest';
+import '../../src/types/express.d.ts';
+import { InvalidPayloadError } from '../errors/invalid-payload.js';
+import { validateBatch } from './validate-batch.js';
 
 let mockRequest: Partial<Request & { token?: string }>;
 let mockResponse: Partial<Response>;
@@ -34,13 +34,13 @@ test(`Short circuits on singletons that aren't queried through SEARCH`, async ()
 	expect(nextFunction).toHaveBeenCalledTimes(1);
 });
 
-test('Throws InvalidPayloadException on missing body', async () => {
+test('Throws InvalidPayloadError on missing body', async () => {
 	mockRequest.method = 'SEARCH';
 
 	await validateBatch('read')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadException);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
 });
 
 test(`Short circuits on Array body in update/delete use`, async () => {

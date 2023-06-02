@@ -46,8 +46,7 @@ import {
 } from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { ServiceUnavailableError } from './errors/index.js';
-import { InvalidPayloadException } from './exceptions/invalid-payload.js';
+import { InvalidPayloadError, ServiceUnavailableError } from './errors/index.js';
 import { getExtensionManager } from './extensions.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
@@ -181,7 +180,7 @@ export default async function createApp(): Promise<express.Application> {
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
-				return next(new InvalidPayloadException(err.message));
+				return next(new InvalidPayloadError({ reason: err.message }));
 			}
 
 			return next();

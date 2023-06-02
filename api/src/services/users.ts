@@ -7,9 +7,7 @@ import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import { ForbiddenError } from '../errors/forbidden.js';
-import { UnprocessableContentError } from '../errors/index.js';
-import { RecordNotUniqueException } from '../errors/record-not-unique.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '../errors/index.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
@@ -38,10 +36,9 @@ export class UsersService extends ItemsService {
 		const duplicates = emails.filter((value, index, array) => array.indexOf(value) !== index);
 
 		if (duplicates.length) {
-			throw new RecordNotUniqueException('email', {
+			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
-				invalid: duplicates[0]!,
 			});
 		}
 
@@ -57,10 +54,9 @@ export class UsersService extends ItemsService {
 		const results = await query;
 
 		if (results.length) {
-			throw new RecordNotUniqueException('email', {
+			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
-				invalid: results[0].email,
 			});
 		}
 	}
@@ -224,7 +220,7 @@ export class UsersService extends ItemsService {
 			});
 
 			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadException(`User in update misses primary key.`);
+				if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `User in update misses primary key` });
 				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
 			}
 		});
@@ -269,12 +265,12 @@ export class UsersService extends ItemsService {
 			}
 
 			if (data['tfa_secret'] !== undefined) {
-				throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
+				throw new InvalidPayloadError({ reason: `You can't change the "tfa_secret" value manually` });
 			}
 
 			if (data['provider'] !== undefined) {
 				if (this.accountability && this.accountability.admin !== true) {
-					throw new InvalidPayloadException(`You can't change the "provider" value manually.`);
+					throw new InvalidPayloadError({ reason: `You can't change the "provider" value manually` });
 				}
 
 				data['auth_data'] = null;
@@ -282,7 +278,7 @@ export class UsersService extends ItemsService {
 
 			if (data['external_identifier'] !== undefined) {
 				if (this.accountability && this.accountability.admin !== true) {
-					throw new InvalidPayloadException(`You can't change the "external_identifier" value manually.`);
+					throw new InvalidPayloadError({ reason: `You can't change the "external_identifier" value manually` });
 				}
 
 				data['auth_data'] = null;
@@ -342,7 +338,7 @@ export class UsersService extends ItemsService {
 
 		try {
 			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST']) === false) {
-				throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
+				throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to invite users` });
 			}
 		} catch (err: any) {
 			opts.preMutationException = err;
@@ -398,7 +394,7 @@ export class UsersService extends ItemsService {
 		const user = await this.getUserByEmail(email);
 
 		if (user?.status !== 'invited') {
-			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
+			throw new InvalidPayloadError({ reason: `Email address ${email} hasn't been invited` });
 		}
 
 		// Allow unauthenticated update
@@ -422,7 +418,7 @@ export class UsersService extends ItemsService {
 		}
 
 		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST']) === false) {
-			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
+			throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to reset passwords` });
 		}
 
 		const mailService = new MailService({

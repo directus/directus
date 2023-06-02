@@ -2,8 +2,8 @@ import { parseJSON } from '@directus/utils';
 import type { RequestHandler } from 'express';
 import type { DocumentNode } from 'graphql';
 import { getOperationAST, parse, Source } from 'graphql';
-import { InvalidQueryError, MethodNotAllowedError } from '../errors/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadError, InvalidQueryError, MethodNotAllowedError } from '../errors/index.js';
+import { GraphQLValidationError } from '../services/graphql/errors/validation.js';
 import type { GraphQLParams } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 
@@ -38,14 +38,14 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 	}
 
 	if (query === null) {
-		throw new InvalidPayloadException('Must provide query string.');
+		throw new InvalidPayloadError({ reason: 'Must provide query string' });
 	}
 
 	try {
 		document = parse(new Source(query));
 	} catch (err: any) {
-		throw new InvalidPayloadException(`GraphQL schema validation error.`, {
-			graphqlErrors: [err],
+		throw new GraphQLValidationError({
+			errors: [err],
 		});
 	}
 

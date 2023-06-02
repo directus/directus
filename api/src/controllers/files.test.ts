@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import FormData from 'form-data';
 import { PassThrough } from 'stream';
 import { describe, expect, it, vi } from 'vitest';
-import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
+import { InvalidPayloadError } from '../errors/index.js';
 import { multipartHandler } from './files.js';
 
 vi.mock('../../src/database');
@@ -36,7 +36,7 @@ describe('multipartHandler', () => {
 
 		multipartHandler(req, res, (err) => {
 			expect(err.message).toBe('No files where included in the body');
-			expect(err).toBeInstanceOf(InvalidPayloadException);
+			expect(err).toBeInstanceOf(InvalidPayloadError);
 		});
 	});
 
@@ -65,7 +65,7 @@ describe('multipartHandler', () => {
 
 		multipartHandler(req, res, (err) => {
 			expect(err.message).toBe('File is missing filename');
-			expect(err).toBeInstanceOf(InvalidPayloadException);
+			expect(err).toBeInstanceOf(InvalidPayloadError);
 		});
 	});
 });

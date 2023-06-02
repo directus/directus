@@ -17,8 +17,7 @@ import { file as createTmpFile } from 'tmp-promise';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenError, ServiceUnavailableError, UnsupportedMediaTypeError } from '../errors/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError, UnsupportedMediaTypeError } from '../errors/index.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
@@ -85,11 +84,11 @@ export class ImportService {
 					saveQueue.push(value);
 				});
 
-				extractJSON.on('error', (err: any) => {
+				extractJSON.on('error', (err: Error) => {
 					destroyStream(stream);
 					destroyStream(extractJSON);
 
-					reject(new InvalidPayloadException(err.message));
+					reject(new InvalidPayloadError({ reason: err.message }));
 				});
 
 				saveQueue.error((err) => {
@@ -150,7 +149,7 @@ export class ImportService {
 					})
 					.on('error', (err: any) => {
 						destroyStream(stream);
-						reject(new InvalidPayloadException(err.message));
+						reject(new InvalidPayloadError(err.message));
 					})
 					.on('end', () => {
 						saveQueue.drain(() => {

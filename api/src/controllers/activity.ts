@@ -2,8 +2,7 @@ import { Action } from '@directus/constants';
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ForbiddenError } from '../errors/index.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -86,7 +85,7 @@ router.post(
 		const { error } = createCommentSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		const primaryKey = await service.createOne({
@@ -132,7 +131,7 @@ router.patch(
 		const { error } = updateCommentSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		const primaryKey = await service.updateOne(req.params['pk']!, req.body);

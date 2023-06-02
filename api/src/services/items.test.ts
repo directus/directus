@@ -9,7 +9,7 @@ import { getDatabaseClient } from '../../src/database/index.js';
 import { ItemsService } from '../../src/services/index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { InvalidPayloadError } from '../errors/index.js';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
@@ -1105,7 +1105,7 @@ describe('Integration Tests', () => {
 		});
 
 		it.each(Object.keys(schemas))(
-			'%s batch update should throw InvalidPayloadException when passing non-array data',
+			'%s batch update should throw InvalidPayloadError when passing non-array data',
 			async (schema) => {
 				const table = schemas[schema].tables[0];
 				schemas[schema].accountability = null;
@@ -1129,7 +1129,7 @@ describe('Integration Tests', () => {
 					await itemsService.updateBatch(items[0]! as any);
 				} catch (err) {
 					expect((err as Error).message).toBe(`Input should be an array of items.`);
-					expect(err).toBeInstanceOf(InvalidPayloadException);
+					expect(err).toBeInstanceOf(InvalidPayloadError);
 				}
 			}
 		);
