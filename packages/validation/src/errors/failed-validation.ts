@@ -79,7 +79,7 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 			message += ` Value can't be empty.`;
 			break;
 		case 'required':
-			message += ` Value is required be empty.`;
+			message += ` Value is required.`;
 			break;
 		case 'regex':
 			message += ` Value doesn't have the correct format.`;
