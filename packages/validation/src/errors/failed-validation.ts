@@ -70,7 +70,7 @@ export const messageConstructor = (extensions: FailedValidationErrorExtensions):
 			message += ` Value has to be null.`;
 			break;
 		case 'nnull':
-			message += ` Value can't be be null.`;
+			message += ` Value can't be null.`;
 			break;
 		case 'empty':
 			message += ` Value has to be empty.`;
