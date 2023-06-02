@@ -508,7 +508,47 @@ duration: Kohëzgjatje
 charset: Set Karakteresh
 second: sekondë
 file_moved: Skedari u Zhvendos
+collection_created: Koleksioni u Krijua
+modified_on: Modifikuar Më
+card_size: Madhësia e Kartës
+sort_field: Fusha e Renditjes
+add_sort_field: Shto Fushë Renditjeje
+sort: Rendit
+status: Statusi
+remove: Hiq
+toggle_manual_sorting: Ndërro Renditjen Manualisht
+bookmark_doesnt_exist: Faqerojtësi Nuk Ekziston
+bookmark_doesnt_exist_copy: Faqerojtësi që po përpiqeni të hapni nuk mund të gjendet.
+bookmark_doesnt_exist_cta: Kthehu te koleksioni
+select_an_item: Zgjidh një artikull...
+edit: Modifiko
+enabled: Aktivizuar
+disable_tfa: Çaktivizo 2FA
+admin_disable_tfa_text: Jeni i sigurt që doni të çaktivizoni 2FA për këtë përdorues?
+tfa_setup: Konfiguro 2FA
+tfa_scan_code: Skano kodin në aplikacionin tuaj autentifikues për të përfunduar konfigurimin e 2FA
+enter_otp_to_disable_tfa: Shkruaj OTP-në për të çaktivizuar 2FA
+create_account: Krijo Llogari
+account_created_successfully: Llogaria u Krijua me Sukses
+auto_fill: Plotesim Automatik
+corresponding_field: Fusha Korrespondente
 errors:
+  COLLECTION_NOT_FOUND: "Koleksioni nuk ekziston"
+  FIELD_NOT_FOUND: Fusha nuk u gjet
+  FORBIDDEN: I ndaluar
+  INVALID_CREDENTIALS: Emri i përdoruesit ose fjalëkalimi i gabuar
+  INVALID_OTP: Fjalëkalimi i gabuar njëherësh
+  INVALID_PAYLOAD: Payload i pavlefshëm
+  INVALID_PROVIDER: Përdoruesi i përket një ofruesi tjetër autentikimi
+  INVALID_QUERY: Pyetje e pavlefshme
+  INVALID_CONFIG: Konfigurim i pavlefshëm
+  INVALID_TOKEN: Token i pavlefshëm
+  INVALID_IP: Adresa IP nuk lejohet
+  INVALID_USER: Autentifikimi i përdoruesit dështoi
+  ITEM_LIMIT_REACHED: Limiti i artikujve arriti
+  ITEM_NOT_FOUND: Artikulli nuk u gjet
+  ROUTE_NOT_FOUND: Nuk u gjet
+  RECORD_NOT_UNIQUE: U detektua vlerë e përsëritur
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
 value_unique: Vlera duhet të jetë unike
 flow_name: Emri
@@ -522,8 +562,10 @@ fields:
     origin: Origjina
   directus_collections:
     note: Shënim
+    sort_field: Fusha e Renditjes
   directus_files:
     title: Titulli
+    modified_on: Modifikuar Më
     created_on: Krijuar Më
     created_by: Krijuar Nga
     folder: Dosje
@@ -550,6 +592,7 @@ field_options:
   directus_collections:
     language: Gjuha
     archive_divider: Arkivo
+    sort_divider: Rendit
   directus_roles:
     fields:
       name_name: Emri
@@ -573,10 +616,16 @@ interfaces:
     select_a_collection: Zgjidh një Koleksion
   select-dropdown:
     choices_value_placeholder: Shkruaj një vlerë...
+  input-rich-text-md:
+    edit: Modifiko
   map:
     zoom: Zmadho
   system-folder:
     folder: Dosje
+  list:
+    sort: Rendit
+  boolean:
+    label_default: Aktivizuar
 displays:
   translations:
     translations: Përkthimet
