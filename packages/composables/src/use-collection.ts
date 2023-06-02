@@ -14,7 +14,9 @@ export type UsableCollection = {
 	accountabilityScope: ComputedRef<'all' | 'activity' | null>;
 };
 
-export function useCollection(collectionKey: string | Ref<string | null>): UsableCollection {
+export function useCollection(
+	collectionKey: string | Ref<string | null> | ComputedRef<string | null>
+): UsableCollection {
 	const { useCollectionsStore, useFieldsStore } = useStores();
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
