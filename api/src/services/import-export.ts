@@ -30,6 +30,8 @@ import { FilesService } from './files.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 
+type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
+
 export class ImportService {
 	knex: Knex;
 	accountability: Accountability | null;
