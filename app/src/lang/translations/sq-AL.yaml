@@ -549,7 +549,120 @@ errors:
   ITEM_NOT_FOUND: Artikulli nuk u gjet
   ROUTE_NOT_FOUND: Nuk u gjet
   RECORD_NOT_UNIQUE: U detektua vlerë e përsëritur
+  USER_SUSPENDED: Përdoruesi është pezulluar
+  CONTAINS_NULL_VALUES: Fusha përmban vlera null
+  UNPROCESSABLE_ENTITY: Entitet i papërpunueshëm
+  INTERNAL_SERVER_ERROR: Gabim i papritur
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
+  ILLEGAL_ASSET_TRANSFORMATION: Burimi i imazhit është shumë i madh për të paraparë
+  VALUE_TOO_LONG: Vlera është shumë e gjatë
+  VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
+  INVALID_FOREIGN_KEY: Kyç i pavlefshëm i huaj
+  UNKNOWN: Gabim i papritur
+  GRAPHQL_VALIDATION_EXCEPTION: Përjashtim Validimi GraphQL
+  SERVICE_UNAVAILABLE: Shërbimi nuk është i disponueshëm
+  UNSUPPORTED_MEDIA_TYPE: Lloj i papërkrahur media
+  UNEXPECTED_RESPONSE: Përgjigje e papritur
+  TOKEN_EXPIRED: Token ka skaduar
+  RANGE_NOT_SATISFIABLE: Rang i pavlefshëm
+  METHOD_NOT_ALLOWED: Metodë e palëjuar
+  REQUESTS_EXCEEDED: Limiti i kërkesave është arritur
+  CONTENT_TOO_LARGE: Artikulli / skedari i paraqitur është shumë i madh
+security: Siguria
+value_hashed: Vlera është Hashuar Sigurisht
+bookmark_name: Emri i Faqerojtësit...
+create_bookmark: Krijo Faqerojtës
+edit_bookmark: Modifiko Faqerojtësin
+edit_personal_bookmark: Modifiko Faqerojtësin Personal
+edit_role_bookmark: Modifiko Faqerojtësin e Rolit
+edit_global_bookmark: Modifiko Faqerojtësin Global
+cannot_edit_role_bookmarks: Nuk mund të Modifikoni Faqerojtësit e Rolit
+cannot_edit_global_bookmarks: Nuk mund të Modifikoni Faqerojtësit Globalë
+bookmarks: Faqerojtësit
+presets: Paracaktuar
+unexpected_error: Gabim i papritur
+unexpected_error_copy: Ka ndodhur një gabim i papritur. Ju lutem provoni përsëri më vonë.
+copy_details: Kopjo Detajet
+no_app_access: S'ka Akses në Aplikacion
+no_app_access_copy: Ky përdorues nuk ka leje për të përdorur aplikacionin e administrimit.
+password_reset_sent: Nëse keni një llogari, kemi dërguar një lidhje të sigurt për të rivendosur fjalëkalimin tuaj
+password_reset_successful: Fjalëkalimi u rivendos me sukses
+back: Mbrapa
+filter: Filtri
+edit_image: Modifiko Imazhin
+editing_image: Po Modifikohet Imazhi
+square: Katror
+free: Lirë
+flip_horizontal: Flip Horizontalisht
+flip_vertical: Flip Vertikalisht
+aspect_ratio: Proporcioni i Aspektit
+rotate: Rrotullo
+all_users: Të gjithë Përdoruesit
+delete_collection: Fshi Koleksionin
+update_collection_success: Përditësoi Koleksionin me Sukses
+delete_collection_success: Fshi Koleksionin me Sukses
+make_collection_visible: Bëj Koleksionin të Dukshëm
+make_collection_hidden: Bëj Koleksionin të Fshehur
+make_folder_visible: Bëj Dosjen të Dukshme
+make_folder_hidden: Bëj Dosjen të Fshehur
+goto_collection_content: Shiko Përmbajtjen
+start_end_of_count_items: '{start}-{end} nga {count} artikuj'
+start_end_of_count_filtered_items: '{start}-{end} nga {count} artikuj të filtruar'
+one_item: '1 artikull'
+one_filtered_item: '1 artikull i filtruar'
+delete_collection_are_you_sure: >-
+  Jeni i sigurt që doni të fshini koleksionin "{collection}"? Kjo do të fshijë koleksionin dhe të gjithë artikujt brenda tij. Ky veprim është i përhershëm.
+delete_folder_are_you_sure: Jeni i sigurt që doni të fshini dosjen "{folder}"? Dosjet e brendshme dhe koleksionet do të zhvendosen në nivelin më të lartë.
+delete_collection_peer_dependencies: Fushat e mëposhtme do të fshihen gjithashtu, pasi janë të lidhura me koleksionin aktual.
+collections_shown: Koleksionet e Shfaqura
+visible_collections: Koleksionet e Dukshme
+hidden_collections: Koleksionet e Fshehura
+show_hidden_collections: Shfaq Koleksionet e Fshehura
+hide_hidden_collections: Fshi Koleksionet e Fshehura
+show_header: Shfaq Kryeartikullin
+unmanaged_collections: Koleksionet e Pamënaxhuara
+system_collections: Koleksionet e Sistemit
+placeholder: Mbushësi
+icon_left: Ikona Majtas
+icon_right: Ikona Djathtas
+count_other_revisions: '{count} Rivizioni të Tjerë'
+font: Fonti
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Ndarës
+color: Ngjyra
+circle: Rreth
+empty_item: Artikull Bosh
+log_in_with: 'Hyr me {provider}'
+conditional_styles: Stile Kushtore
+advanced_settings: Cilësime të Avancuara
+advanced_filter: Filtrim i Avancuar
+delete_advanced_filter: Fshi Filterin
+change_advanced_filter_operator: Ndrysho Operatorin
+advanced: Avancuar
+operators:
+  eq: Është e barabartë me
+  neq: Nuk është e barabartë me
+  lt: Është më e vogël se
+  gt: Është më e madhe se
+  lte: Është më e vogël ose e barabartë me
+  gte: Është më e madhe ose e barabartë me
+  in: Është një prej
+  nin: Nuk është një prej
+  null: Është null
+  nnull: Nuk është null
+  contains: Përmban
+  ncontains: Nuk përmban
+  icontains: Përmban (insensitive)
+  starts_with: Fillon me
+  nstarts_with: Nuk fillon me
+  ends_with: Mbaron me
+  nends_with: Nuk mbaron me
+  between: Është midis
+  nbetween: Nuk është midis
+  empty: Është bosh
+  nempty: Nuk është bosh
 value_unique: Vlera duhet të jetë unike
 flow_name: Emri
 wysiwyg_options:
@@ -562,6 +675,7 @@ fields:
     origin: Origjina
   directus_collections:
     note: Shënim
+    color: Ngjyra
     sort_field: Fusha e Renditjes
   directus_files:
     title: Titulli
@@ -589,6 +703,8 @@ fields:
   directus_webhooks:
     name: Emri
 field_options:
+  directus_settings:
+    security_divider_title: Siguria
   directus_collections:
     language: Gjuha
     archive_divider: Arkivo
@@ -605,15 +721,20 @@ live_preview:
   new_window: Hap në Dritare të Re
 interfaces:
   filter:
+    name: Filtri
     add_filter: Shto Filter
     any: Çdo
   presentation-links:
     primary: Primar
+  select-color:
+    color: Ngjyra
   system-fields:
     select_a_collection: Zgjidh një Koleksion
   system-display-template:
     collection_field_not_setup: Opsioni i fushës së koleksionit është konfiguruar gabim
     select_a_collection: Zgjidh një Koleksion
+  presentation-divider:
+    divider: Ndarës
   select-dropdown:
     choices_value_placeholder: Shkruaj një vlerë...
   input-rich-text-md:
@@ -631,14 +752,22 @@ displays:
     translations: Përkthimet
   boolean:
     boolean: Boolean
+  color:
+    color: Ngjyra
   datetime:
     format: Format
     suffix: Sufiks
   formatted-value:
     format: Format
+    font: Fonti
+    font_serif: Serif
+    font_monospace: Monospace
     prefix: Prefiks
     suffix: Sufiks
+    color: Ngjyra
     text: Tekst
+  image:
+    circle: Rreth
   labels:
     choices_value_placeholder: Shkruaj një vlerë...
   user:
@@ -646,6 +775,8 @@ displays:
 layouts:
   cards:
     title: Titulli
+  kanban:
+    advanced: Avancuar
 operations:
   log:
     message: Mesazh
