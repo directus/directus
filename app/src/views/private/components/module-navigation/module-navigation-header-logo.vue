@@ -80,7 +80,7 @@ const stopSpinnerIfQueueIsEmpty = () => {
 	width: 26.6px;
 	height: 21.3px;
 	margin: 0 auto;
-	background-image: url('../../../../assets/sprite-2.svg');
+	background-image: url('../../../../assets/sprite.svg');
 	background-position: 0% 0%;
 	background-size: 400px 21.3px;
 }

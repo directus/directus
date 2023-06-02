@@ -1,5 +1,5 @@
 <template>
-	<div class="v-avatar" :class="[{ tile }, sizeClass]">
+	<div class="v-avatar" :class="[{ tile, circle }, sizeClass]">
 		<slot />
 	</div>
 </template>
@@ -10,6 +10,8 @@ import { useSizeClass } from '@directus/composables';
 interface Props {
 	/** Render as a tile (square) */
 	tile?: boolean;
+	/** Render as a circle */
+	circle?: boolean;
 	/** Renders a smaller avatar */
 	xSmall?: boolean;
 	/** Renders a small avatar */
@@ -50,10 +52,6 @@ body {
 	border-radius: var(--border-radius);
 }
 
-.tile {
-	border-radius: 0;
-}
-
 .x-small {
 	--v-avatar-size: 24px;
 
@@ -70,6 +68,14 @@ body {
 
 .x-large {
 	--v-avatar-size: 80px;
+}
+
+.tile {
+	border-radius: 0;
+}
+
+.circle {
+	border-radius: 50%;
 }
 
 :slotted(img) {
