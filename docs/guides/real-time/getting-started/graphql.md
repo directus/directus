@@ -61,7 +61,10 @@ client.subscribe(
 				subscription {
 					messages_mutated {
 						id,
-						text
+						event,
+						data {
+							text
+						}
 					}
 				}`,
 	},
