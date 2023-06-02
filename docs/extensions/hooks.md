@@ -124,7 +124,7 @@ The callback function itself receives one parameter:
 ### Schedule
 
 Schedule hooks execute at certain points in time rather than when Directus performs a specific action. This is supported
-through [`node-cron`](https://www.npmjs.com/package/node-cron).
+through [`node-schedule`](https://www.npmjs.com/package/node-schedule).
 
 To set up a scheduled event, provide a cron statement as the first parameter to the `schedule()` function. For example
 `schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or `schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday).
@@ -188,22 +188,30 @@ export default ({ embed }, { env }) => {
 
 ### Filter Events
 
-| Name                          | Payload                         | Meta                                 |
-| ----------------------------- | ------------------------------- | ------------------------------------ |
-| `request.not_found`           | `false`                         | `request`, `response`                |
-| `request.error`               | The request errors              | --                                   |
-| `database.error`              | The database error              | `client`                             |
-| `auth.login`                  | The login payload               | `status`, `user`, `provider`         |
-| `auth.jwt`                    | The auth token                  | `status`, `user`, `provider`, `type` |
-| `authenticate`                | The empty accountability object | `req`                                |
-| `(<collection>.)items.query`  | The items query                 | `collection`                         |
-| `(<collection>.)items.read`   | The read item                   | `query`, `collection`                |
-| `(<collection>.)items.create` | The new item                    | `collection`                         |
-| `(<collection>.)items.update` | The updated item                | `keys`, `collection`                 |
-| `(<collection>.)items.delete` | The keys of the item            | `collection`                         |
-| `<system-collection>.create`  | The new item                    | `collection`                         |
-| `<system-collection>.update`  | The updated item                | `keys`, `collection`                 |
-| `<system-collection>.delete`  | The keys of the item            | `collection`                         |
+| Name                          | Payload                              | Meta                                        |
+| ----------------------------- | ------------------------------------ | ------------------------------------------- |
+| `request.not_found`           | `false`                              | `request`, `response`                       |
+| `request.error`               | The request errors                   | --                                          |
+| `database.error`              | The database error                   | `client`                                    |
+| `auth.login`                  | The login payload                    | `status`, `user`, `provider`                |
+| `auth.jwt`                    | The auth token                       | `status`, `user`, `provider`, `type`        |
+| `auth.create`<sup>[1]</sup>   | The created user                     | `identifier`, `provider`, `providerPayload` |
+| `auth.update`<sup>[2]</sup>   | The updated auth token<sup>[3]</sup> | `identifier`, `provider`, `providerPayload` |
+| `authenticate`                | The empty accountability object      | `req`                                       |
+| `(<collection>.)items.query`  | The items query                      | `collection`                                |
+| `(<collection>.)items.read`   | The read item                        | `query`, `collection`                       |
+| `(<collection>.)items.create` | The new item                         | `collection`                                |
+| `(<collection>.)items.update` | The updated item                     | `keys`, `collection`                        |
+| `(<collection>.)items.delete` | The keys of the item                 | `collection`                                |
+| `<system-collection>.create`  | The new item                         | `collection`                                |
+| `<system-collection>.update`  | The updated item                     | `keys`, `collection`                        |
+| `<system-collection>.delete`  | The keys of the item                 | `collection`                                |
+
+<sup>[1]</sup> Available for `ldap`, `oauth2`, `openid` and `saml` driver.
+
+<sup>[2]</sup> Available for `ldap`, `oauth2` and `openid` driver.
+
+<sup>[3]</sup> Available for `oauth2` and `openid` driver, only if set by provider.
 
 ::: tip System Collections
 

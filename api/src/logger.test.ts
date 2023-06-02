@@ -1,7 +1,7 @@
+import { REDACTED_TEXT } from '@directus/constants';
 import { Writable } from 'node:stream';
 import { pino } from 'pino';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { REDACT_TEXT } from './constants.js';
 
 const REFRESH_TOKEN_COOKIE_NAME = 'directus_refresh_token';
 
@@ -54,7 +54,7 @@ describe('req.headers.authorization', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					authorization: REDACT_TEXT,
+					authorization: REDACTED_TEXT,
 				},
 			},
 		});
@@ -76,7 +76,7 @@ describe('req.headers.cookie', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					cookie: REDACT_TEXT,
+					cookie: REDACTED_TEXT,
 				},
 			},
 		});
@@ -96,7 +96,7 @@ describe('req.headers.cookie', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			req: {
 				headers: {
-					cookie: REDACT_TEXT,
+					cookie: REDACTED_TEXT,
 				},
 			},
 		});
@@ -118,7 +118,7 @@ describe('res.headers', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			res: {
 				headers: {
-					'set-cookie': REDACT_TEXT,
+					'set-cookie': REDACTED_TEXT,
 				},
 			},
 		});
@@ -143,7 +143,7 @@ describe('res.headers', () => {
 		expect(logOutput.mock.calls[0][0]).toMatchObject({
 			res: {
 				headers: {
-					'set-cookie': REDACT_TEXT,
+					'set-cookie': REDACTED_TEXT,
 				},
 			},
 		});

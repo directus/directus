@@ -454,6 +454,10 @@ function sidebar() {
 					text: 'Shares',
 				},
 				{
+					link: '/reference/system/translations',
+					text: 'Custom Translations',
+				},
+				{
 					link: '/reference/system/users',
 					text: 'Users',
 				},
@@ -498,6 +502,10 @@ function sidebar() {
 						{
 							text: 'Build a Static Website',
 							link: '/guides/headless-cms/build-static-website/index.html',
+						},
+            {
+							text: 'Set Up Live Preview',
+							link: '/guides/headless-cms/live-preview/index.html',
 						},
 					],
 				},

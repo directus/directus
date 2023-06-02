@@ -1,0 +1,17 @@
+{
+	"name": "@directus/tsconfig",
+	"version": "0.0.7",
+	"description": "TS Config used in Directus projects",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/tsconfig"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"files": [
+		"./node18-esm.json"
+	]
+}

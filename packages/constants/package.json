@@ -1,13 +1,8 @@
 {
 	"name": "@directus/constants",
-	"version": "10.1.0",
-	"type": "module",
-	"sideEffects": false,
-	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch"
-	},
+	"version": "10.2.0",
 	"description": "Shared constants for Directus",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -16,6 +11,8 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"sideEffects": false,
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -24,14 +21,15 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
-	},
-	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
-		"typescript": "5.0.4"
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch"
 	},
 	"dependencies": {
 		"zod": "3.21.4"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"typescript": "5.0.4"
 	}
 }

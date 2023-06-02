@@ -44,4 +44,4 @@ by Directus, and other contributors; it does not change your rights to use your 
 
 To properly generate changelogs and determine the right version number after a change is merged, we rely on
 [changesets](https://github.com/changesets/changesets). Each pull request should include a changeset that describes
-whether the change is a patch/minor/major version bump, and describe what the change is.
+whether the change is a patch/minor/major version bump, and describe what the change is. Changesets should be written in past tense.

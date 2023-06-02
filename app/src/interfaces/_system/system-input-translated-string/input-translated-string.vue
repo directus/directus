@@ -31,7 +31,7 @@
 				</v-input>
 			</template>
 
-			<div v-if="searchValue !== null || translations.length >= 25" class="search">
+			<div v-if="searchValue !== null || filteredTranslationKeys.length >= 25" class="search">
 				<v-input
 					class="search-input"
 					type="text"
@@ -46,49 +46,52 @@
 				</v-input>
 			</div>
 
-			<v-list>
+			<v-list :loading="loading">
 				<v-list-item
-					v-for="translation in translations"
-					:key="translation.key"
+					v-for="translationKey in filteredTranslationKeys"
+					:key="translationKey"
 					class="translation-key"
-					:class="{ selected: localValue && translation.key === localValueWithoutPrefix }"
+					:class="{ selected: localValue && translationKey === localValueWithoutPrefix }"
 					clickable
-					@click="selectKey(translation.key!)"
+					@click="selectKey(translationKey)"
 				>
 					<v-list-item-icon>
 						<v-icon name="translate" />
 					</v-list-item-icon>
-					<v-list-item-content><v-highlight :text="translation.key" :query="searchValue" /></v-list-item-content>
+					<v-list-item-content><v-highlight :text="translationKey" :query="searchValue" /></v-list-item-content>
 					<v-list-item-icon class="info">
-						<TranslationStringsTooltip :translations="translation.translations" hide-display-text />
+						<custom-translations-tooltip :translation-key="translationKey" />
 					</v-list-item-icon>
 				</v-list-item>
-				<v-list-item class="new-translation-string" clickable @click="openNewTranslationStringDialog">
+				<v-list-item class="new-custom-translation" clickable @click="openNewCustomTranslationDrawer">
 					<v-list-item-icon>
 						<v-icon name="add" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ t('interfaces.input-translated-string.new_translation_string') }}
+						{{ t('interfaces.input-translated-string.new_custom_translation') }}
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
 
-		<TranslationStringsDrawer
-			:model-value="isTranslationStringDialogOpen"
-			:translation-string="editingTranslationString"
-			@update:model-value="updateTranslationStringsDialog"
-			@saved-key="setValue(`${translationPrefix}${$event}`)"
+		<DrawerItem
+			v-model:active="isCustomTranslationDrawerOpen"
+			collection="directus_translations"
+			primary-key="+"
+			@input="create"
 		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import type { Translation } from '@/stores/translations';
+import { useTranslationsStore } from '@/stores/translations';
+import { fetchAll } from '@/utils/fetch-all';
+import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { computed, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTranslationStrings, TranslationString } from '@/composables/use-translation-strings';
-import TranslationStringsDrawer from '@/modules/settings/routes/translation-strings/translation-strings-drawer.vue';
-import TranslationStringsTooltip from '@/modules/settings/routes/translation-strings/translation-strings-tooltip.vue';
+import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
 
 const translationPrefix = '$t:';
 
@@ -100,10 +103,10 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	value: () => null,
+	value: null,
 	autofocus: false,
 	disabled: false,
-	placeholder: () => null,
+	placeholder: null,
 });
 
 const emit = defineEmits(['input']);
@@ -115,16 +118,42 @@ const hasValidKey = ref<boolean>(false);
 const isFocused = ref<boolean>(false);
 const searchValue = ref<string | null>(null);
 
-const { translationStrings } = useTranslationStrings();
+const loading = ref(false);
+const translationsKeys = ref<string[]>([]);
+const translationsStore = useTranslationsStore();
 
-const isTranslationStringDialogOpen = ref<boolean>(false);
+const isCustomTranslationDrawerOpen = ref<boolean>(false);
 
-const editingTranslationString = ref<TranslationString | null>(null);
+const fetchTranslationsKeys = async () => {
+	loading.value = true;
 
-const translations = computed(() => {
-	const keys = translationStrings.value ?? [];
+	try {
+		const response: { key: string }[] = await fetchAll(`/translations`, {
+			params: {
+				fields: ['key'],
+				groupBy: ['key'],
+			},
+		});
 
-	return !searchValue.value ? keys : keys.filter((key) => key.key?.includes(searchValue.value!));
+		translationsKeys.value = response.map((t) => t.key);
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+};
+
+fetchTranslationsKeys();
+
+const filteredTranslationKeys = computed(() => {
+	const keys = unref(translationsKeys);
+	const filteredKeys = !searchValue.value ? keys : keys.filter((key) => key.includes(searchValue.value!));
+
+	if (filteredKeys.length > 100) {
+		return filteredKeys.slice(0, 100);
+	}
+
+	return filteredKeys;
 });
 
 const localValue = computed<string | null>({
@@ -136,6 +165,11 @@ const localValue = computed<string | null>({
 		emit('input', val);
 	},
 });
+
+const create = async (item: Translation) => {
+	await translationsStore.create(item);
+	await fetchTranslationsKeys();
+};
 
 watch(
 	() => props.value,
@@ -170,16 +204,9 @@ function checkKeyValidity() {
 	hasValidKey.value = localValue.value?.startsWith(translationPrefix) ?? false;
 }
 
-function openNewTranslationStringDialog() {
+function openNewCustomTranslationDrawer() {
 	menuEl.value.deactivate();
-	isTranslationStringDialogOpen.value = true;
-}
-
-function updateTranslationStringsDialog(val: boolean) {
-	if (val) return;
-
-	editingTranslationString.value = null;
-	isTranslationStringDialogOpen.value = val;
+	isCustomTranslationDrawerOpen.value = true;
 }
 </script>
 
@@ -262,7 +289,7 @@ function updateTranslationStringsDialog(val: boolean) {
 	}
 }
 
-.new-translation-string {
+.new-custom-translation {
 	--v-list-item-color-hover: var(--primary-125);
 
 	color: var(--primary);
