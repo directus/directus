@@ -73,10 +73,6 @@
 				</v-button>
 			</template>
 
-			<template #navigation>
-				<settings-navigation />
-			</template>
-
 			<component :is="`layout-${layout || 'tabular'}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info :title="t('no_results')" icon="search" center>

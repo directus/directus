@@ -1,9 +1,5 @@
 <template>
 	<private-view :title="t('page_not_found')">
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<div class="not-found">
 			<v-info :title="t('page_not_found')" icon="not_interested">
 				{{ t('page_not_found_body') }}

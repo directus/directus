@@ -63,10 +63,6 @@
 			<logs-sidebar-detail v-if="flow" :flow="flow" />
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<div v-if="loading || !flow" class="container center">
 			<v-progress-circular indeterminate />
 		</div>

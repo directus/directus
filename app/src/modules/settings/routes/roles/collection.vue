@@ -14,10 +14,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_settings_roles_collection')" class="page-description" />

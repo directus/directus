@@ -22,10 +22,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<div class="padding-box">
 			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}

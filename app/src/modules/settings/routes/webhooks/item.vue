@@ -47,10 +47,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<v-form
 			v-model="edits"
 			:loading="loading"

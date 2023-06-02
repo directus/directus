@@ -64,7 +64,12 @@ const currentModule = computed(() => {
 					</div>
 				</RouterLink>
 
-				<component :is="`module-navigation-${modulePart.id}`" v-if="modulePart.navigation" />
+				<transition-expand>
+					<component
+						:is="`module-navigation-${modulePart.id}`"
+						v-if="modulePart.navigation && currentModule === modulePart.id"
+					/>
+				</transition-expand>
 			</div>
 
 			<slot name="navigation" />
@@ -81,14 +86,11 @@ const currentModule = computed(() => {
 	font-size: 1rem;
 	background-color: var(--background-normal);
 	padding: 8px;
+	overflow-y: auto;
 }
 
 .module-nav-content {
 	--v-list-item-background-color-hover: var(--background-normal-alt);
 	--v-list-item-background-color-active: var(--background-normal-alt);
-
-	height: calc(100% - 64px);
-	overflow-x: hidden;
-	overflow-y: auto;
 }
 </style>

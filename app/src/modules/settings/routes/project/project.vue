@@ -13,10 +13,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<div class="settings">
 			<v-form v-model="edits" :initial-values="initialValues" :fields="fields" :primary-key="1" />
 		</div>

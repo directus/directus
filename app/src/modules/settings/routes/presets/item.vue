@@ -23,10 +23,6 @@
 				</v-button>
 			</template>
 
-			<template #navigation>
-				<settings-navigation />
-			</template>
-
 			<template #actions>
 				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 					<template #activator="{ on }">

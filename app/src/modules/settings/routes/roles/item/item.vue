@@ -62,10 +62,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
 		<div class="roles">

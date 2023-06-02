@@ -23,10 +23,6 @@
 				</v-button>
 			</template>
 
-			<template #navigation>
-				<settings-navigation />
-			</template>
-
 			<template #actions>
 				<search-input v-model="search" collection="directus_webhooks" />
 

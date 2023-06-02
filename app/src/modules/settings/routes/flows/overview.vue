@@ -10,10 +10,6 @@
 			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<template #actions>
 			<v-button
 				v-tooltip.bottom="createAllowed ? t('create_flow') : t('not_allowed')"

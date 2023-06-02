@@ -52,10 +52,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<div class="collections-item">
 			<div class="fields">
 				<h2 class="title type-label">

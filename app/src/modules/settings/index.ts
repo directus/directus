@@ -4,6 +4,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
 import RouterPass from '@/utils/router-passthrough';
 import { defineModule } from '@directus/utils';
+import SettingsNavigation from './components/navigation.vue';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
@@ -30,6 +31,7 @@ export default defineModule({
 	name: '$t:settings',
 	icon: 'settings',
 	color: 'var(--primary)',
+	navigation: SettingsNavigation,
 	routes: [
 		{
 			name: 'settings-data-model-redirect',

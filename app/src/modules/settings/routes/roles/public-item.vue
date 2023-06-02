@@ -7,10 +7,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<settings-navigation />
-		</template>
-
 		<div class="roles">
 			<permissions-overview :role="null" :permission="permissionKey" />
 		</div>
