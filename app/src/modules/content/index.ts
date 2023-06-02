@@ -89,6 +89,7 @@ export default defineModule({
 	id: 'content',
 	name: '$t:content',
 	icon: 'box',
+	navigation: ContentNavigation,
 	routes: [
 		{
 			name: 'no-collections',
