@@ -1,3 +1,4 @@
+import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
@@ -10,12 +11,13 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
 import {
+	InvalidConfigError,
+	InvalidCredentialsError,
+	InvalidProviderError,
 	InvalidTokenError,
 	RecordNotUniqueError,
 	ServiceUnavailableError,
-	InvalidCredentialsError,
 } from '../../errors/index.js';
-import { InvalidConfigException, InvalidProviderException } from '../../exceptions/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -40,7 +42,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
 		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
-			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig['provider'] });
+			logger.error('Invalid provider config');
+			throw new InvalidConfigError({ provider: additionalConfig['provider'] });
 		}
 
 		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
@@ -61,8 +64,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 					const supportedTypes = issuer.metadata['response_types_supported'] as string[] | undefined;
 
 					if (!supportedTypes?.includes('code')) {
+						logger.error('OpenID provider does not support required code flow');
+
 						reject(
-							new InvalidConfigException('OpenID provider does not support required code flow', {
+							new InvalidConfigError({
 								provider: additionalConfig['provider'],
 							})
 						);
@@ -224,7 +229,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		} catch (e) {
 			if (e instanceof RecordNotUniqueError) {
 				logger.warn(e, '[OpenID] Failed to register user. User not unique');
-				throw new InvalidProviderException();
+				throw new InvalidProviderError();
 			}
 
 			throw e;
@@ -386,7 +391,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof BaseException) {
+					if (isDirectusError(error)) {
 						reason = error.code;
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);

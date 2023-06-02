@@ -10,8 +10,14 @@ import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { InvalidCredentialsError, InvalidProviderError, InvalidTokenError, RecordNotUniqueError } from '../../errors/index.js';
-import { InvalidConfigException, ServiceUnavailableError } from '../../exceptions/index.js';
+import {
+	InvalidConfigError,
+	InvalidCredentialsError,
+	InvalidProviderError,
+	InvalidTokenError,
+	RecordNotUniqueError,
+	ServiceUnavailableError,
+} from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -36,7 +42,8 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		const { authorizeUrl, accessUrl, profileUrl, clientId, clientSecret, ...additionalConfig } = config;
 
 		if (!authorizeUrl || !accessUrl || !profileUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
-			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig['provider'] });
+			logger.error('Invalid provider config');
+			throw new InvalidConfigError({ provider: additionalConfig['provider'] });
 		}
 
 		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
@@ -189,6 +196,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		try {
 			await this.usersService.createOne(updatedUserPayload);
+		} catch (e) {
 			if (e instanceof RecordNotUniqueError) {
 				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
 				throw new InvalidProviderError();

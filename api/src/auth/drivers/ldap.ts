@@ -7,14 +7,14 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
 import {
+	InvalidConfigError,
 	InvalidCredentialsError,
+	InvalidPayloadError,
 	InvalidProviderError,
 	RecordNotUniqueError,
 	ServiceUnavailableError,
 	UnexpectedResponseError,
-	InvalidPayloadError,
 } from '../../errors/index.js';
-import { InvalidConfigException } from '../../exceptions/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -58,7 +58,8 @@ export class LDAPAuthDriver extends AuthDriver {
 			!provider ||
 			(!clientUrl && !config['client']?.socketPath)
 		) {
-			throw new InvalidConfigException('Invalid provider config', { provider });
+			logger.error('Invalid provider config');
+			throw new InvalidConfigError({ provider });
 		}
 
 		const clientConfig = typeof config['client'] === 'object' ? config['client'] : {};
@@ -95,7 +96,8 @@ export class LDAPAuthDriver extends AuthDriver {
 							const error = handleError(err);
 
 							if (error instanceof InvalidCredentialsError) {
-								reject(new InvalidConfigException('Invalid bind user', { provider }));
+								logger.warn('Invalid bind user');
+								reject(new InvalidConfigError({ provider }));
 							} else {
 								reject(error);
 							}
