@@ -688,5 +688,59 @@ function sidebarUserGuide() {
 				},
 			],
 		},
+		{
+			text: 'Data Model',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Collections',
+					link: '/user-guide/data-model/collections',
+				},
+				{
+					text: 'Fields',
+					link: '/user-guide/data-model/fields',
+				},
+				{
+					text: 'Relationships',
+					link: '/user-guide/data-model/relationships',
+				},
+			],
+		},
+		{
+			text: 'Content Module',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Managing Collections',
+					link: '/user-guide/content-module/collections',
+				},
+				{
+					text: 'Items',
+					link: '/user-guide/content-module/items',
+				},
+				{
+					text: 'Layouts',
+					link: '/user-guide/content-module/layouts',
+				},
+				{
+					text: 'Import/Export',
+					link: '/user-guide/content-module/import-export',
+				},
+				{
+					text: 'Filters',
+					link: '/user-guide/content-module/filters',
+				},
+				{
+					text: 'Translation Strings',
+					link: '/user-guide/content-module/translation-strings',
+				},
+				{
+					text: 'Shares',
+					link: '/user-guide/content-module/shares',
+				},
+			],
+		},
 	];
 }
