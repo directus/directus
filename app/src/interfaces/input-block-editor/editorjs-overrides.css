@@ -60,41 +60,49 @@
 	border-radius: var(--border-radius);
 }
 
-.codex-editor .ce-popover__item--focused {
+.codex-editor .ce-popover-item__title {
+	color: var(--foreground-normal);
+}
+
+.codex-editor .ce-popover-item:not(.ce-popover-item--confirmation):hover {
+	background: var(--v-list-background-color-hover);
+}
+
+.codex-editor .ce-popover-item--focused {
 	--webkit-box-shadow: none;
 	box-shadow: none;
 	background: var(--v-list-background-color-active) !important;
 }
 
-.codex-editor .ce-popover__item--confirmation .ce-popover__item-label {
+.codex-editor .ce-popover-item--confirmation .ce-popover-item-label {
 	color: var(--foreground-normal);
 }
 
-.codex-editor .ce-popover__item--active {
+.codex-editor .ce-popover-item--active {
 	color: var(--primary);
 	background: var(--v-list-background-color-active);
 }
 
-.codex-editor .ce-popover__item:hover {
+.codex-editor .ce-popover-item:hover {
 	background: var(--v-list-background-color-hover) !important;
 }
 
-.codex-editor .ce-popover__item--confirmation,
-.codex-editor .ce-popover__item--confirmation:hover {
+.codex-editor .ce-popover-item--confirmation,
+.codex-editor .ce-popover-item--confirmation:hover {
 	background: var(--danger-alt) !important;
 }
 
-.codex-editor .ce-popover__item-icon {
+.codex-editor .ce-popover-item-icon {
 	background: var(--background-page);
 	border: var(--border-width) solid var(--border-normal);
 	box-shadow: none;
 }
 
-.codex-editor .ce-popover__item-icon svg {
+.codex-editor .ce-popover-item-icon svg {
 	fill: var(--foreground-normal);
 }
 
-.codex-editor .ce-popover__item-secondary-label {
+.codex-editor .ce-popover-item-secondary-label {
 	color: var(--foreground-subdued);
 }
 
@@ -274,6 +282,7 @@
 	padding: 0;
 	line-height: inherit;
 }
+
 .codex-editor .ce-paragraph[data-placeholder]:empty::before {
 	color: var(--foreground-subdued);
 }

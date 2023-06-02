@@ -1,11 +1,12 @@
 import api from '@/api';
-import { Settings } from '@directus/types';
-import { createTestingPinia } from '@pinia/testing';
 import * as notifyUtil from '@/utils/notify';
 import * as unexpectedErrorUtil from '@/utils/unexpected-error';
-import { AxiosRequestConfig } from 'axios';
+import { Settings } from '@directus/types';
+import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeAll, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { useSettingsStore } from './settings';
+import { useUserStore } from './user';
 
 beforeEach(() => {
 	setActivePinia(
@@ -15,19 +16,6 @@ beforeEach(() => {
 		})
 	);
 });
-
-import { useSettingsStore } from './settings';
-import { useUserStore } from './user';
-
-const mockTranslationStrings: Settings['translation_strings'] = [
-	{
-		key: 'test_translation',
-		translations: {
-			'en-US': 'My Translation EN',
-			'zh-CN': 'My Translation CN',
-		},
-	},
-];
 
 const mockSettings: Settings = {
 	id: 1,
@@ -48,7 +36,6 @@ const mockSettings: Settings = {
 	mapbox_key: null,
 	module_bar: [],
 	project_descriptor: null,
-	translation_strings: [],
 	default_language: 'en-US',
 	custom_aspect_ratios: null,
 };
@@ -60,23 +47,13 @@ const mockShareUser = { share: 'a6eff2c1-d26b-43b2-bafd-84bb58c3b8ce', role: { a
 vi.mock('@/api', () => {
 	return {
 		default: {
-			get: (path: string, config?: AxiosRequestConfig<any>) => {
+			get: (path: string) => {
 				if (path === '/settings') {
-					if (!config) {
-						return Promise.resolve({
-							data: {
-								data: mockSettings,
-							},
-						});
-					}
-
-					if (config.params?.fields && config.params.fields.includes('translation_strings')) {
-						return Promise.resolve({
-							data: {
-								data: Object.assign({}, mockSettings, { translation_strings: mockTranslationStrings }),
-							},
-						});
-					}
+					return Promise.resolve({
+						data: {
+							data: mockSettings,
+						},
+					});
 				}
 
 				return Promise.reject(new Error(`Path "${path}" is not mocked in this test`));
@@ -98,7 +75,7 @@ vi.mock('@/api', () => {
 
 let apiGetSpy: SpyInstance;
 
-beforeAll(() => {
+beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
 });
 
@@ -188,33 +165,5 @@ describe('updateSettings action', async () => {
 		expect(ApiPatchSpy).toHaveBeenCalledOnce();
 		expect(NotifySpy).not.toHaveBeenCalled();
 		expect(unexpectedErrorSpy).toHaveBeenCalledOnce();
-	});
-});
-
-describe('fetchRawTranslationStrings action', async () => {
-	test('should not update translation_strings value when store is empty', async () => {
-		const settingsStore = useSettingsStore();
-		await settingsStore.fetchRawTranslationStrings();
-
-		expect(apiGetSpy).toHaveBeenCalledOnce();
-		expect(settingsStore.settings).toEqual(null);
-		expect(settingsStore.settings?.translation_strings).toEqual(undefined);
-	});
-
-	test('should update translation_strings value in existing store', async () => {
-		const userStore = useUserStore();
-		userStore.currentUser = mockUser;
-
-		const settingsStore = useSettingsStore();
-		await settingsStore.hydrate();
-
-		expect(apiGetSpy).toHaveBeenCalledTimes(1);
-		expect(settingsStore.settings?.translation_strings).toEqual([]);
-
-		const translationStrings = await settingsStore.fetchRawTranslationStrings();
-
-		expect(apiGetSpy).toHaveBeenCalledTimes(2);
-		expect(settingsStore.settings?.translation_strings).toEqual(mockTranslationStrings);
-		expect(translationStrings).toEqual(mockTranslationStrings);
 	});
 });

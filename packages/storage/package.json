@@ -1,13 +1,8 @@
 {
 	"name": "@directus/storage",
-	"version": "10.0.1",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
-	},
+	"version": "10.0.2",
 	"description": "Object storage abstraction layer for Directus",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -16,6 +11,7 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "BUSL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -24,14 +20,16 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
-		"@types/node": "18.15.13",
-		"@vitest/coverage-c8": "0.31.0",
+		"@directus/tsconfig": "workspace:*",
+		"@types/node": "18.16.12",
+		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"vitest": "0.31.1"
 	}
 }

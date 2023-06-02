@@ -1,13 +1,8 @@
 {
 	"name": "@directus/update-check",
-	"version": "10.0.1",
-	"type": "module",
-	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
-	},
+	"version": "11.0.0",
 	"description": "Check if an update is available for a given package",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -16,6 +11,7 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -24,19 +20,23 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch"
 	},
 	"dependencies": {
-		"semver": "7.5.0",
-		"undici": "5.22.0"
+		"boxen": "7.1.0",
+		"chalk": "5.2.0",
+		"find-cache-dir": "4.0.0",
+		"node-fetch-cache": "3.1.3",
+		"semver": "7.5.1"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
-		"@ngneat/falso": "6.4.0",
-		"@types/semver": "7.3.13",
-		"@vitest/coverage-c8": "0.31.0",
-		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"@directus/tsconfig": "workspace:*",
+		"@npm/types": "1.0.2",
+		"@types/find-cache-dir": "3.2.1",
+		"@types/node-fetch-cache": "3.0.0",
+		"@types/semver": "7.5.0",
+		"typescript": "5.0.4"
 	}
 }

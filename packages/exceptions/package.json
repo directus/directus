@@ -1,14 +1,8 @@
 {
 	"name": "@directus/exceptions",
-	"version": "10.0.1",
-	"type": "module",
-	"sideEffects": false,
-	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
-	},
+	"version": "10.0.2",
 	"description": "Shared exceptions in Directus",
+	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
@@ -17,6 +11,8 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"sideEffects": false,
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -25,16 +21,18 @@
 	"files": [
 		"dist"
 	],
-	"publishConfig": {
-		"access": "public"
+	"scripts": {
+		"build": "tsc --project tsconfig.prod.json",
+		"dev": "tsc --watch",
+		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "0.0.7",
+		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
-		"@vitest/coverage-c8": "0.31.0",
-		"joi": "17.9.1",
+		"@vitest/coverage-c8": "0.31.1",
+		"joi": "17.9.2",
 		"typescript": "5.0.4",
-		"vitest": "0.31.0"
+		"vitest": "0.31.1"
 	}
 }

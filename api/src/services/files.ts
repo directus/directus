@@ -87,6 +87,9 @@ export class FilesService extends ItemsService {
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
+
+			await this.deleteOne(primaryKey);
+
 			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
 		}
 
@@ -113,10 +116,6 @@ export class FilesService extends ItemsService {
 		});
 
 		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
-
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
-			await this.cache.clear();
-		}
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
@@ -313,15 +312,15 @@ export class FilesService extends ItemsService {
 	/**
 	 * Delete a file
 	 */
-	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.deleteMany([key], opts);
+	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
+		await this.deleteMany([key]);
 		return key;
 	}
 
 	/**
 	 * Delete multiple files
 	 */
-	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
@@ -338,10 +337,6 @@ export class FilesService extends ItemsService {
 			for await (const filepath of disk.list(file['id'])) {
 				await disk.delete(filepath);
 			}
-		}
-
-		if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
-			await this.cache.clear();
 		}
 
 		return keys;
