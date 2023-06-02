@@ -12,7 +12,6 @@
 		"node",
 		"sdk"
 	],
-	"type": "module",
 	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
