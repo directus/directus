@@ -20,9 +20,9 @@
 		"eslint-plugin-vue": "9.13.0",
 		"prettier": "2.8.8"
 	},
-	"packageManager": "pnpm@8.5.1",
+	"packageManager": "pnpm@8.6.0",
 	"engines": {
 		"node": ">=18.0.0",
-		"pnpm": ">=8.5.1"
+		"pnpm": "~8.6.0"
 	}
 }
