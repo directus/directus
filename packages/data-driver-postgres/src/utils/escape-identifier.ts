@@ -5,5 +5,5 @@
  * @returns escaped identifier
  */
 export function escapeIdentifier(identifier: string): string {
-	return '"' + identifier.replace(/"/g, '""') + '"';
+	return `"${identifier.replaceAll('"', '""')}"`;
 }

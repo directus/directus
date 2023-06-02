@@ -988,6 +988,9 @@ importers:
 
   packages/data-driver-postgres:
     dependencies:
+      '@directus/data-sql':
+        specifier: workspace:*
+        version: link:../data-sql
       pg:
         specifier: 8.10.0
         version: 8.10.0

@@ -27,7 +27,7 @@
 	},
 	"devDependencies": {
 		"@directus/data": "workspace:*",
-        "@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",
 		"@types/pg": "8.6.6",
 		"@vitest/coverage-c8": "0.31.1",
@@ -35,6 +35,7 @@
 		"vitest": "0.31.1"
 	},
 	"dependencies": {
+		"@directus/data-sql": "workspace:*",
 		"pg": "8.10.0",
 		"pg-query-stream": "^4.5.0"
 	}

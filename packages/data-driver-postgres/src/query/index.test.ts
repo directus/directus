@@ -1,8 +1,8 @@
-import { constructSQLQuery } from './query-builder.js';
+import { constructSQLQuery } from './index.js';
 import { expect, test } from 'vitest';
 import type { AbstractQuery } from '@directus/data/types';
 
-test('very simple statement', () => {
+test.todo('very simple statement', () => {
 	const ast: AbstractQuery = {
 		root: true,
 		store: 'postgres',

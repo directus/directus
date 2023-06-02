@@ -54,6 +54,8 @@ export interface AbstractQueryFieldNodePrimitive extends AbstractQueryNode {
 
 	/** the name of the attribute */
 	field: string;
+
+	alias?: string;
 }
 
 export type AbstractQueryFn = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
@@ -81,6 +83,8 @@ export interface AbstractQueryFieldNodeFn extends AbstractQueryNode {
 	targetNode: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
 
 	args?: (string | number | boolean)[];
+
+	alias?: string;
 }
 
 /**
@@ -91,6 +95,8 @@ export interface AbstractQueryFieldNodeRelatedBase {
 
 	/** Regardless of the type of the relationship, it always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers?: AbstractQueryModifiers;
+
+	alias?: string;
 }
 
 /**
