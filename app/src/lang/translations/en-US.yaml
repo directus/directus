@@ -67,6 +67,7 @@ edit_collection: Edit Collection
 exclusive: Exclusive
 children: Children
 db_only_click_to_configure: 'Database Only: Click to Configure'
+show_profile: Show Profile
 show_active_items: Show Active Items
 show_archived_items: Show Archived Items
 show_all_items: Show All Items
