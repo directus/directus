@@ -1,5 +1,5 @@
 import { PostgresStatement } from './statement.js';
-import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data/types';
+import type { AbstractQuery, AbstractQueryFieldNodePrimitive, ParameterizedQuery } from '@directus/data/types';
 
 /**
  * Generate the SQL equivalent for the given abstract query.
@@ -11,11 +11,11 @@ import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/d
  * @param query - the abstract query
  * @returns An SQL query
  */
-export function constructSQLQuery(query: AbstractQuery): string {
+export function constructSQLQuery(query: AbstractQuery): ParameterizedQuery {
 	const statement = new PostgresStatement(query.collection);
 
 	const primitives = query.nodes.filter((n) => n.type === 'primitive') as AbstractQueryFieldNodePrimitive[];
 	statement.addSelect(primitives);
 
-	return statement.toString();
+	return statement.toParameterizedQuery();
 }

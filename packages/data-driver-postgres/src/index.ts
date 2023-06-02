@@ -39,7 +39,7 @@ export default class DataDriverPostgres implements DataDriver {
 	async query(_query: AbstractQuery): Promise<Readable> {
 		try {
 			const sql = constructSQLQuery(_query);
-			const queryStream = new QueryStream(sql);
+			const queryStream = new QueryStream(sql.statement, sql.parameters);
 			return this.#pool.query(queryStream);
 		} catch (err) {
 			throw Error('Could not query the PostgreSQL datastore');
