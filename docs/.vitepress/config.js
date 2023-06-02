@@ -127,6 +127,10 @@ gtag('config', 'UA-24637628-7');
 		},
 		nav: [
 			{ text: 'Docs', link: '/' },
+			{
+				text: 'User Guide',
+				link: '/reference/files',
+			},
 			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
@@ -140,6 +144,7 @@ gtag('config', 'UA-24637628-7');
 		sidebar: {
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
+			'/reference/files': sidebarUserGuide(),
 		},
 		editLink: {
 			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
@@ -503,7 +508,7 @@ function sidebar() {
 							text: 'Build a Static Website',
 							link: '/guides/headless-cms/build-static-website/index.html',
 						},
-            {
+						{
 							text: 'Set Up Live Preview',
 							link: '/guides/headless-cms/live-preview/index.html',
 						},
@@ -654,6 +659,32 @@ function sidebar() {
 					type: 'page',
 					link: '/self-hosted/upgrades-migrations',
 					text: 'Upgrades & Migrations',
+				},
+			],
+		},
+	];
+}
+
+function sidebarUserGuide() {
+	return [
+		{
+			text: 'Getting Started',
+			items: [
+				{
+					text: 'Introduction',
+					link: '/user-guide/getting-started/introduction',
+				},
+				{
+					text: 'Quickstart Guide',
+					link: '/user-guide/getting-started/quickstart',
+				},
+				{
+					text: 'Data Studio App',
+					link: '/user-guide/getting-started/data-studio-app',
+				},
+				{
+					text: 'Managing Accounts',
+					link: '/user-guide/getting-started/managing-accounts',
 				},
 			],
 		},
