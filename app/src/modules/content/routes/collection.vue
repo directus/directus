@@ -178,10 +178,6 @@
 				</v-button>
 			</template>
 
-			<template #navigation>
-				<content-navigation :current-collection="collection" />
-			</template>
-
 			<v-info
 				v-if="bookmark && bookmarkExists === false"
 				type="warning"
@@ -292,7 +288,6 @@ import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 
 type Item = {

@@ -156,10 +156,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<content-navigation :current-collection="collection" />
-		</template>
-
 		<v-form
 			ref="form"
 			v-model="edits"
@@ -236,7 +232,6 @@ import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detai
 import { useCollection } from '@directus/composables';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
-import ContentNavigation from '../components/navigation.vue';
 import ContentNotFound from './not-found.vue';
 
 interface Props {

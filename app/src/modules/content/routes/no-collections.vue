@@ -6,10 +6,6 @@
 			</v-button>
 		</template>
 
-		<template #navigation>
-			<content-navigation />
-		</template>
-
 		<v-info icon="box" :title="t('no_collections')" center>
 			<template v-if="isAdmin">
 				{{ t('no_collections_copy_admin') }}
@@ -36,7 +32,6 @@
 import { useUserStore } from '@/stores/user';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ContentNavigation from '../components/navigation.vue';
 
 const { t } = useI18n();
 
