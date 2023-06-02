@@ -765,5 +765,21 @@ function sidebarUserGuide() {
 				},
 			],
 		},
+		{
+			text: 'File Library',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Files',
+					link: '/user-guide/file-library/files',
+				},
+				{
+					text: 'Folders',
+					link: '/user-guide/file-library/folders',
+				},
+			],
+		},
+		
 	];
 }
