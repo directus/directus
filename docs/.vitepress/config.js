@@ -742,5 +742,28 @@ function sidebarUserGuide() {
 				},
 			],
 		},
+		{
+			text: 'User Management',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Users',
+					link: '/user-guide/user-management/users',
+				},
+				{
+					text: 'Roles',
+					link: '/user-guide/user-management/roles',
+				},
+				{
+					text: 'Permissions',
+					link: '/user-guide/user-management/permissions',
+				},
+				{
+					text: 'User Directory',
+					link: '/user-guide/user-management/user-directory',
+				},
+			],
+		},
 	];
 }
