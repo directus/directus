@@ -780,6 +780,24 @@ function sidebarUserGuide() {
 				},
 			],
 		},
-		
+		{
+			text: 'Insights',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Dashboards',
+					link: '/user-guide/insights/dashboards',
+				},
+				{
+					text: 'Panels',
+					link: '/user-guide/insights/panels',
+				},
+				{
+					text: 'Charts',
+					link: '/user-guide/insights/charts',
+				},
+			],
+		},
 	];
 }
