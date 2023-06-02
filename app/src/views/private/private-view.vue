@@ -14,7 +14,6 @@
 			aria-label="Module Navigation"
 			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
 		>
-			<module-bar />
 			<v-resizeable
 				v-model:width="navWidth"
 				:min-width="SIZES.minModuleNavWidth"
@@ -23,13 +22,7 @@
 				@dragging="(value) => (isDraggingNav = value)"
 				@transition-end="resetContentOverflowX"
 			>
-				<div class="module-nav alt-colors">
-					<project-info />
-
-					<div class="module-nav-content">
-						<slot name="navigation" />
-					</div>
-				</div>
+				<ModuleNavigation />
 			</v-resizeable>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
@@ -110,17 +103,15 @@ import { computed, provide, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
-import ModuleBar from './components/module-bar.vue';
 import NotificationDialogs from './components/notification-dialogs.vue';
 import NotificationsDrawer from './components/notifications-drawer.vue';
 import NotificationsGroup from './components/notifications-group.vue';
 import NotificationsPreview from './components/notifications-preview.vue';
-import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
+import ModuleNavigation from './components/module-navigation/module-navigation.vue';
 
 const SIZES = {
-	moduleBarWidth: 60,
-	minModuleNavWidth: 220,
+	minModuleNavWidth: 280,
 	minContentWidth: 590,
 	collapsedSidebarWidth: 60,
 	overlaySpace: 60,
@@ -204,15 +195,9 @@ const showMain = computed(() => {
 	let remainingWidth;
 
 	if (windowWidth.value >= 1260) {
-		remainingWidth =
-			windowWidth.value - SIZES.moduleBarWidth - SIZES.minModuleNavWidth - SIZES.minContentWidth - sidebarWidth.value;
+		remainingWidth = windowWidth.value - SIZES.minModuleNavWidth - SIZES.minContentWidth - sidebarWidth.value;
 	} else if (windowWidth.value >= 960) {
-		remainingWidth =
-			windowWidth.value -
-			SIZES.moduleBarWidth -
-			SIZES.minModuleNavWidth -
-			SIZES.minContentWidth -
-			SIZES.collapsedSidebarWidth;
+		remainingWidth = windowWidth.value - SIZES.minModuleNavWidth - SIZES.minContentWidth - SIZES.collapsedSidebarWidth;
 	} else {
 		remainingWidth = windowWidth.value - SIZES.minContentWidth;
 	}
@@ -258,11 +243,11 @@ const maxWidthNav = computed(() => {
 	let maxWidth;
 
 	if (windowWidth.value >= 1260) {
-		maxWidth = windowWidth.value - SIZES.moduleBarWidth - useMainWidth - sidebarWidth.value;
+		maxWidth = windowWidth.value - useMainWidth - sidebarWidth.value;
 	} else if (windowWidth.value >= 960) {
-		maxWidth = windowWidth.value - SIZES.moduleBarWidth - useMainWidth - SIZES.collapsedSidebarWidth;
+		maxWidth = windowWidth.value - useMainWidth - SIZES.collapsedSidebarWidth;
 	} else {
-		maxWidth = windowWidth.value - SIZES.moduleBarWidth + SIZES.overlaySpace;
+		maxWidth = windowWidth.value + SIZES.overlaySpace;
 	}
 
 	return Math.max(maxWidth, SIZES.minModuleNavWidth);
@@ -274,10 +259,9 @@ const maxWidthMain = computed(() => {
 	let maxWidth;
 
 	if (windowWidth.value >= 1260) {
-		maxWidth = windowWidth.value - SIZES.moduleBarWidth - navWidth.value - splitViewMinWidth - sidebarWidth.value;
+		maxWidth = windowWidth.value - navWidth.value - splitViewMinWidth - sidebarWidth.value;
 	} else if (windowWidth.value >= 960) {
-		maxWidth =
-			windowWidth.value - SIZES.moduleBarWidth - navWidth.value - splitViewMinWidth - SIZES.collapsedSidebarWidth;
+		maxWidth = windowWidth.value - navWidth.value - splitViewMinWidth - SIZES.collapsedSidebarWidth;
 	} else {
 		// split view
 		maxWidth = windowWidth.value - splitViewMinWidth;
@@ -401,24 +385,6 @@ function getWidth(input: unknown, fallback: number): number {
 		}
 		&.has-shadow {
 			box-shadow: var(--navigation-shadow);
-		}
-
-		.module-nav {
-			position: relative;
-			display: inline-block;
-			width: 220px;
-			height: 100%;
-			font-size: 1rem;
-			background-color: var(--background-normal);
-
-			&-content {
-				--v-list-item-background-color-hover: var(--background-normal-alt);
-				--v-list-item-background-color-active: var(--background-normal-alt);
-
-				height: calc(100% - 64px);
-				overflow-x: hidden;
-				overflow-y: auto;
-			}
 		}
 
 		@media (min-width: 960px) {
