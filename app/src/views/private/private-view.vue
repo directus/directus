@@ -22,7 +22,11 @@
 				@dragging="(value) => (isDraggingNav = value)"
 				@transition-end="resetContentOverflowX"
 			>
-				<ModuleNavigation />
+				<ModuleNavigation>
+					<template #navigation>
+						<slot name="navigation" />
+					</template>
+				</ModuleNavigation>
 			</v-resizeable>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
