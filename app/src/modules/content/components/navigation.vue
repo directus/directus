@@ -15,10 +15,10 @@
 			:dense="dense"
 		>
 			<navigation-item
-				v-for="collection in rootItems"
-				:key="collection.collection"
+				v-for="item in rootItems"
+				:key="item.collection"
 				:show-hidden="showHidden"
-				:collection="collection"
+				:collection="item"
 				:search="search"
 			/>
 
@@ -39,17 +39,20 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import { isNil, orderBy } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useNavigation } from '../composables/use-navigation';
 import NavigationItem from './navigation-item.vue';
+import { useCollection } from '@directus/composables';
+import { useRoute } from 'vue-router';
 
-const props = defineProps<{
-	currentCollection?: string;
-}>();
+const route = useRoute();
+
+const collection = computed(() => route.params.collection as string);
+
+const { info: currentCollection } = useCollection(collection);
 
 const { t } = useI18n();
-const { currentCollection } = toRefs(props);
 const { activeGroups, showHidden } = useNavigation(currentCollection);
 
 const search = ref('');
