@@ -6,8 +6,7 @@ import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { RangeNotSatisfiableError } from '../errors/index.js';
-import { InvalidQueryException } from '../exceptions/index.js';
+import { InvalidQueryError, RangeNotSatisfiableError } from '../errors/index.js';
 import logger from '../logger.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
@@ -46,7 +45,9 @@ router.get(
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
 		if ('key' in transformation && Object.keys(transformation).length > 1) {
-			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
+			throw new InvalidQueryError({
+				reason: `You can't combine the "key" query parameter with any other transformation`,
+			});
 		}
 
 		if ('transforms' in transformation) {
@@ -56,19 +57,23 @@ router.get(
 			try {
 				transforms = parseJSON(transformation['transforms'] as string);
 			} catch {
-				throw new InvalidQueryException(`"transforms" Parameter needs to be a JSON array of allowed transformations.`);
+				throw new InvalidQueryError({
+					reason: `"transforms" Parameter needs to be a JSON array of allowed transformations`,
+				});
 			}
 
 			// Check if it is actually an array.
 			if (!Array.isArray(transforms)) {
-				throw new InvalidQueryException(`"transforms" Parameter needs to be a JSON array of allowed transformations.`);
+				throw new InvalidQueryError({
+					reason: `"transforms" Parameter needs to be a JSON array of allowed transformations`,
+				});
 			}
 
 			// Check against ASSETS_TRANSFORM_MAX_OPERATIONS
 			if (transforms.length > Number(env['ASSETS_TRANSFORM_MAX_OPERATIONS'])) {
-				throw new InvalidQueryException(
-					`"transforms" Parameter is only allowed ${env['ASSETS_TRANSFORM_MAX_OPERATIONS']} transformations.`
-				);
+				throw new InvalidQueryError({
+					reason: `"transforms" Parameter is only allowed ${env['ASSETS_TRANSFORM_MAX_OPERATIONS']} transformations`,
+				});
 			}
 
 			// Check the transformations are valid
@@ -76,7 +81,9 @@ router.get(
 				const name = transform[0];
 
 				if (!TransformationMethods.includes(name)) {
-					throw new InvalidQueryException(`"transforms" Parameter does not allow "${name}" as a transformation.`);
+					throw new InvalidQueryError({
+						reason: `"transforms" Parameter does not allow "${name}" as a transformation`,
+					});
 				}
 			});
 
@@ -105,16 +112,16 @@ router.get(
 
 		if (assetSettings.storage_asset_transform === 'all') {
 			if (transformation['key'] && allKeys.includes(transformation['key'] as string) === false) {
-				throw new InvalidQueryException(`Key "${transformation['key']}" isn't configured.`);
+				throw new InvalidQueryError({ reason: `Key "${transformation['key']}" isn't configured` });
 			}
 
 			return next();
 		} else if (assetSettings.storage_asset_transform === 'presets') {
 			if (allKeys.includes(transformation['key'] as string)) return next();
-			throw new InvalidQueryException(`Only configured presets can be used in asset generation.`);
+			throw new InvalidQueryError({ reason: `Only configured presets can be used in asset generation` });
 		} else {
 			if (transformation['key'] && systemKeys.includes(transformation['key'] as string)) return next();
-			throw new InvalidQueryException(`Dynamic asset generation has been disabled for this project.`);
+			throw new InvalidQueryError({ reason: `Dynamic asset generation has been disabled for this project` });
 		}
 	}),
 

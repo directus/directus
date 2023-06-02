@@ -14,7 +14,7 @@ import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
-import { InvalidQueryException } from '../exceptions/invalid-query.js';
+import { InvalidQueryError } from '../errors/index.js';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
@@ -179,9 +179,9 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 				const pathScope = pathParts[0]!.split(':')[1];
 
 				if (!pathScope) {
-					throw new InvalidQueryException(
-						`You have to provide a collection scope when sorting or filtering on a many-to-any item`
-					);
+					throw new InvalidQueryError({
+						reason: `You have to provide a collection scope when sorting or filtering on a many-to-any item`,
+					});
 				}
 
 				rootQuery.leftJoin({ [alias]: pathScope }, (joinClause) => {
@@ -240,9 +240,9 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 			const pathScope = pathParts[0]!.split(':')[1];
 
 			if (!pathScope) {
-				throw new InvalidQueryException(
-					`You have to provide a collection scope when sorting or filtering on a many-to-any item`
-				);
+				throw new InvalidQueryError({
+					reason: `You have to provide a collection scope when sorting or filtering on a many-to-any item`,
+				});
 			}
 
 			parent = pathScope;
@@ -488,11 +488,11 @@ export function applyFilter(
 				}
 
 				if (filterPath.includes('_none') || filterPath.includes('_some')) {
-					throw new InvalidQueryException(
-						`"${
+					throw new InvalidQueryError({
+						reason: `"${
 							filterPath.includes('_none') ? '_none' : '_some'
-						}" can only be used with top level relational alias field`
-					);
+						}" can only be used with top level relational alias field`,
+					});
 				}
 
 				const { columnPath, targetCollection, addNestedPkField } = getColumnPath({
@@ -533,7 +533,7 @@ export function applyFilter(
 
 		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
 			if (fields[key] === undefined) {
-				throw new InvalidQueryException(`Invalid filter key "${key}" on "${collection}"`);
+				throw new InvalidQueryError({ reason: `Invalid filter key "${key}" on "${collection}"` });
 			}
 
 			return fields[key];
@@ -545,18 +545,18 @@ export function applyFilter(
 			}
 
 			if (!getFilterOperatorsForType(type).includes(filterOperator as ClientFilterOperator)) {
-				throw new InvalidQueryException(
-					`"${type}" field type does not contain the "_${filterOperator}" filter operator`
-				);
+				throw new InvalidQueryError({
+					reason: `"${type}" field type does not contain the "_${filterOperator}" filter operator`,
+				});
 			}
 
 			if (
 				special.includes('conceal') &&
 				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
 			) {
-				throw new InvalidQueryException(
-					`Field with "conceal" special does not allow the "_${filterOperator}" filter operator`
-				);
+				throw new InvalidQueryError({
+					reason: `Field with "conceal" special does not allow the "_${filterOperator}" filter operator`,
+				});
 			}
 		}
 

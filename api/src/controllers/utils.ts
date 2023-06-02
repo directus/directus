@@ -3,8 +3,8 @@ import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
 import { flushCaches } from '../cache.js';
-import { ForbiddenError, UnsupportedMediaTypeError } from '../errors/index.js';
-import { InvalidPayloadException, InvalidQueryException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
+import { InvalidPayloadException } from '../exceptions/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
@@ -22,7 +22,7 @@ router.get(
 		const { nanoid } = await import('nanoid');
 
 		if (req.query && req.query['length'] && Number(req.query['length']) > 500) {
-			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
+			throw new InvalidQueryError({ reason: `"length" can't be more than 500 characters` });
 		}
 
 		const string = nanoid(req.query?.['length'] ? Number(req.query['length']) : 32);

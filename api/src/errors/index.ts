@@ -8,6 +8,7 @@ export { InvalidForeignKeyError } from './invalid-foreign-key.js';
 export { InvalidIpError } from './invalid-ip.js';
 export { InvalidOtpError } from './invalid-otp.js';
 export { InvalidProviderError } from './invalid-provider.js';
+export { InvalidQueryError } from './invalid-query.js';
 export { InvalidTokenError } from './invalid-token.js';
 export { MethodNotAllowedError } from './method-not-allowed.js';
 export { NotNullViolationError } from './not-null-violation.js';
