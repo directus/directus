@@ -1,3 +1,4 @@
+import type { Component } from 'vue';
 import type { RouteRecordRaw } from 'vue-router';
 import type { Permission } from './permissions.js';
 import type { User } from './users.js';
@@ -8,6 +9,7 @@ export interface ModuleConfig {
 	icon: string;
 	color?: string;
 
+	navigation?: Component;
 	routes: RouteRecordRaw[];
 	hidden?: boolean;
 	preRegisterCheck?: (user: User, permissions: Permission[]) => Promise<boolean> | boolean;

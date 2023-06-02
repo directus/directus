@@ -72,7 +72,7 @@ export function registerExtensions(app: App): void {
 		{ immediate: true }
 	);
 
-	const { registeredModules, onHydrateModules, onDehydrateModules } = registerModules(modules);
+	const { registeredModules, onHydrateModules, onDehydrateModules } = registerModules(modules, app);
 
 	watch(
 		[i18n.global.locale, registeredModules],

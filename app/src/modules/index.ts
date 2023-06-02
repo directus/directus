@@ -3,8 +3,8 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import RouterPass from '@/utils/router-passthrough';
 import { ModuleConfig } from '@directus/types';
-import { ShallowRef, shallowRef } from 'vue';
 import { sortBy } from 'lodash';
+import { App, ShallowRef, shallowRef } from 'vue';
 
 export function getInternalModules(): ModuleConfig[] {
 	const modules = import.meta.glob<ModuleConfig>('./*/index.ts', { import: 'default', eager: true });
@@ -12,7 +12,10 @@ export function getInternalModules(): ModuleConfig[] {
 	return sortBy(Object.values(modules), 'id');
 }
 
-export function registerModules(modules: ModuleConfig[]): {
+export function registerModules(
+	modules: ModuleConfig[],
+	app: App
+): {
 	registeredModules: ShallowRef<ModuleConfig[]>;
 	onHydrateModules: () => Promise<void>;
 	onDehydrateModules: () => Promise<void>;
@@ -46,6 +49,10 @@ export function registerModules(modules: ModuleConfig[]): {
 				component: RouterPass,
 				children: module.routes,
 			});
+
+			if (module.navigation) {
+				app.component(`module-navigation-${module.id}`, module.navigation);
+			}
 		}
 	};
 
