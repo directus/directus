@@ -925,13 +925,94 @@ unsaved_changes: Ndryshime të Pa Ruajtura
 unsaved_changes_copy: Je i sigurt që dëshiron të lësh këtë faqe?
 discard_changes: Anulo Ndryshimet
 discard_all_changes: Anulo të Gjitha Ndryshimet
+discard_changes_copy: Je i sigurt që dëshiron të anulosh të gjitha ndryshimet e bëra?
+show_x_axis: Shfaq Aksin X
+show_y_axis: Shfaq Aksin Y
+keep_editing: Vazhdo të Modifikosh
+page_help_collections_overview: '**Përmbledhje e Koleksioneve** — Lista e të gjitha koleksioneve të cilave ke qasje.'
+page_help_collections_collection: >-
+  **Shfleto Artikujt** — Liston të gjitha artikujt {collection} të cilave ke qasje. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
+page_help_collections_item: >-
+  **Detajet e Artikullit** — Një formë për shikimin dhe menaxhimin e këtij artikulli. Kjo anësore gjithashtu përmban një histori të plotë të rishikimeve, dhe komente të përmbysura.
+page_help_activity_collection: >-
+  **Shfleto Aktivitetin** — Një listë e plotë e të gjitha aktiviteteve të sistemit dhe të përmbajtjes së përdoruesit tënd.
+page_help_docs_global: >-
+  **Përmbledhje e Dokumentacionit** — Dokumente të përshtatura specifikisht për versionin dhe skemën e këtij projekti.
+page_help_files_collection: >-
+  **Biblioteka e Skedarëve** — Liston të gjitha aktet e skedarëve të ngarkuara në këtë projekt. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
+page_help_files_item: >-
+  **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
+page_help_settings_project: "**Cilësimet e Projektit** — Opsionet globale të konfigurimit të projektit tënd."
+page_help_settings_datamodel_collections: >-
+  **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
+page_help_settings_datamodel_fields: >-
+  **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
+page_help_settings_roles_collection: '**Shfleto Rolet** — Liston rolet e Administratorit, Publikut dhe rolet e personalizuara të Përdoruesit.'
+page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
+page_help_settings_presets_collection: >-
+  **Shfleto Cilësimet e Paracaktuara** — Liston të gjitha cilësimet e paracaktuara në projekt, duke përfshirë: faqerojtësit e përdoruesit, rolit dhe globalë, si dhe pamjet e paracaktuara.
+page_help_settings_presets_item: >-
+  **Detajet e Cilësimeve të Paracaktuara** — Një formë për menaxhimin e faqerojtësve dhe cilësimeve të paracaktuara të koleksionit.
+page_help_settings_webhooks_collection: '**Shfleto Webhooks** — Liston të gjitha webhooks brenda projektit.'
+page_help_settings_webhooks_item: '**Detajet e Webhook** — Një formë për krijimin dhe menaxhimin e webhooks të projektit.'
+page_help_settings_flows_collection: '**Shfleto Flujot** — Liston të gjitha flujot brenda projektit.'
+page_help_settings_flows_item: '**Detajet e Flujos** — Hapësira për menaxhimin e një ose më shumë operacionesh.'
+page_help_settings_translations_collection: '**Shfleto Përkthimet e Personalizuara** — Liston të gjitha përkthimet e personalizuara brenda projektit.'
+page_help_settings_translations_item: '**Detajet e Përkthimit të Personalizuar** — Një formë për shikimin dhe menaxhimin e këtij artikulli.'
+page_help_users_collection: '**Drejtoria e Përdoruesve** — Liston të gjithë përdoruesit e sistemit brenda këtij projekti.'
+page_help_users_item: >-
+  **Detajet e Përdoruesit** — Menaxho informacionin e llogarisë sënde, ose shiko detajet e përdoruesve të tjerë.
+page_help_insights_overview: '**Insights** — Lista e kokpitëve të cilave ke qasje.'
+page_help_insights_dashboard: '**Dashboard** — Hapësira për menaxhimin e një ose më shumë paneleve'
+activity_feed: Feed Aktiviteti
+add_new: Shto të Ri
+create_new: Krijo të Ri
+all: Të Gjithë
+none: Asnjë
+no_layout_collection_selected_yet: Ende nuk është zgjedhur asnjë strukturë/koleksion
+batch_delete_confirm: >-
+  Nuk janë zgjedhur artikuj | A je i sigurtë që dëshiron të fshish këtë artikull? Ky veprim nuk mund të zhbëhet. | A je i sigurtë që dëshiron të fshish këto {count} artikuj? Ky veprim nuk mund të zhbëhet.
+cancel: Anulo
+no_upscale: Mos zgjero imazhet
+collection: Koleksion
+collections: Koleksione
+content: Përmbajtje
+singleton: Singleton
+singleton_label: Trajto si objekt të vetëm
+system_fields_locked: Fushat e sistemit janë të bllokuara dhe nuk mund të redaktohen
+directus_collection:
+  directus_activity: Regjistrat e përgjegjshëm për të gjitha eventet
+  directus_collections: Konfigurimi shtesë i koleksionit dhe metadata
+  directus_dashboards: Dashboards brenda modulit të Insights
+  directus_fields: Konfigurimi shtesë i fushave dhe metadata
+  directus_files: Metadata për të gjitha asetet e menaxhuara të skedarëve
+  directus_flows: Flujot e automatizimit
+  directus_folders: Ofron drejtoritë virtuale për skedarë
+  directus_migrations: Cila version i bazës së të dhënave që po përdorni
+  directus_notifications: Njoftimet e dërguara për përdoruesit
+  directus_operations: Operacionet që drejtohen në Flujot
+  directus_panels: Panelet individuale brenda kokpitëve të Insights
+  directus_permissions: Lejet e qasjes për çdo rol
+  directus_presets: Cilësimet e paracaktuara për parazgjedhjet e koleksionit dhe faqerojtësit
+  directus_relations: Konfigurimi i marrëdhënieve dhe metadata
+  directus_revisions: Instantanet e të dhënave për të gjithë aktivitetin
+  directus_roles: Grupet e lejeve për përdoruesit e sistemit
+  directus_sessions: Informacioni i sesioneve të përdoruesit
+  directus_settings: Opsionet e konfigurimit të projektit
+  directus_shares: Gjurmët e artikujve të ndarë jashtë
+  directus_users: Përdoruesit e sistemit për platformën
+  directus_webhooks: Konfigurimi për kërkesat e bazuar në evente të HTTP
+  directus_translations: Përkthimet e personalizuara
 fields:
   directus_activity:
+    collection: Koleksion
     origin: Origjina
   directus_collections:
+    collection: Koleksion
     note: Shënim
     color: Ngjyra
     display_template: Shabllon i Shfaqjes
+    singleton: Singleton
     sort_field: Fusha e Renditjes
   directus_files:
     title: Titulli
@@ -955,11 +1036,13 @@ fields:
     role: Roli
   directus_fields:
     note: Shënim
+    singleton: Singleton
     translation: Përkthimet e Emrit të Fushës
   directus_roles:
     name: Emri i Rolit
   directus_webhooks:
     name: Emri
+    collections: Koleksione
 field_options:
   directus_settings:
     security_divider_title: Siguria
@@ -968,12 +1051,14 @@ field_options:
     update: Përditëso
   directus_collections:
     collection_setup: Setup i Koleksionit
+    singleton: Trajto si objekt të vetëm
     language: Gjuha
     archive_divider: Arkivo
     sort_divider: Rendit
   directus_roles:
     fields:
       name_name: Emri
+    collections_name: Koleksione
   directus_users:
     status_dropdown_active: Aktiv
   directus_webhooks:
@@ -988,11 +1073,16 @@ interfaces:
   filter:
     name: Filtri
     add_filter: Shto Filter
+    all: Të Gjithë
     any: Çdo
   presentation-links:
     primary: Primar
   input-code:
     code: Kodi
+  system-collection:
+    collection: Koleksion
+  system-collections:
+    collections: Koleksione
   select-color:
     color: Ngjyra
   system-fields:
@@ -1036,6 +1126,8 @@ displays:
     boolean: Boolean
     icon_on: Icon Aktive
     icon_off: Icon Joaktive
+  collection:
+    collection: Koleksion
   color:
     color: Ngjyra
   datetime:
