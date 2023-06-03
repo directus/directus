@@ -32,15 +32,13 @@ mkdir -p ${DIRECTUS_INTERFACES}/fields-masked
 wget -O ${DIRECTUS_INTERFACES}/fields-masked/index.js https://github.com/dimitrov-adrian/directus-extension-masked-interface/releases/download/v1.1.0/index.js
 
 # Install https://github.com/rezo-labs/directus-extension-computed-interface
-pushd /tmp
-git clone https://github.com/rezo-labs/directus-extension-computed-interface.git
-pushd directus-extension-computed-interface
-	pnpm install
-	pnpm build
-	mkdir -p ${DIRECTUS_INTERFACES}/computed-interface
-	cp dist/index.js ${DIRECTUS_INTERFACES}/computed-interface
-popd
-popd
+git clone https://github.com/rezo-labs/directus-extension-computed-interface.git /tmp
+cd /tmp/directus-extension-computed-interface
+pnpm install
+pnpm build
+mkdir -p ${DIRECTUS_INTERFACES}/computed-interface
+cp dist/index.js ${DIRECTUS_INTERFACES}/computed-interface
+cd ..
 
 # Install crawless custom extensions
 # Download from project: https://gitlab.com/crawless/directus-custom-extensions
