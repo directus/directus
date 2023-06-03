@@ -692,18 +692,246 @@ optional_system_fields: Fushat Opsionale të Sistemit
 value_unique: Vlera duhet të jetë unike
 all_activity: Të Gjitha Aktivitetet
 create_item: Krijo Artikull
+display_template: Shabllon i Shfaqjes
+language_display_template: Shabllon i Shfaqjes së Gjuhës
+translations_display_template: Shabllon i Shfaqjes së Përkthimeve
+n_items_selected: 'Nuk janë Zgjedhur Artikuj | 1 Artikull i Zgjedhur | {n} Artikuj të Zgjedhur'
+per_page: Për Faqe
+all_files: Të gjitha Skedarët
+my_files: Skedarët e mi
+recent_files: Skedarët e fundit
+create_folder: Krijo Dosje
+edit_folder: Modifiko Dosje
+folder_name: Emri i Dosjes...
+folder_key: Çelësi i Dosjes...
+add_file: Shto Skedar
+replace_file: Zëvendëso Skedar
+no_results: Pa Rezultate
+no_results_copy: Rregullo ose hiq filtrat e kërkimit për të parë rezultatet.
+no_visible_fields: Formë Bosh
+no_visible_fields_copy: Kjo formë nuk ka fusha të dukshme.
+clear_filters: Hiq Filtrat
+saves_automatically: Ruhet Automatikisht
+role: Roli
+edit_role: Modifiko Roli
+rule: Rregull
+user: Përdorues
+no_presets: Pa Para-caktuar
+no_presets_copy: Nuk ka asnjë para-caktim ose faqeshënues të ruajtur ende.
+no_presets_cta: Shto Para-caktim
+presets_only: Vetëm Para-caktuar
+create: Krijo
+on_create: Gjatë Krijimit
+on_update: Gjatë Përditësimit
+read: Lexo
+update: Përditëso
+delete: Fshi
+select_fields: Zgjidh Fushat
+format_text: Format Teksti
+format_value: Format Vlera
+abbreviate_value: Shkurto Vlerën
+operator: Operator
+bold: Trashë
+toggle: Ndërrimi
+icon_on: Icon Aktive
+icon_off: Icon Joaktive
+label: Etiketë
+flows: Rrjedha
+flow: Rrjedh
+select_a_flow: Zgjidh një Rrjedhë
+run_flow_confirm: A je i sigurtë që dëshiron të ekzekutosh këtë rrjedhë?
+run_flow_on_current_collection: Zbato Rrjedhën në Koleksionin Aktual
+run_flow_on_current: Zbato Rrjedhën në Artikullin Aktual
+run_flow_on_current_edited_confirm: Ky artikull mund të përditësohet nga kjo rrjedhë, a je i sigurtë që dëshiron të ekzekutosh atë?
+run_flow_on_selected: Zgjidh Një ose më Shumë Artikuj Së Pari | Zbato Rrjedhën në 1 Artikull të Zgjedhur | Zbato Rrjedhën në {n} Artikuj të Zgjedhur
+run_flow: Zbato Rrjedhën
+run_flow_success: Rrjedha "{flow}" u ekzekutua me sukses
+field_name_placeholder: Shkruaj emrin e fushës...
+field_key_placeholder: Shkruaj çelësin e fushës...
+trigger: Shkaktues
+trigger_options: Opsionet e Shkaktuesit
+view_trigger: Shiko Shkaktuesin
+create_trigger: Krijo Shkaktues
+trigger_setup: Setup i Shkaktuesit
+change_trigger: Ndërro Shkaktuesin
+flow_delete_confirm: A je i sigurtë që dëshiron të fshijësh Rrjedhën "{flow}"? Ky veprim nuk mund të anulohet.
+set_flow_active: Aktivizo Rrjedhën
+set_flow_inactive: Çaktivizo Rrjedhën
+edit_flow: Modifiko Rrjedhën
+delete_flow: Fshi Rrjedhën
+no_other_flows_copy: Ende nuk ke ndonjë Rrjedhë tjetër.
+no_flows: Pa Rrjedha
+no_flows_copy: Ende nuk ke ndonjë Rrjedhë.
+create_flow: Krijo Rrjedhë
+creating_new_flow: Po Krijohet Rrjedhë e Re
+updating_flow: Po Përditësohet Rrjedhë
+flow_setup: Setup i Rrjedhës
 flow_name: Emri
+flow_tracking: Aktiviteti & Ndjekja e Regjistrave
+flow_tracking_all: Ndjeke Aktivitetin & Regjistrat
+flow_tracking_activity: Ndjeke Vetëm Aktivitetin
+flow_tracking_null: Mos Ndjeke Asgjë
+start_flow: Fillon Rrjedhën
+stop_flow: Ndalon Rrjedhën
+create_operation: Krijo Operacion
+edit_operation: Modifiko Operacion
+code: Kodi
+operation_options: Opsionet e Operacionit
+operation_name: Emri i operacionit...
+operation_key: Identifikuesi për referencë...
+operation_key_unique_error: Çelësat e operacionit duhet të jenë unikë në një Rrjedhë
+operation_handle_resolve: 'Zgjidh: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
+operation_handle_reject: 'Refuzo: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
+insights: Insight-e
+dashboard: Dashboard
+panel: Paneli
+panel_options: Opsionet e Panelit
+panel_header: Koka e Panelit
+panel_name_placeholder: Emërtoni këtë panel...
+panel_note_placeholder: Detaje opsionale rreth këtij paneli...
+panel_delete_confirm: A je i sigurtë që dëshiron të fshijësh këtë panel? Ky veprim nuk mund të anulohet.
+list_panel_allow_edit: Lejo Redaktimin në Varg
+dashboard_delete_confirm: A je i sigurtë që dëshiron të fshijësh këtë panel? Ky veprim nuk mund të anulohet.
+edit_dashboard: Modifiko Dashboard
+delete_dashboard: Fshi Dashboard
+visible: I dukshëm
+prefix_placeholder: Teksti para vlerës...
+suffix_placeholder: Teksti pas vlerës...
+decimals_placeholder: Numri i vendeve pas presjes...
+no_dashboards: Pa Dashboards
+no_dashboards_copy: Ende nuk ke ndonjë Dashboards.
+create_dashboard: Krijo Dashboard
+dashboard_name: Emri i Dashboard
+no_data: Pa të Dhëna
+no_data_in_flow: Nuk u prodhua ose u aksesua asnjë të dhënë brenda kësaj Rrjedhë
+accountability: Përgjegjësia
+payload: Ngarkesa
+details: Detajet
+full_screen: Ekran i Plotë
+full_text_search: Kërkim i Plotë i Tekstit
+edit_panels: Modifiko Panelet
+center_align: Qendro
+left_align: Aligno Majtas
+right_align: Aligno Djathtas
+fit_to_screen: Përshtat Ekranin
+image_url: Url e Imazhit
+alt_text: Teksti
+media: Media
+quality: Cilësia
+width: Gjerësia
+height: Lartësia
+transformation_preset_key: Çelësi i Paracaktuar i Transformimit
+source: Burimi
+url_placeholder: Shkruaj një url...
+display_text: Shfaq Tekstin
+display_text_placeholder: Shkruaj një tekst për të shfaqur...
+interface_group_text_and_numbers: Tekst & Numra
+interface_group_selection: Zgjedhja
+interface_group_relational: Relacionale
+interface_group_presentation: Prezantimi
+interface_group_groups: Grupet
+interface_group_other: Të tjera
+tooltip: Ndihmë
+tooltip_placeholder: Shkruaj një ndihmë...
+unlimited: I pakufizuar
+open_link_in: Hap lidhjen në
+new_tab: Skedë të re
+current_tab: Skedën aktuale
+save_image: Ruaj Imazhin
+save_media: Ruaj Median
 wysiwyg_options:
+  aligncenter: Qendro
+  alignjustify: Justifiko
+  alignleft: Aligno Majtas
+  alignnone: Pa Alignim
+  alignright: Aligno Djathtas
   forecolor: Ngjyra e Paraplanit
   backcolor: Ngjyra e Prapaplanit
+  bold: Trashë
+  italic: Italik
+  underline: Nën të Vizuar
+  strikethrough: Nëpër të Vizuar
+  subscript: Nënshkruar
+  superscript: Mbi të Shkruar
+  codeblock: Kodi
+  blockquote: Citati
+  bullist: Listë me Pika
+  numlist: Listë me Numra
+  hr: Rregulli Horizontal
+  link: Shto/Modifiko Lidhjen
+  unlink: Hiq Lidhjen
+  media: Shto/Modifiko Median
+  image: Shto/Modifiko Imazhin
+  copy: Kopjo
+  cut: Prit
+  paste: Ngjit
+  heading: Kryesore
+  h1: Kryesore 1
+  h2: Kryesore 2
+  h3: Kryesore 3
+  h4: Kryesore 4
+  h5: Kryesore 5
+  h6: Kryesore 6
+  fontselect: Zgjidh Shkronjën
+  fontsizeselect: Zgjidh Madhësinë e Shkronjës
+  indent: Indent
+  outdent: Outdent
+  undo: Anulo
+  redo: Rikthe
+  remove: Hiq
+  removeformat: Hiq Formatin
   selectall: Zgjidh Të Gjitha
+  table: Tabela
+  visualaid: Shiko elementet e padukshme
+  source_code: Kodi Burimor
+  fullscreen: Kodi Burimor
+  directionality: Drejtimi
+dropdown: Zbritëse
+choices: Zgjedhje
+choices_option_configured_incorrectly: Opsionet e zgjedhjeve janë konfiguruar gabim
+deselect: Anulo Zgjedhjen
+deselect_all: Anulo të Gjitha
+other: Të tjera...
+adding_user: Po shtohet Përdoruesi
+unknown_user: Përdorues i Panjohur
+creating_in: 'Po krijohet artikulli në {collection}'
+editing_in: 'Po modifikohet artikulli në {collection}'
+viewing_in: 'Po shikohet artikulli në {collection}'
+creating_unit: 'Po krijohet {unit}'
+editing_unit: 'Po modifikohet {unit}'
+editing_in_batch: 'Modifikim në masë i {count} artikujve'
+no_options_available: Nuk ka opsione të disponueshme
+settings_data_model: Modeli i të Dhënave
+settings_permissions: Role dhe Leje
+settings_project: Cilësimet e Projektit
 settings_webhooks: Webhooks
+settings_flows: Rrjedha
+settings_presets: Cilësimet e Paracaktuara dhe Faqerojtësit
+settings_translations: Përkthimet e Personalizuara
+one_or_more_options_are_missing: Mungon një ose më shumë opsione
+scope: Shtrirje
+actions: Veprimet
+select: Zgjidh...
+layout: Struktura
+tree_view: Shikim si Pemë
+changes_are_permanent: Ndryshimet janë të përhershme
+preset_name_placeholder: Shërben si paracaktuar kur është bosh...
+preset_search_placeholder: Kërko...
+editing_preset: Modifikim i Cilësimeve të Paracaktuara
+layout_preview: Parashikim i Strukturës
+layout_setup: Konfigurim i Strukturës
+data: Të Dhënat
+unsaved_changes: Ndryshime të Pa Ruajtura
+unsaved_changes_copy: Je i sigurt që dëshiron të lësh këtë faqe?
+discard_changes: Anulo Ndryshimet
+discard_all_changes: Anulo të Gjitha Ndryshimet
 fields:
   directus_activity:
     origin: Origjina
   directus_collections:
     note: Shënim
     color: Ngjyra
+    display_template: Shabllon i Shfaqjes
     sort_field: Fusha e Renditjes
   directus_files:
     title: Titulli
@@ -717,12 +945,14 @@ fields:
     title: Titulli
     language: Gjuha
     status_active: Aktiv
+    role: Roli
     last_page: Faqja e Fundit
     last_access: Qasja e Fundit
   directus_settings:
     module_bar: Shiriti i Moduleve
   directus_shares:
     name: Emri
+    role: Roli
   directus_fields:
     note: Shënim
     translation: Përkthimet e Emrit të Fushës
@@ -733,6 +963,9 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Siguria
+  directus_activity:
+    create: Krijo
+    update: Përditëso
   directus_collections:
     collection_setup: Setup i Koleksionit
     language: Gjuha
@@ -746,8 +979,11 @@ field_options:
   directus_webhooks:
     status_options_active: Aktiv
     status_options_inactive: Joaktiv
+    actions_create: Krijo
+    actions_update: Përditëso
 live_preview:
   new_window: Hap në Dritare të Re
+table: Tabela
 interfaces:
   filter:
     name: Filtri
@@ -755,17 +991,22 @@ interfaces:
     any: Çdo
   presentation-links:
     primary: Primar
+  input-code:
+    code: Kodi
   select-color:
     color: Ngjyra
   system-fields:
     select_a_collection: Zgjidh një Koleksion
   system-display-template:
+    display-template: Shabllon i Shfaqjes
     collection_field_not_setup: Opsioni i fushës së koleksionit është konfiguruar gabim
     select_a_collection: Zgjidh një Koleksion
   presentation-divider:
     divider: Ndarës
   select-dropdown:
     choices_value_placeholder: Shkruaj një vlerë...
+  select-dropdown-m2o:
+    display_template: Shabllon i Shfaqjes
   input-rich-text-md:
     edit: Modifiko
   map:
@@ -775,12 +1016,26 @@ interfaces:
   list:
     sort: Rendit
   boolean:
+    toggle: Ndërrimi
     label_default: Aktivizuar
+  translations:
+    display_template: Shabllon i Shfaqjes
+  user:
+    user: Përdorues
+    modes:
+      dropdown: Zbritëse
+  input-block-editor:
+    tools_options:
+      code: Kodi
+      table: Tabela
+      underline: Nën të Vizuar
 displays:
   translations:
     translations: Përkthimet
   boolean:
     boolean: Boolean
+    icon_on: Icon Aktive
+    icon_off: Icon Joaktive
   color:
     color: Ngjyra
   datetime:
@@ -791,6 +1046,8 @@ displays:
     font: Fonti
     font_serif: Serif
     font_monospace: Monospace
+    bold: Trashë
+    italic: Italik
     prefix: Prefiks
     suffix: Sufiks
     color: Ngjyra
@@ -800,16 +1057,30 @@ displays:
   labels:
     choices_value_placeholder: Shkruaj një vlerë...
   user:
+    user: Përdorues
     name: Emri
 layouts:
   cards:
     title: Titulli
+  tabular:
+    tabular: Tabela
   kanban:
     advanced: Avancuar
+panels:
+  label:
+    name: Etiketë
 operations:
+  item-create:
+    payload: Ngarkesa
+  item-update:
+    payload: Ngarkesa
   log:
     message: Mesazh
   notification:
+    recipient: Përdorues
     message: Mesazh
   request:
     url: URL
+  trigger:
+    flows: Rrjedha
+    flow: Rrjedh
