@@ -1268,42 +1268,267 @@ field_options:
       value: Vlera
       add: Shto Header
 no_fields_in_collection: 'Nuk ka fusha në "{collection}" akoma'
+no_value: Pa vlerë
+do_nothing: Mos bëj asgjë
+generate_and_save_uuid: Gjenero dhe Ruaj UUID
+save_current_user_id: Ruaj ID e Përdoruesit Aktual
+save_current_user_role: Ruaj Rolin e Përdoruesit Aktual
+save_current_datetime: Ruaj Datën/Ora Aktuale
+always_open: Gjithmonë e Hapur
+start_open: Fillon e Hapur
+start_collapsed: Fillon e Mbyllur
+block: Bllok
+inline: Në vijë
 comment: Komenti
 live_preview:
+  enable: Aktivizo Parashikimin
+  disable: Çaktivizo Parashikimin
+  change_size: Ndrysho Përmasat e Shfaqjes
+  refresh: Rifresko Parashikimin
   new_window: Hap në Dritare të Re
+  close_window: Hap në Pamje të Ndara
+  toggle_3d: Ndëro 3D
+shares: Ndaj
+unlimited_usage: Përdorim i Pakufizuar
+uses_left: S'ka mbetur asnjë përdorim | 1 përdorim i mbetur | {n} përdorime të mbetura
+no_shares: Asnjë ndarje për t'u shfaqur
+new_share: Ndarje e Re
+expired: Skaduar
+upcoming: E Ardhshme
+share: Ndaj
+share_item: Ndaj Artikull
+shared_with_you: Një artikull është ndarë me ju
+shared_enter_passcode: Shkruani kodin tuaj për të vazhduar...
+shared_leave_blank_for_unlimited: Lëreni bosh për të pakufizuar
+shared_times_remaining: Ky link mund të përdoret vetëm {n} herë
+shared_last_remaining: Ky link mund të përdoret vetëm një herë
+shared_uses_left: Për siguri shtesë, kjo faqe e ndarë është konfiguruar me një numër të limituar të shikimeve. Aktualisht ka mbetur {n} shikime, pas të cilave, faqja nuk do të jetë më e aksesueshme.
+share_access_page: Akseso Faqen e Ndarë
+share_access_not_found: Kjo faqe e ndarë ose nuk ekziston ose ka kaluar numrin maksimal të përdorimeve të lejuara.
+share_access_not_found_desc: Ju lutem kontaktoni një përdorues të autorizuar të këtij projekti për të kërkuar qasje.
+share_access_not_found_title: Faqe e Ndarë e Panjohur
+share_copy_link: Kopjo Lidhjen
+share_copy_link_success: Lidhja u Kopjua
+share_copy_link_error: Nuk mund të Kopjojë Lidhjen
+share_send_link: Dërgo Lidhjen
+relational_triggers: Shkaktuesit Relacional
+referential_action_field_label_m2o: Gjatë Fshirjes së {collection}...
+referential_action_field_label_o2m: Gjatë Hiqjes së {collection}...
+referential_action_no_action: Parandalo fshirjen
+referential_action_cascade: Fshi artikullin e {collection} (cascade)
+referential_action_set_null: Nullifiko fushën {field}
+referential_action_set_default: Vendos {field} në vlerën e paracaktuar
+choose_action: Zgjidh Veprimin
+continue_label: Vazhdo
+continue_as: >-
+  {name} është aktualisht i autentifikuar. Nëse njihni këtë llogari, shtypni vazhdo.
+editing_role: 'Roli {role}'
+creating_webhook: Po krijohet Webhook
+default_label: Parazgjedhur
+delete_label: Fshi
+delete_are_you_sure: >-
+  Ky veprim është përfundimtar dhe nuk mund të zhbëhet. A jeni i sigurt se doni të vazhdoni?
+delete_field_are_you_sure: >-
+  A jeni i sigurt se doni të fshini fushën "{field}"? Ky veprim nuk mund të zhbëhet.
 description: Përshkrim
+done: Përfunduar
+duplicate: Kopjo
+limit: Limit
 email: Email
+embed: Trupëzim
+fallback_icon: Ikonë Zëvendësuese
+field: Fushe | Fusha
+file: Skedar
+file_library: Biblioteka e Skedareve
+forgot_password: Harruat Fjalëkalimin
 hidden: I Fshehur
+hidden_in_group: I fshehur në {group}
+icon: Ikonë
+info: Info
+normal: Normal
+success: Sukses
+warning: Paralajmërim
+danger: Rrezik
+colors:
+  purple: Purpurt
+  blue: Blu
+  green: Gjelbër
+  yellow: Verdhë
+  orange: Portokalli
+  red: Kuqe
+  black: Zi
+  gray: Gri
+  white: Bardhë
+junction_collection: Koleksion Nodal
+latency: Latencë
+login: Hyr
+my_activity: Aktiviteti im
+not_authenticated: Jo i autentifikuar
+authenticated: I autentifikuar
+options: Opsione
+otp: Fjalëkalim i Njëherëshëm
 password: Fjalëkalimi
+permissions: Leje
+relationship: Marrëdhënie
+reset: Reset
+reset_password: Ndrysho Fjalëkalimin
+revisions: Rishikime
+no_revisions: Ende Asnjë Rishikim
+no_logs: Ende Asnjë Regjistrim
+revert: Kthehu
+save: Ruaj
+schema: Skemë
+search: Kërko
+select_existing: Zgjidh Ekzistuesin
+select_field_type: Zgjidh llojin e fushës
+select_interface: Zgjidh ndërfaqen
+settings: Parametra
+sign_in: Hyni
+sign_out: Dil
+sign_out_confirm: A jeni i sigurt se dëshironi të dilni?
+something_went_wrong: Diçka shkoi keq.
+sort_direction: Drejtimi i Renditjes
+export_location: Vendndodhja e Eksportimit
+export_started: Eksportimi ka filluar
+export_started_copy: Eksportimi juaj ka filluar. Ju do të njoftoheni kur të jetë gati për të shkarkuar.
+sort_asc: Rendit Në Ngritje
+sort_desc: Rendit Në Zbritje
+disable_sort: Çaktivizo Renditjen
 template: Template
+require_value_to_be_set: Kërko vlerën të jetë caktuar në krijim
+translation: Përkthim
 translation_placeholder: Shkruani një përkthim...
+value: Vlerë
+view_project: Shiko Projektin
+report_error: Raporto Gabimin
+start: Fillim
 table: Tabela
+list: Listë
+search_filter: Kërko & Filro
+enable_search_filter: Aktivizo kërkimin dhe filtrimin
+item_link: Lidhja e artikullit
+show_link_to_item: Shfaq një lidhje për artikullin
+navigate_to_item: Shko tek Artikulli
+undo_removed_item: Zhbëj Hiqjen e Artikullit
+remove_item: Hiq Artikullin
+delete_item: Fshi Artikullin
 interfaces:
   filter:
     name: Filtri
+    description: Konfiguro një objekt filtrues.
     add_filter: Shto Filter
+    add_group: Grupi And / Or
+    add_value: Shto Vlerën
+    logic_type_and: DHE
+    logic_type_or: OSE
     all: Të Gjithë
     any: Çdo
+    and: dhe
+    of_the_following: nga të mëposhtmet
+    no_rules: Asnjë rregull i konfiguruar
+    change_value: Kliko për të ndryshuar vlerën
+    placeholder: Tërhiq rregullat këtu
+    add_key_placeholder: Shto një çelës dhe shtyp enter...
+  fields:
+    name: Fusha
+  group-accordion:
+    name: Akordion
+    description: Shfaq fushat ose grupet si seksione akordion
+    start: Fillim
+    all_closed: Të Gjitha të Mbyllura
+    first_opened: E Para e Hapur
+    all_opened: Të Gjitha të Hapura
+    accordion_mode: Modaliteti i Akordionit
+    max_one_section_open: Maksimum 1 Seksion i Hapur
   presentation-links:
+    presentation-links: Lidhje Butonash
+    links: Lidhje
+    description: Butonat e lidhjeve konfigurues për lansimin e URL-ve dinamike
+    style: Stil
     primary: Primar
+    link: Lidhje
+    button: Butonat
+    error: Nuk mund të kryej veprimin
+  select-multiple-checkbox:
+    checkboxes: Kutitë për Kontrollim
+    description: Zgjidhni midis opsioneve të shumta përmes kutive të kontrollimit
+    allow_other: Lejo Të Tjerët
+    show_more: 'Shfaq {count} më shumë'
+    items_shown: Artikujt e Shfaqur
+  select-multiple-checkbox-tree:
+    name: Kutitë për Kontrollim (Pemë)
+    description: Zgjidhni midis opsioneve të shumta përmes kutive të kontrollimit të ngjeshur
+    value_combining: Kombinimi i Vlerave
+    value_combining_note: Kontrollon çfarë vlerë ruhet kur bëhen zgjedhje të ngjeshura.
+    show_all: Shfaq Të Gjitha
+    show_selected: Shfaq Të Zgjedhurat
   input-code:
     code: Kodi
+    description: Shkruaj ose ndaj copëza kodesh
+    line_number: Numri i Rreshtit
+    line_wrapping: Kapje Rreshti
+    placeholder: Shkruaj kodin këtu...
   system-collection:
     collection: Koleksion
+    description: Zgjidhni midis koleksioneve ekzistuese
+    include_system_collections: Përfshij Koleksionet e Sistemit
   system-collections:
     collections: Koleksione
+    description: Zgjidhni midis koleksioneve ekzistuese
+    include_system_collections: Përfshij Koleksionet e Sistemit
   select-color:
     color: Ngjyra
+    description: Shkruaj ose zgjidh një vlerë ngjyre
+    placeholder: Zgjidh një ngjyrë...
+    preset_colors: Ngjyrat e Paracaktuara
+    opacity: Opakiteti
+    preset_colors_add_label: Shto ngjyrë të re...
+    name_placeholder: Shkruaj emrin e ngjyrës...
+  datetime:
+    datetime: Datë dhe Kohë
+    description: Shkruaj datat dhe orët
+    include_seconds: Përfshij Sekondat
+    set_to_now: Cakto Tani
+    use_24: Përdor Formatin 24-Oresh
+    placeholder: Zgjidh datën dhe kohën...
   system-fields:
     select_a_collection: Zgjidh një Koleksion
+    no_fields: Asnjë fushë
   system-display-template:
     display-template: Shabllon i Shfaqjes
+    description: Përzie tekstin statik dhe vlerat e fushave dinamike
+    collection_field: Fusha e Koleksionit
     collection_field_not_setup: Opsioni i fushës së koleksionit është konfiguruar gabim
     select_a_collection: Zgjidh një Koleksion
   presentation-divider:
     divider: Ndarës
+    description: Etiketo dhe ndaj fushat në seksione
+    title_placeholder: Shkruaj një titull, ose lëreni bosh për të shfaqur vetëm një linjë...
+    inline_title: Titull në Linjë
+    inline_title_label: Shfaq titullin brenda linjës
+    margin_top: Margini i Sipërm
+    margin_top_label: Rrit Marginin e Sipërm
   select-dropdown:
+    description: Zgjidh një vlerë nga një meni zbritëse
+    choices_placeholder: Shto një zgjedhje të re
+    allow_other: Lejo Të Tjerët
+    allow_other_label: Lejo Vlera të Tjera
+    allow_none: Lejo Asnjë
+    allow_none_label: Lejo Asnjë Zgjedhje
+    choices_name_placeholder: Shkruaj një emër...
     choices_value_placeholder: Shkruaj një vlerë...
+    preview_threshold: Pragu i Parashikimit
+  select-multiple-dropdown:
+    select-multiple-dropdown: Meni Zbritëse (Shumëfishtë)
+    description: Zgjidh vlera të shumta nga një meni zbritëse
+  file:
+    file: Skedar
+    description: Zgjidh ose ngarko një skedar
+  files:
+    files: Skedarë
+    description: Zgjidh ose ngarko shumë skedarë
+  select-icon:
+    icon: Ikonë
   select-dropdown-m2o:
     display_template: Shabllon i Shfaqjes
   input-rich-text-md:
@@ -1328,6 +1553,7 @@ interfaces:
   input-block-editor:
     tools_options:
       header: Header
+      embed: Trupëzim
       code: Kodi
       table: Tabela
       underline: Nën të Vizuar
@@ -1345,8 +1571,11 @@ displays:
   color:
     color: Ngjyra
   datetime:
+    datetime: Datë dhe Kohë
     format: Format
     suffix: Sufiks
+  file:
+    file: Skedar
   formatted-value:
     format: Format
     font: Fonti
@@ -1357,7 +1586,10 @@ displays:
     prefix: Prefiks
     suffix: Sufiks
     color: Ngjyra
+    icon: Ikonë
     text: Tekst
+  icon:
+    icon: Ikonë
   image:
     circle: Rreth
   labels:
