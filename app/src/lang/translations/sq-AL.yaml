@@ -1005,69 +1005,278 @@ directus_collection:
   directus_translations: Përkthimet e personalizuara
 fields:
   directus_activity:
+    item: Çelësi Kryesor i Artikullit
+    action: Veprimi
     collection: Koleksion
+    timestamp: Veprimi Mbi
+    user: Veprimi Nga
+    comment: Komenti
+    user_agent: Agjenti i Përdoruesit
     origin: Origjina
+    ip: Adresa IP
+    revisions: Rishikimet
   directus_collections:
     collection: Koleksion
+    icon: Ikona
     note: Shënim
     color: Ngjyra
     display_template: Shabllon i Shfaqjes
+    hidden: I Fshehur
     singleton: Singleton
+    translations: Përkthimet e Emrave të Koleksionit
+    archive_app_filter: Filtri i Aplikacionit të Arkivimit
+    archive_value: Vlera e Arkivimit
+    unarchive_value: Vlera e De-arkivimit
     sort_field: Fusha e Renditjes
+    accountability: Gjurmimi i Aktivitetit & Rishikimit
+    archive_field: Fusha e Arkivimit
+    item_duplication_fields: Fushat e Duplikimit të Artikullit
   directus_files:
+    $thumbnail: Miniaturë
     title: Titulli
+    description: Përshkrim
+    tags: Etiketa
+    location: Vendndodhje
+    storage: Ruajtje
+    filename_disk: Emri i Skedarit (Disk)
+    filename_download: Emri i Skedarit (Shkarkim)
+    metadata: Metadata
+    type: Lloji i Mime
+    filesize: Madhësia e Skedarit
+    modified_by: Modifikuar Nga
     modified_on: Modifikuar Më
     created_on: Krijuar Më
     created_by: Krijuar Nga
+    embed: Incorporo
+    uploaded_by: Ngarkuar Nga
     folder: Dosje
+    width: Gjerësi
+    uploaded_on: Ngarkuar Mbi
+    height: Lartësi
     charset: Set Karakteresh
     duration: Kohëzgjatje
   directus_users:
+    first_name: Emri
+    last_name: Mbiemri
+    email: Email
+    password: Fjalëkalimi
+    avatar: Avatar
+    location: Vendndodhje
     title: Titulli
+    description: Përshkrim
+    tags: Etiketa
+    user_preferences: Preferencat e Përdoruesit
     language: Gjuha
+    theme: Tema
+    theme_auto: Automatike (Bazuar në Sistemin)
+    theme_light: Mënyrë e Ndritshme
+    theme_dark: Mënyrë e Errët
+    tfa_secret: Autentikimi me Dy Faktorë
+    admin_options: Opsionet e Adminit
+    status: Statusi
+    status_draft: Draft
+    status_invited: I ftuar
     status_active: Aktiv
+    status_suspended: I pezulluar
+    status_archived: I arkivuar
     role: Roli
+    token: Token
+    provider: Ofruesi
+    external_identifier: Identifikuesi i Jashtëm
     last_page: Faqja e Fundit
     last_access: Qasja e Fundit
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    mapping: Hartëzim
+    basemaps: Harta Bazë
+    basemaps_raster: Raster
+    basemaps_tile: TileJSON Raster
+    basemaps_style: Stili i Mapbox
+    mapbox_key: Tokeni i Qasjes së Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atributim
+    attribution_placeholder: '© Kontribuesit e OpenStreetMap'
+    transforms_note: Emri i metodes Sharp dhe argumentet e saj. Shihni https://sharp.pixelplumbing.com/api-constructor për më shumë informacion.
+    additional_transforms: Transformime Shtesë
+    project_name: Emri i Projektit
+    project_descriptor: Përshkrimi i Projektit
+    project_url: URL e Projektit
+    project_color: Ngjyra e Projektit
+    project_logo: Logoja e Projektit
+    default_language: Gjuha e Parazgjedhur
+    branding: Branding & Stil
+    public_foreground: Sfondi i Jashtëm
+    public_background: Sfondi Publik
+    public_note: Shënim Publik
+    auth_password_policy: Politika e Fjalëkalimit të Auth
+    auth_login_attempts: Përpjekjet e Hyrjes Auth
+    files_and_thumbnails: Skedarët & Ruajtja
+    storage_default_folder: Dosja e Parazgjedhur
+    storage_asset_presets: Paracaktimi i Transformimeve
+    storage_asset_transform: Transformime të Lejuara
+    overrides: Anashkalimet e Aplikacionit
+    custom_css: CSS Personalizuar
     module_bar: Shiriti i Moduleve
+    transformations_all: Lejo të gjitha transformimet
+    transformations_none: Çaktivizo transformimet
+    transformations_presets: Kufizo transformimet në paracaktimet më poshtë
+    image_editor: Redaktori i Imazheve
+    custom_aspect_ratios: Raporte Personalizuar të Aspekteve
   directus_shares:
     name: Emri
     role: Roli
+    password: Fjalëkalimi
+    date_start: Data e Fillimit
+    date_end: Data e Mbarimit
+    max_uses: Përdorime Maksimale
+    times_used: Herët e Përdorur
   directus_fields:
+    collection: Emri i Koleksionit
+    icon: Ikona e Koleksionit
     note: Shënim
+    hidden: I Fshehur
     singleton: Singleton
     translation: Përkthimet e Emrit të Fushës
+    display_template: Template
   directus_roles:
     name: Emri i Rolit
+    icon: Ikona e Rolit
+    description: Përshkrim
+    app_access: Qasja në Aplikacion
+    admin_access: Qasja Admin
+    ip_access: Qasja IP
+    enforce_tfa: Kërko 2FA
+    users: Përdoruesit në Rol
+    module_list: Navigacioni i Moduleve
   directus_webhooks:
     name: Emri
+    method: Metoda
+    status: Statusi
+    data: Të Dhënat
+    header: Header
+    value: Vlera
+    headers: Header të Kërkesës
+    data_label: Dërgo Të Dhënat e Ngjarjes
+    triggers: Shkaktuesit
+    actions: Veprimet
     collections: Koleksione
 field_options:
   directus_settings:
+    project_name_placeholder: Projekti im...
+    project_color_note: Login & Mjedis i Logos
+    project_logo_note: White 40x40 SVG/PNG
+    public_note_placeholder: Një mesazh i shkurtër, publik që mbështet formatimin e markdown...
     security_divider_title: Siguria
+    auth_password_policy:
+      none_text: Asnjë – Nuk rekomandohet
+      weak_text: Dobët – Minimumi 8 Karaktere
+      strong_text: I Fortë – Me të Madhe / Me të Vogël / Numra / Speciale
+    storage_asset_presets:
+      fit_label: Përshtatje
+      upscaling: Rritje e Madhësisë
+      fit:
+        contain_text: Përmbaj (ruaj raportin e aspektit)
+        cover_text: Mbulo (detyron madhësinë e saktë)
+        fit_text: Përshtat brenda
+        outside_text: Përshtat jashtë
+    additional_transforms: Transformime Shtesë
+    transforms_note: Emri i metodes Sharp dhe argumentet e saj. Shihni https://sharp.pixelplumbing.com/api-constructor për më shumë informacion.
+    mapbox_key: Tokeni i Qasjes së Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Harta Bazë
+    basemaps_name_placeholder: Shkruani emrin e hartës bazë...
+    basemaps_raster: Raster
+    basemaps_tile: TileJSON Raster
+    basemaps_style: Stili i Mapbox
+    files_divider_title: Skedarët & Miniaturat
+    overrides_divider_title: Anashkalimet e Aplikacionit
   directus_activity:
+    login: Hyrje
     create: Krijo
     update: Përditëso
+    delete: Fshij
   directus_collections:
+    track_activity_revisions: Gjurmë Aktiviteti & Rishikime
+    only_track_activity: Gjurmë Vetëm Aktivitetin
+    do_not_track_anything: Mos Gjurmë Asgjë
     collection_setup: Setup i Koleksionit
+    note_placeholder: Një përshkrim i këtij koleksioni...
+    hidden_label: Fshihe brenda Aplikacionit
     singleton: Trajto si objekt të vetëm
     language: Gjuha
+    translation: Përkthim
+    translation_placeholder: Shkruani një përkthim...
+    collection_name: Emri i Koleksionit
+    singular_unit: Njësi në Numër Singular
+    plural_unit: Njësi në Numër Plural
     archive_divider: Arkivo
+    archive_field_placeholder: Zgjidh një fushë...
+    archive_app_filter: Aktivizo Filterin e Arkivimit të Aplikacionit
+    archive_value: Vlera e vendosur gjatë arkivimit...
+    unarchive_value: Vlera e vendosur gjatë çarkivimit...
     sort_divider: Rendit
+    sort_field: Zgjidh një fushë...
+    accountability_divider: Përgjeg
+    duplication_divider: Përsëritje
+    preview_divider: Parashikim
+  directus_files:
+    title: Një titull unik...
+    description: Një përshkrim opsional...
+    location: Një vendndodhje opsionale...
+    storage_divider: Emërtimi i Skedarit
+    filename_disk: Emri në ruajtjen disk...
+    filename_download: Emri gjatë shkarkimit...
   directus_roles:
+    name: Emri unik për këtë rol...
+    description: Përshkrimi i këtij roli...
+    ip_access: Shto IP të lejuara, lërë bosh për të lejuar të gjitha...
     fields:
+      icon_name: Ikonë
       name_name: Emri
+      name_placeholder: Shkruani një titull...
+      link_name: Lidhje
+      link_placeholder: URL relative ose absolute...
     collections_name: Koleksione
+    collections_addLabel: Shto Koleksion...
   directus_users:
+    preferences_divider: Preferencat e Përdoruesit
+    dropdown_auto: Automatike (Bazuar në Sistemin)
+    dropdown_light: Mënyrë e Ndritshme
+    dropdown_dark: Mënyrë e Errët
+    admin_divider: Opsionet e Adminit
+    status_dropdown_draft: Draft
+    status_dropdown_invited: I Ftuar
     status_dropdown_active: Aktiv
+    status_dropdown_suspended: I pezulluar
+    status_dropdown_archived: I arkivuar
+    token: Shkruaj një token aksesues të sigurt...
   directus_webhooks:
     status_options_active: Aktiv
     status_options_inactive: Joaktiv
+    data_label: Dërgo Të Dhënat e Ngjarjes
+    triggers_divider: Shkaktuesit
     actions_create: Krijo
     actions_update: Përditëso
+    actions_delete: Fshij
+    actions_login: Hyrje
+    headers:
+      header: Header
+      value: Vlera
+      add: Shto Header
+no_fields_in_collection: 'Nuk ka fusha në "{collection}" akoma'
+comment: Komenti
 live_preview:
   new_window: Hap në Dritare të Re
+description: Përshkrim
+email: Email
+hidden: I Fshehur
+password: Fjalëkalimi
+template: Template
+translation_placeholder: Shkruani një përkthim...
 table: Tabela
 interfaces:
   filter:
@@ -1105,6 +1314,8 @@ interfaces:
     folder: Dosje
   list:
     sort: Rendit
+  tags:
+    tags: Etiketa
   boolean:
     toggle: Ndërrimi
     label_default: Aktivizuar
@@ -1116,9 +1327,12 @@ interfaces:
       dropdown: Zbritëse
   input-block-editor:
     tools_options:
+      header: Header
       code: Kodi
       table: Tabela
       underline: Nën të Vizuar
+  system-token:
+    system-token: Token
 displays:
   translations:
     translations: Përkthimet
@@ -1150,6 +1364,7 @@ displays:
     choices_value_placeholder: Shkruaj një vlerë...
   user:
     user: Përdorues
+    avatar: Avatar
     name: Emri
 layouts:
   cards:
@@ -1161,6 +1376,9 @@ layouts:
 panels:
   label:
     name: Etiketë
+triggers:
+  webhook:
+    method: Metoda
 operations:
   item-create:
     payload: Ngarkesa
@@ -1168,11 +1386,18 @@ operations:
     payload: Ngarkesa
   log:
     message: Mesazh
+  mail:
+    template: Template
+    data: Të Dhënat
   notification:
     recipient: Përdorues
     message: Mesazh
   request:
     url: URL
+    method: Metoda
+    data: Të Dhënat
+    header: Header
   trigger:
     flows: Rrjedha
     flow: Rrjedh
+    data: Të Dhënat
