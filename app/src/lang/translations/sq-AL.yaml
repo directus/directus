@@ -663,7 +663,35 @@ operators:
   nbetween: Nuk është midis
   empty: Është bosh
   nempty: Nuk është bosh
+  all: Përmban këto Çelësa
+  has: Përmban disa nga këto Çelësa
+  intersects: Përkryhet
+  nintersects: Nuk Përkryhet
+  intersects_bbox: Përkryhet me Kutinë Kufizuese
+  nintersects_bbox: Nuk Përkryhet me Kutinë Kufizuese
+  regex: Përputhet me RegExp
+custom_validation_message: Mesazh i Personalizuar i Validimit
+loading: Po Ngarkohet...
+drop_to_upload: Lësho për të Ngarkuar
+item: Artikull
+items: Artikuj
+upload_file: Ngarko Skedar
+upload_file_indeterminate: Po Ngarkohet Skedari...
+upload_file_success: Skedari u Ngarkua
+upload_files_indeterminate: 'Po Ngarkohen Skedarët {done}/{total}'
+upload_files_success: '{count} Skedarë u Ngarkuan'
+upload_pending: Ngarkimi në Pritje
+drag_file_here: Tërhiqe dhe Lësho Skedarin Këtu
+click_to_browse: Kliko për të Shfletuar
+interface_options: Opsionet e Ndërfaqes
+layout_options: Opsionet e Faqosjes
+rows: Rreshta
+columns: Kolona
+collection_setup: Setup i Koleksionit
+optional_system_fields: Fushat Opsionale të Sistemit
 value_unique: Vlera duhet të jetë unike
+all_activity: Të Gjitha Aktivitetet
+create_item: Krijo Artikull
 flow_name: Emri
 wysiwyg_options:
   forecolor: Ngjyra e Paraplanit
@@ -706,6 +734,7 @@ field_options:
   directus_settings:
     security_divider_title: Siguria
   directus_collections:
+    collection_setup: Setup i Koleksionit
     language: Gjuha
     archive_divider: Arkivo
     sort_divider: Rendit
