@@ -80,6 +80,10 @@ create_user: Krijo Përdorues
 message: Mesazh
 delete_panel: Fshi Panelin
 create_webhook: Krijo Webhook
+create_custom_translation: Krijo Përkthim të Personalizuar
+edit_custom_translation: Redakto Përkthim të Personalizuar
+no_custom_translations: Pa Përkthime të Personalizuara
+no_custom_translations_copy: Nuk ka përkthime të personalizuara akoma.
 invite_users: Fto Përdorues
 invite: Fto
 email_already_invited: Email-i "{email}" është ftuar tashmë
@@ -223,6 +227,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datë
 date_range: Gama e Datave
+translation_key_placeholder: Futni një çelës...
 datetime: Datëkohë
 dateTime: Datëkohë
 precision: Saktësi
@@ -237,6 +242,52 @@ text: Tekst
 time: Kohë
 timestamp: Kohëshënimi
 uuid: UUID
+hash: Hash
+geometry: Gjeometri (Të Gjitha)
+geometry.Point: Pikë
+geometry.LineString: Vijë
+geometry.Polygon: Poligon
+geometry.MultiPoint: ShumëPikë
+geometry.MultiLineString: ShumëVijë
+geometry.MultiPolygon: ShumëPoligon
+not_available_for_type: Nuk është i Disponueshëm për këtë Lloj
+create_translations: Krijo përkthime
+auto_refresh: Rifreskim Automatik
+refresh_interval: Interval i Rifreskimit
+no_refresh: Mos rifresko
+refresh_interval_seconds: Rifresko Menjëherë | Çdo Sekondë | Çdo {seconds} Sekonda
+refresh_interval_minutes: Çdo Minutë | Çdo {minutes} Minuta
+auto_generate: Gjenero Automatikisht
+this_will_auto_setup_fields_relations: Kjo do të konfigurojë automatikisht të gjitha fushat dhe marrëdhëniet e nevojshme.
+click_here: Kliko këtu
+to_manually_setup_translations: për të konfiguruar manualisht përkthimet.
+click_to_manage_translated_fields: >-
+  Nuk ka fusha të përkthyera akoma. Kliko këtu për t'i krijuar ato. | Ka një fushë të përkthyer. Kliko këtu për ta menaxhuar atë. | Ka {count} fusha të përkthyera. Kliko këtu për t'i menaxhuar ato.
+fields_group: Grup Fushash
+no_collections_found: Nuk u gjetën koleksione.
+new_data_alert: 'Më poshtë do të krijohen brenda Modelit tuaj të të Dhënave:'
+search_collection: Kërko Koleksion...
+search_field: Kërko Fushë...
+new_field: 'Fushë e Re'
+new_collection: 'Koleksion i Ri'
+add_m2o_to_collection: 'Shto M2O në "{collection}"'
+add_o2m_to_collection: 'Shto O2M në "{collection}"'
+add_m2m_to_collection: 'Shto M2M në "{collection}"'
+choose_a_type: Zgjidh një Lloj...
+determined_by_relationship: Përcaktuar nga Marrëdhënia
+add_note: Shto një shënim ndihmës për përdoruesit...
+add_link: Shto Lidhje
+custom_link: Lidhje e Personalizuar
+default_value: Vlera e Paracaktuar
+standard_field: Fushë Standarde
+single_file: Skedar i Vetëm
+multiple_files: Shumë Skedarë
+m2o_relationship: Marrëdhënie Nga Shumë në Një
+o2m_relationship: Marrëdhënie Nga Një në Shumë
+m2m_relationship: Marrëdhënie Nga Shumë në Shumë
+m2a_relationship: Marrëdhënie Nga Shumë në Çdo
+invalid_item: Artikull i Pavlefshëm
+require_confirmation: Kërko Konfirmim
 dialog: Dialog
 modal: Modal
 confirmation_dialog: Dialog i Konfirmimit
@@ -1085,6 +1136,7 @@ fields:
     external_identifier: Identifikuesi i Jashtëm
     last_page: Faqja e Fundit
     last_access: Qasja e Fundit
+    email_notifications: Njoftime Email
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1400,6 +1452,7 @@ translation: Përkthim
 translation_placeholder: Shkruani një përkthim...
 value: Vlerë
 view_project: Shiko Projektin
+weeks: { }
 report_error: Raporto Gabimin
 start: Fillim
 table: Tabela
@@ -1837,47 +1890,288 @@ displays:
     circle: Rreth
     circle_label: Shfaq si rreth
   labels:
+    labels: Etiketa
+    description: Shfaq ose një etiketë të vetme ose një listë etiketash
+    default_foreground: Përparësi e Paracaktuar
+    default_background: Sfondi i Paracaktuar
+    format_label: Format çdo etiketë
+    show_as_dot: Shfaq si Pikë
     choices_value_placeholder: Shkruaj një vlerë...
+    choices_text_placeholder: Shkruaj tekst...
+  mime-type:
+    mime-type: Lloj MIME
+    description: Shfaq llojin MIME të një skedari
+    extension_only: Vetëm Zgjatim
+    extension_only_label: Shfaq vetëm zgjatimin e skedarit
+  rating:
+    rating: Vlerësim
+    description: Vizualizo një numër si yje në raport me vlerën maksimale
+    simple: E thjeshtë
+    simple_label: Shfaq yjet në një format të thjeshtë
+  raw:
+    raw: Vlerë e Papërpunuar
   related-values:
+    related-values: Vlera të Lidhura
+    description: Shfaq vlerat e lidhura
     display_template_configure_notice: Mund të konfigurosh shabllonin e shfaqjes pas krijimit të kësaj fushe.
   user:
     user: Përdorues
+    description: Shfaq një përdorues të directus
     avatar: Avatar
     name: Emri
+    both: Të dyja
+    circle_label: Shfaq përdoruesin në një rreth
 layouts:
   cards:
+    cards: Kartela
+    image_source: Burim i Imazhit
+    image_fit: Përshtatja e Imazhit
+    crop: Pritje
+    contain: Përmbaj
     title: Titulli
+    subtitle: Nëntitull
   tabular:
     tabular: Tabela
+    spacing: Hapësira
+    comfortable: E rehatshme
+    compact: E kompakt
+    cozy: E përzemërt
+  calendar:
+    calendar: Kalendar
+    start_date_field: Fushe e Datës së Fillimit
+    end_date_field: Fushe e Datës së Mbarimit
+    optional: Opsionale
+    first_day: Dita e Parë e Javës
   map:
     map: Hartë
+    basemap: Harta Bazë
+    layers: Shtresa
+    cluster_options: Opsione Klasteri
+    cluster: Grumbullo të Dhënat Pranë
+    cluster_radius: Rreze Klasteri
+    cluster_minpoints: Madhësia Minimale e Klasterit
+    cluster_maxzoom: Zmadhim Maksimal për Klasterizim
+    field: Fushe Gjeospatiale
+    invalid_geometry: Gjeometri e Pavlefshme
+    find_location: Gjej Vendndodhjen...
+    default_template: Duke Përdorur Koleksionin e Parazgjedhur...
+    no_compatible_fields: Asnjë fushe e përshtatshme
   kanban:
+    name: Kanban
+    group_field: Grup Sipas
+    group_field_placeholder: Fusha për grupim...
+    group_title: Titull Grupi
+    group_title_placeholder: Fusha për titujt e grupeve...
+    title: Titull Kartele
+    title_placeholder: Fushë opsionale për titull...
+    text: Tekst Kartele
+    text_placeholder: Fushë opsionale për tekst...
+    date: Datë Kartele
+    date_placeholder: Fushë opsionale për datë...
+    tags: Etiketa Kartele
+    tags_placeholder: Fushë opsionale për etiketa...
+    user: Përdorues Kartele
+    user_placeholder: Fushë opsionale për përdorues...
+    image: Imazh Kartele
+    image_placeholder: Fushë opsionale për imazh...
+    image_fit: Përshtatje Imazhi Kartele
+    crop: Pritje
     advanced: Avancuar
+    edit_group: Redakto Grup
+    delete_group: Fshi Grup
+    add_group: Shto Grup
+    add_group_placeholder: Shkruaj titullin e një grupi të ri...
+    show_ungrouped: Shfaq të Pagrupuar
+    show: Shfaq
+    no_group: Asnjë Grup
+    not_all_loaded: Mund të ngarkohen vetëm 1000 artikujt e parë.
+horizontal: Horizontal
+vertical: Vertikal
+x_axis: Aks X
+y_axis: Aks Y
+y_axis_function: Funskion i Aksit Y
+show_x_only: Shfaq vetëm Aksin X
+show_y_only: Shfaq vetëm Aksin Y
+show_data_label: Shfaq etiketën e të dhënave
+both: Të dyja
+show_axis_labels: Shfaq etiketat e aksit
+function: Funksion
+half_circle: Gjysmë Rreth
+full_circle: Rreth i plotë
+stroke_width: Gjerësi Vije
+rounded_stroke: Vije e rrumbullakët
+thin: I hollë
+medium: Mesatar
+broad: I gjerë
+show_labels: Shfaq etiketat
+show_legend: Shfaq legjendën
+right: Djathtas
+left: Majtas
+donut: Petull
 panels:
+  metric:
+    name: Metrikë
+    description: Shfaq një vlerë të vetme në bazë të një kërkimi
+    field: Fushë
+  time_series:
+    name: Seri Kohore
+    description: Vizualizo një grafik vijash në bazë të vlerave në kohë
+    date_field: Fusha e Datës
+    value_field: Fusha e Vlerës
+    fill_type: Lloji i Mbushjes
+    curve_type: Lloji i Kurvës
   label:
     name: Etiketë
+    description: Shfaq disa tekst
+  list:
+    name: Listë
+    description: Filtro dhe listo fushat nga një koleksion
+  barchart:
+    name: Grafik me Shufra
+    description: Grafikë me shufra ose kolona për të krahasuar grupe vlerash
+    horizontal: Horizontal
+    select_collection: Duhet të zgjedhësh një koleksion.
+  linechart:
+    name: Grafik Vijash
+    description: Grafik vijash për të krahasuar ndryshimin e një fushe
+    disabled_grouping: Është i çaktivizuar kur zgjidhet grupimi.
+    disabled_no_grouping: Është i çaktivizuar kur nuk zgjidhet grupimi.
+    show_marker: Shfaq Shënues Tooltip
+    curve_type: Lloji i Kurvës
+    smooth: I butë
+    straight: I drejtë
+    step_line: Vijë Hapësire
+  meter:
+    name: Metër
+    description: Metër për gjurmimin e vlerave
+  piechart:
+    name: Grafik Rrethi ose Petull
+    description: Grafik rrethor që tregon raportet e grupeve në një kolonë
+  variable:
+    name: Variabël Globale
+    description: Vendos një vlerë globale për përdorim në filtra të tjerë panelesh
+    variable_key: Çelës i Variablës
+  relational-variable:
+    name: Variabël e Mardhënies Globale
+    description: Vendos një vlerë mardhënie globale për përdorim në filtra të tjerë panelesh
+    variable_key: Çelës i Variablës
+    multiple: Të shumtë
+    multiple-label: Zgjidh artikuj të shumtë
 triggers:
+  common:
+    response_body: Trupi i Përgjigjes
+    response_body_all: Të gjitha të Dhënat
+    response_body_last: Të dhënat e Operacionit të Fundit
+  event:
+    name: Grepë Ngjarjeje
+    description: Shkaktohet në platformë ose ngjarje të dhënash
+    action: 'Veprim (Jo-bllokues)'
+    filter: 'Filter (Bllokues)'
   webhook:
+    name: Webhook
+    description: Shkaktohet nga një kërkesë e ardhshme HTTP
     method: Metoda
+    async: Asinkrone
+  operation:
+    name: Një rrjedhë tjetër
+    description: Shfaq një vlerë të vetme në bazë të një kërkimi
+    preview: Shkaktohet nga një operacion në një rrjedhë të ndryshme
+  schedule:
+    name: Orari (CRON)
+    description: Shkaktohet në momente të rregullta në kohë
+    cron: Interval
+  manual:
+    name: Manual
+    description: Shkaktohet në ekzekutimin manual brenda koleksionit(ve) të zgjedhur
+    collection_and_item: Faqet e Koleksionit & Artikullit
+    collection_only: Vetëm Faqe Koleksioni
+    item_only: Vetëm Faqe Artikulli
+    collection_page: Faqe Koleksioni
+    require_selection: Kërkon Zgjedhje
+a_flow_uuid: Zgjidh një rrjedhë për të shkaktuar...
+any_string_or_json: Çdo varg ose JSON...
+item_payload_placeholder: Kjo është JSON që përdoret për të përditësuar vlerat e fushës së artikullit...
+operation_variables_note: Mund të aksesosh të dhënat e rrjedhës me variabla si {'{'}{'{'}$last{'}'}{'}'}, {'{'}{'{'}$trigger{'}'}{'}'} dhe {'{'}{'{'}$accountability{'}'}{'}'}, ose referohu në operacionet e mëparshme duke përdorur {'{'}{'{'}operation_key{'}'}{'}'}.'
 operations:
+  condition:
+    name: Kusht
+    description: Drejto një rrjedhë bazuar në logjikën Nëse / Përndryshe
+  exec:
+    name: Ekzekuto Skript
+    description: Ekzekuto kod të papërcaktuar për të ndryshuar ngarkesën
+    modules: 'Mund të përdoren **modulet e Node** e mëposhtme:'
   item-create:
+    name: Krijo Të Dhëna
+    description: Krijo artikuj në bazën e të dhënave
     payload: Ngarkesa
+    emit_events: Lësho Ngjarje
+  item-delete:
+    name: Fshi Të Dhëna
+    description: Fshi artikuj nga baza e të dhënave
+    emit_events: Lësho Ngjarje
+    key: ID-të
+    query: Query
+  item-read:
+    name: Lexo Të Dhëna
+    description: Lexo artikuj nga baza e të dhënave
+    key: ID-të
+    query: Query
+    emit_events: Lësho Ngjarje
   item-update:
+    name: Përditëso Të Dhëna
+    description: Përditëso artikuj në bazën e të dhënave
+    emit_events: Lësho Ngjarje
+    key: ID-të
     payload: Ngarkesa
+    query: Query
   log:
+    name: Regjistro në Konsolë
+    description: Shfaq diçka në konsolë
     message: Mesazh
+    message_placeholder: Shkruaj një mesazh për t'u shfaqur në konsolë...
   mail:
+    name: Dërgo Email
+    description: Dërgo një email një ose më shumë personave
+    to: Për
+    to_placeholder: Shto adresat e e-mailit dhe shtyp enter...
+    body: Trupi
     template: Template
     data: Të Dhënat
   notification:
+    name: Dërgo Njoftim
+    description: Një njoftim në aplikacion për një ose më shumë përdorues
     recipient: Përdorues
+    recipient_placeholder: Shkruaj një UUID...
+    recipient_note: Shto UUID të përdoruesit dhe shtyp enter...
     message: Mesazh
   request:
+    name: Webhook / Kërkesë URL
+    description: 'Bëj një kërkesë në një URL'
     url: URL
+    url_placeholder: https://example.com/example
     method: Metoda
     data: Të Dhënat
+    headers: Koka
     header: Header
+    header_placeholder: Autorizim...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Fli
+    description: Prit një numër të dhënë milishekonash
+    milliseconds: Milishekonda
+  transform:
+    name: Transformo Ngarkesën
+    description: Ndrysho ngarkesën JSON të rrjedhës
   trigger:
+    name: Shkakto Rrjedhën
+    description: Kaloni këtë të dhënë në një rrjedhë tjetër
     flows: Rrjedha
     flow: Rrjedh
     data: Të Dhënat
+    iteration_mode: Mënyra e Iterimit
+    iteration_mode_note: Mënyra për të iteruar mbi masivë.
+    serial: Serial
+    parallel: Paralel
+    batch: Grup
+    batch_size: Madhësia e Grupit
+    cache: Cache
