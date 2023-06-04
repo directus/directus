@@ -81,3 +81,18 @@ await data.query({
 	]
 })
 ```
+
+## Flow
+This visualizes the general data flow regarding `data`.
+This does not reflect how the packages depend on each other. 
+Such a visualization will be added soon.   
+```mermaid
+flowchart LR
+    api --> data
+	data --> check{decide}
+    check ---> no-sql-adapter
+    check --> data-sql
+	data-sql --> sql-adapter
+	sql-adapter --> db1[(datastore)]
+	no-sql-adapter --> db2[(datastore)]
+```
