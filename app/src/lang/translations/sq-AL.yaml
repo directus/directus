@@ -1527,73 +1527,319 @@ interfaces:
   files:
     files: Skedarë
     description: Zgjidh ose ngarko shumë skedarë
+  input-hash:
+    hash: Hash
+    description: Fut një vlerë për tu hashed
+    masked: I maskuar
+    masked_label: Fshih vlerat e vërteta
   select-icon:
     icon: Ikonë
+    description: Zgjidh një ikonë nga një listë zbritëse
+    search_for_icon: Kërko për ikonë...
+  file-image:
+    image: Imazh
+    description: Zgjidh ose ngarko një imazh
+    crop: Prerje për Përshtatje
+    crop_label: Prerë imazhin sipas nevojës
+  system-interface:
+    interface: Ndërfaqe
+    description: Zgjidh një ndërfaqe ekzistuese
+    placeholder: Zgjidh një ndërfaqe...
+  system-interface-options:
+    interface-options: Opsionet e Ndërfaqes
+    description: Një modal për zgjedhjen e opsioneve të një ndërfaqeje
+  list-m2m:
+    many-to-many: Shumë me Shumë
+    description: Zgjidh artikuj të shumtë të lidhur në një udhëkryq
+    columns_configure_notice: Mund të konfigurosh kolonat pas krijimit të kësaj fushe.
+    display_template_configure_notice: Mund të konfigurosh shabllonin e shfaqjes pas krijimit të kësaj fushe.
   select-dropdown-m2o:
+    many-to-one: Shumë te Një
+    description: Zgjidh një artikull të lidhur
     display_template: Shabllon i Shfaqjes
+  collection-item-dropdown:
+    collection-item-dropdown: Zgjedhje Artikulli Koleksioni
+    description: Zgjidh një artikull nga një koleksion në formatin JSON
   input-rich-text-md:
+    markdown: Markdown
+    description: Fut dhe parashiko markdown
     edit: Modifiko
+    preview: Parashiko
+    editorFont: Fonti i Redaktorit
+    previewFont: Fonti i Parashikimit
+    customSyntax: Blloqe të Personalizuara
+    customSyntax_label: Shto lloje të personalizuara të sintaksës
+    customSyntax_add: Shto sintaksë të personalizuar
+    box: Bllok / Inline
+    imageToken: Token i Qasshëm
+    imageToken_label: Tokeni i qasshëm shtohet në URL-në e aseteve
   map:
+    map: Hartë
+    description: Zgjidh një vendndodhje në hartë
     zoom: Zmadho
+    geometry_type: Lloji i Gjeometrisë
+    geometry_format: Formati i Gjeometrisë
+    default_view: Pamja e Paracaktuar
+    invalid_options: Opsione të pavlefshme
+    invalid_format: Format i pavlefshëm ({format})
+    unexpected_geometry: Pritej {expected}, mori {got}.
+    fit_bounds: Përshtat pamjen në të dhëna
+    native: Native
+    geojson: GeoJSON
+    lnglat: Gjatësi, Gjerësi
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Kliko për të zgjedhur {geometry}
+  presentation-notice:
+    notice: Njoftim
+    description: Shfaq një njoftim të shkurtër
+    text: Fut përmbajtjen e njoftimit këtu...
+    no_text: Nuk është konfiguruar tekst...
+  list-o2m:
+    one-to-many: Një me Shumë
+    description: Zgjidh artikuj të shumtë të lidhur
+    no_collection: Koleksioni nuk mund të gjendet
   system-folder:
     folder: Dosje
+    description: Zgjidh një dosje
+    field_hint: Dosja e paracaktuar për skedarët e ngarkuar pa një dosje të specifikuar. Nuk ndikon në skedarët ekzistues.
+    root_name: Rrënja e Bibliotekës së Skedarëve
+    system_default: Parazgjedhjet e Sistemit
+  select-radio:
+    radio-buttons: Butonat Radio
+    description: Zgjidh një nga zgjedhjet e shumta
   list:
+    repeater: Përsëritës
+    description: Krijo hyrje të shumta të strukturës së njëjtë
+    edit_fields: Redakto Fushat
+    add_label: 'Etiketa "Krijo e Re"'''
     sort: Rendit
+    sort_placeholder: Manual
+    field_note_placeholder: Fut shënim fushe...
+    incompatible_data: Të dhënat aktuale nuk janë të përputhshme me ndërfaqen e përsëritësit dhe do të zëvendësohen kur të shtohen artikuj në përsëritës
+  slider:
+    slider: Rrëshqitës
+    description: Zgjidh një numër përmes një rrëshqitësi
+    always_show_value: Shfaq gjithmonë vlerën
   tags:
     tags: Etiketa
+    description: Zgjidh ose shto etiketa
+    whitespace: Hapësirë e Bardhë
+    hyphen: Zëvendëso me vizë
+    underscore: Zëvendëso me nënvizim
+    remove: Hiq hapësirën e bardhë
+    capitalization: Shkronja të Mëdha
+    uppercase: Shndërro në Shkronja të Mëdha
+    lowercase: Shndërro në Shkronja të Vogla
+    auto_formatter: Përdor Formatorin Automatik të Titullit
+    alphabetize: Alfabetizo
+    alphabetize_label: Detyro Renditjen Alfabetike
+    add_tags: Shto një etiketë dhe shtyp Enter...
+  input:
+    input: Input
+    description: Fut manualisht një vlerë
+    trim: Trim
+    trim_label: Trim në fillim dhe në fund
+    mask: I maskuar
+    mask_label: Fshih vlerën e vërtetë
+    clear: Vlerë e Pastruar
+    clear_label: Ruaj si varg bosh
+    minimum_value: Vlera Minimale
+    maximum_value: Vlera Maksimale
+    step_interval: Interval i Hapit
+    slug: Slugify
+    slug_label: Bëj vlerën e futur të sigurt për URL
+  input-multiline:
+    textarea: Zonë Teksti
+    description: Shkruaj tekst të shumërendshëm
+  input-translated-string:
+    input-translated-string: Fjalë të Përkthyera
+    description: Zgjidh ose shto përkthim të personalizuar
+    search_placeholder: Kërko...
+    new_custom_translation: Përkthim i Ri Personalizuar
   boolean:
     toggle: Ndërrimi
+    description: Kaloni midis pozicionit aktiv dhe joaktiv
+    color_on: Ngjyra Kur është Aktiv
+    color_off: Ngjyra Kur është Joaktiv
+    label_placeholder: Shkruaj një etiketë...
     label_default: Aktivizuar
   translations:
     display_template: Shabllon i Shfaqjes
+    no_collection: Asnjë Koleksion
+    toggle_split_view: Ndërro Pamjen e Ndara
+    enable: Aktivizo
+    user_language: Përdor Gjuhën Aktuale të Përdoruesit
+    default_language: Gjuha e Parazgjedhur
+    language_field: Fushe Indikatore e Gjuhës
+    language_direction_field: Fushe e Drejtimit të Gjuhës
+  list-o2m-tree-view:
+    description: Pamje e pemës për artikujt një me shumë të përsëritur të ngjeshur
+    recursive_only: Ndërfaqja e pamjes së pemës funksionon vetëm për marrëdhëniet e përsëritura.
   user:
     user: Përdorues
+    description: Zgjidh një përdorues ekzistues të directus
+    select_mode: Mënyra e Zgjedhjes
     modes:
+      auto: Automatik
       dropdown: Zbritëse
+      modal: Modal
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Një redaktues teksti të pasur që shkruan përmbajtje HTML
+    toolbar: Shirit Mjetesh
+    custom_formats: Formate të Personalizuara
+    options_override: Opsionet e Parakaluar
+    folder_note: Dosje për skedarët e ngarkuar. Nuk ndikon në skedarët ekzistues.
+    imageToken: Token i Qasshëm
+    imageToken_label: Tokeni i qasshëm shtohet në URL-në e aseteve
   input-block-editor:
+    input-block-editor: Redaktor i Blloqeve
+    description: Redaktor i stilit të bllokut për historitë e pasura mediatike, jep të dhëna të pastra në JSON duke përdorur Editor.js
+    tools: Shirit Mjetesh
     tools_options:
       header: Header
+      nestedlist: Listë
       embed: Trupëzim
+      paragraph: Paragraf
       code: Kodi
+      image: Imazh
+      attaches: Bashkëngjitje
       table: Tabela
+      quote: Citat
       underline: Nën të Vizuar
+      inlinecode: Kod në Vizë
+      delimiter: Ndajës
+      checklist: Listë Kontrolli
+      toggle: Ndërrim i Bllokut
+      alignment: Vizatim
+      raw: HTML i Papërpunuar
+  input-autocomplete-api:
+    input-autocomplete-api: Input i Autokompletimit (API)
+    description: Një pararendësi i kërkimit për vlerat e API-së së jashtme.
+    results_path: Shteg i Rezultateve
+    value_path: Shteg i Vlerave
+    text_path: Shteg i Tekstit
+    trigger: Shkaktar
+    rate: Vlerë
+  group-raw:
+    name: Grup i Papërpunuar
+    description: Paraqit fushat ashtu siç janë
+  group-detail:
+    name: Grup Detajesh
+    description: Paraqit fushat si një seksion i rrumbullakët
+    show_header: Shfaq Kryet e Grupit
+    header_icon: Ikona e Kryet
+    header_color: Ngjyra e Kryet
+    start_open: Fillim i Hapur
+    start_closed: Fillim i Mbyllur
   system-token:
     system-token: Token
+    description: Menaxho tokenin statik të qasjes
+    placeholder: Kliko "Gjenero Token" për të krijuar një token të ri statik të qasjes
+    value_securely_saved: Vlera U Ruajt në mënyrë të Sigurt
+    generate: Gjenero Token
+    regenerate: Rrigjenero Token
+    generate_success_copy: Sigurohu që të bësh backup dhe të kopjosh tokenin e mësipërm. Për arsye sigurie, nuk do të jesh në gjendje të shikosh tokenin përsëri pas ruajtjes dhe largimit nga kjo faqe.
+    remove_token: Hiq Tokenin
+  system-raw-editor:
+    system-raw-editor: Redaktor i Papërpunuar
+    description: Lejo futjen e vlerave të papërpunuara ose të vlerave të modelit të mustaqes
 displays:
   translations:
     translations: Përkthimet
+    description: Përkthimet
+    enable: Parashikoni përkthimet
+    user_language: Përdor Gjuhën Aktuale të Përdoruesit
+    default_language: Gjuha e Parazgjedhur
+    language_field: Fushe Indikatore e Gjuhës
   boolean:
     boolean: Boolean
+    description: Shfaq gjendjet aktiv dhe joaktiv
+    label_on: Etiketë Aktive
+    label_on_placeholder: Shkruaj një etiketë aktive...
+    label_off: Etiketë Joaktive
+    label_off_placeholder: Shkruaj një etiketë joaktive...
     icon_on: Icon Aktive
     icon_off: Icon Joaktive
+    color_on: Ngjyra Kur është Aktiv
+    color_off: Ngjyra Kur është Joaktiv
   collection:
     collection: Koleksion
+    description: Shfaq një koleksion
+    icon_label: Shfaq ikonën e koleksionit
   color:
     color: Ngjyra
+    description: Shfaq një pikë të ngjyrës
+    default_color: Ngjyra e Parazgjedhur
   datetime:
     datetime: Datë dhe Kohë
+    description: Shfaq vlerat e lidhura me kohën
     format: Format
+    format_note: >-
+      Format personalizuar i pranon __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: E gjatë
+    short: E shkurtër
+    relative: Relative
+    relative_label: 'Shfaq kohën relative, psh: 5 minuta më parë'
     suffix: Sufiks
+    suffix_label: Shfaq indikatorin relativ
+    suffix_note: Përdor fjalë si 'në' dhe 'më parë'
+    strict: E rreptë
+    strict_label: Përdor njësi të rrepta
+    strict_note: Hiq fjalët si 'thjesht', 'më shumë se', 'më pak se'
+    round: Rreth
+    round_note: Zgjidh një funksion rrumbullakimi për të përdorur
+    down: Poshtë
+    nearest: Më i afërt
+    up: Lart
   file:
     file: Skedar
+    description: Shfaq skedarët
+  filesize:
+    filesize: Madhësia e Skedarit
+    description: Shfaq madhësinë e një skedari
   formatted-value:
+    formatted-value: Vlerë e Formatuar
+    description: Shfaq një version të formatuar të tekstit
     format: Format
+    format_label: Format automatik
     font: Fonti
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Trashë
+    bold_label: Përdor stilin trashë
     italic: Italik
+    italic_label: Përdor stilin pjerrët
     prefix: Prefiks
+    prefix_label: Parashto tekst
     suffix: Sufiks
+    suffix_label: Teksti i Bashkëngjitur
     color: Ngjyra
+    background: Sfond
     icon: Ikonë
+    border: Kornizë
+    border_label: Shfaq kufirin
     text: Tekst
+    text_placeholder: Kalim i vlerës opsionale...
+  formatted-json-value:
+    formatted-json-value: Vlerë e Formatuar JSON
+    description: Shfaq një version të formatuar të objektit
   icon:
     icon: Ikonë
+    description: Shfaq një ikonë
+    filled: E mbushur
+    filled_label: Përdor variantin e mbushur
   image:
+    image: Imazh
+    description: Shfaq një parapamje të vogël të imazhit
     circle: Rreth
+    circle_label: Shfaq si rreth
   labels:
     choices_value_placeholder: Shkruaj një vlerë...
+  related-values:
+    display_template_configure_notice: Mund të konfigurosh shabllonin e shfaqjes pas krijimit të kësaj fushe.
   user:
     user: Përdorues
     avatar: Avatar
@@ -1603,6 +1849,8 @@ layouts:
     title: Titulli
   tabular:
     tabular: Tabela
+  map:
+    map: Hartë
   kanban:
     advanced: Avancuar
 panels:
