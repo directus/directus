@@ -1,14 +1,10 @@
 import { test, expect } from 'vitest';
-import { column } from './wrap-column.js';
+import { wrapColumn } from './wrap-column.js';
 
-test.todo('primitive field selection', () => {
-	expect(
-		column(
-			{
-				type: 'primitive',
-				field: 'col-name',
-			},
-			'test-table'
-		)
-	).toBe('"test-table"."col-name"');
+test('primitive field', () => {
+	expect(wrapColumn('test-table', 'col-name', undefined)).toBe('"test-table"."col-name"');
+});
+
+test('primitive field with alias', () => {
+	expect(wrapColumn('test-table', 'col-name', 'alt-name')).toBe('"test-table"."col-name" AS "alt-name"');
 });

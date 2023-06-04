@@ -1,23 +1,30 @@
-import type { AbstractQueryFieldNodePrimitive } from '@directus/data/types';
-
+import type { SqlStatement } from '@directus/data-sql';
 import { describe, expect, test } from 'vitest';
 import { select } from './select.js';
 
 describe('select statement', () => {
 	test('with no provided fields', () => {
-		const res = select([], 'table');
-		const expected = 'SELECT "table".*';
+		const statement: SqlStatement = {
+			select: [],
+			from: 'articles',
+		};
+
+		const res = select(statement);
+		const expected = 'SELECT "articles".*';
 		expect(res).toStrictEqual(expected);
 	});
 
-	test('with multiple provided fields', () => {
-		const someFields: AbstractQueryFieldNodePrimitive[] = [
-			{ type: 'primitive', field: 'id' },
-			{ type: 'primitive', field: 'title' },
-		];
+	test('with multiple provided fields and an alias', () => {
+		const statement: SqlStatement = {
+			select: [
+				{ table: 'articles', column: 'id', as: 'identifier' },
+				{ table: 'articles', column: 'title' },
+			],
+			from: 'articles',
+		};
 
-		const res = select(someFields, 'table');
-		const expected = 'SELECT "table"."id", "table"."title"';
+		const res = select(statement);
+		const expected = 'SELECT "articles"."id" AS "identifier", "articles"."title"';
 		expect(res).toStrictEqual(expected);
 	});
 });
