@@ -1,61 +1,58 @@
-import { describe, test, expect } from "vitest";
-import {getSelects} from './statement.js'
-import type { AbstractQuery, AbstractQueryFieldNodePrimitive, AbstractQueryFieldNode } from '@directus/data/types';
+import { test, expect } from 'vitest';
+import { convertPrimitive, convertAbstractQueryToSqlStatement, type SqlStatement } from './statement.js';
+import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data/types';
 
+test('get all selects', () => {
+	const query: AbstractQuery = {
+		root: true,
+		store: 'postgres',
+		collection: 'articles',
+		nodes: [
+			{
+				type: 'primitive',
+				field: 'id',
+			},
+			{
+				type: 'primitive',
+				field: 'title',
+			},
+		],
+	};
 
-test('get all selects', ()=> {
+	const res = convertAbstractQueryToSqlStatement(query);
 
-	const nodes: AbstractQueryFieldNode = [
-		{
-			type: 'primitive',
-			field: 'attribute_xy',
-		},
-		{
-			type: 'primitive',
-			field: 'attribute_zz',
-		},
-		{
-			type: 'func',
-			fn: 'year',
-			targetNode: 'attribute_f',
-		},
-	];
-
-	const res = getSelects(nodes);
-
-	const expected = ['attribute_xy', 'attribute_zz', 'attribute_f'];
+	const expected: SqlStatement = {
+		select: [
+			{
+				type: 'primitive',
+				table: 'articles',
+				column: 'id',
+			},
+			{
+				type: 'primitive',
+				table: 'articles',
+				column: 'title',
+			},
+		],
+		from: 'articles',
+	};
 
 	expect(res).toStrictEqual(expected);
 });
 
+test('get all selects', () => {
+	const primitive: AbstractQueryFieldNodePrimitive = {
+		type: 'primitive',
+		field: 'attribute_xy',
+	};
 
-describe('relations', ()=> {
+	const res = convertPrimitive(primitive, 'collection-name');
 
+	const expected = {
+		type: 'primitive',
+		table: 'collection-name',
+		column: 'attribute_xy',
+	};
 
-	test('m2o', () => {
-
-		const nodes: AbstractQueryFieldNodeRelatedManyToOne = [
-			{
-				type: 'primitive',
-				field: 'attribute_xy',
-			},
-			{
-				type: 'primitive',
-				field: 'attribute_zz',
-			},
-			{
-				type: 'func',
-				fn: 'year',
-				targetNode: 'attribute_f',
-			},
-		];
-
-		const res = getSelects(nodes);
-
-		const expected = ['attribute_xy', 'attribute_zz', 'attribute_f'];
-
-		expect(res).toStrictEqual(expected);
-	});
-
+	expect(res).toStrictEqual(expected);
 });
-

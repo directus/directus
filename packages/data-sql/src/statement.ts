@@ -1,4 +1,4 @@
-import type { AbstractQuery } from '@directus/data/types';
+import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data/types';
 
 export interface SqlStatementSelectPrimitive {
 	type: 'primitive';
@@ -39,20 +39,8 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 	const statement: SqlStatement = {
 		select: abstractQuery.nodes.map((abstractNode) => {
 			switch (abstractNode.type) {
-				case 'primitive': {
-					const statement: SqlStatementSelectPrimitive = {
-						type: 'primitive',
-						table: abstractQuery.collection,
-						column: abstractNode.field,
-					};
-
-					if (abstractNode.alias) {
-						statement.as = abstractNode.alias;
-					}
-
-					return statement;
-				}
-
+				case 'primitive':
+					return convertPrimitive(abstractNode, abstractQuery.collection);
 				case 'fn':
 				case 'm2o':
 				case 'o2m':
@@ -64,6 +52,28 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 		}),
 		from: abstractQuery.collection,
 	};
+
+	return statement;
+};
+
+/**
+ * @param abstractPrimitive
+ * @param collection
+ * @returns the converted primitive node
+ */
+export const convertPrimitive = (
+	abstractPrimitive: AbstractQueryFieldNodePrimitive,
+	collection: string
+): SqlStatementSelectPrimitive => {
+	const statement: SqlStatementSelectPrimitive = {
+		type: 'primitive',
+		table: collection,
+		column: abstractPrimitive.field,
+	};
+
+	if (abstractPrimitive.alias) {
+		statement.as = abstractPrimitive.alias;
+	}
 
 	return statement;
 };
