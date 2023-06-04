@@ -6,25 +6,18 @@ type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (...a
 
 type GithubInfo = AsyncReturnType<typeof getInfo>;
 
-export type ChangesetsWithoutId = Map<string, Omit<NewChangesetWithCommit, 'id'>>;
+export type Changesets = Map<string, Omit<NewChangesetWithCommit, 'id'> & { notice: string | undefined }>;
 
 export type Change = { summary: string; commit: string | undefined; githubInfo: GithubInfo | undefined };
 
-export type Package = {
-	name: string;
-	changes: Change[];
-};
+export type Notice = { notice: string; change: Change };
+
+export type Package = { name: string; changes: Change[] };
 
 type UntypedPackageName = (typeof UNTYPED_PACKAGES)[keyof typeof UNTYPED_PACKAGES];
-export type UntypedPackage = {
-	name: UntypedPackageName;
-	changes: Change[];
-};
+export type UntypedPackage = { name: UntypedPackageName; changes: Change[] };
 
 type TypeTitle = (typeof TYPE_MAP)[keyof typeof TYPE_MAP];
 export type Type = { title: TypeTitle; packages: Package[] };
 
-export type PackageVersion = {
-	name: string;
-	version: string;
-};
+export type PackageVersion = { name: string; version: string };

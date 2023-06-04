@@ -15,6 +15,8 @@ readTime: 5 min read
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/) (often included with newer Docker installations)
 
+It can be easy to under-provision resources to run a self-hosted instance of Directus. For Directus' container resources, the required minimum system requirements are 1x 0.25 vCPU / 512 MB, although the recommended minimum is 2x 1 vCPU / 2GB.
+
 ## 1. Installation
 
 You can use the following configuration to get started using Docker Compose. Make sure to change all sensitive values
