@@ -1,9 +1,7 @@
 /**
- * The driver for PostgreSQL which can be used in combination with @directus/data.
- * It needs to be registered as shown in the {@link https://github.com/.. | README of @directus/data}.
+ * The driver for PostgreSQL which can be registered by using @directus/data.
  *
- * @see {@link https://github.com/..} for a complete usage example.
- * @packageDocumentation
+ *  @packageDocumentation
  */
 
 import type { AbstractQuery, DataDriver } from '@directus/data/types';

@@ -4,10 +4,11 @@
  * However in this package aren't any assumptions made about an concrete SQL dialect.
  *
  * @remarks
- * This packages comes especially handy when it comes to converting abstract relationships.
- * It eliminates redundant logic for converting of abstract relationships into abstract SQL JOINs, which would otherwise be implemented in every SQL driver.
+ * This packages comes in handy especially regarding converting abstract relationships into actual JOINs.
+ * It eliminates redundant logic since this would otherwise be implemented in every SQL driver.
  *
  * @packageDocumentation
  */
 
-export * from './statement.js';
+export * from './converter.js';
+export * from './types.js';

@@ -1,6 +1,7 @@
 import { test, expect } from 'vitest';
-import { convertPrimitive, convertAbstractQueryToSqlStatement, type SqlStatement } from './statement.js';
+import { convertPrimitive, convertAbstractQueryToSqlStatement } from './converter.js';
 import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data/types';
+import type { SqlStatement } from './types.js';
 
 test('get all selects', () => {
 	const query: AbstractQuery = {
