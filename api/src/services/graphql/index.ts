@@ -1074,7 +1074,7 @@ export class GraphQLService {
 					const subscriptionType = schemaComposer.createObjectTC({
 						name: eventName,
 						fields: {
-							id: new GraphQLNonNull(GraphQLID),
+							key: new GraphQLNonNull(GraphQLID),
 							event: subscriptionEventType,
 							data: ReadCollectionTypes[collection.collection]!,
 						},
