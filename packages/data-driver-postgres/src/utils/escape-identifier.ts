@@ -1,6 +1,5 @@
 /**
- * Temporarily util until the issue following issue is fixed {@link https://github.com/brianc/node-postgres/issues/3001}
- * Because we're going to use the util function from node-postgres, there are no tests here for this function.
+ * Escapes an identifier to protect against SQL injection.
  * @param identifier - like a table or column name
  * @returns escaped identifier
  */
