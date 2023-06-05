@@ -3,5 +3,5 @@ import { from } from './from.js';
 import { select } from './select.js';
 
 export function constructSql(query: SqlStatement): string {
-	return [select(query), from(query.from)].join(' ');
+	return [select(query), from(query.from)].join(' ') + ';';
 }

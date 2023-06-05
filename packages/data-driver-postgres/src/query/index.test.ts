@@ -1,19 +1,17 @@
-import { constructSQLQuery } from './index.js';
+import { constructSql } from './index.js';
 import { expect, test } from 'vitest';
-import type { AbstractQuery } from '@directus/data/types';
+import type { SqlStatement } from '@directus/data-sql';
 
-test.todo('very simple statement', () => {
-	const ast: AbstractQuery = {
-		root: true,
-		store: 'postgres',
-		collection: 'articles',
-		nodes: [
-			{ type: 'primitive', field: 'id' },
-			{ type: 'primitive', field: 'some_column' },
+test('very simple statement', () => {
+	const query: SqlStatement = {
+		select: [
+			{ type: 'primitive', column: 'id', table: 'articles' },
+			{ type: 'primitive', column: 'some_column', table: 'articles' },
 		],
+		from: 'articles',
 	};
 
 	const expectedSQL = 'SELECT "articles"."id", "articles"."some_column" FROM "articles";';
 
-	expect(constructSQLQuery(ast)).toStrictEqual(expectedSQL);
+	expect(constructSql(query)).toStrictEqual(expectedSQL);
 });

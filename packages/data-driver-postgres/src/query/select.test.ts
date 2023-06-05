@@ -17,8 +17,17 @@ describe('select statement', () => {
 	test('with multiple provided fields and an alias', () => {
 		const statement: SqlStatement = {
 			select: [
-				{ table: 'articles', column: 'id', as: 'identifier' },
-				{ table: 'articles', column: 'title' },
+				{
+					type: 'primitive',
+					table: 'articles',
+					column: 'id',
+					as: 'identifier',
+				},
+				{
+					type: 'primitive',
+					table: 'articles',
+					column: 'title',
+				},
 			],
 			from: 'articles',
 		};
