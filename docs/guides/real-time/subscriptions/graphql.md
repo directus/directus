@@ -19,7 +19,7 @@ subscribe to a `messages` collection, the query would look like this:
 ```graphql
 subscription {
 	messages_mutated {
-		id
+		key
 		event
 		data {
 			text
