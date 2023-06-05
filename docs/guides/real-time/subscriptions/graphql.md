@@ -57,7 +57,7 @@ contain the full item objects (or specific fields, if specified). If the event i
 
 ## Working With Specific CRUD Operations
 
-Using the `event` argument, you can filter for specific `create`,
+Using the `event` argument you can filter for specific `create`,
 `update`, and `delete` events. Here's an example of how to do this:
 
 ```graphql

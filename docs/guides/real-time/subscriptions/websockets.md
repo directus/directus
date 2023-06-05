@@ -45,7 +45,16 @@ The `event` will be one of `create`, `update`, or `delete`. If the event is `cre
 
 ## Working With Specific CRUD Operations
 
-There is no way to only subscribe to specific events within a collection - it’s all or nothing. Using the `event` value, you should implement your own conditional logic to execute different logic for `create`, `update`, and `delete` events.
+Using the optional `event` argument you can filter for specific `create`, `update`, and `delete` events. When filtering for an event the `init` response will no longer be sent.
+
+Here's an example of how to do this:
+```json
+{
+	"type": "subscribe",
+	"collection": "messages",
+	"event": "create"
+}
+```
 
 ## Specifying Fields To Return
 
