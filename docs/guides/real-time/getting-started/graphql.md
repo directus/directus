@@ -60,8 +60,8 @@ client.subscribe(
 		query: `
 				subscription {
 					messages_mutated {
-						id,
-						event,
+						key
+						event
 						data {
 							text
 						}

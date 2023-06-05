@@ -34,7 +34,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				const { collection, key } = eventData;
 				const service = new ItemsService(collection, { schema });
 				const data = await service.readOne(key, { fields } as Query);
-				yield { [event]: { id: key, data, event: 'create' } };
+				yield { [event]: { key, data, event: 'create' } };
 			}
 
 			if (eventData['action'] === 'update') {
@@ -43,7 +43,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 
 				for (const key of keys) {
 					const data = await service.readOne(key, { fields } as Query);
-					yield { [event]: { id: key, data, event: 'update' } };
+					yield { [event]: { key, data, event: 'update' } };
 				}
 			}
 
@@ -51,7 +51,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				const { keys } = eventData;
 
 				for (const key of keys) {
-					yield { [event]: { id: key, data: {}, event: 'delete' } };
+					yield { [event]: { key, data: {}, event: 'delete' } };
 				}
 			}
 		}

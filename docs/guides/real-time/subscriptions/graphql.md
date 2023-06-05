@@ -61,7 +61,7 @@ Using the `event` argument, you can filter for specific `create`,
 ```graphql
 subscription {
 	messages_mutated(event: create) {
-		id
+		key
 		data {
 			text
 		}
