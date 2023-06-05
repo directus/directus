@@ -50,7 +50,7 @@ export class DriverS3 implements Driver {
 		/*
 		 * AWS' client default socket reusing can cause performance issues when using it very
 		 * often in rapid succession, hitting the maxSockets limit of 50.
-		 * We'll customize the requestHandler to get around this.
+		 * The requestHandler is customized to get around this.
 		 */
 		const connectionTimeout = 5000;
 		const socketTimeout = 120000;
