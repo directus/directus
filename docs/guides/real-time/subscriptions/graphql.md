@@ -22,6 +22,7 @@ subscription {
 		key
 		event
 		data {
+			id
 			text
 		}
 	}
@@ -41,9 +42,10 @@ When a change happens to an item in a collection with an active subscription, it
 ```json
 {
 	"messages_mutated": {
-		"id": "1",
+		"key": "1",
 		"event": "create",
 		"data": {
+			"id": "1",
 			"text": "Hello world!",
 		}
 	}
@@ -51,7 +53,7 @@ When a change happens to an item in a collection with an active subscription, it
 ```
 
 An event will be either `create`, `update`, or `delete`. If the event is `create` or `update`, the payload will
-contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be filled the other requested fields will be `null`.
+contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `key` will be filled the other requested fields will be `null`.
 
 ## Working With Specific CRUD Operations
 
