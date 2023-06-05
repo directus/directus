@@ -42,7 +42,7 @@ export default class DataDriverPostgres implements DataDriver {
 			const queryStream = new QueryStream(sqlString /*, sqlStatement.parameters */);
 			return this.#pool.query(queryStream);
 		} catch (err) {
-			throw Error('Could not query the PostgreSQL datastore');
+			throw Error('Could not query the PostgreSQL datastore: ' + err);
 		}
 	}
 }
