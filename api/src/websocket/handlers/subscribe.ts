@@ -210,10 +210,10 @@ export class SubscribeHandler {
 
 		if (subscription.collection === 'directus_collections') {
 			const service = new CollectionsService({ schema, accountability });
-			result['payload'] = await service.readOne(String(id));
+			result['data'] = await service.readOne(String(id));
 		} else {
 			const service = getService(subscription.collection, { schema, accountability });
-			result['payload'] = await service.readOne(id, query);
+			result['data'] = await service.readOne(id, query);
 		}
 
 		if ('meta' in query) {
@@ -237,16 +237,16 @@ export class SubscribeHandler {
 
 		switch (subscription.collection) {
 			case 'directus_collections':
-				result['payload'] = await this.getCollectionPayload(accountability, schema, event);
+				result['data'] = await this.getCollectionPayload(accountability, schema, event);
 				break;
 			case 'directus_fields':
-				result['payload'] = await this.getFieldsPayload(accountability, schema, event);
+				result['data'] = await this.getFieldsPayload(accountability, schema, event);
 				break;
 			case 'directus_relations':
-				result['payload'] = event?.payload;
+				result['data'] = event?.payload;
 				break;
 			default:
-				result['payload'] = await this.getItemsPayload(subscription, accountability, schema, event);
+				result['data'] = await this.getItemsPayload(subscription, accountability, schema, event);
 				break;
 		}
 

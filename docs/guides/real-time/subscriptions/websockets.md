@@ -37,11 +37,11 @@ When a change happens to an item in a collection with an active subscription, it
 {
 	"type": "subscription",
 	"event": "create",
-	"payload": [...]
+	"data": [...]
 }
 ```
 
-The `event` will be one of `create`, `update`, or `delete`. If the event is `create` or `update`, the payload will contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be returned.
+The `event` will be one of `create`, `update`, or `delete`. If the event is `create` or `update`, `data` will contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be returned.
 
 ## Working With Specific CRUD Operations
 
@@ -79,7 +79,7 @@ When you receive responses, the same `uid` will be included as a property:
 {
 	"type": "subscription",
 	"event": "create",
-	"payload": [...],
+	"data": [...],
 	"uid": "any-string-value"
 }
 ```

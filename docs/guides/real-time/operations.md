@@ -75,13 +75,13 @@ Instead of using an object as the value of `data`, you can provide an array of o
 }
 ```
 
-Regardless of how many items are updated, the `payload` in the returned data will always be an array.
+Regardless of how many items are updated, the `data` in the returned object will always be an array.
 
 ```json
 {
 	"type": "subscription",
 	"event": "update",
-	"payload": [...]
+	"data": [...]
 }
 ```
 
@@ -100,13 +100,13 @@ Instead of using an `id` property, you can use an `ids` property with an array o
 }
 ```
 
-Regardless of how many items are updated, the `payload` in the returned data will always be an array containing all IDs from deleted items:
+Regardless of how many items are updated, the `data` in the returned data will always be an array containing all IDs from deleted items:
 
 ```json
 {
 	"type": "items",
 	"event": "delete",
-	"payload": ["single_item_id", "single_item_id_2"]
+	"data": ["single_item_id", "single_item_id_2"]
 }
 ```
 

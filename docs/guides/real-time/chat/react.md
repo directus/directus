@@ -277,7 +277,7 @@ In your `receiveMessage` function, listen for new `create` events on the `Messag
 
 ```js
 if (data.type === 'subscription' && data.event === 'create') {
-	setMessageHistory((history) => [...history, data.payload[0]]);
+	setMessageHistory((history) => [...history, data.data[0]]);
 }
 ```
 
@@ -305,7 +305,7 @@ Replace the `console.log()` you created when the subscription is initialized:
 ```js
 if (data.type === 'subscription' && data.event === 'init') {
 	console.log('subscription started'); // [!code --]
-	for (const message of data.payload) { // [!code ++]
+	for (const message of data.data) { // [!code ++]
 		setMessageHistory((history) => [...history, message]); // [!code ++]
 	} // [!code ++]
 }
@@ -363,12 +363,12 @@ export default function App() {
 			);
 		}
 		if (data.type === 'subscription' && data.event === 'init') {
-			for (const message of data.payload) {
+			for (const message of data.data) {
 				setMessageHistory((history) => [...history, message]);
 			}
 		}
 		if (data.type === 'subscription' && data.event === 'create') {
-			setMessageHistory((history) => [...history, data.payload[0]]);
+			setMessageHistory((history) => [...history, data.data[0]]);
 		}
 	};
 
