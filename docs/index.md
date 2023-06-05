@@ -7,3 +7,5 @@ layout: home
 </script>
 
 <Hero />
+
+<a href="/getting-started/architecture">Architecture</a>
