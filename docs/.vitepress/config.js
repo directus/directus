@@ -187,168 +187,168 @@ function sidebar() {
 				},
 			],
 		},
-		{
-			text: 'Data Studio App',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{
-					link: '/app/overview',
-					text: 'Overview',
-				},
-				{
-					link: '/app/content',
-					text: 'Content',
-					type: 'page',
-					items: [
-						{
-							link: '/app/content/collections',
-							text: 'Collection Page',
-							type: 'page',
-						},
-						{
-							link: '/app/content/items',
-							text: 'Item Page',
-						},
-						{
-							link: '/app/content/shares',
-							text: 'Shares',
-						},
-					],
-				},
-				{
-					link: '/app/user-directory',
-					text: 'User Directory',
-				},
-				{
-					link: '/app/file-library',
-					text: 'File Library',
-				},
-				{
-					link: '/app/insights',
-					text: 'Insights',
-				},
-				{
-					link: '/app/settings',
-					text: 'Settings',
-				},
-				{
-					link: '/app/display-templates',
-					text: 'Display Templates',
-				},
-				{
-					link: '/app/filters',
-					text: 'Filters',
-				},
-				{
-					link: '/app/layouts',
-					text: 'Layouts',
-				},
-				{
-					link: '/app/import-export',
-					text: 'Import / Export',
-				},
-				{
-					link: '/app/project-settings',
-					text: 'Project Settings',
-				},
-				{
-					link: '/app/data-model',
-					text: 'Data Model',
-					items: [
-						{
-							link: '/app/data-model/collections',
-							text: 'Collections',
-						},
-						{
-							link: '/app/data-model/fields',
-							text: 'Fields',
-							collapsible: true,
-							collapsed: true,
-							items: [
-								{
-									link: '/app/data-model/fields/text-numbers',
-									text: 'Text & Numbers',
-								},
-								{
-									link: '/app/data-model/fields/selection',
-									text: 'Selection',
-								},
-								{
-									link: '/app/data-model/fields/relational',
-									text: 'Relational',
-								},
-								{
-									link: '/app/data-model/fields/presentation',
-									text: 'Presentation',
-								},
-								{
-									link: '/app/data-model/fields/groups',
-									text: 'Groups',
-								},
-								{
-									link: '/app/data-model/fields/other',
-									text: 'Other',
-								},
-							],
-						},
-						{
-							link: '/app/data-model/relationships',
-							text: 'Relationships',
-						},
-					],
-				},
-				{
-					link: '/app/users-roles-permissions',
-					text: 'Users, Roles & Permissions',
-					items: [
-						{
-							link: '/app/users-roles-permissions/users',
-							text: 'Users',
-						},
-						{
-							link: '/app/users-roles-permissions/roles',
-							text: 'Roles',
-						},
-						{
-							link: '/app/users-roles-permissions/permissions',
-							text: 'Permissions',
-						},
-					],
-				},
-				{
-					link: '/app/presets-bookmarks',
-					text: 'Presets & Bookmarks',
-				},
-				{
-					link: '/app/translation-strings',
-					text: 'Translation Strings',
-				},
-				{
-					link: '/app/webhooks',
-					text: 'Webhooks',
-				},
-				{
-					link: '/app/flows',
-					text: 'Flows',
-					collapsible: false,
-					items: [
-						{
-							link: '/app/flows/triggers',
-							text: 'Triggers',
-						},
-						{
-							link: '/app/flows/operations',
-							text: 'Operations',
-						},
-					],
-				},
-				{
-					link: '/app/activity-log',
-					text: 'Activity Log',
-				},
-			],
-		},
+		// {
+		// 	text: 'Data Studio App',
+		// 	collapsible: true,
+		// 	collapsed: true,
+		// 	items: [
+		// 		{
+		// 			link: '/app/overview',
+		// 			text: 'Overview',
+		// 		},
+		// 		{
+		// 			link: '/app/content',
+		// 			text: 'Content',
+		// 			type: 'page',
+		// 			items: [
+		// 				{
+		// 					link: '/app/content/collections',
+		// 					text: 'Collection Page',
+		// 					type: 'page',
+		// 				},
+		// 				{
+		// 					link: '/app/content/items',
+		// 					text: 'Item Page',
+		// 				},
+		// 				{
+		// 					link: '/app/content/shares',
+		// 					text: 'Shares',
+		// 				},
+		// 			],
+		// 		},
+		// 		{
+		// 			link: '/app/user-directory',
+		// 			text: 'User Directory',
+		// 		},
+		// 		{
+		// 			link: '/app/file-library',
+		// 			text: 'File Library',
+		// 		},
+		// 		{
+		// 			link: '/app/insights',
+		// 			text: 'Insights',
+		// 		},
+		// 		{
+		// 			link: '/app/settings',
+		// 			text: 'Settings',
+		// 		},
+		// 		{
+		// 			link: '/app/display-templates',
+		// 			text: 'Display Templates',
+		// 		},
+		// 		{
+		// 			link: '/app/filters',
+		// 			text: 'Filters',
+		// 		},
+		// 		{
+		// 			link: '/app/layouts',
+		// 			text: 'Layouts',
+		// 		},
+		// 		{
+		// 			link: '/app/import-export',
+		// 			text: 'Import / Export',
+		// 		},
+		// 		{
+		// 			link: '/app/project-settings',
+		// 			text: 'Project Settings',
+		// 		},
+		// 		{
+		// 			link: '/app/data-model',
+		// 			text: 'Data Model',
+		// 			items: [
+		// 				{
+		// 					link: '/app/data-model/collections',
+		// 					text: 'Collections',
+		// 				},
+		// 				{
+		// 					link: '/app/data-model/fields',
+		// 					text: 'Fields',
+		// 					collapsible: true,
+		// 					collapsed: true,
+		// 					items: [
+		// 						{
+		// 							link: '/app/data-model/fields/text-numbers',
+		// 							text: 'Text & Numbers',
+		// 						},
+		// 						{
+		// 							link: '/app/data-model/fields/selection',
+		// 							text: 'Selection',
+		// 						},
+		// 						{
+		// 							link: '/app/data-model/fields/relational',
+		// 							text: 'Relational',
+		// 						},
+		// 						{
+		// 							link: '/app/data-model/fields/presentation',
+		// 							text: 'Presentation',
+		// 						},
+		// 						{
+		// 							link: '/app/data-model/fields/groups',
+		// 							text: 'Groups',
+		// 						},
+		// 						{
+		// 							link: '/app/data-model/fields/other',
+		// 							text: 'Other',
+		// 						},
+		// 					],
+		// 				},
+		// 				{
+		// 					link: '/app/data-model/relationships',
+		// 					text: 'Relationships',
+		// 				},
+		// 			],
+		// 		},
+		// 		{
+		// 			link: '/app/users-roles-permissions',
+		// 			text: 'Users, Roles & Permissions',
+		// 			items: [
+		// 				{
+		// 					link: '/app/users-roles-permissions/users',
+		// 					text: 'Users',
+		// 				},
+		// 				{
+		// 					link: '/app/users-roles-permissions/roles',
+		// 					text: 'Roles',
+		// 				},
+		// 				{
+		// 					link: '/app/users-roles-permissions/permissions',
+		// 					text: 'Permissions',
+		// 				},
+		// 			],
+		// 		},
+		// 		{
+		// 			link: '/app/presets-bookmarks',
+		// 			text: 'Presets & Bookmarks',
+		// 		},
+		// 		{
+		// 			link: '/app/translation-strings',
+		// 			text: 'Translation Strings',
+		// 		},
+		// 		{
+		// 			link: '/app/webhooks',
+		// 			text: 'Webhooks',
+		// 		},
+		// 		{
+		// 			link: '/app/flows',
+		// 			text: 'Flows',
+		// 			collapsible: false,
+		// 			items: [
+		// 				{
+		// 					link: '/app/flows/triggers',
+		// 					text: 'Triggers',
+		// 				},
+		// 				{
+		// 					link: '/app/flows/operations',
+		// 					text: 'Operations',
+		// 				},
+		// 			],
+		// 		},
+		// 		{
+		// 			link: '/app/activity-log',
+		// 			text: 'Activity Log',
+		// 		},
+		// 	],
+		// },
 		{
 			text: 'API Reference',
 			collapsible: true,
@@ -796,6 +796,25 @@ function sidebarUserGuide() {
 				{
 					text: 'Charts',
 					link: '/user-guide/insights/charts',
+				},
+			],
+		},
+		{
+			text: 'General Settings',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Project Settings',
+					link: '/user-guide/settings/project-settings',
+				},
+				{
+					text: 'Preset and Bookmarks',
+					link: '/user-guide/settings/presets-bookmarks',
+				},
+				{
+					text: 'Activity Log',
+					link: '/user-guide/settings/activity-log',
 				},
 			],
 		},
