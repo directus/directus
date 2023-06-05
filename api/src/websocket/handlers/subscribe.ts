@@ -11,7 +11,7 @@ import { refreshAccountability } from '../authenticate.js';
 import { WebSocketException, handleWebSocketException } from '../exceptions.js';
 import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
-import type { Subscription, WebSocketClient } from '../types.js';
+import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
 
 /**
@@ -116,6 +116,10 @@ export class SubscribeHandler {
 		for (const subscription of subscriptions) {
 			const { client } = subscription;
 
+			if (subscription.event !== undefined && event.action !== subscription.event) {
+				continue; // skip filtered events
+			}
+
 			try {
 				client.accountability = await refreshAccountability(client.accountability);
 
@@ -157,6 +161,10 @@ export class SubscribeHandler {
 					collection,
 				};
 
+				if ('event' in message) {
+					subscription.event = message.event as SubscriptionEvent;
+				}
+
 				if ('query' in message) {
 					subscription.query = sanitizeQuery(message.query!, accountability);
 				}
@@ -176,8 +184,11 @@ export class SubscribeHandler {
 
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);
+
 				// send an initial response
-				client.send(fmtMessage('subscription', data, subscription.uid));
+				if (subscription.event === undefined) {
+					client.send(fmtMessage('subscription', data, subscription.uid));
+				}
 			} catch (err) {
 				handleWebSocketException(client, err, 'subscribe');
 			}
