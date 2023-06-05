@@ -57,3 +57,8 @@
 #hubspot-messages-iframe-container {
 	color-scheme: auto;
 }
+
+.VPHome {
+	max-width: calc(var(--vp-layout-max-width) - 64px);
+	margin: 0 auto;
+}
