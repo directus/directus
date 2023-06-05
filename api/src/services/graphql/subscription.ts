@@ -51,7 +51,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				const { keys } = eventData;
 
 				for (const key of keys) {
-					yield { [event]: { key, data: {}, event: 'delete' } };
+					yield { [event]: { key, data: null, event: 'delete' } };
 				}
 			}
 		}
