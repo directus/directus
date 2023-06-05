@@ -35,6 +35,10 @@ export interface SqlStatement {
 	// parameters: (string | boolean | number)[];
 }
 
+/**
+ * @param abstractQuery the abstract query to convert
+ * @returns a format very close to actual SQL but without making assumptions about the actual SQL dialect
+ */
 export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery): SqlStatement => {
 	const statement: SqlStatement = {
 		select: abstractQuery.nodes.map((abstractNode) => {

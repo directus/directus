@@ -1,8 +1,8 @@
 /**
- * The driver for PostgreSQL which can be used by @directus/data.
+ * The driver for PostgreSQL which can be used in combination with @directus/data.
  * It needs to be registered as shown in the {@link https://github.com/.. | README of @directus/data}.
  *
- * @see {@link https://github.com/} for a complete usage example.
+ * @see {@link https://github.com/..} for a complete usage example.
  * @packageDocumentation
  */
 
