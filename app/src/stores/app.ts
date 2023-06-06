@@ -4,6 +4,7 @@ import { ref } from 'vue';
 
 export const useAppStore = defineStore('appStore', () => {
 	const { data: sidebarOpen } = useLocalStorage('app-store-sidebar-open', window.innerWidth >= 1430);
+	const { data: navOpen } = useLocalStorage('app-store-nav-open', true);
 	const notificationsDrawerOpen = ref(false);
 	const fullScreen = ref(false);
 	const hydrated = ref(false);
@@ -14,6 +15,7 @@ export const useAppStore = defineStore('appStore', () => {
 	const basemap = ref('OpenStreetMap');
 
 	return {
+		navOpen,
 		sidebarOpen,
 		notificationsDrawerOpen,
 		fullScreen,

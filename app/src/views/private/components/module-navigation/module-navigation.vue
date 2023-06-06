@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import ModuleNavigationHeader from './module-navigation-header.vue';
-import { computed } from 'vue';
-import { useSettingsStore } from '@/stores/settings';
-import { translate } from '@/utils/translate-object-values';
 import { MODULE_BAR_DEFAULT } from '@/constants';
-import { omit } from 'lodash';
 import { useExtensions } from '@/extensions';
+import { useAppStore, useSettingsStore } from '@/stores';
+import { translate } from '@/utils/translate-object-values';
+import { omit } from 'lodash';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import ModuleNavigationHeader from './module-navigation-header.vue';
+import { storeToRefs } from 'pinia';
 
 const route = useRoute();
 
+const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const { modules: registeredModules } = useExtensions();
+
+const { navOpen } = storeToRefs(appStore);
 
 const registeredModuleIDs = computed(() => registeredModules.value.map((module) => module.id));
 
@@ -52,32 +56,72 @@ const currentModule = computed(() => {
 </script>
 
 <template>
-	<div class="module-nav alt-colors">
-		<ModuleNavigationHeader />
+	<aside id="navigation" role="navigation" aria-label="Module Navigation" :class="{ 'is-open': navOpen }">
+		<v-resizeable
+			v-model:width="navWidth"
+			:min-width="SIZES.minModuleNavWidth"
+			:max-width="maxWidthNav"
+			:options="navResizeOptions"
+			@dragging="(value) => (isDraggingNav = value)"
+			@transition-end="resetContentOverflowX"
+		>
+			<div class="module-nav alt-colors">
+				<ModuleNavigationHeader />
 
-		<div class="module-nav-content">
-			<div v-for="modulePart in modules" :key="modulePart.id">
-				<RouterLink v-if="modulePart.to" :to="modulePart.to">
-					<div class="module">
-						<v-icon :name="modulePart.icon" />
-						{{ modulePart.name }}
+				<div class="module-nav-content">
+					<div v-for="modulePart in modules" :key="modulePart.id">
+						<RouterLink v-if="modulePart.to" :to="modulePart.to">
+							<div class="module">
+								<v-icon :name="modulePart.icon" />
+								{{ modulePart.name }}
+							</div>
+						</RouterLink>
+
+						<transition-expand>
+							<component
+								:is="`module-navigation-${modulePart.id}`"
+								v-if="modulePart.navigation && currentModule === modulePart.id"
+							/>
+						</transition-expand>
 					</div>
-				</RouterLink>
 
-				<transition-expand>
-					<component
-						:is="`module-navigation-${modulePart.id}`"
-						v-if="modulePart.navigation && currentModule === modulePart.id"
-					/>
-				</transition-expand>
+					<slot name="navigation" />
+				</div>
 			</div>
+		</v-resizeable>
+	</aside>
 
-			<slot name="navigation" />
-		</div>
-	</div>
+	<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 </template>
 
 <style scoped>
+#navigation {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 50;
+	display: flex;
+	height: 100%;
+	font-size: 0;
+	transform: translateX(-100%);
+	transition: transform var(--slow) var(--transition);
+}
+
+#navigation.is-open {
+	transform: translateX(0);
+}
+
+#navigation.has-shadow {
+	box-shadow: var(--navigation-shadow);
+}
+
+@media (min-width: 960px) {
+	#navigation {
+		position: relative;
+		transform: none;
+	}
+}
+
 .module-nav {
 	position: relative;
 	display: inline-block;

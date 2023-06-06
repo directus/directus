@@ -8,27 +8,8 @@
 	</v-info>
 
 	<div v-else class="private-view" :class="{ theme, 'full-screen': fullScreen, splitView }">
-		<aside
-			id="navigation"
-			role="navigation"
-			aria-label="Module Navigation"
-			:class="{ 'is-open': navOpen, 'has-shadow': sidebarShadow }"
-		>
-			<v-resizeable
-				v-model:width="navWidth"
-				:min-width="SIZES.minModuleNavWidth"
-				:max-width="maxWidthNav"
-				:options="navResizeOptions"
-				@dragging="(value) => (isDraggingNav = value)"
-				@transition-end="resetContentOverflowX"
-			>
-				<ModuleNavigation>
-					<template #navigation>
-						<slot name="navigation" />
-					</template>
-				</ModuleNavigation>
-			</v-resizeable>
-		</aside>
+		<ModuleNavigation />
+
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				ref="headerBarEl"
@@ -37,7 +18,6 @@
 				show-sidebar-toggle
 				:title="title"
 				@toggle:sidebar="sidebarOpen = !sidebarOpen"
-				@primary="navOpen = !navOpen"
 			>
 				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
@@ -83,7 +63,6 @@
 			</div>
 		</aside>
 
-		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
 		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
 
 		<notifications-drawer />
@@ -107,12 +86,12 @@ import { computed, provide, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import HeaderBar from './components/header-bar.vue';
+import ModuleNavigation from './components/module-navigation/module-navigation.vue';
 import NotificationDialogs from './components/notification-dialogs.vue';
 import NotificationsDrawer from './components/notifications-drawer.vue';
 import NotificationsGroup from './components/notifications-group.vue';
 import NotificationsPreview from './components/notifications-preview.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
-import ModuleNavigation from './components/module-navigation/module-navigation.vue';
 
 const SIZES = {
 	minModuleNavWidth: 280,
@@ -308,7 +287,6 @@ const mainResizeOptions = computed<ResizeableOptions>(() => {
 	};
 });
 
-const navOpen = ref(false);
 const userStore = useUserStore();
 const appStore = useAppStore();
 
@@ -370,30 +348,6 @@ function getWidth(input: unknown, fallback: number): number {
 
 		@media (min-width: 1260px) {
 			display: none;
-		}
-	}
-
-	#navigation {
-		position: fixed;
-		top: 0;
-		left: 0;
-		z-index: 50;
-		display: flex;
-		height: 100%;
-		font-size: 0;
-		transform: translateX(-100%);
-		transition: transform var(--slow) var(--transition);
-
-		&.is-open {
-			transform: translateX(0);
-		}
-		&.has-shadow {
-			box-shadow: var(--navigation-shadow);
-		}
-
-		@media (min-width: 960px) {
-			position: relative;
-			transform: none;
 		}
 	}
 
