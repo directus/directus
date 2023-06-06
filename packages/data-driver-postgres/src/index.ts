@@ -36,13 +36,17 @@ export default class DataDriverPostgres implements DataDriver {
 	}
 
 	async query(query: AbstractQuery): Promise<Readable> {
+		if (this.#pool.totalCount === 0) {
+			throw new Error('No client is connected to the PostgreSQL datastore.');
+		}
+
 		try {
 			const sqlStatement = convertAbstractQueryToSqlStatement(query);
 			const sqlString = constructSql(sqlStatement);
 			const queryStream = new QueryStream(sqlString /*, sqlStatement.parameters */);
 			return this.#pool.query(queryStream);
 		} catch (err) {
-			throw Error('Could not query the PostgreSQL datastore: ' + err);
+			throw new Error('Could not query the PostgreSQL datastore: ' + err);
 		}
 	}
 }
