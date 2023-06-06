@@ -1,39 +1,35 @@
 import type { SqlStatement } from '@directus/data-sql';
-import { describe, expect, test } from 'vitest';
+import { randomAlpha, randomInteger } from '@directus/random';
+import { beforeEach, expect, test } from 'vitest';
 import { select } from './select.js';
 
-describe('select statement', () => {
-	test('with no provided fields', () => {
-		const statement: SqlStatement = {
-			select: [],
-			from: 'articles',
-		};
+let sample: {
+	statement: SqlStatement;
+};
 
-		const res = select(statement);
-		const expected = 'SELECT "articles".*';
-		expect(res).toStrictEqual(expected);
-	});
-
-	test('with multiple provided fields and an alias', () => {
-		const statement: SqlStatement = {
+beforeEach(() => {
+	sample = {
+		statement: {
 			select: [
 				{
 					type: 'primitive',
-					table: 'articles',
-					column: 'id',
-					as: 'identifier',
+					column: randomAlpha(randomInteger(3, 25)),
+					table: randomAlpha(randomInteger(3, 25)),
+					as: randomAlpha(randomInteger(3, 25)),
 				},
-				{
-					type: 'primitive',
-					table: 'articles',
-					column: 'title',
-				},
+				{ type: 'primitive', column: randomAlpha(randomInteger(3, 25)), table: randomAlpha(randomInteger(3, 25)) },
 			],
-			from: 'articles',
-		};
+			from: randomAlpha(randomInteger(3, 25)),
+		},
+	};
+});
 
-		const res = select(statement);
-		const expected = 'SELECT "articles"."id" AS "identifier", "articles"."title"';
-		expect(res).toStrictEqual(expected);
-	});
+test('With multiple provided fields and an alias', () => {
+	const res = select(sample.statement);
+
+	const expected = `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}" AS "${
+		sample.statement.select[0]!.as
+	}", "${sample.statement.select[1]!.table}"."${sample.statement.select[1]!.column}"`;
+
+	expect(res).toStrictEqual(expected);
 });

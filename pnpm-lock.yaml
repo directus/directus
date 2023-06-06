@@ -1007,6 +1007,9 @@ importers:
       '@directus/data':
         specifier: workspace:*
         version: link:../data
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
