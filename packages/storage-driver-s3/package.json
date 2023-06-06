@@ -29,6 +29,7 @@
 		"@aws-sdk/abort-controller": "3.329.0",
 		"@aws-sdk/client-s3": "3.332.0",
 		"@aws-sdk/lib-storage": "3.332.0",
+		"@aws-sdk/node-http-handler": "3.344.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*"
 	},
