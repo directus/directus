@@ -10,17 +10,19 @@ let sample: {
 	mockStoreIdentifier: string;
 };
 
-beforeEach(() => {
+beforeEach(async () => {
 	sample = {
 		mockStore: {
 			query: vi.fn(),
+			register: vi.fn(),
 			destroy: vi.fn(),
 		},
 		mockStoreIdentifier: randomAlpha(randomInteger(3, 25)),
 	};
 
 	engine = new DataEngine();
-	engine.registerStore(sample.mockStoreIdentifier, sample.mockStore);
+
+	await engine.registerStore(sample.mockStoreIdentifier, sample.mockStore);
 });
 
 describe('#store', () => {
@@ -47,6 +49,12 @@ describe('#query', () => {
 		await engine.query(query);
 
 		expect(sample.mockStore.query).toHaveBeenCalledWith(query);
+	});
+});
+
+describe('#register', () => {
+	test("Calls the driver's optional register function on registration", () => {
+		expect(sample.mockStore.register).toHaveBeenCalledWith();
 	});
 });
 

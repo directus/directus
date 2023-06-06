@@ -9,7 +9,8 @@ export class DataEngine {
 	}
 
 	/** Registers a new data store for use in queries */
-	registerStore(name: string, driver: DataDriver) {
+	async registerStore(name: string, driver: DataDriver) {
+		await driver.register?.();
 		this.#stores.set(name, driver);
 	}
 
