@@ -19,8 +19,12 @@ subscribe to a `messages` collection, the query would look like this:
 ```graphql
 subscription {
 	messages_mutated {
-		id
-		text
+		key
+		event
+		data {
+			id
+			text
+		}
 	}
 }
 ```
@@ -38,34 +42,33 @@ When a change happens to an item in a collection with an active subscription, it
 ```json
 {
 	"messages_mutated": {
-		"id": "1",
-		"text": "Hello world!",
-		"_event": "create"
+		"key": "1",
+		"event": "create",
+		"data": {
+			"id": "1",
+			"text": "Hello world!",
+		}
 	}
 }
 ```
 
 An event will be either `create`, `update`, or `delete`. If the event is `create` or `update`, the payload will
-contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be
-returned.
+contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `key` will be filled the other requested fields will be `null`.
 
 ## Working With Specific CRUD Operations
 
-Using the `_event` value, you can implement your own conditional logic to execute different logic for `create`,
+Using the `event` argument you can filter for specific `create`,
 `update`, and `delete` events. Here's an example of how to do this:
 
-```js
-next: ({ data }) => {
-	const { text, id, _event } = data?.messages_mutated || {};
-
-	if (_event === 'create') {
-		setMessageData((messages) => [...messages, { id, text }]);
-	} else if (_event === 'delete') {
-		setMessageData((messages) => messages.filter((m) => m.id !== id));
-	} else if (_event === 'update') {
-		setMessageData((messages) => messages.map((message) => (message.id === id ? { ...message, text } : message)));
+```graphql
+subscription {
+	messages_mutated(event: create) {
+		key
+		data {
+			text
+		}
 	}
-};
+}
 ```
 
 ## Unsubscribing From Changes

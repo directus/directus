@@ -190,6 +190,15 @@ export class GraphQLService {
 					: reduceSchema(this.schema, this.accountability?.permissions || null, ['delete']),
 		};
 
+		const subscriptionEventType = schemaComposer.createEnumTC({
+			name: 'EventEnum',
+			values: {
+				create: { value: 'create' },
+				update: { value: 'update' },
+				delete: { value: 'delete' },
+			},
+		});
+
 		const { ReadCollectionTypes } = getReadableTypes();
 
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
@@ -1060,16 +1069,23 @@ export class GraphQLService {
 				}
 
 				const eventName = `${collection.collection}_mutated`;
-				const subscriptionType = ReadCollectionTypes[collection.collection]?.clone(collection.collection + '_mutation');
 
-				if (subscriptionType) {
-					subscriptionType.addFields({
-						_event: GraphQLString,
+				if (collection.collection in ReadCollectionTypes) {
+					const subscriptionType = schemaComposer.createObjectTC({
+						name: eventName,
+						fields: {
+							key: new GraphQLNonNull(GraphQLID),
+							event: subscriptionEventType,
+							data: ReadCollectionTypes[collection.collection]!,
+						},
 					});
 
 					schemaComposer.Subscription.addFields({
 						[eventName]: {
 							type: subscriptionType,
+							args: {
+								event: subscriptionEventType,
+							},
 							subscribe: createSubscriptionGenerator(self, eventName),
 						},
 					});

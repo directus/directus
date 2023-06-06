@@ -46,6 +46,7 @@ export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 	WebSocketMessage.extend({
 		type: z.literal('subscribe'),
 		collection: z.string(),
+		event: z.union([z.literal('create'), z.literal('update'), z.literal('delete')]).optional(),
 		item: zodStringOrNumber.optional(),
 		query: z.custom<Query>().optional(),
 	}),
