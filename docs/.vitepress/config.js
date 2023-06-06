@@ -169,10 +169,6 @@ function sidebar() {
 					link: '/getting-started/support',
 				},
 				{
-					text: 'Backing Directus',
-					link: '/getting-started/backing-directus',
-				},
-				{
 					text: 'Resources',
 					link: '/getting-started/resources',
 				},
