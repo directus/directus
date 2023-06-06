@@ -4,4 +4,4 @@
 "tests-blackbox": patch
 ---
 
-Reused S3 client and increased maxSockets
+Fixed S3 storage scaling issues by using a customized request handler with an increased maximum of open sockets
