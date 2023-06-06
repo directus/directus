@@ -10,6 +10,10 @@ jobs:
     if: github.event.pull_request.merged == true && github.base_ref == 'main'
     runs-on: ubuntu-latest
     steps:
+      - uses: sv-tools/create-milestone-action@v1.4.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: 'Next Release'
       - uses: zoispag/action-assign-milestone@v1
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
