@@ -1,5 +1,4 @@
 ---
-"directus": patch
 "@directus/sdk": patch
 ---
 

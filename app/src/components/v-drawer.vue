@@ -20,11 +20,18 @@
 			<div class="content">
 				<v-overlay v-if="$slots.sidebar" absolute />
 
-				<v-nav v-if="$slots.sidebar" class="sidebar" :resizeable="sidebarResizeable" :max-width="sidebarMaxWidth">
-					<div class="sidebar-content">
-						<slot name="sidebar" />
-					</div>
-				</v-nav>
+				<v-resizeable
+					v-if="$slots.sidebar"
+					:disabled="!sidebarResizeable"
+					:width="sidebarWidth"
+					:max-width="sidebarMaxWidth"
+				>
+					<nav class="sidebar">
+						<div class="sidebar-content">
+							<slot name="sidebar" />
+						</div>
+					</nav>
+				</v-resizeable>
 
 				<main ref="mainEl" class="main">
 					<header-bar
@@ -69,11 +76,11 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import { ref, computed, provide } from 'vue';
-import HeaderBar from '@/views/private/components/header-bar.vue';
 import { i18n } from '@/lang';
-import VNav from './v-nav.vue';
+import HeaderBar from '@/views/private/components/header-bar.vue';
+import { computed, provide, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import VResizeable from './v-resizeable.vue';
 
 export interface Props {
 	title: string;
@@ -109,6 +116,7 @@ const mainEl = ref<Element>();
 
 provide('main-element', mainEl);
 
+const sidebarWidth = 220;
 // Half of the space of the drawer (856 / 2 = 428)
 const sidebarMaxWidth = 428;
 
@@ -188,7 +196,6 @@ body {
 				flex-shrink: 0;
 				width: 220px;
 				height: 100%;
-				height: auto;
 				background-color: var(--background-normal);
 			}
 

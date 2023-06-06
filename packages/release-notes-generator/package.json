@@ -1,6 +1,16 @@
 {
 	"name": "@directus/release-notes-generator",
-	"private": true,
+	"version": "0.0.1",
+	"description": "Directus tailored release notes generator for changesets",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/release-notes-generator"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Pascal Jufer <pascal-jufer@bluewin.ch>",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -22,7 +32,7 @@
 	"devDependencies": {
 		"@changesets/types": "5.2.1",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "20.2.0",
+		"@types/node": "18.16.12",
 		"@vitest/coverage-c8": "0.31.1",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
