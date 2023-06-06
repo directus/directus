@@ -14,8 +14,7 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
-		"./package.json": "./package.json",
-		"./types": "./dist/index.d.ts"
+		"./package.json": "./package.json"
 	},
 	"main": "dist/index.js",
 	"files": [

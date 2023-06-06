@@ -1,4 +1,4 @@
-import type { AbstractQuery } from '@directus/data/types';
+import type { AbstractQuery } from '@directus/data';
 import type { SqlStatement } from '../types.js';
 import { convertPrimitive } from './convert-primitive.js';
 

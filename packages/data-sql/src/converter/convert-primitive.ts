@@ -1,4 +1,4 @@
-import type { AbstractQueryFieldNodePrimitive } from '@directus/data/types';
+import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
 import type { SqlStatementSelectPrimitive } from '../types.js';
 
 /**

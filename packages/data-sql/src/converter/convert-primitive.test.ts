@@ -1,19 +1,30 @@
-import type { AbstractQueryFieldNodePrimitive } from '@directus/data/types';
-import { expect, test } from 'vitest';
+import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
+import { randomAlpha, randomInteger } from '@directus/random';
+import { beforeEach, expect, test } from 'vitest';
 import { convertPrimitive } from './convert-primitive.js';
 
-test('get all selects', () => {
-	const primitive: AbstractQueryFieldNodePrimitive = {
-		type: 'primitive',
-		field: 'attribute_xy',
-	};
+let sample: {
+	node: AbstractQueryFieldNodePrimitive;
+	collection: string;
+};
 
-	const res = convertPrimitive(primitive, 'collection-name');
+beforeEach(() => {
+	sample = {
+		node: {
+			type: 'primitive',
+			field: randomAlpha(randomInteger(3, 25)),
+		},
+		collection: randomAlpha(randomInteger(3, 25)),
+	};
+});
+
+test('get all selects', () => {
+	const res = convertPrimitive(sample.node, sample.collection);
 
 	const expected = {
 		type: 'primitive',
-		table: 'collection-name',
-		column: 'attribute_xy',
+		table: sample.collection,
+		column: sample.node.field,
 	};
 
 	expect(res).toStrictEqual(expected);

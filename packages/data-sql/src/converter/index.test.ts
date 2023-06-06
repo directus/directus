@@ -1,41 +1,50 @@
-import type { AbstractQuery } from '@directus/data/types';
-import { expect, test } from 'vitest';
+import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
+import { randomAlpha, randomInteger } from '@directus/random';
+import { beforeEach, expect, test } from 'vitest';
 import type { SqlStatement } from '../types.js';
 import { convertAbstractQueryToSqlStatement } from './index.js';
 
-test('get all selects', () => {
-	const query: AbstractQuery = {
-		root: true,
-		store: 'postgres',
-		collection: 'articles',
-		nodes: [
-			{
-				type: 'primitive',
-				field: 'id',
-			},
-			{
-				type: 'primitive',
-				field: 'title',
-			},
-		],
-	};
+let sample: {
+	query: AbstractQuery;
+};
 
-	const res = convertAbstractQueryToSqlStatement(query);
+beforeEach(() => {
+	sample = {
+		query: {
+			root: true,
+			store: randomAlpha(randomInteger(3, 25)),
+			collection: randomAlpha(randomInteger(3, 25)),
+			nodes: [
+				{
+					type: 'primitive',
+					field: randomAlpha(randomInteger(3, 25)),
+				},
+				{
+					type: 'primitive',
+					field: randomAlpha(randomInteger(3, 25)),
+				},
+			],
+		},
+	};
+});
+
+test('Get all selects', () => {
+	const res = convertAbstractQueryToSqlStatement(sample.query);
 
 	const expected: SqlStatement = {
 		select: [
 			{
 				type: 'primitive',
-				table: 'articles',
-				column: 'id',
+				table: sample.query.collection,
+				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
 			},
 			{
 				type: 'primitive',
-				table: 'articles',
-				column: 'title',
+				table: sample.query.collection,
+				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
 			},
 		],
-		from: 'articles',
+		from: sample.query.collection,
 	};
 
 	expect(res).toStrictEqual(expected);

@@ -4,8 +4,8 @@
  *  @packageDocumentation
  */
 
+import type { AbstractQuery, DataDriver } from '@directus/data';
 import { convertAbstractQueryToSqlStatement } from '@directus/data-sql';
-import type { AbstractQuery, DataDriver } from '@directus/data/types';
 import type { Readable } from 'node:stream';
 import { Pool } from 'pg';
 import QueryStream from 'pg-query-stream';
