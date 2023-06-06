@@ -1,6 +1,15 @@
+/**
+ * The driver for PostgreSQL which can be registered by using @directus/data.
+ *
+ *  @packageDocumentation
+ */
+
 import type { AbstractQuery, DataDriver } from '@directus/data/types';
-import { Readable } from 'node:stream';
+import type { Readable } from 'node:stream';
 import { Pool } from 'pg';
+import QueryStream from 'pg-query-stream';
+import { constructSql } from './query/index.js';
+import { convertAbstractQueryToSqlStatement } from '@directus/data-sql';
 
 export interface DataDriverPostgresConfig {
 	connectionString: string;
@@ -26,7 +35,14 @@ export default class DataDriverPostgres implements DataDriver {
 		await this.#pool.end();
 	}
 
-	async query(_query: AbstractQuery) {
-		return new Readable();
+	async query(query: AbstractQuery): Promise<Readable> {
+		try {
+			const sqlStatement = convertAbstractQueryToSqlStatement(query);
+			const sqlString = constructSql(sqlStatement);
+			const queryStream = new QueryStream(sqlString /*, sqlStatement.parameters */);
+			return this.#pool.query(queryStream);
+		} catch (err) {
+			throw new Error('Could not query the PostgreSQL datastore: ' + err);
+		}
 	}
 }

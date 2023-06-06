@@ -1,17 +1,22 @@
 {
-	"name": "@directus/data-driver-postgres",
-	"version": "0.0.1",
-	"description": "Data storage abstraction layer for Postgres",
-	"homepage": "https://directus.io",
+	"name": "@directus/data-sql",
+	"version": "0.0.0",
+	"type": "module",
+	"sideEffects": false,
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"test": "vitest --watch=false"
+	},
+	"description": "Shared SQL helpers for SQL-based drivers",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git",
-		"directory": "packages/data-driver-postgres"
+		"directory": "packages/data-sql"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "BUSL-1.1",
+	"license": "BSUL-1.1",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
-	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -20,24 +25,15 @@
 	"files": [
 		"dist"
 	],
-	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
-		"test": "vitest --watch=false"
-	},
 	"devDependencies": {
 		"@directus/data": "workspace:*",
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
 		"@types/node": "18.16.12",
-		"@types/pg": "8.6.6",
 		"@vitest/coverage-c8": "0.31.1",
 		"tsup": "6.7.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
-	},
-	"dependencies": {
-		"@directus/data-sql": "workspace:*",
-		"pg": "8.10.0",
-		"pg-query-stream": "^4.5.0"
 	}
 }

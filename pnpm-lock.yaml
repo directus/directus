@@ -489,7 +489,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   app:
     devDependencies:
@@ -941,7 +941,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/constants:
     dependencies:
@@ -984,13 +984,19 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/data-driver-postgres:
     dependencies:
+      '@directus/data-sql':
+        specifier: workspace:*
+        version: link:../data-sql
       pg:
         specifier: 8.10.0
         version: 8.10.0
+      pg-query-stream:
+        specifier: ^4.5.0
+        version: 4.5.0(pg@8.10.0)
     devDependencies:
       '@directus/data':
         specifier: workspace:*
@@ -1007,12 +1013,45 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 6.7.0
+        version: 6.7.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
+
+  packages/data-sql:
+    devDependencies:
+      '@directus/data':
+        specifier: workspace:*
+        version: link:../data
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      '@types/node':
+        specifier: 18.16.12
+        version: 18.16.12
+      '@vitest/coverage-c8':
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 6.7.0
+        version: 6.7.0(typescript@5.0.4)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.1
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/exceptions:
     devDependencies:
@@ -1036,7 +1075,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/extensions-sdk:
     dependencies:
@@ -1127,7 +1166,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/pressure:
     dependencies:
@@ -1152,7 +1191,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/random:
     devDependencies:
@@ -1173,7 +1212,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/release-notes-generator:
     dependencies:
@@ -1204,7 +1243,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/schema:
     dependencies:
@@ -1282,7 +1321,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1310,7 +1349,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1341,7 +1380,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1369,7 +1408,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-local:
     dependencies:
@@ -1394,7 +1433,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-s3:
     dependencies:
@@ -1428,7 +1467,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/tsconfig: {}
 
@@ -1567,7 +1606,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   tests/blackbox:
     devDependencies:
@@ -8289,7 +8328,7 @@ packages:
       magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.3
-      vitest: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+      vitest: 0.31.1(jsdom@22.0.0)
     dev: true
 
   /@vitest/expect@0.31.1:
@@ -16271,6 +16310,14 @@ packages:
   /pg-connection-string@2.6.0:
     resolution: {integrity: sha512-x14ibktcwlHKoHxx9X3uTVW9zIGR41ZB6QNhHb21OPNdCCO3NaRnpJuwKIQSR4u+Yqjx4HCvy7Hh7VSy1U4dGg==}
 
+  /pg-cursor@2.10.0(pg@8.10.0):
+    resolution: {integrity: sha512-azXIjeIGBwlv/icYyuki5xJYfVSXeirGn4+mvAmYTB8SY0gS1xhluc2CENnq1JrcVSA81lWZgtqc1GAAhH/UuQ==}
+    peerDependencies:
+      pg: ^8
+    dependencies:
+      pg: 8.10.0
+    dev: false
+
   /pg-int8@1.0.1:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
     engines: {node: '>=4.0.0'}
@@ -16292,6 +16339,15 @@ packages:
 
   /pg-protocol@1.6.0:
     resolution: {integrity: sha512-M+PDm637OY5WM307051+bsDia5Xej6d9IR4GwJse1qA1DIhiKlksvrneZOYQq42OM+spubpcNYEo2FcKQrDk+Q==}
+
+  /pg-query-stream@4.5.0(pg@8.10.0):
+    resolution: {integrity: sha512-9slxIXMssuqKUVyCtuVU5/pr2+RLTKva5VE90PFzi6Mi8o3crbyZQvReoWJimgm9c1zY2+Jv3lvYYsqvaKmQ4g==}
+    peerDependencies:
+      pg: ^8
+    dependencies:
+      pg: 8.10.0
+      pg-cursor: 2.10.0(pg@8.10.0)
+    dev: false
 
   /pg-types@2.2.0:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
