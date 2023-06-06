@@ -76,23 +76,22 @@ await data.query({
 	nodes: [
 		{
 			type: 'primitive',
-			field: 'id'
-		}
-	]
-})
+			field: 'id',
+		},
+	],
+});
 ```
 
 ## Dependencies
-This shows how the packages depend on each other. 
+
+This shows how the packages depend on each other.
 
 ```mermaid
-flowchart LR
-    api --> sql-adapter
+graph LR;
+    api --> data
+    data --> sql-adapter
+    data --> no-sql-adapter
 	sql-adapter ---> db1[(datastore)]
-	sql-adapter  --> data-sql
-	sql-adapter --> data
-	api --> data
-    api --> no-sql-adapter
-	no-sql-adapter --> data
+	sql-adapter  --- data-sql
 	no-sql-adapter ---> db2[(datastore)]
 ```
