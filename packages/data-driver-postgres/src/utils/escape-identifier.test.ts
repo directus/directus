@@ -1,24 +1,22 @@
-import { expect, test, describe } from 'vitest';
+import { expect, test } from 'vitest';
 import { escapeIdentifier } from './escape-identifier.js';
 
-describe('escapeIdentifier', () => {
-	test('with a space inside', () => {
-		expect(escapeIdentifier('some collection')).toBe('"some collection"');
-	});
+test('space inside', () => {
+	expect(escapeIdentifier('some collection')).toBe('"some collection"');
+});
 
-	test('with double quotes', () => {
-		expect(escapeIdentifier('collection_"xy"')).toBe('"collection_""xy"""');
-	});
+test('Double quotes', () => {
+	expect(escapeIdentifier('collection_"xy"')).toBe('"collection_""xy"""');
+});
 
-	test('with single quotes', () => {
-		expect(escapeIdentifier(`collection_'xy'`)).toBe(`"collection_'xy'"`);
-	});
+test('Single quotes', () => {
+	expect(escapeIdentifier(`collection_'xy'`)).toBe(`"collection_'xy'"`);
+});
 
-	test('with backslashes', () => {
-		expect(escapeIdentifier('collection\\ xy')).toBe('"collection\\ xy"');
-	});
+test('Backslashes', () => {
+	expect(escapeIdentifier('collection\\ xy')).toBe('"collection\\ xy"');
+});
 
-	test('with single and double quote', () => {
-		expect(escapeIdentifier(`collection_'xy`)).toBe(`"collection_'xy"`);
-	});
+test('Single and double quote', () => {
+	expect(escapeIdentifier(`collection_'xy`)).toBe(`"collection_'xy"`);
 });
