@@ -36,10 +36,6 @@ export default class DataDriverPostgres implements DataDriver {
 	}
 
 	async query(query: AbstractQuery): Promise<Readable> {
-		if (this.#pool.totalCount === 0) {
-			throw new Error('No client is connected to the PostgreSQL datastore.');
-		}
-
 		try {
 			const sqlStatement = convertAbstractQueryToSqlStatement(query);
 			const sqlString = constructSql(sqlStatement);
