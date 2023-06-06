@@ -1,5 +1,5 @@
-import type { DataDriver } from './types/driver.js';
 import type { AbstractQuery } from './types/abstract-query.js';
+import type { DataDriver } from './types/driver.js';
 
 export class DataEngine {
 	#stores: Map<string, DataDriver>;
@@ -29,3 +29,5 @@ export class DataEngine {
 		return this.store(query.store).query(query);
 	}
 }
+
+export type * from './types/index.js';

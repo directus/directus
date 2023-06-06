@@ -4,12 +4,12 @@
  *  @packageDocumentation
  */
 
+import { convertAbstractQueryToSqlStatement } from '@directus/data-sql';
 import type { AbstractQuery, DataDriver } from '@directus/data/types';
 import type { Readable } from 'node:stream';
 import { Pool } from 'pg';
 import QueryStream from 'pg-query-stream';
 import { constructSql } from './query/index.js';
-import { convertAbstractQueryToSqlStatement } from '@directus/data-sql';
 
 export interface DataDriverPostgresConfig {
 	connectionString: string;
@@ -27,11 +27,7 @@ export default class DataDriverPostgres implements DataDriver {
 		});
 	}
 
-	async connect() {
-		await this.#pool.connect();
-	}
-
-	async disconnect() {
+	async destroy() {
 		await this.#pool.end();
 	}
 
