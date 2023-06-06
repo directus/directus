@@ -26,30 +26,12 @@ import { DataDriverPostgres } from '@directus/data-driver-postgres';
 
 const data = new DataEngine();
 
-data.registerStore(
+await data.registerStore(
 	'postgres',
 	new DataDriverPostgres({
 		connectionString: 'postgresql://root:password@localhost/mydb',
 	})
 );
-```
-
-Connect to the registered stores:
-
-```js
-import { DataEngine } from '@directus/data';
-import { DataDriverPostgres } from '@directus/data-driver-postgres';
-
-const data = new DataEngine();
-
-data.registerStore(
-	'postgres',
-	new DataDriverPostgres({
-		connectionString: 'postgresql://root:password@localhost/mydb',
-	})
-);
-
-await data.connect();
 ```
 
 Query data:
@@ -60,14 +42,12 @@ import { DataDriverPostgres } from '@directus/data-driver-postgres';
 
 const data = new DataEngine();
 
-data.registerStore(
+await data.registerStore(
 	'postgres',
 	new DataDriverPostgres({
 		connectionString: 'postgresql://root:password@localhost/mydb',
 	})
 );
-
-await data.connect();
 
 await data.query({
 	root: true,
