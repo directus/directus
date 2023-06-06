@@ -43,7 +43,7 @@ This pull request is usually merged into main before publishing a new release.
 
 :::warning Translations on GitHub
 
-Translations updatesEditing translations directly in the GitHub repo is not recommended, as these changes will be overwritten by Crowdin again (unless we do a manual sync).
+Editing translations directly in the GitHub repo is not recommended, as these changes will be overwritten by Crowdin again (unless we do a manual sync).
 
 :::
 

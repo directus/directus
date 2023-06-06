@@ -18,7 +18,7 @@ If you want to contribute guides, or create new documentation, please first open
 
 ## Online Community
 
-Our online community meets in two places - [Discord](https://directus.chat) and [GitHub](https://github.com/directus/directus/discussions). GitHub is used for discussing feature requests and bugs, and Discord is uesd for community discussion and requests for implementation help.
+Our online community meets in two places - [Discord](https://directus.chat) and [GitHub](https://github.com/directus/directus/discussions). GitHub is used for discussing feature requests and bugs, and Discord is used for community discussion and requests for implementation help.
 
 The Directus community is growing quickly, which also means there are more and more people with questions. Helping out your fellow developers by providing answers on [Discord](https://directus.chat) is a great way to help the project. Questions are opened in one of our help channels, and all are encouraged to respond.
 
@@ -30,10 +30,10 @@ To learn more about how we use GitHub for Feature Requests and Code Contribution
 
 ### Moderation
 
-As well as the Core Team, we have a set of communtiy moderators who support us in creating a kind and well-organized community. The role of a moderator is to:
+As well as the Core Team, we have a set of community moderators who support us in creating a kind and well-organized community. The role of a moderator is to:
 
 - Remove spam and other content that breaks our server rules.
-- Remmove server members who consisntely break rules, or break certain rules where there is zero-tolerance.
+- Remove server members who consistently break rules, or break certain rules where there is zero-tolerance.
 - Move questions to help channels when posted elsewhere.
 - Be model community members.
 
@@ -43,4 +43,4 @@ This is an elevated role that is generally given at discretion of the Core Team.
 
 We have a truly global user base, and run a number of [regional User Groups and events](https://directus.io/events) to bring together local Directus developers and users.
 
-If you are interested in setting up your own, please reach out to a member of the core team. We can always start with a non-commital one-off to gauge local interest. 
+If you are interested in setting up your own, please reach out to a member of the core team. We can always start with a one-off to gauge local interest. 
