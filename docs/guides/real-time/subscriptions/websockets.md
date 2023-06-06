@@ -41,7 +41,7 @@ When a change happens to an item in a collection with an active subscription, it
 }
 ```
 
-The `event` will be one of `create`, `update`, or `delete`. If the event is `create` or `update`, `data` will contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be returned.
+The `event` will be one of `create`, `update`, or `delete`. If the event is `create` or `update`, the `data` will contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be returned.
 
 ## Working With Specific CRUD Operations
 
