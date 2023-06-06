@@ -607,22 +607,19 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
-				{
-					link: '/contributing/introduction',
-					text: 'Introduction',
+				{ link: '/contributing/introduction', text: 'Introduction' },
+				{ 
+					text: 'Code',
+					items: [
+						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
+						{ link: '/contributing/pull-request-process', text: 'Pull Request Process' },
+						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
+						{ link: '/contributing/running-locally', text: 'Running Locally' },
+						{ link: '/contributing/tests', text: 'Tests' },
+					]
 				},
-				{
-					link: '/contributing/running-locally',
-					text: 'Running Locally',
-				},
-				{
-					link: '/contributing/codebase-overview',
-					text: 'Codebase Overview',
-				},
-				{
-					link: '/contributing/tests',
-					text: 'Tests',
-				},
+				{ link: '/contributing/community', text: 'Community' },
+				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' }
 			],
 		},
 		{
