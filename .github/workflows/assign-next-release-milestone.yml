@@ -1,0 +1,16 @@
+name: Assign Next Release Milestone
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: zoispag/action-assign-milestone@v1
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          milestone: 'Next Release'
