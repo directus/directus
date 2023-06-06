@@ -6,7 +6,8 @@ on:
       - closed
 
 jobs:
-  check-if-merged:
+  assign:
+    name: Assign Milestone
     if: github.event.pull_request.merged == true && github.base_ref == 'main'
     runs-on: ubuntu-latest
     steps:
