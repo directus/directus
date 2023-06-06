@@ -20,7 +20,7 @@ If you want to contribute guides, or create new documentation, please first open
 
 Our online community meets in two places - [Discord](https://directus.chat) and [GitHub](https://github.com/directus/directus/discussions). GitHub is used for discussing feature requests and bugs, and Discord is uesd for community discussion and requests for implementation help.
 
-Our Discord space encourages peer-to-peer support between our community members. Questions are opened in one of our help channels, and all are encouraged to respond.
+The Directus community is growing quickly, which also means there are more and more people with questions. Helping out your fellow developers by providing answers on [Discord](https://directus.chat) is a great way to help the project. Questions are opened in one of our help channels, and all are encouraged to respond.
 
 :::info Feature Requests & Code Contributions
 
