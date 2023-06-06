@@ -27,6 +27,7 @@
 		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",
 		"@vitest/coverage-c8": "0.31.1",
