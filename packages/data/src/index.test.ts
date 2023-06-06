@@ -49,3 +49,12 @@ describe('#query', () => {
 		expect(sample.mockStore.query).toHaveBeenCalledWith(query);
 	});
 });
+
+describe('#destroy', () => {
+	test('Calls destroy on all connected drivers that have a destroy method', async () => {
+		await engine.destroy();
+
+		expect(sample.mockStore.destroy).toHaveBeenCalledOnce();
+		expect(sample.mockStore.destroy).toHaveBeenCalledWith();
+	});
+});

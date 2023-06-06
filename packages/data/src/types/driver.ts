@@ -11,7 +11,7 @@ export interface DataDriver {
 	 * Fires when the driver is no longer needed. Can be used to disconnect databases, logout from
 	 * services, etc
 	 */
-	destroy: () => Promise<void>;
+	destroy?: () => Promise<void>;
 }
 
 export abstract class DataDriver {

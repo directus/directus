@@ -28,6 +28,11 @@ export class DataEngine {
 	async query(query: AbstractQuery): Promise<NodeJS.ReadableStream> {
 		return this.store(query.store).query(query);
 	}
+
+	/** Gracefully shutdown connected drivers */
+	async destroy() {
+		await Promise.all(Array.from(this.#stores.values()).map((driver) => driver.destroy?.()));
+	}
 }
 
 export type * from './types/index.js';
