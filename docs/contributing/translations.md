@@ -1,7 +1,7 @@
 ---
 description:
   Directus supports internationalization across the entire App. Many languages are currently supported, with more being
-  added all the time. Anyone can add or refine any languages through the integration with Crowdin
+  added all the time.
 readTime: 2 min read
 ---
 
@@ -25,25 +25,25 @@ language translations for the App. You can update and extend existing languages,
 6. Add or edit the translation in the lower text area
 7. Click "SAVE" below the translation
 
-::: warning Character Length
-
 It is important to keep the character length approximately the same as the source string (English) to avoid truncation
 or a drastically different wrapping. For example, some text translations will go in a smaller button with limited space
 for text and no ability to wrap.
 
-:::
-
-::: warning Suggestions
-
 Crowdin provides useful TM and MT suggestions, however you should always confirm that these are context appropriate, as
 they may not accurately map to the source meaning.
 
-:::
-
-::: tip Request Additional Context
-
 If you feel you do not have enough information on how this string is used, you can always ask for additional context
 using the "Comment" section.
+
+## Releasing New Translations
+
+As soon as a translation is edited on Crowdin, a pull request is created by Crowdin in our repo, which contains the corresponding changes.
+
+This pull request is usually merged into main before publishing a new release.
+
+:::warning Translations on GitHub
+
+Editing translations directly in the GitHub repo is not recommended, as these changes will be overwritten by Crowdin again (unless we do a manual sync).
 
 :::
 

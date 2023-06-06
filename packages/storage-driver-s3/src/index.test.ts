@@ -8,20 +8,21 @@ import {
 	S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
 	randBoolean,
+	randGitBranch as randBucket,
 	randDirectoryPath,
 	randDomainName,
 	randFilePath,
 	randFileType,
-	randGitBranch as randBucket,
-	randGitShortSha as randUnique,
 	randNumber,
 	randPastDate,
 	randText,
+	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
 import { join } from 'node:path';
@@ -184,7 +185,7 @@ describe('#getClient', () => {
 	test('Creates S3Client without key / secret (based on machine config)', () => {
 		const driver = new DriverS3({ bucket: 'bucket' });
 
-		expect(S3Client).toHaveBeenCalledWith({});
+		expect(S3Client).toHaveBeenCalledWith({ requestHandler: expect.any(NodeHttpHandler) });
 
 		expect(driver['client']).toBeInstanceOf(S3Client);
 	});
@@ -195,6 +196,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 
 		expect(driver['client']).toBeInstanceOf(S3Client);
@@ -221,6 +223,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 	});
 
@@ -245,6 +248,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 	});
 
@@ -262,6 +266,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 	});
 
@@ -279,6 +284,7 @@ describe('#getClient', () => {
 				accessKeyId: sample.config.key,
 				secretAccessKey: sample.config.secret,
 			},
+			requestHandler: expect.any(NodeHttpHandler),
 		});
 	});
 });
