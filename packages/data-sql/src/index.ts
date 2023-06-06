@@ -10,5 +10,5 @@
  * @packageDocumentation
  */
 
-export * from './converter.js';
+export * from './converter/index.js';
 export * from './types.js';
