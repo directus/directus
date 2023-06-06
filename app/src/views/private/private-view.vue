@@ -188,23 +188,6 @@ const showMain = computed(() => {
 	return remainingWidth >= props.splitViewMinWidth;
 });
 
-const { data: localStorageModuleWidth } = useLocalStorage<{
-	nav?: number;
-	main?: number;
-}>('module-width', {});
-
-const navWidth = ref(getWidth(localStorageModuleWidth.value?.nav, SIZES.minModuleNavWidth));
-
-watch(
-	navWidth,
-	debounce((value) => {
-		localStorageModuleWidth.value = {
-			...(localStorageModuleWidth.value ?? {}),
-			nav: value,
-		};
-	}, 300)
-);
-
 const mainWidth = ref(getWidth(localStorageModuleWidth.value?.main, SIZES.minContentWidth));
 
 watch(

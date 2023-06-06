@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import VResizeable from '@/components/v-resizeable.vue';
 import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
 import { useAppStore, useSettingsStore } from '@/stores';
 import { translate } from '@/utils/translate-object-values';
-import { omit } from 'lodash';
-import { computed } from 'vue';
+import { debounce, omit } from 'lodash';
+import { storeToRefs } from 'pinia';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import ModuleNavigationHeader from './module-navigation-header.vue';
-import { storeToRefs } from 'pinia';
 
 const route = useRoute();
 
@@ -53,6 +54,23 @@ const modules = computed(() => {
 const currentModule = computed(() => {
 	return route.path.split('/')[1];
 });
+
+const { data: localStorageModuleWidth } = useLocalStorage<{
+	nav?: number;
+	main?: number;
+}>('module-width', {});
+
+const navWidth = ref(getWidth(localStorageModuleWidth.value?.nav, SIZES.minModuleNavWidth));
+
+watch(
+	navWidth,
+	debounce((value) => {
+		localStorageModuleWidth.value = {
+			...(localStorageModuleWidth.value ?? {}),
+			nav: value,
+		};
+	}, 300)
+);
 </script>
 
 <template>
