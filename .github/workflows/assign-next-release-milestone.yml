@@ -15,7 +15,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: 'Next Release'
-      - uses: zoispag/action-assign-milestone@v1
+      - uses: zoispag/action-assign-milestone@v1.1.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           milestone: 'Next Release'
