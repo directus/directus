@@ -55,11 +55,11 @@
 <script setup lang="ts">
 import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { useAppStore } from '@directus/stores';
 import { Item, Notification } from '@directus/types';
 import { parseISO } from 'date-fns';
 import { storeToRefs } from 'pinia';

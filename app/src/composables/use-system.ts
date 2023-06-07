@@ -1,9 +1,8 @@
-import { provide } from 'vue';
 import api from '@/api';
-import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '@directus/constants';
-import { useAppStore } from '@/stores/app';
+import { useExtensions } from '@/extensions';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useFlowsStore } from '@/stores/flows';
 import { useInsightsStore } from '@/stores/insights';
 import { useLatencyStore } from '@/stores/latency';
 import { useNotificationsStore } from '@/stores/notifications';
@@ -14,8 +13,9 @@ import { useRequestsStore } from '@/stores/requests';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
-import { useFlowsStore } from '@/stores/flows';
-import { useExtensions } from '@/extensions';
+import { API_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '@directus/constants';
+import { useAppStore } from '@directus/stores';
+import { provide } from 'vue';
 
 export function useSystem(): void {
 	provide(STORES_INJECT, {
