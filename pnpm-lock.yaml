@@ -1209,34 +1209,6 @@ importers:
         specifier: 5.0.4
         version: 5.0.4
 
-  packages/sdk:
-    dependencies:
-      axios:
-        specifier: 0.27.2
-        version: 0.27.2
-    devDependencies:
-      '@directus/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@types/node':
-        specifier: 18.16.12
-        version: 18.16.12
-      '@vitest/coverage-c8':
-        specifier: 0.31.1
-        version: 0.31.1(vitest@0.31.1)
-      jsdom:
-        specifier: 22.0.0
-        version: 22.0.0
-      msw:
-        specifier: 1.2.1
-        version: 1.2.1(typescript@5.0.4)
-      typescript:
-        specifier: 5.0.4
-        version: 5.0.4
-      vitest:
-        specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
-
   packages/specs:
     dependencies:
       openapi3-ts:
@@ -1561,6 +1533,34 @@ importers:
       vitest:
         specifier: 0.31.1
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+
+  sdk:
+    dependencies:
+      axios:
+        specifier: 0.27.2
+        version: 0.27.2
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../packages/tsconfig
+      '@types/node':
+        specifier: 18.16.12
+        version: 18.16.12
+      '@vitest/coverage-c8':
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
+      jsdom:
+        specifier: 22.0.0
+        version: 22.0.0
+      msw:
+        specifier: 1.2.1
+        version: 1.2.1(typescript@5.0.4)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.1
+        version: 0.31.1(jsdom@22.0.0)
 
   tests/blackbox:
     devDependencies:
