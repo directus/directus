@@ -267,7 +267,7 @@ In your `receiveMessage` function, listen for new `create` events on the `Messag
 
 ```js
 if (data.type == 'subscription' && data.event == 'create') {
-	this.messages.history.push(data.payload[0]);
+	this.messages.history.push(data.data[0]);
 }
 ```
 
@@ -292,7 +292,7 @@ Replace the `console.log()` you created when the subscription is initialized:
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
 	console.log('subscription started'); // [!code --]
-	for (const message of data.payload) { // [!code ++]
+	for (const message of data.data) { // [!code ++]
 		this.messages.history.push(message); // [!code ++]
 	} // [!code ++]
 }
@@ -384,12 +384,12 @@ This guide covers authentication, item creation, and subscription using WebSocke
 						})); 
 					} 
 					if (data.type == 'subscription' && data.event == 'init') { 
-						for (const message of data.payload) { 
+						for (const message of data.data) { 
 							this.messages.history.push(message); 
 						} 
 					} 
 					if (data.type == 'subscription' && data.event == 'create') {
-						this.messages.history.push(data.payload[0]);
+						this.messages.history.push(data.data[0]);
 					}
 				}
 			}

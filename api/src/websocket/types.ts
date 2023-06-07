@@ -13,11 +13,13 @@ export type WebSocketClient = WebSocket &
 	AuthenticationState & { uid: string | number; auth_timer: NodeJS.Timer | null };
 export type UpgradeRequest = IncomingMessage & AuthenticationState;
 
+export type SubscriptionEvent = 'create' | 'update' | 'delete';
+
 export type Subscription = {
 	uid?: string | number;
 	query?: Query;
 	item?: string | number;
-	status?: boolean;
+	event?: SubscriptionEvent;
 	collection: string;
 	client: WebSocketClient;
 };

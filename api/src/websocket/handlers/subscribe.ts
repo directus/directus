@@ -11,7 +11,7 @@ import { refreshAccountability } from '../authenticate.js';
 import { WebSocketException, handleWebSocketException } from '../exceptions.js';
 import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
-import type { Subscription, WebSocketClient } from '../types.js';
+import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
 
 /**
@@ -116,6 +116,10 @@ export class SubscribeHandler {
 		for (const subscription of subscriptions) {
 			const { client } = subscription;
 
+			if (subscription.event !== undefined && event.action !== subscription.event) {
+				continue; // skip filtered events
+			}
+
 			try {
 				client.accountability = await refreshAccountability(client.accountability);
 
@@ -124,7 +128,7 @@ export class SubscribeHandler {
 						? await this.getSinglePayload(subscription, client.accountability, schema, event)
 						: await this.getMultiPayload(subscription, client.accountability, schema, event);
 
-				if (Array.isArray(result?.['payload']) && result?.['payload']?.length === 0) return;
+				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) return;
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
@@ -157,6 +161,10 @@ export class SubscribeHandler {
 					collection,
 				};
 
+				if ('event' in message) {
+					subscription.event = message.event as SubscriptionEvent;
+				}
+
 				if ('query' in message) {
 					subscription.query = sanitizeQuery(message.query!, accountability);
 				}
@@ -176,8 +184,11 @@ export class SubscribeHandler {
 
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);
+
 				// send an initial response
-				client.send(fmtMessage('subscription', data, subscription.uid));
+				if (subscription.event === undefined) {
+					client.send(fmtMessage('subscription', data, subscription.uid));
+				}
 			} catch (err) {
 				handleWebSocketException(client, err, 'subscribe');
 			}
@@ -210,10 +221,10 @@ export class SubscribeHandler {
 
 		if (subscription.collection === 'directus_collections') {
 			const service = new CollectionsService({ schema, accountability });
-			result['payload'] = await service.readOne(String(id));
+			result['data'] = await service.readOne(String(id));
 		} else {
 			const service = getService(subscription.collection, { schema, accountability });
-			result['payload'] = await service.readOne(id, query);
+			result['data'] = await service.readOne(id, query);
 		}
 
 		if ('meta' in query) {
@@ -237,16 +248,16 @@ export class SubscribeHandler {
 
 		switch (subscription.collection) {
 			case 'directus_collections':
-				result['payload'] = await this.getCollectionPayload(accountability, schema, event);
+				result['data'] = await this.getCollectionPayload(accountability, schema, event);
 				break;
 			case 'directus_fields':
-				result['payload'] = await this.getFieldsPayload(accountability, schema, event);
+				result['data'] = await this.getFieldsPayload(accountability, schema, event);
 				break;
 			case 'directus_relations':
-				result['payload'] = event?.payload;
+				result['data'] = event?.payload;
 				break;
 			default:
-				result['payload'] = await this.getItemsPayload(subscription, accountability, schema, event);
+				result['data'] = await this.getItemsPayload(subscription, accountability, schema, event);
 				break;
 		}
 
