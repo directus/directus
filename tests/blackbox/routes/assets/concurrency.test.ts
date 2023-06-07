@@ -38,19 +38,23 @@ describe('/assets', () => {
 								common.USER.ADMIN.TOKEN
 							}`;
 
-							const options = ['exec', 'autocannon', '-c', '100', url];
+							const options = ['exec', 'autocannon', '-j', '-c', '100', url];
 							const child = spawn('pnpm', options);
 
 							isSpawnRunning = true;
 
-							child.stderr.on('data', (data) => {
-								if (String(data).includes('errors')) {
-									hasErrors = true;
-								}
+							let log = '';
+
+							child.stdout.on('data', (data) => {
+								log += String(data);
 							});
 
 							child.on('close', () => {
 								spawnCount++;
+
+								const result = JSON.parse(log);
+
+								if (result.timeouts > 0 || result.non2xx > 0) hasErrors = true;
 
 								if (spawnCount < spawnCountTarget && !hasErrors) {
 									spawnAutoCannon();
