@@ -1,6 +1,5 @@
 import api from '@/api';
 import { router } from '@/router';
-import { useAppStore } from '@/stores/app';
 import { useServerStore } from '@/stores/server';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
 import { getItemRoute } from '@/utils/get-item-route';
@@ -9,6 +8,7 @@ import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useItems, useSync } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
 import { Field, Item } from '@directus/types';
 import { defineLayout, getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { Calendar, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';

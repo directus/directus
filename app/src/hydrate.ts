@@ -1,5 +1,5 @@
+import { getCurrentLanguage } from '@/lang/get-current-language';
 import { setLanguage } from '@/lang/set-language';
-import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
@@ -14,8 +14,8 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { getBasemapSources } from '@/utils/geometry/basemap';
+import { useAppStore } from '@directus/stores';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
-import { getCurrentLanguage } from '@/lang/get-current-language';
 
 type GenericStore = {
 	$id: string;
