@@ -57,9 +57,9 @@ field `status` that controls the published state.
 
 3. [Add a new field](/app/data-model/fields#create-a-field-standard) to your content Collection.
 
-   ![The interface for creating a new field is shown. The field type Datetime is selected. The Key is named date_published. The field for Use 24-Hour format is checked.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-publish-date.webp)
+   ![The interface for creating a new field is shown. The field type Datetime is selected. The Key is named date_published. The field for Use 24-Hour format is checked.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-publish-date-timestamp.webp)
 
-   a. Choose **Datetime** for the Type.
+   a. Choose **Timestamp** for the Type.
 
    b. Name the Key `date_published`.
 
@@ -97,20 +97,20 @@ Using the [Directus JavaScript SDK](/reference/sdk) (preferred)
 
 ```js
 const articles = await directus.items('articles').readByQuery({
-	filter: {
-		_and: [
-			{
-				status: {
-					_eq: 'published',
-				},
-			},
-			{
-				date_published: {
-					_lte: '$NOW',
-				},
-			},
-		],
-	},
+  filter: {
+    _and: [
+      {
+        status: {
+          _eq: 'published',
+        },
+      },
+      {
+        date_published: {
+          _lte: '$NOW',
+        },
+      },
+    ],
+  },
 });
 ```
 
@@ -142,5 +142,5 @@ const articles = await response.json()
 **Tips**
 
 - If you're not receiving the data you expect, double-check your [filter rule](/reference/filter-rules) syntax.
-- Also be sure you have enabled the proper [permissions](/app/users-roles-permissions/permissions) for your
-  content Collection.
+- Also be sure you have enabled the proper [permissions](/app/users-roles-permissions/permissions) for your content
+  Collection.
