@@ -69,6 +69,11 @@ export type WebSocketSubscriptionOptions = {
 	 * Unique ID
 	 */
 	uid?: WebSocketUID;
+
+	/**
+	 * Event to subscribe
+	 */
+	event?: 'create' | 'update' | 'delete';
 };
 export type WebSocketSubscriptionOptionsGql = {
 	/**
