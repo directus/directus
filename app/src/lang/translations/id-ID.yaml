@@ -998,7 +998,7 @@ page_help_settings_webhooks_collection: '**Jelajahi Webhook** — Mencantumkan s
 page_help_settings_webhooks_item: '**Detail Webhook** — Formulir untuk membuat dan mengelola webhook proyek.'
 page_help_settings_flows_collection: '**Jelajahi Flow** — Mencantumkan semua Flow dalam proyek.'
 page_help_settings_flows_item: '**Detail Flow** — Ruang kerja untuk mengelola satu atau beberapa operasi.'
-page_help_users_collection: '**User Directory** — Lists all system users within this project.'
+page_help_users_collection: '**Direktori Pengguna** — Daftar seluruh pengguna dalam sistem proyek ini.'
 page_help_users_item: >-
   **Detail Pengguna** — Kelola informasi akun Anda, atau lihat detail pengguna lain.
 page_help_insights_overview: '**Wawasan** — Daftar dasbor yang dapat Anda akses.'
@@ -1212,6 +1212,7 @@ field_options:
     sort_field: Pilih bidang...
     accountability_divider: Akuntabilitas
     duplication_divider: Duplikasi
+    preview_divider: Pratinjau
   directus_files:
     title: Judul yang unik...
     description: Deskripsi opsional...
@@ -1270,9 +1271,13 @@ block: Blokir
 inline: Inline
 comment: Komentar
 live_preview:
+  enable: Aktifkan Pratinjau
+  disable: Nonaktifkan Pratinjau
+  refresh: Segarkan pratinjau
   new_window: Buka di Jendela Baru
 expired: Kedaluwarsa
 share: Bagikan
+share_item: Bagikan Item
 continue_label: Lanjut
 editing_role: 'Peraturan {role}'
 delete_label: Hapus
@@ -1294,6 +1299,13 @@ normal: Normal
 success: Sukses
 warning: Peringatan
 danger: Bahaya
+colors:
+  yellow: Kuning
+  orange: Oranye
+  red: Merah
+  black: Hitam
+  gray: Abu-abu
+  white: Putih
 junction_collection: Pengumpulan Persimpangan
 latency: Latensi
 login: Masuk
@@ -1309,6 +1321,7 @@ reset: Setel ulang
 reset_password: Atur Ulang Kata Sandi
 revisions: Revisi
 no_revisions: Belum Ada Revisi
+no_logs: Belum ada log
 revert: Pulihkan
 save: Simpan
 schema: Skema
@@ -1321,6 +1334,8 @@ sign_in: Masuk
 sign_out: Keluar
 sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
+export_started_copy: Proses ekspor sedang berjalan. Notifikasi akan diberikan ketika siap untuk diunduh.
+sort_asc: Mengurut Naik
 sort_desc: Mengurut Turun
 template: Templat
 translation: Terjemahan
@@ -1330,6 +1345,8 @@ view_project: Lihat Proyek
 report_error: Lapor Kesalahan
 start: Mulai
 table: Tabel
+list: Daftar
+search_filter: Saring dan Cari
 interfaces:
   filter:
     name: Penyaring
@@ -1396,6 +1413,7 @@ interfaces:
     description: Masukan atau pilih nilai warna
   datetime:
     datetime: Datetime
+    use_24: Gunakan format 24-jam
   system-fields:
     select_a_collection: Pilih Koleksi
   system-display-template:
@@ -1424,15 +1442,18 @@ interfaces:
     display_template: Tampilan Template
   input-rich-text-md:
     edit: Edit
+    preview: Pratinjau
     previewFont: Font Pratinjau
     customSyntax: Blok Kustom
     customSyntax_label: Tambahkan jenis sintaks khusus
     customSyntax_add: Tambahkan sintaks khusus
     box: Blokir / Sebaris
   map:
+    map: Peta
     zoom: Perbesar
   system-folder:
     folder: Direktori
+    description: Pilih folder
   list:
     sort: Sortir
   tags:
@@ -1508,7 +1529,10 @@ layouts:
     comfortable: Longgar
     compact: Rapat
     cozy: Normal
+  map:
+    map: Peta
   kanban:
+    crop: Potong
     advanced: Tingkat lanjut
 both: Keduanya
 panels:
