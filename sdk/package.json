@@ -1,0 +1,20 @@
+{
+	"name": "@directus/sdk",
+	"version": "11.0.0",
+	"type": "module",
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm,cjs --dts --minify",
+		"dev": "tsup src/index.ts --format=esm --dts --watch"
+	},
+	"exports": {
+		"import": "./dist/index.js",
+		"require": "./dist/index.cjs"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@vitest/coverage-c8": "0.31.1",
+		"tsup": "6.7.0",
+		"vitest": "0.31.1"
+	}
+}
