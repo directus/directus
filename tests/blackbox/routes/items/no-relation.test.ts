@@ -169,9 +169,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
 						jsonQuery: {
-							id: true,
-							name: true,
-							_event: true,
+							event: true,
+							data: {
+								id: true,
+								name: true,
+							},
 						},
 					});
 
@@ -230,7 +232,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(messages![0]).toMatchObject({
 							type: 'subscription',
 							event: 'update',
-							payload: [
+							data: [
 								{
 									id: insertedArtist.id,
 									name,
@@ -249,9 +251,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(messages![0]).toEqual({
 							data: {
 								[subscriptionKey]: {
-									id: String(insertedArtist.id),
-									name,
-									_event: 'update',
+									event: 'update',
+									data: {
+										id: String(insertedArtist.id),
+										name,
+									},
 								},
 							},
 						});
@@ -281,8 +285,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
 						jsonQuery: {
-							id: true,
-							_event: true,
+							event: true,
+							key: true,
 						},
 					});
 
@@ -344,7 +348,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(messages![0]).toMatchObject({
 							type: 'subscription',
 							event: 'delete',
-							payload: [String(id)],
+							data: [String(id)],
 						});
 					}
 
@@ -357,8 +361,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(messages![0]).toEqual({
 							data: {
 								[subscriptionKey]: {
-									id: String(id),
-									_event: 'delete',
+									event: 'delete',
+									key: String(id),
 								},
 							},
 						});
@@ -448,9 +452,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const subscriptionKey = await wsGql.subscribe({
 							collection: localCollectionArtists,
 							jsonQuery: {
-								id: true,
-								name: true,
-								_event: true,
+								event: true,
+								data: {
+									id: true,
+									name: true,
+								},
 							},
 						});
 
@@ -497,7 +503,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(messages![0]).toMatchObject({
 								type: 'subscription',
 								event: 'create',
-								payload: [
+								data: [
 									{
 										id: expect.anything(),
 										name,
@@ -516,9 +522,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(messages![0]).toEqual({
 								data: {
 									[subscriptionKey]: {
-										id: expect.anything(),
-										name,
-										_event: 'create',
+										event: 'create',
+										data: {
+											id: expect.anything(),
+											name,
+										},
 									},
 								},
 							});
@@ -555,9 +563,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						const subscriptionKey = await wsGql.subscribe({
 							collection: localCollectionArtists,
 							jsonQuery: {
-								id: true,
-								name: true,
-								_event: true,
+								event: true,
+								data: {
+									id: true,
+									name: true,
+								},
 							},
 						});
 
@@ -607,7 +617,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										return {
 											type: 'subscription',
 											event: 'create',
-											payload: [
+											data: [
 												{
 													id: expect.anything(),
 													name,
@@ -630,9 +640,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								expect(messages![i]).toEqual({
 									data: {
 										[subscriptionKey]: {
-											id: expect.anything(),
-											name: list[i].name,
-											_event: 'create',
+											event: 'create',
+											data: {
+												id: expect.anything(),
+												name: list[i].name,
+											},
 										},
 									},
 								});
@@ -704,9 +716,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
 						jsonQuery: {
-							id: true,
-							name: true,
-							_event: true,
+							event: true,
+							data: {
+								id: true,
+								name: true,
+							},
 						},
 					});
 
@@ -770,7 +784,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(messages![0]).toMatchObject({
 							type: 'subscription',
 							event: 'update',
-							payload: keys.map((key) => {
+							data: keys.map((key) => {
 								return {
 									id: key,
 									name,
@@ -792,9 +806,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									return {
 										data: {
 											[subscriptionKey]: {
-												id: String(id),
-												name,
-												_event: 'update',
+												event: 'update',
+												data: {
+													id: String(id),
+													name,
+												},
 											},
 										},
 									};
@@ -832,8 +848,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					const subscriptionKey = await wsGql.subscribe({
 						collection: localCollectionArtists,
 						jsonQuery: {
-							id: true,
-							_event: true,
+							event: true,
+							key: true,
 						},
 					});
 
@@ -895,7 +911,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(messages![0]).toMatchObject({
 							type: 'subscription',
 							event: 'delete',
-							payload: ids,
+							data: ids,
 						});
 					}
 
@@ -909,8 +925,8 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(messages![i]).toEqual({
 								data: {
 									[subscriptionKey]: {
-										id: String(id[i]),
-										_event: 'delete',
+										event: 'delete',
+										key: String(id[i]),
 									},
 								},
 							});

@@ -1224,9 +1224,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const subscriptionKeyCountries = await wsGql.subscribe({
 									collection: localCollectionCountries,
 									jsonQuery: {
-										id: true,
-										name: true,
-										_event: true,
+										event: true,
+										data: {
+											id: true,
+											name: true,
+										},
 									},
 									uid: localCollectionCountries,
 								});
@@ -1234,12 +1236,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const subscriptionKeyStates = await wsGql.subscribe({
 									collection: localCollectionStates,
 									jsonQuery: {
-										id: true,
-										name: true,
-										country_id: {
+										event: true,
+										data: {
 											id: true,
+											name: true,
+											country_id: {
+												id: true,
+											},
 										},
-										_event: true,
 									},
 									uid: localCollectionStates,
 								});
@@ -1292,7 +1296,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										expect(messagesCountries![i]).toMatchObject({
 											type: 'subscription',
 											event: 'create',
-											payload: [
+											data: [
 												{
 													id: expect.anything(),
 													name: expect.any(String),
@@ -1303,7 +1307,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										expect(messagesStates![i]).toMatchObject({
 											type: 'subscription',
 											event: 'create',
-											payload: [
+											data: [
 												{
 													id: expect.anything(),
 													name: expect.any(String),
@@ -1325,9 +1329,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										expect(messagesCountries![i]).toEqual({
 											data: {
 												[subscriptionKeyCountries]: {
-													id: expect.anything(),
-													name: expect.any(String),
-													_event: 'create',
+													event: 'create',
+													data: {
+														id: expect.anything(),
+														name: expect.any(String),
+													},
 												},
 											},
 										});
@@ -1335,12 +1341,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										expect(messagesStates![i]).toEqual({
 											data: {
 												[subscriptionKeyStates]: {
-													id: expect.anything(),
-													name: expect.any(String),
-													country_id: {
+													event: 'create',
+													data: {
 														id: expect.anything(),
+														name: expect.any(String),
+														country_id: {
+															id: expect.anything(),
+														},
 													},
-													_event: 'create',
 												},
 											},
 										});
@@ -1384,7 +1392,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									jsonQuery: {
 										id: true,
 										name: true,
-										_event: true,
+										event: true,
 									},
 									uid: localCollectionCountries,
 								});
@@ -1397,7 +1405,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										country_id: {
 											id: true,
 										},
-										_event: true,
+										event: true,
 									},
 									uid: localCollectionStates,
 								});
@@ -1675,9 +1683,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const subscriptionKeyCountries = await wsGql.subscribe({
 									collection: localCollectionCountries,
 									jsonQuery: {
-										id: true,
-										name: true,
-										_event: true,
+										event: true,
+										data: {
+											id: true,
+											name: true,
+										},
 									},
 									uid: localCollectionCountries,
 								});
@@ -1685,12 +1695,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								const subscriptionKeyStates = await wsGql.subscribe({
 									collection: localCollectionStates,
 									jsonQuery: {
-										id: true,
-										name: true,
-										country_id: {
+										event: true,
+										data: {
 											id: true,
+											name: true,
+											country_id: {
+												id: true,
+											},
 										},
-										_event: true,
 									},
 									uid: localCollectionStates,
 								});
@@ -1744,7 +1756,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(messagesCountries![0]).toMatchObject({
 										type: 'subscription',
 										event: 'create',
-										payload: [
+										data: [
 											{
 												id: expect.anything(),
 												name: expect.anything(),
@@ -1755,7 +1767,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(messagesStates![0]).toMatchObject({
 										type: 'subscription',
 										event: 'update',
-										payload: expect.arrayContaining([
+										data: expect.arrayContaining([
 											expect.objectContaining({
 												id: expect.anything(),
 												name: expect.any(String),
@@ -1775,9 +1787,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									expect(messagesCountries![0]).toEqual({
 										data: {
 											[subscriptionKeyCountries]: {
-												id: expect.anything(),
-												name: expect.any(String),
-												_event: 'create',
+												event: 'create',
+												data: {
+													id: expect.anything(),
+													name: expect.any(String),
+												},
 											},
 										},
 									});
@@ -1786,12 +1800,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										expect(messagesStates![i]).toEqual({
 											data: {
 												[subscriptionKeyStates]: {
-													id: expect.anything(),
-													name: expect.any(String),
-													country_id: {
+													event: 'update',
+													data: {
 														id: expect.anything(),
+														name: expect.any(String),
+														country_id: {
+															id: expect.anything(),
+														},
 													},
-													_event: 'update',
 												},
 											},
 										});
@@ -1836,9 +1852,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								await wsGql.subscribe({
 									collection: localCollectionCountries,
 									jsonQuery: {
-										id: true,
-										name: true,
-										_event: true,
+										event: true,
+										data: {
+											id: true,
+											name: true,
+										},
 									},
 									uid: localCollectionCountries,
 								});
@@ -1846,12 +1864,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								await wsGql.subscribe({
 									collection: localCollectionStates,
 									jsonQuery: {
-										id: true,
-										name: true,
-										country_id: {
+										event: true,
+										data: {
 											id: true,
+											name: true,
+											country_id: {
+												id: true,
+											},
 										},
-										_event: true,
 									},
 									uid: localCollectionStates,
 								});

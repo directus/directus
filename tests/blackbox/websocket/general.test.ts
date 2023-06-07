@@ -26,7 +26,6 @@ describe('WebSocket General Tests', () => {
 			env1[vendor].MESSENGER_REDIS = `redis://localhost:6108/4`;
 
 			const env2 = cloneDeep(env1);
-			env2[vendor].CACHE_NAMESPACE = env1[vendor].CACHE_NAMESPACE + '2';
 
 			const newServerPort1 = Number(env1[vendor]!.PORT) + 250;
 			const newServerPort2 = Number(env2[vendor]!.PORT) + 300;
@@ -100,9 +99,11 @@ describe('WebSocket General Tests', () => {
 						subscriptionKey = await wsGql.subscribe({
 							collection: localCollectionFirst,
 							jsonQuery: {
-								id: true,
-								name: true,
-								_event: true,
+								event: true,
+								data: {
+									id: true,
+									name: true,
+								},
 							},
 							uid,
 						});
@@ -110,9 +111,11 @@ describe('WebSocket General Tests', () => {
 						await wsGql2.subscribe({
 							collection: localCollectionFirst,
 							jsonQuery: {
-								id: true,
-								name: true,
-								_event: true,
+								event: true,
+								data: {
+									id: true,
+									name: true,
+								},
 							},
 							uid,
 						});
@@ -147,7 +150,7 @@ describe('WebSocket General Tests', () => {
 						expect(wsMessages![0]).toEqual({
 							type: 'subscription',
 							event: 'create',
-							payload: [{ id: insertedId, name: insertedName }],
+							data: [{ id: insertedId, name: insertedName }],
 							uid: uids[i] === undefined ? undefined : String(uids[i]),
 						});
 					}
@@ -159,9 +162,11 @@ describe('WebSocket General Tests', () => {
 						expect(wsMessages![0]).toEqual({
 							data: {
 								[subscriptionKey]: {
-									_event: 'create',
-									id: String(insertedId),
-									name: insertedName,
+									event: 'create',
+									data: {
+										id: String(insertedId),
+										name: insertedName,
+									},
 								},
 							},
 						});
@@ -207,9 +212,11 @@ describe('WebSocket General Tests', () => {
 						await wsGql.subscribe({
 							collection: localCollectionFirst,
 							jsonQuery: {
-								id: true,
-								name: true,
-								_event: true,
+								event: true,
+								data: {
+									id: true,
+									name: true,
+								},
 							},
 							uid,
 						});
@@ -217,9 +224,11 @@ describe('WebSocket General Tests', () => {
 						await wsGql2.subscribe({
 							collection: localCollectionFirst,
 							jsonQuery: {
-								id: true,
-								name: true,
-								_event: true,
+								event: true,
+								data: {
+									id: true,
+									name: true,
+								},
 							},
 							uid,
 						});
