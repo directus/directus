@@ -177,18 +177,22 @@ export class SubscribeHandler {
 					this.unsubscribe(client, subscription.uid);
 				}
 
-				const data =
-					'item' in subscription
-						? await this.getSinglePayload(subscription, accountability, schema)
-						: await this.getMultiPayload(subscription, accountability, schema);
+				let data: Record<string, any>;
+
+				if (subscription.event === undefined) {
+					data =
+						'item' in subscription
+							? await this.getSinglePayload(subscription, accountability, schema)
+							: await this.getMultiPayload(subscription, accountability, schema);
+				} else {
+					data = { event: 'init' };
+				}
 
 				// if no errors were thrown register the subscription
 				this.subscribe(subscription);
 
 				// send an initial response
-				if (subscription.event === undefined) {
-					client.send(fmtMessage('subscription', data, subscription.uid));
-				}
+				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
 				handleWebSocketException(client, err, 'subscribe');
 			}

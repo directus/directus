@@ -45,7 +45,7 @@ The `event` will be one of `create`, `update`, or `delete`. If the event is `cre
 
 ## Working With Specific CRUD Operations
 
-Using the optional `event` argument you can filter for specific `create`, `update`, and `delete` events. When filtering for an event the `init` response will no longer be sent.
+Using the optional `event` argument you can filter for specific `create`, `update`, and `delete` events.
 
 Here's an example of how to do this:
 ```json
