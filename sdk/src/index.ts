@@ -1,3 +1,1 @@
-export const test = () => {
-	/* nothing to see here */
-};
+export { useDirectus } from './client.js';
