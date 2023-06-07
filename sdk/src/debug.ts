@@ -14,4 +14,4 @@ interface MySchema {
 }
 
 const client = useDirectus<MySchema>({ url: 'https://debug.directus.app' });
-const readData = await client.exec(readItems({ collection: 'testCollection' }));
+const readData = await client.exec(readItems({ collection: 'secondTestCollection' }));

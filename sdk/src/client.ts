@@ -1,20 +1,19 @@
-import type { ReadItemsInput, ReadItemsOutput } from './commands/items/read.js';
-import type { Command } from './types.js';
+import type { Command } from './commands/types.js';
+import type { ReadItemsOutput } from './commands/items/read.js';
 
 export interface DirectusClientConfig {
 	url: string;
 	token?: string;
 }
 
-export const useDirectus = <Schema extends object = any>(config: DirectusClientConfig) => {
-	type InputTypes = ReadItemsInput<Schema>;
-	type OutputTypes = ReadItemsOutput;
-
-	const exec = async <InputType extends InputTypes, OutputType extends OutputTypes>(
-		command: Command<InputType, OutputType, DirectusClientConfig, Schema>
+export const useDirectus = <Schema extends object = any, OutputTypes = ReadItemsOutput>(
+	config: DirectusClientConfig
+) => {
+	const exec = async <OutputType extends OutputTypes>(
+		command: Command<OutputType, DirectusClientConfig, Schema>
 	): Promise<OutputType> => {
 		return await command(config);
 	};
 
-	return { exec };
+	return { exec, config };
 };
