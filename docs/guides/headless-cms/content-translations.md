@@ -158,7 +158,7 @@ Instead, you'll want to add a few parameters to your API call.
 
 - [Fields parameter](/reference/query#many-to-any-union-types) to select the relational field data.
 - Limit parameter to only return the a single result.
-- Deep paramater to filter the related collection to only show the translations in the current language.
+- Deep parameter to filter the related collection to only show the translations in the current language.
 
 :::tip
 
