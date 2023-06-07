@@ -6,7 +6,7 @@
 		@click="$emit('click', $event)"
 	>
 		<div class="icon">
-			<v-icon :name="icon" />
+			<v-icon :name="icon!" />
 		</div>
 		<div v-if="sidebarOpen" class="title">
 			<slot />
@@ -14,33 +14,27 @@
 	</component>
 </template>
 
-<script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+<script setup lang="ts">
+import { toRefs } from 'vue';
 import { useAppStore } from '@/stores/app';
 
-export default defineComponent({
-	props: {
-		to: {
-			type: String,
-			default: null,
-		},
-		icon: {
-			type: String,
-			default: 'box',
-		},
-		active: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['click'],
-	setup() {
-		const appStore = useAppStore();
-		const { sidebarOpen } = toRefs(appStore);
+withDefaults(
+	defineProps<{
+		to?: string;
+		icon?: string;
+		active?: boolean;
+	}>(),
+	{
+		icon: 'box',
+	}
+);
 
-		return { sidebarOpen };
-	},
-});
+defineEmits<{
+	(e: 'click', event: MouseEvent): void;
+}>();
+
+const appStore = useAppStore();
+const { sidebarOpen } = toRefs(appStore);
 </script>
 
 <style lang="scss" scoped>

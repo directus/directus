@@ -1,14 +1,15 @@
+import type { SchemaInspector, Table } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import type { Table, SchemaInspector } from '@directus/schema';
-import { omit, chunk } from 'lodash-es';
+import { chunk, omit } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
+import type { Helpers } from '../database/helpers/index.js';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { getHelpers, Helpers } from '../database/helpers/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
@@ -23,6 +24,7 @@ import type {
 	MutationOptions,
 } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 
 export type RawCollection = {
 	collection: string;
@@ -87,7 +89,7 @@ export class CollectionsService {
 					// Directus heavily relies on the primary key of a collection, so we have to make sure that
 					// every collection that is created has a primary key. If no primary key field is created
 					// while making the collection, we default to an auto incremented id named `id`
-					if (!payload.fields)
+					if (!payload.fields) {
 						payload.fields = [
 							{
 								field: 'id',
@@ -103,6 +105,7 @@ export class CollectionsService {
 								},
 							},
 						];
+					}
 
 					// Ensure that every field meta has the field/collection fields filled correctly
 					payload.fields = payload.fields.map((field) => {
@@ -173,7 +176,7 @@ export class CollectionsService {
 
 			return payload.collection;
 		} finally {
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -223,7 +226,7 @@ export class CollectionsService {
 
 			return collections;
 		} finally {
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -406,7 +409,7 @@ export class CollectionsService {
 
 			return collectionKey;
 		} finally {
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -463,7 +466,7 @@ export class CollectionsService {
 				}
 			});
 		} finally {
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -513,7 +516,7 @@ export class CollectionsService {
 
 			return collectionKeys;
 		} finally {
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -649,7 +652,7 @@ export class CollectionsService {
 
 			return collectionKey;
 		} finally {
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 
@@ -697,7 +700,7 @@ export class CollectionsService {
 
 			return collectionKeys;
 		} finally {
-			if (this.cache && env['CACHE_AUTO_PURGE'] && opts?.autoPurgeCache !== false) {
+			if (shouldClearCache(this.cache, opts)) {
 				await this.cache.clear();
 			}
 

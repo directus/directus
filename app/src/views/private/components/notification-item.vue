@@ -15,66 +15,34 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
 
-export default defineComponent({
-	props: {
-		id: {
-			type: String,
-			required: true,
-		},
-		title: {
-			type: String,
-			required: true,
-		},
-		text: {
-			type: String,
-			default: null,
-		},
-		icon: {
-			type: String,
-			default: null,
-		},
-		type: {
-			type: String,
-			default: 'info',
-			validator: (val: string) => ['info', 'success', 'warning', 'error'].includes(val),
-		},
-		tail: {
-			type: Boolean,
-			default: false,
-		},
-		dense: {
-			type: Boolean,
-			default: false,
-		},
-		showClose: {
-			type: Boolean,
-			default: false,
-		},
-		loading: {
-			type: Boolean,
-			default: false,
-		},
-		progress: {
-			type: Number,
-			default: undefined,
-		},
-	},
-	setup(props) {
-		const notificationsStore = useNotificationsStore();
+const props = withDefaults(
+	defineProps<{
+		id: string;
+		title: string;
+		text?: string;
+		icon?: string | null;
+		type?: 'info' | 'success' | 'warning' | 'error';
+		tail?: boolean;
+		dense?: boolean;
+		showClose?: boolean;
+		loading?: boolean;
+		progress?: number;
+	}>(),
+	{
+		type: 'info',
+	}
+);
 
-		return { close };
+const notificationsStore = useNotificationsStore();
 
-		function close() {
-			if (props.showClose === true) {
-				notificationsStore.remove(props.id);
-			}
-		}
-	},
-});
+function close() {
+	if (props.showClose === true) {
+		notificationsStore.remove(props.id);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

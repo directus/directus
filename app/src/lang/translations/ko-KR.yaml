@@ -131,7 +131,7 @@ archive_confirm_count: >-
   선택한 항목 없음 | 이 항목을 보관하시겠습니까? | 이 {Count}개의 항목을 보관하시겠습니까?
 reset_system_permissions_to: '시스템 권한 초기화 :'
 reset_system_permissions_copy: 시스템 데이터 목록에 대한 권한 설정값이 모두 초기화됩니다. 그래도 진행하시겠습니까?
-the_following_are_minimum_permissions: 다음은 '앱 액세스'가 활성화된 경우 필요한 최소 권한입니다. 이 이상으로 권한을 확장할 수 있지만 그 이하로는 확장할 수 없습니다.
+the_following_are_minimum_permissions: 다음 최소 권한은 "App Access"를 사용할 때 자동으로 적용됩니다. 필요한 경우 추가 권한을 부여할 수 있지만 이 수준 이하로 권한을 줄일 수는 없습니다.
 app_access_minimum: 최소 앱 액세스
 recommended_defaults: 권장 기본값
 unarchive: 보관 해제(사용)
@@ -296,7 +296,12 @@ o2m_relationship: 일대다 관계
 m2m_relationship: 다대다 관계
 m2a_relationship: 다대다 관계
 invalid_item: 비정상적인 아이템
+require_confirmation: 확인 요청
+dialog: 대화상자
 modal: 모달
+confirmation_dialog: 확인 대화 상자
+confirmation_description: 확인 설명
+confirmation_input_fields: 확인 입력 필드
 next: 다음
 field_name: 필드 이름
 translations: 번역
@@ -315,6 +320,7 @@ updated_on: 수정일
 updated_by: 수정자
 primary_key: 기본키
 foreign_key: 외래키
+field_key: 필드 키
 finish_setup: 셋업 종료
 dismiss: 무효
 toggle_raw_editor: RAW 편집기 토글
@@ -515,7 +521,7 @@ no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
 no_webhooks_copy: 아직 웹훅이 구성되지 않았습니다. 아래 버튼을 통해 시작해 보세요.
 no_notifications: 알림 없음
-no_notifications_copy: 당신은 모두 잡혔습니다!
+no_notifications_copy: 모든 알림을 확인하셨습니다!
 activity_log: 활동 기록
 all_items: 전체 내용
 any: 모두
@@ -525,6 +531,7 @@ create_collection: 목록 생성
 no_collections_copy_admin: 아직 컬렉션이 없습니다. 시작하려면 아래 버튼을 클릭하세요.
 no_collections_copy: 아직 컬렉션이 없습니다. 시스템 관리자에게 문의하십시오.
 relationship_not_setup: 관계형이 올바르게 구성되지 않았습니다.
+no_singleton_relations: 싱글톤과의 관계는 지원되지 않습니다
 display_template_not_setup: 표시 템플릿 옵션이 잘못 구성됨
 collection_field_not_setup: 컬렉션 필드 옵션이 잘못 구성되었습니다.
 select_a_collection: 컬렉션 선택
@@ -663,6 +670,7 @@ one_filtered_item: '1개 항목'
 delete_collection_are_you_sure: >-
   정말 "{collection}" 컬렉션을 삭제하시겠습니까? 이렇게 하면 컬렉션과 그 안에 있는 모든 항목이 삭제됩니다. 이 작업은 영구적입니다.
 delete_folder_are_you_sure: 정말로 "{folder}" 폴더를 삭제하시겠습니까? 중첩된 폴더 및 컬렉션은 최상위 레벨로 이동됩니다.
+delete_collection_peer_dependencies: 다음 필드도 현재 컬렉션과 관련이 있으므로 삭제됩니다.
 collections_shown: 표시된 컬렉션
 visible_collections: 보이는 컬렉션
 hidden_collections: 숨겨진 컬렉션
@@ -691,34 +699,34 @@ delete_advanced_filter: 필터 삭제
 change_advanced_filter_operator: 연산자 변경
 advanced: 고급의
 operators:
-  eq: 같음
-  neq: 같지 않음
-  lt: 미만
-  gt: 보다 큰
-  lte: 보다 작거나 같음
-  gte: 보다 크거나 같음
-  in: 중 하나이다
-  nin: 다음 중 하나가 아님
+  eq: '이(가) 같음 : '
+  neq: '이(가) 같지 않음 :'
+  lt: '이(가) 작음 :'
+  gt: '이(가) 더 큼 :'
+  lte: '이(가) 작거나 같음 :'
+  gte: '이(가) 크거나 같음:'
+  in: '이(가) 중 하나 :'
+  nin: '이(가) 다음 중 하나가 아님 :'
   null: "null"
   nnull: null이 아님
-  contains: 포함
-  ncontains: 포함하지 않음
-  icontains: 포함(무감각)
-  starts_with: 시작
-  nstarts_with: 로 시작하지 않음
-  ends_with: 로 끝나다
-  nends_with: 로 끝나지 않는다
-  between: 사이에
-  nbetween: 사이가 아님
+  contains: '이(가) 포함 :'
+  ncontains: '이(가) 포함하지 않음 :'
+  icontains: '이(가) 포함(구분) :'
+  starts_with: '이(가) 시작 :'
+  nstarts_with: '이(가) 다음으로 시작하지 않음 :'
+  ends_with: '이(가) 다음으로 끝남 :'
+  nends_with: '이(가) 다음으로 끝나지 않음 :'
+  between: '이(가) 사이임 :'
+  nbetween: '이(가) 사이가 아님 :'
   empty: 비었다
-  nempty: 비어 있지 않음
-  all: 다음 키를 포함합니다.
-  has: 다음 키 중 일부를 포함합니다.
-  intersects: 교차
-  nintersects: 교차하지 않음
-  intersects_bbox: 교차 경계 상자
-  nintersects_bbox: 경계 상자와 교차하지 않음
-  regex: RegExp와 일치
+  nempty: 이(가) 비어 있지 않음
+  all: '이(가) 이 키를 포함 : '
+  has: '이(가) 이 키중 일부를 포함 : '
+  intersects: '이(가) 교차함 :'
+  nintersects: '이(가) 교차하지 않음 :'
+  intersects_bbox: 이(가) 경계 상자와 교차함
+  nintersects_bbox: 이(가) 경계 상자와 교차하지 않음
+  regex: '이(가) 정규표현식과 일치 :'
 custom_validation_message: 사용자 지정 유효성 검사 메시지
 loading: 로드 중...
 drop_to_upload: 드롭하여 업로드
@@ -781,15 +789,22 @@ format_value: 형식 값
 abbreviate_value: 약어 값
 operator: 운영자
 bold: 굵게
-toggle: 비녀장
+toggle: 토글
 icon_on: 아이콘 켜기
 icon_off: 아이콘 끄기
 label: 상표
 flows: 플로우
 flow: 플로우
 select_a_flow: 플로우 선택
+run_flow_confirm: 이 규칙을 실행하시겠습니까?
+run_flow_on_current_collection: 현재 컬렉션에서 플로우 실행
+run_flow_on_current: 현재 항목에서 플로우 실행
 run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
+run_flow_on_selected: 먼저 하나 이상의 항목 선택 | 선택한 항목 1개에서 플로우 실행 | {n} 선택한 항목에서 플로우 실행
+run_flow: 플로우 실행
 run_flow_success: '"{flow}" 플로우이 성공적으로 실행되었습니다.'
+field_name_placeholder: 필드 이름 입력...
+field_key_placeholder: 필드 키 입력...
 trigger: 방아쇠
 trigger_options: 트리거 옵션
 view_trigger: 트리거 보기
@@ -801,9 +816,9 @@ set_flow_active: 플로우을 활성으로 설정
 set_flow_inactive: 플로우을 비활성으로 설정
 edit_flow: 플로우 편집
 delete_flow: 플로우 삭제
-no_other_flows_copy: 아직 다른 플로우이 없습니다.
+no_other_flows_copy: 아직 다른 플로우가 없습니다.
 no_flows: 플로우 없음
-no_flows_copy: 아직 플로우이 없습니다.
+no_flows_copy: 아직 플로우가 없습니다.
 create_flow: 플로우 작성
 creating_new_flow: 새 플로우 만들기
 updating_flow: 플로우 업데이트 중...
@@ -1065,7 +1080,7 @@ fields:
     singleton: 싱글턴 패턴
     translations: 컬렉션 명명 번역
     archive_app_filter: 아카이브 앱 필터
-    archive_value: 아카이브 가치
+    archive_value: 아카이브 값
     unarchive_value: 아카이브 취소 값
     sort_field: 정렬 기준
     accountability: 활동 및 개정 추적
@@ -1131,6 +1146,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: 매핑
     basemaps: 베이스맵
     basemaps_raster: 래스터
@@ -1307,7 +1323,7 @@ field_options:
       value: 값
       add: 헤더 추가
 no_fields_in_collection: '아직 "{collection}"에 필드가 없습니다.'
-no_value: 가치 없음
+no_value: 값 없음
 do_nothing: 아무것도하지 마세요
 generate_and_save_uuid: UUID 생성 및 저장
 save_current_user_id: 현재 사용자 ID 저장
@@ -1319,7 +1335,7 @@ start_collapsed: 축소 시작
 block: 차단하다
 inline: 인라인
 comment: 코멘트
-shares: 주식
+shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
@@ -1425,6 +1441,7 @@ export_started: 내보내기를 시작했습니다.
 export_started_copy: 내보내기 시작합니다. 다운로드 준비가 되면 알려드립니다.
 sort_asc: 오름차순 정렬
 sort_desc: 내림차순 정렬
+disable_sort: 정렬 비활성화
 template: 템플릿
 require_value_to_be_set: 생성 시 값을 설정해야 함
 translation: 번역
@@ -1489,7 +1506,7 @@ interfaces:
   select-multiple-checkbox-tree:
     name: 확인란(트리)
     description: 중첩된 확인란을 통해 여러 옵션 중에서 선택
-    value_combining: 가치 결합
+    value_combining: 값 합치기
     value_combining_note: 중첩된 선택이 수행될 때 저장되는 값을 제어합니다.
     show_all: 모두 보이기
     show_selected: 선택한 항목 표시
@@ -1562,7 +1579,7 @@ interfaces:
     hash: 해시
     description: 해싱할 값을 입력하세요.
     masked: 마스크
-    masked_label: 진정한 가치를 숨기세요
+    masked_label: 참 값 숨기기
   select-icon:
     icon: 아이콘
     description: 드롭다운에서 아이콘 선택
@@ -1588,6 +1605,9 @@ interfaces:
     many-to-one: 다대일
     description: 단일 관련 항목 선택
     display_template: 표시 형식
+  collection-item-dropdown:
+    collection-item-dropdown: 컬렉션 항목 드롭다운
+    description: JSON 형식의 컬렉션에서 항목 선택
   input-rich-text-md:
     markdown: 마크다운
     description: 마크다운 입력 및 미리보기
@@ -1668,8 +1688,8 @@ interfaces:
     trim: 손질
     trim_label: 시작과 끝 다듬기
     mask: 마스크
-    mask_label: 진짜 가치를 숨기다
-    clear: 청산된 가치
+    mask_label: 진짜 값 숨기기
+    clear: 정리된 값
     clear_label: 빈 문자열로 저장
     minimum_value: 최소값
     maximum_value: 최대값
@@ -1685,7 +1705,7 @@ interfaces:
     search_placeholder: 검색...
     new_translation_string: 새 번역 문자열
   boolean:
-    toggle: 비녀장
+    toggle: 토글
     description: 켜기와 끄기 간 전환
     color_on: 컬러 온
     color_off: 색상 끄기
@@ -1724,7 +1744,7 @@ interfaces:
     input-autocomplete-api: 자동 완성 입력(API)
     description: 외부 API 값에 대한 미리 검색.
     results_path: 결과 경로
-    value_path: 가치 경로
+    value_path: 값 경로
     text_path: 텍스트 경로
     trigger: 방아쇠
     rate: 비율
@@ -1743,7 +1763,7 @@ interfaces:
     system-token: 접속 인증 토큰
     description: 정적 액세스 토큰 관리
     placeholder: 새 정적 액세스 토큰을 생성하려면 "토큰 생성"을 클릭하십시오.
-    value_securely_saved: 가치를 안전하게 저장
+    value_securely_saved: 값이 안전하기 저장 됨
     generate: 토큰 생성
     regenerate: 토큰 재생성
     generate_success_copy: 위의 토큰을 백업하고 복사하십시오. 보안상의 이유로 이 페이지를 저장하고 탐색한 후에는 토큰을 다시 볼 수 없습니다.
@@ -2088,10 +2108,14 @@ operations:
     to: 에게
     to_placeholder: 이메일 주소를 추가하고 엔터를 누르세요...
     body: 몸
+    template: 템플릿
+    data: 데이터
   notification:
     name: 알림 보내기
     description: 한 명 이상의 사용자에게 인앱 알림 보내기
     recipient: 사용자
+    recipient_placeholder: UUID를 입력하세요...
+    recipient_note: 사용자 UUID를 추가하고 Enter 키를 누릅니다...
     message: 메시지
   request:
     name: 웹훅 / 요청 URL
@@ -2123,3 +2147,4 @@ operations:
     parallel: 평행한
     batch: 일괄
     batch_size: 배치 크기
+    cache: 캐시

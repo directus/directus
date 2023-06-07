@@ -12,7 +12,7 @@ readTime: 4 min read
 If you're experiencing issues or think you have found a problem in Directus, be sure to follow these steps before
 [Reporting a Bug](/contributing/introduction#bug-reporting):
 
-1. Ensure your server and database meet the [minimum requirements](/self-hosted/docker-guide.html#supported-databases).
+1. Ensure your server and database meet the [minimum requirements](/self-hosted/docker-guide#supported-databases).
 2. Ensure you’re on the [latest version](https://github.com/directus/directus/releases/latest) of Directus.
 3. Stop `CTRL+C` and restart the server `npx directus start`.
 4. Run the database migration script: `directus database migrate:latest`\
@@ -58,7 +58,7 @@ us at [support@directus.io](mailto:support@directus.io).
 
 If you need a specific feature added to Directus faster than the normal development timeline,
 [reach out to us](https://directus.io/contact) for a quote. Our parent agency will often help subsidize the cost of
-developing new features if they pass our [80/20 Rule](/contributing/introduction#feature-requests) and can be merged
+developing new features if they pass our 80/20 Rule (supports 80% of our user's common use cases) and can be merged
 into the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
 
 ### Expedited Fixes

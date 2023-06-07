@@ -20,154 +20,83 @@
 				<span ref="collectionName" class="collection-name">{{ collection.collection }}</span>
 				<span v-if="collection.meta?.note" class="collection-note">{{ collection.meta.note }}</span>
 			</div>
-			<template v-if="collection.type === 'alias' || nestedCollections.length">
-				<v-progress-circular v-if="collapseLoading" small indeterminate />
-				<v-icon
-					v-else-if="nestedCollections.length"
-					v-tooltip="collapseTooltip"
-					:name="collapseIcon"
-					:clickable="nestedCollections.length > 0"
-					@click.stop.prevent="toggleCollapse"
-				/>
-				<v-icon v-else :name="collapseIcon" />
-			</template>
-			<collection-options :collection="collection" />
+
+			<v-icon
+				v-if="nestedCollections?.length"
+				v-tooltip="isCollectionExpanded ? t('collapse') : t('expand')"
+				:name="isCollectionExpanded ? 'unfold_less' : 'unfold_more'"
+				clickable
+				@click.stop.prevent="toggleCollapse"
+			/>
+			<collection-options
+				:has-nested-collections="nestedCollections.length > 0"
+				:collection="collection"
+				@collection-toggle="toggleCollapse"
+			/>
 		</v-list-item>
 
-		<draggable
-			:force-fallback="true"
-			:model-value="nestedCollections"
-			:group="{ name: 'collections' }"
-			:swap-threshold="0.3"
-			class="drag-container"
-			item-key="collection"
-			handle=".drag-handle"
-			@update:model-value="onGroupSortChange"
-		>
-			<template #item="{ element }">
-				<collection-item
-					:collection="element"
-					:collections="collections"
-					@edit-collection="$emit('editCollection', $event)"
-					@set-nested-sort="$emit('setNestedSort', $event)"
-				/>
-			</template>
-		</draggable>
+		<transition-expand class="collection-items">
+			<draggable
+				v-if="isCollectionExpanded"
+				:force-fallback="true"
+				:model-value="nestedCollections"
+				:group="{ name: 'collections' }"
+				:swap-threshold="0.3"
+				class="drag-container"
+				item-key="collection"
+				handle=".drag-handle"
+				@update:model-value="onGroupSortChange"
+			>
+				<template #item="{ element }">
+					<collection-item
+						:collection="element"
+						:collections="collections"
+						@edit-collection="$emit('editCollection', $event)"
+						@set-nested-sort="$emit('setNestedSort', $event)"
+					/>
+				</template>
+			</draggable>
+		</transition-expand>
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, computed, ref } from 'vue';
-import CollectionOptions from './collection-options.vue';
+<script setup lang="ts">
+import { useLocalStorage } from '@/composables/use-local-storage';
 import { Collection } from '@/types/collections';
-import Draggable from 'vuedraggable';
-import { useCollectionsStore } from '@/stores/collections';
-import { DeepPartial } from '@directus/types';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { unexpectedError } from '@/utils/unexpected-error';
+import Draggable from 'vuedraggable';
+import CollectionOptions from './collection-options.vue';
 
-export default defineComponent({
-	name: 'CollectionItem',
-	components: { CollectionOptions, Draggable },
-	props: {
-		collection: {
-			type: Object as PropType<Collection>,
-			required: true,
+const props = defineProps<{
+	collection: Collection;
+	collections: Collection[];
+	disableDrag?: boolean;
+}>();
+
+const emit = defineEmits(['setNestedSort', 'editCollection']);
+
+const { t } = useI18n();
+const { data: isCollectionExpanded } = useLocalStorage(`settings-collapsed-${props.collection.collection}`, true);
+
+const toggleCollapse = () => {
+	isCollectionExpanded.value = !isCollectionExpanded.value;
+};
+
+const nestedCollections = computed(() =>
+	props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
+);
+
+function onGroupSortChange(collections: Collection[]) {
+	const updates = collections.map((collection) => ({
+		collection: collection.collection,
+		meta: {
+			group: props.collection.collection,
 		},
-		collections: {
-			type: Array as PropType<Collection[]>,
-			required: true,
-		},
-		disableDrag: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['setNestedSort', 'editCollection'],
-	setup(props, { emit }) {
-		const collectionsStore = useCollectionsStore();
-		const { t } = useI18n();
+	}));
 
-		const nestedCollections = computed(() =>
-			props.collections.filter((collection) => collection.meta?.group === props.collection.collection)
-		);
-
-		const collapseIcon = computed(() => {
-			switch (props.collection.meta?.collapse) {
-				case 'open':
-					return 'folder_open';
-				case 'closed':
-					return 'folder';
-				case 'locked':
-					return 'folder_lock';
-			}
-
-			return undefined;
-		});
-
-		const collapseTooltip = computed(() => {
-			switch (props.collection.meta?.collapse) {
-				case 'open':
-					return t('start_open');
-				case 'closed':
-					return t('start_collapsed');
-				case 'locked':
-					return t('always_open');
-			}
-
-			return undefined;
-		});
-
-		const collapseLoading = ref(false);
-
-		return {
-			collapseIcon,
-			onGroupSortChange,
-			nestedCollections,
-			update,
-			toggleCollapse,
-			collapseTooltip,
-			collapseLoading,
-		};
-
-		async function toggleCollapse() {
-			if (collapseLoading.value === true) return;
-
-			collapseLoading.value = true;
-
-			let newCollapse: 'open' | 'closed' | 'locked' = 'open';
-
-			if (props.collection.meta?.collapse === 'open') {
-				newCollapse = 'closed';
-			} else if (props.collection.meta?.collapse === 'closed') {
-				newCollapse = 'locked';
-			}
-
-			try {
-				await update({ meta: { collapse: newCollapse } });
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				collapseLoading.value = false;
-			}
-		}
-
-		async function update(updates: DeepPartial<Collection>) {
-			await collectionsStore.updateCollection(props.collection.collection, updates);
-		}
-
-		function onGroupSortChange(collections: Collection[]) {
-			const updates = collections.map((collection) => ({
-				collection: collection.collection,
-				meta: {
-					group: props.collection.collection,
-				},
-			}));
-
-			emit('setNestedSort', updates);
-		}
-	},
-});
+	emit('setNestedSort', updates);
+}
 </script>
 
 <style scoped>

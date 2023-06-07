@@ -82,274 +82,211 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, PropType, computed, ref, toRefs } from 'vue';
-import { Field } from '@directus/types';
-import Draggable from 'vuedraggable';
+<script setup lang="ts">
 import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import { hideDragImage } from '@/utils/hide-drag-image';
 import formatTitle from '@directus/format-title';
+import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Draggable from 'vuedraggable';
 
-export default defineComponent({
-	components: { Draggable },
-	props: {
-		value: {
-			type: Array as PropType<Record<string, any>[]>,
-			default: null,
-		},
-		fields: {
-			type: Array as PropType<Partial<Field>[]>,
-			default: () => [],
-		},
-		template: {
-			type: String,
-			default: null,
-		},
-		addLabel: {
-			type: String,
-			default: () => i18n.global.t('create_new'),
-		},
-		sort: {
-			type: String,
-			default: null,
-		},
-		limit: {
-			type: Number,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		headerPlaceholder: {
-			type: String,
-			default: () => i18n.global.t('empty_item'),
-		},
-		collection: {
-			type: String,
-			default: null,
-		},
-		placeholder: {
-			type: String,
-			default: () => i18n.global.t('no_items'),
-		},
-		direction: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		value: Record<string, unknown>[] | null;
+		fields?: DeepPartial<Field>[];
+		template?: string;
+		addLabel?: string;
+		sort?: string;
+		limit?: number;
+		disabled?: boolean;
+		headerPlaceholder?: string;
+		collection?: string;
+		placeholder?: string;
+		direction?: string;
+	}>(),
+	{
+		fields: () => [],
+		addLabel: () => i18n.global.t('create_new'),
+		headerPlaceholder: () => i18n.global.t('empty_item'),
+		placeholder: () => i18n.global.t('no_items'),
+	}
+);
 
-		const active = ref<number | null>(null);
-		const drawerOpen = computed(() => active.value !== null);
-		const { value } = toRefs(props);
+const emit = defineEmits<{
+	(e: 'input', value: FieldMeta[] | null): void;
+}>();
 
-		const templateWithDefaults = computed(() =>
-			props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : ''
-		);
+const { t } = useI18n();
 
-		const showAddNew = computed(() => {
-			if (props.disabled) return false;
-			if (props.value === null) return true;
-			if (props.limit === null) return true;
-			if (Array.isArray(props.value) && props.value.length < props.limit) return true;
-			return false;
-		});
+const active = ref<number | null>(null);
+const drawerOpen = computed(() => active.value !== null);
+const { value } = toRefs(props);
 
-		const activeItem = computed(() => (active.value !== null ? edits.value : null));
+const templateWithDefaults = computed(() =>
+	props.fields?.[0]?.field ? props.template || `{{${props.fields[0].field}}}` : ''
+);
 
-		const isSaveDisabled = computed(() => {
-			for (const field of props.fields) {
-				if (
-					field.meta?.required &&
-					field.field &&
-					(edits.value[field.field] === null || edits.value[field.field] === undefined)
-				) {
-					return true;
-				}
-			}
+const showAddNew = computed(() => {
+	if (props.disabled) return false;
+	if (props.value === null) return true;
+	if (props.limit === undefined) return true;
+	if (Array.isArray(props.value) && props.value.length < props.limit) return true;
+	return false;
+});
 
-			return false;
-		});
+const activeItem = computed(() => (active.value !== null ? edits.value : null));
 
-		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
+const isSaveDisabled = computed(() => {
+	for (const field of props.fields) {
+		if (
+			field.meta?.required &&
+			field.field &&
+			(edits.value[field.field] === null || edits.value[field.field] === undefined)
+		) {
+			return true;
+		}
+	}
 
-		const defaults = computed(() => {
-			const values: Record<string, any> = {};
+	return false;
+});
 
-			for (const field of props.fields) {
-				if (field.schema?.default_value !== undefined && field.schema?.default_value !== null) {
-					values[field.field!] = field.schema.default_value;
-				}
-			}
+const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
 
-			return values;
-		});
+const defaults = computed(() => {
+	const values: Record<string, any> = {};
 
-		const fieldsWithNames = computed(() =>
-			props.fields?.map((field) => {
-				return {
-					...field,
-					name: formatTitle(field.name ?? field.field!),
-				};
-			})
-		);
+	for (const field of props.fields) {
+		if (field.schema?.default_value !== undefined && field.schema?.default_value !== null) {
+			values[field.field!] = field.schema.default_value;
+		}
+	}
 
-		const internalValue = computed({
-			get: () => {
-				if (props.fields && props.sort) return sortBy(value.value, props.sort);
-				return value.value;
-			},
-			set: (newVal) => {
-				value.value = props.fields && props.sort ? sortBy(value.value, props.sort) : newVal;
-			},
-		});
+	return values;
+});
 
-		const isNewItem = ref(false);
-		const edits = ref({} as Record<string, any>);
-		const confirmDiscard = ref(false);
-
+const fieldsWithNames = computed(() =>
+	props.fields?.map((field) => {
 		return {
-			t,
-			internalValue,
-			updateValues,
-			removeItem,
-			addNew,
-			showAddNew,
-			hideDragImage,
-			active,
-			drawerOpen,
-			displayValue,
-			activeItem,
-			isSaveDisabled,
-			closeDrawer,
-			onSort,
-			templateWithDefaults,
-			defaults,
-			fieldsWithNames,
-			isNewItem,
-			edits,
-			confirmDiscard,
-			openItem,
-			saveItem,
-			trackEdits,
-			checkDiscard,
-			discardAndLeave,
+			...field,
+			name: formatTitle(field.name ?? field.field!),
 		};
+	})
+);
 
-		function openItem(index: number) {
-			isNewItem.value = false;
-
-			edits.value = { ...internalValue.value[index] };
-			active.value = index;
-		}
-
-		function saveItem(index: number) {
-			isNewItem.value = false;
-
-			updateValues(index, edits.value);
-			closeDrawer();
-		}
-
-		function trackEdits(updatedValues: any) {
-			const combinedValues = Object.assign({}, defaults.value, updatedValues);
-			Object.assign(edits.value, combinedValues);
-		}
-
-		function checkDiscard() {
-			if (active.value !== null && !isEqual(edits.value, internalValue.value[active.value])) {
-				confirmDiscard.value = true;
-			} else {
-				closeDrawer();
-			}
-		}
-
-		function discardAndLeave() {
-			closeDrawer();
-			confirmDiscard.value = false;
-		}
-
-		function updateValues(index: number, updatedValues: any) {
-			const newValue = internalValue.value.map((item: any, i: number) => {
-				if (i === index) {
-					return updatedValues;
-				}
-
-				return item;
-			});
-
-			if (props.fields && props.sort) {
-				emitValue(sortBy(newValue, props.sort));
-			} else {
-				emitValue(newValue);
-			}
-		}
-
-		function removeItem(item: Record<string, any>) {
-			if (value.value) {
-				emitValue(internalValue.value.filter((i) => i !== item));
-			} else {
-				emitValue(null);
-			}
-		}
-
-		function addNew() {
-			isNewItem.value = true;
-
-			const newDefaults: any = {};
-
-			props.fields.forEach((field) => {
-				newDefaults[field.field!] = field.schema?.default_value;
-			});
-
-			if (Array.isArray(internalValue.value)) {
-				emitValue([...internalValue.value, newDefaults]);
-			} else {
-				if (internalValue.value != null) {
-					// eslint-disable-next-line no-console
-					console.warn(
-						'The repeater interface expects an array as value, but the given value is no array. Overriding given value.'
-					);
-				}
-
-				emitValue([newDefaults]);
-			}
-
-			edits.value = { ...newDefaults };
-			active.value = (internalValue.value || []).length;
-		}
-
-		function emitValue(value: null | any[]) {
-			if (!value || value.length === 0) {
-				return emit('input', null);
-			}
-
-			return emit('input', value);
-		}
-
-		function onSort(sortedItems: any[]) {
-			if (sortedItems === null || sortedItems.length === 0) {
-				return emit('input', null);
-			}
-
-			return emit('input', sortedItems);
-		}
-
-		function closeDrawer() {
-			if (isNewItem.value) {
-				emitValue(internalValue.value.slice(0, -1));
-			}
-
-			edits.value = {};
-			active.value = null;
-		}
+const internalValue = computed({
+	get: () => {
+		if (props.fields && props.sort) return sortBy(value.value, props.sort);
+		return value.value;
+	},
+	set: (newVal) => {
+		value.value = props.fields && props.sort ? sortBy(value.value, props.sort) : newVal;
 	},
 });
+
+const isNewItem = ref(false);
+const edits = ref({} as Record<string, any>);
+const confirmDiscard = ref(false);
+
+function openItem(index: number) {
+	isNewItem.value = false;
+
+	edits.value = { ...internalValue.value?.[index] };
+	active.value = index;
+}
+
+function saveItem(index: number) {
+	isNewItem.value = false;
+
+	updateValues(index, edits.value);
+	closeDrawer();
+}
+
+function trackEdits(updatedValues: any) {
+	const combinedValues = Object.assign({}, defaults.value, updatedValues);
+	Object.assign(edits.value, combinedValues);
+}
+
+function checkDiscard() {
+	if (active.value !== null && !isEqual(edits.value, internalValue.value?.[active.value])) {
+		confirmDiscard.value = true;
+	} else {
+		closeDrawer();
+	}
+}
+
+function discardAndLeave() {
+	closeDrawer();
+	confirmDiscard.value = false;
+}
+
+function updateValues(index: number, updatedValues: any) {
+	const newValue = internalValue.value?.map((item: any, i: number) => {
+		if (i === index) {
+			return updatedValues;
+		}
+
+		return item;
+	});
+
+	if (props.fields && props.sort) {
+		emitValue(sortBy(newValue, props.sort));
+	} else {
+		emitValue(newValue);
+	}
+}
+
+function removeItem(item: Record<string, any>) {
+	if (value.value) {
+		emitValue(internalValue.value?.filter((i) => i !== item));
+	} else {
+		emitValue();
+	}
+}
+
+function addNew() {
+	isNewItem.value = true;
+
+	const newDefaults: any = {};
+
+	props.fields.forEach((field) => {
+		newDefaults[field.field!] = field.schema?.default_value;
+	});
+
+	if (Array.isArray(internalValue.value)) {
+		emitValue([...internalValue.value, newDefaults]);
+	} else {
+		if (internalValue.value != null) {
+			// eslint-disable-next-line no-console
+			console.warn(
+				'The repeater interface expects an array as value, but the given value is no array. Overriding given value.'
+			);
+		}
+
+		emitValue([newDefaults]);
+	}
+
+	edits.value = { ...newDefaults };
+	active.value = (internalValue.value || []).length;
+}
+
+function emitValue(value?: Record<string, unknown>[]) {
+	if (!value || value.length === 0) {
+		return emit('input', null);
+	}
+
+	return emit('input', value);
+}
+
+function closeDrawer() {
+	if (isNewItem.value) {
+		emitValue(internalValue.value?.slice(0, -1));
+	}
+
+	edits.value = {};
+	active.value = null;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -367,7 +304,7 @@ export default defineComponent({
 }
 
 .drag-handle {
-	cursor: grap;
+	cursor: grab;
 }
 
 .drawer-item-content {

@@ -15,67 +15,60 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, onMounted } from 'vue';
-
+<script setup lang="ts">
 import api from '@/api';
-import { hydrate } from '@/hydrate';
-import { useRouter } from 'vue-router';
-import { userName } from '@/utils/user-name';
-import { unexpectedError } from '@/utils/unexpected-error';
 import { logout } from '@/auth';
+import { hydrate } from '@/hydrate';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { userName } from '@/utils/user-name';
+import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const router = useRouter();
+const router = useRouter();
 
-		const loading = ref(false);
-		const name = ref<string | null>(null);
-		const lastPage = ref<string | null>(null);
+const loading = ref(false);
+const name = ref<string | null>(null);
+const lastPage = ref<string | null>(null);
 
-		fetchUser();
+fetchUser();
 
-		onMounted(() => {
-			if ('continue' in router.currentRoute.value.query) {
-				hydrateAndLogin();
-			}
+onMounted(() => {
+	if ('continue' in router.currentRoute.value.query) {
+		hydrateAndLogin();
+	}
+});
+
+async function fetchUser() {
+	loading.value = true;
+
+	try {
+		const response = await api.get(`/users/me`, {
+			params: {
+				fields: ['email', 'first_name', 'last_name', 'last_page'],
+			},
 		});
 
-		return { t, name, lastPage, loading, hydrateAndLogin };
-
-		async function fetchUser() {
-			loading.value = true;
-
-			try {
-				const response = await api.get(`/users/me`, {
-					params: {
-						fields: ['email', 'first_name', 'last_name', 'last_page'],
-					},
-				});
-
-				if (response.data.data.share) {
-					await logout();
-				}
-
-				name.value = userName(response.data.data);
-				lastPage.value = response.data.data.last_page;
-			} catch (err: any) {
-				unexpectedError(err);
-			} finally {
-				loading.value = false;
-			}
+		if (response.data.data.share) {
+			await logout();
 		}
 
-		async function hydrateAndLogin() {
-			await hydrate();
-			const redirectQuery = router.currentRoute.value.query.redirect as string;
-			router.push(redirectQuery || lastPage.value || `/content`);
-		}
-	},
-});
+		name.value = userName(response.data.data);
+		lastPage.value = response.data.data.last_page;
+	} catch (err: any) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
+	}
+}
+
+async function hydrateAndLogin() {
+	await hydrate();
+	const redirectQuery = router.currentRoute.value.query.redirect as string;
+	router.push(redirectQuery || lastPage.value || `/content`);
+}
 </script>
 
 <style scoped>

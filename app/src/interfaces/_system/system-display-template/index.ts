@@ -18,9 +18,6 @@ export default defineInterface({
 				width: 'full',
 				interface: 'input',
 			},
-			schema: {
-				default_value: null,
-			},
 		},
 	],
 });

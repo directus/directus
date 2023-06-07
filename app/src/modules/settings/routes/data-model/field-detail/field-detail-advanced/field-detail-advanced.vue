@@ -10,7 +10,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import FieldDetailAdvancedSchema from './field-detail-advanced-schema.vue';
 import FieldDetailAdvancedRelationship from './field-detail-advanced-relationship.vue';
 import FieldDetailAdvancedField from './field-detail-advanced-field.vue';
@@ -19,11 +19,9 @@ import FieldDetailAdvancedDisplay from './field-detail-advanced-display.vue';
 import FieldDetailAdvancedValidation from './field-detail-advanced-validation.vue';
 import FieldDetailAdvancedConditions from './field-detail-advanced-conditions.vue';
 
-interface Props {
+defineProps<{
 	currentTab: string;
-}
-
-defineProps<Props>();
+}>();
 </script>
 
 <style scoped>

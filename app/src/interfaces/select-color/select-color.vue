@@ -156,7 +156,7 @@
 	</v-menu>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
 import { cssVar } from '@directus/utils/browser';
@@ -304,8 +304,11 @@ function useColor() {
 
 	const rgb = computed<number[]>({
 		get() {
-			const arr = color.value !== null ? color.value.rgb().array() : props.opacity ? [0, 0, 0, 1] : [0, 0, 0];
-			return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
+			if (color.value !== null) {
+				return roundColorValues(color.value.rgb().array());
+			}
+
+			return roundColorValues(props.opacity ? [0, 0, 0, 1] : [0, 0, 0]);
 		},
 		set(newRGB) {
 			setColor(Color.rgb(newRGB).alpha(newRGB.length === 4 ? newRGB[3] : 1));
@@ -314,8 +317,11 @@ function useColor() {
 
 	const hsl = computed<number[]>({
 		get() {
-			const arr = color.value !== null ? color.value.hsl().array() : props.opacity ? [0, 0, 0, 1] : [0, 0, 0];
-			return arr.length === 4 ? [...arr.slice(0, -1).map(Math.round), arr[3]] : arr.map(Math.round);
+			if (color.value !== null) {
+				return roundColorValues(color.value.hsl().array());
+			}
+
+			return roundColorValues(props.opacity ? [0, 0, 0, 1] : [0, 0, 0]);
 		},
 		set(newHSL) {
 			setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3] : 1));
@@ -360,6 +366,15 @@ function useColor() {
 		} else {
 			emit('input', getHexa());
 		}
+	}
+
+	function roundColorValues(arr: number[]): number[] {
+		if (arr.length === 4) {
+			// Do not round the opacity
+			return [...arr.slice(0, -1).map((x) => Math.round(x)), arr[3]];
+		}
+
+		return arr.map((x) => Math.round(x));
 	}
 }
 </script>

@@ -47,7 +47,7 @@
 				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 					<v-icon name="open_in_new" />
 				</v-button>
-				<v-button v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
+				<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
 					<v-icon name="tune" />
 				</v-button>
 				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
@@ -61,8 +61,9 @@
 			</div>
 
 			<drawer-item
-				v-if="!disabled && image"
+				v-if="image"
 				v-model:active="editImageDetails"
+				:disabled="disabled || !updateAllowed"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -79,13 +80,14 @@
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else from-library from-url :folder="folder" @input="update($event.id)" />
+		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
 	</div>
 </template>
 
 <script setup lang="ts">
 import api, { addTokenToURL } from '@/api';
 import { useRelationM2O } from '@/composables/use-relation-m2o';
+import { useRelationPermissionsM2O } from '@/composables/use-relation-permissions';
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
@@ -183,6 +185,10 @@ async function imageErrorHandler() {
 	}
 }
 
+function onUpload(image: any) {
+	if (image?.id) update(image.id);
+}
+
 function deselect() {
 	remove();
 
@@ -198,6 +204,8 @@ const edits = computed(() => {
 
 	return props.value;
 });
+
+const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 </script>
 
 <style lang="scss" scoped>

@@ -50,61 +50,46 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { addTokenToURL } from '@/api';
 import { useAppStore } from '@/stores/app';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import { storeToRefs } from 'pinia';
-import { Ref, computed, defineComponent, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { getRootPath } from '@/utils/get-root-path';
+import { User } from '@directus/types';
+import { storeToRefs } from 'pinia';
+import { Ref, computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	setup() {
-		const { t } = useI18n();
+const { t } = useI18n();
 
-		const appStore = useAppStore();
-		const notificationsStore = useNotificationsStore();
+const appStore = useAppStore();
+const notificationsStore = useNotificationsStore();
 
-		const { notificationsDrawerOpen } = storeToRefs(appStore);
-		const { unread } = storeToRefs(notificationsStore);
+const { notificationsDrawerOpen } = storeToRefs(appStore);
+const { unread } = storeToRefs(notificationsStore);
 
-		const userStore = useUserStore();
+const userStore = useUserStore();
 
-		const signOutActive = ref(false);
+const signOutActive = ref(false);
 
-		const avatarURL = computed<string | null>(() => {
-			if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
-			return addTokenToURL(`${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
-		});
-
-		const avatarError: Ref<null | Event> = ref(null);
-
-		const userProfileLink = computed<string>(() => {
-			const id = userStore.currentUser?.id;
-			return `/users/${id}`;
-		});
-
-		const signOutLink = computed<string>(() => {
-			return `/logout`;
-		});
-
-		const userFullName = userStore.fullName ?? undefined;
-
-		return {
-			t,
-			userFullName,
-			avatarURL,
-			userProfileLink,
-			signOutActive,
-			signOutLink,
-			notificationsDrawerOpen,
-			unread,
-			avatarError,
-		};
-	},
+const avatarURL = computed<string | null>(() => {
+	if (!userStore.currentUser || !('avatar' in userStore.currentUser) || !userStore.currentUser?.avatar) return null;
+	return addTokenToURL(`${getRootPath()}assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 });
+
+const avatarError: Ref<null | Event> = ref(null);
+
+const userProfileLink = computed<string>(() => {
+	const id = (userStore.currentUser as User).id;
+	return `/users/${id}`;
+});
+
+const signOutLink = computed<string>(() => {
+	return `/logout`;
+});
+
+const userFullName = userStore.fullName ?? undefined;
 </script>
 
 <style lang="scss" scoped>

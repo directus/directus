@@ -1,16 +1,21 @@
-import { FUNCTIONS } from '@directus/constants';
+import { Action, FUNCTIONS } from '@directus/constants';
 import type { BaseException } from '@directus/exceptions';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
-import { Action } from '@directus/constants';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
-import {
+import type {
 	ArgumentNode,
-	execute,
 	ExecutionResult,
 	FieldNode,
 	FormattedExecutionResult,
 	FragmentDefinitionNode,
+	GraphQLNullableType,
+	GraphQLResolveInfo,
+	InlineFragmentNode,
+	SelectionNode,
+	ValueNode,
+} from 'graphql';
+import {
 	GraphQLBoolean,
 	GraphQLEnumType,
 	GraphQLError,
@@ -19,32 +24,24 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
-	GraphQLNullableType,
 	GraphQLObjectType,
-	GraphQLResolveInfo,
 	GraphQLScalarType,
 	GraphQLSchema,
 	GraphQLString,
 	GraphQLUnionType,
-	InlineFragmentNode,
 	NoSchemaIntrospectionCustomRule,
-	SelectionNode,
+	execute,
 	specifiedRules,
 	validate,
-	ValueNode,
 } from 'graphql';
-import {
-	GraphQLJSON,
-	InputTypeComposer,
+import type {
 	InputTypeComposerFieldConfigMapDefinition,
-	ObjectTypeComposer,
 	ObjectTypeComposerFieldConfigAsObjectDefinition,
 	ObjectTypeComposerFieldConfigDefinition,
 	ObjectTypeComposerFieldConfigMapDefinition,
 	ResolverDefinition,
-	SchemaComposer,
-	toInputObjectType,
 } from 'graphql-compose';
+import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
 import { clearSystemCache, getCache } from '../../cache.js';
@@ -160,8 +157,11 @@ export class GraphQLService {
 		const formattedResult: FormattedExecutionResult = {};
 
 		if (result['data']) formattedResult.data = result['data'];
-		if (result['errors'])
+
+		if (result['errors']) {
 			formattedResult.errors = result['errors'].map((error) => processError(this.accountability, error));
+		}
+
 		if (result['extensions']) formattedResult.extensions = result['extensions'];
 
 		return formattedResult;
@@ -425,9 +425,9 @@ export class GraphQLService {
 						}
 
 						if (collection.primary === field.field) {
-							if (!field.defaultValue && !field.special.includes('uuid') && action === 'create')
+							if (!field.defaultValue && !field.special.includes('uuid') && action === 'create') {
 								type = new GraphQLNonNull(GraphQLID);
-							else if (['create', 'update'].includes(action)) type = GraphQLID;
+							} else if (['create', 'update'].includes(action)) type = GraphQLID;
 							else type = new GraphQLNonNull(GraphQLID);
 						}
 
@@ -1907,50 +1907,12 @@ export class GraphQLService {
 						},
 					}),
 				},
-			});
-		}
-
-		if (this.accountability?.admin === true) {
-			ServerInfo.addFields({
-				directus: {
+				queryLimit: {
 					type: new GraphQLObjectType({
-						name: 'server_info_directus',
+						name: 'server_info_query_limit',
 						fields: {
-							version: {
-								type: GraphQLString,
-							},
-						},
-					}),
-				},
-				node: {
-					type: new GraphQLObjectType({
-						name: 'server_info_node',
-						fields: {
-							version: {
-								type: GraphQLString,
-							},
-							uptime: {
-								type: GraphQLInt,
-							},
-						},
-					}),
-				},
-				os: {
-					type: new GraphQLObjectType({
-						name: 'server_info_os',
-						fields: {
-							type: {
-								type: GraphQLString,
-							},
-							version: {
-								type: GraphQLString,
-							},
-							uptime: {
-								type: GraphQLInt,
-							},
-							totalmem: {
-								type: GraphQLInt,
-							},
+							default: { type: GraphQLInt },
+							max: { type: GraphQLInt },
 						},
 					}),
 				},

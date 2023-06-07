@@ -30,13 +30,16 @@ describe('schema', () => {
 	const currentTzOffset = new Date().getTimezoneOffset();
 	const isWindows = ['win32', 'win64'].includes(process.platform);
 	const newTzOffset = currentTzOffset !== 180 ? 180 : 360;
+	let newTz: string;
 
 	// Different timezone format for Windows
-	const newTz = isWindows
-		? String(newTzOffset * 60)
-		: newTzOffset === 180
-		? 'America/Sao_Paulo'
-		: 'America/Mexico_City';
+	if (isWindows) {
+		newTz = String(newTzOffset * 60);
+	} else if (newTzOffset === 180) {
+		newTz = 'America/Sao_Paulo';
+	} else {
+		newTz = 'America/Mexico_City';
+	}
 
 	const sampleDates: SchemaTimezoneTypesObject[] = [];
 

@@ -104,8 +104,8 @@ Layout used in the Content Module. It includes the following controls.
 
 ::: warning Manual Sorting Requires Configuration
 
-Only available if you [configure a sort field](/configuration/data-model/collections#sort-field) in the Collection's
-Data Model Settings.
+Only available if you [configure a sort field](/app/data-model/collections#sort-field) in the Collection's Data Model
+Settings.
 
 :::
 
@@ -168,8 +168,8 @@ controls.
 
 :::tip Configuration Requirements
 
-To use this Layout, the Collection will need at least one datetime [Field](/configuration/data-model/fields.md) to set a
-start time, but ideally two datetime Fields _(to set a start time and end time)_.
+To use this Layout, the Collection will need at least one datetime [Field](/app/data-model/fields) to set a start time,
+but ideally two datetime Fields _(to set a start time and end time)_.
 
 :::
 
@@ -220,12 +220,6 @@ Link to Map Field
 	<source src="https://cdn.directus.io/docs/v9/app-guide/layouts/Layouts-20221205/kanban-layout-20221205A.mp4" type="video/mp4" />
 </video>
 
-:::info Availability
-
-The Kanban Layout is only available in Directus Cloud and Enterprise Self-Hosted projects.
-
-:::
-
 This Layout is ideal for Collections that serve as project management tools or to-do lists, where each Item represents a
 task, because it groups Items onto columns according to their status _(e.g. "Not Started", "In Progress", "Under
 Review", "Complete", or any other status defined)_. The following controls are available.
@@ -258,7 +252,7 @@ _There is no Subheader for the Kanban Layout._
 
 :::tip Configuration Requirements
 
-To make this Layout work, you will need to configure an appropriate status [Field](/configuration/data-model/fields.md)
-on the Collection, then identify this Field under **"Group By"** in the Layout Options menu.
+To make this Layout work, you will need to configure an appropriate status [Field](/app/data-model/fields) on the
+Collection, then identify this Field under **"Group By"** in the Layout Options menu.
 
 :::

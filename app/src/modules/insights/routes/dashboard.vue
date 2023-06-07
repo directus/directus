@@ -199,7 +199,7 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -275,14 +275,21 @@ const tiles = computed<AppTile[]>(() => {
 					[otherPanel.coordinates[3], otherPanel.coordinates[0]],
 				];
 
-				if (topLeftIntersects === false)
+				if (topLeftIntersects === false) {
 					topLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[0], p1, p2));
-				if (topRightIntersects === false)
+				}
+
+				if (topRightIntersects === false) {
 					topRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[1], p1, p2));
-				if (bottomRightIntersects === false)
+				}
+
+				if (bottomRightIntersects === false) {
 					bottomRightIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[2], p1, p2));
-				if (bottomLeftIntersects === false)
+				}
+
+				if (bottomLeftIntersects === false) {
 					bottomLeftIntersects = borders.some(([p1, p2]) => pointOnLine(panel.coordinates[3], p1, p2));
+				}
 			}
 
 			const panelType = unref(panelsInfo).find((panelType) => panelType.id === panel.type);
@@ -380,7 +387,7 @@ const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
 
 const refreshInterval = computed({
 	get() {
-		return unref(refreshIntervals)[props.primaryKey];
+		return unref(refreshIntervals)[props.primaryKey] ?? null;
 	},
 	set(val) {
 		refreshIntervals.value = assign({}, unref(refreshIntervals), { [props.primaryKey]: val });

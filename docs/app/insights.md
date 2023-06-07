@@ -39,8 +39,7 @@ Each Directus Dashboard provides a drag-and-drop canvas where you can create and
 build out customized analytics. The Dashboard area automatically expands as you add more and more Panels. In theory, a
 Dashboard area can expand infinitely large... but in practice, users will probably only want to build Dashboards as
 large as the screen they will be viewing on. You are able to create as many Dashboards as you need. Additionally, the
-Dashboard view, edit, and create permissions are [fully configurable](/configuration/users-roles-permissions) by User
-Role.
+Dashboard view, edit, and create permissions are [fully configurable](/app/users-roles-permissions) by User Role.
 
 :::tip Auto Refresh
 
@@ -262,12 +261,6 @@ or JSON variable in a place that requires Datetime data.
 
 ![Dashboard edit page with a bar chart options panel visible.](https://cdn.directus.io/docs/v9/app-guide/insights/20220223/panels-bar-options-230223A.webp)
 
-:::info Availability
-
-The Bar Chart Panel is only available in Directus Cloud and Enterprise Self-Hosted projects.
-
-:::
-
 The Bar Chart Panel allows you to build vertical and horizontal bar charts from data held in collections.
 
 - **Collection** – Selects the Collection you want to analyze.
@@ -283,12 +276,6 @@ The Bar Chart Panel allows you to build vertical and horizontal bar charts from 
 ## Line Chart
 
 ![Dashboard edit page with a line chart options panel visible.](https://cdn.directus.io/docs/v9/app-guide/insights/20220223/panels-line-options-230223A.webp)
-
-:::info Availability
-
-The Line Chart Panel is only available in Directus Cloud and Enterprise Self-Hosted projects.
-
-:::
 
 The Line Chart Panel allows you to build line charts from data held in collections, and are often used for time-series
 data.
@@ -312,12 +299,6 @@ data.
 
 ![Dashboard edit page with a meter options panel visible.](https://cdn.directus.io/docs/v9/app-guide/insights/20220223/panels-meter-options-230223A.webp)
 
-:::info Availability
-
-The Meter Panel is only available in Directus Cloud and Enterprise Self-Hosted projects.
-
-:::
-
 The Meter Panel takes a maximum value and allows you to show a completion percentage given a second value.
 
 - **Collection** – Selects the Collection you want to analyze.
@@ -336,12 +317,6 @@ The Meter Panel takes a maximum value and allows you to show a completion percen
 
 ![Dashboard edit page with a pie or donut options panel visible.](https://cdn.directus.io/docs/v9/app-guide/insights/20220223/panels-pie-donut-options-230223A.webp)
 
-:::info Availability
-
-The Pie and Donut Chart Panels are only available in Directus Cloud and Enterprise Self-Hosted projects.
-
-:::
-
 The Pie and Donut Charts allow you to create segmented charts based on your data.
 
 - **Collection** – Selects the Collection you want to analyze.
@@ -352,7 +327,6 @@ The Pie and Donut Charts allow you to create segmented charts based on your data
 - **Show Legend** - Selects if and where the legend is shown - none, right, or bottom.
 - **Filter** – Allows filtering of Items considered for analysis based on logical conditions.
 - **Value Decimals** – Changes the number of decimals displayed in the chart segments.
-- **Color** – Sets the default base color of your first segment. Other segments will be variations of this
-  default.
+- **Color** – Sets the default base color of your first segment. Other segments will be variations of this default.
 - **Conditional Styles** – Changes color of segment if its value is `>`, `>=`, `<`, `<=`, `==`, or `!=` to some defined
   value.

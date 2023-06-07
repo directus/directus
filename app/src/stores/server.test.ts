@@ -1,8 +1,11 @@
 import api, * as apiFunctions from '@/api';
 import * as setLanguageDefault from '@/lang/set-language';
+import { User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeAll, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { Auth, Info, useServerStore } from './server';
+import { useUserStore } from './user';
 
 beforeEach(() => {
 	setActivePinia(
@@ -12,9 +15,6 @@ beforeEach(() => {
 		})
 	);
 });
-
-import { Auth, Info, useServerStore } from './server';
-import { useUserStore } from './user';
 
 const mockServerInfo: Info = {
 	project: {
@@ -28,37 +28,28 @@ const mockServerInfo: Info = {
 		public_note: null,
 		custom_css: null,
 	},
-	directus: {
-		version: '10.10.10',
-	},
-	node: {
-		version: '20.0.0',
-		uptime: 123,
-	},
-	os: {
-		type: 'Test OS',
-		version: '10.10.10',
-		uptime: 10000,
-		totalmem: 12345678,
-	},
 };
 
 const mockAuthProviders: Auth['providers'] = [
 	{
-		name: 'directus',
 		driver: 'oauth2',
+		name: 'directus',
+		label: 'Directus',
 	},
 ];
 
-const mockAdminUser = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec' } as any;
+const mockAdminUser = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec' } as User;
 
-const mockAdminUserWithLanguage = { id: 'e7f7a94d-5b38-4978-8450-de0e38859fec', language: 'zh-CN' } as any;
+const mockAdminUserWithLanguage = {
+	id: 'e7f7a94d-5b38-4978-8450-de0e38859fec',
+	language: 'zh-CN',
+} as User;
 
 let apiGetSpy: SpyInstance;
 let replaceQueueSpy: SpyInstance;
 let setLanguageSpy: SpyInstance;
 
-beforeAll(() => {
+beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
 	replaceQueueSpy = vi.spyOn(apiFunctions, 'replaceQueue').mockResolvedValue();
 	setLanguageSpy = vi.spyOn(setLanguageDefault, 'setLanguage').mockResolvedValue(true);
@@ -314,7 +305,7 @@ describe('hydrate action', async () => {
 	});
 });
 
-describe('dehyrate action', () => {
+describe('dehydrate action', () => {
 	test('should reset store', async () => {
 		apiGetSpy.mockImplementation((path: string) => {
 			if (path === '/server/info') {
@@ -340,9 +331,6 @@ describe('dehyrate action', () => {
 		serverStore.dehydrate();
 
 		expect(serverStore.info.project).toEqual(null);
-		expect(serverStore.info.directus).toEqual(undefined);
-		expect(serverStore.info.node).toEqual(undefined);
-		expect(serverStore.info.os).toEqual(undefined);
 		expect(serverStore.auth.providers).toEqual([]);
 		expect(serverStore.auth.disableDefault).toEqual(false);
 	});

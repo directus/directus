@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
-import { DiffKind, SnapshotDiffWithHash, SnapshotWithHash } from '../types/snapshot.js';
+import type { SnapshotDiffWithHash, SnapshotWithHash } from '../types/snapshot.js';
+import { DiffKind } from '../types/snapshot.js';
 
 const deepDiffSchema = Joi.object({
 	kind: Joi.string()

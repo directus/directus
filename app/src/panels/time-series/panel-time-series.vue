@@ -6,27 +6,37 @@
 
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
-import { Filter } from '@directus/types';
+import { PanelFunction } from '@/types/panels';
+import type { Filter } from '@directus/types';
 import { abbreviateNumber, adjustDate } from '@directus/utils';
 import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { addWeeks } from 'date-fns';
-import { isNil, snakeCase } from 'lodash';
+import { isNil, orderBy, snakeCase } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { orderBy } from 'lodash';
 
 const props = withDefaults(
 	defineProps<{
 		height: number;
 		showHeader?: boolean;
-		data?: object[];
+		data?: {
+			group: Record<string, number | string>;
+			count: Record<string, number>;
+			countDistinct: Record<string, number>;
+			avg: Record<string, number>;
+			avgDistinct: Record<string, number>;
+			sum: Record<string, number>;
+			sumDistinct: Record<string, number>;
+			min: Record<string, number>;
+			max: Record<string, number>;
+		}[];
 		id: string;
 		now: Date;
 		collection: string;
 		dateField: string;
 		valueField: string;
-		function: string;
+		function: PanelFunction;
 		precision?: string;
 		range?: string;
 		color?: string;

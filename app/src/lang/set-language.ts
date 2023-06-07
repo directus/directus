@@ -1,14 +1,16 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
+import { useTranslationsStore } from '@/stores/translations';
+import { useUserStore } from '@/stores/user';
+import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
-import { useTranslationStrings } from '@/composables/use-translation-strings';
-import { loadDateFNSLocale } from '@/utils/get-date-fns-locale';
 
 export async function setLanguage(lang: Language): Promise<boolean> {
 	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
-	const { mergeTranslationStringsForLanguage } = useTranslationStrings();
+	const { currentUser } = useUserStore();
+	const translationsStore = useTranslationsStore();
 
 	if (Object.keys(availableLanguages).includes(lang) === false) {
 		// eslint-disable-next-line no-console
@@ -30,11 +32,19 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
 	}
 
-	mergeTranslationStringsForLanguage(lang);
-	collectionsStore.translateCollections();
-	fieldsStore.translateFields();
+	try {
+		if (currentUser) {
+			await translationsStore.loadTranslations(lang);
+		}
 
-	await loadDateFNSLocale(lang);
+		collectionsStore.translateCollections();
+		fieldsStore.translateFields();
+
+		await loadDateFNSLocale(lang);
+	} catch {
+		// eslint-disable-next-line no-console
+		console.error('Failed loading translations');
+	}
 
 	return true;
 }

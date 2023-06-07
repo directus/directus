@@ -16,7 +16,7 @@ readTime: 5 min read
 
 On this page, we'll explain what each operation does, the value it appends to the data chain, how to make use of its
 configuration options, as well as any well as other relevant details. We will assume you have read the documentation on
-[Flows](/configuration/flows) and [Triggers](/configuration/flows/triggers).
+[Flows](/app/flows) and [Triggers](/app/flows/triggers).
 
 :::
 
@@ -41,7 +41,7 @@ append an array containing an object you can use to help debug the misconfigurat
 
 :::warning
 
-When using an [Event Hook](/configuration/flows/triggers.md#event-hook) configured to be **Action (Blocking)**, if your
+When using an [Event Hook](/app/flows/triggers#event-hook) configured to be **Action (Blocking)**, if your
 flow ends with a condition that executes with a `reject` path, it will cancel your database transaction.
 
 :::
@@ -114,7 +114,7 @@ Make sure your `return` value is valid JSON.
 :::tip Throwing Errors
 
 If you throw an error in a **Run Script** operation, it will immediately break your flow chain and stop execution of
-subsequent flows. If you used a ["Blocking" Event hook](/configuration/flows/triggers.md#event-hook), throwing an error
+subsequent flows. If you used a ["Blocking" Event hook](/app/flows/triggers#event-hook), throwing an error
 will cancel the original event transaction to the database.
 
 :::
@@ -267,13 +267,13 @@ To learn about `payload` requirements when updating an item, see [API Reference 
 
 ![Log to Console](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/log-to-console-20220603A.webp)
 
-This operation outputs information to the server-side console as well as the [Logs](/configuration/flows#logs) within
+This operation outputs information to the server-side console as well as the [Logs](/app/flows#logs) within
 the Data Studio. This is a key tool for troubleshooting flow configuration. A Log operation's key will have a null value
 on the data chain.
 
 **Options**
 
-- **Message** — Sets a [log message](/configuration/flows#logs).
+- **Message** — Sets a [log message](/app/flows#logs).
 
 **Payload**
 
@@ -282,7 +282,7 @@ append a `null` value on the `operationKey`.
 
 **More Details**
 
-For more details, see the section on [Logs](/configuration/flows#logs).
+For more details, see the section on [Logs](/app/flows#logs).
 
 ## Send Email
 
@@ -339,7 +339,7 @@ This operation does not generate data. It will append a `null` value on its `ope
 
 :::tip Batch Notifications
 
-You can input an array of UUIDs in the `To` input option to send off multiple emails.
+You can input an array of UUIDs in the `To` input option to send off multiple notifications.
 
 :::
 
@@ -413,7 +413,7 @@ Then you could stitch together all this data to create a new JSON object, like s
 ![Trigger Flow](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/trigger-flow-20220603A.webp)
 
 This operation starts another flow and _(optionally)_ passes data into it. It should be used in combination with the
-[Another Flow](/configuration/flows/triggers#another-flow) trigger.
+[Another Flow](/app/flows/triggers#another-flow) trigger.
 
 **Options**
 

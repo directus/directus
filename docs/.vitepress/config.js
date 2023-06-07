@@ -169,10 +169,6 @@ function sidebar() {
 					link: '/getting-started/support',
 				},
 				{
-					text: 'Backing Directus',
-					link: '/getting-started/backing-directus',
-				},
-				{
 					text: 'Resources',
 					link: '/getting-started/resources',
 				},
@@ -454,6 +450,10 @@ function sidebar() {
 					text: 'Shares',
 				},
 				{
+					link: '/reference/system/translations',
+					text: 'Custom Translations',
+				},
+				{
 					link: '/reference/system/users',
 					text: 'Users',
 				},
@@ -498,6 +498,10 @@ function sidebar() {
 						{
 							text: 'Build a Static Website',
 							link: '/guides/headless-cms/build-static-website/index.html',
+						},
+            {
+							text: 'Set Up Live Preview',
+							link: '/guides/headless-cms/live-preview/index.html',
 						},
 					],
 				},
@@ -599,26 +603,19 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
-				{
-					link: '/contributing/introduction',
-					text: 'Introduction',
+				{ link: '/contributing/introduction', text: 'Introduction' },
+				{ 
+					text: 'Code',
+					items: [
+						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
+						{ link: '/contributing/pull-request-process', text: 'Pull Request Process' },
+						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
+						{ link: '/contributing/running-locally', text: 'Running Locally' },
+						{ link: '/contributing/tests', text: 'Tests' },
+					]
 				},
-				{
-					link: '/contributing/codebase-overview',
-					text: 'Codebase Overview',
-				},
-				{
-					link: '/contributing/running-locally',
-					text: 'Running Locally',
-				},
-				{
-					link: '/contributing/github-ci',
-					text: 'GitHub CI',
-				},
-				{
-					link: '/contributing/translations',
-					text: 'Translating the App',
-				},
+				{ link: '/contributing/community', text: 'Community' },
+				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' }
 			],
 		},
 		{

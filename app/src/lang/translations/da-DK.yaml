@@ -131,7 +131,6 @@ archive_confirm_count: >-
   Ingen elementer valgt | Er du sikker på at du vil arkivere dette element? | Er du sikker på du vil arkiverer disse {count} elementer?
 reset_system_permissions_to: 'Nulstil systemtilladelser til:'
 reset_system_permissions_copy: Denne handling vil overskrive eventuelle tilpassede tilladelser, du måtte have anvendt på systemsamlingerne. Er du sikker?
-the_following_are_minimum_permissions: Følgende er minimum tilladelser der kræves, når "App Adgang" er aktiveret. Du kan udvide tilladelser ud over dette, men ikke nedenfor.
 app_access_minimum: Minimum app-adgang
 recommended_defaults: Anbefalede standarder
 unarchive: Fjern fra arkiv
@@ -2038,6 +2037,8 @@ operations:
     description: Send en mail til en eller flere personer
     to: Til
     to_placeholder: Tilføj e-mail-adresser og tryk på enter...
+    template: Skabelon
+    data: Data
   notification:
     name: Send meddelelse
     description: Send en meddelelse i appen til en eller flere brugere

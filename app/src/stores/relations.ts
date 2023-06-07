@@ -13,7 +13,7 @@ export const useRelationsStore = defineStore({
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/relations`, { params: { limit: -1 } });
+			const response = await api.get(`/relations`);
 			this.relations = response.data.data;
 		},
 		async dehydrate() {

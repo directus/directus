@@ -52,161 +52,136 @@
 	</v-drawer>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useAppStore } from '@/stores/app';
-import { useUserStore } from '@/stores/user';
-import { useNotificationsStore } from '@/stores/notifications';
-import { useCollectionsStore } from '@/stores/collections';
-import { storeToRefs } from 'pinia';
-import { Notification } from '@directus/types';
+<script setup lang="ts">
 import api from '@/api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import { Item } from '@directus/types';
-import { useRouter } from 'vue-router';
-import { parseISO } from 'date-fns';
+import { useAppStore } from '@/stores/app';
+import { useCollectionsStore } from '@/stores/collections';
+import { useNotificationsStore } from '@/stores/notifications';
+import { useUserStore } from '@/stores/user';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
+import { Item, Notification } from '@directus/types';
+import { parseISO } from 'date-fns';
+import { storeToRefs } from 'pinia';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: Boolean,
-			default: false,
-		},
+const { t } = useI18n();
+const appStore = useAppStore();
+const userStore = useUserStore();
+const notificationsStore = useNotificationsStore();
+const collectionsStore = useCollectionsStore();
+
+const router = useRouter();
+
+const notifications = ref<Notification[]>([]);
+const loading = ref(false);
+const error = ref(null);
+const selection = ref([]);
+const tab = ref(['inbox']);
+
+const { notificationsDrawerOpen } = storeToRefs(appStore);
+
+const tableHeaders = ref<TableHeader[]>([
+	{
+		text: t('subject'),
+		value: 'subject',
+		sortable: false,
+		width: 300,
+		align: 'left',
+		description: null,
 	},
-	emits: ['update:modelValue'],
-	setup(props) {
-		const { t } = useI18n();
-		const appStore = useAppStore();
-		const userStore = useUserStore();
-		const notificationsStore = useNotificationsStore();
-		const collectionsStore = useCollectionsStore();
+	{
+		text: t('timestamp'),
+		value: 'timestampDistance',
+		sortable: false,
+		width: 180,
+		align: 'left',
+		description: null,
+	},
+]);
 
-		const router = useRouter();
+fetchNotifications();
 
-		const notifications = ref<Notification[]>([]);
-		const page = ref(0);
-		const loading = ref(false);
-		const error = ref(null);
-		const selection = ref([]);
-		const tab = ref(['inbox']);
+watch(tab, () => fetchNotifications());
 
-		const { notificationsDrawerOpen } = storeToRefs(appStore);
+async function fetchNotifications() {
+	loading.value = true;
 
-		const tableHeaders = ref<TableHeader[]>([
-			{
-				text: t('subject'),
-				value: 'subject',
-				sortable: false,
-				width: 300,
-				align: 'left',
-			},
-			{
-				text: t('timestamp'),
-				value: 'timestampDistance',
-				sortable: false,
-				width: 180,
-				align: 'left',
-			},
-		]);
-
-		fetchNotifications();
-
-		watch([() => props.modelValue, tab], () => fetchNotifications());
-
-		return {
-			tableHeaders,
-			t,
-			notificationsDrawerOpen,
-			page,
-			notifications,
-			loading,
-			error,
-			selection,
-			onRowClick,
-			toggleArchive,
-			tab,
-		};
-
-		async function fetchNotifications() {
-			loading.value = true;
-
-			try {
-				const response = await api.get('/notifications', {
-					params: {
-						filter: {
-							_and: [
-								{
-									recipient: {
-										_eq: userStore.currentUser!.id,
-									},
-								},
-								{
-									status: {
-										_eq: tab.value[0],
-									},
-								},
-							],
+	try {
+		const response = await api.get('/notifications', {
+			params: {
+				filter: {
+					_and: [
+						{
+							recipient: {
+								_eq: userStore.currentUser!.id,
+							},
 						},
-						fields: ['id', 'subject', 'collection', 'item', 'timestamp'],
-						sort: ['-timestamp'],
-					},
-				});
-
-				await notificationsStore.getUnreadCount();
-
-				const notificationsRaw = response.data.data as Notification[];
-
-				const notificationsWithRelative: (Notification & { timestampDistance: string })[] = [];
-
-				for (const notification of notificationsRaw) {
-					notificationsWithRelative.push({
-						...notification,
-						timestampDistance: localizedFormatDistance(parseISO(notification.timestamp), new Date(), {
-							addSuffix: true,
-						}),
-					});
-				}
-
-				notifications.value = notificationsWithRelative;
-			} catch (err: any) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
-		}
-
-		async function toggleArchive() {
-			await api.patch('/notifications', {
-				keys: selection.value.map(({ id }) => id),
-				data: {
-					status: tab.value[0] === 'inbox' ? 'archived' : 'inbox',
+						{
+							status: {
+								_eq: tab.value[0],
+							},
+						},
+					],
 				},
+				fields: ['id', 'subject', 'collection', 'item', 'timestamp'],
+				sort: ['-timestamp'],
+			},
+		});
+
+		await notificationsStore.getUnreadCount();
+
+		const notificationsRaw = response.data.data as Notification[];
+
+		const notificationsWithRelative: (Notification & { timestampDistance: string })[] = [];
+
+		for (const notification of notificationsRaw) {
+			notificationsWithRelative.push({
+				...notification,
+				timestampDistance: localizedFormatDistance(parseISO(notification.timestamp), new Date(), {
+					addSuffix: true,
+				}),
 			});
-
-			await fetchNotifications();
-
-			selection.value = [];
 		}
 
-		function onRowClick({ item }: { item: Item; event: PointerEvent }) {
-			if (item.collection) {
-				const collection = collectionsStore.getCollection(item.collection);
+		notifications.value = notificationsWithRelative;
+	} catch (err: any) {
+		error.value = err;
+	} finally {
+		loading.value = false;
+	}
+}
 
-				if (collection?.meta?.singleton) {
-					router.push(`/content/${item.collection}`);
-				} else {
-					router.push(`/content/${item.collection}/${item.item}`);
-				}
-			} else if (String(item.item).startsWith('/')) {
-				router.push(item.item);
-			}
+async function toggleArchive() {
+	await api.patch('/notifications', {
+		keys: selection.value.map(({ id }) => id),
+		data: {
+			status: tab.value[0] === 'inbox' ? 'archived' : 'inbox',
+		},
+	});
 
-			notificationsDrawerOpen.value = false;
+	await fetchNotifications();
+
+	selection.value = [];
+}
+
+function onRowClick({ item }: { item: Item; event: PointerEvent }) {
+	if (item.collection) {
+		const collection = collectionsStore.getCollection(item.collection);
+
+		if (collection?.meta?.singleton) {
+			router.push(`/content/${item.collection}`);
+		} else {
+			router.push(`/content/${item.collection}/${item.item}`);
 		}
-	},
-});
+	} else if (String(item.item).startsWith('/')) {
+		router.push(item.item);
+	}
+
+	notificationsDrawerOpen.value = false;
+}
 </script>
 
 <style lang="scss" scoped>

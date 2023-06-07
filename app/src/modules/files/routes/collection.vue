@@ -6,9 +6,9 @@
 		v-model:selection="selection"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
-		:filter="mergeFilters(filter, folderTypeFilter)"
+		:filter="mergeFilters(filter, folderFilter)"
 		:filter-user="filter"
-		:filter-system="folderTypeFilter"
+		:filter-system="folderFilter"
 		:search="search"
 		collection="directus_files"
 		:reset-preset="resetPreset"
@@ -116,7 +116,7 @@
 			</template>
 
 			<template #navigation>
-				<files-navigation :current-folder="folder" />
+				<files-navigation :current-folder="folder" :current-special="special" />
 			</template>
 
 			<component :is="`layout-${layout}`" v-bind="layoutState">
@@ -173,7 +173,7 @@
 				<export-sidebar-detail
 					collection="directus_files"
 					:layout-query="layoutQuery"
-					:filter="mergeFilters(filter, folderTypeFilter)"
+					:filter="mergeFilters(filter, folderFilter)"
 					:search="search"
 					@refresh="refresh"
 				/>
@@ -189,7 +189,7 @@
 	</component>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import api from '@/api';
 import { useEventListener } from '@/composables/use-event-listener';
 import { useExtension } from '@/composables/use-extension';
@@ -201,476 +201,377 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFiles } from '@/utils/upload-files';
+import { getFolderFilter } from '@/utils/get-folder-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
-import { subDays } from 'date-fns';
-import { PropType, computed, defineComponent, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
-import FilesNavigation from '../components/navigation.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 
 type Item = {
 	[field: string]: any;
 };
 
-export default defineComponent({
-	name: 'FilesCollection',
-	components: {
-		FilesNavigation,
-		LayoutSidebarDetail,
-		AddFolder,
-		SearchInput,
-		FolderPicker,
-		DrawerBatch,
-	},
-	props: {
-		folder: {
-			type: String,
-			default: null,
-		},
-		special: {
-			type: String as PropType<'all' | 'recent' | 'mine'>,
-			default: null,
-		},
-	},
-	setup(props) {
-		const { t } = useI18n();
+const props = defineProps<{
+	folder?: string;
+	special?: 'all' | 'recent' | 'mine';
+}>();
 
-		const router = useRouter();
+const { t } = useI18n();
 
-		const notificationsStore = useNotificationsStore();
-		const permissionsStore = usePermissionsStore();
-		const { folders } = useFolders();
+const router = useRouter();
 
-		const layoutRef = ref();
-		const selection = ref<Item[]>([]);
+const notificationsStore = useNotificationsStore();
+const permissionsStore = usePermissionsStore();
+const { folders } = useFolders();
 
-		const userStore = useUserStore();
+const layoutRef = ref();
+const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
+const userStore = useUserStore();
 
-		const currentLayout = useExtension('layout', layout);
+const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_files'));
 
-		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
+const currentLayout = useExtension('layout', layout);
 
-		const { breadcrumb, title } = useBreadcrumb();
+const { confirmDelete, deleting, batchDelete, batchEditActive } = useBatch();
 
-		const folderTypeFilter = computed(() => {
-			const filterParsed: Filter = {
-				_and: [
-					{
-						type: {
-							_nnull: true,
-						},
-					},
-				],
-			};
+const { breadcrumb, title } = useBreadcrumb();
 
-			if (props.special === null) {
-				if (props.folder !== null) {
-					filterParsed._and.push({
-						folder: {
-							_eq: props.folder,
-						},
-					});
-				} else {
-					filterParsed._and.push({
-						folder: {
-							_null: true,
-						},
-					});
-				}
-			}
+const folderFilter = computed(() => {
+	return getFolderFilter(props.folder, props.special, userStore?.currentUser?.id);
+});
 
-			if (props.special === 'mine' && userStore.currentUser) {
-				filterParsed._and.push({
-					uploaded_by: {
-						_eq: userStore.currentUser.id,
-					},
-				});
-			}
+const { layoutWrapper } = useLayout(layout);
 
-			if (props.special === 'recent') {
-				filterParsed._and.push({
-					uploaded_on: {
-						_gt: subDays(new Date(), 5).toISOString(),
-					},
-				});
-			}
+const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
-			return filterParsed;
-		});
+onMounted(() => emitter.on(Events.upload, refresh));
+onUnmounted(() => emitter.off(Events.upload, refresh));
 
-		const { layoutWrapper } = useLayout(layout);
+onBeforeRouteLeave(() => {
+	selection.value = [];
+});
 
-		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
+onBeforeRouteUpdate(() => {
+	selection.value = [];
+});
 
-		onMounted(() => emitter.on(Events.upload, refresh));
-		onUnmounted(() => emitter.off(Events.upload, refresh));
+const { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
 
-		onBeforeRouteLeave(() => {
+useEventListener(window, 'dragenter', onDragEnter);
+useEventListener(window, 'dragover', onDragOver);
+useEventListener(window, 'dragleave', onDragLeave);
+useEventListener(window, 'drop', onDrop);
+
+const { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed } = usePermissions();
+
+function useBatch() {
+	const confirmDelete = ref(false);
+	const deleting = ref(false);
+
+	const batchEditActive = ref(false);
+
+	const error = ref<any>();
+
+	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
+
+	async function batchDelete() {
+		deleting.value = true;
+
+		const batchPrimaryKeys = selection.value;
+
+		try {
+			await api.delete('/files', {
+				data: batchPrimaryKeys,
+			});
+
+			await refresh();
+
 			selection.value = [];
-		});
+		} catch (err: any) {
+			unexpectedError(err);
+			error.value = err;
+		} finally {
+			confirmDelete.value = false;
+			deleting.value = false;
+		}
+	}
+}
 
-		onBeforeRouteUpdate(() => {
+function useBreadcrumb() {
+	const title = computed(() => {
+		if (props.special === 'all') {
+			return t('all_files');
+		}
+
+		if (props.special === 'mine') {
+			return t('my_files');
+		}
+
+		if (props.special === 'recent') {
+			return t('recent_files');
+		}
+
+		if (props.folder) {
+			const folder = folders.value?.find((folder: Folder) => folder.id === props.folder);
+
+			if (folder) {
+				return folder.name;
+			}
+		}
+
+		return t('file_library');
+	});
+
+	const breadcrumb = computed(() => {
+		if (title.value !== t('file_library')) {
+			return [
+				{
+					name: t('file_library'),
+					to: `/files`,
+				},
+			];
+		}
+
+		return null;
+	});
+
+	return { breadcrumb, title };
+}
+
+function useMovetoFolder() {
+	const moveToDialogActive = ref(false);
+	const moving = ref(false);
+	const selectedFolder = ref<number | null>();
+
+	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
+
+	async function moveToFolder() {
+		moving.value = true;
+
+		try {
+			await api.patch(`/files`, {
+				keys: selection.value,
+				data: {
+					folder: selectedFolder.value,
+				},
+			});
+
 			selection.value = [];
+
+			if (selectedFolder.value) {
+				router.push(`/files/folders/${selectedFolder.value}`);
+			}
+
+			await nextTick();
+			await refresh();
+		} catch (err: any) {
+			unexpectedError(err);
+		} finally {
+			moveToDialogActive.value = false;
+			moving.value = false;
+		}
+	}
+}
+
+async function refresh() {
+	await layoutRef.value?.state?.refresh?.();
+}
+
+function clearFilters() {
+	filter.value = null;
+	search.value = null;
+}
+
+function usePermissions() {
+	const batchEditAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const updatePermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'update' && permission.collection === 'directus_files'
+		);
+
+		return !!updatePermissions;
+	});
+
+	const batchDeleteAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const deletePermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'delete' && permission.collection === 'directus_files'
+		);
+
+		return !!deletePermissions;
+	});
+
+	const createAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const createPermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'create' && permission.collection === 'directus_files'
+		);
+
+		return !!createPermissions;
+	});
+
+	const createFolderAllowed = computed(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+
+		const createPermissions = permissionsStore.permissions.find(
+			(permission) => permission.action === 'create' && permission.collection === 'directus_folders'
+		);
+
+		return !!createPermissions;
+	});
+
+	return { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed };
+}
+
+function useFileUpload() {
+	const showDropEffect = ref(false);
+
+	let dragNotificationID: string;
+	let fileUploadNotificationID: string;
+
+	const dragCounter = ref(0);
+
+	const dragging = computed(() => dragCounter.value > 0);
+
+	return { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
+
+	function enableDropEffect() {
+		showDropEffect.value = true;
+
+		dragNotificationID = notificationsStore.add({
+			title: t('drop_to_upload'),
+			icon: 'cloud_upload',
+			type: 'info',
+			persist: true,
+			closeable: false,
+		});
+	}
+
+	function disableDropEffect() {
+		showDropEffect.value = false;
+
+		if (dragNotificationID) {
+			notificationsStore.remove(dragNotificationID);
+		}
+	}
+
+	function onDragEnter(event: DragEvent) {
+		if (!event.dataTransfer) return;
+		if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+		event.preventDefault();
+		dragCounter.value++;
+
+		const isDropzone = event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '';
+
+		if (dragCounter.value === 1 && showDropEffect.value === false && isDropzone === false) {
+			enableDropEffect();
+		}
+
+		if (isDropzone) {
+			disableDropEffect();
+			dragCounter.value = 0;
+		}
+	}
+
+	function onDragOver(event: DragEvent) {
+		if (!event.dataTransfer) return;
+		if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+		event.preventDefault();
+	}
+
+	function onDragLeave(event: DragEvent) {
+		if (!event.dataTransfer) return;
+		if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+		event.preventDefault();
+		dragCounter.value--;
+
+		if (dragCounter.value === 0) {
+			disableDropEffect();
+		}
+
+		if (event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '') {
+			enableDropEffect();
+			dragCounter.value = 1;
+		}
+	}
+
+	async function onDrop(event: DragEvent) {
+		if (!event.dataTransfer) return;
+		if (event.dataTransfer?.types.indexOf('Files') === -1) return;
+
+		event.preventDefault();
+		showDropEffect.value = false;
+
+		dragCounter.value = 0;
+
+		if (dragNotificationID) {
+			notificationsStore.remove(dragNotificationID);
+		}
+
+		const files = [...(event.dataTransfer.files as any)];
+
+		fileUploadNotificationID = notificationsStore.add({
+			title: t(
+				'upload_files_indeterminate',
+				{
+					done: 0,
+					total: files.length,
+				},
+				files.length
+			),
+			type: 'info',
+			persist: true,
+			closeable: false,
+			loading: true,
 		});
 
-		const { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
+		const preset = props.folder ? { folder: props.folder } : undefined;
 
-		useEventListener(window, 'dragenter', onDragEnter);
-		useEventListener(window, 'dragover', onDragOver);
-		useEventListener(window, 'dragleave', onDragLeave);
-		useEventListener(window, 'drop', onDrop);
+		await uploadFiles(files, {
+			preset,
+			onProgressChange: (progress) => {
+				const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 
-		const { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed } = usePermissions();
+				const total = files.length;
+				const done = progress.filter((p) => p === 100).length;
 
-		return {
-			t,
-			breadcrumb,
-			title,
-			layoutRef,
-			layoutWrapper,
-			selection,
-			layoutOptions,
-			layoutQuery,
-			layout,
-			folderTypeFilter,
-			search,
-			moveToDialogActive,
-			moveToFolder,
-			moving,
-			selectedFolder,
-			refresh,
-			clearFilters,
-			onDragEnter,
-			onDragLeave,
-			showDropEffect,
-			onDrop,
-			dragging,
-			batchEditAllowed,
-			batchDeleteAllowed,
-			createAllowed,
-			createFolderAllowed,
-			resetPreset,
-			confirmDelete,
-			deleting,
-			batchDelete,
-			deleteError,
-			batchEditActive,
-			filter,
-			mergeFilters,
-			currentLayout,
-		};
-
-		function useBatch() {
-			const confirmDelete = ref(false);
-			const deleting = ref(false);
-
-			const batchEditActive = ref(false);
-
-			const error = ref<any>();
-
-			return { batchEditActive, confirmDelete, deleting, batchDelete, error };
-
-			async function batchDelete() {
-				deleting.value = true;
-
-				const batchPrimaryKeys = selection.value;
-
-				try {
-					await api.delete('/files', {
-						data: batchPrimaryKeys,
-					});
-
-					await refresh();
-
-					selection.value = [];
-				} catch (err: any) {
-					unexpectedError(err);
-					error.value = err;
-				} finally {
-					confirmDelete.value = false;
-					deleting.value = false;
-				}
-			}
-		}
-
-		function useBreadcrumb() {
-			const title = computed(() => {
-				if (props.special === 'all') {
-					return t('all_files');
-				}
-
-				if (props.special === 'mine') {
-					return t('my_files');
-				}
-
-				if (props.special === 'recent') {
-					return t('recent_files');
-				}
-
-				if (props.folder) {
-					const folder = folders.value?.find((folder: Folder) => folder.id === props.folder);
-
-					if (folder) {
-						return folder.name;
-					}
-				}
-
-				return t('file_library');
-			});
-
-			const breadcrumb = computed(() => {
-				if (title.value !== t('file_library')) {
-					return [
-						{
-							name: t('file_library'),
-							to: `/files`,
-						},
-					];
-				}
-
-				return null;
-			});
-
-			return { breadcrumb, title };
-		}
-
-		function useMovetoFolder() {
-			const moveToDialogActive = ref(false);
-			const moving = ref(false);
-			const selectedFolder = ref<number | null>();
-
-			return { moveToDialogActive, moving, moveToFolder, selectedFolder };
-
-			async function moveToFolder() {
-				moving.value = true;
-
-				try {
-					await api.patch(`/files`, {
-						keys: selection.value,
-						data: {
-							folder: selectedFolder.value,
-						},
-					});
-
-					selection.value = [];
-
-					if (selectedFolder.value) {
-						router.push(`/files/folders/${selectedFolder.value}`);
-					}
-
-					await nextTick();
-					await refresh();
-				} catch (err: any) {
-					unexpectedError(err);
-				} finally {
-					moveToDialogActive.value = false;
-					moving.value = false;
-				}
-			}
-		}
-
-		async function refresh() {
-			await layoutRef.value?.state?.refresh?.();
-		}
-
-		function clearFilters() {
-			filter.value = null;
-			search.value = null;
-		}
-
-		function usePermissions() {
-			const batchEditAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const updatePermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'update' && permission.collection === 'directus_files'
-				);
-
-				return !!updatePermissions;
-			});
-
-			const batchDeleteAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const deletePermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'delete' && permission.collection === 'directus_files'
-				);
-
-				return !!deletePermissions;
-			});
-
-			const createAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const createPermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'create' && permission.collection === 'directus_files'
-				);
-
-				return !!createPermissions;
-			});
-
-			const createFolderAllowed = computed(() => {
-				const admin = userStore?.currentUser?.role.admin_access === true;
-				if (admin) return true;
-
-				const createPermissions = permissionsStore.permissions.find(
-					(permission) => permission.action === 'create' && permission.collection === 'directus_folders'
-				);
-
-				return !!createPermissions;
-			});
-
-			return { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed };
-		}
-
-		function useFileUpload() {
-			const showDropEffect = ref(false);
-
-			let dragNotificationID: string;
-			let fileUploadNotificationID: string;
-
-			const dragCounter = ref(0);
-
-			const dragging = computed(() => dragCounter.value > 0);
-
-			return { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
-
-			function enableDropEffect() {
-				showDropEffect.value = true;
-
-				dragNotificationID = notificationsStore.add({
-					title: t('drop_to_upload'),
-					icon: 'cloud_upload',
-					type: 'info',
-					persist: true,
-					closeable: false,
-				});
-			}
-
-			function disableDropEffect() {
-				showDropEffect.value = false;
-
-				if (dragNotificationID) {
-					notificationsStore.remove(dragNotificationID);
-				}
-			}
-
-			function onDragEnter(event: DragEvent) {
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
-
-				event.preventDefault();
-				dragCounter.value++;
-
-				const isDropzone = event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '';
-
-				if (dragCounter.value === 1 && showDropEffect.value === false && isDropzone === false) {
-					enableDropEffect();
-				}
-
-				if (isDropzone) {
-					disableDropEffect();
-					dragCounter.value = 0;
-				}
-			}
-
-			function onDragOver(event: DragEvent) {
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
-
-				event.preventDefault();
-			}
-
-			function onDragLeave(event: DragEvent) {
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
-
-				event.preventDefault();
-				dragCounter.value--;
-
-				if (dragCounter.value === 0) {
-					disableDropEffect();
-				}
-
-				if (event.target && (event.target as HTMLElement).getAttribute?.('data-dropzone') === '') {
-					enableDropEffect();
-					dragCounter.value = 1;
-				}
-			}
-
-			async function onDrop(event: DragEvent) {
-				if (!event.dataTransfer) return;
-				if (event.dataTransfer?.types.indexOf('Files') === -1) return;
-
-				event.preventDefault();
-				showDropEffect.value = false;
-
-				dragCounter.value = 0;
-
-				if (dragNotificationID) {
-					notificationsStore.remove(dragNotificationID);
-				}
-
-				const files = [...(event.dataTransfer.files as any)];
-
-				fileUploadNotificationID = notificationsStore.add({
+				notificationsStore.update(fileUploadNotificationID, {
 					title: t(
 						'upload_files_indeterminate',
 						{
-							done: 0,
-							total: files.length,
+							done,
+							total,
 						},
 						files.length
 					),
-					type: 'info',
-					persist: true,
-					closeable: false,
-					loading: true,
+					loading: false,
+					progress: percentageDone,
 				});
+			},
+		});
 
-				await uploadFiles(files, {
-					preset: {
-						folder: props.folder,
-					},
-					onProgressChange: (progress) => {
-						const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
-
-						const total = files.length;
-						const done = progress.filter((p) => p === 100).length;
-
-						notificationsStore.update(fileUploadNotificationID, {
-							title: t(
-								'upload_files_indeterminate',
-								{
-									done,
-									total,
-								},
-								files.length
-							),
-							loading: false,
-							progress: percentageDone,
-						});
-					},
-				});
-
-				notificationsStore.remove(fileUploadNotificationID);
-				emitter.emit(Events.upload);
-			}
-		}
-	},
-});
+		notificationsStore.remove(fileUploadNotificationID);
+		emitter.emit(Events.upload);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

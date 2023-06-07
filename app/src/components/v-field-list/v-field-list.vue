@@ -32,7 +32,7 @@
 	</v-list>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
@@ -111,8 +111,10 @@ function filter(field: Field, parent?: FieldNode): boolean {
 	if (
 		!includeRelations.value &&
 		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))
-	)
+	) {
 		return false;
+	}
+
 	if (!search.value || isNil(parent) === false) return true;
 
 	const children = isNil(field.schema?.foreign_key_table)

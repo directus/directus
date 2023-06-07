@@ -8,7 +8,7 @@ author: Eron Powell
 ---
 
 <!--
-Pairs well with [workflows](/cookbook/permissions/workflows.md)
+Pairs well with [workflows](/cookbook/permissions/workflows)
 -->
 
 # Generate Work Reports

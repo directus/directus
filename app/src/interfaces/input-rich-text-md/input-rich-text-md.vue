@@ -208,240 +208,198 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, ref, onMounted, watch, reactive, PropType } from 'vue';
 
 import CodeMirror from 'codemirror';
-import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder.js';
+import 'codemirror/mode/markdown/markdown';
 
-import { applyEdit, CustomSyntax, Alteration } from './edits';
-import { getPublicURL } from '@/utils/get-root-path';
 import { useShortcut } from '@/composables/use-shortcut';
-import { translateShortcut } from '@/utils/translate-shortcut';
-import { percentage } from '@/utils/percentage';
 import { useWindowSize } from '@/composables/use-window-size';
+import { getPublicURL } from '@/utils/get-root-path';
+import { percentage } from '@/utils/percentage';
+import { translateShortcut } from '@/utils/translate-shortcut';
+import { Alteration, CustomSyntax, applyEdit } from './edits';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		disabled: {
-			type: Boolean,
-			default: false,
-		},
-		placeholder: {
-			type: String,
-			default: null,
-		},
-		editorFont: {
-			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
-			default: 'sans-serif',
-		},
-		previewFont: {
-			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
-			default: 'sans-serif',
-		},
-		toolbar: {
-			type: Array as PropType<string[] | null>,
-			default: () => [
-				'heading',
-				'bold',
-				'italic',
-				'strikethrough',
-				'bullist',
-				'numlist',
-				'blockquote',
-				'code',
-				'link',
-				'table',
-				'image',
-				'link',
-				'empty',
-			],
-		},
-		customSyntax: {
-			type: Array as PropType<CustomSyntax[]>,
-			default: () => [],
-		},
-		imageToken: {
-			type: String,
-			default: undefined,
-		},
-		softLength: {
-			type: Number,
-			default: undefined,
-		},
-		folder: {
-			type: String,
-			default: undefined,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = withDefaults(
+	defineProps<{
+		value: string | null;
+		disabled?: boolean;
+		placeholder?: string;
+		editorFont?: 'sans-serif' | 'serif' | 'monospace';
+		previewFont?: 'sans-serif' | 'serif' | 'monospace';
+		toolbar?: string[];
+		customSyntax?: CustomSyntax[];
+		imageToken?: string;
+		softLength?: number;
+		folder?: string;
+	}>(),
+	{
+		editorFont: 'sans-serif',
+		previewFont: 'sans-serif',
+		toolbar: () => [
+			'heading',
+			'bold',
+			'italic',
+			'strikethrough',
+			'bullist',
+			'numlist',
+			'blockquote',
+			'code',
+			'link',
+			'table',
+			'image',
+			'link',
+			'empty',
+		],
+		customSyntax: () => [],
+	}
+);
 
-		const { width } = useWindowSize();
+const emit = defineEmits(['input']);
 
-		const markdownInterface = ref<HTMLElement>();
-		const codemirrorEl = ref<HTMLTextAreaElement>();
-		let codemirror: CodeMirror.Editor | null = null;
-		let previousContent: string | null = null;
+const { t } = useI18n();
 
-		const view = ref(['editor']);
+const { width } = useWindowSize();
 
-		const imageDialogOpen = ref(false);
+const markdownInterface = ref<HTMLElement>();
+const codemirrorEl = ref<HTMLTextAreaElement>();
+let codemirror: CodeMirror.Editor | null = null;
+let previousContent: string | null = null;
 
-		let count = ref(0);
+const view = ref(['editor']);
 
-		const readOnly = computed(() => {
-			if (width.value < 600) {
-				// mobile requires 'nocursor' to avoid bringing up the keyboard
-				return props.disabled ? 'nocursor' : false;
-			} else {
-				// desktop cannot use 'nocursor' as it prevents copy/paste
-				return props.disabled;
-			}
-		});
+const imageDialogOpen = ref(false);
 
-		onMounted(async () => {
-			if (codemirrorEl.value) {
-				codemirror = CodeMirror(codemirrorEl.value, {
-					mode: 'markdown',
-					configureMouse: () => ({ addNew: false }),
-					lineWrapping: true,
-					readOnly: readOnly.value,
-					cursorBlinkRate: props.disabled ? -1 : 530,
-					placeholder: props.placeholder,
-					value: props.value || '',
-					spellcheck: true,
-					inputStyle: 'contenteditable',
-				});
+let count = ref(0);
 
-				codemirror.on('change', (cm, { origin }) => {
-					const content = cm.getValue();
-
-					// prevent duplicate emits with same content
-					if (content === previousContent) return;
-					previousContent = content;
-
-					if (origin === 'setValue') return;
-
-					emit('input', content);
-				});
-			}
-
-			if (markdownInterface.value) {
-				const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
-
-				const observer = new MutationObserver(() => {
-					count.value = previewBox.textContent?.replace('\n', '')?.length ?? 0;
-				});
-
-				const config = { characterData: true, childList: true, subtree: true };
-
-				observer.observe(previewBox, config);
-			}
-		});
-
-		watch(
-			() => props.value,
-			(newValue) => {
-				if (!codemirror) return;
-
-				const existingValue = codemirror.getValue();
-
-				if (existingValue !== newValue) {
-					codemirror.setValue('');
-					codemirror.clearHistory();
-					codemirror.setValue(newValue ?? '');
-					codemirror.refresh();
-				}
-			}
-		);
-
-		watch(
-			() => props.disabled,
-			(disabled) => {
-				codemirror?.setOption('readOnly', readOnly.value);
-				codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
-			},
-			{ immediate: true }
-		);
-
-		const editFamily = computed(() => {
-			return `var(--family-${props.editorFont})`;
-		});
-
-		const previewFamily = computed(() => {
-			return `var(--family-${props.previewFont})`;
-		});
-
-		const markdownString = computed(() => {
-			return props.value || '';
-		});
-
-		const table = reactive({
-			rows: 4,
-			columns: 4,
-		});
-
-		const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
-		useShortcut('meta+b', () => edit('bold'), markdownInterface);
-		useShortcut('meta+i', () => edit('italic'), markdownInterface);
-		useShortcut('meta+k', () => edit('link'), markdownInterface);
-		useShortcut('meta+alt+d', () => edit('strikethrough'), markdownInterface);
-		useShortcut('meta+alt+q', () => edit('blockquote'), markdownInterface);
-		useShortcut('meta+alt+c', () => edit('code'), markdownInterface);
-		useShortcut('meta+alt+1', () => edit('heading', { level: 1 }), markdownInterface);
-		useShortcut('meta+alt+2', () => edit('heading', { level: 2 }), markdownInterface);
-		useShortcut('meta+alt+3', () => edit('heading', { level: 3 }), markdownInterface);
-		useShortcut('meta+alt+4', () => edit('heading', { level: 4 }), markdownInterface);
-		useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface);
-		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
-
-		return {
-			t,
-			percRemaining,
-			count,
-			codemirrorEl,
-			edit,
-			view,
-			markdownString,
-			table,
-			onImageUpload,
-			imageDialogOpen,
-			useShortcut,
-			translateShortcut,
-			markdownInterface,
-			editFamily,
-			previewFamily,
-		};
-
-		function onImageUpload(image: any) {
-			if (!codemirror) return;
-
-			let url = getPublicURL() + `assets/` + image.id;
-
-			if (props.imageToken) {
-				url += '?access_token=' + props.imageToken;
-			}
-
-			codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
-
-			imageDialogOpen.value = false;
-		}
-
-		function edit(type: Alteration, options?: Record<string, any>) {
-			if (codemirror) {
-				applyEdit(codemirror, type, options);
-			}
-		}
-	},
+const readOnly = computed(() => {
+	if (width.value < 600) {
+		// mobile requires 'nocursor' to avoid bringing up the keyboard
+		return props.disabled ? 'nocursor' : false;
+	} else {
+		// desktop cannot use 'nocursor' as it prevents copy/paste
+		return props.disabled;
+	}
 });
+
+onMounted(async () => {
+	if (codemirrorEl.value) {
+		codemirror = CodeMirror(codemirrorEl.value, {
+			mode: 'markdown',
+			configureMouse: () => ({ addNew: false }),
+			lineWrapping: true,
+			readOnly: readOnly.value,
+			cursorBlinkRate: props.disabled ? -1 : 530,
+			placeholder: props.placeholder,
+			value: props.value || '',
+			spellcheck: true,
+			inputStyle: 'contenteditable',
+		});
+
+		codemirror.on('change', (cm, { origin }) => {
+			const content = cm.getValue();
+
+			// prevent duplicate emits with same content
+			if (content === previousContent) return;
+			previousContent = content;
+
+			if (origin === 'setValue') return;
+
+			emit('input', content);
+		});
+	}
+
+	if (markdownInterface.value) {
+		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
+
+		const observer = new MutationObserver(() => {
+			count.value = previewBox.textContent?.replace('\n', '')?.length ?? 0;
+		});
+
+		const config = { characterData: true, childList: true, subtree: true };
+
+		observer.observe(previewBox, config);
+	}
+});
+
+watch(
+	() => props.value,
+	(newValue) => {
+		if (!codemirror) return;
+
+		const existingValue = codemirror.getValue();
+
+		if (existingValue !== newValue) {
+			codemirror.setValue('');
+			codemirror.clearHistory();
+			codemirror.setValue(newValue ?? '');
+			codemirror.refresh();
+		}
+	}
+);
+
+watch(
+	() => props.disabled,
+	(disabled) => {
+		codemirror?.setOption('readOnly', readOnly.value);
+		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
+	},
+	{ immediate: true }
+);
+
+const editFamily = computed(() => {
+	return `var(--family-${props.editorFont})`;
+});
+
+const previewFamily = computed(() => {
+	return `var(--family-${props.previewFont})`;
+});
+
+const markdownString = computed(() => {
+	return props.value || '';
+});
+
+const table = reactive({
+	rows: 4,
+	columns: 4,
+});
+
+const percRemaining = computed(() => percentage(count.value, props.softLength) ?? 100);
+useShortcut('meta+b', () => edit('bold'), markdownInterface);
+useShortcut('meta+i', () => edit('italic'), markdownInterface);
+useShortcut('meta+k', () => edit('link'), markdownInterface);
+useShortcut('meta+alt+d', () => edit('strikethrough'), markdownInterface);
+useShortcut('meta+alt+q', () => edit('blockquote'), markdownInterface);
+useShortcut('meta+alt+c', () => edit('code'), markdownInterface);
+useShortcut('meta+alt+1', () => edit('heading', { level: 1 }), markdownInterface);
+useShortcut('meta+alt+2', () => edit('heading', { level: 2 }), markdownInterface);
+useShortcut('meta+alt+3', () => edit('heading', { level: 3 }), markdownInterface);
+useShortcut('meta+alt+4', () => edit('heading', { level: 4 }), markdownInterface);
+useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface);
+useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
+
+function onImageUpload(image: any) {
+	if (!codemirror) return;
+
+	let url = getPublicURL() + `assets/` + image.id;
+
+	if (props.imageToken) {
+		url += '?access_token=' + props.imageToken;
+	}
+
+	codemirror.replaceSelection(`![${codemirror.getSelection()}](${url})`);
+
+	imageDialogOpen.value = false;
+}
+
+function edit(type: Alteration, options?: Record<string, any>) {
+	if (codemirror) {
+		applyEdit(codemirror, type, options);
+	}
+}
 </script>
 
 <style lang="scss" scoped>

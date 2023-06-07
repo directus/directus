@@ -58,7 +58,10 @@ Ensure your Project URL is correct when initializing the Directus JavaScript SDK
 Inside of your `app.vue` entry file, add the following to the bottom to test that your plugin works:
 
 ```js
-<script setup>const {$directus} = useNuxtApp() console.log($directus)</script>
+<script setup>
+  const {$directus} = useNuxtApp() 
+  console.log($directus)
+</script>
 ```
 
 Refresh your browser, and check the console. You should see the Directus instance logged, which means you have access to
@@ -269,7 +272,7 @@ If you want to change what is user-accessible, consider setting up more restrict
 at build-time.
 
 If you want to build more complex dynamic pages made out of reusable components, check out
-[our recipe on doing just this](/use-cases/headless-cms/create-reusable-page-components-using-m2a).
+[our recipe on doing just this](/guides/headless-cms/reusable-components).
 
 If you want to see the code for this project, you can find it
 [on GitHub](https://github.com/directus/examples/blob/main/website-nuxt3).

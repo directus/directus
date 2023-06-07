@@ -1,13 +1,16 @@
 import api from '@/api';
-import { defineModule } from '@directus/utils';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
 import RouterPass from '@/utils/router-passthrough';
+import { defineModule } from '@directus/utils';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';
 import NewCollection from './routes/data-model/new-collection.vue';
+import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
+import FlowsDetail from './routes/flows/flow.vue';
+import FlowsOverview from './routes/flows/overview.vue';
 import NotFound from './routes/not-found.vue';
 import PresetsCollection from './routes/presets/collection/collection.vue';
 import PresetsItem from './routes/presets/item.vue';
@@ -17,12 +20,10 @@ import RolesCollection from './routes/roles/collection.vue';
 import RolesItem from './routes/roles/item/item.vue';
 import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
 import RolesPublicItem from './routes/roles/public-item.vue';
+import TranslationsCollection from './routes/translations/collection.vue';
+import TranslationsItem from './routes/translations/item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
 import WebhooksItem from './routes/webhooks/item.vue';
-import FlowsOverview from './routes/flows/overview.vue';
-import FlowsDetail from './routes/flows/flow.vue';
-import FlowOperationDetail from './routes/flows/components/operation-detail.vue';
-import TranslationStringsCollection from './routes/translation-strings/collection.vue';
 
 export default defineModule({
 	id: 'settings',
@@ -219,13 +220,19 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'translation-strings',
+			path: 'translations',
 			component: RouterPass,
 			children: [
 				{
-					name: 'settings-translation-strings-collection',
+					name: 'settings-translations-collection',
 					path: '',
-					component: TranslationStringsCollection,
+					component: TranslationsCollection,
+				},
+				{
+					name: 'settings-translations-item',
+					path: ':primaryKey',
+					component: TranslationsItem,
+					props: true,
 				},
 			],
 		},

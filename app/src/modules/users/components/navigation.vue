@@ -1,6 +1,6 @@
 <template>
 	<v-list nav>
-		<v-list-item to="/users" exact :active="currentRole === null">
+		<v-list-item to="/users" exact :active="!currentRole">
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>{{ t('all_users') }}</v-list-item-content>
 		</v-list-item>
@@ -23,34 +23,24 @@
 	</v-list>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { computed, defineComponent } from 'vue';
-
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './navigation-role.vue';
 
-export default defineComponent({
-	components: { NavigationRole },
-	props: {
-		currentRole: {
-			type: String,
-			default: null,
-		},
-	},
-	setup() {
-		const { t } = useI18n();
+defineProps<{
+	currentRole?: string;
+}>();
 
-		const { roles, loading } = useNavigation();
+const { t } = useI18n();
 
-		const lastAdminRoleId = computed(() => {
-			if (!roles.value) return null;
-			const adminRoles = roles.value.filter((role) => role.admin_access === true);
-			return adminRoles.length === 1 ? adminRoles[0].id : null;
-		});
+const { roles, loading } = useNavigation();
 
-		return { t, roles, loading, lastAdminRoleId };
-	},
+const lastAdminRoleId = computed(() => {
+	if (!roles.value) return null;
+	const adminRoles = roles.value.filter((role) => role.admin_access === true);
+	return adminRoles.length === 1 ? adminRoles[0].id : null;
 });
 </script>
 

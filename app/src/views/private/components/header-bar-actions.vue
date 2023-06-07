@@ -22,22 +22,18 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
 
-export default defineComponent({
-	props: {
-		showSidebarToggle: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	emits: ['toggle:sidebar'],
-	setup() {
-		const active = ref(false);
-		return { active };
-	},
-});
+defineProps<{
+	showSidebarToggle?: boolean;
+}>();
+
+defineEmits<{
+	(e: 'toggle:sidebar'): void;
+}>();
+
+const active = ref(false);
 </script>
 
 <style scoped>
@@ -84,7 +80,7 @@ export default defineComponent({
 
 @media (min-width: 960px) {
 	.actions .action-buttons .sidebar-toggle {
-		display: none;
+		display: none !important;
 	}
 }
 

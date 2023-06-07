@@ -42,134 +42,113 @@
 	</v-badge>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, ref, watch, PropType, computed, inject, Ref } from 'vue';
+<script setup lang="ts">
+import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
-import { useElementSize } from '@directus/composables';
+import { Ref, computed, inject, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		modelValue: {
-			type: String,
-			default: null,
-		},
-		collection: {
-			type: String,
-			required: true,
-		},
-		filter: {
-			type: Object as PropType<Filter>,
-			default: null,
-		},
+const props = defineProps<{
+	modelValue: string | null;
+	collection: string;
+	filter?: Filter | null;
+}>();
+
+const emit = defineEmits<{
+	(e: 'update:modelValue', value: string | null): void;
+	(e: 'update:filter', value: Filter | null): void;
+}>();
+
+const { t } = useI18n();
+
+const input = ref<HTMLInputElement | null>(null);
+
+const active = ref(props.modelValue !== null);
+const filterActive = ref(false);
+const filterBorder = ref(false);
+
+const mainElement = inject<Ref<Element | undefined>>('main-element');
+const filterElement = ref<HTMLElement>();
+const { width: mainElementWidth } = useElementSize(mainElement!);
+const { width: filterElementWidth } = useElementSize(filterElement);
+
+watch(
+	[mainElementWidth, filterElementWidth],
+	() => {
+		if (!filterElement.value) return;
+
+		const searchElement = filterElement.value.parentElement!;
+		const minWidth = searchElement.offsetWidth - 4;
+
+		if (filterElementWidth.value > minWidth) {
+			filterElement.value.style.borderTopLeftRadius =
+				filterElementWidth.value > minWidth + 22 ? 22 + 'px' : filterElementWidth.value - minWidth + 'px';
+		} else {
+			filterElement.value.style.borderTopLeftRadius = '0px';
+		}
+
+		const headerElement = mainElement?.value?.firstElementChild;
+
+		if (!headerElement) return;
+
+		const maxWidth =
+			searchElement.getBoundingClientRect().right -
+			(headerElement.getBoundingClientRect().left +
+				Number(window.getComputedStyle(headerElement).paddingLeft.replace('px', '')));
+
+		filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
 	},
-	emits: ['update:modelValue', 'update:filter'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+	{ immediate: true }
+);
 
-		const input = ref<HTMLInputElement | null>(null);
-
-		const active = ref(props.modelValue !== null);
-		const filterActive = ref(false);
-		const filterBorder = ref(false);
-
-		const mainElement = inject<Ref<Element | undefined>>('main-element');
-		const filterElement = ref<HTMLElement>();
-		const { width: mainElementWidth } = useElementSize(mainElement!);
-		const { width: filterElementWidth } = useElementSize(filterElement);
-
-		watch(
-			[mainElementWidth, filterElementWidth],
-			() => {
-				if (!filterElement.value) return;
-
-				const searchElement = filterElement.value.parentElement!;
-				const minWidth = searchElement.offsetWidth - 4;
-
-				if (filterElementWidth.value > minWidth) {
-					filterElement.value.style.borderTopLeftRadius =
-						filterElementWidth.value > minWidth + 22 ? 22 + 'px' : filterElementWidth.value - minWidth + 'px';
-				} else {
-					filterElement.value.style.borderTopLeftRadius = '0px';
-				}
-
-				const headerElement = mainElement?.value?.firstElementChild;
-
-				if (!headerElement) return;
-
-				const maxWidth =
-					searchElement.getBoundingClientRect().right -
-					(headerElement.getBoundingClientRect().left +
-						Number(window.getComputedStyle(headerElement).paddingLeft.replace('px', '')));
-
-				filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
-			},
-			{ immediate: true }
-		);
-
-		watch(active, (newActive: boolean) => {
-			if (newActive === true && input.value !== null) {
-				input.value.focus();
-			}
-		});
-
-		const activeFilterCount = computed(() => {
-			if (!props.filter) return 0;
-
-			let filterOperators: string[] = [];
-
-			parseLevel(props.filter);
-
-			return filterOperators.length;
-
-			function parseLevel(level: Record<string, any>) {
-				for (const [key, value] of Object.entries(level)) {
-					if (key === '_and' || key === '_or') {
-						value.forEach(parseLevel);
-					} else if (key.startsWith('_')) {
-						filterOperators.push(key);
-					} else {
-						if (isObject(value)) {
-							parseLevel(value);
-						}
-					}
-				}
-			}
-		});
-
-		return {
-			t,
-			active,
-			disable,
-			input,
-			emitValue,
-			activeFilterCount,
-			filterActive,
-			onClickOutside,
-			filterBorder,
-			filterElement,
-		};
-
-		function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
-			const path = e.path || e.composedPath!();
-			if (path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
-
-			return true;
-		}
-
-		function disable() {
-			active.value = false;
-			filterActive.value = false;
-		}
-
-		function emitValue() {
-			if (!input.value) return;
-			const value = input.value?.value;
-			emit('update:modelValue', value);
-		}
-	},
+watch(active, (newActive: boolean) => {
+	if (newActive === true && input.value !== null) {
+		input.value.focus();
+	}
 });
+
+const activeFilterCount = computed(() => {
+	if (!props.filter) return 0;
+
+	let filterOperators: string[] = [];
+
+	parseLevel(props.filter);
+
+	return filterOperators.length;
+
+	function parseLevel(level: Record<string, any>) {
+		for (const [key, value] of Object.entries(level)) {
+			if (key === '_and' || key === '_or') {
+				value.forEach(parseLevel);
+			} else if (key.startsWith('_')) {
+				filterOperators.push(key);
+			} else {
+				if (isObject(value)) {
+					parseLevel(value);
+				}
+			}
+		}
+	}
+});
+
+function onClickOutside(e: { path?: HTMLElement[]; composedPath?: () => HTMLElement[] }) {
+	const path = e.path || e.composedPath!();
+	if (path.some((el) => el?.classList?.contains('v-menu-content'))) return false;
+
+	return true;
+}
+
+function disable() {
+	active.value = false;
+	filterActive.value = false;
+}
+
+function emitValue() {
+	if (!input.value) return;
+	const value = input.value?.value;
+	emit('update:modelValue', value);
+}
 </script>
 
 <style lang="scss" scoped>

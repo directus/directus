@@ -19,9 +19,9 @@
 						? firstItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
 						: null
 				"
-				:disabled="disabled"
+				:disabled="disabled || !firstChangesAllowed"
 				:loading="loading"
-				:fields="fields"
+				:fields="firstFields"
 				:model-value="firstItem"
 				:initial-values="firstItemInitial"
 				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
@@ -50,10 +50,10 @@
 						? secondItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
 						: null
 				"
-				:disabled="disabled"
+				:disabled="disabled || !secondChangesAllowed"
 				:loading="loading"
 				:initial-values="secondItemInitial"
-				:fields="fields"
+				:fields="secondFields"
 				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
 				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
 				:model-value="secondItem"
@@ -66,21 +66,23 @@
 </template>
 
 <script setup lang="ts">
-import api from '@/api';
 import VDivider from '@/components/v-divider.vue';
 import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
+import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
 import { useWindowSize } from '@/composables/use-window-size';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
+import { usePermissionsStore } from '@/stores/permissions';
+import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { toArray } from '@directus/utils';
-import { isNil } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
+import { getEndpoint } from '@directus/utils';
 
 const props = withDefaults(
 	defineProps<{
@@ -120,6 +122,7 @@ const { relationInfo } = useRelationM2M(collection, field);
 const { t, locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
+const permissionsStore = usePermissionsStore();
 
 const { width } = useWindowSize();
 
@@ -288,15 +291,15 @@ function useLanguages() {
 		loading.value = true;
 
 		try {
-			const response = await api.get<any>(`/items/${relationInfo.value.relatedCollection.collection}`, {
-				params: {
-					fields: Array.from(fields),
-					limit: -1,
-					sort: props.languageField ?? pkField,
-				},
-			});
-
-			languages.value = response.data.data ? toArray(response.data.data) : [];
+			languages.value = await fetchAll<Record<string, any>[]>(
+				getEndpoint(relationInfo.value.relatedCollection.collection),
+				{
+					params: {
+						fields: Array.from(fields),
+						sort: props.languageField ?? pkField,
+					},
+				}
+			);
 
 			if (!firstLang.value) {
 				const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
@@ -314,6 +317,89 @@ function useLanguages() {
 		}
 	}
 }
+
+const { junctionPerms } = useRelationPermissionsM2M(relationInfo);
+
+const createAllowed = computed(() => junctionPerms.value.create);
+const updateAllowed = computed(() => junctionPerms.value.update);
+
+const firstItemNew = computed(
+	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+);
+
+const secondItemNew = computed(
+	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field] === undefined
+);
+
+const firstChangesAllowed = computed(() => {
+	if (firstItemNew.value) {
+		return updateAllowed.value;
+	}
+
+	return createAllowed.value;
+});
+
+const secondChangesAllowed = computed(() => {
+	if (secondItemNew.value) {
+		return updateAllowed.value;
+	}
+
+	return createAllowed.value;
+});
+
+const firstFields = computed(() => {
+	let fieldsWithPerms = cloneDeep(fields.value);
+	if (!relationInfo.value) return fieldsWithPerms;
+
+	const permissions = permissionsStore.getPermissionsForUser(
+		relationInfo.value.junctionCollection.collection,
+		firstItemNew.value ? 'create' : 'update'
+	);
+
+	if (!permissions) return fieldsWithPerms;
+
+	if (permissions.fields?.includes('*') === false) {
+		fieldsWithPerms = fieldsWithPerms.map((field) => {
+			if (permissions.fields?.includes(field.field) === false) {
+				field.meta = {
+					...(field.meta || {}),
+					readonly: true,
+				} as any;
+			}
+
+			return field;
+		});
+	}
+
+	return fieldsWithPerms;
+});
+
+const secondFields = computed(() => {
+	let fieldsWithPerms = cloneDeep(fields.value);
+	if (!relationInfo.value) return fieldsWithPerms;
+
+	const permissions = permissionsStore.getPermissionsForUser(
+		relationInfo.value.junctionCollection.collection,
+		secondItemNew.value ? 'create' : 'update'
+	);
+
+	if (!permissions) return fieldsWithPerms;
+
+	if (permissions.fields?.includes('*') === false) {
+		fieldsWithPerms = fieldsWithPerms.map((field) => {
+			if (permissions.fields?.includes(field.field) === false) {
+				field.meta = {
+					...(field.meta || {}),
+					readonly: true,
+				} as any;
+			}
+
+			return field;
+		});
+	}
+
+	return fieldsWithPerms;
+});
 </script>
 
 <style lang="scss" scoped>

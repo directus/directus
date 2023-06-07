@@ -11,58 +11,48 @@
 	/>
 </template>
 
-<script lang="ts">
-import { useI18n } from 'vue-i18n';
-import { defineComponent, computed, inject, ref, watch } from 'vue';
-import { InterfaceConfig } from '@directus/types';
+<script setup lang="ts">
 import { useExtensions } from '@/extensions';
+import { InterfaceConfig } from '@directus/types';
+import { computed, inject, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-export default defineComponent({
-	props: {
-		value: {
-			type: String,
-			default: null,
-		},
-		typeField: {
-			type: String,
-			default: null,
-		},
-	},
-	emits: ['input'],
-	setup(props, { emit }) {
-		const { t } = useI18n();
+const props = defineProps<{
+	value: string | null;
+	typeField?: string;
+}>();
 
-		const { interfaces } = useExtensions();
+const emit = defineEmits<{
+	(e: 'input', value: string | null): void;
+}>();
 
-		const values = inject('values', ref<Record<string, any>>({}));
+const { t } = useI18n();
 
-		const selectedType = computed(() => {
-			if (props.typeField === null || !values.value[props.typeField]) return;
-			return values.value[props.typeField];
+const { interfaces } = useExtensions();
+
+const values = inject('values', ref<Record<string, any>>({}));
+
+const selectedType = computed(() => {
+	if (!props.typeField || !values.value[props.typeField]) return;
+	return values.value[props.typeField];
+});
+
+watch(
+	() => values.value[props.typeField!],
+	() => {
+		emit('input', null);
+	}
+);
+
+const items = computed(() => {
+	return interfaces.value
+		.filter((inter: InterfaceConfig) => inter.relational !== true && inter.system !== true)
+		.filter((inter: InterfaceConfig) => selectedType.value === undefined || inter.types.includes(selectedType.value))
+		.map((inter: InterfaceConfig) => {
+			return {
+				text: inter.name,
+				value: inter.id,
+			};
 		});
-
-		watch(
-			() => values.value[props.typeField],
-			() => {
-				emit('input', null);
-			}
-		);
-
-		const items = computed(() => {
-			return interfaces.value
-				.filter((inter: InterfaceConfig) => inter.relational !== true && inter.system !== true)
-				.filter(
-					(inter: InterfaceConfig) => selectedType.value === undefined || inter.types.includes(selectedType.value)
-				)
-				.map((inter: InterfaceConfig) => {
-					return {
-						text: inter.name,
-						value: inter.id,
-					};
-				});
-		});
-
-		return { t, items, selectedType, values };
-	},
 });
 </script>

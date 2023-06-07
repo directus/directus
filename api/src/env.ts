@@ -29,6 +29,8 @@ const allowedEnvironmentVars = [
 	'GRAPHQL_INTROSPECTION',
 	'MAX_BATCH_MUTATION',
 	'LOGGER_.+',
+	'QUERY_LIMIT_MAX',
+	'QUERY_LIMIT_DEFAULT',
 	'ROBOTS_TXT',
 	// server
 	'SERVER_.+',
@@ -70,6 +72,7 @@ const allowedEnvironmentVars = [
 	'CACHE_TTL',
 	'CACHE_CONTROL_S_MAXAGE',
 	'CACHE_AUTO_PURGE',
+	'CACHE_AUTO_PURGE_IGNORE_LIST',
 	'CACHE_SYSTEM_TTL',
 	'CACHE_SCHEMA',
 	'CACHE_PERMISSIONS',
@@ -104,6 +107,11 @@ const allowedEnvironmentVars = [
 	'STORAGE_.+_HEALTHCHECK_THRESHOLD',
 	// metadata
 	'FILE_METADATA_ALLOW_LIST',
+
+	// files
+	'FILES_MAX_UPLOAD_SIZE',
+	'FILES_CONTENT_TYPE_ALLOW_LIST',
+
 	// assets
 	'ASSETS_CACHE_TTL',
 	'ASSETS_TRANSFORM_MAX_CONCURRENT',
@@ -159,6 +167,13 @@ const allowedEnvironmentVars = [
 	'MESSENGER_REDIS_HOST',
 	'MESSENGER_REDIS_PORT',
 	'MESSENGER_REDIS_PASSWORD',
+	// synchronization
+	'SYNCHRONIZATION_STORE',
+	'SYNCHRONIZATION_NAMESPACE',
+	'SYNCHRONIZATION_REDIS',
+	'SYNCHRONIZATION_REDIS_HOST',
+	'SYNCHRONIZATION_REDIS_PORT',
+	'SYNCHRONIZATION_REDIS_PASSWORD',
 	// emails
 	'EMAIL_FROM',
 	'EMAIL_TRANSPORT',
@@ -203,6 +218,7 @@ const defaults: Record<string, any> = {
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
+	QUERY_LIMIT_DEFAULT: 100,
 	MAX_BATCH_MUTATION: Infinity,
 	ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 
@@ -246,6 +262,7 @@ const defaults: Record<string, any> = {
 	CACHE_TTL: '5m',
 	CACHE_NAMESPACE: 'system-cache',
 	CACHE_AUTO_PURGE: false,
+	CACHE_AUTO_PURGE_IGNORE_LIST: 'directus_activity,directus_presets',
 	CACHE_CONTROL_S_MAXAGE: '0',
 	CACHE_SCHEMA: true,
 	CACHE_PERMISSIONS: true,
@@ -291,6 +308,16 @@ const defaults: Record<string, any> = {
 
 	FLOWS_EXEC_ALLOWED_MODULES: false,
 	FLOWS_ENV_ALLOW_LIST: false,
+
+	PRESSURE_LIMITER_ENABLED: true,
+	PRESSURE_LIMITER_SAMPLE_INTERVAL: 250,
+	PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION: 0.99,
+	PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY: 500,
+	PRESSURE_LIMITER_MAX_MEMORY_RSS: false,
+	PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED: false,
+	PRESSURE_LIMITER_RETRY_AFTER: false,
+
+	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 };
 
 // Allows us to force certain environment variable into a type, instead of relying
@@ -308,6 +335,7 @@ const typeMap: Record<string, string> = {
 	DB_EXCLUDE_TABLES: 'array',
 
 	CACHE_SKIP_ALLOWED: 'boolean',
+	CACHE_AUTO_PURGE_IGNORE_LIST: 'array',
 
 	IMPORT_IP_DENY_LIST: 'array',
 

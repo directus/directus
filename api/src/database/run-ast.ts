@@ -7,7 +7,8 @@ import env from '../env.js';
 import { PayloadService } from '../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
-import applyQuery, { applyLimit, applySort, ColumnSortRecord, generateAlias } from '../utils/apply-query.js';
+import type { ColumnSortRecord } from '../utils/apply-query.js';
+import applyQuery, { applyLimit, applySort, generateAlias } from '../utils/apply-query.js';
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../utils/get-column-path.js';
 import { getColumn } from '../utils/get-column.js';
@@ -249,7 +250,7 @@ async function getDBQuery(
 	const queryCopy = clone(query);
 	const helpers = getHelpers(knex);
 
-	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
+	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : Number(env['QUERY_LIMIT_DEFAULT']);
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
@@ -473,7 +474,7 @@ function mergeWithParentItems(
 
 			if (nestedNode.query.page && nestedNode.query.page > 1) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					(nestedNode.query.limit ?? 100) * (nestedNode.query.page - 1)
+					(nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT'])) * (nestedNode.query.page - 1)
 				);
 			}
 
@@ -482,7 +483,10 @@ function mergeWithParentItems(
 			}
 
 			if (nestedNode.query.limit !== -1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, nestedNode.query.limit ?? 100);
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
+					0,
+					nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT'])
+				);
 			}
 
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {

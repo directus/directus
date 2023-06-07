@@ -32,11 +32,11 @@ const knexConfig = {
 
 const allowedLogLevels = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
 
-const logLevel = process.env.TEST_SAVE_LOGS
-	? allowedLogLevels.includes(process.env.TEST_SAVE_LOGS)
-		? process.env.TEST_SAVE_LOGS
-		: 'info'
-	: 'error';
+let logLevel = 'error';
+
+if (process.env.TEST_SAVE_LOGS) {
+	logLevel = allowedLogLevels.includes(process.env.TEST_SAVE_LOGS) ? process.env.TEST_SAVE_LOGS : 'info';
+}
 
 const directusAuthConfig = {
 	AUTH_PROVIDERS: 'saml',
@@ -72,6 +72,7 @@ const directusConfig = {
 	CACHE_SCHEMA: 'true',
 	CACHE_ENABLED: 'false',
 	RATE_LIMITER_ENABLED: 'false',
+	PRESSURE_LIMITER_ENABLED: 'false',
 	LOG_LEVEL: logLevel,
 	SERVE_APP: 'false',
 	DB_EXCLUDE_TABLES: 'knex_migrations,knex_migrations_lock,spatial_ref_sys,sysdiagrams',

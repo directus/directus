@@ -1,12 +1,11 @@
 {
 	"name": "create-directus-extension",
-	"version": "9.25.1",
+	"version": "10.0.4",
 	"description": "A small util that will scaffold a Directus extension",
 	"keywords": [
 		"directus",
 		"extensions"
 	],
-	"type": "module",
 	"homepage": "https://directus.io",
 	"repository": {
 		"type": "git",
@@ -14,12 +13,13 @@
 		"directory": "packages/create-directus-extension"
 	},
 	"funding": "https://github.com/directus/directus?sponsor=1",
-	"license": "GPL-3.0-only",
+	"license": "MIT",
 	"author": "Nicola Krumschmidt",
 	"contributors": [
 		"Joonas Palosuo <joonas.palosuo@gmail.com>",
 		"Rijk van Zanten <rijkvanzanten@me.com>"
 	],
+	"type": "module",
 	"exports": {
 		".": "./lib/index.js",
 		"./package.json": "./package.json"
@@ -35,6 +35,6 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
-		"inquirer": "8.2.5"
+		"inquirer": "9.2.4"
 	}
 }

@@ -7,8 +7,8 @@ readTime: 3 min read
 
 ::: info Non-Docker Guides
 
-We only publish and maintain self hosting guides using Docker as this removes many
-environment-specific configuration problems. If you can't or don't want to use Docker, we also publish an
+We only publish and maintain self hosting guides using Docker as this removes many environment-specific configuration
+problems. If you can't or don't want to use Docker, we also publish an
 [npm package](https://www.npmjs.com/package/directus) without guides.
 
 :::
@@ -29,9 +29,9 @@ docker run \
 
 To stick to a more specific version of Directus you can use one of the following tags:
 
-- Full version, e.g. `9.0.0`
-- Minor releases, e.g. `9.0`
-- Major releases, e.g. `9`
+- Full version, e.g. `10.0.0`
+- Minor releases, e.g. `10.0`
+- Major releases, e.g. `10`
 
 To use a specific version of Directus, run:
 
@@ -41,7 +41,7 @@ docker run \
   -p 8055:8055 \
   -e KEY=255d861b-5ea1-5996-9aa3-922530ec40b1 \
   -e SECRET=6116487b-cda1-52c2-b5b5-c8022c45e263 \
-  directus/directus:9.0.0
+  directus/directus:10.0.0
 ```
 
 ### Configure Admin User
@@ -146,8 +146,8 @@ If you are not using the `latest` tag for the Directus image you need to adjust 
 increment the tag version number, e.g.:
 
 ```diff
--   image: directus/directus:9.0.0-rc.101
-+   image: directus/directus:9.0.0
+-   image: directus/directus:10.0.0
++   image: directus/directus:10.1.0
 ```
 
 You can then issue the following two commands (from your docker-compose root):
@@ -162,26 +162,48 @@ started you will be on the latest version (or the version you specified).
 
 ### Adding packages to use in Flows scripts
 
-If you need third-party packages in a script of one of your flows, you can add these lines in the `directus` service of your `docker-compose.yml` file :
-```yaml
-    command: >
-      sh -c "
-        npm install moment uuid
-        npx directus bootstrap && npx directus start
-      "
+If you need third-party packages in a script of one of your flows, the recommended way is to create a new Docker image
+extending from the official image and installing the packages there.
+
+First create a file called `Dockerfile` with a content like this:
+
+```docker
+FROM directus/directus:10.0.0
+
+USER root
+RUN corepack enable \
+  && corepack prepare pnpm@8.3.1 --activate
+
+USER node
+RUN pnpm install moment uuid
+```
+
+Then build the image based on that file:
+
+```bash
+docker build -t my-custom-directus-image .
+```
+
+And update the image reference in the `docker-compose.yml` file:
+
+```diff
+-    image: directus/directus:latest
++    image: my-custom-directus-image:latest
 ```
 
 :::tip Don't forget to provide `FLOWS_EXEC_ALLOWED_MODULES` variable
 
-In your `docker-compose.yml` file, you will need to add :
+In your `docker-compose.yml` file, you will need to add:
+
 ```diff
     environment:
 +     FLOWS_EXEC_ALLOWED_MODULES=array:moment,uuid
 ```
-For more information, please see the config section on [Flows](https://docs.directus.io/self-hosted/config-options.html#flows)
+
+For more information, please see the config section on
+[Flows](https://docs.directus.io/self-hosted/config-options.html#flows)
 
 :::
-
 
 ## Supported Databases
 
@@ -214,3 +236,7 @@ order to run. The official Directus Docker image does not include these dependen
 for more information on what to include for OracleDB.
 
 :::
+
+## Requirements
+
+It can be easy to under-provision resources to run a self-hosted instance of Directus. For Directus' container resources, the required minimum system requirements are 1x 0.25 vCPU / 512 MB, although the recommended minimum is 2x 1 vCPU / 2GB.
