@@ -1,4 +1,4 @@
-import type { Command } from './commands/types.js';
+import type { Command } from './types/command.js';
 import type { ReadItemsOutput } from './commands/items/read.js';
 
 export interface DirectusClientConfig {

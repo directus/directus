@@ -1,5 +1,5 @@
 import type { DirectusClientConfig } from '../../client.js';
-import type { Command } from '../types.js';
+import type { Command } from '../../types/index.js';
 
 export interface ReadItemsInput<Schema extends object = any> {
 	collection: keyof Schema;
