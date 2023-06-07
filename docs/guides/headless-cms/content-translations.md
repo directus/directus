@@ -30,9 +30,13 @@ You will need:
 - Familiarity with [creating collections](/app/data-model/collections#create-a-collection) and
   [creating fields](/app/data-model/fields#create-a-field-standard) inside Directus.
 
-## Create Languages Collection
+You will be creating several collections (one for storing different languages, one for your content, and one junction
+collection that will store all the different translations of your content). Once you setup the data model, you will test
+by adding a few languages and some translated content. Lastly, you'll interact with the translations via the API.
 
-First, you'll need to create a new collection for all the different languages you'll support.
+## Create A Languages Collection
+
+Create a new collection for all the different languages your application will support.
 
 1. Go to Settings > Data Model and create a new collection for `languages`.
 
@@ -77,12 +81,12 @@ Before you can create translations, you need a collection of content to translat
 
    ![Data Model settings screen for the Articles collection is displayed. The following fields are shown: id, status, date_published, author, image.](https://marketing.directus.app/assets/fdeb07d9-d11a-42e9-a39a-14f0a196ecc6.png?key=doc)
 
-   Create the fields above inside the collection.
+   Create these fields inside the collection.
 
    They will be shared across all the different translations of each article.
 
    Do not add the fields to be translated like `title` or `content` or `slug` yet, because those will be stored in a
-   seperate collection you will create next.
+   separate collection shown below.
 
 ## Create Content Translations Collection
 
@@ -145,11 +149,99 @@ built.
 
    ![A dropdown menu with a progress indicator for English and French languages are shown. The progress is less than half and shown in red.](https://marketing.directus.app/assets/78a895e9-744e-4d33-9d87-3c5ca4c784e2.png?key=doc)
 
+## Fetching Translated Content With The API
+
+Next, you'll want to access your content via the API. If you try to use `/items/articles` then `translations` returns an
+array of IDs.
+
+Instead, you'll want to add a few parameters to your API call.
+
+- [Fields parameter](/reference/query#many-to-any-union-types) to select the relational field data.
+- Limit parameter to only return the a single result.
+- Deep paramater to filter the related collection to only show the translations in the current language.
+
+:::tip
+
+Study the [Global Query Parameters > Fields > Deep](/reference/query#deep) parameter to learn how to filter nested
+relational data . It's incredible powerful.
+
+:::
+
+**Sample Request**
+
+```javascript
+// Write some code here in your front-end framework that gets the slug from the current URL.
+const slug = 'slug-in-english';
+const languageCode = 'en-US';
+
+// Call the Directus API using the SDK using the locale of the frontend and the slug.
+const response = await directus.items('articles').readByQuery({
+	deep: {
+		translations: {
+			_filter: {
+				_and: [
+					{
+						languages_code: {
+							_eq: languageCode,
+						},
+					},
+					{
+						slug: {
+							_eq: slug,
+						},
+					},
+				],
+			},
+		},
+	},
+	fields: ['*', 'translations.*'],
+	limit: 1,
+});
+const page = response.data[0];
+```
+
+:::details **Toggle Open to See Sample Response**
+
+```json
+{
+	"data": [
+		{
+			"image": "1ee63d48-d4c6-4d01-aef5-f8b441ac792e",
+			"date_created": "2021-11-11T22:20:33.433Z",
+			"author": "bbcf79f6-9d19-42e7-8ef6-0151780799f4",
+			"id": 14,
+			"status": "published",
+			"date_published": null,
+			"translations": [
+				{
+					"id": 1,
+					"articles_id": 14,
+					"languages_code": "en-US",
+					"title": "Title in English",
+					"slug": "slug-in-english",
+					"summary": "This is a guide on how to create content translations.",
+					"content": "<p>Once upon a time, there was a bunny named Benny who loved to write and share his stories with the world. Benny had been using a headless CMS to manage his content, but he realized that he was only reaching a small audience in his own country.</p>\n<p>Benny decided that he wanted to internationalize his content and reach a broader audience. He furiously typed away on his keyboard, translating his stories into different languages.</p>\n<p>But as he scrolled through the list of supported languages in the headless CMS, he realized that he didn't know how to speak any of them. He had used Google Translate to translate his stories, but he wasn't sure if the translations were accurate.</p>\n<p>As he pondered his dilemma, Benny heard a knock at the door. It was a group of rabbits from different countries, all wanting to read Benny's stories in their native languages.</p>\n<p>Benny was overjoyed and started to share his stories with them. But as the rabbits listened, they started to laugh uncontrollably.</p>\n<p>Benny was confused and asked them what was so funny. One of the rabbits replied, \"Benny, your translations are hilarious! They don't make any sense!\"</p>\n<p>Benny was embarrassed but couldn't help but laugh along with the other rabbits. He realized that he needed to find a better way to internationalize his content.</p>\n<p>From that day on, Benny made sure to hire professional translators to translate his stories into different languages. And he lived happily ever after, sharing his stories with rabbits from all over the world.</p>"
+				}
+			]
+		}
+	]
+}
+```
+
+:::
+
 ## Next Steps
 
 Over the course of this guide, you've setup the basics for translating your content within Directus. Nice work!
 
 Next, you would setup translations collections for all the different content collections you'll be translating.
 
+### Test Your API Calls
+
 Your Headless CMS is just one side of the equation so don't forget to test the API responses and handle them
 appropriately within your frontend.
+
+### Check Your Permissions
+
+If you notice you aren't receiving the data that you expect, check the Permissions settings for your Public or chosen
+role. You'll have to enable Read access for the `languages`, `articles`, and `articles_translations` collections.
