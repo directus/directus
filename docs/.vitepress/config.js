@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress';
+import TypeDocSidebar from '../typedocs/typedoc-sidebar.json';
 
 export default defineConfig({
 	base: '/',
@@ -140,12 +141,17 @@ gtag('config', 'UA-24637628-7');
 		sidebar: {
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
+			'typedocs/': sidebarTypedocs(),
 		},
 		editLink: {
 			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
 		},
 	},
 });
+
+function sidebarTypedocs() {
+	return TypeDocSidebar;
+}
 
 function sidebar() {
 	return [
