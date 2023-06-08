@@ -16,6 +16,7 @@ import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { version } from '../utils/package.js';
 import { SettingsService } from './settings.js';
+import { toBoolean } from '../utils/to-boolean.js';
 
 export class ServerService {
 	knex: Knex;
@@ -76,6 +77,32 @@ export class ServerService {
 				default: env['QUERY_LIMIT_DEFAULT'],
 				max: Number.isFinite(env['QUERY_LIMIT_MAX']) ? env['QUERY_LIMIT_MAX'] : -1,
 			};
+		}
+
+		if (this.accountability?.user) {
+			if (toBoolean(env['WEBSOCKETS_ENABLED'])) {
+				info['websocket'] = {};
+
+				info['websocket'].rest = toBoolean(env['WEBSOCKETS_REST_ENABLED'])
+					? {
+							authentication: env['WEBSOCKETS_REST_AUTH'],
+							path: env['WEBSOCKETS_REST_PATH'],
+					  }
+					: false;
+
+				info['websocket'].graphql = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
+					? {
+							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
+							path: env['WEBSOCKETS_GRAPHQL_PATH'],
+					  }
+					: false;
+
+				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
+					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
+					: false;
+			} else {
+				info['websocket'] = false;
+			}
 		}
 
 		return info;
