@@ -113,9 +113,8 @@ Then, connect these values to the form input fields:
 	<input type="email" id="email" /> // [!code --]
 	<input type="email" id="email" name="email" value={formValue.email} onChange={handleLoginChange} /> // [!code ++]
 	<label htmlFor="password">Password</label>
-	<input type="password" id="password" /> // [!code --] // [!code ++]
-	<input type="password" id="password" name="password" value={formValue.password} onChange={handleLoginChange} /> // [!code
-	++]
+	<input type="password" id="password" /> // [!code --]
+	<input type="password" id="password" name="password" value={formValue.password} onChange={handleLoginChange} /> // [!code ++]
 	<button type="submit">Submit</button>
 </form>
 ```
@@ -174,16 +173,12 @@ As soon as you have successfully authenticated, a message will be sent. When thi
 ```js
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
-	if (data.type === 'auth' && data.status === 'ok') {
-		// [!code ++]
-		connectionRef.current.send(
-			// [!code ++]
-			JSON.stringify({
-				// [!code ++]
+	if (data.type === 'auth' && data.status === 'ok') { // [!code ++]
+		connectionRef.current.send( // [!code ++]
+			JSON.stringify({ // [!code ++]
 				type: 'subscribe', // [!code ++]
 				collection: 'messages', // [!code ++]
-				query: {
-					// [!code ++]
+				query: { // [!code ++]
 					fields: ['*', 'user_created.first_name'], // [!code ++]
 					sort: 'date_created', // [!code ++]
 				}, // [!code ++]
@@ -210,8 +205,7 @@ const receiveMessage = (message) => {
 			})
 		);
 	}
-	if (data.type === 'subscription' && data.event === 'init') {
-		// [!code ++]
+	if (data.type === 'subscription' && data.event === 'init') { // [!code ++]
 		console.log('subscription started'); // [!code ++]
 	} // [!code ++]
 };

@@ -9,13 +9,13 @@ In this guide, you will build a live-updating chart based on votes to a multiple
 
 ## Before You Start
 
-You will need a Directus project. If you don’t already have one, the easiest way to get started is with our [managed Directus Cloud service](https://directus.cloud). 
+You will need a Directus project. If you don’t already have one, the easiest way to get started is with our [managed Directus Cloud service](https://directus.cloud).
 
 Create a new collection called `votes`, with a dropdown selection field called `choice`. Create two choices - one with the value of `dogs` and one with `cats`.
 
-In the `Public` role, give Create access to the `votes` collection. 
+In the `Public` role, give Create access to the `votes` collection.
 
-Create a new Role called `Results`, and make sure the `Results` role has Read access to the `votes` collection. Create a new user with this role, generate an access token, and make note of it. 
+Create a new Role called `Results`, and make sure the `Results` role has Read access to the `votes` collection. Create a new user with this role, generate an access token, and make note of it.
 
 ## Create The Vote Page
 Create a `vote.html` file and open it in your code editor. Add the following:
@@ -60,7 +60,7 @@ At the bottom of your `vote` function, add some user feedback that the vote was 
 document.body.innerHTML = 'Vote cast'
 ```
 
-*Refresh your browser and try casting a vote. The page should be replaced with a success message once the vote has taken place.* 
+*Refresh your browser and try casting a vote. The page should be replaced with a success message once the vote has taken place.*
 
 ## Create The Results Page
 
@@ -70,7 +70,9 @@ Also create a `results.html` file and open it in your editor. Add the following:
 <!doctype html>
 <html>
 	<body>
-		<canvas id="chart"></canvas>
+		<div style="display: flex; justify-content: center; height: 80vh">
+			<canvas id="chart"></canvas>
+		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
 			const socket = new WebSocket('wss://your-directus-url/websocket')
@@ -100,7 +102,7 @@ Also create a `results.html` file and open it in your editor. Add the following:
 </html>
 ```
 
-This boilerplate creates a placeholder element for our chart, and includes Chart.js from a CDN. It also sets up our WebSocket methods - for more information check out our [Getting Started With WebSockets](/guides/real-time/getting-started/websockets.md) guide. 
+This boilerplate creates a placeholder element for our chart, and includes Chart.js from a CDN. It also sets up our WebSocket methods - for more information check out our [Getting Started With WebSockets](/guides/real-time/getting-started/websockets.md) guide.
 
 Make sure to replace `your-directus-url` with your project’s URL, and `your-access-token` with your token.
 
@@ -125,7 +127,7 @@ const chart = new Chart(ctx, {
 });
 ```
 
-Load `results.html` in your browser. Don’t worry that nothing is displayed yet - the chart has no data so it can’t render. 
+Load `results.html` in your browser. Don’t worry that nothing is displayed yet - the chart has no data so it can’t render.
 
 ### Add Existing Votes On Load
 
@@ -133,32 +135,32 @@ Once authenticated, immediately subscribe to the `votes` collection:
 
 ```js
 if (data.type == 'auth' && data.status == 'ok') {
-	socket.send(JSON.stringify({	// [!code	++]
-		type: 'subscribe',	// [!code	++]
-		collection: 'votes',	// [!code	++]
-		query: {	// [!code	++]
-			aggregate: { count: 'choice' },	// [!code	++]
-			groupBy: ['choice'],	// [!code	++]
-		}	// [!code	++]
-	}));	// [!code	++]
+	socket.send(JSON.stringify({	// [!code ++]
+		type: 'subscribe',	// [!code ++]
+		collection: 'votes',	// [!code ++]
+		query: {	// [!code ++]
+			aggregate: { count: 'choice' },	// [!code ++]
+			groupBy: ['choice'],	// [!code ++]
+		}	// [!code ++]
+	}));	// [!code ++]
 }
 ```
 
-The `query` groups all items by their `choice` value, and are then counted by the aggregation. The result is a payload that shows how many of each choice exist in the collection. 
+The `query` groups all items by their `choice` value, and are then counted by the aggregation. The result is a payload that shows how many of each choice exist in the collection.
 
 A message is sent over the connection when a connection is initialized with data from the existing collection. Use this data to edit the chart’s dataset and update it:
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
-	for (const item of data.data) {	// [!code	++]
-		chart.data.labels.push(item.choice);	// [!code	++]
-		chart.data.datasets[0].data.push(item.count.choice);	// [!code	++]
-	}	// [!code	++]
-	chart.update();	// [!code	++]
+	for (const item of data.data) {	// [!code ++]
+		chart.data.labels.push(item.choice);	// [!code ++]
+		chart.data.datasets[0].data.push(item.count.choice);	// [!code ++]
+	}	// [!code ++]
+	chart.update();	// [!code ++]
 }
 ```
 
-Refresh the page, and you should see the chart update with the initial values. 
+Refresh the page, and you should see the chart update with the initial values.
 
 ![A pie chart with two segments - one labeled cats and the other dogs.](https://cdn.directus.io/docs/v9/guides/websockets/poll-pie-chart.webp)
 
@@ -168,16 +170,21 @@ When a new vote is cast, update the chart’s dataset and update it:
 
 ```js
 if (data.type == 'subscription' && data.event == 'create') {
-  const vote = data.data[0]; // [!code  ++]
-  const itemToUpdate = chart.data.labels.indexOf(vote.choice); // [!code  ++]
-  chart.data.datasets[0].data[itemToUpdate]++; // [!code  ++]
-  chart.update(); // [!code  ++]
+  const vote = data.data[0]; // [!code ++]
+  const itemToUpdate = chart.data.labels.indexOf(vote.choice); // [!code ++]
+  if (itemToUpdate !== -1) { // [!code ++]
+    chart.data.datasets[0].data[itemToUpdate]++; // [!code ++]
+  } else { // [!code ++]
+    chart.data.labels.push(vote.choice); // [!code ++]
+    chart.data.datasets[0].data.push(1); // [!code ++]
+  } // [!code ++]
+  chart.update(); // [!code ++]
 }
 ```
 
 This code finds which index position the choice is in, increases it by 1, and updates the chart.
 
-Open both `vote.html` and `results.html` in your browser. Make a vote and see the chart update. 
+Open both `vote.html` and `results.html` in your browser. Make a vote and see the chart update.
 
 ## Next Steps
 There are many ways to improve the project built in this guide:
@@ -223,7 +230,9 @@ There are many ways to improve the project built in this guide:
 <!doctype html>
 <html>
 	<body>
-		<canvas id="chart"></canvas>
+		<div style="display: flex; justify-content: center; height: 80vh">
+			<canvas id="chart"></canvas>
+		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
 			const socket = new WebSocket('wss://your-directus-url/websocket');
@@ -262,8 +271,13 @@ There are many ways to improve the project built in this guide:
 
 				if (data.type == 'subscription' && data.event == 'create') {
 					const vote = data.data[0];
-					const itemToUpdate = chart.data.labels.indexOf(vote.choice); 
-					chart.data.datasets[0].data[itemToUpdate]++;
+					const itemToUpdate = chart.data.labels.indexOf(vote.choice);
+					if (itemToUpdate !== -1) {
+						chart.data.datasets[0].data[itemToUpdate]++;
+					} else {
+						chart.data.labels.push(vote.choice);
+						chart.data.datasets[0].data.push(1);
+					}
 					chart.update();
 				}
 			});
