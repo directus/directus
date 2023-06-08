@@ -1076,7 +1076,7 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | Variable           | Description                                | Default Value |
 |--------------------|--------------------------------------------|---------------|
 | `WEBSOCKETS_REST_ENABLED` | Whether or not to enable the REST message handlers. | `true` |
-| `WEBSOCKETS_REST_PATH` | The URL Path at which the WebSocket will be available. | `/websocket` |
+| `WEBSOCKETS_REST_PATH` | The URL path at which the WebSocket REST endpoint will be available. | `/websocket` |
 | `WEBSOCKETS_REST_CONN_LIMIT` | How many simultaneous connections are allowed. | `Infinity` |
 | `WEBSOCKETS_REST_AUTH` | What method of authentication to require for this connection. | `handshake` |
 | `WEBSOCKETS_REST_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection. | 30 |
@@ -1086,7 +1086,7 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | Variable           | Description                                | Default Value |
 |--------------------|--------------------------------------------|---------------|
 | `WEBSOCKETS_GRAPHQL_ENABLED` | Whether or not to enable the GraphQL Subscriptions. | `true` |
-| `WEBSOCKETS_GRAPHQL_PATH` | The URL Path at which the WebSocket will be available. | `/graphql` |
+| `WEBSOCKETS_GRAPHQL_PATH` | The URL path at which the WebSocket GraphQL endpoint will be available. | `/graphql` |
 | `WEBSOCKETS_GRAPHQL_CONN_LIMIT` | How many simultaneous connections are allowed. | `Infinity` |
 | `WEBSOCKETS_GRAPHQL_AUTH` | What method of authentication to require for this connection. | `handshake` |
 | `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection. | 30 |
