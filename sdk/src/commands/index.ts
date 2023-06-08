@@ -1,1 +1,1 @@
-export * from './items/read.js';
+export * from './read-items.js';

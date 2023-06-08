@@ -1,5 +1,12 @@
-export interface Command<Output extends object | unknown, Configuration extends object, _Schema extends object> {
-	(configuration: Configuration): Promise<Output>;
+import type { DirectusClient } from '../client.js';
+
+export interface Command<
+	_Input extends object,
+	Output extends object | unknown,
+	Client extends DirectusClient,
+	_Schema extends object
+> {
+	(client: Client): Promise<Output>;
 }
 
 export type ApiError = {
@@ -8,4 +15,5 @@ export type ApiError = {
 	code?: string;
 	extensions?: Record<string, any>;
 };
-export type ApiResponse<Data = any> = { data: Data } | { errors: ApiError[] };
+
+export type ApiResponse<Data = any> = { data: Data }; // | { errors: ApiError[] };

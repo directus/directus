@@ -14,16 +14,14 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
 		"@vitest/coverage-c8": "0.31.1",
-		"typescript": "5.0.4",
-		"tsx": "3.12.7",
 		"tsup": "6.7.0",
+		"tsx": "3.12.7",
+		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"
-	},
-	"dependencies": {
-		"@directus/types": "workspace:^"
 	}
 }
