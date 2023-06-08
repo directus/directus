@@ -2,7 +2,7 @@
 	"name": "docs",
 	"private": true,
 	"scripts": {
-		"build": "pnpm --recursive --filter '!docs' run build && pnpm -r typedocs && vitepress build",
+		"build": "pnpm --recursive --filter '!docs' --filter '!api' --filter '!app' run build && pnpm -r typedocs && vitepress build",
 		"dev": "pnpm -r typedocs && vitepress dev",
 		"preview": "pnpm -r typedocs && vitepress preview",
 		"spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
