@@ -13,9 +13,6 @@
     ],
     "name": "Directus",
     "entryPointStrategy": "packages",
-    // "plugin": ["typedoc-plugin-markdown"],
-    "out": "./.typedocs",
-    "compilerOptions": {
-        "lib": ["es2022", "DOM"]
-    }
+    "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+    "out": "./.typedocs"
 }
