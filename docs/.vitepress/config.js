@@ -127,7 +127,7 @@ gtag('config', 'UA-24637628-7');
 		},
 		nav: [
 			{ text: 'Docs', link: '/' },
-			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
+			{ text: 'Developer Blog', link: '/blog/', activeMatch: '/blog/' },
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
 			{ text: 'GitHub', link: 'https://github.com/directus/directus' },
@@ -138,7 +138,7 @@ gtag('config', 'UA-24637628-7');
 			indexName: 'directus',
 		},
 		sidebar: {
-			// '/cookbook/': sidebarCookbooks(),
+			'/blog/': sidebar(),
 			'/': sidebar(),
 		},
 		editLink: {
@@ -608,7 +608,7 @@ function sidebar() {
 			collapsed: true,
 			items: [
 				{ link: '/contributing/introduction', text: 'Introduction' },
-				{ 
+				{
 					text: 'Code',
 					items: [
 						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
@@ -616,10 +616,10 @@ function sidebar() {
 						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
 						{ link: '/contributing/running-locally', text: 'Running Locally' },
 						{ link: '/contributing/tests', text: 'Tests' },
-					]
+					],
 				},
 				{ link: '/contributing/community', text: 'Community' },
-				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' }
+				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' },
 			],
 		},
 		{
