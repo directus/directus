@@ -51,7 +51,7 @@ data updates.
 
 ## Create a Subscription
 
-After subscribing to collections over your connection, you will real-data changes in your collection. To subscribe to a
+After subscribing to collections over your connection, you will receive real-time data changes of those collections. To subscribe to a
 `messages` collection, the query would look like this:
 
 ```js
