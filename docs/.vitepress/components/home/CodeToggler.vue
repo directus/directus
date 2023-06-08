@@ -11,7 +11,7 @@
 			</button>
 		</div>
 
-		<div class="tab-code-content">
+		<div class="tab-code-content no-scroll">
 			<div v-show="activeTab === 0">
 				<HighCode
 					class="code-block"
@@ -200,6 +200,16 @@ await directus.items("articles").readOne(4, {
 	margin: 20px;
 	max-height: 420px;
 	overflow-y: auto;
+}
+.no-scroll,
+pre[data-v-f4a493be] {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	overflow-y: scroll;
+}
+.no-scroll::-webkit-scrollbar,
+pre[data-v-f4a493be]::-webkit-scrollbar {
+	display: none;
 }
 </style>
 

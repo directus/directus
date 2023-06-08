@@ -25,11 +25,9 @@ export default {
 <style scoped>
 .use-case {
 	color: inherit;
-	max-width: 380px;
 }
 .img-size {
-	max-width: 350px;
-	height: 170px;
+	width: 100%;
 	object-fit: contain;
 }
 .tag {

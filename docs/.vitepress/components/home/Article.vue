@@ -1,5 +1,5 @@
 <template>
-	<div class="article vp-docs">
+	<div class="vp-docs">
 		<a :href="url">
 			<img :src="img" alt="" class="img-size" />
 			<p class="tag">{{ tag }}</p>
@@ -30,12 +30,8 @@ export default {
 </script>
 
 <style scoped>
-.article {
-	/* width: 100%; */
-	max-width: 300px;
-}
 .img-size {
-	max-height: 170px;
+	width: 100%;
 	object-fit: contain;
 }
 .tag {
