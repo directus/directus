@@ -1,5 +1,5 @@
 import request, { Response } from 'supertest';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import { EnumType, jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { WebSocket } from 'ws';
 import { createClient } from 'graphql-ws';
 import {
@@ -223,6 +223,8 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		conn.on('message', (data) => {
 			const message: WebSocketResponse = JSON.parse(data.toString());
 
+			// console.dir({ message });
+
 			if (config?.respondToPing !== false && message.type === 'ping') {
 				conn.send(JSON.stringify({ type: 'pong' }));
 				return;
@@ -411,9 +413,13 @@ export function createWebSocketGql(host: string, config?: WebSocketOptionsGql) {
 			targetMessages.push(data);
 		};
 
+		const args = options.event ? { __args: { event: new EnumType(options.event) } } : false;
+
 		const unsubscribe = client.subscribe(
 			{
-				query: processGraphQLJson({ subscription: { [subscriptionKey]: options.jsonQuery } }),
+				query: processGraphQLJson({
+					subscription: { [subscriptionKey]: { ...args, ...options.jsonQuery } },
+				}),
 			},
 			{
 				next: onNext,

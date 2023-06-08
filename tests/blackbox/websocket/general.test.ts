@@ -8,6 +8,7 @@ import knex, { Knex } from 'knex';
 import { cloneDeep } from 'lodash';
 import { collectionFirst } from './general.seed';
 import { v4 as uuid } from 'uuid';
+import { sleep } from '@utils/sleep';
 
 describe('WebSocket General Tests', () => {
 	const databases = new Map<string, Knex>();
@@ -255,6 +256,245 @@ describe('WebSocket General Tests', () => {
 						expect(ws2.getMessageCount(uid)).toBe(2);
 						expect(wsGql.getMessageCount(uid)).toBe(0);
 						expect(wsGql2.getMessageCount(uid)).toBe(0);
+					}
+				},
+				100000
+			);
+		});
+
+		describe('Test event filtering', () => {
+			it.each(vendors)(
+				'%s',
+				async (vendor) => {
+					// Setup
+					const eventUids = [undefined, 'create', 'update', 'delete'];
+					const env = envs[vendor][0];
+
+					const ws = common.createWebSocketConn(getUrl(vendor, env), {
+						auth: { access_token: common.USER.ADMIN.TOKEN },
+					});
+
+					const wsGql = common.createWebSocketGql(getUrl(vendor, env), {
+						auth: { access_token: common.USER.ADMIN.TOKEN },
+					});
+
+					let messageList: common.WebSocketResponse[] = [];
+					const messageListFiltered: Record<string, any> = {};
+					let messageListGql: common.WebSocketResponse[] = [];
+					const messageListGqlFiltered: Record<string, any> = {};
+
+					let subscriptionKey = '';
+
+					// Action
+					for (const uid of eventUids) {
+						await ws.subscribe({
+							collection: localCollectionFirst,
+							uid,
+							event: uid as common.WebSocketSubscriptionOptions['event'],
+						});
+
+						const gqlQuery =
+							uid === 'delete'
+								? {
+										event: true,
+										key: true,
+								  }
+								: {
+										event: true,
+										data: {
+											id: true,
+											name: true,
+										},
+								  };
+
+						subscriptionKey = await wsGql.subscribe({
+							collection: localCollectionFirst,
+							jsonQuery: gqlQuery,
+							uid,
+							event: uid as common.WebSocketSubscriptionOptions['event'],
+						});
+					}
+
+					const insertedName = uuid();
+					const updatedName = `updated_${uuid()}`;
+
+					const insertedId = (
+						await request(getUrl(vendor, env))
+							.post(`/items/${localCollectionFirst}`)
+							.send({ id: pkType === 'string' ? uuid() : undefined, name: insertedName })
+							.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
+					).body.data.id;
+
+					await sleep(100);
+
+					await request(getUrl(vendor, env))
+						.patch(`/items/${localCollectionFirst}/${insertedId}`)
+						.send({ name: updatedName })
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					await sleep(100);
+
+					await request(getUrl(vendor, env))
+						.delete(`/items/${localCollectionFirst}/${insertedId}`)
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					await sleep(100);
+
+					for (const uid of eventUids) {
+						if (uid === undefined) {
+							messageList = (await ws.getMessages(3)) || [];
+							messageListGql = (await wsGql.getMessages(3)) || [];
+						} else {
+							messageListFiltered[uid] = await ws.getMessages(1, { uid });
+							messageListGqlFiltered[uid] = await wsGql.getMessages(1, { uid });
+						}
+					}
+
+					ws.conn.close();
+					await wsGql.client.dispose();
+
+					// Assert
+					expect(messageList).toHaveLength(3);
+
+					expect(messageList[0]).toEqual({
+						type: 'subscription',
+						event: 'create',
+						data: [{ id: insertedId, name: insertedName }],
+					});
+
+					expect(messageList[1]).toEqual({
+						type: 'subscription',
+						event: 'update',
+						data: [{ id: insertedId, name: updatedName }],
+					});
+
+					expect(messageList[2]).toEqual({
+						type: 'subscription',
+						event: 'delete',
+						data: [String(insertedId)],
+					});
+
+					for (const uid of eventUids) {
+						if (!uid) continue;
+
+						expect(messageListFiltered[uid]).toHaveLength(1);
+
+						switch (uid) {
+							case 'create':
+								expect(messageListFiltered[uid][0]).toEqual({
+									type: 'subscription',
+									event: uid,
+									data: [{ id: insertedId, name: insertedName }],
+									uid,
+								});
+
+								break;
+
+							case 'update':
+								expect(messageListFiltered[uid][0]).toEqual({
+									type: 'subscription',
+									event: uid,
+									data: [{ id: insertedId, name: updatedName }],
+									uid,
+								});
+
+								break;
+
+							case 'delete':
+								expect(messageListFiltered[uid][0]).toEqual({
+									type: 'subscription',
+									event: uid,
+									data: [String(insertedId)],
+									uid,
+								});
+
+								break;
+						}
+					}
+
+					expect(messageListGql).toHaveLength(3);
+
+					expect(messageListGql[0]).toEqual({
+						data: {
+							[subscriptionKey]: {
+								event: 'create',
+								data: {
+									id: String(insertedId),
+									name: insertedName,
+								},
+							},
+						},
+					});
+
+					expect(messageListGql[1]).toEqual({
+						data: {
+							[subscriptionKey]: {
+								event: 'update',
+								data: {
+									id: String(insertedId),
+									name: updatedName,
+								},
+							},
+						},
+					});
+
+					expect(messageListGql[2]).toEqual({
+						data: {
+							[subscriptionKey]: {
+								event: 'delete',
+								data: null,
+							},
+						},
+					});
+
+					for (const uid of eventUids) {
+						if (!uid) continue;
+
+						expect(messageListGqlFiltered[uid]).toHaveLength(1);
+
+						switch (uid) {
+							case 'create':
+								expect(messageListGqlFiltered[uid][0]).toEqual({
+									data: {
+										[subscriptionKey]: {
+											event: 'create',
+											data: {
+												id: String(insertedId),
+												name: insertedName,
+											},
+										},
+									},
+								});
+
+								break;
+
+							case 'update':
+								expect(messageListGqlFiltered[uid][0]).toEqual({
+									data: {
+										[subscriptionKey]: {
+											event: 'update',
+											data: {
+												id: String(insertedId),
+												name: updatedName,
+											},
+										},
+									},
+								});
+
+								break;
+
+							case 'delete':
+								expect(messageListGqlFiltered[uid][0]).toEqual({
+									data: {
+										[subscriptionKey]: {
+											event: 'delete',
+											key: String(insertedId),
+										},
+									},
+								});
+
+								break;
+						}
 					}
 				},
 				100000

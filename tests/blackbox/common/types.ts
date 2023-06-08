@@ -9,6 +9,7 @@ export type WebSocketResponse = {
 	type: string;
 	status?: string;
 	uid?: WebSocketUID;
+	event?: string;
 	[field: string]: any;
 };
 export type WebSocketDefaultOptions = {
@@ -90,4 +91,9 @@ export type WebSocketSubscriptionOptionsGql = {
 	 * Unique ID
 	 */
 	uid?: WebSocketUID;
+
+	/**
+	 * Event to subscribe
+	 */
+	event?: 'create' | 'update' | 'delete';
 };
