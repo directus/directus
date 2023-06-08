@@ -61,7 +61,7 @@ The `connection` variable will later contain a WebSocket instance.
 Finally, create event listeners which are triggered on the form submissions:
 
 ```js
-document.querySelector('#login').addEventListener('open', function(event) {
+document.querySelector('#login').addEventListener('submit', function(event) {
 	event.preventDefault();
 });
 
