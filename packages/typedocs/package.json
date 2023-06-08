@@ -12,7 +12,7 @@
 	"license": "MIT",
 	"author": "Connor Winston <connor@winston.guru",
 	"scripts": {
-		"build": "typedoc"
+		"typedocs": "typedoc --options ./typedoc.json"
 	},
 	"devDependencies": {
 		"typedoc": "^0.24.7",

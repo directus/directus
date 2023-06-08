@@ -9,12 +9,13 @@
         "../sdk",
         "../types",
         "../update-check",
-        "../utils",
         "../stores",
     ],
     "name": "Directus",
     "entryPointStrategy": "packages",
-    "includeVersion": true,
-    "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
-    "out": "./typedocs"
+    // "plugin": ["typedoc-plugin-markdown"],
+    "out": "./.typedocs",
+    "compilerOptions": {
+        "lib": ["es2022", "DOM"]
+    }
 }
