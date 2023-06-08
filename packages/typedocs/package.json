@@ -1,0 +1,14 @@
+{
+	"name": "@directus/typedocs",
+	"version": "0.0.1",
+	"description": "Directus TypeDocs Generator",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/typedocs"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Connor Winston <connor@winston.guru",
+}
