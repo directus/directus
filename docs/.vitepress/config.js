@@ -488,20 +488,24 @@ function sidebar() {
 							link: '/guides/headless-cms/reusable-components',
 						},
 						{
-							link: '/guides/headless-cms/schedule-content/index.html',
+							link: '/guides/headless-cms/schedule-content/',
 							text: 'Scheduling Future Content',
 						},
 						{
-							link: '/guides/headless-cms/trigger-static-builds/index.html',
+							link: '/guides/headless-cms/trigger-static-builds/',
 							text: 'Trigger Static Site Builds',
 						},
 						{
 							text: 'Build a Static Website',
-							link: '/guides/headless-cms/build-static-website/index.html',
+							link: '/guides/headless-cms/build-static-website/',
 						},
-            {
+						{
 							text: 'Set Up Live Preview',
-							link: '/guides/headless-cms/live-preview/index.html',
+							link: '/guides/headless-cms/live-preview/',
+						},
+						{
+							text: 'Content Translations (i18n)',
+							link: '/guides/headless-cms/content-translations',
 						},
 					],
 				},
