@@ -16,7 +16,7 @@ immediately updates all connected chats.
 You will need a Directus project. If you don’t already have one, the easiest way to get started is with our
 [managed Directus Cloud service](https://directus.cloud).
 
-Create a new collection called `Messages`, with `date_created` and `user_created` fields enabled in the _Optional System
+Create a new collection called `messages`, with `date_created` and `user_created` fields enabled in the _Optional System
 Fields_ pane on collection creation. Create a text field called `text`.
 
 Create a new Role called `Users`. Give Create and Read access to the `Messages` collection, and Read access to the
