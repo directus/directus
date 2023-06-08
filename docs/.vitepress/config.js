@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress';
-import TypeDocSidebar from '../typedocs/typedoc-sidebar.json';
+import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 
 export default defineConfig({
 	base: '/',
@@ -141,7 +141,7 @@ gtag('config', 'UA-24637628-7');
 		sidebar: {
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
-			'typedocs/': sidebarTypedocs(),
+			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
 			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
@@ -149,8 +149,40 @@ gtag('config', 'UA-24637628-7');
 	},
 });
 
+function typeDocSidebarFormat(item){
+
+	item.items = item.items.filter((subItem) => {
+		return subItem.link !== null || subItem.items.length > 0;
+	});
+
+	if(item.text.startsWith('@directus/')){
+		
+		item.items.unshift({
+			text: 'Overview',
+			link: `/packages/${item.text}/`,
+			items: [],
+			collapsed: true,
+		});
+	}
+
+	if(item.items.length > 0){
+		item.items.map((subItem) => {
+			return typeDocSidebarFormat(subItem);
+		});
+	} else {
+		delete item.items;
+		delete item.collapsed;
+	}
+
+	return item;
+}
+
 function sidebarTypedocs() {
-	return TypeDocSidebar;
+	const sidebar = TypeDocSidebar;
+
+	return sidebar.map((item) => {
+		return typeDocSidebarFormat(item);
+	});
 }
 
 function sidebar() {
@@ -559,53 +591,62 @@ function sidebar() {
 					text: 'Creating Extensions',
 				},
 				{
-					link: '/extensions/displays',
-					text: 'Displays',
+					text: "Types",
+					items: [
+						{
+							link: '/extensions/displays',
+							text: 'Displays',
+						},
+						{
+							link: '/extensions/email-templates',
+							text: 'Email Templates',
+						},
+						{
+							link: '/extensions/endpoints',
+							text: 'Endpoints',
+						},
+						{
+							link: '/extensions/hooks',
+							text: 'Hooks',
+						},
+						{
+							link: '/extensions/interfaces',
+							text: 'Interfaces',
+						},
+						{
+							link: '/extensions/layouts',
+							text: 'Layouts',
+						},
+						{
+							link: '/extensions/migrations',
+							text: 'Migrations',
+						},
+						{
+							link: '/extensions/modules',
+							text: 'Modules',
+						},
+						{
+							link: '/extensions/operations',
+							text: 'Operations',
+						},
+						{
+							link: '/extensions/panels',
+							text: 'Panels',
+						},
+						{
+							link: '/extensions/themes',
+							text: 'Themes',
+						},
+						{
+							link: '/extensions/bundles',
+							text: 'Bundles',
+						},
+					]
 				},
 				{
-					link: '/extensions/email-templates',
-					text: 'Email Templates',
-				},
-				{
-					link: '/extensions/endpoints',
-					text: 'Endpoints',
-				},
-				{
-					link: '/extensions/hooks',
-					text: 'Hooks',
-				},
-				{
-					link: '/extensions/interfaces',
-					text: 'Interfaces',
-				},
-				{
-					link: '/extensions/layouts',
-					text: 'Layouts',
-				},
-				{
-					link: '/extensions/migrations',
-					text: 'Migrations',
-				},
-				{
-					link: '/extensions/modules',
-					text: 'Modules',
-				},
-				{
-					link: '/extensions/operations',
-					text: 'Operations',
-				},
-				{
-					link: '/extensions/panels',
-					text: 'Panels',
-				},
-				{
-					link: '/extensions/themes',
-					text: 'Themes',
-				},
-				{
-					link: '/extensions/bundles',
-					text: 'Bundles',
-				},
+					text: "Packages",
+					link: '/packages/'
+				}
 			],
 		},
 		{

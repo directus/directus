@@ -48,4 +48,4 @@ TODO
 *.db
 ts-errors.yaml
 
-.typedocs
+/docs/packages

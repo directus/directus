@@ -2,9 +2,9 @@
 	"name": "docs",
 	"private": true,
 	"scripts": {
-		"build": "vitepress build",
-		"dev": "vitepress dev",
-		"preview": "vitepress preview",
+		"build": "pnpm -r typedocs && vitepress build",
+		"dev": "pnpm -r typedocs && vitepress dev",
+		"preview": "pnpm -r typedocs && vitepress preview",
 		"spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
 		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
 	},
