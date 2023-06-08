@@ -1455,6 +1455,36 @@ importers:
 
   packages/typedocs:
     devDependencies:
+      '@directus/composables':
+        specifier: workspace:*
+        version: link:../composables
+      '@directus/constants':
+        specifier: workspace:*
+        version: link:../constants
+      '@directus/exceptions':
+        specifier: workspace:*
+        version: link:../exceptions
+      '@directus/extensions-sdk':
+        specifier: workspace:*
+        version: link:../extensions-sdk
+      '@directus/pressure':
+        specifier: workspace:*
+        version: link:../pressure
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
+      '@directus/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@directus/stores':
+        specifier: workspace:*
+        version: link:../stores
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      '@directus/update-check':
+        specifier: workspace:*
+        version: link:../update-check
       typedoc:
         specifier: ^0.24.7
         version: 0.24.7(typescript@5.0.4)
