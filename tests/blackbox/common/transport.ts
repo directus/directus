@@ -223,8 +223,6 @@ export function createWebSocketConn(host: string, config?: WebSocketOptions) {
 		conn.on('message', (data) => {
 			const message: WebSocketResponse = JSON.parse(data.toString());
 
-			// console.dir({ message });
-
 			if (config?.respondToPing !== false && message.type === 'ping') {
 				conn.send(JSON.stringify({ type: 'pong' }));
 				return;
