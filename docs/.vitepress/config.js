@@ -596,7 +596,11 @@ function sidebar() {
 					text: 'Creating Extensions',
 				},
 				{
-					text: "Types",
+					text: "Packages",
+					link: '/packages/'
+				},
+				{
+					text: "Extension Types",
 					items: [
 						{
 							link: '/extensions/displays',
@@ -647,10 +651,6 @@ function sidebar() {
 							text: 'Bundles',
 						},
 					]
-				},
-				{
-					text: "Packages",
-					link: '/packages/'
 				}
 			],
 		},
