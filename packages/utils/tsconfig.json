@@ -7,5 +7,12 @@
 		{ "path": "./browser/tsconfig.json" },
 		{ "path": "./node/tsconfig.json" },
 		{ "path": "./shared/tsconfig.json" }
-	]
+	],
+	"typedocOptions": {
+        "entryPoints": [
+			"./browser",
+			"./node",
+			"./shared"
+		]
+    }
 }

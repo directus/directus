@@ -15,6 +15,6 @@
     "name": "Directus",
     "entryPointStrategy": "packages",
     "includeVersion": true,
-    // "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+    "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
     "out": "./typedocs"
 }

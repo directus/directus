@@ -2,5 +2,8 @@
 	"extends": "@directus/tsconfig/node18-esm.json",
 	"compilerOptions": {
 		"lib": ["es2022", "DOM"]
-	}
+	},
+	"typedocOptions": {
+        "entryPoints": ["./src"]
+    }
 }

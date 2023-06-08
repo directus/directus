@@ -489,7 +489,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   app:
     devDependencies:
@@ -944,7 +944,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/constants:
     dependencies:
@@ -987,7 +987,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/data-driver-postgres:
     devDependencies:
@@ -1005,7 +1005,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/exceptions:
     devDependencies:
@@ -1029,7 +1029,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/extensions-sdk:
     dependencies:
@@ -1120,7 +1120,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/pressure:
     dependencies:
@@ -1145,7 +1145,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/random:
     devDependencies:
@@ -1166,7 +1166,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/release-notes-generator:
     dependencies:
@@ -1197,7 +1197,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/schema:
     dependencies:
@@ -1275,7 +1275,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1303,7 +1303,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1334,7 +1334,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1362,7 +1362,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-local:
     dependencies:
@@ -1387,7 +1387,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-s3:
     dependencies:
@@ -1424,7 +1424,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/stores:
     dependencies:
@@ -1452,6 +1452,18 @@ importers:
         version: 5.0.4
 
   packages/tsconfig: {}
+
+  packages/typedocs:
+    devDependencies:
+      typedoc:
+        specifier: ^0.24.7
+        version: 0.24.7(typescript@5.0.4)
+      typedoc-plugin-markdown:
+        specifier: 4.0.0-next.13
+        version: 4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7)
+      typedoc-vitepress-theme:
+        specifier: 1.0.0-next.0
+        version: 1.0.0-next.0(typedoc-plugin-markdown@4.0.0-next.13)
 
   packages/types:
     devDependencies:
@@ -1588,7 +1600,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   tests/blackbox:
     devDependencies:
@@ -8229,7 +8241,7 @@ packages:
       magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.3
-      vitest: 0.31.1(jsdom@22.0.0)
+      vitest: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
     dev: true
 
   /@vitest/expect@0.31.1:
@@ -14380,6 +14392,10 @@ packages:
     engines: {node: '>=16.14'}
     dev: true
 
+  /lunr@2.3.9:
+    resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
+    dev: true
+
   /luxon@3.3.0:
     resolution: {integrity: sha512-An0UCfG/rSiqtAIiBPO0Y9/zAnHUZxAMiCpTd5h2smgsj7GGmcenvrvww2cqNA8/4A5ZrD1gJpHN2mIHZQF+Mg==}
     engines: {node: '>=12'}
@@ -14555,6 +14571,12 @@ packages:
       react: '>= 0.14.0'
     dependencies:
       react: 18.0.0
+    dev: true
+
+  /marked@4.3.0:
+    resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
+    engines: {node: '>= 12'}
+    hasBin: true
     dev: true
 
   /marked@5.0.2:
@@ -19660,6 +19682,38 @@ packages:
 
   /typedarray@0.0.7:
     resolution: {integrity: sha512-ueeb9YybpjhivjbHP2LdFDAjbS948fGEPj+ACAMs4xCMmh72OCOMQWBQKlaN4ZNQ04yfLSDLSx1tGRIoWimObQ==}
+
+  /typedoc-plugin-markdown@4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7):
+    resolution: {integrity: sha512-ZOcLsJoGN4QI5x1iS2M5lj6bA3MABf6hA183W1KebbxcBA+SFr+XIu73Uovv3SiwqPa+viBftLzkZlLyA6J9bg==}
+    peerDependencies:
+      prettier: '>=1.8.0'
+      typedoc: '>=0.24.0'
+    dependencies:
+      prettier: 2.8.8
+      typedoc: 0.24.7(typescript@5.0.4)
+    dev: true
+
+  /typedoc-vitepress-theme@1.0.0-next.0(typedoc-plugin-markdown@4.0.0-next.13):
+    resolution: {integrity: sha512-MWhNL+u5iLrg7RlHWjgWGmDuvMVHMQ67FkNVHBXHu5YVGdEUZZbosl7vONYy/KU8TaJ8+AesoHV89dywaOSaLA==}
+    peerDependencies:
+      typedoc-plugin-markdown: '>=4.0.0-next.11'
+    dependencies:
+      typedoc-plugin-markdown: 4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7)
+    dev: true
+
+  /typedoc@0.24.7(typescript@5.0.4):
+    resolution: {integrity: sha512-zzfKDFIZADA+XRIp2rMzLe9xZ6pt12yQOhCr7cD7/PBTjhPmMyMvGrkZ2lPNJitg3Hj1SeiYFNzCsSDrlpxpKw==}
+    engines: {node: '>= 14.14'}
+    hasBin: true
+    peerDependencies:
+      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x
+    dependencies:
+      lunr: 2.3.9
+      marked: 4.3.0
+      minimatch: 9.0.1
+      shiki: 0.14.2
+      typescript: 5.0.4
+    dev: true
 
   /typescript@5.0.4:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
