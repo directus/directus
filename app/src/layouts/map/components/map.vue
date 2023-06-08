@@ -7,6 +7,11 @@
 </template>
 
 <script setup lang="ts">
+import { useSettingsStore } from '@/stores/settings';
+import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
+import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
+import { useAppStore } from '@directus/stores';
+import { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import maplibre, {
@@ -25,12 +30,6 @@ import maplibre, {
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { WatchStopHandle, computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-import { useAppStore } from '@/stores/app';
-import { useSettingsStore } from '@/stores/settings';
-import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
-import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
-import { ShowSelect } from '@directus/types';
 
 const props = withDefaults(
 	defineProps<{

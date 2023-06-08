@@ -1,11 +1,11 @@
 import { setLanguage } from '@/lang/set-language';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { useUserStore } from '@/stores/user';
+import { useAppStore } from '@directus/stores';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { useUserStore } from '@/stores/user';
-import { useServerStore } from '@/stores/server';
-import { useSettingsStore } from '@/stores/settings';
-import { useAppStore } from '@/stores/app';
 
 import { hydrate } from './hydrate';
 import { defaultBasemap } from './utils/geometry/basemap';

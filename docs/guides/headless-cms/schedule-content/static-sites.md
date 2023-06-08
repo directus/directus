@@ -66,9 +66,9 @@ field `status` that controls the published state.
 
 3. [Add a new field](/app/data-model/fields#create-a-field-standard) to your content Collection.
 
-   ![The interface for creating a new field is shown. The field type Datetime is selected. The Key is named date_published. The field for Use 24-Hour format is checked.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-publish-date.webp)
+   ![The interface for creating a new field is shown. The field type Datetime is selected. The Key is named date_published. The field for Use 24-Hour format is checked.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-publish-date-timestamp.webp)
 
-   a. Choose **Datetime** for the Type.
+   a. Choose **Timestamp** for the Type.
 
    b. For the Key, use something relevant like `date_published`.
 
@@ -98,8 +98,8 @@ field `status` that controls the published state.
 
    ![Under the Creating New Flow interface, the Trigger Setup tab is shown. The selected trigger is Schedule(CRON). The Interval field has a value of "* 15 * * * *".](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-trigger.webp)
 
-   a. For **Type**, Select [Schedule (CRON)](/app/flows/triggers#schedule-cron). This will trigger this flow
-   at regular intervals of time.
+   a. For **Type**, Select [Schedule (CRON)](/app/flows/triggers#schedule-cron). This will trigger this flow at regular
+   intervals of time.
 
    b. Add your **Interval** in proper CRON syntax.
 
@@ -133,7 +133,7 @@ field `status` that controls the published state.
 
    ```json
    {
-   	"status": "published"
+     "status": "published"
    }
    ```
 
@@ -141,20 +141,20 @@ field `status` that controls the published state.
 
    ```json
    {
-   	"filter": {
-   		"_and": [
-   			{
-   				"status": {
-   					"_eq": "scheduled"
-   				}
-   			},
-   			{
-   				"date_published": {
-   					"_lte": "$NOW"
-   				}
-   			}
-   		]
-   	}
+     "filter": {
+       "_and": [
+         {
+           "status": {
+             "_eq": "scheduled"
+           }
+         },
+         {
+           "date_published": {
+             "_lte": "$NOW"
+           }
+         }
+       ]
+     }
    }
    ```
 
@@ -171,7 +171,6 @@ If you haven't already, you'll want to configure one of the recipes below.
 
 - [Triggering a static site build at Netlify](/guides/headless-cms/trigger-static-builds/netlify)
 - [Triggering a static site build at Vercel](/guides/headless-cms/trigger-static-builds/vercel)
-
 
 You checked Emit Events in the Operation during Step 7. This will emit an `item.update` event which is a trigger for the
 Flows in the recipes above.

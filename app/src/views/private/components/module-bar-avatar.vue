@@ -52,10 +52,10 @@
 
 <script setup lang="ts">
 import { addTokenToURL } from '@/api';
-import { useAppStore } from '@/stores/app';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
+import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { Ref, computed, ref } from 'vue';
