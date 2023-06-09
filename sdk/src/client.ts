@@ -6,12 +6,14 @@ export interface DirectusClientConfig {
 	token?: string;
 }
 
-export interface DirectusClient<Schema extends object = any, _Features extends object = any> {
+export interface DirectusClient<Schema extends object = any, _Features = null> {
 	config: DirectusClientConfig;
 	exec: <InputType extends InputTypes, OutputType extends OutputTypes>(
 		command: Command<InputType, OutputType, DirectusClient, Schema>
 	) => Promise<OutputType>;
-	use: <T extends DirectusClient<Schema, _Features>>(feature: (client: DirectusClient<Schema, _Features>) => T) => T;
+	use: <G>(
+		feature: (client: DirectusClient<Schema, _Features>) => DirectusClient<Schema, G>
+	) => DirectusClient<Schema, G>;
 }
 
 type InputTypes = ReadItemsInput<any>;

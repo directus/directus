@@ -34,10 +34,10 @@ import type { DirectusClient } from '../client.js';
 // 	return newClient;
 // };
 
-export function withWebSocket<S extends object, T, F>(_cfg: any) {
-	return (client: T) => {
+export function withWebSocket(_cfg: any) {
+	return <S extends object, F>(client: DirectusClient<S, F>) => {
 		console.log('ws');
-		return client as DirectusClient<S, F & { websocket: true }>;
+		return client as DirectusClient<S, F extends null ? 'WebSocket' : F | 'WebSocket'>;
 	};
 }
 
@@ -46,11 +46,11 @@ export function withHttpAuthentication() {}
 
 export function withWebSocketAuthentication() {}
 
-export function withGraphQL(client: DirectusClient, _cfg: any) {
-	// return {
-	// 	name: 'gql',
-	// 	register: () => console.log('gql'),
-	// };
+export function withGraphQL(_cfg: any) {
+	return <S extends object, F>(client: DirectusClient<S, F>) => {
+		console.log('gql');
+		return client as DirectusClient<S, F extends null ? 'GraphQL' : F | 'GraphQL'>;
+	};
 }
 
 export function withSubscriptions() {}

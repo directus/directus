@@ -65,13 +65,19 @@ const client = withSubscriptions(withGraphQL(client, {
 /**
  * EXPERIMENT 3: Composing features using a chainable `.use` function
  */
-const client = useDirectus<MySchema>({ url: 'http://localhost:8056' })
-	.use(withWebSocket({
+const client = useDirectus<MySchema>({ url: 'http://localhost:8056' });
+
+const client2 = client.use(
+	withWebSocket({
 		url: 'ws://localhost:8056/',
-	}))
-	// .use(withGraphQL({
-	// 	path: '/graphql'
-	// }))
+	})
+);
+
+const client3 = client2.use(
+	withGraphQL({
+		path: '/graphql',
+	})
+);
 
 // const wsClient = withWebSocket(client, {
 // 	url: 'ws://localhost:8056/',
@@ -124,7 +130,6 @@ const result = await readItems(client, { collection: 'test' })
 // client.socket(readItems());
 
 // client.exec(subscribe());
-
 
 // const client = withWebSockets(client);
 // client.subscribe(readItems());
