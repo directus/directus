@@ -6,22 +6,27 @@ export interface DirectusClientConfig {
 	token?: string;
 }
 
-export interface DirectusClient<Schema extends object = any> {
+export interface DirectusClient<Schema extends object = any, _Features extends object = any> {
 	config: DirectusClientConfig;
 	exec: <InputType extends InputTypes, OutputType extends OutputTypes>(
 		command: Command<InputType, OutputType, DirectusClient, Schema>
 	) => Promise<OutputType>;
+	use: <T extends DirectusClient<Schema, _Features>>(feature: (client: DirectusClient<Schema, _Features>) => T) => T;
 }
 
 type InputTypes = ReadItemsInput<any>;
 type OutputTypes = ReadItemsOutput<any, any>;
 
-export const useDirectus = <Schema extends object = any>(config: DirectusClientConfig) => {
+export const useDirectus = <Schema extends object>(config: DirectusClientConfig) => {
 	const exec: DirectusClient<Schema>['exec'] = async (command) => {
 		return await command(client);
 	};
 
-	const client: DirectusClient<Schema> = { config, exec };
+	const use: DirectusClient<Schema>['use'] = (callback) => {
+		return callback(client);
+	};
+
+	const client: DirectusClient<Schema> = { config, exec, use };
 
 	return client;
 };
