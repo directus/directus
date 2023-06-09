@@ -1,7 +1,7 @@
 <template>
 	<header ref="headerEl" class="header-bar" :class="{ collapsed, small, shadow }">
-		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')">
-			<v-icon :name="primaryActionIcon" />
+		<v-button secondary class="nav-toggle" icon rounded @click="navbarOpen = !navbarOpen">
+			<v-icon name="menu" />
 		</v-button>
 
 		<div v-if="$slots['title-outer:prepend']" class="title-outer-prepend">
@@ -30,7 +30,7 @@
 
 		<slot name="actions:prepend" />
 
-		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
+		<header-bar-actions :show-sidebar-toggle="showSidebarToggle">
 			<slot name="actions" />
 		</header-bar-actions>
 
@@ -39,27 +39,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { useAppStore } from '@directus/stores';
+import { storeToRefs } from 'pinia';
+import { onMounted, onUnmounted, ref } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
+
+const appStore = useAppStore();
+
+const { navbarOpen } = storeToRefs(appStore);
 
 withDefaults(
 	defineProps<{
 		title?: string;
 		showSidebarToggle?: boolean;
-		primaryActionIcon?: string;
 		small?: boolean;
 		shadow?: boolean;
 	}>(),
 	{
-		primaryActionIcon: 'menu',
 		shadow: true,
 	}
 );
-
-defineEmits<{
-	(e: 'primary'): void;
-	(e: 'toggle:sidebar'): void;
-}>();
 
 const headerEl = ref<Element>();
 

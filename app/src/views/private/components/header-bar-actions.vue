@@ -12,7 +12,7 @@
 				rounded
 				secondary
 				outlined
-				@click="$emit('toggle:sidebar')"
+				@click="sidebarOpen = !sidebarOpen"
 			>
 				<v-icon name="info" />
 			</v-button>
@@ -23,15 +23,17 @@
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from '@directus/stores';
+import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 
 defineProps<{
 	showSidebarToggle?: boolean;
 }>();
 
-defineEmits<{
-	(e: 'toggle:sidebar'): void;
-}>();
+const appStore = useAppStore();
+
+const { sidebarOpen } = storeToRefs(appStore);
 
 const active = ref(false);
 </script>
