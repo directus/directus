@@ -1546,7 +1546,7 @@ importers:
         specifier: ^2.6.4
         version: 2.6.4
       '@types/ws':
-        specifier: 8.5.5
+        specifier: ^8.5.5
         version: 8.5.5
       '@vitest/coverage-c8':
         specifier: 0.31.1
@@ -1563,6 +1563,9 @@ importers:
       vitest:
         specifier: 0.31.1
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+      ws:
+        specifier: ^8.13.0
+        version: 8.13.0
 
   tests/blackbox:
     devDependencies:
