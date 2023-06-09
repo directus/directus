@@ -93,33 +93,32 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { Filter } from '@directus/types';
-import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { computed, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useActivityModuleStore } from '../store';
 
-const props = defineProps<{
-	filter?: Filter;
-}>();
+const activityModuleStore = useActivityModuleStore();
 
-const emit = defineEmits(['update:filter']);
+const { roleFilter } = storeToRefs(activityModuleStore);
 
 const { t } = useI18n();
 
 const userStore = useUserStore();
 const currentUserID = computed(() => userStore.currentUser?.id);
 
-const filterField = computed(() => Object.keys(props.filter ?? {})[0] ?? null);
-const filterValue = computed(() => Object.values(props.filter ?? {})[0]?._eq ?? null);
+const filterField = computed(() => Object.keys(unref(roleFilter) ?? {})[0] ?? null);
+const filterValue = computed(() => Object.values(unref(roleFilter) ?? {})[0]?._eq ?? null);
 
-function setNavFilter(key: string, value: any) {
-	emit('update:filter', {
+const setNavFilter = (key: string, value: any) => {
+	roleFilter.value = {
 		[key]: {
 			_eq: value,
 		},
-	});
-}
+	};
+};
 
-function clearNavFilter() {
-	emit('update:filter', null);
-}
+const clearNavFilter = () => {
+	roleFilter.value = null;
+};
 </script>
