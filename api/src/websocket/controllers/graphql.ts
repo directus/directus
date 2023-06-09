@@ -55,7 +55,7 @@ export class GraphQLSubscriptionController extends SocketController {
 					client.on('parsed-message', async (message: WebSocketMessage) => {
 						try {
 							if (getMessageType(message) === 'connection_init' && this.authentication.mode !== 'strict') {
-								const params = ConnectionParams.parse(message['payload']);
+								const params = ConnectionParams.parse(message['payload'] ?? {});
 
 								if (this.authentication.mode === 'handshake') {
 									if (typeof params.access_token === 'string') {
