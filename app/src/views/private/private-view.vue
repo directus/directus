@@ -444,6 +444,7 @@ function getWidth(input: unknown, fallback: number): number {
 		font-size: 15px;
 		line-height: 24px;
 
+		.content-wrapper,
 		main {
 			display: contents;
 		}
