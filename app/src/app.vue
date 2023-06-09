@@ -14,7 +14,13 @@
 			</template>
 		</v-info>
 
-		<router-view v-else-if="!hydrating" />
+		<template v-else-if="!hydrating">
+			<component :is="view" v-if="view">
+				<router-view />
+			</component>
+
+			<router-view v-else />
+		</template>
 
 		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
@@ -29,7 +35,11 @@ import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { StyleValue, computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import PrivateView from './views/private/private-view.vue';
+import PublicView from './views/public/public-view.vue';
+import SharedView from './views/shared/shared-view.vue';
 
 const { t } = useI18n();
 
@@ -38,6 +48,23 @@ const userStore = useUserStore();
 const serverStore = useServerStore();
 
 const { hydrating } = toRefs(appStore);
+
+const route = useRoute();
+
+const view = computed(() => {
+	const name = route.meta.view;
+
+	switch (name) {
+		case 'public':
+			return PublicView;
+		case 'shared':
+			return SharedView;
+		case 'private':
+			return PrivateView;
+		default:
+			return null;
+	}
+});
 
 const brandStyle = computed(() => {
 	return {
