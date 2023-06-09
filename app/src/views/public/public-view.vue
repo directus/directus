@@ -26,7 +26,15 @@
 				<slot />
 			</div>
 			<div class="notice">
-				<router-view name="notice" />
+				<div v-if="authenticated">
+					<v-icon name="lock_open" left />
+					{{ t('authenticated') }}
+				</div>
+
+				<div v-else>
+					<v-icon name="lock" left />
+					{{ logoutMessage }}
+				</div>
 			</div>
 		</div>
 		<div class="art" :style="artStyles">
@@ -68,16 +76,32 @@
 import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
 import { getTheme } from '@/utils/get-theme';
+import { useAppStore } from '@directus/stores';
 import { cssVar } from '@directus/utils/browser';
 import Color from 'color';
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { computed, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 const { t } = useI18n();
 const serverStore = useServerStore();
 
 const { info } = storeToRefs(serverStore);
+
+const appStore = useAppStore();
+
+const { authenticated } = storeToRefs(appStore);
+
+const route = useRoute();
+
+const logoutReason = computed(() => route.query.reason);
+
+const logoutMessage = computed(() => {
+	return unref(logoutReason) && te(`logoutReason.${unref(logoutReason)}`)
+		? t(`logoutReason.${unref(logoutReason)}`)
+		: t('not_authenticated');
+});
 
 const colors = computed(() => {
 	const primary = info.value?.project?.project_color || 'var(--primary)';
