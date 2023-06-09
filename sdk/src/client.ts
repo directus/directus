@@ -5,11 +5,15 @@ import type { Command } from './types/index.js';
 export interface BaseClientConfig extends Record<string, any> {
 	fetch: fetch;
 	ws: typeof WebSocket;
+	staticToken?: string;
 }
 
 export interface GenericClient<Schema extends object, Features extends object> {
 	// baseUrl: string;
-	// token: string | null;
+	token: {
+		access?: string;
+		refresh?: string;
+	};
 	config: BaseClientConfig;
 
 	// exec: <InputType extends InputTypes, OutputType extends OutputTypes>(
@@ -45,6 +49,9 @@ export const useDirectus = <Schema extends object>(
 
 	return {
 		config,
+		token: {
+			access: config.staticToken,
+		},
 		use(feature) {
 			const extra = feature(this);
 			return extendClient(this, extra);

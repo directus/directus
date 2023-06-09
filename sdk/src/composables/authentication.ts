@@ -19,6 +19,11 @@ interface AuthClient {
 	refresh(): void;
 }
 
+interface AuthStorage {
+	access_token?: string;
+	refresh_token?: string;
+}
+
 export function Authentication(cfg: AuthConfig = {}) {
 	return <Client extends DirectusClient>(_client: Client): AuthClient => {
 		const authClient: AuthClient = {
