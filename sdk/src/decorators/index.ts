@@ -1,4 +1,4 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient, DirectusClientConfig } from '../client.js';
 
 // export type WebSocketClientConfig = {
 // 	url: string;
@@ -34,10 +34,15 @@ import type { DirectusClient } from '../client.js';
 // 	return newClient;
 // };
 
+interface WebSocketClient {
+	websocket: any;
+	subscribe(collection: string): void;
+}
+
 export function withWebSocket(_cfg: any) {
-	return <S extends object, F>(client: DirectusClient<S, F>) => {
+	return <S extends object, F extends object>(client: DirectusClient<S, F>) => {
 		console.log('ws');
-		return client as DirectusClient<S, F extends null ? 'WebSocket' : F | 'WebSocket'>;
+		return client as unknown as DirectusClient<S, F & WebSocketClient>;
 	};
 }
 
@@ -46,13 +51,19 @@ export function withHttpAuthentication() {}
 
 export function withWebSocketAuthentication() {}
 
+interface GraphQLClient {
+	graphql(query: string): any;
+}
+
 export function withGraphQL(_cfg: any) {
-	return <S extends object, F>(client: DirectusClient<S, F>) => {
+	return <S extends object, F extends object>(client: DirectusClient<S, F>) => {
 		console.log('gql');
-		return client as DirectusClient<S, F extends null ? 'GraphQL' : F | 'GraphQL'>;
+		return client as unknown as DirectusClient<S, F & GraphQLClient>;
 	};
 }
 
 export function withSubscriptions() {}
 
 export function withPagination() {}
+
+export type AddFeature<F, N> = F extends {} ? N : F & N;

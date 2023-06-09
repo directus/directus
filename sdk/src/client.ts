@@ -6,15 +6,33 @@ export interface DirectusClientConfig {
 	token?: string;
 }
 
-export interface DirectusClient<Schema extends object = any, _Features = null> {
+export interface GenericClient<Schema extends object, Features extends object> {
 	config: DirectusClientConfig;
 	exec: <InputType extends InputTypes, OutputType extends OutputTypes>(
 		command: Command<InputType, OutputType, DirectusClient, Schema>
 	) => Promise<OutputType>;
-	use: <G>(
-		feature: (client: DirectusClient<Schema, _Features>) => DirectusClient<Schema, G>
+	use: <G extends Features>(
+		feature: (client: DirectusClient<Schema, Features>) => DirectusClient<Schema, G>
 	) => DirectusClient<Schema, G>;
 }
+
+// idk just a better name xD
+export type BaseClient = Record<string, never>;
+
+export type DirectusClient<
+	Schema extends object = any,
+	Features extends object = BaseClient
+> = GenericClient<Schema, Features> & Features;
+
+//  {
+// 	config: Config;
+// 	exec: <InputType extends InputTypes, OutputType extends OutputTypes>(
+// 		command: Command<InputType, OutputType, DirectusClient, Schema>
+// 	) => Promise<OutputType>;
+// 	use: <G>(
+// 		feature: (client: DirectusClient<Schema, _Features>) => DirectusClient<Schema, G>
+// 	) => DirectusClient<Schema, G>;
+// } & _Features
 
 type InputTypes = ReadItemsInput<any>;
 type OutputTypes = ReadItemsOutput<any, any>;
