@@ -8196,6 +8196,12 @@ packages:
     resolution: {integrity: sha512-zcsf4oHeEcvpvWhDOB1+qNK04oFJtsmv7Otb1Vy8w8GAqQkgRrVkI/C76PdwtpiT216aM1SbhkKgKWzGLhHKng==}
     dev: true
 
+  /@types/writable-consumable-stream@2.0.0:
+    resolution: {integrity: sha512-9pnn3oI+VrFhyp5l8frOvAaK+CS3K34kSJT4+8upBeTWeaMSxkSSyIGM6hVcRx0M1VuStKH3xjMKVLBGCzPgfw==}
+    dependencies:
+      '@types/consumable-stream': 2.0.0
+    dev: true
+
   /@types/ws@8.5.4:
     resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
     dependencies:
