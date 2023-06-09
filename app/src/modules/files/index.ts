@@ -10,7 +10,7 @@ export default defineModule({
 	routes: [
 		{
 			name: 'files-collection',
-			path: '',
+			path: '/files/',
 			component: Collection,
 			children: [
 				{
@@ -24,17 +24,17 @@ export default defineModule({
 		},
 		{
 			name: 'files-item',
-			path: ':primaryKey',
+			path: '/files/:primaryKey',
 			component: Item,
 			props: true,
 		},
 		{
-			path: 'folders',
+			path: '/folders',
 			redirect: '/files',
 		},
 		{
 			name: 'folders-collection',
-			path: 'folders/:folder',
+			path: '/files/folders/:folder',
 			component: Collection,
 			props: true,
 			children: [
@@ -48,21 +48,21 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'all',
+			path: '/files/all',
 			component: Collection,
 			props: {
 				special: 'all',
 			},
 		},
 		{
-			path: 'mine',
+			path: '/files/mine',
 			component: Collection,
 			props: {
 				special: 'mine',
 			},
 		},
 		{
-			path: 'recent',
+			path: '/files/recent',
 			component: Collection,
 			props: {
 				special: 'recent',

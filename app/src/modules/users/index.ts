@@ -9,28 +9,28 @@ export default defineModule({
 	routes: [
 		{
 			name: 'users-collection',
-			path: '',
+			path: '/users/',
 			component: Collection,
 		},
 		{
 			name: 'users-item',
-			path: ':primaryKey',
+			path: '/users/:primaryKey',
 			component: Item,
 			props: true,
 		},
 		{
-			path: 'roles',
+			path: '/roles',
 			redirect: '/users',
 		},
 		{
 			name: 'roles-collection',
-			path: 'roles/:role',
+			path: '/users/roles/:role',
 			component: Collection,
 			props: true,
 		},
 		{
 			name: 'roles-item-add',
-			path: 'roles/:role/+',
+			path: '/users/roles/:role/+',
 			component: Item,
 			props: (route) => ({
 				primaryKey: '+',

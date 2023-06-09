@@ -92,7 +92,7 @@ export default defineModule({
 	routes: [
 		{
 			name: 'no-collections',
-			path: '',
+			path: '/content',
 			component: NoCollections,
 			beforeEnter() {
 				const collectionsStore = useCollectionsStore();
@@ -149,7 +149,7 @@ export default defineModule({
 			},
 		},
 		{
-			path: ':collection',
+			path: '/content/:collection',
 			component: RouterPass,
 			children: [
 				{
@@ -168,7 +168,7 @@ export default defineModule({
 				},
 				{
 					name: 'content-item',
-					path: ':primaryKey',
+					path: '/:primaryKey',
 					component: Item,
 					props: true,
 					beforeEnter: checkForSystem,
@@ -177,13 +177,13 @@ export default defineModule({
 		},
 		{
 			name: 'content-item-preview',
-			path: ':collection/:primaryKey/preview',
+			path: '/content/:collection/:primaryKey/preview',
 			component: Preview,
 			props: true,
 		},
 		{
 			name: 'content-item-not-found',
-			path: ':_(.+)+',
+			path: '/content/:_(.+)+',
 			component: ItemNotFound,
 			beforeEnter: checkForSystem,
 		},

@@ -33,16 +33,16 @@ export default defineModule({
 	routes: [
 		{
 			name: 'settings-data-model-redirect',
-			path: '',
+			path: '/settings/',
 			redirect: '/settings/data-model',
 		},
 		{
 			name: 'settings-project',
-			path: 'project',
+			path: '/settings/project',
 			component: Project,
 		},
 		{
-			path: 'data-model',
+			path: '/settings/data-model',
 			component: RouterPass,
 			children: [
 				{
@@ -65,7 +65,7 @@ export default defineModule({
 				},
 				{
 					name: 'settings-fields',
-					path: ':collection',
+					path: '/:collection',
 					component: Fields,
 					async beforeEnter(to) {
 						const collectionsStore = useCollectionsStore();
@@ -92,7 +92,7 @@ export default defineModule({
 					}),
 					children: [
 						{
-							path: ':field',
+							path: '/:field',
 							name: 'settings-fields-field',
 							components: {
 								field: FieldDetail,
@@ -103,7 +103,7 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'roles',
+			path: '/settings/roles',
 			component: RouterPass,
 			children: [
 				{
@@ -150,7 +150,7 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'presets',
+			path: '/settings/presets',
 			component: RouterPass,
 			children: [
 				{
@@ -167,7 +167,7 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'webhooks',
+			path: '/settings/webhooks',
 			component: RouterPass,
 			children: [
 				{
@@ -184,7 +184,7 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'flows',
+			path: '/settings/flows',
 			component: RouterPass,
 			children: [
 				{
@@ -220,7 +220,7 @@ export default defineModule({
 			],
 		},
 		{
-			path: 'translations',
+			path: '/settings/translations',
 			component: RouterPass,
 			children: [
 				{
@@ -238,7 +238,7 @@ export default defineModule({
 		},
 		{
 			name: 'settings-not-found',
-			path: ':_(.+)+',
+			path: '/settings/:_(.+)+',
 			component: NotFound,
 		},
 	],

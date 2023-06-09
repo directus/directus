@@ -11,10 +11,12 @@
 		show-select="none"
 		collection="directus_activity"
 	>
-		<private-view
+		<header-bar
+			ref="headerBarEl"
+			:small="currentLayout?.smallHeader"
+			:shadow="currentLayout?.headerShadow"
+			show-sidebar-toggle
 			:title="t('activity_feed')"
-			:small-header="currentLayout?.smallHeader"
-			:header-shadow="currentLayout?.headerShadow"
 		>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" rounded disabled icon secondary>
@@ -29,28 +31,25 @@
 			<template #actions>
 				<search-input v-model="search" v-model:filter="filter" collection="directus_activity" />
 			</template>
+		</header-bar>
 
-			<template #navigation>
-				<activity-navigation v-model:filter="roleFilter" />
+		<component :is="`layout-${layout}`" v-bind="layoutState">
+			<template #no-results>
+				<v-info :title="t('no_results')" icon="search" center>
+					{{ t('no_results_copy') }}
+				</v-info>
 			</template>
 
-			<component :is="`layout-${layout}`" v-bind="layoutState">
-				<template #no-results>
-					<v-info :title="t('no_results')" icon="search" center>
-						{{ t('no_results_copy') }}
-					</v-info>
-				</template>
+			<template #no-items>
+				<v-info :title="t('item_count', 0)" icon="access_time" center>
+					{{ t('no_items_copy') }}
+				</v-info>
+			</template>
+		</component>
 
-				<template #no-items>
-					<v-info :title="t('item_count', 0)" icon="access_time" center>
-						{{ t('no_items_copy') }}
-					</v-info>
-				</template>
-			</component>
+		<router-view name="detail" :primary-key="primaryKey" />
 
-			<router-view name="detail" :primary-key="primaryKey" />
-
-			<template #sidebar>
+		<!-- <template #sidebar>
 				<sidebar-detail icon="info" :title="t('information')" close>
 					<div v-md="t('page_help_activity_collection')" class="page-description" />
 				</sidebar-detail>
@@ -58,26 +57,26 @@
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
-			</template>
-		</private-view>
+			</template> -->
 	</component>
 </template>
 
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
+import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ActivityNavigation from '../components/navigation.vue';
+import { useActivityModuleStore } from '../store';
 
 defineProps<{
 	primaryKey?: string;
 }>();
+
+const activityModuleStore = useActivityModuleStore();
 
 const { t } = useI18n();
 
@@ -87,7 +86,7 @@ const { layoutWrapper } = useLayout(layout);
 
 const currentLayout = useExtension('layout', layout);
 
-const roleFilter = ref<Filter | null>(null);
+const { roleFilter } = storeToRefs(activityModuleStore);
 </script>
 
 <style lang="scss" scoped>

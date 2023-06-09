@@ -11,12 +11,12 @@ export default defineModule({
 	routes: [
 		{
 			name: 'insights-overview',
-			path: '',
+			path: '/insights/',
 			component: InsightsOverview,
 		},
 		{
 			name: 'insights-dashboard',
-			path: ':primaryKey',
+			path: '/insights/:primaryKey',
 			component: InsightsDashboard,
 			props: true,
 			beforeEnter(to) {
@@ -27,7 +27,7 @@ export default defineModule({
 			children: [
 				{
 					name: 'panel-detail',
-					path: ':panelKey',
+					path: '/:panelKey',
 					props: true,
 					components: {
 						detail: InsightsPanelConfiguration,

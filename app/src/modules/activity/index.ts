@@ -1,4 +1,5 @@
 import { defineModule } from '@directus/utils';
+import ActivityNavigation from './components/navigation.vue';
 import ActivityCollection from './routes/collection.vue';
 import ActivityItem from './routes/item.vue';
 
@@ -10,13 +11,19 @@ export default defineModule({
 	routes: [
 		{
 			name: 'activity-collection',
-			path: '',
-			component: ActivityCollection,
+			path: '/activity',
+			components: {
+				default: ActivityCollection,
+				navigation: ActivityNavigation,
+			},
 			props: true,
+			meta: {
+				view: 'private',
+			},
 			children: [
 				{
 					name: 'activity-item',
-					path: ':primaryKey',
+					path: '/activity/:primaryKey',
 					components: {
 						detail: ActivityItem,
 					},

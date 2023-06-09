@@ -1,10 +1,9 @@
 import { router } from '@/router';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import RouterPass from '@/utils/router-passthrough';
 import { ModuleConfig } from '@directus/types';
-import { ShallowRef, shallowRef } from 'vue';
 import { sortBy } from 'lodash';
+import { ShallowRef, shallowRef } from 'vue';
 
 export function getInternalModules(): ModuleConfig[] {
 	const modules = import.meta.glob<ModuleConfig>('./*/index.ts', { import: 'default', eager: true });
@@ -40,12 +39,9 @@ export function registerModules(modules: ModuleConfig[]): {
 		).filter((module): module is ModuleConfig => module !== null);
 
 		for (const module of registeredModules.value) {
-			router.addRoute({
-				name: module.id,
-				path: `/${module.id}`,
-				component: RouterPass,
-				children: module.routes,
-			});
+			for (const route of module.routes) {
+				router.addRoute(route);
+			}
 		}
 	};
 
