@@ -15,10 +15,7 @@
 		</v-info>
 
 		<template v-else-if="!hydrating">
-			<component :is="view" v-if="view">
-				<router-view />
-			</component>
-
+			<component :is="view" v-if="view" />
 			<router-view v-else />
 		</template>
 
