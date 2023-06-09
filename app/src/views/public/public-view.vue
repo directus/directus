@@ -26,7 +26,7 @@
 				<slot />
 			</div>
 			<div class="notice">
-				<slot name="notice" />
+				<router-view name="notice" />
 			</div>
 		</div>
 		<div class="art" :style="artStyles">
@@ -186,7 +186,7 @@ const logoURL = computed<string | null>(() => {
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
 		transition: max-width var(--medium) var(--transition);
 
-		:slotted(.type-title) {
+		:deep(.type-title) {
 			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
