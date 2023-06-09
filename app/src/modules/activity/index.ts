@@ -11,7 +11,7 @@ export default defineModule({
 	routes: [
 		{
 			name: 'activity-collection',
-			path: '/activity',
+			path: '',
 			components: {
 				default: ActivityCollection,
 				navigation: ActivityNavigation,
@@ -23,7 +23,7 @@ export default defineModule({
 			children: [
 				{
 					name: 'activity-item',
-					path: '/activity/:primaryKey',
+					path: ':primaryKey',
 					components: {
 						detail: ActivityItem,
 					},
