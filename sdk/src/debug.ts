@@ -72,14 +72,16 @@ const client2 = client.use(
 		url: 'ws://localhost:8056/',
 	})
 );
-// client2.subscribe('test')
+
+client2.subscribe('test')
 
 const client3 = client2.use(
 	withGraphQL({
 		path: '/graphql',
 	})
 );
-// client3.graphql('{ test }')
+
+client3.graphql('{ test }')
 
 // const wsClient = withWebSocket(client, {
 // 	url: 'ws://localhost:8056/',
