@@ -40,7 +40,10 @@ export function registerModules(modules: ModuleConfig[]): {
 
 		for (const module of registeredModules.value) {
 			for (const route of module.routes) {
-				router.addRoute(route);
+				router.addRoute({
+					...route,
+					path: `/${module.id}/${route.path}`,
+				});
 			}
 		}
 	};
