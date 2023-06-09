@@ -7,10 +7,10 @@ import { parseJSON, toArray } from '@directus/utils';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash-es';
+import { createRequire } from 'node:module';
 import path from 'path';
 import { requireYAML } from './utils/require-yaml.js';
-
-import { createRequire } from 'node:module';
+import { toBoolean } from './utils/to-boolean.js';
 
 const require = createRequire(import.meta.url);
 
@@ -206,6 +206,8 @@ const allowedEnvironmentVars = [
 	// flows
 	'FLOWS_EXEC_ALLOWED_MODULES',
 	'FLOWS_ENV_ALLOW_LIST',
+	// websockets
+	'WEBSOCKETS_.+',
 ].map((name) => new RegExp(`^${name}$`));
 
 const acceptedEnvTypes = ['string', 'number', 'regex', 'array', 'json'];
@@ -305,6 +307,18 @@ const defaults: Record<string, any> = {
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISO',
 
 	GRAPHQL_INTROSPECTION: true,
+
+	WEBSOCKETS_ENABLED: false,
+	WEBSOCKETS_REST_ENABLED: true,
+	WEBSOCKETS_REST_AUTH: 'handshake',
+	WEBSOCKETS_REST_AUTH_TIMEOUT: 10,
+	WEBSOCKETS_REST_PATH: '/websocket',
+	WEBSOCKETS_GRAPHQL_ENABLED: true,
+	WEBSOCKETS_GRAPHQL_AUTH: 'handshake',
+	WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT: 10,
+	WEBSOCKETS_GRAPHQL_PATH: '/graphql',
+	WEBSOCKETS_HEARTBEAT_ENABLED: true,
+	WEBSOCKETS_HEARTBEAT_PERIOD: 30,
 
 	FLOWS_EXEC_ALLOWED_MODULES: false,
 	FLOWS_ENV_ALLOW_LIST: false,
@@ -570,8 +584,4 @@ function tryJSON(value: any) {
 	} catch {
 		return value;
 	}
-}
-
-function toBoolean(value: any): boolean {
-	return value === 'true' || value === true || value === '1' || value === 1;
 }

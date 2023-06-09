@@ -35,6 +35,15 @@ export default defineConfig({
 				return data === null ? {} : undefined;
 			},
 		}),
+		{
+			name: 'watch-directus-dependencies',
+			configureServer: (server) => {
+				server.watcher.options = {
+					...server.watcher.options,
+					ignored: [/node_modules\/(?!@directus\/).*/, '**/.git/**'],
+				};
+			},
+		},
 	],
 	resolve: {
 		alias: [

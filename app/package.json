@@ -36,6 +36,7 @@
 		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
+		"@directus/stores": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@editorjs/attaches": "1.3.0",
