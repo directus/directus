@@ -16,7 +16,6 @@ export default defineModule({
 				default: ActivityCollection,
 				navigation: ActivityNavigation,
 			},
-			props: true,
 			meta: {
 				view: 'private',
 			},

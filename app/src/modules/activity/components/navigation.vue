@@ -94,11 +94,13 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import { storeToRefs } from 'pinia';
-import { computed, unref } from 'vue';
+import { computed, onUnmounted, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useActivityModuleStore } from '../store';
 
 const activityModuleStore = useActivityModuleStore();
+
+onUnmounted(() => activityModuleStore.$dispose());
 
 const { roleFilter } = storeToRefs(activityModuleStore);
 
