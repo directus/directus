@@ -18,4 +18,6 @@ export const TYPE_MAP = {
 	none: '📎 Misc.',
 } as const satisfies Record<VersionType, string>;
 
+export const NOTICE_TYPE = TYPE_MAP.major;
+
 export const VERSIONS_TITLE = '📦 Published Versions';

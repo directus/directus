@@ -43,7 +43,7 @@
 import api, { RequestError } from '@/api';
 import { login, logout } from '@/auth';
 import { hydrate } from '@/hydrate';
-import { useAppStore } from '@/stores/app';
+import { useAppStore } from '@directus/stores';
 import { useCollection } from '@directus/composables';
 import { Share } from '@directus/types';
 import { computed, ref } from 'vue';

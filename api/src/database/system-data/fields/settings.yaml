@@ -375,11 +375,6 @@ fields:
             options:
               placeholder: $t:fields.directus_settings.attribution_placeholder
 
-  - field: translation_strings
-    special:
-      - cast-json
-    hidden: true
-
   - field: image_editor
     interface: presentation-divider
     options:
