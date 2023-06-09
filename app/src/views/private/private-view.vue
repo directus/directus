@@ -27,26 +27,12 @@
 					<project-info />
 
 					<div class="module-nav-content">
-						<slot name="navigation" />
+						<router-view name="navigation" />
 					</div>
 				</div>
 			</v-resizeable>
 		</aside>
 		<div id="main-content" ref="contentEl" class="content">
-			<header-bar
-				ref="headerBarEl"
-				:small="smallHeader || splitView"
-				:shadow="headerShadow || splitView"
-				show-sidebar-toggle
-				:title="title"
-				@toggle:sidebar="sidebarOpen = !sidebarOpen"
-				@primary="navOpen = !navOpen"
-			>
-				<template v-for="(_, scopedSlotName) in $slots" #[scopedSlotName]="slotData">
-					<slot :name="scopedSlotName" v-bind="slotData" />
-				</template>
-			</header-bar>
-
 			<div class="content-wrapper">
 				<v-resizeable
 					v-model:width="mainWidth"
@@ -57,7 +43,7 @@
 					@dragging="(value) => (isDraggingMain = value)"
 				>
 					<main v-show="showMain">
-						<slot />
+						<router-view />
 					</main>
 				</v-resizeable>
 
@@ -77,7 +63,7 @@
 		>
 			<div class="flex-container">
 				<sidebar-detail-group :sidebar-open="sidebarOpen">
-					<slot name="sidebar" />
+					<router-view name="sidebar" />
 				</sidebar-detail-group>
 
 				<div class="spacer" />
@@ -98,18 +84,16 @@
 <script setup lang="ts">
 import VResizeable, { ResizeableOptions } from '@/components/v-resizeable.vue';
 import { useLocalStorage } from '@/composables/use-local-storage';
-import { useTitle } from '@/composables/use-title';
 import { useWindowSize } from '@/composables/use-window-size';
-import { useAppStore } from '@directus/stores';
 import { useUserStore } from '@/stores/user';
 import { useElementSize, useSync } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
 import { useEventListener } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { storeToRefs } from 'pinia';
-import { computed, provide, ref, toRefs, watch } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import HeaderBar from './components/header-bar.vue';
 import ModuleBar from './components/module-bar.vue';
 import NotificationDialogs from './components/notification-dialogs.vue';
 import NotificationsDrawer from './components/notifications-drawer.vue';
@@ -128,16 +112,11 @@ const SIZES = {
 
 const props = withDefaults(
 	defineProps<{
-		title?: string | null;
-		smallHeader?: boolean;
-		headerShadow?: boolean;
 		splitView?: boolean;
 		splitViewMinWidth?: number;
 		sidebarShadow?: boolean;
 	}>(),
 	{
-		title: null,
-		headerShadow: true,
 		splitViewMinWidth: 0,
 	}
 );
@@ -147,7 +126,6 @@ const emit = defineEmits(['update:splitView']);
 const { t } = useI18n();
 
 const router = useRouter();
-const { title } = toRefs(props);
 
 const splitViewWritable = useSync(props, 'splitView', emit);
 
@@ -343,8 +321,6 @@ router.afterEach(() => {
 	contentEl.value?.scrollTo({ top: 0 });
 	fullScreen.value = false;
 });
-
-useTitle(title);
 
 function openSidebar(event: MouseEvent) {
 	if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
