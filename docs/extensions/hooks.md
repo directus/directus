@@ -124,7 +124,7 @@ The callback function itself receives one parameter:
 ### Schedule
 
 Schedule hooks execute at certain points in time rather than when Directus performs a specific action. This is supported
-through [`node-cron`](https://www.npmjs.com/package/node-cron).
+through [`node-schedule`](https://www.npmjs.com/package/node-schedule).
 
 To set up a scheduled event, provide a cron statement as the first parameter to the `schedule()` function. For example
 `schedule('15 14 1 * *', <...>)` (at 14:15 on day-of-month 1) or `schedule('5 4 * * sun', <...>)` (at 04:05 on Sunday).
