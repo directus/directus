@@ -12,3 +12,7 @@ export function serializeParams(params: Record<string, any>) {
 
 	return new URLSearchParams(result).toString();
 }
+
+export function withoutTrailingSlash(url: string) {
+	return url.endsWith('/') ? url.slice(0, -1) : url;
+}

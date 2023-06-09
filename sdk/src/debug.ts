@@ -3,14 +3,7 @@
  */
 import { readItems } from './commands/read-items.js';
 import { subscribe } from './commands/subscribe.js';
-import {
-	withHttpAuthentication,
-	withWebSocket,
-	withWebSocketAuthentication,
-	withGraphQL,
-	withSubscriptions,
-	withPagination,
-} from './decorators/index.js';
+import { REST, GraphQL, WebSocket, Authentication, Pagination } from './composables/index.js';
 import { useDirectus } from './index.js';
 
 type MySchema = {
@@ -29,59 +22,33 @@ type MySchema = {
 };
 
 /**
- * EXPERIMENT 1:
+ * Composable client
  */
+const client = useDirectus<MySchema>()
+	.use(REST({ url: 'http://localhost:8056' }))
+	.use(WebSocket({ url: 'ws://localhost:8056/' })) // this name collides in the browser
+	.use(Authentication())
+	// .use(GraphQL())
+	// .use(Subscription())
+	.use(Pagination({ pageSize: 250 }));
 
-/*
-const client = withSubscriptions(withGraphQL(client, {
-	path: 'test
-}), {
-	url: 'ws://localhost:8056/test'
-});
+client.subscribe('test');
 
-// client.graphql(`
-// 	subscribe {
-// 		articles {
-// 			id
-// 		}
-// 	}
-// `);
-
-/**
- * EXPERIMENT 2: Composing features using an array
- */
-
-// const client = useDirectus<MySchema>({ url: 'http://localhost:8056' }, [
-// 	// withHttpAuthentication(),
+// const client2 = client.use(
 // 	withWebSocket({
 // 		url: 'ws://localhost:8056/',
-// 	}),
-// // 	withWebSocketAuthentication(),
-// 	// withGraphQL(),
-// // 	withSubscriptions(),
-// // 	withPagination(),
-// ]);
+// 	})
+// );
 
-/**
- * EXPERIMENT 3: Composing features using a chainable `.use` function
- */
-const client = useDirectus<MySchema>({ url: 'http://localhost:8056' });
+// client2.subscribe('test')
 
-const client2 = client.use(
-	withWebSocket({
-		url: 'ws://localhost:8056/',
-	})
-);
+// const client3 = client2.use(
+// 	withGraphQL({
+// 		path: '/graphql',
+// 	})
+// );
 
-client2.subscribe('test')
-
-const client3 = client2.use(
-	withGraphQL({
-		path: '/graphql',
-	})
-);
-
-client3.graphql('{ test }')
+// client3.graphql('{ test }')
 
 // const wsClient = withWebSocket(client, {
 // 	url: 'ws://localhost:8056/',
@@ -93,15 +60,6 @@ client3.graphql('{ test }')
 // 		uid: 'test-123',
 // 	})
 // );
-/**
- * Ik denk dat dit gebruiksvriendelijker is uiteindelijk
- * 
-const something = await subscribe(wsClient, {
-	collection: 'test',
-	uid: 'test-123',
-})
-const result = await readItems(client, { collection: 'test' })
- */
 
 // const readData = await client.exec(
 // 	readItems({

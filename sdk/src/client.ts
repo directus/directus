@@ -1,11 +1,10 @@
-import type fetch from 'node-fetch';
-import type { WebSocket } from 'ws';
+import { WebSocket } from 'ws';
 import type { ReadItemsInput, ReadItemsOutput } from './commands/read-items.js';
 import type { Command } from './types/index.js';
 
-export interface BaseClientConfig {
-	fetch?: typeof fetch;
-	ws?: WebSocket;
+export interface BaseClientConfig extends Record<string, any> {
+	fetch: fetch;
+	ws: typeof WebSocket;
 }
 
 export interface GenericClient<Schema extends object, Features extends object> {
@@ -34,7 +33,12 @@ export type DirectusClient<
 type InputTypes = ReadItemsInput<any>;
 type OutputTypes = ReadItemsOutput<any, any>;
 
-export const useDirectus = <Schema extends object>(config: BaseClientConfig = {}) => {
+export const useDirectus = <Schema extends object>(
+	config: BaseClientConfig = {
+		fetch: fetch,
+		ws: WebSocket,
+	}
+) => {
 	// const exec: DirectusClient<Schema>['exec'] = async (command) => {
 	// 	return await command(client);
 	// };
@@ -60,9 +64,9 @@ export function extendClient<Schema extends object, Features extends object, Ext
 			partialClient[key] = {
 				...partialClient[key],
 				...properties[key],
-			};
+			} as (Features & ExtraFeatures)[keyof ExtraFeatures];
 		} else {
-			partialClient[key] = properties[key];
+			partialClient[key] = properties[key] as (Features & ExtraFeatures)[keyof ExtraFeatures];
 		}
 	});
 
