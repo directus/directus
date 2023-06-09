@@ -1,6 +1,6 @@
 <template>
 	<div class="public-view" :class="{ branded: isBranded }">
-		<div class="container" :class="{ wide }">
+		<div class="container">
 			<div class="title-box">
 				<div
 					v-if="info?.project?.project_logo"
@@ -73,14 +73,6 @@ import Color from 'color';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-interface Props {
-	wide?: boolean;
-}
-
-withDefaults(defineProps<Props>(), {
-	wide: false,
-});
 
 const { t } = useI18n();
 const serverStore = useServerStore();
