@@ -1,10 +1,10 @@
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
-import LoginRouteNotice from '@/routes/login/login-notice.vue';
 import LoginRoute from '@/routes/login/login.vue';
 import LogoutRoute from '@/routes/logout.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
+import PublicNotice from '@/routes/public-notice.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
@@ -24,7 +24,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		path: '/login',
 		components: {
 			default: LoginRoute,
-			notice: LoginRouteNotice,
+			notice: PublicNotice,
 		},
 		props: {
 			notice: (route) => ({
@@ -39,9 +39,10 @@ export const defaultRoutes: RouteRecordRaw[] = [
 	{
 		name: 'reset-password',
 		path: '/reset-password',
-		component: ResetPasswordRoute,
+		components: { default: ResetPasswordRoute, notice: PublicNotice },
 		meta: {
 			public: true,
+			view: 'public',
 		},
 	},
 	{
