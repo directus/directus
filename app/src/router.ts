@@ -51,6 +51,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		component: TFASetup,
 		meta: {
 			track: false,
+			view: 'public',
 		},
 	},
 	{
