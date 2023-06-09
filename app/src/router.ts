@@ -1,6 +1,7 @@
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
+import LoginRouteNotice from '@/routes/login/login-notice.vue';
 import LoginRoute from '@/routes/login/login.vue';
 import LogoutRoute from '@/routes/logout.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
@@ -21,13 +22,18 @@ export const defaultRoutes: RouteRecordRaw[] = [
 	{
 		name: 'login',
 		path: '/login',
-		component: LoginRoute,
-		props: (route) => ({
-			ssoErrorCode: route.query.error ? route.query.code : null,
-			logoutReason: route.query.reason,
-		}),
+		components: {
+			default: LoginRoute,
+			notice: LoginRouteNotice,
+		},
+		props: {
+			notice: (route) => ({
+				logoutReason: route.query.reason,
+			}),
+		},
 		meta: {
 			public: true,
+			view: 'public',
 		},
 	},
 	{

@@ -1,34 +1,18 @@
 <template>
-	<public-view>
-		<div class="header">
-			<h1 class="type-title">{{ t('sign_in') }}</h1>
-			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
-				<v-select v-model="providerSelect" inline :items="providerOptions" label />
-			</div>
+	<div class="header">
+		<h1 class="type-title">{{ t('sign_in') }}</h1>
+		<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
+			<v-select v-model="providerSelect" inline :items="providerOptions" label />
 		</div>
+	</div>
 
-		<continue-as v-if="authenticated" />
+	<continue-as v-if="authenticated" />
 
-		<ldap-form v-else-if="driver === 'ldap'" :provider="provider" />
+	<ldap-form v-else-if="driver === 'ldap'" :provider="provider" />
 
-		<login-form v-else-if="driver === DEFAULT_AUTH_DRIVER || driver === 'local'" :provider="provider" />
+	<login-form v-else-if="driver === DEFAULT_AUTH_DRIVER || driver === 'local'" :provider="provider" />
 
-		<sso-links v-if="!authenticated" :providers="auth.providers" />
-
-		<template #notice>
-			<div v-if="authenticated">
-				<v-icon name="lock_open" left />
-				{{ t('authenticated') }}
-			</div>
-			<div v-else>
-				{{
-					logoutReason && te(`logoutReason.${logoutReason}`)
-						? t(`logoutReason.${logoutReason}`)
-						: t('not_authenticated')
-				}}
-			</div>
-		</template>
-	</public-view>
+	<sso-links v-if="!authenticated" :providers="auth.providers" />
 </template>
 
 <script setup lang="ts">
@@ -42,15 +26,11 @@ import ContinueAs from './components/continue-as.vue';
 import { LdapForm, LoginForm } from './components/login-form/';
 import SsoLinks from './components/sso-links.vue';
 
-interface Props {
-	logoutReason?: string | null;
-}
-
-withDefaults(defineProps<Props>(), {
-	logoutReason: null,
+defineOptions({
+	inheritAttrs: false,
 });
 
-const { t, te } = useI18n();
+const { t } = useI18n();
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
