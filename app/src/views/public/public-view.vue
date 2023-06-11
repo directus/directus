@@ -23,7 +23,7 @@
 			</div>
 
 			<div class="content">
-				<slot />
+				<router-view />
 			</div>
 			<div class="notice">
 				<div v-if="authenticated">
