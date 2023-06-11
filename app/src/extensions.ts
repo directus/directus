@@ -3,7 +3,7 @@ import { App, shallowRef, watch } from 'vue';
 import { getInternalDisplays, registerDisplays } from './displays';
 import { getInternalInterfaces, registerInterfaces } from './interfaces';
 import { i18n } from './lang';
-import { getInternalLayouts, registerLayouts } from './layouts';
+import { getInternalLayouts } from './layouts';
 import { getInternalModules, registerModules } from './modules';
 import { getInternalOperations, registerOperations } from './operations';
 import { getInternalPanels, registerPanels } from './panels';
@@ -56,7 +56,6 @@ export function registerExtensions(app: App): void {
 
 	registerInterfaces(interfaces, app);
 	registerDisplays(displays, app);
-	registerLayouts(layouts, app);
 	registerPanels(panels, app);
 	registerOperations(operations, app);
 

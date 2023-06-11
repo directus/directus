@@ -1,17 +1,17 @@
-export type LayoutOptions = {
-	widths?: {
+export interface LayoutOptions {
+	widths: {
 		[field: string]: number;
 	};
-	align?: {
+	align: {
 		[field: string]: 'left' | 'center' | 'right';
 	};
-	limit?: number;
-	spacing?: 'comfortable' | 'cozy' | 'compact';
-};
+	limit: number;
+	spacing: 'comfortable' | 'cozy' | 'compact';
+}
 
-export type LayoutQuery = {
+export interface LayoutQuery {
 	fields: string[];
 	sort: string[];
 	page: number;
 	limit: number;
-};
+}

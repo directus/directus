@@ -29,7 +29,11 @@ export default defineConfig({
 	},
 	plugins: [
 		directusExtensions(),
-		vue(),
+		vue({
+			script: {
+				defineModel: true,
+			},
+		}),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;

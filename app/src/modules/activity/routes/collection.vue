@@ -1,7 +1,29 @@
 <template>
+	<header-bar
+		ref="headerBarEl"
+		:small="currentLayout?.smallHeader"
+		:shadow="currentLayout?.headerShadow"
+		show-sidebar-toggle
+		:title="t('activity_feed')"
+	>
+		<template #title-outer:prepend>
+			<v-button class="header-icon" rounded disabled icon secondary>
+				<v-icon name="access_time" />
+			</v-button>
+		</template>
+
+		<template #actions:prepend>
+			<component :is="currentLayout.components.actions" v-if="currentLayout?.components?.actions" />
+		</template>
+
+		<template #actions>
+			<search-input v-model="search" v-model:filter="filter" collection="directus_activity" />
+		</template>
+	</header-bar>
+
 	<component
-		:is="layoutWrapper"
-		v-slot="{ layoutState }"
+		:is="currentLayout.components.default"
+		v-if="currentLayout?.components?.default"
 		v-model:layout-options="layoutOptions"
 		v-model:layout-query="layoutQuery"
 		:filter="mergeFilters(filter, roleFilter)"
@@ -10,62 +32,29 @@
 		:search="search"
 		show-select="none"
 		collection="directus_activity"
-	>
-		<header-bar
-			ref="headerBarEl"
-			:small="currentLayout?.smallHeader"
-			:shadow="currentLayout?.headerShadow"
-			show-sidebar-toggle
-			:title="t('activity_feed')"
-		>
-			<template #title-outer:prepend>
-				<v-button class="header-icon" rounded disabled icon secondary>
-					<v-icon name="access_time" />
-				</v-button>
-			</template>
+	></component>
 
-			<template #actions:prepend>
-				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
-			</template>
+	<!-- <component :is="`layout-${layout}`" v-bind="layoutState">
+		<template #no-results>
+			<v-info :title="t('no_results')" icon="search" center>
+				{{ t('no_results_copy') }}
+			</v-info>
+		</template>
 
-			<template #actions>
-				<search-input v-model="search" v-model:filter="filter" collection="directus_activity" />
-			</template>
-		</header-bar>
+		<template #no-items>
+			<v-info :title="t('item_count', 0)" icon="access_time" center>
+				{{ t('no_items_copy') }}
+			</v-info>
+		</template>
+	</component> -->
 
-		<component :is="`layout-${layout}`" v-bind="layoutState">
-			<template #no-results>
-				<v-info :title="t('no_results')" icon="search" center>
-					{{ t('no_results_copy') }}
-				</v-info>
-			</template>
-
-			<template #no-items>
-				<v-info :title="t('item_count', 0)" icon="access_time" center>
-					{{ t('no_items_copy') }}
-				</v-info>
-			</template>
-		</component>
-
-		<router-view name="detail" :primary-key="primaryKey" />
-
-		<!-- <template #sidebar>
-				<sidebar-detail icon="info" :title="t('information')" close>
-					<div v-md="t('page_help_activity_collection')" class="page-description" />
-				</sidebar-detail>
-				<layout-sidebar-detail v-model="layout">
-					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
-				</layout-sidebar-detail>
-				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
-			</template> -->
-	</component>
+	<router-view name="detail" :primary-key="primaryKey" />
 </template>
 
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
@@ -81,9 +70,6 @@ const activityModuleStore = useActivityModuleStore();
 const { t } = useI18n();
 
 const { layout, layoutOptions, layoutQuery, filter, search } = usePreset(ref('directus_activity'));
-
-const { layoutWrapper } = useLayout(layout);
-
 const currentLayout = useExtension('layout', layout);
 
 const { roleFilter } = storeToRefs(activityModuleStore);

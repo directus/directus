@@ -5,6 +5,7 @@ export * from './use-filter-fields.js';
 export * from './use-groupable.js';
 export * from './use-items.js';
 export * from './use-layout.js';
+export { useObjectProperty } from './use-object-property.js';
 export * from './use-size-class.js';
 export * from './use-sync.js';
 export * from './use-system.js';

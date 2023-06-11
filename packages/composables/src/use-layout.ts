@@ -1,16 +1,16 @@
 import type { Filter, LayoutConfig, ShowSelect } from '@directus/types';
 import type { Component, ComputedRef, PropType, Ref } from 'vue';
-import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useExtensions } from './use-system.js';
 
 const NAME_SUFFIX = 'wrapper';
 const WRITABLE_PROPS = ['selection', 'layoutOptions', 'layoutQuery'] as const;
 
-type WritableProp = (typeof WRITABLE_PROPS)[number];
+// type WritableProp = (typeof WRITABLE_PROPS)[number];
 
-function isWritableProp(prop: string): prop is WritableProp {
-	return (WRITABLE_PROPS as readonly string[]).includes(prop);
-}
+// function isWritableProp(prop: string): prop is WritableProp {
+// 	return (WRITABLE_PROPS as readonly string[]).includes(prop);
+// }
 
 function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 	return defineComponent({
@@ -70,21 +70,19 @@ function createLayoutWrapper<Options, Query>(layout: LayoutConfig): Component {
 			},
 		},
 		emits: WRITABLE_PROPS.map((prop) => `update:${prop}` as const),
-		setup(props, { emit }) {
-			const state: Record<string, unknown> = reactive({ ...layout.setup(props, { emit }), ...toRefs(props) });
-
-			for (const key in state) {
-				state[`onUpdate:${key}`] = (value: unknown) => {
-					if (isWritableProp(key)) {
-						emit(`update:${key}`, value);
-					} else if (!Object.keys(props).includes(key)) {
-						state[key] = value;
-					}
-				};
-			}
-
-			return { state };
-		},
+		// setup(props, { emit }) {
+		// const state: Record<string, unknown> = reactive({ ...layout.setup(props, { emit }), ...toRefs(props) });
+		// for (const key in state) {
+		// 	state[`onUpdate:${key}`] = (value: unknown) => {
+		// 		if (isWritableProp(key)) {
+		// 			emit(`update:${key}`, value);
+		// 		} else if (!Object.keys(props).includes(key)) {
+		// 			state[key] = value;
+		// 		}
+		// 	};
+		// }
+		// return { state };
+		// },
 		render(ctx: any) {
 			return ctx.$slots.default !== undefined ? ctx.$slots.default({ layoutState: ctx.state }) : null;
 		},

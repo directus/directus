@@ -4,7 +4,7 @@ import { translate } from '@/utils/translate-literal';
 import type { User } from '@directus/types';
 import { Filter, Preset } from '@directus/types';
 import { assign, debounce, isEqual } from 'lodash';
-import { ComputedRef, Ref, computed, ref, watch } from 'vue';
+import { ComputedRef, Ref, computed, ref, unref, watch } from 'vue';
 
 type UsablePreset = {
 	bookmarkExists: ComputedRef<boolean>;
@@ -26,7 +26,7 @@ type UsablePreset = {
 };
 
 export function usePreset(
-	collection: Ref<string>,
+	collection: string | Ref<string>,
 	bookmark: Ref<number | null> = ref(null),
 	temporary = false
 ): UsablePreset {
@@ -34,8 +34,6 @@ export function usePreset(
 	const userStore = useUserStore();
 
 	const busy = ref(false);
-
-	// const { info: collectionInfo } = useCollection(collection);
 
 	const bookmarkExists = computed(() => {
 		if (!bookmark.value) return false;
@@ -193,7 +191,7 @@ export function usePreset(
 		const preset = { layout: 'tabular' };
 
 		if (bookmark.value === null) {
-			assign(preset, presetsStore.getPresetForCollection(collection.value));
+			assign(preset, presetsStore.getPresetForCollection(unref(collection)));
 		} else if (bookmarkExists.value) {
 			assign(preset, presetsStore.getBookmark(Number(bookmark.value)));
 		}

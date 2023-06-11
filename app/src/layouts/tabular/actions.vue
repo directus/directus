@@ -1,46 +1,47 @@
 <template>
-	<transition name="fade">
+	actions
+	<!-- <transition name="fade">
 		<span v-if="itemCount" class="item-count">
 			{{ showingCount }}
 		</span>
-	</transition>
+	</transition> -->
 </template>
 
 <script setup lang="ts">
-defineProps<{
-	itemCount?: number;
-	showingCount: string;
-}>();
+// defineProps<{
+// 	itemCount?: number;
+// 	showingCount: string;
+// }>();
 </script>
 
-<script lang="ts">
+<!-- <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
 	inheritAttrs: false,
 });
-</script>
+</script> -->
 
 <style lang="scss" scoped>
-.item-count {
-	position: relative;
-	display: none;
-	margin: 0 8px;
-	color: var(--foreground-subdued);
-	white-space: nowrap;
+// .item-count {
+// 	position: relative;
+// 	display: none;
+// 	margin: 0 8px;
+// 	color: var(--foreground-subdued);
+// 	white-space: nowrap;
 
-	@media (min-width: 600px) {
-		display: inline;
-	}
-}
+// 	@media (min-width: 600px) {
+// 		display: inline;
+// 	}
+// }
 
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity var(--medium) var(--transition);
-}
+// .fade-enter-active,
+// .fade-leave-active {
+// 	transition: opacity var(--medium) var(--transition);
+// }
 
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
+// .fade-enter-from,
+// .fade-leave-to {
+// 	opacity: 0;
+// }
 </style>

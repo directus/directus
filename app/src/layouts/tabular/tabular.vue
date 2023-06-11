@@ -1,5 +1,6 @@
 <template>
-	<div class="layout-tabular">
+	Tabular
+	<!-- <div class="layout-tabular">
 		<v-table
 			v-if="loading || (itemCount && itemCount > 0 && !error)"
 			ref="table"
@@ -168,208 +169,208 @@
 
 		<slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
-	</div>
+	</div> -->
 </template>
 
-<script lang="ts">
+<!-- <script lang="ts">
 export default {
 	inheritAttrs: false,
 };
-</script>
+</script> -->
 
 <script setup lang="ts">
-import { HeaderRaw } from '@/components/v-table/types';
-import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
-import { usePageSize } from '@/composables/use-page-size';
-import { useShortcut } from '@/composables/use-shortcut';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
-import { Collection } from '@/types/collections';
-import { useSync } from '@directus/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/types';
-import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+// import { HeaderRaw } from '@/components/v-table/types';
+// import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
+// import { usePageSize } from '@/composables/use-page-size';
+// import { useShortcut } from '@/composables/use-shortcut';
+// import { usePermissionsStore } from '@/stores/permissions';
+// import { useUserStore } from '@/stores/user';
+// import { Collection } from '@/types/collections';
+// import { useSync } from '@directus/composables';
+// import { Field, Filter, Item, ShowSelect } from '@directus/types';
+// import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
+// import { useI18n } from 'vue-i18n';
 
-interface Props {
-	collection: string;
-	selection?: Item[];
-	readonly: boolean;
-	tableHeaders: HeaderRaw[];
-	showSelect?: ShowSelect;
-	items: Item[];
-	loading: boolean;
-	error?: any;
-	totalPages: number;
-	tableSort?: { by: string; desc: boolean } | null;
-	onRowClick: (item: Item) => void;
-	tableRowHeight: number;
-	page: number;
-	toPage: (newPage: number) => void;
-	itemCount?: number;
-	fields: string[];
-	limit: number;
-	primaryKeyField?: Field;
-	info?: Collection;
-	sortField?: string;
-	changeManualSort: (data: any) => Promise<void>;
-	resetPresetAndRefresh: () => Promise<void>;
-	selectAll: () => void;
-	filterUser?: Filter;
-	search?: string;
-	aliasedFields: Record<string, AliasFields>;
-	aliasedKeys: string[];
-	onSortChange: (newSort: { by: string; desc: boolean }) => void;
-	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
-}
+// interface Props {
+// 	collection: string;
+// 	selection?: Item[];
+// 	readonly: boolean;
+// 	tableHeaders: HeaderRaw[];
+// 	showSelect?: ShowSelect;
+// 	items: Item[];
+// 	loading: boolean;
+// 	error?: any;
+// 	totalPages: number;
+// 	tableSort?: { by: string; desc: boolean } | null;
+// 	onRowClick: (item: Item) => void;
+// 	tableRowHeight: number;
+// 	page: number;
+// 	toPage: (newPage: number) => void;
+// 	itemCount?: number;
+// 	fields: string[];
+// 	limit: number;
+// 	primaryKeyField?: Field;
+// 	info?: Collection;
+// 	sortField?: string;
+// 	changeManualSort: (data: any) => Promise<void>;
+// 	resetPresetAndRefresh: () => Promise<void>;
+// 	selectAll: () => void;
+// 	filterUser?: Filter;
+// 	search?: string;
+// 	aliasedFields: Record<string, AliasFields>;
+// 	aliasedKeys: string[];
+// 	onSortChange: (newSort: { by: string; desc: boolean }) => void;
+// 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
+// }
 
-const props = withDefaults(defineProps<Props>(), {
-	selection: () => [],
-	showSelect: 'none',
-	error: null,
-	itemCount: undefined,
-	tableSort: undefined,
-	primaryKeyField: undefined,
-	info: undefined,
-	sortField: undefined,
-	filterUser: undefined,
-	search: undefined,
-	onAlignChange: () => undefined,
-});
+// const props = withDefaults(defineProps<Props>(), {
+// 	selection: () => [],
+// 	showSelect: 'none',
+// 	error: null,
+// 	itemCount: undefined,
+// 	tableSort: undefined,
+// 	primaryKeyField: undefined,
+// 	info: undefined,
+// 	sortField: undefined,
+// 	filterUser: undefined,
+// 	search: undefined,
+// 	onAlignChange: () => undefined,
+// });
 
-const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
+// const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
 
-const { t } = useI18n();
-const { collection } = toRefs(props);
+// const { t } = useI18n();
+// const { collection } = toRefs(props);
 
-const selectionWritable = useSync(props, 'selection', emit);
-const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
-const limitWritable = useSync(props, 'limit', emit);
+// const selectionWritable = useSync(props, 'selection', emit);
+// const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
+// const limitWritable = useSync(props, 'limit', emit);
 
-const mainElement = inject<Ref<Element | undefined>>('main-element');
+// const mainElement = inject<Ref<Element | undefined>>('main-element');
 
-const table = ref<ComponentPublicInstance>();
+// const table = ref<ComponentPublicInstance>();
 
-watch(
-	() => props.page,
-	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
-);
+// watch(
+// 	() => props.page,
+// 	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
+// );
 
-useShortcut(
-	'meta+a',
-	() => {
-		props.selectAll();
-	},
-	table
-);
+// useShortcut(
+// 	'meta+a',
+// 	() => {
+// 		props.selectAll();
+// 	},
+// 	table
+// );
 
-const permissionsStore = usePermissionsStore();
-const userStore = useUserStore();
+// const permissionsStore = usePermissionsStore();
+// const userStore = useUserStore();
 
-const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
-	[25, 50, 100, 250, 500, 1000],
-	(value) => String(value),
-	props.limit
-);
+// const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
+// 	[25, 50, 100, 250, 500, 1000],
+// 	(value) => String(value),
+// 	props.limit
+// );
 
-limitWritable.value = selectedSize;
+// limitWritable.value = selectedSize;
 
-const showManualSort = computed(() => {
-	if (!props.sortField) return false;
+// const showManualSort = computed(() => {
+// 	if (!props.sortField) return false;
 
-	const isAdmin = userStore.currentUser?.role?.admin_access;
+// 	const isAdmin = userStore.currentUser?.role?.admin_access;
 
-	if (isAdmin) return true;
+// 	if (isAdmin) return true;
 
-	const permission = permissionsStore.getPermissionsForUser(props.collection, 'update');
+// 	const permission = permissionsStore.getPermissionsForUser(props.collection, 'update');
 
-	if (!permission) return false;
+// 	if (!permission) return false;
 
-	if (Array.isArray(permission.fields) && permission.fields.length > 0) {
-		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
-	}
+// 	if (Array.isArray(permission.fields) && permission.fields.length > 0) {
+// 		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
+// 	}
 
-	return true;
-});
+// 	return true;
+// });
 
-const fieldsWritable = useSync(props, 'fields', emit);
+// const fieldsWritable = useSync(props, 'fields', emit);
 
-const { getFromAliasedItem } = useAliasFields(fieldsWritable, collection);
+// const { getFromAliasedItem } = useAliasFields(fieldsWritable, collection);
 
-function addField(fieldKey: string) {
-	fieldsWritable.value = [...fieldsWritable.value, fieldKey];
-}
+// function addField(fieldKey: string) {
+// 	fieldsWritable.value = [...fieldsWritable.value, fieldKey];
+// }
 
-function removeField(fieldKey: string) {
-	fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
-}
+// function removeField(fieldKey: string) {
+// 	fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
+// }
 </script>
 
 <style lang="scss" scoped>
-.layout-tabular {
-	display: contents;
-	margin: var(--content-padding);
-	margin-bottom: var(--content-padding-bottom);
-}
+// .layout-tabular {
+// 	display: contents;
+// 	margin: var(--content-padding);
+// 	margin-bottom: var(--content-padding-bottom);
+// }
 
-.v-table {
-	--v-table-sticky-offset-top: var(--layout-offset-top);
+// .v-table {
+// 	--v-table-sticky-offset-top: var(--layout-offset-top);
 
-	display: contents;
+// 	display: contents;
 
-	& > :deep(table) {
-		min-width: calc(100% - var(--content-padding)) !important;
-		margin-left: var(--content-padding);
+// 	& > :deep(table) {
+// 		min-width: calc(100% - var(--content-padding)) !important;
+// 		margin-left: var(--content-padding);
 
-		tr {
-			margin-right: var(--content-padding);
-		}
-	}
-}
+// 		tr {
+// 			margin-right: var(--content-padding);
+// 		}
+// 	}
+// }
 
-.footer {
-	position: sticky;
-	left: 0;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	padding: 32px var(--content-padding);
+// .footer {
+// 	position: sticky;
+// 	left: 0;
+// 	display: flex;
+// 	align-items: center;
+// 	justify-content: space-between;
+// 	width: 100%;
+// 	padding: 32px var(--content-padding);
 
-	.pagination {
-		display: inline-block;
-	}
+// 	.pagination {
+// 		display: inline-block;
+// 	}
 
-	.per-page {
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		width: 240px;
-		color: var(--foreground-subdued);
+// 	.per-page {
+// 		display: flex;
+// 		align-items: center;
+// 		justify-content: flex-end;
+// 		width: 240px;
+// 		color: var(--foreground-subdued);
 
-		span {
-			width: auto;
-			margin-right: 4px;
-		}
+// 		span {
+// 			width: auto;
+// 			margin-right: 4px;
+// 		}
 
-		.v-select {
-			color: var(--foreground-normal);
-		}
-	}
-}
+// 		.v-select {
+// 			color: var(--foreground-normal);
+// 		}
+// 	}
+// }
 
-.reset-preset {
-	margin-top: 24px;
-}
+// .reset-preset {
+// 	margin-top: 24px;
+// }
 
-.add-field {
-	--v-icon-color-hover: var(--foreground-normal);
+// .add-field {
+// 	--v-icon-color-hover: var(--foreground-normal);
 
-	&.active {
-		--v-icon-color: var(--foreground-normal);
-	}
-}
+// 	&.active {
+// 		--v-icon-color: var(--foreground-normal);
+// 	}
+// }
 
-.flip {
-	transform: scaleY(-1);
-}
+// .flip {
+// 	transform: scaleY(-1);
+// }
 </style>

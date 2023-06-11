@@ -1,13 +1,13 @@
 import type {
-	InterfaceConfig,
 	DisplayConfig,
+	EndpointConfig,
+	HookConfig,
+	InterfaceConfig,
 	LayoutConfig,
 	ModuleConfig,
-	PanelConfig,
-	HookConfig,
-	EndpointConfig,
-	OperationAppConfig,
 	OperationApiConfig,
+	OperationAppConfig,
+	PanelConfig,
 } from '@directus/types';
 
 export function defineInterface<T extends InterfaceConfig>(config: T): T {
@@ -18,9 +18,7 @@ export function defineDisplay<T extends DisplayConfig>(config: T): T {
 	return config;
 }
 
-export function defineLayout<Options = any, Query = any>(
-	config: LayoutConfig<Options, Query>
-): LayoutConfig<Options, Query> {
+export function defineLayout<T extends LayoutConfig>(config: T): T {
 	return config;
 }
 

@@ -1,21 +1,18 @@
 import type { Component } from 'vue';
 import type { Filter } from './filter.js';
 
-export interface LayoutConfig<Options = any, Query = any> {
+export interface LayoutConfig {
 	id: string;
 	name: string;
 	icon: string;
-
-	component: Component;
-	slots: {
-		options: Component;
-		sidebar: Component;
-		actions: Component;
+	components: {
+		default: Component;
+		options?: Component;
+		actions?: Component;
 	};
 	smallHeader?: boolean;
 	headerShadow?: boolean;
 	sidebarShadow?: boolean;
-	setup: (props: LayoutProps<Options, Query>, ctx: LayoutContext) => Record<string, unknown>;
 }
 
 export interface LayoutProps<Options = any, Query = any> {
@@ -34,12 +31,8 @@ export interface LayoutProps<Options = any, Query = any> {
 	clearFilters?: () => void;
 }
 
-interface LayoutContext {
-	emit: (event: 'update:selection' | 'update:layoutOptions' | 'update:layoutQuery', ...args: any[]) => void;
+export interface LayoutOptionsProps<Options = any> {
+	layoutOptions: Options;
 }
-
-export type LayoutState<T, Options, Query> = {
-	props: LayoutProps<Options, Query>;
-} & T;
 
 export type ShowSelect = 'none' | 'one' | 'multiple';

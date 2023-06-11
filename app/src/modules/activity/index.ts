@@ -1,5 +1,6 @@
 import { defineModule } from '@directus/utils';
 import ActivityNavigation from './components/navigation.vue';
+import ActivitySidebar from './components/sidebar.vue';
 import ActivityCollection from './routes/collection.vue';
 import ActivityItem from './routes/item.vue';
 
@@ -15,6 +16,7 @@ export default defineModule({
 			components: {
 				default: ActivityCollection,
 				navigation: ActivityNavigation,
+				sidebar: ActivitySidebar,
 			},
 			meta: {
 				view: 'private',
