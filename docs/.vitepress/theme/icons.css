@@ -1,10 +1,3 @@
-@font-face {
-	font-family: 'Material Symbols Outlined';
-	font-style: normal;
-	font-weight: 100 700;
-	src: url(https://fonts.gstatic.com/s/materialsymbolsoutlined/v119/kJEhBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oFsLjBuVY.woff2)
-		format('woff2');
-}
 span[mi] {
 	font-family: 'Material Symbols Outlined';
 	font-weight: normal;
