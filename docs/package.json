@@ -7,8 +7,8 @@
 		"build:typedocs": "typedoc --options ./.typedocs/options.json",
 		"build:docs": "vitepress build",
 		"build": "pnpm build:packages && pnpm build:typedocs && pnpm build:docs",
-		"dev": "vitepress dev",
-		"preview": "pnpm build:docs && vitepress preview",
+		"dev": "pnpm build:typedocs && vitepress dev",
+		"preview": "vitepress preview",
 		"spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
 		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
 	},

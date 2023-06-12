@@ -153,7 +153,6 @@ gtag('config', 'UA-24637628-7');
 function typeDocSidebarFormat(item){
 
 	if(item.link !== null && !item.link.startsWith('/packages')){
-		// remove characters up until /packages
 		item.link = item.link.substring(item.link.indexOf('/packages'));
 	}
 
