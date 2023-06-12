@@ -42,7 +42,6 @@ const iconIsImage = computed(() => props.icon.startsWith('/'));
 	border-radius: 8px;
 	padding: 24px;
 	width: 100%;
-	height: 100%;
 	transition: border-color 0.25s;
 	gap: 20px;
 }
