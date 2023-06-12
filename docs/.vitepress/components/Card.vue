@@ -13,7 +13,6 @@ interface CardProps {
 const props = withDefaults(defineProps<CardProps>(), {
 	h: '2',
 	icon: 'link',
-	addMargin: true,
 });
 
 const tagType = computed(() => (props.url ? 'a' : 'div'));

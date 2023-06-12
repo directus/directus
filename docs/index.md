@@ -8,7 +8,6 @@ layout: home
   import Footer from "./.vitepress/components/home/Footer.vue"
   import SelfHosting from "./.vitepress/components/home/SelfHosting.vue"
   import Article from "./.vitepress/components/home/Article.vue"
-  import DocCard from "./.vitepress/components/home/DocCard.vue"
   import Github from "./.vitepress/components/home/icons/Github.vue"
 </script>
 
