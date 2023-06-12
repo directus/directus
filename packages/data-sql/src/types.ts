@@ -25,10 +25,7 @@ export interface SqlStatementSelectPrimitive {
 export interface SqlStatement {
 	select: SqlStatementSelectPrimitive[];
 	from: string;
-
-	// limit: {
-	// 	parameterIndex: number;
-	// };
+	limit?: number;
 
 	// parameters: (string | boolean | number)[];
 }

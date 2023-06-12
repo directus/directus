@@ -49,3 +49,34 @@ test('Get all selects', () => {
 
 	expect(res).toStrictEqual(expected);
 });
+
+test('Get all selects', () => {
+	sample.query.modifiers = {
+		limit: {
+			type: 'limit',
+			value: 10,
+		},
+	};
+
+	const res = convertAbstractQueryToSqlStatement(sample.query);
+
+	const expected: SqlStatement = {
+		select: [
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+			},
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+			},
+		],
+		from: sample.query.collection,
+		// @ts-ignore
+		limit: sample.query.modifiers.limit.value,
+	};
+
+	expect(res).toStrictEqual(expected);
+});
