@@ -1,8 +1,7 @@
 <script setup lang="ts">
-// import { useObjectProperty } from '@directus/composables';
+import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useI18n } from 'vue-i18n';
 import type { LayoutOptions } from './types';
-import { computed, unref } from 'vue';
 
 defineOptions({ inheritAttrs: false });
 
@@ -12,17 +11,7 @@ const layoutOptions = defineModel<LayoutOptions>({
 	required: true,
 });
 
-const spacing = computed({
-	get() {
-		return unref(layoutOptions).spacing;
-	},
-	set(val) {
-		layoutOptions.value = {
-			...layoutOptions.value,
-			spacing: val,
-		};
-	},
-});
+const spacing = syncRefProperty(layoutOptions, 'spacing', 'comfortable');
 </script>
 
 <template>

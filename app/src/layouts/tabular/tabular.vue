@@ -1,5 +1,5 @@
 <template>
-	Tabular
+	{{  }}
 	<!-- <div class="layout-tabular">
 		<v-table
 			v-if="loading || (itemCount && itemCount > 0 && !error)"
@@ -179,6 +179,11 @@ export default {
 </script> -->
 
 <script setup lang="ts">
+defineOptions({
+	inheritAttrs: false,
+});
+
+import { LayoutOptions } from './types';
 // import { HeaderRaw } from '@/components/v-table/types';
 // import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
 // import { usePageSize } from '@/composables/use-page-size';
