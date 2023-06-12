@@ -1,13 +1,14 @@
-import DefaultTheme from 'vitepress/theme';
 import { createHead } from '@unhead/vue';
+import DefaultTheme from 'vitepress/theme';
 
-import Layout from './DocLayout.vue';
 import Card from '../components/Card.vue';
 import Contributors from '../components/Contributors.vue';
+import Tabs from '../components/Tabs.vue';
+import Layout from './DocLayout.vue';
 
-import './vars.css';
-import './overrides.css';
 import './icons.css';
+import './overrides.css';
+import './vars.css';
 
 export default {
 	...DefaultTheme,
@@ -18,5 +19,6 @@ export default {
 		ctx.app.use(head);
 		ctx.app.component('Card', Card);
 		ctx.app.component('Contributors', Contributors);
+		ctx.app.component('Tabs', Tabs);
 	},
 };
