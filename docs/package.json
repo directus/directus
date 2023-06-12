@@ -15,9 +15,11 @@
 		"vue-highlight-code": "^0.1.16"
 	},
 	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
 		"@thumbsmith/url": "0.1.3",
 		"@unhead/vue": "1.1.26",
 		"spellchecker-cli": "6.1.1",
+		"typescript": "5.0.4",
 		"vitepress": "1.0.0-alpha.75",
 		"vue": "3.3.4"
 	}
