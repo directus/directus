@@ -10,7 +10,7 @@
  * -------------------------------------------------------------------------- */
 .vp-doc img,
 .vp-doc video {
-	border-radius: 5px;
+	border-radius: 8px;
 	width: 100%;
 	box-shadow: 0px 0px 6px 0px rgba(23, 41, 64, 0.2);
 }
