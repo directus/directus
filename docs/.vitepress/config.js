@@ -129,7 +129,7 @@ gtag('config', 'UA-24637628-7');
 			{ text: 'Docs', link: '/' },
 			{
 				text: 'User Guide',
-				link: '/reference/files',
+				link: '/user-guide/overview/data-studio-app',
 			},
 			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
 			{ text: 'Website', link: 'https://directus.io/' },
@@ -144,7 +144,7 @@ gtag('config', 'UA-24637628-7');
 		sidebar: {
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
-			'/reference/files': sidebarUserGuide(),
+			'/user-guide/': sidebarUserGuide(),
 		},
 		editLink: {
 			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
@@ -187,168 +187,6 @@ function sidebar() {
 				},
 			],
 		},
-		// {
-		// 	text: 'Data Studio App',
-		// 	collapsible: true,
-		// 	collapsed: true,
-		// 	items: [
-		// 		{
-		// 			link: '/app/overview',
-		// 			text: 'Overview',
-		// 		},
-		// 		{
-		// 			link: '/app/content',
-		// 			text: 'Content',
-		// 			type: 'page',
-		// 			items: [
-		// 				{
-		// 					link: '/app/content/collections',
-		// 					text: 'Collection Page',
-		// 					type: 'page',
-		// 				},
-		// 				{
-		// 					link: '/app/content/items',
-		// 					text: 'Item Page',
-		// 				},
-		// 				{
-		// 					link: '/app/content/shares',
-		// 					text: 'Shares',
-		// 				},
-		// 			],
-		// 		},
-		// 		{
-		// 			link: '/app/user-directory',
-		// 			text: 'User Directory',
-		// 		},
-		// 		{
-		// 			link: '/app/file-library',
-		// 			text: 'File Library',
-		// 		},
-		// 		{
-		// 			link: '/app/insights',
-		// 			text: 'Insights',
-		// 		},
-		// 		{
-		// 			link: '/app/settings',
-		// 			text: 'Settings',
-		// 		},
-		// 		{
-		// 			link: '/app/display-templates',
-		// 			text: 'Display Templates',
-		// 		},
-		// 		{
-		// 			link: '/app/filters',
-		// 			text: 'Filters',
-		// 		},
-		// 		{
-		// 			link: '/app/layouts',
-		// 			text: 'Layouts',
-		// 		},
-		// 		{
-		// 			link: '/app/import-export',
-		// 			text: 'Import / Export',
-		// 		},
-		// 		{
-		// 			link: '/app/project-settings',
-		// 			text: 'Project Settings',
-		// 		},
-		// 		{
-		// 			link: '/app/data-model',
-		// 			text: 'Data Model',
-		// 			items: [
-		// 				{
-		// 					link: '/app/data-model/collections',
-		// 					text: 'Collections',
-		// 				},
-		// 				{
-		// 					link: '/app/data-model/fields',
-		// 					text: 'Fields',
-		// 					collapsible: true,
-		// 					collapsed: true,
-		// 					items: [
-		// 						{
-		// 							link: '/app/data-model/fields/text-numbers',
-		// 							text: 'Text & Numbers',
-		// 						},
-		// 						{
-		// 							link: '/app/data-model/fields/selection',
-		// 							text: 'Selection',
-		// 						},
-		// 						{
-		// 							link: '/app/data-model/fields/relational',
-		// 							text: 'Relational',
-		// 						},
-		// 						{
-		// 							link: '/app/data-model/fields/presentation',
-		// 							text: 'Presentation',
-		// 						},
-		// 						{
-		// 							link: '/app/data-model/fields/groups',
-		// 							text: 'Groups',
-		// 						},
-		// 						{
-		// 							link: '/app/data-model/fields/other',
-		// 							text: 'Other',
-		// 						},
-		// 					],
-		// 				},
-		// 				{
-		// 					link: '/app/data-model/relationships',
-		// 					text: 'Relationships',
-		// 				},
-		// 			],
-		// 		},
-		// 		{
-		// 			link: '/app/users-roles-permissions',
-		// 			text: 'Users, Roles & Permissions',
-		// 			items: [
-		// 				{
-		// 					link: '/app/users-roles-permissions/users',
-		// 					text: 'Users',
-		// 				},
-		// 				{
-		// 					link: '/app/users-roles-permissions/roles',
-		// 					text: 'Roles',
-		// 				},
-		// 				{
-		// 					link: '/app/users-roles-permissions/permissions',
-		// 					text: 'Permissions',
-		// 				},
-		// 			],
-		// 		},
-		// 		{
-		// 			link: '/app/presets-bookmarks',
-		// 			text: 'Presets & Bookmarks',
-		// 		},
-		// 		{
-		// 			link: '/app/translation-strings',
-		// 			text: 'Translation Strings',
-		// 		},
-		// 		{
-		// 			link: '/app/webhooks',
-		// 			text: 'Webhooks',
-		// 		},
-		// 		{
-		// 			link: '/app/flows',
-		// 			text: 'Flows',
-		// 			collapsible: false,
-		// 			items: [
-		// 				{
-		// 					link: '/app/flows/triggers',
-		// 					text: 'Triggers',
-		// 				},
-		// 				{
-		// 					link: '/app/flows/operations',
-		// 					text: 'Operations',
-		// 				},
-		// 			],
-		// 		},
-		// 		{
-		// 			link: '/app/activity-log',
-		// 			text: 'Activity Log',
-		// 		},
-		// 	],
-		// },
 		{
 			text: 'API Reference',
 			collapsible: true,
@@ -668,23 +506,15 @@ function sidebar() {
 function sidebarUserGuide() {
 	return [
 		{
-			text: 'Getting Started',
+			text: 'Overview',
 			items: [
 				{
-					text: 'Introduction',
-					link: '/user-guide/getting-started/introduction',
+					text: 'Data Studio App',
+					link: '/user-guide/overview/data-studio-app',
 				},
 				{
 					text: 'Quickstart Guide',
-					link: '/user-guide/getting-started/quickstart',
-				},
-				{
-					text: 'Data Studio App',
-					link: '/user-guide/getting-started/data-studio-app',
-				},
-				{
-					text: 'Managing Accounts',
-					link: '/user-guide/getting-started/managing-accounts',
+					link: '/user-guide/overview/quickstart',
 				},
 			],
 		},
@@ -815,6 +645,10 @@ function sidebarUserGuide() {
 				{
 					text: 'Activity Log',
 					link: '/user-guide/settings/activity-log',
+				},
+				{
+					text: 'Managing Accounts',
+					link: '/user-guide/settings/managing-accounts',
 				},
 			],
 		},

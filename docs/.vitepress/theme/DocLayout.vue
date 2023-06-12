@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, effect } from 'vue';
 import DefaultTheme from 'vitepress/theme';
 import { useData, useRoute } from 'vitepress';
 import ArticleFeedback from '../components/ArticleFeedback.vue';

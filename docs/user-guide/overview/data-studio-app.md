@@ -1,12 +1,17 @@
 ---
-description: The App is a no-code presentation layer for your data, content, and assets.
+description: An introduction to the Directus studio app and it's components.
 readTime: 3 min read
 ---
 
-# The Application
+# Data Studio App
 
 > The App is a no-code presentation layer for your data, content, and assets. It uses an intuitive left-to-right visual
 > hierarchy for general organization and navigation.
+
+The Directus Studio App provides users with a user-friendly and intuitive interface that allows for the seamless
+creation and management of collections, definition of relationships, and control over access permissions.
+
+The App also enables users to create flows and dashboards for internal applications.
 
 <img src="https://cdn.directus.io/docs/v9/app-guide/overview/app-overview-20220810A.svg" alt="Directus Application Overview" class="no-shadow" />
 
