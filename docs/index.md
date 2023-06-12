@@ -3,16 +3,12 @@ layout: home
 ---
 
 <script setup>
-  import Tabs from "./.vitepress/components/home/Tabs.vue"
   import CodeToggler from "./.vitepress/components/home/CodeToggler.vue"
   import UseCase from "./.vitepress/components/home/UseCase.vue"
   import Footer from "./.vitepress/components/home/Footer.vue"
   import SelfHosting from "./.vitepress/components/home/SelfHosting.vue"
   import Article from "./.vitepress/components/home/Article.vue"
   import DocCard from "./.vitepress/components/home/DocCard.vue"
-  import BugReport from "./.vitepress/components/home/icons/BugReport.vue"
-  import PR from "./.vitepress/components/home/icons/PR.vue"
-  import Request from "./.vitepress/components/home/icons/Request.vue"
   import Github from "./.vitepress/components/home/icons/Github.vue"
 </script>
 
@@ -31,7 +27,57 @@ layout: home
       <CodeToggler class="hero-toggler" />
     </div>
 
-  <Tabs />
+<Tabs :tabs="['Developer Reference', 'User Guide']">
+	<template #developer-reference>
+		<Card
+			title="Authentication"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+		<Card
+			title="GraphQL"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+		<Card
+			title="APIs"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+		<Card
+			title="Extensions"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+		<Card
+			title="Real Time"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+		<Card
+			title="Self Hosting"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+	</template>
+	<template #user-guide>
+		<Card
+			title="Extensions"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+		<Card
+			title="Real Time"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+		<Card
+			title="Self Hosting"
+			text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+			url="https://www.google.com/"
+		/>
+	</template>
+</Tabs>
 
  <div class="hero-container gray-bg ">
       <div class="header centered-text vp-doc ">
