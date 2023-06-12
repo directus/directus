@@ -90,33 +90,27 @@ projects with our feature-rich toolkit that configures your backend logic." img=
         </div>
       </div>
       <div class="grid-3">
-      			<DocCard
-    				title="Report a Bug"
-    				desc="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
-    				url="https://www.google.com/"
-    			>
-    				<template v-slot:icon>
-    					<BugReport />
-    				</template>
-    			</DocCard>
-          	<DocCard
-    				title="Create a PR"
-    				desc="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
-    				url="https://www.google.com/"
-    			>
-    				<template v-slot:icon>
-    					<PR />
-    				</template>
-    			</DocCard>
-          	<DocCard
-    				title="Request a Feature"
-    				desc="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
-    				url="https://www.google.com/"
-    			>
-    				<template v-slot:icon>
-    					<Request />
-    				</template>
-    			</DocCard>
+			<Card
+				h="3"
+				title="Report a Bug"
+				text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+				url="https://www.google.com/"
+				icon="bug_report"
+			/>
+			<Card
+				h="3"
+				title="Create a PR"
+				text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+				url="https://www.google.com/"
+				icon="domain_verification"
+			/>
+			<Card
+				h="3"
+				title="Request a Feature"
+				text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+				url="https://www.google.com/"
+				icon="post_add"
+			/>
           </div>
       </div>
       <Footer />
@@ -124,7 +118,7 @@ projects with our feature-rich toolkit that configures your backend logic." img=
 <style>
 .VPHome {
   max-width: unset;
-  
+
 }
 .VPHome[data-v-ecbca2fe] {
  padding-bottom: 0;
@@ -174,12 +168,12 @@ hr {
   font-size: 60px;
   font-weight: 900;
   line-height: 1;
-  
+
 }
 .hero-content p {
   font-size: 21px;
   line-height: 1.5;
- 
+
 }
 .hero-buttons {
   margin: 48px 0;
@@ -210,7 +204,7 @@ hr {
   border-radius: 8px;
   width: 100%;
   max-width: 590px;
-  
+
 }
 .flex {
   display: flex;
