@@ -803,14 +803,15 @@ await directus.comments.update(/* comment activity id */ 15, 'Yo, dawg!');
 
 ### Delete a comment
 
-````js
+```js
 await directus.comments.delete(/* comment activity id */ 15);
+```
 
 ## Collections
 
 ```js
 directus.collections;
-````
+```
 
 ### Read a single collection
 

@@ -11,6 +11,8 @@ exports.list = {
 		{ testFilePath: '/schema/timezone/timezone.test.ts' },
 		{ testFilePath: '/schema/timezone/timezone-changed-node-tz-america.test.ts' },
 		{ testFilePath: '/schema/timezone/timezone-changed-node-tz-asia.test.ts' },
+		{ testFilePath: '/websocket/auth.test.ts' },
+		{ testFilePath: '/websocket/general.test.ts' },
 		{ testFilePath: '/flows/schedule-hook.test.ts' },
 		{ testFilePath: '/logger/redact.test.ts' },
 		{ testFilePath: '/routes/permissions/cache-purge.test.ts' },
