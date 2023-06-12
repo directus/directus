@@ -33,3 +33,12 @@
 #hubspot-messages-iframe-container {
 	color-scheme: auto;
 }
+
+.vp-doc .custom-block li + li {
+	margin: 0;
+}
+
+.vp-doc .custom-block a {
+	font-weight: 500;
+	text-decoration: underline;
+}
