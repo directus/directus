@@ -28,7 +28,7 @@
 	--vp-c-purple-darker: #4422dd;
 	--vp-c-purple-dimm-1: rgba(102, 68, 255, 0.5);
 	--vp-c-purple-dimm-2: rgba(102, 68, 255, 0.25);
-	--vp-c-purple-dimm-3: rgba(102, 68, 255, 0.05);
+	--vp-c-purple-dimm-3: rgba(102, 68, 255, 0.09);
 
 	--vp-c-yellow: #fbc54f;
 	--vp-c-yellow-light: #fff7ed;
@@ -65,7 +65,7 @@
 	--vp-c-purple: #8866ff;
 	--vp-c-purple-dimm-1: rgba(136, 102, 255, 0.5);
 	--vp-c-purple-dimm-2: rgba(136, 102, 255, 0.25);
-	--vp-c-purple-dimm-3: rgba(136, 102, 255, 0.05);
+	--vp-c-purple-dimm-3: rgba(159, 132, 255, 0.1);
 }
 
 /**
