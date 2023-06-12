@@ -107,7 +107,7 @@ gtag('config', 'UA-24637628-7');
 			'link',
 			{
 				rel: 'stylesheet',
-				href: 'https://fonts.googleapis.com/css2?family=Material+Icons+Outlined',
+				href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',
 			},
 		],
 		[
@@ -167,10 +167,6 @@ function sidebar() {
 				{
 					text: 'Help & Support',
 					link: '/getting-started/support',
-				},
-				{
-					text: 'Backing Directus',
-					link: '/getting-started/backing-directus',
 				},
 				{
 					text: 'Resources',
@@ -492,26 +488,41 @@ function sidebar() {
 							link: '/guides/headless-cms/reusable-components',
 						},
 						{
-							link: '/guides/headless-cms/schedule-content/index.html',
+							link: '/guides/headless-cms/schedule-content/',
 							text: 'Scheduling Future Content',
 						},
 						{
-							link: '/guides/headless-cms/trigger-static-builds/index.html',
+							link: '/guides/headless-cms/trigger-static-builds/',
 							text: 'Trigger Static Site Builds',
 						},
 						{
 							text: 'Build a Static Website',
-							link: '/guides/headless-cms/build-static-website/index.html',
+							link: '/guides/headless-cms/build-static-website/',
 						},
-            {
+						{
 							text: 'Set Up Live Preview',
-							link: '/guides/headless-cms/live-preview/index.html',
+							link: '/guides/headless-cms/live-preview/',
+						},
+						{
+							text: 'Content Translations (i18n)',
+							link: '/guides/headless-cms/content-translations',
 						},
 					],
 				},
 				{
 					link: '/guides/migration/index.html',
 					text: 'Schema Migration',
+				},
+				{
+					text: 'Real-Time',
+					items: [
+						{ text: 'Getting Started', link: '/guides/real-time/getting-started/index.html' },
+						{ text: 'Authentication', link: '/guides/real-time/authentication' },
+						{ text: 'Operations', link: '/guides/real-time/operations' },
+						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
+						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
+						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
+					],
 				},
 			],
 		},
@@ -607,22 +618,19 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{ link: '/contributing/introduction', text: 'Introduction' },
 				{
-					link: '/contributing/introduction',
-					text: 'Introduction',
+					text: 'Code',
+					items: [
+						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
+						{ link: '/contributing/pull-request-process', text: 'Pull Request Process' },
+						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
+						{ link: '/contributing/running-locally', text: 'Running Locally' },
+						{ link: '/contributing/tests', text: 'Tests' },
+					],
 				},
-				{
-					link: '/contributing/running-locally',
-					text: 'Running Locally',
-				},
-				{
-					link: '/contributing/codebase-overview',
-					text: 'Codebase Overview',
-				},
-				{
-					link: '/contributing/tests',
-					text: 'Tests',
-				},
+				{ link: '/contributing/community', text: 'Community' },
+				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' },
 			],
 		},
 		{

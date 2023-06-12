@@ -1,21 +1,33 @@
-<script setup>
-const props = defineProps({
-	title: { type: String, required: true },
-	h: { type: String, required: false, default: '2' },
-	text: { type: String, required: true },
-	icon: { type: String, required: false, default: "/icons/card_link.svg" },
-	url: { type: String, required: false, default: null },
+<script setup lang="ts">
+import { computed } from 'vue';
+
+interface CardProps {
+	title: string;
+	h?: '1' | '2' | '3' | '4' | '5';
+	text: string;
+	icon?: string;
+	url?: string;
+	addMargin?: boolean;
+}
+
+const props = withDefaults(defineProps<CardProps>(), {
+	h: '2',
+	icon: 'link',
+	addMargin: true,
 });
 
-const tagType = props.url ? 'a' : 'div';
-const headerType = 'h' + props.h;
+const tagType = computed(() => (props.url ? 'a' : 'div'));
+const headerType = computed(() => 'h' + props.h);
+const iconIsImage = computed(() => props.icon.startsWith('/'));
 </script>
 
 <template>
-	<component :is="tagType" :href="url" class="card" :class="{ 'no-icon': !icon }">
+	<component :is="tagType" :href="url" class="card" :class="{ margin: addMargin }">
 		<div v-if="icon" class="icon">
-			<img v-if="icon" :src="icon" alt="" />
+			<img v-if="iconIsImage" :src="icon" alt="" />
+			<span mi v-else>{{ icon }}</span>
 		</div>
+
 		<div class="text">
 			<component :is="headerType">{{ title }}</component>
 			<p>{{ text }}</p>
@@ -25,68 +37,75 @@ const headerType = 'h' + props.h;
 
 <style scoped>
 .card {
-	border: 2px solid var(--vp-c-brand-light);
+	display: flex;
+	border: 1px solid var(--vp-c-divider);
 	border-radius: 8px;
-	transition: border-color 0.25s, background-color 0.25s;
-	padding: 1.5rem;
-	color: inherit;
-	display: grid;
-	grid-template-columns: 44px auto;
-	gap: 1.5em;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	box-shadow: 0 0 4px var(--vp-c-brand-light) ;
+	padding: 24px;
+	width: 100%;
+	height: 100%;
+	transition: border-color 0.25s;
+	gap: 20px;
 }
 
-.card p {
-	color: var(--vp-c-gray);
-}
-.card.no-icon {
-	grid-template-columns: auto;
+.card.margin {
+	margin: 1rem 0;
 }
 
 .card:hover {
-	border: 2px solid var(--vp-c-brand);
-	box-shadow: 0 0 8px var(--vp-c-brand) ;
-	text-decoration: underline;
-}
-.icon {
-	width: 44px;
-}
-img {
-	border: none !important;
-	width: auto;
-	border-radius: 0 !important;
+	border-color: var(--vp-c-brand);
+	text-decoration: none;
 }
 
-.vp-doc h2 {
-	padding-top: 0;
+.icon {
+	width: 54px;
+	height: 54px;
+	background: var(--vp-c-purple-dimm-3);
+	border-radius: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+}
+
+.icon:has(img) {
+	background: var(--vp-c-bg-soft-up);
+}
+
+.icon span[mi] {
+	font-size: 24px;
+	font-variation-settings: 'opsz' 24, 'wght' 500;
+	color: var(--vp-c-purple);
+}
+
+.icon img {
+	width: 24px;
+	height: 24px;
+	object-fit: contain;
+	object-position: center center;
+	box-shadow: none;
+	border-radius: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 24px;
+	padding: 0;
 	margin: 0;
 	border: none;
-}
-.vp-doc h3 {
-	margin-top: 0;
-}
-.vp-doc h2,
-.vp-doc h3 {
-	font-weight: 600;
-	font-size: 1.25rem;
-	margin-top: -0.25rem;
-	margin-bottom: 0.25rem;
-}
-.vp-doc p {
-	line-height: inherit;
-	margin: 0;
+	color: var(--vp-c-text-1);
+	margin-bottom: 4px;
 }
 
-@media screen and (max-width: 770px) {
-	.card {
-		grid-template-columns: auto;
-		gap: 0;
-	}
-	.vp-doc h2,
-	.vp-doc h3 {
-		margin-top: 1em;
-	}
+p {
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+	color: var(--vp-c-text-2);
+	line-height: 22px;
 }
 </style>

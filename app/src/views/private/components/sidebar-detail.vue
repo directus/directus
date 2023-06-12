@@ -27,9 +27,9 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue';
-import { useAppStore } from '@/stores/app';
 import { useGroupable } from '@directus/composables';
+import { useAppStore } from '@directus/stores';
+import { toRefs } from 'vue';
 
 const props = defineProps<{
 	icon: string;
