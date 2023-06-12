@@ -13,10 +13,10 @@
 		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
 	},
 	"dependencies": {
-		"node-fetch": "3.3.1",
-		"@directus/format-title": "10.0.0"
+		"node-fetch": "3.3.1"
 	},
 	"devDependencies": {
+		"@directus/format-title": "10.0.0",
 		"@thumbsmith/url": "0.1.3",
 		"@unhead/vue": "1.1.26",
 		"spellchecker-cli": "6.1.1",
