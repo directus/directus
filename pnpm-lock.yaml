@@ -883,13 +883,13 @@ importers:
 
   docs:
     dependencies:
+      '@directus/format-title':
+        specifier: 10.0.0
+        version: 10.0.0
       node-fetch:
         specifier: 3.3.1
         version: 3.3.1
     devDependencies:
-      '@directus/typedocs':
-        specifier: workspace:*
-        version: link:../packages/typedocs
       '@thumbsmith/url':
         specifier: 0.1.3
         version: 0.1.3
@@ -899,6 +899,15 @@ importers:
       spellchecker-cli:
         specifier: 6.1.1
         version: 6.1.1
+      typedoc:
+        specifier: ^0.24.7
+        version: 0.24.7(typescript@5.0.4)
+      typedoc-plugin-markdown:
+        specifier: 4.0.0-next.13
+        version: 4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7)
+      typedoc-vitepress-theme:
+        specifier: 1.0.0-next.2
+        version: 1.0.0-next.2(typedoc-plugin-markdown@4.0.0-next.13)
       vitepress:
         specifier: 1.0.0-alpha.75
         version: 1.0.0-alpha.75(@algolia/client-search@4.17.0)
@@ -1455,48 +1464,6 @@ importers:
         version: 5.0.4
 
   packages/tsconfig: {}
-
-  packages/typedocs:
-    devDependencies:
-      '@directus/composables':
-        specifier: workspace:*
-        version: link:../composables
-      '@directus/constants':
-        specifier: workspace:*
-        version: link:../constants
-      '@directus/exceptions':
-        specifier: workspace:*
-        version: link:../exceptions
-      '@directus/extensions-sdk':
-        specifier: workspace:*
-        version: link:../extensions-sdk
-      '@directus/pressure':
-        specifier: workspace:*
-        version: link:../pressure
-      '@directus/random':
-        specifier: workspace:*
-        version: link:../random
-      '@directus/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@directus/stores':
-        specifier: workspace:*
-        version: link:../stores
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../types
-      '@directus/update-check':
-        specifier: workspace:*
-        version: link:../update-check
-      typedoc:
-        specifier: ^0.24.7
-        version: 0.24.7(typescript@5.0.4)
-      typedoc-plugin-markdown:
-        specifier: 4.0.0-next.13
-        version: 4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7)
-      typedoc-vitepress-theme:
-        specifier: 1.0.0-next.2
-        version: 1.0.0-next.2(typedoc-plugin-markdown@4.0.0-next.13)
 
   packages/types:
     devDependencies:

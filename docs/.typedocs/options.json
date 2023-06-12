@@ -1,0 +1,20 @@
+{
+    "entryPoints": [
+        "../../packages/composables",
+        "../../packages/constants",
+        "../../packages/exceptions",
+        "../../packages/extensions-sdk",
+        "../../packages/pressure",
+        "../../packages/random",
+        "../../packages/sdk",
+        "../../packages/stores",
+        "../../packages/types",
+        "../../packages/update-check"
+    ],
+    "name": "Directus",
+    "entryPointStrategy": "packages",
+    "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+    "out": "../packages",
+    "docsRoot": "/",
+    "readme": "./home.md"
+}
