@@ -7,11 +7,13 @@ interface CardProps {
 	text: string;
 	icon?: string;
 	url?: string;
+	addMargin?: boolean;
 }
 
 const props = withDefaults(defineProps<CardProps>(), {
 	h: '2',
 	icon: 'link',
+	addMargin: true,
 });
 
 const tagType = computed(() => (props.url ? 'a' : 'div'));
@@ -20,10 +22,10 @@ const iconIsImage = computed(() => props.icon.startsWith('/'));
 </script>
 
 <template>
-	<component :is="tagType" :href="url" class="card" :class="{ 'no-icon': !icon }">
+	<component :is="tagType" :href="url" class="card" :class="{ margin: addMargin }">
 		<div v-if="icon" class="icon">
 			<img v-if="iconIsImage" :src="icon" alt="" />
-			<span mi else>{{ icon }}</span>
+			<span mi v-else>{{ icon }}</span>
 		</div>
 
 		<div class="text">
@@ -45,6 +47,10 @@ const iconIsImage = computed(() => props.icon.startsWith('/'));
 	gap: 20px;
 }
 
+.card.margin {
+	margin: 1rem 0;
+}
+
 .card:hover {
 	border-color: var(--vp-c-brand);
 	text-decoration: none;
@@ -61,10 +67,23 @@ const iconIsImage = computed(() => props.icon.startsWith('/'));
 	flex-shrink: 0;
 }
 
+.icon:has(img) {
+	background: var(--vp-c-bg-soft-up);
+}
+
 .icon span[mi] {
 	font-size: 24px;
 	font-variation-settings: 'opsz' 24, 'wght' 500;
 	color: var(--vp-c-purple);
+}
+
+.icon img {
+	width: 24px;
+	height: 24px;
+	object-fit: contain;
+	object-position: center center;
+	box-shadow: none;
+	border-radius: 0;
 }
 
 h1,
