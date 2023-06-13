@@ -5,9 +5,5 @@ export default defineTheme({
 	appearance: 'light',
 	rules: {
 		foreground: '#000',
-		'header.foreground': '#ff0000',
-		'header.title.family': '',
-		'header.title.size': '42px',
-		'header.title.weight': 700,
 	},
 });
