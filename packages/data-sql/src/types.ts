@@ -26,6 +26,7 @@ export interface SqlStatement {
 	select: SqlStatementSelectPrimitive[];
 	from: string;
 	limit?: number;
+	offset?: number;
 
 	// parameters: (string | boolean | number)[];
 }

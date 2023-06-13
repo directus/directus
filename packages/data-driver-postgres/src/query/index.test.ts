@@ -38,3 +38,15 @@ test('statement with a limit', () => {
 		values: [sample.statement.limit],
 	});
 });
+
+test('statement with a limit', () => {
+	sample.statement.limit = randomInteger(1, 100);
+	sample.statement.offset = randomInteger(1, 100);
+
+	expect(constructSql(sample.statement)).toEqual({
+		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
+			sample.statement.select[1]!.table
+		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1 OFFSET $2;`,
+		values: [sample.statement.limit, sample.statement.offset],
+	});
+});
