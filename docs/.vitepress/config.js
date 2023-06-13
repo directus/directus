@@ -181,10 +181,6 @@ function sidebar() {
 					text: 'Resources',
 					link: '/getting-started/resources',
 				},
-				{
-					text: 'Glossary',
-					link: '/getting-started/glossary',
-				},
 			],
 		},
 		{
@@ -516,6 +512,10 @@ function sidebarUserGuide() {
 					text: 'Quickstart Guide',
 					link: '/user-guide/overview/quickstart',
 				},
+				{
+					text: 'Glossary',
+					link: '/user-guide/overview/glossary',
+				},
 			],
 		},
 		{
@@ -573,6 +573,25 @@ function sidebarUserGuide() {
 			],
 		},
 		{
+			text: 'Project Overview',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Projects',
+					link: '/user-guide/projects/projects',
+				},
+				{
+					text: 'Teams',
+					link: '/user-guide/projects/teams',
+				},
+				{
+					text: 'Project Settings',
+					link: '/user-guide/projects/project-settings',
+				},
+			],
+		},
+		{
 			text: 'User Management',
 			collapsible: true,
 			collapsed: true,
@@ -592,6 +611,14 @@ function sidebarUserGuide() {
 				{
 					text: 'User Directory',
 					link: '/user-guide/user-management/user-directory',
+				},
+				{
+					text: 'Projects',
+					link: '/user-guide/user-management/projects',
+				},
+				{
+					text: 'Teams',
+					link: '/user-guide/user-management/teams',
 				},
 			],
 		},
@@ -634,10 +661,6 @@ function sidebarUserGuide() {
 			collapsible: true,
 			collapsed: true,
 			items: [
-				{
-					text: 'Project Settings',
-					link: '/user-guide/settings/project-settings',
-				},
 				{
 					text: 'Preset and Bookmarks',
 					link: '/user-guide/settings/presets-bookmarks',
