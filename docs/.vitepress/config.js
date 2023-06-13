@@ -1,5 +1,5 @@
+import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
-import { formatTitle } from '@directus/format-title'
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 
 export default defineConfig({
@@ -150,19 +150,18 @@ gtag('config', 'UA-24637628-7');
 	},
 });
 
-function typeDocSidebarFormat(item){
-
-	if(item.link !== null && !item.link.startsWith('/packages')){
+function typeDocSidebarFormat(item) {
+	if (item.link !== null && !item.link.startsWith('/packages')) {
 		item.link = item.link.substring(item.link.indexOf('/packages'));
 	}
 
-	if(item.items){
+	if (item.items) {
 		item.items = item.items.filter((subItem) => {
 			return subItem.link !== null || subItem.items.length > 0;
 		});
 	}
 
-	if(item.text.startsWith('@directus/')){
+	if (item.text.startsWith('@directus/')) {
 		item.items.unshift({
 			text: 'Overview',
 			link: `/packages/${item.text}/`,
@@ -170,10 +169,10 @@ function typeDocSidebarFormat(item){
 			collapsed: true,
 		});
 		item.text = formatTitle(item.text.replace('@directus/', ''));
-		item.text = item.text.replace('Sdk', 'SDK')
+		item.text = item.text.replace('Sdk', 'SDK');
 	}
 
-	if(item?.items?.length > 0){
+	if (item?.items?.length > 0) {
 		item.items.map((subItem) => {
 			return typeDocSidebarFormat(subItem);
 		});
@@ -612,7 +611,7 @@ function sidebar() {
 					text: 'Creating Extensions',
 				},
 				{
-					text: "Extension Types",
+					text: 'Extension Types',
 					collapsed: true,
 					items: [
 						{
@@ -663,11 +662,11 @@ function sidebar() {
 							link: '/extensions/bundles',
 							text: 'Bundles',
 						},
-					]
+					],
 				},
 				{
-					text: "Packages",
-					link: '/contributing/codebase-overview.html#packages-packages'
+					text: 'Packages',
+					link: '/contributing/codebase-overview.html#packages-packages',
 				},
 			],
 		},
