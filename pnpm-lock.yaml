@@ -185,6 +185,9 @@ importers:
       graphql-compose:
         specifier: 9.0.10
         version: 9.0.10(graphql@16.6.0)
+      graphql-ws:
+        specifier: 5.12.0
+        version: 5.12.0(graphql@16.6.0)
       helmet:
         specifier: 7.0.0
         version: 7.0.0
@@ -326,6 +329,15 @@ importers:
       wellknown:
         specifier: 0.5.0
         version: 0.5.0
+      ws:
+        specifier: 8.12.1
+        version: 8.12.1
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4
+      zod-validation-error:
+        specifier: 1.0.1
+        version: 1.0.1(zod@3.21.4)
     optionalDependencies:
       '@keyv/redis':
         specifier: 2.5.8
@@ -469,6 +481,9 @@ importers:
       '@types/wellknown':
         specifier: 0.5.4
         version: 0.5.4
+      '@types/ws':
+        specifier: 8.5.4
+        version: 8.5.4
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
@@ -1613,6 +1628,9 @@ importers:
       '@types/uuid':
         specifier: 9.0.1
         version: 9.0.1
+      '@types/ws':
+        specifier: 8.5.4
+        version: 8.5.4
       autocannon:
         specifier: 7.11.0
         version: 7.11.0
@@ -1622,6 +1640,9 @@ importers:
       globby:
         specifier: 11.1.0
         version: 11.1.0
+      graphql-ws:
+        specifier: 5.12.0
+        version: 5.12.0(graphql@16.6.0)
       jest:
         specifier: 29.5.0
         version: 29.5.0
@@ -1658,6 +1679,9 @@ importers:
       uuid:
         specifier: 9.0.0
         version: 9.0.0
+      ws:
+        specifier: 8.12.1
+        version: 8.12.1
 
 packages:
 
@@ -7085,7 +7109,7 @@ packages:
       ts-dedent: 2.2.0
       util-deprecate: 1.0.2
       watchpack: 2.4.0
-      ws: 8.13.0
+      ws: 8.12.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -8035,6 +8059,12 @@ packages:
 
   /@types/wellknown@0.5.4:
     resolution: {integrity: sha512-zcsf4oHeEcvpvWhDOB1+qNK04oFJtsmv7Otb1Vy8w8GAqQkgRrVkI/C76PdwtpiT216aM1SbhkKgKWzGLhHKng==}
+    dev: true
+
+  /@types/ws@8.5.4:
+    resolution: {integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==}
+    dependencies:
+      '@types/node': 18.16.12
     dev: true
 
   /@types/yargs-parser@21.0.0:
@@ -12356,6 +12386,14 @@ packages:
     dependencies:
       graphql: 16.6.0
     dev: false
+
+  /graphql-ws@5.12.0(graphql@16.6.0):
+    resolution: {integrity: sha512-PA3ImUp8utrpEjoxBMhvxsjkStvFEdU0E1gEBREt8HZIWkxOUymwJBhFnBL7t/iHhUq1GVPeZevPinkZFENxTw==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      graphql: '>=0.11 <=16'
+    dependencies:
+      graphql: 16.6.0
 
   /graphql@16.6.0:
     resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
@@ -20817,6 +20855,18 @@ packages:
         optional: true
     dev: true
 
+  /ws@8.12.1:
+    resolution: {integrity: sha512-1qo+M9Ba+xNhPB+YTWUlK6M17brTut5EXbcBaMRN5pH5dFrXz7lzz1ChFSUq3bOUl8yEvSenhHmYUNJxFzdJew==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   /ws@8.13.0:
     resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
     engines: {node: '>=10.0.0'}
@@ -20990,6 +21040,15 @@ packages:
   /zhead@2.0.4:
     resolution: {integrity: sha512-V4R94t3ifk9AURym6OskbKcnowzgp5Z88tkoL/NF67vyryNxC62u6mx5F1Ux4oh4+YN7FFmKYEyWy6m5kfPH6g==}
     dev: true
+
+  /zod-validation-error@1.0.1(zod@3.21.4):
+    resolution: {integrity: sha512-QRk2AtHLJg8sCZAbEjXSs7E0n4/mSdX5caoh6eOUvDSdcIQz03i0xoNN1Qx6UZT+ADVHRK6+ZXRtldzW6nnltA==}
+    engines: {node: ^14.17 || >=16.0.0}
+    peerDependencies:
+      zod: ^3.18.0
+    dependencies:
+      zod: 3.21.4
+    dev: false
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
