@@ -9,7 +9,6 @@ export interface BaseClientConfig extends Record<string, any> {
 }
 
 export interface GenericClient<Schema extends object, Features extends object> {
-	// baseUrl: string;
 	token: {
 		access?: string;
 		refresh?: string;

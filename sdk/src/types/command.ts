@@ -1,4 +1,5 @@
 import type { DirectusClient } from '../client.js';
+import type { RESTRequestOptions } from '../composables/rest.js';
 
 export interface Command<
 	_Input extends object,
@@ -8,6 +9,12 @@ export interface Command<
 > {
 	(client: Client): Promise<Output>;
 }
+
+export type RESTCommand<
+	_Schema extends object,
+	_Options extends object,
+	_Output extends object | unknown
+> = RESTRequestOptions;
 
 export type ApiError = {
 	message: string;
