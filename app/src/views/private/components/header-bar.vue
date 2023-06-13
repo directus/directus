@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
 
 withDefaults(
@@ -163,7 +163,6 @@ onUnmounted(() => {
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
-				color: v-bind('rules["header.foreground"]');
 			}
 
 			:deep(.type-title) {
