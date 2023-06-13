@@ -71,7 +71,10 @@ export async function setPreviewUrl(...urls: string[]) {
 }
 
 async function updatePreviewUrls() {
-	const urls = (await getDatabase().select('preview_url').from('directus_collections').whereNotNull('preview_url')).map(
+	const database = getDatabase();
+	if (!database) return;
+
+	const urls = (await database.select('preview_url').from('directus_collections').whereNotNull('preview_url')).map(
 		({ preview_url }) => preview_url
 	);
 
