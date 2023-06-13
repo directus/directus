@@ -5,7 +5,7 @@ import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type }
 import { addFieldFlag, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { isEqual, isNil } from 'lodash-es';
+import { isEqual, isNil, merge } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import type { Helpers } from '../database/helpers/index.js';
@@ -306,9 +306,17 @@ export class FieldsService {
 				}
 
 				if (hookAdjustedField.meta) {
+					const existingSortRecord: Record<'max', number | null> | undefined = await trx
+						.from('directus_fields')
+						.where(hookAdjustedField.meta?.group ? { collection, group: hookAdjustedField.meta.group } : { collection })
+						.max('sort', { as: 'max' })
+						.first();
+
+					const newSortValue: number = existingSortRecord?.max ? existingSortRecord.max + 1 : 1;
+
 					await itemsService.createOne(
 						{
-							...hookAdjustedField.meta,
+							...merge({ sort: newSortValue }, hookAdjustedField.meta),
 							collection: collection,
 							field: hookAdjustedField.field,
 						},
