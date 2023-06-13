@@ -80,6 +80,9 @@ create_user: Opprett bruker
 message: Melding
 delete_panel: Slett panel
 create_webhook: Lag Webhook
+create_custom_translation: Opprett egendefinert oversettelse
+edit_custom_translation: Rediger egendefinert oversettelse
+no_custom_translations: Ingen egendefinerte oversettelser
 invite_users: Invitere brukere
 invite: Inviter
 email_already_invited: E-postadressen "{email}" er allerede invitert
@@ -346,6 +349,7 @@ interface_label: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
+delete_share: Slett Del
 functions:
   year: År
   month: Måned
@@ -394,6 +398,7 @@ modified: Endret
 owner: Eier
 edited_by: Redigert av
 folder: Mappe
+folders: Mapper
 zoom: Zoom
 download: Last ned
 open: Åpen
@@ -770,6 +775,8 @@ interfaces:
     any: Noen
   presentation-links:
     primary: Primær
+  select-multiple-checkbox-tree:
+    show_all: Vis alle
   system-collection:
     collection: Kolleksjon
   system-collections:
