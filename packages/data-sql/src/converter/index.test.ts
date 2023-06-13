@@ -1,7 +1,8 @@
-import { getRandomIdentifier, type AbstractQuery, type AbstractQueryFieldNodePrimitive } from '@directus/data';
+import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { SqlStatement } from '../types.js';
 import { convertAbstractQueryToSqlStatement } from './index.js';
+import { randomIdentifier } from '@directus/random';
 
 let sample: {
 	query: AbstractQuery;
@@ -11,16 +12,16 @@ beforeEach(() => {
 	sample = {
 		query: {
 			root: true,
-			store: getRandomIdentifier(),
-			collection: getRandomIdentifier(),
+			store: randomIdentifier(),
+			collection: randomIdentifier(),
 			nodes: [
 				{
 					type: 'primitive',
-					field: getRandomIdentifier(),
+					field: randomIdentifier(),
 				},
 				{
 					type: 'primitive',
-					field: getRandomIdentifier(),
+					field: randomIdentifier(),
 				},
 			],
 		},

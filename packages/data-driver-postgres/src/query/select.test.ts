@@ -1,7 +1,7 @@
 import type { SqlStatement } from '@directus/data-sql';
 import { beforeEach, expect, test } from 'vitest';
 import { select } from './select.js';
-import { getRandomIdentifier } from '@directus/data';
+import { randomIdentifier } from '@directus/random';
 
 let sample: {
 	statement: SqlStatement;
@@ -13,13 +13,13 @@ beforeEach(() => {
 			select: [
 				{
 					type: 'primitive',
-					column: getRandomIdentifier(),
-					table: getRandomIdentifier(),
-					as: getRandomIdentifier(),
+					column: randomIdentifier(),
+					table: randomIdentifier(),
+					as: randomIdentifier(),
 				},
-				{ type: 'primitive', column: getRandomIdentifier(), table: getRandomIdentifier() },
+				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
 			],
-			from: getRandomIdentifier(),
+			from: randomIdentifier(),
 		},
 	};
 });

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { getRandomIdentifier, type AbstractQuery, type DataDriver } from './index.js';
+import type { AbstractQuery, DataDriver } from './index.js';
 import { DataEngine } from './index.js';
+import { randomIdentifier } from '@directus/random';
 
 let engine: DataEngine;
 
@@ -16,7 +17,7 @@ beforeEach(async () => {
 			register: vi.fn(),
 			destroy: vi.fn(),
 		},
-		mockStoreIdentifier: getRandomIdentifier(),
+		mockStoreIdentifier: randomIdentifier(),
 	};
 
 	engine = new DataEngine();
@@ -41,7 +42,7 @@ describe('#query', () => {
 		const query: AbstractQuery = {
 			store: sample.mockStoreIdentifier,
 			root: true,
-			collection: getRandomIdentifier(),
+			collection: randomIdentifier(),
 			nodes: [],
 		};
 
