@@ -39,13 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import HeaderBarActions from './header-bar-actions.vue';
-import { useThemeStore } from '@directus/themes';
-import { storeToRefs } from 'pinia';
-
-const themesStore = useThemeStore();
-const { rules } = storeToRefs(themesStore);
 
 withDefaults(
 	defineProps<{

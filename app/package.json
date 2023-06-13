@@ -36,7 +36,6 @@
 		"@directus/exceptions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
-		"@directus/themes": "workspace:*",
 		"@directus/stores": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
