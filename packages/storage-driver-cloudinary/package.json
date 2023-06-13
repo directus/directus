@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-cloudinary",
-	"version": "10.0.4",
+	"version": "10.0.5",
 	"description": "Cloudinary file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
