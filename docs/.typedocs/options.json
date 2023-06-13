@@ -8,6 +8,7 @@
         "../../packages/random",
         "../../packages/sdk",
         "../../packages/stores",
+        "../../packages/themes",
         "../../packages/types",
         "../../packages/update-check"
     ],
