@@ -1,23 +1,22 @@
-# Views
+# `@directus/components`
 
 > **Warning**\
 > This is a work in progress, and is not intended for production use.
 
-This package will contain the basic page views used in the Directus app. This includes the Public, Private, and Shared
-view.
+This package will contain the basic components used in the Directus app.
 
 ## Usage
 
 ```
-pnpm add @directus/views
+pnpm add @directus/components
 ```
 
 ```vue
 <script setup lang="ts">
-import { PrivateView } from '@directus/views';
+import { SomeComponent } from '@directus/components';
 </script>
 
 <template>
-	<PrivateView />
+	<SomeComponent />
 </template>
 ```
