@@ -1,1 +1,1 @@
-// export * from './y.js';
+export * from './accordion-list/index.js';
