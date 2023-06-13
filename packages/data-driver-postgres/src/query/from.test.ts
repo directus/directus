@@ -1,7 +1,7 @@
 import type { SqlStatement } from '@directus/data-sql';
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import { from } from './from.js';
+import { getRandomIdentifier } from '@directus/data';
 
 let sample: {
 	statement: SqlStatement;
@@ -11,7 +11,7 @@ beforeEach(() => {
 	sample = {
 		statement: {
 			select: [],
-			from: randomAlpha(randomInteger(3, 25)),
+			from: getRandomIdentifier(),
 		},
 	};
 });

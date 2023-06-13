@@ -37,3 +37,4 @@ export class DataEngine {
 }
 
 export type * from './types/index.js';
+export * from './utils.js';

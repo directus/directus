@@ -1,7 +1,7 @@
 import type { SqlStatement } from '@directus/data-sql';
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import { constructSql } from './index.js';
+import { getRandomIdentifier } from '@directus/data';
 
 let sample: {
 	statement: SqlStatement;
@@ -11,10 +11,10 @@ beforeEach(() => {
 	sample = {
 		statement: {
 			select: [
-				{ type: 'primitive', column: randomAlpha(randomInteger(3, 25)), table: randomAlpha(randomInteger(3, 25)) },
-				{ type: 'primitive', column: randomAlpha(randomInteger(3, 25)), table: randomAlpha(randomInteger(3, 25)) },
+				{ type: 'primitive', column: getRandomIdentifier(), table: getRandomIdentifier() },
+				{ type: 'primitive', column: getRandomIdentifier(), table: getRandomIdentifier() },
 			],
-			from: randomAlpha(randomInteger(3, 25)),
+			from: getRandomIdentifier(),
 		},
 	};
 });

@@ -1,6 +1,5 @@
-import { randomAlpha, randomInteger } from '@directus/random';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { AbstractQuery, DataDriver } from './index.js';
+import { getRandomIdentifier, type AbstractQuery, type DataDriver } from './index.js';
 import { DataEngine } from './index.js';
 
 let engine: DataEngine;
@@ -17,7 +16,7 @@ beforeEach(async () => {
 			register: vi.fn(),
 			destroy: vi.fn(),
 		},
-		mockStoreIdentifier: randomAlpha(randomInteger(3, 25)),
+		mockStoreIdentifier: getRandomIdentifier(),
 	};
 
 	engine = new DataEngine();
@@ -42,7 +41,7 @@ describe('#query', () => {
 		const query: AbstractQuery = {
 			store: sample.mockStoreIdentifier,
 			root: true,
-			collection: randomAlpha(randomInteger(3, 25)),
+			collection: getRandomIdentifier(),
 			nodes: [],
 		};
 

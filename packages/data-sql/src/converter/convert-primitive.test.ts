@@ -1,5 +1,4 @@
-import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
-import { randomAlpha, randomInteger } from '@directus/random';
+import { getRandomIdentifier, type AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import { convertPrimitive } from './convert-primitive.js';
 
@@ -12,9 +11,9 @@ beforeEach(() => {
 	sample = {
 		node: {
 			type: 'primitive',
-			field: randomAlpha(randomInteger(3, 25)),
+			field: getRandomIdentifier(),
 		},
-		collection: randomAlpha(randomInteger(3, 25)),
+		collection: getRandomIdentifier(),
 	};
 });
 
