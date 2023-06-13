@@ -4,13 +4,13 @@ export interface AbstractQuery {
 	root: true;
 
 	/** Location where the data is stored */
-	datastore: string;
+	store: string;
 
-	/** Name of the collection entrypoint within the datastore */
+	/** Name of the collection entrypoint within the store */
 	collection: string;
 
 	/** All fields to select in the query */
-	fieldNodes: AbstractQueryFieldNode[];
+	nodes: AbstractQueryFieldNode[];
 
 	/** Optional attributes to perform a fine granular query */
 	modifiers?: AbstractQueryModifiers;
@@ -19,7 +19,7 @@ export interface AbstractQuery {
 type AbstractQueryNodeType = 'primitive' | 'fn' | 'm2o' | 'o2m' | 'a2o' | 'o2a';
 
 /**
- * All nodes which can be used within the `fieldNodes` array of the `AbstractQuery` have a type attribute.
+ * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.
  * With this in place it can easily be determined how to technically handle this field.
  * @see `AbstractQueryNodeType` for all possible types.
  */
@@ -30,7 +30,7 @@ interface AbstractQueryNode {
 
 /**
  * The A group of all possible field types.
- * This can be used within the `fieldNodes` array of the `AbstractQuery`.
+ * This can be used within the `nodes` array of the `AbstractQuery`.
  */
 export type AbstractQueryFieldNode =
 	| AbstractQueryFieldNodePrimitive
@@ -38,10 +38,10 @@ export type AbstractQueryFieldNode =
 	| AbstractQueryFieldNodeRelated;
 
 /**
- * Generic primitive value read from the datastore field
+ * Generic primitive value read from the store field
  * @example
  * Let's say you want the engine to only return the `id` field of the collection in question:
- * For that you would create a node like the following and add it to the `fieldNodes` of the query.
+ * For that you would create a node like the following and add it to the `nodes` of the query.
  * ```
  * const primitiveField: AbstractQueryFieldNodePrimitive = {
  * 	type: 'primitive',
@@ -54,6 +54,8 @@ export interface AbstractQueryFieldNodePrimitive extends AbstractQueryNode {
 
 	/** the name of the attribute */
 	field: string;
+
+	alias?: string;
 }
 
 export type AbstractQueryFn = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
@@ -81,16 +83,20 @@ export interface AbstractQueryFieldNodeFn extends AbstractQueryNode {
 	targetNode: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
 
 	args?: (string | number | boolean)[];
+
+	alias?: string;
 }
 
 /**
  * This is a basic interface for all relational field types.
  */
 export interface AbstractQueryFieldNodeRelatedBase {
-	fieldNodes: AbstractQueryFieldNode[];
+	nodes: AbstractQueryFieldNode[];
 
 	/** Regardless of the type of the relationship, it always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers?: AbstractQueryModifiers;
+
+	alias?: string;
 }
 
 /**
@@ -111,7 +117,7 @@ export type AbstractQueryFieldNodeRelated =
  * 		fields: ['id']
  *  },
  * 	external: {
- * 		datastore: 'mongodb',
+ * 		store: 'mongodb',
  * 		collection: 'some-collection',
  * }
  * ```
@@ -124,7 +130,7 @@ interface AbstractQueryFieldNodeRelatedJoinMany {
 
 	/** the external collection or item which should be pulled/joined/merged into the current collection */
 	external: {
-		datastore?: string;
+		store?: string;
 		collection: string;
 		fields: string[];
 	};
@@ -137,7 +143,7 @@ interface AbstractQueryFieldNodeRelatedJoinAny {
 	};
 
 	external: {
-		datastore?: string;
+		store?: string;
 		fields: string[];
 	};
 }
@@ -325,6 +331,21 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 
 	/** the conditional value. Might be also a function or sub query in the future */
 	value: string | number | boolean;
+}
+
+/**
+ * Used to work with parameterized queries.
+ * @example
+ * ```
+ * {
+ * 		statement: 'SELECT * FROM "articles" WHERE "articles"."id" = $1;',
+ * 		values: [99],
+ * }
+ * ```
+ */
+export interface ParameterizedSQLStatement {
+	statement: string;
+	values: (string | number | boolean)[];
 }
 
 /**

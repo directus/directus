@@ -113,6 +113,7 @@
 		"fs-extra": "11.1.1",
 		"graphql": "16.6.0",
 		"graphql-compose": "9.0.10",
+		"graphql-ws": "5.12.0",
 		"helmet": "7.0.0",
 		"icc": "3.0.0",
 		"inquirer": "9.2.4",
@@ -159,7 +160,10 @@
 		"uuid": "9.0.0",
 		"uuid-validate": "0.0.3",
 		"vm2": "3.9.19",
-		"wellknown": "0.5.0"
+		"wellknown": "0.5.0",
+		"ws": "8.12.1",
+		"zod": "3.21.4",
+		"zod-validation-error": "1.0.1"
 	},
 	"devDependencies": {
 		"@directus/random": "workspace:*",
@@ -201,6 +205,7 @@
 		"@types/uuid": "9.0.1",
 		"@types/uuid-validate": "0.0.1",
 		"@types/wellknown": "0.5.4",
+		"@types/ws": "8.5.4",
 		"@vitest/coverage-c8": "0.31.1",
 		"copyfiles": "2.4.1",
 		"form-data": "4.0.0",

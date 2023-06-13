@@ -48,40 +48,31 @@ import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { ForbiddenError } from '../../errors/index.js';
-import { InvalidPayloadError } from '../../errors/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../../errors/index.js';
 import { getExtensionManager } from '../../extensions.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { getService } from '../../utils/get-service.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { toBoolean } from '../../utils/to-boolean.js';
 import { validateQuery } from '../../utils/validate-query.js';
 import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
 import { FieldsService } from '../fields.js';
 import { FilesService } from '../files.js';
-import { FlowsService } from '../flows.js';
-import { FoldersService } from '../folders.js';
-import { ItemsService } from '../items.js';
-import { NotificationsService } from '../notifications.js';
-import { OperationsService } from '../operations.js';
-import { PermissionsService } from '../permissions.js';
-import { PresetsService } from '../presets.js';
 import { RelationsService } from '../relations.js';
 import { RevisionsService } from '../revisions.js';
-import { RolesService } from '../roles.js';
 import { ServerService } from '../server.js';
-import { SettingsService } from '../settings.js';
-import { SharesService } from '../shares.js';
 import { SpecificationService } from '../specifications.js';
 import { TFAService } from '../tfa.js';
 import { UsersService } from '../users.js';
 import { UtilsService } from '../utils.js';
-import { WebhooksService } from '../webhooks.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
+import { createSubscriptionGenerator } from './subscription.js';
 import { GraphQLBigInt } from './types/bigint.js';
 import { GraphQLDate } from './types/date.js';
 import { GraphQLGeoJSON } from './types/geojson.js';
@@ -199,6 +190,15 @@ export class GraphQLService {
 					? this.schema
 					: reduceSchema(this.schema, this.accountability?.permissions || null, ['delete']),
 		};
+
+		const subscriptionEventType = schemaComposer.createEnumTC({
+			name: 'EventEnum',
+			values: {
+				create: { value: 'create' },
+				update: { value: 'update' },
+				delete: { value: 'delete' },
+			},
+		});
 
 		const { ReadCollectionTypes } = getReadableTypes();
 
@@ -1068,6 +1068,29 @@ export class GraphQLService {
 						},
 					});
 				}
+
+				const eventName = `${collection.collection}_mutated`;
+
+				if (collection.collection in ReadCollectionTypes) {
+					const subscriptionType = schemaComposer.createObjectTC({
+						name: eventName,
+						fields: {
+							key: new GraphQLNonNull(GraphQLID),
+							event: subscriptionEventType,
+							data: ReadCollectionTypes[collection.collection]!,
+						},
+					});
+
+					schemaComposer.Subscription.addFields({
+						[eventName]: {
+							type: subscriptionType,
+							args: {
+								event: subscriptionEventType,
+							},
+							subscribe: createSubscriptionGenerator(self, eventName),
+						},
+					});
+				}
 			}
 
 			for (const relation of schema.read.relations) {
@@ -1413,7 +1436,12 @@ export class GraphQLService {
 			return await this.upsertSingleton(collection, args['data'], query);
 		}
 
-		const service = this.getService(collection);
+		const service = getService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
 		const hasQuery = (query.fields || []).length > 0;
 
 		try {
@@ -1468,7 +1496,11 @@ export class GraphQLService {
 	 * Execute the read action on the correct service. Checks for singleton as well.
 	 */
 	async read(collection: string, query: Query): Promise<Partial<Item>> {
-		const service = this.getService(collection);
+		const service = getService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
 
 		const result = this.schema.collections[collection]!.singleton
 			? await service.readSingleton(query, { stripNonRequested: false })
@@ -1485,7 +1517,11 @@ export class GraphQLService {
 		body: Record<string, any> | Record<string, any>[],
 		query: Query
 	): Promise<Partial<Item> | boolean> {
-		const service = this.getService(collection);
+		const service = getService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
 
 		try {
 			await service.upsertSingleton(body);
@@ -1740,51 +1776,6 @@ export class GraphQLService {
 	}
 
 	/**
-	 * Select the correct service for the given collection. This allows the individual services to run
-	 * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
-	 */
-	getService(collection: string): ItemsService {
-		const opts = {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		};
-
-		switch (collection) {
-			case 'directus_activity':
-				return new ActivityService(opts);
-			case 'directus_files':
-				return new FilesService(opts);
-			case 'directus_folders':
-				return new FoldersService(opts);
-			case 'directus_permissions':
-				return new PermissionsService(opts);
-			case 'directus_presets':
-				return new PresetsService(opts);
-			case 'directus_notifications':
-				return new NotificationsService(opts);
-			case 'directus_revisions':
-				return new RevisionsService(opts);
-			case 'directus_roles':
-				return new RolesService(opts);
-			case 'directus_settings':
-				return new SettingsService(opts);
-			case 'directus_users':
-				return new UsersService(opts);
-			case 'directus_webhooks':
-				return new WebhooksService(opts);
-			case 'directus_shares':
-				return new SharesService(opts);
-			case 'directus_flows':
-				return new FlowsService(opts);
-			case 'directus_operations':
-				return new OperationsService(opts);
-			default:
-				return new ItemsService(collection, opts);
-		}
-	}
-
-	/**
 	 * Replace all fragments in a selectionset for the actual selection set as defined in the fragment
 	 * Effectively merges the selections with the fragments used in those selections
 	 */
@@ -1909,6 +1900,58 @@ export class GraphQLService {
 						},
 					}),
 				},
+				websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
+					? {
+							type: new GraphQLObjectType({
+								name: 'server_info_websocket',
+								fields: {
+									rest: {
+										type: toBoolean(env['WEBSOCKETS_REST_ENABLED'])
+											? new GraphQLObjectType({
+													name: 'server_info_websocket_rest',
+													fields: {
+														authentication: {
+															type: new GraphQLEnumType({
+																name: 'server_info_websocket_rest_authentication',
+																values: {
+																	public: { value: 'public' },
+																	handshake: { value: 'handshake' },
+																	strict: { value: 'strict' },
+																},
+															}),
+														},
+														path: { type: GraphQLString },
+													},
+											  })
+											: GraphQLBoolean,
+									},
+									graphql: {
+										type: toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
+											? new GraphQLObjectType({
+													name: 'server_info_websocket_graphql',
+													fields: {
+														authentication: {
+															type: new GraphQLEnumType({
+																name: 'server_info_websocket_graphql_authentication',
+																values: {
+																	public: { value: 'public' },
+																	handshake: { value: 'handshake' },
+																	strict: { value: 'strict' },
+																},
+															}),
+														},
+														path: { type: GraphQLString },
+													},
+											  })
+											: GraphQLBoolean,
+									},
+									heartbeat: {
+										type: toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) ? GraphQLInt : GraphQLBoolean,
+									},
+								},
+							}),
+					  }
+					: GraphQLBoolean,
 				queryLimit: {
 					type: new GraphQLObjectType({
 						name: 'server_info_query_limit',

@@ -1,10 +1,10 @@
 import api from '@/api';
+import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
-import { useAppStore } from '@/stores/app';
+import { useAppStore } from '@directus/stores';
 import { RouteLocationRaw } from 'vue-router';
 import { idleTracker } from './idle';
-import { DEFAULT_AUTH_PROVIDER } from '@/constants';
 
 type LoginCredentials = {
 	identifier?: string;

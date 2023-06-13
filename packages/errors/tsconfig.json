@@ -3,5 +3,8 @@
 	"compilerOptions": {
 		"isolatedModules": true
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"typedocOptions": {
+        "entryPoints": ["./src"]
+    }
 }

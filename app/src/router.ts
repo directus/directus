@@ -1,16 +1,16 @@
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
-import TFASetup from '@/routes/tfa-setup.vue';
 import AcceptInviteRoute from '@/routes/accept-invite.vue';
 import LoginRoute from '@/routes/login/login.vue';
 import LogoutRoute from '@/routes/logout.vue';
-import ShareRoute from '@/routes/shared/shared.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
-import { useAppStore } from '@/stores/app';
+import ShareRoute from '@/routes/shared/shared.vue';
+import TFASetup from '@/routes/tfa-setup.vue';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
+import { useAppStore } from '@directus/stores';
 import { createRouter, createWebHistory, NavigationGuard, NavigationHookAfter, RouteRecordRaw } from 'vue-router';
 
 export const defaultRoutes: RouteRecordRaw[] = [
