@@ -6,11 +6,10 @@
 "@directus/extensions-sdk": patch
 "@directus/pressure": patch
 "@directus/random": patch
-"@directus/sdk": patch
 "@directus/stores": patch
 "@directus/types": patch
 "@directus/update-check": patch
 "@directus/utils": patch
 ---
 
-Add TypeDocs to Docs
+Added TypeDocs to Docs

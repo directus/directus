@@ -3,7 +3,7 @@
 "directus": minor
 ---
 
-Integrating Websockets Subscriptions for REST and GraphQL in Directus 🕸️🧦 
+Integrated Websockets Subscriptions for REST and GraphQL in Directus 🕸️🧦
 - A CRUD implementation over WebSockets
 - A REST Subscriptions implementation
 - GraphQL Subscriptions over WebSockets

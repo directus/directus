@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Move useAppStore to @directus/stores
+Moved useAppStore to @directus/stores

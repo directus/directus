@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fixed reverse usage of null, nnull, empty and nempty filter operator
+Fixed reverse usage of _null, _nnull, _empty and _nempty filter operators
