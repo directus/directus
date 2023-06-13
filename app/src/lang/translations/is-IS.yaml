@@ -57,9 +57,6 @@ create_role: Búa til Hlutverk
 create_user: Búa til Notanda
 message: Skilaboð
 create_webhook: Búa til Vefkrækju
-create_translation_string: Búa til Þýðingar Streng
-no_translation_string: Engir Þýðingar Strengir
-edit_translation_string: Breyta þýðingastreng
 invite_users: Bjóða notendum
 invite: Bjóða
 subject: Viðfangsefni
@@ -79,11 +76,6 @@ logoutReason:
   SESSION_EXPIRED: Lota útrunnin
 public_label: Almennt
 not_allowed: Ekki Leyft
-directus_version: Directus Útgáfa
-os_type: Gerð stýrikerfis
-os_version: Útgáfa stýrikerfis
-os_uptime: Uppitími stýrikerfis
-os_totalmem: OS Minni
 archive: Geymsla
 all_access: Allur Aðgangur
 no_access: Enginn Aðgangur
@@ -407,6 +399,7 @@ field_options:
     collection_name: Safn Nafn
     archive_divider: Geymsla
     sort_divider: Flokka
+    preview_divider: Forskoða
   directus_roles:
     fields:
       icon_name: Íkon
@@ -428,6 +421,8 @@ field_options:
       header: Haus
 do_nothing: Gera Ekkert
 comment: Athugasemd
+live_preview:
+  new_window: Opna í Nýjum Glugga
 share_copy_link: Afrita Hlekk
 delete_label: Eyða
 description: Lýsing
@@ -498,6 +493,13 @@ interfaces:
     modes:
       auto: Sjálfvirkt
       dropdown: Fellilisti
+  input-block-editor:
+    tools_options:
+      header: Haus
+      nestedlist: Listi
+      code: Kóði
+      image: Mynd
+      table: Tafla
 displays:
   translations:
     translations: Þýðingar

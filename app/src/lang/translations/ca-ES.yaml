@@ -80,14 +80,6 @@ create_user: Crear usuari
 message: Missatge
 delete_panel: Elimina el panell
 create_webhook: Crear Webhook
-create_translation_string: Crea una cadena de traducció
-no_translation_string: No hi ha traduccions
-no_translation_string_copy: Encara no hi ha traduccions.
-translation_string_key_placeholder: Clau de cadena de traducció...
-translation_string_translations_placeholder: Afegeix una nova traducció
-edit_translation_string: Edita la cadena de traducció
-delete_translation_string_copy: >-
-  Estàs segur d'eliminar la cadena de traducció "{key}"? Aquesta acció no es podrà revertir.
 invite_users: Convidar usuaris
 invite: Convida
 email_already_invited: El correu "{email}" ja s'ha convidat
@@ -118,13 +110,6 @@ public_label: Públic
 public_description: Controla quines dades API estan disponibles sense autenticar.
 admin_description: Rol d'administració inicial sense restriccions d'accés a l'APP/API.
 not_allowed: No permès
-directus_version: Versió de Directus
-node_version: Versió de Node
-node_uptime: Temps d'activitat de Node
-os_type: Tipus de SO
-os_version: Versió d'OS
-os_uptime: Temps d'activitat del SO
-os_totalmem: Memòria del SO
 archive: Arxiu
 archive_confirm: Estàs segur de que vols arxivar aquest element?
 archive_confirm_count: >-
@@ -348,7 +333,7 @@ revision_delta_reverted: Revertit
 revision_delta_update_message: Aquest camp s'ha actualitzat però el seu valor s'està ocultant per motius de seguretat.
 revision_delta_other: Revisió
 revision_delta_by: '{date} per {user}'
-presentation_text_values_cannot_be_reimported: "Utilitza text de presentació, els valors no poden ser re-importats."
+presentation_text_values_cannot_be_reimported: 'Utilitza text de presentació, els valors no poden ser re-importats.'
 download_page_as_csv: 'Descarrega la pàgina com a CSV'
 private_user: Usuari privat
 creation_preview: Previsualització de la creació
@@ -488,7 +473,6 @@ enable_select_button: Habilita el botó de selecció
 allow_duplicates: Permet duplicats
 comments: Comentaris
 no_comments: No hi ha comentaris, encara
-click_to_expand: Fes clic per ampliar
 select_item: Selecciona element
 no_items: No hi ha elements
 search_items: Cerca elements...
@@ -897,7 +881,6 @@ settings_project: Ajustaments del projecte
 settings_webhooks: Webhooks
 settings_flows: Fluxes
 settings_presets: Predefinits i Marcadors
-settings_translation_strings: Cadenes de traducció
 one_or_more_options_are_missing: Falta una o més opcions
 scope: Abast
 actions: Accions
@@ -946,7 +929,6 @@ page_help_settings_presets_item: >-
 page_help_settings_webhooks_collection: '** Examina Webhooks **: Llista tots els webhooks del projecte.'
 page_help_settings_webhooks_item: '** Detall de webhook **: Un formulari per crear i gestionar webhooks del projecte.'
 page_help_settings_flows_collection: '**Examina els fluxos** — Llista tots els fluxos del projecte.'
-page_help_settings_translation_strings_collection: '**Examina cadenes de traducció** - Llista totes les cadenes de traducció del projecte.'
 page_help_users_collection: '**Directori de l''usuari**.'
 page_help_users_item: >-
   ** Detall de l'usuari **: Gestiona la informació del compte o consulta la informació d'altres usuaris.
@@ -1202,6 +1184,7 @@ field_options:
     archive_divider: Arxiu
     archive_field_placeholder: Tria un camp...
     sort_divider: Ordre
+    preview_divider: Vista prèvia
   directus_roles:
     fields:
       icon_name: Icona
@@ -1240,6 +1223,8 @@ start_open: Comença obert
 block: Block
 inline: Inline
 comment: Comentari
+live_preview:
+  new_window: Obre en una nova finestra
 relational_triggers: Disparadors relacionals
 referential_action_field_label_m2o: Si s'esborra de {collection}...
 referential_action_field_label_o2m: Si es deselecciona de {collection}...
@@ -1593,6 +1578,15 @@ interfaces:
     toolbar: Barra d'eines
     custom_formats: Formats personalitzats
     options_override: Sobreescriptura d'opcions
+  input-block-editor:
+    tools: Barra d'eines
+    tools_options:
+      header: Capçalera
+      embed: Inclou
+      code: Codi
+      image: Imatge
+      table: Taula
+      underline: Subratllat
   input-autocomplete-api:
     input-autocomplete-api: Entrada autocompleta (API)
     description: Una cerca typeahead per valors d'API externes.

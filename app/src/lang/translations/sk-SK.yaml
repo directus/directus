@@ -80,14 +80,6 @@ create_user: Vytvoriť používateľa
 message: Správa
 delete_panel: Odstrániť panel
 create_webhook: Vytvoriť Webhook
-create_translation_string: Vytvoriť prekladový text
-no_translation_string: Žiadne prekladové texty
-no_translation_string_copy: Zatiaľ tu nie sú žiadne prekladové texty.
-translation_string_key_placeholder: Prekladaný kľúč...
-translation_string_translations_placeholder: Pridať nový preklad
-edit_translation_string: Upraviť prekladový text
-delete_translation_string_copy: >-
-  Naozaj chcete odstrániť prekladový kľúč "{key}"? Táto akcia sa nedá vrátiť.
 invite_users: Pozvať používateľov
 invite: Pozvať
 email_already_invited: Email "{email}" už bol pozvaný
@@ -118,13 +110,6 @@ public_label: Verejné
 public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
 admin_description: Počiatočná administratívna rola s neobmedzeným prístupom k Appke/API.
 not_allowed: Nepovolené
-directus_version: Verzia Directus
-node_version: Verzia Node
-node_uptime: Doba prevádzky nodu
-os_type: Typ OS
-os_version: Verzia OS
-os_uptime: Doba prevádzky OS
-os_totalmem: Pamäť OS
 archive: Archív
 archive_confirm: Naozaj chcete archivovať túto položku?
 archive_confirm_count: >-
@@ -349,7 +334,7 @@ revision_delta_reverted: Vrátené
 revision_delta_update_message: Toto pole je zmenené, ale jeho hodnota je utajená z bezpečnostných dôvodov.
 revision_delta_other: Revízia
 revision_delta_by: '{date} od {user}'
-presentation_text_values_cannot_be_reimported: "Používa prezentačný text, hodnoty sa nedajú preimportovať."
+presentation_text_values_cannot_be_reimported: 'Používa prezentačný text, hodnoty sa nedajú preimportovať.'
 download_page_as_csv: 'Stiahnuť stranu ako CSV'
 private_user: Súkromný používateľ
 creation_preview: Náhľad výtvoru
@@ -489,7 +474,6 @@ enable_select_button: Zapnúť tlačidlo Vybrať
 allow_duplicates: Povoliť duplicity
 comments: Komentáre
 no_comments: Zatiaľ žiadne komentáre
-click_to_expand: Kliknutím rozbalíte
 select_item: Vybrať položku
 no_items: Žiadne položky
 search_items: Hľadať položky...
@@ -945,7 +929,6 @@ settings_project: Nastavenia projektu
 settings_webhooks: Webhooky
 settings_flows: Toky
 settings_presets: Presety a Záložky
-settings_translation_strings: Prekladové texty
 one_or_more_options_are_missing: Chýba jedna alebo viac možností
 scope: Rámec
 actions: Akcie
@@ -995,7 +978,6 @@ page_help_settings_webhooks_collection: '**Prehliadanie Webhookov** — Zoznam v
 page_help_settings_webhooks_item: '**Podrobnosti webhooku** — Formulár na vytváranie a správu webhookov v projekte.'
 page_help_settings_flows_collection: '**Prehliadanie tokov** — Zoznam všetkých tokov v projekte.'
 page_help_settings_flows_item: '**Podrobnosti toku** — Pracovný priestor na správu jedného alebo viac operácií.'
-page_help_settings_translation_strings_collection: '**Prehliadanie prekladových textov** — Zoznam všetkých prekladový textov v rámci projektu.'
 page_help_users_collection: '**Priečinok používateľov** — Zoznam všetkých používateľov v projekte.'
 page_help_users_item: >-
   **Podrobnosti používateľa** — Spravuje informácie o vašom účte, alebo zobrazuje podrobnosti iných používateľov.
@@ -1256,6 +1238,7 @@ field_options:
     sort_field: Vyberte pole...
     accountability_divider: Zodpovednosť
     duplication_divider: Duplikovanie
+    preview_divider: Náhľad
   directus_files:
     title: Unikátny nadpis...
     description: Voliteľný popis...
@@ -1313,6 +1296,8 @@ start_collapsed: Začať zložené
 block: Blokovať
 inline: V riadku
 comment: Komentovanie
+live_preview:
+  new_window: Otvoriť v novom okne
 shares: Zdieľania
 unlimited_usage: Neobmedzené používanie
 uses_left: Nezostali žiadne použitia | Zostáva 1 použitie | Zostáva {n} použití
@@ -1675,7 +1660,6 @@ interfaces:
     input-translated-string: Preložené texty
     description: Vyberie alebo pridá prekladový text
     search_placeholder: Hľadať...
-    new_translation_string: Nový prekladový text
   boolean:
     toggle: Prepnúť
     description: Prepínanie medzi zap a vyp
@@ -1710,6 +1694,16 @@ interfaces:
     folder_note: Priečinok na nahrávanie súborov. Neovplyvní to existujúce súbory.
     imageToken: Statický prístupový token
     imageToken_label: Statický prístupový token sa pridá do URL súborov
+  input-block-editor:
+    tools: Panel nástrojov
+    tools_options:
+      header: Hlavička
+      nestedlist: Zoznam
+      embed: Vložiť
+      code: Kód
+      image: Obrázok
+      table: Tabuľka
+      underline: Podčiarknuté
   input-autocomplete-api:
     input-autocomplete-api: Dopĺňaný vstup (API)
     description: Dopredné vyhľadávanie hodnôt z externej API.
@@ -2065,7 +2059,7 @@ operations:
     message: Správa
   request:
     name: Webhook / URL požiadavka
-    description: "Spraví požiadavku na URL"
+    description: 'Spraví požiadavku na URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Metóda
