@@ -5,4 +5,4 @@
 '@directus/random': patch
 ---
 
-Start work on @directus/data
+Started initial work on @directus/data
