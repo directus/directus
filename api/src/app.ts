@@ -3,7 +3,6 @@ import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
 import type { ServerResponse } from 'http';
-import { merge } from 'lodash-es';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import path from 'path';
@@ -68,6 +67,7 @@ import { Url } from './utils/url.js';
 import { validateEnv } from './utils/validate-env.js';
 import { validateStorage } from './utils/validate-storage.js';
 import { init as initWebhooks } from './webhooks.js';
+import { contentSecurityPolicy } from './csp.js';
 
 const require = createRequire(import.meta.url);
 
@@ -128,32 +128,7 @@ export default async function createApp(): Promise<express.Application> {
 		);
 	}
 
-	app.use(
-		helmet.contentSecurityPolicy(
-			merge(
-				{
-					useDefaults: true,
-					directives: {
-						// Unsafe-eval is required for vue3 / vue-i18n / app extensions
-						scriptSrc: ["'self'", "'unsafe-eval'"],
-
-						// Even though this is recommended to have enabled, it breaks most local
-						// installations. Making this opt-in rather than opt-out is a little more
-						// friendly. Ref #10806
-						upgradeInsecureRequests: null,
-
-						// These are required for MapLibre
-						workerSrc: ["'self'", 'blob:'],
-						childSrc: ["'self'", 'blob:'],
-						imgSrc: ["'self'", 'data:', 'blob:'],
-						mediaSrc: ["'self'"],
-						connectSrc: ["'self'", 'https://*'],
-					},
-				},
-				getConfigFromEnv('CONTENT_SECURITY_POLICY_')
-			)
-		)
-	);
+	app.use(contentSecurityPolicy(helmet));
 
 	if (env['HSTS_ENABLED']) {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
