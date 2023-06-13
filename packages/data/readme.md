@@ -62,9 +62,9 @@ await data.query({
 });
 ```
 
-## Dependencies
+## Flow
 
-This shows how the packages depend on each other.
+This visualizes the general data flow regarding `data`.
 
 ```mermaid
 graph LR;
