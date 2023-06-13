@@ -4,14 +4,23 @@ import { monitorEventLoopDelay, performance } from 'node:perf_hooks';
 import { memoryUsage } from 'node:process';
 import { setTimeout } from 'node:timers';
 
-export type PressureMonitorOptions = {
+export interface PressureMonitorOptions {
 	maxEventLoopDelay?: number | false;
 	maxEventLoopUtilization?: number | false;
 	maxMemoryHeapUsed?: number | false;
 	maxMemoryRss?: number | false;
 	sampleInterval?: number;
 	resolution?: number;
-};
+}
+
+export interface PressureMonitorOverloaded {
+	healthy: boolean;
+	triggered: {
+		type: 'memoryHeapUsed' | 'memoryRss' | 'eventLoopDelay' | 'eventLoopUtilization';
+		limit: number;
+		current: number;
+	}[];
+}
 
 export class PressureMonitor {
 	private memoryHeapUsed = 0;
@@ -40,24 +49,53 @@ export class PressureMonitor {
 		this.timeout.unref();
 	}
 
-	get overloaded() {
+	get overloaded(): PressureMonitorOverloaded {
+		const overloaded: PressureMonitorOverloaded = {
+			healthy: true,
+			triggered: [],
+		};
+
 		if (this.options.maxMemoryHeapUsed && this.memoryHeapUsed > this.options.maxMemoryHeapUsed) {
-			return true;
+			overloaded.healthy = false;
+
+			overloaded.triggered.push({
+				type: 'memoryHeapUsed',
+				limit: this.options.maxMemoryHeapUsed,
+				current: this.memoryHeapUsed,
+			});
 		}
 
 		if (this.options.maxMemoryRss && this.memoryRss > this.options.maxMemoryRss) {
-			return true;
+			overloaded.healthy = false;
+
+			overloaded.triggered.push({
+				type: 'memoryRss',
+				limit: this.options.maxMemoryRss,
+				current: this.memoryRss,
+			});
 		}
 
 		if (this.options.maxEventLoopDelay && this.eventLoopDelay > this.options.maxEventLoopDelay) {
-			return true;
+			overloaded.healthy = false;
+
+			overloaded.triggered.push({
+				type: 'eventLoopDelay',
+				limit: this.options.maxEventLoopDelay,
+				current: this.eventLoopDelay,
+			});
 		}
 
 		if (this.options.maxEventLoopUtilization && this.eventLoopUtilization > this.options.maxEventLoopUtilization) {
-			return true;
+			overloaded.healthy = false;
+
+			overloaded.triggered.push({
+				type: 'eventLoopUtilization',
+				limit: this.options.maxEventLoopUtilization,
+				current: this.eventLoopUtilization,
+			});
 		}
 
-		return false;
+		return overloaded;
 	}
 
 	private updateUsage() {
