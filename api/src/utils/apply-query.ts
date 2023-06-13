@@ -12,6 +12,7 @@ import type {
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
+import { customAlphabet } from 'nanoid/non-secure';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
 import { InvalidQueryException } from '../exceptions/invalid-query.js';
@@ -20,9 +21,6 @@ import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { stripFunction } from './strip-function.js';
-
-// @ts-ignore
-import { customAlphabet } from 'nanoid/non-secure';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -576,21 +574,21 @@ export function applyFilter(
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
 			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
-			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
+			if ((operator === '_null' && compareValue !== false) || (operator === '_nnull' && compareValue === false)) {
 				dbQuery[logical].whereNull(selectionRaw);
 			}
 
-			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+			if ((operator === '_nnull' && compareValue !== false) || (operator === '_null' && compareValue === false)) {
 				dbQuery[logical].whereNotNull(selectionRaw);
 			}
 
-			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+			if ((operator === '_empty' && compareValue !== false) || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.whereNull(key).orWhere(key, '=', '');
 				});
 			}
 
-			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+			if ((operator === '_nempty' && compareValue !== false) || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.whereNotNull(key).andWhere(key, '!=', '');
 				});

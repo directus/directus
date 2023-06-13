@@ -1,21 +1,59 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+identifier: Identifikator
 avatar: Avatar
+application: Aplikacija
 default_provider: Privzeto
 method: Metoda
+published: Objavljeno
 draft: Osnutek
 archived: Arhivirano
+modules: Moduli
+module_bar: Stranski Meni
+logs: Dnevniki
+reset_width: Ponastavi Širino
+tile_size: Velikost ploščice
 edit_field: Uredi polje
 conditions: Pogoji
 location: Lokacija
+condition_rules: Pravila pogojev
 input: Vnos
 maps: Zemljevidi
+switch_user: Spremeni Uporabnika
+item_creation: Ustvari predmet
 item_revision: Revizija postavke
+enter_a_name: Vpiši ime...
 duplicate_field: Podvajanje polja
 half_width: Polovična širina
 full_width: Polna širina
 group: Skupina
+export_items: Izvozi predmete
 and: in
 or: ali
+init: Inicializiraj
+dataset_too_large_currently_showing_n_items: Zbirka je prevelika. Trenutno prikazujem prvih {n} predmetov.
+modifier: Modifikator
+custom: Po meri
+hook: Hook
 fill_width: Zapolni širino
 field_name_translations: Prevodi imen polj
 enter_password_to_enable_tfa: Vnesite svoje geslo, da boste lahko omogočili dvonivojsko avtentikacijo
@@ -27,18 +65,26 @@ indeterminate: Nedoločeno
 edit_collection: Uredi zbirko
 exclusive: Ekskluzivno
 children: Podrejeni
+db_only_click_to_configure: 'Samo podatkovna baza: klikni za konfiguracijo'
+show_active_items: Prikaži aktivne predmete
 show_archived_items: Prikaži arhivirane opombe
+show_all_items: Prikaži vse
 edited: Urejena vrednost
 required: Zahtevano
 required_for_app_access: Zahtevano za dostop do aplikacije
 requires_value: Vnos je obvezen
 create_preset: Ustvari prednastavitev
+create_panel: Ustvari ploščo
 create_role: Ustvari vlogo
 create_user: Ustvari uporabnika
+message: Sporočilo
+delete_panel: Izbriži ploščo
 create_webhook: Ustvari Webhook
 invite_users: Povabite uporabnike
 invite: Povabi
 email_already_invited: Elektronski naslov {email} je že bil povabljen
+subject: Zadeva
+inbox: Nabiralnik
 emails: E-pošte
 connection_excellent: Odlična povezava
 connection_good: Dobra povezava
@@ -54,25 +100,23 @@ update_bookmark: Posodobi zaznamek
 delete_bookmark: Izbriši zaznamek
 delete_bookmark_copy: >-
   Ali ste prepričani, da želite trajno izbrisati zaznamek {bookmark}? Tega dejanja ne morete preklicati.
+delete_personal_bookmark: Izbriši osebni zaznamek
+delete_role_bookmark: Izbriši zaznamek vloge
+delete_global_bookmark: Izbriši globalen zaznamek
 logoutReason:
   SIGN_OUT: Izpisani
   SESSION_EXPIRED: Seja je potekla
 public_label: Javno
 public_description: Nadzoruje, kateri podatki API so na voljo brez avtentikacije.
+admin_description: Začetna administrativna vloga z neoviranim dostopom do Aplikacije in API.
 not_allowed: Ni dovoljeno
-directus_version: Directus verzija
-node_version: Node verzija
-node_uptime: Node deluje
-os_type: OS vrsta
-os_version: OS verzija
-os_uptime: OS deluje
-os_totalmem: OS spomin
 archive: Arhiviraj
 archive_confirm: Ste prepričani, da želite arhivirati ta zapis?
 archive_confirm_count: >-
   Ni izbranih zapisov | Ste prepričani, da želite arhivirati ta zapis? | Ste prepričani, da želite arhivirati {count} zapisov?
 reset_system_permissions_to: 'Ponastavi sistemska dovoljenja na:'
 reset_system_permissions_copy: To dejanje bo prepisalo dovoljenja na sistemski zbirki. Ste prepričani?
+the_following_are_minimum_permissions: Slednja minimalna dovoljenja so avtomatsko dodana, kadar je "App Access" omogočen. Če je potrebno lahko dodate druga dovoljenja, vendar zmanjšati se jih ne da.
 app_access_minimum: Minimum za aplikacijski dostop
 recommended_defaults: Priporočene privzete vrednosti
 unarchive: Dearhiviraj
@@ -267,7 +311,7 @@ functions:
 date-fns_date: PPP
 date-fns_time: 'hh:mm:ss'
 date-fns_time_no_seconds: 'hh:mm'
-date-fns_date_short: 'd. M. YY'
+date-fns_date_short: 'd. M. yy'
 date-fns_time_short: 'hh:mm'
 date-fns_date_short_no_year: MMM d
 month: Mesec
@@ -336,7 +380,6 @@ selecting_items: Izbiranje zapisov
 enable_select_button: Omogoči gumb za izbor
 comments: Komentarji
 no_comments: Trenutno še ni komentarjev
-click_to_expand: Pritisni za razširitev
 select_item: Izberi zapis
 no_items: Ni zapisov
 search_items: Iskanje zapisov ...
@@ -804,6 +847,7 @@ fields:
     auth_login_attempts: Število poskusov prijave
     overrides: Aplikacijske preglasitve
     custom_css: CSS po meri
+    module_bar: Stranski Meni
   directus_shares:
     name: Ime
     role: Vloga
@@ -933,6 +977,8 @@ start_collapsed: Začni zaprto
 block: Blokiraj
 inline: V vrstici
 comment: Komentar
+live_preview:
+  new_window: Odpri v novem oknu
 relational_triggers: Povezani prožilci
 referential_action_field_label_m2o: Ob brisanju v {collection} ...
 referential_action_field_label_o2m: Pri deselektiranju iz {collection} ...
@@ -1232,6 +1278,14 @@ interfaces:
     toolbar: Orodna vrstica
     custom_formats: Prilagojene oblike
     options_override: Preglasitev opcij
+  input-block-editor:
+    tools: Orodna vrstica
+    tools_options:
+      embed: Vstavi
+      code: Koda
+      image: Slika
+      table: Tabela
+      underline: Podčrtano
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: Iskalnik za zunanje API vrednosti.
@@ -1388,11 +1442,14 @@ triggers:
   webhook:
     method: Metoda
 operations:
+  log:
+    message: Sporočilo
   mail:
     template: Predloga
     data: Podatki
   notification:
     recipient: Uporabnik
+    message: Sporočilo
   request:
     url: URL
     method: Metoda

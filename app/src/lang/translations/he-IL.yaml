@@ -68,14 +68,13 @@ show_archived_items: הצג פריטי ארכיון
 show_all_items: הצג את כל הפריטים
 edited: ערך נערך
 required: שדה חובה
+required_for_app_access: נדרש עבור גישה לאפליקציה
 requires_value: דורש ערך
 create_preset: יצירת הגדרה מראש
 create_role: צור תפקיד
 create_user: צור משתמש
 message: הודעה
 create_webhook: צור Webhook
-translation_string_translations_placeholder: יצירת תרגום חדש
-edit_translation_string: אריכה של תרגום
 invite_users: הזמן משתמשים
 invite: הזמן
 subject: נושא
@@ -89,10 +88,6 @@ primary: ראשי
 rename_folder: שינוי שם תיקיה
 delete_folder: מחק תיקייה
 not_allowed: לא מורשה
-directus_version: גרסת דירקטוס
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
 validationError:
   eq: הערך צריך להיות {valid}
   neq: הערך אינו יכול להיות {invalid}

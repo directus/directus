@@ -1,4 +1,6 @@
+import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
+import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 
 export default defineConfig({
 	base: '/',
@@ -107,7 +109,7 @@ gtag('config', 'UA-24637628-7');
 			'link',
 			{
 				rel: 'stylesheet',
-				href: 'https://fonts.googleapis.com/css2?family=Material+Icons+Outlined',
+				href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',
 			},
 		],
 		[
@@ -140,12 +142,57 @@ gtag('config', 'UA-24637628-7');
 		sidebar: {
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
+			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
 			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
 		},
 	},
 });
+
+function typeDocSidebarFormat(item) {
+	if (item.link !== null && !item.link.startsWith('/packages')) {
+		item.link = item.link.substring(item.link.indexOf('/packages'));
+	}
+
+	if (item.items) {
+		item.items = item.items.filter((subItem) => {
+			return subItem.link !== null || subItem.items.length > 0;
+		});
+	}
+
+	if (item.text.startsWith('@directus/')) {
+		item.items.unshift({
+			text: 'Overview',
+			link: `/packages/${item.text}/`,
+			items: [],
+			collapsed: true,
+		});
+		item.text = formatTitle(item.text.replace('@directus/', ''));
+		item.text = item.text.replace('Sdk', 'SDK');
+	}
+
+	if (item?.items?.length > 0) {
+		item.items.map((subItem) => {
+			return typeDocSidebarFormat(subItem);
+		});
+	} else {
+		delete item.items;
+		delete item.collapsed;
+	}
+
+	return item;
+}
+
+function sidebarTypedocs() {
+	let sidebar = TypeDocSidebar;
+
+	sidebar = sidebar.map((item) => {
+		return typeDocSidebarFormat(item);
+	});
+
+	return sidebar;
+}
 
 function sidebar() {
 	return [
@@ -167,10 +214,6 @@ function sidebar() {
 				{
 					text: 'Help & Support',
 					link: '/getting-started/support',
-				},
-				{
-					text: 'Backing Directus',
-					link: '/getting-started/backing-directus',
 				},
 				{
 					text: 'Resources',
@@ -492,26 +535,41 @@ function sidebar() {
 							link: '/guides/headless-cms/reusable-components',
 						},
 						{
-							link: '/guides/headless-cms/schedule-content/index.html',
+							link: '/guides/headless-cms/schedule-content/',
 							text: 'Scheduling Future Content',
 						},
 						{
-							link: '/guides/headless-cms/trigger-static-builds/index.html',
+							link: '/guides/headless-cms/trigger-static-builds/',
 							text: 'Trigger Static Site Builds',
 						},
 						{
 							text: 'Build a Static Website',
-							link: '/guides/headless-cms/build-static-website/index.html',
+							link: '/guides/headless-cms/build-static-website/',
 						},
-            {
+						{
 							text: 'Set Up Live Preview',
-							link: '/guides/headless-cms/live-preview/index.html',
+							link: '/guides/headless-cms/live-preview/',
+						},
+						{
+							text: 'Content Translations (i18n)',
+							link: '/guides/headless-cms/content-translations',
 						},
 					],
 				},
 				{
 					link: '/guides/migration/index.html',
 					text: 'Schema Migration',
+				},
+				{
+					text: 'Real-Time',
+					items: [
+						{ text: 'Getting Started', link: '/guides/real-time/getting-started/index.html' },
+						{ text: 'Authentication', link: '/guides/real-time/authentication' },
+						{ text: 'Operations', link: '/guides/real-time/operations' },
+						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
+						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
+						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
+					],
 				},
 			],
 		},
@@ -553,52 +611,62 @@ function sidebar() {
 					text: 'Creating Extensions',
 				},
 				{
-					link: '/extensions/displays',
-					text: 'Displays',
+					text: 'Extension Types',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/displays',
+							text: 'Displays',
+						},
+						{
+							link: '/extensions/email-templates',
+							text: 'Email Templates',
+						},
+						{
+							link: '/extensions/endpoints',
+							text: 'Endpoints',
+						},
+						{
+							link: '/extensions/hooks',
+							text: 'Hooks',
+						},
+						{
+							link: '/extensions/interfaces',
+							text: 'Interfaces',
+						},
+						{
+							link: '/extensions/layouts',
+							text: 'Layouts',
+						},
+						{
+							link: '/extensions/migrations',
+							text: 'Migrations',
+						},
+						{
+							link: '/extensions/modules',
+							text: 'Modules',
+						},
+						{
+							link: '/extensions/operations',
+							text: 'Operations',
+						},
+						{
+							link: '/extensions/panels',
+							text: 'Panels',
+						},
+						{
+							link: '/extensions/themes',
+							text: 'Themes',
+						},
+						{
+							link: '/extensions/bundles',
+							text: 'Bundles',
+						},
+					],
 				},
 				{
-					link: '/extensions/email-templates',
-					text: 'Email Templates',
-				},
-				{
-					link: '/extensions/endpoints',
-					text: 'Endpoints',
-				},
-				{
-					link: '/extensions/hooks',
-					text: 'Hooks',
-				},
-				{
-					link: '/extensions/interfaces',
-					text: 'Interfaces',
-				},
-				{
-					link: '/extensions/layouts',
-					text: 'Layouts',
-				},
-				{
-					link: '/extensions/migrations',
-					text: 'Migrations',
-				},
-				{
-					link: '/extensions/modules',
-					text: 'Modules',
-				},
-				{
-					link: '/extensions/operations',
-					text: 'Operations',
-				},
-				{
-					link: '/extensions/panels',
-					text: 'Panels',
-				},
-				{
-					link: '/extensions/themes',
-					text: 'Themes',
-				},
-				{
-					link: '/extensions/bundles',
-					text: 'Bundles',
+					text: 'Packages',
+					link: '/contributing/codebase-overview.html#packages-packages',
 				},
 			],
 		},
@@ -607,22 +675,19 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{ link: '/contributing/introduction', text: 'Introduction' },
 				{
-					link: '/contributing/introduction',
-					text: 'Introduction',
+					text: 'Code',
+					items: [
+						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
+						{ link: '/contributing/pull-request-process', text: 'Pull Request Process' },
+						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
+						{ link: '/contributing/running-locally', text: 'Running Locally' },
+						{ link: '/contributing/tests', text: 'Tests' },
+					],
 				},
-				{
-					link: '/contributing/running-locally',
-					text: 'Running Locally',
-				},
-				{
-					link: '/contributing/codebase-overview',
-					text: 'Codebase Overview',
-				},
-				{
-					link: '/contributing/tests',
-					text: 'Tests',
-				},
+				{ link: '/contributing/community', text: 'Community' },
+				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' },
 			],
 		},
 		{

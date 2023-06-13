@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-s3",
-	"version": "10.0.4",
+	"version": "10.0.5",
 	"description": "S3 file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -29,6 +29,7 @@
 		"@aws-sdk/abort-controller": "3.329.0",
 		"@aws-sdk/client-s3": "3.332.0",
 		"@aws-sdk/lib-storage": "3.332.0",
+		"@aws-sdk/node-http-handler": "3.344.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*"
 	},

@@ -53,7 +53,7 @@
 			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value as ((string | number)[])[0]"
+			:value="(value as (string | number)[])[0] ?? ''"
 			@input="setValueAt(0, $event)"
 		/>
 		<div class="and">{{ t('interfaces.filter.and') }}</div>
@@ -61,7 +61,7 @@
 			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value as ((string | number)[])[1]"
+			:value="(value as (string | number)[])[1] ?? ''"
 			@input="setValueAt(1, $event)"
 		/>
 	</template>
