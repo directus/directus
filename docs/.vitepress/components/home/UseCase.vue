@@ -38,7 +38,7 @@ export default {
 	font-size: 12px;
 	font-weight: 500;
 	margin: 12px 0;
-	padding: 4px 8px;
+	padding: 0px 8px;
 }
 
 .sub-headline {

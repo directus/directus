@@ -123,7 +123,7 @@ projects with our feature-rich toolkit that configures your backend logic." img=
 
   <div class="hero-container">
       <div class="header centered-text vp-doc">
-        <h2>Contributing to Direcuts</h2>
+        <h2>Contributing to Directus</h2>
         <p class="m-20">
           Directus combines BaaS, Headless CMS, and internal tools for seamless
           backend management, content distribution, and workflow optimization.
