@@ -17,16 +17,17 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from '@/stores/app';
 import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { GEOMETRY_TYPES } from '@directus/constants';
+import { useAppStore } from '@directus/stores';
 import { Field, GeometryOptions, GeometryType } from '@directus/types';
 import { CameraOptions, Map } from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Ref } from 'vue';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 const props = defineProps<{
 	collection: string;

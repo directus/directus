@@ -328,9 +328,9 @@ function deleteItem(item: DisplayItem) {
 
 const showUpload = ref(false);
 
-function onUpload(files: Record<string, any>[]) {
+function onUpload(files: Record<string, any>[] | null) {
 	showUpload.value = false;
-	if (files.length === 0 || !relationInfo.value) return;
+	if (!files || files.length === 0 || !relationInfo.value) return;
 
 	const fileIds = files.map((file) => file.id);
 

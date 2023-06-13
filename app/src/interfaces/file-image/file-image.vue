@@ -80,7 +80,7 @@
 
 			<file-lightbox :id="image.id" v-model="lightboxActive" />
 		</div>
-		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="update($event.id)" />
+		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
 	</div>
 </template>
 
@@ -183,6 +183,10 @@ async function imageErrorHandler() {
 			imageError.value = 'UNKNOWN';
 		}
 	}
+}
+
+function onUpload(image: any) {
+	if (image?.id) update(image.id);
 }
 
 function deselect() {

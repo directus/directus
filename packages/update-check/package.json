@@ -1,6 +1,6 @@
 {
 	"name": "@directus/update-check",
-	"version": "10.0.1",
+	"version": "11.0.0",
 	"description": "Check if an update is available for a given package",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -22,19 +22,21 @@
 	],
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
+		"dev": "tsc --watch"
 	},
 	"dependencies": {
-		"semver": "7.5.1",
-		"undici": "5.22.1"
+		"boxen": "7.1.0",
+		"chalk": "5.2.0",
+		"find-cache-dir": "4.0.0",
+		"node-fetch-cache": "3.1.3",
+		"semver": "7.5.1"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@ngneat/falso": "6.4.0",
+		"@npm/types": "1.0.2",
+		"@types/find-cache-dir": "3.2.1",
+		"@types/node-fetch-cache": "3.0.0",
 		"@types/semver": "7.5.0",
-		"@vitest/coverage-c8": "0.31.1",
-		"typescript": "5.0.4",
-		"vitest": "0.31.1"
+		"typescript": "5.0.4"
 	}
 }

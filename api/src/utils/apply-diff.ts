@@ -181,9 +181,11 @@ export async function applyDiff(
 
 		// delete top level collections (no group) first, then continue with nested collections recursively
 		await deleteCollections(
-			snapshotDiff.collections.filter(
-				({ diff }) => diff[0]?.kind === DiffKind.DELETE && (diff[0] as DiffDeleted<Collection>).lhs.meta?.group === null
-			)
+			snapshotDiff.collections.filter(({ diff }) => {
+				if (diff.length === 0 || diff[0] === undefined) return false;
+				const collectionDiff = diff[0] as DiffDeleted<Collection>;
+				return collectionDiff.kind === DiffKind.DELETE && collectionDiff.lhs?.meta?.group === null;
+			})
 		);
 
 		for (const { collection, diff } of snapshotDiff.collections) {

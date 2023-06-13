@@ -58,7 +58,10 @@ Ensure your Project URL is correct when initializing the Directus JavaScript SDK
 Inside of your `app.vue` entry file, add the following to the bottom to test that your plugin works:
 
 ```js
-<script setup>const {$directus} = useNuxtApp() console.log($directus)</script>
+<script setup>
+  const {$directus} = useNuxtApp() 
+  console.log($directus)
+</script>
 ```
 
 Refresh your browser, and check the console. You should see the Directus instance logged, which means you have access to

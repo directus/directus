@@ -12,6 +12,7 @@ import type {
 import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
+import { customAlphabet } from 'nanoid/non-secure';
 import validate from 'uuid-validate';
 import { getHelpers } from '../database/helpers/index.js';
 import { InvalidQueryException } from '../exceptions/invalid-query.js';
@@ -20,9 +21,6 @@ import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { stripFunction } from './strip-function.js';
-
-// @ts-ignore
-import { customAlphabet } from 'nanoid/non-secure';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -38,6 +36,7 @@ export default function applyQuery(
 	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined }
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
+	let hasJoins = false;
 	let hasMultiRelationalFilter = false;
 
 	applyLimit(knex, dbQuery, query.limit);
@@ -51,7 +50,11 @@ export default function applyQuery(
 	}
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
-		applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
+		const sortResult = applySort(knex, schema, dbQuery, query.sort, collection, aliasMap);
+
+		if (!hasJoins) {
+			hasJoins = sortResult.hasJoins;
+		}
 	}
 
 	if (query.search) {
@@ -62,22 +65,21 @@ export default function applyQuery(
 		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false, schema)));
 	}
 
-	if (query.aggregate) {
-		applyAggregate(dbQuery, query.aggregate, collection);
-	}
-
 	if (query.filter) {
-		hasMultiRelationalFilter = applyFilter(
-			knex,
-			schema,
-			dbQuery,
-			query.filter,
-			collection,
-			aliasMap
-		).hasMultiRelationalFilter;
+		const filterResult = applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap);
+
+		if (!hasJoins) {
+			hasJoins = filterResult.hasJoins;
+		}
+
+		hasMultiRelationalFilter = filterResult.hasMultiRelationalFilter;
 	}
 
-	return { query: dbQuery, hasMultiRelationalFilter };
+	if (query.aggregate) {
+		applyAggregate(schema, dbQuery, query.aggregate, collection, hasJoins);
+	}
+
+	return { query: dbQuery, hasJoins, hasMultiRelationalFilter };
 }
 
 /**
@@ -129,13 +131,14 @@ type AddJoinProps = {
 	knex: Knex;
 };
 
-function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, knex }: AddJoinProps): boolean {
+function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, knex }: AddJoinProps) {
 	let hasMultiRelational = false;
+	let isJoinAdded = false;
 
 	path = clone(path);
 	followRelation(path);
 
-	return hasMultiRelational;
+	return { hasMultiRelational, isJoinAdded };
 
 	function followRelation(pathParts: string[], parentCollection: string = collection, parentFields?: string) {
 		/**
@@ -168,6 +171,8 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 				);
 
 				aliasMap[aliasKey]!.collection = relation.related_collection!;
+
+				isJoinAdded = true;
 			} else if (relationType === 'a2o') {
 				const pathScope = pathParts[0]!.split(':')[1];
 
@@ -191,6 +196,8 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 				});
 
 				aliasMap[aliasKey]!.collection = pathScope;
+
+				isJoinAdded = true;
 			} else if (relationType === 'o2a') {
 				rootQuery.leftJoin({ [alias]: relation.collection }, (joinClause) => {
 					joinClause
@@ -208,6 +215,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 				aliasMap[aliasKey]!.collection = relation.collection;
 
 				hasMultiRelational = true;
+				isJoinAdded = true;
 			} else if (relationType === 'o2m') {
 				rootQuery.leftJoin(
 					{ [alias]: relation.collection },
@@ -218,6 +226,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 				aliasMap[aliasKey]!.collection = relation.collection;
 
 				hasMultiRelational = true;
+				isJoinAdded = true;
 			}
 		}
 
@@ -257,6 +266,7 @@ export function applySort(
 	returnRecords = false
 ) {
 	const relations: Relation[] = schema.relations;
+	let hasJoins = false;
 	let hasMultiRelationalSort = false;
 
 	const sortRecords = rootSort.map((sortField) => {
@@ -283,7 +293,7 @@ export function applySort(
 			}
 		}
 
-		const hasMultiRelational = addJoin({
+		const { hasMultiRelational, isJoinAdded } = addJoin({
 			path: column,
 			collection,
 			aliasMap,
@@ -303,6 +313,10 @@ export function applySort(
 
 		const [alias, field] = columnPath.split('.');
 
+		if (!hasJoins) {
+			hasJoins = isJoinAdded;
+		}
+
 		if (!hasMultiRelationalSort) {
 			hasMultiRelationalSort = hasMultiRelational;
 		}
@@ -313,14 +327,14 @@ export function applySort(
 		};
 	});
 
-	if (returnRecords) return { sortRecords, hasMultiRelationalSort };
+	if (returnRecords) return { sortRecords, hasJoins, hasMultiRelationalSort };
 
 	// Clears the order if any, eg: from MSSQL offset
 	rootQuery.clear('order');
 
 	rootQuery.orderBy(sortRecords);
 
-	return undefined;
+	return { hasJoins, hasMultiRelationalSort };
 }
 
 export function applyLimit(knex: Knex, rootQuery: Knex.QueryBuilder, limit: any) {
@@ -345,12 +359,13 @@ export function applyFilter(
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
+	let hasJoins = false;
 	let hasMultiRelationalFilter = false;
 
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
-	return { query: rootQuery, hasMultiRelationalFilter };
+	return { query: rootQuery, hasJoins, hasMultiRelationalFilter };
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
@@ -374,7 +389,7 @@ export function applyFilter(
 				filterPath.length > 1 ||
 				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
 			) {
-				const hasMultiRelational = addJoin({
+				const { hasMultiRelational, isJoinAdded } = addJoin({
 					path: filterPath,
 					collection,
 					knex,
@@ -383,6 +398,10 @@ export function applyFilter(
 					rootQuery,
 					aliasMap,
 				});
+
+				if (!hasJoins) {
+					hasJoins = isJoinAdded;
+				}
 
 				if (!hasMultiRelationalFilter) {
 					hasMultiRelationalFilter = hasMultiRelational;
@@ -555,21 +574,21 @@ export function applyFilter(
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
 			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
-			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
+			if ((operator === '_null' && compareValue !== false) || (operator === '_nnull' && compareValue === false)) {
 				dbQuery[logical].whereNull(selectionRaw);
 			}
 
-			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+			if ((operator === '_nnull' && compareValue !== false) || (operator === '_null' && compareValue === false)) {
 				dbQuery[logical].whereNotNull(selectionRaw);
 			}
 
-			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+			if ((operator === '_empty' && compareValue !== false) || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.whereNull(key).orWhere(key, '=', '');
 				});
 			}
 
-			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+			if ((operator === '_nempty' && compareValue !== false) || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.whereNotNull(key).andWhere(key, '!=', '');
 				});
@@ -785,7 +804,13 @@ function validateNumber(value: string, parsed: number) {
 	return String(parsed) === value;
 }
 
-export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate, collection: string): void {
+export function applyAggregate(
+	schema: SchemaOverview,
+	dbQuery: Knex.QueryBuilder,
+	aggregate: Aggregate,
+	collection: string,
+	hasJoins: boolean
+): void {
 	for (const [operation, fields] of Object.entries(aggregate)) {
 		if (!fields) continue;
 
@@ -811,7 +836,12 @@ export function applyAggregate(dbQuery: Knex.QueryBuilder, aggregate: Aggregate,
 			}
 
 			if (operation === 'countDistinct') {
-				dbQuery.countDistinct(`${collection}.${field}`, { as: `countDistinct->${field}` });
+				if (!hasJoins && schema.collections[collection]?.primary === field) {
+					// Optimize to count as primary keys are unique
+					dbQuery.count(`${collection}.${field}`, { as: `countDistinct->${field}` });
+				} else {
+					dbQuery.countDistinct(`${collection}.${field}`, { as: `countDistinct->${field}` });
+				}
 			}
 
 			if (operation === 'sum') {

@@ -1,28 +1,4 @@
 /**
- * Border thickness to 2px where appropriate
- * -------------------------------------------------------------------------- */
-.vp-doc h2,
-.vp-doc .custom-block,
-.VPSidebar .group + .group,
-.VPNavBarTitle.has-sidebar,
-.VPDocAside .VPDocAsideOutline .content {
-	border-width: 2px;
-}
-
-.VPDocAside .VPDocAsideOutline .outline-marker {
-	width: 2px;
-	left: -2px;
-}
-
-.menu + .translations::before,
-.menu + .appearance::before,
-.menu + .social-links::before,
-.translations + .appearance::before,
-.appearance + .social-links::before {
-	width: 2px !important;
-}
-
-/**
  * Make logo size of the sidebar
  * -------------------------------------------------------------------------- */
 .VPNav .VPNavBar .VPNavBarTitle .logo {
@@ -35,8 +11,8 @@
 .vp-doc img,
 .vp-doc video {
 	border-radius: 8px;
-	border: 2px solid var(--vp-custom-block-tip-border);
 	width: 100%;
+	box-shadow: 0px 0px 6px 0px rgba(23, 41, 64, 0.2);
 }
 
 /**
@@ -56,4 +32,13 @@
  * -------------------------------------------------------------------------- */
 #hubspot-messages-iframe-container {
 	color-scheme: auto;
+}
+
+.vp-doc .custom-block li + li {
+	margin: 0;
+}
+
+.vp-doc .custom-block a {
+	font-weight: 500;
+	text-decoration: underline;
 }

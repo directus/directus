@@ -62,11 +62,11 @@
 </template>
 
 <script setup lang="ts">
-import { useAppStore } from '@/stores/app';
 import { useSettingsStore } from '@/stores/settings';
 import { flatten, getBBox, getGeometryFormatForType, getParser, getSerializer } from '@/utils/geometry';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { ButtonControl } from '@/utils/geometry/controls';
+import { useAppStore } from '@directus/stores';
 import { Field, GeoJSONParser, GeoJSONSerializer, GeometryType, MultiGeometry, SimpleGeometry } from '@directus/types';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
