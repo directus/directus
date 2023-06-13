@@ -24,5 +24,13 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 		from: abstractQuery.collection,
 	};
 
+	if (abstractQuery.modifiers?.limit) {
+		statement.limit = abstractQuery.modifiers.limit.value;
+	}
+
+	if (abstractQuery.modifiers?.offset) {
+		statement.offset = abstractQuery.modifiers.offset.value;
+	}
+
 	return statement;
 };

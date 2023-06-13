@@ -1,7 +1,24 @@
 import type { SqlStatement } from '@directus/data-sql';
 import { from } from './from.js';
 import { select } from './select.js';
+import type { ParameterizedSQLStatement } from '@directus/data';
+import { limit } from './limit-offset.js';
+import { replaceMarkers } from '../utils/index.js';
 
-export function constructSql(query: SqlStatement): string {
-	return [select(query), from(query)].join(' ') + ';';
+/**
+ * All of the sub functions are called for any query.
+ * Within those functions checks are being made, if the part can or should be included within the statement.
+ *
+ * @param query the abstract SQL statement
+ * @returns An actual SQL with parameters
+ */
+export function constructSql(query: SqlStatement): ParameterizedSQLStatement {
+	const base = [select(query), from(query)].join(' ');
+
+	const limitPart = limit(query);
+
+	return {
+		statement: `${replaceMarkers(`${base} ${limitPart.statement}`)};`,
+		values: [limitPart.values].flat(),
+	};
 }
