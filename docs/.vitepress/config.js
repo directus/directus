@@ -109,7 +109,7 @@ gtag('config', 'UA-24637628-7');
 			'link',
 			{
 				rel: 'stylesheet',
-				href: 'https://fonts.googleapis.com/css2?family=Material+Icons+Outlined',
+				href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',
 			},
 		],
 		[
@@ -570,7 +570,7 @@ function sidebar() {
 						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
 						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
 						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
-					]
+					],
 				},
 			],
 		},
@@ -677,7 +677,7 @@ function sidebar() {
 			collapsed: true,
 			items: [
 				{ link: '/contributing/introduction', text: 'Introduction' },
-				{ 
+				{
 					text: 'Code',
 					items: [
 						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
@@ -685,10 +685,10 @@ function sidebar() {
 						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
 						{ link: '/contributing/running-locally', text: 'Running Locally' },
 						{ link: '/contributing/tests', text: 'Tests' },
-					]
+					],
 				},
 				{ link: '/contributing/community', text: 'Community' },
-				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' }
+				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' },
 			],
 		},
 		{
