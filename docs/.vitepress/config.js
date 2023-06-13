@@ -1,4 +1,6 @@
+import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
+import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 
 export default defineConfig({
 	base: '/',
@@ -140,12 +142,57 @@ gtag('config', 'UA-24637628-7');
 		sidebar: {
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
+			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
 			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
 		},
 	},
 });
+
+function typeDocSidebarFormat(item) {
+	if (item.link !== null && !item.link.startsWith('/packages')) {
+		item.link = item.link.substring(item.link.indexOf('/packages'));
+	}
+
+	if (item.items) {
+		item.items = item.items.filter((subItem) => {
+			return subItem.link !== null || subItem.items.length > 0;
+		});
+	}
+
+	if (item.text.startsWith('@directus/')) {
+		item.items.unshift({
+			text: 'Overview',
+			link: `/packages/${item.text}/`,
+			items: [],
+			collapsed: true,
+		});
+		item.text = formatTitle(item.text.replace('@directus/', ''));
+		item.text = item.text.replace('Sdk', 'SDK');
+	}
+
+	if (item?.items?.length > 0) {
+		item.items.map((subItem) => {
+			return typeDocSidebarFormat(subItem);
+		});
+	} else {
+		delete item.items;
+		delete item.collapsed;
+	}
+
+	return item;
+}
+
+function sidebarTypedocs() {
+	let sidebar = TypeDocSidebar;
+
+	sidebar = sidebar.map((item) => {
+		return typeDocSidebarFormat(item);
+	});
+
+	return sidebar;
+}
 
 function sidebar() {
 	return [
@@ -564,52 +611,62 @@ function sidebar() {
 					text: 'Creating Extensions',
 				},
 				{
-					link: '/extensions/displays',
-					text: 'Displays',
+					text: 'Extension Types',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/displays',
+							text: 'Displays',
+						},
+						{
+							link: '/extensions/email-templates',
+							text: 'Email Templates',
+						},
+						{
+							link: '/extensions/endpoints',
+							text: 'Endpoints',
+						},
+						{
+							link: '/extensions/hooks',
+							text: 'Hooks',
+						},
+						{
+							link: '/extensions/interfaces',
+							text: 'Interfaces',
+						},
+						{
+							link: '/extensions/layouts',
+							text: 'Layouts',
+						},
+						{
+							link: '/extensions/migrations',
+							text: 'Migrations',
+						},
+						{
+							link: '/extensions/modules',
+							text: 'Modules',
+						},
+						{
+							link: '/extensions/operations',
+							text: 'Operations',
+						},
+						{
+							link: '/extensions/panels',
+							text: 'Panels',
+						},
+						{
+							link: '/extensions/themes',
+							text: 'Themes',
+						},
+						{
+							link: '/extensions/bundles',
+							text: 'Bundles',
+						},
+					],
 				},
 				{
-					link: '/extensions/email-templates',
-					text: 'Email Templates',
-				},
-				{
-					link: '/extensions/endpoints',
-					text: 'Endpoints',
-				},
-				{
-					link: '/extensions/hooks',
-					text: 'Hooks',
-				},
-				{
-					link: '/extensions/interfaces',
-					text: 'Interfaces',
-				},
-				{
-					link: '/extensions/layouts',
-					text: 'Layouts',
-				},
-				{
-					link: '/extensions/migrations',
-					text: 'Migrations',
-				},
-				{
-					link: '/extensions/modules',
-					text: 'Modules',
-				},
-				{
-					link: '/extensions/operations',
-					text: 'Operations',
-				},
-				{
-					link: '/extensions/panels',
-					text: 'Panels',
-				},
-				{
-					link: '/extensions/themes',
-					text: 'Themes',
-				},
-				{
-					link: '/extensions/bundles',
-					text: 'Bundles',
+					text: 'Packages',
+					link: '/contributing/codebase-overview.html#packages-packages',
 				},
 			],
 		},

@@ -27,5 +27,8 @@
 		"isolatedModules": true,
 		"outDir": "dist"
 	},
-	"include": ["./src/**/*.ts"]
+	"include": ["./src/**/*.ts"],
+	"typedocOptions": {
+        "entryPoints": ["./src"]
+    }
 }
