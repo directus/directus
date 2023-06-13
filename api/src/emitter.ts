@@ -1,6 +1,7 @@
 import type { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/types';
 import ee2 from 'eventemitter2';
 import logger from './logger.js';
+import getDatabase from './database/index.js';
 
 export class Emitter {
 	private filterEmitter;
@@ -22,11 +23,19 @@ export class Emitter {
 		this.initEmitter = new ee2.EventEmitter2(emitterOptions);
 	}
 
+	private getDefaultContext(): EventContext {
+		return {
+			database: getDatabase(),
+			accountability: null,
+			schema: null,
+		};
+	}
+
 	public async emitFilter<T>(
 		event: string | string[],
 		payload: T,
 		meta: Record<string, any>,
-		context: EventContext
+		context: EventContext | null = null
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
 
@@ -39,7 +48,7 @@ export class Emitter {
 
 		for (const { event, listeners } of eventListeners) {
 			for (const listener of listeners) {
-				const result = await listener(updatedPayload, { event, ...meta }, context);
+				const result = await listener(updatedPayload, { event, ...meta }, context ?? this.getDefaultContext());
 
 				if (result !== undefined) {
 					updatedPayload = result;
@@ -50,11 +59,11 @@ export class Emitter {
 		return updatedPayload;
 	}
 
-	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext): void {
+	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext | null = null): void {
 		const events = Array.isArray(event) ? event : [event];
 
 		for (const event of events) {
-			this.actionEmitter.emitAsync(event, { event, ...meta }, context).catch((err) => {
+			this.actionEmitter.emitAsync(event, { event, ...meta }, context ?? this.getDefaultContext()).catch((err) => {
 				logger.warn(`An error was thrown while executing action "${event}"`);
 				logger.warn(err);
 			});

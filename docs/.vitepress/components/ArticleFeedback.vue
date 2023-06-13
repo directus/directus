@@ -130,8 +130,10 @@ async function handleSubmission(rating?: number) {
 .step > * + * {
 	margin-top: 1rem;
 }
+
 .btn {
 	border: 1px solid var(--vp-c-divider);
+	background-color: var(--vp-c-bg);
 	border-radius: 8px;
 	transition: border-color 0.25s, background-color 0.25s;
 	display: inline-block;
@@ -144,9 +146,11 @@ async function handleSubmission(rating?: number) {
 	vertical-align: middle;
 	white-space: nowrap;
 }
+
 .btn:disabled {
 	opacity: 0.5;
 }
+
 .btn:hover {
 	border-color: var(--vp-c-brand);
 }
@@ -175,8 +179,9 @@ async function handleSubmission(rating?: number) {
 .wrapper {
 	margin: 2rem 0;
 	padding: 1.5rem;
-	border: 2px dashed var(--vp-custom-block-tip-border);
+	border: 1px solid var(--vp-c-divider);
 	border-radius: 8px;
+	background: var(--vp-c-bg-alt)
 }
 
 .input {
