@@ -26,11 +26,15 @@ export const useThemeStore = defineStore('themes', () => {
 		}
 	};
 
+	const defaultTheme = computed(() => {
+		if (unref(currentAppearance) === 'dark') return darkDefault;
+		return lightDefault;
+	});
+
 	const rules = computed(() => {
 		const appearance = unref(currentAppearance);
 		const theme = themes[appearance].find(({ name }) => name === currentTheme[unref(currentAppearance)]);
-
-		return defu(theme?.rules, lightDefault.rules);
+		return defu(theme?.rules, unref(defaultTheme).rules);
 	});
 
 	return { themes, registerTheme, currentTheme, currentAppearance, rules };
