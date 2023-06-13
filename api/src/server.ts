@@ -12,6 +12,14 @@ import emitter from './emitter.js';
 import env from './env.js';
 import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import {
+	createSubscriptionController,
+	createWebSocketController,
+	getSubscriptionController,
+	getWebSocketController,
+} from './websocket/controllers/index.js';
+import { startWebSocketHandlers } from './websocket/handlers/index.js';
+import { toBoolean } from './utils/to-boolean.js';
 
 export let SERVER_ONLINE = true;
 
@@ -82,6 +90,12 @@ export async function createServer(): Promise<http.Server> {
 		res.once('close', complete.bind(null, false));
 	});
 
+	if (toBoolean(env['WEBSOCKETS_ENABLED']) === true) {
+		createSubscriptionController(server);
+		createWebSocketController(server);
+		startWebSocketHandlers();
+	}
+
 	const terminusOptions: TerminusOptions = {
 		timeout:
 			env['SERVER_SHUTDOWN_TIMEOUT'] >= 0 && env['SERVER_SHUTDOWN_TIMEOUT'] < Infinity
@@ -106,6 +120,8 @@ export async function createServer(): Promise<http.Server> {
 	}
 
 	async function onSignal() {
+		getSubscriptionController()?.terminate();
+		getWebSocketController()?.terminate();
 		const database = getDatabase();
 		await database.destroy();
 
