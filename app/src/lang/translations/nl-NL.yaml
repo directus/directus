@@ -80,14 +80,6 @@ create_user: Gebruiker Aanmaken
 message: Bericht
 delete_panel: Paneel verwijderen
 create_webhook: Webhook Aanmaken
-create_translation_string: Vertalingen aanmaken
-no_translation_string: Vertaalde Strings
-no_translation_string_copy: Er zijn nog geen vertaling reeksen.
-translation_string_key_placeholder: Tekenreeks van vertalingen...
-translation_string_translations_placeholder: Voeg nieuwe vertaling toe
-edit_translation_string: Vertaalstring bewerken
-delete_translation_string_copy: >-
-  Weet je zeker dat je het {key} veld wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 invite_users: Gebruikers Uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
@@ -118,13 +110,6 @@ public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 admin_description: Initiële administratieve rol met onbeperkte App/API toegang.
 not_allowed: Niet toegestaan
-directus_version: Directus Versie
-node_version: Node Versie
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Versie
-os_uptime: OS Uptime
-os_totalmem: OS Geheugen
 archive: Archiveren
 archive_confirm: Weet je zeker dat je dit item wilt archiveren?
 archive_confirm_count: >-
@@ -356,7 +341,7 @@ revision_delta_reverted: Teruggedraaid
 revision_delta_update_message: Dit veld is bijgewerkt, maar de waarde wordt verborgen om veiligheidsredenen.
 revision_delta_other: Revisie
 revision_delta_by: '{date} door {user}'
-presentation_text_values_cannot_be_reimported: "Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd."
+presentation_text_values_cannot_be_reimported: 'Gebruikt presentatietekst, waardes kunnen niet opnieuw worden geïmporteerd.'
 download_page_as_csv: 'Download Pagina als CSV'
 private_user: Privé gebruiker
 creation_preview: Creatie voorbeeld
@@ -496,7 +481,6 @@ enable_select_button: Selecteerknop inschakelen
 allow_duplicates: Sta duplicaten toe
 comments: Reacties
 no_comments: Nog geen reacties
-click_to_expand: Klik om uit te breiden
 select_item: Selecteer Item
 no_items: Geen items
 search_items: Zoek items...
@@ -954,7 +938,6 @@ settings_project: Projectinstellingen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Voorkeuren & Bladwijzers
-settings_translation_strings: Schermtekst vertalingen
 one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
 actions: Acties
@@ -1004,7 +987,6 @@ page_help_settings_webhooks_collection: '**Browse Webhooks** — Toont alle webh
 page_help_settings_webhooks_item: '**Webhook Detail** - Een formulier voor het maken en beheren van project webhooks.'
 page_help_settings_flows_collection: '**Blader door Flows** — Toon alle Flows in het project.'
 page_help_settings_flows_item: '**Flow details** — Werkruimte voor het beheren van één of meerdere operaties.'
-page_help_settings_translation_strings_collection: '**Blader door vertaling reeksen** — Toont alle vertaling reeksen in het project.'
 page_help_users_collection: '**User Directory** — Laat alle gebruikers in dit project zien.'
 page_help_users_item: >-
   **Gebruikersdetail** — Beheer je accountgegevens, of bekijk de details van andere gebruikers.
@@ -1273,6 +1255,8 @@ start_collapsed: Start gesloten
 block: Blok
 inline: Doorlopend
 comment: Reactie
+live_preview:
+  new_window: Openen in nieuw venster
 unlimited_usage: Onbeperkt gebruik
 new_share: Delen
 expired: Verlopen
@@ -1541,6 +1525,16 @@ interfaces:
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
     imageToken: Statische toegangstoken
+  input-block-editor:
+    tools: Werkbalk
+    tools_options:
+      header: Header
+      nestedlist: Lijst
+      embed: Insluiten
+      code: Code
+      image: Afbeelding
+      table: Tabel
+      underline: Onderstreept
   system-token:
     system-token: Token
 displays:

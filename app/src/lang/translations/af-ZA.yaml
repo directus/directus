@@ -77,14 +77,6 @@ create_user: Skep Gebruiker
 message: Boodskap
 delete_panel: Skrap paneel
 create_webhook: Skep 'n Webhaak
-create_translation_string: Skep 'n vertalingstring
-no_translation_string: Geen Vertalingstringe
-no_translation_string_copy: Daar is nog geen vertalingstringe nie.
-translation_string_key_placeholder: Vertalingstring-sleutel...
-translation_string_translations_placeholder: Voeg 'n nuwe vertaling by
-edit_translation_string: Werk Vertalingstring By
-delete_translation_string_copy: >-
-  Is jy seker jy wil die vertalingstring "{key}" uitwis? Hierdie aksie kan nie ongedaan gemaak word nie.
 invite_users: Nooi Gebruikers
 invite: Nooi uit
 email_already_invited: E-pos "{email}" is reeds uit genooi
@@ -107,9 +99,6 @@ delete_bookmark_copy: >-
   Is jy seker jy wil die "{bookmark}" boekmerk uitvee? Hierdie aksie kan nie ongedaan gemaak word nie.
 delete_personal_bookmark: Wis Persoonlike Boekmerk Uit
 delete_role_bookmark: Wis Rolboekmerk Uit
-directus_version: Directus Version
-node_version: Node Version
-os_version: OS Version
 field_translations: Vertalings
 language: Taal
 create_field: Skep Veld
@@ -229,6 +218,10 @@ interfaces:
     files: Lêers
   tags:
     tags: Sleutelwoorde
+  input-block-editor:
+    tools_options:
+      code: Kode
+      table: Tafel
 displays:
   collection:
     collection: Versameling

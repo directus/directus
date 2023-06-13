@@ -78,14 +78,6 @@ create_user: Dodaj korisnika
 message: Poruka
 delete_panel: Ukloni panel
 create_webhook: Kreiraj webhook
-create_translation_string: Dodaj prijevodni niz
-no_translation_string: Nema prijevodnih nizova
-no_translation_string_copy: Još nema prijevodnih nizova.
-translation_string_key_placeholder: Ključ niza prijevoda...
-translation_string_translations_placeholder: Dodaj novi prijevod
-edit_translation_string: Uredi prijevodni niz
-delete_translation_string_copy: >-
-  Jeste li sigurni da želite izbrisati prijevodni niz "{key}"? Ova se akcija ne može poništiti.
 invite_users: Pozovite korisnike
 invite: Pozovi
 email_already_invited: Adresa e-pošte "{email}" već pozvana
@@ -116,13 +108,6 @@ public_label: Javno
 public_description: Određuje koji su API podaci dostupni bez provjere autentičnosti.
 admin_description: Početna administrativna rola s neograničenim pristupom aplikaciji/API-ju.
 not_allowed: Nije dopušteno
-directus_version: Directus verzija
-node_version: Node verzija
-node_uptime: Node vrijeme rada
-os_type: Vrsta OS-a
-os_version: OS verzija
-os_uptime: OS vrijeme rada
-os_totalmem: OS memorija
 archive: Arhiva
 archive_confirm: Jeste li sigurni da želite arhivirati ovu stavku?
 archive_confirm_count: >-
@@ -335,7 +320,7 @@ revision_delta_reverted: Vraćeno
 revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrijednost skrivena iz sigurnosnih razloga.
 revision_delta_other: Revizija
 revision_delta_by: '{date} od strane {user}'
-presentation_text_values_cannot_be_reimported: "Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti."
+presentation_text_values_cannot_be_reimported: 'Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti.'
 download_page_as_csv: 'Preuzmite stranicu kao CSV'
 private_user: Privatni korisnik
 creation_preview: Pretpregled izrade
@@ -463,7 +448,6 @@ enable_select_button: Omogući dugme za odabir
 allow_duplicates: Dopusti duplikate
 comments: Komentari
 no_comments: Još nema komentara
-click_to_expand: Klikni za proširenje
 select_item: Odaberi stavku
 no_items: Nema stavki
 search_items: Pretraži stavke...
@@ -904,7 +888,6 @@ settings_project: Postavke projekta
 settings_webhooks: Web-dojavnici
 settings_flows: Tokovi
 settings_presets: Zadane postavke i oznake
-settings_translation_strings: Prijevodni nizovi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
 scope: Opseg
 actions: Akcije
@@ -954,7 +937,6 @@ page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazu
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za kreiranje i upravljanje web-dojavnicima.'
 page_help_settings_flows_collection: '**Pregledaj tokove** — Popisuje sve tokove unutar projekta.'
 page_help_settings_flows_item: '**Detalji toka** — Radni prostor za upravljanje jednom ili više operacija.'
-page_help_settings_translation_strings_collection: '**Pregledaj nizove prijevoda** — Navodi sve prijevodne nizove unutar projekta.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sistema unutar ovog projekta.'
 page_help_users_item: >-
   **Detalji o korisniku** — Upravljajte podacima o svom računu ili pregledajte detalje drugih korisnika.
@@ -1196,6 +1178,7 @@ field_options:
     sort_field: Odaberite polje...
     accountability_divider: Odgovornost
     duplication_divider: Umnožavanje
+    preview_divider: Pretpregled
   directus_files:
     title: Jedinstven naslov...
     description: Neobavezan opis...
@@ -1251,6 +1234,8 @@ start_open: Počni otvoren
 start_collapsed: Počni skupljen
 block: Blok
 comment: Komentar
+live_preview:
+  new_window: Otvori u novom prozoru
 shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 uses_left: 'Nema više korištenja | Još 1 korištenje | Preostalo korištenja: {n}'
@@ -1602,7 +1587,6 @@ interfaces:
     input-translated-string: Prevedeni nizovi
     description: Odaberi ili dodaj prijevodni niz
     search_placeholder: Traži...
-    new_translation_string: Novi prijevodni niz
   boolean:
     toggle: Uključi/isključi
     description: Prebacivanje između uključivanja i isključivanja
@@ -1637,6 +1621,16 @@ interfaces:
     folder_note: Folder za učitane fajlove. Ne utječe na postojeće fajlove.
     imageToken: Statički pristupni token
     imageToken_label: Statički pristupni token se dodaje URL-u
+  input-block-editor:
+    tools: Alatna traka
+    tools_options:
+      header: Zaglavlje
+      nestedlist: Lista
+      embed: Ugradi
+      code: Kôd
+      image: Slika
+      table: Tablica
+      underline: Podcrtano
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete unos (API)
     description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'
@@ -1952,7 +1946,7 @@ operations:
     message: Poruka
   request:
     name: Web dojavnik / URL zahtjeva
-    description: "Pošaljite zahtjev na URL"
+    description: 'Pošaljite zahtjev na URL'
     method: Metoda
     data: Podaci
     headers: Zaglavlja

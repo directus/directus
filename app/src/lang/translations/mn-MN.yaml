@@ -94,13 +94,6 @@ public_label: Нээлттэй
 public_description: Нэвтэрч ороогүй үед API- ны ямар өгөгдөл авч болохыг удирдана.
 admin_description: Апп болон API дата руу хязгааргүй хандах эрхтэй үндсэн админ эрх.
 not_allowed: Зөвшөөрөгдөөгүй
-directus_version: Directus хувилбар
-node_version: Node хувилбар
-node_uptime: Node ажиллаж буй хугацаа
-os_type: Үйлдлийн системийн төрөл
-os_version: Үйлдлийн системийн хувилбар
-os_uptime: Үйлдлийн системийн ажиллаж буй хугацаа
-os_totalmem: Үйлдлийн системийн санах ой
 archive: Архивлах
 archive_confirm: Та энэ мэдээллийг архивлахыг хүсч байна уу?
 archive_confirm_count: >-
