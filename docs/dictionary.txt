@@ -65,6 +65,8 @@
 (U|u)tils?
 (URI|URIs)
 (URL|url)
+(V|v)ite
+(V|v)itest
 (W|w)alkthrough
 (W|w)ebhook.?
 (W|w)ebhooks?
@@ -287,6 +289,7 @@ performant
 phpMyAdmin
 Phusion
 Pinia
+Pinia-based
 pino
 Pino
 Plesk
@@ -365,6 +368,8 @@ truthy
 TTL
 TTY
 UI
+UID
+UIDs
 UIs?
 unarchives
 Ungrouped
@@ -375,8 +380,6 @@ upscaled
 upvotes
 userbase
 uuid
-UID
-UIDs
 UUID
 UUIDs
 UUIDv4
@@ -387,8 +390,6 @@ vCPU
 Vercel
 viewability
 VitePress
-(V|v)itest
-(V|v)ite
 volta
 VPC
 Vue
