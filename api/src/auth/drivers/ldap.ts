@@ -13,9 +13,8 @@ import {
 	InvalidCredentialsError,
 	InvalidPayloadError,
 	InvalidProviderError,
-	RecordNotUniqueError,
 	ServiceUnavailableError,
-	UnexpectedResponseError,
+	UnexpectedResponseError
 } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
@@ -321,7 +320,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (e instanceof RecordNotUniqueError) {
+			if (isDirectusError(e) && e.code === ErrorCode.RecordNotUnique) {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}

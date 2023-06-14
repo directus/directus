@@ -1,3 +1,4 @@
+import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import {
@@ -9,7 +10,7 @@ import {
 } from '../auth/drivers/index.js';
 import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import env from '../env.js';
-import { InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
 import logger from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
@@ -171,7 +172,7 @@ router.post(
 			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
 			return next();
 		} catch (err: any) {
-			if (err instanceof InvalidPayloadError) {
+			if (isDirectusError(err) && err.code === ErrorCode.InvalidPayload) {
 				throw err;
 			} else {
 				logger.warn(err, `[email] ${err}`);

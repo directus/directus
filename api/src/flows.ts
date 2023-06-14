@@ -435,7 +435,7 @@ class FlowManager {
 			let data;
 
 			if (error instanceof Error) {
-				// make sure we dont expose the stack trace
+				// make sure we don't expose the stack trace
 				data = sanitizeError(error);
 			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data

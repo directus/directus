@@ -1,5 +1,6 @@
 import { Action, FUNCTIONS } from '@directus/constants';
 import type { DirectusError } from '@directus/errors';
+import { isDirectusError } from '@directus/errors';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
@@ -48,7 +49,7 @@ import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { ForbiddenError, InvalidPayloadError } from '../../errors/index.js';
+import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../../errors/index.js';
 import { getExtensionManager } from '../../extensions.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
@@ -2205,7 +2206,7 @@ export class GraphQLService {
 					try {
 						await service.requestPasswordReset(args['email'], args['reset_url'] || null);
 					} catch (err: any) {
-						if (err instanceof InvalidPayloadError) {
+						if (isDirectusError(err) && err.code === ErrorCode.InvalidPayload) {
 							throw err;
 						}
 					}

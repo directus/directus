@@ -11,11 +11,11 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
 import {
+	ErrorCode,
 	InvalidConfigError,
 	InvalidCredentialsError,
 	InvalidProviderError,
 	InvalidTokenError,
-	RecordNotUniqueError,
 	ServiceUnavailableError,
 } from '../../errors/index.js';
 import logger from '../../logger.js';
@@ -197,7 +197,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (e instanceof RecordNotUniqueError) {
+			if (isDirectusError(e) && e.code === ErrorCode.RecordNotUnique) {
 				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}
@@ -350,7 +350,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
-				if (error instanceof InvalidTokenError && !prompt) {
+				if (isDirectusError(error) && error.code === ErrorCode.InvalidToken && !prompt) {
 					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
 				}
 
