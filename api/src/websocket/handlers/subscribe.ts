@@ -1,14 +1,14 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import emitter from '../../emitter.js';
-import { InvalidPayloadException } from '../../index.js';
-import { getMessenger } from '../../messenger.js';
+import { InvalidPayloadError } from '../../errors/index.js';
 import type { Messenger } from '../../messenger.js';
+import { getMessenger } from '../../messenger.js';
 import { CollectionsService, FieldsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { getService } from '../../utils/get-service.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { refreshAccountability } from '../authenticate.js';
-import { WebSocketException, handleWebSocketException } from '../exceptions.js';
+import { WebSocketError, handleWebSocketError } from '../errors.js';
 import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
 import type { Subscription, SubscriptionEvent, WebSocketClient } from '../types.js';
@@ -51,7 +51,7 @@ export class SubscribeHandler {
 			try {
 				this.onMessage(client, WebSocketSubscribeMessage.parse(message));
 			} catch (error) {
-				handleWebSocketException(client, error, 'subscribe');
+				handleWebSocketError(client, error, 'subscribe');
 			}
 		});
 
@@ -68,7 +68,7 @@ export class SubscribeHandler {
 		const { collection } = subscription;
 
 		if ('item' in subscription && ['directus_fields', 'directus_relations'].includes(collection)) {
-			throw new InvalidPayloadException(`Cannot subscribe to a specific item in the ${collection} collection.`);
+			throw new InvalidPayloadError({ reason: `Cannot subscribe to a specific item in the ${collection} collection.` });
 		}
 
 		if (!this.subscriptions[collection]) {
@@ -132,7 +132,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', result, subscription.uid));
 			} catch (err) {
-				handleWebSocketException(client, err, 'subscribe');
+				handleWebSocketError(client, err, 'subscribe');
 			}
 		}
 	}
@@ -148,7 +148,7 @@ export class SubscribeHandler {
 				const schema = await getSchema();
 
 				if (!accountability?.admin && !schema.collections[collection]) {
-					throw new WebSocketException(
+					throw new WebSocketError(
 						'subscribe',
 						'INVALID_COLLECTION',
 						'The provided collection does not exists or is not accessible.',
@@ -194,7 +194,7 @@ export class SubscribeHandler {
 				// send an initial response
 				client.send(fmtMessage('subscription', data, subscription.uid));
 			} catch (err) {
-				handleWebSocketException(client, err, 'subscribe');
+				handleWebSocketError(client, err, 'subscribe');
 			}
 		}
 
@@ -204,7 +204,7 @@ export class SubscribeHandler {
 
 				client.send(fmtMessage('subscription', { event: 'unsubscribe' }, message.uid));
 			} catch (err) {
-				handleWebSocketException(client, err, 'unsubscribe');
+				handleWebSocketError(client, err, 'unsubscribe');
 			}
 		}
 	}

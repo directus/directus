@@ -1,4 +1,5 @@
-import { BaseException } from '@directus/exceptions';
+import type { DirectusError } from '@directus/errors';
+import { isDirectusError } from '@directus/errors';
 import type { WebSocket } from 'ws';
 import { ZodError } from 'zod';
 import { fromZodError } from 'zod-validation-error';
@@ -6,7 +7,7 @@ import logger from '../logger.js';
 import type { WebSocketResponse } from './messages.js';
 import type { WebSocketClient } from './types.js';
 
-export class WebSocketException extends Error {
+export class WebSocketError extends Error {
 	type: string;
 	code: string;
 	uid: string | number | undefined;
@@ -38,29 +39,29 @@ export class WebSocketException extends Error {
 		return JSON.stringify(this.toJSON());
 	}
 
-	static fromException(error: BaseException, type = 'unknown') {
-		return new WebSocketException(type, error.code, error.message);
+	static fromError(error: DirectusError<unknown>, type = 'unknown') {
+		return new WebSocketError(type, error.code, error.message);
 	}
 
 	static fromZodError(error: ZodError, type = 'unknown') {
 		const zError = fromZodError(error);
-		return new WebSocketException(type, 'INVALID_PAYLOAD', zError.message);
+		return new WebSocketError(type, 'INVALID_PAYLOAD', zError.message);
 	}
 }
 
-export function handleWebSocketException(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
-	if (error instanceof BaseException) {
-		client.send(WebSocketException.fromException(error, type).toMessage());
+export function handleWebSocketError(client: WebSocketClient | WebSocket, error: unknown, type?: string): void {
+	if (isDirectusError(error)) {
+		client.send(WebSocketError.fromError(error, type).toMessage());
 		return;
 	}
 
-	if (error instanceof WebSocketException) {
+	if (error instanceof WebSocketError) {
 		client.send(error.toMessage());
 		return;
 	}
 
 	if (error instanceof ZodError) {
-		client.send(WebSocketException.fromZodError(error, type).toMessage());
+		client.send(WebSocketError.fromZodError(error, type).toMessage());
 		return;
 	}
 

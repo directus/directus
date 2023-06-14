@@ -1,10 +1,12 @@
+import { createError } from '@directus/errors';
 import { describe, expect, test, vi } from 'vitest';
-import type { WebSocketClient } from './types.js';
-import { BaseException } from '@directus/exceptions';
-import { InvalidPayloadException } from '../index.js';
-import { WebSocketException, handleWebSocketException } from './exceptions.js';
 import { ZodError } from 'zod';
+import { InvalidPayloadError } from '../errors/index.js';
 import logger from '../logger.js';
+import { WebSocketError, handleWebSocketError } from './errors.js';
+import type { WebSocketClient } from './types.js';
+
+const TestError = createError('test', '123', 200);
 
 vi.mock('../logger');
 
@@ -18,9 +20,9 @@ function mockClient() {
 	} as unknown as WebSocketClient;
 }
 
-describe('WebSocketException', () => {
+describe('WebSocketError', () => {
 	test('with uid', () => {
-		const error = new WebSocketException('type', 'code', 'message', 123);
+		const error = new WebSocketError('type', 'code', 'message', 123);
 		const response = error.toJSON();
 
 		expect(response).toStrictEqual({
@@ -37,7 +39,7 @@ describe('WebSocketException', () => {
 	});
 
 	test('without uid', () => {
-		const error = new WebSocketException('type', 'code', 'message');
+		const error = new WebSocketError('type', 'code', 'message');
 		const response = error.toJSON();
 
 		expect(response).toStrictEqual({
@@ -53,32 +55,32 @@ describe('WebSocketException', () => {
 	});
 });
 
-describe('handleWebSocketException', () => {
+describe('handleWebSocketError', () => {
 	const type = 'testing';
 
 	test('handle BaseException', () => {
 		const client = mockClient();
-		const error = new BaseException('test', 200, '123');
-		const expected = WebSocketException.fromException(error, type).toMessage();
-		handleWebSocketException(client, error, type);
+		const error = new TestError();
+		const expected = WebSocketError.fromError(error, type).toMessage();
+		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
 		expect(logger.error).not.toBeCalled();
 	});
 
-	test('handle InvalidPayloadException', () => {
+	test('handle InvalidPayloadError', () => {
 		const client = mockClient();
-		const error = new InvalidPayloadException('test');
-		const expected = WebSocketException.fromException(error, type).toMessage();
-		handleWebSocketException(client, error, type);
+		const error = new InvalidPayloadError({ reason: 'test' });
+		const expected = WebSocketError.fromError(error, type).toMessage();
+		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
 		expect(logger.error).not.toBeCalled();
 	});
 
-	test('handle WebSocketException', () => {
+	test('handle WebSocketError', () => {
 		const client = mockClient();
-		const error = new WebSocketException('type', 'code', 'message', 123);
+		const error = new WebSocketError('type', 'code', 'message', 123);
 		const expected = error.toMessage();
-		handleWebSocketException(client, error, type);
+		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
 		expect(logger.error).not.toBeCalled();
 	});
@@ -90,8 +92,8 @@ describe('handleWebSocketException', () => {
 			{ message: 'test', code: 'invalid_type', path: ['path'], expected: 'array', received: 'string' },
 		]);
 
-		const expected = WebSocketException.fromZodError(error, type).toMessage();
-		handleWebSocketException(client, error, type);
+		const expected = WebSocketError.fromZodError(error, type).toMessage();
+		handleWebSocketError(client, error, type);
 		expect(client.send).toBeCalledWith(expected);
 		expect(logger.error).not.toBeCalled();
 	});
@@ -99,7 +101,7 @@ describe('handleWebSocketException', () => {
 	test('unhandled exception', () => {
 		const client = mockClient();
 		const error = new Error('regular error');
-		handleWebSocketException(client, error, type);
+		handleWebSocketError(client, error, type);
 		expect(client.send).not.toBeCalled();
 		expect(logger.error).toBeCalled();
 	});
