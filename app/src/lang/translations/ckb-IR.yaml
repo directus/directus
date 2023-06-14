@@ -80,14 +80,6 @@ create_user: دروستکردنی بەکارهێنەر
 message: پەیام
 delete_panel: سڕینەوەی پانێڵ
 create_webhook: دروستکردنی وێبهووک
-create_translation_string: دروستکردنی وەرگێڕانی دەقە ڕیزبەند
-no_translation_string: وەرگێڕانی دەقە ڕیزبەند نییە
-no_translation_string_copy: هیچ وەرگێڕانێکی دەقە ڕیزبەند نییە هێشتا.
-translation_string_key_placeholder: کلیلی وەرگێڕانی دەقە ڕیزبەند...
-translation_string_translations_placeholder: دانانی وەرگێڕانی نوێ
-edit_translation_string: دەستکاریکردنی وەرگێڕانی دەقە ڕیزبەند
-delete_translation_string_copy: >-
-  ئایا دڵنیای کە دەتەوێت وەرگێڕانی دەقە ڕیزبەندی "{key}" بسڕیتەوە؟ ئەم کارە گەڕانەوەی نییە.
 invite_users: بانگهێشتکردنی بەکارهێنەرەکان
 invite: بانگهێشت
 email_already_invited: ئیمەیڵی "{email}" پێشتر بانگهێشتکراوە
@@ -118,13 +110,6 @@ public_label: گشتی
 public_description: کۆنتڕۆڵکردنی ئەوەی کام داتایەی API بەردەستە بەبێ ڕەسەنایەتی.
 admin_description: ڕۆڵی بەڕێوبەری سەرەتایی لەگەڵ دەسەڵاتی API و پێگەی بێ سنوور.
 not_allowed: ڕێگەپێنەدراوە
-directus_version: وەشانی دایرێکتەس
-node_version: وەشانی نۆد
-node_uptime: چالاکی نۆد
-os_type: جۆری سیستەم
-os_version: وەشانی سیستەم
-os_uptime: چالاکی سیستەم
-os_totalmem: بیرگەی سیستەم
 archive: ئەرشیڤ
 archive_confirm: ئایا دڵنیای دەتەوێت ئەم مادەیە ئەرشیف بکەیت؟
 archive_confirm_count: >-
@@ -349,7 +334,7 @@ revision_delta_reverted: گەڕێندرایەوە
 revision_delta_update_message: ئەم خانەیە نوێ کراوەتەوە بەڵام بەهاکەی بە هۆکاری ئەمنی دەشاردرێتەوە.
 revision_delta_other: پێداچونەوە
 revision_delta_by: '{date} بەپێی {user}'
-presentation_text_values_cannot_be_reimported: "دەقی پێشکەشکردن بەکاردەهێنێت، بەهاکان ناتوانرێت دووبارە هاوردە بکرێتەوە."
+presentation_text_values_cannot_be_reimported: 'دەقی پێشکەشکردن بەکاردەهێنێت، بەهاکان ناتوانرێت دووبارە هاوردە بکرێتەوە.'
 download_page_as_csv: 'داگرتنی پەڕە وەک CSV'
 private_user: بەکارهێنەری تایبەت
 creation_preview: پێشبینی دروستکردن
@@ -489,7 +474,6 @@ enable_select_button: کاراکردنی دوگمەی دیاریکردن
 allow_duplicates: ڕێگەدان بە دووبارەبوونەوە
 comments: لێدوانەکان
 no_comments: هێشتا هیچ لێدوانێک نییە
-click_to_expand: کرتە بکە بۆ فراوانکردن
 select_item: مادە دیاری بکە
 no_items: هیچ مادەیەک نییە
 search_items: گەڕانی مادەکان...
@@ -947,7 +931,6 @@ settings_project: ڕێکخستنەکانی پڕۆژە
 settings_webhooks: وێبهووکەکان
 settings_flows: لێشاوەکان
 settings_presets: پێشسێتەکان و نیشانکردنەکان
-settings_translation_strings: دەقە وەرگێڕاوەکان
 one_or_more_options_are_missing: یەک یان چەند بژاردەیەک دیارنین
 scope: بوار
 actions: کردارەکان
@@ -997,7 +980,6 @@ page_help_settings_webhooks_collection: '**گەڕانی وێبهووکەکان**
 page_help_settings_webhooks_item: '**وردەکاری وێبهووک** —شێوەیەکە بۆ بەڕێوەبردنی و دروستکردنی وێبهووکەکانی پڕۆژە.'
 page_help_settings_flows_collection: '**گەڕانی لێشاوەکان** — لیستی سەرجەم لێشاوەکان لە پڕۆژەدا.'
 page_help_settings_flows_item: '**وردەکاری لێشاو** — ناوچەی کارە بۆ بەڕێوەبردنی یەک کردار یان زیاتر.'
-page_help_settings_translation_strings_collection: '**گەڕانی دەقە وەرگێڕەکان** — لیستی سەرجەم دەقە وەرگێڕاوەکان لە ناو پڕۆژەدا.'
 page_help_users_collection: '**بەڕێوبەرایەتی بەکارهێنەر** — لیستی سەرجەم بەکارهێنەرانی سیستەم لە پڕۆژەدا.'
 page_help_users_item: >-
   **وردەکاری بەکارهێنەر** — بەڕێوەبردنی زانیاریەکانی هەژمار، یان بینینی وردەکاری بەکارهێنەرەکانی تر.
@@ -1260,6 +1242,7 @@ field_options:
     sort_field: خانەیەک هەڵبژێرە...
     accountability_divider: بەرپرسیاری
     duplication_divider: دووبارەکردنەوە
+    preview_divider: بینین
   directus_files:
     title: ناونیشانێکی بێ هاوتا...
     description: وەسفێکی بژاردەیی...
@@ -1317,6 +1300,8 @@ start_collapsed: دەستپێکی داخراو
 block: قاڵب
 inline: ناوهێڵ
 comment: لێدوان
+live_preview:
+  new_window: کردنەوە لە پەنجەرەی نوێدا
 shares: هاوبەشیکردنەکان
 unlimited_usage: بەکارهێنانی بێسنور
 uses_left: هیچ بەکارهێنانێک نەماوەتەوە | یەک بەکارهێنان ماوەتەوە | {n} بەکارهێنان ماوەتەوە
@@ -1679,7 +1664,6 @@ interfaces:
     input-translated-string: دەقە وەرگێڕدراوەکان
     description: دەقی وەرگێڕان دیاریبکە یان زیادی بکە
     search_placeholder: گەڕان...
-    new_translation_string: وەرگێڕانی دەقی نوێ
   boolean:
     toggle: ڕەوشگۆڕ
     description: گۆڕین لە نێوان هەڵبون و خامۆش بووندا
@@ -1716,6 +1700,16 @@ interfaces:
     folder_note: بوخچە بۆ بارکردنی پەڕگەکان. کاریگەری نابێت لەسەر پەڕگە هەنووکەیەکان.
     imageToken: تۆکنی دەستگەیشتنی جێگیر
     imageToken_label: تۆکنی دەستڕاگەیشتن بە جێگیری لەگەڵ بەستەری یاریدەدەریەکان هاوپێچ دەکرێت
+  input-block-editor:
+    tools: شریتی ئامرازەکان
+    tools_options:
+      header: سەرپەڕە
+      nestedlist: لیست
+      embed: جێگیرکردن
+      code: کۆد
+      image: وێنە
+      table: خشتە
+      underline: ژێرهێڵ
   input-autocomplete-api:
     input-autocomplete-api: تێچوونی تەواوکردنی خودکار (API)
     description: جۆری گەڕان بۆ بەها دەرەکیەکانی API.

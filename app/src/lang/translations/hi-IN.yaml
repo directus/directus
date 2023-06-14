@@ -80,14 +80,6 @@ create_user: यूजर बनाएं
 message: संदेश
 delete_panel: पैनल हटाएं
 create_webhook: Webhook बनाएं
-create_translation_string: अनुवाद स्ट्रिंग बनाएं
-no_translation_string: कोई अनुवाद स्ट्रिंग नहीं
-no_translation_string_copy: अभी तक कोई अनुवाद स्ट्रिंग नहीं है।
-translation_string_key_placeholder: अनुवाद स्ट्रिंग कुंजी...
-translation_string_translations_placeholder: नया अनुवाद जोड़ें
-edit_translation_string: अनुवाद स्ट्रिंग संपादित करें
-delete_translation_string_copy: >-
-  क्या आप वाकई अनुवाद स्ट्रिंग "{key}" को हटाना चाहते हैं? इस क्रिया को पूर्ववत नहीं किया जा सकता है।
 invite_users: यूज़र आमंत्रित करें
 invite: आमंत्रित करें
 email_already_invited: ईमेल "{email}" पहले ही आमंत्रित किया जा चुका है
@@ -118,13 +110,6 @@ public_label: सार्वजनिक
 public_description: यह नियंत्रित करता है कि authentication के बिना कौन सा API डेटा उपलब्ध है
 admin_description: अप्रतिबंधित ऐप/एपीआई एक्सेस के साथ प्रारंभिक प्रशासनिक भूमिका।
 not_allowed: अनुमति नहीं हैं
-directus_version: Directus वर्शन
-node_version: Node वर्शन
-node_uptime: Node उप टाइम
-os_type: OS टाइप
-os_version: OS वर्शन
-os_uptime: OS उप टाइम
-os_totalmem: OS मेमोरी
 archive: आर्काइव
 archive_confirm: क्या आप वाकई इस आइटम को आर्काइव करना चाहते हैं?
 archive_confirm_count: >-
@@ -303,7 +288,7 @@ revision_delta_reverted: पहले जैसा करें
 revision_delta_update_message: इस फ़ील्ड को अपडेट कर दिया गया है लेकिन सुरक्षा कारणों से इसके मूल्य को छुपाया जा रहा है।
 revision_delta_other: संशोधन
 revision_delta_by: '{user} द्वारा {date} '
-presentation_text_values_cannot_be_reimported: "प्रस्तुति पाठ का उपयोग करता है, मूल्यों को फिर से आयात नहीं किया जा सकता है।"
+presentation_text_values_cannot_be_reimported: 'प्रस्तुति पाठ का उपयोग करता है, मूल्यों को फिर से आयात नहीं किया जा सकता है।'
 download_page_as_csv: 'CSV के रूप में डाउनलोड करें'
 private_user: निजी उपयोगकर्ता
 creation_preview: निर्माण पूर्वावलोकन
@@ -371,7 +356,6 @@ choose_from_library: पुस्तकालय से चुनें
 name: नाम
 comments: टिप्पणियाँ
 no_comments: अभी तक कोई टिप्पणी नहीं
-click_to_expand: फ़ैलाने के लिए यहाँ क्लिक करें
 select_item: आइटम का चयन करें
 no_items: कोई आइटम नहीं
 search_items: आइटम्स खोजें
@@ -470,6 +454,8 @@ field_options:
   directus_webhooks:
     actions_create: Create
     actions_update: Update
+live_preview:
+  new_window: नए विंडो में खोलें
 interfaces:
   presentation-links:
     primary: प्राइमरी

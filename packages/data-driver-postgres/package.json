@@ -1,6 +1,6 @@
 {
 	"name": "@directus/data-driver-postgres",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Data storage abstraction layer for Postgres",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -21,15 +21,24 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
+		"@directus/data": "workspace:*",
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",
+		"@types/pg": "8.6.6",
 		"@vitest/coverage-c8": "0.31.1",
+		"tsup": "6.7.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
+	},
+	"dependencies": {
+		"@directus/data-sql": "workspace:*",
+		"pg": "8.10.0",
+		"pg-query-stream": "^4.5.0"
 	}
 }

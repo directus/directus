@@ -80,14 +80,6 @@ create_user: 사용자 생성
 message: 메시지
 delete_panel: 판넬 삭제
 create_webhook: 웹훅 생성
-create_translation_string: 번역 문구 추가
-no_translation_string: 번역 문구 없음.
-no_translation_string_copy: 아직 등록된 번역 문구가 없습니다.
-translation_string_key_placeholder: 번역 문구 키(key)...
-translation_string_translations_placeholder: 새로운 번역 문구를 추가하세요.
-edit_translation_string: 번역 문구 수정
-delete_translation_string_copy: >-
-  번역 문구 "{key}"를 삭제하시겠습니까? 한번 삭제하면 복구되지 않습니다.
 invite_users: 사용자 초대
 invite: 초대
 email_already_invited: 이메일주소 "{email}" 로 이미 초대하였습니다.
@@ -118,13 +110,6 @@ public_label: 공개
 public_description: 인증 없이 사용할 수 있는 API 데이터를 제어합니다.
 admin_description: 제한 없는 앱/API 액세스 권한이 있는 초기 관리자 역할입니다.
 not_allowed: 허용되지 않음
-directus_version: Directus 버전
-node_version: 노드 버전
-node_uptime: 노드 가동 시간
-os_type: OS 유형
-os_version: OS 버전
-os_uptime: OS 가동 시간
-os_totalmem: OS 메모리
 archive: 보관
 archive_confirm: 이 항목을 사용하지 않고 보관하시겠습니까?
 archive_confirm_count: >-
@@ -357,7 +342,7 @@ revision_delta_reverted: 되돌림
 revision_delta_update_message: 이 필드는 업데이트되었지만 보안상의 이유로 해당 값이 숨겨져 있습니다.
 revision_delta_other: 리비전
 revision_delta_by: '{user}의 {date}'
-presentation_text_values_cannot_be_reimported: "프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다."
+presentation_text_values_cannot_be_reimported: '프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다.'
 download_page_as_csv: '페이지를 CSV로 다운로드'
 private_user: 비공개 사용자
 creation_preview: 생성 미리보기
@@ -497,7 +482,6 @@ enable_select_button: 선택 버튼 활성화
 allow_duplicates: 중복 허용
 comments: 코멘트
 no_comments: 아직 코멘트가 없습니다
-click_to_expand: 확장하려면 클릭
 select_item: 항목 선택
 no_items: 항목 없음
 search_items: 검색
@@ -948,7 +932,7 @@ choices: 선택
 choices_option_configured_incorrectly: 잘못 구성된 선택 사항
 deselect: 선택 취소
 deselect_all: 모두 선택 취소
-other: 다른...
+other: 기타
 adding_user: 사용자 추가
 unknown_user: 알 수 없는 사용자
 creating_in: '{collection} 데이터 추가'
@@ -964,7 +948,6 @@ settings_project: 프로젝트 설정
 settings_webhooks: 웹후크
 settings_flows: 플로우
 settings_presets: 사전설정 및 북마크
-settings_translation_strings: 번역 문자열
 one_or_more_options_are_missing: 하나 이상의 옵션이 없습니다.
 scope: 범위
 actions: 액션
@@ -1014,7 +997,6 @@ page_help_settings_webhooks_collection: '**웹훅 찾아보기** — 프로젝�
 page_help_settings_webhooks_item: '**Webhook 세부 정보** — 프로젝트 Webhook 생성 및 관리를 위한 양식입니다.'
 page_help_settings_flows_collection: '**플로우 찾아보기** — 프로젝트 내의 모든 플로우을 나열합니다.'
 page_help_settings_flows_item: '**Flow Detail** — 하나 이상의 작업을 관리하기 위한 작업 공간입니다.'
-page_help_settings_translation_strings_collection: '**번역 문자열 찾아보기** — 프로젝트 내의 모든 번역 문자열을 나열합니다.'
 page_help_users_collection: '**사용자 디렉터리** — 이 프로젝트 내의 모든 시스템 사용자를 나열합니다.'
 page_help_users_item: >-
   **사용자 세부 정보** — 계정 정보를 관리하거나 다른 사용자의 세부 정보를 봅니다.
@@ -1278,6 +1260,7 @@ field_options:
     sort_field: 필드 선택...
     accountability_divider: 책임
     duplication_divider: 복사
+    preview_divider: 미리보기 
   directus_files:
     title: 고유한 제목...
     description: 선택적 설명...
@@ -1335,6 +1318,8 @@ start_collapsed: 축소 시작
 block: 차단하다
 inline: 인라인
 comment: 코멘트
+live_preview:
+  new_window: 새 창에서 열기
 shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
@@ -1368,8 +1353,7 @@ referential_action_set_default: '{field}를 기본값으로 설정'
 choose_action: 액션 선택
 continue_label: 계속
 continue_as: >-
-  현재 {name}으로 인증되었습니다.
-  이 계정으로 계속하려면 계속을 누르세요.
+  현재 {name}으로 인증되었습니다. 이 계정으로 계속하려면 계속을 누르세요.
 editing_role: '{role} 역할'
 creating_webhook: 웹훅 만들기
 default_label: 기본
@@ -1703,7 +1687,6 @@ interfaces:
     input-translated-string: 번역된 문자열
     description: 번역 문자열 선택 또는 추가
     search_placeholder: 검색...
-    new_translation_string: 새 번역 문자열
   boolean:
     toggle: 토글
     description: 켜기와 끄기 간 전환
@@ -1740,6 +1723,16 @@ interfaces:
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
+  input-block-editor:
+    tools: 툴바
+    tools_options:
+      header: 머리글
+      nestedlist: 목록
+      embed: 포함시키다
+      code: 코드
+      image: 이미지
+      table: 테이블
+      underline: 밑줄
   input-autocomplete-api:
     input-autocomplete-api: 자동 완성 입력(API)
     description: 외부 API 값에 대한 미리 검색.
@@ -2119,7 +2112,7 @@ operations:
     message: 메시지
   request:
     name: 웹훅 / 요청 URL
-    description: "URL에 요청하기"
+    description: 'URL에 요청하기'
     url: URL
     url_placeholder: https://example.com/example
     method: 방법

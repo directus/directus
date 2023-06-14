@@ -1,9 +1,13 @@
 {
 	"name": "docs",
 	"private": true,
+	"type": "module",
 	"scripts": {
-		"build": "vitepress build",
-		"dev": "vitepress dev",
+		"build:packages": "pnpm --recursive --filter '!docs' --filter '!api' --filter '!app' run build",
+		"build:typedocs": "typedoc --options ./.typedocs/options.json",
+		"build:docs": "vitepress build",
+		"build": "pnpm build:packages && pnpm build:typedocs && pnpm build:docs",
+		"dev": "pnpm build:typedocs && vitepress dev",
 		"preview": "vitepress preview",
 		"spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
 		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
@@ -12,9 +16,13 @@
 		"node-fetch": "3.3.1"
 	},
 	"devDependencies": {
+		"@directus/format-title": "10.0.0",
 		"@thumbsmith/url": "0.1.3",
 		"@unhead/vue": "1.1.26",
 		"spellchecker-cli": "6.1.1",
+		"typedoc": "^0.24.7",
+		"typedoc-plugin-markdown": "4.0.0-next.13",
+		"typedoc-vitepress-theme": "1.0.0-next.2",
 		"vitepress": "1.0.0-alpha.75",
 		"vue": "3.3.4"
 	}

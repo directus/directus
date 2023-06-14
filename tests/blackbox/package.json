@@ -12,9 +12,11 @@
 		"@types/seedrandom": "3.0.5",
 		"@types/supertest": "2.0.12",
 		"@types/uuid": "9.0.1",
+		"@types/ws": "8.5.4",
 		"autocannon": "7.11.0",
 		"axios": "1.4.0",
 		"globby": "11.1.0",
+		"graphql-ws": "5.12.0",
 		"jest": "29.5.0",
 		"jest-environment-node": "29.5.0",
 		"js-yaml": "4.1.0",
@@ -26,6 +28,7 @@
 		"supertest": "6.3.3",
 		"ts-jest": "29.1.0",
 		"typescript": "5.0.4",
-		"uuid": "9.0.0"
+		"uuid": "9.0.0",
+		"ws": "8.12.1"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/data",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Data storage abstraction layer for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -21,14 +21,16 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
 		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",
 		"@vitest/coverage-c8": "0.31.1",
+		"tsup": "6.7.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	}

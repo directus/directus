@@ -44,13 +44,6 @@ required: Захтјева се
 create_role: Креирајте улогу
 emails: Е-мејлови
 not_allowed: Није дозвољено
-directus_version: Верзија Директуса
-node_version: Верзија нода
-node_uptime: Вријеме рада нода
-os_type: Тип OS-а
-os_version: Верзија OS-а
-os_uptime: Вријеме рада OS-а
-os_totalmem: Меморија OS-а
 archive: Архивирај
 unarchive: Деархивирај
 unarchive_confirm: Да ли сте сигурни да желите да деархивирате овај итем?
@@ -146,7 +139,7 @@ revision_delta_reverted: Vraćeno
 revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrednost skrivena iz bezbednosnih razloga.
 revision_delta_other: Izmena
 revision_delta_by: 'datum, korisnik'
-presentation_text_values_cannot_be_reimported: "Koristi tekst prezentacije, vrednosti se ne mogu ponovo uvesti."
+presentation_text_values_cannot_be_reimported: 'Koristi tekst prezentacije, vrednosti se ne mogu ponovo uvesti.'
 download_page_as_csv: 'Preuzmi stranicu kao CSV'
 private_user: Privatni korisnik
 creation_preview: Pregled izrade
@@ -295,6 +288,11 @@ interfaces:
     hash: Isečak
   tags:
     tags: Ознаке
+  input-block-editor:
+    tools_options:
+      embed: Угради
+      code: Код
+      table: Табела
 displays:
   boolean:
     boolean: Logički izraz
