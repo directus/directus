@@ -1,4 +1,3 @@
-import type { ParameterizedSQLStatement } from '@directus/data-sql';
 import type { SqlStatement } from '@directus/data-sql';
 
 /**
@@ -8,23 +7,14 @@ import type { SqlStatement } from '@directus/data-sql';
  * @param query - The abstract query
  * @returns The `LIMIT x` part of a SQL statement
  */
-export function limitOffset({ limit, offset }: SqlStatement): ParameterizedSQLStatement {
+export function limitOffset({ limit, offset }: SqlStatement): string {
 	if (limit === undefined) {
-		return {
-			statement: '',
-			values: [],
-		};
+		return '';
 	}
 
 	if (offset === undefined) {
-		return {
-			statement: 'LIMIT ?',
-			values: [Number(limit)],
-		};
+		return `LIMIT $${limit}`;
 	}
 
-	return {
-		statement: 'LIMIT ? OFFSET ?',
-		values: [Number(limit), Number(offset)],
-	};
+	return `LIMIT $${limit} OFFSET $${offset}`.trim();
 }

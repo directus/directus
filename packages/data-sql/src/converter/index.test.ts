@@ -45,6 +45,7 @@ test('Get all selects', () => {
 			},
 		],
 		from: sample.query.collection,
+		parameters: [],
 	};
 
 	expect(res).toStrictEqual(expected);
@@ -54,7 +55,7 @@ test('Get selects with a limit', () => {
 	sample.query.modifiers = {
 		limit: {
 			type: 'limit',
-			value: 10,
+			value: randomInteger(1, 100),
 		},
 	};
 
@@ -75,7 +76,9 @@ test('Get selects with a limit', () => {
 		],
 		from: sample.query.collection,
 		// @ts-ignore
-		limit: sample.query.modifiers.limit.value,
+		limit: 1,
+		// @ts-ignore
+		parameters: [sample.query.modifiers.limit.value],
 	};
 
 	expect(res).toStrictEqual(expected);
@@ -109,10 +112,10 @@ test('Get selects with a limit and offset', () => {
 			},
 		],
 		from: sample.query.collection,
+		limit: 1,
+		offset: 2,
 		// @ts-ignore
-		limit: sample.query.modifiers.limit.value,
-		// @ts-ignore
-		offset: sample.query.modifiers.offset.value,
+		parameters: [sample.query.modifiers.limit.value, sample.query.modifiers.offset.value],
 	};
 
 	expect(res).toStrictEqual(expected);

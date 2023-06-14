@@ -22,15 +22,36 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 			}
 		}),
 		from: abstractQuery.collection,
+		parameters: [],
 	};
 
+	const idGen = parameterIndexGenerator();
+
+	// The next functions look very similar.
+	// Depending on how the other conversions will look like, we can introduce a generic function for this.
+
 	if (abstractQuery.modifiers?.limit) {
-		statement.limit = abstractQuery.modifiers.limit.value;
+		const idx = idGen.next().value as number;
+		statement.limit = idx + 1;
+		statement.parameters[idx] = abstractQuery.modifiers.limit.value;
 	}
 
 	if (abstractQuery.modifiers?.offset) {
-		statement.offset = abstractQuery.modifiers.offset.value;
+		const idx = idGen.next().value as number;
+		statement.offset = idx + 1;
+		statement.parameters[idx] = abstractQuery.modifiers.offset.value;
 	}
 
 	return statement;
 };
+
+/**
+ * Generator function to generate parameter indices.
+ */
+function* parameterIndexGenerator() {
+	let index = 0;
+
+	while (true) {
+		yield index++;
+	}
+}

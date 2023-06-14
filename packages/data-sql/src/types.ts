@@ -22,16 +22,34 @@ export interface SqlStatementSelectPrimitive {
 // 	path: string;
 // }
 
+/**
+ * This is an abstract SQL query.
+ *
+ * @example
+ * ```typescript
+ * const query: SqlStatement = {
+ *  select: [id],
+ *  from: 'articles',
+ *  limit: 1,
+ * 	parameters: [25],
+ * };
+ * ```
+ */
 export interface SqlStatement {
 	select: SqlStatementSelectPrimitive[];
 	from: string;
+
+	/** Index of the parameter, not the actual value */
 	limit?: number;
+
+	/** Index of the parameter, not the actual value */
 	offset?: number;
-	// parameters: (string | boolean | number)[];
+
+	parameters: (string | boolean | number)[];
 }
 
 /**
- * Used to work with parameterized queries.
+ * An actual vendor specific SQL statement with its parameters.
  * @example
  * ```
  * {

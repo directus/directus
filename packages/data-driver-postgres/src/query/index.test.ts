@@ -15,6 +15,7 @@ beforeEach(() => {
 				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
 			],
 			from: randomIdentifier(),
+			parameters: [],
 		},
 	};
 });
@@ -29,24 +30,26 @@ test('basic statement', () => {
 });
 
 test('statement with a limit', () => {
-	sample.statement.limit = randomInteger(1, 100);
+	sample.statement.limit = 1;
+	sample.statement.parameters = [randomInteger(1, 100)];
 
 	expect(constructSql(sample.statement)).toEqual({
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1;`,
-		values: [sample.statement.limit],
+		values: sample.statement.parameters,
 	});
 });
 
 test('statement with a limit and an offset', () => {
-	sample.statement.limit = randomInteger(1, 100);
-	sample.statement.offset = randomInteger(1, 100);
+	sample.statement.limit = 1;
+	sample.statement.offset = 2;
+	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100)];
 
 	expect(constructSql(sample.statement)).toEqual({
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1 OFFSET $2;`,
-		values: [sample.statement.limit, sample.statement.offset],
+		values: sample.statement.parameters,
 	});
 });

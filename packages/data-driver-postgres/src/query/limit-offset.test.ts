@@ -7,39 +7,33 @@ test('Returns empty parametrized statement when limit is not defined', () => {
 	const query: SqlStatement = {
 		select: [],
 		from: randomIdentifier(),
+		parameters: [],
 	};
 
-	expect(limitOffset(query)).toStrictEqual({
-		statement: '',
-		values: [],
-	});
+	expect(limitOffset(query)).toStrictEqual('');
 });
 
 test('Returns limit part with one parameter', () => {
 	const query: SqlStatement = {
 		select: [],
 		from: randomIdentifier(),
-		limit: randomInteger(1, 100),
+		limit: 1,
+		parameters: [randomInteger(1, 100)],
 	};
 
-	expect(limitOffset(query)).toStrictEqual({
-		statement: `LIMIT ?`,
-		values: [query.limit],
-	});
+	expect(limitOffset(query)).toStrictEqual(`LIMIT $1`);
 });
 
 test('Returns limit and offset part with their parameters', () => {
 	const query: SqlStatement = {
 		select: [],
 		from: randomIdentifier(),
-		limit: randomInteger(1, 100),
-		offset: randomInteger(1, 100),
+		limit: 1,
+		offset: 2,
+		parameters: [randomInteger(1, 100), randomInteger(1, 100)],
 	};
 
-	expect(limitOffset(query)).toStrictEqual({
-		statement: `LIMIT ? OFFSET ?`,
-		values: [query.limit, query.offset],
-	});
+	expect(limitOffset(query)).toStrictEqual(`LIMIT $1 OFFSET $2`);
 });
 
 test('No limit and offset if only offset is provided', () => {
@@ -47,10 +41,8 @@ test('No limit and offset if only offset is provided', () => {
 		select: [],
 		from: randomIdentifier(),
 		offset: randomInteger(1, 100),
+		parameters: [],
 	};
 
-	expect(limitOffset(query)).toStrictEqual({
-		statement: ``,
-		values: [],
-	});
+	expect(limitOffset(query)).toStrictEqual('');
 });
