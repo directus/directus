@@ -49,13 +49,6 @@ logoutReason:
   SESSION_EXPIRED: Sesijos laikas baigėsi
 public_description: Nustato kokie API duomenys yra prieinami neprisijungus.
 not_allowed: Neleidžiama
-directus_version: Directus versija
-node_version: Serverio versija
-node_uptime: Serverio veikimo laikas
-os_type: OS tipas
-os_version: OS versija
-os_uptime: OS veikimo laikas
-os_totalmem: OS atmintis
 archive: Archyvuoti
 archive_confirm: Ar tikrai norite archyvuoti šį elementą?
 archive_confirm_count: >-
@@ -309,7 +302,6 @@ save_as_copy: Išsaugoti kaip kopiją
 add_existing: Pridėti esamą
 comments: Komentarai
 no_comments: Dar nėra komentarų
-click_to_expand: Išskleiskite
 select_item: Pasirinkti elementą
 no_items: Nėra elementų
 search_items: Ieškoti elementų...
@@ -747,6 +739,8 @@ save_current_datetime: Išsaugoti dabartinį datą/laiką
 block: Blokas
 inline: Toje pačioje eilutėje
 comment: Komentaras
+live_preview:
+  new_window: Atversti naujame lange
 editing_role: '{role} grupė'
 creating_webhook: Kuriamas Webhook'ą
 delete_are_you_sure: >-
@@ -891,6 +885,13 @@ interfaces:
       auto: Automatiškai
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
+  input-block-editor:
+    tools_options:
+      embed: Įterptas
+      code: Kodas
+      image: Paveikslėlis
+      table: Lentelė
+      underline: Pabrauktas
 displays:
   translations:
     translations: Vertimai

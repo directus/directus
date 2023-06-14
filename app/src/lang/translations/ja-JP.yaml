@@ -80,14 +80,6 @@ create_user: ユーザーの作成
 message: メッセージ
 delete_panel: パネルを削除
 create_webhook: Webhookの作成
-create_translation_string: 翻訳文字列を作成
-no_translation_string: 翻訳文字列なし
-no_translation_string_copy: 翻訳文字列がまだありません。
-translation_string_key_placeholder: 翻訳文字列のキー
-translation_string_translations_placeholder: 翻訳を追加
-edit_translation_string: 翻訳文字列の編集
-delete_translation_string_copy: >-
-  このフィールド：\"{key}\"を削除してよろしいですか？この操作を取り消すことはできません。
 invite_users: ユーザーを招待
 invite: 招待する
 email_already_invited: このメールアドレス ({email}) は招待済みです
@@ -118,13 +110,6 @@ public_label: 公開
 public_description: 認証せずに利用できる API データを制御します。
 admin_description: App/APIへアクセス制限の無い初期管理者のロール
 not_allowed: 許可されていない
-directus_version: Directus Version
-node_version: Node バージョン
-node_uptime: Node 稼働時間
-os_type: OS 種類
-os_version: OSバージョン
-os_uptime: OS 稼働時間
-os_totalmem: OS メモリ
 archive: アーカイブ
 archive_confirm: この項目をアーカイブしてよろしいですか？
 archive_confirm_count: >-
@@ -351,7 +336,7 @@ revision_delta_reverted: 復元済
 revision_delta_update_message: 項目は更新済ですが、セキュリティーにより値は非表示です
 revision_delta_other: 履歴
 revision_delta_by: '{date} by {user}'
-presentation_text_values_cannot_be_reimported: "テキストを使用しますが、値は再インポートできません"
+presentation_text_values_cannot_be_reimported: 'テキストを使用しますが、値は再インポートできません'
 download_page_as_csv: 'CSV 形式でダウンロード'
 private_user: 非公開ユーザー
 creation_preview: 作成プレビュー
@@ -491,7 +476,6 @@ enable_select_button: 選択ボタンを有効化
 allow_duplicates: 重複を許可
 comments: コメント
 no_comments: コメントがありません
-click_to_expand: クリックして展開
 select_item: アイテムの選択
 no_items: アイテムがありません
 search_items: アイテムを検索...
@@ -912,7 +896,6 @@ settings_project: プロジェクト設定
 settings_webhooks: Webhook
 settings_flows: フロー
 settings_presets: プリセットとブックマーク
-settings_translation_strings: 翻訳文字列
 one_or_more_options_are_missing: 1つ以上のオプションがありません
 scope: 適用範囲
 actions: 操作
@@ -1190,6 +1173,8 @@ save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
 inline: インライン
 comment: コメント
+live_preview:
+  new_window: 新しいウィンドウで開く
 referential_action_set_null: '{field} フィールドを Null にする'
 creating_webhook: Webhookの作成
 default_label: デフォルト
@@ -1378,6 +1363,13 @@ interfaces:
     user: ユーザー
     modes:
       dropdown: ドロップダウン
+  input-block-editor:
+    tools_options:
+      embed: 埋め込む
+      code: コード
+      image: 画像
+      table: テーブル
+      underline: 下線
   system-token:
     system-token: トークン
 displays:
@@ -1407,13 +1399,21 @@ displays:
     suffix: 接尾辞
     color: 色
     icon: アイコン
+    border: 区切り線
+    border_label: 区切り線を表示
     text: テキスト
   icon:
     icon: アイコン
   image:
+    image: 画像
     circle: サークル
   labels:
+    labels: ラベル
     choices_value_placeholder: 値を入力...
+    choices_text_placeholder: テキストを入力…
+  mime-type:
+    mime-type: MIMEタイプ
+    description: ファイルのMIME-Typeを表示
   user:
     user: ユーザー
     avatar: プロフィール画像
@@ -1431,7 +1431,27 @@ layouts:
     comfortable: 広め
     compact: コンパクト
     cozy: 普通
+  calendar:
+    calendar: カレンダー
+    start_date_field: 開始日時
+    end_date_field: 終了日時
+    optional: オプション
+    first_day: 週の初日
+  map:
+    map: マップ
+    layers: レイヤー
+    cluster_options: クラスタリングオプション
+    find_location: 場所を検索...
+    no_compatible_fields: 互換性あるフィールドがありません
   kanban:
+    name: かんばん
+    group_title: グループタイトル
+    group_title_placeholder: グループタイトルのフィールド...
+    title: カードタイトル
+    text: カードのテキスト
+    date: カードの日付
+    tags: カードのタグ
+    user: カードのユーザー
     advanced: 詳細設定
 both: 両方
 panels:

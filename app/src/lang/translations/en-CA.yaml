@@ -97,13 +97,6 @@ public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Version
-os_uptime: OS Uptime
-os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
@@ -413,7 +406,6 @@ selecting_items: Selecting Items
 enable_select_button: Enable Select Button
 comments: Comments
 no_comments: No Comments Yet
-click_to_expand: Click to Expand
 select_item: Select Item
 no_items: No items
 search_items: Search items...
@@ -1086,6 +1078,7 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
+    preview_divider: Preview
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1143,6 +1136,8 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+live_preview:
+  new_window: Open in New Window
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
@@ -1496,6 +1491,16 @@ interfaces:
     custom_formats: Custom Formats
     options_override: Options Override
     folder_note: Folder for uploaded files. Does not affect existing files.
+  input-block-editor:
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: List
+      embed: Embed
+      code: Code
+      image: Image
+      table: Table
+      underline: Underline
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.

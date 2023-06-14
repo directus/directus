@@ -80,14 +80,6 @@ create_user: Kullanıcı Oluştur
 message: Mesaj
 delete_panel: Paneli Sil
 create_webhook: Webhook Oluşturun
-create_translation_string: Çeviri Dizesi Oluştur
-no_translation_string: Çeviri Dizesi Yok
-no_translation_string_copy: Henüz çeviri dizesi yok.
-translation_string_key_placeholder: Çeviri dizesi anahtarı...
-translation_string_translations_placeholder: Yeni çeviri ekle
-edit_translation_string: Çeviri Dizesini Düzenle
-delete_translation_string_copy: >-
-  "{key}" çeviri dizesini silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.
 invite_users: Kullanıcıları Davet Et
 invite: Davet Et
 email_already_invited: E-posta "{email}" zaten davet edildi
@@ -118,13 +110,6 @@ public_label: Herkese Açık
 public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanılabileceğini kontrol eder.
 admin_description: Sınırsız Uygulama/API erişimine sahip ilk yönetici rolü.
 not_allowed: İzin Verilmedi
-directus_version: Directus Versiyon
-node_version: Node Versiyon
-node_uptime: Node Hizmet Zamanı
-os_type: OS Tip
-os_version: OS Versiyon
-os_uptime: OS Hizmet Zamanı
-os_totalmem: OS Bellek
 archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
@@ -351,7 +336,7 @@ revision_delta_reverted: Geri Alındı
 revision_delta_update_message: Bu alan güncellenmiştir ancak değeri güvenlik nedeniyle gizlenmektedir.
 revision_delta_other: Revizyon
 revision_delta_by: '{user} tarafından {date} tarihinde'
-presentation_text_values_cannot_be_reimported: "Sunum metnini kullanır, değerler yeniden içe aktarılamaz."
+presentation_text_values_cannot_be_reimported: 'Sunum metnini kullanır, değerler yeniden içe aktarılamaz.'
 download_page_as_csv: 'Sayfayı CSV olarak indir'
 private_user: Gizli Kullanıcı
 creation_preview: Oluşturma Önizlemesi
@@ -491,7 +476,6 @@ enable_select_button: Seç Butonunu Etkinleştir
 allow_duplicates: Çiftlere İzin Ver
 comments: Yorumlar
 no_comments: Henüz Yorum Yok
-click_to_expand: Genişletmek için Tıklayın
 select_item: Öğe Seçin
 no_items: Hiç öğe yok
 search_items: Öğeleri ara...
@@ -950,7 +934,6 @@ settings_project: Proje Ayarları
 settings_webhooks: Webhooklar
 settings_flows: Akışlar
 settings_presets: Ön Ayarlar ve Yer İşaretleri
-settings_translation_strings: Çeviri Dizeleri
 one_or_more_options_are_missing: Bir ya da birden fazla seçenek eksik
 scope: Kapsam
 actions: Aksiyonlar
@@ -1000,7 +983,6 @@ page_help_settings_webhooks_collection: '**Webhooklara Göz At** — Projedeki t
 page_help_settings_webhooks_item: '**Webhook Detayı** — Projede webhook oluşturmak ve yönetmek için bir form/sayfa.'
 page_help_settings_flows_collection: '**Akışlara Gözat** — Proje içindeki tüm Akışları listeler.'
 page_help_settings_flows_item: '**Akış Ayrıntısı** — Bir veya daha fazla işlemi yönetmek için çalışma alanı.'
-page_help_settings_translation_strings_collection: '**Dize Çevirilerini Görüntüle** — Projedeki tüm çeviri dizelerini gösterir.'
 page_help_users_collection: '**Kullanıcı Dizini** — Projedeki tüm sistem kullanıcılarını listeler.'
 page_help_users_item: >-
   **Kullanıcı Detayı** — Hesap bilgilerini düzenle ya da diğer kullanıcıların detaylarını gör.
@@ -1263,6 +1245,7 @@ field_options:
     sort_field: Bir alan seçin...
     accountability_divider: İzlenebilirlik
     duplication_divider: Çoğaltma
+    preview_divider: Önizleme
   directus_files:
     title: Benzersiz bir başlık...
     description: Opsiyonel bir açıklama...
@@ -1320,6 +1303,8 @@ start_collapsed: Kapalı Başla
 block: Blok
 inline: Hizada
 comment: Yorum
+live_preview:
+  new_window: Yeni Pencerede Aç
 shares: Paylaşımlar
 unlimited_usage: Limitsiz kullanım
 uses_left: Hiç kullanım kalmadı | 1 kullanım kaldı | {n} kullanım kaldı
@@ -1682,7 +1667,6 @@ interfaces:
     input-translated-string: Çevrilmiş Dizeler
     description: Çeviri dizesi seçin veya ekleyin
     search_placeholder: Ara...
-    new_translation_string: Yeni Çeviri Dizesi
   boolean:
     toggle: Aç/Kapat
     description: Açık ve kapalı arasında geçiş yap
@@ -1719,6 +1703,16 @@ interfaces:
     folder_note: Yüklenen dosyalar için bir klasör. Varolan dosyaları etkilemez.
     imageToken: Statik Erişim Anahtarı
     imageToken_label: Statik erişim anahtarı dosyaların URL'lerinin sonuna eklenir
+  input-block-editor:
+    tools: Araç Çubuğu
+    tools_options:
+      header: Header
+      nestedlist: Liste
+      embed: Yerleştir
+      code: Kod
+      image: Fotoğraf
+      table: Tablo
+      underline: Alt Çizgi
   input-autocomplete-api:
     input-autocomplete-api: Otomatik Tamamlamalı Girdi (API)
     description: Dış API değerleri için otomatik tamamlamalı arama.
@@ -2075,7 +2069,7 @@ operations:
     recipient: Kullanıcı
     message: Mesaj
   request:
-    description: "Bir URL'ye istekte bulunun"
+    description: 'Bir URL''ye istekte bulunun'
     url: URL
     url_placeholder: https://example.com/example
     method: Metod
