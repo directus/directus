@@ -347,11 +347,6 @@ const itemCountTotal = ref<number>();
 const itemCount = ref<number>();
 const itemCountLoading = ref(false);
 
-const exportCount = computed(() => {
-	const limit = exportSettings.limit === null || exportSettings.limit === -1 ? Infinity : exportSettings.limit;
-	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
-});
-
 const getItemCount = async () => {
 	itemCountLoading.value = true;
 
@@ -404,23 +399,30 @@ watch(
 		) {
 			exportSettings.limit = Math.round(exportSettings.limit);
 		}
-
-		const queryLimitThreshold = exportCount.value > queryLimitMax;
-		const batchThreshold = exportCount.value >= 2500;
-
-		if (queryLimitThreshold || batchThreshold) {
-			lockedToFiles.value = {
-				lockedBy: queryLimitThreshold ? 'queryLimitThreshold' : 'batchThreshold',
-				previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
-			};
-
-			location.value = 'files';
-		} else if (lockedToFiles.value) {
-			location.value = lockedToFiles.value.previousLocation;
-			lockedToFiles.value = null;
-		}
 	}
 );
+
+const exportCount = computed(() => {
+	const limit = exportSettings.limit === null || exportSettings.limit === -1 ? Infinity : exportSettings.limit;
+	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
+});
+
+watch(exportCount, () => {
+	const queryLimitThreshold = exportCount.value > queryLimitMax;
+	const batchThreshold = exportCount.value >= 2500;
+
+	if (queryLimitThreshold || batchThreshold) {
+		lockedToFiles.value = {
+			lockedBy: queryLimitThreshold ? 'queryLimitThreshold' : 'batchThreshold',
+			previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
+		};
+
+		location.value = 'files';
+	} else if (lockedToFiles.value) {
+		location.value = lockedToFiles.value.previousLocation;
+		lockedToFiles.value = null;
+	}
+});
 
 watch(primaryKeyField, (newVal) => {
 	exportSettings.sort = newVal?.field ?? '';
@@ -553,7 +555,7 @@ function exportDataLocal() {
 	if (exportSettings.filter) params.filter = exportSettings.filter;
 	if (exportSettings.search) params.search = exportSettings.search;
 
-	params.limit = exportSettings.limit ?? -1;
+	params.limit = exportSettings.limit ? Math.min(exportSettings.limit, queryLimitMax) : -1;
 
 	const exportUrl = api.getUri({
 		url,
