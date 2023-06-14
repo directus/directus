@@ -110,7 +110,7 @@ export class LDAPAuthDriver extends AuthDriver {
 				res.on('end', (result: LDAPResult | null) => {
 					// Handle edge case where authenticated bind user cannot read their own DN
 					if (result?.status === 0) {
-						logger.warn('Failed to find bind user record');
+						logger.warn('[LDAP] Failed to find bind user record');
 						reject(new UnexpectedResponseError());
 					}
 				});
