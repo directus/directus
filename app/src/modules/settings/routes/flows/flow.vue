@@ -113,7 +113,7 @@
 			:primary-key="flow.id"
 			:start-tab="'trigger_setup'"
 			@cancel="triggerDetailOpen = false"
-			@done="triggerDetailOpen = false"
+			@done="triggerDetailPanelDone"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -594,6 +594,13 @@ function duplicatePanel(panel: OperationRaw) {
 function editPanel(panel: AppTile) {
 	if (panel.id === '$trigger') triggerDetailOpen.value = true;
 	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
+}
+
+async function triggerDetailPanelDone() {
+	triggerDetailOpen.value = false;
+
+	await flowsStore.hydrate();
+	await loadCurrentFlow();
 }
 
 // ------------- Move Panel To ------------- //
