@@ -4,7 +4,7 @@ import { serializeParams, withoutTrailingSlash } from '../utils.js';
 import type { AuthStorage } from './authentication.js';
 
 export interface RESTConfig {
-	url: string;
+	url?: string;
 }
 
 export interface RESTClientConfig {
@@ -28,13 +28,13 @@ export interface RESTClient<Schema extends object> {
 	): Promise<Output>;
 }
 
-export function REST(cfg: RESTConfig) {
+export function REST(cfg: RESTConfig = {}) {
 	return <Schema extends object, Features extends object>(
 		client: DirectusClient<Schema, Features>
 	): RESTClient<Schema> => {
 		const restClient = {
 			config: {
-				apiURL: withoutTrailingSlash(cfg.url),
+				apiURL: cfg.url ? withoutTrailingSlash(cfg.url) : client.config.apiURL,
 			},
 			async request<Options extends object, Output extends object>(
 				optionsCallback: RESTCommand<Options, Output, Schema>

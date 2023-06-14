@@ -1,23 +1,26 @@
 import { WebSocket } from 'ws';
+import type { AuthStorage } from './composables/authentication.js';
+import { withoutTrailingSlash } from './utils.js';
 // import type { ReadItemsInput, ReadItemsOutput } from './commands/read-items.js';
 // import type { Command } from './types/index.js';
+
+export interface ClientConfig {
+	fetch?: fetch;
+	ws?: typeof WebSocket;
+	url?: string;
+	token?: string;
+}
 
 export interface BaseClientConfig extends Record<string, any> {
 	fetch: fetch;
 	ws: typeof WebSocket;
-	staticToken?: string;
+	apiURL: string;
 }
 
 export interface GenericClient<Schema extends object, Features extends object> {
-	token: {
-		access?: string;
-		refresh?: string;
-	};
 	config: BaseClientConfig;
+	auth: AuthStorage;
 
-	// exec: <InputType extends InputTypes, OutputType extends OutputTypes>(
-	// 	command: Command<InputType, OutputType, DirectusClient, Schema>
-	// ) => Promise<OutputType>;
 	use: <ExtraFeatures extends object>(
 		feature: (client: DirectusClient<Schema, Features>) => ExtraFeatures
 	) => DirectusClient<Schema, Features & ExtraFeatures>;
@@ -36,20 +39,16 @@ export type DirectusClient<
 // type InputTypes = ReadItemsInput<any>;
 // type OutputTypes = ReadItemsOutput<any, any>;
 
-export const useDirectus = <Schema extends object>(
-	config: BaseClientConfig = {
-		fetch: fetch,
-		ws: WebSocket,
-	}
-) => {
-	// const exec: DirectusClient<Schema>['exec'] = async (command) => {
-	// 	return await command(client);
-	// };
-
+export const useDirectus = <Schema extends object>(config: ClientConfig = {}) => {
+	// return a bare bones client
 	return {
-		config,
-		token: {
-			access: config.staticToken,
+		config: {
+			fetch: config.fetch ?? fetch,
+			ws: config.ws ?? WebSocket,
+			apiURL: config.url ? withoutTrailingSlash(config.url) : '',
+		},
+		auth: {
+			access_token: config.token,
 		},
 		use(feature) {
 			const extra = feature(this);

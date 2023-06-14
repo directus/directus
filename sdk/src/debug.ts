@@ -3,7 +3,8 @@
  */
 import { readItems } from './commands/read-items.js';
 import { subscribe } from './commands/subscribe.js';
-import { REST, /*GraphQL,*/ WebSocket, Authentication /*, Pagination*/ } from './composables/index.js';
+import { REST, GraphQL, WebSocket, Authentication /*, Pagination*/ } from './composables/index.js';
+import type { GqlResult } from './composables/index.js';
 import { useDirectus } from './index.js';
 
 type MySchema = {
@@ -28,13 +29,21 @@ type MySchema = {
 /**
  * Composable client
  */
-const client = useDirectus<MySchema>()
-	.use(REST({ url: 'http://localhost:8056' }))
-	// .use(GraphQL())
-	// .use(WebSocket({ url: 'ws://localhost:8056/websocket' })) // this name collides in the browser
-	.use(Authentication());
+const client = useDirectus<MySchema>({
+	url: 'http://localhost:8056/',
+	token: 'admin',
+})
+	.use(REST())
+	.use(GraphQL());
+// .use(WebSocket({ url: 'ws://localhost:8056/websocket' })); // this name collides in the browser
+// .use(Authentication());
 // .use(Subscription())
 // .use(Pagination({ pageSize: 250 }));
+
+/**
+ * Authentication
+ */
+// await client.login('admin@example.com', 'd1r3ctu5');
 
 /**
  * REST
@@ -53,23 +62,22 @@ console.log(data);
 /**
  * WebSocket
  */
-// client.subscribe('aha', {}, console.log);
+// const subscription = client.subscribe('aha', {});
 
-/**
- * Authentication
- */
-await client.login('admin@example.com', 'd1r3ctu5');
-
-const data2 = await client.request(
-	readItems({
-		collection: 'directus_users',
-	})
-);
-
-console.log(data2);
 /**
  * GraphQL
+ *
+ * Absolutely not sure if we can do more than this typewise for gql
  */
+const data2 = await client.graphql<GqlResult<MySchema, 'test'>>(`
+query {
+	test(limit: 2) {
+		id
+		test
+	}
+}`);
+
+console.log(data2.test);
 
 /**
  * Subscription

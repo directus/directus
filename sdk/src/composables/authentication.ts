@@ -1,5 +1,4 @@
 import type { DirectusClient } from '../client.js';
-import { withoutTrailingSlash } from '../utils.js';
 
 type wsMode = 'public' | 'handshake' | 'strict';
 
@@ -18,7 +17,7 @@ interface AuthClient {
 	config: AuthClientConfig;
 	auth: AuthStorage;
 	login(email: string, password: string, otp?: string): Promise<void>;
-	refresh(token?: string): Promise<void>;
+	refresh(): Promise<void>;
 	logout(): Promise<void>;
 }
 
@@ -70,18 +69,17 @@ export function Authentication(cfg: AuthConfig = {}) {
 					this.refresh();
 				}, expires);
 			},
-			async refresh(token?: string) {
-				if (!this.auth.refresh_token && !token) return;
+			async refresh() {
+				if (!this.auth.refresh_token) return;
 
 				const url = this.config.apiURL + '/auth/refresh';
-				const rtoken = token ?? this.auth.refresh_token;
 
 				const headers: Record<string, string> = {
 					'Content-Type': 'application/json',
 				};
 
 				const response = await client.config.fetch(url, {
-					body: JSON.stringify({ refresh_token: rtoken }),
+					body: JSON.stringify({ refresh_token: this.auth.refresh_token }),
 					method: 'POST',
 					headers,
 				});
