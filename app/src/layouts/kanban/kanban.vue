@@ -69,7 +69,7 @@
 											v-tooltip.bottom="`${user.first_name} ${user.last_name}`"
 											class="avatar"
 										>
-											<img v-if="parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
+											<img v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
 											<v-icon v-else name="person" />
 										</v-avatar>
 									</div>
@@ -165,7 +165,7 @@ function openEditGroup(group: Group) {
 function parseAvatar(file: Record<string, any>) {
 	if (!file || !file.type) return;
 	if (file.type.startsWith('image') === false) return;
-	if (file.type.includes('svg')) return;
+	if (!file.type.includes('svg')) return;
 
 	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&width=48&height=48`;
 	return addTokenToURL(url);
