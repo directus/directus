@@ -106,6 +106,7 @@ module.exports = {
 			rules: {
 				...defaultRules,
 				'prettier/prettier': ['error', { parser: 'markdown' }],
+				'no-irregular-whitespace': 'off',
 			},
 		},
 	],
