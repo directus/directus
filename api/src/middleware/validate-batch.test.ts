@@ -1,4 +1,3 @@
-import { FailedValidationError } from '@directus/validation';
 import type { Request, Response } from 'express';
 import { beforeEach, expect, test, vi } from 'vitest';
 import '../../src/types/express.d.ts';
@@ -80,7 +79,7 @@ test(`Doesn't allow both query and keys in a batch delete`, async () => {
 	await validateBatch('delete')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationError);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
 });
 
 test(`Requires 'data' on batch update`, async () => {
@@ -94,7 +93,7 @@ test(`Requires 'data' on batch update`, async () => {
 	await validateBatch('update')(mockRequest as Request, mockResponse as Response, nextFunction);
 
 	expect(nextFunction).toHaveBeenCalledTimes(1);
-	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(FailedValidationError);
+	expect(vi.mocked(nextFunction).mock.calls[0][0]).toBeInstanceOf(InvalidPayloadError);
 });
 
 test(`Calls next when all is well`, async () => {

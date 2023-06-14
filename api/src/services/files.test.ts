@@ -43,7 +43,7 @@ describe('Integration Tests', () => {
 					});
 				} catch (err: any) {
 					expect(err).toBeInstanceOf(InvalidPayloadError);
-					expect(err.message).toBe('"type" is required');
+					expect(err.message).toBe('Invalid payload. "type" is required.');
 				}
 
 				expect(superCreateOne).not.toHaveBeenCalled();

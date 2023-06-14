@@ -161,7 +161,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
@@ -241,7 +241,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
@@ -357,7 +357,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
@@ -412,7 +412,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
@@ -479,7 +479,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
@@ -530,7 +530,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
@@ -597,7 +597,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
@@ -674,7 +674,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);
@@ -753,7 +753,7 @@ describe('Integration Tests', () => {
 							expect(superUpdateOne).toHaveBeenCalled();
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException.message).toBe(
-								`You can't remove the last admin user from the admin role.`
+								`Can't process content. You can't remove the last admin user from the admin role.`
 							);
 
 							expect(superUpdateOne.mock.lastCall![2].preMutationException).toBeInstanceOf(UnprocessableContentError);

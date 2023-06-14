@@ -1,7 +1,5 @@
-import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
-import { ErrorCode } from '../errors/index.js';
 import { AuthenticationService } from '../services/index.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { getPermissions } from '../utils/get-permissions.js';
@@ -40,10 +38,6 @@ export async function authenticateConnection(
 		const expires_at = getExpiresAtForToken(access_token);
 		return { accountability, expires_at, refresh_token } as AuthenticationState;
 	} catch (error) {
-		if (isDirectusError(error) && error.code === ErrorCode.InvalidCredentials && error.message === 'Token expired.') {
-			throw new WebSocketError('auth', 'TOKEN_EXPIRED', 'Token expired.', message['uid']);
-		}
-
 		throw new WebSocketError('auth', 'AUTH_FAILED', 'Authentication failed.', message['uid']);
 	}
 }

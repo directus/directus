@@ -64,7 +64,7 @@ describe('multipartHandler', () => {
 		stream.push(fakeForm.getBuffer());
 
 		multipartHandler(req, res, (err) => {
-			expect(err.message).toBe('File is missing filename');
+			expect(err.message).toBe('Invalid payload. File is missing filename.');
 			expect(err).toBeInstanceOf(InvalidPayloadError);
 		});
 	});

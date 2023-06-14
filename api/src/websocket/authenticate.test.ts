@@ -93,7 +93,7 @@ describe('authenticateConnection', () => {
 				type: 'auth',
 				access_token: 'expired',
 			} as WebSocketAuthMessage)
-		).rejects.toThrow('Token expired.');
+		).rejects.toThrow('Authentication failed.');
 	});
 
 	test('Failure authentication failed', async () => {

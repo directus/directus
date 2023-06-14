@@ -260,7 +260,7 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
-						`You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadError);
@@ -339,7 +339,7 @@ describe('Integration Tests', () => {
 				try {
 					await service.updateMany([1, 2], { email: 'test@example.com' });
 				} catch (err: any) {
-					expect(err.message).toBe(`Field "email" has to be unique.`);
+					expect(err.message).toBe(`Value for field "email" in collection "directus_users" has to be unique.`);
 					expect(err).toBeInstanceOf(RecordNotUniqueError);
 				}
 			});
@@ -377,7 +377,7 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
-						`You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadError);
@@ -470,7 +470,7 @@ describe('Integration Tests', () => {
 				try {
 					await service.updateByQuery({}, { email: 'test@example.com' });
 				} catch (err: any) {
-					expect(err.message).toBe(`Field "email" has to be unique.`);
+					expect(err.message).toBe(`Value for field "email" in collection "directus_users" has to be unique.`);
 					expect(err).toBeInstanceOf(RecordNotUniqueError);
 				}
 			});
@@ -514,7 +514,7 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
-						`You can't change the "${field}" value manually.`
+						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
 					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadError);

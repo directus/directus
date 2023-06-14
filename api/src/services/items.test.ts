@@ -1128,7 +1128,7 @@ describe('Integration Tests', () => {
 					// intentional `as any` to test non-array data on runtime
 					await itemsService.updateBatch(items[0]! as any);
 				} catch (err) {
-					expect((err as Error).message).toBe(`Input should be an array of items.`);
+					expect((err as Error).message).toBe(`Invalid payload. Input should be an array of items.`);
 					expect(err).toBeInstanceOf(InvalidPayloadError);
 				}
 			}
