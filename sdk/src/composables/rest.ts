@@ -1,6 +1,7 @@
 import type { DirectusClient } from '../client.js';
 import type { RESTCommand } from '../index.js';
-import { withoutTrailingSlash } from '../utils.js';
+import { serializeParams, withoutTrailingSlash } from '../utils.js';
+import type { AuthStorage } from './authentication.js';
 
 export interface RESTConfig {
 	url: string;
@@ -39,11 +40,16 @@ export function REST(cfg: RESTConfig) {
 				optionsCallback: RESTCommand<Options, Output, Schema>
 			): Promise<Output> {
 				const options = optionsCallback();
-				const url = this.config.apiURL + options.path;
-				const headers: Record<string, string> = options.headers ?? {};
+				const queryString = serializeParams(options.params ?? {});
+				const url = this.config.apiURL + options.path + (queryString ? '?' + queryString : '');
+
+				const headers: Record<string, string> = {
+					'Content-Type': 'application/json',
+					...(options.headers ?? {}),
+				};
 
 				if ('auth' in this) {
-					const { access_token } = this.auth as Record<string, string>;
+					const { access_token } = this.auth as AuthStorage;
 
 					if (access_token) {
 						headers['Authorization'] = `Bearer ${access_token}`;
@@ -51,7 +57,6 @@ export function REST(cfg: RESTConfig) {
 				}
 
 				const response = await client.config.fetch(url, {
-					url,
 					headers,
 					method: options.method ?? 'GET',
 				});

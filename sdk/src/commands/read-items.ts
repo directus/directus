@@ -15,8 +15,11 @@ export const readItems =
 	<Schema extends object, Input extends ReadItemsInput<Schema>>(
 		input: Input
 	): RESTCommand<ReadItemsInput<Schema>, ReadItemsOutput<Schema, Input>, Schema> =>
-	() => ({
-		path: `/items/${String(input.collection)}`,
-		params: input.query ?? {},
-		method: 'GET',
-	});
+	() => {
+		const collection = String(input.collection);
+		return {
+			path: collection.startsWith('directus_') ? `/${collection.slice(9)}` : `/items/${collection}`,
+			params: input.query ?? {},
+			method: 'GET',
+		};
+	};

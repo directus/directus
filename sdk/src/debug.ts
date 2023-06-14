@@ -19,6 +19,10 @@ type MySchema = {
 		date: string;
 		status: string | null;
 	};
+	directus_users: {
+		first_name: string;
+		last_name: string;
+	};
 };
 
 /**
@@ -26,9 +30,9 @@ type MySchema = {
  */
 const client = useDirectus<MySchema>()
 	.use(REST({ url: 'http://localhost:8056' }))
-	.use(WebSocket({ url: 'ws://localhost:8056/' })) // this name collides in the browser
+	// .use(GraphQL())
+	// .use(WebSocket({ url: 'ws://localhost:8056/websocket' })) // this name collides in the browser
 	.use(Authentication());
-// .use(GraphQL())
 // .use(Subscription())
 // .use(Pagination({ pageSize: 250 }));
 
@@ -54,8 +58,15 @@ console.log(data);
 /**
  * Authentication
  */
-// client.login('admin@example.com', 'admin');
+await client.login('admin@example.com', 'd1r3ctu5');
 
+const data2 = await client.request(
+	readItems({
+		collection: 'directus_users',
+	})
+);
+
+console.log(data2);
 /**
  * GraphQL
  */
@@ -68,22 +79,6 @@ console.log(data);
  * Pagination
  */
 
-// client.subscribe('test');
-// const client2 = client.use(
-// 	withWebSocket({
-// 		url: 'ws://localhost:8056/',
-// 	})
-// );
-// client2.subscribe('test')
-// const client3 = client2.use(
-// 	withGraphQL({
-// 		path: '/graphql',
-// 	})
-// );
-// client3.graphql('{ test }')
-// const wsClient = withWebSocket(client, {
-// 	url: 'ws://localhost:8056/',
-// })
 // const result = wsClient.exec(
 // 	subscribe({
 // 		collection: 'test',
