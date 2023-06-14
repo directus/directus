@@ -2,3 +2,7 @@ node_modules
 dist
 packages/extensions-sdk/templates
 extensions
+!/docs/.vitepress/*.js
+!/docs/.vitepress/components
+!/docs/.vitepress/theme
+!/docs/.typedocs
