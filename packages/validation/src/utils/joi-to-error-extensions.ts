@@ -24,7 +24,7 @@ export const joiValidationErrorItemToErrorExtensions = (
 				extensions.type = 'empty';
 			} else {
 				extensions.type = 'eq';
-				extensions.valid = validationErrorItem.context?.['valids'][0];
+				extensions.valid = valid;
 			}
 		}
 	}
