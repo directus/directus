@@ -3,3 +3,5 @@ coverage
 node_modules
 pnpm-lock.yaml
 app/src/lang/translations/*.yaml
+.changeset
+.github
