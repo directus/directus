@@ -29,7 +29,6 @@
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
-		"@directus/utils": "workspace:*",
 		"@types/ms": "0.7.31",
 		"@types/node": "18.16.12",
 		"@vitest/coverage-c8": "0.31.1",
