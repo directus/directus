@@ -1,3 +1,4 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
-export const InvalidCredentialsError = createError('INVALID_CREDENTIALS', 'Invalid user credentials.', 401);
+export const InvalidCredentialsError = createError(ErrorCode.InvalidCredentials, 'Invalid user credentials.', 401);

@@ -1,3 +1,4 @@
+import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -7,6 +8,7 @@ import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
 import {
+	ErrorCode,
 	InvalidConfigError,
 	InvalidCredentialsError,
 	InvalidPayloadError,
@@ -95,7 +97,7 @@ export class LDAPAuthDriver extends AuthDriver {
 						if (err) {
 							const error = handleError(err);
 
-							if (error instanceof InvalidCredentialsError) {
+							if (isDirectusError(error) && error.code === ErrorCode.InvalidCredentials) {
 								logger.warn('Invalid bind user');
 								reject(new InvalidConfigError({ provider }));
 							} else {

@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 export interface InvalidForeignKeyErrorExtensions {
 	collection: string | null;
@@ -22,7 +23,7 @@ export const messageConstructor = ({ collection, field }: InvalidForeignKeyError
 };
 
 export const InvalidForeignKeyError = createError<InvalidForeignKeyErrorExtensions>(
-	'INVALID_FOREIGN_KEY',
+	ErrorCode.InvalidForeignKey,
 	messageConstructor,
 	400
 );

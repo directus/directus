@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 export interface ValueTooLongErrorExtensions {
 	collection: string | null;
@@ -21,4 +22,8 @@ export const messageConstructor = ({ collection, field }: ValueTooLongErrorExten
 	return message;
 };
 
-export const ValueTooLongError = createError<ValueTooLongErrorExtensions>('VALUE_TOO_LONG', messageConstructor, 400);
+export const ValueTooLongError = createError<ValueTooLongErrorExtensions>(
+	ErrorCode.ValueTooLong,
+	messageConstructor,
+	400
+);

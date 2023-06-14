@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 export interface UnsupportedMediaTypeErrorExtensions {
 	mediaType: string;
@@ -9,7 +10,7 @@ export const messageConstructor = (extensions: UnsupportedMediaTypeErrorExtensio
 	`Unsupported media type "${extensions.mediaType}" in ${extensions.where}.`;
 
 export const UnsupportedMediaTypeError = createError<UnsupportedMediaTypeErrorExtensions>(
-	'UNSUPPORTED_MEDIA_TYPE',
+	ErrorCode.UnsupportedMediaType,
 	messageConstructor,
 	415
 );

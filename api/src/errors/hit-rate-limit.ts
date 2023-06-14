@@ -1,5 +1,6 @@
-import ms from 'ms';
 import { createError } from '@directus/errors';
+import ms from 'ms';
+import { ErrorCode } from './codes.js';
 
 export interface HitRateLimitErrorExtensions {
 	limit: number;
@@ -11,4 +12,8 @@ export const messageConstructor = (extensions: HitRateLimitErrorExtensions) => {
 	return `Too many requests, retry after ${ms(msBeforeNext)}.`;
 };
 
-export const HitRateLimitError = createError<HitRateLimitErrorExtensions>('REQUESTS_EXCEEDED', messageConstructor, 429);
+export const HitRateLimitError = createError<HitRateLimitErrorExtensions>(
+	ErrorCode.RequestsExceeded,
+	messageConstructor,
+	429
+);

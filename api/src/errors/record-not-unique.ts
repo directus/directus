@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 export interface RecordNotUniqueErrorExtensions {
 	collection: string | null;
@@ -22,7 +23,7 @@ export const messageConstructor = ({ collection, field }: RecordNotUniqueErrorEx
 };
 
 export const RecordNotUniqueError = createError<RecordNotUniqueErrorExtensions>(
-	'RECORD_NOT_UNIQUE',
+	ErrorCode.RecordNotUnique,
 	messageConstructor,
 	400
 );

@@ -1,3 +1,4 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
-export const UserSuspendedError = createError('USER_SUSPENDED', 'User suspended.', 401);
+export const UserSuspendedError = createError(ErrorCode.UserSuspended, 'User suspended.', 401);

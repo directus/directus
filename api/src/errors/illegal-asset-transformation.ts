@@ -1,11 +1,12 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 export interface IllegalAssetTransformationErrorExtensions {
 	invalidTransformations: string[];
 }
 
 export const IllegalAssetTransformationError = createError<IllegalAssetTransformationErrorExtensions>(
-	'ILLEGAL_ASSET_TRANSFORMATION',
+	ErrorCode.IllegalAssetTransformation,
 	'Illegal asset transformation.',
 	400
 );

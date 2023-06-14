@@ -1,3 +1,4 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
-export const InvalidProviderError = createError('INVALID_PROVIDER', 'Invalid provider.', 403);
+export const InvalidProviderError = createError(ErrorCode.InvalidProvider, 'Invalid provider.', 403);

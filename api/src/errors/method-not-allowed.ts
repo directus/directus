@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 export interface MethodNotAllowedErrorExtensions {
 	allowed: string[];
@@ -11,7 +12,7 @@ export const messageConstructor = (extensions: MethodNotAllowedErrorExtensions) 
 		.join(', ')}.`;
 
 export const MethodNotAllowedError = createError<MethodNotAllowedErrorExtensions>(
-	'METHOD_NOT_ALLOWED',
+	ErrorCode.MethodNotAllowed,
 	messageConstructor,
 	405
 );

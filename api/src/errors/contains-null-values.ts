@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 interface ContainsNullValuesErrorExtensions {
 	collection: string;
@@ -9,7 +10,7 @@ export const messageConstructor = ({ collection, field }: ContainsNullValuesErro
 	`Field "${field}" in collection "${collection}" contains null values.`;
 
 export const ContainsNullValuesError = createError<ContainsNullValuesErrorExtensions>(
-	'CONTAINS_NULL_VALUES',
+	ErrorCode.ContainsNullValues,
 	messageConstructor,
 	400
 );

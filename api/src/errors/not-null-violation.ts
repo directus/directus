@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 export interface NotNullViolationErrorExtensions {
 	collection: string | null;
@@ -22,7 +23,7 @@ export const messageConstructor = ({ collection, field }: NotNullViolationErrorE
 };
 
 export const NotNullViolationError = createError<NotNullViolationErrorExtensions>(
-	'NOT_NULL_VIOLATION',
+	ErrorCode.NotNullViolation,
 	messageConstructor,
 	400
 );

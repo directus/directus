@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 interface ServiceUnavailableErrorExtensions {
 	service: string;
@@ -9,7 +10,7 @@ export const messageConstructor = ({ service, reason }: ServiceUnavailableErrorE
 	`Service "${service}" is unavailable. ${reason}.`;
 
 export const ServiceUnavailableError = createError<ServiceUnavailableErrorExtensions>(
-	'SERVICE_UNAVAILABLE',
+	ErrorCode.ServiceUnavailable,
 	messageConstructor,
 	503
 );

@@ -1,4 +1,5 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
 export interface ValueOutOfRangeErrorExtensions {
 	collection: string | null;
@@ -22,7 +23,7 @@ export const messageConstructor = ({ collection, field }: ValueOutOfRangeErrorEx
 };
 
 export const ValueOutOfRangeError = createError<ValueOutOfRangeErrorExtensions>(
-	'VALUE_OUT_OF_RANGE',
+	ErrorCode.ValueOutOfRange,
 	messageConstructor,
 	400
 );

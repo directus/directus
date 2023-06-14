@@ -1,3 +1,4 @@
 import { createError } from '@directus/errors';
+import { ErrorCode } from './codes.js';
 
-export const InvalidOtpError = createError('INVALID_OTP', 'Invalid user OTP.', 401);
+export const InvalidOtpError = createError(ErrorCode.InvalidOtp, 'Invalid user OTP.', 401);
