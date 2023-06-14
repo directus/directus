@@ -20,22 +20,25 @@ export interface RESTRequestOptions {
 	body?: string;
 }
 
-export interface RESTClient {
+export interface RESTClient<Schema extends object> {
 	config: RESTClientConfig;
-	request<Schema extends object, Options extends object, Output extends object>(
-		options: RESTCommand<Schema, Options, Output>
-	): any;
+	request<Options extends object, Output extends object>(
+		options: RESTCommand<Options, Output, Schema>
+	): Promise<Output>;
 }
 
 export function REST(cfg: RESTConfig) {
-	return <Client extends DirectusClient>(_client: Client): RESTClient => {
-		const restClient: RESTClient = {
+	return <Schema extends object, Features extends object>(
+		client: DirectusClient<Schema, Features>
+	): RESTClient<Schema> => {
+		const restClient = {
 			config: {
 				apiURL: withoutTrailingSlash(cfg.url),
 			},
 			async request<Options extends object, Output extends object>(
-				options: RESTCommand<Schema, Options, Output>
+				optionsCallback: RESTCommand<Options, Output, Schema>
 			): Promise<Output> {
+				const options = optionsCallback();
 				const url = this.config.apiURL + options.path;
 				const headers: Record<string, string> = options.headers ?? {};
 
@@ -47,7 +50,7 @@ export function REST(cfg: RESTConfig) {
 					}
 				}
 
-				const response = await _client.config.fetch(url, {
+				const response = await client.config.fetch(url, {
 					url,
 					headers,
 					method: options.method ?? 'GET',

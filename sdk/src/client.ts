@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws';
-import type { ReadItemsInput, ReadItemsOutput } from './commands/read-items.js';
-import type { Command } from './types/index.js';
+// import type { ReadItemsInput, ReadItemsOutput } from './commands/read-items.js';
+// import type { Command } from './types/index.js';
 
 export interface BaseClientConfig extends Record<string, any> {
 	fetch: fetch;
@@ -33,8 +33,8 @@ export type DirectusClient<
 	Features extends object = BaseClient
 > = GenericClient<Schema, Features> & Features;
 
-type InputTypes = ReadItemsInput<any>;
-type OutputTypes = ReadItemsOutput<any, any>;
+// type InputTypes = ReadItemsInput<any>;
+// type OutputTypes = ReadItemsOutput<any, any>;
 
 export const useDirectus = <Schema extends object>(
 	config: BaseClientConfig = {

@@ -37,9 +37,14 @@ const client = useDirectus<MySchema>()
  */
 const data = await client.request(
 	readItems({
-		collection: 'sss',
+		collection: 'test',
+		query: {
+			limit: 2,
+		},
 	})
 );
+
+console.log(data);
 
 /**
  * WebSocket
