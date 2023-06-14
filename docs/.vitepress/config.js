@@ -168,6 +168,7 @@ function typeDocSidebarFormat(item) {
 			items: [],
 			collapsed: true,
 		});
+
 		item.text = formatTitle(item.text.replace('@directus/', ''));
 		item.text = item.text.replace('Sdk', 'SDK');
 	}

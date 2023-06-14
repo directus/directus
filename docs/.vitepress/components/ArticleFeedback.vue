@@ -59,6 +59,7 @@ function getRatingOption(rating: number) {
 async function handleSubmission(rating?: number) {
 	loading.value = true;
 	if (rating) feedback.rating = rating;
+
 	const body = {
 		id: feedback.id,
 		rating: feedback.rating,
@@ -66,6 +67,7 @@ async function handleSubmission(rating?: number) {
 		title: props.title,
 		url: props.url,
 	};
+
 	try {
 		const response = await fetch('/api/feedback', {
 			method: 'POST',
@@ -81,7 +83,7 @@ async function handleSubmission(rating?: number) {
 		}
 	} catch (err) {
 		error.value = err;
-		console.error(err);
+		// console.error(err);
 	} finally {
 		loading.value = false;
 	}
@@ -181,7 +183,7 @@ async function handleSubmission(rating?: number) {
 	padding: 1.5rem;
 	border: 1px solid var(--vp-c-divider);
 	border-radius: 8px;
-	background: var(--vp-c-bg-alt)
+	background: var(--vp-c-bg-alt);
 }
 
 .input {

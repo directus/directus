@@ -31,6 +31,7 @@ const meta = computed(() => {
 
 			if (Array.isArray(page.items)) {
 				const itemCrumbs = walkTree(page.items, [...crumbs, page.text]);
+
 				if (Array.isArray(itemCrumbs)) {
 					return itemCrumbs;
 				}
