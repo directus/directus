@@ -3,7 +3,7 @@
 	"private": true,
 	"scripts": {
 		"build": "pnpm --recursive --filter '!docs' run build",
-		"format": "prettier --check \"**/*.{md,y?(a)ml,json}\"",
+		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
 		"lint": "eslint .",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
 		"test:blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
