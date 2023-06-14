@@ -34,8 +34,8 @@ const client = useDirectus<MySchema>({
 	token: 'admin',
 })
 	.use(REST())
-	.use(GraphQL());
-// .use(WebSocket({ url: 'ws://localhost:8056/websocket' })); // this name collides in the browser
+	.use(GraphQL())
+	.use(WebSocket({ url: 'ws://localhost:8056/websocket' })); // this name collides in the browser
 // .use(Authentication());
 // .use(Subscription())
 // .use(Pagination({ pageSize: 250 }));
@@ -60,11 +60,6 @@ const data = await client.request(
 console.log(data);
 
 /**
- * WebSocket
- */
-// const subscription = client.subscribe('aha', {});
-
-/**
  * GraphQL
  *
  * Absolutely not sure if we can do more than this typewise for gql
@@ -78,6 +73,23 @@ query {
 }`);
 
 console.log(data2.test);
+
+/**
+ * WebSocket
+ */
+await client.connect();
+
+const { subscription } = client.subscribe('test', {
+	// event: 'update',
+	query: {
+		fields: ['*'],
+		limit: 2,
+	},
+});
+
+for await (const data of subscription) {
+	console.log('data', data);
+}
 
 /**
  * Subscription
