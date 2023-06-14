@@ -5,7 +5,7 @@ import type { DirectusError } from './create-error.js';
  *
  * @param err - Any input
  */
-export const isDirectusError = (err: unknown): err is DirectusError<unknown> => {
+export const isDirectusError = <T = unknown>(err: unknown): err is DirectusError<T> => {
 	return (
 		typeof err === 'object' &&
 		err !== null &&

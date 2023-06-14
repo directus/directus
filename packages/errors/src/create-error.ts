@@ -1,27 +1,27 @@
-export interface DirectusError<T = void> extends Error {
-	extensions: T;
+export interface DirectusError<Extensions = void> extends Error {
+	extensions: Extensions;
 	code: string;
 	status: number;
 }
 
-export interface DirectusErrorConstructor<T = void> {
-	new (extensions: T, options?: ErrorOptions): DirectusError<T>;
-	readonly prototype: DirectusError<T>;
+export interface DirectusErrorConstructor<Extensions = void> {
+	new (extensions: Extensions, options?: ErrorOptions): DirectusError<Extensions>;
+	readonly prototype: DirectusError<Extensions>;
 }
 
-export const createError = <T = void>(
+export const createError = <Extensions = void>(
 	code: string,
-	message: string | ((extensions: T) => string),
+	message: string | ((extensions: Extensions) => string),
 	status = 500
-): DirectusErrorConstructor<T> => {
-	return class extends Error implements DirectusError<T> {
+): DirectusErrorConstructor<Extensions> => {
+	return class extends Error implements DirectusError<Extensions> {
 		override name = 'DirectusError';
-		extensions: T;
+		extensions: Extensions;
 		code = code.toUpperCase();
 		status = status;
 
-		constructor(extensions: T, options?: ErrorOptions) {
-			const msg = typeof message === 'string' ? message : message(extensions as T);
+		constructor(extensions: Extensions, options?: ErrorOptions) {
+			const msg = typeof message === 'string' ? message : message(extensions as Extensions);
 
 			super(msg, options);
 
