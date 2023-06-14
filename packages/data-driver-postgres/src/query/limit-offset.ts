@@ -8,7 +8,7 @@ import type { SqlStatement } from '@directus/data-sql';
  * @param query - The abstract query
  * @returns The `LIMIT x` part of a SQL statement
  */
-export function limit({ limit, offset }: SqlStatement): ParameterizedSQLStatement {
+export function limitOffset({ limit, offset }: SqlStatement): ParameterizedSQLStatement {
 	if (limit === undefined) {
 		return {
 			statement: '',

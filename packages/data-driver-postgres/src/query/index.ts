@@ -2,7 +2,7 @@ import type { SqlStatement } from '@directus/data-sql';
 import { from } from './from.js';
 import { select } from './select.js';
 import type { ParameterizedSQLStatement } from '@directus/data';
-import { limit } from './limit-offset.js';
+import { limitOffset } from './limit-offset.js';
 import { replaceMarkers } from '../utils/index.js';
 
 /**
@@ -15,10 +15,10 @@ import { replaceMarkers } from '../utils/index.js';
 export function constructSql(query: SqlStatement): ParameterizedSQLStatement {
 	const base = [select(query), from(query)].join(' ');
 
-	const limitPart = limit(query);
+	const limitOffsetPart = limitOffset(query);
 
 	return {
-		statement: `${replaceMarkers(`${base} ${limitPart.statement}`)};`,
-		values: [limitPart.values].flat(),
+		statement: `${replaceMarkers(`${base} ${limitOffsetPart.statement}`)};`,
+		values: [limitOffsetPart.values].flat(),
 	};
 }

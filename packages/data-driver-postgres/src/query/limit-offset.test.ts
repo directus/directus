@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { limit } from './limit-offset.js';
+import { limitOffset } from './limit-offset.js';
 import { randomInteger, randomIdentifier } from '@directus/random';
 import type { SqlStatement } from '@directus/data-sql';
 
@@ -9,26 +9,26 @@ test('Returns empty parametrized statement when limit is not defined', () => {
 		from: randomIdentifier(),
 	};
 
-	expect(limit(query)).toStrictEqual({
+	expect(limitOffset(query)).toStrictEqual({
 		statement: '',
 		values: [],
 	});
 });
 
-test('Returns LIMIT statement with parameterized limit', () => {
+test('Returns limit part with one parameter', () => {
 	const query: SqlStatement = {
 		select: [],
 		from: randomIdentifier(),
 		limit: randomInteger(1, 100),
 	};
 
-	expect(limit(query)).toStrictEqual({
+	expect(limitOffset(query)).toStrictEqual({
 		statement: `LIMIT ?`,
 		values: [query.limit],
 	});
 });
 
-test('Returns LIMIT with offset', () => {
+test('Returns limit and offset part with their parameters', () => {
 	const query: SqlStatement = {
 		select: [],
 		from: randomIdentifier(),
@@ -36,20 +36,20 @@ test('Returns LIMIT with offset', () => {
 		offset: randomInteger(1, 100),
 	};
 
-	expect(limit(query)).toStrictEqual({
+	expect(limitOffset(query)).toStrictEqual({
 		statement: `LIMIT ? OFFSET ?`,
 		values: [query.limit, query.offset],
 	});
 });
 
-test('Ignore limit if only offset is provided', () => {
+test('No limit and offset if only offset is provided', () => {
 	const query: SqlStatement = {
 		select: [],
 		from: randomIdentifier(),
 		offset: randomInteger(1, 100),
 	};
 
-	expect(limit(query)).toStrictEqual({
+	expect(limitOffset(query)).toStrictEqual({
 		statement: ``,
 		values: [],
 	});
