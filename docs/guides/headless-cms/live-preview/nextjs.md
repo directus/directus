@@ -7,7 +7,6 @@ author_override:
 author: Esther Agbaje
 ---
 
-
 # Set Up Live Preview With Next.js
 
 > {{ $frontmatter.description }}
@@ -18,8 +17,8 @@ author: Esther Agbaje
 
 :::
 
-
-Directus' Live Preview feature allows you to show changes in your website collection before publishing and without the need to refresh the browser.
+Directus' Live Preview feature allows you to show changes in your website collection before publishing and without the
+need to refresh the browser.
 
 [Next.js](https://nextjs.org/) Draft Mode feature renders pages on request instead of build time and fetches draft
 content instead of the published content.
@@ -37,8 +36,7 @@ You will need:
 - Some knowledge of React.js and Next.js.
 
 If you're just getting started with Next.js and Directus, reference our
-[guide](/guides/headless-cms/build-static-website/next-13.html) to set up Next.js 13 with
-Directus
+[guide](/guides/headless-cms/build-static-website/next-13.html) to set up Next.js 13 with Directus
 
 ## Configure Live Preview URL in Directus
 

@@ -69,11 +69,9 @@ const connectionRef = useRef(null);
 Create the methods for form submissions:
 
 ```js
-const loginSubmit = (event) => {
-};
+const loginSubmit = (event) => {};
 
-const messageSubmit = (event) => {
-};
+const messageSubmit = (event) => {};
 ```
 
 Ensure to call the `event.preventDefault()` in these methods to prevent the browser from refreshing the page upon

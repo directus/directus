@@ -33,8 +33,8 @@ permissions. We welcome any [pull-requests](/contributing/introduction) to addre
 
 ::: warning Users, Roles and Permissions!
 
-You will need to understand how [Users, Roles, and Permissions](/app/users-roles-permissions) work in Directus
-to configure Shares properly.
+You will need to understand how [Users, Roles, and Permissions](/app/users-roles-permissions) work in Directus to
+configure Shares properly.
 
 :::
 
@@ -104,8 +104,8 @@ You can share any Item you want. However, Users with other Roles will likely hav
 Any Share will inherit the same read permissions as the Role it was associated with in the Share Options Menu.
 
 This system allows for absolutely granular configuration options on Shares... _but it also means you'll need to
-understand [Users, Roles, and Permissions](/app/users-roles-permissions) thoroughly to use Shares properly_.
-Here are some highlights of what you can do:
+understand [Users, Roles, and Permissions](/app/users-roles-permissions) thoroughly to use Shares properly_. Here are
+some highlights of what you can do:
 
 - Set the Collections a Role can view or share.
 - Filter for specific Items a Role can view or share.

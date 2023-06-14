@@ -97,20 +97,20 @@ Using the [Directus JavaScript SDK](/reference/sdk) (preferred)
 
 ```js
 const articles = await directus.items('articles').readByQuery({
-  filter: {
-    _and: [
-      {
-        status: {
-          _eq: 'published',
-        },
-      },
-      {
-        date_published: {
-          _lte: '$NOW',
-        },
-      },
-    ],
-  },
+	filter: {
+		_and: [
+			{
+				status: {
+					_eq: 'published',
+				},
+			},
+			{
+				date_published: {
+					_lte: '$NOW',
+				},
+			},
+		],
+	},
 });
 ```
 

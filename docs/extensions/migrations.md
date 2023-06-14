@@ -24,7 +24,8 @@ for example:
 
 ::: tip
 
-For backwards compatibility it is possible to rename your existing CommonJS migrations to `<migration-name>.cjs`. However using ESM where possible is recommended.
+For backwards compatibility it is possible to rename your existing CommonJS migrations to `<migration-name>.cjs`.
+However using ESM where possible is recommended.
 
 :::
 
@@ -39,11 +40,11 @@ export async function up(knex) {
 		table.increments();
 		table.string('rijk');
 	});
-};
+}
 
 export async function down(knex) {
 	await knex.schema.dropTable('test');
-};
+}
 ```
 
 ::: danger Danger

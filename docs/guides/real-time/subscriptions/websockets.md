@@ -5,13 +5,15 @@ description: "Learn how to get started with Directus' WebSockets subscriptons."
 
 # WebSockets Subscriptions
 
-WebSocket subscriptions allows for real-time notification of item creations, edits, and deletions in a collection. 
+WebSocket subscriptions allows for real-time notification of item creations, edits, and deletions in a collection.
 
-This guide assumes you already know [how to establish, authenticate, and send messages](/guides/real-time/getting-started/websockets) over a WebSocket connection.
+This guide assumes you already know
+[how to establish, authenticate, and send messages](/guides/real-time/getting-started/websockets) over a WebSocket
+connection.
 
 ## Subscribe To Changes In A Collection
 
-Send the following message over your WebSocket connection to start a subscription: 
+Send the following message over your WebSocket connection to start a subscription:
 
 ```json
 {
@@ -29,9 +31,9 @@ In return, you will receive a message to confirm that your subscription has been
 }
 ```
 
-## Handling Collection Changes 
+## Handling Collection Changes
 
-When a change happens to an item in a collection with an active subscription, it will emit a message 
+When a change happens to an item in a collection with an active subscription, it will emit a message
 
 ```json
 {
@@ -41,13 +43,16 @@ When a change happens to an item in a collection with an active subscription, it
 }
 ```
 
-The `event` will be one of `create`, `update`, or `delete`. If the event is `create` or `update`, the `data` will contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be returned.
+The `event` will be one of `create`, `update`, or `delete`. If the event is `create` or `update`, the `data` will
+contain the full item objects (or specific fields, if specified). If the event is `delete`, just the `id` will be
+returned.
 
 ## Working With Specific CRUD Operations
 
 Using the optional `event` argument you can filter for specific `create`, `update`, and `delete` events.
 
 Here's an example of how to do this:
+
 ```json
 {
 	"type": "subscribe",
@@ -58,7 +63,8 @@ Here's an example of how to do this:
 
 ## Specifying Fields To Return
 
-If you only want to return specific fields on subscription events, add the `query.fields` property when initializing the subscription:
+If you only want to return specific fields on subscription events, add the `query.fields` property when initializing the
+subscription:
 
 ```json
 {
@@ -68,11 +74,13 @@ If you only want to return specific fields on subscription events, add the `quer
 }
 ```
 
-Refer to the [Fields Query Parameter](/reference/query.html#fields) docs for more information on specifying what data should be returned.
+Refer to the [Fields Query Parameter](/reference/query.html#fields) docs for more information on specifying what data
+should be returned.
 
 ## Using UIDs
 
-You can have multiple ongoing CRUD operations and subscriptions at a time. When doing so, it is highly recommended to add an additional `uid` property to your request, which will be included in related item change events.
+You can have multiple ongoing CRUD operations and subscriptions at a time. When doing so, it is highly recommended to
+add an additional `uid` property to your request, which will be included in related item change events.
 
 ```json
 {
@@ -93,7 +101,7 @@ When you receive responses, the same `uid` will be included as a property:
 }
 ```
 
-Use a new `uid` for every subscription, and you can easily tell which subscription an event is related to. 
+Use a new `uid` for every subscription, and you can easily tell which subscription an event is related to.
 
 ## Unsubscribing From Changes
 
@@ -106,4 +114,4 @@ To stop change events being sent from a specific subscription, send the followin
 }
 ```
 
-You can also omit `uid` to stop all subscriptions at once. 
+You can also omit `uid` to stop all subscriptions at once.

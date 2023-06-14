@@ -16,7 +16,8 @@ npm install @directus/exceptions
 
 ## License
 
-This package is licensed under the MIT License. See the [LICENSE](https://github.com/directus/directus/blob/main/packages/exceptions/license) file for more information.
+This package is licensed under the MIT License. See the
+[LICENSE](https://github.com/directus/directus/blob/main/packages/exceptions/license) file for more information.
 
 ## Additional Resources
 

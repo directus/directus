@@ -5,23 +5,29 @@ contributors: Kevin Lewis
 
 # Build a Live Poll Result Chart With JavaScript
 
-In this guide, you will build a live-updating chart based on votes to a multiple-choice poll. New entries will be added using a Directus REST API, and results will be accessed using a WebSockets connection. The chart will be created and updated using [Chart.js](https://www.chartjs.org).
+In this guide, you will build a live-updating chart based on votes to a multiple-choice poll. New entries will be added
+using a Directus REST API, and results will be accessed using a WebSockets connection. The chart will be created and
+updated using [Chart.js](https://www.chartjs.org).
 
 ## Before You Start
 
-You will need a Directus project. If you don’t already have one, the easiest way to get started is with our [managed Directus Cloud service](https://directus.cloud).
+You will need a Directus project. If you don’t already have one, the easiest way to get started is with our
+[managed Directus Cloud service](https://directus.cloud).
 
-Create a new collection called `votes`, with a dropdown selection field called `choice`. Create two choices - one with the value of `dogs` and one with `cats`.
+Create a new collection called `votes`, with a dropdown selection field called `choice`. Create two choices - one with
+the value of `dogs` and one with `cats`.
 
 In the `Public` role, give Create access to the `votes` collection.
 
-Create a new Role called `Results`, and make sure the `Results` role has Read access to the `votes` collection. Create a new user with this role, generate an access token, and make note of it.
+Create a new Role called `Results`, and make sure the `Results` role has Read access to the `votes` collection. Create a
+new user with this role, generate an access token, and make note of it.
 
 ## Create The Vote Page
+
 Create a `vote.html` file and open it in your code editor. Add the following:
 
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<body>
 		<div id="options">
@@ -31,8 +37,8 @@ Create a `vote.html` file and open it in your code editor. Add the following:
 		<p></p>
 		<script>
 			const directusUrl = 'https://your-directus-url';
-			document.querySelector('#cat').addEventListener('click', vote('cats'))
-			document.querySelector('#dog').addEventListener('click', vote('dogs'))
+			document.querySelector('#cat').addEventListener('click', vote('cats'));
+			document.querySelector('#dog').addEventListener('click', vote('dogs'));
 
 			async function vote(choice) {
 				await fetch(`${directusUrl}/items/votes`, {
@@ -42,32 +48,35 @@ Create a `vote.html` file and open it in your code editor. Add the following:
 						'Content-Type': 'application/json',
 					},
 				});
-			};
+			}
 		</script>
 	</body>
 </html>
 ```
 
-This uses the Directus REST API to create a new item in the `votes` collection when the a button is pressed. Make sure to replace `your-directus-url` with your project’s URL.
+This uses the Directus REST API to create a new item in the `votes` collection when the a button is pressed. Make sure
+to replace `your-directus-url` with your project’s URL.
 
-*Load `vote.html` in your browser and click a button. Check your Directus project and you should see a new item in the `votes` collection.*
+_Load `vote.html` in your browser and click a button. Check your Directus project and you should see a new item in the
+`votes` collection._
 
 ![Directus Votes collection with a single item with a choice of ‘cats’.](https://cdn.directus.io/docs/v9/guides/websockets/poll-item-added.webp)
 
 At the bottom of your `vote` function, add some user feedback that the vote was cast:
 
 ```js
-document.body.innerHTML = 'Vote cast'
+document.body.innerHTML = 'Vote cast';
 ```
 
-*Refresh your browser and try casting a vote. The page should be replaced with a success message once the vote has taken place.*
+_Refresh your browser and try casting a vote. The page should be replaced with a success message once the vote has taken
+place._
 
 ## Create The Results Page
 
 Also create a `results.html` file and open it in your editor. Add the following:
 
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<body>
 		<div style="display: flex; justify-content: center; height: 80vh">
@@ -75,8 +84,8 @@ Also create a `results.html` file and open it in your editor. Add the following:
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		<script>
-			const socket = new WebSocket('wss://your-directus-url/websocket')
-			const access_token = 'your-access-token'
+			const socket = new WebSocket('wss://your-directus-url/websocket');
+			const access_token = 'your-access-token';
 
 			socket.addEventListener('open', function () {
 				console.log({ event: 'onopen' });
@@ -94,7 +103,7 @@ Also create a `results.html` file and open it in your editor. Add the following:
 				}
 				if (data.type == 'subscription' && data.event == 'init') {
 				}
-				if(data.type == 'subscription' && data.event == 'create') {
+				if (data.type == 'subscription' && data.event == 'create') {
 				}
 			});
 		</script>
@@ -102,7 +111,9 @@ Also create a `results.html` file and open it in your editor. Add the following:
 </html>
 ```
 
-This boilerplate creates a placeholder element for our chart, and includes Chart.js from a CDN. It also sets up our WebSocket methods - for more information check out our [Getting Started With WebSockets](/guides/real-time/getting-started/websockets.md) guide.
+This boilerplate creates a placeholder element for our chart, and includes Chart.js from a CDN. It also sets up our
+WebSocket methods - for more information check out our
+[Getting Started With WebSockets](/guides/real-time/getting-started/websockets.md) guide.
 
 Make sure to replace `your-directus-url` with your project’s URL, and `your-access-token` with your token.
 
@@ -120,14 +131,15 @@ const chart = new Chart(ctx, {
 			{
 				label: '# of Votes',
 				data: [],
-				backgroundColor: ['#4f46e5', '#f472b6']
-			}
-		]
-	}
+				backgroundColor: ['#4f46e5', '#f472b6'],
+			},
+		],
+	},
 });
 ```
 
-Load `results.html` in your browser. Don’t worry that nothing is displayed yet - the chart has no data so it can’t render.
+Load `results.html` in your browser. Don’t worry that nothing is displayed yet - the chart has no data so it can’t
+render.
 
 ### Add Existing Votes On Load
 
@@ -146,9 +158,11 @@ if (data.type == 'auth' && data.status == 'ok') {
 }
 ```
 
-The `query` groups all items by their `choice` value, and are then counted by the aggregation. The result is a payload that shows how many of each choice exist in the collection.
+The `query` groups all items by their `choice` value, and are then counted by the aggregation. The result is a payload
+that shows how many of each choice exist in the collection.
 
-A message is sent over the connection when a connection is initialized with data from the existing collection. Use this data to edit the chart’s dataset and update it:
+A message is sent over the connection when a connection is initialized with data from the existing collection. Use this
+data to edit the chart’s dataset and update it:
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
@@ -187,6 +201,7 @@ This code finds which index position the choice is in, increases it by 1, and up
 Open both `vote.html` and `results.html` in your browser. Make a vote and see the chart update.
 
 ## Next Steps
+
 There are many ways to improve the project built in this guide:
 
 1. Accept more data - such as voter name or contact details.
@@ -197,8 +212,9 @@ There are many ways to improve the project built in this guide:
 ## Full Code Sample
 
 ### `vote.html`
+
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<body>
 		<div id="options">
@@ -208,8 +224,8 @@ There are many ways to improve the project built in this guide:
 		<p></p>
 		<script>
 			const directusUrl = 'https://your-directus-url';
-			document.querySelector('#cat').addEventListener('click', vote('cats'))
-			document.querySelector('#dog').addEventListener('click', vote('dogs'))
+			document.querySelector('#cat').addEventListener('click', vote('cats'));
+			document.querySelector('#dog').addEventListener('click', vote('dogs'));
 
 			async function vote(choice) {
 				await fetch(`${directusUrl}/items/votes`, {
@@ -219,15 +235,16 @@ There are many ways to improve the project built in this guide:
 						'Content-Type': 'application/json',
 					},
 				});
-			};
+			}
 		</script>
 	</body>
 </html>
 ```
 
 ### `results.html`
+
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<body>
 		<div style="display: flex; justify-content: center; height: 80vh">
@@ -251,14 +268,16 @@ There are many ways to improve the project built in this guide:
 			socket.addEventListener('message', function (message) {
 				const data = JSON.parse(message.data);
 				if (data.type == 'auth' && data.status == 'ok') {
-					socket.send(JSON.stringify({
-						type: 'subscribe',
-						collection: 'votes',
-						query: {
+					socket.send(
+						JSON.stringify({
+							type: 'subscribe',
+							collection: 'votes',
+							query: {
 								aggregate: { count: 'choice' },
 								groupBy: ['choice'],
-						}
-					}));
+							},
+						})
+					);
 				}
 
 				if (data.type == 'subscription' && data.event == 'init') {
@@ -287,12 +306,14 @@ There are many ways to improve the project built in this guide:
 				type: 'pie',
 				data: {
 					labels: [],
-					datasets: [{
-						label: '# of Votes',
-						data: [],
-						backgroundColor: ['#4f46e5', '#f472b6']
-					}]
-				}
+					datasets: [
+						{
+							label: '# of Votes',
+							data: [],
+							backgroundColor: ['#4f46e5', '#f472b6'],
+						},
+					],
+				},
 			});
 		</script>
 	</body>

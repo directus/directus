@@ -41,8 +41,8 @@ append an array containing an object you can use to help debug the misconfigurat
 
 :::warning
 
-When using an [Event Hook](/app/flows/triggers#event-hook) configured to be **Action (Blocking)**, if your
-flow ends with a condition that executes with a `reject` path, it will cancel your database transaction.
+When using an [Event Hook](/app/flows/triggers#event-hook) configured to be **Action (Blocking)**, if your flow ends
+with a condition that executes with a `reject` path, it will cancel your database transaction.
 
 :::
 
@@ -54,8 +54,9 @@ flow ends with a condition that executes with a `reject` path, it will cancel yo
 </video>
 -->
 
-This operation lets you add a custom script using vanilla JavaScript or TypeScript.
-The script will be executed securely in an isolated sandbox. No interactions take place between the sandbox and the host except for sharing input and output values. This means, for example, no access to the file system and no ability to do network requests.
+This operation lets you add a custom script using vanilla JavaScript or TypeScript. The script will be executed securely
+in an isolated sandbox. No interactions take place between the sandbox and the host except for sharing input and output
+values. This means, for example, no access to the file system and no ability to do network requests.
 
 **Options**
 
@@ -114,8 +115,8 @@ Make sure your `return` value is valid JSON.
 :::tip Throwing Errors
 
 If you throw an error in a **Run Script** operation, it will immediately break your flow chain and stop execution of
-subsequent flows. If you used a ["Blocking" Event hook](/app/flows/triggers#event-hook), throwing an error
-will cancel the original event transaction to the database.
+subsequent flows. If you used a ["Blocking" Event hook](/app/flows/triggers#event-hook), throwing an error will cancel
+the original event transaction to the database.
 
 :::
 
@@ -267,9 +268,9 @@ To learn about `payload` requirements when updating an item, see [API Reference 
 
 ![Log to Console](https://cdn.directus.io/docs/v9/configuration/flows/operations/operations-20220603A/log-to-console-20220603A.webp)
 
-This operation outputs information to the server-side console as well as the [Logs](/app/flows#logs) within
-the Data Studio. This is a key tool for troubleshooting flow configuration. A Log operation's key will have a null value
-on the data chain.
+This operation outputs information to the server-side console as well as the [Logs](/app/flows#logs) within the Data
+Studio. This is a key tool for troubleshooting flow configuration. A Log operation's key will have a null value on the
+data chain.
 
 **Options**
 
