@@ -249,7 +249,7 @@ async function save() {
 
 		await flowsStore.hydrate();
 
-		emit('done', id);
+		emit('done', values);
 	} catch (err: any) {
 		unexpectedError(err);
 	} finally {

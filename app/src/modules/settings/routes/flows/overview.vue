@@ -136,7 +136,7 @@ import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { FlowRaw } from '@directus/types';
+import { Flow, FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
 import { computed, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -252,9 +252,9 @@ async function toggleFlowStatusById(id: string, value: string) {
 	}
 }
 
-function onFlowDrawerCompletion(id: string) {
+function onFlowDrawerCompletion(values: Flow) {
 	if (editFlow.value === '+') {
-		router.push(`/settings/flows/${id}`);
+		router.push(`/settings/flows/${values.id}`);
 	}
 
 	editFlow.value = undefined;

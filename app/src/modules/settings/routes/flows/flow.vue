@@ -182,7 +182,7 @@
 </template>
 
 <script setup lang="ts">
-import { FlowRaw, OperationRaw } from '@directus/types';
+import { Flow, FlowRaw, OperationRaw } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 
 import { computed, ref, watch } from 'vue';
@@ -596,8 +596,10 @@ function editPanel(panel: AppTile) {
 	else router.push(`/settings/flows/${props.primaryKey}/${panel.id}`);
 }
 
-async function triggerDetailPanelDone() {
+async function triggerDetailPanelDone(values: Flow) {
 	triggerDetailOpen.value = false;
+
+	stagedFlow.value = merge({}, stagedFlow.value, values);
 
 	await flowsStore.hydrate();
 	await loadCurrentFlow();
