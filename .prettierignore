@@ -5,3 +5,4 @@ pnpm-lock.yaml
 app/src/lang/translations/*.yaml
 .changeset
 .github
+/docs/packages
