@@ -14,7 +14,7 @@ import {
 	InvalidPayloadError,
 	InvalidProviderError,
 	ServiceUnavailableError,
-	UnexpectedResponseError
+	UnexpectedResponseError,
 } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
