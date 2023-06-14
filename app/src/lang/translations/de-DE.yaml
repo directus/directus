@@ -227,7 +227,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 date_range: Zeitspanne
-translation_key_placeholder: Schlüssel eingeben...
+translation_key_placeholder: Schlüssel eingeben ...
 datetime: Datum mit Uhrzeit
 dateTime: Datum mit Uhrzeit
 precision: Präzision
@@ -461,7 +461,7 @@ start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
 exporting_limited_items_in_collection: '{limit} von {total} Elementen innerhalb von {collection} exportieren.'
-exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Konfiguration unten an.
+exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Exportkonfiguration an.
 exporting_download_hint: Sobald abgeschlossen, wird die {format} Datei automatisch auf das Gerät heruntergeladen.
 exporting_batch_hint: Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek gespeichert.
 exporting_batch_hint_forced: Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung wird die Datei {format} in der Dateibibliothek gespeichert.
@@ -1008,7 +1008,7 @@ page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung 
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
 page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
 page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
-page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchsuchen ** — Listet alle benutzerdefinierten Übersetzungen im Projekt auf.'
+page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchsuchen** — Listet alle benutzerdefinierten Übersetzungen im Projekt auf.'
 page_help_settings_translations_item: '**Benutzerdefinierte Übersetzungen-Detail** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
@@ -1611,7 +1611,7 @@ interfaces:
     description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
   collection-item-dropdown:
-    collection-item-dropdown: Dropdown für Kollektion Elemente
+    collection-item-dropdown: Dropdown für Elemente einer Sammlung
     description: Auswahl eines Elements aus einer Sammlung im JSON-Format
   input-rich-text-md:
     markdown: Markdown
@@ -1647,7 +1647,7 @@ interfaces:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
     text: Inhalt der Anmerkung eingeben...
-    no_text: Kein Text gesetzt...
+    no_text: Kein Text gesetzt ...
   list-o2m:
     one-to-many: 1:n
     description: Mehrere verwandte Elemente auswählen
@@ -1797,7 +1797,7 @@ interfaces:
     remove_token: Token löschen
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
-    description: Eingabe von Roh- oder Mustache Template werten erlauben
+    description: Eingabe von Rohwerten oder Mustache-Templates erlauben
 displays:
   translations:
     translations: Übersetzungen
@@ -1959,9 +1959,9 @@ layouts:
   kanban:
     name: Kanban
     group_field: Gruppieren nach
-    group_field_placeholder: Feld zum Gruppieren...
+    group_field_placeholder: Feld zum Gruppieren ...
     group_title: Gruppentitel
-    group_title_placeholder: Feld für Grupentitel...
+    group_title_placeholder: Feld für Grupentitel ...
     title: Kartentitel
     title_placeholder: Optionales Titelfeld...
     text: Kartentext
@@ -1971,7 +1971,7 @@ layouts:
     tags: Karten-Tags
     tags_placeholder: Optionales Tag-Feld...
     user: Kartenbenutzer
-    user_placeholder: Optionales Benutzerfeld...
+    user_placeholder: Optionales Benutzerfeld ...
     image: Kartenbild
     image_placeholder: Optionales Bildfeld...
     image_fit: Kartenbild passen
@@ -1980,7 +1980,7 @@ layouts:
     edit_group: Gruppe bearbeiten
     delete_group: Gruppe löschen
     add_group: Gruppe hinzufügen
-    add_group_placeholder: Neuen Gruppentitel eingeben...
+    add_group_placeholder: Neuen Gruppentitel eingeben ...
     show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
