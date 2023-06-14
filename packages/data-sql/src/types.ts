@@ -29,3 +29,18 @@ export interface SqlStatement {
 	offset?: number;
 	// parameters: (string | boolean | number)[];
 }
+
+/**
+ * Used to work with parameterized queries.
+ * @example
+ * ```
+ * {
+ * 		statement: 'SELECT * FROM "articles" WHERE "articles"."id" = $1;',
+ * 		values: [99],
+ * }
+ * ```
+ */
+export interface ParameterizedSQLStatement {
+	statement: string;
+	values: (string | number | boolean)[];
+}

@@ -1,4 +1,4 @@
-import type { ParameterizedSQLStatement } from '@directus/data';
+import type { ParameterizedSQLStatement } from '@directus/data-sql';
 import type { SqlStatement } from '@directus/data-sql';
 
 /**

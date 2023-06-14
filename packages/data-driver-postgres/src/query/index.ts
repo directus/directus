@@ -1,7 +1,7 @@
 import type { SqlStatement } from '@directus/data-sql';
 import { from } from './from.js';
 import { select } from './select.js';
-import type { ParameterizedSQLStatement } from '@directus/data';
+import type { ParameterizedSQLStatement } from '@directus/data-sql';
 import { limitOffset } from './limit-offset.js';
 import { replaceMarkers } from '../utils/index.js';
 
