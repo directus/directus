@@ -145,6 +145,7 @@ render.
 
 Once authenticated, immediately subscribe to the `votes` collection:
 
+<!-- prettier-ignore -->
 ```js
 if (data.type == 'auth' && data.status == 'ok') {
 	socket.send(JSON.stringify({	// [!code ++]
@@ -164,6 +165,7 @@ that shows how many of each choice exist in the collection.
 A message is sent over the connection when a connection is initialized with data from the existing collection. Use this
 data to edit the chart’s dataset and update it:
 
+<!-- prettier-ignore -->
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
 	for (const item of data.data) {	// [!code ++]
@@ -182,17 +184,18 @@ Refresh the page, and you should see the chart update with the initial values.
 
 When a new vote is cast, update the chart’s dataset and update it:
 
+<!-- prettier-ignore -->
 ```js
 if (data.type == 'subscription' && data.event == 'create') {
-  const vote = data.data[0]; // [!code ++]
-  const itemToUpdate = chart.data.labels.indexOf(vote.choice); // [!code ++]
-  if (itemToUpdate !== -1) { // [!code ++]
-    chart.data.datasets[0].data[itemToUpdate]++; // [!code ++]
-  } else { // [!code ++]
-    chart.data.labels.push(vote.choice); // [!code ++]
-    chart.data.datasets[0].data.push(1); // [!code ++]
-  } // [!code ++]
-  chart.update(); // [!code ++]
+	const vote = data.data[0]; // [!code ++]
+	const itemToUpdate = chart.data.labels.indexOf(vote.choice); // [!code ++]
+	if (itemToUpdate !== -1) { // [!code ++]
+		chart.data.datasets[0].data[itemToUpdate]++; // [!code ++]
+	} else { // [!code ++]
+		chart.data.labels.push(vote.choice); // [!code ++]
+		chart.data.datasets[0].data.push(1); // [!code ++]
+	} // [!code ++]
+	chart.update(); // [!code ++]
 }
 ```
 

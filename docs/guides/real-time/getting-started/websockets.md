@@ -77,6 +77,7 @@ Open `index.html` in your browser and open the Developer Tools. You should see t
 Once a connection is opened, you have to send a message to authenticate your session. If you don't, you'll receive a
 message indicating there was an authentication failure.
 
+<!-- prettier-ignore -->
 ```js
 connection.addEventListener('open', function () {
 	console.log({ event: 'onopen' });

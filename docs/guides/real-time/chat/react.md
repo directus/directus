@@ -48,16 +48,16 @@ function App() {
 }
 ```
 
-The first form will handle user login, the second will handle new message submissions while the empty `<ol>` will be
+The first form will handle user login, the second will handle new message submissions while the empty `<ol>` will be
 populated with messages we will create shortly.
 
-Create a `url` variable and be sure to replace `your-directus-url` with your project’s URL:
+Create a `url` variable and be sure to replace `your-directus-url` with your project’s URL:
 
 ```js
 const url = 'wss://your-directus-url/websocket';
 ```
 
-Now, create a variable called `connectionRef` that has an initial null value. The `connectionRef` will later contain a
+Now, create a variable called `connectionRef` that has an initial null value. The `connectionRef` will later contain a
 WebSocket instance.
 
 ```js
@@ -105,6 +105,7 @@ const handleLoginChange = (event) => {
 
 Then, connect these values to the form input fields:
 
+<!-- prettier-ignore -->
 ```js
 <form onSubmit={loginSubmit}>
 	<label htmlFor="email">Email</label>
@@ -117,7 +118,7 @@ Then, connect these values to the form input fields:
 </form>
 ```
 
-Within the `loginSubmit` method, create a new WebSocket, which will immediately attempt connection:
+Within the `loginSubmit` method, create a new WebSocket, which will immediately attempt connection:
 
 ```js
 const loginSubmit = (event) => {
@@ -135,7 +136,7 @@ const loginSubmit = (event) => {
 };
 ```
 
-Then, create a new `authenticate` method:
+Then, create a new `authenticate` method:
 
 ```js
 const authenticate = (opts) => {
@@ -168,6 +169,7 @@ const receiveMessage = (message) => {
 As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the
 `Messages` collection. Add this inside of the `receiveMessage` method:
 
+<!-- prettier-ignore -->
 ```js
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
@@ -188,6 +190,7 @@ const receiveMessage = (message) => {
 
 When a subscription is started, a message will be sent to confirm. Add this inside of the `receiveMessage` method:
 
+<!-- prettier-ignore -->
 ```js {15-17}
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
@@ -273,7 +276,7 @@ if (data.type === 'subscription' && data.event === 'create') {
 }
 ```
 
-Update your `<ol>` to display items in the array by mapping over `messageHistory`
+Update your `<ol>` to display items in the array by mapping over `messageHistory`
 
 ```js
 <ol>
@@ -294,6 +297,7 @@ and navigate to your index.html file, login and submit a message there and both 
 
 Replace the `console.log()` you created when the subscription is initialized:
 
+<!-- prettier-ignore -->
 ```js
 if (data.type === 'subscription' && data.event === 'init') {
 	console.log('subscription started'); // [!code --]
