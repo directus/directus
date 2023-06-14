@@ -98,5 +98,15 @@ module.exports = {
 				'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
 			},
 		},
+		// Configuration for markdown files
+		{
+			files: ['*.md'],
+			extends: ['eslint:recommended', 'prettier'],
+			parser: 'markdown-eslint-parser',
+			rules: {
+				...defaultRules,
+				'prettier/prettier': ['error', { parser: 'markdown' }],
+			},
+		},
 	],
 };

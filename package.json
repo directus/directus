@@ -3,7 +3,7 @@
 	"private": true,
 	"scripts": {
 		"build": "pnpm --recursive --filter '!docs' run build",
-		"format": "prettier --write \"**/*.{md,y?(a)ml,json}\"",
+		"format": "prettier --check \"**/*.{md,y?(a)ml,json}\"",
 		"lint": "eslint .",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
 		"test:blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
@@ -16,6 +16,7 @@
 		"eslint": "8.40.0",
 		"eslint-config-prettier": "8.8.0",
 		"eslint-plugin-jest": "27.2.1",
+		"eslint-plugin-md": "^1.0.19",
 		"eslint-plugin-prettier": "4.2.1",
 		"eslint-plugin-vue": "9.13.0",
 		"prettier": "2.8.8"
