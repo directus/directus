@@ -80,14 +80,6 @@ create_user: Opret bruger
 message: Besked
 delete_panel: Slet panel
 create_webhook: Opret webhook
-create_translation_string: Opret oversættelsesstreng
-no_translation_string: Oversættelse mangler
-no_translation_string_copy: Der er ingen oversættelsesstrenge endnu.
-translation_string_key_placeholder: Oversættelse streng nøgle...
-translation_string_translations_placeholder: Tilføj en ny oversættelse
-edit_translation_string: Rediger oversættelsesstreng
-delete_translation_string_copy: >-
-  Er du sikker på du vil slette oversættelsesstrengen "{key}"? Denne handling kan ikke fortrydes.
 invite_users: Inviter brugere
 invite: Inviter
 email_already_invited: Email "{email}" er allerede blevet inviteret
@@ -118,13 +110,6 @@ public_label: Offentlig
 public_description: Styrer, hvilke API-data der er tilgængelige uden godkendelse.
 admin_description: Oprindelig administrativ rolle med ubegrænset App/API-adgang.
 not_allowed: Ikke tilladt
-directus_version: Directus version
-node_version: Node version
-node_uptime: Node oppetid
-os_type: OS type
-os_version: OS version
-os_uptime: OS oppetid
-os_totalmem: OS hukommelse
 archive: Arkiver
 archive_confirm: Er du sikker på at du vil arkivere dette element?
 archive_confirm_count: >-
@@ -347,7 +332,7 @@ revision_delta_reverted: Omvendt
 revision_delta_update_message: Dette felt er blevet opdateret, men dets værdi bliver skjult af sikkerhedsmæssige årsager.
 revision_delta_other: Revision
 revision_delta_by: '{date} af {user}'
-presentation_text_values_cannot_be_reimported: "Bruger præsentationstekst, værdier kan ikke genimporteres."
+presentation_text_values_cannot_be_reimported: 'Bruger præsentationstekst, værdier kan ikke genimporteres.'
 download_page_as_csv: 'Hent side som CSV'
 private_user: Privat bruger
 creation_preview: Forhåndsvisning af oprettelse
@@ -487,7 +472,6 @@ enable_select_button: Aktivér vælg-knap
 allow_duplicates: Tillad gengangere
 comments: Kommentarer
 no_comments: Ingen kommentarer endnu
-click_to_expand: Klik for at udvide
 select_item: Vælg element
 no_items: Ingen elementer
 search_items: Søg efter emner...
@@ -940,7 +924,6 @@ settings_permissions: Roller og tilladelser
 settings_project: Projektindstillinger
 settings_webhooks: Webhooks
 settings_presets: Forudindstillinger og bogmærker
-settings_translation_strings: Oversættelsesstrenge
 one_or_more_options_are_missing: En eller flere muligheder mangler
 scope: Anvendelsesområde
 actions: Handlinger
@@ -990,7 +973,6 @@ page_help_settings_webhooks_collection: '**Gennemse Webhooks** — Viser alle we
 page_help_settings_webhooks_item: '**Webhook Detail** — En formular til oprettelse og håndtering af projektwebhooks.'
 page_help_settings_flows_collection: '**Gennemse flows** — Viser alle flows i projektet.'
 page_help_settings_flows_item: '**Flowdetalje** — Arbejdsområde til styring af en eller flere operationer.'
-page_help_settings_translation_strings_collection: '**Gennemse oversættelsesstrenge** — Viser alle oversættelsesstrenge i projektet.'
 page_help_users_collection: '**Bruger Directory** — Viser en liste over alle systembrugere i dette projekt.'
 page_help_users_item: >-
   **Brugeroplysninger** — Administrer dine kontooplysninger eller se andre brugeres detaljer.
@@ -1247,6 +1229,7 @@ field_options:
     sort_field: Vælg et felt...
     accountability_divider: Ansvarlighed
     duplication_divider: Duplikering
+    preview_divider: Eksempelvisning
   directus_files:
     title: En unik titel...
     description: En valgfri beskrivelse...
@@ -1304,6 +1287,8 @@ start_collapsed: Start sammenbrudt
 block: Blokér
 inline: Indlejret
 comment: Kommenter
+live_preview:
+  new_window: Åbn i nyt vindue
 shares: Aktier
 unlimited_usage: Ubegrænset brug
 uses_left: Ingen anvendelser tilbage - 1 brug tilbage - {n} bruger venstre
@@ -1663,7 +1648,6 @@ interfaces:
     input-translated-string: Oversatte strenge
     description: Vælg eller tilføj oversættelsesstreng
     search_placeholder: Søg...
-    new_translation_string: Ny oversættelsesstreng
   boolean:
     toggle: Skift
     description: Skift mellem tænd og sluk
@@ -1700,6 +1684,16 @@ interfaces:
     folder_note: Mappe for uploadede filer. Påvirker ikke eksisterende filer.
     imageToken: Statisk Adgangstoken
     imageToken_label: Statisk adgangstoken er vedlagt aktivernes URL
+  input-block-editor:
+    tools: Værktøjslinje
+    tools_options:
+      header: Overskrift
+      nestedlist: Liste
+      embed: Indlejr
+      code: Kode
+      image: Billede
+      table: Tabel
+      underline: Understreget
   input-autocomplete-api:
     input-autocomplete-api: Autofuldførelsesinput (API)
     description: En søgetype foran for eksterne API-værdier.
@@ -2045,7 +2039,7 @@ operations:
     recipient: Bruger
     message: besked
   request:
-    description: "Lav en anmodning til en URL"
+    description: 'Lav en anmodning til en URL'
     url: URL
     url_placeholder: https://eksempel.dk/eksempel
     method: Metode

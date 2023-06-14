@@ -80,14 +80,6 @@ create_user: Creează utilizator
 message: Mesaj
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
-create_translation_string: Crează șirul de traducere
-no_translation_string: Nu există traducere
-no_translation_string_copy: Nu există traducere momentan.
-translation_string_key_placeholder: Cheie traducere șir...
-translation_string_translations_placeholder: Adauga o nouă traducere
-edit_translation_string: Editează Șirul de Traduceri
-delete_translation_string_copy: >-
-  Sunteţi sigur că doriţi să ştergeţi câmpul "{key}"? Această acţiune nu poate fi modificată ulterior.
 invite_users: Invită utilizatori
 invite: Invită
 email_already_invited: Adresa "{email}" a fost deja invitată
@@ -118,13 +110,6 @@ public_label: Public
 public_description: Controlează ce date API sunt disponibile fără autentificare.
 admin_description: Rol administrativ inițial cu acces fără restricții la aplicație/API.
 not_allowed: Nu este permis
-directus_version: Versiune Directus
-node_version: Versiune Node
-node_uptime: Durată execuție Node
-os_type: Tip SO
-os_version: Versiune SO
-os_uptime: Durată execuție SO
-os_totalmem: Memorie SO
 archive: Arhivează
 archive_confirm: Sigur doriți să arhivați acest element?
 archive_confirm_count: >-
@@ -475,7 +460,6 @@ selecting_items: Selectare elemente
 enable_select_button: Activează butonul de selectare
 comments: Comentarii
 no_comments: Nici un comentariu încă
-click_to_expand: Click pentru a extinde
 select_item: Selectaţi elementul
 no_items: Niciun element
 search_items: Caută elemente...
@@ -1157,6 +1141,7 @@ field_options:
     sort_field: Alegeți un câmp...
     accountability_divider: Responsabilitate
     duplication_divider: Duplicare
+    preview_divider: Previzualizare
   directus_files:
     title: Un titlu unic...
     description: O descriere opțională...
@@ -1214,6 +1199,8 @@ start_collapsed: Începe închis
 block: Blochează
 inline: Pe aceeași linie
 comment: Comentariu
+live_preview:
+  new_window: Deschide în fereastră nouă
 shares: Distribuiri
 unlimited_usage: Utilizare nelimitată
 uses_left: Nu a mai rămas nicio utilizare | O utilizare rămasă | {n} utilizări rămase
@@ -1555,7 +1542,6 @@ interfaces:
     input-translated-string: Șiruri traduse
     description: Selectați sau adăugați un șir de traducere
     search_placeholder: Caută...
-    new_translation_string: Șirul Traducător nou
   boolean:
     toggle: Comutare
     description: Comutare între pornit și oprit
@@ -1591,6 +1577,16 @@ interfaces:
     folder_note: Dosar pentru fișierele încărcate. Nu afectează fișierele existente.
     imageToken: Token acces static
     imageToken_label: Token-ul de acces static este adăugat la URL-ul obiectelor
+  input-block-editor:
+    tools: Bară de instrumente
+    tools_options:
+      header: Antet
+      nestedlist: Listă
+      embed: Încorporați
+      code: Cod
+      image: Imagine
+      table: Tabel
+      underline: Subliniat
   input-autocomplete-api:
     input-autocomplete-api: Autocompletare input (API)
     description: O căutare a literelor în avans pentru valori API externe.

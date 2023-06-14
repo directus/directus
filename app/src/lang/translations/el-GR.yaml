@@ -80,12 +80,6 @@ create_user: Δημιουργία Χρήστη
 message: Μήνυμα
 delete_panel: Διαγραφή Πίνακα
 create_webhook: Δημιουργία Webhook
-create_translation_string: Δημιουργία Μετάφρασης
-no_translation_string: Δεν Υπάρχουν Μεταφράσεις
-no_translation_string_copy: Δεν υπάρχουν μεταφράσεις προς τον παρόν.
-translation_string_key_placeholder: Πλήκτρο μετάφρασης κειμένου...
-translation_string_translations_placeholder: Δημιουργία νέας μετάφρασης
-edit_translation_string: Επεξεργασία Μετάφρασης
 invite_users: Πρόσκληση Χρηστών
 invite: Πρόσκληση
 email_already_invited: To email "{email}" έχει ήδη προσκληθεί
@@ -110,12 +104,6 @@ logoutReason:
 public_label: Κοινόχρηστο
 public_description: Ελέγχει ποια δεδομένα API είναι διαθέσιμα χωρίς ταυτοποίηση.
 not_allowed: Δεν Επιτρέπεται
-directus_version: Έκδοση Directus
-node_version: Έκδοση Node
-os_type: Λειτουργικό
-os_version: Έκδοση Λειτουργικού
-os_uptime: Χρόνος λειτουργίας συστήματος
-os_totalmem: Μνήμη Λειτουργικού
 archive: Αρχειοθέτηση
 archive_confirm: Είστε βέβαιοι ότι θέλετε να αρχειοθετήσετε αυτό το στοιχείο;
 archive_confirm_count: >-
@@ -380,6 +368,10 @@ interfaces:
     icon: Εικονίδιο
   tags:
     tags: Ετικέτες
+  input-block-editor:
+    tools_options:
+      embed: Ενσωμάτωση
+      table: Πίνακας
 displays:
   collection:
     collection: Συλλογή
