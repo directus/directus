@@ -19,7 +19,7 @@ beforeEach(() => {
 	};
 });
 
-test('very simple statement', () => {
+test('basic statement', () => {
 	expect(constructSql(sample.statement)).toEqual({
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
