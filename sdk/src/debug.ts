@@ -2,11 +2,12 @@ import { useDirectus } from './client.js';
 import { graphql } from './graphql/composable.js';
 import { readItems } from './rest/commands/read/items.js';
 import { rest } from './rest/composable.js';
+import type { Relational } from './types/schema.js';
 
 interface Article {
 	id: number;
 	title: string;
-	author: string | Author;
+	author: Relational<Author>;
 }
 
 interface Author {
@@ -23,7 +24,7 @@ const client = useDirectus<Schema>('https://rijks.website');
 const restClient = client.use(rest());
 const both = restClient.use(graphql());
 
-const res = both.request(readItems('articles'));
+const res = both.request(readItems('articles', { fields: [] }));
 
 // /**
 //  * File to run some tests / experiments. Not intended for prod usage

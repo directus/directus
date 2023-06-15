@@ -1,13 +1,9 @@
+import type { Query } from '../../../types/query.js';
 import type { RestCommand } from '../../types.js';
+import { queryToParams } from '../../utils/query-to-params.js';
 
-type Query<_WHATEVER> = Record<string, string>;
-
-export type GetItem<TSchema extends object, TName extends keyof TSchema> = TName extends keyof Schema
-	? TSchema[TName]
-	: never;
-
-export interface ReadItemsInput<Item extends object> {
-	query?: Query<Item>;
+export interface ReadItemsInput<TItem extends object> {
+	query?: Query<TItem>;
 }
 
 // export type ReadItemsOutput<
@@ -16,15 +12,16 @@ export interface ReadItemsInput<Item extends object> {
 // > = Schema[Input['collection']][];
 
 export const readItems =
-	<Schema extends object, Collection extends keyof Schema, Item extends Schema[Collection]>(
-		collection: Collection,
-		query: Query<Item> = {}
-	): RestCommand<Query<Item>, Item[], Schema> =>
+	<TSchema extends object, TCollection extends keyof TSchema, TItem extends TSchema[TCollection]>(
+		collection: TCollection,
+		query: Query<TItem> = {}
+	): RestCommand<Query<TItem>, TItem[], TSchema> =>
 	() => {
 		const _collection = String(collection);
+
 		return {
 			path: _collection.startsWith('directus_') ? `/${_collection.slice(9)}` : `/items/${_collection}`,
-			params: query,
+			params: queryToParams(query),
 			method: 'GET',
 		};
 	};
