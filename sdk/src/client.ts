@@ -1,13 +1,13 @@
-export type BaseClient = {};
-
 export interface ClientConfig {
 	token?: string;
 }
 
-export interface DirectusClient<_TSchema = any> extends BaseClient {
+export interface DirectusClient<TSchema = any> {
 	config: { url: URL };
 	auth: { token: string | null };
-	use: <TExtension extends object>(createExtension: (client: this) => TExtension) => this & TExtension;
+	use: <TExtension extends object>(
+		createExtension: (client: DirectusClient<TSchema>) => TExtension
+	) => this & TExtension;
 }
 
 export const useDirectus = <TSchema = any>(url: string, config?: ClientConfig) => {
