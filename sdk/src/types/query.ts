@@ -25,12 +25,13 @@ interface Article {
 interface Author {
 	id: number;
 	name: string;
+	friend: Relation<Author>;
 	// friends: Relation<Author[]>; TODO multiple relation like o2m m2o
 }
 
 type TestFields = QueryFields<Article>;
 
-const test: TestFields = [{ author: ['name', 'id'] }];
+const test: TestFields = [{ author: ['name', 'id', { friend: [{ friend: [] }] }] }];
 ////////////////////////////
 
 export type Relation<R extends object> = R | PrimaryKey;
@@ -49,7 +50,7 @@ export type NestedFields<Item extends object, Fields extends keyof Item> = {
 	[Field in Fields]: (
 		| '*'
 		| FlatFields<ExtractRelation<Item[Field]>>
-		| NestedFields<ExtractRelation<Item[Field]>, ExtractRelation<Item[Field]>>
+		| NestedFields<ExtractRelation<Item[Field]>, RelationFields<ExtractRelation<Item[Field]>>>
 	)[];
 };
 
