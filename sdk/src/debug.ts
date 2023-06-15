@@ -4,21 +4,26 @@
 import { readItems } from './commands/read-items.js';
 import { REST, GraphQL, RealTime, Authentication /*, Pagination*/ } from './composables/index.js';
 import type { GqlResult } from './composables/index.js';
-import { useDirectus } from './index.js';
+import { useDirectus, type Relation } from './index.js';
+
+type TestCollection = {
+	id: number;
+	test: number | null;
+	xx: string | null;
+};
+
+type LinksCollection = {
+	id: number;
+	name: string;
+	link: string;
+	date: string;
+	status: string | null;
+	test_rel: Relation<TestCollection>;
+};
 
 type MySchema = {
-	test: {
-		id: number;
-		test: number | null;
-		xx: string | null;
-	};
-	links: {
-		id: number;
-		name: string;
-		link: string;
-		date: string;
-		status: string | null;
-	};
+	test: TestCollection;
+	links: LinksCollection;
 	directus_users: {
 		first_name: string;
 		last_name: string;
@@ -34,8 +39,8 @@ const client = useDirectus<MySchema>({
 })
 	.use(REST())
 	.use(GraphQL())
-	.use(RealTime({ url: 'ws://localhost:8056/websocket' }))
-	.use(Authentication());
+	.use(RealTime({ url: 'ws://localhost:8056/websocket' }));
+// .use(Authentication());
 // .use(Pagination({ pageSize: 250 }));
 
 /**
@@ -47,15 +52,16 @@ const client = useDirectus<MySchema>({
  * REST
  */
 const data = await client.request(
-	readItems({
-		collection: 'test',
-		query: {
-			limit: 2,
-		},
+	readItems('links', {
+		fields: [
+			'id',
+			{
+				test_rel: ['id'],
+			},
+		],
+		// ['*', 'id', 'name', 'test_rel.*'],
 	})
 );
-
-console.log(data);
 
 /**
  * GraphQL
@@ -70,7 +76,7 @@ query {
 	}
 }`);
 
-console.log(data2.test);
+// console.log(data2.test);
 
 /**
  * WebSocket
