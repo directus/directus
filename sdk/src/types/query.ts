@@ -15,25 +15,6 @@ export type Query<Item extends object> = {
 	// alias?: Record<keyof Item, string> | null;
 };
 
-//////////////////////////// DEMO
-interface Article {
-	id: number;
-	title: string;
-	author: Relation<Author>;
-}
-
-interface Author {
-	id: number;
-	name: string;
-	friend: Relation<Author>;
-	// friends: Relation<Author[]>; TODO multiple relation like o2m m2o
-}
-
-type TestFields = QueryFields<Article>;
-
-const test: TestFields = [{ author: ['name', 'id', { friend: [{ friend: [] }] }] }];
-////////////////////////////
-
 export type Relation<R extends object> = R | PrimaryKey;
 
 export type RelationFields<Item extends object> = {

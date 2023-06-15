@@ -1,5 +1,6 @@
 import { useDirectus } from './client.js';
 import { graphql } from './graphql/composable.js';
+import { readItems } from './rest/commands/read/items.js';
 import { rest } from './rest/composable.js';
 
 interface Article {
@@ -21,6 +22,8 @@ interface Schema {
 const client = useDirectus<Schema>('https://rijks.website');
 const restClient = client.use(rest());
 const both = restClient.use(graphql());
+
+const res = both.request(readItems('articles'));
 
 // /**
 //  * File to run some tests / experiments. Not intended for prod usage
