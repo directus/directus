@@ -15,7 +15,7 @@ layout: home
 </script>
 
 <section class="hero">
-  <div class="section-container section-padding--lg flex">
+  <div class="section-container section-padding--hero flex">
     <div class="hero-content">
       <h1 class="m-20 ">Directus Documentation</h1>
       <p class="m-20">
@@ -231,6 +231,10 @@ hr {
   padding-block: 120px;
 }
 
+.section-padding--hero {
+ padding-block: 120px;
+}
+
 .hero {
   background: #011026;
   background: linear-gradient(172deg,#64f 20%,#f9d 300%);
@@ -412,6 +416,10 @@ hr {
   }
   .hero-content h1 {
   font-size: 48px;
+  }
+
+  .section-padding--hero {
+    padding-block: 32px;
   }
 }
 
