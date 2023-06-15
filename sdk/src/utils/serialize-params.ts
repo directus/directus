@@ -1,5 +1,9 @@
-export function serializeParams(params: Record<string, any>) {
-	// TODO serialize params better
+/**
+ * @TODO Serialize parameters better
+ * @TODO Type params better
+ */
+
+export const serializeParams = (params: Record<string, any>) => {
 	const result = Object.fromEntries(
 		Object.entries(params).map((item) => {
 			if (typeof item[1] === 'object' && !Array.isArray(item[1])) {
@@ -11,8 +15,4 @@ export function serializeParams(params: Record<string, any>) {
 	);
 
 	return new URLSearchParams(result).toString();
-}
-
-export function withoutTrailingSlash(url: string) {
-	return url.endsWith('/') ? url.slice(0, -1) : url;
-}
+};

@@ -1,4 +1,4 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../client/index.js';
 import { withoutTrailingSlash } from '../utils.js';
 import type { AuthStorage } from './authentication.js';
 

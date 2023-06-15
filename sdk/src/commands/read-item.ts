@@ -1,5 +1,5 @@
 import type { PrimaryKey, Query } from '@directus/types';
-import type { DirectusClientConfig } from '../client.js';
+import type { DirectusClientConfig } from '../client/index.js';
 import type { ApiResponse, Command } from '../types/index.js';
 import { serializeParams } from '../utils.js';
 

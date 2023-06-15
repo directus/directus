@@ -1,6 +1,6 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../client/index.js';
 import type { RESTCommand } from '../index.js';
-import { serializeParams, withoutTrailingSlash } from '../utils.js';
+import { serializeParams } from '../utils/index.js';
 import type { AuthStorage } from './authentication.js';
 
 export interface RESTConfig {
@@ -28,7 +28,7 @@ export interface RESTClient<Schema extends object> {
 	): Promise<Output>;
 }
 
-export function REST(cfg: RESTConfig = {}) {
+export function rest(cfg: RESTConfig = {}) {
 	return <Schema extends object, Features extends object>(
 		client: DirectusClient<Schema, Features>
 	): RESTClient<Schema> => {

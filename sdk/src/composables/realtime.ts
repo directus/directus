@@ -1,4 +1,4 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../client/index.js';
 import NativeWS from 'ws';
 import { withoutTrailingSlash } from '../utils.js';
 import type { Query } from '@directus/types';

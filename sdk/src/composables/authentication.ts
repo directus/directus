@@ -1,4 +1,4 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../client/index.js';
 
 type wsMode = 'public' | 'handshake' | 'strict';
 

@@ -1,3 +1,1 @@
-export * from './client.js';
-export * from './commands/index.js';
-export * from './types/index.js';
+export { useDirectus } from './client/index.js';
