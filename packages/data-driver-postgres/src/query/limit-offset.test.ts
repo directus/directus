@@ -17,7 +17,7 @@ test('Returns limit part with one parameter', () => {
 	const query: SqlStatement = {
 		select: [],
 		from: randomIdentifier(),
-		limit: 1,
+		limit: 0,
 		parameters: [randomInteger(1, 100)],
 	};
 
@@ -28,8 +28,8 @@ test('Returns limit and offset part with their parameters', () => {
 	const query: SqlStatement = {
 		select: [],
 		from: randomIdentifier(),
-		limit: 1,
-		offset: 2,
+		limit: 0,
+		offset: 1,
 		parameters: [randomInteger(1, 100), randomInteger(1, 100)],
 	};
 

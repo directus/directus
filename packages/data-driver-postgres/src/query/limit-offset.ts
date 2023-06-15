@@ -13,8 +13,8 @@ export function limitOffset({ limit, offset }: SqlStatement): string {
 	}
 
 	if (offset === undefined) {
-		return `LIMIT $${limit}`;
+		return `LIMIT $${limit + 1}`;
 	}
 
-	return `LIMIT $${limit} OFFSET $${offset}`.trim();
+	return `LIMIT $${limit + 1} OFFSET $${offset + 1}`.trim();
 }
