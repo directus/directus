@@ -2,6 +2,7 @@ import type { AbstractQuery } from '@directus/data';
 import type { SqlStatement } from '../types.js';
 import { convertPrimitive } from './convert-primitive.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
+import { convertSort } from './convert-sort.js';
 
 /**
  * @param abstractQuery the abstract query to convert
@@ -41,6 +42,14 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 		const idx = idGen.next().value as number;
 		statement.offset = idx + 1;
 		statement.parameters[idx] = abstractQuery.modifiers.offset.value;
+	}
+
+	if (abstractQuery.modifiers?.sort) {
+		const { orderBy, order, parameters } = convertSort(abstractQuery.modifiers.sort);
+		statement.orderBy = orderBy;
+		statement.order = order;
+		// @ts-ignore
+		statement.parameters[orderBy] = parameters[0];
 	}
 
 	return statement;

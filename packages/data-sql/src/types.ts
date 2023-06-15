@@ -1,3 +1,5 @@
+import type { AbstractQueryNodeSortTargets } from '@directus/data';
+
 export interface SqlStatementSelectPrimitive {
 	type: 'primitive';
 	table: string;
@@ -45,7 +47,10 @@ export interface SqlStatement {
 	/** Index of the parameter, not the actual value */
 	offset?: number;
 
-	parameters: (string | boolean | number)[];
+	orderBy?: number;
+	order?: 'ASC' | 'DESC';
+
+	parameters: (string | boolean | number | AbstractQueryNodeSortTargets)[];
 }
 
 /**

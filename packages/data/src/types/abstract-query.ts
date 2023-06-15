@@ -204,21 +204,23 @@ interface AbstractQueryNodeOffset extends AbstractQueryModifierNode {
 	value: number;
 }
 
+export type AbstractQueryNodeSortTargets =
+	| AbstractQueryFieldNodePrimitive
+	| AbstractQueryFieldNodeFn
+	| AbstractQueryFieldNodeRelatedManyToOne
+	| AbstractQueryFieldNodeRelatedAnyToOne;
+
 /**
  * Specifies the order of the results
  */
-interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
+export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
 	type: 'sort';
 
 	/** the desired order */
 	direction: 'ascending' | 'descending';
 
 	/** the node on which the sorting should be applied */
-	target:
-		| AbstractQueryFieldNodePrimitive
-		| AbstractQueryFieldNodeFn
-		| AbstractQueryFieldNodeRelatedManyToOne
-		| AbstractQueryFieldNodeRelatedAnyToOne;
+	target: AbstractQueryNodeSortTargets;
 }
 
 /**
