@@ -1,6 +1,7 @@
 import type { AbstractQuery } from '@directus/data';
 import type { SqlStatement } from '../types.js';
 import { convertPrimitive } from './convert-primitive.js';
+import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 
 /**
  * @param abstractQuery the abstract query to convert
@@ -44,14 +45,3 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 
 	return statement;
 };
-
-/**
- * Generator function to generate parameter indices.
- */
-function* parameterIndexGenerator() {
-	let index = 0;
-
-	while (true) {
-		yield index++;
-	}
-}
