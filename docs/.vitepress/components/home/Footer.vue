@@ -7,6 +7,7 @@ import YouTube from './icons/YouTube.vue';
 import Discord from './icons/Discord.vue';
 import Twitter from './icons/Twitter.vue';
 import GitHub2 from './icons/GitHub2.vue';
+import Divider from '../Divider.vue';
 </script>
 
 <script lang="ts">
@@ -58,7 +59,8 @@ export default {
 				</ul>
 			</div>
 		</div>
-		<hr />
+
+		<Divider />
 
 		<p class="footer-copyright">&copy; {{ currentYear }} Monospace Inc</p>
 	</footer>

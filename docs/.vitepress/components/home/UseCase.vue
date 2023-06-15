@@ -4,7 +4,7 @@
 			<img :src="img" alt="" class="img-size" />
 			<p class="tag">{{ tag }}</p>
 			<h3 class="sub-headline">{{ title }}</h3>
-			<p class="m-10">{{ desc }}</p>
+			<p class="m-10 text-muted">{{ desc }}</p>
 		</a>
 	</div>
 </template>
@@ -24,7 +24,7 @@ export default {
 
 <style scoped>
 .use-case {
-	color: inherit;
+	color: var(--vp-c-text-1);
 }
 .img-size {
 	width: 100%;
