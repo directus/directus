@@ -38,7 +38,7 @@ export interface WebSocketClient<Schema extends object> {
 	};
 }
 
-export function WebSocket(cfg: WebSocketConfig) {
+export function RealTime(cfg: WebSocketConfig) {
 	return <Schema extends object, Features extends object>(client: DirectusClient<Schema, Features>) => {
 		const messageHandlers: Record<string, Deferred<any>> = {};
 

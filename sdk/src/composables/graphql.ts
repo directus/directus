@@ -24,6 +24,10 @@ export interface GraphQLClient {
 		query: string,
 		variables?: Record<string, unknown>
 	): Promise<Output>;
+	// graphqlSubscribe<Output extends object = Record<string, any>>(
+	// 	query: string,
+	// 	variables?: Record<string, unknown>
+	// ): AsyncGenerator<Output, void, unknown>;
 }
 
 export function GraphQL(cfg: GraphQLConfig = {}) {

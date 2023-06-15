@@ -2,8 +2,7 @@
  * File to run some tests / experiments. Not intended for prod usage
  */
 import { readItems } from './commands/read-items.js';
-import { subscribe } from './commands/subscribe.js';
-import { REST, GraphQL, WebSocket, Authentication /*, Pagination*/ } from './composables/index.js';
+import { REST, GraphQL, RealTime, Authentication /*, Pagination*/ } from './composables/index.js';
 import type { GqlResult } from './composables/index.js';
 import { useDirectus } from './index.js';
 
@@ -35,9 +34,8 @@ const client = useDirectus<MySchema>({
 })
 	.use(REST())
 	.use(GraphQL())
-	.use(WebSocket({ url: 'ws://localhost:8056/websocket' })); // this name collides in the browser
-// .use(Authentication());
-// .use(Subscription())
+	.use(RealTime({ url: 'ws://localhost:8056/websocket' }))
+	.use(Authentication());
 // .use(Pagination({ pageSize: 250 }));
 
 /**
@@ -99,37 +97,6 @@ for await (const data of subscription) {
  * Pagination
  */
 
-// const result = wsClient.exec(
-// 	subscribe({
-// 		collection: 'test',
-// 		uid: 'test-123',
-// 	})
-// );
-// const readData = await client.exec(
-// 	readItems({
-// 		collection: 'test',
-// 		query: {
-// 			filter: {
-// 				id: { _gt: 10 },
-// 			},
-// 		},
-// 	})
-// );
-// readData.forEach((item) => {
-// 	item.test;
-// });
-// console.log('readItems', readData);
-// // const singleItem = ;
-// const test = readItems({ collection: 'test' });
-// const test2 = await client.exec(test);
-// test2.forEach((item) => {
-// 	item.test;
-// });
-// console.log('readItem', test2);
-// client.socket(readItems());
-// client.exec(subscribe());
-// const client = withWebSockets(client);
-// client.subscribe(readItems());
 // const client = withPagination(client);
 // const iterator = client.paginate(readItems());
 // for await (const page of iterator) {
