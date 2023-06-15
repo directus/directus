@@ -12,12 +12,22 @@ const activeTab = ref(props.tabs[0]);
 
 <template>
 	<div class="tabs">
-		<div class="tab-buttons">
-			<button v-for="tab in tabs" :class="{ active: activeTab === tab }" @click="activeTab = tab">{{ tab }}</button>
+		<div role="tablist" class="tab-buttons">
+			<template v-for="tab in tabs">
+				<button
+					type="button"
+					role="tab"
+					:aria-selected="activeTab === tab"
+					:class="{ active: activeTab === tab }"
+					@click="activeTab = tab"
+				>
+					{{ tab }}
+				</button>
+			</template>
 		</div>
 		<div>
 			<template v-for="tab in tabs">
-				<div class="tab-content" v-if="activeTab === tab">
+				<div role="tabpanel" class="tab-content" v-if="activeTab === tab">
 					<slot :name="tab.toLowerCase().replaceAll(' ', '-')" />
 				</div>
 			</template>
@@ -26,20 +36,15 @@ const activeTab = ref(props.tabs[0]);
 </template>
 
 <style scoped>
-.tabs {
-	padding: 120px;
-}
-
 .tab-buttons {
 	display: flex;
-	justify-content: space-between;
+	gap: 40px;
+	justify-content: center;
 	max-width: 560px;
-	margin: 0 auto;
-	text-align: center;
+	margin-inline: auto;
 }
 
 .tab-buttons button {
-	background: white;
 	color: #a3a7ac;
 	cursor: pointer;
 	border: none;
@@ -48,7 +53,7 @@ const activeTab = ref(props.tabs[0]);
 }
 
 .tab-buttons button.active {
-	color: black;
+	color: var(--vp-c-text-1);
 	text-decoration: underline;
 	text-decoration-color: #6543fa75;
 	text-underline-offset: 16px;
@@ -62,9 +67,6 @@ const activeTab = ref(props.tabs[0]);
 }
 
 @media only screen and (max-width: 768px) {
-	.tabs {
-		padding: 48px;
-	}
 	.tab-content {
 		grid-template-columns: 1fr;
 	}
