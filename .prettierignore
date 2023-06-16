@@ -1,8 +1,10 @@
-dist
-coverage
-node_modules
+*.js
+*.ts
+*.vue
+dist/
+coverage/
 pnpm-lock.yaml
 app/src/lang/translations/*.yaml
-.changeset
-.github
-/docs/packages
+.changeset/
+/docs/packages/
+/docs/.vitepress/cache/

@@ -1,8 +1,7 @@
-node_modules
-dist
-packages/extensions-sdk/templates
-extensions
-!/docs/.vitepress
-!/docs/.typedocs
-/docs/.vitepress/cache
-/docs/.vitepress/dist
+dist/
+/packages/extensions-sdk/templates/
+/api/extensions/
+!/docs/.vitepress/
+!/docs/.typedocs/
+/docs/.vitepress/cache/
+/docs/.vitepress/dist/
