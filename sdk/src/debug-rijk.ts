@@ -21,7 +21,7 @@ interface Schema {
 
 const client = useDirectus<Schema>('https://rijks.website').use(rest());
 
-const res = client.request(readItems('author', { fields: ['name'] }));
+const res = client.request(readItems('author', { fields: undefined }));
 
 type Q = Query<Schema, Article>;
 
