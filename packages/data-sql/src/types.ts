@@ -25,14 +25,22 @@ export interface SqlStatementSelectPrimitive {
 // }
 
 /**
+ * Used for parameterized queries.
+ */
+type ParameterIndex = {
+	/** Indicates where the actual value is stored in the parameter array */
+	parameterIndex: number;
+};
+
+/**
  * This is an abstract SQL query.
  *
  * @example
- * ```typescript
+ * ```ts
  * const query: SqlStatement = {
  *  select: [id],
  *  from: 'articles',
- *  limit: 1,
+ *  limit: 0,
  * 	parameters: [25],
  * };
  * ```
@@ -40,16 +48,10 @@ export interface SqlStatementSelectPrimitive {
 export interface SqlStatement {
 	select: SqlStatementSelectPrimitive[];
 	from: string;
-
-	/** Index of the parameter, not the actual value */
-	limit?: number;
-
-	/** Index of the parameter, not the actual value */
-	offset?: number;
-
+	limit?: ParameterIndex;
+	offset?: ParameterIndex;
 	orderBy?: number;
 	order?: 'ASC' | 'DESC';
-
 	parameters: (string | boolean | number | AbstractQueryNodeSortTargets)[];
 }
 
@@ -65,5 +67,5 @@ export interface SqlStatement {
  */
 export interface ParameterizedSQLStatement {
 	statement: string;
-	values: (string | number | boolean)[];
+	parameters: (string | number | boolean)[];
 }

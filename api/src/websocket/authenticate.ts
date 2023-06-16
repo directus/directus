@@ -1,15 +1,14 @@
 import type { Accountability } from '@directus/types';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
-import getDatabase from '../database/index.js';
 import { InvalidCredentialsException } from '../exceptions/index.js';
 import { AuthenticationService } from '../services/index.js';
-import { getAccountabilityForRole } from '../utils/get-accountability-for-role.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
 import { getSchema } from '../utils/get-schema.js';
 import { WebSocketException } from './exceptions.js';
 import type { BasicAuthMessage, WebSocketResponse } from './messages.js';
 import type { AuthenticationState } from './types.js';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
+import { getPermissions } from '../utils/get-permissions.js';
 
 export async function authenticateConnection(
 	message: BasicAuthMessage & Record<string, any>
@@ -51,14 +50,17 @@ export async function authenticateConnection(
 export async function refreshAccountability(
 	accountability: Accountability | null | undefined
 ): Promise<Accountability> {
-	const result: Accountability = await getAccountabilityForRole(accountability?.role || null, {
-		accountability: accountability || null,
-		schema: await getSchema(),
-		database: getDatabase(),
-	});
+	accountability = accountability ?? {
+		role: null,
+		user: null,
+		admin: false,
+		app: false,
+	};
 
-	result.user = accountability?.user || null;
-	return result;
+	const schema = await getSchema();
+	const permissions = await getPermissions(accountability, schema);
+
+	return { ...accountability, permissions };
 }
 
 export function authenticationSuccess(uid?: string | number, refresh_token?: string): string {

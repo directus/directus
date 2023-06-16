@@ -76,7 +76,7 @@ test('Get selects with a limit', () => {
 		],
 		from: sample.query.collection,
 		// @ts-ignore
-		limit: 0,
+		limit: { parameterIndex: 0 },
 		// @ts-ignore
 		parameters: [sample.query.modifiers.limit.value],
 	};
@@ -112,8 +112,8 @@ test('Get selects with a limit and offset', () => {
 			},
 		],
 		from: sample.query.collection,
-		limit: 0,
-		offset: 1,
+		limit: { parameterIndex: 0 },
+		offset: { parameterIndex: 1 },
 		// @ts-ignore
 		parameters: [sample.query.modifiers.limit.value, sample.query.modifiers.offset.value],
 	};
