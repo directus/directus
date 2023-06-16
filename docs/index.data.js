@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
 
 const env = {
-	url: 'https://marketing.directus.app',
-	token: 'vptnnna9QRADTNb5xCMBlhAiu9snX4TW',
+	url: 'https://example.com',
+	token: 'abcdef',
 };
 
 const fields = [
