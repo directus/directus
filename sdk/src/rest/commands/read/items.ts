@@ -1,5 +1,6 @@
-import type { Query, RestCommand } from '../../../types/index.js';
-import { queryToParams } from '../../../utils/query-to-params.js';
+import type { Query } from '../../../types/index.js';
+import type { RestCommand } from '../../types.js';
+import { queryToParams } from '../../utils/query-to-params.js';
 
 export interface ReadItemsInput<Schema extends object, Item extends object> {
 	query?: Query<Schema, Item>;

@@ -1,9 +1,6 @@
-import type { RestRequestOptions } from '../types/index.js';
+import type { RequestOptions } from '../types/index.js';
 
-export const fetchRequest = async <Output extends object>(
-	url: string,
-	options: RestRequestOptions
-): Promise<Output> => {
+export const request = async <Output extends object>(url: string, options: RequestOptions): Promise<Output> => {
 	/** @TODO Check fetch implementation for all methods */
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',

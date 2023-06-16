@@ -1,6 +1,6 @@
 import type { DirectusClient } from '../client.js';
-import type { RestRequestOptions } from '../types/rest.js';
-import { fetchRequest } from '../utils/fetch-request.js';
+import type { RequestOptions } from '../types/request.js';
+import { fetchRequest } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 
 /** @TODO check required GraphQL settings */
@@ -24,7 +24,7 @@ export const graphql = () => {
 				variables?: Record<string, unknown>,
 				scope?: 'items' | 'system'
 			): Promise<Output> {
-				const options: RestRequestOptions = {
+				const options: RequestOptions = {
 					method: 'POST',
 					path: scope === 'items' ? '/graphql' : '/graphql/system',
 					body: JSON.stringify({ query, variables }),
@@ -36,7 +36,7 @@ export const graphql = () => {
 					options.headers['Authorization'] = `Bearer ${client.auth.token}`;
 				}
 
-				const requestUrl = getRequestUrl(client.config.url, options);
+				const requestUrl = getRequestUrl(client.url, options);
 
 				return await fetchRequest<Output>(requestUrl.toString(), options);
 			},

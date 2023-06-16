@@ -1,4 +1,4 @@
-import type { Query } from '../types/index.js';
+import type { Query } from '../../types/index.js';
 
 export const queryToParams = <Schema extends object, Item extends object>(
 	query: Query<Schema, Item>

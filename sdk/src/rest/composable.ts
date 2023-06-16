@@ -1,6 +1,6 @@
 import type { DirectusClient } from '../client.js';
 import type { RestCommand } from '../types/index.js';
-import { fetchRequest } from '../utils/fetch-request.js';
+import { fetchRequest } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 
 /** @TODO use real REST settings */
