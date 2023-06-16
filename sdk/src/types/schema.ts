@@ -1,9 +1,9 @@
-export type ItemType<TSchema extends object> = TSchema[keyof TSchema];
+export type ItemType<Schema extends object> = Schema[keyof Schema];
 
-export type PrimitiveFields<TSchema extends object, TItem extends object> = {
-	[Key in keyof TItem]: Extract<TItem[Key], ItemType<TSchema>> extends never ? Key : never;
-}[keyof TItem];
+export type PrimitiveFields<Schema extends object, Item extends object> = {
+	[Key in keyof Item]: Extract<Item[Key], ItemType<Schema>> extends never ? Key : never;
+}[keyof Item];
 
-export type RelationalFields<TSchema extends object, TItem extends object> = {
-	[Key in keyof TItem]: Extract<TItem[Key], ItemType<TSchema>> extends never ? never : Key;
-}[keyof TItem];
+export type RelationalFields<Schema extends object, Item extends object> = {
+	[Key in keyof Item]: Extract<Item[Key], ItemType<Schema>> extends never ? never : Key;
+}[keyof Item];

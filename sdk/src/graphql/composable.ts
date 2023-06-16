@@ -15,7 +15,7 @@ export interface GraphqlClient<Schema> {
 }
 
 export const graphql = () => {
-	return <TSchema>(client: DirectusClient<TSchema>): GraphqlClient<TSchema> => {
+	return <Schema>(client: DirectusClient<Schema>): GraphqlClient<Schema> => {
 		return {
 			async query() {
 				return 1;

@@ -2,17 +2,17 @@ import type { DirectusClient } from '../client.js';
 import type { RestCommand } from './types.js';
 import { getRequestUrl } from './utils/get-request-url.js';
 
-export interface RestClient<TSchema extends object> {
+export interface RestClient<Schema extends object> {
 	request<TOptions extends object, TOutput extends object>(
-		options: RestCommand<TOptions, TOutput, TSchema>
+		options: RestCommand<TOptions, TOutput, Schema>
 	): Promise<TOutput>;
 }
 
 export const rest = () => {
-	return <TSchema extends object>(client: DirectusClient<TSchema>): RestClient<TSchema> => {
+	return <Schema extends object>(client: DirectusClient<Schema>): RestClient<Schema> => {
 		return {
 			async request<TOptions extends object, TOutput extends object>(
-				getOptions: RestCommand<TOptions, TOutput, TSchema>
+				getOptions: RestCommand<TOptions, TOutput, Schema>
 			): Promise<TOutput> {
 				const options = getOptions();
 

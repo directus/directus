@@ -2,16 +2,16 @@ export interface ClientConfig {
 	token?: string;
 }
 
-export interface DirectusClient<TSchema extends object> {
+export interface DirectusClient<Schema extends object> {
 	config: { url: URL };
 	auth: { token: string | null };
 	use: <TExtension extends object>(
-		createExtension: (client: DirectusClient<TSchema>) => TExtension
+		createExtension: (client: DirectusClient<Schema>) => TExtension
 	) => this & TExtension;
 }
 
-export const useDirectus = <TSchema extends object = any>(url: string, config?: ClientConfig) => {
-	const client: DirectusClient<TSchema> = {
+export const useDirectus = <Schema extends object = any>(url: string, config?: ClientConfig) => {
+	const client: DirectusClient<Schema> = {
 		config: {
 			url: new URL(url),
 		},

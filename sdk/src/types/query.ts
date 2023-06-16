@@ -1,18 +1,15 @@
 import type { ItemType, RelationalFields } from './schema.js';
 
-export interface Query<TSchema extends object, TItem extends object> {
-	fields?: QueryFields<TSchema, TItem>;
+export interface Query<Schema extends object, Item extends object> {
+	fields?: QueryFields<Schema, Item>;
 }
 
-export type QueryFields<TSchema extends object, TItem extends object> = (
+export type QueryFields<Schema extends object, Item extends object> = (
 	| '*'
-	| keyof TItem
-	| QueryFieldsNested<TSchema, TItem>
+	| keyof Item
+	| QueryFieldsNested<Schema, Item>
 )[];
 
-export type QueryFieldsNested<TSchema extends object, TItem extends object> = {
-	[Key in keyof Pick<TItem, RelationalFields<TSchema, TItem>>]: QueryFields<
-		TSchema,
-		Extract<TItem[Key], ItemType<TSchema>>
-	>;
+export type QueryFieldsNested<Schema extends object, Item extends object> = {
+	[Key in keyof Pick<Item, RelationalFields<Schema, Item>>]: QueryFields<Schema, Extract<Item[Key], ItemType<Schema>>>;
 };
