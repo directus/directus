@@ -100,7 +100,7 @@ function parseFilterEntry(
 ): Filter {
 	if (['_or', '_and'].includes(String(key))) {
 		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
-	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
+	} else if (['_in', '_in_all', '_nin', '_between', '_nbetween'].includes(String(key))) {
 		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
 	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
 		return { [key]: parseFilterValue(value, accountability, context) };

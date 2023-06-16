@@ -367,6 +367,7 @@ export function applyFilter(
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
 
+	console.log(rootQuery.toSQL().sql);
 	return { query: rootQuery, hasJoins, hasMultiRelationalFilter };
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
@@ -727,6 +728,35 @@ export function applyFilter(
 				if (typeof value === 'string') value = value.split(',');
 
 				dbQuery[logical].whereIn(selectionRaw, value as string[]);
+			}
+
+			if (operator === '_in_all') {
+				// TODO: throw exception?
+				if (!originalCollectionName) return;
+
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				const mainCollection = (rootQuery as any)._single.table;
+				const mainCollectionPK = schema.collections[mainCollection]!.primary;
+
+				const relationsToMainCollection = relations.filter(
+					(r) => r.collection === originalCollectionName && r.related_collection === mainCollection
+				);
+
+				// TODO: throw exception?
+				if (relationsToMainCollection.length > 1) return;
+				const relation = relationsToMainCollection[0]!;
+
+				value.forEach((v) =>
+					dbQuery[logical].whereExists(
+						knex
+							.select('*')
+							.from(originalCollectionName)
+							.where(selectionRaw, '=', v)
+							.andWhere(`${originalCollectionName}.${relation.field}`, '=', `${mainCollection}.${mainCollectionPK}`)
+					)
+				);
 			}
 
 			if (operator === '_nin') {

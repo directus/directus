@@ -595,6 +595,9 @@ export class GraphQLService {
 					_in: {
 						type: new GraphQLList(GraphQLString),
 					},
+					_in_all: {
+						type: GraphQLString,
+					},
 					_nin: {
 						type: new GraphQLList(GraphQLString),
 					},
@@ -661,6 +664,9 @@ export class GraphQLService {
 					_in: {
 						type: new GraphQLList(GraphQLString),
 					},
+					_in_all: {
+						type: GraphQLString,
+					},
 					_nin: {
 						type: new GraphQLList(GraphQLString),
 					},
@@ -685,6 +691,9 @@ export class GraphQLService {
 					},
 					_in: {
 						type: new GraphQLList(GraphQLStringOrFloat),
+					},
+					_in_all: {
+						type: GraphQLStringOrFloat,
 					},
 					_nin: {
 						type: new GraphQLList(GraphQLStringOrFloat),

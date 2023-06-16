@@ -31,6 +31,7 @@ export function getFilterOperatorsForType(
 				'null',
 				'nnull',
 				'in',
+				'in_all',
 				'nin',
 				...validationOnlyStringFilterOperators,
 			];
@@ -40,7 +41,7 @@ export function getFilterOperatorsForType(
 		// JSON
 		// UUID
 		case 'uuid':
-			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
+			return ['eq', 'neq', 'null', 'nnull', 'in', 'in_all', 'nin'];
 		case 'json':
 			return ['null', 'nnull'];
 
@@ -53,13 +54,13 @@ export function getFilterOperatorsForType(
 		case 'integer':
 		case 'decimal':
 		case 'float':
-			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
+			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'in_all', 'nin'];
 
 		// Datetime
 		case 'dateTime':
 		case 'date':
 		case 'time':
-			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
+			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'in_all', 'nin'];
 
 		case 'geometry':
 			return ['eq', 'neq', 'null', 'nnull', 'intersects', 'nintersects', 'intersects_bbox', 'nintersects_bbox'];
@@ -81,6 +82,7 @@ export function getFilterOperatorsForType(
 				'null',
 				'nnull',
 				'in',
+				'in_all',
 				'nin',
 				...validationOnlyStringFilterOperators,
 			];
