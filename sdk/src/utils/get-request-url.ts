@@ -1,4 +1,4 @@
-import type { RestRequestOptions } from '../types.js';
+import type { RestRequestOptions } from '../types/index.js';
 
 export const getRequestUrl = (baseUrl: URL, options: RestRequestOptions): URL => {
 	const url = new globalThis.URL(options.path, baseUrl);
