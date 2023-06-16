@@ -11,8 +11,8 @@ export type QueryFields<Schema extends object, Item extends object> = (
 )[];
 
 export type QueryFieldsNested<Schema extends object, Item extends object> = {
-	[Key in keyof Pick<Item, RelationalFields<Schema, Item>>]: QueryFields<
-		Schema,
-		Extract<Item[Key] extends any[] ? Item[Key][number] : Item[Key], ItemType<Schema>>
-	>;
+	[Key in keyof Pick<Item, RelationalFields<Schema, Item>>]: QueryFields<Schema, ExtractItem<Schema, Item[Key]>>;
 };
+
+type ExtractItem<Schema extends object, Item extends object> = Extract<UnpackList<Item>, ItemType<Schema>>;
+type UnpackList<Item extends object> = Item extends any[] ? Item[number] : Item;
