@@ -1,3 +1,4 @@
-export type * from './command.js';
-export type * from './filter.js';
+export type * from './graphql.js';
 export type * from './query.js';
+export type * from './rest.js';
+export type * from './schema.js';
