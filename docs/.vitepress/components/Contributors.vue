@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps({
+defineProps({
 	contributors: { type: String, required: true },
 });
 </script>

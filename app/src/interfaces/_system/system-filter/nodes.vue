@@ -256,7 +256,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	if (nodeInfo.isField === false) return;
 
 	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-	let value = get(nodeInfo.node, valuePath);
+	const value = get(nodeInfo.node, valuePath);
 
 	switch (operator) {
 		case '_in':

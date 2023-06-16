@@ -266,7 +266,7 @@ const correspondingLabel = computed(() => {
 });
 
 const unsortableJunctionFields = computed(() => {
-	let fields = [];
+	const fields = [];
 
 	if (junctionCollection.value) {
 		const relations = relationsStore.getRelationsForCollection(junctionCollection.value);

@@ -258,15 +258,15 @@ const editorElement = ref<ComponentPublicInstance | null>(null);
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
 
-let storageAssetTransform = ref('all');
-let storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+const storageAssetTransform = ref('all');
+const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
 
 if (settingsStore.settings?.storage_asset_transform) {
 	storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
 	storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
 }
 
-let count = ref(0);
+const count = ref(0);
 
 const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 	editorRef,

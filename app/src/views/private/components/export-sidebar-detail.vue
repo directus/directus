@@ -516,7 +516,7 @@ function exportDataLocal() {
 	// usually getEndpoint contains leading slash, but here we need to remove it
 	const url = getPublicURL() + endpoint.substring(1);
 
-	let params: Record<string, unknown> = {
+	const params: Record<string, unknown> = {
 		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: format.value,
 	};
