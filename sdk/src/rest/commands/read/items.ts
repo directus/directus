@@ -2,8 +2,8 @@ import type { Query } from '../../../types/query.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-export interface ReadItemsInput<TItem extends object> {
-	query?: Query<TItem>;
+export interface ReadItemsInput<TSchema extends object, TItem extends object> {
+	query?: Query<TSchema, TItem>;
 }
 
 // export type ReadItemsOutput<
@@ -14,8 +14,8 @@ export interface ReadItemsInput<TItem extends object> {
 export const readItems =
 	<TSchema extends object, TCollection extends keyof TSchema, TItem extends TSchema[TCollection]>(
 		collection: TCollection,
-		query: Query<TItem> = {}
-	): RestCommand<Query<TItem>, TItem[], TSchema> =>
+		query: Query<TSchema, TItem> = {}
+	): RestCommand<Query<TSchema, TItem>, TItem[], TSchema> =>
 	() => {
 		const _collection = String(collection);
 
