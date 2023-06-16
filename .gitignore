@@ -47,3 +47,5 @@ TODO
 /packages/extensions-sdk/temp-extension-*
 *.db
 ts-errors.yaml
+
+/docs/packages

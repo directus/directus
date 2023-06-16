@@ -28,7 +28,25 @@
 	--vp-c-purple-darker: #4422dd;
 	--vp-c-purple-dimm-1: rgba(102, 68, 255, 0.5);
 	--vp-c-purple-dimm-2: rgba(102, 68, 255, 0.25);
-	--vp-c-purple-dimm-3: rgba(102, 68, 255, 0.05);
+	--vp-c-purple-dimm-3: rgba(102, 68, 255, 0.09);
+
+	--vp-c-yellow: #fbc54f;
+	--vp-c-yellow-light: #fff7ed;
+	--vp-c-yellow-lighter: #fbbf24;
+	--vp-c-yellow-dark: #b45309;
+	--vp-c-yellow-darker: #92400e;
+	--vp-c-yellow-dimm-1: rgba(234, 179, 8, 0.5);
+	--vp-c-yellow-dimm-2: rgba(234, 179, 8, 0.2);
+	--vp-c-yellow-dimm-3: rgba(234, 179, 8, 0.05);
+
+	--vp-c-red: #e35169;
+	--vp-c-red-light: #fceef0;
+	--vp-c-red-lighter: #FCEEF0;
+	--vp-c-red-dark: #e11d48;
+	--vp-c-red-darker: #be123c;
+	--vp-c-red-dimm-1: rgba(244, 63, 94, 0.5);
+	--vp-c-red-dimm-2: rgba(244, 63, 94, 0.2);
+	--vp-c-red-dimm-3: rgba(244, 63, 94, 0.05);
 }
 
 /**
@@ -47,7 +65,7 @@
 	--vp-c-purple: #8866ff;
 	--vp-c-purple-dimm-1: rgba(136, 102, 255, 0.5);
 	--vp-c-purple-dimm-2: rgba(136, 102, 255, 0.25);
-	--vp-c-purple-dimm-3: rgba(136, 102, 255, 0.05);
+	--vp-c-purple-dimm-3: rgba(159, 132, 255, 0.1);
 }
 
 /**
@@ -60,12 +78,24 @@
 	--vp-custom-block-tip-bg: var(--vp-c-purple-dimm-3);
 	--vp-custom-block-tip-code-bg: var(--vp-custom-block-tip-bg);
 
+	--vp-custom-block-warning-border: var(--vp-c-yellow-dimm-1);
 	--vp-custom-block-warning-text: var(--vp-c-yellow-darker);
+	--vp-custom-block-warning-bg: var(--vp-c-yellow-dimm-3);
+	--vp-custom-block-warning-code-bg: var(--vp-custom-block-tip-bg);
+
+	--vp-custom-block-danger-border: var(--vp-c-red-dimm-1);
+	--vp-custom-block-danger-text: var(--vp-c-red-darker);
+	--vp-custom-block-danger-bg: var(--vp-c-red-dimm-3);
+	--vp-custom-block-danger-code-bg: var(--vp-custom-block-tip-bg);
 }
 
 .dark {
 	--vp-custom-block-tip-border: var(--vp-c-purple-dimm-2);
 	--vp-custom-block-tip-text: var(--vp-c-purple-light);
 
+	--vp-custom-block-warning-border: var(--vp-c-yellow-dimm-2);
 	--vp-custom-block-warning-text: var(--vp-c-yellow);
+
+	--vp-custom-block-danger-border: var(--vp-c-red-dimm-2);
+	--vp-custom-block-danger-text: var(--vp-c-red);
 }

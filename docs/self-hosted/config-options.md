@@ -1062,3 +1062,32 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
 | `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
 | `EXPORT_BATCH_SIZE`     | How many rows are read into memory at a time when constructing exports                    | 5000          |
+
+## WebSockets
+
+| Variable           | Description                                | Default Value |
+|--------------------|--------------------------------------------|---------------|
+| `WEBSOCKETS_ENABLED` | Whether or not to enable all WebSocket functionality. | `false` |
+| `WEBSOCKETS_HEARTBEAT_ENABLED` | Whether or not to enable the heartbeat ping signal. | `true` |
+| `WEBSOCKETS_HEARTBEAT_PERIOD` | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30 |
+
+### REST 
+
+| Variable           | Description                                | Default Value |
+|--------------------|--------------------------------------------|---------------|
+| `WEBSOCKETS_REST_ENABLED` | Whether or not to enable the REST message handlers. | `true` |
+| `WEBSOCKETS_REST_PATH` | The URL path at which the WebSocket REST endpoint will be available. | `/websocket` |
+| `WEBSOCKETS_REST_CONN_LIMIT` | How many simultaneous connections are allowed. | `Infinity` |
+| `WEBSOCKETS_REST_AUTH` | What method of authentication to require for this connection. | `handshake` |
+| `WEBSOCKETS_REST_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection. | 30 |
+
+### GraphQL 
+
+| Variable           | Description                                | Default Value |
+|--------------------|--------------------------------------------|---------------|
+| `WEBSOCKETS_GRAPHQL_ENABLED` | Whether or not to enable the GraphQL Subscriptions. | `true` |
+| `WEBSOCKETS_GRAPHQL_PATH` | The URL path at which the WebSocket GraphQL endpoint will be available. | `/graphql` |
+| `WEBSOCKETS_GRAPHQL_CONN_LIMIT` | How many simultaneous connections are allowed. | `Infinity` |
+| `WEBSOCKETS_GRAPHQL_AUTH` | What method of authentication to require for this connection. | `handshake` |
+| `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection. | 30 |
+

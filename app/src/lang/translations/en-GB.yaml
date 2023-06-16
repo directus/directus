@@ -80,14 +80,6 @@ create_user: Create User
 message: Message
 delete_panel: Delete Panel
 create_webhook: Create Webhook
-create_translation_string: Create Translation String
-no_translation_string: No Translation Strings
-no_translation_string_copy: There are no translation strings yet.
-translation_string_key_placeholder: Translation string key...
-translation_string_translations_placeholder: Add a new translation
-edit_translation_string: Edit Translation String
-delete_translation_string_copy: >-
-  Are you sure you want to delete the translation string "{key}"? This action can not be undone.
 invite_users: Invite Users
 invite: Invite
 email_already_invited: Email "{email}" has already been invited
@@ -118,13 +110,6 @@ public_label: Public
 public_description: Controls what API data is available without authenticating.
 admin_description: Initial administrative role with unrestricted App/API access.
 not_allowed: Not Allowed
-directus_version: Directus Version
-node_version: Node Version
-node_uptime: Node Uptime
-os_type: OS Type
-os_version: OS Version
-os_uptime: OS Uptime
-os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
@@ -351,7 +336,7 @@ revision_delta_reverted: Reverted
 revision_delta_update_message: This field has been updated but its value is being concealed for security reasons.
 revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
-presentation_text_values_cannot_be_reimported: "Uses presentation text, values can not be re-imported."
+presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
 private_user: Private User
 creation_preview: Creation Preview
@@ -491,7 +476,6 @@ enable_select_button: Enable Select Button
 allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
-click_to_expand: Click to Expand
 select_item: Select Item
 no_items: No items
 search_items: Search items...
@@ -949,7 +933,6 @@ settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Presets & Bookmarks
-settings_translation_strings: Translation Strings
 one_or_more_options_are_missing: One or more options are missing
 scope: Scope
 actions: Actions
@@ -999,7 +982,6 @@ page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webho
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
 page_help_settings_flows_collection: '**Browse Flows** — Lists all Flows within the project.'
 page_help_settings_flows_item: '**Flow Detail** — Workspace for managing one or more operations.'
-page_help_settings_translation_strings_collection: '**Browse Translation Strings** — Lists all translation strings within the project.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
@@ -1263,6 +1245,7 @@ field_options:
     sort_field: Choose a field...
     accountability_divider: Accountability
     duplication_divider: Duplication
+    preview_divider: Preview
   directus_files:
     title: A unique title...
     description: An optional description...
@@ -1320,6 +1303,8 @@ start_collapsed: Start Collapsed
 block: Block
 inline: Inline
 comment: Comment
+live_preview:
+  new_window: Open in New Window
 shares: Shares
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
@@ -1683,7 +1668,6 @@ interfaces:
     input-translated-string: Translated Strings
     description: Select or add translation string
     search_placeholder: Search...
-    new_translation_string: New Translation String
   boolean:
     toggle: Toggle
     description: Switch between on and off
@@ -1720,6 +1704,16 @@ interfaces:
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+  input-block-editor:
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: List
+      embed: Embed
+      code: Code
+      image: Image
+      table: Table
+      underline: Underline
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
@@ -2098,7 +2092,7 @@ operations:
     message: Message
   request:
     name: Webhook / Request URL
-    description: "Make a request to a URL"
+    description: 'Make a request to a URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Method

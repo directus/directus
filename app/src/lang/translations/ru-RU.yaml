@@ -80,14 +80,6 @@ create_user: Создать пользователя
 message: Сообщение
 delete_panel: Удалить панель
 create_webhook: Создать веб-хук
-create_translation_string: Создать строку перевода
-no_translation_string: Нет строк перевода
-no_translation_string_copy: Строк перевода пока нет.
-translation_string_key_placeholder: Ключ строки перевода...
-translation_string_translations_placeholder: Добавить новый перевод
-edit_translation_string: Редактировать строку перевода
-delete_translation_string_copy: >-
-  Вы уверены, что хотите удалить строку перевода «{key}»? Это действие не может быть отменено.
 invite_users: Пригласить пользователей
 invite: Пригласить
 email_already_invited: На адрес «{email}» уже было отправлено приглашение
@@ -118,13 +110,6 @@ public_label: Публичный
 public_description: Контролирует, какие данные API доступны без входа в личный кабинет.
 admin_description: Начальная административная роль с неограниченным доступом к приложениям/API.
 not_allowed: Не разрешено
-directus_version: Версия Directus
-node_version: Версия Node
-node_uptime: Время работы Node
-os_type: Тип ОС
-os_version: Версия ОС
-os_uptime: Время работы ОС
-os_totalmem: Память ОС
 archive: Архив
 archive_confirm: Вы уверены, что хотите архивировать этот элемент?
 archive_confirm_count: >-
@@ -349,7 +334,7 @@ revision_delta_reverted: Восстановлено
 revision_delta_update_message: Это поле было обновлено, но его значение скрывается по соображениям безопасности.
 revision_delta_other: Редакция
 revision_delta_by: '{date} пользователем {user}'
-presentation_text_values_cannot_be_reimported: "Используется текст для оформления, значения не могут быть повторно импортированы."
+presentation_text_values_cannot_be_reimported: 'Используется текст для оформления, значения не могут быть повторно импортированы.'
 download_page_as_csv: 'Скачать страницу в формате CSV'
 private_user: Скрытый пользователь
 creation_preview: Предпросмотр
@@ -489,7 +474,6 @@ enable_select_button: Включить кнопку «Выбрать»
 allow_duplicates: Разрешить дубликаты
 comments: Комментарии
 no_comments: Комментариев пока нет
-click_to_expand: Нажмите, чтобы раскрыть
 select_item: Выбрать элемент
 no_items: Нет элементов
 search_items: Поиск элементов...
@@ -947,7 +931,6 @@ settings_project: Настройки проекта
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
 settings_presets: Шаблоны и закладки
-settings_translation_strings: Строки перевода
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
 scope: Область применения
 actions: Действия
@@ -997,7 +980,6 @@ page_help_settings_webhooks_collection: '**Просмотр веб-хуков** 
 page_help_settings_webhooks_item: '**Карточка веб-хука** — форма для создания и управления веб-хуками проекта.'
 page_help_settings_flows_collection: '**Просмотреть процессы** — список всех процессов в проекте.'
 page_help_settings_flows_item: '**Карточка процесса** — рабочее пространство для управления одной или несколькими операциями.'
-page_help_settings_translation_strings_collection: '**Просмотр строк перевода** — список всех строк перевода в проекте.'
 page_help_users_collection: '**Пользователи** — список всех системных пользователей в этом проекте.'
 page_help_users_item: >-
   **Карточка пользователя** — управляйте данными вашей учётной записи или просматривайте данные других пользователей.
@@ -1260,6 +1242,7 @@ field_options:
     sort_field: Выберите поле...
     accountability_divider: Подотчетность
     duplication_divider: Дублирование
+    preview_divider: Предпросмотр
   directus_files:
     title: Уникальное название...
     description: Описание (необязательно)...
@@ -1317,6 +1300,8 @@ start_collapsed: Начать свёрнутым
 block: Блок
 inline: Встроенный
 comment: Комментарий
+live_preview:
+  new_window: Открыть в новом окне
 unlimited_usage: Неограниченное использование
 new_share: Новая публикация
 expired: Истекло
@@ -1653,7 +1638,6 @@ interfaces:
     input-translated-string: Переведенные строки
     description: Выберите или добавьте строку перевода
     search_placeholder: Поиск...
-    new_translation_string: Новая строка перевода
   boolean:
     toggle: Переключить
     description: Переключение вкл / выкл
@@ -1688,6 +1672,16 @@ interfaces:
     options_override: Переопределение параметров
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла
+  input-block-editor:
+    tools: Панель инструментов
+    tools_options:
+      header: HTTP-заголовок
+      nestedlist: Список
+      embed: Встроить
+      code: Код
+      image: Изображение
+      table: Таблица
+      underline: Подчеркнутый
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
     description: Автодополнение значений поиска через внешний API.
@@ -1940,7 +1934,7 @@ operations:
     message: Сообщение
   request:
     name: Веб-хук / URL-адрес запроса
-    description: "Сделать запрос на URL-адрес"
+    description: 'Сделать запрос на URL-адрес'
     url: URL-адрес
     url_placeholder: https://example.com/example
     method: Метод

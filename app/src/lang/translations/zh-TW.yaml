@@ -80,14 +80,6 @@ create_user: 建立用户
 message: 訊息
 delete_panel: 刪除面板
 create_webhook: 建立 Webhook
-create_translation_string: 建立翻譯字串
-no_translation_string: 尚無翻譯字串
-no_translation_string_copy: 目前尚無翻譯字串。
-translation_string_key_placeholder: 翻譯字串
-translation_string_translations_placeholder: 新增翻譯字串
-edit_translation_string: 編輯翻譯字串
-delete_translation_string_copy: >-
-  是否確定要刪除此翻譯 "{key}"? 此動作無法還原。
 invite_users: 邀請用戶
 invite: 邀请
 email_already_invited: 此電郵 "{email}" 已被邀請
@@ -118,13 +110,6 @@ public_label: 公開
 public_description: 在沒有身分驗證的情況下，控制這些可用的API數據。
 admin_description: 預設管理者角色，擁有完整的管理介面以及API存取權限
 not_allowed: 不允许
-directus_version: Directus 版本
-node_version: 節點的版本
-node_uptime: 節點正常運行時間
-os_type: 操作系統類型
-os_version: 作業系統版本
-os_uptime: 作業系統已運行時間
-os_totalmem: 作業系統記憶體
 archive: 封存
 archive_confirm: 您確定要封存這個項目嗎？
 archive_confirm_count: >-
@@ -347,7 +332,7 @@ revision_delta_reverted: 已復原
 revision_delta_update_message: 欄位已更新，由於安全問題，內容已清除。
 revision_delta_other: 版本
 revision_delta_by: '{date} 由 {user}'
-presentation_text_values_cannot_be_reimported: "使用顯示文字，內容無法重新匯入。"
+presentation_text_values_cannot_be_reimported: '使用顯示文字，內容無法重新匯入。'
 download_page_as_csv: '將此頁下載為 CSV'
 private_user: 私密用戶
 creation_preview: 建立預覽
@@ -481,7 +466,6 @@ enable_select_button: 啟用選取按鈕
 allow_duplicates: 允許重複
 comments: 評論
 no_comments: 還沒有評論
-click_to_expand: 點擊以展開
 select_item: 選擇項目
 no_items: 沒有任何項目
 search_items: 搜尋項目...
@@ -937,7 +921,6 @@ settings_project: 專案設定
 settings_webhooks: Webhooks
 settings_flows: 流程
 settings_presets: 預設與書籤
-settings_translation_strings: 翻譯字串
 one_or_more_options_are_missing: 一或多個選項遺失
 scope: 範圍
 actions: 操作
@@ -1239,6 +1222,7 @@ field_options:
     sort_field: 選擇欄位
     accountability_divider: 稽核
     duplication_divider: 重複欄位
+    preview_divider: 預覽
   directus_files:
     title: 不重複的標題...
     description: 選填的描述內容
@@ -1296,6 +1280,8 @@ start_collapsed: 現在折疊
 block: 區塊
 inline: 行內
 comment: 評論
+live_preview:
+  new_window: 在新視窗開啟
 shares: 分享
 unlimited_usage: 無限制使用
 uses_left: 已無法使用 | 剩下1次 | 剩下{n} 次
@@ -1658,7 +1644,6 @@ interfaces:
     input-translated-string: 已翻譯字串
     description: 選擇或新增翻譯字串
     search_placeholder: 搜尋...
-    new_translation_string: 尚無翻譯字串
   boolean:
     toggle: 切換
     description: 在狀態間切換
@@ -1695,6 +1680,16 @@ interfaces:
     folder_note: 供上傳檔案用的資料夾。並不會影響已存在的其他檔案。
     imageToken: 永久的 Access Token
     imageToken_label: 永久的 Access Token 將會附在網址後方
+  input-block-editor:
+    tools: 工具列
+    tools_options:
+      header: 標題
+      nestedlist: 清單
+      embed: 內嵌
+      code: 程式碼
+      image: 圖像
+      table: 表格
+      underline: 底線
   input-autocomplete-api:
     input-autocomplete-api: 輸入自動完成 (API)
     description: 在搜尋外部 API 資料時開啟自動完成功能。
@@ -2021,7 +2016,7 @@ operations:
     message: 訊息
   request:
     name: Webhook / 要求網址
-    description: "發送要求至特定網址"
+    description: '發送要求至特定網址'
     url: URL
     url_placeholder: https://example.com/example
     method: 方法
