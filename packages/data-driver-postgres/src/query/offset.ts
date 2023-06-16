@@ -11,5 +11,5 @@ export function offset({ offset }: SqlStatement): string {
 		return '';
 	}
 
-	return `OFFSET $${offset + 1}`;
+	return `OFFSET $${offset.parameterIndex + 1}`;
 }

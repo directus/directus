@@ -30,7 +30,7 @@ test('basic statement', () => {
 });
 
 test('statement with a limit', () => {
-	sample.statement.limit = 0;
+	sample.statement.limit = { parameterIndex: 0 };
 	sample.statement.parameters = [randomInteger(1, 100)];
 
 	expect(constructSql(sample.statement)).toEqual({
@@ -42,8 +42,8 @@ test('statement with a limit', () => {
 });
 
 test('statement with limit and offset', () => {
-	sample.statement.limit = 0;
-	sample.statement.offset = 1;
+	sample.statement.limit = { parameterIndex: 0 };
+	sample.statement.offset = { parameterIndex: 1 };
 	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100)];
 
 	expect(constructSql(sample.statement)).toEqual({

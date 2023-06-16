@@ -30,6 +30,6 @@ test('Empty string when offset is not defined', () => {
 });
 
 test('Returns offset', () => {
-	sample.statement.offset = 0;
+	sample.statement.offset = { parameterIndex: 0 };
 	expect(offset(sample.statement)).toStrictEqual(`OFFSET $1`);
 });

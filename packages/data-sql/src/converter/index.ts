@@ -33,13 +33,13 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 
 	if (abstractQuery.modifiers?.limit) {
 		const idx = idGen.next().value as number;
-		statement.limit = idx;
+		statement.limit = { parameterIndex: idx };
 		statement.parameters[idx] = abstractQuery.modifiers.limit.value;
 	}
 
 	if (abstractQuery.modifiers?.offset) {
 		const idx = idGen.next().value as number;
-		statement.offset = idx;
+		statement.offset = { parameterIndex: idx };
 		statement.parameters[idx] = abstractQuery.modifiers.offset.value;
 	}
 

@@ -11,5 +11,5 @@ export function limit({ limit }: SqlStatement): string {
 		return '';
 	}
 
-	return `LIMIT $${limit + 1}`;
+	return `LIMIT $${limit.parameterIndex + 1}`;
 }

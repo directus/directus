@@ -23,6 +23,14 @@ export interface SqlStatementSelectPrimitive {
 // }
 
 /**
+ * Used for parameterized queries.
+ */
+type ParameterIndex = {
+	/** Indicates where the actual value is stored in the parameter array */
+	parameterIndex: number;
+};
+
+/**
  * This is an abstract SQL query.
  *
  * @example
@@ -38,13 +46,8 @@ export interface SqlStatementSelectPrimitive {
 export interface SqlStatement {
 	select: SqlStatementSelectPrimitive[];
 	from: string;
-
-	/** Index of the parameter, not the actual value */
-	limit?: number;
-
-	/** Index of the parameter, not the actual value */
-	offset?: number;
-
+	limit?: ParameterIndex;
+	offset?: ParameterIndex;
 	parameters: (string | boolean | number)[];
 }
 
