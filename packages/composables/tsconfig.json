@@ -4,5 +4,8 @@
 		"outDir": "dist",
 		"lib": ["es2022", "DOM"]
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"typedocOptions": {
+        "entryPoints": ["./src"]
+    }
 }

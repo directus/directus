@@ -80,14 +80,6 @@ create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
 create_webhook: Crear webhook
-create_translation_string: Crear cadena de traducción
-no_translation_string: Sin cadenas de traducción
-no_translation_string_copy: Todavía no hay cadenas de traducción.
-translation_string_key_placeholder: Clave de la cadena de traducción...
-translation_string_translations_placeholder: Añadir una nueva traducción
-edit_translation_string: Editar cadena de traducción
-delete_translation_string_copy: >-
-  ¿Estás seguro que quieres eliminar la cadena de traducción "{key}"? Esta acción no se puede deshacer.
 invite_users: Invitar usuarios
 invite: Invitar
 email_already_invited: El email "{email}" ya ha sido invitado
@@ -118,13 +110,6 @@ public_label: Público
 public_description: Controla qué datos de la API están disponibles sin autenticar.
 admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
 not_allowed: No permitido
-directus_version: Versión de Directus
-node_version: Versión de Node
-node_uptime: Tiempo de actividad de Node
-os_type: Tipo de SO
-os_version: Versión del SO
-os_uptime: Tiempo de actividad del SO
-os_totalmem: Memoria del SO
 archive: Archivar
 archive_confirm: '¿Estás seguro que quieres archivar este elemento?'
 archive_confirm_count: >-
@@ -357,7 +342,7 @@ revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo ha sido actualizado, pero su valor está siendo ocultado por razones de seguridad.
 revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
-presentation_text_values_cannot_be_reimported: "Utiliza texto de presentación, los valores no pueden ser reimportados."
+presentation_text_values_cannot_be_reimported: 'Utiliza texto de presentación, los valores no pueden ser reimportados.'
 download_page_as_csv: 'Descargar página como CSV'
 private_user: Usuario Privado
 creation_preview: Vista previa de creación
@@ -497,7 +482,6 @@ enable_select_button: Habilitar el botón Seleccionar
 allow_duplicates: Permitir duplicados
 comments: Comentarios
 no_comments: Aún Sin Comentarios
-click_to_expand: Haga Clic para Expandir
 select_item: Seleccionar elemento
 no_items: Sin elementos
 search_items: Buscar elementos...
@@ -964,7 +948,6 @@ settings_project: Configuración del proyecto
 settings_webhooks: Webhooks
 settings_flows: Flujos
 settings_presets: Preajustes y marcadores
-settings_translation_strings: Cadenas de traducción
 one_or_more_options_are_missing: Falta una o más opciones
 scope: Alcance
 actions: Acciones
@@ -1014,7 +997,6 @@ page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos
 page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
 page_help_settings_flows_collection: '**Explorar flujos** — Lista todos los flujos dentro del proyecto.'
 page_help_settings_flows_item: '**Detalle de flujo** — Espacio de trabajo para gestionar una o más operaciones.'
-page_help_settings_translation_strings_collection: '**Examinar cadenas de traducción** — Lista todas las cadenas de traducción dentro del proyecto.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
@@ -1278,6 +1260,7 @@ field_options:
     sort_field: Elige un campo...
     accountability_divider: Responsabilidad
     duplication_divider: Duplicación
+    preview_divider: Vista previa
   directus_files:
     title: Un título único...
     description: Una descripción opcional...
@@ -1335,6 +1318,8 @@ start_collapsed: Iniciar colapsado
 block: Bloque
 inline: Alineado
 comment: Comentar
+live_preview:
+  new_window: Abrir en nueva ventana
 shares: Compartido
 unlimited_usage: Uso ilimitado
 uses_left: No hay usos restantes | 1 uso restante | {n} usos restantes
@@ -1702,7 +1687,6 @@ interfaces:
     input-translated-string: Cadenas traducidas
     description: Seleccionar o añadir cadena de traducción
     search_placeholder: Buscar...
-    new_translation_string: Nueva cadena de traducción
   boolean:
     toggle: Alternar
     description: Alternar entre Activado y Desactivado
@@ -1739,6 +1723,16 @@ interfaces:
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
     imageToken_label: Token de acceso estático se añade a la URL de los archivos
+  input-block-editor:
+    tools: Barra de Herramientas
+    tools_options:
+      header: Encabezado
+      nestedlist: Lista
+      embed: Incrustado
+      code: Código
+      image: Imagen
+      table: Tabla
+      underline: Subrayado
   input-autocomplete-api:
     input-autocomplete-api: Campo de Autocompletado (API)
     description: Búsqueda autocompletada para valores de API externos.
@@ -2118,7 +2112,7 @@ operations:
     message: Mensaje
   request:
     name: Webhook / Solicitud de URL
-    description: "Haz una solicitud a una URL"
+    description: 'Haz una solicitud a una URL'
     url: URL
     url_placeholder: https://ejemplo.com/ejemplo
     method: Método

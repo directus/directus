@@ -93,13 +93,6 @@ logoutReason:
 public_label: Alment
 public_description: Stýrir hvat API dáta til taks uttan samgildi.
 not_allowed: Ikki loyvt
-directus_version: Directus Útgáva
-node_version: Node Útgáva
-node_uptime: Node Nýtslutíð
-os_type: OS Slag
-os_version: OS Útgáva
-os_uptime: OS Nýtslutíð
-os_totalmem: OS Minni
 archive: Skjalasavna
 archive_confirm: Ert tú vísur í at tú vilt skjalasavna hendan lutin?
 archive_confirm_count: >-

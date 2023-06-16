@@ -80,14 +80,10 @@ create_user: Krijo Përdorues
 message: Mesazh
 delete_panel: Fshi Panelin
 create_webhook: Krijo Webhook
-create_translation_string: Krijo Stringun e Përkthimit
-no_translation_string: Nuk ka Stringje Përkthimi
-no_translation_string_copy: Nuk ka stringje përkthimi akoma.
-translation_string_key_placeholder: Çelësi i stringut të përkthimit...
-translation_string_translations_placeholder: Shto një përkthim të ri
-edit_translation_string: Modifiko Stringun e Përkthimit
-delete_translation_string_copy: >-
-  A je i sigurt që dëshiron të fshish stringun e përkthimit "{key}"? Ky veprim nuk mund të zhbëhet.
+create_custom_translation: Krijo Përkthim të Personalizuar
+edit_custom_translation: Redakto Përkthim të Personalizuar
+no_custom_translations: Pa Përkthime të Personalizuara
+no_custom_translations_copy: Nuk ka përkthime të personalizuara akoma.
 invite_users: Fto Përdorues
 invite: Fto
 email_already_invited: Email-i "{email}" është ftuar tashmë
@@ -118,13 +114,6 @@ public_label: Publik
 public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
 admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
 not_allowed: Nuk lejohet
-directus_version: Versioni i Directus
-node_version: Versioni i Node
-node_uptime: Kohëzgjatja e Node
-os_type: Lloji i OS
-os_version: Versioni i OS
-os_uptime: Kohëzgjatja e OS
-os_totalmem: Memoria e OS
 archive: Arkivo
 archive_confirm: A jeni të sigurtë që doni të arkivoni këtë artikull?
 archive_confirm_count: >-
@@ -238,6 +227,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datë
 date_range: Gama e Datave
+translation_key_placeholder: Futni një çelës...
 datetime: Datëkohë
 dateTime: Datëkohë
 precision: Saktësi
@@ -252,38 +242,1936 @@ text: Tekst
 time: Kohë
 timestamp: Kohëshënimi
 uuid: UUID
+hash: Hash
+geometry: Gjeometri (Të Gjitha)
+geometry.Point: Pikë
+geometry.LineString: Vijë
+geometry.Polygon: Poligon
+geometry.MultiPoint: ShumëPikë
+geometry.MultiLineString: ShumëVijë
+geometry.MultiPolygon: ShumëPoligon
+not_available_for_type: Nuk është i Disponueshëm për këtë Lloj
+create_translations: Krijo përkthime
+auto_refresh: Rifreskim Automatik
+refresh_interval: Interval i Rifreskimit
+no_refresh: Mos rifresko
+refresh_interval_seconds: Rifresko Menjëherë | Çdo Sekondë | Çdo {seconds} Sekonda
+refresh_interval_minutes: Çdo Minutë | Çdo {minutes} Minuta
+auto_generate: Gjenero Automatikisht
+this_will_auto_setup_fields_relations: Kjo do të konfigurojë automatikisht të gjitha fushat dhe marrëdhëniet e nevojshme.
+click_here: Kliko këtu
+to_manually_setup_translations: për të konfiguruar manualisht përkthimet.
+click_to_manage_translated_fields: >-
+  Nuk ka fusha të përkthyera akoma. Kliko këtu për t'i krijuar ato. | Ka një fushë të përkthyer. Kliko këtu për ta menaxhuar atë. | Ka {count} fusha të përkthyera. Kliko këtu për t'i menaxhuar ato.
+fields_group: Grup Fushash
+no_collections_found: Nuk u gjetën koleksione.
+new_data_alert: 'Më poshtë do të krijohen brenda Modelit tuaj të të Dhënave:'
+search_collection: Kërko Koleksion...
+search_field: Kërko Fushë...
+new_field: 'Fushë e Re'
+new_collection: 'Koleksion i Ri'
+add_m2o_to_collection: 'Shto M2O në "{collection}"'
+add_o2m_to_collection: 'Shto O2M në "{collection}"'
+add_m2m_to_collection: 'Shto M2M në "{collection}"'
+choose_a_type: Zgjidh një Lloj...
+determined_by_relationship: Përcaktuar nga Marrëdhënia
+add_note: Shto një shënim ndihmës për përdoruesit...
+add_link: Shto Lidhje
+custom_link: Lidhje e Personalizuar
+default_value: Vlera e Paracaktuar
+standard_field: Fushë Standarde
+single_file: Skedar i Vetëm
+multiple_files: Shumë Skedarë
+m2o_relationship: Marrëdhënie Nga Shumë në Një
+o2m_relationship: Marrëdhënie Nga Një në Shumë
+m2m_relationship: Marrëdhënie Nga Shumë në Shumë
+m2a_relationship: Marrëdhënie Nga Shumë në Çdo
+invalid_item: Artikull i Pavlefshëm
+require_confirmation: Kërko Konfirmim
+dialog: Dialog
+modal: Modal
+confirmation_dialog: Dialog i Konfirmimit
+confirmation_description: Përshkrimi i Konfirmimit
+confirmation_input_fields: Fushat e Hyrjes së Konfirmimit
+next: Vazhdo
+field_name: Emri i Fushës
+translations: Përkthimet
+no_translations: Pa Përkthime
+left_to_right: Nga e Majta në të Djathtë
+right_to_left: Nga e Djathta në të Majtë
+note: Shënim
+enter_a_value: Shkruaj një vlerë...
+enter_a_placeholder: Shkruaj një vendmbajtës...
+length: Gjatësi
+soft_length: Kufi i Butë
+precision_scale: Saktësi & Shkallë
+readonly: Vetëm Lexim
+unique: Unike
+updated_on: Përditësuar më
+updated_by: Përditësuar nga
+primary_key: Çelësi Kryesor
+foreign_key: Çelësi i Huaj
+field_key: Çelësi i Fushës
+finish_setup: Përfundo Konfigurimin
+dismiss: Anulo
+toggle_raw_editor: Ndërrimi i Editorit të Papërpunuar
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Vlera e Papërpunuar
+copy_raw_value: Kopjo Vlerën e Papërpunuar
+copy_raw_value_success: Kopjuar
+copy_raw_value_fail: Kopjimi Dështoi
+paste_raw_value: Vlerën e Papërpunuar
+paste_raw_value_success: Ngjitur
+paste_raw_value_fail: Ngjitja Dështoi
+view_raw_value: Shiko Vlerën e Papërpunuar
+edit_raw_value: Modifiko Vlerën e Papërpunuar
+enter_raw_value: Shkruaj vlerën e papërpunuar...
+clear_value: Vlerën
+clear_changes: Pastroni Ndryshimet
+clear_items: Artikujt
+reset_to_default: Kthehu në Parametrat e Paracaktuar
+undo_changes: Anulo Ndryshimet
+notifications: Njoftimet
+show_all_activity: Shfaq të Gjithë Aktivitetin
+page_not_found: Faqe nuk u Gjet
+page_not_found_body: Faqja që kërkoni nuk duket të ekzistojë.
+confirm_revert: Konfirmo Rikthimin
+confirm_revert_body: Kjo do të rikthejë artikullin në gjendjen e zgjedhur.
+display: Shfaq
+settings_update_success: Cilësimet u përditësuan
+title: Titulli
+revision_delta_created: U krijua
+revision_delta_created_externally: U krijua Jashtë
+revision_delta_updated: '''Përditësoi 1 Fushë | Përditësoi {count} Fusha'''
+revision_delta_deleted: U fshi
+revision_delta_reverted: U rikthye
+revision_delta_update_message: Kjo fushë është përditësuar por vlera e saj është e fshehur për arsye sigurie.
+revision_delta_other: Rishikim
+revision_delta_by: '{date} nga {user}'
+presentation_text_values_cannot_be_reimported: 'Përdor tekst prezantimi, vlerat nuk mund të rimportohen.'
+download_page_as_csv: 'Shkarko Faqen si CSV'''
+private_user: Përdorues Privat
+creation_preview: Parapamje e Krijimit
+revision_preview: Parapamje e Rishikimit
+updates_made: Përditësime të Bëra
+leave_comment: Lë një koment...
+post_comment_success: Komenti u postua
+post_comment_updated: Komenti u përditësua
+item_create_success: Artikulli u Krijua | Artikujt u Krijuan
+item_update_success: Artikulli u Përditësua | Artikujt u Përditësuan
+item_delete_success: Artikulli u Fshi | Artikujt u Fshinë
+this_collection: Kjo Koleksion
+related_collection: Koleksion i Lidhur
+related_collections: Koleksione të Lidhura
+translations_collection: Koleksion i Përkthimeve
+languages_collection: Koleksion i Gjuhëve
+import_data_input_placeholder: CSV ose JSON...
+import_data_button: Filloni Importimin
+import_data_indeterminate: Importimi i të Dhënave...
+import_data_success: Të dhënat u importuan me sukses nga {filename}
+import_data_error: Struktura e të dhënave të këtij dokumenti nuk përputhet me koleksionin.
+label_import: Importo
+label_export: Eksporto
+import_export: Importo / Eksporto
+format: Format
+last_page: Faqja e Fundit
+last_access: Qasja e Fundit
+fill_template: Plotësoni me Vlerën e Shabllonit
+a_unique_table_name: Një emër unik të tryezës...
+a_unique_column_name: Një emër unik kolone...
+enable_custom_values: Aktivizo vlerat e personalizuara
+submit: Dorëzo
+move_to_folder: Zhvendos në Dosje
+move: Zhvendos
+system: Sistemi
+add_field_related: Shto Fushë në Koleksionin e Lidhur
+interface_label: Ndërfaqe
+today: Sot
+yesterday: Dje
+delete_comment: Fshi Komentin
+delete_share: Fshi Ndarjen
 functions:
+  year: Viti
+  month: Muaji
+  week: Java
+  day: Dita
+  weekday: Dita e Javës
+  hour: Ora
+  minute: Minuta
+  second: Sekonda
   count: Numri
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: Minuta
+hours: Orë
+month: Muaj
+year: Vit
+select_all: Zgjidh Të Gjitha
+months:
+  january: Janar
+  february: Shkurt
+  march: Mars
+  april: Prill
+  may: Maj
+  june: Qershor
+  july: Korrik
+  august: Gusht
+  september: Shtator
+  october: Tetor
+  november: Nëntor
+  december: Dhjetor
+drag_mode: Mënyra e Tërheqjes
+cancel_crop: Anulo Kopshtin
+original: Origjinal
+url: URL
+import_label: Importo
+file_details: Detajet e Skedarit
+dimensions: Dimensionet
+size: Madhësia
+created: U krijua
+modified: Modifikuar
+checksum: Checksum
+owner: Pronari
+edited_by: Redaktuar nga
+folder: Dosje
+folders: Dosjet
+zoom: Zmadho
+download: Shkarko
+open: Hap
+open_in_new_window: Hap në Dritare të Re
+open_folder: Hap dosjen "{folder}"
+foreground_color: Ngjyra e Paraplanit
+background_color: Ngjyra e Prapaplanit
+upload_from_device: Ngarko Skedar nga Pajisja
+choose_from_library: Zgjidh Skedar nga Biblioteka
+import_from_url: Importo Skedar nga URL
+replace_from_device: Zëvendëso Skedarin nga Pajisja
+replace_from_library: Zëvendëso Skedarin nga Biblioteka
+replace_from_url: Zëvendëso Skedarin nga URL
+no_file_selected: Asnjë Skedar i Zgjedhur
+download_file: Shkarko Skedarin
+open_file_in_tab: Hap skedarin në skedë të re
+start_export: Filloni Eksportimin
+not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
+exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
+exporting_limited_items_in_collection: Eksportimi i {limit} nga {total} artikujve brenda {collection}.
+exporting_no_items_to_export: Asnjë artikull për t'u eksportuar. Rregulloni konfigurimin e eksportimit.
+exporting_download_hint: Kur të përfundojë, ky skedar {format} do të shkarkohet automatikisht në pajisjen tuaj.
+exporting_batch_hint: Ky eksport do të përpunohet në grupe, dhe kur të përfundojë, skedari {format} do të ruhet në Bibliotekën e Skedarëve.
+exporting_batch_hint_forced: Për shkak të numrit të madh të artikujve, ky eksport duhet të përpunohet në grupe, dhe kur të përfundojë, skedari {format} do të ruhet në Bibliotekën e Skedarëve.
+collection_key: Kyçi i Koleksionit
+name: Emri
+primary_key_field: Fusha e Kyçit Primar
+type: Lloji
+creating_new_collection: Duke Krijuar Koleksion të Ri
+created_by: Krijuar Nga
+created_on: Krijuar Më
+creating_collection_info: Emërto koleksionin dhe vendos "çelësin" e tij unik...
+creating_collection_system: Aktivizo dhe riemërto çdo fushë opcionale.
+auto_increment_integer: Integer me rritje automatike
+auto_increment_big_integer: Big Integer me rritje automatike
+generated_uuid: UUID i Gjeneruar
+manual_string: String i Vendosur Manualisht
+save_and_create_new: Ruaj dhe Krijo të Ri
+save_and_stay: Ruaj dhe Qëndro
+save_as_copy: Ruaj si Kopje
+add_existing: Shto Ekzistuese
+creating_items: Krijim i Artikujve
+enable_create_button: Aktivizo Butonin e Krijimit
+selecting_items: Zgjedhja e Artikujve
+enable_select_button: Aktivizo Butonin e Zgjedhjes
+allow_duplicates: Lejo Kopjet
+comments: Komente
+no_comments: Ende nuk ka komente
+expand: Zgjero
+collapse: Tkurre
+select_item: Zgjidh Artikull
+no_items: Asnjë artikull
+search_items: Kërko artikuj...
+disabled: I Çaktivizuar
+information: Informacion
+report_bug: Raporto Defekt
+request_feature: Kërko Karakteristikë
+request_body: Kërko Trupin
+interface_not_found: 'Ndërfaqja "{interface}" nuk u gjet.'
+operation_not_found: 'Operacioni "{operation}" nuk u gjet.'
+reset_interface: Riaktivizo Ndërfaqen
+display_not_found: 'Shfaqja "{display}" nuk u gjet.'
+reset_display: Riaktivizo Shfaqjen
+list-m2a: Ndërtues (M2A)
+item_count: 'Asnjë Artikull | Një Artikull | {count} Artikuj'
+no_items_copy: Ende nuk ka artikuj në këtë koleksion.
+file_count: 'Asnjë Skedar | Një Skedar | {count} Skedarë'
+no_files_copy: Këtu nuk ka skedarë.
+user_count: 'Asnjë Përdorues | Një Përdorues | {count} Përdorues'
+no_users_copy: Ende nuk ka përdorues në këtë rol.
+webhooks_count: 'Asnjë Webhook | Një Webhook | {count} Webhooks'
+no_webhooks_copy: Ende nuk është konfiguruar asnjë webhook. Filloni duke krijuar një më poshtë.
+no_notifications: Asnjë Njoftim
+no_notifications_copy: Ju jeni përditësuar plotësisht!
+activity_log: Regjistri i Aktivitetit
+all_items: Të gjitha Artikujt
+any: Çdo
+csv: CSV
+no_collections: Asnjë Koleksion
+create_collection: Krijo Koleksion
+no_collections_copy_admin: Ju nuk keni asnjë Koleksion ende. Klikoni butonin më poshtë për të filluar.
+no_collections_copy: Ju nuk keni asnjë Koleksion ende. Ju lutemi kontaktoni administratorin e sistemit.
+relationship_not_setup: Marrëdhënia nuk është konfiguruar siç duhet
+no_singleton_relations: Marrëdhëniet me Singleton nuk mbështeten
+display_template_not_setup: Opsioni i shabllonit të shfaqjes është konfiguruar gabim
+collection_field_not_setup: Opsioni i fushës së koleksionit është konfiguruar gabim
+select_a_collection: Zgjidh një Koleksion
+select_a_field: Zgjidh një Fushë
+active: Aktiv
+move_to: Zhvendos në...
+copy: Kopjo
+copy_to: Kopjo në...
+no_other_dashboards_copy: Ju nuk keni asnjë Dashboard tjetër ende.
+inactive: Joaktiv
+users: Përdorues
+activity: Aktivitet
+activity_item: Artikull Aktiviteti
+action: Veprim
+ip_address: Adresa IP
+user_agent: Agjenti i Përdoruesit
+origin: Origjina
+webhooks: Webhooks
+decimals: Decimale
+value_decimals: Vlera Decimale
+min_value: Vlera Minimale
+max_value: Vlera Maksimale
+automatic: Automatik
+field_width: Gjerësia e Fushës
+add_filter: Shto Filter
+upper_limit: Kufi i sipërm...
+lower_limit: Kufi i poshtëm...
+user_directory: Drejtoria e Përdoruesit
+documentation: Dokumentacion
+sidebar: Shtyllë Anësore
+duration: Kohëzgjatje
+charset: Set Karakteresh
+second: sekondë
+file_moved: Skedari u Zhvendos
+collection_created: Koleksioni u Krijua
+modified_on: Modifikuar Më
+card_size: Madhësia e Kartës
+sort_field: Fusha e Renditjes
+add_sort_field: Shto Fushë Renditjeje
+sort: Rendit
+status: Statusi
+remove: Hiq
+toggle_manual_sorting: Ndërro Renditjen Manualisht
+bookmark_doesnt_exist: Faqerojtësi Nuk Ekziston
+bookmark_doesnt_exist_copy: Faqerojtësi që po përpiqeni të hapni nuk mund të gjendet.
+bookmark_doesnt_exist_cta: Kthehu te koleksioni
+select_an_item: Zgjidh një artikull...
+edit: Modifiko
+enabled: Aktivizuar
+disable_tfa: Çaktivizo 2FA
+admin_disable_tfa_text: Jeni i sigurt që doni të çaktivizoni 2FA për këtë përdorues?
+tfa_setup: Konfiguro 2FA
+tfa_scan_code: Skano kodin në aplikacionin tuaj autentifikues për të përfunduar konfigurimin e 2FA
+enter_otp_to_disable_tfa: Shkruaj OTP-në për të çaktivizuar 2FA
+create_account: Krijo Llogari
+account_created_successfully: Llogaria u Krijua me Sukses
+auto_fill: Plotesim Automatik
+corresponding_field: Fusha Korrespondente
 errors:
+  COLLECTION_NOT_FOUND: "Koleksioni nuk ekziston"
+  FIELD_NOT_FOUND: Fusha nuk u gjet
+  FORBIDDEN: I ndaluar
+  INVALID_CREDENTIALS: Emri i përdoruesit ose fjalëkalimi i gabuar
+  INVALID_OTP: Fjalëkalimi i gabuar njëherësh
+  INVALID_PAYLOAD: Payload i pavlefshëm
+  INVALID_PROVIDER: Përdoruesi i përket një ofruesi tjetër autentikimi
+  INVALID_QUERY: Pyetje e pavlefshme
+  INVALID_CONFIG: Konfigurim i pavlefshëm
+  INVALID_TOKEN: Token i pavlefshëm
+  INVALID_IP: Adresa IP nuk lejohet
+  INVALID_USER: Autentifikimi i përdoruesit dështoi
+  ITEM_LIMIT_REACHED: Limiti i artikujve arriti
+  ITEM_NOT_FOUND: Artikulli nuk u gjet
+  ROUTE_NOT_FOUND: Nuk u gjet
+  RECORD_NOT_UNIQUE: U detektua vlerë e përsëritur
+  USER_SUSPENDED: Përdoruesi është pezulluar
+  CONTAINS_NULL_VALUES: Fusha përmban vlera null
+  UNPROCESSABLE_ENTITY: Entitet i papërpunueshëm
+  INTERNAL_SERVER_ERROR: Gabim i papritur
   NOT_NULL_VIOLATION: Vlera nuk mund të jetë null
+  ILLEGAL_ASSET_TRANSFORMATION: Burimi i imazhit është shumë i madh për të paraparë
+  VALUE_TOO_LONG: Vlera është shumë e gjatë
+  VALUE_OUT_OF_RANGE: Vlera është jashtë rangut
+  INVALID_FOREIGN_KEY: Kyç i pavlefshëm i huaj
+  UNKNOWN: Gabim i papritur
+  GRAPHQL_VALIDATION_EXCEPTION: Përjashtim Validimi GraphQL
+  SERVICE_UNAVAILABLE: Shërbimi nuk është i disponueshëm
+  UNSUPPORTED_MEDIA_TYPE: Lloj i papërkrahur media
+  UNEXPECTED_RESPONSE: Përgjigje e papritur
+  TOKEN_EXPIRED: Token ka skaduar
+  RANGE_NOT_SATISFIABLE: Rang i pavlefshëm
+  METHOD_NOT_ALLOWED: Metodë e palëjuar
+  REQUESTS_EXCEEDED: Limiti i kërkesave është arritur
+  CONTENT_TOO_LARGE: Artikulli / skedari i paraqitur është shumë i madh
+security: Siguria
+value_hashed: Vlera është Hashuar Sigurisht
+bookmark_name: Emri i Faqerojtësit...
+create_bookmark: Krijo Faqerojtës
+edit_bookmark: Modifiko Faqerojtësin
+edit_personal_bookmark: Modifiko Faqerojtësin Personal
+edit_role_bookmark: Modifiko Faqerojtësin e Rolit
+edit_global_bookmark: Modifiko Faqerojtësin Global
+cannot_edit_role_bookmarks: Nuk mund të Modifikoni Faqerojtësit e Rolit
+cannot_edit_global_bookmarks: Nuk mund të Modifikoni Faqerojtësit Globalë
+bookmarks: Faqerojtësit
+presets: Paracaktuar
+unexpected_error: Gabim i papritur
+unexpected_error_copy: Ka ndodhur një gabim i papritur. Ju lutem provoni përsëri më vonë.
+copy_details: Kopjo Detajet
+no_app_access: S'ka Akses në Aplikacion
+no_app_access_copy: Ky përdorues nuk ka leje për të përdorur aplikacionin e administrimit.
+password_reset_sent: Nëse keni një llogari, kemi dërguar një lidhje të sigurt për të rivendosur fjalëkalimin tuaj
+password_reset_successful: Fjalëkalimi u rivendos me sukses
+back: Mbrapa
+filter: Filtri
+edit_image: Modifiko Imazhin
+editing_image: Po Modifikohet Imazhi
+square: Katror
+free: Lirë
+flip_horizontal: Flip Horizontalisht
+flip_vertical: Flip Vertikalisht
+aspect_ratio: Proporcioni i Aspektit
+rotate: Rrotullo
+all_users: Të gjithë Përdoruesit
+delete_collection: Fshi Koleksionin
+update_collection_success: Përditësoi Koleksionin me Sukses
+delete_collection_success: Fshi Koleksionin me Sukses
+make_collection_visible: Bëj Koleksionin të Dukshëm
+make_collection_hidden: Bëj Koleksionin të Fshehur
+make_folder_visible: Bëj Dosjen të Dukshme
+make_folder_hidden: Bëj Dosjen të Fshehur
+goto_collection_content: Shiko Përmbajtjen
+start_end_of_count_items: '{start}-{end} nga {count} artikuj'
+start_end_of_count_filtered_items: '{start}-{end} nga {count} artikuj të filtruar'
+one_item: '1 artikull'
+one_filtered_item: '1 artikull i filtruar'
+delete_collection_are_you_sure: >-
+  Jeni i sigurt që doni të fshini koleksionin "{collection}"? Kjo do të fshijë koleksionin dhe të gjithë artikujt brenda tij. Ky veprim është i përhershëm.
+delete_folder_are_you_sure: Jeni i sigurt që doni të fshini dosjen "{folder}"? Dosjet e brendshme dhe koleksionet do të zhvendosen në nivelin më të lartë.
+delete_collection_peer_dependencies: Fushat e mëposhtme do të fshihen gjithashtu, pasi janë të lidhura me koleksionin aktual.
+collections_shown: Koleksionet e Shfaqura
+visible_collections: Koleksionet e Dukshme
+hidden_collections: Koleksionet e Fshehura
+show_hidden_collections: Shfaq Koleksionet e Fshehura
+hide_hidden_collections: Fshi Koleksionet e Fshehura
+show_header: Shfaq Kryeartikullin
+unmanaged_collections: Koleksionet e Pamënaxhuara
+system_collections: Koleksionet e Sistemit
+placeholder: Mbushësi
+icon_left: Ikona Majtas
+icon_right: Ikona Djathtas
+count_other_revisions: '{count} Rivizioni të Tjerë'
+font: Fonti
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Ndarës
+color: Ngjyra
+circle: Rreth
+empty_item: Artikull Bosh
+log_in_with: 'Hyr me {provider}'
+conditional_styles: Stile Kushtore
+advanced_settings: Cilësime të Avancuara
+advanced_filter: Filtrim i Avancuar
+delete_advanced_filter: Fshi Filterin
+change_advanced_filter_operator: Ndrysho Operatorin
+advanced: Avancuar
+operators:
+  eq: Është e barabartë me
+  neq: Nuk është e barabartë me
+  lt: Është më e vogël se
+  gt: Është më e madhe se
+  lte: Është më e vogël ose e barabartë me
+  gte: Është më e madhe ose e barabartë me
+  in: Është një prej
+  nin: Nuk është një prej
+  null: Është null
+  nnull: Nuk është null
+  contains: Përmban
+  ncontains: Nuk përmban
+  icontains: Përmban (insensitive)
+  starts_with: Fillon me
+  nstarts_with: Nuk fillon me
+  ends_with: Mbaron me
+  nends_with: Nuk mbaron me
+  between: Është midis
+  nbetween: Nuk është midis
+  empty: Është bosh
+  nempty: Nuk është bosh
+  all: Përmban këto Çelësa
+  has: Përmban disa nga këto Çelësa
+  intersects: Përkryhet
+  nintersects: Nuk Përkryhet
+  intersects_bbox: Përkryhet me Kutinë Kufizuese
+  nintersects_bbox: Nuk Përkryhet me Kutinë Kufizuese
+  regex: Përputhet me RegExp
+custom_validation_message: Mesazh i Personalizuar i Validimit
+loading: Po Ngarkohet...
+drop_to_upload: Lësho për të Ngarkuar
+item: Artikull
+items: Artikuj
+upload_file: Ngarko Skedar
+upload_file_indeterminate: Po Ngarkohet Skedari...
+upload_file_success: Skedari u Ngarkua
+upload_files_indeterminate: 'Po Ngarkohen Skedarët {done}/{total}'
+upload_files_success: '{count} Skedarë u Ngarkuan'
+upload_pending: Ngarkimi në Pritje
+drag_file_here: Tërhiqe dhe Lësho Skedarin Këtu
+click_to_browse: Kliko për të Shfletuar
+interface_options: Opsionet e Ndërfaqes
+layout_options: Opsionet e Faqosjes
+rows: Rreshta
+columns: Kolona
+collection_setup: Setup i Koleksionit
+optional_system_fields: Fushat Opsionale të Sistemit
 value_unique: Vlera duhet të jetë unike
+all_activity: Të Gjitha Aktivitetet
+create_item: Krijo Artikull
+display_template: Shabllon i Shfaqjes
+language_display_template: Shabllon i Shfaqjes së Gjuhës
+translations_display_template: Shabllon i Shfaqjes së Përkthimeve
+n_items_selected: 'Nuk janë Zgjedhur Artikuj | 1 Artikull i Zgjedhur | {n} Artikuj të Zgjedhur'
+per_page: Për Faqe
+all_files: Të gjitha Skedarët
+my_files: Skedarët e mi
+recent_files: Skedarët e fundit
+create_folder: Krijo Dosje
+edit_folder: Modifiko Dosje
+folder_name: Emri i Dosjes...
+folder_key: Çelësi i Dosjes...
+add_file: Shto Skedar
+replace_file: Zëvendëso Skedar
+no_results: Pa Rezultate
+no_results_copy: Rregullo ose hiq filtrat e kërkimit për të parë rezultatet.
+no_visible_fields: Formë Bosh
+no_visible_fields_copy: Kjo formë nuk ka fusha të dukshme.
+clear_filters: Hiq Filtrat
+saves_automatically: Ruhet Automatikisht
+role: Roli
+edit_role: Modifiko Roli
+rule: Rregull
+user: Përdorues
+no_presets: Pa Para-caktuar
+no_presets_copy: Nuk ka asnjë para-caktim ose faqeshënues të ruajtur ende.
+no_presets_cta: Shto Para-caktim
+presets_only: Vetëm Para-caktuar
+create: Krijo
+on_create: Gjatë Krijimit
+on_update: Gjatë Përditësimit
+read: Lexo
+update: Përditëso
+delete: Fshi
+select_fields: Zgjidh Fushat
+format_text: Format Teksti
+format_value: Format Vlera
+abbreviate_value: Shkurto Vlerën
+operator: Operator
+bold: Trashë
+toggle: Ndërrimi
+icon_on: Icon Aktive
+icon_off: Icon Joaktive
+label: Etiketë
+flows: Rrjedha
+flow: Rrjedh
+select_a_flow: Zgjidh një Rrjedhë
+run_flow_confirm: A je i sigurtë që dëshiron të ekzekutosh këtë rrjedhë?
+run_flow_on_current_collection: Zbato Rrjedhën në Koleksionin Aktual
+run_flow_on_current: Zbato Rrjedhën në Artikullin Aktual
+run_flow_on_current_edited_confirm: Ky artikull mund të përditësohet nga kjo rrjedhë, a je i sigurtë që dëshiron të ekzekutosh atë?
+run_flow_on_selected: Zgjidh Një ose më Shumë Artikuj Së Pari | Zbato Rrjedhën në 1 Artikull të Zgjedhur | Zbato Rrjedhën në {n} Artikuj të Zgjedhur
+run_flow: Zbato Rrjedhën
+run_flow_success: Rrjedha "{flow}" u ekzekutua me sukses
+field_name_placeholder: Shkruaj emrin e fushës...
+field_key_placeholder: Shkruaj çelësin e fushës...
+trigger: Shkaktues
+trigger_options: Opsionet e Shkaktuesit
+view_trigger: Shiko Shkaktuesin
+create_trigger: Krijo Shkaktues
+trigger_setup: Setup i Shkaktuesit
+change_trigger: Ndërro Shkaktuesin
+flow_delete_confirm: A je i sigurtë që dëshiron të fshijësh Rrjedhën "{flow}"? Ky veprim nuk mund të anulohet.
+set_flow_active: Aktivizo Rrjedhën
+set_flow_inactive: Çaktivizo Rrjedhën
+edit_flow: Modifiko Rrjedhën
+delete_flow: Fshi Rrjedhën
+no_other_flows_copy: Ende nuk ke ndonjë Rrjedhë tjetër.
+no_flows: Pa Rrjedha
+no_flows_copy: Ende nuk ke ndonjë Rrjedhë.
+create_flow: Krijo Rrjedhë
+creating_new_flow: Po Krijohet Rrjedhë e Re
+updating_flow: Po Përditësohet Rrjedhë
+flow_setup: Setup i Rrjedhës
+flow_name: Emri
+flow_tracking: Aktiviteti & Ndjekja e Regjistrave
+flow_tracking_all: Ndjeke Aktivitetin & Regjistrat
+flow_tracking_activity: Ndjeke Vetëm Aktivitetin
+flow_tracking_null: Mos Ndjeke Asgjë
+start_flow: Fillon Rrjedhën
+stop_flow: Ndalon Rrjedhën
+create_operation: Krijo Operacion
+edit_operation: Modifiko Operacion
+code: Kodi
+operation_options: Opsionet e Operacionit
+operation_name: Emri i operacionit...
+operation_key: Identifikuesi për referencë...
+operation_key_unique_error: Çelësat e operacionit duhet të jenë unikë në një Rrjedhë
+operation_handle_resolve: 'Zgjidh: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
+operation_handle_reject: 'Refuzo: Kliko për të Shtuar ose Tërhiq për të Rirregulluar'
+insights: Insight-e
+dashboard: Dashboard
+panel: Paneli
+panel_options: Opsionet e Panelit
+panel_header: Koka e Panelit
+panel_name_placeholder: Emërtoni këtë panel...
+panel_note_placeholder: Detaje opsionale rreth këtij paneli...
+panel_delete_confirm: A je i sigurtë që dëshiron të fshijësh këtë panel? Ky veprim nuk mund të anulohet.
+list_panel_allow_edit: Lejo Redaktimin në Varg
+dashboard_delete_confirm: A je i sigurtë që dëshiron të fshijësh këtë panel? Ky veprim nuk mund të anulohet.
+edit_dashboard: Modifiko Dashboard
+delete_dashboard: Fshi Dashboard
+visible: I dukshëm
+prefix_placeholder: Teksti para vlerës...
+suffix_placeholder: Teksti pas vlerës...
+decimals_placeholder: Numri i vendeve pas presjes...
+no_dashboards: Pa Dashboards
+no_dashboards_copy: Ende nuk ke ndonjë Dashboards.
+create_dashboard: Krijo Dashboard
+dashboard_name: Emri i Dashboard
+no_data: Pa të Dhëna
+no_data_in_flow: Nuk u prodhua ose u aksesua asnjë të dhënë brenda kësaj Rrjedhë
+accountability: Përgjegjësia
+payload: Ngarkesa
+details: Detajet
+full_screen: Ekran i Plotë
+full_text_search: Kërkim i Plotë i Tekstit
+edit_panels: Modifiko Panelet
+center_align: Qendro
+left_align: Aligno Majtas
+right_align: Aligno Djathtas
+fit_to_screen: Përshtat Ekranin
+image_url: Url e Imazhit
+alt_text: Teksti
+media: Media
+quality: Cilësia
+width: Gjerësia
+height: Lartësia
+transformation_preset_key: Çelësi i Paracaktuar i Transformimit
+source: Burimi
+url_placeholder: Shkruaj një url...
+display_text: Shfaq Tekstin
+display_text_placeholder: Shkruaj një tekst për të shfaqur...
+interface_group_text_and_numbers: Tekst & Numra
+interface_group_selection: Zgjedhja
+interface_group_relational: Relacionale
+interface_group_presentation: Prezantimi
+interface_group_groups: Grupet
+interface_group_other: Të tjera
+tooltip: Ndihmë
+tooltip_placeholder: Shkruaj një ndihmë...
+unlimited: I pakufizuar
+open_link_in: Hap lidhjen në
+new_tab: Skedë të re
+current_tab: Skedën aktuale
+save_image: Ruaj Imazhin
+save_media: Ruaj Median
+wysiwyg_options:
+  aligncenter: Qendro
+  alignjustify: Justifiko
+  alignleft: Aligno Majtas
+  alignnone: Pa Alignim
+  alignright: Aligno Djathtas
+  forecolor: Ngjyra e Paraplanit
+  backcolor: Ngjyra e Prapaplanit
+  bold: Trashë
+  italic: Italik
+  underline: Nën të Vizuar
+  strikethrough: Nëpër të Vizuar
+  subscript: Nënshkruar
+  superscript: Mbi të Shkruar
+  codeblock: Kodi
+  blockquote: Citati
+  bullist: Listë me Pika
+  numlist: Listë me Numra
+  hr: Rregulli Horizontal
+  link: Shto/Modifiko Lidhjen
+  unlink: Hiq Lidhjen
+  media: Shto/Modifiko Median
+  image: Shto/Modifiko Imazhin
+  copy: Kopjo
+  cut: Prit
+  paste: Ngjit
+  heading: Kryesore
+  h1: Kryesore 1
+  h2: Kryesore 2
+  h3: Kryesore 3
+  h4: Kryesore 4
+  h5: Kryesore 5
+  h6: Kryesore 6
+  fontselect: Zgjidh Shkronjën
+  fontsizeselect: Zgjidh Madhësinë e Shkronjës
+  indent: Indent
+  outdent: Outdent
+  undo: Anulo
+  redo: Rikthe
+  remove: Hiq
+  removeformat: Hiq Formatin
+  selectall: Zgjidh Të Gjitha
+  table: Tabela
+  visualaid: Shiko elementet e padukshme
+  source_code: Kodi Burimor
+  fullscreen: Kodi Burimor
+  directionality: Drejtimi
+dropdown: Zbritëse
+choices: Zgjedhje
+choices_option_configured_incorrectly: Opsionet e zgjedhjeve janë konfiguruar gabim
+deselect: Anulo Zgjedhjen
+deselect_all: Anulo të Gjitha
+other: Të tjera...
+adding_user: Po shtohet Përdoruesi
+unknown_user: Përdorues i Panjohur
+creating_in: 'Po krijohet artikulli në {collection}'
+editing_in: 'Po modifikohet artikulli në {collection}'
+viewing_in: 'Po shikohet artikulli në {collection}'
+creating_unit: 'Po krijohet {unit}'
+editing_unit: 'Po modifikohet {unit}'
+editing_in_batch: 'Modifikim në masë i {count} artikujve'
+no_options_available: Nuk ka opsione të disponueshme
+settings_data_model: Modeli i të Dhënave
+settings_permissions: Role dhe Leje
+settings_project: Cilësimet e Projektit
+settings_webhooks: Webhooks
+settings_flows: Rrjedha
+settings_presets: Cilësimet e Paracaktuara dhe Faqerojtësit
+settings_translations: Përkthimet e Personalizuara
+one_or_more_options_are_missing: Mungon një ose më shumë opsione
+scope: Shtrirje
+actions: Veprimet
+select: Zgjidh...
+layout: Struktura
+tree_view: Shikim si Pemë
+changes_are_permanent: Ndryshimet janë të përhershme
+preset_name_placeholder: Shërben si paracaktuar kur është bosh...
+preset_search_placeholder: Kërko...
+editing_preset: Modifikim i Cilësimeve të Paracaktuara
+layout_preview: Parashikim i Strukturës
+layout_setup: Konfigurim i Strukturës
+data: Të Dhënat
+unsaved_changes: Ndryshime të Pa Ruajtura
+unsaved_changes_copy: Je i sigurt që dëshiron të lësh këtë faqe?
+discard_changes: Anulo Ndryshimet
+discard_all_changes: Anulo të Gjitha Ndryshimet
+discard_changes_copy: Je i sigurt që dëshiron të anulosh të gjitha ndryshimet e bëra?
+show_x_axis: Shfaq Aksin X
+show_y_axis: Shfaq Aksin Y
+keep_editing: Vazhdo të Modifikosh
+page_help_collections_overview: '**Përmbledhje e Koleksioneve** — Lista e të gjitha koleksioneve të cilave ke qasje.'
+page_help_collections_collection: >-
+  **Shfleto Artikujt** — Liston të gjitha artikujt {collection} të cilave ke qasje. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
+page_help_collections_item: >-
+  **Detajet e Artikullit** — Një formë për shikimin dhe menaxhimin e këtij artikulli. Kjo anësore gjithashtu përmban një histori të plotë të rishikimeve, dhe komente të përmbysura.
+page_help_activity_collection: >-
+  **Shfleto Aktivitetin** — Një listë e plotë e të gjitha aktiviteteve të sistemit dhe të përmbajtjes së përdoruesit tënd.
+page_help_docs_global: >-
+  **Përmbledhje e Dokumentacionit** — Dokumente të përshtatura specifikisht për versionin dhe skemën e këtij projekti.
+page_help_files_collection: >-
+  **Biblioteka e Skedarëve** — Liston të gjitha aktet e skedarëve të ngarkuara në këtë projekt. Personalizo strukturën, filtrat dhe renditjen për ta përshtatur pamjen tënde, dhe madje ruaj faqerojtësit e këtyre konfigurimeve të ndryshme për akses të shpejtë.
+page_help_files_item: >-
+  **Detajet e Skedarit** — Një formë për menaxhimin e metatë dhënave të skedarit, redaktimin e asetit origjinal dhe përditësimin e cilësimeve të aksesit.
+page_help_settings_project: "**Cilësimet e Projektit** — Opsionet globale të konfigurimit të projektit tënd."
+page_help_settings_datamodel_collections: >-
+  **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
+page_help_settings_datamodel_fields: >-
+  **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
+page_help_settings_roles_collection: '**Shfleto Rolet** — Liston rolet e Administratorit, Publikut dhe rolet e personalizuara të Përdoruesit.'
+page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
+page_help_settings_presets_collection: >-
+  **Shfleto Cilësimet e Paracaktuara** — Liston të gjitha cilësimet e paracaktuara në projekt, duke përfshirë: faqerojtësit e përdoruesit, rolit dhe globalë, si dhe pamjet e paracaktuara.
+page_help_settings_presets_item: >-
+  **Detajet e Cilësimeve të Paracaktuara** — Një formë për menaxhimin e faqerojtësve dhe cilësimeve të paracaktuara të koleksionit.
+page_help_settings_webhooks_collection: '**Shfleto Webhooks** — Liston të gjitha webhooks brenda projektit.'
+page_help_settings_webhooks_item: '**Detajet e Webhook** — Një formë për krijimin dhe menaxhimin e webhooks të projektit.'
+page_help_settings_flows_collection: '**Shfleto Flujot** — Liston të gjitha flujot brenda projektit.'
+page_help_settings_flows_item: '**Detajet e Flujos** — Hapësira për menaxhimin e një ose më shumë operacionesh.'
+page_help_settings_translations_collection: '**Shfleto Përkthimet e Personalizuara** — Liston të gjitha përkthimet e personalizuara brenda projektit.'
+page_help_settings_translations_item: '**Detajet e Përkthimit të Personalizuar** — Një formë për shikimin dhe menaxhimin e këtij artikulli.'
+page_help_users_collection: '**Drejtoria e Përdoruesve** — Liston të gjithë përdoruesit e sistemit brenda këtij projekti.'
+page_help_users_item: >-
+  **Detajet e Përdoruesit** — Menaxho informacionin e llogarisë sënde, ose shiko detajet e përdoruesve të tjerë.
+page_help_insights_overview: '**Insights** — Lista e kokpitëve të cilave ke qasje.'
+page_help_insights_dashboard: '**Dashboard** — Hapësira për menaxhimin e një ose më shumë paneleve'
+activity_feed: Feed Aktiviteti
+add_new: Shto të Ri
+create_new: Krijo të Ri
+all: Të Gjithë
+none: Asnjë
+no_layout_collection_selected_yet: Ende nuk është zgjedhur asnjë strukturë/koleksion
+batch_delete_confirm: >-
+  Nuk janë zgjedhur artikuj | A je i sigurtë që dëshiron të fshish këtë artikull? Ky veprim nuk mund të zhbëhet. | A je i sigurtë që dëshiron të fshish këto {count} artikuj? Ky veprim nuk mund të zhbëhet.
+cancel: Anulo
+no_upscale: Mos zgjero imazhet
+collection: Koleksion
+collections: Koleksione
+content: Përmbajtje
+singleton: Singleton
+singleton_label: Trajto si objekt të vetëm
+system_fields_locked: Fushat e sistemit janë të bllokuara dhe nuk mund të redaktohen
+directus_collection:
+  directus_activity: Regjistrat e përgjegjshëm për të gjitha eventet
+  directus_collections: Konfigurimi shtesë i koleksionit dhe metadata
+  directus_dashboards: Dashboards brenda modulit të Insights
+  directus_fields: Konfigurimi shtesë i fushave dhe metadata
+  directus_files: Metadata për të gjitha asetet e menaxhuara të skedarëve
+  directus_flows: Flujot e automatizimit
+  directus_folders: Ofron drejtoritë virtuale për skedarë
+  directus_migrations: Cila version i bazës së të dhënave që po përdorni
+  directus_notifications: Njoftimet e dërguara për përdoruesit
+  directus_operations: Operacionet që drejtohen në Flujot
+  directus_panels: Panelet individuale brenda kokpitëve të Insights
+  directus_permissions: Lejet e qasjes për çdo rol
+  directus_presets: Cilësimet e paracaktuara për parazgjedhjet e koleksionit dhe faqerojtësit
+  directus_relations: Konfigurimi i marrëdhënieve dhe metadata
+  directus_revisions: Instantanet e të dhënave për të gjithë aktivitetin
+  directus_roles: Grupet e lejeve për përdoruesit e sistemit
+  directus_sessions: Informacioni i sesioneve të përdoruesit
+  directus_settings: Opsionet e konfigurimit të projektit
+  directus_shares: Gjurmët e artikujve të ndarë jashtë
+  directus_users: Përdoruesit e sistemit për platformën
+  directus_webhooks: Konfigurimi për kërkesat e bazuar në evente të HTTP
+  directus_translations: Përkthimet e personalizuara
 fields:
+  directus_activity:
+    item: Çelësi Kryesor i Artikullit
+    action: Veprimi
+    collection: Koleksion
+    timestamp: Veprimi Mbi
+    user: Veprimi Nga
+    comment: Komenti
+    user_agent: Agjenti i Përdoruesit
+    origin: Origjina
+    ip: Adresa IP
+    revisions: Rishikimet
+  directus_collections:
+    collection: Koleksion
+    icon: Ikona
+    note: Shënim
+    color: Ngjyra
+    display_template: Shabllon i Shfaqjes
+    hidden: I Fshehur
+    singleton: Singleton
+    translations: Përkthimet e Emrave të Koleksionit
+    archive_app_filter: Filtri i Aplikacionit të Arkivimit
+    archive_value: Vlera e Arkivimit
+    unarchive_value: Vlera e De-arkivimit
+    sort_field: Fusha e Renditjes
+    accountability: Gjurmimi i Aktivitetit & Rishikimit
+    archive_field: Fusha e Arkivimit
+    item_duplication_fields: Fushat e Duplikimit të Artikullit
+  directus_files:
+    $thumbnail: Miniaturë
+    title: Titulli
+    description: Përshkrim
+    tags: Etiketa
+    location: Vendndodhje
+    storage: Ruajtje
+    filename_disk: Emri i Skedarit (Disk)
+    filename_download: Emri i Skedarit (Shkarkim)
+    metadata: Metadata
+    type: Lloji i Mime
+    filesize: Madhësia e Skedarit
+    modified_by: Modifikuar Nga
+    modified_on: Modifikuar Më
+    created_on: Krijuar Më
+    created_by: Krijuar Nga
+    embed: Incorporo
+    uploaded_by: Ngarkuar Nga
+    folder: Dosje
+    width: Gjerësi
+    uploaded_on: Ngarkuar Mbi
+    height: Lartësi
+    charset: Set Karakteresh
+    duration: Kohëzgjatje
   directus_users:
+    first_name: Emri
+    last_name: Mbiemri
+    email: Email
+    password: Fjalëkalimi
+    avatar: Avatar
+    location: Vendndodhje
+    title: Titulli
+    description: Përshkrim
+    tags: Etiketa
+    user_preferences: Preferencat e Përdoruesit
     language: Gjuha
+    theme: Tema
+    theme_auto: Automatike (Bazuar në Sistemin)
+    theme_light: Mënyrë e Ndritshme
+    theme_dark: Mënyrë e Errët
+    tfa_secret: Autentikimi me Dy Faktorë
+    admin_options: Opsionet e Adminit
+    status: Statusi
+    status_draft: Draft
+    status_invited: I ftuar
+    status_active: Aktiv
+    status_suspended: I pezulluar
+    status_archived: I arkivuar
+    role: Roli
+    token: Token
+    provider: Ofruesi
+    external_identifier: Identifikuesi i Jashtëm
+    last_page: Faqja e Fundit
+    last_access: Qasja e Fundit
+    email_notifications: Njoftime Email
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    mapping: Hartëzim
+    basemaps: Harta Bazë
+    basemaps_raster: Raster
+    basemaps_tile: TileJSON Raster
+    basemaps_style: Stili i Mapbox
+    mapbox_key: Tokeni i Qasjes së Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atributim
+    attribution_placeholder: '© Kontribuesit e OpenStreetMap'
+    transforms_note: Emri i metodes Sharp dhe argumentet e saj. Shihni https://sharp.pixelplumbing.com/api-constructor për më shumë informacion.
+    additional_transforms: Transformime Shtesë
+    project_name: Emri i Projektit
+    project_descriptor: Përshkrimi i Projektit
+    project_url: URL e Projektit
+    project_color: Ngjyra e Projektit
+    project_logo: Logoja e Projektit
+    default_language: Gjuha e Parazgjedhur
+    branding: Branding & Stil
+    public_foreground: Sfondi i Jashtëm
+    public_background: Sfondi Publik
+    public_note: Shënim Publik
+    auth_password_policy: Politika e Fjalëkalimit të Auth
+    auth_login_attempts: Përpjekjet e Hyrjes Auth
+    files_and_thumbnails: Skedarët & Ruajtja
+    storage_default_folder: Dosja e Parazgjedhur
+    storage_asset_presets: Paracaktimi i Transformimeve
+    storage_asset_transform: Transformime të Lejuara
+    overrides: Anashkalimet e Aplikacionit
+    custom_css: CSS Personalizuar
     module_bar: Shiriti i Moduleve
+    transformations_all: Lejo të gjitha transformimet
+    transformations_none: Çaktivizo transformimet
+    transformations_presets: Kufizo transformimet në paracaktimet më poshtë
+    image_editor: Redaktori i Imazheve
+    custom_aspect_ratios: Raporte Personalizuar të Aspekteve
+  directus_shares:
+    name: Emri
+    role: Roli
+    password: Fjalëkalimi
+    date_start: Data e Fillimit
+    date_end: Data e Mbarimit
+    max_uses: Përdorime Maksimale
+    times_used: Herët e Përdorur
   directus_fields:
+    collection: Emri i Koleksionit
+    icon: Ikona e Koleksionit
+    note: Shënim
+    hidden: I Fshehur
+    singleton: Singleton
     translation: Përkthimet e Emrit të Fushës
+    display_template: Template
   directus_roles:
     name: Emri i Rolit
+    icon: Ikona e Rolit
+    description: Përshkrim
+    app_access: Qasja në Aplikacion
+    admin_access: Qasja Admin
+    ip_access: Qasja IP
+    enforce_tfa: Kërko 2FA
+    users: Përdoruesit në Rol
+    module_list: Navigacioni i Moduleve
+  directus_webhooks:
+    name: Emri
+    method: Metoda
+    status: Statusi
+    data: Të Dhënat
+    header: Header
+    value: Vlera
+    headers: Header të Kërkesës
+    data_label: Dërgo Të Dhënat e Ngjarjes
+    triggers: Shkaktuesit
+    actions: Veprimet
+    collections: Koleksione
 field_options:
+  directus_settings:
+    project_name_placeholder: Projekti im...
+    project_color_note: Login & Mjedis i Logos
+    project_logo_note: White 40x40 SVG/PNG
+    public_note_placeholder: Një mesazh i shkurtër, publik që mbështet formatimin e markdown...
+    security_divider_title: Siguria
+    auth_password_policy:
+      none_text: Asnjë – Nuk rekomandohet
+      weak_text: Dobët – Minimumi 8 Karaktere
+      strong_text: I Fortë – Me të Madhe / Me të Vogël / Numra / Speciale
+    storage_asset_presets:
+      fit_label: Përshtatje
+      upscaling: Rritje e Madhësisë
+      fit:
+        contain_text: Përmbaj (ruaj raportin e aspektit)
+        cover_text: Mbulo (detyron madhësinë e saktë)
+        fit_text: Përshtat brenda
+        outside_text: Përshtat jashtë
+    additional_transforms: Transformime Shtesë
+    transforms_note: Emri i metodes Sharp dhe argumentet e saj. Shihni https://sharp.pixelplumbing.com/api-constructor për më shumë informacion.
+    mapbox_key: Tokeni i Qasjes së Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Harta Bazë
+    basemaps_name_placeholder: Shkruani emrin e hartës bazë...
+    basemaps_raster: Raster
+    basemaps_tile: TileJSON Raster
+    basemaps_style: Stili i Mapbox
+    files_divider_title: Skedarët & Miniaturat
+    overrides_divider_title: Anashkalimet e Aplikacionit
+  directus_activity:
+    login: Hyrje
+    create: Krijo
+    update: Përditëso
+    delete: Fshij
   directus_collections:
+    track_activity_revisions: Gjurmë Aktiviteti & Rishikime
+    only_track_activity: Gjurmë Vetëm Aktivitetin
+    do_not_track_anything: Mos Gjurmë Asgjë
+    collection_setup: Setup i Koleksionit
+    note_placeholder: Një përshkrim i këtij koleksioni...
+    hidden_label: Fshihe brenda Aplikacionit
+    singleton: Trajto si objekt të vetëm
     language: Gjuha
+    translation: Përkthim
+    translation_placeholder: Shkruani një përkthim...
+    collection_name: Emri i Koleksionit
+    singular_unit: Njësi në Numër Singular
+    plural_unit: Njësi në Numër Plural
     archive_divider: Arkivo
+    archive_field_placeholder: Zgjidh një fushë...
+    archive_app_filter: Aktivizo Filterin e Arkivimit të Aplikacionit
+    archive_value: Vlera e vendosur gjatë arkivimit...
+    unarchive_value: Vlera e vendosur gjatë çarkivimit...
+    sort_divider: Rendit
+    sort_field: Zgjidh një fushë...
+    accountability_divider: Përgjeg
+    duplication_divider: Përsëritje
+    preview_divider: Parashikim
+  directus_files:
+    title: Një titull unik...
+    description: Një përshkrim opsional...
+    location: Një vendndodhje opsionale...
+    storage_divider: Emërtimi i Skedarit
+    filename_disk: Emri në ruajtjen disk...
+    filename_download: Emri gjatë shkarkimit...
+  directus_roles:
+    name: Emri unik për këtë rol...
+    description: Përshkrimi i këtij roli...
+    ip_access: Shto IP të lejuara, lërë bosh për të lejuar të gjitha...
+    fields:
+      icon_name: Ikonë
+      name_name: Emri
+      name_placeholder: Shkruani një titull...
+      link_name: Lidhje
+      link_placeholder: URL relative ose absolute...
+    collections_name: Koleksione
+    collections_addLabel: Shto Koleksion...
+  directus_users:
+    preferences_divider: Preferencat e Përdoruesit
+    dropdown_auto: Automatike (Bazuar në Sistemin)
+    dropdown_light: Mënyrë e Ndritshme
+    dropdown_dark: Mënyrë e Errët
+    admin_divider: Opsionet e Adminit
+    status_dropdown_draft: Draft
+    status_dropdown_invited: I Ftuar
+    status_dropdown_active: Aktiv
+    status_dropdown_suspended: I pezulluar
+    status_dropdown_archived: I arkivuar
+    token: Shkruaj një token aksesues të sigurt...
+  directus_webhooks:
+    status_options_active: Aktiv
+    status_options_inactive: Joaktiv
+    data_label: Dërgo Të Dhënat e Ngjarjes
+    triggers_divider: Shkaktuesit
+    actions_create: Krijo
+    actions_update: Përditëso
+    actions_delete: Fshij
+    actions_login: Hyrje
+    headers:
+      header: Header
+      value: Vlera
+      add: Shto Header
+no_fields_in_collection: 'Nuk ka fusha në "{collection}" akoma'
+no_value: Pa vlerë
+do_nothing: Mos bëj asgjë
+generate_and_save_uuid: Gjenero dhe Ruaj UUID
+save_current_user_id: Ruaj ID e Përdoruesit Aktual
+save_current_user_role: Ruaj Rolin e Përdoruesit Aktual
+save_current_datetime: Ruaj Datën/Ora Aktuale
+always_open: Gjithmonë e Hapur
+start_open: Fillon e Hapur
+start_collapsed: Fillon e Mbyllur
+block: Bllok
+inline: Në vijë
+comment: Komenti
+live_preview:
+  enable: Aktivizo Parashikimin
+  disable: Çaktivizo Parashikimin
+  change_size: Ndrysho Përmasat e Shfaqjes
+  refresh: Rifresko Parashikimin
+  new_window: Hap në Dritare të Re
+  close_window: Hap në Pamje të Ndara
+  toggle_3d: Ndëro 3D
+shares: Ndaj
+unlimited_usage: Përdorim i Pakufizuar
+uses_left: S'ka mbetur asnjë përdorim | 1 përdorim i mbetur | {n} përdorime të mbetura
+no_shares: Asnjë ndarje për t'u shfaqur
+new_share: Ndarje e Re
+expired: Skaduar
+upcoming: E Ardhshme
+share: Ndaj
+share_item: Ndaj Artikull
+shared_with_you: Një artikull është ndarë me ju
+shared_enter_passcode: Shkruani kodin tuaj për të vazhduar...
+shared_leave_blank_for_unlimited: Lëreni bosh për të pakufizuar
+shared_times_remaining: Ky link mund të përdoret vetëm {n} herë
+shared_last_remaining: Ky link mund të përdoret vetëm një herë
+shared_uses_left: Për siguri shtesë, kjo faqe e ndarë është konfiguruar me një numër të limituar të shikimeve. Aktualisht ka mbetur {n} shikime, pas të cilave, faqja nuk do të jetë më e aksesueshme.
+share_access_page: Akseso Faqen e Ndarë
+share_access_not_found: Kjo faqe e ndarë ose nuk ekziston ose ka kaluar numrin maksimal të përdorimeve të lejuara.
+share_access_not_found_desc: Ju lutem kontaktoni një përdorues të autorizuar të këtij projekti për të kërkuar qasje.
+share_access_not_found_title: Faqe e Ndarë e Panjohur
+share_copy_link: Kopjo Lidhjen
+share_copy_link_success: Lidhja u Kopjua
+share_copy_link_error: Nuk mund të Kopjojë Lidhjen
+share_send_link: Dërgo Lidhjen
+relational_triggers: Shkaktuesit Relacional
+referential_action_field_label_m2o: Gjatë Fshirjes së {collection}...
+referential_action_field_label_o2m: Gjatë Hiqjes së {collection}...
+referential_action_no_action: Parandalo fshirjen
+referential_action_cascade: Fshi artikullin e {collection} (cascade)
+referential_action_set_null: Nullifiko fushën {field}
+referential_action_set_default: Vendos {field} në vlerën e paracaktuar
+choose_action: Zgjidh Veprimin
+continue_label: Vazhdo
+continue_as: >-
+  {name} është aktualisht i autentifikuar. Nëse njihni këtë llogari, shtypni vazhdo.
+editing_role: 'Roli {role}'
+creating_webhook: Po krijohet Webhook
+default_label: Parazgjedhur
+delete_label: Fshi
+delete_are_you_sure: >-
+  Ky veprim është përfundimtar dhe nuk mund të zhbëhet. A jeni i sigurt se doni të vazhdoni?
+delete_field_are_you_sure: >-
+  A jeni i sigurt se doni të fshini fushën "{field}"? Ky veprim nuk mund të zhbëhet.
+description: Përshkrim
+done: Përfunduar
+duplicate: Kopjo
+limit: Limit
+email: Email
+embed: Trupëzim
+fallback_icon: Ikonë Zëvendësuese
+field: Fushe | Fusha
+file: Skedar
+file_library: Biblioteka e Skedareve
+forgot_password: Harruat Fjalëkalimin
+hidden: I Fshehur
+hidden_in_group: I fshehur në {group}
+icon: Ikonë
+info: Info
+normal: Normal
+success: Sukses
+warning: Paralajmërim
+danger: Rrezik
+colors:
+  purple: Purpurt
+  blue: Blu
+  green: Gjelbër
+  yellow: Verdhë
+  orange: Portokalli
+  red: Kuqe
+  black: Zi
+  gray: Gri
+  white: Bardhë
+junction_collection: Koleksion Nodal
+latency: Latencë
+login: Hyr
+my_activity: Aktiviteti im
+not_authenticated: Jo i autentifikuar
+authenticated: I autentifikuar
+options: Opsione
+otp: Fjalëkalim i Njëherëshëm
+password: Fjalëkalimi
+permissions: Leje
+relationship: Marrëdhënie
+reset: Reset
+reset_password: Ndrysho Fjalëkalimin
+revisions: Rishikime
+no_revisions: Ende Asnjë Rishikim
+no_logs: Ende Asnjë Regjistrim
+revert: Kthehu
+save: Ruaj
+schema: Skemë
+search: Kërko
+select_existing: Zgjidh Ekzistuesin
+select_field_type: Zgjidh llojin e fushës
+select_interface: Zgjidh ndërfaqen
+settings: Parametra
+sign_in: Hyni
+sign_out: Dil
+sign_out_confirm: A jeni i sigurt se dëshironi të dilni?
+something_went_wrong: Diçka shkoi keq.
+sort_direction: Drejtimi i Renditjes
+export_location: Vendndodhja e Eksportimit
+export_started: Eksportimi ka filluar
+export_started_copy: Eksportimi juaj ka filluar. Ju do të njoftoheni kur të jetë gati për të shkarkuar.
+sort_asc: Rendit Në Ngritje
+sort_desc: Rendit Në Zbritje
+disable_sort: Çaktivizo Renditjen
+template: Template
+require_value_to_be_set: Kërko vlerën të jetë caktuar në krijim
+translation: Përkthim
+translation_placeholder: Shkruani një përkthim...
+value: Vlerë
+view_project: Shiko Projektin
+weeks: { }
+report_error: Raporto Gabimin
+start: Fillim
+table: Tabela
+list: Listë
+search_filter: Kërko & Filro
+enable_search_filter: Aktivizo kërkimin dhe filtrimin
+item_link: Lidhja e artikullit
+show_link_to_item: Shfaq një lidhje për artikullin
+navigate_to_item: Shko tek Artikulli
+undo_removed_item: Zhbëj Hiqjen e Artikullit
+remove_item: Hiq Artikullin
+delete_item: Fshi Artikullin
 interfaces:
+  filter:
+    name: Filtri
+    description: Konfiguro një objekt filtrues.
+    add_filter: Shto Filter
+    add_group: Grupi And / Or
+    add_value: Shto Vlerën
+    logic_type_and: DHE
+    logic_type_or: OSE
+    all: Të Gjithë
+    any: Çdo
+    and: dhe
+    of_the_following: nga të mëposhtmet
+    no_rules: Asnjë rregull i konfiguruar
+    change_value: Kliko për të ndryshuar vlerën
+    placeholder: Tërhiq rregullat këtu
+    add_key_placeholder: Shto një çelës dhe shtyp enter...
+  fields:
+    name: Fusha
+  group-accordion:
+    name: Akordion
+    description: Shfaq fushat ose grupet si seksione akordion
+    start: Fillim
+    all_closed: Të Gjitha të Mbyllura
+    first_opened: E Para e Hapur
+    all_opened: Të Gjitha të Hapura
+    accordion_mode: Modaliteti i Akordionit
+    max_one_section_open: Maksimum 1 Seksion i Hapur
   presentation-links:
+    presentation-links: Lidhje Butonash
+    links: Lidhje
+    description: Butonat e lidhjeve konfigurues për lansimin e URL-ve dinamike
+    style: Stil
     primary: Primar
+    link: Lidhje
+    button: Butonat
+    error: Nuk mund të kryej veprimin
+  select-multiple-checkbox:
+    checkboxes: Kutitë për Kontrollim
+    description: Zgjidhni midis opsioneve të shumta përmes kutive të kontrollimit
+    allow_other: Lejo Të Tjerët
+    show_more: 'Shfaq {count} më shumë'
+    items_shown: Artikujt e Shfaqur
+  select-multiple-checkbox-tree:
+    name: Kutitë për Kontrollim (Pemë)
+    description: Zgjidhni midis opsioneve të shumta përmes kutive të kontrollimit të ngjeshur
+    value_combining: Kombinimi i Vlerave
+    value_combining_note: Kontrollon çfarë vlerë ruhet kur bëhen zgjedhje të ngjeshura.
+    show_all: Shfaq Të Gjitha
+    show_selected: Shfaq Të Zgjedhurat
+  input-code:
+    code: Kodi
+    description: Shkruaj ose ndaj copëza kodesh
+    line_number: Numri i Rreshtit
+    line_wrapping: Kapje Rreshti
+    placeholder: Shkruaj kodin këtu...
+  system-collection:
+    collection: Koleksion
+    description: Zgjidhni midis koleksioneve ekzistuese
+    include_system_collections: Përfshij Koleksionet e Sistemit
+  system-collections:
+    collections: Koleksione
+    description: Zgjidhni midis koleksioneve ekzistuese
+    include_system_collections: Përfshij Koleksionet e Sistemit
+  select-color:
+    color: Ngjyra
+    description: Shkruaj ose zgjidh një vlerë ngjyre
+    placeholder: Zgjidh një ngjyrë...
+    preset_colors: Ngjyrat e Paracaktuara
+    opacity: Opakiteti
+    preset_colors_add_label: Shto ngjyrë të re...
+    name_placeholder: Shkruaj emrin e ngjyrës...
+  datetime:
+    datetime: Datë dhe Kohë
+    description: Shkruaj datat dhe orët
+    include_seconds: Përfshij Sekondat
+    set_to_now: Cakto Tani
+    use_24: Përdor Formatin 24-Oresh
+    placeholder: Zgjidh datën dhe kohën...
+  system-fields:
+    select_a_collection: Zgjidh një Koleksion
+    no_fields: Asnjë fushë
+  system-display-template:
+    display-template: Shabllon i Shfaqjes
+    description: Përzie tekstin statik dhe vlerat e fushave dinamike
+    collection_field: Fusha e Koleksionit
+    collection_field_not_setup: Opsioni i fushës së koleksionit është konfiguruar gabim
+    select_a_collection: Zgjidh një Koleksion
+  presentation-divider:
+    divider: Ndarës
+    description: Etiketo dhe ndaj fushat në seksione
+    title_placeholder: Shkruaj një titull, ose lëreni bosh për të shfaqur vetëm një linjë...
+    inline_title: Titull në Linjë
+    inline_title_label: Shfaq titullin brenda linjës
+    margin_top: Margini i Sipërm
+    margin_top_label: Rrit Marginin e Sipërm
+  select-dropdown:
+    description: Zgjidh një vlerë nga një meni zbritëse
+    choices_placeholder: Shto një zgjedhje të re
+    allow_other: Lejo Të Tjerët
+    allow_other_label: Lejo Vlera të Tjera
+    allow_none: Lejo Asnjë
+    allow_none_label: Lejo Asnjë Zgjedhje
+    choices_name_placeholder: Shkruaj një emër...
+    choices_value_placeholder: Shkruaj një vlerë...
+    preview_threshold: Pragu i Parashikimit
+  select-multiple-dropdown:
+    select-multiple-dropdown: Meni Zbritëse (Shumëfishtë)
+    description: Zgjidh vlera të shumta nga një meni zbritëse
+  file:
+    file: Skedar
+    description: Zgjidh ose ngarko një skedar
+  files:
+    files: Skedarë
+    description: Zgjidh ose ngarko shumë skedarë
+  input-hash:
+    hash: Hash
+    description: Fut një vlerë për tu hashed
+    masked: I maskuar
+    masked_label: Fshih vlerat e vërteta
+  select-icon:
+    icon: Ikonë
+    description: Zgjidh një ikonë nga një listë zbritëse
+    search_for_icon: Kërko për ikonë...
+  file-image:
+    image: Imazh
+    description: Zgjidh ose ngarko një imazh
+    crop: Prerje për Përshtatje
+    crop_label: Prerë imazhin sipas nevojës
+  system-interface:
+    interface: Ndërfaqe
+    description: Zgjidh një ndërfaqe ekzistuese
+    placeholder: Zgjidh një ndërfaqe...
+  system-interface-options:
+    interface-options: Opsionet e Ndërfaqes
+    description: Një modal për zgjedhjen e opsioneve të një ndërfaqeje
+  list-m2m:
+    many-to-many: Shumë me Shumë
+    description: Zgjidh artikuj të shumtë të lidhur në një udhëkryq
+    columns_configure_notice: Mund të konfigurosh kolonat pas krijimit të kësaj fushe.
+    display_template_configure_notice: Mund të konfigurosh shabllonin e shfaqjes pas krijimit të kësaj fushe.
+  select-dropdown-m2o:
+    many-to-one: Shumë te Një
+    description: Zgjidh një artikull të lidhur
+    display_template: Shabllon i Shfaqjes
+  collection-item-dropdown:
+    collection-item-dropdown: Zgjedhje Artikulli Koleksioni
+    description: Zgjidh një artikull nga një koleksion në formatin JSON
+  input-rich-text-md:
+    markdown: Markdown
+    description: Fut dhe parashiko markdown
+    edit: Modifiko
+    preview: Parashiko
+    editorFont: Fonti i Redaktorit
+    previewFont: Fonti i Parashikimit
+    customSyntax: Blloqe të Personalizuara
+    customSyntax_label: Shto lloje të personalizuara të sintaksës
+    customSyntax_add: Shto sintaksë të personalizuar
+    box: Bllok / Inline
+    imageToken: Token i Qasshëm
+    imageToken_label: Tokeni i qasshëm shtohet në URL-në e aseteve
+  map:
+    map: Hartë
+    description: Zgjidh një vendndodhje në hartë
+    zoom: Zmadho
+    geometry_type: Lloji i Gjeometrisë
+    geometry_format: Formati i Gjeometrisë
+    default_view: Pamja e Paracaktuar
+    invalid_options: Opsione të pavlefshme
+    invalid_format: Format i pavlefshëm ({format})
+    unexpected_geometry: Pritej {expected}, mori {got}.
+    fit_bounds: Përshtat pamjen në të dhëna
+    native: Native
+    geojson: GeoJSON
+    lnglat: Gjatësi, Gjerësi
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Kliko për të zgjedhur {geometry}
+  presentation-notice:
+    notice: Njoftim
+    description: Shfaq një njoftim të shkurtër
+    text: Fut përmbajtjen e njoftimit këtu...
+    no_text: Nuk është konfiguruar tekst...
+  list-o2m:
+    one-to-many: Një me Shumë
+    description: Zgjidh artikuj të shumtë të lidhur
+    no_collection: Koleksioni nuk mund të gjendet
+  system-folder:
+    folder: Dosje
+    description: Zgjidh një dosje
+    field_hint: Dosja e paracaktuar për skedarët e ngarkuar pa një dosje të specifikuar. Nuk ndikon në skedarët ekzistues.
+    root_name: Rrënja e Bibliotekës së Skedarëve
+    system_default: Parazgjedhjet e Sistemit
+  select-radio:
+    radio-buttons: Butonat Radio
+    description: Zgjidh një nga zgjedhjet e shumta
+  list:
+    repeater: Përsëritës
+    description: Krijo hyrje të shumta të strukturës së njëjtë
+    edit_fields: Redakto Fushat
+    add_label: 'Etiketa "Krijo e Re"'''
+    sort: Rendit
+    sort_placeholder: Manual
+    field_note_placeholder: Fut shënim fushe...
+    incompatible_data: Të dhënat aktuale nuk janë të përputhshme me ndërfaqen e përsëritësit dhe do të zëvendësohen kur të shtohen artikuj në përsëritës
+  slider:
+    slider: Rrëshqitës
+    description: Zgjidh një numër përmes një rrëshqitësi
+    always_show_value: Shfaq gjithmonë vlerën
+  tags:
+    tags: Etiketa
+    description: Zgjidh ose shto etiketa
+    whitespace: Hapësirë e Bardhë
+    hyphen: Zëvendëso me vizë
+    underscore: Zëvendëso me nënvizim
+    remove: Hiq hapësirën e bardhë
+    capitalization: Shkronja të Mëdha
+    uppercase: Shndërro në Shkronja të Mëdha
+    lowercase: Shndërro në Shkronja të Vogla
+    auto_formatter: Përdor Formatorin Automatik të Titullit
+    alphabetize: Alfabetizo
+    alphabetize_label: Detyro Renditjen Alfabetike
+    add_tags: Shto një etiketë dhe shtyp Enter...
+  input:
+    input: Input
+    description: Fut manualisht një vlerë
+    trim: Trim
+    trim_label: Trim në fillim dhe në fund
+    mask: I maskuar
+    mask_label: Fshih vlerën e vërtetë
+    clear: Vlerë e Pastruar
+    clear_label: Ruaj si varg bosh
+    minimum_value: Vlera Minimale
+    maximum_value: Vlera Maksimale
+    step_interval: Interval i Hapit
+    slug: Slugify
+    slug_label: Bëj vlerën e futur të sigurt për URL
+  input-multiline:
+    textarea: Zonë Teksti
+    description: Shkruaj tekst të shumërendshëm
+  input-translated-string:
+    input-translated-string: Fjalë të Përkthyera
+    description: Zgjidh ose shto përkthim të personalizuar
+    search_placeholder: Kërko...
+    new_custom_translation: Përkthim i Ri Personalizuar
+  boolean:
+    toggle: Ndërrimi
+    description: Kaloni midis pozicionit aktiv dhe joaktiv
+    color_on: Ngjyra Kur është Aktiv
+    color_off: Ngjyra Kur është Joaktiv
+    label_placeholder: Shkruaj një etiketë...
+    label_default: Aktivizuar
+  translations:
+    display_template: Shabllon i Shfaqjes
+    no_collection: Asnjë Koleksion
+    toggle_split_view: Ndërro Pamjen e Ndara
+    enable: Aktivizo
+    user_language: Përdor Gjuhën Aktuale të Përdoruesit
+    default_language: Gjuha e Parazgjedhur
+    language_field: Fushe Indikatore e Gjuhës
+    language_direction_field: Fushe e Drejtimit të Gjuhës
+  list-o2m-tree-view:
+    description: Pamje e pemës për artikujt një me shumë të përsëritur të ngjeshur
+    recursive_only: Ndërfaqja e pamjes së pemës funksionon vetëm për marrëdhëniet e përsëritura.
+  user:
+    user: Përdorues
+    description: Zgjidh një përdorues ekzistues të directus
+    select_mode: Mënyra e Zgjedhjes
+    modes:
+      auto: Automatik
+      dropdown: Zbritëse
+      modal: Modal
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Një redaktues teksti të pasur që shkruan përmbajtje HTML
+    toolbar: Shirit Mjetesh
+    custom_formats: Formate të Personalizuara
+    options_override: Opsionet e Parakaluar
+    folder_note: Dosje për skedarët e ngarkuar. Nuk ndikon në skedarët ekzistues.
+    imageToken: Token i Qasshëm
+    imageToken_label: Tokeni i qasshëm shtohet në URL-në e aseteve
+  input-block-editor:
+    input-block-editor: Redaktor i Blloqeve
+    description: Redaktor i stilit të bllokut për historitë e pasura mediatike, jep të dhëna të pastra në JSON duke përdorur Editor.js
+    tools: Shirit Mjetesh
+    tools_options:
+      header: Header
+      nestedlist: Listë
+      embed: Trupëzim
+      paragraph: Paragraf
+      code: Kodi
+      image: Imazh
+      attaches: Bashkëngjitje
+      table: Tabela
+      quote: Citat
+      underline: Nën të Vizuar
+      inlinecode: Kod në Vizë
+      delimiter: Ndajës
+      checklist: Listë Kontrolli
+      toggle: Ndërrim i Bllokut
+      alignment: Vizatim
+      raw: HTML i Papërpunuar
+  input-autocomplete-api:
+    input-autocomplete-api: Input i Autokompletimit (API)
+    description: Një pararendësi i kërkimit për vlerat e API-së së jashtme.
+    results_path: Shteg i Rezultateve
+    value_path: Shteg i Vlerave
+    text_path: Shteg i Tekstit
+    trigger: Shkaktar
+    rate: Vlerë
+  group-raw:
+    name: Grup i Papërpunuar
+    description: Paraqit fushat ashtu siç janë
+  group-detail:
+    name: Grup Detajesh
+    description: Paraqit fushat si një seksion i rrumbullakët
+    show_header: Shfaq Kryet e Grupit
+    header_icon: Ikona e Kryet
+    header_color: Ngjyra e Kryet
+    start_open: Fillim i Hapur
+    start_closed: Fillim i Mbyllur
+  system-token:
+    system-token: Token
+    description: Menaxho tokenin statik të qasjes
+    placeholder: Kliko "Gjenero Token" për të krijuar një token të ri statik të qasjes
+    value_securely_saved: Vlera U Ruajt në mënyrë të Sigurt
+    generate: Gjenero Token
+    regenerate: Rrigjenero Token
+    generate_success_copy: Sigurohu që të bësh backup dhe të kopjosh tokenin e mësipërm. Për arsye sigurie, nuk do të jesh në gjendje të shikosh tokenin përsëri pas ruajtjes dhe largimit nga kjo faqe.
+    remove_token: Hiq Tokenin
+  system-raw-editor:
+    system-raw-editor: Redaktor i Papërpunuar
+    description: Lejo futjen e vlerave të papërpunuara ose të vlerave të modelit të mustaqes
 displays:
+  translations:
+    translations: Përkthimet
+    description: Përkthimet
+    enable: Parashikoni përkthimet
+    user_language: Përdor Gjuhën Aktuale të Përdoruesit
+    default_language: Gjuha e Parazgjedhur
+    language_field: Fushe Indikatore e Gjuhës
   boolean:
     boolean: Boolean
+    description: Shfaq gjendjet aktiv dhe joaktiv
+    label_on: Etiketë Aktive
+    label_on_placeholder: Shkruaj një etiketë aktive...
+    label_off: Etiketë Joaktive
+    label_off_placeholder: Shkruaj një etiketë joaktive...
+    icon_on: Icon Aktive
+    icon_off: Icon Joaktive
+    color_on: Ngjyra Kur është Aktiv
+    color_off: Ngjyra Kur është Joaktiv
+  collection:
+    collection: Koleksion
+    description: Shfaq një koleksion
+    icon_label: Shfaq ikonën e koleksionit
+  color:
+    color: Ngjyra
+    description: Shfaq një pikë të ngjyrës
+    default_color: Ngjyra e Parazgjedhur
   datetime:
+    datetime: Datë dhe Kohë
+    description: Shfaq vlerat e lidhura me kohën
+    format: Format
+    format_note: >-
+      Format personalizuar i pranon __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: E gjatë
+    short: E shkurtër
+    relative: Relative
+    relative_label: 'Shfaq kohën relative, psh: 5 minuta më parë'
     suffix: Sufiks
+    suffix_label: Shfaq indikatorin relativ
+    suffix_note: Përdor fjalë si 'në' dhe 'më parë'
+    strict: E rreptë
+    strict_label: Përdor njësi të rrepta
+    strict_note: Hiq fjalët si 'thjesht', 'më shumë se', 'më pak se'
+    round: Rreth
+    round_note: Zgjidh një funksion rrumbullakimi për të përdorur
+    down: Poshtë
+    nearest: Më i afërt
+    up: Lart
+  file:
+    file: Skedar
+    description: Shfaq skedarët
+  filesize:
+    filesize: Madhësia e Skedarit
+    description: Shfaq madhësinë e një skedari
   formatted-value:
+    formatted-value: Vlerë e Formatuar
+    description: Shfaq një version të formatuar të tekstit
+    format: Format
+    format_label: Format automatik
+    font: Fonti
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Trashë
+    bold_label: Përdor stilin trashë
+    italic: Italik
+    italic_label: Përdor stilin pjerrët
     prefix: Prefiks
+    prefix_label: Parashto tekst
     suffix: Sufiks
+    suffix_label: Teksti i Bashkëngjitur
+    color: Ngjyra
+    background: Sfond
+    icon: Ikonë
+    border: Kornizë
+    border_label: Shfaq kufirin
     text: Tekst
+    text_placeholder: Kalim i vlerës opsionale...
+  formatted-json-value:
+    formatted-json-value: Vlerë e Formatuar JSON
+    description: Shfaq një version të formatuar të objektit
+  icon:
+    icon: Ikonë
+    description: Shfaq një ikonë
+    filled: E mbushur
+    filled_label: Përdor variantin e mbushur
+  image:
+    image: Imazh
+    description: Shfaq një parapamje të vogël të imazhit
+    circle: Rreth
+    circle_label: Shfaq si rreth
+  labels:
+    labels: Etiketa
+    description: Shfaq ose një etiketë të vetme ose një listë etiketash
+    default_foreground: Përparësi e Paracaktuar
+    default_background: Sfondi i Paracaktuar
+    format_label: Format çdo etiketë
+    show_as_dot: Shfaq si Pikë
+    choices_value_placeholder: Shkruaj një vlerë...
+    choices_text_placeholder: Shkruaj tekst...
+  mime-type:
+    mime-type: Lloj MIME
+    description: Shfaq llojin MIME të një skedari
+    extension_only: Vetëm Zgjatim
+    extension_only_label: Shfaq vetëm zgjatimin e skedarit
+  rating:
+    rating: Vlerësim
+    description: Vizualizo një numër si yje në raport me vlerën maksimale
+    simple: E thjeshtë
+    simple_label: Shfaq yjet në një format të thjeshtë
+  raw:
+    raw: Vlerë e Papërpunuar
+  related-values:
+    related-values: Vlera të Lidhura
+    description: Shfaq vlerat e lidhura
+    display_template_configure_notice: Mund të konfigurosh shabllonin e shfaqjes pas krijimit të kësaj fushe.
+  user:
+    user: Përdorues
+    description: Shfaq një përdorues të directus
+    avatar: Avatar
+    name: Emri
+    both: Të dyja
+    circle_label: Shfaq përdoruesin në një rreth
+layouts:
+  cards:
+    cards: Kartela
+    image_source: Burim i Imazhit
+    image_fit: Përshtatja e Imazhit
+    crop: Pritje
+    contain: Përmbaj
+    title: Titulli
+    subtitle: Nëntitull
+  tabular:
+    tabular: Tabela
+    spacing: Hapësira
+    comfortable: E rehatshme
+    compact: E kompakt
+    cozy: E përzemërt
+  calendar:
+    calendar: Kalendar
+    start_date_field: Fushe e Datës së Fillimit
+    end_date_field: Fushe e Datës së Mbarimit
+    optional: Opsionale
+    first_day: Dita e Parë e Javës
+  map:
+    map: Hartë
+    basemap: Harta Bazë
+    layers: Shtresa
+    cluster_options: Opsione Klasteri
+    cluster: Grumbullo të Dhënat Pranë
+    cluster_radius: Rreze Klasteri
+    cluster_minpoints: Madhësia Minimale e Klasterit
+    cluster_maxzoom: Zmadhim Maksimal për Klasterizim
+    field: Fushe Gjeospatiale
+    invalid_geometry: Gjeometri e Pavlefshme
+    find_location: Gjej Vendndodhjen...
+    default_template: Duke Përdorur Koleksionin e Parazgjedhur...
+    no_compatible_fields: Asnjë fushe e përshtatshme
+  kanban:
+    name: Kanban
+    group_field: Grup Sipas
+    group_field_placeholder: Fusha për grupim...
+    group_title: Titull Grupi
+    group_title_placeholder: Fusha për titujt e grupeve...
+    title: Titull Kartele
+    title_placeholder: Fushë opsionale për titull...
+    text: Tekst Kartele
+    text_placeholder: Fushë opsionale për tekst...
+    date: Datë Kartele
+    date_placeholder: Fushë opsionale për datë...
+    tags: Etiketa Kartele
+    tags_placeholder: Fushë opsionale për etiketa...
+    user: Përdorues Kartele
+    user_placeholder: Fushë opsionale për përdorues...
+    image: Imazh Kartele
+    image_placeholder: Fushë opsionale për imazh...
+    image_fit: Përshtatje Imazhi Kartele
+    crop: Pritje
+    advanced: Avancuar
+    edit_group: Redakto Grup
+    delete_group: Fshi Grup
+    add_group: Shto Grup
+    add_group_placeholder: Shkruaj titullin e një grupi të ri...
+    show_ungrouped: Shfaq të Pagrupuar
+    show: Shfaq
+    no_group: Asnjë Grup
+    not_all_loaded: Mund të ngarkohen vetëm 1000 artikujt e parë.
+horizontal: Horizontal
+vertical: Vertikal
+x_axis: Aks X
+y_axis: Aks Y
+y_axis_function: Funskion i Aksit Y
+show_x_only: Shfaq vetëm Aksin X
+show_y_only: Shfaq vetëm Aksin Y
+show_data_label: Shfaq etiketën e të dhënave
+both: Të dyja
+show_axis_labels: Shfaq etiketat e aksit
+function: Funksion
+half_circle: Gjysmë Rreth
+full_circle: Rreth i plotë
+stroke_width: Gjerësi Vije
+rounded_stroke: Vije e rrumbullakët
+thin: I hollë
+medium: Mesatar
+broad: I gjerë
+show_labels: Shfaq etiketat
+show_legend: Shfaq legjendën
+right: Djathtas
+left: Majtas
+donut: Petull
+panels:
+  metric:
+    name: Metrikë
+    description: Shfaq një vlerë të vetme në bazë të një kërkimi
+    field: Fushë
+  time_series:
+    name: Seri Kohore
+    description: Vizualizo një grafik vijash në bazë të vlerave në kohë
+    date_field: Fusha e Datës
+    value_field: Fusha e Vlerës
+    fill_type: Lloji i Mbushjes
+    curve_type: Lloji i Kurvës
+  label:
+    name: Etiketë
+    description: Shfaq disa tekst
+  list:
+    name: Listë
+    description: Filtro dhe listo fushat nga një koleksion
+  barchart:
+    name: Grafik me Shufra
+    description: Grafikë me shufra ose kolona për të krahasuar grupe vlerash
+    horizontal: Horizontal
+    select_collection: Duhet të zgjedhësh një koleksion.
+  linechart:
+    name: Grafik Vijash
+    description: Grafik vijash për të krahasuar ndryshimin e një fushe
+    disabled_grouping: Është i çaktivizuar kur zgjidhet grupimi.
+    disabled_no_grouping: Është i çaktivizuar kur nuk zgjidhet grupimi.
+    show_marker: Shfaq Shënues Tooltip
+    curve_type: Lloji i Kurvës
+    smooth: I butë
+    straight: I drejtë
+    step_line: Vijë Hapësire
+  meter:
+    name: Metër
+    description: Metër për gjurmimin e vlerave
+  piechart:
+    name: Grafik Rrethi ose Petull
+    description: Grafik rrethor që tregon raportet e grupeve në një kolonë
+  variable:
+    name: Variabël Globale
+    description: Vendos një vlerë globale për përdorim në filtra të tjerë panelesh
+    variable_key: Çelës i Variablës
+  relational-variable:
+    name: Variabël e Mardhënies Globale
+    description: Vendos një vlerë mardhënie globale për përdorim në filtra të tjerë panelesh
+    variable_key: Çelës i Variablës
+    multiple: Të shumtë
+    multiple-label: Zgjidh artikuj të shumtë
+triggers:
+  common:
+    response_body: Trupi i Përgjigjes
+    response_body_all: Të gjitha të Dhënat
+    response_body_last: Të dhënat e Operacionit të Fundit
+  event:
+    name: Grepë Ngjarjeje
+    description: Shkaktohet në platformë ose ngjarje të dhënash
+    action: 'Veprim (Jo-bllokues)'
+    filter: 'Filter (Bllokues)'
+  webhook:
+    name: Webhook
+    description: Shkaktohet nga një kërkesë e ardhshme HTTP
+    method: Metoda
+    async: Asinkrone
+  operation:
+    name: Një rrjedhë tjetër
+    description: Shfaq një vlerë të vetme në bazë të një kërkimi
+    preview: Shkaktohet nga një operacion në një rrjedhë të ndryshme
+  schedule:
+    name: Orari (CRON)
+    description: Shkaktohet në momente të rregullta në kohë
+    cron: Interval
+  manual:
+    name: Manual
+    description: Shkaktohet në ekzekutimin manual brenda koleksionit(ve) të zgjedhur
+    collection_and_item: Faqet e Koleksionit & Artikullit
+    collection_only: Vetëm Faqe Koleksioni
+    item_only: Vetëm Faqe Artikulli
+    collection_page: Faqe Koleksioni
+    require_selection: Kërkon Zgjedhje
+a_flow_uuid: Zgjidh një rrjedhë për të shkaktuar...
+any_string_or_json: Çdo varg ose JSON...
+item_payload_placeholder: Kjo është JSON që përdoret për të përditësuar vlerat e fushës së artikullit...
+operation_variables_note: Mund të aksesosh të dhënat e rrjedhës me variabla si {'{'}{'{'}$last{'}'}{'}'}, {'{'}{'{'}$trigger{'}'}{'}'} dhe {'{'}{'{'}$accountability{'}'}{'}'}, ose referohu në operacionet e mëparshme duke përdorur {'{'}{'{'}operation_key{'}'}{'}'}.'
 operations:
+  condition:
+    name: Kusht
+    description: Drejto një rrjedhë bazuar në logjikën Nëse / Përndryshe
+  exec:
+    name: Ekzekuto Skript
+    description: Ekzekuto kod të papërcaktuar për të ndryshuar ngarkesën
+    modules: 'Mund të përdoren **modulet e Node** e mëposhtme:'
+  item-create:
+    name: Krijo Të Dhëna
+    description: Krijo artikuj në bazën e të dhënave
+    payload: Ngarkesa
+    emit_events: Lësho Ngjarje
+  item-delete:
+    name: Fshi Të Dhëna
+    description: Fshi artikuj nga baza e të dhënave
+    emit_events: Lësho Ngjarje
+    key: ID-të
+    query: Query
+  item-read:
+    name: Lexo Të Dhëna
+    description: Lexo artikuj nga baza e të dhënave
+    key: ID-të
+    query: Query
+    emit_events: Lësho Ngjarje
+  item-update:
+    name: Përditëso Të Dhëna
+    description: Përditëso artikuj në bazën e të dhënave
+    emit_events: Lësho Ngjarje
+    key: ID-të
+    payload: Ngarkesa
+    query: Query
   log:
+    name: Regjistro në Konsolë
+    description: Shfaq diçka në konsolë
     message: Mesazh
+    message_placeholder: Shkruaj një mesazh për t'u shfaqur në konsolë...
+  mail:
+    name: Dërgo Email
+    description: Dërgo një email një ose më shumë personave
+    to: Për
+    to_placeholder: Shto adresat e e-mailit dhe shtyp enter...
+    body: Trupi
+    template: Template
+    data: Të Dhënat
   notification:
+    name: Dërgo Njoftim
+    description: Një njoftim në aplikacion për një ose më shumë përdorues
+    recipient: Përdorues
+    recipient_placeholder: Shkruaj një UUID...
+    recipient_note: Shto UUID të përdoruesit dhe shtyp enter...
     message: Mesazh
+  request:
+    name: Webhook / Kërkesë URL
+    description: 'Bëj një kërkesë në një URL'
+    url: URL
+    url_placeholder: https://example.com/example
+    method: Metoda
+    data: Të Dhënat
+    headers: Koka
+    header: Header
+    header_placeholder: Autorizim...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Fli
+    description: Prit një numër të dhënë milishekonash
+    milliseconds: Milishekonda
+  transform:
+    name: Transformo Ngarkesën
+    description: Ndrysho ngarkesën JSON të rrjedhës
+  trigger:
+    name: Shkakto Rrjedhën
+    description: Kaloni këtë të dhënë në një rrjedhë tjetër
+    flows: Rrjedha
+    flow: Rrjedh
+    data: Të Dhënat
+    iteration_mode: Mënyra e Iterimit
+    iteration_mode_note: Mënyra për të iteruar mbi masivë.
+    serial: Serial
+    parallel: Paralel
+    batch: Grup
+    batch_size: Madhësia e Grupit
+    cache: Cache
