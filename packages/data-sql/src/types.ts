@@ -30,7 +30,7 @@ export interface SqlStatementSelectPrimitive {
  * const query: SqlStatement = {
  *  select: [id],
  *  from: 'articles',
- *  limit: 1,
+ *  limit: 0,
  * 	parameters: [25],
  * };
  * ```

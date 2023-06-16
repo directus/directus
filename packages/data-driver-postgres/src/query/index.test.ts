@@ -41,7 +41,7 @@ test('statement with a limit', () => {
 	});
 });
 
-test('statement with a limit and an offset', () => {
+test('statement with limit and offset', () => {
 	sample.statement.limit = 0;
 	sample.statement.offset = 1;
 	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100)];
