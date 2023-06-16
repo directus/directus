@@ -28,7 +28,7 @@ export const rest = (_options: RestConfig = {}) => {
 					options.headers['Authorization'] = `Bearer ${client.auth.token}`;
 				}
 
-				const requestUrl = getRequestUrl(client.config.url, options);
+				const requestUrl = getRequestUrl(client.url, options);
 
 				return await fetchRequest<Output>(requestUrl.toString(), options);
 			},
