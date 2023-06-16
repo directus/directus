@@ -25,7 +25,7 @@ export const rest = () => {
 					headers['Authorization'] = `Bearer ${client.auth.token}`;
 				}
 
-				const requestUrl = getRequestUrl(client.config.url, options);
+				const requestUrl = getRequestUrl(client.url, options);
 
 				const response = await globalThis.fetch(requestUrl, {
 					method: options.method,
