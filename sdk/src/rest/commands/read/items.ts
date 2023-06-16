@@ -2,20 +2,17 @@ import type { Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-export interface ReadItemsInput<Schema extends object, Item extends object> {
-	query?: Query<Schema, Item>;
-}
+export type ReadItemsOutput<
+	Schema extends object,
+	Collection extends keyof Schema,
+	TQuery extends Query<Schema, Schema[Collection]>
+> = Partial<Schema[Collection]>;
 
 export const readItems =
-	<
-		Schema extends object,
-		Collection extends keyof Schema,
-		Item extends Schema[Collection],
-		Output extends Partial<Item>
-	>(
+	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		query: Query<Schema, Item> = {}
-	): RestCommand<Query<Schema, Item>, Output[], Schema> =>
+		query: TQuery
+	): RestCommand<ReadItemsOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
 		const _collection = String(collection);
 

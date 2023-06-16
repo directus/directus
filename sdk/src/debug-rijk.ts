@@ -1,7 +1,7 @@
 import { useDirectus } from './client.js';
-import { graphql } from './graphql/composable.js';
 import { readItems } from './rest/commands/read/items.js';
 import { rest } from './rest/composable.js';
+import type { ApplyQueryFields, Query } from './types/query.js';
 
 interface Article {
 	id: number;
@@ -19,8 +19,14 @@ interface Schema {
 	author: Author;
 }
 
-const client = useDirectus<Schema>('https://rijks.website');
-const restClient = client.use(rest());
-const both = restClient.use(graphql());
+const client = useDirectus<Schema>('https://rijks.website').use(rest());
 
-const res = both.request(readItems('articles', { fields: ['title', 'author', { author: ['name'] }] }));
+const res = client.request(readItems('author', { fields: ['name'] }));
+
+type Q = Query<Schema, Article>;
+
+const query: Q = {
+	fields: ['id', 'title', { author: ['name'] }],
+};
+
+type Output = ApplyQueryFields<Schema, Article, undefined>;
