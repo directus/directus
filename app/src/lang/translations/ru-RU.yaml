@@ -1891,23 +1891,37 @@ triggers:
     response_body_all: Все данные
     response_body_last: Данные последней операции
   webhook:
+    description: Выполняется при входящем HTTP запросе
     method: Метод
+    async: Асинхронный
   operation:
     name: Другой процесс
     description: Запускается другим процессом, для цепочки
     preview: Запускается операцией из другого процесса
+  manual:
+    description: Выполняется при ручном запуске в выбранной коллекции(ях)
+    collection_and_item: Страницы Коллекции и Элемента
+    collection_only: Только страница Коллекции
+    item_only: Только страница Элемента
+    collection_page: Страница Коллекции
+    require_selection: Требуется выбор
 a_flow_uuid: Выберите процесс для запуска...
+any_string_or_json: Любая строка или JSON...
 operation_variables_note: Вы можете получить доступ к данным процесса с такими переменными как **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или ссылаться на предыдущие операции, используя **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
+    name: Условие
     description: Маршрутизировать процесс на основе логики If / Else
   exec:
+    name: Выполнить скрипт
     modules: 'Можно использовать следующие **Node модули**:'
   item-create:
     name: Создать данные
+    description: Создать элементы в базе данных
     payload: Содержимое
   item-delete:
     name: Удалить данные
+    description: Удалить элементы в базе данных
     query: Запрос
   item-read:
     name: Читать данные
@@ -1926,11 +1940,15 @@ operations:
     name: Отправить эл. письмо
     description: Отправить письмо одному или нескольким людям
     to_placeholder: Добавьте адреса эл. почты и нажмите Enter...
+    body: Тело
     template: Шаблон
     data: Данные
   notification:
     name: Отправить уведомление
+    description: Отправить уведомление одному или нескольким пользователям
     recipient: Пользователь
+    recipient_placeholder: Введите UUID...
+    recipient_note: Добавьте пользовательский UUID и нажмите Enter...
     message: Сообщение
   request:
     name: Веб-хук / URL-адрес запроса
@@ -1939,9 +1957,12 @@ operations:
     url_placeholder: https://example.com/example
     method: Метод
     data: Данные
+    headers: Заголовки
     header: HTTP-заголовок
     header_placeholder: Авторизация...
   sleep:
+    name: Сон
+    description: Ожидать заданное количество миллисекунд
     milliseconds: Миллисекунды
   transform:
     name: Содержание преобразования
@@ -1952,3 +1973,5 @@ operations:
     flows: Процессы
     flow: Процесс
     data: Данные
+    parallel: Параллельно
+    cache: Кэш
