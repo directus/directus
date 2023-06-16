@@ -26,7 +26,7 @@ export interface SqlStatementSelectPrimitive {
  * This is an abstract SQL query.
  *
  * @example
- * ```typescript
+ * ```ts
  * const query: SqlStatement = {
  *  select: [id],
  *  from: 'articles',
