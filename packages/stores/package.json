@@ -1,0 +1,38 @@
+{
+	"name": "@directus/stores",
+	"version": "0.1.0",
+	"description": "Shared Pinia stores used in @directus/app",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/stores"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@vueuse/shared": "10.1.2",
+		"tsup": "6.7.0",
+		"typescript": "5.0.4"
+	},
+	"dependencies": {
+		"@vueuse/core": "10.1.2",
+		"pinia": "2.1.1",
+		"vue": "3.3.4"
+	}
+}
