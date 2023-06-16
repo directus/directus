@@ -6,6 +6,7 @@ export type FilterOperator =
 	| 'gt'
 	| 'gte'
 	| 'in'
+	| 'in_all'
 	| 'nin'
 	| 'null'
 	| 'nnull'

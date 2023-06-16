@@ -729,6 +729,29 @@ export function applyFilter(
 				dbQuery[logical].whereIn(selectionRaw, value as string[]);
 			}
 
+			if (operator === '_in_all') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				if (originalCollectionName) {
+					const rootTable = (rootQuery as any)._single.table;
+					const pkOriginal = schema.collections[rootTable]!.primary;
+
+					const filteredRelations = relations.filter(
+						(r) => r.collection === originalCollectionName && r.related_collection === rootTable
+					);
+
+					if (filteredRelations.length === 1) {
+						value.forEach((val: string) =>
+							dbQuery[logical].whereExists(
+								knex.select('*').from(originalCollectionName).whereRaw(`
+									${originalCollectionName}.${field} = ${val} and ${originalCollectionName}.${filteredRelations[0]?.field} = ${rootTable}.${pkOriginal}`)
+							)
+						);
+					}
+				}
+			}
+
 			if (operator === '_nin') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');

@@ -31,6 +31,7 @@ export function getFilterOperatorsForType(
 				'null',
 				'nnull',
 				'in',
+				'in_all',
 				'nin',
 				...validationOnlyStringFilterOperators,
 			];
@@ -53,7 +54,7 @@ export function getFilterOperatorsForType(
 		case 'integer':
 		case 'decimal':
 		case 'float':
-			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'nin'];
+			return ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'null', 'nnull', 'in', 'in_all', 'nin'];
 
 		// Datetime
 		case 'dateTime':
