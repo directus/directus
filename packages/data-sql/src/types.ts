@@ -60,5 +60,5 @@ export interface SqlStatement {
  */
 export interface ParameterizedSQLStatement {
 	statement: string;
-	values: (string | number | boolean)[];
+	parameters: (string | number | boolean)[];
 }

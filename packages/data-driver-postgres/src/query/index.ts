@@ -18,6 +18,6 @@ export function constructSql(query: SqlStatement): ParameterizedSQLStatement {
 
 	return {
 		statement: `${base} ${limitOffsetPart}`.trimEnd() + ';',
-		values: query.parameters,
+		parameters: query.parameters,
 	};
 }

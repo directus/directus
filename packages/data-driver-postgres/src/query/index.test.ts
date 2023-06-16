@@ -25,7 +25,7 @@ test('basic statement', () => {
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}";`,
-		values: [],
+		parameters: [],
 	});
 });
 
@@ -37,7 +37,7 @@ test('statement with a limit', () => {
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1;`,
-		values: sample.statement.parameters,
+		parameters: sample.statement.parameters,
 	});
 });
 
@@ -50,6 +50,6 @@ test('statement with a limit and an offset', () => {
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1 OFFSET $2;`,
-		values: sample.statement.parameters,
+		parameters: sample.statement.parameters,
 	});
 });
