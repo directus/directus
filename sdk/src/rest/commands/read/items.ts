@@ -12,10 +12,10 @@ export interface ReadItemsInput<Schema extends object, Item extends object> {
 // > = Schema[Input['collection']][];
 
 export const readItems =
-	<Schema extends object, TCollection extends keyof Schema, Item extends Schema[TCollection]>(
+	<Schema extends object, TCollection extends keyof Schema, Item extends Schema[TCollection], Output extends Partial<Item>>(
 		collection: TCollection,
 		query: Query<Schema, Item> = {}
-	): RestCommand<Query<Schema, Item>, Item[], Schema> =>
+	): RestCommand<Query<Schema, Item>, Output[], Schema> =>
 	() => {
 		const _collection = String(collection);
 
