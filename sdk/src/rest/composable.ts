@@ -1,6 +1,13 @@
 import type { DirectusClient } from '../client.js';
-import type { RestCommand } from './types.js';
-import { getRequestUrl } from './utils/get-request-url.js';
+import type { RestCommand } from '../types/index.js';
+import { fetchRequest } from '../utils/fetch-request.js';
+import { getRequestUrl } from '../utils/get-request-url.js';
+
+/** @TODO use real REST settings */
+export interface RestConfig {
+	globalHeaders?: Record<string, string>;
+	forceSearch?: boolean;
+}
 
 export interface RestClient<Schema extends object> {
 	request<Options extends object, Output extends object>(
@@ -8,7 +15,7 @@ export interface RestClient<Schema extends object> {
 	): Promise<Output>;
 }
 
-export const rest = () => {
+export const rest = (_options: RestConfig = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): RestClient<Schema> => {
 		return {
 			async request<Options extends object, Output extends object>(
@@ -16,29 +23,14 @@ export const rest = () => {
 			): Promise<Output> {
 				const options = getOptions();
 
-				const headers: Record<string, string> = {
-					'Content-Type': 'application/json',
-					...(options.headers ?? {}),
-				};
-
 				if (client.auth.token) {
-					headers['Authorization'] = `Bearer ${client.auth.token}`;
+					if (!options.headers) options.headers = {};
+					options.headers['Authorization'] = `Bearer ${client.auth.token}`;
 				}
 
 				const requestUrl = getRequestUrl(client.config.url, options);
 
-				const response = await globalThis.fetch(requestUrl, {
-					method: options.method,
-				});
-
-				if (!response.ok) {
-					/** @TODO Enhance by returning response data */
-					throw new Error('Request errored');
-				}
-
-				const data = (await response.json()) as { data: unknown };
-
-				return data.data as Output;
+				return await fetchRequest<Output>(requestUrl.toString(), options);
 			},
 		};
 	};
