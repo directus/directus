@@ -48,6 +48,7 @@ export type FieldFilterOperator = {
 	_gt?: string | number;
 	_gte?: string | number;
 	_in?: (string | number)[];
+	_in_all?: (string | number)[];
 	_nin?: (string | number)[];
 	_null?: boolean;
 	_nnull?: boolean;
