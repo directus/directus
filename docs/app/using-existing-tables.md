@@ -15,7 +15,7 @@ Directus does not support compund primary keys! This can be a critical issue, wh
 ::: details Example:
 TYPO3, a php-based Enterprise CMS, handles its mm-relations using compound keys in this way:
 
-```sql{1-2,5}
+```sql{2-3,6}
 CREATE TABLE `rwfm_mm_award_awardcategory` (
   `uid_local` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `uid_foreign` int(10) UNSIGNED NOT NULL DEFAULT 0,
@@ -29,14 +29,15 @@ CREATE TABLE `rwfm_mm_award_awardcategory` (
 
 In order to use this table in Directus, it must be changed to:
 
-```sql{2,6}
+```sql{2,8}
 CREATE TABLE `rwfm_mm_award_awardcategory` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT, // [!code  ++]
   `uid_local` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `uid_foreign` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `sorting` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `sorting_foreign` int(10) UNSIGNED NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`uid_local`,`uid_foreign`), // [!code  --]
+  PRIMARY KEY (`id`), // [!code  ++]
   KEY `uid_local` (`uid_local`),
   KEY `uid_foreign` (`uid_foreign`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
