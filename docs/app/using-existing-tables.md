@@ -10,10 +10,10 @@ Directus recognizing tables only, when they adhere to vertain rules. Since diffe
 
 ## 1. Check Primary Keys
 
-Directus does not support compund primary keys! This can be a critical issue, when the relational model of the foreign source defines a mm pivot table with compound, that is: more that one fields. In that case it is required to change the table structure by adding an extra field that is used as primary key. 
+Directus does not support compound primary keys! This can be a critical issue, when the relational model of the foreign source defines a mm pivot table with compound, that is: more that one fields. In that case it is recommended to change the table structure by adding an extra field that is used as primary key.
 
 ::: details Example:
-TYPO3, a php-based Enterprise CMS, handles its mm-relations using compound keys in this way:
+[TYPO3](https://typo3.org), a php-based Enterprise CMS, handles its mm-relations using compound keys in this way:
 
 ```sql{2-3,6}
 CREATE TABLE `rwfm_mm_award_awardcategory` (
