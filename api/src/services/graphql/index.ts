@@ -601,9 +601,6 @@ export class GraphQLService {
 					_nin: {
 						type: new GraphQLList(GraphQLString),
 					},
-					_in_all: {
-						type: GraphQLString,
-					},
 					_null: {
 						type: GraphQLBoolean,
 					},
@@ -673,9 +670,6 @@ export class GraphQLService {
 					_nin: {
 						type: new GraphQLList(GraphQLString),
 					},
-					_in_all: {
-						type: GraphQLString,
-					},
 					_between: {
 						type: new GraphQLList(GraphQLStringOrFloat),
 					},
@@ -703,9 +697,6 @@ export class GraphQLService {
 					},
 					_nin: {
 						type: new GraphQLList(GraphQLStringOrFloat),
-					},
-					_in_all: {
-						type: GraphQLStringOrFloat,
 					},
 					_gt: {
 						type: GraphQLStringOrFloat,

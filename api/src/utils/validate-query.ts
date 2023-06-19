@@ -58,7 +58,6 @@ function validateFilter(filter: Query['filter']) {
 				case '_in':
 				case '_in_all':
 				case '_nin':
-				case '_in_all':
 				case '_between':
 				case '_nbetween':
 					validateList(value, key);
