@@ -154,7 +154,7 @@ async function fetchRoles() {
 			...response.map((role: any) => {
 				return {
 					...translate(role),
-					count: role.users[0]?.count.id || 0,
+					count: role.users.length || 0,
 				};
 			}),
 		];
