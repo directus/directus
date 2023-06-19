@@ -117,3 +117,46 @@ test('Get selects with a limit and offset', () => {
 
 	expect(res).toStrictEqual(expected);
 });
+
+test('Get selects with a sort', () => {
+	sample.query.modifiers = {
+		sort: [
+			{
+				type: 'sort',
+				direction: 'ascending',
+				target: {
+					type: 'primitive',
+					field: randomIdentifier(),
+				},
+			},
+		],
+	};
+
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+
+	const expected: AbstractSqlQuery = {
+		select: [
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+			},
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+			},
+		],
+		from: sample.query.collection,
+		order: [
+			{
+				// @ts-ignore
+				orderBy: sample.query.modifiers.sort[0].target,
+				order: 'ASC',
+			},
+		],
+		parameters: [],
+	};
+
+	expect(res).toStrictEqual(expected);
+});
