@@ -4,7 +4,7 @@ import type { ItemType, RelationalFields, RemoveRelationships } from './schema.j
  * All query options available
  */
 export interface Query<Schema extends object, Item extends object> {
-	fields?: QueryFields<Schema, Item>;
+	fields?: QueryFields<Schema, Item> | undefined;
 }
 
 /**
@@ -26,12 +26,12 @@ export type QueryFieldsRelational<Schema extends object, Item extends object> = 
 /**
  * Returns Item types that are available in the root Schema
  */
-type ExtractItem<Schema extends object, Item extends object> = Extract<UnpackList<Item>, ItemType<Schema>>;
+export type ExtractItem<Schema extends object, Item extends object> = Extract<UnpackList<Item>, ItemType<Schema>>;
 
 /**
  * Flatten array types to their singular root
  */
-type UnpackList<Item extends object> = Item extends any[] ? Item[number] : Item;
+export type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
 
 /**
  * Apply the configured fields query parameter on a given Item type
@@ -42,10 +42,26 @@ export type ApplyQueryFields<
 	Fields extends QueryFields<Schema, Item> | undefined
 > = Fields extends undefined
 	? RemoveRelationships<Schema, Item>
-	: PickFromFields<Schema, Item, Exclude<Fields, undefined>>;
+	: HasWildcard<Fields> extends never
+	? PickFromFields<Schema, Item, Exclude<Fields, undefined>>
+	: RemoveRelationships<Schema, Item>;
 
 /**
  * Apply the query fields set on a given Item type
  * @TODO do the difficult bit
  */
-export type PickFromFields<Schema extends object, Item extends object, Fields extends QueryFields<Schema, Item>> = Item;
+export type PickFromFields<Schema extends object, Item extends object, Fields extends QueryFields<Schema, Item>> = Pick<
+	Item,
+	FlattenFields<Fields>
+>;
+
+//
+type FlattenFields<Fields> = UnpackList<Fields> extends infer Field
+	? Field extends string
+		? Field
+		: Field extends object
+		? keyof Field
+		: never
+	: never;
+
+type HasWildcard<Fields> = UnpackList<Fields> extends infer Field ? (Field extends '*' ? Field : never) : never;
