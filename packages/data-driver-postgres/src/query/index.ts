@@ -1,4 +1,4 @@
-import type { SqlStatement } from '@directus/data-sql';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 import { from } from './from.js';
 import { select } from './select.js';
 import type { ParameterizedSQLStatement } from '@directus/data-sql';
@@ -12,7 +12,7 @@ import { offset } from './offset.js';
  * @param query The abstract SQL statement
  * @returns An actual SQL with parameters
  */
-export function constructSql(query: SqlStatement): ParameterizedSQLStatement {
+export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSQLStatement {
 	const base = [select(query), from(query)].join(' ');
 
 	const limitPart = limit(query);

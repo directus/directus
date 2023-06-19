@@ -1,5 +1,5 @@
 import type { AbstractQuery } from '@directus/data';
-import type { SqlStatement } from '../types.js';
+import type { AbstractSqlQuery } from '../types.js';
 import { convertPrimitive } from './convert-primitive.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 
@@ -7,8 +7,8 @@ import { parameterIndexGenerator } from '../utils/param-index-generator.js';
  * @param abstractQuery the abstract query to convert
  * @returns a format very close to actual SQL but without making assumptions about the actual SQL dialect
  */
-export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery): SqlStatement => {
-	const statement: SqlStatement = {
+export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
+	const statement: AbstractSqlQuery = {
 		select: abstractQuery.nodes.map((abstractNode) => {
 			switch (abstractNode.type) {
 				case 'primitive':
