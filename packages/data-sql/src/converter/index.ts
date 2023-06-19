@@ -1,13 +1,14 @@
 import type { AbstractQuery } from '@directus/data';
-import type { SqlStatement } from '../types.js';
+import type { AbstractSqlQuery } from '../types.js';
 import { convertPrimitive } from './convert-primitive.js';
+import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 
 /**
  * @param abstractQuery the abstract query to convert
  * @returns a format very close to actual SQL but without making assumptions about the actual SQL dialect
  */
-export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery): SqlStatement => {
-	const statement: SqlStatement = {
+export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
+	const statement: AbstractSqlQuery = {
 		select: abstractQuery.nodes.map((abstractNode) => {
 			switch (abstractNode.type) {
 				case 'primitive':
@@ -22,7 +23,26 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 			}
 		}),
 		from: abstractQuery.collection,
+		parameters: [],
 	};
+
+	const idGen = parameterIndexGenerator();
+
+	// TODO:
+	// The next functions look very similar.
+	// Depending on how the other conversions will look like, we can introduce a generic function for this.
+
+	if (abstractQuery.modifiers?.limit) {
+		const idx = idGen.next().value;
+		statement.limit = { parameterIndex: idx };
+		statement.parameters[idx] = abstractQuery.modifiers.limit.value;
+	}
+
+	if (abstractQuery.modifiers?.offset) {
+		const idx = idGen.next().value;
+		statement.offset = { parameterIndex: idx };
+		statement.parameters[idx] = abstractQuery.modifiers.offset.value;
+	}
 
 	return statement;
 };
