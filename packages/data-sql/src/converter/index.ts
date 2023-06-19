@@ -29,9 +29,7 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 
 	const idGen = parameterIndexGenerator();
 
-	// TODO:
-	// The next functions look very similar.
-	// Depending on how the other conversions will look like, we can introduce a generic function for this.
+	// TODO: Create a generic function for this and add unit tests. This way we might can save some tests in index.test.ts
 
 	if (abstractQuery.modifiers?.limit) {
 		const idx = idGen.next().value;
