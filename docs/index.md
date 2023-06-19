@@ -32,58 +32,79 @@ layout: home
 <section class="section-container section-padding--lg">
   <Tabs class="white-bg" :tabs="['Developer Reference', 'User Guide']">
     <template #developer-reference>
-       <Card
-        title="Authentication"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
-        url="https://www.google.com/"
-        icon="check"
-      />
-      <Card
-        title="GraphQL"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
-        url="https://www.google.com/"
-        icon="full_stacked_bar_chart"
-      />
-      <Card
-        title="APIs"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+     <Card
+        title="Database APIs"
+        text="Use our dynamic REST and GraphQL APIs to access and efficiently manage your data."
         url="https://www.google.com/"
         icon="api"
       />
       <Card
+        title="File Storage"
+        text="Store and retrieve files, use storage adapters, and learn about media transformations."
+        url="https://www.google.com/"
+        icon="full_stacked_bar_chart"
+      />
+       <Card
+        title="Authentication"
+        text="Use our powerful and simple authentication features in your own applications."
+        url="https://www.google.com/"
+        icon="check"
+      />
+       <Card
         title="Extensions"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+        text="Build, modify or expand any feature needed for your project with our flexible extensions."
         url="https://www.google.com/"
         icon="extension"
       />
       <Card
         title="Real Time"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+        text="Access real-time data in your project with WebSockets, backed by your database."
         url="https://www.google.com/"
         icon="insights"
       />
       <Card
-        title="Self Hosting"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+        title="Live Preview"
+        text="Facilitate collaboration between your teams by setting up your website to take advantage of Live Preview."
         url="https://www.google.com/"
-        icon="view_module"
-      />
+        icon="full_stacked_bar_chart"
+      /> 
     </template>
     <template #user-guide>
       <Card
-        title="Extensions"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+        title="Content Module"
+        text="Empower your entire team to interact with and manage items in your collection."
         url="https://www.google.com/"
+        icon="folder_copy"
       />
-      <Card
-        title="Real Time"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+       <Card
+        title="Data Model"
+        text="Structure and organize items in your collection, while also establishing relationships between them."
         url="https://www.google.com/"
+        icon="database"
       />
-      <Card
-        title="Self Hosting"
-        text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+       <Card
+        title="User Management"
+        text="Learn about adding users, granular roles, and access permissions to your projects."
         url="https://www.google.com/"
+        icon="group"
+      />
+       <Card
+        title="Insights Dashboard"
+        text="Build custom analytics dashboards directly from your data to gain meaningful business insights. "
+        url="https://www.google.com/"
+        icon="insights"
+      />
+       <Card
+        title="Flows"
+        text="Create custom, event-driven data processing and task automation workflows."
+        url="https://www.google.com/"
+        icon="flowsheet"
+      />
+       <Card
+        title="Directus Cloud"
+        text="Explore key aspects of Directus Cloud including the dashboard, projects, and members."
+        url="https://www.google.com/"
+        icon="cloud"
       />
     </template>
   </Tabs>
@@ -110,14 +131,14 @@ layout: home
 <section class="section-padding--md">
   <div class="section-container flex">
     <div class="header vp-doc max-width">
-      <h2 class="sh-heading">Directus <span style="white-space:nowrap;">Self Hosting</span></h2>
+      <h2 class="sh-heading">Self Hosted <span style="white-space:nowrap;">Directus</span></h2>
       <p class="m-20 text-muted">
-        Self-hosting empowers customization and scalability, allowing you to tailor Directus to meet specific requirements.
+       Learn how to run Directus on your own machine, customize settings, and deploy with confidence. 
       </p>
     </div>
     <div class="grid-2 m-20">
-      <SelfHosting class="m-20" title="Docker Guide" desc="Get up and running with our Docker Guide." img="/assets/docker.png" url='#' />
-      <SelfHosting class="m-20" title="CLI" desc="Get up and running with our CLI Guide." img="/assets/cli.png" url='#' />
+      <SelfHosting class="m-20" title="Get Started with Docker" desc="Get up and running with our Docker Guide." img="/assets/docker.png" url='#' />
+      <SelfHosting class="m-20" title="Config Options" desc="A reference of all possible settings in your project." img="/assets/cli.png" url='#' />
     </div>
   </div>
 </section>
@@ -144,37 +165,38 @@ layout: home
   <div class="header centered-text vp-doc">
     <h2>Contributing to Directus</h2>
     <p class="m-20 text-muted">
-      Directus combines BaaS, Headless CMS, and internal tools for seamless
-      backend management, content distribution, and workflow optimization.
+     There are many ways in which you can contribute to the health and growth of the Directus project
     </p>
-    <div class="max-btn-width">
-      <a class="outline-btn" href="#">Contact Us</a>
+    <div>
+      <a class="outline-btn" href="#">Join the Community</a>
       <a class="secondary-btn inline-flex " href="#" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
         >
     </div>
+
   </div>
   <div class="grid-3">
+   <Card
+    h="3"
+    title="Request a Feature"
+    text="Propose new features to improve Directus. Find out how we use GitHub Discussions to organize requests."
+    url="https://www.google.com/"
+    icon="post_add"
+    />
     <Card
     h="3"
-    title="Report a Bug"
-    text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+    title="Contribute via code"
+    text="Make a significant impact with code contributions. Read our Pull Request process and find out about our CLA."
     url="https://www.google.com/"
     icon="bug_report"
     />
     <Card
     h="3"
-    title="Create a PR"
-    text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
+    title="Sponsorship & Advocacy"
+    text="Sponsor our project, increase its visibility and find out how to share the word with others!"
     url="https://www.google.com/"
     icon="domain_verification"
     />
-    <Card
-    h="3"
-    title="Request a Feature"
-    text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
-    url="https://www.google.com/"
-    icon="post_add"
-    />
+   
   </div>
 </section>
 
@@ -380,7 +402,7 @@ hr {
 }
 
 .max-width {
-  max-width: 480px;
+  max-width: 420px;
 }
 
 @media only screen and (min-width: 768px) {
