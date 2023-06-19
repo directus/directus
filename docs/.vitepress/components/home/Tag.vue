@@ -1,15 +1,12 @@
+<script lang="ts" setup>
+defineProps<{
+	tag?: string;
+}>();
+</script>
+
 <template>
 	<p class="tag">{{ tag }}</p>
 </template>
-
-<script>
-export default {
-	name: 'Tag',
-	props: {
-		tag: { type: String, required: true },
-	},
-};
-</script>
 
 <style scoped>
 .tag {

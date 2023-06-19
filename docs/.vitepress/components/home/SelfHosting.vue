@@ -1,3 +1,12 @@
+<script lang="ts" setup>
+defineProps<{
+	title: string;
+	desc?: string;
+	url: string;
+	img: string;
+}>();
+</script>
+
 <template>
 	<div class="sh">
 		<img :src="img" alt="" class="sh-img" />
@@ -6,18 +15,6 @@
 		<a :href="url" class="outline-btn">Read More</a>
 	</div>
 </template>
-
-<script>
-export default {
-	name: 'SelfHosting',
-	props: {
-		title: { type: String, required: true },
-		desc: { type: String, required: true },
-		url: { type: String, required: true },
-		img: { type: String, required: true },
-	},
-};
-</script>
 
 <style scoped>
 .sh-img {
