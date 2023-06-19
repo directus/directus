@@ -117,3 +117,97 @@ test('Get selects with a limit and offset', () => {
 
 	expect(res).toStrictEqual(expected);
 });
+
+test('Get selects with a sort', () => {
+	sample.query.modifiers = {
+		sort: [
+			{
+				type: 'sort',
+				direction: 'ascending',
+				target: {
+					type: 'primitive',
+					field: randomIdentifier(),
+				},
+			},
+		],
+	};
+
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+
+	const expected: AbstractSqlQuery = {
+		select: [
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+			},
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+			},
+		],
+		from: sample.query.collection,
+		order: [
+			{
+				orderBy: sample.query.modifiers.sort![0]!.target,
+				direction: 'ASC',
+			},
+		],
+		parameters: [],
+	};
+
+	expect(res).toStrictEqual(expected);
+});
+
+test('Convert a complex abstract query', () => {
+	sample.query.modifiers = {
+		limit: {
+			type: 'limit',
+			value: randomInteger(1, 100),
+		},
+		offset: {
+			type: 'offset',
+			value: randomInteger(1, 100),
+		},
+		sort: [
+			{
+				type: 'sort',
+				direction: 'ascending',
+				target: {
+					type: 'primitive',
+					field: randomIdentifier(),
+				},
+			},
+		],
+	};
+
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+
+	const expected: AbstractSqlQuery = {
+		select: [
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+			},
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+			},
+		],
+		from: sample.query.collection,
+		order: [
+			{
+				orderBy: sample.query.modifiers.sort![0]!.target,
+				direction: 'ASC',
+			},
+		],
+		limit: { parameterIndex: 0 },
+		offset: { parameterIndex: 1 },
+		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
+	};
+
+	expect(res).toStrictEqual(expected);
+});
