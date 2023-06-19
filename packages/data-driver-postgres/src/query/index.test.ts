@@ -1,10 +1,10 @@
-import type { SqlStatement } from '@directus/data-sql';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 import { beforeEach, expect, test } from 'vitest';
-import { constructSql } from './index.js';
+import { constructSqlQuery } from './index.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: {
-	statement: SqlStatement;
+	statement: AbstractSqlQuery;
 };
 
 beforeEach(() => {
@@ -21,7 +21,7 @@ beforeEach(() => {
 });
 
 test('basic statement', () => {
-	expect(constructSql(sample.statement)).toEqual({
+	expect(constructSqlQuery(sample.statement)).toEqual({
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}";`,
@@ -33,7 +33,7 @@ test('statement with a limit', () => {
 	sample.statement.limit = { parameterIndex: 0 };
 	sample.statement.parameters = [randomInteger(1, 100)];
 
-	expect(constructSql(sample.statement)).toEqual({
+	expect(constructSqlQuery(sample.statement)).toEqual({
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1;`,
@@ -46,7 +46,7 @@ test('statement with limit and offset', () => {
 	sample.statement.offset = { parameterIndex: 1 };
 	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100)];
 
-	expect(constructSql(sample.statement)).toEqual({
+	expect(constructSqlQuery(sample.statement)).toEqual({
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1 OFFSET $2;`,

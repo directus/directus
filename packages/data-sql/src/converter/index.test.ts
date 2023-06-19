@@ -1,7 +1,7 @@
 import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
-import type { SqlStatement } from '../types.js';
-import { convertAbstractQueryToSqlStatement } from './index.js';
+import type { AbstractSqlQuery } from '../types.js';
+import { convertAbstractQueryToAbstractSqlQuery } from './index.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: {
@@ -29,9 +29,9 @@ beforeEach(() => {
 });
 
 test('Get all selects', () => {
-	const res = convertAbstractQueryToSqlStatement(sample.query);
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
 
-	const expected: SqlStatement = {
+	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
@@ -59,9 +59,9 @@ test('Get selects with a limit', () => {
 		},
 	};
 
-	const res = convertAbstractQueryToSqlStatement(sample.query);
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
 
-	const expected: SqlStatement = {
+	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
@@ -75,10 +75,8 @@ test('Get selects with a limit', () => {
 			},
 		],
 		from: sample.query.collection,
-		// @ts-ignore
 		limit: { parameterIndex: 0 },
-		// @ts-ignore
-		parameters: [sample.query.modifiers.limit.value],
+		parameters: [sample.query.modifiers.limit!.value],
 	};
 
 	expect(res).toStrictEqual(expected);
@@ -96,9 +94,9 @@ test('Get selects with a limit and offset', () => {
 		},
 	};
 
-	const res = convertAbstractQueryToSqlStatement(sample.query);
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
 
-	const expected: SqlStatement = {
+	const expected: AbstractSqlQuery = {
 		select: [
 			{
 				type: 'primitive',
@@ -114,8 +112,7 @@ test('Get selects with a limit and offset', () => {
 		from: sample.query.collection,
 		limit: { parameterIndex: 0 },
 		offset: { parameterIndex: 1 },
-		// @ts-ignore
-		parameters: [sample.query.modifiers.limit.value, sample.query.modifiers.offset.value],
+		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
 	};
 
 	expect(res).toStrictEqual(expected);

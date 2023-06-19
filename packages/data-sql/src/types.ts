@@ -45,7 +45,7 @@ type ParameterIndex = {
  * };
  * ```
  */
-export interface SqlStatement {
+export interface AbstractSqlQuery {
 	select: SqlStatementSelectPrimitive[];
 	from: string;
 	limit?: ParameterIndex;
