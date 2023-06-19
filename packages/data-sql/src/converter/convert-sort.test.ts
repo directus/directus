@@ -4,39 +4,70 @@ import { randomIdentifier } from '@directus/random';
 import { convertSort } from './convert-sort.js';
 
 let sample: {
-	sortNode: AbstractQueryNodeSort;
+	sort: AbstractQueryNodeSort[];
 };
 
 beforeEach(() => {
 	sample = {
-		sortNode: {
-			type: 'sort',
-			direction: 'ascending',
-			target: {
-				type: 'primitive',
-				field: randomIdentifier(),
+		sort: [
+			{
+				type: 'sort',
+				direction: 'ascending',
+				target: {
+					type: 'primitive',
+					field: randomIdentifier(),
+				},
 			},
-		},
+		],
 	};
 });
 
 test('convert ascending sort', () => {
-	const res = convertSort(sample.sortNode);
+	const res = convertSort(sample.sort);
 
-	expect(res).toStrictEqual({
-		orderBy: 0,
-		order: 'ASC',
-		parameters: [sample.sortNode.target],
-	});
+	expect(res).toStrictEqual([
+		{
+			orderBy: sample.sort[0]?.target,
+			order: 'ASC',
+		},
+	]);
 });
 
 test('convert descending sort', () => {
-	sample.sortNode.direction = 'descending';
-	const res = convertSort(sample.sortNode);
+	// @ts-ignore
+	sample.sort[0].direction = 'descending';
+	const res = convertSort(sample.sort);
 
-	expect(res).toStrictEqual({
-		orderBy: 0,
-		order: 'DESC',
-		parameters: [sample.sortNode.target],
+	expect(res).toStrictEqual([
+		{
+			// @ts-ignore
+			orderBy: sample.sort[0]?.target,
+			order: 'DESC',
+		},
+	]);
+});
+
+test('convert multiple sorts', () => {
+	// @ts-ignore
+	sample.sort.push({
+		type: 'sort',
+		direction: 'ascending',
+		target: {
+			type: 'primitive',
+			field: randomIdentifier(),
+		},
 	});
+
+	const res = convertSort(sample.sort);
+
+	expect(res).toStrictEqual([
+		{
+			orderBy: sample.sort[0]?.target,
+			order: 'ASC',
+		},
+		{
+			orderBy: sample.sort[1]?.target,
+			order: 'ASC',
+		},
+	]);
 });

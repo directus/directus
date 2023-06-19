@@ -45,11 +45,7 @@ export const convertAbstractQueryToSqlStatement = (abstractQuery: AbstractQuery)
 	}
 
 	if (abstractQuery.modifiers?.sort) {
-		const { orderBy, order, parameters } = convertSort(abstractQuery.modifiers.sort);
-		statement.orderBy = orderBy;
-		statement.order = order;
-		// @ts-ignore
-		statement.parameters[orderBy] = parameters[0];
+		statement.order = convertSort(abstractQuery.modifiers.sort);
 	}
 
 	return statement;

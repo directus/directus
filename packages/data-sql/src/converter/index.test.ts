@@ -123,14 +123,16 @@ test('Get selects with a limit and offset', () => {
 
 test('Get selects with a sort', () => {
 	sample.query.modifiers = {
-		sort: {
-			type: 'sort',
-			direction: 'ascending',
-			target: {
-				type: 'primitive',
-				field: randomIdentifier(),
+		sort: [
+			{
+				type: 'sort',
+				direction: 'ascending',
+				target: {
+					type: 'primitive',
+					field: randomIdentifier(),
+				},
 			},
-		},
+		],
 	};
 
 	const res = convertAbstractQueryToSqlStatement(sample.query);
@@ -149,11 +151,14 @@ test('Get selects with a sort', () => {
 			},
 		],
 		from: sample.query.collection,
-		// @ts-ignore
-		orderBy: 0,
-		order: 'ASC',
-		// @ts-ignore
-		parameters: [sample.query.modifiers.sort.target],
+		order: [
+			{
+				// @ts-ignore
+				orderBy: sample.query.modifiers.sort[0].target,
+				order: 'ASC',
+			},
+		],
+		parameters: [],
 	};
 
 	expect(res).toStrictEqual(expected);

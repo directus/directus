@@ -50,10 +50,17 @@ export interface SqlStatement {
 	from: string;
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
-	orderBy?: number;
-	order?: 'ASC' | 'DESC';
-	parameters: (string | boolean | number | AbstractQueryNodeSortTargets)[];
+	order?: {
+		orderBy: AbstractQueryNodeSortTargets;
+		order: 'ASC' | 'DESC';
+	}[];
+	parameters: (string | boolean | number)[];
 }
+
+export type SqlOrder = {
+	orderBy: AbstractQueryNodeSortTargets;
+	order: 'ASC' | 'DESC';
+};
 
 /**
  * An actual vendor specific SQL statement with its parameters.

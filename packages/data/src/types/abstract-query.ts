@@ -180,7 +180,7 @@ export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryNode
 export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
 	offset?: AbstractQueryNodeOffset;
-	sort?: AbstractQueryNodeSort;
+	sort?: AbstractQueryNodeSort[];
 	filter?: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
 }
 
