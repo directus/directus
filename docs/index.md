@@ -21,7 +21,7 @@ layout: home
       </p>
       <div class="hero-buttons">
         <a class="primary-btn" href="#">Get Started</a>
-        <a class="secondary-btn inline-flex" href="#" target="_blank">GitHub<Github/></a
+        <a class="secondary-btn inline-flex" href="#" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
         >
       </div>
     </div>
@@ -149,7 +149,7 @@ layout: home
     </p>
     <div class="max-btn-width">
       <a class="outline-btn" href="#">Contact Us</a>
-      <a class="secondary-btn inline-flex " href="#" target="_blank">GitHub<Github/></a
+      <a class="secondary-btn inline-flex " href="#" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
         >
     </div>
   </div>
@@ -234,8 +234,7 @@ hr {
 }
 
 .hero {
-  background: #011026;
-  background: linear-gradient(172deg,#64f 20%,#f9d 300%);
+  background: #0E1C2F;
   color: white;
 }
 
@@ -253,7 +252,7 @@ hr {
 }
 .hero-content h1 {
   font-size: 60px;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
 
 }
@@ -274,17 +273,18 @@ hr {
 	border-color: var(--vp-c-divider);
 	border-radius: 8px;
 	color: var(--vp-c-text-1);
-	font-weight: 500;
-	margin-top: 20px;
-	padding: 12px;
+	font-weight: 600;
+  font-size: 14px;
+	margin-top: 10px;
+	padding: 4px 8px;
 }
 
 .primary-btn {
   background: #fff;
-  border-radius: 24px;
-  color: #64f;
+  border-radius: 12px;
+  color: #0E1C2F;
   font-size: 16px;
-  padding: 8px 16px;
+  padding: 12px 16px;
 }
 .primary-btn:hover {
   background-color: #f0f4f9;
@@ -292,12 +292,11 @@ hr {
 }
 .secondary-btn {
   padding: 16px;
-  margin-left: 20px;
+  margin-left: 32px;
+  color: #D1D3D5;
 }
 
-.secondary-btn:hover {
-  text-decoration: underline;
-}
+
 .hero-toggler {
   background-color: #1F1938;
   border-radius: 8px;
@@ -318,7 +317,7 @@ hr {
   background: var(--vp-c-bg);
 }
 .gray-bg {
-  background: var(--vp-sidebar-bg-color);
+  background: var(--vp-c-bg-soft);
 }
 
 .text-muted {
@@ -348,6 +347,9 @@ hr {
 }
 .m-10 {
     margin: 10px 0;
+}
+.m-6 {
+    margin: 6px 0;
 }
 .max-btn-width {
   max-width: 260px;

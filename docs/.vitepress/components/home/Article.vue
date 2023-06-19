@@ -18,8 +18,8 @@ defineProps<{
 			<img :src="img" alt="" class="article-img" />
 			<Tag :tag="tag" />
 			<h3 class="sub-headline article-heading">{{ title }}</h3>
-			<p class="m-10 text-muted">{{ desc }}</p>
-			<div v-if="author" class="m-10 gray">
+			<p class="m-6 text-muted">{{ desc }}</p>
+			<div v-if="author" class="m-6 gray">
 				<span>{{ author }}</span>
 				&nbsp;
 				<span>•</span>

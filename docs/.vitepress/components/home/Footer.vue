@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import Logo from './icons/Logo.vue';
 import SocialIcon from './SocialIcon.vue';
+import Divider from '../Divider.vue';
 </script>
 
 <script lang="ts">
@@ -54,7 +55,9 @@ export default {
 			</div>
 		</div>
 
-		<Divider />
+		<div class="section-container dark">
+			<Divider />
+		</div>
 
 		<p class="footer-copyright">&copy; {{ currentYear }} Monospace Inc</p>
 	</footer>
@@ -63,10 +66,14 @@ export default {
 <style scoped>
 footer {
 	padding-bottom: 60px;
-	background: linear-gradient(66.35deg, #0b081a 28.05%, #150e34 97.17%);
+	background: #172940;
 }
 hr {
 	border-color: gray;
+}
+
+a {
+	color: var(--vp-c-text-dark-2);
 }
 .footer {
 	display: flex;
@@ -74,13 +81,15 @@ hr {
 	align-items: center;
 }
 .footer-container {
-	padding: 60px 80px;
+	padding: 24px 120px;
 }
 
 .footer-links {
 	display: flex;
 	list-style: none;
+	font-weight: 600;
 	justify-content: space-between;
+	gap: 24px;
 }
 
 .footer-links li {
@@ -90,7 +99,8 @@ hr {
 
 .footer-copyright {
 	text-align: center;
-	color: white;
+	color: var(--vp-c-text-dark-2);
+	font-weight: 500;
 	margin-top: 32px;
 }
 .social-links {

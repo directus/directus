@@ -26,7 +26,13 @@ const Comp = iconsMap[props.icon];
 </script>
 
 <template>
-	<a :href="url">
+	<a class="social-icons" :href="url">
 		<Comp />
 	</a>
 </template>
+
+<style scoped>
+.social-icons {
+	font-size: 28px;
+}
+</style>
