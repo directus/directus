@@ -1,10 +1,25 @@
+<script lang="ts" setup>
+import Tag from './Tag.vue';
+
+defineProps<{
+	title: string;
+	tag?: string;
+	url: string;
+	img: string;
+	author?: string;
+	date?: string;
+	desc?: string;
+}>();
+</script>
+
 <template>
 	<div class="vp-docs">
 		<a :href="url">
 			<img :src="img" alt="" class="article-img" />
-			<p class="tag">{{ tag }}</p>
+			<Tag :tag="tag" />
 			<h3 class="sub-headline article-heading">{{ title }}</h3>
-			<div class="m-10 gray">
+			<p class="m-10 text-muted">{{ desc }}</p>
+			<div v-if="author" class="m-10 gray">
 				<span>{{ author }}</span>
 				&nbsp;
 				<span>•</span>
@@ -14,20 +29,6 @@
 		</a>
 	</div>
 </template>
-
-<script>
-export default {
-	name: 'Article',
-	props: {
-		title: { type: String, required: true },
-		tag: { type: String, required: true },
-		url: { type: String, required: true },
-		img: { type: String, required: true },
-		author: { type: String, required: true },
-		date: { type: String, required: true },
-	},
-};
-</script>
 
 <style scoped>
 .article-heading {

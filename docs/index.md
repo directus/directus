@@ -4,11 +4,9 @@ layout: home
 
 <script setup>
   import CodeToggler from "./.vitepress/components/home/CodeToggler.vue"
-  import UseCase from "./.vitepress/components/home/UseCase.vue"
   import Footer from "./.vitepress/components/home/Footer.vue"
   import SelfHosting from "./.vitepress/components/home/SelfHosting.vue"
   import Article from "./.vitepress/components/home/Article.vue"
-  import Articles from "./.vitepress/components/home/Article.vue"
   import Github from "./.vitepress/components/home/icons/Github.vue"
   import Divider from "./.vitepress/components/Divider.vue"
   import { data as articles } from "./index.data.js"
@@ -101,10 +99,10 @@ layout: home
       </p>
     </div>
     <div class="grid-3">
-      <UseCase title="Backend-As-A-Service" tag="Backend" desc="Quickly build digital
+      <Article title="Backend-As-A-Service" tag="Backend" desc="Quickly build digital
       projects with our feature-rich toolkit that configures your backend logic." img="/assets/baas.png" url='#' />
-      <UseCase title="Headless CMS" tag="CMS" desc="Manage content, users, and assets with no limitations or barriers." img="/assets/headless-cms.png" url='#' />
-      <UseCase title="Internal Tools" tag="Tools" desc="Build workflows, dashboards and  customized internal apps faster." img="/assets/internal-tools.png" url='#' />
+      <Article title="Headless CMS" tag="CMS" desc="Manage content, users, and assets with no limitations or barriers." img="/assets/headless-cms.png" url='#' />
+      <Article title="Internal Tools" tag="Tools" desc="Build workflows, dashboards and  customized internal apps faster." img="/assets/internal-tools.png" url='#' />
     </div>
   </div>
 </section>
