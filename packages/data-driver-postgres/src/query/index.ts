@@ -6,10 +6,9 @@ import { limit } from './limit.js';
 import { offset } from './offset.js';
 
 /**
- * All of the sub functions are called for any query.
- * Within those functions checks are being made, if the part can or should be included within the statement.
+ * Constructs an actual PostgreSQL query statement from a given abstract SQL query.
  *
- * @param query The abstract SQL statement
+ * @param query - The abstract SQL statement
  * @returns An actual SQL with parameters
  */
 export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSQLStatement {
