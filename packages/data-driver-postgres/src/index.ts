@@ -33,8 +33,8 @@ export default class DataDriverPostgres implements DataDriver {
 
 	async query(query: AbstractQuery): Promise<Readable> {
 		try {
-			const abstractSQLQuery = convertAbstractQueryToAbstractSqlQuery(query);
-			const sql = constructSqlQuery(abstractSQLQuery);
+			const abstractSqlQuery = convertAbstractQueryToAbstractSqlQuery(query);
+			const sql = constructSqlQuery(abstractSqlQuery);
 			const queryStream = new QueryStream(sql.statement, sql.parameters);
 			return this.#pool.query(queryStream);
 		} catch (err) {
