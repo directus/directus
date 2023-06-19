@@ -1,8 +1,11 @@
 import fetch from 'node-fetch';
+import { loadEnv } from 'vitepress';
+
+const secrets = loadEnv('', process.cwd());
 
 const env = {
-	url: 'https://example.com',
-	token: 'abcdef',
+	url: secrets.VITE_DIRECTUS_URL,
+	token: secrets.VITE_DIRECTUS_TOKEN,
 };
 
 const fields = [
