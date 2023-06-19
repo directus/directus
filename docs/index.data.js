@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-
 const url = 'https://marketing.directus.app'
 
 const fields = [
