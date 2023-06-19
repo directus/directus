@@ -32,13 +32,13 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 	// Depending on how the other conversions will look like, we can introduce a generic function for this.
 
 	if (abstractQuery.modifiers?.limit) {
-		const idx = idGen.next().value as number;
+		const idx = idGen.next().value;
 		statement.limit = { parameterIndex: idx };
 		statement.parameters[idx] = abstractQuery.modifiers.limit.value;
 	}
 
 	if (abstractQuery.modifiers?.offset) {
-		const idx = idGen.next().value as number;
+		const idx = idGen.next().value;
 		statement.offset = { parameterIndex: idx };
 		statement.parameters[idx] = abstractQuery.modifiers.offset.value;
 	}
