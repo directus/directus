@@ -1,13 +1,6 @@
 <script lang="ts" setup>
 import Logo from './icons/Logo.vue';
-import LinkedIn from './icons/LinkedIn.vue';
-import Docker from './icons/Docker.vue';
-import NPM from './icons/NPM.vue';
-import YouTube from './icons/YouTube.vue';
-import Discord from './icons/Discord.vue';
-import Twitter from './icons/Twitter.vue';
-import GitHub2 from './icons/GitHub2.vue';
-import Divider from '../Divider.vue';
+import SocialIcon from './SocialIcon.vue';
 </script>
 
 <script lang="ts">
@@ -17,6 +10,7 @@ export default {
 			currentYear: new Date().getFullYear(),
 		};
 	},
+	components: { SocialIcon },
 };
 </script>
 
@@ -36,25 +30,25 @@ export default {
 			<div>
 				<ul class="social-links m-20">
 					<li>
-						<a href="#"><LinkedIn /></a>
+						<SocialIcon url="#" icon="linkedin" />
 					</li>
 					<li>
-						<a href="#"><Docker /></a>
+						<SocialIcon url="#" icon="docker" />
 					</li>
 					<li>
-						<a href="#"><NPM /></a>
+						<SocialIcon url="#" icon="npm" />
 					</li>
 					<li>
-						<a href="#"><YouTube /></a>
+						<SocialIcon url="#" icon="youtube" />
 					</li>
 					<li>
-						<a href="#"><Discord /></a>
+						<SocialIcon url="#" icon="discord" />
 					</li>
 					<li>
-						<a href="#"><Twitter /></a>
+						<SocialIcon url="#" icon="twitter" />
 					</li>
 					<li>
-						<a href="#"><GitHub2 /></a>
+						<SocialIcon url="#" icon="github" />
 					</li>
 				</ul>
 			</div>

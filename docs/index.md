@@ -32,7 +32,7 @@ layout: home
 <section class="section-container section-padding--lg">
   <Tabs class="white-bg" :tabs="['Developer Reference', 'User Guide']">
     <template #developer-reference>
-      <Card
+       <Card
         title="Authentication"
         text="Directus provides powerful authentication capabilities to effortlessly implement a robust authentication system."
         url="https://www.google.com/"
