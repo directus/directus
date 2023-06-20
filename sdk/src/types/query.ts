@@ -27,6 +27,10 @@ export type QueryFieldsRelational<Schema extends object, Item extends object> = 
  * Returns Item types that are available in the root Schema
  */
 export type ExtractItem<Schema extends object, Item extends object> = Extract<UnpackList<Item>, ItemType<Schema>>;
+
+/**
+ * Returns the relation type from the current item by key
+ */
 export type ExtractRelation<Schema extends object, Item extends object, Key> = Key extends keyof Item
 	? ExtractItem<Schema, Item> extends infer Relation
 		? Relation extends never
@@ -34,13 +38,20 @@ export type ExtractRelation<Schema extends object, Item extends object, Key> = K
 			: Relation
 		: never
 	: never;
+
 /**
  * Flatten array types to their singular root
  */
 export type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
 
-// -- helpers
+/**
+ * Returns true if the Fields has any nested field
+ */
 type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field ? (Field extends object ? true : never) : never;
+
+/**
+ * Return all keys if Fields is undefined or contains '*'
+ */
 export type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> extends infer Field
 	? Field extends undefined
 		? keyof Item
@@ -50,12 +61,19 @@ export type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> ext
 		? Field
 		: never
 	: never;
+
+/**
+ * Returns the relational fields from the fields list
+ */
 export type RelationalQueryFields<Fields> = UnpackList<Fields> extends infer Field
 	? Field extends object
 		? Field
 		: never
 	: never;
 
+/**
+ * Extract the required fields from an item
+ */
 type PickFlatFields<Schema extends object, Item extends object, Fields> = Pick<
 	RemoveRelationships<Schema, Item>,
 	Extract<Fields, keyof Item>
@@ -66,11 +84,11 @@ type PickFlatFields<Schema extends object, Item extends object, Fields> = Pick<
  */
 export type ApplyQueryFields<Schema extends object, Item extends object, Fields> = HasNestedFields<Fields> extends never
 	? PickFlatFields<Schema, Item, FieldsWildcard<Item, Fields>> // no relation
-	: RelationalQueryFields<Fields> extends infer RelatedFields
+	: RelationalQueryFields<Fields> extends infer RelatedFields // infer related fields
 	? PickFlatFields<Schema, Item, Exclude<FieldsWildcard<Item, Fields>, keyof RelatedFields>> & {
 			[K in keyof RelatedFields]: ExtractRelation<Schema, Item, K> extends infer Relation
 				? Relation extends object
-					? ApplyQueryFields<Schema, Relation, RelatedFields[K]>
+					? ApplyQueryFields<Schema, Relation, RelatedFields[K]> // recursively build the result
 					: never
 				: never;
 	  }
