@@ -15,7 +15,7 @@ layout: home
 <section class="hero">
   <div class="section-container section-padding--hero flex">
     <div class="hero-content">
-      <p class="hero-badge">Learning hub</p>
+      <p class="hero-badge">Resource Hub</p>
       <h1 class="m-20 ">Directus Documentation</h1>
       <p class="m-20 hero-paragraph">Explore our resources and powerful data engine to build your projects confidently.
 </p> <div class="hero-buttons"> <a class="primary-btn" href="#">Get Started</a>
@@ -167,14 +167,14 @@ layout: home
     title="Contribute via code"
     text="Make a significant impact with code contributions. Read our Pull Request process and find out about our CLA."
     url="https://www.google.com/"
-    icon="bug_report"
+    icon="code"
     />
     <Card
     h="3"
     title="Sponsorship & Advocacy"
     text="Sponsor our project, increase its visibility and find out how to share the word with others!"
     url="https://www.google.com/"
-    icon="domain_verification"
+    icon="handshake"
     />
    
   </div>
@@ -279,7 +279,7 @@ hr {
 	font-weight: 600;
   font-size: 14px;
 	margin-top: 10px;
-	padding: 4px 8px;
+	padding: 4px 12px;
 }
 
 .primary-btn {
