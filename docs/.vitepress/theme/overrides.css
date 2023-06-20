@@ -57,9 +57,6 @@
 /**
  * Snippet Toggler Content
  * -------------------------------------------------------------------------- */
-.snippet-toggler {
-	margin: 16px 0;
-}
 
 .snippet-toggler .content-area [class^='language-'] {
 	margin: 0;

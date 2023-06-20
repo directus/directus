@@ -101,7 +101,7 @@ const onPrefChange = (event: Event) => {
 }
 @media (min-width: 640px) {
 	.snippet-toggler {
-		border-radius: 8px;
+		border-radius: 16px;
 	}
 }
 .content-area {

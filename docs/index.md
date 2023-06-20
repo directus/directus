@@ -391,9 +391,12 @@ hr {
 
 
 .hero-toggler {
-  border-radius: 8px;
+  border-radius: 16px;
   width: 100%;
   max-width: 590px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  filter: drop-shadow(0px 0px 120px rgba(255, 255, 255, 0.1));
+  backdrop-filter: blur(4px)
 
 }
 .flex {
