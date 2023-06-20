@@ -334,21 +334,6 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 }
 
 /**
- * Used to work with parameterized queries.
- * @example
- * ```
- * {
- * 		statement: 'SELECT * FROM "articles" WHERE "articles"."id" = $1;',
- * 		values: [99],
- * }
- * ```
- */
-export interface ParameterizedSQLStatement {
-	statement: string;
-	values: (string | number | boolean)[];
-}
-
-/**
  * @TODO
  * - Should we support "Distinct", if so where does it live (field level vs collection level)
  * - Rethink every / some
