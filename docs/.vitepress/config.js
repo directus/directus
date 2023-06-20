@@ -571,6 +571,10 @@ function sidebar() {
 						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
 					],
 				},
+				{
+					text: 'Extension Building',
+					link: '/guides/extensions/index.html'
+				}
 			],
 		},
 		{
