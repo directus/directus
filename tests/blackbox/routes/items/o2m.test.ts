@@ -1927,11 +1927,54 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								.fill(0)
 								.map(() => createState(pkType));
 
+							const ws = common.createWebSocketConn(getUrl(vendor), {
+								auth: { access_token: common.USER.ADMIN.TOKEN },
+							});
+
+							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
+							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
+							const wsGql = common.createWebSocketGql(getUrl(vendor), {
+								auth: { access_token: common.USER.ADMIN.TOKEN },
+							});
+
+							const subscriptionKeyCountries = await wsGql.subscribe({
+								collection: localCollectionCountries,
+								jsonQuery: {
+									event: true,
+									data: {
+										id: true,
+										name: true,
+									},
+								},
+								uid: localCollectionCountries,
+							});
+
+							const subscriptionKeyStates = await wsGql.subscribe({
+								collection: localCollectionStates,
+								jsonQuery: {
+									event: true,
+									data: {
+										id: true,
+										name: true,
+										country_id: {
+											id: true,
+										},
+									},
+								},
+								uid: localCollectionStates,
+							});
+
 							// Action
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
 								.send(country)
 								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const wsMessagesCountries = await ws.getMessages(1, { uid: localCollectionCountries });
+							const wsMessagesStates = await ws.getMessages(1, { uid: localCollectionStates });
+							const wsGqlMessagesCountries = await wsGql.getMessages(1, { uid: localCollectionCountries });
+							const wsGqlMessagesStates = await wsGql.getMessages(1, { uid: localCollectionStates });
 
 							const mutationKey = `create_${localCollectionCountries}_item`;
 
@@ -1949,12 +1992,85 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
+							const wsMessagesGqlCountries = await ws.getMessages(1, { uid: localCollectionCountries });
+							const wsMessagesGqlStates = await ws.getMessages(1, { uid: localCollectionStates });
+							ws.conn.close();
+							const wsGqlMessagesGqlCountries = await wsGql.getMessages(1, { uid: localCollectionCountries });
+							const wsGqlMessagesGqlStates = await wsGql.getMessages(1, { uid: localCollectionStates });
+							wsGql.client.dispose();
+
 							// Assert
 							expect(response.statusCode).toBe(200);
 							expect(response.body.data.states.length).toBe(countNested);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].states.length).toEqual(countNested);
+
+							for (const { messagesCountries, messagesStates } of [
+								{ messagesCountries: wsMessagesCountries, messagesStates: wsMessagesStates },
+								{ messagesCountries: wsMessagesGqlCountries, messagesStates: wsMessagesGqlStates },
+							]) {
+								expect(messagesCountries?.length).toBe(1);
+								expect(messagesStates?.length).toBe(1);
+
+								expect(messagesCountries![0]).toMatchObject({
+									type: 'subscription',
+									event: 'create',
+									data: [
+										{
+											id: expect.anything(),
+											name: expect.any(String),
+										},
+									],
+								});
+
+								expect(messagesStates![0]).toMatchObject({
+									type: 'subscription',
+									event: 'create',
+									data: [
+										{
+											id: expect.anything(),
+											name: expect.any(String),
+											country_id: expect.anything(),
+										},
+									],
+								});
+							}
+
+							for (const { messagesCountries, messagesStates } of [
+								{ messagesCountries: wsGqlMessagesCountries, messagesStates: wsGqlMessagesStates },
+								{ messagesCountries: wsGqlMessagesGqlCountries, messagesStates: wsGqlMessagesGqlStates },
+							]) {
+								expect(messagesCountries?.length).toBe(1);
+								expect(messagesStates?.length).toBe(1);
+
+								expect(messagesCountries![0]).toEqual({
+									data: {
+										[subscriptionKeyCountries]: {
+											event: 'create',
+											data: {
+												id: expect.anything(),
+												name: expect.any(String),
+											},
+										},
+									},
+								});
+
+								expect(messagesStates![0]).toEqual({
+									data: {
+										[subscriptionKeyStates]: {
+											event: 'create',
+											data: {
+												id: expect.anything(),
+												name: expect.any(String),
+												country_id: {
+													id: expect.anything(),
+												},
+											},
+										},
+									},
+								});
+							}
 						},
 						120000
 					);
@@ -1983,6 +2099,44 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								.fill(0)
 								.map(() => createState(pkType));
 
+							const ws = common.createWebSocketConn(getUrl(vendor), {
+								auth: { access_token: common.USER.ADMIN.TOKEN },
+							});
+
+							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
+							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
+							const wsGql = common.createWebSocketGql(getUrl(vendor), {
+								auth: { access_token: common.USER.ADMIN.TOKEN },
+							});
+
+							await wsGql.subscribe({
+								collection: localCollectionCountries,
+								jsonQuery: {
+									event: true,
+									data: {
+										id: true,
+										name: true,
+									},
+								},
+								uid: localCollectionCountries,
+							});
+
+							await wsGql.subscribe({
+								collection: localCollectionStates,
+								jsonQuery: {
+									event: true,
+									data: {
+										id: true,
+										name: true,
+										country_id: {
+											id: true,
+										},
+									},
+								},
+								uid: localCollectionStates,
+							});
+
 							// Action
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
@@ -2005,6 +2159,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
+							ws.conn.close();
+							wsGql.client.dispose();
+
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
@@ -2019,6 +2176,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
+
+							expect(ws.getMessageCount(localCollectionCountries)).toBe(1);
+							expect(ws.getMessageCount(localCollectionStates)).toBe(1);
+							expect(wsGql.getMessageCount(localCollectionCountries)).toBe(0);
+							expect(wsGql.getMessageCount(localCollectionStates)).toBe(0);
 						},
 						120000
 					);
@@ -2050,11 +2212,54 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									.map(() => createState(pkType));
 							}
 
+							const ws = common.createWebSocketConn(getUrl(vendor), {
+								auth: { access_token: common.USER.ADMIN.TOKEN },
+							});
+
+							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
+							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
+							const wsGql = common.createWebSocketGql(getUrl(vendor), {
+								auth: { access_token: common.USER.ADMIN.TOKEN },
+							});
+
+							const subscriptionKeyCountries = await wsGql.subscribe({
+								collection: localCollectionCountries,
+								jsonQuery: {
+									event: true,
+									data: {
+										id: true,
+										name: true,
+									},
+								},
+								uid: localCollectionCountries,
+							});
+
+							const subscriptionKeyStates = await wsGql.subscribe({
+								collection: localCollectionStates,
+								jsonQuery: {
+									event: true,
+									data: {
+										id: true,
+										name: true,
+										country_id: {
+											id: true,
+										},
+									},
+								},
+								uid: localCollectionStates,
+							});
+
 							// Action
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
 								.send(countries)
 								.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+							const wsMessagesCountries = await ws.getMessages(count, { uid: localCollectionCountries });
+							const wsMessagesStates = await ws.getMessages(count, { uid: localCollectionStates });
+							const wsGqlMessagesCountries = await wsGql.getMessages(count, { uid: localCollectionCountries });
+							const wsGqlMessagesStates = await wsGql.getMessages(count, { uid: localCollectionStates });
 
 							const mutationKey = `create_${localCollectionCountries}_items`;
 
@@ -2069,12 +2274,89 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
+							const wsMessagesGqlCountries = await ws.getMessages(count, { uid: localCollectionCountries });
+							const wsMessagesGqlStates = await ws.getMessages(count, { uid: localCollectionStates });
+							ws.conn.close();
+							const wsGqlMessagesGqlCountries = await wsGql.getMessages(count, { uid: localCollectionCountries });
+							const wsGqlMessagesGqlStates = await wsGql.getMessages(count, { uid: localCollectionStates });
+							wsGql.client.dispose();
+
 							// Assert
 							expect(response.statusCode).toBe(200);
 							expect(response.body.data.length).toBe(count);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
+
+							for (const { messagesCountries, messagesStates } of [
+								{ messagesCountries: wsMessagesCountries, messagesStates: wsMessagesStates },
+								{ messagesCountries: wsMessagesGqlCountries, messagesStates: wsMessagesGqlStates },
+							]) {
+								expect(messagesCountries?.length).toBe(count);
+								expect(messagesStates?.length).toBe(count);
+
+								for (let i = 0; i < count; i++) {
+									expect(messagesCountries![i]).toMatchObject({
+										type: 'subscription',
+										event: 'create',
+										data: [
+											{
+												id: expect.anything(),
+												name: expect.any(String),
+											},
+										],
+									});
+
+									expect(messagesStates![i]).toMatchObject({
+										type: 'subscription',
+										event: 'create',
+										data: [
+											{
+												id: expect.anything(),
+												name: expect.any(String),
+												country_id: expect.anything(),
+											},
+										],
+									});
+								}
+							}
+
+							for (const { messagesCountries, messagesStates } of [
+								{ messagesCountries: wsGqlMessagesCountries, messagesStates: wsGqlMessagesStates },
+								{ messagesCountries: wsGqlMessagesGqlCountries, messagesStates: wsGqlMessagesGqlStates },
+							]) {
+								expect(messagesCountries?.length).toBe(count);
+								expect(messagesStates?.length).toBe(count);
+
+								for (let i = 0; i < count; i++) {
+									expect(messagesCountries![i]).toEqual({
+										data: {
+											[subscriptionKeyCountries]: {
+												event: 'create',
+												data: {
+													id: expect.anything(),
+													name: expect.any(String),
+												},
+											},
+										},
+									});
+
+									expect(messagesStates![i]).toEqual({
+										data: {
+											[subscriptionKeyStates]: {
+												event: 'create',
+												data: {
+													id: expect.anything(),
+													name: expect.any(String),
+													country_id: {
+														id: expect.anything(),
+													},
+												},
+											},
+										},
+									});
+								}
+							}
 						},
 						120000
 					);
@@ -2110,6 +2392,44 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									.map(() => createState(pkType));
 							}
 
+							const ws = common.createWebSocketConn(getUrl(vendor), {
+								auth: { access_token: common.USER.ADMIN.TOKEN },
+							});
+
+							await ws.subscribe({ collection: localCollectionCountries, uid: localCollectionCountries });
+							await ws.subscribe({ collection: localCollectionStates, uid: localCollectionStates });
+
+							const wsGql = common.createWebSocketGql(getUrl(vendor), {
+								auth: { access_token: common.USER.ADMIN.TOKEN },
+							});
+
+							await wsGql.subscribe({
+								collection: localCollectionCountries,
+								jsonQuery: {
+									event: true,
+									data: {
+										id: true,
+										name: true,
+									},
+								},
+								uid: localCollectionCountries,
+							});
+
+							await wsGql.subscribe({
+								collection: localCollectionStates,
+								jsonQuery: {
+									event: true,
+									data: {
+										id: true,
+										name: true,
+										country_id: {
+											id: true,
+										},
+									},
+								},
+								uid: localCollectionStates,
+							});
+
 							// Action
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
@@ -2129,6 +2449,9 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								},
 							});
 
+							ws.conn.close();
+							wsGql.client.dispose();
+
 							// Assert
 							expect(response.statusCode).toBe(400);
 							expect(response.body.errors).toBeDefined();
@@ -2143,6 +2466,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(gqlResponse.body.errors[0].message).toBe(
 								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
+
+							expect(ws.getMessageCount(localCollectionCountries)).toBe(1);
+							expect(ws.getMessageCount(localCollectionStates)).toBe(1);
+							expect(wsGql.getMessageCount(localCollectionCountries)).toBe(0);
+							expect(wsGql.getMessageCount(localCollectionStates)).toBe(0);
 						},
 						120000
 					);
@@ -2203,17 +2531,23 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									create: Array(countCreate)
 										.fill(0)
 										.map(() => createState(pkType)),
-									update: states.slice(0, countUpdate),
+									update: states.slice(0, countUpdate).map((state: State) => {
+										state.name = 'updated';
+										return state;
+									}),
 									delete: states.slice(-countDelete).map((state: State) => state.id),
 								};
 							}
 
 							for (const country of countries2) {
 								country.states = [
-									...country.states,
 									...Array(countCreate)
 										.fill(0)
 										.map(() => createState(pkType)),
+									...country.states.map((state: State) => {
+										state.name = 'updated';
+										return state;
+									}),
 								];
 							}
 
@@ -2306,17 +2640,23 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 									create: Array(countCreate)
 										.fill(0)
 										.map(() => createState(pkType)),
-									update: states.slice(0, countUpdate),
+									update: states.slice(0, countUpdate).map((state: State) => {
+										state.name = 'updated';
+										return state;
+									}),
 									delete: states.slice(-countDelete).map((state: State) => state.id),
 								};
 							}
 
 							for (const country of countries2) {
 								country.states = [
-									...country.states,
 									...Array(countCreate)
 										.fill(0)
 										.map(() => createState(pkType)),
+									...country.states.map((state: State) => {
+										state.name = 'updated';
+										return state;
+									}),
 								];
 							}
 

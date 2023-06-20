@@ -80,14 +80,6 @@ create_user: Buat User
 message: Pesan
 delete_panel: Hapus Panel
 create_webhook: Buat Webhook
-create_translation_string: Buat Terjemahan
-no_translation_string: Tidak ditemukan terjemahan
-no_translation_string_copy: Belum ada terjemahan tersedia.
-translation_string_key_placeholder: Kunci string terjemahan...
-translation_string_translations_placeholder: Tambahkan terjemahan baru
-edit_translation_string: Sunting Terjemahan
-delete_translation_string_copy: >-
-  Apakah Anda yakin ingin menghapus bidang terjemahan "{key}" ini? Tindakan ini tidak dapat dikembalikan.
 invite_users: Undang Pengguna Lain
 invite: Undang
 email_already_invited: Email "{email}" sudah diundang
@@ -118,19 +110,13 @@ public_label: Publik
 public_description: Kendalikan data API yang tersedia tanpa autentikasi.
 admin_description: Peran administratif awal tanpa batasan akses aplikasi/API.
 not_allowed: Tidak Diizinkan
-directus_version: Versi Directus
-node_version: Versi Node
-node_uptime: Waktu Jalan Node
-os_type: Tipe OS
-os_version: Versi OS
-os_uptime: Waktu Jalan OS
-os_totalmem: Memori OS
 archive: Arsip
 archive_confirm: Apakah Anda yakin ingin mengarsipkan item ini?
 archive_confirm_count: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan {count} item ini?
 reset_system_permissions_to: 'Set Ulang Perizinan Sistem ke:'
 reset_system_permissions_copy: Tindakan ini akan menimpa perizinan kustom apapun yang mungkin telah diterapkan ke koleksi sistem. Apakah Anda yakin?
+the_following_are_minimum_permissions: Izin minimum berikut ini diterapkan secara otomatis ketika "Akses Aplikasi" diaktifkan. Anda dapat memberikan izin tambahan jika diperlukan, tetapi Anda tidak dapat mengurangi izin di bawah level ini.
 app_access_minimum: Minimum Akses Aplikasi
 recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
@@ -181,6 +167,7 @@ permissions_for_role: 'Item {role} Peran dapat {action}.'
 fields_for_role: 'Baris {role} Peran dapat {action}.'
 validation_for_role: 'Aturan baris {action} Peran {role} harus tunduk.'
 presets_for_role: 'Nilai bawaan baris untuk Peran {role}.'
+presets_field_warning: 'Preset relasional untuk kolom "{field}" harus dikonfigurasi dengan sintaks "detail".'
 presentation_and_aliases: Presentasi & Alias
 revision_post_create: Ini adalah bagaimana item ini terlihat ketika dibuat.
 revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan.
@@ -295,6 +282,12 @@ o2m_relationship: Relasi Satu ke Banyak
 m2m_relationship: Relasi Banyak ke Banyak
 m2a_relationship: Relasi Banyak ke Semua
 invalid_item: Item tidak Valid
+require_confirmation: Memerlukan Konfirmasi
+dialog: Dialog
+modal: Modal
+confirmation_dialog: Dialog Konfirmasi
+confirmation_description: Keterangan Konfirmasi
+confirmation_input_fields: Kolom Input Konfirmasi
 next: Lanjut
 field_name: Nama Kolom
 translations: Terjemahan
@@ -313,6 +306,7 @@ updated_on: Diperbarui Pada
 updated_by: Diperbarui Oleh
 primary_key: Primary Key
 foreign_key: Kunci Asing
+field_key: Kunci Kolom
 finish_setup: Selesai Setup
 dismiss: Abaikan
 toggle_raw_editor: Ganti Editor Raw
@@ -349,7 +343,7 @@ revision_delta_reverted: Dikembalikan
 revision_delta_update_message: Kolom ini telah diperbarui namun nilainya sedang disembunyikan demi alasan keamanan.
 revision_delta_other: Revisi
 revision_delta_by: '{date} oleh {user}'
-presentation_text_values_cannot_be_reimported: "Menggunakan teks untuk presentasi, nilai tidak dapat diimpor ulang."
+presentation_text_values_cannot_be_reimported: 'Menggunakan teks untuk presentasi, nilai tidak dapat diimpor ulang.'
 download_page_as_csv: 'Unduh Halaman sebagai CSV'
 private_user: Pengguna Pribadi
 creation_preview: Pratinjau Kreasi
@@ -489,7 +483,6 @@ enable_select_button: Aktifkan Tombol Pemilihan
 allow_duplicates: Izinkan Duplikasi
 comments: Komentar
 no_comments: Belum Ada Komentar
-click_to_expand: Tekan Untuk Memperluas
 select_item: Pilih Item
 no_items: Tidak Ada Item
 search_items: Cari item...
@@ -523,6 +516,7 @@ create_collection: Buat Pengumpulan
 no_collections_copy_admin: Kamu belum punya Koleksi. Klik tombol di bawah ini untuk memulai.
 no_collections_copy: Kamu belum memiliki Koleksi. Silakan hubungi administrator sistem.
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
+no_singleton_relations: Hubungan dengan Singletons tidak didukung
 display_template_not_setup: Opsi templat tampilan disalahkonfigurasikan
 collection_field_not_setup: Opsi bidang koleksi disalahkonfigurasikan
 select_a_collection: Pilih Koleksi
@@ -661,6 +655,7 @@ one_filtered_item: '1 item yang di filter'
 delete_collection_are_you_sure: >-
   Apakah anda yakin ingin menghapus koleksi "{collection}"? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
 delete_folder_are_you_sure: Anda yakin ingin menghapus folder "{folder}"? Susunan folder dan koleksi akan dipindahkan ke level paling atas.
+delete_collection_peer_dependencies: Kolom berikut juga akan dihapus, karena terkait dengan koleksi saat ini.
 collections_shown: Koleksi yang ditampilkan
 visible_collections: Koleksi yang terlihat
 hidden_collections: Koleksi yang tersembunyi
@@ -786,8 +781,15 @@ label: Label
 flows: Kumpulan Alur
 flow: Alur
 select_a_flow: Pilih Alur
+run_flow_confirm: Apakah Anda yakin ingin menjalankan Flow ini?
+run_flow_on_current_collection: Jalankan Flow pada Koleksi Ini
+run_flow_on_current: Jalankan Flow pada Item Ini
 run_flow_on_current_edited_confirm: Item ini mungkin akan diperbarui sesuai dengan alur ini, apakah anda yakin akan menjalankannya?
+run_flow_on_selected: Pilih Satu atau Lebih Item Terlebih Dahulu | Jalankan Flow pada 1 Item Terpilih | Jalankan Flow pada {n} Item yang Dipilih
+run_flow: Jalankan Flow
 run_flow_success: Alur "{flow}" berhasil dijalankan
+field_name_placeholder: Masukkan Nama Kolom...
+field_key_placeholder: Masukkan Kunci Kolom...
 trigger: Pemicu
 trigger_options: Opsi Pemicu
 view_trigger: Lihat Pemicu
@@ -947,7 +949,6 @@ settings_project: Pengaturan Proyek
 settings_webhooks: Webhooks
 settings_flows: Kumpulan Alur
 settings_presets: Preset & Markah
-settings_translation_strings: Terjemahan
 one_or_more_options_are_missing: Satu atau lebih opsi hilang
 scope: Lingkup
 actions: Aksi
@@ -987,24 +988,58 @@ page_help_settings_datamodel_collections: >-
   **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
 page_help_settings_datamodel_fields: >-
   **Model Data: Collection** — Formulir untuk mengelola Collection ini dan fieldnya.
+page_help_settings_roles_collection: '**Jelajahi Peran** — Mencantumkan Peran Admin, Publik, dan Pengguna khusus.'
+page_help_settings_roles_item: "**Detail Peran** — Mengelola izin peran dan pengaturan lainnya."
+page_help_settings_presets_collection: >-
+  **Jelajahi Preset** — Mencantumkan semua preset dalam proyek, termasuk: pengguna, peran, dan bookmark global, serta tampilan default.
+page_help_settings_presets_item: >-
+  **Detail Preset** — Formulir untuk mengelola bookmark dan preset koleksi default.
+page_help_settings_webhooks_collection: '**Jelajahi Webhook** — Mencantumkan semua webhook dalam project.'
+page_help_settings_webhooks_item: '**Detail Webhook** — Formulir untuk membuat dan mengelola webhook proyek.'
+page_help_settings_flows_collection: '**Jelajahi Flow** — Mencantumkan semua Flow dalam proyek.'
+page_help_settings_flows_item: '**Detail Flow** — Ruang kerja untuk mengelola satu atau beberapa operasi.'
+page_help_users_collection: '**Direktori Pengguna** — Daftar seluruh pengguna dalam sistem proyek ini.'
+page_help_users_item: >-
+  **Detail Pengguna** — Kelola informasi akun Anda, atau lihat detail pengguna lain.
+page_help_insights_overview: '**Wawasan** — Daftar dasbor yang dapat Anda akses.'
+page_help_insights_dashboard: '**Dasbor** — Ruang kerja untuk mengelola satu atau beberapa panel'
 activity_feed: Feed Aktifitas
 add_new: Tambah Baru
 create_new: Buat baru
 all: Semua
 none: Tidak ada
+no_layout_collection_selected_yet: Belum ada tata letak/koleksi yang dipilih
 batch_delete_confirm: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin menghapus item ini? Tindakan ini tidak dapat dibatalkan. | Apakah Anda yakin ingin menghapus {count} item ini? Tindakan ini tidak dapat dibatalkan.
 cancel: Batal
+no_upscale: Jangan memperbesar gambar
 collection: Koleksi
 collections: Pengumpulan
 content: Konten
 singleton: Singleton
 singleton_label: Perlakukan sebagai objek tunggal
+system_fields_locked: Kolom sistem dikunci dan tidak dapat diedit
 directus_collection:
   directus_activity: Log akuntabilitas untuk semua kejadian
   directus_collections: Konfigurasi koleksi tambahan dan metadata
+  directus_dashboards: Dasbor dalam modul Wawasan
   directus_fields: Isian konfigurasi tambahan dan metadata
+  directus_files: Metadata untuk semua aset file terkelola
+  directus_flows: Otomatisasi mengalir
+  directus_folders: Menyediakan direktori virtual untuk file
+  directus_migrations: Versi database apa yang Anda gunakan
+  directus_notifications: Notifikasi dikirim ke pengguna
+  directus_operations: Operasi yang berjalan di Flow
+  directus_panels: Panel individual dalam dasbor Wawasan
   directus_permissions: Izin akses untuk setiap peran
+  directus_presets: Preset untuk default koleksi dan bookmark
+  directus_relations: Konfigurasi relasi dan metadata
+  directus_revisions: Snapshot data untuk semua aktivitas
+  directus_roles: Grup izin untuk pengguna sistem
+  directus_sessions: Informasi sesi pengguna
+  directus_settings: Opsi konfigurasi proyek
+  directus_shares: Melacak item yang dibagikan secara eksternal
+  directus_users: Pengguna sistem untuk platform
 fields:
   directus_activity:
     item: Kunci Utama Item
@@ -1177,6 +1212,7 @@ field_options:
     sort_field: Pilih bidang...
     accountability_divider: Akuntabilitas
     duplication_divider: Duplikasi
+    preview_divider: Pratinjau
   directus_files:
     title: Judul yang unik...
     description: Deskripsi opsional...
@@ -1234,8 +1270,14 @@ start_collapsed: Mulai Runtuh
 block: Blokir
 inline: Inline
 comment: Komentar
+live_preview:
+  enable: Aktifkan Pratinjau
+  disable: Nonaktifkan Pratinjau
+  refresh: Segarkan pratinjau
+  new_window: Buka di Jendela Baru
 expired: Kedaluwarsa
 share: Bagikan
+share_item: Bagikan Item
 continue_label: Lanjut
 editing_role: 'Peraturan {role}'
 delete_label: Hapus
@@ -1257,6 +1299,13 @@ normal: Normal
 success: Sukses
 warning: Peringatan
 danger: Bahaya
+colors:
+  yellow: Kuning
+  orange: Oranye
+  red: Merah
+  black: Hitam
+  gray: Abu-abu
+  white: Putih
 junction_collection: Pengumpulan Persimpangan
 latency: Latensi
 login: Masuk
@@ -1272,6 +1321,7 @@ reset: Setel ulang
 reset_password: Atur Ulang Kata Sandi
 revisions: Revisi
 no_revisions: Belum Ada Revisi
+no_logs: Belum ada log
 revert: Pulihkan
 save: Simpan
 schema: Skema
@@ -1284,6 +1334,8 @@ sign_in: Masuk
 sign_out: Keluar
 sign_out_confirm: Apakah Anda yakin ingin keluar?
 something_went_wrong: Ada yang salah.
+export_started_copy: Proses ekspor sedang berjalan. Notifikasi akan diberikan ketika siap untuk diunduh.
+sort_asc: Mengurut Naik
 sort_desc: Mengurut Turun
 template: Templat
 translation: Terjemahan
@@ -1293,6 +1345,8 @@ view_project: Lihat Proyek
 report_error: Lapor Kesalahan
 start: Mulai
 table: Tabel
+list: Daftar
+search_filter: Saring dan Cari
 interfaces:
   filter:
     name: Penyaring
@@ -1359,6 +1413,7 @@ interfaces:
     description: Masukan atau pilih nilai warna
   datetime:
     datetime: Datetime
+    use_24: Gunakan format 24-jam
   system-fields:
     select_a_collection: Pilih Koleksi
   system-display-template:
@@ -1387,15 +1442,18 @@ interfaces:
     display_template: Tampilan Template
   input-rich-text-md:
     edit: Edit
+    preview: Pratinjau
     previewFont: Font Pratinjau
     customSyntax: Blok Kustom
     customSyntax_label: Tambahkan jenis sintaks khusus
     customSyntax_add: Tambahkan sintaks khusus
     box: Blokir / Sebaris
   map:
+    map: Peta
     zoom: Perbesar
   system-folder:
     folder: Direktori
+    description: Pilih folder
   list:
     sort: Sortir
   tags:
@@ -1409,6 +1467,12 @@ interfaces:
     user: Pengguna
     modes:
       dropdown: Dropwdown
+  input-block-editor:
+    tools_options:
+      embed: Lampirkan
+      code: Kode
+      table: Tabel
+      underline: Garis Bawah
   system-token:
     system-token: Token
 displays:
@@ -1465,7 +1529,10 @@ layouts:
     comfortable: Longgar
     compact: Rapat
     cozy: Normal
+  map:
+    map: Peta
   kanban:
+    crop: Potong
     advanced: Tingkat lanjut
 both: Keduanya
 panels:

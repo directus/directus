@@ -80,14 +80,10 @@ create_user: Benutzer erstellen
 message: Nachricht
 delete_panel: Panel löschen
 create_webhook: Webhook erstellen
-create_translation_string: Übersetzungselement erstellen
-no_translation_string: Keine Übersetzung
-no_translation_string_copy: Es existiert noch keine Übersetzung.
-translation_string_key_placeholder: Schlüssel für Übersetzungselement...
-translation_string_translations_placeholder: Neue Übersetzung hinzufügen
-edit_translation_string: Übersetzungselement editieren
-delete_translation_string_copy: >-
-  Soll das Übersetzungselement "{key}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
+create_custom_translation: Benutzerdefinierte Übersetzung erstellen
+edit_custom_translation: Benutzerdefinierte Übersetzung bearbeiten
+no_custom_translations: Keine benutzerdefinierten Übersetzungen
+no_custom_translations_copy: Es gibt aktuell noch keine benutzerdefinierten Übersetzungen.
 invite_users: Benutzer einladen
 invite: Einladen
 email_already_invited: E-Mail "{email}" wurde bereits eingeladen
@@ -118,13 +114,6 @@ public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
 not_allowed: Nicht erlaubt
-directus_version: Directus-Version
-node_version: NodeJS-Version
-node_uptime: Server-Betriebszeit
-os_type: Betriebssystem
-os_version: Betriebssystem-Version
-os_uptime: System-Betriebszeit
-os_totalmem: Arbeitsspeicher
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
 archive_confirm_count: >-
@@ -238,6 +227,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 date_range: Zeitspanne
+translation_key_placeholder: Schlüssel eingeben...
 datetime: Datum mit Uhrzeit
 dateTime: Datum mit Uhrzeit
 precision: Präzision
@@ -358,7 +348,7 @@ revision_delta_reverted: Zurückgesetzt
 revision_delta_update_message: Dieses Feld wurde aktualisiert, aber sein Wert wird aus Sicherheitsgründen verschleiert.
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
-presentation_text_values_cannot_be_reimported: "Verwendet Präsentationstext, Werte können nicht neu importiert werden."
+presentation_text_values_cannot_be_reimported: 'Verwendet Präsentationstext, Werte können nicht neu importiert werden.'
 download_page_as_csv: 'Als CSV herunterladen'
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
@@ -450,6 +440,7 @@ checksum: Prüfsumme
 owner: Besitzer
 edited_by: Editiert von
 folder: Ordner
+folders: Ordner
 zoom: Zoom
 download: Herunterladen
 open: Öffnen
@@ -498,7 +489,8 @@ enable_select_button: Knopf zum Auswählen aktivieren
 allow_duplicates: Duplikate erlauben
 comments: Kommentare
 no_comments: Noch keine Kommentare
-click_to_expand: Zum Erweitern klicken
+expand: Ausklappen
+collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen...
@@ -626,6 +618,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   REQUESTS_EXCEEDED: Anfragelimit erreicht
+  CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
 security: Sicherheit
 value_hashed: Wert sicher gehashed
 bookmark_name: Name des Lesezeichens...
@@ -965,7 +958,7 @@ settings_project: Projekteinstellungen
 settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Vorlagen & Lesezeichen
-settings_translation_strings: Übersetzungselemente
+settings_translations: Benutzerdefinierte Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
 scope: Bereich
 actions: Aktionen
@@ -1015,7 +1008,8 @@ page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung 
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
 page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
 page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
-page_help_settings_translation_strings_collection: '**Übersetzungsstrings durchsuchen** — Listet alle Übersetzungselemente im Projekt auf.'
+page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchsuchen ** — Listet alle benutzerdefinierten Übersetzungen im Projekt auf.'
+page_help_settings_translations_item: '**Benutzerdefinierte Übersetzungen-Detail** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -1059,6 +1053,7 @@ directus_collection:
   directus_shares: Verfolgen von extern freigegebenen Elementen
   directus_users: Systembenutzer für die Plattform
   directus_webhooks: Konfiguration für ereignisbasierte HTTP-Anfragen
+  directus_translations: Benutzerdefinierte Übersetzungen
 fields:
   directus_activity:
     item: Item-Primärschlüssel
@@ -1279,6 +1274,7 @@ field_options:
     sort_field: Wählen Sie ein Feld...
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
+    preview_divider: Vorschau
   directus_files:
     title: Ein einzigartiger Titel...
     description: Eine optionale Beschreibung...
@@ -1336,6 +1332,14 @@ start_collapsed: Eingeklappt starten
 block: Blockieren
 inline: Inline
 comment: Kommentar
+live_preview:
+  enable: Vorschau aktivieren
+  disable: Vorschau deaktivieren
+  change_size: Display-Auflösung ändern
+  refresh: Vorschau aktualisieren
+  new_window: In neuem Fenster öffnen
+  close_window: In geteilter Ansicht öffnen
+  toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
 uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
@@ -1643,6 +1647,7 @@ interfaces:
     notice: Anmerkung
     description: Kurze Anmerkung anzeigen
     text: Inhalt der Anmerkung eingeben...
+    no_text: Kein Text gesetzt...
   list-o2m:
     one-to-many: 1:n
     description: Mehrere verwandte Elemente auswählen
@@ -1704,7 +1709,7 @@ interfaces:
     input-translated-string: Übersetzte Elemente
     description: Übersetzungselement auswählen oder hinzufügen
     search_placeholder: Suchen...
-    new_translation_string: Neues Übersetzungelement
+    new_custom_translation: Neue benutzerdefinierte Übersetzung
   boolean:
     toggle: Umschalten
     description: Zwischen Ein und Aus wechseln
@@ -1741,6 +1746,27 @@ interfaces:
     folder_note: Ordner für hochgeladene Dateien. Bestehende Dateien werden nicht beeinflusst.
     imageToken: Statisches Zugriffstoken
     imageToken_label: Statisches Zugriffstoken wird an die URL der Assets angehängt
+  input-block-editor:
+    input-block-editor: Block-Editor
+    description: Block-basierter Editor für Rich-Media-Content, erzeugt sauberes JSON mithilfe von Editor.js
+    tools: Toolbar
+    tools_options:
+      header: Header
+      nestedlist: Liste
+      embed: Einbetten
+      paragraph: Absatz
+      code: Code
+      image: Bild
+      attaches: Anhänge
+      table: Tabelle
+      quote: Zitat
+      underline: Unterstrichen
+      inlinecode: Inline-Code
+      delimiter: Trennzeichen
+      checklist: Checkliste
+      toggle: Block umschalten
+      alignment: Ausrichtung
+      raw: HTML-Code
   input-autocomplete-api:
     input-autocomplete-api: Auto-Complete Eingabe (API)
     description: Auto-Complete bei der Suche von externen API-Werten.
@@ -2120,7 +2146,7 @@ operations:
     message: Nachricht
   request:
     name: Webhook / Anfrage URL
-    description: "Eine Anfrage an eine URL senden"
+    description: 'Eine Anfrage an eine URL senden'
     url: URL
     url_placeholder: https://example.com/example
     method: Methode

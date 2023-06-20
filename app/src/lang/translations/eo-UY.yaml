@@ -71,7 +71,6 @@ create_user: Krei uzanton
 message: Mesaĝo
 delete_panel: Forigi la panelon
 create_webhook: Krei rethokon
-translation_string_translations_placeholder: Aldoni novan tradukon
 invite_users: Inviti uzantojn
 invite: Inviti
 email_already_invited: La retpoŝtadreso "{email}" jam estas invitita
@@ -95,13 +94,6 @@ logoutReason:
   SESSION_EXPIRED: Seanco eksvalidiĝinta
 public_label: Publika
 not_allowed: Ne permesita
-directus_version: Directus-versio
-node_version: Node-versio
-node_uptime: Node-funkcidaŭro
-os_type: Operaciuma tipo
-os_version: Operaciuma versio
-os_uptime: Operaciuma funkcidaŭro
-os_totalmem: Operaciuma memoro
 archive: Arĥivi
 archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
 archive_confirm_count: >-
@@ -817,6 +809,8 @@ no_value: Neniu valoro
 do_nothing: Fari nenion
 generate_and_save_uuid: Generi kaj konservi UUID
 comment: Komento
+live_preview:
+  new_window: Malfermi en nova fenestro
 shares: Konigoj
 unlimited_usage: Senlima uzado
 new_share: Nova konigo
@@ -1026,6 +1020,15 @@ interfaces:
       dropdown: Falmenuo
   input-rich-text-html:
     toolbar: Ilobreto
+  input-block-editor:
+    tools: Ilobreto
+    tools_options:
+      nestedlist: Listo
+      embed: Enkorpigi
+      code: Kodo
+      image: Bildo
+      table: Tabelo
+      underline: Substrekita
   input-autocomplete-api:
     trigger: Ekagilo
   group-raw:

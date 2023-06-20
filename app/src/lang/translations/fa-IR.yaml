@@ -80,14 +80,10 @@ create_user: ایجاد کاربر
 message: پیام
 delete_panel: حذف پنل
 create_webhook: ساخت وب هوک
-create_translation_string: ایجاد رشته ترجمه
-no_translation_string: ویرایش رشته ترجمه
-no_translation_string_copy: هنوز هیچ رشته ترجمه ای وجود ندارد.
-translation_string_key_placeholder: کلید شته ترجمه...
-translation_string_translations_placeholder: اضافه کردن ترجمه جدید
-edit_translation_string: ویرایش متن ترجمه
-delete_translation_string_copy: >-
-  آیا مطمئنید که می خواهید رشته ترجمه "{key}" را حذف کنید؟ این عمل قابل لغو نیست.
+create_custom_translation: ایجاد ترجمه جدید
+edit_custom_translation: ویرایش ترجمه
+no_custom_translations: بدون ترجمه
+no_custom_translations_copy: هنوز هیچ ترجمه ای وجود ندارد
 invite_users: دعوت کاربران
 invite: دعوت
 email_already_invited: قبلاً برای ایمیل {email}، دعوت نامه ارسال شده است
@@ -118,13 +114,6 @@ public_label: در دسترس عموم
 public_description: اینکه کدام داده مربوط به API، بدون احراز هویت، قابل دسترسی باشد را کنترل میکند.
 admin_description: نقش مدیریتی اولیه با سطح دسترسی بدون محدودیت به برنامه و API
 not_allowed: مجاز نیست
-directus_version: نسخه دایرکتوس
-node_version: نسخه node
-node_uptime: مدت زمان اجرای node تاکنون
-os_type: نوع سیستم عامل
-os_version: نسخه سیستم عامل
-os_uptime: زمان به کار سیستم عامل
-os_totalmem: حافظه سیستم عامل
 archive: بایگانی
 archive_confirm: از بایگانی شدن این مورد مطمئنید؟
 archive_confirm_count: >-
@@ -237,6 +226,7 @@ bigInteger: عدد صحیح بزرگ
 boolean: بولین
 date: تاریخ
 date_range: بازه تاریخ
+translation_key_placeholder: ورود یک کلید...
 datetime: تاریخ و ساعت
 dateTime: تاریخ و ساعت
 precision: دقت
@@ -357,7 +347,7 @@ revision_delta_reverted: بازگردانده شد
 revision_delta_update_message: این فیلد به روز شده است اما ارزش آن به دلایل امنیتی پنهان شده است.
 revision_delta_other: نسخه
 revision_delta_by: 'در {date} توسط {user}'
-presentation_text_values_cannot_be_reimported: "از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد."
+presentation_text_values_cannot_be_reimported: 'از متن ارائه استفاده می کند، مقادیر را نمی توان دوباره وارد کرد.'
 download_page_as_csv: 'دانلود صفحه به‌صورت CSV'
 private_user: کاربر خصوصی
 creation_preview: پیش نمایش ساخت
@@ -449,6 +439,7 @@ checksum: Checksum
 owner: مالک
 edited_by: ویرایش شده توسط
 folder: پوشه
+folders: پوشه ها
 zoom: بزرگنمايی
 download: دانلود
 open: باز
@@ -497,7 +488,8 @@ enable_select_button: فعالسازی دکمه انتخاب
 allow_duplicates: اجازه تکرار
 comments: دیدگاهها
 no_comments: هنوز دیدگاهی ارسال نشده
-click_to_expand: برای بازکردن، کلیک کنید
+expand: گسترش
+collapse: جمع کردن
 select_item: انتخاب آیتم
 no_items: آیتمی وجود ندارد
 search_items: جستجوی آیتمها...
@@ -625,6 +617,7 @@ errors:
   RANGE_NOT_SATISFIABLE: محدوده نامعتبر است
   METHOD_NOT_ALLOWED: روش مجاز نمی باشد
   REQUESTS_EXCEEDED: به محدودیت درخواست رسیده است
+  CONTENT_TOO_LARGE: آیتم/فایل بیشتر از حد مجاز است
 security: امنیت
 value_hashed: این مقدار به طور امن، هش شده است
 bookmark_name: نام نشانک...
@@ -964,7 +957,7 @@ settings_project: تنظیمات پروژه
 settings_webhooks: هوک های تحت وب
 settings_flows: اتوماسیون
 settings_presets: الگوها و نشانک ها
-settings_translation_strings: رشته های ترجمه
+settings_translations: ایجاد ترجمه سفارشی
 one_or_more_options_are_missing: یک یا چند مورد از تنظیمات، وجود ندارد
 scope: محدوده در دسترس
 actions: فعالیت ها
@@ -1014,7 +1007,6 @@ page_help_settings_webhooks_collection: '**مرور Webhooks** - فهرستی ا
 page_help_settings_webhooks_item: '** جزئیات وب هوک ** - فرمی برای ایجاد و مدیریت وب هوک های پروژه.'
 page_help_settings_flows_collection: '**مرور جریان‌ها** - همه جریان‌های داخل پروژه را فهرست می کند.'
 page_help_settings_flows_item: '**جزئیات جریان** - محیط کاری برای مدیریت یک یا چند عملیات.'
-page_help_settings_translation_strings_collection: '**مرور رشته‌های ترجمه** - همه رشته‌های ترجمه را در پروژه فهرست می‌کند.'
 page_help_users_collection: '**دایرکتوری کاربر** - لیست تمامی کاربران سیستم در این پروژه.'
 page_help_users_item: >-
   **جزئیات کاربر** — اطلاعات حساب خود را مدیریت کنید یا جزئیات سایر کاربران را مشاهده کنید.
@@ -1058,6 +1050,7 @@ directus_collection:
   directus_shares: موارد به اشتراک گذاشته شده خارجی را ردیابی می کند
   directus_users: کاربران سیستمی برای پلتفرم
   directus_webhooks: پیکربندی برای درخواست های HTTP مبتنی بر رویداد
+  directus_translations: ترجمه های سفارشی
 fields:
   directus_activity:
     item: کلید اصلی آیتم
@@ -1278,6 +1271,7 @@ field_options:
     sort_field: یک فیلد را انتخاب کنید...
     accountability_divider: مسئوليت
     duplication_divider: تکراری
+    preview_divider: پيش نمايش
   directus_files:
     title: یک عنوان منحصر به فرد
     description: توضیحات اختیاری...
@@ -1335,6 +1329,14 @@ start_collapsed: هنگام بسته شدن
 block: بلوک
 inline: درون خطی
 comment: نظر
+live_preview:
+  enable: فعال سازی حالت نمایشی
+  disable: غیرفعال سازی حالت نمایشی
+  change_size: تغییر ابعاد نمایش
+  refresh: تازه کردن پیش نمایش
+  new_window: باز کردن در پنجره جدید
+  close_window: حالت توو در توو
+  toggle_3d: حالت سه بعدی
 shares: اشتراک‌گذاری
 unlimited_usage: Unlimited usage
 uses_left: No uses left | 1 use left | {n} uses left
@@ -1641,6 +1643,7 @@ interfaces:
     notice: اطلاعیه
     description: Display a short notice
     text: Enter notice content here...
+    no_text: هیچ متنی پیکربندی نشده است...
   list-o2m:
     one-to-many: یک به چند
     description: انتخاب چندین آیتم مرتبط
@@ -1702,7 +1705,6 @@ interfaces:
     input-translated-string: رشته‌های ترجمه شده
     description: Select or add translation string
     search_placeholder: جست‌وجو...
-    new_translation_string: New Translation String
   boolean:
     toggle: تغییر وضعیت
     description: Switch between on and off
@@ -1739,6 +1741,16 @@ interfaces:
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
+  input-block-editor:
+    tools: نوار ابزار
+    tools_options:
+      header: سربرگ
+      nestedlist: لیست
+      embed: درج
+      code: کد
+      image: عکس
+      table: جدول
+      underline: زیر خطدار
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.
@@ -2108,7 +2120,7 @@ operations:
     message: پیام
   request:
     name: وب‌هوک / درخواست URL
-    description: "ساخت یک درخواست به URL"
+    description: 'ساخت یک درخواست به URL'
     url: URL
     url_placeholder: https://example.com/example
     method: شیوه یا متود
@@ -2136,3 +2148,4 @@ operations:
     parallel: موازی
     batch: دسته
     batch_size: اندازه دسته
+    cache: Cache

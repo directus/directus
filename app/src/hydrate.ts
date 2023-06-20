@@ -1,5 +1,5 @@
+import { getCurrentLanguage } from '@/lang/get-current-language';
 import { setLanguage } from '@/lang/set-language';
-import { useAppStore } from '@/stores/app';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
@@ -14,8 +14,8 @@ import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
 import { useUserStore } from '@/stores/user';
 import { getBasemapSources } from '@/utils/geometry/basemap';
+import { useAppStore } from '@directus/stores';
 import { onDehydrateExtensions, onHydrateExtensions } from './extensions';
-import { getCurrentLanguage } from '@/lang/get-current-language';
 
 type GenericStore = {
 	$id: string;
@@ -73,7 +73,7 @@ export async function hydrate(): Promise<void> {
 		if (currentUser?.role) {
 			await Promise.all([permissionsStore.hydrate(), fieldsStore.hydrate({ skipTranslation: true })]);
 
-			const hydratedStores = ['userStore', 'permissionsStore', 'fieldsStore'];
+			const hydratedStores = ['userStore', 'permissionsStore', 'fieldsStore', 'serverStore'];
 			await Promise.all(stores.filter(({ $id }) => !hydratedStores.includes($id)).map((store) => store.hydrate?.()));
 
 			await onHydrateExtensions();

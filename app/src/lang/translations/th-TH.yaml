@@ -79,8 +79,6 @@ create_role: สร้างบทบาท
 create_user: สร้างผู้ใช้งาน
 message: ข้อความ
 create_webhook: สร้างเว็บฮุก
-create_translation_string: สร้างสตริงการแปล
-no_translation_string: ไม่มีสตริงการแปล
 invite_users: เชิญชวนผู้ใช้งาน
 invite: เชิญชวน
 email_already_invited: อีเมล "{email}" ได้รับเชิญแล้ว
@@ -106,13 +104,6 @@ logoutReason:
 public_label: สาธารณะ
 public_description: สามารถเข้าถึง API เหล่านี้ได้โดยไม่ต้องยืนยันตัวตน
 not_allowed: ไม่อนุญาต
-directus_version: เวอร์ชั่น Directus
-node_version: เวอร์ชั่น Node
-node_uptime: เวลาออนไลน์ Node
-os_type: ประเภท OS
-os_version: เวอร์ชั่น OS
-os_uptime: เวลาออนไลน์ OS
-os_totalmem: หน่วยความจำ OS
 archive: เก็บถาวร
 archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
 archive_confirm_count: >-
@@ -425,7 +416,6 @@ selecting_items: เลือกรายการ
 enable_select_button: เปิดใช้งานปุ่มเลือก
 comments: ความคิดเห็น
 no_comments: ยังไม่มีความเห็น
-click_to_expand: คลิกเพื่อขยาย
 select_item: เลือกรายการ
 no_items: ไม่มีรายการ
 search_items: ค้นหารายการ
@@ -983,6 +973,7 @@ field_options:
     archive_divider: เก็บถาวร
     archive_field_placeholder: เลือกฟิลด์
     sort_divider: เรียง
+    preview_divider: ดูตัวอย่าง
   directus_roles:
     fields:
       icon_name: ไอคอน
@@ -1018,6 +1009,8 @@ always_open: เปิดตลอดเวลา
 block: ปิดกั้น
 inline: แบบอินไลน์
 comment: ความคิดเห็น
+live_preview:
+  new_window: เปิดในหน้าต่างใหม่
 relational_triggers: ทริกเกอร์เชิงสัมพันธ์
 referential_action_field_label_m2o: เมื่อลบ {collection}...
 referential_action_field_label_o2m: เมื่อยกเลิกการเลือก {collection}...
@@ -1305,6 +1298,16 @@ interfaces:
     toolbar: แถบเครื่องมือ
     custom_formats: รูปแบบที่กำหนดเอง
     options_override: ตัวเลือกแทนที่
+  input-block-editor:
+    tools: แถบเครื่องมือ
+    tools_options:
+      header: เฮดเดอร์
+      nestedlist: รายการ
+      embed: ฝัง
+      code: โค้ด
+      image: รูปภาพ
+      table: ตาราง
+      underline: ขีดเส้นใต้
   input-autocomplete-api:
     input-autocomplete-api: ป้อนข้อมูลอัตโนมัติ (API)
     description: การพิมพ์ล่วงหน้าสำหรับค่า API ภายนอก
