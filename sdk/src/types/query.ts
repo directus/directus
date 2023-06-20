@@ -19,7 +19,7 @@ export type QueryFields<Schema extends object, Item extends object> = (
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
  */
-export type QueryFieldsRelational<Schema extends object, Item extends object> = {
+type QueryFieldsRelational<Schema extends object, Item extends object> = {
 	[Key in keyof Pick<Item, RelationalFields<Schema, Item>>]?: QueryFields<Schema, ExtractItem<Schema, Item[Key]>>;
 };
 
@@ -31,7 +31,7 @@ export type ExtractItem<Schema extends object, Item extends object> = Extract<Un
 /**
  * Returns the relation type from the current item by key
  */
-export type ExtractRelation<Schema extends object, Item extends object, Key> = Key extends keyof Item
+type ExtractRelation<Schema extends object, Item extends object, Key> = Key extends keyof Item
 	? ExtractItem<Schema, Item> extends infer Relation
 		? Relation extends never
 			? never
@@ -52,7 +52,7 @@ type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field ? (Field e
 /**
  * Return all keys if Fields is undefined or contains '*'
  */
-export type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> extends infer Field
+type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> extends infer Field
 	? Field extends undefined
 		? keyof Item
 		: Field extends '*'
@@ -65,7 +65,7 @@ export type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> ext
 /**
  * Returns the relational fields from the fields list
  */
-export type RelationalQueryFields<Fields> = UnpackList<Fields> extends infer Field
+type RelationalQueryFields<Fields> = UnpackList<Fields> extends infer Field
 	? Field extends object
 		? Field
 		: never
