@@ -42,21 +42,26 @@ const activeTab = ref(props.tabs[0]);
 	justify-content: center;
 	max-width: 560px;
 	margin-inline: auto;
+	padding: 12px;
+	box-shadow: 0 5px 10px 0 rgba(23, 41, 64, 0.1);
+	border-radius: 8px;
+	width: 100%;
 }
 
 .tab-buttons button {
-	color: #a3a7ac;
+	color: var(--vp-c-text-1);
 	cursor: pointer;
 	border: none;
-	font-size: 32px;
+	font-size: 18px;
 	font-weight: bold;
+	width: 100%;
 }
 
 .tab-buttons button.active {
-	color: var(--vp-c-text-1);
-	text-decoration: underline;
-	text-decoration-color: #6543fa75;
-	text-underline-offset: 16px;
+	background: var(--vp-c-purple-dimm-3);
+	padding: 12px;
+	border-radius: 5px;
+	width: 100%;
 }
 
 .tab-content {
@@ -71,7 +76,7 @@ const activeTab = ref(props.tabs[0]);
 		grid-template-columns: 1fr;
 	}
 	.tab-buttons button {
-		font-size: 24px;
+		font-size: 16px;
 	}
 }
 </style>
