@@ -18,8 +18,8 @@ layout: home
       <p class="hero-badge">Resource Hub</p>
       <h1 class="m-20 ">Directus Documentation</h1>
       <p class="m-20 hero-paragraph">Explore our resources and powerful data engine to build your projects confidently.
-</p> <div class="hero-buttons"> <a class="primary-btn" href="#">Get Started</a>
-<a class="secondary-btn inline-flex" href="#" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
+</p> <div class="hero-buttons"> <a class="primary-btn" href="/getting-started/introduction">Get Started</a>
+<a class="secondary-btn inline-flex" href="https://github.com/directus/directus/" target="_blank" rel="noreferrer noopener">GitHub<Github style="margin-left: 6px;"/></a
         > </div> </div> <CodeToggler class="hero-toggler" />
 
   </div>
@@ -115,9 +115,9 @@ layout: home
       </p>
     </div>
     <div class="grid-3">
-      <Article title="Build a Static Website with Nuxt.js" tag="Nuxt.js" desc="Learn how to build a website using Directus as a CMS and Nuxt 3." img="/assets/baas.png" url='#' />
-      <Article title="Set up Live Preview in a Next.js project" tag="Next.js" desc="By adding a preview URL, you can instantly see live changes made to your collection." img="/assets/headless-cms.png" url='#' />
-      <Article title="Build a Multi-User Chat With React.js" tag="React.js" desc="Deep dive into how to use Directus websockets to build an interactive chat application." img="/assets/internal-tools.png" url='#' />
+      <Article title="Build a Static Website with Nuxt.js" tag="Nuxt.js" desc="Learn how to build a website using Directus as a CMS and Nuxt 3." img="/assets/baas.png" url='/guides/headless-cms/build-static-website/nuxt-3' />
+      <Article title="Set up Live Preview in a Next.js project" tag="Next.js" desc="By adding a preview URL, you can instantly see live changes made to your collection." img="/assets/headless-cms.png" url='/guides/headless-cms/live-preview/nextjs' />
+      <Article title="Build a Multi-User Chat With React.js" tag="React.js" desc="Deep dive into how to use Directus websockets to build an interactive chat application." img="/assets/internal-tools.png" url='/guides/real-time/chat/react' />
     </div>
   </div>
 </section>
@@ -131,8 +131,8 @@ layout: home
       </p>
     </div>
     <div class="grid-2 m-20">
-      <SelfHosting class="m-20" title="Get Started with Docker" desc="Get up and running with our Docker Guide." img="/assets/docker.png" url='#' />
-      <SelfHosting class="m-20" title="Config Options" desc="A reference of all possible settings in your project." img="/assets/cli.png" url='#' />
+      <SelfHosting class="m-20" title="Get Started with Docker" desc="Get up and running with our Docker Guide." img="/assets/docker.png" url='/self-hosted/docker-guide' />
+      <SelfHosting class="m-20" title="Config Options" desc="A reference of all possible settings in your project." img="/assets/cli.png" url='/self-hosted/config-options' />
     </div>
   </div>
 </section>
@@ -148,8 +148,8 @@ layout: home
      There are many ways in which you can contribute to the health and growth of the Directus project
     </p>
     <div>
-      <a class="outline-btn" href="#">Join the Community</a>
-      <a class="secondary-btn inline-flex " href="#" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
+      <a class="outline-btn" href="https://discord.com/invite/directus" target="_blank" rel="noreferrer noopener">Join the Community</a>
+      <a class="secondary-btn inline-flex " href="https://github.com/directus/directus/" target="_blank" rel="noreferrer noopener">GitHub<Github style="margin-left: 6px;"/></a
         >
     </div>
 
@@ -159,21 +159,21 @@ layout: home
     h="3"
     title="Request a Feature"
     text="Propose new features to improve Directus. Find out how we use GitHub Discussions to organize requests."
-    url="https://www.google.com/"
+    url="/contributing/feature-request-process"
     icon="post_add"
     />
     <Card
     h="3"
     title="Contribute via code"
     text="Make a significant impact with code contributions. Read our Pull Request process and find out about our CLA."
-    url="https://www.google.com/"
+    url="/contributing/introduction"
     icon="code"
     />
     <Card
     h="3"
     title="Sponsorship & Advocacy"
     text="Sponsor our project, increase its visibility and find out how to share the word with others!"
-    url="https://www.google.com/"
+    url="/contributing/sponsor"
     icon="handshake"
     />
    

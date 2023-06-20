@@ -26,7 +26,7 @@ const Comp = iconsMap[props.icon];
 </script>
 
 <template>
-	<a class="social-icons" :href="url">
+	<a class="social-icons" :href="url" target="_blank" rel="noreferrer noopener">
 		<Comp />
 	</a>
 </template>

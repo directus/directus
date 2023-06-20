@@ -20,9 +20,13 @@ export default {
 		<div class="footer footer-container flex">
 			<div>
 				<ul class="footer-links m-20">
-					<li><a href="#">License</a></li>
-					<li><a href="#">Terms</a></li>
-					<li><a href="#">Privacy</a></li>
+					<li>
+						<a href="https://github.com/directus/directus/blob/main/license" target="_blank" rel="noreferrer noopener">
+							License
+						</a>
+					</li>
+					<li><a href="https://directus.io/terms/" target="_blank" rel="noreferrer noopener">Terms</a></li>
+					<li><a href="https://directus.io/privacy/" target="_blank" rel="noreferrer noopener">Privacy</a></li>
 				</ul>
 			</div>
 			<div class="m-20">
@@ -31,25 +35,25 @@ export default {
 			<div>
 				<ul class="social-links m-20">
 					<li>
-						<SocialIcon url="#" icon="linkedin" />
+						<SocialIcon url="https://www.linkedin.com/company/directus-io" icon="linkedin" />
 					</li>
 					<li>
-						<SocialIcon url="#" icon="docker" />
+						<SocialIcon url="https://hub.docker.com/r/directus/directus" icon="docker" />
 					</li>
 					<li>
-						<SocialIcon url="#" icon="npm" />
+						<SocialIcon url="https://www.npmjs.com/package/directus" icon="npm" />
 					</li>
 					<li>
-						<SocialIcon url="#" icon="youtube" />
+						<SocialIcon url="https://www.youtube.com/c/DirectusVideos" icon="youtube" />
 					</li>
 					<li>
-						<SocialIcon url="#" icon="discord" />
+						<SocialIcon url="https://directus.chat" icon="discord" />
 					</li>
 					<li>
-						<SocialIcon url="#" icon="twitter" />
+						<SocialIcon url="https://twitter.com/directus" icon="twitter" />
 					</li>
 					<li>
-						<SocialIcon url="#" icon="github" />
+						<SocialIcon url="https://github.com/directus" icon="github" />
 					</li>
 				</ul>
 			</div>
@@ -58,8 +62,11 @@ export default {
 		<div class="section-container dark">
 			<Divider />
 		</div>
-
-		<p class="footer-copyright">&copy; {{ currentYear }} Monospace Inc</p>
+		<div class="footer-copyright">
+			<a href="https://monospace.io/" target="_blank" rel="noreferrer noopener">
+				&copy; {{ currentYear }} Monospace Inc
+			</a>
+		</div>
 	</footer>
 </template>
 
