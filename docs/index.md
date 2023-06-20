@@ -3,7 +3,6 @@ layout: home
 ---
 
 <script setup>
-  import CodeToggler from "./.vitepress/components/home/CodeToggler.vue"
   import Footer from "./.vitepress/components/home/Footer.vue"
   import SelfHosting from "./.vitepress/components/home/SelfHosting.vue"
   import Article from "./.vitepress/components/home/Article.vue"
@@ -96,7 +95,6 @@ await directus.items('articles').readOne(4, {
 </template>
 </SnippetToggler>
     </div>
-    <!-- a<CodeToggler class="hero-toggler" /> -->
 
   </div>
 </section>
