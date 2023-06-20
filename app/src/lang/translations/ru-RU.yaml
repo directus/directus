@@ -80,6 +80,10 @@ create_user: Создать пользователя
 message: Сообщение
 delete_panel: Удалить панель
 create_webhook: Создать веб-хук
+create_custom_translation: Создать пользовательский перевод
+edit_custom_translation: Редактировать пользовательский перевод
+no_custom_translations: Нет пользовательских переводов
+no_custom_translations_copy: Еще нет пользовательских переводов.
 invite_users: Пригласить пользователей
 invite: Пригласить
 email_already_invited: На адрес «{email}» уже было отправлено приглашение
@@ -116,6 +120,7 @@ archive_confirm_count: >-
   Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
 reset_system_permissions_to: 'Сбросить системные разрешения:'
 reset_system_permissions_copy: Это действие перезапишет пользовательские разрешения, которые вы могли задать системным коллекциям. Вы уверены?
+the_following_are_minimum_permissions: Следующие минимальные разрешения автоматически применяются при предоставлении "Доступа к приложению". При необходимости вы можете предоставить дополнительные разрешения, но вы не можете уменьшить разрешения ниже этого уровня.
 app_access_minimum: Минимальный доступ к приложению
 recommended_defaults: Рекомендуемые значения по умолчанию
 unarchive: Разархивировать
@@ -221,6 +226,7 @@ bigInteger: Большое целое число
 boolean: Логическое значение
 date: Дата
 date_range: Диапазон дат
+translation_key_placeholder: Введите ключ...
 datetime: Дата и время
 dateTime: Дата и время
 precision: Точность
@@ -279,7 +285,11 @@ o2m_relationship: Отношение «один ко многим» (O2M)
 m2m_relationship: Отношение «многие ко многим» (M2M)
 m2a_relationship: Отношение «многие к любому» (M2A)
 invalid_item: Недействительный элемент
+dialog: Диалог
 modal: Модальный
+confirmation_dialog: Диалог Подтверждения
+confirmation_description: Описание Подтверждения
+confirmation_input_fields: Поля ввода Подтверждения
 next: Дальше
 field_name: Название поля
 translations: Переводы
@@ -298,6 +308,7 @@ updated_on: Дата обновления
 updated_by: Обновлено
 primary_key: Первичный ключ
 foreign_key: Внешний ключ
+field_key: Ключ поля
 finish_setup: Завершить настройку
 dismiss: Скрыть
 toggle_raw_editor: Включить/отключить редактор без форматирования
@@ -426,6 +437,7 @@ checksum: Контрольная сумма
 owner: Владелец
 edited_by: Изменено
 folder: Папка
+folders: Папки
 zoom: Масштаб
 download: Скачать
 open: Открыть
@@ -474,6 +486,8 @@ enable_select_button: Включить кнопку «Выбрать»
 allow_duplicates: Разрешить дубликаты
 comments: Комментарии
 no_comments: Комментариев пока нет
+expand: Развернуть
+collapse: Свернуть
 select_item: Выбрать элемент
 no_items: Нет элементов
 search_items: Поиск элементов...
@@ -600,6 +614,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Недопустимый диапазон
   METHOD_NOT_ALLOWED: Метод не разрешён
   REQUESTS_EXCEEDED: Достигнуто максимальное количество запросов
+  CONTENT_TOO_LARGE: Отправленный файл слишком большой
 security: Безопасность
 value_hashed: Надёжно зашифрованное значение
 bookmark_name: Название закладки...
@@ -645,6 +660,7 @@ one_filtered_item: '1 отфильтрованный элемент'
 delete_collection_are_you_sure: >-
   Вы уверены, что хотите удалить коллекцию «{collection}»? Это приведет к удалению коллекции и всех её элементов. Это действие необратимо.
 delete_folder_are_you_sure: Вы уверены, что хотите удалить папку «{folder}»? Вложенные папки и коллекции будут перемещены на самый верхний уровень.
+delete_collection_peer_dependencies: Следующие поля будут также удалены, так как они связаны с текущей коллекцией.
 collections_shown: Показано коллекций
 visible_collections: Видимые коллекции
 hidden_collections: Скрытые коллекции
@@ -772,6 +788,8 @@ flow: Процесс
 select_a_flow: Выберите процесс
 run_flow_on_current_edited_confirm: Этот элемент может быть обновлен этим процессом — вы уверены, что хотите выполнить его?
 run_flow_success: Процесс «{flow}» успешно завершён
+field_name_placeholder: Введите имя поля...
+field_key_placeholder: Введите ключ поля...
 trigger: Триггер
 trigger_options: Параметры триггера
 view_trigger: Просмотреть триггер
@@ -931,6 +949,7 @@ settings_project: Настройки проекта
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
 settings_presets: Шаблоны и закладки
+settings_translations: Пользовательские Переводы
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
 scope: Область применения
 actions: Действия
@@ -1023,6 +1042,7 @@ directus_collection:
   directus_shares: Отслеживает элементы с общим доступом
   directus_users: Системные пользователи для платформы
   directus_webhooks: Конфигурация для HTTP-запросов на основе событий
+  directus_translations: Пользовательские переводы
 fields:
   directus_activity:
     item: Ключ элемента
@@ -1301,6 +1321,10 @@ block: Блок
 inline: Встроенный
 comment: Комментарий
 live_preview:
+  enable: Включить Предпросмотр
+  disable: Отключить Предпросмотр
+  change_size: Изменить размеры отображения
+  refresh: Обновить Предпросмотр
   new_window: Открыть в новом окне
 unlimited_usage: Неограниченное использование
 new_share: Новая публикация
@@ -1348,6 +1372,7 @@ file: Файл
 file_library: Библиотека Файлов
 forgot_password: Забыли пароль
 hidden: Скрыто
+hidden_in_group: Скрыто в {group}
 icon: Иконка
 info: Инфо
 normal: Нормальный
@@ -1398,7 +1423,9 @@ export_started: Экспорт начат
 export_started_copy: Ваш экспорт начат. Вы получите уведомление, когда он будет готов к загрузке.
 sort_asc: По Возрастанию
 sort_desc: По Убыванию
+disable_sort: Отключить сортировку
 template: Шаблон
+require_value_to_be_set: Значение должно быть установлено при создании
 translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение
@@ -1638,6 +1665,7 @@ interfaces:
     input-translated-string: Переведенные строки
     description: Выберите или добавьте строку перевода
     search_placeholder: Поиск...
+    new_custom_translation: Новый Пользовательский Перевод
   boolean:
     toggle: Переключить
     description: Переключение вкл / выкл
@@ -1653,6 +1681,7 @@ interfaces:
     user_language: Использовать текущий язык пользователя
     default_language: Язык по умолчанию
     language_field: Языковое поле
+    language_direction_field: Поле Направления языка
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
     recursive_only: Интерфейс просмотра дерева работает только для рекурсивных отношений.
@@ -1671,6 +1700,7 @@ interfaces:
     custom_formats: Пользовательские форматы
     options_override: Переопределение параметров
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
+    imageToken: Токен Статического Доступа
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла
   input-block-editor:
     tools: Панель инструментов
@@ -1678,10 +1708,17 @@ interfaces:
       header: HTTP-заголовок
       nestedlist: Список
       embed: Встроить
+      paragraph: Абзац
       code: Код
       image: Изображение
+      attaches: Вложения
       table: Таблица
+      quote: Цитата
       underline: Подчеркнутый
+      delimiter: Разделитель
+      checklist: Список
+      alignment: Выравнивание
+      raw: HTML код
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
     description: Автодополнение значений поиска через внешний API.
@@ -1702,7 +1739,12 @@ interfaces:
     start_closed: Свёрнута
   system-token:
     system-token: Ключ доступа
+    description: Управление токеном статического доступа
+    placeholder: Нажмите "Сгенерировать Токен", чтобы создать новый Токен статического доступа
+    generate: Сгенерировать Токен
+    regenerate: Перевыпустить Токен
     generate_success_copy: Обязательно создайте резервную копию и скопируйте токен выше. Из соображений безопасности вы не сможете просмотреть токен снова после сохранения и перехода с этой страницы.
+    remove_token: Удалить Токен
 displays:
   translations:
     translations: Переводы
