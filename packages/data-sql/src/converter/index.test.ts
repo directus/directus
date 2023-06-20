@@ -28,7 +28,7 @@ beforeEach(() => {
 	};
 });
 
-test('Get all selects', () => {
+test('Convert simple query', () => {
 	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
 
 	const expected: AbstractSqlQuery = {
@@ -51,7 +51,7 @@ test('Get all selects', () => {
 	expect(res).toStrictEqual(expected);
 });
 
-test('Get selects with a limit', () => {
+test('Convert query with a limit', () => {
 	sample.query.modifiers = {
 		limit: {
 			type: 'limit',
@@ -82,7 +82,7 @@ test('Get selects with a limit', () => {
 	expect(res).toStrictEqual(expected);
 });
 
-test('Get selects with a limit and offset', () => {
+test('Convert query with limit and offset', () => {
 	sample.query.modifiers = {
 		limit: {
 			type: 'limit',
@@ -118,7 +118,7 @@ test('Get selects with a limit and offset', () => {
 	expect(res).toStrictEqual(expected);
 });
 
-test('Get selects with a sort', () => {
+test('Convert query with a sort', () => {
 	sample.query.modifiers = {
 		sort: [
 			{
@@ -160,7 +160,7 @@ test('Get selects with a sort', () => {
 	expect(res).toStrictEqual(expected);
 });
 
-test('Convert a complex abstract query', () => {
+test('Convert a query with all possible modifiers', () => {
 	sample.query.modifiers = {
 		limit: {
 			type: 'limit',
