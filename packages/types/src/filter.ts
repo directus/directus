@@ -25,8 +25,12 @@ export type ClientFilterOperator =
 	| FilterOperator
 	| 'starts_with'
 	| 'nstarts_with'
+	| 'istarts_with'
+	| 'nistarts_with'
 	| 'ends_with'
 	| 'nends_with'
+	| 'iends_with'
+	| 'niends_with'
 	| 'regex';
 
 export type Filter = LogicalFilter | FieldFilter;
