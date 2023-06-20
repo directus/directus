@@ -15,17 +15,13 @@ layout: home
 <section class="hero">
   <div class="section-container section-padding--hero flex">
     <div class="hero-content">
+      <p class="hero-badge">Learning hub</p>
       <h1 class="m-20 ">Directus Documentation</h1>
-      <p class="m-20">
-        Navigate your way through our resources to build your projects with our robust data engine.
-      </p>
-      <div class="hero-buttons">
-        <a class="primary-btn" href="#">Get Started</a>
-        <a class="secondary-btn inline-flex" href="#" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
-        >
-      </div>
-    </div>
-    <CodeToggler class="hero-toggler" />
+      <p class="m-20 hero-paragraph">Explore our resources and powerful data engine to build your projects confidently.
+</p> <div class="hero-buttons"> <a class="primary-btn" href="#">Get Started</a>
+<a class="secondary-btn inline-flex" href="#" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
+        > </div> </div> <CodeToggler class="hero-toggler" />
+
   </div>
 </section>
 
@@ -242,15 +238,16 @@ hr {
 .hero {
   background: #0E1C2F;
   color: white;
+  margin-inline: 40px;
+  border-radius: 12px;
 }
 
 .hero-badge {
-  background: #FF99DD;
-  border-radius: 6px;
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 4px;
+  color: #FE97DC;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  
 }
 
 .hero-content {
@@ -262,7 +259,7 @@ hr {
   line-height: 1;
 
 }
-.hero-content p {
+.hero-paragraph {
   font-size: 21px;
   line-height: 1.5;
 
