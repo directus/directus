@@ -1,17 +1,9 @@
+/* eslint-disable prettier/prettier */
 import { useDirectus } from './client.js';
 import { graphql } from './graphql/composable.js';
 import { readItems } from './rest/commands/read/items.js';
 import { rest } from './rest/composable.js';
 import type { PrimaryKey } from '@directus/types';
-import type {
-	ApplyQueryFields,
-	ExtractItem,
-	FieldsWildcard,
-	QueryFields,
-	RelationalQueryFields,
-	UnpackList,
-} from './types/query.js';
-import type { ItemType, RelationalFields } from './types/schema.js';
 
 type Relation<RelatedItem extends object, FieldType> = RelatedItem | FieldType;
 
@@ -48,30 +40,20 @@ const client = useDirectus<Schema>('https://rijks.website').use(rest()).use(grap
 // 		fields: ['title', 'author', { author: ['name', 'friends'] }],
 // 	})
 // );
-const res = await client.request(
+
+const result = await client.request(
 	readItems('author', {
-		fields: ['*', 'friends', { friends: [{ friends: [{ friends: ['*'] }] }] }],
+		fields: [
+			'*', 'friends', 
+			{ friends: [
+				{ friends: [
+					'id',
+					'name',
+					{ friends: ['*'] }
+				] }
+			] }
+		],
 	})
 );
 
-type x = (
-	| 'id'
-	| 'friends'
-	| {
-			friends: (
-				| 'name'
-				| {
-						friends: {
-							friends: '*'[];
-						}[];
-				  }
-			)[];
-	  }
-)[];
-type y = undefined; //'*';
-type z = 'id' | 'name' | '*';
-
-// type r = HasNestedFields<z>;
-type test = ApplyQueryFields<Schema, Author, x>;
-type ppp = test['friends']['friends']['friends'];
-// type nest = y['friends']['friends'];
+result.friends.friends.friends.name;
