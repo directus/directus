@@ -1,3 +1,5 @@
+import type { AbstractQueryNodeSortTargets } from '@directus/data';
+
 export interface SqlStatementSelectPrimitive {
 	type: 'primitive';
 	table: string;
@@ -48,8 +50,14 @@ export interface AbstractSqlQuery {
 	from: string;
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
+	order?: AbstractSqlOrder[];
 	parameters: (string | boolean | number)[];
 }
+
+export type AbstractSqlOrder = {
+	orderBy: AbstractQueryNodeSortTargets;
+	direction: 'ASC' | 'DESC';
+};
 
 /**
  * An actual vendor specific SQL statement with its parameters.
