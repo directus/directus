@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 const props = defineProps<{
 	choices: string[];
-  initial: string
+	initial: string;
 	label?: string;
 }>();
 
@@ -107,5 +107,11 @@ const onPrefChange = (event: Event) => {
 .content-area {
 	padding-inline: 24px;
 	padding-bottom: 32px;
+	scrollbar-width: none;
+	overflow-y: scroll;
+}
+
+.content-area::-webkit-scrollbar {
+	display: none;
 }
 </style>

@@ -79,10 +79,24 @@ await directus.items('articles').readOne(4, {
 });
 ```
 
+```js
+{
+	"id": 4,
+	"status": "review",
+	"title": "Pink Crystals",
+	"category": "random",
+	"image": {
+		"id": 311,
+		"name": "pink-crystals.png"
+	},
+	"date_added": "2020-11-12T17:56:41Z"
+}
+```
+
 </template>
 </SnippetToggler>
     </div>
-    <!-- <CodeToggler class="hero-toggler" /> -->
+    <!-- a<CodeToggler class="hero-toggler" /> -->
 
   </div>
 </section>
@@ -316,6 +330,7 @@ hr {
 .hero {
   background: #0E1C2F;
   color: white;
+  min-height: 744px;
 }
 
 .hero-badge {
@@ -474,6 +489,9 @@ hr {
 }
 
 @media only screen and (max-width: 768px) {
+  .hero {
+    min-height: unset;
+  }
   .flex {
     flex-direction: column;
     align-items: stretch;
