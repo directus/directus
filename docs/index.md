@@ -38,17 +38,17 @@ layout: home
         url="https://www.google.com/"
         icon="api"
       />
-      <Card
-        title="File Storage"
-        text="Store and retrieve files, use storage adapters, and learn about media transformations."
+    <Card
+        title="Data Model"
+        text="Structure and organize items in your collection, while also establishing relationships between them."
         url="https://www.google.com/"
-        icon="full_stacked_bar_chart"
+        icon="database"
       />
        <Card
         title="Authentication"
         text="Use our powerful and simple authentication features in your own applications."
         url="https://www.google.com/"
-        icon="check"
+        icon="lock"
       />
        <Card
         title="Extensions"
@@ -60,33 +60,33 @@ layout: home
         title="Real Time"
         text="Access real-time data in your project with WebSockets, backed by your database."
         url="https://www.google.com/"
-        icon="insights"
+        icon="bolt"
       />
-      <Card
-        title="Live Preview"
-        text="Facilitate collaboration between your teams by setting up your website to take advantage of Live Preview."
+       <Card
+        title="Flows"
+        text="Create custom, event-driven data processing and task automation workflows."
         url="https://www.google.com/"
-        icon="full_stacked_bar_chart"
-      /> 
+        icon="flowsheet"
+      />
     </template>
     <template #user-guide>
       <Card
         title="Content Module"
         text="Empower your entire team to interact with and manage items in your collection."
         url="https://www.google.com/"
-        icon="folder_copy"
+        icon="deployed_code"
       />
-       <Card
-        title="Data Model"
-        text="Structure and organize items in your collection, while also establishing relationships between them."
-        url="https://www.google.com/"
-        icon="database"
-      />
-       <Card
+      <Card
         title="User Management"
         text="Learn about adding users, granular roles, and access permissions to your projects."
         url="https://www.google.com/"
         icon="group"
+      />
+       <Card
+        title="File Storage"
+        text="Store and retrieve files, use storage adapters, and learn about media transformations."
+        url="https://www.google.com/"
+        icon="folder_copy"
       />
        <Card
         title="Insights Dashboard"
@@ -95,10 +95,10 @@ layout: home
         icon="insights"
       />
        <Card
-        title="Flows"
-        text="Create custom, event-driven data processing and task automation workflows."
+        title="Translation"
+        text="Easily manage multilingual content, making your projects accessible and user-friendly for a global audience."
         url="https://www.google.com/"
-        icon="flowsheet"
+        icon="g_translate"
       />
        <Card
         title="Directus Cloud"
@@ -113,17 +113,15 @@ layout: home
 <section class="gray-bg">
   <div class="section-container section-padding--md">
     <div class="header centered-text vp-doc">
-      <h2>Check our Use Cases</h2>
+      <h2>Framework Guides</h2>
       <p class="m-20 text-muted">
-        Directus combines BaaS, Headless CMS, and internal tools for seamless
-        backend management, content distribution, and workflow optimization.
+   Combine Directus with your favorite framework to create dynamic and efficient web applications
       </p>
     </div>
     <div class="grid-3">
-      <Article title="Backend-As-A-Service" tag="Backend" desc="Quickly build digital
-      projects with our feature-rich toolkit that configures your backend logic." img="/assets/baas.png" url='#' />
-      <Article title="Headless CMS" tag="CMS" desc="Manage content, users, and assets with no limitations or barriers." img="/assets/headless-cms.png" url='#' />
-      <Article title="Internal Tools" tag="Tools" desc="Build workflows, dashboards and  customized internal apps faster." img="/assets/internal-tools.png" url='#' />
+      <Article title="Build a Static Website with Nuxt.js" tag="Nuxt.js" desc="Learn how to build a website using Directus as a CMS and Nuxt 3." img="/assets/baas.png" url='#' />
+      <Article title="Set up Live Preview in a Next.js project" tag="Next.js" desc="By adding a preview URL, you can instantly see live changes made to your collection." img="/assets/headless-cms.png" url='#' />
+      <Article title="Build a Multi-User Chat With React.js" tag="React.js" desc="Deep dive into how to use Directus websockets to build an interactive chat application." img="/assets/internal-tools.png" url='#' />
     </div>
   </div>
 </section>
@@ -140,20 +138,6 @@ layout: home
       <SelfHosting class="m-20" title="Get Started with Docker" desc="Get up and running with our Docker Guide." img="/assets/docker.png" url='#' />
       <SelfHosting class="m-20" title="Config Options" desc="A reference of all possible settings in your project." img="/assets/cli.png" url='#' />
     </div>
-  </div>
-</section>
-
-<div class="section-container">
-  <Divider />
-</div>
-
-<section class="section-container section-padding--md">
-  <div class="header vp-doc">
-    <h2>Featured Articles</h2>
-  </div>
-
-  <div class="article-grid section-padding--md">
-    <Article v-for="article in articles.data" :title="article.title" :tag="article.category" :img="article.image" :url='article.slug' :author="article.author" :date="new Date(article.publish_date).toDateString()"  />
   </div>
 </section>
 
