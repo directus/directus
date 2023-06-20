@@ -3,4 +3,4 @@
 '@directus/data': minor
 ---
 
-Sort conversion in SQL middleware
+Implemented sort conversion in SQL middleware
