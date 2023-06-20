@@ -9,6 +9,7 @@ layout: home
   import Article from "./.vitepress/components/home/Article.vue"
   import Github from "./.vitepress/components/home/icons/Github.vue"
   import Divider from "./.vitepress/components/Divider.vue"
+  import SnippetToggler from "./.vitepress/components/SnippetToggler.vue"
   import { data as articles } from "./index.data.js"
 </script>
 
@@ -25,7 +26,64 @@ layout: home
         >
       </div>
     </div>
-    <CodeToggler class="hero-toggler" />
+    <div class="hero-toggler">
+
+<SnippetToggler initial="REST" :choices="['REST', 'GraphQL', 'JS-SDK']" label="API">
+<template #rest>
+
+```js
+GET /items/products/4?fields=*,image.id,image.name
+```
+
+```js
+{
+	"id": 4,
+	"status": "review",
+	"title": "Pink Crystals",
+	"category": "random",
+	"image": {
+		"id": 311,
+		"name": "pink-crystals.png"
+	},
+	"date_added": "2020-11-12T17:56:41Z"
+}'
+```
+
+</template>
+
+<template #graphql>
+
+```graphql
+query {
+	articles_by_id(id: 4) {
+		id
+		status
+		title
+		category
+		image {
+			id
+			name
+		}
+		date_added
+	}
+}
+```
+
+</template>
+
+<template #js-sdk>
+
+```js
+await directus.items('articles').readOne(4, {
+	fields: ['id', 'status', 'title', 'category', 'image.id', 'image.name', 'date_added'],
+});
+```
+
+</template>
+</SnippetToggler>
+    </div>
+    <!-- <CodeToggler class="hero-toggler" /> -->
+
   </div>
 </section>
 
@@ -320,7 +378,6 @@ hr {
 
 
 .hero-toggler {
-  background-color: #1F1938;
   border-radius: 8px;
   width: 100%;
   max-width: 590px;
