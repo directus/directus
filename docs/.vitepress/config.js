@@ -227,6 +227,78 @@ function sidebar() {
 			],
 		},
 		{
+			text: 'Data Studio App',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					link: '/app/data-model',
+					text: 'Data Model',
+					items: [
+						{
+							link: '/app/data-model/collections',
+							text: 'Collections',
+						},
+						{
+							link: '/app/data-model/fields',
+							text: 'Fields',
+							collapsible: true,
+							collapsed: true,
+							items: [
+								{
+									link: '/app/data-model/fields/text-numbers',
+									text: 'Text & Numbers',
+								},
+								{
+									link: '/app/data-model/fields/selection',
+									text: 'Selection',
+								},
+								{
+									link: '/app/data-model/fields/relational',
+									text: 'Relational',
+								},
+								{
+									link: '/app/data-model/fields/presentation',
+									text: 'Presentation',
+								},
+								{
+									link: '/app/data-model/fields/groups',
+									text: 'Groups',
+								},
+								{
+									link: '/app/data-model/fields/other',
+									text: 'Other',
+								},
+							],
+						},
+						{
+							link: '/app/data-model/relationships',
+							text: 'Relationships',
+						},
+					],
+				},
+				{
+					link: '/app/webhooks',
+					text: 'Webhooks',
+				},
+				{
+					link: '/app/flows',
+					text: 'Flows',
+					collapsible: false,
+					items: [
+						{
+							link: '/app/flows/triggers',
+							text: 'Triggers',
+						},
+						{
+							link: '/app/flows/operations',
+							text: 'Operations',
+						},
+					],
+				},
+			],
+		},
+		{
 			text: 'API Reference',
 			collapsible: true,
 			collapsed: true,
@@ -580,25 +652,6 @@ function sidebarUserGuide() {
 				{
 					text: 'Glossary',
 					link: '/user-guide/overview/glossary',
-				},
-			],
-		},
-		{
-			text: 'Data Model',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{
-					text: 'Collections',
-					link: '/user-guide/data-model/collections',
-				},
-				{
-					text: 'Fields',
-					link: '/user-guide/data-model/fields',
-				},
-				{
-					text: 'Relationships',
-					link: '/user-guide/data-model/relationships',
 				},
 			],
 		},
