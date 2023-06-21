@@ -53,3 +53,25 @@ test('statement with limit and offset', () => {
 		parameters: sample.statement.parameters,
 	});
 });
+
+test('statement with order', () => {
+	sample.statement.order = [
+		{
+			orderBy: {
+				type: 'primitive',
+				field: randomIdentifier(),
+			},
+			direction: 'ASC',
+		},
+	];
+
+	expect(constructSqlQuery(sample.statement)).toEqual({
+		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
+			sample.statement.select[1]!.table
+		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" ORDER BY "${
+			// @ts-ignore
+			sample.statement.order[0].orderBy.field
+		}" ASC;`,
+		parameters: sample.statement.parameters,
+	});
+});

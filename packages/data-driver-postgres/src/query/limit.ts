@@ -8,7 +8,7 @@ import type { AbstractSqlQuery } from '@directus/data-sql';
  */
 export function limit({ limit }: AbstractSqlQuery): string | null {
 	if (limit === undefined) {
-		return '';
+		return null;
 	}
 
 	return `LIMIT $${limit.parameterIndex + 1}`;

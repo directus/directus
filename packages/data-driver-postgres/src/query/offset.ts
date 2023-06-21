@@ -8,7 +8,7 @@ import type { AbstractSqlQuery } from '@directus/data-sql';
  */
 export function offset({ offset }: AbstractSqlQuery): string | null {
 	if (offset === undefined) {
-		return '';
+		return null;
 	}
 
 	return `OFFSET $${offset.parameterIndex + 1}`;

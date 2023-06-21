@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 
 test('Empty string when offset is not defined', () => {
-	expect(offset(sample.statement)).toStrictEqual('');
+	expect(offset(sample.statement)).toStrictEqual(null);
 });
 
 test('Returns offset', () => {
