@@ -142,7 +142,7 @@ You can then issue the following two commands (from your docker-compose root):
 
 ```bash
 docker compose pull
-docker compose up -d
+docker compose up
 ```
 
 The images will be pulled and the containers recreated. Migrations will happen automatically so once the containers have started you will be on the latest version (or the version you specified).
