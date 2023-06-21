@@ -696,6 +696,10 @@ function sidebarUserGuide() {
 					text: 'Translation Strings',
 					link: '/user-guide/content-module/translation-strings',
 				},
+				{
+					text: 'Display Templates',
+					link: '/user-guide/content-module/display-templates',
+				},
 			],
 		},
 		{
@@ -791,6 +795,10 @@ function sidebarUserGuide() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{
+					text: 'Settings',
+					link: '/user-guide/settings/settings',
+				},
 				{
 					text: 'Preset and Bookmarks',
 					link: '/user-guide/settings/presets-bookmarks',
