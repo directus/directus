@@ -6,6 +6,7 @@
 (B|b)ackend
 (B|b)ackend-as-a-(S|s)ervice
 (B|b)alancer
+(B|b)arebones
 (B|b)asemap
 (B|b)lackbox
 (B|b)ugfixes
@@ -67,6 +68,7 @@
 (URL|url)
 (V|v)ite
 (V|v)itest
+(V|v)ue
 (W|w)alkthrough
 (W|w)ebhook.?
 (W|w)ebhooks?
@@ -232,6 +234,7 @@ Koyeb
 KPIs
 Kubernetes
 LDAP
+LiquidJS
 localhost
 lowercased
 LTS
@@ -342,8 +345,10 @@ siloed
 slugification
 slugify
 slugifying
+SMS
 SMTP
 socio-economic
+src
 SSG
 SSL
 SSO
@@ -355,11 +360,13 @@ substring
 SuperAdmins?
 superset
 Superset
+svg
 SVG
 TablePlus
 tfa
 TFA
 TileJSON
+(T|t)imeseries
 TinyMCE
 TLS
 toc
@@ -367,6 +374,7 @@ TrustRadius
 truthy
 TTL
 TTY
+(t|T)wilio
 UI
 UID
 UIDs
@@ -390,6 +398,7 @@ vCPU
 Vercel
 viewability
 VitePress
+(V|v)onage
 volta
 VPC
 Vue

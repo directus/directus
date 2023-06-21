@@ -162,7 +162,7 @@ To use your new layout in Directus, you will need a table that already contains 
 2. If the right side menu is closed, click on the Layout Options icon. 
 3. Click on the dropdown and choose your new layout from the list.
 
-![Two screenshots. On the left is the layout dropdown showing that custom layout is selected. On te right is the unstyled table showing data from the layout.](https://marketing.directus.app/assets/ef0c6c19-ef1d-45bd-a66d-df8f581b98a4)
+![Two screenshots. On the left is the layout dropdown showing that custom layout is selected. On the right is the unstyled table showing data from the layout.](https://marketing.directus.app/assets/ef0c6c19-ef1d-45bd-a66d-df8f581b98a4)
 
 ## Summary
 

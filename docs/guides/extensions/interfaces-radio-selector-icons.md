@@ -270,7 +270,7 @@ After the `v-notice`, add a `div` for the buttons and use `v-else` from the `if`
 </div>
 ```
 
-Inside the `div`, add a hidden `input` field which will bind to the the selected value. 
+Inside the `div`, add a hidden `input` field which will bind to the selected value. 
 
 ```html
 <input
