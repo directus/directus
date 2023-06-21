@@ -52,11 +52,12 @@ const onPrefChange = (event: Event) => {
 <style scoped>
 .snippet-toggler {
 	overflow: hidden;
-	background: var(--vp-code-block-bg);
+	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
 }
 .snippet-toggler-header {
-	background-color: #25232d;
+	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
 	color: #a6accd;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 	height: 40px;
 	display: flex;
 	align-items: center;
