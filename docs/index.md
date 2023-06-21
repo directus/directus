@@ -3,7 +3,6 @@ layout: home
 ---
 
 <script setup>
-  import CodeToggler from "./.vitepress/components/home/CodeToggler.vue"
   import Footer from "./.vitepress/components/home/Footer.vue"
   import SelfHosting from "./.vitepress/components/home/SelfHosting.vue"
   import Article from "./.vitepress/components/home/Article.vue"
@@ -20,7 +19,7 @@ layout: home
       <p class="m-20 hero-paragraph">Explore our resources and powerful data engine to build your projects confidently.
 </p> <div class="hero-buttons"> <a class="primary-btn" href="/getting-started/introduction">Get Started</a>
 <a class="secondary-btn inline-flex" href="https://github.com/directus/directus/" target="_blank" rel="noreferrer noopener">GitHub<Github style="margin-left: 6px;"/></a
-        > </div> </div> <CodeToggler class="hero-toggler" />
+        > </div> </div>
 
   </div>
 </section>
