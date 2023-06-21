@@ -53,16 +53,3 @@
 	max-width: calc(var(--vp-layout-max-width) - 64px);
 	margin: 0 auto;
 }
-
-/**
- * Snippet Toggler Content
- * -------------------------------------------------------------------------- */
-
-.snippet-toggler .content-area [class^='language-'] {
-	margin: 0;
-	border-radius: 0;
-}
-
-.snippet-toggler .content-area .lang {
-	display: none;
-}
