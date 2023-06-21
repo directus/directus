@@ -75,3 +75,29 @@ test('statement with order', () => {
 		parameters: sample.statement.parameters,
 	});
 });
+
+test('statement with all possible modifiers', () => {
+	sample.statement.limit = { parameterIndex: 0 };
+	sample.statement.offset = { parameterIndex: 1 };
+	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100)];
+
+	sample.statement.order = [
+		{
+			orderBy: {
+				type: 'primitive',
+				field: randomIdentifier(),
+			},
+			direction: 'ASC',
+		},
+	];
+
+	expect(constructSqlQuery(sample.statement)).toEqual({
+		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
+			sample.statement.select[1]!.table
+		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" ORDER BY "${
+			// @ts-ignore
+			sample.statement.order[0].orderBy.field
+		}" ASC LIMIT $1 OFFSET $2;`,
+		parameters: sample.statement.parameters,
+	});
+});
