@@ -13,10 +13,10 @@
 		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
 	},
 	"dependencies": {
+		"@vueuse/core": "10.1.2",
 		"highlight.js": "^11.8.0",
 		"node-fetch": "3.3.1",
-		"outdent": "^0.8.0",
-		"vue-highlight-code": "^0.1.16"
+		"outdent": "^0.8.0"
 	},
 	"devDependencies": {
 		"@directus/format-title": "10.0.0",

@@ -10,6 +10,7 @@ layout: home
   import Divider from "./.vitepress/components/Divider.vue"
   import SnippetToggler from "./.vitepress/components/SnippetToggler.vue"
   import { data as articles } from "./index.data.js"
+  import { useStorage } from '@vueuse/core'
 </script>
 
 <section class="hero">
@@ -27,7 +28,7 @@ layout: home
     </div>
     <div class="hero-toggler">
 
-<SnippetToggler initial="REST" :choices="['REST', 'GraphQL', 'JS-SDK']" label="API">
+<SnippetToggler initial="REST" :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
 ```js
@@ -70,7 +71,7 @@ query {
 
 </template>
 
-<template #js-sdk>
+<template #sdk>
 
 ```js
 await directus.items('articles').readOne(4, {

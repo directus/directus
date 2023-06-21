@@ -898,6 +898,9 @@ importers:
 
   docs:
     dependencies:
+      '@vueuse/core':
+        specifier: 10.1.2
+        version: 10.1.2(vue@3.3.4)
       highlight.js:
         specifier: ^11.8.0
         version: 11.8.0
