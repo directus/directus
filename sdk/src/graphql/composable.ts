@@ -1,20 +1,8 @@
 import type { DirectusClient } from '../client.js';
 import type { RequestOptions } from '../types/request.js';
-import { fetchRequest } from '../utils/request.js';
+import type { GraphqlClient } from './types.js';
+import { request } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
-
-/** @TODO check required GraphQL settings */
-// export interface GraphQLConfig {
-// 	url?: string;
-// }
-
-export interface GraphqlClient<_Schema extends object> {
-	query<Output extends object = Record<string, any>>(
-		query: string,
-		variables?: Record<string, unknown>,
-		scope?: 'items' | 'system'
-	): Promise<Output>;
-}
 
 export const graphql = () => {
 	return <Schema extends object>(client: DirectusClient<Schema>): GraphqlClient<Schema> => {
@@ -22,7 +10,7 @@ export const graphql = () => {
 			async query<Output extends object = Record<string, any>>(
 				query: string,
 				variables?: Record<string, unknown>,
-				scope?: 'items' | 'system'
+				scope: 'items' | 'system' = 'items'
 			): Promise<Output> {
 				const options: RequestOptions = {
 					method: 'POST',
@@ -38,7 +26,7 @@ export const graphql = () => {
 
 				const requestUrl = getRequestUrl(client.url, options);
 
-				return await fetchRequest<Output>(requestUrl.toString(), options);
+				return await request<Output>(requestUrl.toString(), options);
 			},
 		};
 	};
