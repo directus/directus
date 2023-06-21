@@ -1,10 +1,10 @@
 import { test, expect, beforeEach } from 'vitest';
 import { limit } from './limit.js';
 import { randomInteger, randomIdentifier } from '@directus/random';
-import type { SqlStatement } from '@directus/data-sql';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 
 let sample: {
-	statement: SqlStatement;
+	statement: AbstractSqlQuery;
 };
 
 beforeEach(() => {
