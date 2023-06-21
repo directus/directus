@@ -87,7 +87,6 @@ const onPrefChange = (event: Event) => {
 	font-family: inherit;
 	color: inherit;
 	appearance: none;
-	-webkit-appearance: none;
 	line-height: inherit;
 	color: inherit;
 	font-size: 12px;
@@ -100,6 +99,18 @@ const onPrefChange = (event: Event) => {
 	user-select: none;
 	pointer-events: none;
 }
+
+.snippet-toggler .content-area [class^='language-'] {
+	margin: 0;
+	border-radius: 0;
+	display: none;
+}
+
+.snippet-toggler .content-area :global(.lang) {
+	display: none;
+}
+.toke
+
 @media (min-width: 640px) {
 	.snippet-toggler {
 		border-radius: 16px;
@@ -109,10 +120,6 @@ const onPrefChange = (event: Event) => {
 	padding-inline: 24px;
 	padding-bottom: 32px;
 	scrollbar-width: none;
-	overflow-y: scroll;
-}
-
-.content-area::-webkit-scrollbar {
-	display: none;
+	overflow-y: auto;
 }
 </style>
