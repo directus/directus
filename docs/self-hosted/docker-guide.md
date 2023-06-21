@@ -23,7 +23,7 @@ To stick to a more specific version of Directus you can use one of the following
 - Minor releases, e.g. `10.0`
 - Major releases, e.g. `10`
 
-To use a specific version of Directus, include the version number in your `services.directus.image` value:
+It is recommended to explicitly specify a Directus version in your `docker-compose.yml` file. Include the version number in your `services.directus.image` value:
 
 ```yml
 services:
@@ -34,13 +34,14 @@ services:
 
 ## Configure Admin User
 
-The `ADMIN_EMAIL` and `ADMIN_PASSWORD` variables, while shown in the quickstart, are optional. If omitted, the published Docker image will automatically populate the database and create an admin user. To configure the
-email/password for this first user, include the following environment variables:
+The `ADMIN_EMAIL` and `ADMIN_PASSWORD` variables, while shown in the quickstart, are optional. If omitted, the published Docker image will automatically populate the database and create an admin user, and these will only be shown in the Docker bootstrap logs when starting Directus for the first time. To configure the email/password for this first user, include the following environment variables:
 
 ```bash
 ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD="d1r3ctu5"
 ```
+
+Once you've started Directus for the first time, assuming your database is persisted, you can remove these values from your compose file. 
 
 ## Persistence
 
