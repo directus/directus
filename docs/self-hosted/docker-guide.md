@@ -65,7 +65,7 @@ services:
 
 ## Example Docker Compose
 
-Whiel the [Self-Hosting Quickstart](/self-hosted/quickstart.html) aims to show you the minimum-viable `docker-compose.yml` file, here is a more complete one that spins up a Postgres database, Redis cache, and Directus project:
+While the [Self-Hosting Quickstart](/self-hosted/quickstart.html) aims to show you the minimum-viable `docker-compose.yml` file, here is a more complete one that spins up a Postgres database, Redis cache, and Directus project:
 
 ```yaml
 version: '3'
