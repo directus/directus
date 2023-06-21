@@ -1,15 +1,28 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps<{
 	choices: string[];
 	label?: string;
 }>();
 
-const pref = ref(props.choices[0]);
+const storageKey = 'toggler-value';
+const getStorageValue = () => {
+	const value = localStorage.getItem(storageKey);
+	return value === 'undefined' || value == null ? props.choices[0] : value;
+};
+const setStorageValue = (value: string) => localStorage.setItem(storageKey, value);
+
+onMounted(() => {
+	setStorageValue(getStorageValue());
+});
+
+const pref = ref(getStorageValue());
 
 const onPrefChange = (event: Event) => {
-	pref.value = (event.target as HTMLSelectElement).value;
+	const selectedValue = (event.target as HTMLSelectElement).value;
+	pref.value = selectedValue;
+	setStorageValue(selectedValue);
 };
 </script>
 
