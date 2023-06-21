@@ -661,12 +661,24 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
-					text: 'Managing Collections',
-					link: '/user-guide/content-module/collections',
-				},
-				{
-					text: 'Items',
-					link: '/user-guide/content-module/items',
+					link: '/user-guide/content-module/content',
+					text: 'Managing Content',
+					type: 'page',
+					items: [
+						{
+							link: '/user-guide/content-module/content/collections',
+							text: 'Collection Page',
+							type: 'page',
+						},
+						{
+							link: '/user-guide/content-module/content/items',
+							text: 'Item Page',
+						},
+						{
+							link: '/user-guide/content-module/content/shares',
+							text: 'Shares',
+						},
+					],
 				},
 				{
 					text: 'Layouts',
@@ -683,10 +695,6 @@ function sidebarUserGuide() {
 				{
 					text: 'Translation Strings',
 					link: '/user-guide/content-module/translation-strings',
-				},
-				{
-					text: 'Shares',
-					link: '/user-guide/content-module/shares',
 				},
 			],
 		},
