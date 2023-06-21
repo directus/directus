@@ -28,7 +28,7 @@ export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSQLStat
 	const actualParts = [base, orderByPart, limitPart, offsetPart].filter((p) => p !== null);
 
 	return {
-		statement: actualParts.join(' ').trim() + ';',
+		statement: actualParts.join(' ') + ';',
 		parameters: query.parameters,
 	};
 }
