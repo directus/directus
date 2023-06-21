@@ -229,12 +229,17 @@ useShortcut('meta+s', () => {
 const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
-const fetchedFlow = ref<FlowRaw>();
-
 const flow = computed<FlowRaw | undefined>({
 	get() {
-		if (!fetchedFlow.value) return undefined;
-		return merge({}, fetchedFlow.value, stagedFlow.value);
+		if (!flowsStore.flows.find((flow) => flow.id === props.primaryKey)) return undefined;
+		return merge(
+			{},
+			flowsStore.flows.find((flow) => flow.id === props.primaryKey),
+			{
+				operation: stagedFlow.value ? stagedFlow.value.operation : flow.value?.operation,
+				operations: stagedFlow.value.operations ?? [],
+			}
+		);
 	},
 	set(newFlow) {
 		stagedFlow.value = newFlow ?? {};
@@ -242,34 +247,6 @@ const flow = computed<FlowRaw | undefined>({
 });
 
 const loading = ref(false);
-
-watch(
-	() => props.primaryKey,
-	() => {
-		loadCurrentFlow();
-	},
-	{ immediate: true }
-);
-
-async function loadCurrentFlow() {
-	if (!props.primaryKey) return;
-
-	loading.value = true;
-
-	try {
-		const response = await api.get(`/flows/${props.primaryKey}`, {
-			params: {
-				fields: ['*', 'operations.*'],
-			},
-		});
-
-		fetchedFlow.value = response.data.data;
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
-}
 
 const exitingOperationKeys = computed(() => [
 	...(flow.value?.operations || []).map((operation) => operation.key),
@@ -500,7 +477,6 @@ async function saveChanges() {
 		}
 
 		await flowsStore.hydrate();
-		await loadCurrentFlow();
 
 		stagedPanels.value = [];
 		panelsToBeDeleted.value = [];
