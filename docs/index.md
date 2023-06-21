@@ -261,6 +261,7 @@ hr {
 .hero-paragraph {
   font-size: 21px;
   line-height: 1.5;
+  color: var(--vp-c-gray-light-3);
 
 }
 .hero-buttons {
