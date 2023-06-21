@@ -3,6 +3,7 @@ import type { AbstractSqlQuery } from '../types.js';
 import { convertPrimitive } from './convert-primitive.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 import { convertSort } from './convert-sort.js';
+import { convertFilter } from './convert-filter.js';
 
 /**
  * @param abstractQuery the abstract query to convert
@@ -28,6 +29,16 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 	};
 
 	const idGen = parameterIndexGenerator();
+
+	if (abstractQuery.modifiers?.filter) {
+		const idx = idGen.next().value;
+		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, idx);
+
+		if (convertedFilter !== null) {
+			statement.where = convertedFilter.where;
+			statement.parameters[idx] = convertedFilter.parameters[0]!;
+		}
+	}
 
 	// TODO: Create a generic function for this and add unit tests. This way we might can save some tests in index.test.ts
 

@@ -51,6 +51,49 @@ test('Convert simple query', () => {
 	expect(res).toStrictEqual(expected);
 });
 
+test('Convert query with filter', () => {
+	sample.query.modifiers = {
+		filter: {
+			type: 'condition',
+			target: {
+				type: 'primitive',
+				field: randomIdentifier(),
+			},
+			operation: 'gt',
+			value: randomInteger(1, 100),
+			negation: false,
+		},
+	};
+
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+
+	const expected: AbstractSqlQuery = {
+		select: [
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+			},
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+			},
+		],
+		from: sample.query.collection,
+		// @ts-ignore The filter here is in fact a condition, not a logical node
+		where: {
+			...sample.query.modifiers.filter,
+			value: { parameterIndex: 0 },
+			operation: '>',
+		},
+		// @ts-ignore The filter values exists because a condition is used here, not a logical node
+		parameters: [sample.query.modifiers.filter.value],
+	};
+
+	expect(res).toStrictEqual(expected);
+});
+
 test('Convert query with a limit', () => {
 	sample.query.modifiers = {
 		limit: {

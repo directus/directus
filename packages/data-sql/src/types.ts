@@ -1,4 +1,4 @@
-import type { AbstractQueryNodeSortTargets } from '@directus/data';
+import type { AbstractQueryNodeSortTargets, AbstractQueryNodeCondition } from '@directus/data';
 
 export interface SqlStatementSelectPrimitive {
 	type: 'primitive';
@@ -51,6 +51,7 @@ export interface AbstractSqlQuery {
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
 	order?: AbstractSqlOrder[];
+	where?: AbstractSqlQueryNodeCondition;
 	parameters: (string | boolean | number)[];
 }
 
@@ -58,6 +59,11 @@ export type AbstractSqlOrder = {
 	orderBy: AbstractQueryNodeSortTargets;
 	direction: 'ASC' | 'DESC';
 };
+
+export interface AbstractSqlQueryNodeCondition extends Omit<AbstractQueryNodeCondition, 'value' | 'operation'> {
+	value: ParameterIndex;
+	operation: '>';
+}
 
 /**
  * An actual vendor specific SQL statement with its parameters.

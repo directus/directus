@@ -335,7 +335,7 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	type: 'condition';
 
 	/** the node on which the condition should be applied */
-	targetNode:
+	target:
 		| AbstractQueryFieldNodePrimitive
 		| AbstractQueryFieldNodeFn
 		| AbstractQueryFieldNodeRelatedManyToOne
