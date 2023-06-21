@@ -73,7 +73,7 @@ export default {
 <style scoped>
 footer {
 	padding-bottom: 60px;
-	background: #172940;
+	background: var(--vp-docs-section-bg);
 }
 hr {
 	border-color: gray;

@@ -235,7 +235,7 @@ hr {
 }
 
 .hero {
-  background: #0E1C2F;
+  background: var(--vp-docs-section-bg);
   color: white;
   margin-inline: 40px;
   border-radius: 12px;
