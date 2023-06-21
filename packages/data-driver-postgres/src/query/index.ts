@@ -11,7 +11,7 @@ import { orderBy } from './orderBy.js';
  *
  * @remarks
  * To create a PostgreSQL statement each part is constructed in a separate function.
- * In those functions it will be check if the part is actually should be created.
+ * In those functions it will be checked if the part should actually be created.
  * If not, the functions return null.
  *
  * @param query - The abstract SQL statement
