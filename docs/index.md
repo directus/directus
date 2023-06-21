@@ -8,6 +8,7 @@ layout: home
   import Article from "./.vitepress/components/home/Article.vue"
   import Github from "./.vitepress/components/home/icons/Github.vue"
   import Divider from "./.vitepress/components/Divider.vue"
+  import Pattern from "./.vitepress/components/Pattern.vue"
   import { data as articles } from "./index.data.js"
 </script>
 
@@ -21,6 +22,9 @@ layout: home
 <a class="secondary-btn inline-flex" href="https://github.com/directus/directus/" target="_blank" rel="noreferrer noopener">GitHub<Github style="margin-left: 6px;"/></a
         > </div> </div>
 
+  </div>
+  <div class="hero-pattern">
+    <Pattern />
   </div>
 </section>
 
@@ -239,6 +243,21 @@ hr {
   color: white;
   margin-inline: 40px;
   border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-pattern{
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+.hero-pattern svg {
+  width: 1600px;
+  height: 1000px;
+  opacity: 0.5;
 }
 
 .hero-badge {
