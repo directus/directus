@@ -198,7 +198,7 @@ Please make sure to update tests as appropriate.
 First start docker containers:
 
 ```shell
-$ docker-compose up -d
+$ docker compose up -d
 ```
 
 Then run tests:

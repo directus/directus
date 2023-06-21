@@ -36,29 +36,29 @@ services:
     environment:
       KEY: 'replace-with-random-value'
       SECRET: 'replace-with-random-value'
-      ADMIN_EMAIL: 'admin@example.com' 
-      ADMIN_PASSWORD: 'd1r3ctu5' 
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'd1r3ctu5'
       WEBSOCKETS_ENABLED: true
 ```
 
 Save the file. Let's step through it:
 
-- This file defines a single Docker container that will use the latest version of the `directus/directus` image. 
+- This file defines a single Docker container that will use the latest version of the `directus/directus` image.
 - The `ports` list maps internal port `8055` is made available to our machine using the same port number, meaning we can access it from our computer's browser.
 - The`volumes` section maps internal `directus/database` and `directus/uploads` to our local file system alongside the `docker-compose.yml` - meaning data is backed up outside of Docker containers.
-- The `environment` section contains any [configuration variables](/self-hosted/config-options.html) we wish to set. 
+- The `environment` section contains any [configuration variables](/self-hosted/config-options.html) we wish to set.
   - `KEY` and `SECRET` are required and should be random values.
-  - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch. 
-  - `WEBSOCKETS_ENABLED` is not required, but enables [Directus Realtime](/guides/real-time/getting-started/index.html). 
+  - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch.
+  - `WEBSOCKETS_ENABLED` is not required, but enables [Directus Realtime](/guides/real-time/getting-started/index.html).
 
 The volumes section is not requires, but without this, our database and file uploads will be destroyed when the Docker container stops running. The default database is SQLite - a self-contained server-less database that stores data to a file.
 
-## Run Directus 
+## Run Directus
 
 Run the following in your terminal:
 
 ```
-docker-compose up
+docker compose up
 ```
 
 Directus should now be available at http://0.0.0.0:8055

@@ -41,7 +41,7 @@ ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD="d1r3ctu5"
 ```
 
-Once you've started Directus for the first time, assuming your database is persisted, you can remove these values from your compose file. 
+Once you've started Directus for the first time, assuming your database is persisted, you can remove these values from your compose file.
 
 ## Persistence
 
@@ -141,8 +141,8 @@ increment the tag version number, e.g.:
 You can then issue the following two commands (from your docker-compose root):
 
 ```bash
-docker-compose pull
-docker-compose up -d
+docker compose pull
+docker compose up -d
 ```
 
 The images will be pulled and the containers recreated. Migrations will happen automatically so once the containers have started you will be on the latest version (or the version you specified).
