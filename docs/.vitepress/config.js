@@ -9,7 +9,7 @@ export default defineConfig({
 	description: 'Directus. An Instant App & API for your SQL Database.',
 	ignoreDeadLinks: true,
 	markdown: {
-		theme: 'material-theme-palenight',
+		theme: 'dracula-soft',
 		toc: {
 			level: [2],
 		},
