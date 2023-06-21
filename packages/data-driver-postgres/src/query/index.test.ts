@@ -1,7 +1,8 @@
+import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
 import type { AbstractSqlQuery } from '@directus/data-sql';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import { constructSqlQuery } from './index.js';
-import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: {
 	statement: AbstractSqlQuery;
@@ -69,8 +70,7 @@ test('statement with order', () => {
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" ORDER BY "${
-			// @ts-ignore
-			sample.statement.order[0].orderBy.field
+			(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field
 		}" ASC;`,
 		parameters: sample.statement.parameters,
 	});
@@ -95,8 +95,7 @@ test('statement with all possible modifiers', () => {
 		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" ORDER BY "${
-			// @ts-ignore
-			sample.statement.order[0].orderBy.field
+			(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field
 		}" ASC LIMIT $1 OFFSET $2;`,
 		parameters: sample.statement.parameters,
 	});
