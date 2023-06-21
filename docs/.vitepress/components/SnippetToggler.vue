@@ -3,11 +3,10 @@ import { ref } from 'vue';
 
 const props = defineProps<{
 	choices: string[];
-	initial: string;
 	label?: string;
 }>();
 
-const pref = ref(props.initial);
+const pref = ref(props.choices[0]);
 
 const onPrefChange = (event: Event) => {
 	pref.value = (event.target as HTMLSelectElement).value;
@@ -109,7 +108,6 @@ const onPrefChange = (event: Event) => {
 .snippet-toggler .content-area :global(.lang) {
 	display: none;
 }
-.toke
 
 @media (min-width: 640px) {
 	.snippet-toggler {

@@ -898,9 +898,6 @@ importers:
 
   docs:
     dependencies:
-      '@vueuse/core':
-        specifier: 10.1.2
-        version: 10.1.2(vue@3.3.4)
       highlight.js:
         specifier: ^11.8.0
         version: 11.8.0
@@ -910,9 +907,6 @@ importers:
       outdent:
         specifier: ^0.8.0
         version: 0.8.0
-      vue-highlight-code:
-        specifier: ^0.1.16
-        version: 0.1.16
     devDependencies:
       '@directus/format-title':
         specifier: 10.0.0
@@ -20624,13 +20618,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
-
-  /vue-highlight-code@0.1.16:
-    resolution: {integrity: sha512-aPVwAOxHxG9wCpbZKEmqdlPc/g9l+FT+uYA6bLrqpbEe72KcxqIPuVjjtDX0Eba4qxG35gyxESyiJWeVtsv/Vg==}
-    dependencies:
-      highlight.js: 11.8.0
-      vue: 3.3.4
-    dev: false
 
   /vue-i18n@9.2.2(vue@3.3.4):
     resolution: {integrity: sha512-yswpwtj89rTBhegUAv9Mu37LNznyu3NpyLQmozF3i1hYOhwpG8RjcjIFIIfnu+2MDZJGSZPXaKWvnQA71Yv9TQ==}
