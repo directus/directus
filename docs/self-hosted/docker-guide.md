@@ -7,7 +7,7 @@ readTime: 3 min read
 
 ::: info Non-Docker Guides
 
-We only publish and maintain self hosting guides using Docker as this removes many environment-specific configuration
+We only publish and maintain self-hosting guides using Docker as this removes many environment-specific configuration
 problems. If you can't or don't want to use Docker, we also publish an
 [npm package](https://www.npmjs.com/package/directus) without guides.
 
