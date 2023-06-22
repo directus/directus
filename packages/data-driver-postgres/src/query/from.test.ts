@@ -12,6 +12,7 @@ beforeEach(() => {
 		statement: {
 			select: [],
 			from: randomIdentifier(),
+			parameters: [],
 		},
 	};
 });
