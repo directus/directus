@@ -295,7 +295,9 @@ hook is currently handling as that would result in an infinite loop!
 
 ```js
 import axios from 'axios';
-import { ServiceUnavailableError, ForbiddenError } from '@directus/exceptions';
+import { createError } from '@directus/errors';
+
+const MyExtensionError = createError('MY_EXTENSION_ERROR', 'Something went wrong...', 500);
 
 export default ({ filter }, { services }) => {
 	const { MailService } = services;
@@ -318,7 +320,7 @@ export default ({ filter }, { services }) => {
 				},
 			});
 		} catch (error) {
-			throw new ServiceUnavailableError(error);
+			throw new MyExtensionError();
 		}
 
 		input.syncedWithExample = true;
