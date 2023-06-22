@@ -182,30 +182,27 @@
 </template>
 
 <script setup lang="ts">
-import { FlowRaw, OperationRaw } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-
-import { computed, ref, watch } from 'vue';
-import { useFlowsStore } from '@/stores/flows';
-import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
+import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
-import { isEmpty, merge, omit, cloneDeep } from 'lodash';
-import { router } from '@/router';
-import { nanoid, customAlphabet } from 'nanoid/non-secure';
-
-import SettingsNotFound from '../not-found.vue';
-import SettingsNavigation from '../../components/navigation.vue';
-import Operation, { ArrowInfo, Target } from './components/operation.vue';
-import { AppTile } from '@/components/v-workspace-tile.vue';
-import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
-import Arrows from './components/arrows.vue';
-import { Vector2 } from '@/utils/vector2';
-import FlowDrawer from './flow-drawer.vue';
-
-import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
 import { useExtensions } from '@/extensions';
+import { router } from '@/router';
+import { useFlowsStore } from '@/stores/flows';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Vector2 } from '@/utils/vector2';
+import { FlowRaw, OperationRaw } from '@directus/types';
+import { cloneDeep, isEmpty, merge, omit } from 'lodash';
+import { customAlphabet, nanoid } from 'nanoid/non-secure';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+import SettingsNotFound from '../not-found.vue';
+import Arrows from './components/arrows.vue';
+import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
+import Operation, { ArrowInfo, Target } from './components/operation.vue';
+import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
+import FlowDrawer from './flow-drawer.vue';
 
 // Maps the x and y coordinates of attachments of panels to their id
 export type Attachments = Record<number, Record<number, string>>;
