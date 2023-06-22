@@ -15,8 +15,10 @@
 		"@typescript-eslint/parser": "5.59.6",
 		"eslint": "8.40.0",
 		"eslint-config-prettier": "8.8.0",
-		"eslint-plugin-markdown": "^3.0.0",
-		"eslint-plugin-prettier": "4.2.1",
+		"eslint-parser-plain": "0.1.0",
+		"eslint-plugin-disable-autofix": "3.1.1",
+		"eslint-plugin-markdown": "3.0.0",
+		"eslint-plugin-prettier": "npm:@paescuj/eslint-plugin-prettier@4.3.0-1",
 		"eslint-plugin-react": "7.32.2",
 		"eslint-plugin-vue": "9.13.0",
 		"prettier": "2.8.8"

@@ -105,7 +105,7 @@ module.exports = {
 		sourceType: 'module',
 	},
 	overrides: [
-		// Configuration for TypeScript & Vue files
+		// TypeScript & Vue files
 		{
 			files: ['*.ts?(x)', '*.vue'],
 			parser: 'vue-eslint-parser',
@@ -123,11 +123,19 @@ module.exports = {
 				...vueRules,
 			},
 		},
-		// Lint code blocks in Markdown files under '/docs'
+		// Code blocks in Markdown files
 		{
-			files: ['docs/**/*.md'],
+			files: ['**/*.md'],
 			plugins: ['markdown'],
 			processor: 'markdown/markdown',
+		},
+		{
+			files: ['**/*.md/**'],
+			plugins: ['disable-autofix'],
+			rules: {
+				'prettier/prettier': 'off',
+				'disable-autofix/prettier/prettier': ['warn', {}, { forceFormatExtracted: true }],
+			},
 		},
 		{
 			files: ['**/*.md/*.{js,ts,vue,jsx,tsx}'],
@@ -151,6 +159,10 @@ module.exports = {
 					version: '18',
 				},
 			},
+		},
+		{
+			files: ['**/*.md/*.{json?(c|5),md,html}'],
+			parser: 'eslint-parser-plain',
 		},
 	],
 };
