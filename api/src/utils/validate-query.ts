@@ -67,7 +67,6 @@ function validateFilter(filter: Query['filter']) {
 				case '_nempty':
 					validateBoolean(value, key);
 					break;
-
 				case '_intersects':
 				case '_nintersects':
 				case '_intersects_bbox':
@@ -135,8 +134,8 @@ function validateList(value: any, key: string) {
 	return true;
 }
 
-function validateBoolean(value: any, key: string) {
-	if (value === null) return true;
+export function validateBoolean(value: any, key: string) {
+	if (value === null || value === '') return true;
 
 	if (typeof value !== 'boolean') {
 		throw new InvalidQueryError({ reason: `"${key}" has to be a boolean` });
@@ -145,8 +144,8 @@ function validateBoolean(value: any, key: string) {
 	return true;
 }
 
-function validateGeometry(value: any, key: string) {
-	if (value === null) return true;
+export function validateGeometry(value: any, key: string) {
+	if (value === null || value === '') return true;
 
 	try {
 		stringify(value);

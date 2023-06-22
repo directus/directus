@@ -176,7 +176,10 @@ router.get(
 			const rangeParts = /bytes=([0-9]*)-([0-9]*)/.exec(req.headers.range);
 
 			if (rangeParts && rangeParts.length > 1) {
-				range = {};
+				range = {
+					start: undefined,
+					end: undefined,
+				};
 
 				if (rangeParts[1]) {
 					range.start = Number(rangeParts[1]);

@@ -20,6 +20,7 @@ beforeEach(() => {
 				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
 			],
 			from: randomIdentifier(),
+			parameters: [],
 		},
 	};
 });
