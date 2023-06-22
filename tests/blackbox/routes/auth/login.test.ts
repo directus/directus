@@ -280,7 +280,7 @@ describe('/auth', () => {
 							expect(response.body).toMatchObject({
 								errors: [
 									{
-										message: '"email" must be a valid email',
+										message: 'Invalid payload. "email" must be a valid email',
 										extensions: {
 											code: 'INVALID_PAYLOAD',
 										},
@@ -351,7 +351,7 @@ describe('/auth', () => {
 							expect(response.body).toMatchObject({
 								errors: [
 									{
-										message: '"password" is required',
+										message: 'Invalid payload. "password" is required',
 										extensions: {
 											code: 'INVALID_PAYLOAD',
 										},
