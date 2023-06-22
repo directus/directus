@@ -1,28 +1,36 @@
-export interface ClientConfig {
+export type ClientConfig = {
 	token?: string;
-}
+};
 
 export interface DirectusClient<Schema extends object> {
 	url: URL;
-	auth: { token: string | null };
+	getToken: () => Promise<string | null>;
+	setToken: (token: string | null) => void;
 	use: <Extension extends object>(createExtension: (client: DirectusClient<Schema>) => Extension) => this & Extension;
 }
 
-export const useDirectus = <Schema extends object = any>(url: string | URL, config?: ClientConfig) => {
-	const client: DirectusClient<Schema> = {
-		url: typeof url === 'string' ? new URL(url) : url,
-		auth: {
-			token: config?.token ?? null,
-		},
+/**
+ * Creates a client to communicate with a Directus app.
+ *
+ * @param url The URL to the Directus app.
+ * @param config The optional configuration.
+ *
+ * @returns A Directus client.
+ */
+export const useDirectus = <Schema extends object = any>(
+	url: string,
+	config?: ClientConfig
+): DirectusClient<Schema> => {
+	let token = config?.token ?? null;
+	return {
+		url: new URL(url),
+		getToken: async () => token,
+		setToken: (newToken) => (token = newToken),
 		use(createExtension) {
-			const extension = createExtension(this);
-
 			return {
 				...this,
-				...extension,
+				...createExtension(this),
 			};
 		},
 	};
-
-	return client;
 };

@@ -19,9 +19,11 @@ export const graphql = () => {
 					headers: {},
 				};
 
-				if (client.auth.token) {
+				const token = await client.getToken();
+
+				if (token) {
 					if (!options.headers) options.headers = {};
-					options.headers['Authorization'] = `Bearer ${client.auth.token}`;
+					options.headers['Authorization'] = `Bearer ${token}`;
 				}
 
 				const requestUrl = getRequestUrl(client.url, options);
