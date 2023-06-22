@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Use Flow Store instead of API in Flows Workspace
+Fixed issue that caused changes to flows to not be reflected in the inline edidtor.
