@@ -28,7 +28,7 @@ It is recommended to explicitly specify a Directus version in your `docker-compo
 ```yml
 services:
   directus:
-    image: directus/directus // [!code --]
+    image: directus/directus:latest // [!code --]
     image: directus/directus:10.0.0 // [!code ++]
 ```
 
@@ -93,7 +93,7 @@ services:
 
   directus:
     container_name: directus
-    image: directus/directus:latest
+    image: directus/directus:10.0.0
     ports:
       - 8055:8055
     volumes:
@@ -138,14 +138,13 @@ increment the tag version number, e.g.:
 +   image: directus/directus:10.1.0
 ```
 
-You can then issue the following two commands (from your docker-compose root):
+Then run the following from your docker-compose root:
 
 ```bash
-docker compose pull
 docker compose up
 ```
 
-The images will be pulled and the containers recreated. Migrations will happen automatically so once the containers have started you will be on the latest version (or the version you specified).
+The specified image will be pulled and the containers recreated. Migrations will happen automatically so once the containers have started you will be on the latest version (or the version you specified).
 
 ### Adding Packages to Use in Flows Scripts
 
