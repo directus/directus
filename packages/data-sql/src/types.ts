@@ -69,7 +69,6 @@ export interface AbstractSqlQueryNodeCondition
 	extends Omit<AbstractQueryNodeCondition, 'value' | 'operation' | 'target'> {
 	value: ParameterIndex;
 	operation: '>';
-	target: SqlStatementSelectPrimitive;
 }
 
 /**
