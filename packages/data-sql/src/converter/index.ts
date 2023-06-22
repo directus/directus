@@ -32,7 +32,7 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 
 	if (abstractQuery.modifiers?.filter) {
 		const idx = idGen.next().value;
-		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, idx);
+		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, idx, abstractQuery.collection);
 
 		if (convertedFilter !== null) {
 			statement.where = convertedFilter.where;

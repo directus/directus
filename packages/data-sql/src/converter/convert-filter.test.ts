@@ -1,4 +1,4 @@
-import type { AbstractQueryNodeCondition } from '@directus/data';
+import type { AbstractQueryFieldNodePrimitive, AbstractQueryNodeCondition } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test, beforeEach } from 'vitest';
 import { convertFilter } from './convert-filter.js';
@@ -25,12 +25,19 @@ beforeEach(() => {
 });
 
 test('Convert filter', () => {
-	expect(convertFilter(sample.condition, sample.index)).toStrictEqual({
+	const randomCollection = randomIdentifier();
+
+	expect(convertFilter(sample.condition, sample.index, randomCollection)).toStrictEqual({
 		where: {
 			...sample.condition,
 			operation: '>',
 			value: {
 				parameterIndex: sample.index,
+			},
+			target: {
+				column: (sample.condition.target as AbstractQueryFieldNodePrimitive).field,
+				table: randomCollection,
+				type: 'primitive',
 			},
 		},
 		parameters: [sample.condition.value],

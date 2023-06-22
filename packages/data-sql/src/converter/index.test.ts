@@ -1,4 +1,4 @@
-import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
+import type { AbstractQuery, AbstractQueryFieldNodePrimitive, AbstractQueryNodeCondition } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types.js';
 import { convertAbstractQueryToAbstractSqlQuery } from './index.js';
@@ -81,14 +81,20 @@ test('Convert query with filter', () => {
 			},
 		],
 		from: sample.query.collection,
-		// @ts-ignore The filter here is in fact a condition, not a logical node
 		where: {
-			...sample.query.modifiers.filter,
 			value: { parameterIndex: 0 },
 			operation: '>',
+			target: {
+				column: (
+					(sample.query.modifiers.filter as AbstractQueryNodeCondition).target as AbstractQueryFieldNodePrimitive
+				).field,
+				table: sample.query.collection,
+				type: 'primitive',
+			},
+			type: 'condition',
+			negation: false,
 		},
-		// @ts-ignore The filter values exists because a condition is used here, not a logical node
-		parameters: [sample.query.modifiers.filter.value],
+		parameters: [(sample.query.modifiers.filter! as AbstractQueryNodeCondition).value],
 	};
 
 	expect(res).toStrictEqual(expected);

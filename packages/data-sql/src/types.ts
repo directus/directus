@@ -68,7 +68,12 @@ export type AbstractSqlOrder = {
 export interface AbstractSqlQueryNodeCondition
 	extends Omit<AbstractQueryNodeCondition, 'value' | 'operation' | 'target'> {
 	value: ParameterIndex;
-	operation: '>';
+	operation: '=' | '>' | '>=' | '<' | '<=';
+	target: {
+		column: string;
+		table: string;
+		type: 'primitive';
+	};
 }
 
 /**
