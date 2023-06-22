@@ -4,6 +4,7 @@ import { select } from './select.js';
 import type { ParameterizedSQLStatement } from '@directus/data-sql';
 import { limit } from './limit.js';
 import { offset } from './offset.js';
+import { where } from './where.js';
 
 /**
  * Constructs an actual PostgreSQL query statement from a given abstract SQL query.
@@ -12,13 +13,16 @@ import { offset } from './offset.js';
  * @returns An actual SQL with parameters
  */
 export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSQLStatement {
-	const base = [select(query), from(query)].join(' ');
+	const statementParts = [select, from, where, limit, offset];
 
-	const limitPart = limit(query);
-	const offsetPart = offset(query);
+	const statement = `${statementParts
+		.map((part) => part(query))
+		.filter((p) => p !== null)
+		.join(' ')
+		.trim()};`;
 
 	return {
-		statement: `${base} ${limitPart} ${offsetPart}`.trimEnd() + ';',
+		statement,
 		parameters: query.parameters,
 	};
 }

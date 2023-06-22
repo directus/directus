@@ -60,9 +60,16 @@ export type AbstractSqlOrder = {
 	direction: 'ASC' | 'DESC';
 };
 
-export interface AbstractSqlQueryNodeCondition extends Omit<AbstractQueryNodeCondition, 'value' | 'operation'> {
+/**
+ * So far only comparisons to _primitives_ are supported.
+ * Functions will be supported soon.
+ * How we'll handle relational values here, needs to be discussed.
+ */
+export interface AbstractSqlQueryNodeCondition
+	extends Omit<AbstractQueryNodeCondition, 'value' | 'operation' | 'target'> {
 	value: ParameterIndex;
 	operation: '>';
+	target: SqlStatementSelectPrimitive;
 }
 
 /**
