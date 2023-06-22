@@ -1,10 +1,11 @@
-export interface ClientConfig {
-	token?: string | undefined;
-}
+export type ClientConfig = {
+	token?: string;
+};
 
 export interface DirectusClient<Schema extends object> {
 	url: URL;
-	auth: { token: string | null };
+	getToken: () => Promise<string | null>;
+	setToken: (token: string | null) => void;
 	use: <Extension extends object>(createExtension: (client: DirectusClient<Schema>) => Extension) => this & Extension;
 }
 
@@ -18,14 +19,18 @@ export interface DirectusClient<Schema extends object> {
  */
 export const useDirectus = <Schema extends object = any>(
 	url: string,
-	config?: ClientConfig | undefined
-): DirectusClient<Schema> => ({
-	url: new URL(url),
-	auth: { token: config?.token ?? null },
-	use(createExtension) {
-		return {
-			...this,
-			...createExtension(this),
-		};
-	},
-});
+	config?: ClientConfig
+): DirectusClient<Schema> => {
+	let token = config?.token ?? null;
+	return {
+		url: new URL(url),
+		getToken: async () => token,
+		setToken: (newToken) => (token = newToken),
+		use(createExtension) {
+			return {
+				...this,
+				...createExtension(this),
+			};
+		},
+	};
+};
