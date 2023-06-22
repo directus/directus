@@ -3,7 +3,12 @@ import { useDirectus } from './client.js';
 import { graphql } from './graphql/composable.js';
 import { readItems } from './rest/commands/read/items.js';
 import { rest } from './rest/composable.js';
+import { realtime } from './realtime/composable.js';
 import type { PrimaryKey } from '@directus/types';
+import WebSocket from 'ws';
+
+//@ts-ignore
+globalThis.WebSocket = WebSocket;
 
 type Relation<RelatedItem extends object, FieldType> = RelatedItem | FieldType;
 
@@ -20,6 +25,11 @@ interface Article {
 	author: Relation<Author, string>;
 }
 
+interface Test {
+	id: number;
+	test: string;
+}
+
 interface Author {
 	id: string;
 	name: string;
@@ -30,30 +40,50 @@ interface Author {
 interface Schema {
 	articles: Article;
 	author: Author;
+	test: Test;
 }
 
-const client = useDirectus<Schema>('https://rijks.website').use(rest()).use(graphql());
-// .use(ws())
+const client = useDirectus<Schema>('http://localhost:8056/')
+	.use(rest())
+	.use(graphql())
+	.use(realtime({
+		authMode: 'public',
+	}));
 
+const { subscription, unsubscribe } = await client.subscribe('test', {
+	query: {
+		fields: ['*']
+	},
+})
+
+setTimeout(() => {
+	unsubscribe();
+	client.disconnect();
+}, 60000);
+
+for await (const item of subscription) {
+	console.log({ item });
+
+}
 // const res = await client.request(
 // 	readItems('articles', {
 // 		fields: ['title', 'author', { author: ['name', 'friends'] }],
 // 	})
 // );
 
-const result = await client.request(
-	readItems('author', {
-		fields: [
-			'*', 'friends', 
-			{ friends: [
-				{ friends: [
-					'id',
-					'name',
-					{ friends: ['*'] }
-				] }
-			] }
-		],
-	})
-);
+// const result = await client.request(
+// 	readItems('author', {
+// 		fields: [
+// 			'*', 'friends', 
+// 			{ friends: [
+// 				{ friends: [
+// 					'id',
+// 					'name',
+// 					{ friends: ['*'] }
+// 				] }
+// 			] }
+// 		],
+// 	})
+// );
 
-result.friends.friends.friends.name;
+// result.friends.friends.friends.name;
