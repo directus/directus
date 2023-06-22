@@ -8,9 +8,9 @@ export interface DirectusClient<Schema extends object> {
 	use: <Extension extends object>(createExtension: (client: DirectusClient<Schema>) => Extension) => this & Extension;
 }
 
-export const useDirectus = <Schema extends object = any>(url: string, config?: ClientConfig) => {
+export const useDirectus = <Schema extends object = any>(url: string | URL, config?: ClientConfig) => {
 	const client: DirectusClient<Schema> = {
-		url: new URL(url),
+		url: typeof url === 'string' ? new URL(url) : url,
 		auth: {
 			token: config?.token ?? null,
 		},

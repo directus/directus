@@ -1,16 +1,10 @@
 import type { DirectusClient } from '../client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
-import type { RestCommand } from './types.js';
+import type { RestClient, RestCommand } from './types.js';
 
-/** @TODO use real REST settings */
 export interface RestConfig {
-	globalHeaders?: Record<string, string>;
-	forceSearch?: boolean;
-}
-
-export interface RestClient<Schema extends object> {
-	request<Output extends object>(options: RestCommand<Output, Schema>): Promise<Output>;
+	useSearch?: boolean; // use SEARCH instead of GET
 }
 
 export const rest = (_options: RestConfig = {}) => {
