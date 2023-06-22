@@ -228,15 +228,14 @@ const stagedFlow = ref<Partial<FlowRaw>>({});
 
 const flow = computed<FlowRaw | undefined>({
 	get() {
-		if (!flowsStore.flows.find((flow) => flow.id === props.primaryKey)) return undefined;
-		return merge(
-			{},
-			flowsStore.flows.find((flow) => flow.id === props.primaryKey),
-			{
-				operation: stagedFlow.value ? stagedFlow.value.operation : flow.value?.operation,
-				operations: stagedFlow.value.operations ?? [],
-			}
-		);
+		const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
+
+		if (!existing) return undefined;
+
+		return merge({}, existing, {
+			operation: stagedFlow.value?.operation ?? existing.operation,
+			operations: stagedFlow.value?.operations ?? existing.operations,
+		});
 	},
 	set(newFlow) {
 		stagedFlow.value = newFlow ?? {};
