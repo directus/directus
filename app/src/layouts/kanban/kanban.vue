@@ -109,8 +109,8 @@ export default {
 
 <script setup lang="ts">
 import { addTokenToURL } from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
 import { getItemRoute } from '@/utils/get-item-route';
+import { getRootPath } from '@/utils/get-root-path';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -164,7 +164,7 @@ function openEditGroup(group: Group) {
 
 function parseAvatar(file: Record<string, any>) {
 	if (!file || !file.type) return;
-	if (file.type.startsWith('image') === false && !file.type.includes('svg')) return;
+	if (file.type.startsWith('image') === false) return;
 
 	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
 	return addTokenToURL(url);
