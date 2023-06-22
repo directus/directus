@@ -6,17 +6,11 @@ export const where = ({ where }: AbstractSqlQuery): string | null => {
 		return null;
 	}
 
-	let target = null;
-
-	if (where.type === 'condition') {
-		if (where.target.type === 'primitive') {
-			target = wrapColumn(where.target.table, where.target.column);
-		} else {
-			throw new Error('Functions are not yet supported.');
-		}
-	} else {
-		throw new Error('Logical operators are not yet supported.');
+	if (where.type !== 'condition' || where.target.type !== 'primitive') {
+		throw new Error('Logical operators and functions are not yet supported in where clause.');
 	}
+
+	const target = wrapColumn(where.target.table, where.target.column);
 
 	return `WHERE ${target} ${where.operation} $${where.value.parameterIndex + 1}`;
 };
