@@ -92,7 +92,6 @@ methods: {
 
 Then, ensure these methods are called on form submissions by using the `@submit.prevent` directive:
 
-<!-- prettier-ignore -->
 ```html
 <!-- Login form -->
 <form> // [!code --]
@@ -121,7 +120,6 @@ data() {
 
 Then, bind the login form's inputs to `form`:
 
-<!-- prettier-ignore -->
 ```html
 <form>
 	<label for="email">Email</label>
@@ -246,7 +244,6 @@ data() {
 
 Then, bind the login form's inputs to `form` properties:
 
-<!-- prettier-ignore -->
 ```html
 <form @submit.prevent="messageSubmit">
 	<label for="message">Message</label>
@@ -288,7 +285,6 @@ if (data.type == 'subscription' && data.event == 'create') {
 
 Update your `<ol>` to display items in the array:
 
-<!-- prettier-ignore -->
 ```html
 <ol>
 	<li v-for="message in messages.history" :key="message.id"> // [!code ++]
@@ -306,7 +302,6 @@ and navigate to your index.html file, login and submit a message there and both 
 
 Replace the `console.log()` you created when the subscription is initialized:
 
-<!-- prettier-ignore -->
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
 	console.log('subscription started'); // [!code --]

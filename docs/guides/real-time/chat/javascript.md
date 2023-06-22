@@ -157,7 +157,6 @@ console for this console log._
 
 Within the `#new` form submit event handler, send a new message to create the item in your Directus collection:
 
-<!-- prettier-ignore -->
 ```js
 document.querySelector('#new').addEventListener('submit', function (event) {
 	event.preventDefault();
@@ -209,7 +208,6 @@ and navigate to your index.html file, login and submit a message there and both 
 
 Replace the `console.log()` you created when the subscription is initialized:
 
-<!-- prettier-ignore -->
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
 	console.log('subscription started'); // [!code --]
