@@ -1,6 +1,6 @@
-export type ClientConfig = {
+export interface ClientConfig {
 	token?: string;
-};
+}
 
 export interface DirectusClient<Schema extends object> {
 	url: URL;
