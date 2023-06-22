@@ -753,8 +753,8 @@ export function applyFilter(
 						knex
 							.select('*')
 							.from(originalCollectionName)
-							.where(selectionRaw, '=', v)
-							.andWhere(`${originalCollectionName}.${relation.field}`, '=', `${mainCollection}.${mainCollectionPK}`)
+							.where(`${originalCollectionName}.${field}`, '=', v)
+							.andWhereRaw(`${originalCollectionName}.${relation.field} = ${mainCollection}.${mainCollectionPK}`)
 					)
 				);
 			}
