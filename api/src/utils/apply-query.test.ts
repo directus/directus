@@ -156,7 +156,7 @@ describe('applyFilter', () => {
 		}, operators);
 
 		for (const { filterOperator, sqlWhereClause } of withReverseOperators) {
-			for (const filterValue of [true, false]) {
+			for (const filterValue of [true, '', false]) {
 				test(`${filterOperator} with value ${filterValue}`, async () => {
 					class Client_SQLite3 extends MockClient {}
 
@@ -180,7 +180,7 @@ describe('applyFilter', () => {
 
 					const sql = tracker.history.select[0]?.sql.match(/select \* where \((.*)\)/)?.[1];
 
-					const expectedSql = sqlWhereClause[filterValue ? 'true' : 'false'].replaceAll(
+					const expectedSql = sqlWhereClause[filterValue === false ? 'false' : 'true'].replaceAll(
 						'$column',
 						`"${collection}"."${field}"`
 					);
