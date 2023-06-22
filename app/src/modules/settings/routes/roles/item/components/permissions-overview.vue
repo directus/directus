@@ -124,7 +124,8 @@ function usePermissions() {
 				params.filter.role = { _eq: props.role };
 			}
 
-			permissions.value = await fetchAll('/permissions', { params });
+			const response = await api.get('/permissions', { params });
+			permissions.value = response.data.data;
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
