@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -974,7 +974,7 @@ importers:
         version: 2.3.0(rollup@3.22.0)(vite@4.3.7)
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/composables:
     dependencies:
@@ -1017,7 +1017,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/constants:
     dependencies:
@@ -1066,7 +1066,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/data-driver-postgres:
     dependencies:
@@ -1106,7 +1106,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/data-sql:
     devDependencies:
@@ -1136,7 +1136,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/exceptions:
     devDependencies:
@@ -1160,7 +1160,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/extensions-sdk:
     dependencies:
@@ -1251,7 +1251,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/pressure:
     dependencies:
@@ -1276,7 +1276,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/random:
     devDependencies:
@@ -1297,7 +1297,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/release-notes-generator:
     dependencies:
@@ -1328,7 +1328,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/schema:
     dependencies:
@@ -1378,7 +1378,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-azure:
     dependencies:
@@ -1406,7 +1406,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1437,7 +1437,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1465,7 +1465,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-local:
     dependencies:
@@ -1490,7 +1490,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-s3:
     dependencies:
@@ -1527,7 +1527,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/stores:
     dependencies:
@@ -1583,7 +1583,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/tsconfig: {}
 
@@ -1722,7 +1722,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   sdk:
     devDependencies:
@@ -1752,7 +1752,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
       ws:
         specifier: ^8.13.0
         version: 8.13.0
@@ -20942,28 +20942,7 @@ packages:
       picocolors: 1.0.0
       source-map: 0.6.1
       source-map-support: 0.5.21
-      vite: 4.3.7(@types/node@20.2.0)(sass@1.62.1)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    dev: true
-
-  /vite-node@0.31.1(@types/node@20.2.0):
-    resolution: {integrity: sha512-BajE/IsNQ6JyizPzu9zRgHrBwczkAs0erQf/JRpgTIESpKvNj9/Gd0vxX905klLkb0I0SJVCKbdrl5c6FnqYKA==}
-    engines: {node: '>=v14.18.0'}
-    hasBin: true
-    dependencies:
-      cac: 6.7.14
-      debug: 4.3.4
-      mlly: 1.2.1
-      pathe: 1.1.0
-      picocolors: 1.0.0
-      vite: 4.3.7(@types/node@20.2.0)
+      vite: 4.3.7(@types/node@18.16.12)(sass@1.62.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -20985,6 +20964,27 @@ packages:
       pathe: 1.1.0
       picocolors: 1.0.0
       vite: 4.3.7(@types/node@18.16.12)(sass@1.62.1)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
+  /vite-node@0.31.1(@types/node@20.2.0):
+    resolution: {integrity: sha512-BajE/IsNQ6JyizPzu9zRgHrBwczkAs0erQf/JRpgTIESpKvNj9/Gd0vxX905klLkb0I0SJVCKbdrl5c6FnqYKA==}
+    engines: {node: '>=v14.18.0'}
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
+      mlly: 1.2.1
+      pathe: 1.1.0
+      picocolors: 1.0.0
+      vite: 4.3.7(@types/node@20.2.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -21018,6 +21018,39 @@ packages:
       - supports-color
     dev: true
 
+  /vite@4.3.7(@types/node@18.16.12)(sass@1.62.1):
+    resolution: {integrity: sha512-MTIFpbIm9v7Hh5b0wSBgkcWzSBz7SAa6K/cBTwS4kUiQJfQLFlZZRJRQgqunCVzhTPCk674tW+0Qaqh3Q00dBg==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 18.16.12
+      esbuild: 0.17.19
+      postcss: 8.4.23
+      rollup: 3.22.0
+      sass: 1.62.1
+    optionalDependencies:
+      fsevents: 2.3.2
+
   /vite@4.3.7(@types/node@20.2.0):
     resolution: {integrity: sha512-MTIFpbIm9v7Hh5b0wSBgkcWzSBz7SAa6K/cBTwS4kUiQJfQLFlZZRJRQgqunCVzhTPCk674tW+0Qaqh3Q00dBg==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -21050,39 +21083,6 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
-
-  /vite@4.3.7(@types/node@20.2.0)(sass@1.62.1):
-    resolution: {integrity: sha512-MTIFpbIm9v7Hh5b0wSBgkcWzSBz7SAa6K/cBTwS4kUiQJfQLFlZZRJRQgqunCVzhTPCk674tW+0Qaqh3Q00dBg==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 18.16.12
-      esbuild: 0.17.19
-      postcss: 8.4.23
-      rollup: 3.22.0
-      sass: 1.62.1
-    optionalDependencies:
-      fsevents: 2.3.2
 
   /vitepress@1.0.0-alpha.75(@algolia/client-search@4.17.0):
     resolution: {integrity: sha512-twpPZ/6UnDR8X0Nmj767KwKhXlTQQM9V/J1i2BP9ryO29/w4hpxBfEum6nvfpNhJ4H3h+cIhwzAK/e9crZ6HEQ==}
