@@ -71,3 +71,18 @@
 	from = "/getting-started/backing-directus"
 	to = "/contributing/sponsor"
 	status = 301
+
+[[redirects]]
+	from = "/app/content/*"
+	to = "/user-guide/content-module/content/:splat"
+	status = 301
+
+[[redirects]]
+  from = "/app/users-roles-permissions"
+  to = "/user-guide/user-management/users-roles-permissions"
+  status = 301
+
+[[redirects]]
+  from = "/getting-started/glossary"
+  to = "/user-guide/overview/glossary"
+  status = 301
