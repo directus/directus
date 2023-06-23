@@ -22,12 +22,9 @@ for example:
 20201202A-my-custom-migration.js
 ```
 
-::: tip
-
-For backwards compatibility it is possible to rename your existing CommonJS migrations to `<migration-name>.cjs`.
-However using ESM where possible is recommended.
-
-:::
+Every file in the root of the `migrations` folder is treated as a migration. Files that don't include a `-` character
+are ignored. If you want to rely on shared helper functions between migrations, put them in a subfolder so they aren't
+loaded in by the migrations helper.
 
 ## Structure
 

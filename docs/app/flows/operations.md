@@ -41,7 +41,7 @@ append an array containing an object you can use to help debug the misconfigurat
 
 :::warning
 
-When using an [Event Hook](/app/flows/triggers#event-hook) configured to be **Action (Blocking)**, if your flow ends
+When using an [Event Hook](/app/flows/triggers#event-hook) configured to be **Filter (Blocking)**, if your flow ends
 with a condition that executes with a `reject` path, it will cancel your database transaction.
 
 :::

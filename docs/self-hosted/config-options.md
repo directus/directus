@@ -358,20 +358,20 @@ For more details about each configuration variable, please see the
 You can use the built-in rate-limiter to prevent users from hitting the API too much. Simply enabling the rate-limiter
 will set a default maximum of 50 requests per second, tracked in memory. Once you have multiple copies of Directus
 running under a load balancer, or your user base grows so much that memory is no longer a viable place to store the rate
-limiter information, you can use an external `memcache` or `redis` instance to store the rate limiter data.
+limiter information, you should use `redis` instance to store the rate limiter data.
 
-| Variable                                    | Description                                                                      | Default Value |
-| ------------------------------------------- | -------------------------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.                        | `false`       |
-| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                                         | `50`          |
-| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.                      | `1`           |
-| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`, or `memcache`. | `memory`      |
-| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                                             | `150`         |
-| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.                        | `false`       |
-| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                                   | `1000`        |
-| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.                      | `1`           |
-| `RATE_LIMITER_GLOBAL_STORE`                 | Where to store the rate limiter counts. One of `memory`, `redis`, or `memcache`. | `memory`      |
-| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                             | `150`         |
+| Variable                                    | Description                                                       | Default Value |
+| ------------------------------------------- | ----------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.         | `false`       |
+| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                          | `50`          |
+| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.       | `1`           |
+| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
+| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                              | `150`         |
+| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.         | `false`       |
+| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                    | `1000`        |
+| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.       | `1`           |
+| `RATE_LIMITER_GLOBAL_STORE`                 | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
+| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                              | `150`         |
 
 Based on the `RATE_LIMITER_STORE`/`RATE_LIMITER_GLOBAL_STORE` used, you must also provide the following configurations:
 
@@ -400,13 +400,6 @@ Alternatively, you can provide the individual connection parameters:
 | `RATE_LIMITER_GLOBAL_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
 | `RATE_LIMITER_GLOBAL_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
 | `RATE_LIMITER_GLOBAL_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
-
-### Memcache
-
-| Variable                       | Description                                                                                                                                                             | Default Value |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_MEMCACHE`        | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), e.g., `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
-| `RATE_LIMITER_GLOBAL_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), e.g., `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
 ::: tip Additional Rate Limiter Variables
 
@@ -476,8 +469,8 @@ middleman servers (like CDNs) and even the browser.
 
 In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` and `CACHE_PERMISSIONS` which
 are enabled by default. These speed up the overall performance of Directus, as we don't want to introspect the whole
-database or check all permissions on every request. When running Directus load balanced, you'll need to use a shared
-cache storage (like [Redis](#redis-2) or [Memcache](#memcache-2)) or else disable all caching.
+database or check all permissions on every request. When running Directus load balanced, you'll need to use
+[Redis](#redis-2) or disable all caching.
 
 :::
 
@@ -500,7 +493,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
 | `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`                               |
 | `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `directus-cache`                     |
-| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                                                 | `memory`                             |
+| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                | `memory`                             |
 | `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --                                   |
 | `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false                                |
 | `CACHE_SKIP_ALLOWED`                         | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                 | false                                |
@@ -521,8 +514,8 @@ benefits on quick subsequent reads.
 <sup>[4]</sup> Not affected by the `CACHE_ENABLED` value.
 
 <sup>[5]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
-Instead, you can use the above `CACHE_STORE` environment variable to use either `memcache` or `redis` as the cache
-store. Based on the chosen `CACHE_STORE`, you must also provide the following configurations:
+Instead, you can use the above `CACHE_STORE` environment variable to use `redis` as the cache store. Based on the chosen
+`CACHE_STORE`, you must also provide the following configurations:
 
 ### Memory
 
@@ -543,12 +536,6 @@ Alternatively, you can provide the individual connection parameters:
 | `CACHE_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
 | `CACHE_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
 | `CACHE_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
-
-### Memcache
-
-| Variable         | Description                                                                                                                                                             | Default Value |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `CACHE_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), e.g., `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
 
 ## File Storage
 
