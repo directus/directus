@@ -39,7 +39,9 @@ When a change happens to an item in a collection with an active subscription, it
 {
 	"type": "subscription",
 	"event": "create",
-	"data": [...]
+	"data": [
+		// ...
+	]
 }
 ```
 
@@ -96,7 +98,9 @@ When you receive responses, the same `uid` will be included as a property:
 {
 	"type": "subscription",
 	"event": "create",
-	"data": [...],
+	"data": [
+		// ...
+	],
 	"uid": "any-string-value"
 }
 ```

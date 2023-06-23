@@ -80,6 +80,7 @@ message indicating there was an authentication failure.
 ```js
 connection.addEventListener('open', function () {
 	console.log({ event: 'onopen' });
+
 	connection.send(JSON.stringify({ // [!code ++]
 		type: 'auth', // [!code ++]
 		access_token // [!code ++]

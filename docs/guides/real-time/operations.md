@@ -34,7 +34,9 @@ In return, you will receive a message with the specified item:
 ```json
 {
 	"type": "items",
-	"data": { ... }
+	"data": {
+		// ...
+	}
 }
 ```
 
@@ -50,7 +52,9 @@ it to return all items in the specified collection. When returning multiple item
 	"type": "items",
 	"action": "create",
 	"collection": "your_collection_name",
-	"data": { ... }
+	"data": {
+		// ...
+	}
 }
 ```
 
@@ -59,7 +63,9 @@ In return, you will receive a message with the newly-created item:
 ```json
 {
 	"type": "items",
-	"data": { ... }
+	"data": {
+		// ...
+	}
 }
 ```
 
@@ -76,7 +82,9 @@ The returned payload will also contain an array.
 	"action": "update",
 	"collection": "your_collection_name",
 	"id": "single_item_id",
-	"data": { ... }
+	"data": {
+		// ...
+	}
 }
 ```
 
@@ -86,7 +94,9 @@ Regardless of how many items are updated, the `data` in the returned object will
 {
 	"type": "subscription",
 	"event": "update",
-	"data": [...]
+	"data": [
+		// ...
+	]
 }
 ```
 
@@ -154,7 +164,9 @@ The response will include the same `uid`:
 ```json
 {
 	"type": "items",
-	"data": { ... },
+	"data": {
+		// ...
+	},
 	"uid": "sorted_latest_first"
 }
 ```

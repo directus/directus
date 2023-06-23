@@ -92,7 +92,7 @@ methods: {
 
 Then, ensure these methods are called on form submissions by using the `@submit.prevent` directive:
 
-```html
+```vue-html
 <!-- Login form -->
 <form> // [!code --]
 <form @submit.prevent="loginSubmit"> // [!code ++]
@@ -120,7 +120,7 @@ data() {
 
 Then, bind the login form's inputs to `form`:
 
-```html
+```vue-html
 <form>
 	<label for="email">Email</label>
 	<input type="email" id="email">  // [!code --]
@@ -244,7 +244,7 @@ data() {
 
 Then, bind the login form's inputs to `form` properties:
 
-```html
+```vue-html
 <form @submit.prevent="messageSubmit">
 	<label for="message">Message</label>
 	<input type="text" id="message"> // [!code --]
@@ -285,7 +285,7 @@ if (data.type == 'subscription' && data.event == 'create') {
 
 Update your `<ol>` to display items in the array:
 
-```html
+```vue-html
 <ol>
 	<li v-for="message in messages.history" :key="message.id"> // [!code ++]
 		{{ message.user_created.first_name }}: {{ message.text }} // [!code ++]
@@ -305,6 +305,7 @@ Replace the `console.log()` you created when the subscription is initialized:
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
 	console.log('subscription started'); // [!code --]
+
 	for (const message of data.data) { // [!code ++]
 		this.messages.history.push(message); // [!code ++]
 	} // [!code ++]

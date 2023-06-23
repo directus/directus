@@ -161,6 +161,7 @@ Within the `#new` form submit event handler, send a new message to create the it
 document.querySelector('#new').addEventListener('submit', function (event) {
 	event.preventDefault();
 	const text = event.target.elements.text.value; // [!code ++]
+
 	connection.send( // [!code ++]
 		JSON.stringify({ // [!code ++]
 			type: 'items', // [!code ++]
@@ -169,6 +170,7 @@ document.querySelector('#new').addEventListener('submit', function (event) {
 			data: { text }, // [!code ++]
 		}) // [!code ++]
 	); // [!code ++]
+
 	document.querySelector('#text').value = ''; // [!code ++]
 });
 ```
@@ -211,6 +213,7 @@ Replace the `console.log()` you created when the subscription is initialized:
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
 	console.log('subscription started'); // [!code --]
+
 	for (const message of data.data) { // [!code ++]
 		addMessageToList(message); // [!code ++]
 	} // [!code ++]

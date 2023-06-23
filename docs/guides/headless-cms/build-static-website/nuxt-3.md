@@ -44,6 +44,7 @@ To expose an npm package available globally in your Nuxt project you must create
 
 ```js
 import { Directus } from '@directus/sdk';
+
 const directus = new Directus('https://your-project-id.directus.app');
 
 export default defineNuxtPlugin(() => {
@@ -90,17 +91,18 @@ In `app.vue`, remove `<NuxtWelcome />` and replace it with `<NuxtPage />`. This 
 
 Create a new directory called `pages` and a new file called `index.vue` inside of it.
 
-```js
+```vue
 <template>
-  <h1>{{global.data.title}}</h1>
-  <p>{{global.data.description}}</p>
+	<h1>{{global.data.title}}</h1>
+	<p>{{global.data.description}}</p>
 </template>
 
 <script setup>
-  const { $directus } = useNuxtApp()
-  const { data: global } = await useAsyncData('global', () => {
-    return $directus.items('global').readByQuery()
-  })
+const { $directus } = useNuxtApp()
+
+const { data: global } = await useAsyncData('global', () => {
+  return $directus.items('global').readByQuery()
+})
 </script>
 ```
 
@@ -118,22 +120,24 @@ Public role read access to the new collection. Create 3 items in the new collect
 Inside of `pages`, create a new file called `[slug].vue`. This is a dynamic route, so a single file can be used for all
 of the top-level pages.
 
-```js
+```vue
 <template>
-  <h1>{{page.title}}</h1>
-  <div v-html="page.content"></div>
+	<h1>{{page.title}}</h1>
+	<div v-html="page.content"></div>
 </template>
 
 <script setup>
-  const { $directus } = useNuxtApp()
-  const route = useRoute()
-  const { data: page } = await useAsyncData('page', () => {
-    return $directus.items('pages').readOne(route.params.slug)
-  })
-  if (!page.value) throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found'
-  })
+const { $directus } = useNuxtApp()
+const route = useRoute()
+
+const { data: page } = await useAsyncData('page', () => {
+  return $directus.items('pages').readOne(route.params.slug)
+})
+
+if (!page.value) throw createError({
+  statusCode: 404,
+  statusMessage: 'Page Not Found'
+})
 </script>
 ```
 
@@ -169,19 +173,20 @@ Create 3 items in the posts collection -
 
 Inside of the `pages` directory, create a new subdirectory called `blog` and a new file called `index.vue` inside of it.
 
-```js
+```vue
 <template>
-  <h1>Blog</h1>
+	<h1>Blog</h1>
 </template>
 
 <script setup>
-  const { $directus } = useNuxtApp()
-  const { data: posts } = await useAsyncData('posts', () => {
-    return $directus.items('posts').readByQuery({
-      fields: ['slug', 'title', 'publish_date', 'author.name'],
-      sort: ['-publish_date']
-    })
+const { $directus } = useNuxtApp()
+
+const { data: posts } = await useAsyncData('posts', () => {
+  return $directus.items('posts').readByQuery({
+    fields: ['slug', 'title', 'publish_date', 'author.name'],
+    sort: ['-publish_date']
   })
+})
 </script>
 ```
 
@@ -191,11 +196,11 @@ related `author` item.
 
 Update the `<template>` section:
 
-```html
+```vue
 <template>
 	<h1>Blog</h1>
 	<ul>
-		<li v-for="post in posts.data">
+		<li v-for="post in posts.data" :key="post.id">
 			<NuxtLink :href="`/blog/${post.slug}`">
 				<h2>{{post.title}}</h2>
 			</NuxtLink>
@@ -214,25 +219,27 @@ Visit `http://localhost:3000` and you should now see a blog post listing, with l
 Each blog post links to a page that does not yet exist. In the `pages/blog` directory, create a new file called
 `[slug].vue`:
 
-```js
+```vue
 <template>
-  <img :src="`${$directus.url}/assets/${post.image.filename_disk}?width=600`" alt="">
-  <h1>{{post.title}}</h1>
-  <div v-html="post.content"></div>
+	<img :src="`${$directus.url}/assets/${post.image.filename_disk}?width=600`" alt="" />
+	<h1>{{post.title}}</h1>
+	<div v-html="post.content"></div>
 </template>
 
 <script setup>
-  const { $directus } = useNuxtApp()
-  const route = useRoute()
-  const { data: post } = await useAsyncData('post', () => {
-    return $directus.items('posts').readOne(route.params.slug, {
-      fields: ['*.*']
-    })
+const { $directus } = useNuxtApp()
+const route = useRoute()
+
+const { data: post } = await useAsyncData('post', () => {
+  return $directus.items('posts').readOne(route.params.slug, {
+    fields: ['*.*']
   })
-  if (!post.value) throw createError({
-    statusCode: 404,
-    statusMessage: 'Post Not Found'
-  })
+})
+
+if (!post.value) throw createError({
+  statusCode: 404,
+  statusMessage: 'Post Not Found'
+})
 </script>
 ```
 
@@ -253,7 +260,7 @@ Click on any of the blog post links, and it will take you to a blog post page co
 While not strictly Directus-related, there are now several pages that aren't linked to each other. In `app.vue`, above
 the `<NuxtPage />` component, add a navigation. Don't forget to use your specific page slugs.
 
-```html
+```vue-html
 <nav>
 	<NuxtLink to="/">Home</NuxtLink>
 	<NuxtLink to="/about">About</NuxtLink>

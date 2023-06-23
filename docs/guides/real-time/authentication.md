@@ -98,6 +98,7 @@ When a token expires, the connection will be closed with a `Forbidden` message, 
 
 ```js
 import { createClient } from 'graphql-ws';
+
 const client = createClient({
 	url: 'ws://your-directus-url/graphql',
 	keepAlive: 30000,
@@ -108,6 +109,7 @@ const client = createClient({
 
 ```js
 import { createClient } from 'graphql-ws';
+
 const client = createClient({
 	url: 'ws://your-directus-url/graphql',
 	keepAlive: 30000,
@@ -121,6 +123,7 @@ const client = createClient({
 
 ```js
 import { createClient } from 'graphql-ws';
+
 const client = createClient({
 	url: 'ws://your-directus-url/graphql?access_token=your-access-token',
 	keepAlive: 30000,

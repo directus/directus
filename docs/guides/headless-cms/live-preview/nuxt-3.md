@@ -40,11 +40,11 @@ an item in the new collection, and make sure the Public role has Read access to 
 
 Create an `index.vue` file to load all of the items in the posts collection:
 
-```html
+```vue
 <template>
 	<h1>Blog</h1>
 	<ul>
-		<li v-for="post in posts.data">
+		<li v-for="post in posts.data" :key="post.id">
 			<NuxtLink :href="`/${post.slug}`">
 				<h2>{{ post.title }}</h2>
 			</NuxtLink>
@@ -53,16 +53,17 @@ Create an `index.vue` file to load all of the items in the posts collection:
 </template>
 
 <script setup>
-	const { $directus } = useNuxtApp()
-	const { data: posts } = await useAsyncData('posts', () => {
-	  return $directus.items('posts').readByQuery()
-	})
+const { $directus } = useNuxtApp()
+
+const { data: posts } = await useAsyncData('posts', () => {
+  return $directus.items('posts').readByQuery()
+})
 </script>
 ```
 
 Create a `[id].vue` file that will load for single items in the collection:
 
-```html
+```vue
 <template>
 	<NuxtLink to="/">Home</NuxtLink>
 	<h1>{{ post.title }}</h1>
@@ -70,17 +71,17 @@ Create a `[id].vue` file that will load for single items in the collection:
 </template>
 
 <script setup>
-	const { $directus } = useNuxtApp();
-	const route = useRoute();
+const { $directus } = useNuxtApp();
+const route = useRoute();
 
-	const { data: post } = await useAsyncData('post', () => {
-	  return $directus.items('posts').readOne(route.params.id);
-	});
+const { data: post } = await useAsyncData('post', () => {
+  return $directus.items('posts').readOne(route.params.id);
+});
 
-	if (!post.value) throw createError({
-	  statusCode: 404,
-	  statusMessage: 'Post Not Found'
-	});
+if (!post.value) throw createError({
+  statusCode: 404,
+  statusMessage: 'Post Not Found'
+});
 </script>
 ```
 
@@ -121,26 +122,26 @@ and re-fetches all data dynamically, even if the page is statically-built.
 
 In `[id].vue`, access the new `$preview` helper and re-fetch data if `$preview` is true:
 
-```js
+```vue
 <script setup>
-  const { $directus } = useNuxtApp(); // [!code --]
-  const { $directus, $preview } = useNuxtApp(); // [!code ++]
-  const route = useRoute();
+const { $directus } = useNuxtApp(); // [!code --]
+const { $directus, $preview } = useNuxtApp(); // [!code ++]
+const route = useRoute();
 
-  if($preview) { // [!code ++]
-    const { data: post } = await useAsyncData('post', () => { // [!code ++]
-      return $directus.items('posts').readOne(route.params.id); // [!code ++]
-    }); // [!code ++]
-  } // [!code ++]
+if($preview) { // [!code ++]
+  const { data: post } = await useAsyncData('post', () => { // [!code ++]
+    return $directus.items('posts').readOne(route.params.id); // [!code ++]
+  }); // [!code ++]
+} // [!code ++]
 
-  const { data: post } = await useAsyncData('post', () => {
-    return $directus.items('posts').readOne(route.params.id);
-  });
+const { data: post } = await useAsyncData('post', () => {
+  return $directus.items('posts').readOne(route.params.id);
+});
 
-  if (!post.value) throw createError({
-    statusCode: 404,
-    statusMessage: 'Post Not Found'
-  });
+if (!post.value) throw createError({
+  statusCode: 404,
+  statusMessage: 'Post Not Found'
+});
 </script>
 ```
 

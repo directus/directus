@@ -60,7 +60,7 @@ enabled, pages can be rendered at request time instead of build time.
 
 In your Next.js application, create a route handler file at `app/api/draft/route.ts` and include the following code:
 
-```js
+```ts
 import { draftMode } from 'next/headers';
 
 export async function GET(request: Request) {
@@ -108,7 +108,7 @@ Next.js documentation
 To enable draft mode while fetching post data, modify the `pages.tsx` file located in the `app/posts/[id]` directory
 with the following code:
 
-```js
+```tsx
 import { getPostById, getAllPosts } from '@/lib/directus';
 import { draftMode } from 'next/headers'; // [!code ++]
 
@@ -116,6 +116,7 @@ export default async function Post({ params: { id } }: { params: { id: string } 
 	const { isEnabled } = draftMode(); // [!code ++]
 
 	const post = await getPostById(id);
+
 	if (!post) {
 		return null;
 	}

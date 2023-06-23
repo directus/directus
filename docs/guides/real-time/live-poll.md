@@ -123,6 +123,7 @@ At the bottom of your `<script>`, initialize a pie chart which will have two seg
 
 ```js
 const ctx = document.getElementById('chart');
+
 const chart = new Chart(ctx, {
 	type: 'pie',
 	data: {
@@ -170,6 +171,7 @@ if (data.type == 'subscription' && data.event == 'init') {
 		chart.data.labels.push(item.choice);	// [!code ++]
 		chart.data.datasets[0].data.push(item.count.choice);	// [!code ++]
 	}	// [!code ++]
+
 	chart.update();	// [!code ++]
 }
 ```
@@ -186,12 +188,14 @@ When a new vote is cast, update the chart’s dataset and update it:
 if (data.type == 'subscription' && data.event == 'create') {
 	const vote = data.data[0]; // [!code ++]
 	const itemToUpdate = chart.data.labels.indexOf(vote.choice); // [!code ++]
+
 	if (itemToUpdate !== -1) { // [!code ++]
 		chart.data.datasets[0].data[itemToUpdate]++; // [!code ++]
 	} else { // [!code ++]
 		chart.data.labels.push(vote.choice); // [!code ++]
 		chart.data.datasets[0].data.push(1); // [!code ++]
 	} // [!code ++]
+
 	chart.update(); // [!code ++]
 }
 ```

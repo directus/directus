@@ -24,7 +24,7 @@ Create a new Role called `Users`. Give Create and Read access to the `Messages` 
 
 ### Create a React.js Boilerplate
 
-```js
+```jsx
 function App() {
 	return (
 		<div className="App">
@@ -105,7 +105,7 @@ const handleLoginChange = (event) => {
 
 Then, connect these values to the form input fields:
 
-```js
+```jsx
 <form onSubmit={loginSubmit}>
 	<label htmlFor="email">Email</label>
 	<input type="email" id="email" /> // [!code --]
@@ -171,6 +171,7 @@ As soon as you have successfully authenticated, a message will be sent. When thi
 ```js
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
+
 	if (data.type === 'auth' && data.status === 'ok') { // [!code ++]
 		connectionRef.current.send( // [!code ++]
 			JSON.stringify({ // [!code ++]
@@ -191,6 +192,7 @@ When a subscription is started, a message will be sent to confirm. Add this insi
 ```js {15-17}
 const receiveMessage = (message) => {
 	const data = JSON.parse(message.data);
+
 	if (data.type === 'auth' && data.status === 'ok') {
 		connectionRef.current.send(
 			JSON.stringify({
@@ -203,6 +205,7 @@ const receiveMessage = (message) => {
 			})
 		);
 	}
+
 	if (data.type === 'subscription' && data.event === 'init') { // [!code ++]
 		console.log('subscription started'); // [!code ++]
 	} // [!code ++]
@@ -232,7 +235,7 @@ const handleMessageChange = (event) => {
 
 Then, connect these values to the form input fields:
 
-```js
+```jsx
 <form onSubmit={messageSubmit}>
 	<label htmlFor="message">Message</label>
 	<input type="text" id="message" /> // [!code --]
@@ -253,6 +256,7 @@ const messageSubmit = (event) => {
 			data: { text: newMessage },
 		})
 	);
+
 	setNewMessage('');
 };
 ```
@@ -275,7 +279,7 @@ if (data.type === 'subscription' && data.event === 'create') {
 
 Update your `<ol>` to display items in the array by mapping over `messageHistory`
 
-```js
+```jsx
 <ol>
 	{messageHistory.map((message) => (
 		<li key={message.id}>
@@ -297,6 +301,7 @@ Replace the `console.log()` you created when the subscription is initialized:
 ```js
 if (data.type === 'subscription' && data.event === 'init') {
 	console.log('subscription started'); // [!code --]
+
 	for (const message of data.data) { // [!code ++]
 		setMessageHistory((history) => [...history, message]); // [!code ++]
 	} // [!code ++]
@@ -316,7 +321,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
 
 ## Full Code Sample
 
-```js
+```jsx
 import { useState, useRef } from 'react';
 
 const url = 'wss://your-directus-url/websocket';
@@ -342,6 +347,7 @@ export default function App() {
 
 	const receiveMessage = (message) => {
 		const data = JSON.parse(message.data);
+
 		if (data.type == 'auth' && data.status == 'ok') {
 			connectionRef.current.send(
 				JSON.stringify({
@@ -354,11 +360,13 @@ export default function App() {
 				})
 			);
 		}
+
 		if (data.type === 'subscription' && data.event === 'init') {
 			for (const message of data.data) {
 				setMessageHistory((history) => [...history, message]);
 			}
 		}
+
 		if (data.type === 'subscription' && data.event === 'create') {
 			setMessageHistory((history) => [...history, data.data[0]]);
 		}
@@ -366,6 +374,7 @@ export default function App() {
 
 	const messageSubmit = (event) => {
 		event.preventDefault();
+
 		connectionRef.current.send(
 			JSON.stringify({
 				type: 'items',
@@ -374,6 +383,7 @@ export default function App() {
 				data: { text: newMessage },
 			})
 		);
+
 		setNewMessage('');
 	};
 
