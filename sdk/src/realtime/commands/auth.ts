@@ -12,9 +12,6 @@ export interface RefreshAuth {
 	uid?: string;
 }
 
-export function auth(creds: EmailAuth): string;
-export function auth(creds: TokenAuth): string;
-export function auth(creds: RefreshAuth): string;
 export function auth(creds: EmailAuth | TokenAuth | RefreshAuth) {
 	return JSON.stringify({ ...creds, type: 'auth' });
 }
