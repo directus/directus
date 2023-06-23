@@ -2,7 +2,7 @@
 
 ## Setup
 
-Make sure the containers for the databases are running by running `docker compose up -d` in this folder.
+Make sure the containers for the databases are running by running `docker compose up` in this folder.
 
 Directus needs to be deployed with `pnpm --filter directus deploy --prod dist`. When using the `test:blackbox` script in the workspace root (`pnpm -w run test:blackbox`) this is already done.
 
