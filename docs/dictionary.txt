@@ -16,6 +16,7 @@
 (C|c)loudinary
 (C|c)loudinary's
 (C|c)odebase
+(C|c)omposable
 (C|c)onfigs?
 (C|c)ustomizable
 (D|d)atacenter
@@ -124,7 +125,6 @@ CMS
 CockroachDB
 CodeDeploy
 CommonJS
-composable
 composables
 config-options
 CORS
