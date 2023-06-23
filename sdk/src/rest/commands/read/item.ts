@@ -12,7 +12,7 @@ export type ReadItemOutput<
 export const readItem =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		id: PrimaryKey,
+		key: PrimaryKey,
 		query?: TQuery
 	): RestCommand<ReadItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
@@ -23,7 +23,7 @@ export const readItem =
 		}
 
 		return {
-			path: `/items/${_collection}/${id}`,
+			path: `/items/${_collection}/${key}`,
 			params: queryToParams(query ?? {}),
 			method: 'GET',
 		};
