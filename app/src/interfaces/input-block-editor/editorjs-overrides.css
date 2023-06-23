@@ -18,19 +18,19 @@
 
 .codex-editor .ce-toolbar__plus svg,
 .codex-editor .ce-toolbar__settings-btn svg {
-	fill: var(--foreground-normal) !important;
+	color: var(--foreground-normal) !important;
 }
 
 .codex-editor .cdx-settings-button svg,
 .codex-editor .ce-inline-toolbar__dropdown svg,
 .codex-editor .ce-inline-toolbar .ce-inline-tool svg,
 .codex-editor .ce-settings .ce-settings__button svg {
-	fill: var(--v-list-color) !important;
+	color: var(--v-list-color) !important;
 }
 
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
 .codex-editor .ce-settings .cdx-settings-button--active svg {
-	fill: var(--primary) !important;
+	color: var(--primary) !important;
 }
 
 .codex-editor .cdx-settings-button--active {
@@ -300,7 +300,13 @@
 	--front-color: var(--primary);
 	--border-color: var(--border-normal);
 }
-
+.codex-editor .image-tool--withBackground .image-tool__image-picture {
+	max-width: 60% !important;
+	margin: 0 auto !important;
+}
+.codex-editor .image-tool.image-tool--stretched {
+	margin: 0 -22px;
+}
 /* Personality */
 
 .codex-editor .cdx-personality__description {
