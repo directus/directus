@@ -22,7 +22,7 @@ The following composables are available/in progress:
 - `auth()` authentication functions [wip]
   - adds `.login({ email, password })`, `.logout()`, `.refresh()` on the client
 - `realtime()` websocket connectivity [wip]
-  - adds `.subscribe(...)`, `.message(...)` on the client
+  - adds `.subscribe(...)`, `.message(...)`, `.receive((message) => {})` on the client
 - `subscription()` GraphQL Subscriptions [wip]
   - not sure yet but something like `.subscription()`
 
@@ -49,3 +49,46 @@ const gqlResult = await client.query<OutputType>(`
 `);
 
 ```
+
+## Real-Time
+
+The `realtime()` extension allows you to work with a Directus REST WebSocket.
+
+Subscribing to updates:
+```ts
+const client = useDirectus<Schema>('https://api.directus.io')
+    .use(realtime({
+		    authMode: 'public',
+    }));
+
+const { subscription, unsubscribe } = await client.subscribe('test', {
+	  query: { fields: ['*'] },
+});
+
+for await (const item of subscription) {
+	  console.log('subscription', { item });
+}
+
+// unsubscribe()
+```
+
+Receive/Send messages:
+```ts
+const client = useDirectus<Schema>('https://api.directus.io')
+    .use(realtime({
+		    authMode: 'public',
+    }));
+
+const stop = client.receive((message) => {
+    if ('type' in message && message['type'] === 'pong') {
+        console.log('PONG received');
+        stop();
+    }
+});
+
+client.message({ type: 'ping' });
+```
+
+## Authentication
+
+[WIP]
