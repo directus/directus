@@ -1,6 +1,7 @@
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
@@ -16,7 +17,6 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
-import Joi from 'joi';
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -106,7 +106,7 @@ export class UsersService extends ItemsService {
 			const { error } = schema.validate(email);
 
 			if (error) {
-				throw new FailedValidationError(joiValidationErrorItemToErrorExtensions(error));
+				throw new FailedValidationError(joiValidationErrorItemToErrorExtensions(error.details![0]!));
 			}
 		}
 	}
