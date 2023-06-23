@@ -16,6 +16,7 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+import Joi from 'joi';
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -98,6 +99,18 @@ export class UsersService extends ItemsService {
 		}
 	}
 
+	private validateEmails(emails: string[]) {
+		const schema = Joi.string().email().required();
+
+		for (const email of emails) {
+			const { error } = schema.validate(email);
+
+			if (error) {
+				throw new FailedValidationError(joiValidationErrorItemToErrorExtensions(error));
+			}
+		}
+	}
+
 	private async checkRemainingAdminExistence(excludeKeys: PrimaryKey[]) {
 		// Make sure there's at least one admin user left after this deletion is done
 		const otherAdminUsers = await this.knex
@@ -176,6 +189,7 @@ export class UsersService extends ItemsService {
 
 		try {
 			if (emails.length) {
+				this.validateEmails(emails);
 				await this.checkUniqueEmails(emails);
 			}
 
@@ -256,6 +270,7 @@ export class UsersService extends ItemsService {
 					});
 				}
 
+				this.validateEmails([data['email']]);
 				await this.checkUniqueEmails([data['email']], keys[0]);
 			}
 
