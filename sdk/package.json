@@ -18,7 +18,8 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm,cjs --dts --minify",
 		"debug": "tsx src/debug.ts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch"
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"playground": "vite playground/index.html"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
@@ -29,6 +30,7 @@
 		"tsup": "6.7.0",
 		"tsx": "3.12.7",
 		"typescript": "5.0.4",
+		"vite": "4.3.7",
 		"vitest": "0.31.1",
 		"ws": "8.13.0"
 	},
