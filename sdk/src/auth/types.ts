@@ -1,13 +1,20 @@
-export interface AuthenticationConfig {
-	mode: 'json' | 'cookie';
+export type AuthTokenMode = 'cookie' | 'json';
+
+export interface AuthenticationConfigJson {
 	storage?: {
-		get: (name: string) => string | undefined;
-		set: (name: string, value: string) => void;
+		get: (name: string) => Promise<string | undefined>;
+		set: (name: string, value: string) => Promise<void>;
 	};
 }
 
 export interface AuthenticationClient<_Schema extends object> {
-	login(creds: { email: string; password: string }): Promise<unknown>;
+	login(credentials: AuthenticationCredentials): Promise<void>;
 	refresh(): Promise<unknown>;
 	logout(): Promise<unknown>;
+}
+
+export interface AuthenticationCredentials {
+	email: string;
+	password: string;
+	otp?: number;
 }
