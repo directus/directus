@@ -1974,7 +1974,7 @@ operations:
     url_placeholder: https://example.com/example
     method: Método
     data: Dados
-    headers: Cabeçalhos	
+    headers: Cabeçalhos
     header: Cabeçalho
     header_placeholder: Autorização...
     value_placeholder: Portador eyJhbGciOi...
