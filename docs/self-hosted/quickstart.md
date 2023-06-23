@@ -11,13 +11,7 @@ description:
 
 You should have [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
-<<<<<<< HEAD It can be easy to under-provision resources to run a self-hosted instance of Directus. For Directus'
-container resources, the required minimum system requirements are 1x 0.25 vCPU / 512 MB, although the recommended
-minimum is 2x 1 vCPU / 2GB. ||||||| 1bbb8e12e It can be easy to under-provision resources to run a self-hosted instance
-of Directus. For Directus' container resources, the required minimum system requirements are 1x 0.25 vCPU / 512 MB,
-although the recommended minimum is 2x 1 vCPU / 2GB. ======= :::info What Is Docker?
-
-> > > > > > > main
+:::info What Is Docker?
 
 Docker is a developer tool that allows software-creators to distribute their work along with all dependencies and
 required environment settings. This means that applications can run reliably and consistently, making it the perfect way
