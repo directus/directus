@@ -128,27 +128,11 @@ const result = await client.request(readItem('articles', 5));
 
 #### Read all items
 
-JavaScript
-
 ```js
 import { useDirectus, readItems } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/composable';
 
 const client = useDirectus('http://directus.example.com').use(rest());
-const result = await client.request(readItems('articles'));
-```
-
-TypeScript
-
-```ts
-import { useDirectus, readItems } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/composable';
-
-type Schema = {
-	articles: { title: string; content: string };
-};
-
-const client = useDirectus<Schema>('http://directus.example.com').use(rest());
 const result = await client.request(readItems('articles'));
 ```
 
