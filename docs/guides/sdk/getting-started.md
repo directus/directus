@@ -63,17 +63,15 @@ The client starts as an empty wrapper without any functionality. To add features
 
 For example, to create a client with REST or GraphQL support, use the following:
 
-```ts
+```js
 import { useDirectus } from '@directus/sdk@beta';
 import { rest, graphql } from '@directus/sdk@beta/composable';
 
-type Schema = {};
-
 // Client with REST support
-const client = useDirectus<Schema>('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com').use(rest());
 
 // Client with GraphQL support
-const client = useDirectus<Schema>('http://directus.example.com').use(graphql());
+const client = useDirectus('http://directus.example.com').use(graphql());
 ```
 
 ## Authentication
@@ -128,27 +126,11 @@ const result = await client.request(readItem('articles', 5));
 
 #### Read all items
 
-JavaScript
-
 ```js
 import { useDirectus, readItems } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/composable';
 
 const client = useDirectus('http://directus.example.com').use(rest());
-const result = await client.request(readItems('articles'));
-```
-
-TypeScript
-
-```ts
-import { useDirectus, readItems } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/composable';
-
-type Schema = {
-	articles: { title: string; content: string };
-};
-
-const client = useDirectus<Schema>('http://directus.example.com').use(rest());
 const result = await client.request(readItems('articles'));
 ```
 
