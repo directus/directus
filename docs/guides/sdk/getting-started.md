@@ -165,11 +165,12 @@ const result = await client.query<Article[]>(`
 
 You have successfully created a composable client using the Directus SDK.
 
-As you progress, you may want to explore other available features like authentication, real-time updates, and GraphQL
-subscriptions. Keep an eye on our documentation as we continue to enhance and expand the SDK with new features and
-improvements.
+As you progress, you may want to explore other available features like real-time updates, and GraphQL subscriptions.
 
-If you encounter any issues or have questions, don't hesitate to reach out to us in our [Discord community](https://directus.chat/).
+Keep an eye on our documentation as we continue to enhance and expand the SDK.
+
+If you encounter any issues or have questions, don't hesitate to reach out to us in our
+[Discord community](https://directus.chat/).
 
 ## Backward Compatibility
 
