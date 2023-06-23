@@ -12,6 +12,12 @@ readTime: 14 min read
 > Node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
 > storing state. Advanced customizations are available.
 
+<Card
+  title="Explore the new JavaScript SDK"
+  h="2"
+  text="The new SDK is a significant overhaul of the previous version."
+  url="/guides/sdk/getting-started" />
+
 ## Installation
 
 ```bash
