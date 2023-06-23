@@ -6,7 +6,7 @@ export type ReadItemsOutput<
 	Schema extends object,
 	Collection extends keyof Schema,
 	TQuery extends Query<Schema, Schema[Collection]>
-> = ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>;
+> = ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>[];
 
 export const readItems =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
