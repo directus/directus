@@ -241,7 +241,7 @@ return more in-depth information about the current health status of the system.
 {
 	"status": "ok"
 }
-````
+```
 
 ```json [Admin Response]
 {

@@ -491,7 +491,7 @@ DELETE /items/articles
 ```json
 // Array of primary keys
 [15, 16, 21]
-````
+```
 
 ```json
 // Object containing keys
