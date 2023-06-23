@@ -11,9 +11,9 @@ Learn how to use the new Directus JavaScript SDK to easily access and manipulate
 
 This SDK is a significant overhaul of the previous version, introducing new features and improvements.
 
-- **TypeScript first:** It is now written in TypeScript, providing more robust and type-safe development experience.
-- **Modular architecture:** The SDK is now split into separate modules, giving you granular control over the features
-  that match your product needs.
+- **TypeScript first:** Written in TypeScript, the SDK provides a robust and type-safe development experience
+- **Modular architecture:** The SDK is split into separate modules, giving you granular control over which features to
+  include and which can be pruned at build-time
 - **Lightweight and dependency-free:** It does not require external libraries, ensuring a lighter bundle and streamlined
   experience.
 
@@ -28,16 +28,16 @@ The new SDK is in Beta, so we recommend using it in a staging environment first 
 Install the SDK using the following command:
 
 ```js
-npm install @directus/sdk
+npm install @directus/sdk@beta
 ```
 
 ## Basic Usage
 
-Create the directus client using the `useDirectus` hook from `@directus/sdk`. The client gives you access to your
+Create the directus client using the `useDirectus` hook from `@directus/sdk@beta`. The client gives you access to your
 Directus project and data.
 
 ```ts
-import { useDirectus } from '@directus/sdk';
+import { useDirectus } from '@directus/sdk@beta';
 
 // your Directus collection schema
 type Schema = {
@@ -61,11 +61,11 @@ The client starts as an empty wrapper without any functionality. To add features
 - `realtime()`: WebSocket connectivity, adds `.subscribe(...)` and `.message(...)` to the client. (work in progress).
 - `subscription()`: GraphQL Subscriptions, adds `.subscription()` to the client. (work in progress).
 
-For example, to create a client with REST and GraphQL support, use the following:
+For example, to create a client with REST or GraphQL support, use the following:
 
 ```ts
-import { useDirectus } from '@directus/sdk';
-import { rest, graphql } from '@directus/sdk/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { rest, graphql } from '@directus/sdk@beta/composable';
 
 type Schema = {};
 
@@ -83,8 +83,8 @@ Use the `auth()` composable to authenticate with the client.
 For example, to login to your directus instance, invoke the `login` method
 
 ```js
-import { useDirectus } from '@directus/sdk';
-import { auth } from '@directus/sdk/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { auth } from '@directus/sdk@beta/composable';
 
 const client = useDirectus('http://directus.example.co').use(auth());
 await client.login({ email, password });
@@ -98,13 +98,25 @@ To query or update your collection in Directus, use the `rest()` or `graphql()` 
 
 Add the `rest()` composable to the client, this enables the `.request(...)` method to query the collection.
 
-For example, say you want to make a request to an `articles` collection.
+For example, to make a request to an `articles` collection.
 
 #### Read a single item
 
+JavaScript
+
+```js
+import { useDirectus, readItem } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/composable';
+
+const client = useDirectus('http://directus.example.com').use(rest());
+const result = await client.request(readItem('articles', 5));
+```
+
+TypeScript
+
 ```ts
-import { useDirectus, readItem } from '@directus/sdk';
-import { rest } from '@directus/sdk/composable';
+import { useDirectus, readItem } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/composable';
 
 type Schema = {
 	articles: { title: string; content: string };
@@ -116,9 +128,21 @@ const result = await client.request(readItem('articles', 5));
 
 #### Read all items
 
+JavaScript
+
+```js
+import { useDirectus, readItems } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/composable';
+
+const client = useDirectus('http://directus.example.com').use(rest());
+const result = await client.request(readItems('articles'));
+```
+
+TypeScript
+
 ```ts
-import { useDirectus, readItems } from '@directus/sdk';
-import { rest } from '@directus/sdk/composable';
+import { useDirectus, readItems } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/composable';
 
 type Schema = {
 	articles: { title: string; content: string };
@@ -128,6 +152,48 @@ const client = useDirectus<Schema>('http://directus.example.com').use(rest());
 const result = await client.request(readItems('articles'));
 ```
 
+#### Read specific fields
+
+```js
+import { useDirectus, readItems } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/composable';
+
+const client = useDirectus('http://directus.example.com').use(rest());
+const result = await client.request(
+	readItems('articles', {
+		fields: ['id', 'title'],
+	})
+);
+```
+
+#### Read all fields
+
+```js
+import { useDirectus, readItems } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/composable';
+
+const client = useDirectus('http://directus.example.com').use(rest());
+const result = await client.request(
+	readItems('articles', {
+		fields: ['*'],
+	})
+);
+```
+
+#### Read nested fields
+
+```js
+import { useDirectus, readItems } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/composable';
+
+const client = useDirectus('http://directus.example.com').use(rest());
+const result = await client.request(
+	readItems('articles', {
+		fields: ['*', { author: ['*'] }],
+	})
+);
+```
+
 ### Using GraphQL
 
 Add the `graphql()` composable to the client, this enables the `.query(...)` method to query the collection.
@@ -135,8 +201,8 @@ Add the `graphql()` composable to the client, this enables the `.query(...)` met
 For example, say you want to make a request to an `articles` collection.
 
 ```ts
-import { useDirectus } from '@directus/sdk';
-import { graphql } from '@directus/sdk/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { graphql } from '@directus/sdk@beta/composable';
 
 type Article = {
 	title: string;
@@ -176,10 +242,3 @@ If you encounter any issues or have questions, don't hesitate to reach out to us
 
 The older Directus SDK will still work and your existing applications that use the older version will continue to
 function without any issues.
-
-:::tip Migrate to the new SDK
-
-We recommended that you migrate to the new SDK. This way, you can take advantage of the new features and improvements
-that this SDK offers.
-
-:::

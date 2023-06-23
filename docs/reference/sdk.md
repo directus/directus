@@ -13,9 +13,9 @@ readTime: 14 min read
 > storing state. Advanced customizations are available.
 
 <Card
-  title="Explore the new JavaScript SDK"
+  title="Explore the New JavaScript SDK (beta)"
   h="2"
-  text="The new SDK is a significant overhaul of the previous version."
+  text="Learn how to compose a Directus client using our new modular SDK."
   url="/guides/sdk/getting-started" />
 
 ## Installation
