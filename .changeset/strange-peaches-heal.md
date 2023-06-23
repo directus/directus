@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Flushed cache when applying diff
+Ensured all caches are flushed when applying diff
