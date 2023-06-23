@@ -498,7 +498,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   app:
     devDependencies:
@@ -895,6 +895,9 @@ importers:
       node-fetch:
         specifier: 3.3.1
         version: 3.3.1
+      typedoc-plugin-frontmatter:
+        specifier: ^0.0.2
+        version: 0.0.2
     devDependencies:
       '@directus/format-title':
         specifier: 10.0.0
@@ -974,7 +977,7 @@ importers:
         version: 2.3.0(rollup@3.22.0)(vite@4.3.7)
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/composables:
     dependencies:
@@ -1017,7 +1020,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/constants:
     dependencies:
@@ -1066,7 +1069,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/data-driver-postgres:
     dependencies:
@@ -1106,7 +1109,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/data-sql:
     devDependencies:
@@ -1136,7 +1139,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/exceptions:
     devDependencies:
@@ -1160,7 +1163,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/extensions-sdk:
     dependencies:
@@ -1251,7 +1254,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/pressure:
     dependencies:
@@ -1276,7 +1279,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/random:
     devDependencies:
@@ -1297,7 +1300,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/release-notes-generator:
     dependencies:
@@ -1328,7 +1331,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/schema:
     dependencies:
@@ -1378,7 +1381,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-azure:
     dependencies:
@@ -1406,7 +1409,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1437,7 +1440,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1465,7 +1468,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-local:
     dependencies:
@@ -1490,7 +1493,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/storage-driver-s3:
     dependencies:
@@ -1527,7 +1530,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/stores:
     dependencies:
@@ -1583,7 +1586,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   packages/tsconfig: {}
 
@@ -1722,7 +1725,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
 
   sdk:
     devDependencies:
@@ -1752,7 +1755,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1
       ws:
         specifier: 8.13.0
         version: 8.13.0
@@ -6002,26 +6005,26 @@ packages:
       react: 18.0.0
     dev: true
 
-  /@microsoft/api-extractor-model@7.27.3:
-    resolution: {integrity: sha512-fSFvw7otYHduOkyshjTbapKKgwF8bgquVHvgF8VgeKtMYvqXkoaj7W6VcM7PNY7E2bbblhUgC4XNdqZLD4SJGw==}
+  /@microsoft/api-extractor-model@7.27.2:
+    resolution: {integrity: sha512-JWhSfEb4UMYZgI4JsJOws1DjQrb7BaoXoWQV5XW23MWRn1krHVmRHky82Dby5rQPHdr/BBKvEjZV6joFmaGU4Q==}
     dependencies:
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 3.59.4
+      '@rushstack/node-core-library': 3.59.3
     transitivePeerDependencies:
       - '@types/node'
     dev: true
 
-  /@microsoft/api-extractor@7.35.4:
-    resolution: {integrity: sha512-E/DIIlgu1ZW+AD+Y0UuVe/30rO+Km0CRkDU1aOKQntwKtv/+FodtRAUvzU/vAxq5lQHSsy6jJErLiXR6G3fupA==}
+  /@microsoft/api-extractor@7.35.3:
+    resolution: {integrity: sha512-Psh6rZB7BeJznIKJd1+xPhM0AQVXLyYHxIz5ezN7Whu3DIHfx/iRJZLFvMdshpB046ir/JDYBciuYdQbArloHQ==}
     hasBin: true
     dependencies:
-      '@microsoft/api-extractor-model': 7.27.3
+      '@microsoft/api-extractor-model': 7.27.2
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2
-      '@rushstack/node-core-library': 3.59.4
-      '@rushstack/rig-package': 0.3.21
-      '@rushstack/ts-command-line': 4.15.1
+      '@rushstack/node-core-library': 3.59.3
+      '@rushstack/rig-package': 0.3.20
+      '@rushstack/ts-command-line': 4.15.0
       colors: 1.2.5
       lodash: 4.17.21
       resolve: 1.22.2
@@ -6764,8 +6767,8 @@ packages:
       picomatch: 2.3.1
       rollup: 3.22.0
 
-  /@rushstack/node-core-library@3.59.4:
-    resolution: {integrity: sha512-YAKJDC6Mz/KA1D7bvB88WaRX3knt/ZuLzkRu5G9QADGSjLtvTWzCNCytRF2PCSaaHOZaZsWul4F1KQdgFgUDqA==}
+  /@rushstack/node-core-library@3.59.3:
+    resolution: {integrity: sha512-OGk0nQc+SvDkn+IQN16co691A/96gPoRIoWdIlpUds+sYPAGWdTcNVjKMwFOAsCSASqOeF2lh1GdPtWoWJCkPQ==}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
@@ -6781,15 +6784,15 @@ packages:
       z-schema: 5.0.5
     dev: true
 
-  /@rushstack/rig-package@0.3.21:
-    resolution: {integrity: sha512-6KPBuZYP/b9U0Qwy1J4vjYtXvLavdmVT7mMelErfqqZ3P/ywoxlFITGr9ZbqD1zmfIVrIfC2jrM6gfm7OHPRhQ==}
+  /@rushstack/rig-package@0.3.20:
+    resolution: {integrity: sha512-XemFRFbH9FOk1Es1kTjrYydenf3hXtrV3xxMCEWPuOSn2Lcll/dsLzEULbhCL0Nf5nGMe52ewEiVtX3odd5Ukg==}
     dependencies:
       resolve: 1.22.2
       strip-json-comments: 3.1.1
     dev: true
 
-  /@rushstack/ts-command-line@4.15.1:
-    resolution: {integrity: sha512-EL4jxZe5fhb1uVL/P/wQO+Z8Rc8FMiWJ1G7VgnPDvdIt5GVjRfK7vwzder1CZQiX3x0PY6uxENYLNGTFd1InRQ==}
+  /@rushstack/ts-command-line@4.15.0:
+    resolution: {integrity: sha512-Xl1Xc8d89ioJ6AbOQsSIPyYvrQPqmGG+YrqUZKYEDenZtKq57xuFbBJya9TXgAWSB+uVRmDYYd9ogu6WTwRjCQ==}
     dependencies:
       '@types/argparse': 1.0.38
       argparse: 1.0.10
@@ -8648,7 +8651,7 @@ packages:
       magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.3
-      vitest: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+      vitest: 0.31.1
     dev: true
 
   /@vitest/expect@0.31.1:
@@ -14359,11 +14362,11 @@ packages:
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
       is-potential-custom-element-name: 1.0.1
-      nwsapi: 2.2.5
+      nwsapi: 2.2.4
       parse5: 7.1.2
       saxes: 6.0.0
       symbol-tree: 3.2.4
-      tough-cookie: 4.1.3
+      tough-cookie: 4.1.2
       w3c-xmlserializer: 4.0.0
       webidl-conversions: 7.0.0
       whatwg-encoding: 2.0.0
@@ -16350,8 +16353,8 @@ packages:
     resolution: {integrity: sha512-/fYevVkXRcyBiZDg6yzZbm0RuaD6i0qRfn8yr+6D0KgBMOndFPxuW10qCHpzs50nN8qKuv78k8MuotZhcVX6Pw==}
     dev: true
 
-  /nwsapi@2.2.5:
-    resolution: {integrity: sha512-6xpotnECFy/og7tKSBVmUNft7J3jyXAka4XvG6AUhFWRz+Q/Ljus7znJAA3bxColfQLdS+XsjoodtJfCgeTEFQ==}
+  /nwsapi@2.2.4:
+    resolution: {integrity: sha512-NHj4rzRo0tQdijE9ZqAx6kYDcoRwYwSYzCA8MY3JzfxlrvEU0jhnhJT9BhqhJs7I/dKcrDm6TyulaRqZPIhN5g==}
     dev: true
 
   /oauth-sign@0.9.0:
@@ -20150,8 +20153,8 @@ packages:
     dev: false
     optional: true
 
-  /tough-cookie@4.1.3:
-    resolution: {integrity: sha512-aX/y5pVRkfRnfmuX+OdbSdXvPe6ieKX/G2s7e98f4poJHnqH3281gDPm/metm6E/WRamfx7WC4HUqkWHfQHprw==}
+  /tough-cookie@4.1.2:
+    resolution: {integrity: sha512-G9fqXWoYFZgTc2z8Q5zaHy/vJMjm+WV0AkAeHxVCQiEB1b+dGvWzFW6QV07cY5jQ5gRkeid2qIkzkxUnmoQZUQ==}
     engines: {node: '>=6'}
     dependencies:
       psl: 1.9.0
@@ -20434,6 +20437,12 @@ packages:
 
   /typedarray@0.0.7:
     resolution: {integrity: sha512-ueeb9YybpjhivjbHP2LdFDAjbS948fGEPj+ACAMs4xCMmh72OCOMQWBQKlaN4ZNQ04yfLSDLSx1tGRIoWimObQ==}
+
+  /typedoc-plugin-frontmatter@0.0.2:
+    resolution: {integrity: sha512-xPw76L4S4/zbd01Tt89CVsJdPiMxztlmkXaA2Wu/l0KEbIrsqSHPv/sGsPI1O+pkZrSpaFr94qLA3ls1MrpKKw==}
+    dependencies:
+      yaml: 2.2.2
+    dev: false
 
   /typedoc-plugin-markdown@4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7):
     resolution: {integrity: sha512-ZOcLsJoGN4QI5x1iS2M5lj6bA3MABf6hA183W1KebbxcBA+SFr+XIu73Uovv3SiwqPa+viBftLzkZlLyA6J9bg==}
@@ -20952,6 +20961,27 @@ packages:
       - terser
     dev: true
 
+  /vite-node@0.31.1(@types/node@20.2.0):
+    resolution: {integrity: sha512-BajE/IsNQ6JyizPzu9zRgHrBwczkAs0erQf/JRpgTIESpKvNj9/Gd0vxX905klLkb0I0SJVCKbdrl5c6FnqYKA==}
+    engines: {node: '>=v14.18.0'}
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
+      mlly: 1.2.1
+      pathe: 1.1.0
+      picocolors: 1.0.0
+      vite: 4.3.7(@types/node@20.2.0)(sass@1.62.1)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
   /vite-node@0.31.1(@types/node@20.2.0)(sass@1.62.1):
     resolution: {integrity: sha512-BajE/IsNQ6JyizPzu9zRgHrBwczkAs0erQf/JRpgTIESpKvNj9/Gd0vxX905klLkb0I0SJVCKbdrl5c6FnqYKA==}
     engines: {node: '>=v14.18.0'}
@@ -20980,9 +21010,9 @@ packages:
       vite: '>=2.9.0'
     dependencies:
       '@babel/parser': 7.21.8
-      '@microsoft/api-extractor': 7.35.4
+      '@microsoft/api-extractor': 7.35.3
       '@rollup/pluginutils': 5.0.2(rollup@3.22.0)
-      '@rushstack/node-core-library': 3.59.4
+      '@rushstack/node-core-library': 3.59.3
       debug: 4.3.4
       fast-glob: 3.2.12
       fs-extra: 10.1.0
@@ -21055,6 +21085,71 @@ packages:
       - sass
       - stylus
       - sugarss
+      - terser
+    dev: true
+
+  /vitest@0.31.1:
+    resolution: {integrity: sha512-/dOoOgzoFk/5pTvg1E65WVaobknWREN15+HF+0ucudo3dDG/vCZoXTQrjIfEaWvQXmqScwkRodrTbM/ScMpRcQ==}
+    engines: {node: '>=v14.18.0'}
+    hasBin: true
+    peerDependencies:
+      '@edge-runtime/vm': '*'
+      '@vitest/browser': '*'
+      '@vitest/ui': '*'
+      happy-dom: '*'
+      jsdom: '*'
+      playwright: '*'
+      safaridriver: '*'
+      webdriverio: '*'
+    peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
+      '@vitest/browser':
+        optional: true
+      '@vitest/ui':
+        optional: true
+      happy-dom:
+        optional: true
+      jsdom:
+        optional: true
+      playwright:
+        optional: true
+      safaridriver:
+        optional: true
+      webdriverio:
+        optional: true
+    dependencies:
+      '@types/chai': 4.3.5
+      '@types/chai-subset': 1.3.3
+      '@types/node': 20.2.0
+      '@vitest/expect': 0.31.1
+      '@vitest/runner': 0.31.1
+      '@vitest/snapshot': 0.31.1
+      '@vitest/spy': 0.31.1
+      '@vitest/utils': 0.31.1
+      acorn: 8.8.2
+      acorn-walk: 8.2.0
+      cac: 6.7.14
+      chai: 4.3.7
+      concordance: 5.0.4
+      debug: 4.3.4
+      local-pkg: 0.4.3
+      magic-string: 0.30.0
+      pathe: 1.1.0
+      picocolors: 1.0.0
+      std-env: 3.3.3
+      strip-literal: 1.0.1
+      tinybench: 2.5.0
+      tinypool: 0.5.0
+      vite: 4.3.7(@types/node@20.2.0)(sass@1.62.1)
+      vite-node: 0.31.1(@types/node@20.2.0)
+      why-is-node-running: 2.2.2
+    transitivePeerDependencies:
+      - less
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
       - terser
     dev: true
 
