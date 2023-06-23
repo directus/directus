@@ -107,7 +107,7 @@ module.exports = {
 	overrides: [
 		// TypeScript & Vue files
 		{
-			files: ['*.ts?(x)', '*.vue'],
+			files: ['*.ts', '*.vue'],
 			parser: 'vue-eslint-parser',
 			parserOptions: {
 				parser: '@typescript-eslint/parser',
@@ -122,47 +122,6 @@ module.exports = {
 				...tsRules,
 				...vueRules,
 			},
-		},
-		// Code blocks in Markdown files
-		{
-			files: ['**/*.md'],
-			plugins: ['markdown'],
-			processor: 'markdown/markdown',
-		},
-		{
-			files: ['**/*.md/**'],
-			plugins: ['disable-autofix'],
-			rules: {
-				'prettier/prettier': 'off',
-				'disable-autofix/prettier/prettier': ['warn', {}, { forceFormatExtracted: true }],
-			},
-		},
-		{
-			files: ['**/*.md/*.{js,ts,vue,jsx,tsx}'],
-			rules: {
-				'no-console': 'off',
-				'no-undef': 'off',
-				'no-unused-vars': 'off',
-				'@typescript-eslint/no-unused-vars': 'off',
-			},
-		},
-		{
-			files: ['**/*.md/*.{jsx,tsx}'],
-			extends: ['plugin:react/jsx-runtime'],
-			parserOptions: {
-				ecmaFeatures: {
-					jsx: true,
-				},
-			},
-			settings: {
-				react: {
-					version: '18',
-				},
-			},
-		},
-		{
-			files: ['**/*.md/*.{json?(c|5),md,html}'],
-			parser: 'eslint-parser-plain',
 		},
 	],
 };

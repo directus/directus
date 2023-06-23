@@ -5,7 +5,7 @@
 	"proseWrap": "always",
 	"overrides": [
 		{
-			"files": "**/*.md",
+			"files": "docs/**/*.md",
 			"options": {
 				"embeddedLanguageFormatting": "off"
 			}
