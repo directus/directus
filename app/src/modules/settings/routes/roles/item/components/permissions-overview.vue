@@ -65,7 +65,6 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
-import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Permission } from '@directus/types';
 import { orderBy } from 'lodash';
