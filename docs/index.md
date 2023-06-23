@@ -34,37 +34,37 @@ layout: home
      <Card
         title="Database APIs"
         text="Use our dynamic REST and GraphQL APIs to access and efficiently manage your data."
-        url="https://www.google.com/"
+        url="/reference/introduction"
         icon="api"
       />
     <Card
         title="Data Model"
         text="Structure and organize items in your collection, while also establishing relationships between them."
-        url="https://www.google.com/"
+        url="/app/data-model"
         icon="database"
       />
        <Card
         title="Authentication"
         text="Use our powerful and simple authentication features in your own applications."
-        url="https://www.google.com/"
+        url="/reference/authentication"
         icon="lock"
       />
        <Card
         title="Extensions"
         text="Build, modify or expand any feature needed for your project with our flexible extensions."
-        url="https://www.google.com/"
+        url="/extensions/introduction"
         icon="extension"
       />
       <Card
         title="Real Time"
         text="Access real-time data in your project with WebSockets, backed by your database."
-        url="https://www.google.com/"
+        url="/guides/real-time/getting-started"
         icon="bolt"
       />
        <Card
         title="Flows"
         text="Create custom, event-driven data processing and task automation workflows."
-        url="https://www.google.com/"
+        url="/app/flows"
         icon="flowsheet"
       />
     </template>
@@ -72,37 +72,37 @@ layout: home
       <Card
         title="Content Module"
         text="Empower your entire team to interact with and manage items in your collection."
-        url="https://www.google.com/"
+        url="/user-guide/content-module/content"
         icon="deployed_code"
       />
       <Card
         title="User Management"
         text="Learn about adding users, granular roles, and access permissions to your projects."
-        url="https://www.google.com/"
+        url="/user-guide/user-management/users-roles-permissions"
         icon="group"
       />
        <Card
         title="File Storage"
         text="Store and retrieve files, use storage adapters, and learn about media transformations."
-        url="https://www.google.com/"
+        url="/user-guide/file-library/files"
         icon="folder_copy"
       />
        <Card
         title="Insights Dashboard"
         text="Build custom analytics dashboards directly from your data to gain meaningful business insights. "
-        url="https://www.google.com/"
+        url="/user-guide/insights/dashboards"
         icon="insights"
       />
        <Card
         title="Translation"
         text="Easily manage multilingual content, making your projects accessible and user-friendly for a global audience."
-        url="https://www.google.com/"
+        url="/user-guide/content-module/translation-strings"
         icon="g_translate"
       />
        <Card
         title="Directus Cloud"
         text="Explore key aspects of Directus Cloud including the dashboard, projects, and members."
-        url="https://www.google.com/"
+        url="/user-guide/cloud/overview"
         icon="cloud"
       />
     </template>
