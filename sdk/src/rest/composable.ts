@@ -3,11 +3,11 @@ import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand } from './types.js';
 
-export interface RestConfig {
-	useSearch?: boolean; // use SEARCH instead of GET
-}
+// export interface RestConfig {
+// 	useSearch?: boolean; // use SEARCH instead of GET
+// }
 
-export const rest = (_options: RestConfig = {}) => {
+export const rest = (/*_options: RestConfig = {}*/) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): RestClient<Schema> => {
 		return {
 			async request<Output extends object>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
