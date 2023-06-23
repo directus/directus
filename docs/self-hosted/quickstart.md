@@ -51,7 +51,7 @@ Save the file. Let's step through it:
   - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch.
   - `WEBSOCKETS_ENABLED` is not required, but enables [Directus Realtime](/guides/real-time/getting-started/index.html).
 
-The volumes section is not requires, but without this, our database and file uploads will be destroyed when the Docker container stops running. The default database is SQLite - a self-contained server-less database that stores data to a file.
+The volumes section is not required, but without this, our database and file uploads will be destroyed when the Docker container stops running. The default database is SQLite - a self-contained server-less database that stores data to a file.
 
 ## Run Directus
 
