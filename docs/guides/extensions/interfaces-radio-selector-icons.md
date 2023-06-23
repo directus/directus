@@ -443,7 +443,7 @@ npm run build
 
 In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder. 
 
-1. In the Directus extensions directory, open the interfaces directory and make a new directory called __directus-interface-custom-radio-buttons__.
+1. In the Directus extensions directory, open the interfaces directory and make a new directory called `directus-interface-custom-radio-buttons`.
 2. From the interface's directory, open the __dist__ folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 

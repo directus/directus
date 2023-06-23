@@ -277,7 +277,7 @@ npm run build
 
 In order to use this display in Directus, you must copy the compiled index file into the project's extension folder. 
 
-1. In the Directus extensions directory, open the displays directory and make a new directory called __directus-display-sum-count__.
+1. In the Directus extensions directory, open the displays directory and make a new directory called `directus-display-sum-count`.
 2. From the display’s directory, open the __dist__ folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 

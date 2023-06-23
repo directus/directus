@@ -52,9 +52,9 @@ export default {
 
 Make sure the `id` is unique between all extensions including ones created by 3rd parties - a good practice is to include a professional prefix. You can choose an icon from the library [here](https://fonts.google.com/icons).
 
-The value of `types` will need to account for the different possibilities of id fields. Sometimes this will be an INT or BIGINT when using incremental IDs, or this could be GUID which is stored as a string or uuid.
+The value of `types` will need to account for the different possibilities of id fields. Sometimes this will be an INT or BIGINT when using incremental IDs, or this could be GUID which is stored as a `String` or `UUID`.
 
-`localTypes` is unique to relational fields. Some interfaces can have o2m and m2o. This interface can only be used for m2o. `group` will allow us to add this interface alongside other relational interfaces.
+`localTypes` is unique to relational fields. Some interfaces can have `o2m` and `m2o`. This interface can only be used for `m2o`. `group` will allow us to add this interface alongside other relational interfaces.
 
 Setting `relational: true` will force Directus to only offer this interface on a relational field. Finally, `recommendedDisplays` are a way of pinning one or more displays to the top of the list when the user is setting up the field.
 
@@ -357,7 +357,7 @@ npm run build
 
 In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder. 
 
-1. In the Directus extensions directory, open the interfaces directory and make a new directory called __directus-interface-m2o-searchable-dropdown__.
+1. In the Directus extensions directory, open the interfaces directory and make a new directory called `directus-interface-m2o-searchable-dropdown`.
 2. From the interface's directory, open the __dist__ folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 

@@ -5,7 +5,7 @@ contributors: Tim Butterfield, Kevin Lewis
 
 # Use Hooks To Validate Phone Numbers Using Twilio
 
-Hooks allow you to trigger your own code when events are emitted from Directus. This guide will show you how to prevent a record from saving if a phone number is not valid using Twilio's Lookup API.
+Hooks allow you to trigger your own code when events are emitted from Directus. This guide will show you how to prevent a record from saving if a phone number is not valid using the Twilio Lookup API.
 
 ## Install Dependencies
 
@@ -118,7 +118,7 @@ npm run build
 
 In order to use this hook in Directus, you must first install the dependency into your project. 
 
-1. In the Directus extensions directory, open the hooks directory and make a new directory called __directus-hook-phone-validation__.
+1. In the Directus extensions directory, open the hooks directory and make a new directory called `directus-hook-phone-validation`.
 2. From the hook’s directory, open the __dist__ folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 

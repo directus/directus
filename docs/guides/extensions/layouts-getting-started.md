@@ -25,7 +25,7 @@ cd directus-layout-example
 npm run build
 ```
 
-## Build the Stucture 
+## Build the Structure 
 
 Open the extension directory that was created in the previous steps then open the directory called `src`. This is where the source code is located - `index.js` and `layout.vue`. Any new files that are required, must go in this directory.
 
@@ -41,7 +41,7 @@ To start interacting with Directus, you will need to import various functions th
 
 Open the `index.js` file and change the id to a unique value. This is usually your layout name such as example-layout. Then, change the `name` of the layout. This is visible in the list of layout options when changing a collection’s layout. If you want to change the icon, use the material-icons library to find the name of the icon and replace it in this file.
 
-Import the `useItems` and `useCollection` stores to this file by importing the functions from the Directus Extensions SDK. Add the following line underneath the ref import from vue and include toRefs from vue.
+Import the `useItems` and `useCollection` stores to this file by importing the functions from the Directus Extensions SDK. Add the following line underneath the ref import from vue and include `toRefs` from vue.
 
 ```js
 import { toRefs } from 'vue';
@@ -62,7 +62,7 @@ const { items, loading, error } = useItems(collection, {
 });
 ```
 
-_Note the parameters being set in useItems(). Change this to suit your needs._
+_Note the parameters being set in `useItems()`. Change this to suit your needs._
 
 Return the constants so they can be used in the layout. Add the following underneath the constants:
 
@@ -150,7 +150,7 @@ npm run build
 
 In order to use this interface in Directus, you must copy the compiled index file into the project's extension folder. 
 
-1. In the Directus extensions directory, open the interfaces directory and make a new directory called __directus-layout-example__.
+1. In the Directus extensions directory, open the interfaces directory and make a new directory called `directus-layout-example`.
 2. From the interface's directory, open the __dist__ folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 
@@ -162,7 +162,7 @@ To use your new layout in Directus, you will need a table that already contains 
 2. If the right side menu is closed, click on the Layout Options icon. 
 3. Click on the dropdown and choose your new layout from the list.
 
-![Two screenshots. On the left is the layout dropdown showing that custom layout is selected. On the right is the unstyled table showing data from the layout.](https://marketing.directus.app/assets/ef0c6c19-ef1d-45bd-a66d-df8f581b98a4)
+![Two screenshots. On the left is the layout dropdown showing that custom layout is selected. On the right is the table showing data from the layout.](https://marketing.directus.app/assets/ef0c6c19-ef1d-45bd-a66d-df8f581b98a4)
 
 ## Summary
 

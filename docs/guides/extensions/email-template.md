@@ -48,8 +48,8 @@ There are a few predefined variables available to email templates. They are:
 
 |Variable|Description|Default|
 |---|---|---|
-|`projectName`|String|Directus|
-|`projectColor`|Hex Color|#546e7a|
+|`projectName`|String|`Directus`|
+|`projectColor`|Hex Color|`#546e7a`|
 |`projectLogo`|Image URL||
 |`projectUrl`|URL||
 
@@ -72,7 +72,7 @@ If you are using Flows, you can also inject data into emails:
 
 ![Type template. Template name 'my custom template' and data is a JSON object with a property named first name and a value of trigger.payload.firstname.](https://marketing.directus.app/assets/e1330f0f-a15f-40e6-96d1-3cf113a6da6b)
 
-In your template, you can use the firstname variable like this:
+In your template, you can use the `firstname` variable like this:
 
 ```html
 {% layout "my-custom-base" %}
@@ -177,9 +177,9 @@ For this report, the template uses a for loop to generate a table of results and
 
 ## Add Template to Directus
 
-Inside the Directus project folder is an extensions folder, this is where the custom extensions live. There is a folder for each type. In this case you are adding a template.
+Inside the Directus project directory is an extensions directory, this is where the custom extensions live. There is a directory for each type. In this case you are adding a template.
 
-1. Inside the templates folder, copy and paste the required liquid files for your email. These cannot go in a subfolder.
+1. Inside the templates directory, copy and paste the required liquid files for your email. These cannot go in a subdirectory.
 2. Restart Directus.
 
 The template is now available to Directus.

@@ -203,6 +203,7 @@ granularly
 GraphQL
 greenlight
 GUIs?
+GUID
 headshot
 Heya
 Hoppscotch
@@ -309,6 +310,8 @@ pre-installed
 programmatically
 Programmatically
 ProgressEvent
+Proxy
+Proxying
 PRs
 pub/sub
 px
@@ -361,7 +364,7 @@ SuperAdmins?
 superset
 Superset
 svg
-SVG
+SVGs?
 TablePlus
 tfa
 TFA

@@ -129,7 +129,7 @@ npm run build
 
 In order to use this hook in Directus, you must first install the dependency into your project. 
 
-1. In the Directus extensions directory, open the hooks directory and make a new directory called __directus-hook-create-stripe-customer__.
+1. In the Directus extensions directory, open the hooks directory and make a new directory called `directus-hook-create-stripe-customer`.
 2. From the hook’s directory, open the __dist__ folder and copy the `index.js` file into the directory.
 3. Restart Directus to load the extension.
 
