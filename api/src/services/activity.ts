@@ -4,6 +4,7 @@ import type { Accountability } from '@directus/types';
 import { uniq } from 'lodash-es';
 import validateUUID from 'uuid-validate';
 import env from '../env.js';
+import { ErrorCode } from '../errors/index.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { getPermissions } from '../utils/get-permissions.js';
@@ -98,7 +99,7 @@ ${comment}
 						item: data['item'],
 					});
 				} catch (err: any) {
-					if (isDirectusError(err) && err.code === 'FORBIDDEN') {
+					if (isDirectusError(err) && err.code === ErrorCode.Forbidden) {
 						logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
 					} else {
 						throw err;
