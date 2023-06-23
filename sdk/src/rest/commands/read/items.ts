@@ -16,8 +16,12 @@ export const readItems =
 	() => {
 		const _collection = String(collection);
 
+		if (_collection.startsWith('directus_')) {
+			throw new Error('Cannot use readItems for core collections');
+		}
+
 		return {
-			path: _collection.startsWith('directus_') ? `/${_collection.slice(9)}` : `/items/${_collection}`,
+			path: `/items/${_collection}`,
 			params: queryToParams(query ?? {}),
 			method: 'GET',
 		};
