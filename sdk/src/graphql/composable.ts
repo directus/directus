@@ -2,7 +2,6 @@ import type { DirectusClient } from '../client.js';
 import type { RequestOptions } from '../types/request.js';
 import type { GraphqlClient } from './types.js';
 import { request } from '../utils/request.js';
-import { getRequestUrl } from '../utils/get-request-url.js';
 
 export const graphql = () => {
 	return <Schema extends object>(client: DirectusClient<Schema>): GraphqlClient<Schema> => {
@@ -24,9 +23,7 @@ export const graphql = () => {
 					options.headers['Authorization'] = `Bearer ${client.token}`;
 				}
 
-				const requestUrl = getRequestUrl(client.url, options);
-
-				return await request<Output>(requestUrl.toString(), options);
+				return await request<Output>(client.url, options);
 			},
 		};
 	};

@@ -1,5 +1,4 @@
 import type { DirectusClient } from '../client.js';
-import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand } from './types.js';
 
@@ -18,9 +17,7 @@ export const rest = (/*_options: RestConfig = {}*/) => {
 					options.headers['Authorization'] = `Bearer ${client.token}`;
 				}
 
-				const requestUrl = getRequestUrl(client.url, options);
-
-				return await request<Output>(requestUrl.toString(), options);
+				return await request<Output>(client.url, options);
 			},
 		};
 	};

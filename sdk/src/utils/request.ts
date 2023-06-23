@@ -1,6 +1,6 @@
 import type { RequestOptions } from '../types/index.js';
 
-export const request = async <Output extends object>(url: string, options: RequestOptions): Promise<Output> => {
+export const request = async <Output extends object>(url: string | URL, options: RequestOptions): Promise<Output> => {
 	/** @TODO Check fetch implementation for all methods */
 	const headers: Record<string, string> = {
 		'Content-Type': 'application/json',
@@ -11,6 +11,13 @@ export const request = async <Output extends object>(url: string, options: Reque
 		method: options.method ?? 'GET',
 		headers,
 	};
+
+	url = new globalThis.URL(url);
+
+	if (options.params) {
+		const searchParams = new globalThis.URLSearchParams(options.params);
+		url.search = searchParams.toString();
+	}
 
 	if (options.body) {
 		fetchOptions['body'] = options.body;
