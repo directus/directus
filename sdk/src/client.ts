@@ -4,8 +4,7 @@ export interface ClientConfig {
 
 export interface DirectusClient<Schema extends object> {
 	url: URL;
-	getToken: () => Promise<string | null>;
-	setToken: (token: string | null) => void;
+	token: string | null;
 	use: <Extension extends object>(createExtension: (client: DirectusClient<Schema>) => Extension) => this & Extension;
 }
 
@@ -21,11 +20,9 @@ export const useDirectus = <Schema extends object = any>(
 	url: string,
 	config?: ClientConfig
 ): DirectusClient<Schema> => {
-	let token = config?.token ?? null;
 	return {
 		url: new URL(url),
-		getToken: async () => token,
-		setToken: (newToken) => (token = newToken),
+		token: config?.token ?? null,
 		use(createExtension) {
 			return {
 				...this,

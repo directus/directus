@@ -13,11 +13,9 @@ export const rest = (/*_options: RestConfig = {}*/) => {
 			async request<Output extends object>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
 
-				const token = await client.getToken();
-
-				if (token) {
+				if (client.token) {
 					if (!options.headers) options.headers = {};
-					options.headers['Authorization'] = `Bearer ${token}`;
+					options.headers['Authorization'] = `Bearer ${client.token}`;
 				}
 
 				const requestUrl = getRequestUrl(client.url, options);

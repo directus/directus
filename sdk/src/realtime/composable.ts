@@ -19,8 +19,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 
 		const withStrictAuth = async (url: URL) => {
 			if (config.authMode === 'strict') {
-				const token = await client.getToken();
-				if (token) url.searchParams.set('access_token', token);
+				if (client.token) url.searchParams.set('access_token', client.token);
 			}
 
 			return url;
@@ -53,8 +52,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 				const message = await messageCallback(ws);
 
 				if ('type' in message && message['type'] === 'auth') {
-					const access_token = await client.getToken();
-					if (access_token) ws.send(auth({ access_token }));
+					if (client.token) ws.send(auth({ access_token: client.token }));
 				}
 
 				if ('type' in message && message['type'] === 'ping') {
@@ -72,9 +70,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 
 					ws.addEventListener('open', async () => {
 						if (config.authMode === 'handshake') {
-							const access_token = await client.getToken();
-
-							if (access_token) ws.send(auth({ access_token }));
+							if (client.token) ws.send(auth({ access_token: client.token }));
 						}
 
 						resolved = true;
