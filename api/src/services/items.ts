@@ -155,8 +155,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				? authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
 				: payloadAfterHooks;
 
-			if (opts.preMutationException) {
-				throw opts.preMutationException;
+			if (opts.preMutationError) {
+				throw opts.preMutationError;
 			}
 
 			const {
@@ -603,8 +603,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			? authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
 			: payloadAfterHooks;
 
-		if (opts.preMutationException) {
-			throw opts.preMutationException;
+		if (opts.preMutationError) {
+			throw opts.preMutationError;
 		}
 
 		await this.knex.transaction(async (trx) => {
@@ -866,8 +866,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await authorizationService.checkAccess('delete', this.collection, keys);
 		}
 
-		if (opts.preMutationException) {
-			throw opts.preMutationException;
+		if (opts.preMutationError) {
+			throw opts.preMutationError;
 		}
 
 		if (opts.emitEvents !== false) {

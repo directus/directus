@@ -259,11 +259,11 @@ describe('Integration Tests', () => {
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
 						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadError);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
 				}
 			);
 
@@ -376,11 +376,11 @@ describe('Integration Tests', () => {
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
 						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadError);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
 				}
 			);
 
@@ -513,11 +513,11 @@ describe('Integration Tests', () => {
 
 					expect(superUpdateManySpy).toHaveBeenCalled();
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException.message).toBe(
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError.message).toBe(
 						`Invalid payload. You can't change the "${field}" value manually.`
 					);
 
-					expect(superUpdateManySpy.mock.lastCall![2].preMutationException).toBeInstanceOf(InvalidPayloadError);
+					expect(superUpdateManySpy.mock.lastCall![2].preMutationError).toBeInstanceOf(InvalidPayloadError);
 				}
 			);
 

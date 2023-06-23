@@ -183,7 +183,7 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return await super.createMany(data, opts);
@@ -283,7 +283,7 @@ export class UsersService extends ItemsService {
 				data['auth_data'] = null;
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return await super.updateMany(keys, data, opts);
@@ -304,7 +304,7 @@ export class UsersService extends ItemsService {
 		try {
 			await this.checkRemainingAdminExistence(keys);
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
@@ -340,7 +340,7 @@ export class UsersService extends ItemsService {
 				throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to invite users` });
 			}
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
 		const emails = toArray(email);
@@ -464,7 +464,7 @@ export class UsersService extends ItemsService {
 		try {
 			await this.checkPasswordPolicy([password]);
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
 		const user = await this.getUserByEmail(email);

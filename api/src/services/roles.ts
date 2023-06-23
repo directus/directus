@@ -79,7 +79,7 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminUsers(key, data['users']);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateOne(key, data, opts);
@@ -96,7 +96,7 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateBatch(data, opts);
@@ -112,7 +112,7 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateMany(keys, data, opts);
@@ -129,7 +129,7 @@ export class RolesService extends ItemsService {
 		try {
 			await this.checkForOtherAdminRoles(keys);
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
 		await this.knex.transaction(async (trx) => {
