@@ -351,7 +351,7 @@ describe('/auth', () => {
 							expect(response.body).toMatchObject({
 								errors: [
 									{
-										message: 'Invalid payload. "password" is required',
+										message: 'Invalid payload. "password" is required.',
 										extensions: {
 											code: 'INVALID_PAYLOAD',
 										},
