@@ -1,4 +1,4 @@
-import type { SqlStatement } from '@directus/data-sql';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 
 /**
  * Generate the `OFFSET x` part of a SQL statement.
@@ -6,9 +6,9 @@ import type { SqlStatement } from '@directus/data-sql';
  * @param query The abstract query
  * @returns The `OFFSET x` part of a SQL statement
  */
-export function offset({ offset }: SqlStatement): string {
+export function offset({ offset }: AbstractSqlQuery): string | null {
 	if (offset === undefined) {
-		return '';
+		return null;
 	}
 
 	return `OFFSET $${offset.parameterIndex + 1}`;
