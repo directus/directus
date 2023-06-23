@@ -1,6 +1,5 @@
 import type { PrimaryKey } from '@directus/types';
 import type { ApplyQueryFields, Query } from '../types/query.js';
-import type { Options } from 'prettier';
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
@@ -24,6 +23,7 @@ export interface WebSocketClient<Schema extends object> {
 	connect(): Promise<void>;
 	disconnect(): void;
 	message(message: Record<string, any>): void;
+	receive(callback: (message: Record<string, any>) => any): () => void;
 	subscribe<Collection extends keyof Schema, Options extends SubscribeOptions<Schema, Collection>>(
 		collection: Collection,
 		options?: Options

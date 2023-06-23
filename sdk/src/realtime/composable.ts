@@ -2,6 +2,8 @@ import type { DirectusClient } from '../client.js';
 import type { SubscribeOptions, WebSocketClient, WebSocketConfig } from './types.js';
 import { messageCallback } from './utils/message-callback.js';
 import { generateUid } from './utils/generate-uid.js';
+import { pong } from './commands/pong.js';
+import { auth } from './commands/auth.js';
 
 /**
  * Creates a client to communicate with a Directus REST WebSocket.
@@ -15,21 +17,21 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 		let socket: globalThis.WebSocket | null = null;
 		let uid = generateUid();
 
-		const withStrictAuth = (url: URL) => {
+		const withStrictAuth = async (url: URL) => {
 			if (config.authMode === 'strict') {
-				// const token = await client.getToken();
-				// if (token) url.searchParams.set('access_token', token);
+				const token = await client.getToken();
+				if (token) url.searchParams.set('access_token', token);
 			}
 
 			return url;
 		};
 
-		const getSocketUrl = () => {
-			if ('url' in config) return withStrictAuth(new URL(config.url));
+		const getSocketUrl = async () => {
+			if ('url' in config) return await withStrictAuth(new URL(config.url));
 
 			// if the main URL is a websocket URL use it directly!
 			if (['ws:', 'wss:'].includes(client.url.protocol)) {
-				return withStrictAuth(client.url);
+				return await withStrictAuth(client.url);
 			}
 
 			// try filling in the defaults based on the main URL
@@ -37,7 +39,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 			newUrl.protocol = client.url.protocol === 'https:' ? 'wss:' : 'ws:';
 			newUrl.pathname = '/websocket';
 
-			return withStrictAuth(newUrl);
+			return await withStrictAuth(newUrl);
 		};
 
 		const resetConnection = () => {
@@ -51,28 +53,28 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 				const message = await messageCallback(ws);
 
 				if ('type' in message && message['type'] === 'auth') {
-					ws.send(JSON.stringify({ type: 'auth', access_token: await client.getToken() }));
+					const access_token = await client.getToken();
+					if (access_token) ws.send(auth({ access_token }));
 				}
 
 				if ('type' in message && message['type'] === 'ping') {
-					ws.send('{ "type": "pong" }');
+					ws.send(pong());
 				}
 			}
 		};
 
 		return {
 			async connect() {
+				const url = await getSocketUrl();
 				return new Promise<void>((resolve, reject) => {
 					let resolved = false;
-					const ws = new globalThis.WebSocket(getSocketUrl());
+					const ws = new globalThis.WebSocket(url);
 
 					ws.addEventListener('open', async () => {
 						if (config.authMode === 'handshake') {
-							const token = await client.getToken();
+							const access_token = await client.getToken();
 
-							if (token) {
-								ws.send(JSON.stringify({ type: 'auth', access_token: token }));
-							}
+							if (access_token) ws.send(auth({ access_token }));
 						}
 
 						resolved = true;
@@ -102,6 +104,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 			},
 			message(message: Record<string, any>) {
 				if (!socket || socket?.readyState !== WebSocket.OPEN) {
+					// TODO use directus error
 					throw new Error('websocket connection not OPEN');
 				}
 
@@ -110,6 +113,29 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 				}
 
 				socket?.send(JSON.stringify(message));
+			},
+			receive(callback: (message: Record<string, any>) => any) {
+				if (!socket || socket?.readyState !== WebSocket.OPEN) {
+					// TODO use directus error
+					throw new Error('websocket connection not OPEN');
+				}
+
+				const handler = (data: MessageEvent<string>) => {
+					try {
+						const message = JSON.parse(data.data) as Record<string, any>;
+
+						if (typeof message === 'object' && !Array.isArray(message) && message !== null) {
+							callback(message);
+						}
+					} catch (err) {
+						// @TODO: either ignore or throw proper error
+						// eslint-disable-next-line no-console
+						console.warn('invalid message', err);
+					}
+				};
+
+				socket.addEventListener('message', handler);
+				return () => socket?.removeEventListener('message', handler);
 			},
 			async subscribe<Collection extends keyof Schema, Options extends SubscribeOptions<Schema, Collection>>(
 				collection: Collection,
