@@ -83,7 +83,6 @@ async function handleSubmission(rating?: number) {
 		}
 	} catch (err) {
 		error.value = err;
-		// console.error(err);
 	} finally {
 		loading.value = false;
 	}
