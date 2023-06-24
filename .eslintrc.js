@@ -2,7 +2,7 @@ const basicRules = {
 	// No console & debugger statements in production
 	'no-console': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
 	'no-debugger': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
-	// Custom formatting rules
+	// Require empty line between certain statements
 	'padding-line-between-statements': [
 		'error',
 		{
@@ -34,30 +34,12 @@ const basicRules = {
 		},
 		{ blankLine: 'any', prev: ['export', 'import'], next: ['export', 'import'] },
 	],
+	// Require empty line between class members
 	'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+	// Disallow nested ternary expressions
 	'no-nested-ternary': 'error',
+	// Require brace style for multi-line control statements
 	curly: ['error', 'multi-line'],
-	// Disregard '.prettierignore' file
-	'prettier/prettier': [
-		'error',
-		{},
-		{
-			fileInfoOptions: {
-				ignorePath: null,
-			},
-		},
-	],
-};
-
-// Fetch TypeScript rules directly to enable matching Vue files as well
-const tsPlugin = require('@typescript-eslint/eslint-plugin');
-
-const tsRecommendedRules = {
-	// Disables core rules which are already handled by TypeScript and
-	// enables rules that make sense due to TS's typechecking / transpilation
-	...tsPlugin.configs['eslint-recommended'].overrides[0].rules,
-	// Recommended TypeScript rules for code correctness
-	...tsPlugin.configs.recommended.rules,
 };
 
 const tsRules = {
@@ -82,10 +64,10 @@ const getExtends = (configs = []) => [
 	// Enables a subset of core rules that report common problems
 	'eslint:recommended',
 	...configs,
-	// Enables Prettier plugin and turns off some ESLint rules
-	// that conflict with Prettier (eslint-config-prettier)
+	// Turns off rules from other configs that are
+	// unnecessary or might conflict with Prettier
 	// (should always be the last entry in 'extends')
-	'plugin:prettier/recommended',
+	'prettier',
 ];
 
 /** @type {import('eslint').Linter.Config} */
@@ -104,6 +86,7 @@ module.exports = {
 		ecmaVersion: 2022,
 		sourceType: 'module',
 	},
+	reportUnusedDisableDirectives: true,
 	overrides: [
 		// TypeScript & Vue files
 		{
@@ -114,11 +97,16 @@ module.exports = {
 			},
 			plugins: ['@typescript-eslint'],
 			extends: getExtends([
+				// Recommended TypeScript rules for code correctness
+				'plugin:@typescript-eslint/recommended',
 				// Enables Vue plugin and recommended rules
 				'plugin:vue/vue3-recommended',
 			]),
 			rules: {
-				...tsRecommendedRules,
+				// Disables core rules which are already handled by TypeScript and
+				// enables rules that make sense due to TS's typechecking / transpilation
+				// (fetched directly to enable it for Vue files too)
+				...require('@typescript-eslint/eslint-plugin').configs['eslint-recommended'].overrides[0].rules,
 				...tsRules,
 				...vueRules,
 			},

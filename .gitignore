@@ -24,10 +24,12 @@ debug
 .clinic
 
 # IDEs / Editors
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 *.code-workspace
-.history
+.history/
 *.sublime-settings
 .*.swp
 
