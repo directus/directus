@@ -1,7 +1,8 @@
 dist/
 coverage/
 pnpm-lock.yaml
-app/src/lang/translations/*.yaml
+**/.vitepress/cache/
 .changeset/
+/app/src/lang/translations/*.yaml
+!/app/src/lang/translations/en-US.yaml
 /docs/packages/
-/docs/.vitepress/cache/
