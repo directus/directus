@@ -1,10 +1,9 @@
 import { isObjectLike } from 'lodash-es';
 
 export function deepMap(
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	object: any,
 	iterator: (value: any, key: string | number) => any,
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+
 	context?: any
 ): any {
 	if (Array.isArray(object)) {
