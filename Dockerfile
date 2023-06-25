@@ -32,6 +32,8 @@ RUN : \
 
 FROM node:18-alpine AS runtime
 
+RUN npm install --global pm2
+
 USER node
 
 WORKDIR /directus
@@ -50,5 +52,5 @@ COPY --from=builder --chown=node:node /directus/dist .
 
 CMD : \
 	&& node /directus/cli.js bootstrap \
-	&& node /directus/cli.js start \
+	&& pm2-runtime /directus/cli.js --wait-ready --kill-timeout 3000 -i max -- start \
 	;
