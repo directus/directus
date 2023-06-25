@@ -1317,6 +1317,7 @@ options: विकल्पहरू
 otp: वन-टाइम पासवर्ड
 password: पासवर्ड
 permissions: अनुमतिहरू
+relationship: सम्बन्ध
 reset: रिसेट
 reset_password: पासवर्ड रिसेट गर्नुहोस्
 revisions: संशोधनहरू
@@ -1326,34 +1327,45 @@ revert: उल्‍टाउनुहोस्
 save: बचत गर्नुहोस्
 schema: स्‍कीमा
 search: खोज्नुहोस्
+select_existing: पहिले नै अवस्थित चयन गर्नुहोस्
+select_interface: इन्टरफेस चयन गर्नुहोस्
 settings: सेटिंग्सहरु
 sign_in: साइन इन
 sign_out: साईन आउट
 sign_out_confirm: "के तपाई साईन आउट गर्न निश्चित हुनुहुन्छ?\n"
 something_went_wrong: केही त्रुटी भयो ।
 sort_direction: "क्रमबद्ध गर्ने दिशा\n"
+export_location: स्थान निर्यात गर्नुहोस्
 export_started: निर्यात सुरु भयो
 export_started_copy: "तपाईंको निर्यात सुरु भएको छ। यो डाउनलोड गर्न तयार हुँदा तपाईंलाई सूचित गरिनेछ।\n"
 sort_asc: क्रमबद्ध गर्नुहोस्
+sort_desc: घट्दो क्रमबद्ध गर्नुहोस्
+disable_sort: क्रमबद्ध अक्षम गर्नुहोस्
 template: टेम्प्लेट
 require_value_to_be_set: सिर्जना गर्दा मान सेट गर्न आवश्यक छ
 translation: अनुवाद
 translation_placeholder: अनुवाद प्रविष्ट गर्नुहोस्...
 value: मान
 view_project: परियोजना हेर्नुहोस्
+report_error: रिपोर्ट त्रुटि
 start: सुरु
 table: टेबल
 list: सूची
+search_filter: खोज र फिल्टर
 enable_search_filter: "खोजी र फिल्टरिङ सक्षम गर्नुहोस्\n"
+item_link: वस्तुको लिङ्क
 show_link_to_item: वस्तुको लिङ्क देखाउनुहोस्
+navigate_to_item: वस्तुमा जानुहोस्
 undo_removed_item: हटाइएको वस्तु अनडू गर्नुहोस्
 remove_item: वस्तु हटाउनुहोस्
 delete_item: वस्तु मेट्नुहोस्
 interfaces:
   filter:
     name: फिल्‍टर
+    description: फिल्टर वस्तु कन्फिगर गर्नुहोस्।
     add_filter: फिल्टर थप्नुहोस्
     add_group: र / वा समूह
+    add_value: मान थप्नुहोस्
     logic_type_and: र
     logic_type_or: वा
     all: सबै
@@ -1461,6 +1473,7 @@ interfaces:
     customSyntax_label: अनुकूलन सिन्ट्याक्स प्रकारहरू थप्नुहोस्
   map:
     map: नक्सा
+    description: नक्सामा स्थान चयन गर्नुहोस्
     zoom: जुम
     geometry_type: ज्यामिति प्रकार
     default_view: पूर्वनिर्धारित दृश्य
@@ -1544,7 +1557,11 @@ interfaces:
       image: तस्बिर
       table: टेबल
       underline: अन्डरलाइन
+      checklist: जाँच सूचीहरू
+      alignment: पङ्क्तिबद्धता
+      raw: कच्चा HTML
   input-autocomplete-api:
+    input-autocomplete-api: 'स्वत: पूर्ण इनपुट (API)'
     trigger: ट्रिगर
     rate: दर
   group-raw:
@@ -1660,12 +1677,18 @@ layouts:
     image_source: छवि स्रोत
     crop: क्रप गर्नुहोस्
     title: सेटिङहरू अद्यावधिक गरियो
+    subtitle: उपशीर्षक
   tabular:
     tabular: टेबल
+    spacing: स्पेसिङ
     comfortable: आरामदायी
     compact: संकुचित
     cozy: सहज
   calendar:
+    calendar: पात्रो
+    start_date_field: सुरु मिति क्षेत्र
+    end_date_field: समाप्ति मिति क्षेत्र
+    optional: ऐच्छिक
     first_day: हप्ताको पहिलो दिन
   map:
     map: नक्सा
@@ -1731,6 +1754,8 @@ panels:
     name: रेखा चार्ट
     disabled_grouping: समूह चयन गर्दा असक्षम हुन्छ।
     curve_type: वक्र प्रकार
+    smooth: चिल्लो
+    straight: सीधा
   meter:
     name: मिटर
   piechart:
@@ -1741,6 +1766,7 @@ panels:
 triggers:
   common:
     response_body: प्रतिक्रिया को शरीर
+    response_body_all: सबै डाटा
     response_body_last: पछिल्लो अपरेशनको डाटा
   event:
     description: प्लेटफर्म वा डेटा घटनाहरूमा ट्रिगरहरू
@@ -1752,9 +1778,19 @@ triggers:
     async: एसिन्क्रोनस
   operation:
     name: अर्को प्रवाह
+    description: चेनिङका लागि अर्को फ्लोद्वारा ट्रिगर गरिएको
+    preview: एक फरक फ्लोमा एक अपरेशन द्वारा ट्रिगर
   schedule:
+    name: तालिका (CRON)
     description: पूर्वनिर्धारित समयमा नियमित समयमा ट्रिगर हुन्छ
+    cron: अंतराल
   manual:
+    name: म्यानुअल
+    description: चयनित संग्रह(हरू) भित्र म्यानुअल रनमा ट्रिगर हुन्छ
+    collection_and_item: संग्रह र वस्तु पृष्ठहरू
+    collection_only: संग्रह पृष्ठ मात्र
+    item_only: वस्तु पृष्ठ मात्र
+    collection_page: संग्रह पृष्ठ
     require_selection: चयन आवश्यक छ
 a_flow_uuid: "ट्रिगर गर्न फ्लो चयन गर्नुहोस्...\n"
 any_string_or_json: कुनै पनि स्ट्रिङ वा JSON...
@@ -1808,6 +1844,7 @@ operations:
     name: सूचना पठाउनुहोस्
     description: एक वा धेरै प्रयोगकर्ताहरूलाई इन-एप सूचना पठाउनुहोस्
     recipient: प्रयोगकर्ता
+    recipient_placeholder: अद्वितीय पहिचानकर्ता प्रविष्ट गर्नुहोस्...
     message: सन्देश
   request:
     name: वेबहुक / अनुरोध URL
@@ -1837,3 +1874,4 @@ operations:
     parallel: समानान्तर
     batch: ब्याच
     batch_size: ब्याच साइज
+    cache: क्यास
