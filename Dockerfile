@@ -53,5 +53,5 @@ COPY --from=builder --chown=node:node /directus/dist .
 
 CMD : \
 	&& node cli.js bootstrap \
-	&& pm2-runtime ecosystem.config.cjs \
+	&& pm2-runtime start ecosystem.config.cjs \
 	;
