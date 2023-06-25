@@ -31,6 +31,23 @@ jobs:
       - name: Run Linter
         run: pnpm lint
 
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Run Formatter
+        uses: EPMatt/reviewdog-action-prettier@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          filter_mode: nofilter
+
   unit:
     name: Unit Tests
     runs-on: ubuntu-latest
