@@ -68,9 +68,9 @@ The source code is located in `/api/src` and the below folders are inside there.
 
 ::: tip Component Library
 
-Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you
-can use to enrich your extensions or when developing locally. These components can be used in any of the "app
-extensions", including Interfaces, Displays, Modules, Layouts, and Panels.
+Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you can
+use to enrich your extensions or when developing locally. These components can be used in any of the "app extensions",
+including Interfaces, Displays, Modules, Layouts, and Panels.
 
 :::
 
