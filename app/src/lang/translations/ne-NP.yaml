@@ -758,6 +758,7 @@ flow: फ्लो
 select_a_flow: फ्लो चयन गर्नुहोस्
 run_flow_on_current_edited_confirm: यो वस्तु यस फ्लो द्वारा अद्यावधिक हुन सक्छ, के तपाइँ यसलाई कार्यान्वयन गर्न निश्चित हुनुहुन्छ?
 run_flow_success: फ्लो "{flow}" सफलतापूर्वक दौडियो
+field_name_placeholder: फिल्डको नाम प्रविष्ट गर्नुहोस्...
 trigger: ट्रिगर
 trigger_options: ट्रिगर विकल्पहरू
 view_trigger: ट्रिगर हेर्नुहोस्
@@ -820,6 +821,7 @@ details: विवरणहरू
 full_screen: फुलस्क्रिन
 full_text_search: पूर्ण-पाठ खोज
 edit_panels: प्यानलहरू सम्पादन गर्नुहोस्
+center_align: केन्द्र पंक्तिबद्ध
 left_align: बायाँ पङ्क्तिबद्ध
 right_align: दायाँ पंक्तिबद्ध
 fit_to_screen: स्क्रिनमा फिट गर्नुहोस्
@@ -914,11 +916,13 @@ settings_project: प्रोजेक्ट सेटिंग्स
 settings_webhooks: वेबहुकहरू
 settings_flows: फ्लोहरु
 settings_presets: प्रिसेट र बुकमार्कहरू
+settings_translations: कस्टम अनुवादहरु
 one_or_more_options_are_missing: एक वा बढी विकल्पहरू छुटेका छन्
 scope: दायरा
 actions: कार्यहरू
 select: चयन गर्नुहोस्...
 layout: लेआउट
+tree_view: Tree View
 changes_are_permanent: परिवर्तनहरू स्थायी हुन्छन्
 preset_name_placeholder: खाली हुँदा पूर्वनिर्धारित रूपमा कार्य गर्दछ...
 preset_search_placeholder: खोज क्वेरी...
@@ -950,6 +954,8 @@ page_help_files_item: >-
 page_help_settings_project: "**प्रोजेक्ट सेटिङ्हरू** — तपाईंको प्रोजेक्टको ग्लोबल कन्फिगरेसन विकल्पहरू।"
 page_help_settings_datamodel_collections: >-
   **डेटा मोडेल: सङ्कलन** — उपलब्ध सबै सङ्कलनहरूको सूची बनाउँछ। यसमा दृश्यात्मक, लुकेका, र प्रणाली सङ्कलनहरू, साथै अव्यवस्थित डाटाबेस तालिकाहरू थप्न सकिन्छ।
+page_help_settings_roles_collection: '**भूमिकाहरू ब्राउज गर्नुहोस्** — प्रशासक, सार्वजनिक र अनुकूलन प्रयोगकर्ता भूमिकाहरू सूचीबद्ध गर्दछ।'
+page_help_settings_roles_item: "**भूमिका विवरण** — भूमिकाको अनुमति र अन्य सेटिङहरू प्रबन्ध गर्नुहोस्।"
 page_help_users_collection: '**प्रयोगकर्ता निर्देशिका** — यो परियोजना भित्रका सबै प्रणाली प्रयोगकर्ताहरूलाई सूचीबद्ध गर्दछ।'
 page_help_users_item: >-
   **प्रयोगकर्ता विवरण** — आफ्नो खाता जानकारी प्रबन्ध गर्नुहोस्, वा अन्य प्रयोगकर्ताहरूको विवरण हेर्नुहोस्।
@@ -992,6 +998,7 @@ directus_collection:
   directus_shares: बाह्य रूपमा साझा वस्तुहरू ट्र्याक गर्दछ
   directus_users: प्लेटफर्मको लागि सिस्टम प्रयोगकर्ताहरू
   directus_webhooks: एभेन्ट-आधारित HTTP अनुरोधहरूको लागि कन्फिगरेसन
+  directus_translations: कस्टम अनुवादहरु
 fields:
   directus_activity:
     item: वस्तुको प्राथमिक कुञ्जी
@@ -1076,10 +1083,12 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    mapping: म्यापिंग
     mapbox_key: "म्यापबक्स Access टोकन\n"
     attribution: विशेषता
     attribution_placeholder: "© OpenStreetMap योगदानकर्ताहरू\n"
     transforms_note: "Sharp Method नाम र यसको Argumentहरु। थप जानकारीको लागि https://sharp.pixelplumbing.com/api-constructor हेर्नुहोस्।\n"
+    additional_transforms: अतिरिक्त रूपान्तरण
     project_name: परियोजनाको नाम
     project_url: परियोजनाको URL
     project_color: परियोजनाको रङ
@@ -1089,22 +1098,29 @@ fields:
     public_foreground: सार्वजनिक अग्रभूमि
     public_background: सार्वजनिक पृष्ठभूमि
     public_note: सार्वजनिक नोट
+    auth_password_policy: प्रमाणीकरण पासवर्ड नीति
     auth_login_attempts: प्रमाणीकरण लगइन प्रयासहरू
+    files_and_thumbnails: फाईलहरू र भण्डारण
     storage_default_folder: पूर्वनिर्धारित फोल्डर
     storage_asset_presets: रूपान्तरण प्रिसेट
     storage_asset_transform: अनुमति दिइएको रूपान्तरण
     overrides: एप ओभरराइड
+    custom_css: आफ्नै अनुकूलन CSS
     module_bar: मोड्युल बार
+    transformations_all: सबै रूपान्तरणहरूलाई अनुमति दिनुहोस्
     transformations_none: रूपान्तरण असक्षम गर्नुहोस्
     transformations_presets: तलका प्रिसेटहरूमा रूपान्तरणहरू सीमित गर्नुहोस्
+    image_editor: तस्वीर सम्पादक
   directus_shares:
     name: नाम
     role: भूमिका
     password: पासवर्ड
+    date_start: सुरु मिति
     date_end: "अन्त्य मिति\n"
     max_uses: "अधिकतम प्रयोगहरू\n"
     times_used: प्रयोग गरिएको संख्या
   directus_fields:
+    collection: संग्रह नाम
     icon: संग्रह आइकन
     note: नोट
     hidden: लुकेको
@@ -1141,11 +1157,17 @@ field_options:
     security_divider_title: सुरक्षा
     auth_password_policy:
       none_text: कुनै पनि सुझाव नगरिएको
+      weak_text: कमजोर - न्यूनतम आठ अक्षरहरू
       strong_text: "\nबलियो - ठूला अक्षरहरू / सानो अक्षरहरू / संख्याहरू / विशेष क्यारेक्टरहरू"
     storage_asset_presets:
+      fit_label: फिट गर्नु
       upscaling: अपस्केलिंग
       fit:
         contain_text: समावेश गर्नुहोस् (पक्ष अनुपात सुरक्षित गर्नुहोस्)
+        cover_text: कभर (आकार अनुसार ठ्याक्कै लागू)
+        fit_text: भित्र फिट गर्नुहोस्
+        outside_text: बाहिर फिट गर्नुहोस्
+    additional_transforms: अतिरिक्त रूपान्तरण
     transforms_note: "Sharp Method नाम र यसको Argumentहरु। थप जानकारीको लागि https://sharp.pixelplumbing.com/api-constructor हेर्नुहोस्।\n"
     mapbox_key: "म्यापबक्स Access टोकन\n"
     files_divider_title: फाइलहरू र थम्बनेलहरू
@@ -1156,6 +1178,7 @@ field_options:
     update: अद्यावधिक
     delete: मेट्नुहोस्
   directus_collections:
+    track_activity_revisions: गतिविधि र संशोधनहरू ट्र्याक गर्नुहोस्
     only_track_activity: मात्र गतिविधि ट्र्याक गर्नुहोस्
     do_not_track_anything: केहि पनि ट्र्याक नगर्नुहोस्
     collection_setup: संग्रह सेटअप
@@ -1165,8 +1188,10 @@ field_options:
     language: भाषा
     translation: अनुवाद
     translation_placeholder: अनुवाद प्रविष्ट गर्नुहोस्...
+    collection_name: संग्रह नाम
     archive_divider: संग्रह
     archive_field_placeholder: एउटा क्षेत्र छान्नुहोस्...
+    archive_app_filter: एप अभिलेख फिल्टर सक्षम गर्नुहोस्
     sort_divider: क्रमबद्ध
     sort_field: एउटा क्षेत्र छान्नुहोस्...
     accountability_divider: जवाफदेहिता
@@ -1174,11 +1199,14 @@ field_options:
     preview_divider: पूर्वावलोकन
   directus_files:
     title: एक अद्वितीय शीर्षक ...
+    description: वैकल्पिक विवरण...
     location: एक वैकल्पिक स्थान ...
     storage_divider: फाइल नामकरण
     filename_disk: डिस्क भण्डारणमा नाम...
+    filename_download: डाउनलोड गर्दा नाम...
   directus_roles:
     name: "यो भूमिकाको लागि अद्वितीय नाम ...\n"
+    description: यस भूमिकाको विवरण...
     ip_access: "अनुमति दिइएको IP ठेगानाहरू थप्नुहोस्, सबैलाई अनुमति दिन खाली छोड्नुहोस्...\n"
     fields:
       icon_name: आइकन
@@ -1257,9 +1285,11 @@ duplicate: प्रतिलिपि
 limit: सीमा
 email: इमेल
 embed: इम्बेड
+fallback_icon: फलब्याक आइकन
 field: क्षेत्र | क्षेत्रहरू
 file: फाइल
 file_library: फाइल लाइब्रेरी
+forgot_password: पासवर्ड भुल्नुभयो
 hidden: लुकेको
 hidden_in_group: '{group} मा लुकेको'
 icon: आइकन
