@@ -48,10 +48,10 @@ ENV \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
-COPY --from=builder --chown=node:node /directus/ecosystem.config.js .
+COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
 
 CMD : \
 	&& node cli.js bootstrap \
-	&& pm2-runtime ecosystem.config.js \
+	&& pm2-runtime ecosystem.config.cjs \
 	;
