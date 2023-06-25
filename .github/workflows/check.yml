@@ -40,6 +40,8 @@ jobs:
 
       - name: Prepare
         uses: ./.github/actions/prepare
+        with:
+          build: false
 
       - name: Run Formatter
         uses: EPMatt/reviewdog-action-prettier@v1
@@ -47,6 +49,7 @@ jobs:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           filter_mode: nofilter
+          fail_on_error: true
 
   unit:
     name: Unit Tests
