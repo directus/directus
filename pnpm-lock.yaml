@@ -889,6 +889,9 @@ importers:
       node-fetch:
         specifier: 3.3.1
         version: 3.3.1
+      typedoc-plugin-frontmatter:
+        specifier: ^0.0.2
+        version: 0.0.2
     devDependencies:
       '@directus/format-title':
         specifier: 10.0.0
@@ -20607,6 +20610,12 @@ packages:
 
   /typedarray@0.0.7:
     resolution: {integrity: sha512-ueeb9YybpjhivjbHP2LdFDAjbS948fGEPj+ACAMs4xCMmh72OCOMQWBQKlaN4ZNQ04yfLSDLSx1tGRIoWimObQ==}
+
+  /typedoc-plugin-frontmatter@0.0.2:
+    resolution: {integrity: sha512-xPw76L4S4/zbd01Tt89CVsJdPiMxztlmkXaA2Wu/l0KEbIrsqSHPv/sGsPI1O+pkZrSpaFr94qLA3ls1MrpKKw==}
+    dependencies:
+      yaml: 2.2.2
+    dev: false
 
   /typedoc-plugin-markdown@4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7):
     resolution: {integrity: sha512-ZOcLsJoGN4QI5x1iS2M5lj6bA3MABf6hA183W1KebbxcBA+SFr+XIu73Uovv3SiwqPa+viBftLzkZlLyA6J9bg==}

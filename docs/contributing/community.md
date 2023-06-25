@@ -35,7 +35,7 @@ Questions are opened in one of our help channels, and all are encouraged to resp
 :::info Feature Requests & Code Contributions
 
 To learn more about how we use GitHub for Feature Requests and Code Contributions, check out our
-[Code Contributions guide](/contributing/code).
+[Code Contributions guide](/contributing/introduction).
 
 :::
 
