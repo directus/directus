@@ -56,9 +56,8 @@ The client starts as an empty wrapper without any functionality. To add features
 
 - `rest()`: REST request functions, adds `.request(...)` to the client.
 - `graphql()`: GraphQL request functions, adds `.query(...)` to the client.
-- `auth()`: Authentication functions, adds `.login(...)`, `.logout()`, and .`refresh()` to the client. (work in
-  progress).
-- `realtime()`: WebSocket connectivity, adds `.subscribe(...)` and `.message(...)` to the client. (work in progress).
+- `auth()`: Authentication functions, adds `.login(...)`, `.logout()`, and .`refresh()` to the client.
+- `realtime()`: WebSocket connectivity, adds `.subscribe(...)` and `.message(...)` to the client.
 - `subscription()`: GraphQL Subscriptions, adds `.subscription()` to the client. (work in progress).
 
 For example, to create a client with REST or GraphQL support, use the following:
@@ -76,16 +75,16 @@ const client = useDirectus('http://directus.example.com').use(graphql());
 
 ## Authentication
 
-Use the `auth()` composable to authenticate with the client.
+Use the `authentication()` composable to authenticate with the client.
 
 For example, to login to your directus instance, invoke the `login` method
 
 ```js
 import { useDirectus } from '@directus/sdk@beta';
-import { auth } from '@directus/sdk@beta/composable';
+import { authentication } from '@directus/sdk@beta/composable';
 
-const client = useDirectus('http://directus.example.co').use(auth());
-await client.login({ email, password });
+const client = useDirectus('http://directus.example.co').use(authentication());
+await client.login(email, password);
 ```
 
 ## Making Requests
