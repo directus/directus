@@ -29,18 +29,55 @@ export const auth = (config: AuthenticationConfig = { mode: 'cookie' }) => {
 				} as RequestOptions;
 
 				const requestUrl = getRequestUrl(client.url, options);
-
 				const data = await request<AuthenticationData>(requestUrl.toString(), options);
 
 				storage.set(data);
 				return data;
 			},
 			async refresh() {
-				// TODO implement
-				resetStorage();
+				const awaitRefresh = async () => {
+					const authData = await storage.get();
+					resetStorage();
+
+					const options = {
+						path: '/auth/refresh',
+						method: 'POST',
+					} as RequestOptions;
+
+					if (config.mode === 'json' && authData?.refresh_token) {
+						options.body = JSON.stringify({
+							refresh_token: authData.refresh_token,
+						});
+					}
+
+					const requestUrl = getRequestUrl(client.url, options);
+					const data = await request<AuthenticationData>(requestUrl.toString(), options);
+
+					storage.set(data);
+					return data;
+				};
+
+				refreshPromise = awaitRefresh();
+				return refreshPromise;
 			},
 			async logout() {
-				// TODO implement
+				const authData = await storage.get();
+
+				const options = {
+					path: '/auth/logout',
+					method: 'POST',
+				} as RequestOptions;
+
+				if (config.mode === 'json' && authData?.refresh_token) {
+					options.body = JSON.stringify({
+						refresh_token: authData.refresh_token,
+					});
+				}
+
+				const requestUrl = getRequestUrl(client.url, options);
+				await request(requestUrl.toString(), options);
+
+				resetStorage();
 			},
 			async getToken() {
 				if (refreshPromise !== null) {
