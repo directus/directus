@@ -8,6 +8,7 @@ layout: home
   import Article from "./.vitepress/components/home/Article.vue"
   import Github from "./.vitepress/components/home/icons/Github.vue"
   import Divider from "./.vitepress/components/Divider.vue"
+  import SnippetToggler from "./.vitepress/components/SnippetToggler.vue"
   import Pattern from "./.vitepress/components/Pattern.vue"
   import { data as articles } from "./index.data.js"
 </script>
@@ -17,15 +18,85 @@ layout: home
     <div class="hero-content">
       <p class="hero-badge">Resource Hub</p>
       <h1 class="m-20 ">Directus Documentation</h1>
-      <p class="m-20 hero-paragraph">Explore our resources and powerful data engine to build your projects confidently.
-</p> <div class="hero-buttons"> <a class="primary-btn" href="/getting-started/introduction">Get Started</a>
-<a class="secondary-btn inline-flex" href="https://github.com/directus/directus/" target="_blank" rel="noreferrer noopener">GitHub<Github style="margin-left: 6px;"/></a
-        > </div> </div>
+      <p class="m-20">
+       Explore our resources and powerful data engine to build your projects confidently.
+      </p>
+      <div class="hero-buttons">
+        <a class="primary-btn" href="/getting-started/introduction">Get Started</a>
+        <a class="secondary-btn inline-flex" 
+        href="https://github.com/directus/directus/" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
+        >
+      </div>
+    </div>
+    <div class="hero-toggler">
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+```js
+GET /items/products/4?fields=*,image.id,image.name
+```
+
+```js
+{
+	"id": 4,
+	"status": "review",
+	"title": "Pink Crystals",
+	"category": "random",
+	"image": {
+		"id": 311,
+		"name": "pink-crystals.png"
+	}
+}'
+```
+
+</template>
+
+<template #graphql>
+
+```graphql
+query {
+	articles_by_id(id: 4) {
+		id
+		status
+		title
+		category
+		image {
+			id
+			name
+		}
+		date_added
+	}
+}
+```
+
+</template>
+
+<template #sdk>
+
+```js
+await directus.items('articles').readOne(4, {
+	fields: ['id', 'status', 'title', 'category'],
+});
+```
+
+```js
+{
+	"id": 4,
+	"status": "review",
+	"title": "Pink Crystals",
+	"category": "random"
+}
+```
+
+</template>
+</SnippetToggler>
   </div>
   <div class="hero-pattern">
     <Pattern />
   </div>
+
+</div>
 </section>
 
 <section class="section-container section-padding--lg">
@@ -235,7 +306,7 @@ hr {
 }
 
 .section-padding--hero {
- padding-block: 120px;
+ padding-block: 108px;
 }
 
 .hero {
@@ -321,10 +392,13 @@ hr {
 
 
 .hero-toggler {
-  background-color: #1F1938;
-  border-radius: 8px;
+  border-radius: 16px;
   width: 100%;
   max-width: 590px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  filter: drop-shadow(0px 0px 120px rgba(255, 255, 255, 0.1));
+  backdrop-filter: blur(4px);
+  z-index: 1;
 
 }
 .flex {
@@ -418,6 +492,9 @@ hr {
 }
 
 @media only screen and (max-width: 768px) {
+  .hero {
+    min-height: unset;
+  }
   .flex {
     flex-direction: column;
     align-items: stretch;
