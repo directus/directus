@@ -1,12 +1,15 @@
+import type { AuthenticationStorage, AuthenticationData } from '../types.js';
+
+/**
+ * Simple memory storage implementation
+ */
 export const memoryStorage = () => {
-	const store: Record<string, string> = {};
+	let store: AuthenticationData | null = null;
 
 	return {
-		get(name: string) {
-			return store[name];
+		get: async () => store,
+		set: async (value: AuthenticationData | null) => {
+			store = value;
 		},
-		set(name: string, value: string) {
-			store[name] = value;
-		},
-	};
+	} as AuthenticationStorage;
 };
