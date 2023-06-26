@@ -46,8 +46,7 @@ GET /items/products/4?fields=*,image.id,image.name
 	"image": {
 		"id": 311,
 		"name": "pink-crystals.png"
-	},
-	"date_added": "2020-11-12T17:56:41Z"
+	}
 }'
 ```
 
@@ -77,7 +76,7 @@ query {
 
 ```js
 await directus.items('articles').readOne(4, {
-	fields: ['id', 'status', 'title', 'category', 'image.id', 'image.name', 'date_added'],
+	fields: ['id', 'status', 'title', 'category'],
 });
 ```
 
@@ -86,12 +85,7 @@ await directus.items('articles').readOne(4, {
 	"id": 4,
 	"status": "review",
 	"title": "Pink Crystals",
-	"category": "random",
-	"image": {
-		"id": 311,
-		"name": "pink-crystals.png"
-	},
-	"date_added": "2020-11-12T17:56:41Z"
+	"category": "random"
 }
 ```
 
@@ -101,7 +95,6 @@ await directus.items('articles').readOne(4, {
   <div class="hero-pattern">
     <Pattern />
   </div>
-  
 
 </div>
 </section>
@@ -404,7 +397,8 @@ hr {
   max-width: 590px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   filter: drop-shadow(0px 0px 120px rgba(255, 255, 255, 0.1));
-  backdrop-filter: blur(4px)
+  backdrop-filter: blur(4px);
+  z-index: 1;
 
 }
 .flex {

@@ -132,5 +132,6 @@ const onPrefChange = (event: Event) => {
 	padding-bottom: 32px;
 	scrollbar-width: none;
 	overflow-y: auto;
+  min-height: 408px;
 }
 </style>
