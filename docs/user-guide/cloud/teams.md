@@ -73,7 +73,7 @@ the Team. To invite Team Members:
 :::tip
 
 Clicking the emailed invitation link does not automatically create an Account for you. Invitees will need to
-[create an Account](/cloud/accounts#create-account-and-login) before accepting an invitation to join a Team.
+[create an Account](/user-guide/cloud/accounts#create-account-and-login) before accepting an invitation to join a Team.
 
 :::
 

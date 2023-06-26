@@ -7,22 +7,22 @@ readTime: 8 min read
 
 > Cloud Projects are individual instances of Directus, managed within a Team. Standard and Enterprise tier Projects are
 > available, with each offering different options for infrastructure, configuration and professional services. A Cloud
-> Project is a Directus Instance, the [Infrastructure](/cloud/glossary#infrastructure) it runs on, and all of its
-> [data and file assets](/cloud/glossary#asset-storage). All Cloud Projects include all
-> [Cloud Exclusives](/cloud/glossary#cloud-exclusives). See [Support Options](/cloud/glossary#support-options) to find
+> Project is a Directus Instance, the [Infrastructure](/user-guide/cloud/glossary#infrastructure) it runs on, and all of its
+> [data and file assets](/user-guide/cloud/glossary#asset-storage). All Cloud Projects include all
+> [Cloud Exclusives](/user-guide/cloud/glossary#cloud-exclusives). See [Support Options](/user-guide/cloud/glossary#support-options) to find
 > out how to get help on your Project.
 
 There are two different Project tiers on Directus Cloud: [Standard](#create-a-standard-project) and
 [Enterprise](#create-an-enterprise-project). A side-by-side comparison of what's included in each tier can be found on
 the [Pricing page](https://directus.io/pricing).
 
-See the [Overview](/cloud/overview) to learn how Accounts, Teams and Projects interrelate.
+See the [Overview](/user-guide/cloud/overview) to learn how Accounts, Teams and Projects interrelate.
 
 ## View a Team's Projects
 
 All of a Team's Projects are listed on the Projects Page. For each Project, the following information and shortcuts are
 provided. On Project creation, the provisioning progress will be displayed until fully complete. The icon on the far
-left indicates whether it's online or [offline](/cloud/glossary#system-status). Next to that icon are the Project Name
+left indicates whether it's online or [offline](/user-guide/cloud/glossary#system-status). Next to that icon are the Project Name
 and Project Slug. On the right, you'll see the Project tier, followed by shortcuts, which allow you to
 <span mi icon>edit</span> update and <span mi icon>launch</span> access the Project. To view a Team's Projects:
 
@@ -32,13 +32,13 @@ and Project Slug. On the right, you'll see the Project tier, followed by shortcu
 ## Create a Standard Project
 
 The Standard tier is perfect for most production-ready use cases. Standard tier Projects come with custom URLs, daily
-[backups](/cloud/glossary#backups) and the recommended infrastructure for most projects. as needed.
+[backups](/user-guide/cloud/glossary#backups) and the recommended infrastructure for most projects. as needed.
 
 Standard Projects come with the following configuration options:
 
 - **Project Name** — Custom. This can be changed at any time.
 - **Project URL** — Custom URL: `your-custom-url.directus.app`. _This cannot be changed_.
-- [Datacenter Region](/cloud/glossary#datacenter-regions) — `United States, East`, `Europe, Frankfurt` or
+- [Datacenter Region](/user-guide/cloud/glossary#datacenter-regions) — `United States, East`, `Europe, Frankfurt` or
   `Asia Pacific, Singapore`.
 
 To create a Standard Project:
@@ -63,7 +63,7 @@ Upgrade to an [Enterprise Project](#create-an-enterprise-project).
 ## Create an Enterprise Project
 
 Enterprise tier offers power and scale to meet any Project's needs and offers 19
-[Datacenter regions](/cloud/glossary#datacenter-regions), upgraded [support options](/cloud/glossary#support-options),
+[Datacenter regions](/user-guide/cloud/glossary#datacenter-regions), upgraded [support options](/user-guide/cloud/glossary#support-options),
 and much more.
 
 :::tip Ready to go Enterprise?
