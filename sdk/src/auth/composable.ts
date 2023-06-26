@@ -92,6 +92,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				const requestUrl = getRequestUrl(client.url, options);
 				const data = await request<AuthenticationData>(requestUrl.toString(), options);
 
+				data.expires_at = new Date().getTime() + (data.expires ?? 0);
 				storage.set(data);
 				return data;
 			},
