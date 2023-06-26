@@ -65,7 +65,6 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
-import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Permission } from '@directus/types';
 import { orderBy } from 'lodash';
@@ -101,8 +100,6 @@ const { permissions, fetchPermissions, refreshing } = usePermissions();
 
 const { resetActive, resetSystemPermissions, resetting } = useReset();
 
-fetchPermissions();
-
 watch(() => props.permission, fetchPermissions, { immediate: true });
 
 provide('refresh-permissions', fetchPermissions);
@@ -126,7 +123,8 @@ function usePermissions() {
 				params.filter.role = { _eq: props.role };
 			}
 
-			permissions.value = await fetchAll('/permissions', { params });
+			const response = await api.get('/permissions', { params });
+			permissions.value = response.data.data;
 		} catch (err: any) {
 			unexpectedError(err);
 		} finally {
