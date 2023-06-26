@@ -184,8 +184,7 @@ query {
 	articles(
 		filter: {
 			sections: {
-				item__headings: {
-					# Instead of: item:headings
+				item__headings: { # Instead of: item:headings
 					title: { _eq: "Section 1" }
 				}
 			}
