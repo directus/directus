@@ -29,7 +29,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Linter
-        run: pnpm lint
+        run: pnpm exec eslint .
 
   format:
     name: Format
@@ -44,12 +44,7 @@ jobs:
           build: false
 
       - name: Run Formatter
-        uses: EPMatt/reviewdog-action-prettier@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
-          filter_mode: nofilter
-          fail_on_error: true
+        run: pnpm exec prettier --check .
 
   unit:
     name: Unit Tests
