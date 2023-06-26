@@ -7,6 +7,7 @@ import { memoryStorage } from './utils/memory-storage.js';
 
 const defaultConfigValues = {
 	msRefreshBeforeExpires: 30000, // 30 seconds
+	autoRefresh: true,
 };
 
 export const authentication = (mode: AuthenticationMode = 'cookie', config: AuthenticationConfig = {}) => {
@@ -15,6 +16,8 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 		let refreshPromise: Promise<unknown> | null = null;
 		let refreshTimeout: NodeJS.Timer | null = null;
 		const storage = config.storage ?? memoryStorage();
+
+		const autoRefresh = 'autoRefresh' in config ? config.autoRefresh : defaultConfigValues.autoRefresh;
 
 		const msRefreshBeforeExpires =
 			typeof config.msRefreshBeforeExpires === 'number'
@@ -53,7 +56,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 			data.expires_at = new Date().getTime() + expires;
 			storage.set(data);
 
-			if (expires > msRefreshBeforeExpires && expires < Number.MAX_SAFE_INTEGER) {
+			if (autoRefresh && expires > msRefreshBeforeExpires && expires < Number.MAX_SAFE_INTEGER) {
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 
 				refreshTimeout = setTimeout(() => {

@@ -13,6 +13,7 @@ export interface AuthenticationStorage {
 }
 
 export interface AuthenticationConfig {
+	autoRefresh?: boolean;
 	msRefreshBeforeExpires?: number;
 	storage?: AuthenticationStorage;
 }
