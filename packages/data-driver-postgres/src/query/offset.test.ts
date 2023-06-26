@@ -1,10 +1,10 @@
 import { test, expect, beforeEach } from 'vitest';
 import { offset } from './offset.js';
 import { randomIdentifier } from '@directus/random';
-import type { SqlStatement } from '@directus/data-sql';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 
 let sample: {
-	statement: SqlStatement;
+	statement: AbstractSqlQuery;
 };
 
 beforeEach(() => {
@@ -26,7 +26,7 @@ beforeEach(() => {
 });
 
 test('Empty string when offset is not defined', () => {
-	expect(offset(sample.statement)).toStrictEqual('');
+	expect(offset(sample.statement)).toStrictEqual(null);
 });
 
 test('Returns offset', () => {
