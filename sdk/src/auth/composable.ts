@@ -13,6 +13,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
 		config = { ...defaultConfigValues, ...config };
 		let refreshPromise: Promise<unknown> | null = null;
+		let refreshTimeout: NodeJS.Timer | null = null;
 		const storage = config.storage ?? memoryStorage();
 
 		const msRefreshBeforeExpires =
@@ -47,6 +48,21 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 			await activeRefresh();
 		};
 
+		const setCredentials = (data: AuthenticationData) => {
+			const expires = data.expires ?? 0;
+			data.expires_at = new Date().getTime() + expires;
+			storage.set(data);
+
+			if (expires > msRefreshBeforeExpires && expires < Number.MAX_SAFE_INTEGER) {
+				if (refreshTimeout) clearTimeout(refreshTimeout);
+
+				refreshTimeout = setTimeout(() => {
+					refreshTimeout = null;
+					refresh();
+				}, expires - msRefreshBeforeExpires);
+			}
+		};
+
 		const refresh = async () => {
 			const awaitRefresh = async () => {
 				const authData = await storage.get();
@@ -66,7 +82,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				const requestUrl = getRequestUrl(client.url, options);
 				const data = await request<AuthenticationData>(requestUrl.toString(), options);
 
-				storage.set(data);
+				setCredentials(data);
 				return data;
 			};
 
@@ -92,8 +108,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				const requestUrl = getRequestUrl(client.url, options);
 				const data = await request<AuthenticationData>(requestUrl.toString(), options);
 
-				data.expires_at = new Date().getTime() + (data.expires ?? 0);
-				storage.set(data);
+				setCredentials(data);
 				return data;
 			},
 			async logout() {
