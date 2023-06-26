@@ -24,13 +24,10 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/node-fetch": "2.6.4",
-		"@types/ws": "8.5.5",
 		"@vitest/coverage-c8": "0.31.1",
 		"tsup": "7.1.0",
-		"tsx": "3.12.7",
 		"typescript": "5.0.4",
-		"vitest": "0.31.1",
-		"ws": "8.13.0"
+		"vitest": "0.31.1"
 	},
 	"engines": {
 		"node": ">=18.0.0"
