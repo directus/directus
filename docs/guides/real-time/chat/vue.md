@@ -49,6 +49,7 @@ Create a new Role called `Users`, and give Create and Read access to the `Messag
 		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 		<script>
 			const { createApp } = Vue;
+
 			createApp({
 				data() {
 					return {};
@@ -71,7 +72,7 @@ data() {
 	return {
 		url: 'wss://your-directus-url/websocket', // [!code ++]
 		connection: null, // [!code ++]
-	}
+	};
 },
 ```
 
@@ -86,7 +87,7 @@ methods: {
 	loginSubmit() { // [!code ++]
 	}, // [!code ++]
 	messageSubmit() { // [!code ++]
-	} // [!code ++]
+	}, // [!code ++]
 }
 ```
 
@@ -114,7 +115,7 @@ data() {
 		url: 'wss://your-directus-url/websocket',
 		connection: null,
 		form: {}, // [!code ++]
-	}
+	};
 },
 ```
 
@@ -155,7 +156,7 @@ Then, create a new `authenticate` method:
 ```js
 authenticate(opts) {
 	const { email, password } = opts;
-	this.connection.send(JSON.stringify({  type: 'auth', email, password }));
+	this.connection.send(JSON.stringify({ type: 'auth', email, password }));
 },
 ```
 
@@ -168,7 +169,7 @@ In a WebSocket connection, all data sent from the server will trigger the connec
 loginSubmit() {
 	this.connection = new WebSocket(this.url);
 	this.connection.addEventListener('open', this.authenticate(this.login));
-	this.connection.addEventListener('message', message => this.receiveMessage(message)); // [!code ++]
+	this.connection.addEventListener('message', (message) => this.receiveMessage(message)); // [!code ++]
 },
 ```
 
@@ -186,6 +187,7 @@ As soon as you have successfully authenticated, a message will be sent. When thi
 ```js
 receiveMessage(message) {
 	const data = JSON.parse(message.data);
+// [!code ++]
 	if (data.type == 'auth' && data.status == 'ok') { // [!code ++]
 		connection.send(JSON.stringify({ // [!code ++]
 			type: 'subscribe', // [!code ++]
@@ -204,16 +206,20 @@ When a subscription is started, a message will be sent to confirm. Add this insi
 ```js
 receiveMessage(message) {
 	const data = JSON.parse(message.data);
+
 	if (data.type == 'auth' && data.status == 'ok') {
-		this.connection.send(JSON.stringify({
-			type: 'subscribe',
-			collection: 'messages',
-			query: {
-				fields: ['*', 'user_created.first_name'],
-				sort: 'date_created'
-			}
-		})) ;
+		this.connection.send(
+			JSON.stringify({
+				type: 'subscribe',
+				collection: 'messages',
+				query: {
+					fields: ['*', 'user_created.first_name'],
+					sort: 'date_created',
+				},
+			})
+		);
 	}
+// [!code ++]
 	if (data.type == 'subscription' && data.event == 'init') { // [!code ++]
 		console.log('subscription started'); // [!code ++]
 	} // [!code ++]
@@ -236,9 +242,9 @@ data() {
 		form: {},
 		messages: { // [!code ++]
 			new: '', // [!code ++]
-			history: [] // [!code ++]
-		} // [!code ++]
-	}
+			history: [], // [!code ++]
+		}, // [!code ++]
+	};
 },
 ```
 
@@ -257,12 +263,15 @@ Within the `messageSubmit` method, send a new message to create the item in your
 
 ```js
 messageSubmit() {
-	this.connection.send(JSON.stringify({ // [!code ++]
-		type: 'items', // [!code ++]
-		collection: 'messages', // [!code ++]
-		action: 'create', // [!code ++]
-		data: { text: this.messages.new } // [!code ++]
-	})); // [!code ++]
+	this.connection.send( // [!code ++]
+		JSON.stringify({ // [!code ++]
+			type: 'items', // [!code ++]
+			collection: 'messages', // [!code ++]
+			action: 'create', // [!code ++]
+			data: { text: this.messages.new }, // [!code ++]
+		}) // [!code ++]
+	); // [!code ++]
+// [!code ++]
 	this.messages.new = ''; // [!code ++]
 }
 ```
@@ -305,7 +314,6 @@ Replace the `console.log()` you created when the subscription is initialized:
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
 	console.log('subscription started'); // [!code --]
-
 	for (const message of data.data) { // [!code ++]
 		this.messages.history.push(message); // [!code ++]
 	} // [!code ++]
@@ -354,6 +362,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
 		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 		<script>
 			const { createApp } = Vue;
+
 			createApp({
 				data() {
 					return {
@@ -381,6 +390,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
 								data: { text: this.messages.new },
 							})
 						);
+
 						this.messages.new = '';
 					},
 					authenticate(opts) {
@@ -389,6 +399,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
 					},
 					receiveMessage(message) {
 						const data = JSON.parse(message.data);
+
 						if (data.type == 'auth' && data.status == 'ok') {
 							this.connection.send(
 								JSON.stringify({
@@ -401,11 +412,13 @@ This guide covers authentication, item creation, and subscription using WebSocke
 								})
 							);
 						}
+
 						if (data.type == 'subscription' && data.event == 'init') {
 							for (const message of data.data) {
 								this.messages.history.push(message);
 							}
 						}
+
 						if (data.type == 'subscription' && data.event == 'create') {
 							this.messages.history.push(data.data[0]);
 						}

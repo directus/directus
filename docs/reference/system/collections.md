@@ -184,7 +184,7 @@ type Query {
 ```graphql
 query {
 	collections {
-		...
+		# ...
 	}
 }
 ```
@@ -232,7 +232,7 @@ type Query {
 ```graphql
 query {
 	collections_by_name(name: "articles") {
-		...
+		# ...
 	}
 }
 ```
@@ -302,13 +302,8 @@ type Mutation {
 
 ```graphql
 mutation {
-	create_collections_item(data: {
-		collection: "testimonials",
-		meta: {
-			icon: "format_quote"
-		}
-	}) {
-		...
+	create_collections_item(data: { collection: "testimonials", meta: { icon: "format_quote" } }) {
+		# ...
 	}
 }
 ```

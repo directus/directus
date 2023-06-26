@@ -802,7 +802,9 @@ directus.comments;
 ### Create a comment
 
 ```js
-await directus.comments.create({/* ... */});
+await directus.comments.create({
+	// ...
+});
 ```
 
 ### Update a comment
@@ -838,13 +840,13 @@ await directus.collections.readAll(); //does not currently support query or sear
 ### Create a collection
 
 ```js
-await directus.collections.createOne({collection: 'articles', /* ... */});
+await directus.collections.createOne({ collection: 'articles', /* ... */ });
 ```
 
 ### Create multiple collections
 
 ```js
-await directus.collections.createMany([{collection: 'articles', /* ... */}, /* ... */]);
+await directus.collections.createMany([{ collection: 'articles', /* ... */ }, /* ... */]);
 ```
 
 ### Update a collection
@@ -886,7 +888,7 @@ await directus.fields.readAll(); //does not currently support query or searching
 ### Create a field
 
 ```js
-await directus.fields.createOne(/* collection name */ 'articles', {field: 'alt_title', /* ... */});
+await directus.fields.createOne(/* collection name */ 'articles', { field: 'alt_title', /* ... */ });
 ```
 
 ### Update a field
@@ -955,15 +957,16 @@ if (form && form instanceof HTMLFormElement) {
 
 ```html
 <!-- index.html -->
-<head></head>
-<body>
-	<form id="upload-file">
-		<input type="text" name="title" />
-		<input type="file" name="file" />
-    	<button>Send</button>
-	</form>
-	<script src="/index.js" type="module"></script>
-</body>
+<html>
+	<head></head>
+	<body>
+		<form id="upload-file">
+			<input type="text" name="title" />
+			<input type="file" name="file" />
+			<button>Send</button>
+		</form>
+		<script src="/index.js" type="module"></script>
+	</body>
 </html>
 ```
 
@@ -982,15 +985,19 @@ const directus = new Directus('https://example.directus.app', {
 });
 
 const form = new FormData();
-form.append("file", fs.createReadStream("./to_upload.jpeg"));
+form.append('file', fs.createReadStream('./to_upload.jpeg'));
 
-await directus.files.createOne(form, {}, {
-  requestOptions: {
-    headers: {
-      ...form.getHeaders()
-    }
-  }
-});
+await directus.files.createOne(
+	form,
+	{},
+	{
+		requestOptions: {
+			headers: {
+				...form.getHeaders(),
+			},
+		},
+	}
+);
 ```
 
 ### Importing a file

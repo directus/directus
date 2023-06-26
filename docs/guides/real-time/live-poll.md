@@ -89,6 +89,7 @@ Also create a `results.html` file and open it in your editor. Add the following:
 
 			socket.addEventListener('open', function () {
 				console.log({ event: 'onopen' });
+
 				socket.send(
 					JSON.stringify({
 						type: 'auth',
@@ -99,10 +100,13 @@ Also create a `results.html` file and open it in your editor. Add the following:
 
 			socket.addEventListener('message', function (message) {
 				const data = JSON.parse(message.data);
+
 				if (data.type == 'auth' && data.status == 'ok') {
 				}
+
 				if (data.type == 'subscription' && data.event == 'init') {
 				}
+
 				if (data.type == 'subscription' && data.event == 'create') {
 				}
 			});
@@ -148,14 +152,16 @@ Once authenticated, immediately subscribe to the `votes` collection:
 
 ```js
 if (data.type == 'auth' && data.status == 'ok') {
-	socket.send(JSON.stringify({	// [!code ++]
-		type: 'subscribe',	// [!code ++]
-		collection: 'votes',	// [!code ++]
-		query: {	// [!code ++]
-			aggregate: { count: 'choice' },	// [!code ++]
-			groupBy: ['choice'],	// [!code ++]
-		}	// [!code ++]
-	}));	// [!code ++]
+	socket.send( // [!code ++]
+		JSON.stringify({ // [!code ++]
+			type: 'subscribe', // [!code ++]
+			collection: 'votes', // [!code ++]
+			query: { // [!code ++]
+				aggregate: { count: 'choice' }, // [!code ++]
+				groupBy: ['choice'], // [!code ++]
+			}, // [!code ++]
+		}) // [!code ++]
+	); // [!code ++]
 }
 ```
 
@@ -167,12 +173,12 @@ data to edit the chart’s dataset and update it:
 
 ```js
 if (data.type == 'subscription' && data.event == 'init') {
-	for (const item of data.data) {	// [!code ++]
-		chart.data.labels.push(item.choice);	// [!code ++]
-		chart.data.datasets[0].data.push(item.count.choice);	// [!code ++]
-	}	// [!code ++]
-
-	chart.update();	// [!code ++]
+	for (const item of data.data) { // [!code ++]
+		chart.data.labels.push(item.choice); // [!code ++]
+		chart.data.datasets[0].data.push(item.count.choice); // [!code ++]
+	} // [!code ++]
+// [!code ++]
+	chart.update(); // [!code ++]
 }
 ```
 
@@ -188,14 +194,14 @@ When a new vote is cast, update the chart’s dataset and update it:
 if (data.type == 'subscription' && data.event == 'create') {
 	const vote = data.data[0]; // [!code ++]
 	const itemToUpdate = chart.data.labels.indexOf(vote.choice); // [!code ++]
-
+// [!code ++]
 	if (itemToUpdate !== -1) { // [!code ++]
 		chart.data.datasets[0].data[itemToUpdate]++; // [!code ++]
 	} else { // [!code ++]
 		chart.data.labels.push(vote.choice); // [!code ++]
 		chart.data.datasets[0].data.push(1); // [!code ++]
 	} // [!code ++]
-
+// [!code ++]
 	chart.update(); // [!code ++]
 }
 ```
@@ -261,6 +267,7 @@ There are many ways to improve the project built in this guide:
 
 			socket.addEventListener('open', function () {
 				console.log({ event: 'onopen' });
+
 				socket.send(
 					JSON.stringify({
 						type: 'auth',
@@ -271,6 +278,7 @@ There are many ways to improve the project built in this guide:
 
 			socket.addEventListener('message', function (message) {
 				const data = JSON.parse(message.data);
+
 				if (data.type == 'auth' && data.status == 'ok') {
 					socket.send(
 						JSON.stringify({
@@ -289,23 +297,27 @@ There are many ways to improve the project built in this guide:
 						chart.data.labels.push(item.choice);
 						chart.data.datasets[0].data.push(item.count.choice);
 					}
+
 					chart.update();
 				}
 
 				if (data.type == 'subscription' && data.event == 'create') {
 					const vote = data.data[0];
 					const itemToUpdate = chart.data.labels.indexOf(vote.choice);
+
 					if (itemToUpdate !== -1) {
 						chart.data.datasets[0].data[itemToUpdate]++;
 					} else {
 						chart.data.labels.push(vote.choice);
 						chart.data.datasets[0].data.push(1);
 					}
+
 					chart.update();
 				}
 			});
 
 			const ctx = document.getElementById('chart');
+
 			const chart = new Chart(ctx, {
 				type: 'pie',
 				data: {

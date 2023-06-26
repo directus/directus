@@ -181,17 +181,18 @@ underscore. For example, instead of using `sections.item:heading` in your filter
 
 ```graphql
 query {
-    articles(filter: {
-        sections: {
-            item__headings: {  # Instead of: item:headings
-                title: {
-                    _eq: "Section 1"
-                }
-            }
-        }
-    }): {
-        id
-    }
+	articles(
+		filter: {
+			sections: {
+				item__headings: {
+					# Instead of: item:headings
+					title: { _eq: "Section 1" }
+				}
+			}
+		}
+	) {
+		id
+	}
 }
 ```
 

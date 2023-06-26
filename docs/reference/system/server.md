@@ -69,21 +69,23 @@ GraphQL SDL file.
 
 ```graphql
 type about_us {
-  id: Int
-  introduction: String
-  our_process: String
-  sales_email: String
-  general_email: String
-  primary_color: String
-  secondary_color: String
-  logo: directus_files
-  mark: directus_files
+	id: Int
+	introduction: String
+	our_process: String
+	sales_email: String
+	general_email: String
+	primary_color: String
+	secondary_color: String
+	logo: directus_files
+	mark: directus_files
 }
 
 type articles {
-  id: Int
-  status: String
-	...
+	id: Int
+	status: String
+	# ...
+}
+
 # etc
 ```
 
