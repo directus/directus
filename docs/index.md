@@ -252,6 +252,7 @@ hr {
   top: 40%;
   left: 50%;
   translate: -50% -50%;
+  pointer-events: none;
 }
 
 .hero-pattern svg {
