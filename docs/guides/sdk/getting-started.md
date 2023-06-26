@@ -180,7 +180,7 @@ const result = await client.request(
 
 Add the `graphql()` composable to the client, this enables the `.query(...)` method to query the collection.
 
-For example, say you want to make a request to an `articles` collection.
+For example, to make a request to an `articles` collection.
 
 ```ts
 import { useDirectus } from '@directus/sdk@beta';
