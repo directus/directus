@@ -26,7 +26,7 @@
 		"@types/node-fetch": "2.6.4",
 		"@types/ws": "8.5.5",
 		"@vitest/coverage-c8": "0.31.1",
-		"tsup": "6.7.0",
+		"tsup": "7.1.0",
 		"tsx": "3.12.7",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1",
