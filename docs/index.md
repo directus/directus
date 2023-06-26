@@ -118,9 +118,9 @@ layout: home
       </p>
     </div>
     <div class="grid-3">
-      <Article title="Build a Static Website with Nuxt.js" tag="Nuxt.js" desc="Learn how to build a website using Directus as a CMS and Nuxt 3." img="/assets/baas.png" url='/guides/headless-cms/build-static-website/nuxt-3' />
-      <Article title="Set up Live Preview in a Next.js project" tag="Next.js" desc="By adding a preview URL, you can instantly see live changes made to your collection." img="/assets/headless-cms.png" url='/guides/headless-cms/live-preview/nextjs' />
-      <Article title="Build a Multi-User Chat With React.js" tag="React.js" desc="Deep dive into how to use Directus websockets to build an interactive chat application." img="/assets/internal-tools.png" url='/guides/real-time/chat/react' />
+      <Article title="Build a Static Website with Nuxt.js" tag="Nuxt.js" desc="Learn how to build a website using Directus as a CMS and Nuxt 3." img="/assets/nuxt-guide.png" url='/guides/headless-cms/build-static-website/nuxt-3' />
+      <Article title="Set up Live Preview in a Next.js project" tag="Next.js" desc="By adding a preview URL, you can instantly see live changes made to your collection." img="/assets/next-guide1.png" url='/guides/headless-cms/live-preview/nextjs' />
+      <Article title="Build a Multi-User Chat With React.js" tag="React.js" desc="Deep dive into how to use Directus websockets to build an interactive chat application." img="/assets/react-guide.png" url='/guides/real-time/chat/react' />
     </div>
   </div>
 </section>
