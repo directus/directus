@@ -80,14 +80,6 @@ create_user: إضافة مستخدم
 message: الرسالة
 delete_panel: حذف لوحة
 create_webhook: إنشاء Webhook
-create_translation_string: إنشئ نص ترجمة
-no_translation_string: لا توجد نصوص ترجمة
-no_translation_string_copy: لا توجد نصوص ترجمة حتى الآن.
-translation_string_key_placeholder: مفتاح نص الترجمة...
-translation_string_translations_placeholder: إضافة ترجمة جديدة
-edit_translation_string: تحليل نص الترجمة
-delete_translation_string_copy: >-
-  هل أنت متأكد من أنك تريد حذف نص الترجمة لـ "{key}"؟ لا يمكن التراجع عن هذا الإجراء.
 invite_users: دعوة مستخدمين
 invite: دعوة
 email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
@@ -118,19 +110,13 @@ public_label: عام
 public_description: التحكم بتوفر البيانات على واجهة الربط البرمجي بدون تسجيل دخول.
 admin_description: الدور الأساسي للمدير مع وصول غير مقيّد للتطبيق والـ API.
 not_allowed: غير مسموح
-directus_version: إصدار Directus
-node_version: رقم نسخة الوحدة
-node_uptime: مدة الاستيقاظ الوحدة
-os_type: نوع نظام التشغيل
-os_version: إصدار نظام التشغيل
-os_uptime: مدة استيقاظ نظام التشغيل
-os_totalmem: ذاكرة نظام التشغيل
 archive: أرشفة
 archive_confirm: هل أنت متأكد من أنك تريد أرشفة هذا العنصر؟
 archive_confirm_count: >-
   لا توجد عناصر محددة | هل أنت متأكد من أنك تريد أرشفة هذا العنصر؟ | هل أنت متأكد من أنك تريد أرشفة هذه العناصر {count}؟
 reset_system_permissions_to: 'إعادة تعيين صلاحيات النظام إلى:'
 reset_system_permissions_copy: سيؤدي هذا الإجراء إلى الكتابة فوق أي صلاحيات مخصصة ربما تكون قد طبقت على مجموعات النظام. هل أنت متأكد؟
+the_following_are_minimum_permissions: يتم تطبيق الحد الأدنى من الأذونات التالية تلقائياً عند تمكين "الوصول إلى التطبيق". يمكنك منح أذونات إضافية عند الحاجة، ولكن لا يمكنك تقليل الأذونات تحت هذا المستوى.
 app_access_minimum: الحد الأدنى للوصول إلى التطبيق
 recommended_defaults: الإعدادات الافتراضية الافضل
 unarchive: إزالة من الأرشيف
@@ -347,7 +333,7 @@ revision_delta_reverted: تمت الإستعادة
 revision_delta_update_message: تم تحديث هذا الحقل ولكن يتم إخفاء قيمته لأسباب أمنية.
 revision_delta_other: تنقيح
 revision_delta_by: '{date} بواسطة {user}'
-presentation_text_values_cannot_be_reimported: "يستخدم نص العرض التقديمي، لا يمكن إعادة استيراد القيم."
+presentation_text_values_cannot_be_reimported: 'يستخدم نص العرض التقديمي، لا يمكن إعادة استيراد القيم.'
 download_page_as_csv: 'تحميل الصفحة كـ CSV'
 private_user: خصخصة المستخدم
 creation_preview: معاينة الإنشاء
@@ -487,7 +473,6 @@ enable_select_button: تفعيل زر التحديد
 allow_duplicates: السماح بالتكرارات
 comments: تعليقات
 no_comments: لا توجد تعليقات بعد
-click_to_expand: أضغط للمزيد
 select_item: تحديد عنصر
 no_items: لا يوجد عناصر
 search_items: البحث عن عناصر...
@@ -906,7 +891,6 @@ settings_project: إعدادات المشروع
 settings_webhooks: روابط الويب (Webhooks)
 settings_flows: التدفقات
 settings_presets: الإعدادات المسبقة والعلامات
-settings_translation_strings: نصوص التّرجَمَة
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
 scope: مجال
 actions: الإجراءات
@@ -955,7 +939,6 @@ page_help_settings_webhooks_collection: '**تصفح Webhooks** - عرض جميع
 page_help_settings_webhooks_item: '**تفاصيل Webhook ** - نموذج لإنشاء وإدارة webhook للمشروع.'
 page_help_settings_flows_collection: '**تصفح التدفقات** - عرض جميع التدفقات داخل المشروع.'
 page_help_settings_flows_item: '**تفاصيل التدفق** - مساحة عمل لإدارة عملية واحدة أو أكثر.'
-page_help_settings_translation_strings_collection: '**تصفح مقاطع الترجمة** - عرض جميع مقاطع الترجمة داخل المشروع.'
 page_help_users_collection: '**دليل المستخدم** - يعرض جميع مستخدمي النظام داخل هذا المشروع.'
 page_help_users_item: >-
   **تفاصيل المستخدم** - إدارة معلومات حسابك، أو عرض تفاصيل المستخدمين الآخرين.
@@ -1249,6 +1232,8 @@ always_open: يعمل دائماً
 block: حَظْر
 inline: ضمن السياق
 comment: تعليق
+live_preview:
+  new_window: فتح في نافذة جديدة
 shares: مشاركات
 unlimited_usage: استخدام غير محدود
 no_shares: لا توجد مشاركات لإظهارها
@@ -1524,6 +1509,15 @@ interfaces:
     toolbar: شريط الأدوات
     custom_formats: تنسيقات مخصصة
     options_override: تجاوز الخيارات
+  input-block-editor:
+    tools: شريط الأدوات
+    tools_options:
+      header: الترويسة
+      embed: تضمين
+      code: نص برمجي
+      image: صورة
+      table: الجدول
+      underline: مسطر
   input-autocomplete-api:
     trigger: المشغّل
     rate: معدل
@@ -1660,7 +1654,7 @@ operations:
     recipient: مستخدم
     message: الرسالة
   request:
-    description: "تقديم طلب إلى عنوان URL"
+    description: 'تقديم طلب إلى عنوان URL'
     url: الرابط
     url_placeholder: https://example.com/example
     method: الطريقة

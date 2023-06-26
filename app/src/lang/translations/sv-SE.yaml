@@ -80,14 +80,6 @@ create_user: Skapa användare
 message: Meddelande
 delete_panel: Ta bort panel
 create_webhook: Skapa webhook
-create_translation_string: Skapa översättnings-sträng
-no_translation_string: Inga översättningssträngar
-no_translation_string_copy: Det finns inga översättningssträngar ännu.
-translation_string_key_placeholder: Översättningsnyckel...
-translation_string_translations_placeholder: Lägg till en ny översättning
-edit_translation_string: Redigera översättnings-sträng
-delete_translation_string_copy: >-
-  Är du säker på att du vill radera översättnings-strängen "{key}"? Den här åtgärden kan inte ångras.
 invite_users: Bjud in användare
 invite: Bjud in
 email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
@@ -118,13 +110,6 @@ public_label: Publik
 public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
 admin_description: Initial administrativ roll med obegränsad app/API-åtkomst.
 not_allowed: Inte tillåtet
-directus_version: Directus Version
-node_version: Node version
-node_uptime: Node upptid
-os_type: Operativsystem
-os_version: Operativsystemets version
-os_uptime: Operativsystemets upptid
-os_totalmem: Operativsystemets minne
 archive: Arkivera
 archive_confirm: Är du säker på att du vill arkivera detta objekt?
 archive_confirm_count: >-
@@ -348,7 +333,7 @@ revision_delta_reverted: Annullerad
 revision_delta_update_message: Detta fält har uppdaterats men dess värde döljs av säkerhetsskäl.
 revision_delta_other: Revision
 revision_delta_by: '{date} av {user}'
-presentation_text_values_cannot_be_reimported: "Använder presentationstext, värden kan inte återimporteras."
+presentation_text_values_cannot_be_reimported: 'Använder presentationstext, värden kan inte återimporteras.'
 download_page_as_csv: 'Ladda ned sida som CSV'
 private_user: Privat användare
 creation_preview: Förhandsgranskning av skapande
@@ -487,7 +472,6 @@ enable_select_button: Aktivera markerings knapp
 allow_duplicates: Tillåt dubbletter
 comments: Kommentarer
 no_comments: Inga kommentarer ännu
-click_to_expand: Klicka för att expandera
 select_item: Välj objekt
 no_items: Inga objekt
 search_items: Sök objekt...
@@ -955,7 +939,6 @@ page_help_settings_presets_item: >-
   **Förinställda detaljer** — Ett formulär för att hantera bokmärken och förinställningar för standardinsamling.
 page_help_settings_webhooks_collection: '**Bläddra bland webhooks** — Listar alla webhooks i projektet.'
 page_help_settings_webhooks_item: '**Detaljvy webhook** — Ett formulär för att skapa och hantera projektets webhooks.'
-page_help_settings_translation_strings_collection: '**Bläddra översättningssträngar** — Listar alla översättningssträngar inom projektet.'
 page_help_users_collection: '**Användarkatalog** — Listar alla systemanvändare i detta projekt.'
 page_help_users_item: >-
   **Användarinformation** — Hantera din kontoinformation eller visa information om andra användare.
@@ -1175,6 +1158,7 @@ field_options:
     sort_field: Välj ett fält...
     accountability_divider: Ansvarsskyldighet
     duplication_divider: Duplicering
+    preview_divider: Förhandsgranska
   directus_files:
     title: En unik titel...
     description: En valfri beskrivning...
@@ -1230,6 +1214,8 @@ start_collapsed: Start ihopfälld
 block: Blockera
 inline: Infogad
 comment: Kommentera
+live_preview:
+  new_window: Öppna i nytt fönster
 expired: Upphört
 upcoming: Kommande
 share: Dela
@@ -1569,6 +1555,15 @@ interfaces:
     custom_formats: Anpassade format
     options_override: Skriv över alternativ
     folder_note: Mapp för uppladdade filer. Påverkar inte befintliga filer.
+  input-block-editor:
+    tools: Verktygsfält
+    tools_options:
+      nestedlist: Lista
+      embed: Bädda in
+      code: Kod
+      image: Bild
+      table: Tabell
+      underline: Understruken
   input-autocomplete-api:
     results_path: Sökväg för resultat
     trigger: Utlösare

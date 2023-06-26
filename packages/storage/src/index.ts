@@ -31,10 +31,10 @@ export class StorageManager {
 	}
 }
 
-export type Range = {
-	start?: number;
-	end?: number;
-};
+export interface Range {
+	start: number | undefined;
+	end: number | undefined;
+}
 
 export type Stat = {
 	size: number;

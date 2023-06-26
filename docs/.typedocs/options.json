@@ -8,13 +8,17 @@
         "../../packages/random",
         "../../packages/sdk",
         "../../packages/stores",
+        "../../packages/themes",
         "../../packages/types",
         "../../packages/update-check"
     ],
     "name": "Directus",
     "entryPointStrategy": "packages",
-    "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+    "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme", "typedoc-plugin-frontmatter"],
     "out": "../packages",
     "docsRoot": "/",
-    "readme": "./home.md"
+    "readme": "./home.md",
+    "frontmatterGlobals": {
+        "editLink": false
+    }
 }

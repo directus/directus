@@ -15,7 +15,8 @@
 	"dependencies": {
 		"highlight.js": "^11.8.0",
 		"node-fetch": "3.3.1",
-		"outdent": "^0.8.0"
+		"outdent": "^0.8.0",
+		"typedoc-plugin-frontmatter": "^0.0.2"
 	},
 	"devDependencies": {
 		"@directus/format-title": "10.0.0",

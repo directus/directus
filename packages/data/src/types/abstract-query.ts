@@ -29,7 +29,7 @@ interface AbstractQueryNode {
 }
 
 /**
- * The A group of all possible field types.
+ * A group of all possible field types.
  * This can be used within the `nodes` array of the `AbstractQuery`.
  */
 export type AbstractQueryFieldNode =
@@ -180,7 +180,7 @@ export interface AbstractQueryFieldNodeRelatedOneToAny extends AbstractQueryNode
 export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
 	offset?: AbstractQueryNodeOffset;
-	sort?: AbstractQueryNodeSort;
+	sort?: AbstractQueryNodeSort[];
 	filter?: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
 }
 
@@ -204,21 +204,50 @@ interface AbstractQueryNodeOffset extends AbstractQueryModifierNode {
 	value: number;
 }
 
+export type AbstractQueryNodeSortTargets =
+	| AbstractQueryFieldNodePrimitive
+	| AbstractQueryFieldNodeFn
+	// TDB when we implement relations:
+	| AbstractQueryFieldNodeRelatedManyToOne
+	| AbstractQueryFieldNodeRelatedAnyToOne;
+
 /**
- * Specifies the order of the results
+ * Specifies the order of the result, f.e. for a primitive field.
+ * @example
+ * ```js
+ * const sortNode = {
+ * 		type: 'sort',
+ * 		direction: 'ascending',
+ * 		target: {
+ * 			type: 'primitive',
+ * 			field: 'attribute_xy'
+ * 		}
+ * }
+ * ```
+ * Alternatively a function can be applied a the field.
+ * The result is then used for sorting.
+ * @example
+ * ```js
+ * const sortNode = {
+ * 		type: 'sort',
+ * 		direction: 'ascending',
+ * 		target: {
+ * 			type: 'fn',
+ * 			fn: 'year',
+ * 			targetNode: {
+ * 				type: 'primitive'
+ * 				field: 'date_created'
+ * 		}
+ * }
  */
-interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
+export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
 	type: 'sort';
 
 	/** the desired order */
 	direction: 'ascending' | 'descending';
 
 	/** the node on which the sorting should be applied */
-	target:
-		| AbstractQueryFieldNodePrimitive
-		| AbstractQueryFieldNodeFn
-		| AbstractQueryFieldNodeRelatedManyToOne
-		| AbstractQueryFieldNodeRelatedAnyToOne;
+	target: AbstractQueryNodeSortTargets;
 }
 
 /**
@@ -331,21 +360,6 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 
 	/** the conditional value. Might be also a function or sub query in the future */
 	value: string | number | boolean;
-}
-
-/**
- * Used to work with parameterized queries.
- * @example
- * ```
- * {
- * 		statement: 'SELECT * FROM "articles" WHERE "articles"."id" = $1;',
- * 		values: [99],
- * }
- * ```
- */
-export interface ParameterizedSQLStatement {
-	statement: string;
-	values: (string | number | boolean)[];
 }
 
 /**
