@@ -1,13 +1,28 @@
+export type AuthenticationMode = 'json' | 'cookie';
+
+export interface AuthenticationData {
+	access_token: string | null;
+	refresh_token: string | null;
+	expires: number | null;
+}
+
+export interface AuthenticationStorage {
+	get: () => Promise<AuthenticationData | null> | AuthenticationData | null;
+	set: (value: AuthenticationData | null) => Promise<void> | void;
+}
+
 export interface AuthenticationConfig {
-	mode: 'json' | 'cookie';
-	storage?: {
-		get: (name: string) => string | undefined;
-		set: (name: string, value: string) => void;
-	};
+	mode: AuthenticationMode;
+	autoRefresh?: boolean;
+	msRefreshBeforeExpires?: number;
+	storage?: AuthenticationStorage;
 }
 
 export interface AuthenticationClient<_Schema extends object> {
-	login(creds: { email: string; password: string }): Promise<unknown>;
+	login(email: string, password: string): Promise<unknown>;
 	refresh(): Promise<unknown>;
 	logout(): Promise<unknown>;
+
+	getToken(): Promise<string | null>;
+	setToken(access_token: string | null): void;
 }
