@@ -11,11 +11,6 @@
 	autoLaunch = false
 	framework = "#custom"
 
-[[redirects]]
-	from = "/"
-	to = "/getting-started/introduction"
-	status = 301
-	force = true
 
 [[redirects]]
 	from = "/api/*"
@@ -86,3 +81,38 @@
   from = "/getting-started/glossary"
   to = "/user-guide/overview/glossary"
   status = 301
+
+[[redirects]]
+  from = "/app/activity-log"
+  to = "/user-guide/settings/activity-log"
+  status = 301
+
+[[redirects]]
+  from = "/app/insights"
+  to = "/user-guide/insights/dashboards"
+  status = 301
+
+[[redirects]]
+  from = "/app/file-library"
+  to = "/user-guide/file-library/files"
+  status = 301
+
+[[redirects]]
+  from = "/app/project-settings"
+  to = "/user-guide/cloud/project-settings"
+  status = 301
+
+[[redirects]]
+  from = "/app/content/shares"
+  to = "/user-guide/content-module/content/shares"
+  status = 301
+
+[[redirects]]
+  from = "/app/user-directory"
+  to = "/user-guide/user-management/user-directory"
+  status = 301
+
+[[redirects]]
+	from = "/cloud/*"
+	to = "/user-guide/cloud/:splat"
+	status = 301
