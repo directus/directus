@@ -691,7 +691,7 @@ function sidebar() {
 			],
 		},
 		{
-			text: 'Self Hosted',
+			text: 'Self-Hosted',
 			collapsible: true,
 			collapsed: true,
 			items: [

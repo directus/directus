@@ -52,6 +52,7 @@ or: Hoặc
 init: Khởi tạo
 dataset_too_large_currently_showing_n_items: Cơ sở dữ liệu quá lớn. Hiển thị {n} dòng đầu tiên.
 custom: Tuỳ chỉnh
+hook: Móc
 fill_width: Rộng toàn bộ
 field_name_translations: Hiển thị Ngôn ngữ Khác
 enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt Bảo Mật 2 Lớp
@@ -77,10 +78,6 @@ create_user: Tạo Người dùng
 message: Tin nhắn
 delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
-create_translation_string: Tạo Các Bản Dịch
-no_translation_string: Không có bản dịch
-no_translation_string_copy: Không có bản dịch nào.
-translation_string_translations_placeholder: Thêm bản dịch mới
 invite_users: Mời Người dùng
 invite: Mời
 email_already_invited: Email "{email}" đã được mời
@@ -107,14 +104,8 @@ logoutReason:
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
 public_label: Công khai
 public_description: Kiểm soát dữ liệu API nào có thể truy cập mà không cần đăng nhập.
+admin_description: Chức vụ quản trị bắt đầu và không bị giới hạn truy cập App/API.
 not_allowed: Không Cho Phép
-directus_version: Phiên bản hệ thống
-node_version: Phiên bản Node
-node_uptime: Thời gian Hoạt động
-os_type: Hệ điều hành
-os_version: Phiên bản hệ điều hành
-os_uptime: Thời gian Hoạt động
-os_totalmem: Bộ nhớ
 archive: Lưu trữ
 archive_confirm: Bạn có chắc chắn muốn lưu trữ mục này không?
 archive_confirm_count: >-
@@ -194,6 +185,7 @@ exposure: Độ phơi sáng
 shutter: Màn trập
 iso: ISO
 focal_length: Tiêu cự
+schema_setup_key: Tên cột cơ sở dữ liệu và khóa API của trường này
 create_field: Tạo thêm trường
 creating_new_field: 'Trường Mới ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -261,6 +253,8 @@ o2m_relationship: Quan hệ Một - Nhiều
 m2m_relationship: Quan hệ Nhiều - Nhiều
 m2a_relationship: Quan hệ Nhiều - Bất Kỳ
 invalid_item: Mục Không hợp lệ
+dialog: Hộp thoại
+confirmation_description: Mô tả xác nhận
 next: Tiếp theo
 field_name: Tên Trường
 translations: Các Bản Dịch
@@ -283,6 +277,7 @@ dismiss: Bỏ qua
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Dữ liệu thực tế
 copy_raw_value_success: Đã sao chép
+copy_raw_value_fail: Sao chép không thành công
 paste_raw_value: Dán dữ liệu thô
 paste_raw_value_success: Dán
 paste_raw_value_fail: Dán thất bại
@@ -422,7 +417,6 @@ enable_create_button: Bật Nút Tạo
 allow_duplicates: Cho phép Trùng lặp
 comments: Bình luận
 no_comments: Chưa Có Bình Luận
-click_to_expand: Nhấn vào để Mở rộng
 select_item: Chọn Bản Ghi
 no_items: Không có bản ghi nào
 search_items: Tìm kiếm...
@@ -903,6 +897,8 @@ field_options:
       value: Giá trị
 no_value: Không có giá trị
 comment: Bình luận
+live_preview:
+  new_window: Mở trong Cửa Sổ Mới
 expired: Đã hết hạn
 share: Chia sẻ
 share_access_not_found_desc: Vui lòng liên hệ với người dùng được ủy quyền của dự án này để yêu cầu quyền truy cập.
@@ -1042,6 +1038,13 @@ interfaces:
     user: Người dùng
     modes:
       dropdown: Tuỳ chọn dạng thả xuống
+  input-block-editor:
+    tools_options:
+      nestedlist: Danh sách
+      embed: Nhúng
+      code: Mã nguồn
+      table: Bảng
+      underline: Gạch chân
   system-token:
     system-token: Token
 displays:

@@ -80,14 +80,6 @@ create_user: Felhasználó létrehozása
 message: Üzenet
 delete_panel: Panel törlése
 create_webhook: Webhook létrehozása
-create_translation_string: Fordítás létrehozása
-no_translation_string: Nincs lefordított karakterlánc
-no_translation_string_copy: Nincs még lefordított karakterlánc.
-translation_string_key_placeholder: Fordítási karakterlánc kulcs...
-translation_string_translations_placeholder: Új fordítás hozzáadása
-edit_translation_string: Fordítás módosítása
-delete_translation_string_copy: >-
-  Biztosan törörlni szeretné a "{key}" fordítási karakterláncot? Ez a művelet nem visszavonható.
 invite_users: Felhasználók meghívása
 invite: Meghívás
 email_already_invited: Az "{email}" e-mail címet már meghívták
@@ -118,13 +110,6 @@ public_label: Nyilvános
 public_description: API adatok hozzáférése bejelentkezés nélkül.
 admin_description: Alapértelmezett adminisztrátori szerepkör korlátlan alkalmazás és API hozzáféréssel.
 not_allowed: Nem engedélyezett
-directus_version: Directus verzió
-node_version: Node verzió
-node_uptime: Node futásidő
-os_type: Operációs rendszer típusa
-os_version: Operációs rendszer verziója
-os_uptime: Operációs rendszer futásideje
-os_totalmem: Operációs rendszer memóriája
 archive: Archiválás
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
@@ -350,7 +335,7 @@ revision_delta_reverted: Visszaállítva
 revision_delta_update_message: Ezt a mezőt frissítették, de értékét biztonsági okokból elrejtjük
 revision_delta_other: Változat
 revision_delta_by: '{date} {user} által'
-presentation_text_values_cannot_be_reimported: "Prezentációs szöveget használ, az értékek nem importálhatók újra."
+presentation_text_values_cannot_be_reimported: 'Prezentációs szöveget használ, az értékek nem importálhatók újra.'
 download_page_as_csv: 'Letöltés CSV-ként'
 private_user: Privát felhasználó
 creation_preview: Létrehozás előnézete
@@ -490,7 +475,6 @@ enable_select_button: Kiválasztás gomb engedélyezése
 allow_duplicates: Másolatok engedélyezése
 comments: Hozzászólások
 no_comments: Még nincs hozzászólás
-click_to_expand: Kattintson a kibontáshoz
 select_item: Elem kiválasztása
 no_items: Nincs megjeleníthető elem
 search_items: Tételek keresése...
@@ -952,7 +936,6 @@ settings_project: Projekt beállításai
 settings_webhooks: Webhookok
 settings_flows: Folyamatok
 settings_presets: Alapértelmezések és Könyvjelzők
-settings_translation_strings: Fordítási karakterláncok
 one_or_more_options_are_missing: Egy vagy több opció hiányzik
 scope: Hatókör
 actions: Műveletek
@@ -1002,7 +985,6 @@ page_help_settings_webhooks_collection: '**Webhookok Böngészése** — A proje
 page_help_settings_webhooks_item: '**Webhook Részletei** — A projekt webhookjainak létrehozására és kezelésére szolgáló űrlap.'
 page_help_settings_flows_collection: '**Folyamatok tallózása** — A projekten belüli összes folyamat felsorolása.'
 page_help_settings_flows_item: '**A folyamat részletei** — Munkaterület egy vagy több művelet kezeléséhez.'
-page_help_settings_translation_strings_collection: '**Tallózás a fordítási karakterláncok között** — A projekten belüli összes fordítási karakterlánc felsorolása.'
 page_help_users_collection: '**Felhasználók Könyvtára** - A projekt összes rendszerfelhasználójának listája.'
 page_help_users_item: >-
   **Felhasználó részletei** - Kezelje fiókinformációit, vagy tekintse meg más felhasználók adatait.
@@ -1265,6 +1247,7 @@ field_options:
     sort_field: Mező kiválasztása...
     accountability_divider: Elszámoltathatóság
     duplication_divider: Duplikálás
+    preview_divider: Előnézet
   directus_files:
     title: Egy egyedi cím...
     description: Egy opcionális leírás...
@@ -1322,6 +1305,8 @@ start_collapsed: Kezdetben összecsukva
 block: Blokk
 inline: Inline
 comment: Hozzászólás
+live_preview:
+  new_window: Megnyitás új ablakban
 shares: Megosztások
 unlimited_usage: Korlátlan használat
 uses_left: Nincs használat hátra | 1 használat maradt | {n} használat maradt
@@ -1684,7 +1669,6 @@ interfaces:
     input-translated-string: Lefordított szavak
     description: Válassza ki vagy adja hozzá a fordítási karakterláncot
     search_placeholder: Keresés...
-    new_translation_string: Új fordítás
   boolean:
     toggle: Váltás
     description: Be- és kikapcsolás közti váltás
@@ -1721,6 +1705,16 @@ interfaces:
     folder_note: Mappa a feltöltött fájlok számára. Nem érinti a meglévő fájlokat.
     imageToken: Statikus hozzáférési token
     imageToken_label: A statikus hozzáférési token hozzá van rendelve az eszközök URL-jéhez
+  input-block-editor:
+    tools: Eszköztár
+    tools_options:
+      header: Fejléc
+      nestedlist: Lista
+      embed: Beágyazás
+      code: Kód
+      image: Kép
+      table: Táblázat
+      underline: Aláhúzott
   input-autocomplete-api:
     input-autocomplete-api: Automatikus kiegészítés (API)
     description: Külső API-értékek keresési típusvezetője (automatikus kiegészítés).
@@ -2098,7 +2092,7 @@ operations:
     message: Üzenet
   request:
     name: Webhook / URL-kérés
-    description: "Kérjen egy URL-t"
+    description: 'Kérjen egy URL-t'
     url: URL
     url_placeholder: https://pelda.hu/pelda
     method: Metódus

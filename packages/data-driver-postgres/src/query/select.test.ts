@@ -1,10 +1,10 @@
-import type { SqlStatement } from '@directus/data-sql';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 import { beforeEach, expect, test } from 'vitest';
 import { select } from './select.js';
 import { randomIdentifier } from '@directus/random';
 
 let sample: {
-	statement: SqlStatement;
+	statement: AbstractSqlQuery;
 };
 
 beforeEach(() => {
@@ -20,6 +20,7 @@ beforeEach(() => {
 				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
 			],
 			from: randomIdentifier(),
+			parameters: [],
 		},
 	};
 });

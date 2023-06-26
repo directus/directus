@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-gcs",
-	"version": "10.0.4",
+	"version": "10.0.5",
 	"description": "GCS file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
