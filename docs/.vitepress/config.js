@@ -132,6 +132,7 @@ gtag('config', 'UA-24637628-7');
 			{
 				text: 'User Guide',
 				link: '/user-guide/overview/data-studio-app',
+				activeMatch: '/user-guide',
 			},
 			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
 			{ text: 'Website', link: 'https://directus.io/' },
