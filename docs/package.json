@@ -13,15 +13,10 @@
 		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
 	},
 	"dependencies": {
-<<<<<<< HEAD
 		"highlight.js": "^11.8.0",
 		"node-fetch": "3.3.1",
 		"outdent": "^0.8.0",
-		"vue-highlight-code": "^0.1.16"
-=======
-		"node-fetch": "3.3.1",
 		"typedoc-plugin-frontmatter": "^0.0.2"
->>>>>>> 94bfecf72e0802d03d5e85363d85d4e7d6da08bb
 	},
 	"devDependencies": {
 		"@directus/format-title": "10.0.0",
