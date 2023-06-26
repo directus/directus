@@ -2,6 +2,7 @@ const tsFilesConfig = require('../.eslintrc.js').overrides.find((o) => o.files.i
 
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
+	ignorePatterns: ['/packages/**'],
 	overrides: [
 		// Apply TypeScript config to tsx files
 		{
