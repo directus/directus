@@ -206,7 +206,7 @@ await directus.items('articles').readOne(4, {
     </div>
     <div class="grid-2 m-20">
       <SelfHosting class="m-20" title="Get Started with Docker" desc="Get up and running with our Docker Guide." img="/assets/docker.png" url='/self-hosted/docker-guide' />
-      <SelfHosting class="m-20" title="Config Options" desc="A reference of all possible settings in your project." img="/assets/cli.png" url='/self-hosted/config-options' />
+      <SelfHosting class="m-20" title="Config Options" desc="A reference of all possible settings in your project." img="/assets/config-options.png" url='/self-hosted/config-options' />
     </div>
   </div>
 </section>
