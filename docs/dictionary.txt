@@ -313,6 +313,8 @@ px.
 reactively
 readonly
 readTime
+(R|r)ealtime
+(R|r)eal-(T|t)ime
 rebase
 reconfigurations
 reconnection
@@ -351,6 +353,7 @@ SSR
 StackOverflow
 stylization
 subdirectory
+subfolder
 substring
 SuperAdmins?
 superset

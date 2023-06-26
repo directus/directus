@@ -24,7 +24,7 @@ The Directus community is growing quickly, which also means there are more and m
 
 :::info Feature Requests & Code Contributions
 
-To learn more about how we use GitHub for Feature Requests and Code Contributions, check out our [Code Contributions guide](/contributing/code).
+To learn more about how we use GitHub for Feature Requests and Code Contributions, check out our [Code Contributions guide](/contributing/introduction).
 
 :::
 

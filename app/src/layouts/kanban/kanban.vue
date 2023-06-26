@@ -69,7 +69,7 @@
 											v-tooltip.bottom="`${user.first_name} ${user.last_name}`"
 											class="avatar"
 										>
-											<img v-if="user.avatar" :src="parseAvatar(user.avatar)" />
+											<v-image v-if="user.avatar && parseAvatar(user.avatar)" :src="parseAvatar(user.avatar)" />
 											<v-icon v-else name="person" />
 										</v-avatar>
 									</div>
@@ -109,8 +109,8 @@ export default {
 
 <script setup lang="ts">
 import { addTokenToURL } from '@/api';
-import { getRootPath } from '@/utils/get-root-path';
 import { getItemRoute } from '@/utils/get-item-route';
+import { getRootPath } from '@/utils/get-root-path';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -165,9 +165,8 @@ function openEditGroup(group: Group) {
 function parseAvatar(file: Record<string, any>) {
 	if (!file || !file.type) return;
 	if (file.type.startsWith('image') === false) return;
-	if (file.type.includes('svg')) return;
 
-	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&width=48&height=48`;
+	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
 	return addTokenToURL(url);
 }
 
