@@ -13,7 +13,9 @@ export const rest = (/*_options: RestConfig = {}*/) => {
 			async request<Output extends object>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
 
-				const token = await client.getToken();
+				// we need to use THIS here instead of client allow for overridden functions
+				const self = this as RestClient<Schema> & DirectusClient<Schema>;
+				const token = await self.getToken();
 
 				if (token) {
 					if (!options.headers) options.headers = {};

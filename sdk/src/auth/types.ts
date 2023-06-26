@@ -4,6 +4,7 @@ export interface AuthenticationData {
 	access_token: string | null;
 	refresh_token: string | null;
 	expires: number | null;
+	expires_at: number | null;
 }
 
 export interface AuthenticationStorage {
@@ -12,8 +13,6 @@ export interface AuthenticationStorage {
 }
 
 export interface AuthenticationConfig {
-	mode: AuthenticationMode;
-	autoRefresh?: boolean;
 	msRefreshBeforeExpires?: number;
 	storage?: AuthenticationStorage;
 }

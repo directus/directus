@@ -2,19 +2,80 @@ import type { DirectusClient } from '../client.js';
 import type { RequestOptions } from '../types/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
-import type { AuthenticationClient, AuthenticationConfig, AuthenticationData } from './types.js';
+import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';
 import { memoryStorage } from './utils/memory-storage.js';
 
-export const auth = (config: AuthenticationConfig = { mode: 'cookie' }) => {
+const defaultConfigValues = {
+	msRefreshBeforeExpires: 30000, // 30 seconds
+};
+
+export const authentication = (mode: AuthenticationMode = 'cookie', config: AuthenticationConfig = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
-		let refreshPromise: Promise<any> | null = null;
+		config = { ...defaultConfigValues, ...config };
+		let refreshPromise: Promise<unknown> | null = null;
 		const storage = config.storage ?? memoryStorage();
 
+		const msRefreshBeforeExpires =
+			typeof config.msRefreshBeforeExpires === 'number'
+				? config.msRefreshBeforeExpires
+				: defaultConfigValues.msRefreshBeforeExpires;
+
 		const resetStorage = () => {
-			storage.set({ access_token: null, refresh_token: null, expires: null });
+			storage.set({ access_token: null, refresh_token: null, expires: null, expires_at: null });
+		};
+
+		const activeRefresh = async () => {
+			try {
+				await refreshPromise;
+			} finally {
+				refreshPromise = null;
+			}
+		};
+
+		const refreshIfExpired = async () => {
+			const authData = await storage.get();
+
+			if (refreshPromise || !authData?.expires_at) {
+				await activeRefresh();
+				return;
+			}
+
+			if (authData.expires_at < new Date().getTime() + msRefreshBeforeExpires) {
+				refresh();
+			}
+
+			await activeRefresh();
+		};
+
+		const refresh = async () => {
+			const awaitRefresh = async () => {
+				const authData = await storage.get();
+				resetStorage();
+
+				const options = {
+					path: '/auth/refresh',
+					method: 'POST',
+				} as RequestOptions;
+
+				if (mode === 'json' && authData?.refresh_token) {
+					options.body = JSON.stringify({
+						refresh_token: authData.refresh_token,
+					});
+				}
+
+				const requestUrl = getRequestUrl(client.url, options);
+				const data = await request<AuthenticationData>(requestUrl.toString(), options);
+
+				storage.set(data);
+				return data;
+			};
+
+			refreshPromise = awaitRefresh();
+			return refreshPromise;
 		};
 
 		return {
+			refresh,
 			async login(email: string, password: string) {
 				// TODO: allow for websocket only authentication
 				resetStorage();
@@ -34,32 +95,6 @@ export const auth = (config: AuthenticationConfig = { mode: 'cookie' }) => {
 				storage.set(data);
 				return data;
 			},
-			async refresh() {
-				const awaitRefresh = async () => {
-					const authData = await storage.get();
-					resetStorage();
-
-					const options = {
-						path: '/auth/refresh',
-						method: 'POST',
-					} as RequestOptions;
-
-					if (config.mode === 'json' && authData?.refresh_token) {
-						options.body = JSON.stringify({
-							refresh_token: authData.refresh_token,
-						});
-					}
-
-					const requestUrl = getRequestUrl(client.url, options);
-					const data = await request<AuthenticationData>(requestUrl.toString(), options);
-
-					storage.set(data);
-					return data;
-				};
-
-				refreshPromise = awaitRefresh();
-				return refreshPromise;
-			},
 			async logout() {
 				const authData = await storage.get();
 
@@ -68,7 +103,7 @@ export const auth = (config: AuthenticationConfig = { mode: 'cookie' }) => {
 					method: 'POST',
 				} as RequestOptions;
 
-				if (config.mode === 'json' && authData?.refresh_token) {
+				if (mode === 'json' && authData?.refresh_token) {
 					options.body = JSON.stringify({
 						refresh_token: authData.refresh_token,
 					});
@@ -80,13 +115,7 @@ export const auth = (config: AuthenticationConfig = { mode: 'cookie' }) => {
 				resetStorage();
 			},
 			async getToken() {
-				if (refreshPromise !== null) {
-					try {
-						await refreshPromise;
-					} finally {
-						refreshPromise = null;
-					}
-				}
+				await refreshIfExpired();
 
 				const data = await storage.get();
 				return data?.access_token ?? null;
@@ -96,6 +125,7 @@ export const auth = (config: AuthenticationConfig = { mode: 'cookie' }) => {
 					access_token,
 					refresh_token: null,
 					expires: null,
+					expires_at: null,
 				});
 			},
 		};
