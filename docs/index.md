@@ -22,7 +22,7 @@ layout: home
        Explore our resources and powerful data engine to build your projects confidently.
       </p>
       <div class="hero-buttons">
-        <a class="primary-btn" href="/getting-started/introduction">Get Started</a>
+        <a class="primary-btn" href="/getting-started/quickstart">Get Started</a>
         <a class="secondary-btn inline-flex" 
         href="https://github.com/directus/directus/" target="_blank">GitHub<Github style="margin-left: 6px;"/></a
         >
@@ -127,9 +127,9 @@ await directus.items('articles').readOne(4, {
         icon="extension"
       />
       <Card
-        title="Real Time"
+        title="Realtime"
         text="Access real-time data in your project with WebSockets, backed by your database."
-        url="/guides/real-time/getting-started"
+        url="/guides/real-time/getting-started/"
         icon="bolt"
       />
        <Card
