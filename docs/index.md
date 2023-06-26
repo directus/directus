@@ -399,6 +399,7 @@ hr {
   filter: drop-shadow(0px 0px 120px rgba(255, 255, 255, 0.1));
   backdrop-filter: blur(4px);
   z-index: 1;
+  margin-left: 20px;
 
 }
 .flex {
@@ -491,6 +492,12 @@ hr {
   }
 }
 
+@media only screen and (max-width: 1200px) {
+  .hero-toggler {
+    display: none;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   .hero {
     min-height: unset;
@@ -511,11 +518,8 @@ hr {
     grid-template-columns: 1fr;
   }
 
-  .hero-toggler {
-    display: none;
-  }
   .hero-content h1 {
-  font-size: 48px;
+  font-size: 42px;
   }
 
   .section-padding--hero {
