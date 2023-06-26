@@ -40,6 +40,6 @@ defineProps<{
 	border-radius: 8px;
 }
 .gray {
-	color: #747a82;
+	color: var(--vp-c-gray);
 }
 </style>

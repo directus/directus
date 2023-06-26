@@ -12,7 +12,7 @@ defineProps<{
 .tag {
 	background: #f0ecff;
 	border-radius: 6px;
-	color: #6644ff;
+	color: var(--vp-c-purple);
 	display: inline-block;
 	font-size: 12px;
 	font-weight: 500;
