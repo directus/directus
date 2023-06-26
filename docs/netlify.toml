@@ -12,12 +12,6 @@
 	framework = "#custom"
 
 [[redirects]]
-	from = "/"
-	to = "/getting-started/introduction"
-	status = 301
-	force = true
-
-[[redirects]]
 	from = "/api/*"
 	to = "/.netlify/functions/:splat"
 	status = 200
@@ -56,7 +50,7 @@
 	from = "/use-cases/headless-cms/build-website-*"
 	to = "/guides/headless-cms/build-static-website/:splat"
 	status = 301
-	
+
 [[redirects]]
 	from = "/use-cases/headless-cms/create-reusable-page-components-using-m2a"
 	to = "/guides/headless-cms/reusable-components"
