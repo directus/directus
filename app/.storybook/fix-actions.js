@@ -1,6 +1,6 @@
 import { action } from '@storybook/addon-actions';
 
-export function fix(args, argTypes, update) {
+export function fix(args, argTypes) {
 	if (args === undefined) args = {};
 
 	for (let type of Object.values(argTypes)) {
@@ -8,9 +8,6 @@ export function fix(args, argTypes, update) {
 
 		if (type.name.startsWith('update:')) {
 			args[type.name] = (event) => {
-				// update({
-				//     [type.name.substring(7)]: event
-				// })
 				action(type.name)(event);
 			};
 		} else args[type.name] = action(type.name);

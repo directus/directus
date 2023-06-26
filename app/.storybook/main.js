@@ -1,5 +1,6 @@
 const path = require('path');
 const { mergeConfig } = require('vite');
+
 module.exports = {
 	async viteFinal(config) {
 		return mergeConfig(config, {
@@ -10,7 +11,6 @@ module.exports = {
 						find: '@',
 						replacement: path.resolve(__dirname, '..', 'src'),
 					},
-					// { find: 'json2csv', replacement: 'json2csv/dist/json2csv.umd.js' },
 				],
 			},
 		});

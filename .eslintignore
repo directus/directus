@@ -1,6 +1,7 @@
 dist/
 /packages/extensions-sdk/templates/
 /api/extensions/
+!/app/.storybook/
 !/docs/.vitepress/
 !/docs/.typedocs/
 /docs/.vitepress/cache/
