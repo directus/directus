@@ -24,6 +24,7 @@ describe('Schema Caching Tests', () => {
 			env1[vendor].CACHE_ENABLED = 'true';
 			env1[vendor].CACHE_AUTO_PURGE = 'true';
 			env1[vendor].CACHE_SCHEMA = 'true';
+			env1[vendor].CACHE_STORE = 'memory';
 			env1[vendor].CACHE_NAMESPACE = 'directus-schema-cache';
 			env1[vendor].REDIS = `redis://localhost:6108/4`;
 			env1[vendor].MESSENGER_STORE = 'redis';
