@@ -1,4 +1,6 @@
-# Directus JS SDK Revamped
+# Directus JS SDK
+
+> This is a BETA release, expect that things do not work!
 
 The design goals for this rebuild:
 - TypeScript first
