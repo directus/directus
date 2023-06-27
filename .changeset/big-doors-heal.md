@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Updating Archive status based on updated props
+Fixed archive status in sidebar when clicking on same collection again
