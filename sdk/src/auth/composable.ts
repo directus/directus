@@ -10,6 +10,14 @@ const defaultConfigValues = {
 	autoRefresh: true,
 };
 
+/**
+ * Creates a client to authenticate with Directus.
+ *
+ * @param mode AuthenticationMode
+ * @param config The optional configuration.
+ *
+ * @returns A Directus authentication client.
+ */
 export const authentication = (mode: AuthenticationMode = 'cookie', config: AuthenticationConfig = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
 		config = { ...defaultConfigValues, ...config };

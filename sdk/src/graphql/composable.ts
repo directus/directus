@@ -4,6 +4,11 @@ import type { GraphqlClient } from './types.js';
 import { request } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 
+/**
+ * Creates a client to communicate with Directus GraphQL.
+ *
+ * @returns A Directus GraphQL client.
+ */
 export const graphql = () => {
 	return <Schema extends object>(client: DirectusClient<Schema>): GraphqlClient<Schema> => {
 		return {
