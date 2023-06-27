@@ -276,6 +276,23 @@ All the `DB_POOL__` prefixed options are passed to [`tarn.js`](https://github.co
 
 :::
 
+## Redis
+
+Directus requires Redis for multi-container deployments. This ensures that things like caching, rate-limiting, and
+websockets work reliably across multiple containers of Directus.
+
+| Variable                  | Description                                                                                                                                                | Default Value |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `REDIS_NAMESPACE`         | Namespace prefix to use for the redis keys                                                                                                                 | `directus`    |
+| `REDIS_CONNECTION_STRING` | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4`. Using this will ignore the other Redis connection parameter environment variables | --            |
+| `REDIS_HOST`              | Hostname of the Redis instance, e.g., `"127.0.0.1"`                                                                                                        | --            |
+| `REDIS_PORT`              | Port of the Redis instance, e.g., `6379`                                                                                                                   | --            |
+| `REDIS_USERNAME`          | Username for your Redis instance, e.g., `"default"`                                                                                                        | --            |
+| `REDIS_PASSWORD`          | Password for your Redis instance, e.g., `"yourRedisPassword"`                                                                                              | --            |
+
+If the Redis configuration is omitted, Directus will default to using local memory. This will fail when running Directus
+across multiple containers.
+
 ## Security
 
 | Variable                         | Description                                                                                                                                                                                          | Default Value             |
@@ -356,58 +373,20 @@ For more details about each configuration variable, please see the
 ## Rate Limiting
 
 You can use the built-in rate-limiter to prevent users from hitting the API too much. Simply enabling the rate-limiter
-will set a default maximum of 50 requests per second, tracked in memory. Once you have multiple copies of Directus
-running under a load balancer, or your user base grows so much that memory is no longer a viable place to store the rate
-limiter information, you should use `redis` instance to store the rate limiter data.
+will set a default maximum of 50 requests per second, tracked in memory.
 
-| Variable                                    | Description                                                       | Default Value |
-| ------------------------------------------- | ----------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.         | `false`       |
-| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                          | `50`          |
-| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.       | `1`           |
-| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
-| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                              | `150`         |
-| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.         | `false`       |
-| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                    | `1000`        |
-| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.       | `1`           |
-| `RATE_LIMITER_GLOBAL_STORE`                 | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
-| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                              | `150`         |
+| Variable                                    | Description                                                 | Default Value |
+| ------------------------------------------- | ----------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.   | `false`       |
+| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                    | `50`          |
+| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted. | `1`           |
+| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                        | `150`         |
+| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.   | `false`       |
+| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.              | `1000`        |
+| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted. | `1`           |
+| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                        | `150`         |
 
 Based on the `RATE_LIMITER_STORE`/`RATE_LIMITER_GLOBAL_STORE` used, you must also provide the following configurations:
-
-### Memory
-
-No additional configuration required.
-
-### Redis
-
-| Variable                    | Description                                                             | Default Value |
-| --------------------------- | ----------------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_REDIS`        | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
-| `RATE_LIMITER_GLOBAL_REDIS` | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable                             | Description                                                   | Default Value |
-| ------------------------------------ | ------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_REDIS_HOST`            | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `RATE_LIMITER_REDIS_PORT`            | Port of the Redis instance, e.g., `6379`                      | --            |
-| `RATE_LIMITER_REDIS_USERNAME`        | Username for your Redis instance, e.g., `"default"`           | --            |
-| `RATE_LIMITER_REDIS_PASSWORD`        | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `RATE_LIMITER_REDIS_DB`              | Database of your Redis instance to connect, e.g., `1`         | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
-
-::: tip Additional Rate Limiter Variables
-
-All `RATE_LIMITER_*`/`RATE_LIMITER_GLOBAL_*` variables are passed directly to a `rate-limiter-flexible` instance.
-Depending on your project's needs, you can extend the above environment variables to configure any of
-[the `rate-limiter-flexible` options](https://github.com/animir/node-rate-limiter-flexible/wiki/Options).
-
-:::
 
 ### Example: Basic
 
@@ -419,26 +398,6 @@ RATE_LIMITER_DURATION="5"
 # globally 100 requests per 5 seconds
 RATE_LIMITER_GLOBAL_POINTS="100"
 RATE_LIMITER_GLOBAL_DURATION="5"
-```
-
-### Example: Redis
-
-```
-RATE_LIMITER_ENABLED="true"
-
-RATE_LIMITER_POINTS="10"
-RATE_LIMITER_DURATION="5"
-
-RATE_LIMITER_STORE="redis"
-
-RATE_LIMITER_REDIS="redis://@127.0.0.1"
-
-# If you are using Redis ACL
-RATE_LIMITER_REDIS_USERNAME="default"
-RATE_LIMITER_REDIS_PASSWORD="yourRedisPassword"
-RATE_LIMITER_REDIS_HOST="127.0.0.1"
-RATE_LIMITER_REDIS_PORT=6379
-RATE_LIMITER_REDIS_DB=0
 ```
 
 ### Pressure-based rate limiter
@@ -469,8 +428,7 @@ middleman servers (like CDNs) and even the browser.
 
 In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` and `CACHE_PERMISSIONS` which
 are enabled by default. These speed up the overall performance of Directus, as we don't want to introspect the whole
-database or check all permissions on every request. When running Directus load balanced, you'll need to use
-[Redis](#redis-2) or disable all caching.
+database or check all permissions on every request.
 
 :::
 
@@ -493,7 +451,6 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
 | `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`                               |
 | `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `directus-cache`                     |
-| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                | `memory`                             |
 | `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --                                   |
 | `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false                                |
 | `CACHE_SKIP_ALLOWED`                         | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                 | false                                |
@@ -512,30 +469,6 @@ benefits on quick subsequent reads.
 `CACHE_AUTO_PURGE_IGNORE_LIST`.
 
 <sup>[4]</sup> Not affected by the `CACHE_ENABLED` value.
-
-<sup>[5]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
-Instead, you can use the above `CACHE_STORE` environment variable to use `redis` as the cache store. Based on the chosen
-`CACHE_STORE`, you must also provide the following configurations:
-
-### Memory
-
-No additional configuration required.
-
-### Redis
-
-| Variable      | Description                                                             | Default Value |
-| ------------- | ----------------------------------------------------------------------- | ------------- |
-| `CACHE_REDIS` | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable               | Description                                                   | Default Value |
-| ---------------------- | ------------------------------------------------------------- | ------------- |
-| `CACHE_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `CACHE_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
-| `CACHE_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
-| `CACHE_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `CACHE_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
 
 ## File Storage
 
@@ -928,46 +861,6 @@ code for the extensions doesn't need to be re-fetched from the server on each ap
 that code changes to app extensions won't be taken into account by the browser until `EXTENSIONS_CACHE_TTL` has expired.
 By default, extensions are not cached. The input data type for this environment variable is the same as
 [`CACHE_TTL`](#cache).
-
-## Messenger
-
-| Variable              | Description                                                             | Default Value |
-| --------------------- | ----------------------------------------------------------------------- | ------------- |
-| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup>                                  | `memory`      |
-| `MESSENGER_NAMESPACE` | How to scope the channels in Redis                                      | `directus`    |
-| `MESSENGER_REDIS`     | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable                   | Description                                                   | Default Value |
-| -------------------------- | ------------------------------------------------------------- | ------------- |
-| `MESSENGER_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `MESSENGER_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
-| `MESSENGER_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
-| `MESSENGER_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `MESSENGER_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
-
-<sup>[1]</sup> `redis` should be used in load-balanced installations of Directus
-
-## Synchronization
-
-| Variable                    | Description                                                             | Default Value |
-| --------------------------- | ----------------------------------------------------------------------- | ------------- |
-| `SYNCHRONIZATION_STORE`     | One of `memory`, `redis`<sup>[1]</sup>                                  | `memory`      |
-| `SYNCHRONIZATION_NAMESPACE` | How to scope the channels in Redis                                      | `directus`    |
-| `SYNCHRONIZATION_REDIS`     | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable                         | Description                                                   | Default Value |
-| -------------------------------- | ------------------------------------------------------------- | ------------- |
-| `SYNCHRONIZATION_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `SYNCHRONIZATION_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
-| `SYNCHRONIZATION_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
-| `SYNCHRONIZATION_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `SYNCHRONIZATION_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
-
-<sup>[1]</sup> `redis` should be used in load-balanced installations of Directus
 
 ## Email
 
