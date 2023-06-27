@@ -68,9 +68,9 @@ The source code is located in `/api/src` and the below folders are inside there.
 
 ::: tip Component Library
 
-Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you
-can use to enrich your extensions or when developing locally. These components can be used in any of the "app
-extensions", including Interfaces, Displays, Modules, Layouts, and Panels.
+Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you can
+use to enrich your extensions or when developing locally. These components can be used in any of the "app extensions",
+including Interfaces, Displays, Modules, Layouts, and Panels.
 
 :::
 
@@ -104,6 +104,11 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 | [@directus/types](/packages/@directus/types/)                                                                            | Shared types for Directus                                                                                                                                             |
 | [@directus/update-check](/packages/@directus/update-check/)                                                              | Check if an update is available for a given package                                                                                                                   |
 | [@directus/utils](https://github.com/directus/directus/tree/main/packages/utils)                                         | Utilities shared between the Directus packages                                                                                                                        |
+
+## The JavaScript SDK (`/sdk`)
+
+Contains the new Directus JavaScript SDK available as [@directus/sdk](</packages/SDK (beta)/>) package. Currently in
+beta state.
 
 ## Tests (`/tests`)
 

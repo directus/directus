@@ -4,5 +4,9 @@
 		"outDir": "dist",
 		"lib": ["DOM"]
 	},
-	"include": ["src"]
+	"include": ["src"],
+	"typedocOptions": {
+		"entryPoints": ["./src/client.ts", "./src/*/index.ts"],
+		"name": "@directus/SDK (beta)"
+	}
 }
