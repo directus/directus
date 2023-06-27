@@ -12,12 +12,47 @@
 	"license": "MIT",
 	"type": "module",
 	"exports": {
-		"import": "./dist/index.js",
-		"require": "./dist/index.cjs"
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
+		},
+		"./auth": {
+			"import": "./dist/auth/index.js",
+			"require": "./dist/auth/index.cjs",
+			"types": "./dist/auth/index.d.ts"
+		},
+		"./graphql": {
+			"import": "./dist/graphql/index.js",
+			"require": "./dist/graphql/index.cjs",
+			"types": "./dist/graphql/index.d.ts"
+		},
+		"./realtime": {
+			"import": "./dist/realtime/index.js",
+			"require": "./dist/realtime/index.cjs",
+			"types": "./dist/realtime/index.d.ts"
+		},
+		"./realtime/commands": {
+			"import": "./dist/realtime/commands/index.js",
+			"require": "./dist/realtime/commands/index.cjs",
+			"types": "./dist/realtime/commands/index.d.ts"
+		},
+		"./rest": {
+			"import": "./dist/rest/index.js",
+			"require": "./dist/rest/index.cjs",
+			"types": "./dist/rest/index.d.ts"
+		},
+		"./rest/commands": {
+			"import": "./dist/rest/commands/index.js",
+			"require": "./dist/rest/commands/index.cjs",
+			"types": "./dist/rest/commands/index.d.ts"
+		},
+		"./package.json": "./package.json"
 	},
+	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "tsup src/index.ts --format=esm,cjs --dts --minify",
-		"dev": "tsup src/index.ts --format=esm --dts --watch"
+		"build": "NODE_ENV=production tsup",
+		"dev": "NODE_ENV=development tsup"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
