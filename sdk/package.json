@@ -32,20 +32,10 @@
 			"require": "./dist/realtime/index.cjs",
 			"types": "./dist/realtime/index.d.ts"
 		},
-		"./realtime/commands": {
-			"import": "./dist/realtime/commands/index.js",
-			"require": "./dist/realtime/commands/index.cjs",
-			"types": "./dist/realtime/commands/index.d.ts"
-		},
 		"./rest": {
 			"import": "./dist/rest/index.js",
 			"require": "./dist/rest/index.cjs",
 			"types": "./dist/rest/index.d.ts"
-		},
-		"./rest/commands": {
-			"import": "./dist/rest/commands/index.js",
-			"require": "./dist/rest/commands/index.cjs",
-			"types": "./dist/rest/commands/index.d.ts"
 		},
 		"./package.json": "./package.json"
 	},
