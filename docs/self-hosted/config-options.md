@@ -279,7 +279,7 @@ All the `DB_POOL__` prefixed options are passed to [`tarn.js`](https://github.co
 ## Redis
 
 Directus requires Redis for multi-container deployments. This ensures that things like caching, rate-limiting, and
-websockets work reliably across multiple containers of Directus.
+WebSockets work reliably across multiple containers of Directus.
 
 | Variable         | Description                                                                                                                                                | Default Value |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
