@@ -25,18 +25,18 @@ describe('Schema Caching Tests', () => {
 			env1[vendor].CACHE_AUTO_PURGE = 'true';
 			env1[vendor].CACHE_SCHEMA = 'true';
 			env1[vendor].CACHE_NAMESPACE = 'directus-schema-cache';
+			env1[vendor].REDIS = `redis://localhost:6108/4`;
 			env1[vendor].MESSENGER_STORE = 'redis';
 			env1[vendor].MESSENGER_NAMESPACE = `directus-${vendor}`;
-			env1[vendor].REDIS = `redis://localhost:6108/4`;
 
 			const env2 = cloneDeep(env1);
 			env2[vendor].CACHE_NAMESPACE = env1[vendor].CACHE_NAMESPACE + '2';
 
 			const env3 = cloneDeep(env1);
 			env3[vendor].CACHE_NAMESPACE = env1[vendor].CACHE_NAMESPACE + '3';
+			delete env3[vendor].REDIS;
 			delete env3[vendor].MESSENGER_STORE;
 			delete env3[vendor].MESSENGER_NAMESPACE;
-			delete env3[vendor].REDIS;
 
 			const env4 = cloneDeep(env3);
 			env4[vendor].CACHE_NAMESPACE = env1[vendor].CACHE_NAMESPACE + '4';

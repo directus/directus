@@ -38,6 +38,7 @@ describe('Permissions Cache Purging Tests', () => {
 			const envRedis = cloneDeep(envMem);
 			envRedis[vendor].REDIS_HOST = 'localhost';
 			envRedis[vendor].REDIS_PORT = '6108';
+			envRedis[vendor].CACHE_STORE = 'redis';
 			envRedis[vendor].CACHE_NAMESPACE = `${cacheNamespacePrefix}_redis`;
 
 			const envRedisPurge = cloneDeep(envRedis);

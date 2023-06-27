@@ -128,6 +128,7 @@ services:
       DB_PASSWORD: 'directus'
 
       CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
       REDIS: 'redis://cache:6379'
 
       ADMIN_EMAIL: 'admin@example.com'
