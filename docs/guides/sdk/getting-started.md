@@ -231,8 +231,6 @@ const result = await client.query<Article[]>(`
 `);
 ```
 
-> Feel free to customize the queries according to your project's GraphQL schema.
-
 ## Next Steps
 
 You have successfully created a composable client using the Directus SDK.
@@ -243,8 +241,3 @@ Keep an eye on our documentation as we continue to enhance and expand the SDK.
 
 If you encounter any issues or have questions, don't hesitate to reach out to us in our
 [Discord community](https://directus.chat/).
-
-## Older SDK Version
-
-The older SDK still works and your existing applications that use the older version will continue to
-function without any issues.
