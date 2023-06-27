@@ -57,11 +57,56 @@
 	status = 301
 
 [[redirects]]
-	from = "/cloud/*"
-	to = "/"
+	from = "/getting-started/backing-directus"
+	to = "/contributing/sponsor"
 	status = 301
 
 [[redirects]]
-	from = "/getting-started/backing-directus"
-	to = "/contributing/sponsor"
+	from = "/app/content/*"
+	to = "/user-guide/content-module/content/:splat"
+	status = 301
+
+[[redirects]]
+  from = "/app/users-roles-permissions.html"
+  to = "/user-guide/user-management/users-roles-permissions.html"
+  status = 301
+
+[[redirects]]
+  from = "/getting-started/glossary.html"
+  to = "/user-guide/overview/glossary.html"
+  status = 301
+
+[[redirects]]
+  from = "/app/activity-log.html"
+  to = "/user-guide/settings/activity-log.html"
+  status = 301
+
+[[redirects]]
+  from = "/app/insights.html"
+  to = "/user-guide/insights/dashboards.html"
+  status = 301
+
+[[redirects]]
+  from = "/app/file-library.html"
+  to = "/user-guide/file-library/files.html"
+  status = 301
+
+[[redirects]]
+  from = "/app/project-settings.html"
+  to = "/user-guide/cloud/project-settings.html"
+  status = 301
+
+[[redirects]]
+  from = "/app/content/shares.html"
+  to = "/user-guide/content-module/content/shares.html"
+  status = 301
+
+[[redirects]]
+  from = "/app/user-directory.html"
+  to = "/user-guide/user-management/user-directory.html"
+  status = 301
+
+[[redirects]]
+	from = "/cloud/*"
+	to = "/user-guide/cloud/:splat"
 	status = 301
