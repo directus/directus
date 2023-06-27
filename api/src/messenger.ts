@@ -46,7 +46,7 @@ export class MessengerRedis implements Messenger {
 		const env = getEnv();
 		this.pub = new Redis(env['REDIS'] ?? config);
 		this.sub = new Redis(env['REDIS'] ?? config);
-		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus';
+		this.namespace = env['MESSENGER_NAMESPACE'] ?? 'directus-messenger';
 	}
 
 	publish(channel: string, payload: Record<string, any>) {
