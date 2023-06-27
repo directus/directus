@@ -39,7 +39,7 @@ Directus project and data.
 ```ts
 import { useDirectus } from '@directus/sdk@beta';
 
-// your Directus collection schema
+// Your Directus collection schema
 type Schema = {
 	// ...
 };
