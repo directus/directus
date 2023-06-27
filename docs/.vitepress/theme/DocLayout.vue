@@ -1,7 +1,7 @@
 <script setup>
-import { computed } from 'vue';
-import DefaultTheme from 'vitepress/theme';
 import { useData, useRoute } from 'vitepress';
+import DefaultTheme from 'vitepress/theme';
+import { computed } from 'vue';
 import ArticleFeedback from '../components/ArticleFeedback.vue';
 
 const { Layout } = DefaultTheme;
