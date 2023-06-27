@@ -19,7 +19,7 @@ This SDK is a significant overhaul of the previous version, introducing new feat
 
 ::: warning SDK in Beta
 
-The new SDK is in Beta, so we recommend using it in a staging environment first before deploying it to production.
+The new SDK is in Beta, so we do not recommend using it in production.
 
 :::
 
@@ -83,7 +83,7 @@ For example, to login to your directus instance, invoke the `login` method
 import { useDirectus } from '@directus/sdk@beta';
 import { authentication } from '@directus/sdk@beta/composable';
 
-const client = useDirectus('http://directus.example.co').use(authentication());
+const client = useDirectus('http://directus.example.com').use(authentication());
 await client.login(email, password);
 ```
 
@@ -219,7 +219,7 @@ Keep an eye on our documentation as we continue to enhance and expand the SDK.
 If you encounter any issues or have questions, don't hesitate to reach out to us in our
 [Discord community](https://directus.chat/).
 
-## Backward Compatibility
+## Older SDK Version
 
-The older Directus SDK will still work and your existing applications that use the older version will continue to
+The older SDK still works and your existing applications that use the older version will continue to
 function without any issues.
