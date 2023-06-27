@@ -67,7 +67,6 @@ function validateFilter(filter: Query['filter']) {
 				case '_nempty':
 					validateBoolean(value, key);
 					break;
-
 				case '_intersects':
 				case '_nintersects':
 				case '_intersects_bbox':
@@ -84,8 +83,12 @@ function validateFilter(filter: Query['filter']) {
 				case '_ncontains':
 				case '_starts_with':
 				case '_nstarts_with':
+				case '_istarts_with':
+				case '_nistarts_with':
 				case '_ends_with':
 				case '_nends_with':
+				case '_iends_with':
+				case '_niends_with':
 				case '_gt':
 				case '_gte':
 				case '_lt':
@@ -135,8 +138,8 @@ function validateList(value: any, key: string) {
 	return true;
 }
 
-function validateBoolean(value: any, key: string) {
-	if (value === null) return true;
+export function validateBoolean(value: any, key: string) {
+	if (value === null || value === '') return true;
 
 	if (typeof value !== 'boolean') {
 		throw new InvalidQueryException(`"${key}" has to be a boolean`);
@@ -145,8 +148,8 @@ function validateBoolean(value: any, key: string) {
 	return true;
 }
 
-function validateGeometry(value: any, key: string) {
-	if (value === null) return true;
+export function validateGeometry(value: any, key: string) {
+	if (value === null || value === '') return true;
 
 	try {
 		stringify(value);

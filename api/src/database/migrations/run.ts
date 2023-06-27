@@ -23,7 +23,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 	migrationFiles = migrationFiles.filter((file: string) => /^[0-9]+[A-Z]-[^.]+\.(?:js|ts)$/.test(file));
 
-	customMigrationFiles = customMigrationFiles.filter((file: string) => /\.(c|m)?js$/.test(file));
+	customMigrationFiles = customMigrationFiles.filter((file: string) => file.includes('-') && /\.(c|m)?js$/.test(file));
 
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
 
@@ -74,6 +74,10 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { up } = await import(`file://${nextVersion.file}`);
 
+		if (!up) {
+			logger.warn(`Couldn't find the "up" function from migration ${nextVersion.file}`);
+		}
+
 		if (log) {
 			logger.info(`Applying ${nextVersion.name}...`);
 		}
@@ -99,6 +103,10 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { down } = await import(`file://${migration.file}`);
 
+		if (!down) {
+			logger.warn(`Couldn't find the "down" function from migration ${migration.file}`);
+		}
+
 		if (log) {
 			logger.info(`Undoing ${migration.name}...`);
 		}
@@ -116,6 +124,10 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			if (migration.completed === false) {
 				needsCacheFlush = true;
 				const { up } = getModuleDefault(await import(`file://${migration.file}`));
+
+				if (!up) {
+					logger.warn(`Couldn't find the "up" function from migration ${migration.file}`);
+				}
 
 				if (log) {
 					logger.info(`Applying ${migration.name}...`);

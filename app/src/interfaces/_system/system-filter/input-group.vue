@@ -15,9 +15,13 @@
 				'_ncontains',
 				'_icontains',
 				'_starts_with',
+				'_istarts_with',
 				'_nstarts_with',
+				'_nistarts_with',
 				'_ends_with',
+				'_iends_with',
 				'_nends_with',
+				'_niends_with',
 				'_regex',
 			].includes(comparator)
 		"
