@@ -5,7 +5,7 @@ import { orderBy } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { flushCaches } from '../../cache.js';
+import { flushCaches } from '../../cache/index.js';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';

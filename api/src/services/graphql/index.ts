@@ -44,7 +44,7 @@ import type {
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { Knex } from 'knex';
 import { flatten, get, mapKeys, merge, omit, pick, set, transform, uniq } from 'lodash-es';
-import { clearSystemCache, getCache } from '../../cache.js';
+import { clearSystemCache, getCache } from '../../cache/index.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';

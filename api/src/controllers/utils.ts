@@ -2,7 +2,7 @@ import argon2 from 'argon2';
 import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
-import { flushCaches } from '../cache.js';
+import { flushCaches } from '../cache/index.js';
 import {
 	ForbiddenException,
 	InvalidPayloadException,

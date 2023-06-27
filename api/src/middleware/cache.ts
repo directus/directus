@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import { getCache, getCacheValue } from '../cache.js';
+import { getCache, getCacheValue } from '../cache/index.js';
 import env from '../env.js';
 import logger from '../logger.js';
 import asyncHandler from '../utils/async-handler.js';

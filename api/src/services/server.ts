@@ -4,7 +4,7 @@ import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
-import { getCache } from '../cache.js';
+import { getCache } from '../cache/index.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
 import env from '../env.js';
 import logger from '../logger.js';

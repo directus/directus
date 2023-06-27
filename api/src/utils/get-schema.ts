@@ -4,7 +4,7 @@ import type { Filter, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';
-import { getSchemaCache, setSchemaCache } from '../cache.js';
+import { getSchemaCache, setSchemaCache } from '../cache/index.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';

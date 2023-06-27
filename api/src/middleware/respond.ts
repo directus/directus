@@ -1,6 +1,6 @@
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
-import { getCache, setCacheValue } from '../cache.js';
+import { getCache, setCacheValue } from '../cache/index.js';
 import env from '../env.js';
 import logger from '../logger.js';
 import { ExportService } from '../services/import-export.js';

@@ -3,7 +3,7 @@ import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
-import { getCache } from '../cache.js';
+import { getCache } from '../cache/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';

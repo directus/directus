@@ -4,7 +4,7 @@ import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } fr
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { clearSystemCache, getCache } from '../cache.js';
+import { clearSystemCache, getCache } from '../cache/index.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';

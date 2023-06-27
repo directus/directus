@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -498,7 +498,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   app:
     devDependencies:
@@ -977,7 +977,7 @@ importers:
         version: 2.3.0(rollup@3.22.0)(vite@4.3.7)
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/composables:
     dependencies:
@@ -1020,7 +1020,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/constants:
     dependencies:
@@ -1069,7 +1069,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/data-driver-postgres:
     dependencies:
@@ -1109,7 +1109,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/data-sql:
     devDependencies:
@@ -1139,7 +1139,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/exceptions:
     devDependencies:
@@ -1163,7 +1163,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/extensions-sdk:
     dependencies:
@@ -1254,7 +1254,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/pressure:
     dependencies:
@@ -1279,7 +1279,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/random:
     devDependencies:
@@ -1300,7 +1300,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/release-notes-generator:
     dependencies:
@@ -1331,7 +1331,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/schema:
     dependencies:
@@ -1409,7 +1409,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1437,7 +1437,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1468,7 +1468,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1496,7 +1496,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-local:
     dependencies:
@@ -1521,7 +1521,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/storage-driver-s3:
     dependencies:
@@ -1558,7 +1558,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/stores:
     dependencies:
@@ -1614,7 +1614,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   packages/tsconfig: {}
 
@@ -1753,7 +1753,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+        version: 0.31.1(jsdom@22.0.0)
 
   tests/blackbox:
     devDependencies:
@@ -8681,7 +8681,7 @@ packages:
       magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.3
-      vitest: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
+      vitest: 0.31.1(jsdom@22.0.0)
     dev: true
 
   /@vitest/expect@0.31.1:

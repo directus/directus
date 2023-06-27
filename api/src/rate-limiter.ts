@@ -43,7 +43,7 @@ function getConfig(
 	if (store === 'redis') {
 		const Redis = require('ioredis');
 		delete config.redis;
-		config.storeClient = new Redis(env[`${configPrefix}_REDIS`] || getConfigFromEnv(`${configPrefix}_REDIS_`));
+		config.storeClient = new Redis(env[`REDIS`] || getConfigFromEnv(`REDIS_`));
 	}
 
 	delete config.enabled;
