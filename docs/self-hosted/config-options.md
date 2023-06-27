@@ -471,6 +471,9 @@ benefits on quick subsequent reads.
 
 <sup>[4]</sup> Not affected by the `CACHE_ENABLED` value.
 
+<sup>[5]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
+Instead, you can use the above `CACHE_STORE` environment variable to use `redis` as the cache store.
+
 ## File Storage
 
 By default, Directus stores all uploaded files locally on disk. However, you can also configure Directus to use S3,
