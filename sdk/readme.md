@@ -21,11 +21,11 @@ The following composables are available/in progress:
   - adds `.request(...)` on the client
 - `graphql()` GraphQL request functions
   - adds `.query(...)` on the client
-- `auth()` authentication functions
+- `authenticate()` authentication functions
   - adds `.login({ email, password })`, `.logout()`, `.refresh()` on the client
 - `realtime()` websocket connectivity
   - adds `.subscribe(...)`, `.message(...)`, `.receive((message) => {})` on the client
-- `subscription()` GraphQL Subscriptions [todo]
+- `subscription()` GraphQL Subscriptions [not available]
   - will add `.subscription()`
 
 For this example we'll build a client including `rest` and `graphql`:

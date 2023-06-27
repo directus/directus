@@ -11,7 +11,7 @@ Learn how to use the new Directus JavaScript SDK to easily access and manipulate
 
 This SDK is a significant overhaul of the previous version, introducing new features and improvements.
 
-- **TypeScript first:** Written in TypeScript, the SDK provides a robust and type-safe development experience
+- **TypeScript first:** The SDK provides a robust and type-safe development experience
 - **Modular architecture:** The SDK is split into separate modules, giving you granular control over which features to
   include and which can be pruned at build-time
 - **Lightweight and dependency-free:** It does not require external libraries, ensuring a lighter bundle and streamlined
@@ -58,7 +58,7 @@ The client starts as an empty wrapper without any functionality. To add features
 - `graphql()`: GraphQL request functions, adds `.query(...)` to the client.
 - `auth()`: Authentication functions, adds `.login(...)`, `.logout()`, and .`refresh()` to the client.
 - `realtime()`: WebSocket connectivity, adds `.subscribe(...)` and `.message(...)` to the client.
-- `subscription()`: GraphQL Subscriptions, adds `.subscription()` to the client. (work in progress).
+- `subscription()`: GraphQL Subscriptions, adds `.subscription()` to the client. (unavailable).
 
 For example, to create a client with REST or GraphQL support, use the following:
 
@@ -68,10 +68,12 @@ import { rest } from '@directus/sdk@beta/rest';
 import { graphql } from '@directus/sdk@beta/graphql';
 
 // Client with REST support
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
 
 // Client with GraphQL support
-const client = useDirectus('http://directus.example.com').use(graphql());
+const client = useDirectus('http://directus.example.com')
+	.use(graphql());
 ```
 
 ## Authentication
@@ -84,7 +86,9 @@ For example, to login to your directus instance, invoke the `login` method
 import { useDirectus } from '@directus/sdk@beta';
 import { authentication } from '@directus/sdk@beta/auth';
 
-const client = useDirectus('http://directus.example.com').use(authentication());
+const client = useDirectus('http://directus.example.com')
+	.use(authentication());
+
 await client.login(email, password);
 ```
 
@@ -107,7 +111,9 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItem } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
+
 const result = await client.request(readItem('articles', 5));
 ```
 
@@ -122,7 +128,9 @@ type Schema = {
 	articles: { title: string; content: string };
 };
 
-const client = useDirectus<Schema>('http://directus.example.com').use(rest());
+const client = useDirectus<Schema>('http://directus.example.com')
+	.use(rest());
+
 const result = await client.request(readItem('articles', 5));
 ```
 
@@ -133,7 +141,9 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
+
 const result = await client.request(readItems('articles'));
 ```
 
@@ -144,7 +154,9 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
+
 const result = await client.request(
 	readItems('articles', {
 		fields: ['id', 'title'],
@@ -159,7 +171,9 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
+
 const result = await client.request(
 	readItems('articles', {
 		fields: ['*'],
@@ -174,7 +188,9 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
+
 const result = await client.request(
 	readItems('articles', {
 		fields: ['*', { author: ['*'] }],
@@ -201,7 +217,9 @@ type Schema = {
 	articles: Article;
 };
 
-const client = useDirectus<Schema>('http://directus.example.com').use(graphql());
+const client = useDirectus<Schema>('http://directus.example.com')
+	.use(graphql());
+
 const result = await client.query<Article[]>(`
     query {
         articles {
