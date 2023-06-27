@@ -64,23 +64,9 @@ export type AbstractSqlOrder = {
  * An abstract WHERE clause.
  *
  * @remarks
- * So far only comparisons to _primitives_ are supported.
- * Functions will be supported soon.
+ * So far only comparisons to _primitives_ are supported. Functions will be supported soon.
  * How we'll handle relational values here, needs to be discussed.
  */
-export interface AbstractSqlQueryNodeConditionAlt {
-	type: 'condition';
-	negation: 'NOT' | '';
-	target: Omit<SqlStatementSelectPrimitive, 'as'>;
-	operation: {
-		operator: '=' | '>' | '>=' | '<' | '<=' | 'LIKE' | 'BETWEEN' | 'IN';
-		prefix?: '%' | '_'[];
-		suffix?: '%' | '_'[];
-		concatenation: 'AND' | 'OR';
-	};
-	values: ParameterIndex[];
-}
-
 export interface AbstractSqlQueryNodeCondition {
 	type: 'condition';
 	negation: boolean;
