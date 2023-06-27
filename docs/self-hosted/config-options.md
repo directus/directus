@@ -281,14 +281,13 @@ All the `DB_POOL__` prefixed options are passed to [`tarn.js`](https://github.co
 Directus requires Redis for multi-container deployments. This ensures that things like caching, rate-limiting, and
 websockets work reliably across multiple containers of Directus.
 
-| Variable                  | Description                                                                                                                                                | Default Value |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `REDIS_NAMESPACE`         | Namespace prefix to use for the redis keys                                                                                                                 | `directus`    |
-| `REDIS_CONNECTION_STRING` | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4`. Using this will ignore the other Redis connection parameter environment variables | --            |
-| `REDIS_HOST`              | Hostname of the Redis instance, e.g., `"127.0.0.1"`                                                                                                        | --            |
-| `REDIS_PORT`              | Port of the Redis instance, e.g., `6379`                                                                                                                   | --            |
-| `REDIS_USERNAME`          | Username for your Redis instance, e.g., `"default"`                                                                                                        | --            |
-| `REDIS_PASSWORD`          | Password for your Redis instance, e.g., `"yourRedisPassword"`                                                                                              | --            |
+| Variable         | Description                                                                                                                                                | Default Value |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `REDIS`          | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4`. Using this will ignore the other Redis connection parameter environment variables | --            |
+| `REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`                                                                                                        | --            |
+| `REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                                                                                                                   | --            |
+| `REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`                                                                                                        | --            |
+| `REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"`                                                                                              | --            |
 
 If the Redis configuration is omitted, Directus will default to using local memory. This will fail when running Directus
 across multiple containers.
@@ -866,10 +865,10 @@ By default, extensions are not cached. The input data type for this environment 
 
 ## Messenger
 
-| Variable              | Description                            | Default Value |
-| --------------------- | -------------------------------------- | ------------- |
-| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`      |
-| `MESSENGER_NAMESPACE` | How to scope the channels in Redis     | `directus-messenger`    |
+| Variable              | Description                            | Default Value        |
+| --------------------- | -------------------------------------- | -------------------- |
+| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`             |
+| `MESSENGER_NAMESPACE` | How to scope the channels in Redis     | `directus-messenger` |
 
 ## Synchronization
 
