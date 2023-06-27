@@ -35,6 +35,7 @@ tile_size: Размер плитки
 edit_field: Редактировать поле
 conditions: Условия
 location: Расположение
+collection_names_are_case_sensitive: Названия коллекций чувствительны к регистру
 condition_rules: Правила условий
 input: Ввод текста
 maps: Карты
@@ -235,6 +236,7 @@ float: Десятичная дробь
 integer: Целое число
 json: JSON
 xml: XML
+yaml: YAML
 string: Строка
 text: Текст
 time: Время
@@ -285,6 +287,7 @@ o2m_relationship: Отношение «один ко многим» (O2M)
 m2m_relationship: Отношение «многие ко многим» (M2M)
 m2a_relationship: Отношение «многие к любому» (M2A)
 invalid_item: Недействительный элемент
+require_confirmation: Требуется подтверждение
 dialog: Диалог
 modal: Модальный
 confirmation_dialog: Диалог Подтверждения
@@ -521,6 +524,7 @@ create_collection: Создать коллекцию
 no_collections_copy_admin: У вас пока нет коллекций. Нажмите кнопку ниже, чтобы начать.
 no_collections_copy: У вас пока нет коллекций. Пожалуйста, обратитесь к системному администратору.
 relationship_not_setup: Отношение не было настроено правильно
+no_singleton_relations: Связи с Singletons не поддерживаются
 display_template_not_setup: Опция шаблона отображения настроена неправильно
 collection_field_not_setup: Опция поля коллекции настроена неправильно
 select_a_collection: Выберите коллекцию
@@ -786,7 +790,12 @@ label: Описание
 flows: Процессы
 flow: Процесс
 select_a_flow: Выберите процесс
+run_flow_confirm: Вы уверены, что хотите выполнить этот процесс?
+run_flow_on_current_collection: Запустить процесс с текущей коллекцией
+run_flow_on_current: Запустить процесс с текущим элементом
 run_flow_on_current_edited_confirm: Этот элемент может быть обновлен этим процессом — вы уверены, что хотите выполнить его?
+run_flow_on_selected: Сначала выберите один или несколько элементов | Запустить процесс с выбранным элементом | Запустить процесс с {n} выбранными элементами
+run_flow: Запуск потока
 run_flow_success: Процесс «{flow}» успешно завершён
 field_name_placeholder: Введите имя поля...
 field_key_placeholder: Введите ключ поля...
@@ -1131,6 +1140,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Картография
     basemaps: Базовые карты
     basemaps_raster: Растр
@@ -1326,9 +1336,12 @@ live_preview:
   change_size: Изменить размеры отображения
   refresh: Обновить Предпросмотр
   new_window: Открыть в новом окне
+  close_window: Открыть в сплит-режиме
+  toggle_3d: Переключить 3D
 unlimited_usage: Неограниченное использование
 new_share: Новая публикация
 expired: Истекло
+upcoming: Предстоящие
 share: Поделиться
 share_item: Поделиться элементом
 shared_with_you: С вами поделились элементом
@@ -1436,6 +1449,9 @@ table: Таблица
 list: Список
 search_filter: Поиск и фильтрация
 enable_search_filter: Включить поиск и фильтрацию
+undo_removed_item: Отменить удаление элемента
+remove_item: Удалить элемент
+delete_item: Удалить элемент
 interfaces:
   filter:
     name: Фильтр
@@ -1515,6 +1531,7 @@ interfaces:
     placeholder: Выберите дату и время...
   system-fields:
     select_a_collection: Выберите коллекцию
+    no_fields: Нет полей
   system-display-template:
     display-template: Шаблон отображения
     description: Смешивать статический текст и динамические значения полей
@@ -1561,6 +1578,7 @@ interfaces:
     image: Изображение
     description: Выберите или загрузите изображение
     crop: Обрезать по размеру
+    crop_label: Обрезать изображение при необходимости
   system-interface:
     interface: Интерфейс
     description: Выберите существующий интерфейс
@@ -1571,20 +1589,27 @@ interfaces:
   list-m2m:
     many-to-many: Многие ко Многим
     description: Выберите несколько связанных элементов
+    columns_configure_notice: Вы можете настроить столбцы после создания этого поля.
+    display_template_configure_notice: Вы можете настроить шаблон отображения после создания этого поля.
   select-dropdown-m2o:
     many-to-one: Многие к Одному
     description: Выберите один связанный элемент
     display_template: Шаблон отображения
+  collection-item-dropdown:
+    collection-item-dropdown: Выпадающий список предметов коллекции
+    description: Выберите элемент из коллекции в формате JSON
   input-rich-text-md:
     markdown: Markdown
     description: Ввод и предпросмотр разметки
     edit: Редактирование
     preview: Предпросмотр
+    editorFont: Шрифт редактора
     previewFont: Шрифт на предпросмотре
     customSyntax: Произвольные блоки
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
+    imageToken: Токен Статического Доступа
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла
   map:
     map: Карта
@@ -1607,6 +1632,7 @@ interfaces:
     notice: Уведомление
     description: Показать короткое уведомление
     text: Введите содержание уведомления здесь...
+    no_text: Текст не настроен...
   list-o2m:
     one-to-many: Один ко многим
     description: Выберите связанные элементы
@@ -1614,6 +1640,7 @@ interfaces:
   system-folder:
     folder: Папка
     description: Выбрать папку
+    field_hint: Папка по умолчанию для загруженных файлов без указания папки. Не влияет на существующие файлы.
     root_name: Корень файловой библиотеки
     system_default: Системные настройки по умолчанию
   select-radio:
@@ -1625,7 +1652,9 @@ interfaces:
     edit_fields: Редактировать поля
     add_label: 'Ярлык «Создать новый»'
     sort: Сортировать
+    sort_placeholder: Вручную
     field_note_placeholder: Примечание к полю...
+    incompatible_data: Текущие данные не совместимы с интерфейсом репитера и будут переопределены при добавлении элементов в репитер
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
@@ -1703,6 +1732,8 @@ interfaces:
     imageToken: Токен Статического Доступа
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла
   input-block-editor:
+    input-block-editor: Блоковый редактор
+    description: Редактор в стиле блоков для мультимедийных историй, выводит чистые данные в JSON, используя Editor.js
     tools: Панель инструментов
     tools_options:
       header: HTTP-заголовок
@@ -1715,6 +1746,7 @@ interfaces:
       table: Таблица
       quote: Цитата
       underline: Подчеркнутый
+      inlinecode: Встроенный код
       delimiter: Разделитель
       checklist: Список
       alignment: Выравнивание
@@ -1849,6 +1881,7 @@ displays:
   related-values:
     related-values: Связанные Значения
     description: Показать относительные значения
+    display_template_configure_notice: Вы можете настроить шаблон отображения после создания этого поля.
   user:
     user: Пользователь
     description: Показать пользователя directus
@@ -1901,7 +1934,33 @@ layouts:
     image_placeholder: Изображение (необязательно)...
     crop: Обрезать
     advanced: Доп. настройки
+    show_ungrouped: Показать несгруппированные
+    show: Показать
+    no_group: Нет группы
+    not_all_loaded: Загружены только первые 1000 элементов.
+horizontal: Горизонтально
+vertical: Вертикально
+x_axis: Ось X
+y_axis: Ось Y
+y_axis_function: Функция оси Y
+show_x_only: Показывать только ось X
+show_y_only: Показать только ось Y
+show_data_label: Показать метку данных
 both: Оба
+show_axis_labels: Показать метки оси
+function: Функция
+half_circle: Половина круга
+full_circle: Полный круг
+stroke_width: Толщина линии
+rounded_stroke: Скругленный штрих
+thin: Тонкий
+medium: Средний
+broad: Широкий
+show_labels: Показывать подписи
+show_legend: Показать легенду
+right: Справа
+left: Слева
+donut: Кольцевая диаграмма
 panels:
   metric:
     name: Метрика
@@ -1912,16 +1971,30 @@ panels:
     description: Отображение линейного графика на основе значений по времени
     date_field: Поле Дата
     value_field: Поле значения
+    fill_type: Тип заполнения
+    curve_type: Тип кривой
   label:
     name: Описание
     description: Показать немного текста
   list:
     name: Список
     description: Фильтр и список полей из коллекции
+  barchart:
+    name: Гистограмма
+    horizontal: Горизонтально
+    select_collection: Необходимо выбрать коллекцию.
   linechart:
+    name: Линейный график
     disabled_no_grouping: Отключено, если не выбрана ни одна группировка.
+    curve_type: Тип кривой
+    smooth: Гладкий
+    straight: Прямой
+    step_line: Ступенчатая линия
+  meter:
+    name: Счётчик
   variable:
     name: Глобальная переменная
+    variable_key: Ключ переменной
   relational-variable:
     name: Глобальная реляционная переменная
     description: Установить глобальное реляционное значение для использования в фильтре других панелей
@@ -1930,8 +2003,12 @@ panels:
     multiple-label: Выберите несколько элементов
 triggers:
   common:
+    response_body: Тело ответа
     response_body_all: Все данные
     response_body_last: Данные последней операции
+  event:
+    name: Хук события
+    action: 'Действие (не блокирующее)'
   webhook:
     description: Выполняется при входящем HTTP запросе
     method: Метод
