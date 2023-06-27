@@ -156,8 +156,8 @@ STORAGE_LOCATIONS="s3,local,example"
 ```
 
 In cases where the environment variables are converted to a configuration object for third party library use, like in
-`DB_*` or `RATE_LIMITER_REDIS_*`, the environment variable will be converted to camelCase. You can use a double
-underscore (`__`) for nested objects:
+`DB_*`, the environment variable will be converted to camelCase. You can use a double underscore (`__`) for nested
+objects:
 
 ```
 DB_CLIENT="pg"
