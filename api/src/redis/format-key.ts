@@ -1,7 +1,7 @@
 import { getEnv } from '../env.js';
 
-export const formatKey = (key: string) => {
+export const formatKey = (scope: string, key: string) => {
 	const env = getEnv();
 	const namespace = env['REDIS_NAMESPACE'] ?? 'directus';
-	return `${namespace}:${key}`;
+	return `${namespace}:${scope}:${key}`;
 };
