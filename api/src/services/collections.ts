@@ -13,7 +13,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import { FieldsService } from '../services/fields.js';
 import { ItemsService } from '../services/items.js';
 import type {
@@ -59,13 +59,13 @@ export class CollectionsService {
 	 */
 	async createOne(payload: RawCollection, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
-		if (!payload.collection) throw new InvalidPayloadException(`"collection" is required`);
+		if (!payload.collection) throw new InvalidPayloadError({ reason: `"collection" is required` });
 
 		if (payload.collection.startsWith('directus_')) {
-			throw new InvalidPayloadException(`Collections can't start with "directus_"`);
+			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -78,7 +78,7 @@ export class CollectionsService {
 			];
 
 			if (existingCollections.includes(payload.collection)) {
-				throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
+				throw new InvalidPayloadError({ reason: `Collection "${payload.collection}" already exists` });
 			}
 
 			// Create the collection/fields in a transaction so it'll be reverted in case of errors or
@@ -332,7 +332,7 @@ export class CollectionsService {
 	async readOne(collectionKey: string): Promise<Collection> {
 		const result = await this.readMany([collectionKey]);
 
-		if (result.length === 0) throw new ForbiddenException();
+		if (result.length === 0) throw new ForbiddenError();
 
 		return result[0]!;
 	}
@@ -351,7 +351,7 @@ export class CollectionsService {
 
 				for (const collectionKey of collectionKeys) {
 					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-						throw new ForbiddenException();
+						throw new ForbiddenError();
 					}
 				}
 			}
@@ -366,7 +366,7 @@ export class CollectionsService {
 	 */
 	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -433,11 +433,11 @@ export class CollectionsService {
 	 */
 	async updateBatch(data: Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (!Array.isArray(data)) {
-			throw new InvalidPayloadException('Input should be an array of collection changes.');
+			throw new InvalidPayloadError({ reason: 'Input should be an array of collection changes' });
 		}
 
 		const collectionKey = 'collection';
@@ -453,7 +453,9 @@ export class CollectionsService {
 				});
 
 				for (const payload of data) {
-					if (!payload[collectionKey]) throw new InvalidPayloadException(`Collection in update misses collection key.`);
+					if (!payload[collectionKey]) {
+						throw new InvalidPayloadError({ reason: `Collection in update misses collection key` });
+					}
 
 					await collectionItemsService.updateOne(payload[collectionKey], omit(payload, collectionKey), {
 						autoPurgeCache: false,
@@ -492,7 +494,7 @@ export class CollectionsService {
 	 */
 	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -541,7 +543,7 @@ export class CollectionsService {
 	 */
 	async deleteOne(collectionKey: string, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];
@@ -552,7 +554,7 @@ export class CollectionsService {
 			const collectionToBeDeleted = collections.find((collection) => collection.collection === collectionKey);
 
 			if (!!collectionToBeDeleted === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			await this.knex.transaction(async (trx) => {
@@ -676,7 +678,7 @@ export class CollectionsService {
 	 */
 	async deleteMany(collectionKeys: string[], opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nestedActionEvents: ActionEventParams[] = [];

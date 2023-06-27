@@ -11,10 +11,12 @@ import validateUUID from 'uuid-validate';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
-import { ForbiddenException } from '../exceptions/forbidden.js';
-import { IllegalAssetTransformation } from '../exceptions/illegal-asset-transformation.js';
-import { RangeNotSatisfiableException } from '../exceptions/range-not-satisfiable.js';
-import { ServiceUnavailableException } from '../exceptions/service-unavailable.js';
+import {
+	ForbiddenError,
+	IllegalAssetTransformationError,
+	RangeNotSatisfiableError,
+	ServiceUnavailableError,
+} from '../errors/index.js';
 import logger from '../logger.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, File, Transformation, TransformationSet } from '../types/index.js';
@@ -54,7 +56,7 @@ export class AssetsService {
 		 */
 		const isValidUUID = validateUUID(id, 4);
 
-		if (isValidUUID === false) throw new ForbiddenException();
+		if (isValidUUID === false) throw new ForbiddenError();
 
 		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
 			await this.authorizationService.checkAccess('read', 'directus_files', id);
@@ -62,11 +64,11 @@ export class AssetsService {
 
 		const file = (await this.knex.select('*').from('directus_files').where({ id }).first()) as File;
 
-		if (!file) throw new ForbiddenException();
+		if (!file) throw new ForbiddenError();
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
-		if (!exists) throw new ForbiddenException();
+		if (!exists) throw new ForbiddenError();
 
 		if (range) {
 			const missingRangeLimits = range.start === undefined && range.end === undefined;
@@ -75,7 +77,7 @@ export class AssetsService {
 			const endUnderflow = range.end !== undefined && range.end <= 0;
 
 			if (missingRangeLimits || endBeforeStart || startOverflow || endUnderflow) {
-				throw new RangeNotSatisfiableException(range);
+				throw new RangeNotSatisfiableError({ range });
 			}
 
 			const lastByte = file.filesize - 1;
@@ -142,16 +144,16 @@ export class AssetsService {
 				width > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] ||
 				height > env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION']
 			) {
-				throw new IllegalAssetTransformation(
-					`Image is too large to be transformed, or image size couldn't be determined.`
-				);
+				logger.warn(`Image is too large to be transformed, or image size couldn't be determined.`);
+				throw new IllegalAssetTransformationError({ invalidTransformations: ['width', 'height'] });
 			}
 
 			const { queue, process } = sharp.counters();
 
 			if (queue + process > env['ASSETS_TRANSFORM_MAX_CONCURRENT']) {
-				throw new ServiceUnavailableException('Server too busy', {
+				throw new ServiceUnavailableError({
 					service: 'files',
+					reason: 'Server too busy',
 				});
 			}
 

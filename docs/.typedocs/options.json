@@ -15,10 +15,11 @@
 	],
 	"name": "Directus",
 	"entryPointStrategy": "packages",
-	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme", "typedoc-plugin-frontmatter"],
+	"plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme", "typedoc-plugin-frontmatter", "typedoc-plugin-zod"],
 	"out": "../packages",
 	"docsRoot": "/",
 	"readme": "./home.md",
+	"hideGenerator": true,
 	"frontmatterGlobals": {
 		"editLink": false
 	}

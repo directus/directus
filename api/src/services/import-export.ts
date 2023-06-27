@@ -18,11 +18,11 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
 import {
-	ForbiddenException,
-	InvalidPayloadException,
-	ServiceUnavailableException,
-	UnsupportedMediaTypeException,
-} from '../exceptions/index.js';
+	ForbiddenError,
+	InvalidPayloadError,
+	ServiceUnavailableError,
+	UnsupportedMediaTypeError,
+} from '../errors/index.js';
 import logger from '../logger.js';
 import type { AbstractServiceOptions, ActionEventParams, File } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
@@ -44,7 +44,7 @@ export class ImportService {
 	}
 
 	async import(collection: string, mimetype: string, stream: Readable): Promise<void> {
-		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenException();
+		if (this.accountability?.admin !== true && collection.startsWith('directus_')) throw new ForbiddenError();
 
 		const createPermissions = this.accountability?.permissions?.find(
 			(permission) => permission.collection === collection && permission.action === 'create'
@@ -55,7 +55,7 @@ export class ImportService {
 		);
 
 		if (this.accountability?.admin !== true && (!createPermissions || !updatePermissions)) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		switch (mimetype) {
@@ -65,7 +65,7 @@ export class ImportService {
 			case 'application/vnd.ms-excel':
 				return await this.importCSV(collection, stream);
 			default:
-				throw new UnsupportedMediaTypeException(`Can't import files of type "${mimetype}"`);
+				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
 	}
 
@@ -91,11 +91,11 @@ export class ImportService {
 					saveQueue.push(value);
 				});
 
-				extractJSON.on('error', (err: any) => {
+				extractJSON.on('error', (err: Error) => {
 					destroyStream(stream);
 					destroyStream(extractJSON);
 
-					reject(new InvalidPayloadException(err.message));
+					reject(new InvalidPayloadError({ reason: err.message }));
 				});
 
 				saveQueue.error((err) => {
@@ -156,7 +156,7 @@ export class ImportService {
 					})
 					.on('error', (err: any) => {
 						destroyStream(stream);
-						reject(new InvalidPayloadException(err.message));
+						reject(new InvalidPayloadError({ reason: err.message }));
 					})
 					.on('end', () => {
 						saveQueue.drain(() => {
@@ -377,6 +377,6 @@ export class ExportService {
 			return toYAML(input);
 		}
 
-		throw new ServiceUnavailableException(`Illegal export type used: "${format}"`, { service: 'export' });
+		throw new ServiceUnavailableError({ service: 'export', reason: `Illegal export type used: "${format}"` });
 	}
 }

@@ -1,5 +1,4 @@
 import { Action, REDACTED_TEXT } from '@directus/constants';
-import * as sharedExceptions from '@directus/exceptions';
 import type {
 	Accountability,
 	ActionHandler,
@@ -16,7 +15,7 @@ import { get } from 'micromustache';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import * as exceptions from './exceptions/index.js';
+import { ForbiddenError } from './errors/index.js';
 import logger from './logger.js';
 import { getMessenger } from './messenger.js';
 import { ActivityService } from './services/activity.js';
@@ -122,7 +121,7 @@ class FlowManager {
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		if (!(id in this.webhookFlowHandlers)) {
 			logger.warn(`Couldn't find webhook or manual triggered flow with id "${id}"`);
-			throw new exceptions.ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const handler = this.webhookFlowHandlers[id];
@@ -246,17 +245,17 @@ class FlowManager {
 
 					if (!targetCollection) {
 						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (enabledCollections.length === 0) {
 						logger.warn(`There is no collections configured for this manual trigger`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (!enabledCollections.includes(targetCollection)) {
 						logger.warn(`Specified collection must be one of: ${enabledCollections.join(', ')}.`);
-						throw new exceptions.ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					if (flow.options['async']) {
@@ -413,7 +412,6 @@ class FlowManager {
 		try {
 			let result = await handler(options, {
 				services,
-				exceptions: { ...exceptions, ...sharedExceptions },
 				env,
 				database: getDatabase(),
 				logger,
@@ -437,7 +435,7 @@ class FlowManager {
 			let data;
 
 			if (error instanceof Error) {
-				// make sure we dont expose the stack trace
+				// make sure we don't expose the stack trace
 				data = sanitizeError(error);
 			} else if (typeof error === 'string') {
 				// If the error is a JSON string, parse it and use that as the error data

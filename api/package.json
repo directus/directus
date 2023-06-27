@@ -68,7 +68,7 @@
 		"@aws-sdk/client-ses": "3.332.0",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
-		"@directus/exceptions": "workspace:*",
+		"@directus/errors": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/pressure": "workspace:*",
@@ -81,6 +81,7 @@
 		"@directus/storage-driver-local": "workspace:*",
 		"@directus/storage-driver-s3": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "4.12.0",
 		"@rollup/plugin-alias": "5.0.0",
 		"@rollup/plugin-node-resolve": "15.0.2",
@@ -165,6 +166,7 @@
 		"zod-validation-error": "1.0.1"
 	},
 	"devDependencies": {
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
