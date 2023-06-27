@@ -9,6 +9,16 @@ export type UpdateItemOutput<
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>;
 
+/**
+ * Update an existing item.
+ *
+ * @param collection The collection of the item
+ * @param key The primary key of the item
+ * @param item The item data to update
+ * @param query Optional return data query
+ *
+ * @returns Returns the item object of the item that was updated.
+ */
 export const updateItem =
 	<
 		Schema extends object,

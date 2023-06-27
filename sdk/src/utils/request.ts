@@ -1,5 +1,13 @@
 import type { RequestOptions } from '../types/index.js';
 
+/**
+ * Request helper providing default settings
+ *
+ * @param url The request URL
+ * @param options The request options
+ *
+ * @returns The API result if successful
+ */
 export const request = async <Output extends object>(url: string, options: RequestOptions): Promise<Output> => {
 	/** @TODO Check fetch implementation for all methods */
 	const headers: Record<string, string> = {

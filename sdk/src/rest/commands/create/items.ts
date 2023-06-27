@@ -8,6 +8,15 @@ export type CreateItemsOutput<
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>[];
 
+/**
+ * Create new items in the given collection.
+ *
+ * @param collection The collection of the item
+ * @param items The items to create
+ * @param query Optional return data query
+ *
+ * @returns Returns the item objects of the item that were created.
+ */
 export const createItems =
 	<
 		Schema extends object,

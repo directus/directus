@@ -8,6 +8,15 @@ export type CreateItemOutput<
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>;
 
+/**
+ * Create a new item in the given collection.
+ *
+ * @param collection The collection of the item
+ * @param item The item to create
+ * @param query Optional return data query
+ *
+ * @returns Returns the item objects of the item that were created.
+ */
 export const createItem =
 	<
 		Schema extends object,
@@ -16,7 +25,7 @@ export const createItem =
 		Item = Schema[Collection]
 	>(
 		collection: Collection,
-		items: Partial<Item>,
+		item: Partial<Item>,
 		query?: TQuery
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
@@ -29,7 +38,7 @@ export const createItem =
 		return {
 			path: `/items/${_collection}`,
 			params: queryToParams(query ?? {}),
-			body: JSON.stringify(items),
+			body: JSON.stringify(item),
 			method: 'POST',
 		};
 	};

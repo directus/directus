@@ -1,4 +1,14 @@
-// Generate a Promise that listens only once for an event
+interface WebSocketListener {
+	(data: MessageEvent<string>): any;
+}
+
+/**
+ * Wait for a websocket response
+ *
+ * @param socket WebSocket
+ *
+ * @returns Incoming message object
+ */
 export const messageCallback = (socket: globalThis.WebSocket) =>
 	new Promise<Record<string, any>>((resolve) => {
 		const handler: WebSocketListener = (data) => {
@@ -18,7 +28,3 @@ export const messageCallback = (socket: globalThis.WebSocket) =>
 
 		socket.addEventListener('message', handler);
 	});
-
-interface WebSocketListener {
-	(data: MessageEvent<string>): any;
-}

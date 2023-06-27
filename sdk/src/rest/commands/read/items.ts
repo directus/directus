@@ -8,6 +8,14 @@ export type ReadItemsOutput<
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>[];
 
+/**
+ * List all items that exist in Directus.
+ *
+ * @param collection The collection of the items
+ * @param query The query parameters
+ *
+ * @returns An array of up to limit item objects. If no items are available, data will be an empty array.
+ */
 export const readItems =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,

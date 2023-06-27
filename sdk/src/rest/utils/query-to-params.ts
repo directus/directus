@@ -1,5 +1,12 @@
 import type { Query } from '../../types/index.js';
 
+/**
+ * Transform nested query object to an url compatible format
+ *
+ * @param query The nested query object
+ *
+ * @returns Flat query parameters
+ */
 export const queryToParams = <Schema extends object, Item extends object>(
 	query: Query<Schema, Item>
 ): Record<string, string> => {

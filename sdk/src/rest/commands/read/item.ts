@@ -9,6 +9,15 @@ export type ReadItemOutput<
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>;
 
+/**
+ * Get an item that exists in Directus.
+ *
+ * @param collection The collection of the item
+ * @param key The primary key of the item
+ * @param query The query parameters
+ *
+ * @returns Returns an item object if a valid primary key was provided.
+ */
 export const readItem =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,

@@ -2,6 +2,14 @@ import type { PrimaryKey } from '@directus/types';
 import type { Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
+/**
+ * Delete multiple existing items.
+ *
+ * @param collection The collection of the items
+ * @param keysOrQuery The primary keys or a query
+ *
+ * @returns Nothing
+ */
 export const deleteItems =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,

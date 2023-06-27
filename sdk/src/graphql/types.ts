@@ -1,8 +1,3 @@
-/** @TODO check required GraphQL settings */
-// export interface GraphQLConfig {
-// 	url?: string;
-// }
-
 export interface GraphqlClient<_Schema extends object> {
 	query<Output extends object = Record<string, any>>(
 		query: string,
