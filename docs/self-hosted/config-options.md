@@ -289,8 +289,7 @@ WebSockets work reliably across multiple containers of Directus.
 | `REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`                                                                                                        | --            |
 | `REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"`                                                                                              | --            |
 
-If the Redis configuration is omitted, Directus will default to using local memory. This will fail when running Directus
-across multiple containers.
+Redis is required when you run Directus load balanced across multiple containers/processes.
 
 ## Security
 
