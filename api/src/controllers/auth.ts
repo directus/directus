@@ -152,7 +152,7 @@ router.post(
 	'/password/request',
 	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.email !== 'string') {
-			throw new InvalidPayloadError({ reason: `"email" field is required.` });
+			throw new InvalidPayloadError({ reason: `"email" field is required` });
 		}
 
 		const accountability: Accountability = {

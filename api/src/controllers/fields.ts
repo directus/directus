@@ -127,7 +127,7 @@ router.patch(
 		});
 
 		if (Array.isArray(req.body) === false) {
-			throw new InvalidPayloadError({ reason: 'Submitted body has to be an array.' });
+			throw new InvalidPayloadError({ reason: 'Submitted body has to be an array' });
 		}
 
 		for (const field of req.body) {

@@ -526,7 +526,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				});
 
 				for (const item of data) {
-					if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `Item in update misses primary key.` });
+					if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
 					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
 					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
 				}

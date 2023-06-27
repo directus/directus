@@ -156,7 +156,7 @@ export class ImportService {
 					})
 					.on('error', (err: any) => {
 						destroyStream(stream);
-						reject(new InvalidPayloadError(err.message));
+						reject(new InvalidPayloadError({ reason: err.message }));
 					})
 					.on('end', () => {
 						saveQueue.drain(() => {

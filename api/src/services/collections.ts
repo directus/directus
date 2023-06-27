@@ -454,7 +454,7 @@ export class CollectionsService {
 
 				for (const payload of data) {
 					if (!payload[collectionKey]) {
-						throw new InvalidPayloadError({ reason: `Collection in update misses collection key.` });
+						throw new InvalidPayloadError({ reason: `Collection in update misses collection key` });
 					}
 
 					await collectionItemsService.updateOne(payload[collectionKey], omit(payload, collectionKey), {
