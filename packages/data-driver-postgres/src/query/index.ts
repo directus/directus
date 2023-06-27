@@ -12,7 +12,7 @@ import { orderBy } from './orderBy.js';
  *
  * @remarks
  * To create a PostgreSQL statement each part is constructed in a separate function.
- * In those functions it will be checked if the part should actually be created.
+ * In those functions it will be checked if the query part is actually needed.
  * If not, the functions return null.
  *
  * @param query - The abstract SQL statement
@@ -24,8 +24,7 @@ export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSQLStat
 	const statement = `${statementParts
 		.map((part) => part(query))
 		.filter((p) => p !== null)
-		.join(' ')
-		.trim()};`;
+		.join(' ')};`;
 
 	return {
 		statement,
