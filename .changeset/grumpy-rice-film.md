@@ -2,4 +2,4 @@
 '@directus/api': major
 ---
 
-Consolidate environment variables for Redis usage
+Consolidated environment variables for Redis usage
