@@ -2,7 +2,7 @@ import { TYPES } from '@directus/constants';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
 import { getDatabaseClient } from '../database/index.js';
-import { InvalidPayloadException } from '../exceptions/invalid-payload.js';
+import { InvalidPayloadError } from '../errors/index.js';
 import type { Snapshot } from '../types/index.js';
 import { DatabaseClients } from '../types/index.js';
 import { version as currentDirectusVersion } from './package.js';
@@ -55,28 +55,29 @@ const snapshotJoiSchema = Joi.object({
  **/
 export function validateSnapshot(snapshot: Snapshot, force = false) {
 	const { error } = snapshotJoiSchema.validate(snapshot);
-	if (error) throw new InvalidPayloadException(error.message);
+	if (error) throw new InvalidPayloadError({ reason: error.message });
 
 	// Bypass checks when "force" option is enabled
 	if (force) return;
 
 	if (snapshot.directus !== currentDirectusVersion) {
-		throw new InvalidPayloadException(
-			`Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}. You can bypass this check by passing the "force" query parameter.`
-		);
+		throw new InvalidPayloadError({
+			reason: `Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}. You can bypass this check by passing the "force" query parameter`,
+		});
 	}
 
 	if (!snapshot.vendor) {
-		throw new InvalidPayloadException(
-			'Provided snapshot does not contain the "vendor" property. You can bypass this check by passing the "force" query parameter.'
-		);
+		throw new InvalidPayloadError({
+			reason:
+				'Provided snapshot does not contain the "vendor" property. You can bypass this check by passing the "force" query parameter',
+		});
 	}
 
 	const currentVendor = getDatabaseClient();
 
 	if (snapshot.vendor !== currentVendor) {
-		throw new InvalidPayloadException(
-			`Provided snapshot's vendor ${snapshot.vendor} does not match the current instance's vendor ${currentVendor}. You can bypass this check by passing the "force" query parameter.`
-		);
+		throw new InvalidPayloadError({
+			reason: `Provided snapshot's vendor ${snapshot.vendor} does not match the current instance's vendor ${currentVendor}. You can bypass this check by passing the "force" query parameter`,
+		});
 	}
 }

@@ -1,5 +1,6 @@
 import { Action, FUNCTIONS } from '@directus/constants';
-import type { BaseException } from '@directus/exceptions';
+import type { DirectusError } from '@directus/errors';
+import { isDirectusError } from '@directus/errors';
 import type { Accountability, Aggregate, Filter, PrimaryKey, Query, SchemaOverview } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
 import argon2 from 'argon2';
@@ -48,14 +49,16 @@ import { clearSystemCache, getCache } from '../../cache.js';
 import { DEFAULT_AUTH_PROVIDER, GENERATE_SPECIAL } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
-import { ForbiddenException, GraphQLValidationException, InvalidPayloadException } from '../../exceptions/index.js';
+import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../../errors/index.js';
 import { getExtensionManager } from '../../extensions.js';
 import type { AbstractServiceOptions, GraphQLParams, Item } from '../../types/index.js';
 import { generateHash } from '../../utils/generate-hash.js';
 import { getGraphQLType } from '../../utils/get-graphql-type.js';
 import { getMilliseconds } from '../../utils/get-milliseconds.js';
+import { getService } from '../../utils/get-service.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
+import { toBoolean } from '../../utils/to-boolean.js';
 import { validateQuery } from '../../utils/validate-query.js';
 import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
@@ -69,6 +72,8 @@ import { SpecificationService } from '../specifications.js';
 import { TFAService } from '../tfa.js';
 import { UsersService } from '../users.js';
 import { UtilsService } from '../utils.js';
+import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
+import { createSubscriptionGenerator } from './subscription.js';
 import { GraphQLBigInt } from './types/bigint.js';
 import { GraphQLDate } from './types/date.js';
 import { GraphQLGeoJSON } from './types/geojson.js';
@@ -77,9 +82,6 @@ import { GraphQLStringOrFloat } from './types/string-or-float.js';
 import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
-import { createSubscriptionGenerator } from './subscription.js';
-import { getService } from '../../utils/get-service.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 
 const validationRules = Array.from(specifiedRules);
 
@@ -129,7 +131,7 @@ export class GraphQLService {
 		);
 
 		if (validationErrors.length > 0) {
-			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
+			throw new GraphQLValidationError({ errors: validationErrors });
 		}
 
 		let result: ExecutionResult;
@@ -143,7 +145,7 @@ export class GraphQLService {
 				operationName,
 			});
 		} catch (err: any) {
-			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
+			throw new GraphQLExecutionError({ errors: [err.message] });
 		}
 
 		const formattedResult: FormattedExecutionResult = {};
@@ -1776,7 +1778,7 @@ export class GraphQLService {
 	/**
 	 * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.
 	 */
-	formatError(error: BaseException | BaseException[]): GraphQLError {
+	formatError(error: DirectusError | DirectusError[]): GraphQLError {
 		if (Array.isArray(error)) {
 			set(error[0]!, 'extensions.code', error[0]!.code);
 			return new GraphQLError(error[0]!.message, undefined, undefined, undefined, undefined, error[0]);
@@ -2138,7 +2140,9 @@ export class GraphQLService {
 					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 					if (!currentRefreshToken) {
-						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+						throw new InvalidPayloadError({
+							reason: `"refresh_token" is required in either the JSON payload or Cookie`,
+						});
 					}
 
 					const result = await authenticationService.refresh(currentRefreshToken);
@@ -2184,7 +2188,9 @@ export class GraphQLService {
 					const currentRefreshToken = args['refresh_token'] || req?.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 					if (!currentRefreshToken) {
-						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+						throw new InvalidPayloadError({
+							reason: `"refresh_token" is required in either the JSON payload or Cookie`,
+						});
 					}
 
 					await authenticationService.logout(currentRefreshToken);
@@ -2212,7 +2218,7 @@ export class GraphQLService {
 					try {
 						await service.requestPasswordReset(args['email'], args['reset_url'] || null);
 					} catch (err: any) {
-						if (err instanceof InvalidPayloadException) {
+						if (isDirectusError(err, ErrorCode.InvalidPayload)) {
 							throw err;
 						}
 					}
@@ -2305,7 +2311,7 @@ export class GraphQLService {
 					const otpValid = await service.verifyOTP(this.accountability.user, args['otp']);
 
 					if (otpValid === false) {
-						throw new InvalidPayloadException(`"otp" is invalid`);
+						throw new InvalidPayloadError({ reason: `"otp" is invalid` });
 					}
 
 					await service.disableTFA(this.accountability.user);
@@ -2321,7 +2327,7 @@ export class GraphQLService {
 					const { nanoid } = await import('nanoid');
 
 					if (args['length'] && Number(args['length']) > 500) {
-						throw new InvalidPayloadException(`"length" can't be more than 500 characters`);
+						throw new InvalidPayloadError({ reason: `"length" can't be more than 500 characters` });
 					}
 
 					return nanoid(args['length'] ? Number(args['length']) : 32);
@@ -2383,7 +2389,7 @@ export class GraphQLService {
 				type: GraphQLVoid,
 				resolve: async () => {
 					if (this.accountability?.admin !== true) {
-						throw new ForbiddenException();
+						throw new ForbiddenError();
 					}
 
 					const { cache } = getCache();
