@@ -1,8 +1,8 @@
-import getDatabase from '../database/index.js';
 import type { Accountability } from '@directus/types';
-import isDirectusJWT from './is-directus-jwt.js';
-import { InvalidCredentialsException } from '../index.js';
+import getDatabase from '../database/index.js';
 import env from '../env.js';
+import { InvalidCredentialsError } from '../errors/index.js';
+import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 
 export async function getAccountabilityForToken(
@@ -44,7 +44,7 @@ export async function getAccountabilityForToken(
 				.first();
 
 			if (!user) {
-				throw new InvalidCredentialsException();
+				throw new InvalidCredentialsError();
 			}
 
 			accountability.user = user.id;

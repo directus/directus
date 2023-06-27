@@ -3,7 +3,7 @@ import type { FieldFunction, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getFunctions } from '../database/helpers/index.js';
-import { InvalidQueryException } from '../exceptions/index.js';
+import { InvalidQueryError } from '../errors/index.js';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 type GetColumnOptions = {
@@ -43,7 +43,7 @@ export function getColumn(
 			const allowedFunctions = getFunctionsForType(type);
 
 			if (allowedFunctions.includes(functionName) === false) {
-				throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
+				throw new InvalidQueryError({ reason: `Invalid function specified "${functionName}"` });
 			}
 
 			const result = fn[functionName as keyof typeof fn](table, columnName!, {
@@ -58,7 +58,7 @@ export function getColumn(
 
 			return result;
 		} else {
-			throw new InvalidQueryException(`Invalid function specified "${functionName}"`);
+			throw new InvalidQueryError({ reason: `Invalid function specified "${functionName}"` });
 		}
 	}
 

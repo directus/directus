@@ -53,9 +53,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
-      '@directus/exceptions':
+      '@directus/errors':
         specifier: workspace:*
-        version: link:../packages/exceptions
+        version: link:../packages/errors
       '@directus/extensions-sdk':
         specifier: workspace:*
         version: link:../packages/extensions-sdk
@@ -92,6 +92,9 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
+      '@directus/validation':
+        specifier: workspace:*
+        version: link:../packages/validation
       '@godaddy/terminus':
         specifier: 4.12.0
         version: 4.12.0
@@ -361,6 +364,9 @@ importers:
         specifier: 16.1.0
         version: 16.1.0
     devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../packages/random
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
@@ -514,9 +520,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
-      '@directus/exceptions':
+      '@directus/errors':
         specifier: workspace:*
-        version: link:../packages/exceptions
+        version: link:../packages/errors
       '@directus/extensions-sdk':
         specifier: workspace:*
         version: link:../packages/extensions-sdk
@@ -532,6 +538,9 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
+      '@directus/validation':
+        specifier: workspace:*
+        version: link:../packages/validation
       '@editorjs/attaches':
         specifier: 1.3.0
         version: 1.3.0
@@ -1144,23 +1153,29 @@ importers:
         specifier: 0.31.1
         version: 0.31.1(jsdom@22.0.0)
 
-  packages/exceptions:
+  packages/errors:
     devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@directus/types':
         specifier: workspace:*
         version: link:../types
-      '@ngneat/falso':
-        specifier: 6.4.0
-        version: 6.4.0
+      '@types/ms':
+        specifier: 0.7.31
+        version: 0.7.31
+      '@types/node':
+        specifier: 18.16.12
+        version: 18.16.12
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
-      joi:
-        specifier: 17.9.2
-        version: 17.9.2
+      tsup:
+        specifier: 6.7.0
+        version: 6.7.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1727,6 +1742,9 @@ importers:
         specifier: 3.3.4
         version: 3.3.4
     devDependencies:
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -1751,6 +1769,40 @@ importers:
       concurrently:
         specifier: 8.0.1
         version: 8.0.1
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.1
+        version: 0.31.1(jsdom@22.0.0)
+
+  packages/validation:
+    dependencies:
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+      joi:
+        specifier: 17.9.2
+        version: 17.9.2
+    devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      '@vitest/coverage-c8':
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 6.7.0
+        version: 6.7.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -5360,11 +5412,13 @@ packages:
 
   /@hapi/hoek@9.3.0:
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
+    dev: false
 
   /@hapi/topo@5.1.0:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: false
 
   /@histoire/app@0.16.1(vite@4.3.7):
     resolution: {integrity: sha512-13komnhVk1Pk0wMmkJKDPWT8RKpA5HfAbeeXSHAq29pvFP9Faq+dAa62g1wqOpoyJD5C7SkI0OPI3eJwJHgTiQ==}
@@ -6861,12 +6915,15 @@ packages:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: false
 
   /@sideway/formula@3.0.1:
     resolution: {integrity: sha512-/poHZJJVjx3L+zVD6g9KgHfYnb443oi7wLu/XKojDviHy6HOEOA6z1Trk5aR1dGcmPenJEgb2sK2I80LeS3MIg==}
+    dev: false
 
   /@sideway/pinpoint@2.0.0:
     resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
+    dev: false
 
   /@sinclair/typebox@0.25.24:
     resolution: {integrity: sha512-XJfwUVUKDHF5ugKwIcxEgc9k8b7HbznCp6eUfWgu710hMPNIO4aw4/zB5RogDQz8nd6gyCDpU9O/m6qYEWY6yQ==}
@@ -14351,6 +14408,7 @@ packages:
       '@sideway/address': 4.1.4
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+    dev: false
 
   /jose@4.14.4:
     resolution: {integrity: sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g==}
@@ -21196,6 +21254,27 @@ packages:
       - terser
     dev: true
 
+  /vite-node@0.31.1(@types/node@20.2.0):
+    resolution: {integrity: sha512-BajE/IsNQ6JyizPzu9zRgHrBwczkAs0erQf/JRpgTIESpKvNj9/Gd0vxX905klLkb0I0SJVCKbdrl5c6FnqYKA==}
+    engines: {node: '>=v14.18.0'}
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
+      mlly: 1.2.1
+      pathe: 1.1.0
+      picocolors: 1.0.0
+      vite: 4.3.7(@types/node@20.2.0)(sass@1.62.1)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
   /vite-node@0.31.1(@types/node@20.2.0)(sass@1.62.1):
     resolution: {integrity: sha512-BajE/IsNQ6JyizPzu9zRgHrBwczkAs0erQf/JRpgTIESpKvNj9/Gd0vxX905klLkb0I0SJVCKbdrl5c6FnqYKA==}
     engines: {node: '>=v14.18.0'}
@@ -21423,7 +21502,7 @@ packages:
       tinybench: 2.5.0
       tinypool: 0.5.0
       vite: 4.3.7(@types/node@20.2.0)(sass@1.62.1)
-      vite-node: 0.31.1(@types/node@20.2.0)(sass@1.62.1)
+      vite-node: 0.31.1(@types/node@20.2.0)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

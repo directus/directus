@@ -10,13 +10,13 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { InvalidConfigException, TokenExpiredException } from '../../exceptions/index.js';
+import { InvalidProviderConfigError, TokenExpiredError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
 import { toBoolean } from '../../utils/to-boolean.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
-import { WebSocketException, handleWebSocketException } from '../exceptions.js';
+import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, UpgradeContext, WebSocketClient } from '../types.js';
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
@@ -71,7 +71,10 @@ export default abstract class SocketController {
 			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
 
 		if (!authMode.success) {
-			throw new InvalidConfigException(fromZodError(authMode.error, { prefix: `${configPrefix}_AUTH` }).message);
+			throw new InvalidProviderConfigError({
+				provider: 'ws',
+				reason: fromZodError(authMode.error, { prefix: `${configPrefix}_AUTH` }).message,
+			});
 		}
 
 		return {
@@ -159,8 +162,8 @@ export default abstract class SocketController {
 				this.server.emit('connection', ws, state);
 			} catch {
 				logger.debug('WebSocket authentication handshake failed');
-				const error = new WebSocketException('auth', 'AUTH_FAILED', 'Authentication handshake failed.');
-				handleWebSocketException(ws, error, 'auth');
+				const error = new WebSocketError('auth', 'AUTH_FAILED', 'Authentication handshake failed.');
+				handleWebSocketError(ws, error, 'auth');
 				ws.close();
 			}
 		});
@@ -180,13 +183,13 @@ export default abstract class SocketController {
 				} catch (limit) {
 					const timeout = (limit as any)?.msBeforeNext ?? this.rateLimiter.msDuration;
 
-					const error = new WebSocketException(
+					const error = new WebSocketError(
 						'server',
 						'REQUESTS_EXCEEDED',
 						`Too many messages, retry after ${timeout}ms.`
 					);
 
-					handleWebSocketException(client, error, 'server');
+					handleWebSocketError(client, error, 'server');
 					logger.debug(`WebSocket#${client.uid} is rate limited`);
 					return;
 				}
@@ -197,7 +200,7 @@ export default abstract class SocketController {
 			try {
 				message = this.parseMessage(data.toString());
 			} catch (err: any) {
-				handleWebSocketException(client, err, 'server');
+				handleWebSocketError(client, err, 'server');
 				return;
 			}
 
@@ -255,7 +258,7 @@ export default abstract class SocketController {
 		try {
 			message = WebSocketMessage.parse(parseJSON(data));
 		} catch (err: any) {
-			throw new WebSocketException('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
+			throw new WebSocketError('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
 		}
 
 		return message;
@@ -278,11 +281,11 @@ export default abstract class SocketController {
 			client.expires_at = null;
 
 			const _error =
-				error instanceof WebSocketException
+				error instanceof WebSocketError
 					? error
-					: new WebSocketException('auth', 'AUTH_FAILED', 'Authentication failed.', message.uid);
+					: new WebSocketError('auth', 'AUTH_FAILED', 'Authentication failed.', message.uid);
 
-			handleWebSocketException(client, _error, 'auth');
+			handleWebSocketError(client, _error, 'auth');
 
 			if (this.authentication.mode !== 'public') {
 				client.close();
@@ -305,11 +308,11 @@ export default abstract class SocketController {
 		client.auth_timer = setTimeout(() => {
 			client.accountability = null;
 			client.expires_at = null;
-			handleWebSocketException(client, new TokenExpiredException(), 'auth');
+			handleWebSocketError(client, new TokenExpiredError(), 'auth');
 
 			waitForMessageType(client, 'auth', this.authentication.timeout).catch((msg: WebSocketMessage) => {
-				const error = new WebSocketException('auth', 'AUTH_TIMEOUT', 'Authentication timed out.', msg?.uid);
-				handleWebSocketException(client, error, 'auth');
+				const error = new WebSocketError('auth', 'AUTH_TIMEOUT', 'Authentication timed out.', msg?.uid);
+				handleWebSocketError(client, error, 'auth');
 
 				if (this.authentication.mode !== 'public') {
 					client.close();

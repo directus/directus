@@ -48,6 +48,7 @@
 		"vue": "3.3.4"
 	},
 	"devDependencies": {
+		"@directus/errors": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.1",
