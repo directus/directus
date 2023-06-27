@@ -216,8 +216,6 @@
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.5.8",
-		"keyv-memcache": "1.3.3",
-		"memcached": "2.2.2",
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
