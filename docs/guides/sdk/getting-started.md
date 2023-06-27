@@ -64,7 +64,8 @@ For example, to create a client with REST or GraphQL support, use the following:
 
 ```js
 import { useDirectus } from '@directus/sdk@beta';
-import { rest, graphql } from '@directus/sdk@beta/composable';
+import { rest } from '@directus/sdk@beta/rest';
+import { graphql } from '@directus/sdk@beta/graphql';
 
 // Client with REST support
 const client = useDirectus('http://directus.example.com').use(rest());
@@ -81,7 +82,7 @@ For example, to login to your directus instance, invoke the `login` method
 
 ```js
 import { useDirectus } from '@directus/sdk@beta';
-import { authentication } from '@directus/sdk@beta/composable';
+import { authentication } from '@directus/sdk@beta/auth';
 
 const client = useDirectus('http://directus.example.com').use(authentication());
 await client.login(email, password);
@@ -102,8 +103,9 @@ For example, to make a request to an `articles` collection.
 JavaScript
 
 ```js
-import { useDirectus, readItem } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/rest';
+import { readItem } from '@directus/sdk@beta/rest/commands';
 
 const client = useDirectus('http://directus.example.com').use(rest());
 const result = await client.request(readItem('articles', 5));
@@ -112,8 +114,9 @@ const result = await client.request(readItem('articles', 5));
 TypeScript
 
 ```ts
-import { useDirectus, readItem } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/rest';
+import { readItem } from '@directus/sdk@beta/rest/commands';
 
 type Schema = {
 	articles: { title: string; content: string };
@@ -126,8 +129,9 @@ const result = await client.request(readItem('articles', 5));
 #### Read all items
 
 ```js
-import { useDirectus, readItems } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/rest';
+import { readItems } from '@directus/sdk@beta/rest/commands';
 
 const client = useDirectus('http://directus.example.com').use(rest());
 const result = await client.request(readItems('articles'));
@@ -136,8 +140,9 @@ const result = await client.request(readItems('articles'));
 #### Read specific fields
 
 ```js
-import { useDirectus, readItems } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/rest';
+import { readItems } from '@directus/sdk@beta/rest/commands';
 
 const client = useDirectus('http://directus.example.com').use(rest());
 const result = await client.request(
@@ -150,8 +155,9 @@ const result = await client.request(
 #### Read all fields
 
 ```js
-import { useDirectus, readItems } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/rest';
+import { readItems } from '@directus/sdk@beta/rest/commands';
 
 const client = useDirectus('http://directus.example.com').use(rest());
 const result = await client.request(
@@ -164,8 +170,9 @@ const result = await client.request(
 #### Read nested fields
 
 ```js
-import { useDirectus, readItems } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/composable';
+import { useDirectus } from '@directus/sdk@beta';
+import { rest } from '@directus/sdk@beta/rest';
+import { readItems } from '@directus/sdk@beta/rest/commands';
 
 const client = useDirectus('http://directus.example.com').use(rest());
 const result = await client.request(
@@ -183,7 +190,7 @@ For example, to make a request to an `articles` collection.
 
 ```ts
 import { useDirectus } from '@directus/sdk@beta';
-import { graphql } from '@directus/sdk@beta/composable';
+import { graphql } from '@directus/sdk@beta/graphql';
 
 type Article = {
 	title: string;
