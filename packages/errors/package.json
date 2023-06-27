@@ -1,13 +1,6 @@
 {
 	"name": "@directus/errors",
 	"version": "0.0.0",
-	"type": "module",
-	"sideEffects": false,
-	"scripts": {
-		"build": "tsup src/index.ts --format=esm --dts",
-		"dev": "tsup src/index.ts --format=esm --dts --watch",
-		"test": "vitest --watch=false"
-	},
 	"description": "Create consistent error objects around the codebase",
 	"repository": {
 		"type": "git",
@@ -17,6 +10,8 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"sideEffects": false,
+	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
@@ -25,6 +20,11 @@
 	"files": [
 		"dist"
 	],
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"test": "vitest --watch=false"
+	},
 	"devDependencies": {
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
@@ -35,8 +35,5 @@
 		"tsup": "6.7.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
-	},
-	"dependencies": {
-		"ms": "2.1.3"
 	}
 }
