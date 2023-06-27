@@ -525,6 +525,7 @@ create_collection: Nova zbirka
 no_collections_copy_admin: Još nemate niti jednu zbirku. Kliknite gumb u nastavku da biste započeli.
 no_collections_copy: Još nemate nijednu zbirku. Obratite se administratoru.
 relationship_not_setup: Odnos nije ispravno konfiguriran
+no_singleton_relations: Veze s pojedinačnim objektima (singletons) nisu podržane
 display_template_not_setup: Opcija predloška prikaza je pogrešno konfigurirana
 collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
 select_a_collection: Odaberite zbirku
@@ -575,6 +576,8 @@ select_an_item: Odaberi stavku...
 edit: Uredi
 enabled: Omogućeno
 disable_tfa: Onemogući 2FA
+admin_disable_tfa_text: Jeste li sigurni da želite onemogućiti dvofaktorsku autentifikaciju (2FA) za ovog korisnika?
+tfa_setup: Postavljanje dvofaktorske autentifikacije (2FA)
 tfa_scan_code: Skenirajte kod u svojoj aplikaciji za autentifikaciju da biste dovršili postavljanje 2FA
 enter_otp_to_disable_tfa: Unesite OTP da biste onemogućili 2FA
 create_account: Kreiraj račun
@@ -616,6 +619,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Nevažeći raspon
   METHOD_NOT_ALLOWED: Metoda nije dozvoljena
   REQUESTS_EXCEEDED: Dosegnuto je ograničenje zahtjeva
+  CONTENT_TOO_LARGE: Predmet/datoteka koju ste poslali je prevelika
 security: Sigurnost
 value_hashed: Sigurno kriptirana vrijednost
 bookmark_name: Naziv oznake...
@@ -661,6 +665,7 @@ one_filtered_item: '1 filtrirana stavka'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati zbirku "{collection}"? Ovo će izbrisati zbirku i sve stavke u njoj. Ova akcija je trajna.
 delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati mapu "{folder}"? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
+delete_collection_peer_dependencies: Sljedeća polja također će biti izbrisana, budući da su povezana s trenutnom kolekcijom.
 collections_shown: Prikazane zbirke
 visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke
@@ -755,6 +760,8 @@ add_file: Dodaj datoteku
 replace_file: Zamijeni datoteku
 no_results: Nema rezultata
 no_results_copy: Podesite ili obrišite filtre pretraživanja da biste vidjeli rezultate.
+no_visible_fields: Prazan obrazac
+no_visible_fields_copy: Ovaj obrazac nema vidljiva polja.
 clear_filters: Poništi filtere
 saves_automatically: Automatski sprema
 role: Uloge
@@ -784,6 +791,7 @@ label: Oznaka
 flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
+run_flow_confirm: Jeste li sigurni da želite izvršiti ovaj tok?
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
