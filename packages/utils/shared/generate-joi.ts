@@ -176,6 +176,27 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			}
 		}
 
+		if (operator === '_istarts_with') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`, 'i'), {
+					name: 'istarts_with',
+				});
+			}
+		}
+
+		if (operator === '_nistarts_with') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`, 'i'), {
+					name: 'istarts_with',
+					invert: true,
+				});
+			}
+		}
+
 		if (operator === '_ends_with') {
 			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
 				schema[key] = Joi.any().equal(true);
@@ -192,6 +213,27 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 			} else {
 				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`), {
 					name: 'ends_with',
+					invert: true,
+				});
+			}
+		}
+
+		if (operator === '_iends_with') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`, 'i'), {
+					name: 'iends_with',
+				});
+			}
+		}
+
+		if (operator === '_niends_with') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`, 'i'), {
+					name: 'iends_with',
 					invert: true,
 				});
 			}
