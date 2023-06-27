@@ -285,6 +285,8 @@ invalid_item: Item inválido
 require_confirmation: Requer confirmação
 dialog: Diálogo
 modal: Modal
+confirmation_dialog: Diálogos de confirmação
+confirmation_description: Descrição da confirmação
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
@@ -431,6 +433,7 @@ checksum: Checksum
 owner: Proprietário
 edited_by: Editado por
 folder: Pasta
+folders: Pastas
 zoom: Zoom
 download: Download
 open: Abrir
@@ -479,6 +482,8 @@ enable_select_button: Habilitar botão de seleção
 allow_duplicates: Permitir duplicatas
 comments: Comentários
 no_comments: Nenhum comentário ainda
+expand: Expandir
+collapse: Recolher
 select_item: Selecionar item
 no_items: Nenhum item
 search_items: Buscar Itens...
@@ -512,6 +517,7 @@ create_collection: Criar Coleção
 no_collections_copy_admin: Você ainda não tem nenhuma coleção. Clique no botão abaixo para começar.
 no_collections_copy: Você ainda não tem nenhuma coleção. Entre em contato com o administrador do sistema.
 relationship_not_setup: O relacionamento não foi configurado corretamente
+no_singleton_relations: Relações com Singletons não são suportadas
 display_template_not_setup: A opção do modelo de exibição está configurada incorretamente
 collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
 select_a_collection: Selecione uma coleção
@@ -605,6 +611,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Intervalo inválido
   METHOD_NOT_ALLOWED: Método não permitido
   REQUESTS_EXCEEDED: Limite de requisições atingido
+  CONTENT_TOO_LARGE: Item/arquivo enviado é muito grande
 security: Segurança
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
@@ -650,6 +657,7 @@ one_filtered_item: '1 item filtrado'
 delete_collection_are_you_sure: >-
   Você tem certeza que quer deletar a coleção "{collection}"? Isso apagará a coleção e todos os itens dela. Esta ação é permanente.
 delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível mais elevado.
+delete_collection_peer_dependencies: Os seguintes campos também serão excluídos, uma vez que estão relacionados com a coleção atual.
 collections_shown: Coleções mostradas
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
@@ -775,8 +783,13 @@ label: Rótulo
 flows: Fluxos
 flow: Fluxo
 select_a_flow: Selecione um fluxo
+run_flow_confirm: Tem certeza que deseja excluir este fluxo?
+run_flow_on_current_collection: Executar fluxo na coleção atual
+run_flow_on_current: Executar fluxo no Item atual
 run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
+run_flow: Executar Fluxo
 run_flow_success: Fluxo "{flow}" executado com sucesso
+field_name_placeholder: Inserir nome do campo...
 trigger: Acionar
 trigger_options: Opções de ativação
 view_trigger: Ver gatilho
@@ -936,6 +949,7 @@ settings_project: Configurações do projeto
 settings_webhooks: Webhooks
 settings_flows: Fluxos
 settings_presets: Predefinições & Marcadores
+settings_translations: Traduções personalizadas
 one_or_more_options_are_missing: Uma ou mais opções estão faltando
 scope: Escopo
 actions: Ações
