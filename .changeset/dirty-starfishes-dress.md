@@ -3,4 +3,4 @@
 '@directus/utils': patch
 ---
 
-Add support for `_istarts_with` and `_iends_with` filters
+Expose case-insensitive variants of `_starts_with` and `_ends_with` filter operators
