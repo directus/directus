@@ -47,7 +47,6 @@ const allowedEnvironmentVars = [
 	'REFRESH_TOKEN_COOKIE_NAME',
 
 	'REDIS',
-	'REDIS_NAMESPACE',
 	'REDIS_HOST',
 	'REDIS_PORT',
 	'REDIS_USERNAME',
