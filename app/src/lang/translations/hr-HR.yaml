@@ -1453,6 +1453,7 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
+weeks: { }
 report_error: Prijavi grešku
 start: Započni
 table: Tablica
@@ -1709,6 +1710,7 @@ interfaces:
     input-translated-string: Prevedeni nizovi
     description: Odaberi ili dodaj prijevodni niz
     search_placeholder: Traži...
+    new_custom_translation: Novi Prilagođeni Prijevod
   boolean:
     toggle: Uključi/isključi
     description: Prebacivanje između uključivanja i isključivanja
@@ -1746,15 +1748,26 @@ interfaces:
     imageToken: Statički pristupni token
     imageToken_label: Statički pristupni token se dodaje URL-u
   input-block-editor:
+    input-block-editor: Uređivač Blokova
+    description: Uređivač u stilu blokova za obogaćene medijske priče, izlazni podaci u čistom JSON formatu koristeći Editor.js
     tools: Alatna traka
     tools_options:
       header: Zaglavlje
       nestedlist: Lista
       embed: Ugradi
+      paragraph: Odlomak
       code: Kôd
       image: Slika
+      attaches: Prilozi
       table: Tablica
+      quote: Citat
       underline: Podcrtano
+      inlinecode: Ugrađeni Kod
+      delimiter: Razdjelnik
+      checklist: Lista provjere
+      toggle: Prekidač Bloka
+      alignment: Poravnanje
+      raw: Sirovi HTML
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete unos (API)
     description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'
@@ -1945,11 +1958,49 @@ layouts:
     default_template: Korištenje zadane zbirke...
     no_compatible_fields: Nema kompatibilnih polja
   kanban:
+    name: Kanban
+    group_field: Grupiraj po
+    group_field_placeholder: Polje za grupiranje prema...
+    group_title: Naslov Grupe
+    group_title_placeholder: Polje za naslove grupa...
+    title: Naslov Kartice
+    title_placeholder: Neobavezno polje naslova...
+    text: Tekst kartice
+    text_placeholder: Neobavezno tekstno polje...
+    date: Datum Kartice
+    date_placeholder: Neobavezno polje datuma...
+    tags: Oznake Kartice
+    tags_placeholder: Neobavezno polje oznaka...
+    user: Korisnik kartice
+    user_placeholder: Neobavezno polje korisnika...
+    image: Slika kartice
+    image_placeholder: Neobavezno polje slike...
+    image_fit: Prilagodi Sliku Kartice
     crop: Obreži
     advanced: Napredno
+    edit_group: Uredi Grupu
+    delete_group: Obriši Grupu
+    add_group: Dodaj Grupu
+    add_group_placeholder: Unesite novi naslov grupe...
+    show_ungrouped: Prikaži Negrupirano
+    show: Prikaži
+    no_group: Nema Grupe
     not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 horizontal: Horizontalno
+vertical: Uspravno
+x_axis: X-Os
+y_axis: Y-Os
+y_axis_function: Funkcija Y-Osi
+show_x_only: Prikaži samo X-Os
+show_y_only: Prikaži samo Y-Os
+show_data_label: Prikaži Podatkovnu Oznaku
 both: Oboje
+show_axis_labels: Prikaži Oznaku Osi
+function: Funkcija
+half_circle: Polukrug
+full_circle: Puni Krug
+stroke_width: Širina Poteza
+rounded_stroke: Zaobljenost Poteza
 thin: Tanak
 medium: Srednji
 broad: Širok
