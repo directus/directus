@@ -12,9 +12,9 @@ import emitter from '../../emitter.js';
 import env from '../../env.js';
 import {
 	ErrorCode,
-	InvalidConfigError,
 	InvalidCredentialsError,
 	InvalidProviderError,
+	InvalidProviderConfigError,
 	InvalidTokenError,
 	ServiceUnavailableError,
 } from '../../errors/index.js';
@@ -43,7 +43,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
 			logger.error('Invalid provider config');
-			throw new InvalidConfigError({ provider: additionalConfig['provider'] });
+			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
 		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
@@ -67,7 +67,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 						logger.error('OpenID provider does not support required code flow');
 
 						reject(
-							new InvalidConfigError({
+							new InvalidProviderConfigError({
 								provider: additionalConfig['provider'],
 							})
 						);

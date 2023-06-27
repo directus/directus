@@ -10,7 +10,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { InvalidConfigError, TokenExpiredError } from '../../errors/index.js';
+import { InvalidProviderConfigError, TokenExpiredError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
@@ -71,7 +71,7 @@ export default abstract class SocketController {
 			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
 
 		if (!authMode.success) {
-			throw new InvalidConfigError({
+			throw new InvalidProviderConfigError({
 				provider: 'ws',
 				reason: fromZodError(authMode.error, { prefix: `${configPrefix}_AUTH` }).message,
 			});

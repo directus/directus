@@ -9,10 +9,10 @@ import emitter from '../../emitter.js';
 import env from '../../env.js';
 import {
 	ErrorCode,
-	InvalidConfigError,
 	InvalidCredentialsError,
 	InvalidPayloadError,
 	InvalidProviderError,
+	InvalidProviderConfigError,
 	ServiceUnavailableError,
 	UnexpectedResponseError,
 } from '../../errors/index.js';
@@ -60,7 +60,7 @@ export class LDAPAuthDriver extends AuthDriver {
 			(!clientUrl && !config['client']?.socketPath)
 		) {
 			logger.error('Invalid provider config');
-			throw new InvalidConfigError({ provider });
+			throw new InvalidProviderConfigError({ provider });
 		}
 
 		const clientConfig = typeof config['client'] === 'object' ? config['client'] : {};
@@ -98,7 +98,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 							if (isDirectusError(error, ErrorCode.InvalidCredentials)) {
 								logger.warn('Invalid bind user');
-								reject(new InvalidConfigError({ provider }));
+								reject(new InvalidProviderConfigError({ provider }));
 							} else {
 								reject(error);
 							}
