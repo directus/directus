@@ -287,8 +287,21 @@ websockets work reliably across multiple containers of Directus.
 | `REDIS_CONNECTION_STRING` | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4`. Using this will ignore the other Redis connection parameter environment variables | --            |
 | `REDIS_HOST`              | Hostname of the Redis instance, e.g., `"127.0.0.1"`                                                                                                        | --            |
 | `REDIS_PORT`              | Port of the Redis instance, e.g., `6379`                                                                                                                   | --            |
-| `REDIS_USERNAME`          | Username for your Redis instance, e.g., `"default"`                                                                                                        | --            |
-| `REDIS_PASSWORD`          | Password for your Redis instance, e.g., `"yourRedisPassword"`                                                                                              | --            |
+
+### Options
+
+The following Redis options are available for configuration in Directus' environment variables:
+
+| Variable                        | Description                                                                                   | Default Value |
+| ------------------------------- | --------------------------------------------------------------------------------------------- | ------------- |
+| `REDIS_COMMAND_TIMEOUT`         | Throw an error if the Redis value hasn't returned after the configured threshold. Value in ms | `1000`        |
+| `REDIS_CONNECTION_NAME`         | Set the name of the connection so it's easier to find the connection in debugging             | `'directus'`  |
+| `REDIS_CONNECT_TIMEOUT`         | How long Directus will wait before killing the connection due to inactivity                   | `5000`        |
+| `REDIS_MAX_RETRIES_PER_REQUEST` | How many reconnection attempts are made before the queue is flushed                           | `20`          |
+| `REDIS_ENABLE_AUTO_PIPELINING`  | Enables [ioredis' auto-pipelining feature](https://github.com/redis/ioredis#autopipelining)   | `true`        |
+| `REDIS_USERNAME`                | Redis username                                                                                | --            |
+| `REDIS_PASSWORD`                | Redis password                                                                                | --            |
+| `REDIS_DB`                      | Database index to use                                                                         | --            |
 
 If the Redis configuration is omitted, Directus will default to using local memory. This will fail when running Directus
 across multiple containers.
