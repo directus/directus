@@ -3,7 +3,7 @@ import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
 import { cloneDeep, merge, set } from 'lodash-es';
-import { clearSystemCache } from '../cache.js';
+import { flushCaches } from '../cache.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
@@ -324,7 +324,7 @@ export async function applyDiff(
 		await helpers.schema.postColumnChange();
 	}
 
-	await clearSystemCache();
+	await flushCaches();
 
 	if (nestedActionEvents.length > 0) {
 		const updatedSchema = await getSchema({ database, bypassCache: true });
