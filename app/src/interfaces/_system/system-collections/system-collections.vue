@@ -43,7 +43,9 @@ const collections = computed(() => {
 
 	if (props.includeSystem) return collections;
 
-	return collections.filter((collection) => collection.collection.startsWith('directus_') === false);
+	return collections.filter(
+		(collection) => collection.collection.startsWith('directus_') === false && collection.type === 'table'
+	);
 });
 
 const items = computed(() => {
