@@ -60,7 +60,7 @@ test('Convert query with filter', () => {
 				field: randomIdentifier(),
 			},
 			operation: 'gt',
-			value: randomInteger(1, 100),
+			values: [randomInteger(1, 100)],
 			negation: false,
 		},
 	};
@@ -82,8 +82,7 @@ test('Convert query with filter', () => {
 		],
 		from: sample.query.collection,
 		where: {
-			value: { parameterIndex: 0 },
-			operation: '>',
+			type: 'condition',
 			target: {
 				column: (
 					(sample.query.modifiers.filter as AbstractQueryNodeCondition).target as AbstractQueryFieldNodePrimitive
@@ -91,10 +90,11 @@ test('Convert query with filter', () => {
 				table: sample.query.collection,
 				type: 'primitive',
 			},
-			type: 'condition',
 			negation: false,
+			operation: 'gt',
+			parameterIndexes: [0],
 		},
-		parameters: [(sample.query.modifiers.filter! as AbstractQueryNodeCondition).value],
+		parameters: (sample.query.modifiers.filter! as AbstractQueryNodeCondition).values,
 	};
 
 	expect(res).toStrictEqual(expected);

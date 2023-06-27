@@ -349,6 +349,7 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 		| 'gt'
 		| 'gte'
 		| 'in'
+		| 'between'
 		| 'contains'
 		| 'starts_with'
 		| 'ends_with'
@@ -358,8 +359,8 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	/** the above operations can be negated by setting the following attribute to true. */
 	negation: boolean;
 
-	/** the conditional value. Might be also a function or sub query in the future */
-	value: string | number | boolean;
+	/** the conditional values. Might be also a function or sub query in the future */
+	values: (string | number | boolean)[];
 }
 
 /**

@@ -32,11 +32,27 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 
 	if (abstractQuery.modifiers?.filter) {
 		const idx = idGen.next().value;
-		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, idx, abstractQuery.collection);
+
+		if (abstractQuery.modifiers.filter.type === 'logical') {
+			throw new Error('Logical operators are not supported yet');
+		}
+
+		// for those two operators a second parameter is needed
+		let secondIndex = null;
+
+		if (['between', 'in'].includes(abstractQuery.modifiers.filter.operation!)) {
+			secondIndex = idGen.next().value;
+		}
+
+		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, abstractQuery.collection, idx, secondIndex);
 
 		if (convertedFilter !== null) {
 			statement.where = convertedFilter.where;
 			statement.parameters[idx] = convertedFilter.parameters[0]!;
+
+			if (secondIndex) {
+				statement.parameters[secondIndex] = convertedFilter.parameters[1]!;
+			}
 		}
 	}
 

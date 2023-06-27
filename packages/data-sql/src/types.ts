@@ -1,4 +1,4 @@
-import type { AbstractQueryNodeSortTargets, AbstractQueryNodeCondition } from '@directus/data';
+import type { AbstractQueryNodeSortTargets } from '@directus/data';
 
 export interface SqlStatementSelectPrimitive {
 	type: 'primitive';
@@ -61,19 +61,44 @@ export type AbstractSqlOrder = {
 };
 
 /**
+ * An abstract WHERE clause.
+ *
+ * @remarks
  * So far only comparisons to _primitives_ are supported.
  * Functions will be supported soon.
  * How we'll handle relational values here, needs to be discussed.
  */
-export interface AbstractSqlQueryNodeCondition
-	extends Omit<AbstractQueryNodeCondition, 'value' | 'operation' | 'target'> {
-	value: ParameterIndex;
-	operation: '=' | '>' | '>=' | '<' | '<=';
-	target: {
-		column: string;
-		table: string;
-		type: 'primitive';
+export interface AbstractSqlQueryNodeConditionAlt {
+	type: 'condition';
+	negation: 'NOT' | '';
+	target: Omit<SqlStatementSelectPrimitive, 'as'>;
+	operation: {
+		operator: '=' | '>' | '>=' | '<' | '<=' | 'LIKE' | 'BETWEEN' | 'IN';
+		prefix?: '%' | '_'[];
+		suffix?: '%' | '_'[];
+		concatenation: 'AND' | 'OR';
 	};
+	values: ParameterIndex[];
+}
+
+export interface AbstractSqlQueryNodeCondition {
+	type: 'condition';
+	negation: boolean;
+	target: Omit<SqlStatementSelectPrimitive, 'as'>;
+	operation:
+		| 'eq'
+		| 'lt'
+		| 'lte'
+		| 'gt'
+		| 'gte'
+		| 'in'
+		| 'between'
+		| 'contains'
+		| 'starts_with'
+		| 'ends_with'
+		| 'intersects'
+		| 'intersects_bounding_box';
+	parameterIndexes: number[];
 }
 
 /**
