@@ -105,7 +105,7 @@ router.post(
 			const createdField = await service.readOne(req.params['collection']!, field.field);
 			res.locals['payload'] = { data: createdField || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -143,7 +143,7 @@ router.patch(
 				res.locals['payload'] = { data: results || null };
 			}
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -198,7 +198,7 @@ router.patch(
 			const updatedField = await service.readOne(req.params['collection']!, req.params['field']!);
 			res.locals['payload'] = { data: updatedField || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

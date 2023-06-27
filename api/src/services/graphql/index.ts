@@ -2218,7 +2218,7 @@ export class GraphQLService {
 					try {
 						await service.requestPasswordReset(args['email'], args['reset_url'] || null);
 					} catch (err: any) {
-						if (isDirectusError(err) && err.code === ErrorCode.InvalidPayload) {
+						if (isDirectusError(err, ErrorCode.InvalidPayload)) {
 							throw err;
 						}
 					}

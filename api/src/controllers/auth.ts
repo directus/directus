@@ -172,7 +172,7 @@ router.post(
 			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
 			return next();
 		} catch (err: any) {
-			if (isDirectusError(err) && err.code === ErrorCode.InvalidPayload) {
+			if (isDirectusError(err, ErrorCode.InvalidPayload)) {
 				throw err;
 			} else {
 				logger.warn(err, `[email] ${err}`);

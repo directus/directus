@@ -99,7 +99,7 @@ ${comment}
 						item: data['item'],
 					});
 				} catch (err: any) {
-					if (isDirectusError(err) && err.code === ErrorCode.Forbidden) {
+					if (isDirectusError(err, ErrorCode.Forbidden)) {
 						logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
 					} else {
 						throw err;

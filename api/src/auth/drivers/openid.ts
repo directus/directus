@@ -227,7 +227,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (isDirectusError(e) && e.code === ErrorCode.RecordNotUnique) {
+			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
 				logger.warn(e, '[OpenID] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}
@@ -382,7 +382,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
-				if (isDirectusError(error) && error.code === ErrorCode.InvalidToken && !prompt) {
+				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {
 					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
 				}
 

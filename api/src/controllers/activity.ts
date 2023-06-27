@@ -104,7 +104,7 @@ router.post(
 				data: record || null,
 			};
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -143,7 +143,7 @@ router.patch(
 				data: record || null,
 			};
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

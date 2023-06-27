@@ -46,7 +46,7 @@ router.post(
 				res.locals['payload'] = { data: result || null };
 			}
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -151,7 +151,7 @@ router.patch(
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals['payload'] = { data: result };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -184,7 +184,7 @@ router.patch(
 			const result = await service.readOne(updatedPrimaryKey, req.sanitizedQuery);
 			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

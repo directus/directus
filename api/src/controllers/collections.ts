@@ -91,7 +91,7 @@ router.patch(
 			const collections = await collectionsService.readMany(collectionKeys);
 			res.locals['payload'] = { data: collections || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -117,7 +117,7 @@ router.patch(
 			const collection = await collectionsService.readOne(req.params['collection']!);
 			res.locals['payload'] = { data: collection || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

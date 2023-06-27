@@ -39,7 +39,7 @@ router.patch(
 			const record = await service.readSingleton(req.sanitizedQuery);
 			res.locals['payload'] = { data: record || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === ErrorCode.Forbidden) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

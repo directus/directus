@@ -96,7 +96,7 @@ export class LDAPAuthDriver extends AuthDriver {
 						if (err) {
 							const error = handleError(err);
 
-							if (isDirectusError(error) && error.code === ErrorCode.InvalidCredentials) {
+							if (isDirectusError(error, ErrorCode.InvalidCredentials)) {
 								logger.warn('Invalid bind user');
 								reject(new InvalidConfigError({ provider }));
 							} else {
@@ -320,7 +320,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (isDirectusError(e) && e.code === ErrorCode.RecordNotUnique) {
+			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}
