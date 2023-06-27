@@ -68,10 +68,12 @@ import { rest } from '@directus/sdk@beta/rest';
 import { graphql } from '@directus/sdk@beta/graphql';
 
 // Client with REST support
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
 
 // Client with GraphQL support
-const client = useDirectus('http://directus.example.com').use(graphql());
+const client = useDirectus('http://directus.example.com')
+	.use(graphql());
 ```
 
 ## Authentication
@@ -84,7 +86,8 @@ For example, to login to your directus instance, invoke the `login` method
 import { useDirectus } from '@directus/sdk@beta';
 import { authentication } from '@directus/sdk@beta/auth';
 
-const client = useDirectus('http://directus.example.com').use(authentication());
+const client = useDirectus('http://directus.example.com')
+	.use(authentication());
 
 await client.login(email, password);
 ```
@@ -108,7 +111,8 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItem } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
 
 const result = await client.request(readItem('articles', 5));
 ```
@@ -124,7 +128,8 @@ type Schema = {
 	articles: { title: string; content: string };
 };
 
-const client = useDirectus<Schema>('http://directus.example.com').use(rest());
+const client = useDirectus<Schema>('http://directus.example.com')
+	.use(rest());
 
 const result = await client.request(readItem('articles', 5));
 ```
@@ -136,7 +141,8 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
 
 const result = await client.request(readItems('articles'));
 ```
@@ -148,7 +154,8 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
 
 const result = await client.request(
 	readItems('articles', {
@@ -164,7 +171,8 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
 
 const result = await client.request(
 	readItems('articles', {
@@ -180,7 +188,8 @@ import { useDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = useDirectus('http://directus.example.com')
+	.use(rest());
 
 const result = await client.request(
 	readItems('articles', {
@@ -208,7 +217,8 @@ type Schema = {
 	articles: Article;
 };
 
-const client = useDirectus<Schema>('http://directus.example.com').use(graphql());
+const client = useDirectus<Schema>('http://directus.example.com')
+	.use(graphql());
 
 const result = await client.query<Article[]>(`
     query {
@@ -221,6 +231,8 @@ const result = await client.query<Article[]>(`
 `);
 ```
 
+> Feel free to customize the queries according to your project's GraphQL schema.
+
 ## Next Steps
 
 You have successfully created a composable client using the Directus SDK.
@@ -231,3 +243,8 @@ Keep an eye on our documentation as we continue to enhance and expand the SDK.
 
 If you encounter any issues or have questions, don't hesitate to reach out to us in our
 [Discord community](https://directus.chat/).
+
+## Older SDK Version
+
+The older SDK still works and your existing applications that use the older version will continue to
+function without any issues.
