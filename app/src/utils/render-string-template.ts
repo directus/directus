@@ -1,4 +1,3 @@
-import { useAliasFields } from '@/composables/use-alias-fields';
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
 import { Field } from '@directus/types';
@@ -69,10 +68,8 @@ export function renderDisplayStringTemplate(
 
 	const parsedItem: Record<string, any> = {};
 
-	const { getFromAliasedItem } = useAliasFields(fields, collection);
-
 	for (const key of fields) {
-		const value = getFromAliasedItem(item, key);
+		const value = get(item, key);
 
 		const display = useExtension(
 			'display',
