@@ -6,20 +6,20 @@ export type ItemType<Schema extends object> = Schema[keyof Schema] | { [K in key
 /**
  * Return string keys of all Primitive fields in the given schema Item
  */
-export type PrimitiveFields<Schema extends object, Item extends object> = {
+export type PrimitiveFields<Schema extends object, Item> = {
 	[Key in keyof Item]: Extract<Item[Key], ItemType<Schema>> extends never ? Key : never;
 }[keyof Item];
 
 /**
  * Return string keys of all Relational fields in the given schema Item
  */
-export type RelationalFields<Schema extends object, Item extends object> = {
+export type RelationalFields<Schema extends object, Item> = {
 	[Key in keyof Item]: Extract<Item[Key], ItemType<Schema>> extends never ? never : Key;
 }[keyof Item];
 
 /**
  * Remove the related Item types from relational m2o/a2o fields
  */
-export type RemoveRelationships<Schema extends object, Item extends object> = {
+export type RemoveRelationships<Schema extends object, Item> = {
 	[Key in keyof Item]: Exclude<Item[Key], ItemType<Schema>>;
 };

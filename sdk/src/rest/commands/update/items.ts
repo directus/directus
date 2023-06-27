@@ -20,15 +20,10 @@ export type UpdateItemsOutput<
  * @returns Returns the item objects for the updated items.
  */
 export const updatedItems =
-	<
-		Schema extends object,
-		Collection extends keyof Schema,
-		TQuery extends Query<Schema, Schema[Collection]>,
-		Item = Schema[Collection]
-	>(
+	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		keys: PrimaryKey[],
-		item: Partial<Item>,
+		item: Partial<Schema[Collection]>,
 		query?: TQuery
 	): RestCommand<UpdateItemsOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {

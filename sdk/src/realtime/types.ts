@@ -9,13 +9,9 @@ export interface WebSocketConfig {
 	url?: string;
 }
 
-export interface SubscribeOptions<
-	Schema extends object,
-	Collection extends keyof Schema,
-	Item extends object = Schema[Collection]
-> {
+export interface SubscribeOptions<Schema extends object, Collection extends keyof Schema> {
 	event?: SubscriptionOptionsEvents;
-	query?: Query<Schema, Item>;
+	query?: Query<Schema, Schema[Collection]>;
 	uid?: string;
 }
 

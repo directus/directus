@@ -23,10 +23,10 @@ The following composables are available/in progress:
   - adds `.query(...)` on the client
 - `auth()` authentication functions
   - adds `.login({ email, password })`, `.logout()`, `.refresh()` on the client
-- `realtime()` websocket connectivity [wip]
+- `realtime()` websocket connectivity
   - adds `.subscribe(...)`, `.message(...)`, `.receive((message) => {})` on the client
 - `subscription()` GraphQL Subscriptions [todo]
-  - not sure yet but something like `.subscription()`
+  - will add `.subscription()`
 
 For this example we'll build a client including `rest` and `graphql`:
 ```ts
