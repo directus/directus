@@ -1777,6 +1777,8 @@ interfaces:
     regenerate: Перевыпустить Токен
     generate_success_copy: Обязательно создайте резервную копию и скопируйте токен выше. Из соображений безопасности вы не сможете просмотреть токен снова после сохранения и перехода с этой страницы.
     remove_token: Удалить Токен
+  system-raw-editor:
+    system-raw-editor: Редактор сырых данных
 displays:
   translations:
     translations: Переводы
@@ -1817,6 +1819,7 @@ displays:
     suffix: Суффикс
     strict_label: Использовать строгие единицы измерения
     strict_note: Удаляет слова типа 'almost', 'over', 'less than'
+    round_note: Выберите округляющую функцию
   file:
     file: Файл
     description: Показать файлы
