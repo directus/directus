@@ -917,12 +917,6 @@ importers:
       '@unhead/vue':
         specifier: 1.1.26
         version: 1.1.26(vue@3.3.4)
-      highlight.js:
-        specifier: 11.8.0
-        version: 11.8.0
-      outdent:
-        specifier: 0.8.0
-        version: 0.8.0
       spellchecker-cli:
         specifier: 6.1.1
         version: 6.1.1
@@ -13227,11 +13221,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /highlight.js@11.8.0:
-    resolution: {integrity: sha512-MedQhoqVdr0U6SSnWPzfiadUcDHfN/Wzq25AkXiQv9oiOO/sG0S7XkvpFIqWBl9Yq1UYyYOOVORs5UW2XlPyzg==}
-    engines: {node: '>=12.0.0'}
-    dev: true
-
   /histoire@0.16.1(vite@4.3.7):
     resolution: {integrity: sha512-TIzJ0Wqe8epfTYMd7yuS0Zcuy86ysJ5t4p6qt0zjHAinoNgEH2M9biHtuKQzd96/QuUy3oc2dcXiFLFSZGdSyw==}
     hasBin: true
@@ -16821,10 +16810,6 @@ packages:
 
   /outdent@0.5.0:
     resolution: {integrity: sha512-/jHxFIzoMXdqPzTaCpFzAAWhpkSjZPF4Vsn6jAfNpmbH/ymsmd7Qc6VE9BGn0L6YMj6uwpQLxCECpus4ukKS9Q==}
-    dev: true
-
-  /outdent@0.8.0:
-    resolution: {integrity: sha512-KiOAIsdpUTcAXuykya5fnVVT+/5uS0Q1mrkRHcF89tpieSmY33O/tmc54CqwA+bfhbtEfZUNLHaPUiB9X3jt1A==}
     dev: true
 
   /outvariant@1.4.0:

@@ -34,8 +34,8 @@ layout: home
 <template #rest>
 
 ```js
-GET /items/products/4
-	?fields[]=id,status,title,category,image.id,image.name
+GET /items/products/4?
+	fields[]=id,status,title,category,image.id,image.name
 ```
 
 </template>

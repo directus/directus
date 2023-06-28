@@ -20,8 +20,6 @@
 		"@directus/tsconfig": "workspace:*",
 		"@thumbsmith/url": "0.1.3",
 		"@unhead/vue": "1.1.26",
-		"highlight.js": "11.8.0",
-		"outdent": "0.8.0",
 		"spellchecker-cli": "6.1.1",
 		"typedoc": "0.24.7",
 		"typedoc-plugin-frontmatter": "0.0.2",
