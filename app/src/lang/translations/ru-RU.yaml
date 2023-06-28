@@ -35,6 +35,7 @@ tile_size: Размер плитки
 edit_field: Редактировать поле
 conditions: Условия
 location: Расположение
+collection_names_are_case_sensitive: Названия коллекций чувствительны к регистру
 condition_rules: Правила условий
 input: Ввод текста
 maps: Карты
@@ -80,6 +81,10 @@ create_user: Создать пользователя
 message: Сообщение
 delete_panel: Удалить панель
 create_webhook: Создать веб-хук
+create_custom_translation: Создать пользовательский перевод
+edit_custom_translation: Редактировать пользовательский перевод
+no_custom_translations: Нет пользовательских переводов
+no_custom_translations_copy: Еще нет пользовательских переводов.
 invite_users: Пригласить пользователей
 invite: Пригласить
 email_already_invited: На адрес «{email}» уже было отправлено приглашение
@@ -116,6 +121,7 @@ archive_confirm_count: >-
   Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
 reset_system_permissions_to: 'Сбросить системные разрешения:'
 reset_system_permissions_copy: Это действие перезапишет пользовательские разрешения, которые вы могли задать системным коллекциям. Вы уверены?
+the_following_are_minimum_permissions: Следующие минимальные разрешения автоматически применяются при предоставлении "Доступа к приложению". При необходимости вы можете предоставить дополнительные разрешения, но вы не можете уменьшить разрешения ниже этого уровня.
 app_access_minimum: Минимальный доступ к приложению
 recommended_defaults: Рекомендуемые значения по умолчанию
 unarchive: Разархивировать
@@ -221,6 +227,7 @@ bigInteger: Большое целое число
 boolean: Логическое значение
 date: Дата
 date_range: Диапазон дат
+translation_key_placeholder: Введите ключ...
 datetime: Дата и время
 dateTime: Дата и время
 precision: Точность
@@ -229,6 +236,7 @@ float: Десятичная дробь
 integer: Целое число
 json: JSON
 xml: XML
+yaml: YAML
 string: Строка
 text: Текст
 time: Время
@@ -279,7 +287,12 @@ o2m_relationship: Отношение «один ко многим» (O2M)
 m2m_relationship: Отношение «многие ко многим» (M2M)
 m2a_relationship: Отношение «многие к любому» (M2A)
 invalid_item: Недействительный элемент
+require_confirmation: Требуется подтверждение
+dialog: Диалог
 modal: Модальный
+confirmation_dialog: Диалог Подтверждения
+confirmation_description: Описание Подтверждения
+confirmation_input_fields: Поля ввода Подтверждения
 next: Дальше
 field_name: Название поля
 translations: Переводы
@@ -298,6 +311,7 @@ updated_on: Дата обновления
 updated_by: Обновлено
 primary_key: Первичный ключ
 foreign_key: Внешний ключ
+field_key: Ключ поля
 finish_setup: Завершить настройку
 dismiss: Скрыть
 toggle_raw_editor: Включить/отключить редактор без форматирования
@@ -426,6 +440,7 @@ checksum: Контрольная сумма
 owner: Владелец
 edited_by: Изменено
 folder: Папка
+folders: Папки
 zoom: Масштаб
 download: Скачать
 open: Открыть
@@ -474,6 +489,8 @@ enable_select_button: Включить кнопку «Выбрать»
 allow_duplicates: Разрешить дубликаты
 comments: Комментарии
 no_comments: Комментариев пока нет
+expand: Развернуть
+collapse: Свернуть
 select_item: Выбрать элемент
 no_items: Нет элементов
 search_items: Поиск элементов...
@@ -507,6 +524,7 @@ create_collection: Создать коллекцию
 no_collections_copy_admin: У вас пока нет коллекций. Нажмите кнопку ниже, чтобы начать.
 no_collections_copy: У вас пока нет коллекций. Пожалуйста, обратитесь к системному администратору.
 relationship_not_setup: Отношение не было настроено правильно
+no_singleton_relations: Связи с Singletons не поддерживаются
 display_template_not_setup: Опция шаблона отображения настроена неправильно
 collection_field_not_setup: Опция поля коллекции настроена неправильно
 select_a_collection: Выберите коллекцию
@@ -600,6 +618,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Недопустимый диапазон
   METHOD_NOT_ALLOWED: Метод не разрешён
   REQUESTS_EXCEEDED: Достигнуто максимальное количество запросов
+  CONTENT_TOO_LARGE: Отправленный файл слишком большой
 security: Безопасность
 value_hashed: Надёжно зашифрованное значение
 bookmark_name: Название закладки...
@@ -645,6 +664,7 @@ one_filtered_item: '1 отфильтрованный элемент'
 delete_collection_are_you_sure: >-
   Вы уверены, что хотите удалить коллекцию «{collection}»? Это приведет к удалению коллекции и всех её элементов. Это действие необратимо.
 delete_folder_are_you_sure: Вы уверены, что хотите удалить папку «{folder}»? Вложенные папки и коллекции будут перемещены на самый верхний уровень.
+delete_collection_peer_dependencies: Следующие поля будут также удалены, так как они связаны с текущей коллекцией.
 collections_shown: Показано коллекций
 visible_collections: Видимые коллекции
 hidden_collections: Скрытые коллекции
@@ -770,8 +790,15 @@ label: Описание
 flows: Процессы
 flow: Процесс
 select_a_flow: Выберите процесс
+run_flow_confirm: Вы уверены, что хотите выполнить этот процесс?
+run_flow_on_current_collection: Запустить процесс с текущей коллекцией
+run_flow_on_current: Запустить процесс с текущим элементом
 run_flow_on_current_edited_confirm: Этот элемент может быть обновлен этим процессом — вы уверены, что хотите выполнить его?
+run_flow_on_selected: Сначала выберите один или несколько элементов | Запустить процесс с выбранным элементом | Запустить процесс с {n} выбранными элементами
+run_flow: Запуск потока
 run_flow_success: Процесс «{flow}» успешно завершён
+field_name_placeholder: Введите имя поля...
+field_key_placeholder: Введите ключ поля...
 trigger: Триггер
 trigger_options: Параметры триггера
 view_trigger: Просмотреть триггер
@@ -931,6 +958,7 @@ settings_project: Настройки проекта
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
 settings_presets: Шаблоны и закладки
+settings_translations: Пользовательские Переводы
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
 scope: Область применения
 actions: Действия
@@ -1023,6 +1051,7 @@ directus_collection:
   directus_shares: Отслеживает элементы с общим доступом
   directus_users: Системные пользователи для платформы
   directus_webhooks: Конфигурация для HTTP-запросов на основе событий
+  directus_translations: Пользовательские переводы
 fields:
   directus_activity:
     item: Ключ элемента
@@ -1111,6 +1140,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Картография
     basemaps: Базовые карты
     basemaps_raster: Растр
@@ -1301,10 +1331,17 @@ block: Блок
 inline: Встроенный
 comment: Комментарий
 live_preview:
+  enable: Включить Предпросмотр
+  disable: Отключить Предпросмотр
+  change_size: Изменить размеры отображения
+  refresh: Обновить Предпросмотр
   new_window: Открыть в новом окне
+  close_window: Открыть в сплит-режиме
+  toggle_3d: Переключить 3D
 unlimited_usage: Неограниченное использование
 new_share: Новая публикация
 expired: Истекло
+upcoming: Предстоящие
 share: Поделиться
 share_item: Поделиться элементом
 shared_with_you: С вами поделились элементом
@@ -1348,6 +1385,7 @@ file: Файл
 file_library: Библиотека Файлов
 forgot_password: Забыли пароль
 hidden: Скрыто
+hidden_in_group: Скрыто в {group}
 icon: Иконка
 info: Инфо
 normal: Нормальный
@@ -1398,7 +1436,9 @@ export_started: Экспорт начат
 export_started_copy: Ваш экспорт начат. Вы получите уведомление, когда он будет готов к загрузке.
 sort_asc: По Возрастанию
 sort_desc: По Убыванию
+disable_sort: Отключить сортировку
 template: Шаблон
+require_value_to_be_set: Значение должно быть установлено при создании
 translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение
@@ -1409,6 +1449,9 @@ table: Таблица
 list: Список
 search_filter: Поиск и фильтрация
 enable_search_filter: Включить поиск и фильтрацию
+undo_removed_item: Отменить удаление элемента
+remove_item: Удалить элемент
+delete_item: Удалить элемент
 interfaces:
   filter:
     name: Фильтр
@@ -1488,6 +1531,7 @@ interfaces:
     placeholder: Выберите дату и время...
   system-fields:
     select_a_collection: Выберите коллекцию
+    no_fields: Нет полей
   system-display-template:
     display-template: Шаблон отображения
     description: Смешивать статический текст и динамические значения полей
@@ -1534,6 +1578,7 @@ interfaces:
     image: Изображение
     description: Выберите или загрузите изображение
     crop: Обрезать по размеру
+    crop_label: Обрезать изображение при необходимости
   system-interface:
     interface: Интерфейс
     description: Выберите существующий интерфейс
@@ -1544,20 +1589,27 @@ interfaces:
   list-m2m:
     many-to-many: Многие ко Многим
     description: Выберите несколько связанных элементов
+    columns_configure_notice: Вы можете настроить столбцы после создания этого поля.
+    display_template_configure_notice: Вы можете настроить шаблон отображения после создания этого поля.
   select-dropdown-m2o:
     many-to-one: Многие к Одному
     description: Выберите один связанный элемент
     display_template: Шаблон отображения
+  collection-item-dropdown:
+    collection-item-dropdown: Выпадающий список предметов коллекции
+    description: Выберите элемент из коллекции в формате JSON
   input-rich-text-md:
     markdown: Markdown
     description: Ввод и предпросмотр разметки
     edit: Редактирование
     preview: Предпросмотр
+    editorFont: Шрифт редактора
     previewFont: Шрифт на предпросмотре
     customSyntax: Произвольные блоки
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
     box: Блок / Строчный элемент
+    imageToken: Токен Статического Доступа
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла
   map:
     map: Карта
@@ -1580,6 +1632,7 @@ interfaces:
     notice: Уведомление
     description: Показать короткое уведомление
     text: Введите содержание уведомления здесь...
+    no_text: Текст не настроен...
   list-o2m:
     one-to-many: Один ко многим
     description: Выберите связанные элементы
@@ -1587,6 +1640,7 @@ interfaces:
   system-folder:
     folder: Папка
     description: Выбрать папку
+    field_hint: Папка по умолчанию для загруженных файлов без указания папки. Не влияет на существующие файлы.
     root_name: Корень файловой библиотеки
     system_default: Системные настройки по умолчанию
   select-radio:
@@ -1598,7 +1652,9 @@ interfaces:
     edit_fields: Редактировать поля
     add_label: 'Ярлык «Создать новый»'
     sort: Сортировать
+    sort_placeholder: Вручную
     field_note_placeholder: Примечание к полю...
+    incompatible_data: Текущие данные не совместимы с интерфейсом репитера и будут переопределены при добавлении элементов в репитер
   slider:
     slider: Слайдер
     description: Выберите номер с помощью слайдера
@@ -1638,6 +1694,7 @@ interfaces:
     input-translated-string: Переведенные строки
     description: Выберите или добавьте строку перевода
     search_placeholder: Поиск...
+    new_custom_translation: Новый Пользовательский Перевод
   boolean:
     toggle: Переключить
     description: Переключение вкл / выкл
@@ -1653,6 +1710,7 @@ interfaces:
     user_language: Использовать текущий язык пользователя
     default_language: Язык по умолчанию
     language_field: Языковое поле
+    language_direction_field: Поле Направления языка
   list-o2m-tree-view:
     description: В виде дерева рекурсивно вложенных элементов
     recursive_only: Интерфейс просмотра дерева работает только для рекурсивных отношений.
@@ -1671,17 +1729,28 @@ interfaces:
     custom_formats: Пользовательские форматы
     options_override: Переопределение параметров
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
+    imageToken: Токен Статического Доступа
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла
   input-block-editor:
+    input-block-editor: Блоковый редактор
+    description: Редактор в стиле блоков для мультимедийных историй, выводит чистые данные в JSON, используя Editor.js
     tools: Панель инструментов
     tools_options:
       header: HTTP-заголовок
       nestedlist: Список
       embed: Встроить
+      paragraph: Абзац
       code: Код
       image: Изображение
+      attaches: Вложения
       table: Таблица
+      quote: Цитата
       underline: Подчеркнутый
+      inlinecode: Встроенный код
+      delimiter: Разделитель
+      checklist: Список
+      alignment: Выравнивание
+      raw: HTML код
   input-autocomplete-api:
     input-autocomplete-api: Автоматическое дополнение ввода (API)
     description: Автодополнение значений поиска через внешний API.
@@ -1702,7 +1771,14 @@ interfaces:
     start_closed: Свёрнута
   system-token:
     system-token: Ключ доступа
+    description: Управление токеном статического доступа
+    placeholder: Нажмите "Сгенерировать Токен", чтобы создать новый Токен статического доступа
+    generate: Сгенерировать Токен
+    regenerate: Перевыпустить Токен
     generate_success_copy: Обязательно создайте резервную копию и скопируйте токен выше. Из соображений безопасности вы не сможете просмотреть токен снова после сохранения и перехода с этой страницы.
+    remove_token: Удалить Токен
+  system-raw-editor:
+    system-raw-editor: Редактор сырых данных
 displays:
   translations:
     translations: Переводы
@@ -1743,6 +1819,7 @@ displays:
     suffix: Суффикс
     strict_label: Использовать строгие единицы измерения
     strict_note: Удаляет слова типа 'almost', 'over', 'less than'
+    round_note: Выберите округляющую функцию
   file:
     file: Файл
     description: Показать файлы
@@ -1807,6 +1884,7 @@ displays:
   related-values:
     related-values: Связанные Значения
     description: Показать относительные значения
+    display_template_configure_notice: Вы можете настроить шаблон отображения после создания этого поля.
   user:
     user: Пользователь
     description: Показать пользователя directus
@@ -1859,7 +1937,33 @@ layouts:
     image_placeholder: Изображение (необязательно)...
     crop: Обрезать
     advanced: Доп. настройки
+    show_ungrouped: Показать несгруппированные
+    show: Показать
+    no_group: Нет группы
+    not_all_loaded: Загружены только первые 1000 элементов.
+horizontal: Горизонтально
+vertical: Вертикально
+x_axis: Ось X
+y_axis: Ось Y
+y_axis_function: Функция оси Y
+show_x_only: Показывать только ось X
+show_y_only: Показать только ось Y
+show_data_label: Показать метку данных
 both: Оба
+show_axis_labels: Показать метки оси
+function: Функция
+half_circle: Половина круга
+full_circle: Полный круг
+stroke_width: Толщина линии
+rounded_stroke: Скругленный штрих
+thin: Тонкий
+medium: Средний
+broad: Широкий
+show_labels: Показывать подписи
+show_legend: Показать легенду
+right: Справа
+left: Слева
+donut: Кольцевая диаграмма
 panels:
   metric:
     name: Метрика
@@ -1870,16 +1974,30 @@ panels:
     description: Отображение линейного графика на основе значений по времени
     date_field: Поле Дата
     value_field: Поле значения
+    fill_type: Тип заполнения
+    curve_type: Тип кривой
   label:
     name: Описание
     description: Показать немного текста
   list:
     name: Список
     description: Фильтр и список полей из коллекции
+  barchart:
+    name: Гистограмма
+    horizontal: Горизонтально
+    select_collection: Необходимо выбрать коллекцию.
   linechart:
+    name: Линейный график
     disabled_no_grouping: Отключено, если не выбрана ни одна группировка.
+    curve_type: Тип кривой
+    smooth: Гладкий
+    straight: Прямой
+    step_line: Ступенчатая линия
+  meter:
+    name: Счётчик
   variable:
     name: Глобальная переменная
+    variable_key: Ключ переменной
   relational-variable:
     name: Глобальная реляционная переменная
     description: Установить глобальное реляционное значение для использования в фильтре других панелей
@@ -1888,26 +2006,44 @@ panels:
     multiple-label: Выберите несколько элементов
 triggers:
   common:
+    response_body: Тело ответа
     response_body_all: Все данные
     response_body_last: Данные последней операции
+  event:
+    name: Хук события
+    action: 'Действие (не блокирующее)'
   webhook:
+    description: Выполняется при входящем HTTP запросе
     method: Метод
+    async: Асинхронный
   operation:
     name: Другой процесс
     description: Запускается другим процессом, для цепочки
     preview: Запускается операцией из другого процесса
+  manual:
+    description: Выполняется при ручном запуске в выбранной коллекции(ях)
+    collection_and_item: Страницы Коллекции и Элемента
+    collection_only: Только страница Коллекции
+    item_only: Только страница Элемента
+    collection_page: Страница Коллекции
+    require_selection: Требуется выбор
 a_flow_uuid: Выберите процесс для запуска...
+any_string_or_json: Любая строка или JSON...
 operation_variables_note: Вы можете получить доступ к данным процесса с такими переменными как **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или ссылаться на предыдущие операции, используя **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
+    name: Условие
     description: Маршрутизировать процесс на основе логики If / Else
   exec:
+    name: Выполнить скрипт
     modules: 'Можно использовать следующие **Node модули**:'
   item-create:
     name: Создать данные
+    description: Создать элементы в базе данных
     payload: Содержимое
   item-delete:
     name: Удалить данные
+    description: Удалить элементы в базе данных
     query: Запрос
   item-read:
     name: Читать данные
@@ -1926,11 +2062,15 @@ operations:
     name: Отправить эл. письмо
     description: Отправить письмо одному или нескольким людям
     to_placeholder: Добавьте адреса эл. почты и нажмите Enter...
+    body: Тело
     template: Шаблон
     data: Данные
   notification:
     name: Отправить уведомление
+    description: Отправить уведомление одному или нескольким пользователям
     recipient: Пользователь
+    recipient_placeholder: Введите UUID...
+    recipient_note: Добавьте пользовательский UUID и нажмите Enter...
     message: Сообщение
   request:
     name: Веб-хук / URL-адрес запроса
@@ -1939,9 +2079,12 @@ operations:
     url_placeholder: https://example.com/example
     method: Метод
     data: Данные
+    headers: Заголовки
     header: HTTP-заголовок
     header_placeholder: Авторизация...
   sleep:
+    name: Сон
+    description: Ожидать заданное количество миллисекунд
     milliseconds: Миллисекунды
   transform:
     name: Содержание преобразования
@@ -1952,3 +2095,5 @@ operations:
     flows: Процессы
     flow: Процесс
     data: Данные
+    parallel: Параллельно
+    cache: Кэш

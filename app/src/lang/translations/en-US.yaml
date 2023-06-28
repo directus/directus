@@ -722,8 +722,12 @@ operators:
   icontains: Contains (insensitive)
   starts_with: Starts with
   nstarts_with: Doesn't start with
+  istarts_with: Starts with (insensitive)
+  nistarts_with: Doesn't start with (insensitive)
   ends_with: Ends with
   nends_with: Doesn't end with
+  iends_with: Ends with (insensitive)
+  niends_with: Doesn't end with (insensitive)
   between: Is between
   nbetween: Isn't between
   empty: Is empty

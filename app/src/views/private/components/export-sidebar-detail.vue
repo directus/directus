@@ -137,51 +137,45 @@
 
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
-						<p>
-							<template v-if="itemCountLoading">
-								{{ t('loading') }}
-							</template>
-							<template v-else-if="exportSettings.limit === 0 || itemCount === 0">
-								{{ t('exporting_no_items_to_export') }}
-							</template>
-							<template
-								v-else-if="
-									!exportSettings.limit ||
-									exportSettings.limit === -1 ||
-									(itemCount && exportSettings.limit >= itemCount)
-								"
-							>
-								{{
-									t('exporting_all_items_in_collection', {
-										total: itemCount ? n(itemCount) : '??',
-										collection: collectionInfo?.name,
-									})
-								}}
-							</template>
-
-							<template v-else-if="itemCount && itemCount > exportSettings.limit">
-								{{
-									t('exporting_limited_items_in_collection', {
-										limit: exportSettings.limit ? n(exportSettings.limit) : '??',
-										total: itemCount ? n(itemCount) : '??',
-										collection: collectionInfo?.name,
-									})
-								}}
-							</template>
+						<p v-if="itemCountLoading">
+							{{ t('loading') }}
+						</p>
+						<p v-else-if="exportSettings.limit === 0 || itemCount === 0">
+							{{ t('exporting_no_items_to_export') }}
+						</p>
+						<p
+							v-else-if="
+								!exportSettings.limit || exportSettings.limit === -1 || (itemCount && exportSettings.limit >= itemCount)
+							"
+						>
+							{{
+								t('exporting_all_items_in_collection', {
+									total: itemCount ? n(itemCount) : '??',
+									collection: collectionInfo?.name,
+								})
+							}}
 						</p>
 
-						<p>
-							<template v-if="lockedToFiles">
-								{{ t('exporting_batch_hint_forced', { format: t(format) }) }}
-							</template>
+						<p v-else-if="itemCount && itemCount > exportSettings.limit">
+							{{
+								t('exporting_limited_items_in_collection', {
+									limit: exportSettings.limit ? n(exportSettings.limit) : '??',
+									total: itemCount ? n(itemCount) : '??',
+									collection: collectionInfo?.name,
+								})
+							}}
+						</p>
 
-							<template v-else-if="location === 'files'">
-								{{ t('exporting_batch_hint', { format: t(format) }) }}
-							</template>
+						<p v-if="lockedToFiles">
+							{{ t('exporting_batch_hint_forced', { format: t(format) }) }}
+						</p>
 
-							<template v-else>
-								{{ t('exporting_download_hint', { format: t(format) }) }}
-							</template>
+						<p v-else-if="location === 'files'">
+							{{ t('exporting_batch_hint', { format: t(format) }) }}
+						</p>
+
+						<p v-else>
+							{{ t('exporting_download_hint', { format: t(format) }) }}
 						</p>
 					</div>
 				</v-notice>

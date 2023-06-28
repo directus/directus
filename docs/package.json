@@ -14,8 +14,7 @@
 		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
 	},
 	"dependencies": {
-		"node-fetch": "3.3.1",
-		"typedoc-plugin-frontmatter": "^0.0.2"
+		"node-fetch": "3.3.1"
 	},
 	"devDependencies": {
 		"@directus/format-title": "10.0.0",
@@ -27,7 +26,9 @@
 		"eslint-plugin-react": "7.32.2",
 		"spellchecker-cli": "6.1.1",
 		"typedoc": "^0.24.7",
+		"typedoc-plugin-frontmatter": "^0.0.2",
 		"typedoc-plugin-markdown": "4.0.0-next.13",
+		"typedoc-plugin-zod": "1.0.2",
 		"typedoc-vitepress-theme": "1.0.0-next.2",
 		"vitepress": "1.0.0-alpha.75",
 		"vue": "3.3.4"

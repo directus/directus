@@ -129,7 +129,7 @@ services:
 
       CACHE_ENABLED: 'true'
       CACHE_STORE: 'redis'
-      CACHE_REDIS: 'redis://cache:6379'
+      REDIS: 'redis://cache:6379'
 
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'

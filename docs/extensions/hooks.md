@@ -49,12 +49,12 @@ Filter hooks act on the event's payload before the event is fired. They allow yo
 Below is an example of canceling a `create` event by throwing a standard Directus exception.
 
 ```js
-export default ({ filter }, { exceptions }) => {
-	const { InvalidPayloadException } = exceptions;
+import { InvalidPayloadError } from '@directus/errors';
 
+export default ({ filter }) => {
 	filter('items.create', async (input) => {
 		if (LOGIC_TO_CANCEL_EVENT) {
-			throw new InvalidPayloadException(WHAT_IS_WRONG);
+			throw new InvalidPayloadException();
 		}
 
 		return input;
@@ -276,7 +276,6 @@ The register function receives an object containing the type-specific register f
 The second parameter is a context object with the following properties:
 
 - `services` — All API internal services
-- `exceptions` — API exception objects that can be used for throwing "proper" errors
 - `database` — Knex instance that is connected to the current database
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
@@ -297,10 +296,12 @@ hook is currently handling as that would result in an infinite loop!
 
 ```js
 import axios from 'axios';
+import { createError } from '@directus/errors';
 
-export default ({ filter }, { services, exceptions }) => {
+const MyExtensionError = createError('MY_EXTENSION_ERROR', 'Something went wrong...', 500);
+
+export default ({ filter }, { services }) => {
 	const { MailService } = services;
-	const { ServiceUnavailableException, ForbiddenException } = exceptions;
 
 	// Sync with external recipes service, cancel creation on failure
 	filter('items.create', async (input, { collection }, { schema, database }) => {
@@ -321,7 +322,7 @@ export default ({ filter }, { services, exceptions }) => {
 				},
 			});
 		} catch (error) {
-			throw new ServiceUnavailableException(error);
+			throw new MyExtensionError();
 		}
 
 		input.syncedWithExample = true;

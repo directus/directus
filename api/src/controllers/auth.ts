@@ -1,3 +1,4 @@
+import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import {
@@ -9,7 +10,7 @@ import {
 } from '../auth/drivers/index.js';
 import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import env from '../env.js';
-import { InvalidPayloadException } from '../exceptions/index.js';
+import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
 import logger from '../logger.js';
 import { respond } from '../middleware/respond.js';
 import { AuthenticationService } from '../services/authentication.js';
@@ -81,7 +82,7 @@ router.post(
 		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
 		}
 
 		const mode: 'json' | 'cookie' = req.body.mode || (req.body.refresh_token ? 'json' : 'cookie');
@@ -128,7 +129,7 @@ router.post(
 		const currentRefreshToken = req.body.refresh_token || req.cookies[env['REFRESH_TOKEN_COOKIE_NAME']];
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+			throw new InvalidPayloadError({ reason: `"refresh_token" is required in either the JSON payload or Cookie` });
 		}
 
 		await authenticationService.logout(currentRefreshToken);
@@ -151,7 +152,7 @@ router.post(
 	'/password/request',
 	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.email !== 'string') {
-			throw new InvalidPayloadException(`"email" field is required.`);
+			throw new InvalidPayloadError({ reason: `"email" field is required` });
 		}
 
 		const accountability: Accountability = {
@@ -171,7 +172,7 @@ router.post(
 			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
 			return next();
 		} catch (err: any) {
-			if (err instanceof InvalidPayloadException) {
+			if (isDirectusError(err, ErrorCode.InvalidPayload)) {
 				throw err;
 			} else {
 				logger.warn(err, `[email] ${err}`);
@@ -186,11 +187,11 @@ router.post(
 	'/password/reset',
 	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.token !== 'string') {
-			throw new InvalidPayloadException(`"token" field is required.`);
+			throw new InvalidPayloadError({ reason: `"token" field is required` });
 		}
 
 		if (typeof req.body.password !== 'string') {
-			throw new InvalidPayloadException(`"password" field is required.`);
+			throw new InvalidPayloadError({ reason: `"password" field is required` });
 		}
 
 		const accountability: Accountability = {
