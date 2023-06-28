@@ -1,12 +1,3 @@
-:global(.VPHome) {
-	max-width: none;
-	padding-bottom: 0 !important;
-}
-
-:global(.VPNavBar) {
-	background-color: var(--vp-nav-bg-color);
-}
-
 .vp-doc h2 {
 	border-top: 0;
 	margin: 0;

@@ -50,6 +50,9 @@
  * Homepage container
  * -------------------------------------------------------------------------- */
 .VPHome {
-	max-width: calc(var(--vp-layout-max-width) - 64px);
-	margin: 0 auto;
+	padding-bottom: 0 !important;
+}
+
+.VPNavBar {
+	background-color: var(--vp-nav-bg-color);
 }
