@@ -32,6 +32,12 @@ We may change the scope over time, but for now, we are interested in:
 - Tutorials that extend default functionality, such as “Creating An Extension To Send Stripe Invoices”.
 - Advanced-level tutorials explaining how to use one or more Directus features.
 
+Some additional guidelines you must follow when creating ideas to apply with:
+
+- Posts must use code, unless you're using our Directus Flows automation feature.
+- Posts must be original. This means a new and unique topic that has not been published elsewhere.
+- Posts must not be generated with AI services or models - we expect you to author them from beginning to end.
+
 ## Questions
 
 :::details How much will I get paid?
@@ -70,5 +76,5 @@ We may change the scope over time, but for now, we are interested in:
   title="Apply now!"
   h="2"
   text="All you need to apply is an idea for a topic."
-  url="https://forms.gle/QEqYrRjrA4aYaWYF9" 
+  url="https://forms.gle/QEqYrRjrA4aYaWYF9"
   style="margin-top: 4em;" />
