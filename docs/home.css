@@ -1,13 +1,9 @@
-:root {
-	--vp-layout-max-width: 1280px;
+:global(.VPHome) {
+	max-width: none;
 }
 
-.VPHome {
-	max-width: unset;
-}
-
-.VPHome[data-v-ecbca2fe] {
-	padding-bottom: 0;
+:global(.VPNavBar) {
+	background-color: var(--vp-nav-bg-color);
 }
 
 .vp-doc h2 {
@@ -35,9 +31,12 @@ hr {
 	margin: 0 120px;
 }
 
+.padding-box {
+	padding: 0 32px;
+}
+
 .section-container {
-	padding-inline: 24px;
-	max-width: var(--vp-layout-max-width);
+	max-width: calc(var(--vp-layout-max-width) - 64px);
 	margin-inline: auto;
 }
 
@@ -56,8 +55,6 @@ hr {
 .hero {
 	background: var(--vp-docs-section-bg);
 	color: white;
-	margin-inline: 40px;
-	border-radius: 12px;
 	position: relative;
 	overflow: hidden;
 }

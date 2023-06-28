@@ -13,7 +13,7 @@ layout: home
   import { data as articles } from "./index.data.js"
 </script>
 
-<section class="hero">
+<section class="hero padding-box">
   <div class="section-container section-padding--hero flex">
     <div class="hero-content">
       <p class="hero-badge">Resource Hub</p>
@@ -34,7 +34,8 @@ layout: home
 <template #rest>
 
 ```js
-GET /items/products/4?fields=*,image.id,image.name
+GET /items/products/4
+	?fields[]=id,status,title,category,image.id,image.name
 ```
 
 </template>
@@ -62,7 +63,14 @@ query {
 
 ```js
 await directus.items('articles').readOne(4, {
-	fields: ['id', 'status', 'title', 'category', 'image.id', 'image.name'],
+	fields: [
+		'id',
+		'status',
+		'title',
+		'category',
+		'image.id',
+		'image.name'
+	],
 });
 ```
 
