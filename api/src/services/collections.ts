@@ -145,16 +145,22 @@ export class CollectionsService {
 
 					const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
 
+					// Sort new fields that does not have any group defined, in ascending order.
+					// Lodash merge is so that the "sort" can be overridden if defined.
 					let sortedFieldPayloads = fieldPayloads
 						.filter((field) => field?.group === undefined || field?.group === null)
 						.map((field, index) => merge({ sort: index + 1 }, field));
 
+					// Sort remaining new fields with group defined, if any, in ascending order.
+					// sortedFieldPayloads will be less than fieldPayloads if it filtered out any fields with group defined.
 					if (sortedFieldPayloads.length < fieldPayloads.length) {
 						const fieldsWithGroups = groupBy(
 							fieldPayloads.filter((field) => field?.group),
 							(field) => field?.group
 						);
 
+						// The sort order is restarted from 1 for fields in each group and appended to sortedFieldPayloads.
+						// Lodash merge is so that the "sort" can be overridden if defined.
 						for (const [_group, fields] of Object.entries(fieldsWithGroups)) {
 							sortedFieldPayloads = sortedFieldPayloads.concat(
 								fields.map((field, index) => merge({ sort: index + 1 }, field))
