@@ -38,7 +38,6 @@ const activeTab = ref(props.tabs[0]);
 <style scoped>
 .tab-buttons {
 	display: flex;
-	gap: 40px;
 	justify-content: center;
 	max-width: 560px;
 	margin-inline: auto;
@@ -55,11 +54,11 @@ const activeTab = ref(props.tabs[0]);
 	font-size: 18px;
 	font-weight: bold;
 	width: 100%;
+	padding: 12px;
 }
 
 .tab-buttons button.active {
 	background: var(--vp-c-purple-dimm-3);
-	padding: 12px;
 	border-radius: 5px;
 	width: 100%;
 }
