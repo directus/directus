@@ -1,4 +1,4 @@
-import { randomAlpha, randomInteger } from '@directus/random';
+import { randomAlpha, randomInteger, randomIdentifier } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import { createError } from './create-error.js';
 import { isDirectusError } from './is-directus-error.js';
@@ -40,4 +40,11 @@ test('Reports true for Directus error', () => {
 	const SampleError = createError(sample.code, sample.message, sample.status);
 	const error = new SampleError();
 	expect(isDirectusError(error)).toBe(true);
+});
+
+test('Check against optional error code', () => {
+	const SampleError = createError(sample.code, sample.message, sample.status);
+	const error = new SampleError();
+	expect(isDirectusError(error, sample.code)).toBe(true);
+	expect(isDirectusError(error, randomIdentifier())).toBe(false);
 });

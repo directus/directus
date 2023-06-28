@@ -4,7 +4,7 @@ import type { Field, Type } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
 import { ALIAS_TYPES } from '../constants.js';
-import { InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
@@ -105,7 +105,7 @@ router.post(
 			const createdField = await service.readOne(req.params['collection']!, field.field);
 			res.locals['payload'] = { data: createdField || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -127,7 +127,7 @@ router.patch(
 		});
 
 		if (Array.isArray(req.body) === false) {
-			throw new InvalidPayloadError({ reason: 'Submitted body has to be an array.' });
+			throw new InvalidPayloadError({ reason: 'Submitted body has to be an array' });
 		}
 
 		for (const field of req.body) {
@@ -143,7 +143,7 @@ router.patch(
 				res.locals['payload'] = { data: results || null };
 			}
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -198,7 +198,7 @@ router.patch(
 			const updatedField = await service.readOne(req.params['collection']!, req.params['field']!);
 			res.locals['payload'] = { data: updatedField || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

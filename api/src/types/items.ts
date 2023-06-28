@@ -61,7 +61,7 @@ export type MutationOptions = {
 	/*
 	 * The validation error to throw right before the mutation takes place
 	 */
-	preMutationException?: DirectusError | undefined;
+	preMutationError?: DirectusError | undefined;
 };
 
 export type ActionEventParams = {

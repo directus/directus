@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import type { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
+import type { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
 import env from '../env.js';
 import { HitRateLimitError } from '../errors/index.js';
 import { createRateLimiter } from '../rate-limiter.js';
@@ -9,7 +9,7 @@ import { validateEnv } from '../utils/validate-env.js';
 
 let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 
-export let rateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
+export let rateLimiter: RateLimiterRedis | RateLimiterMemory;
 
 if (env['RATE_LIMITER_ENABLED'] === true) {
 	validateEnv(['RATE_LIMITER_STORE', 'RATE_LIMITER_DURATION', 'RATE_LIMITER_POINTS']);

@@ -53,7 +53,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				},
 			});
 
-			if (isDirectusError(err) && err.code === ErrorCode.MethodNotAllowed) {
+			if (isDirectusError(err, ErrorCode.MethodNotAllowed)) {
 				res.header('Allow', (err as InstanceType<typeof MethodNotAllowedError>).extensions.allowed.join(', '));
 			}
 		} else {

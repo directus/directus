@@ -2,7 +2,7 @@ import { Action } from '@directus/constants';
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -104,7 +104,7 @@ router.post(
 				data: record || null,
 			};
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -143,7 +143,7 @@ router.patch(
 				data: record || null,
 			};
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

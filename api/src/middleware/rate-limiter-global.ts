@@ -1,5 +1,5 @@
 import type { RequestHandler } from 'express';
-import type { RateLimiterMemcache, RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
+import type { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
 import env from '../env.js';
 import { HitRateLimitError } from '../errors/index.js';
 import logger from '../logger.js';
@@ -11,7 +11,7 @@ const RATE_LIMITER_GLOBAL_KEY = 'global-rate-limit';
 
 let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 
-export let rateLimiterGlobal: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
+export let rateLimiterGlobal: RateLimiterRedis | RateLimiterMemory;
 
 if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
 	validateEnv(['RATE_LIMITER_GLOBAL_STORE', 'RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);

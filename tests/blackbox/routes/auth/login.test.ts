@@ -364,7 +364,7 @@ describe('/auth', () => {
 									{
 										message: 'GraphQL validation error.',
 										extensions: {
-											code: 'GRAPHQL_VALIDATION_EXCEPTION',
+											code: 'GRAPHQL_VALIDATION',
 										},
 									},
 								],

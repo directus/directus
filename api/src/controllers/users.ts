@@ -2,7 +2,7 @@ import { isDirectusError } from '@directus/errors';
 import type { Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -46,7 +46,7 @@ router.post(
 				res.locals['payload'] = { data: item };
 			}
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -109,7 +109,7 @@ router.get(
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
 			res.locals['payload'] = { data: item || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				res.locals['payload'] = { data: { id: req.accountability.user } };
 				return next();
 			}
@@ -204,7 +204,7 @@ router.patch(
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals['payload'] = { data: result };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -230,7 +230,7 @@ router.patch(
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals['payload'] = { data: item || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

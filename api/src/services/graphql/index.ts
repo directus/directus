@@ -589,10 +589,22 @@ export class GraphQLService {
 					_nstarts_with: {
 						type: GraphQLString,
 					},
+					_istarts_with: {
+						type: GraphQLString,
+					},
+					_nistarts_with: {
+						type: GraphQLString,
+					},
 					_ends_with: {
 						type: GraphQLString,
 					},
 					_nends_with: {
+						type: GraphQLString,
+					},
+					_iends_with: {
+						type: GraphQLString,
+					},
+					_niends_with: {
 						type: GraphQLString,
 					},
 					_in: {
@@ -2206,7 +2218,7 @@ export class GraphQLService {
 					try {
 						await service.requestPasswordReset(args['email'], args['reset_url'] || null);
 					} catch (err: any) {
-						if (isDirectusError(err) && err.code === ErrorCode.InvalidPayload) {
+						if (isDirectusError(err, ErrorCode.InvalidPayload)) {
 							throw err;
 						}
 					}

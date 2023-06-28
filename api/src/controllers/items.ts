@@ -1,6 +1,6 @@
 import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ForbiddenError, RouteNotFoundError } from '../errors/index.js';
+import { ErrorCode, ForbiddenError, RouteNotFoundError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -46,7 +46,7 @@ router.post(
 				res.locals['payload'] = { data: result || null };
 			}
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -151,7 +151,7 @@ router.patch(
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals['payload'] = { data: result };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -184,7 +184,7 @@ router.patch(
 			const result = await service.readOne(updatedPrimaryKey, req.sanitizedQuery);
 			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

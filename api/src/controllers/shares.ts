@@ -3,7 +3,7 @@ import express from 'express';
 import Joi from 'joi';
 import { COOKIE_OPTIONS, UUID_REGEX } from '../constants.js';
 import env from '../env.js';
-import { InvalidPayloadError } from '../errors/index.js';
+import { ErrorCode, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -98,8 +98,8 @@ router.post(
 				const item = await service.readOne(savedKeys[0]!, req.sanitizedQuery);
 				res.locals['payload'] = { data: item };
 			}
-		} catch (error) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -214,8 +214,8 @@ router.patch(
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals['payload'] = { data: result };
-		} catch (error) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -240,8 +240,8 @@ router.patch(
 		try {
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals['payload'] = { data: item || null };
-		} catch (error) {
-			if (isDirectusError(error) && error.code === 'FORBIDDEN') {
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

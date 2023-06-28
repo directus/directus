@@ -21,7 +21,9 @@
 		"@unhead/vue": "1.1.26",
 		"spellchecker-cli": "6.1.1",
 		"typedoc": "^0.24.7",
+		"typedoc-plugin-frontmatter": "^0.0.2",
 		"typedoc-plugin-markdown": "4.0.0-next.13",
+		"typedoc-plugin-zod": "1.0.2",
 		"typedoc-vitepress-theme": "1.0.0-next.2",
 		"vitepress": "1.0.0-alpha.75",
 		"vue": "3.3.4"

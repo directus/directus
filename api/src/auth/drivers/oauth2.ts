@@ -12,9 +12,9 @@ import emitter from '../../emitter.js';
 import env from '../../env.js';
 import {
 	ErrorCode,
-	InvalidConfigError,
 	InvalidCredentialsError,
 	InvalidProviderError,
+	InvalidProviderConfigError,
 	InvalidTokenError,
 	ServiceUnavailableError,
 } from '../../errors/index.js';
@@ -43,7 +43,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		if (!authorizeUrl || !accessUrl || !profileUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
 			logger.error('Invalid provider config');
-			throw new InvalidConfigError({ provider: additionalConfig['provider'] });
+			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
 		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
@@ -197,7 +197,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (isDirectusError(e) && e.code === ErrorCode.RecordNotUnique) {
+			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
 				logger.warn(e, '[OAuth2] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}
@@ -350,7 +350,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
-				if (isDirectusError(error) && error.code === ErrorCode.InvalidToken && !prompt) {
+				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {
 					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
 				}
 

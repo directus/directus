@@ -85,7 +85,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		try {
 			return await this.usersService.createOne(updatedUserPayload);
 		} catch (error) {
-			if (isDirectusError(error) && error.code === ErrorCode.RecordNotUnique) {
+			if (isDirectusError(error, ErrorCode.RecordNotUnique)) {
 				logger.warn(error, '[SAML] Failed to register user. User not unique');
 				throw new InvalidProviderError();
 			}

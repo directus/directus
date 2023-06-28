@@ -152,7 +152,7 @@ router.post(
 	'/password/request',
 	asyncHandler(async (req, _res, next) => {
 		if (typeof req.body.email !== 'string') {
-			throw new InvalidPayloadError({ reason: `"email" field is required.` });
+			throw new InvalidPayloadError({ reason: `"email" field is required` });
 		}
 
 		const accountability: Accountability = {
@@ -172,7 +172,7 @@ router.post(
 			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
 			return next();
 		} catch (err: any) {
-			if (isDirectusError(err) && err.code === ErrorCode.InvalidPayload) {
+			if (isDirectusError(err, ErrorCode.InvalidPayload)) {
 				throw err;
 			} else {
 				logger.warn(err, `[email] ${err}`);
