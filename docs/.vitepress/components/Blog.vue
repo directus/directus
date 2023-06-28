@@ -6,6 +6,7 @@ import { truncateString } from '../utils/strings';
 <template>
 	<section class="page">
 		<div class="container big-stack">
+			<a href="/blog/guest-author" style="text-decoration:underline;">Guest author program</a>
 			<a v-for="article in data.blog.articles" :key="article.id" :href="`/blog/${article.id}`" class="card">
 				<div class="image">
 					<img :src="`https://marketing.directus.app/assets/${article.image}`" alt="" loading="lazy" />
