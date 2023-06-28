@@ -209,7 +209,7 @@ avg_distinct: Prosječno razlikovno
 count: Zbroj
 count_distinct: Zbroj razlikovno
 min: Min
-max: Max
+max: Maks
 exposure: Ekspozicija
 shutter: Zatvarač
 iso: ISO
@@ -1143,7 +1143,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
-    avif: AVIF - format slike
+    avif: AVIF
     mapping: Mapiranje
     basemaps: Osnovne karte
     basemaps_raster: Raster
