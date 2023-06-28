@@ -4,7 +4,7 @@ import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@direc
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { chunk, omit } from 'lodash-es';
+import { chunk, groupBy, merge, omit } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import type { Helpers } from '../database/helpers/index.js';
@@ -145,7 +145,30 @@ export class CollectionsService {
 
 					const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
 
-					await fieldItemsService.createMany(fieldPayloads, {
+					// Sort new fields that does not have any group defined, in ascending order.
+					// Lodash merge is used so that the "sort" can be overridden if defined.
+					let sortedFieldPayloads = fieldPayloads
+						.filter((field) => field?.group === undefined || field?.group === null)
+						.map((field, index) => merge({ sort: index + 1 }, field));
+
+					// Sort remaining new fields with group defined, if any, in ascending order.
+					// sortedFieldPayloads will be less than fieldPayloads if it filtered out any fields with group defined.
+					if (sortedFieldPayloads.length < fieldPayloads.length) {
+						const fieldsWithGroups = groupBy(
+							fieldPayloads.filter((field) => field?.group),
+							(field) => field?.group
+						);
+
+						// The sort order is restarted from 1 for fields in each group and appended to sortedFieldPayloads.
+						// Lodash merge is used so that the "sort" can be overridden if defined.
+						for (const [_group, fields] of Object.entries(fieldsWithGroups)) {
+							sortedFieldPayloads = sortedFieldPayloads.concat(
+								fields.map((field, index) => merge({ sort: index + 1 }, field))
+							);
+						}
+					}
+
+					await fieldItemsService.createMany(sortedFieldPayloads, {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 						bypassLimits: true,
