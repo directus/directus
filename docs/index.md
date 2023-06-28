@@ -37,19 +37,6 @@ layout: home
 GET /items/products/4?fields=*,image.id,image.name
 ```
 
-```js
-{
-	"id": 4,
-	"status": "review",
-	"title": "Pink Crystals",
-	"category": "random",
-	"image": {
-		"id": 311,
-		"name": "pink-crystals.png"
-	}
-}'
-```
-
 </template>
 
 <template #graphql>
@@ -65,7 +52,6 @@ query {
 			id
 			name
 		}
-		date_added
 	}
 }
 ```
@@ -76,17 +62,8 @@ query {
 
 ```js
 await directus.items('articles').readOne(4, {
-	fields: ['id', 'status', 'title', 'category'],
+	fields: ['id', 'status', 'title', 'category', 'image.id', 'image.name'],
 });
-```
-
-```js
-{
-	"id": 4,
-	"status": "review",
-	"title": "Pink Crystals",
-	"category": "random"
-}
 ```
 
 </template>

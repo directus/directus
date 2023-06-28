@@ -65,7 +65,9 @@ const onPrefChange = (event: Event) => {
 .snippet-toggler {
 	overflow: hidden;
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
+	tab-size: 2;
 }
+
 .snippet-toggler-header {
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
 	color: #a6accd;
@@ -75,9 +77,11 @@ const onPrefChange = (event: Event) => {
 	align-items: center;
 	padding: 0 24px;
 }
+
 .spacer {
 	flex-grow: 1;
 }
+
 .snippet-toggler-header-label {
 	text-transform: uppercase;
 	font-size: 12px;
@@ -89,6 +93,7 @@ const onPrefChange = (event: Event) => {
 	align-items: center;
 	gap: 2px;
 }
+
 .snippet-toggler-header-lang {
 	background-color: transparent;
 	text-align: right;
@@ -103,9 +108,11 @@ const onPrefChange = (event: Event) => {
 	color: inherit;
 	font-size: 12px;
 }
+
 .snippet-toggler-header-lang:focus {
 	outline: none;
 }
+
 .snippet-toggler-header-lang-arrow {
 	fill: #a6accd;
 	user-select: none;
@@ -127,11 +134,11 @@ const onPrefChange = (event: Event) => {
 		border-radius: 16px;
 	}
 }
+
 .content-area {
 	padding-inline: 24px;
 	padding-bottom: 32px;
 	scrollbar-width: none;
 	overflow-y: auto;
-  min-height: 408px;
 }
 </style>
