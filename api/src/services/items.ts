@@ -452,12 +452,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
 		const results = await this.readByQuery(queryWithKey, opts);
-
-		if (results.length === 0) {
-			throw new ForbiddenError();
-		}
-
-		return results[0]!;
+		return results?.[0]!;
 	}
 
 	/**
