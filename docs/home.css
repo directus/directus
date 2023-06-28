@@ -1,5 +1,6 @@
 :global(.VPHome) {
 	max-width: none;
+	padding-bottom: 0 !important;
 }
 
 :global(.VPNavBar) {
@@ -102,7 +103,7 @@ hr {
 	font-weight: 600;
 }
 
-.outline-btn {
+.outline-btn, :deep(.outline-btn) {
 	display: inline-block;
 	border: 1px solid;
 	border-color: var(--vp-c-divider);
