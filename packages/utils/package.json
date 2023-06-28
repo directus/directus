@@ -1,6 +1,6 @@
 {
 	"name": "@directus/utils",
-	"version": "10.0.5",
+	"version": "10.0.6",
 	"description": "Utilities shared between the Directus packages",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -48,6 +48,7 @@
 		"vue": "3.3.4"
 	},
 	"devDependencies": {
+		"@directus/errors": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.1",

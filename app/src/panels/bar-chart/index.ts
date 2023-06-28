@@ -369,8 +369,38 @@ export default definePanel({
 														disabled: !xAxisIsntNumber.value,
 													},
 													{
+														text: '$t:operators.nstarts_with',
+														value: 'nstarts_with',
+														disabled: !xAxisIsntNumber.value,
+													},
+													{
+														text: '$t:operators.istarts_with',
+														value: 'istarts_with',
+														disabled: !xAxisIsntNumber.value,
+													},
+													{
+														text: '$t:operators.nistarts_with',
+														value: 'nistarts_with',
+														disabled: !xAxisIsntNumber.value,
+													},
+													{
 														text: '$t:operators.ends_with',
 														value: 'ends_with',
+														disabled: !xAxisIsntNumber.value,
+													},
+													{
+														text: '$t:operators.nends_with',
+														value: 'nends_with',
+														disabled: !xAxisIsntNumber.value,
+													},
+													{
+														text: '$t:operators.iends_with',
+														value: 'iends_with',
+														disabled: !xAxisIsntNumber.value,
+													},
+													{
+														text: '$t:operators.niends_with',
+														value: 'niends_with',
 														disabled: !xAxisIsntNumber.value,
 													},
 													{

@@ -1,7 +1,8 @@
 import { Action } from '@directus/constants';
+import { isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ErrorCode, ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -84,7 +85,7 @@ router.post(
 		const { error } = createCommentSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		const primaryKey = await service.createOne({
@@ -103,7 +104,7 @@ router.post(
 				data: record || null,
 			};
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -130,7 +131,7 @@ router.patch(
 		const { error } = updateCommentSchema.validate(req.body);
 
 		if (error) {
-			throw new InvalidPayloadException(error.message);
+			throw new InvalidPayloadError({ reason: error.message });
 		}
 
 		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
@@ -142,7 +143,7 @@ router.patch(
 				data: record || null,
 			};
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -169,7 +170,7 @@ router.delete(
 		const item = await adminService.readOne(req.params['pk']!, { fields: ['action'] });
 
 		if (!item || item['action'] !== Action.COMMENT) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		await service.deleteOne(req.params['pk']!);

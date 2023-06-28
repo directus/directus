@@ -13,7 +13,8 @@ problems. If you can't or don't want to use Docker, we also publish an
 
 :::
 
-Directus is published to [Docker Hub](https://hub.docker.com/r/directus/directus) under `directus/directus`. If you're just getting started, check out our [Self-Hosting Quickstart](/self-hosted/quickstart.html).
+Directus is published to [Docker Hub](https://hub.docker.com/r/directus/directus) under `directus/directus`. If you're
+just getting started, check out our [Self-Hosting Quickstart](/self-hosted/quickstart.html).
 
 ## Installing Specific Versions
 
@@ -23,7 +24,8 @@ To stick to a more specific version of Directus you can use one of the following
 - Minor releases, e.g. `10.0`
 - Major releases, e.g. `10`
 
-It is recommended to explicitly specify a Directus version in your `docker-compose.yml` file. Include the version number in your `services.directus.image` value:
+It is recommended to explicitly specify a Directus version in your `docker-compose.yml` file. Include the version number
+in your `services.directus.image` value:
 
 ```yml
 services:
@@ -34,26 +36,33 @@ services:
 
 ## Configure Admin User
 
-The `ADMIN_EMAIL` and `ADMIN_PASSWORD` variables, while shown in the quickstart, are optional. If omitted, the published Docker image will automatically populate the database and create an admin user, and these will only be shown in the Docker bootstrap logs when starting Directus for the first time. To configure the email/password for this first user, include the following environment variables:
+The `ADMIN_EMAIL` and `ADMIN_PASSWORD` variables, while shown in the quickstart, are optional. If omitted, the published
+Docker image will automatically populate the database and create an admin user, and these will only be shown in the
+Docker bootstrap logs when starting Directus for the first time. To configure the email/password for this first user,
+include the following environment variables:
 
 ```bash
 ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD="d1r3ctu5"
 ```
 
-Once you've started Directus for the first time, assuming your database is persisted, you can remove these values from your compose file.
+Once you've started Directus for the first time, assuming your database is persisted, you can remove these values from
+your compose file.
 
 ## Persistence
 
-Containers are ephemeral, and this means that whenever you stop a container, all the data associated with it is going to be removed [unless you persist them](https://docs.docker.com/storage) when creating your container.
+Containers are ephemeral, and this means that whenever you stop a container, all the data associated with it is going to
+be removed [unless you persist them](https://docs.docker.com/storage) when creating your container.
 
-Directus image by default will use the following locations for data persistence (note that these can be changed through environment variables):
+Directus image by default will use the following locations for data persistence (note that these can be changed through
+environment variables):
 
 - `/directus/uploads` for uploads
 - `/directus/database` (only when using SQLite and not configured to a different folder)
 - `/directus/extensions` for loading extensions
 
-The `services.directus.volumes` section in your docker-compose.yml is optional. To persist data to your local machine, include a list of persisted directories:
+The `services.directus.volumes` section in your docker-compose.yml is optional. To persist data to your local machine,
+include a list of persisted directories:
 
 ```yml
 services:
@@ -66,7 +75,9 @@ services:
 
 ## Example Docker Compose
 
-While the [Self-Hosting Quickstart](/self-hosted/quickstart.html) aims to show you the minimum-viable `docker-compose.yml` file, here is a more complete one that spins up a Postgres database, Redis cache, and Directus project:
+While the [Self-Hosting Quickstart](/self-hosted/quickstart.html) aims to show you the minimum-viable
+`docker-compose.yml` file, here is a more complete one that spins up a Postgres database, Redis cache, and Directus
+project:
 
 ```yaml
 version: '3'
@@ -118,7 +129,7 @@ services:
 
       CACHE_ENABLED: 'true'
       CACHE_STORE: 'redis'
-      CACHE_REDIS: 'redis://cache:6379'
+      REDIS: 'redis://cache:6379'
 
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
@@ -144,7 +155,8 @@ Then run the following from your docker-compose root:
 docker compose up
 ```
 
-The specified image will be pulled and the containers recreated. Migrations will happen automatically so once the containers have started you will be on the latest version (or the version you specified).
+The specified image will be pulled and the containers recreated. Migrations will happen automatically so once the
+containers have started you will be on the latest version (or the version you specified).
 
 ### Adding Packages to Use in Flows Scripts
 
@@ -225,4 +237,6 @@ for more information on what to include for OracleDB.
 
 ## Requirements
 
-It can be easy to under-provision resources to run a self-hosted instance of Directus. For Directus' container resources, the required minimum system requirements are 1x 0.25 vCPU / 512 MB, although the recommended minimum is 2x 1 vCPU / 2GB.
+It can be easy to under-provision resources to run a self-hosted instance of Directus. For Directus' container
+resources, the required minimum system requirements are 1x 0.25 vCPU / 512 MB, although the recommended minimum is 2x 1
+vCPU / 2GB.

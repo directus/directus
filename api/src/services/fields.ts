@@ -8,13 +8,13 @@ import type { Knex } from 'knex';
 import { isEqual, isNil } from 'lodash-es';
 import { clearSystemCache, getCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemFieldRows } from '../database/system-data/fields/index.js';
 import emitter from '../emitter.js';
-import { translateDatabaseError } from '../exceptions/database/translate.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import { ItemsService } from '../services/items.js';
 import { PayloadService } from '../services/payload.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
@@ -61,7 +61,7 @@ export class FieldsService {
 		let fields: FieldMeta[];
 
 		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
@@ -161,7 +161,7 @@ export class FieldsService {
 			});
 
 			if (collection && collection in allowedFieldsInCollection === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			return result.filter((field) => {
@@ -189,18 +189,18 @@ export class FieldsService {
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
 		if (this.accountability && this.accountability.admin !== true) {
 			if (this.hasReadAccess === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			const permissions = this.accountability.permissions!.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
-			if (!permissions || !permissions.fields) throw new ForbiddenException();
+			if (!permissions || !permissions.fields) throw new ForbiddenError();
 
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
-				if (allowedFields.includes(field) === false) throw new ForbiddenException();
+				if (allowedFields.includes(field) === false) throw new ForbiddenError();
 			}
 		}
 
@@ -221,7 +221,7 @@ export class FieldsService {
 			// Do nothing
 		}
 
-		if (!column && !fieldInfo) throw new ForbiddenException();
+		if (!column && !fieldInfo) throw new ForbiddenError();
 
 		const type = getLocalType(column, fieldInfo);
 
@@ -250,7 +250,7 @@ export class FieldsService {
 		opts?: MutationOptions
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
@@ -265,7 +265,9 @@ export class FieldsService {
 
 			// Check if field already exists, either as a column, or as a row in directus_fields
 			if (exists) {
-				throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
+				throw new InvalidPayloadError({
+					reason: `Field "${field.field}" already exists in collection "${collection}"`,
+				});
 			}
 
 			// Add flag for specific database type overrides
@@ -362,7 +364,7 @@ export class FieldsService {
 
 	async updateField(collection: string, field: RawField, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
@@ -393,7 +395,7 @@ export class FieldsService {
 					this.schema.collections[collection]!.fields[field.field]?.type === 'alias') &&
 				hookAdjustedField.type !== (this.schema.collections[collection]!.fields[field.field]?.type ?? 'alias')
 			) {
-				throw new InvalidPayloadException('Alias type cannot be changed');
+				throw new InvalidPayloadError({ reason: 'Alias type cannot be changed' });
 			}
 
 			if (hookAdjustedField.schema) {
@@ -485,7 +487,7 @@ export class FieldsService {
 
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
@@ -679,7 +681,7 @@ export class FieldsService {
 		} else if (KNEX_TYPES.includes(field.type as (typeof KNEX_TYPES)[number])) {
 			column = table[field.type as (typeof KNEX_TYPES)[number]](field.field);
 		} else {
-			throw new InvalidPayloadException(`Illegal type passed: "${field.type}"`);
+			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
 		if (field.schema?.default_value !== undefined) {

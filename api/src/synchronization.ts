@@ -100,10 +100,10 @@ class SynchronizationManagerRedis implements SynchronizationManager {
 	private client: Redis;
 
 	constructor() {
-		const config = getConfigFromEnv('SYNCHRONIZATION_REDIS');
+		const config = getConfigFromEnv('REDIS');
 
-		this.client = new Redis(env['SYNCHRONIZATION_REDIS'] ?? config);
-		this.namespace = env['SYNCHRONIZATION_NAMESPACE'] ?? 'directus';
+		this.client = new Redis(env['REDIS'] ?? config);
+		this.namespace = env['SYNCHRONIZATION_NAMESPACE'] ?? 'directus-sync';
 
 		this.client.defineCommand('setGreaterThan', {
 			numberOfKeys: 1,

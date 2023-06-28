@@ -1,0 +1,10 @@
+{
+	"extends": "@directus/tsconfig/node18-esm.json",
+	"compilerOptions": {
+		"isolatedModules": true
+	},
+	"include": ["src"],
+	"typedocOptions": {
+        "entryPoints": ["./src"]
+    }
+}

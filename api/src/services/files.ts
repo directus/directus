@@ -14,7 +14,7 @@ import url from 'url';
 import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { ForbiddenException, InvalidPayloadException, ServiceUnavailableException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '../errors/index.js';
 import logger from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
@@ -90,7 +90,7 @@ export class FilesService extends ItemsService {
 
 			await this.deleteOne(primaryKey);
 
-			throw new ServiceUnavailableException(`Couldn't save file ${payload.filename_disk}`, { service: 'files' });
+			throw new ServiceUnavailableError({ service: 'files', reason: `Couldn't save file ${payload.filename_disk}` });
 		}
 
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
@@ -264,7 +264,7 @@ export class FilesService extends ItemsService {
 		);
 
 		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		let fileResponse;
@@ -277,8 +277,9 @@ export class FilesService extends ItemsService {
 			});
 		} catch (err: any) {
 			logger.warn(err, `Couldn't fetch file from URL "${importURL}"`);
-			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+			throw new ServiceUnavailableError({
 				service: 'external-file',
+				reason: `Couldn't fetch file from url "${importURL}"`,
 			});
 		}
 
@@ -302,7 +303,7 @@ export class FilesService extends ItemsService {
 	 */
 	override async createOne(data: Partial<File>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data.type) {
-			throw new InvalidPayloadException(`"type" is required`);
+			throw new InvalidPayloadError({ reason: `"type" is required` });
 		}
 
 		const key = await super.createOne(data, opts);
@@ -325,7 +326,7 @@ export class FilesService extends ItemsService {
 		const files = await super.readMany(keys, { fields: ['id', 'storage'], limit: -1 });
 
 		if (!files) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		await super.deleteMany(keys);
