@@ -54,7 +54,6 @@ The register function receives the two parameters `router` and `context`. `route
 `context` is an object with the following properties:
 
 - `services` — All API internal services.
-- `exceptions` — API exception objects that can be used to throw "proper" errors.
 - `database` — Knex instance that is connected to the current database.
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables.
@@ -72,9 +71,12 @@ hook is currently handling as that would result in an infinite loop!
 ## Example: Recipes
 
 ```js
-export default (router, { services, exceptions }) => {
+import { createError } from '@directus/errors';
+
+const MyExtensionError = createError('MY_EXTENSION_ERROR', 'Something went wrong...', 500);
+
+export default (router, { services }) => {
 	const { ItemsService } = services;
-	const { ServiceUnavailableException } = exceptions;
 
 	router.get('/', (req, res, next) => {
 		const recipeService = new ItemsService('recipes', { schema: req.schema, accountability: req.accountability });
@@ -83,7 +85,7 @@ export default (router, { services, exceptions }) => {
 			.readByQuery({ sort: ['name'], fields: ['*'] })
 			.then((results) => res.json(results))
 			.catch((error) => {
-				return next(new ServiceUnavailableException(error.message));
+				return next(new MyExtensionError());
 			});
 	});
 };

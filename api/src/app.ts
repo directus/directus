@@ -46,8 +46,7 @@ import {
 } from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { InvalidPayloadException } from './exceptions/invalid-payload.js';
-import { ServiceUnavailableException } from './exceptions/service-unavailable.js';
+import { InvalidPayloadError, ServiceUnavailableError } from './errors/index.js';
 import { getExtensionManager } from './extensions.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
@@ -122,7 +121,7 @@ export default async function createApp(): Promise<express.Application> {
 				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'],
 				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'],
 				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'],
-				error: new ServiceUnavailableException('Under pressure', { service: 'api' }),
+				error: new ServiceUnavailableError({ service: 'api', reason: 'Under pressure' }),
 				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'],
 			})
 		);
@@ -181,7 +180,7 @@ export default async function createApp(): Promise<express.Application> {
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
-				return next(new InvalidPayloadException(err.message));
+				return next(new InvalidPayloadError({ reason: err.message }));
 			}
 
 			return next();

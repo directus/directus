@@ -171,7 +171,7 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
-		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_'));
+		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'));
 	}
 
 	return config;

@@ -1,5 +1,5 @@
 import type { Query } from '@directus/types';
-import { ForbiddenException, UnprocessableEntityException } from '../exceptions/index.js';
+import { ForbiddenError, UnprocessableContentError } from '../errors/index.js';
 import type { AbstractServiceOptions, Alterations, Item, MutationOptions, PrimaryKey } from '../types/index.js';
 import { ItemsService } from './items.js';
 import { PermissionsService } from './permissions.js';
@@ -21,13 +21,16 @@ export class RolesService extends ItemsService {
 			.first();
 
 		const otherAdminRolesCount = +(otherAdminRoles?.count || 0);
-		if (otherAdminRolesCount === 0) throw new UnprocessableEntityException(`You can't delete the last admin role.`);
+
+		if (otherAdminRolesCount === 0) {
+			throw new UnprocessableContentError({ reason: `You can't delete the last admin role` });
+		}
 	}
 
 	private async checkForOtherAdminUsers(key: PrimaryKey, users: Alterations | Item[]): Promise<void> {
 		const role = await this.knex.select('admin_access').from('directus_roles').where('id', '=', key).first();
 
-		if (!role) throw new ForbiddenException();
+		if (!role) throw new ForbiddenError();
 
 		// The users that will now be in this new non-admin role
 		let userKeys: PrimaryKey[] = [];
@@ -64,7 +67,7 @@ export class RolesService extends ItemsService {
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
 		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableEntityException(`You can't remove the last admin user from the admin role.`);
+			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the admin role` });
 		}
 
 		return;
@@ -76,7 +79,7 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminUsers(key, data['users']);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateOne(key, data, opts);
@@ -93,7 +96,7 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateBatch(data, opts);
@@ -109,7 +112,7 @@ export class RolesService extends ItemsService {
 				await this.checkForOtherAdminRoles(keys);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationException = err;
+			(opts || (opts = {})).preMutationError = err;
 		}
 
 		return super.updateMany(keys, data, opts);
@@ -126,7 +129,7 @@ export class RolesService extends ItemsService {
 		try {
 			await this.checkForOtherAdminRoles(keys);
 		} catch (err: any) {
-			opts.preMutationException = err;
+			opts.preMutationError = err;
 		}
 
 		await this.knex.transaction(async (trx) => {

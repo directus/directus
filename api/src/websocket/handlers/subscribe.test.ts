@@ -1,9 +1,9 @@
-import { expect, describe, test, vi, beforeEach, afterEach } from 'vitest';
-import emitter from '../../emitter.js';
-import { SubscribeHandler } from './subscribe.js';
-import type { WebSocketClient } from '../types.js';
-import { getSchema } from '../../utils/get-schema.js';
 import type { CollectionsOverview, Relation } from '@directus/types';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import emitter from '../../emitter.js';
+import { getSchema } from '../../utils/get-schema.js';
+import type { WebSocketClient } from '../types.js';
+import { SubscribeHandler } from './subscribe.js';
 
 // mocking
 vi.mock('../controllers', () => ({

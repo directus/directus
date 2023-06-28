@@ -1,5 +1,5 @@
 import * as validator from '@authenio/samlify-node-xmllint';
-import { BaseException } from '@directus/exceptions';
+import { isDirectusError } from '@directus/errors';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
@@ -7,8 +7,7 @@ import { COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
-import { InvalidCredentialsException, InvalidProviderException } from '../../exceptions/index.js';
+import { ErrorCode, InvalidCredentialsError, InvalidProviderError } from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -59,7 +58,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 
 		if (!allowPublicRegistration) {
 			logger.trace(`[SAML] User doesn't exist, and public registration not allowed for provider "${provider}"`);
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const firstName = payload[givenNameKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];
@@ -86,9 +85,9 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		try {
 			return await this.usersService.createOne(updatedUserPayload);
 		} catch (error) {
-			if (error instanceof RecordNotUniqueException) {
+			if (isDirectusError(error, ErrorCode.RecordNotUnique)) {
 				logger.warn(error, '[SAML] Failed to register user. User not unique');
-				throw new InvalidProviderException();
+				throw new InvalidProviderError();
 			}
 
 			throw error;
@@ -179,7 +178,7 @@ export function createSAMLAuthRouter(providerName: string) {
 				if (relayState) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof BaseException) {
+					if (isDirectusError(error)) {
 						reason = error.code;
 					} else {
 						logger.warn(error, `[SAML] Unexpected error during SAML login`);
