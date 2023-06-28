@@ -1,5 +1,5 @@
 ---
-'@directus/app': minor
+'@directus/app': patch
 ---
 
-Added condition to filter tables/collections only, not folders..
+Updated list of collections for Event Hooks in Flows to not include folders
