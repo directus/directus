@@ -9,8 +9,9 @@ import getDatabase from '../database/index.js';
 import runAST from '../database/run-ast.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { translateDatabaseError } from '../exceptions/database/translate.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError } from '../errors/index.js';
+import { translateDatabaseError } from '../database/errors/translate.js';
+import { InvalidPayloadError } from '../errors/index.js';
 import type {
 	AbstractService,
 	AbstractServiceOptions,
@@ -63,7 +64,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				mutationCount += count;
 
 				if (mutationCount > maxCount) {
-					throw new InvalidPayloadException(`Exceeded max batch mutation limit of ${maxCount}.`);
+					throw new InvalidPayloadError({ reason: `Exceeded max batch mutation limit of ${maxCount}` });
 				}
 			},
 			getCount() {
@@ -154,8 +155,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				? authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
 				: payloadAfterHooks;
 
-			if (opts.preMutationException) {
-				throw opts.preMutationException;
+			if (opts.preMutationError) {
+				throw opts.preMutationError;
 			}
 
 			const {
@@ -401,7 +402,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (records === null) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const filteredRecords =
@@ -453,7 +454,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const results = await this.readByQuery(queryWithKey, opts);
 
 		if (results.length === 0) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		return results[0]!;
@@ -507,7 +508,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!Array.isArray(data)) {
-			throw new InvalidPayloadException('Input should be an array of items.');
+			throw new InvalidPayloadError({ reason: 'Input should be an array of items' });
 		}
 
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
@@ -525,7 +526,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				});
 
 				for (const item of data) {
-					if (!item[primaryKeyField]) throw new InvalidPayloadException(`Item in update misses primary key.`);
+					if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
 					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
 					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
 				}
@@ -602,8 +603,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			? authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
 			: payloadAfterHooks;
 
-		if (opts.preMutationException) {
-			throw opts.preMutationException;
+		if (opts.preMutationError) {
+			throw opts.preMutationError;
 		}
 
 		await this.knex.transaction(async (trx) => {
@@ -865,8 +866,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await authorizationService.checkAccess('delete', this.collection, keys);
 		}
 
-		if (opts.preMutationException) {
-			throw opts.preMutationException;
+		if (opts.preMutationError) {
+			throw opts.preMutationError;
 		}
 
 		if (opts.emitEvents !== false) {

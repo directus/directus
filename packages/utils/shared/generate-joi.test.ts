@@ -370,6 +370,59 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
+	it(`returns the correct schema for a _istarts_with match`, () => {
+		const mockFieldFilter = { field: { _istarts_with: 'field' } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.string().pattern(new RegExp(`^${escapeRegExp('field')}.*`, 'i'), {
+				name: 'istarts_with',
+			}),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a _istarts_with with null value`, () => {
+		const mockFieldFilter = { field: { _istarts_with: null } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(true),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a _nistarts_with match`, () => {
+		const mockFieldFilter = { field: { _nistarts_with: 'field' } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.string().pattern(new RegExp(`^${escapeRegExp('field')}.*`, 'i'), {
+				name: 'istarts_with',
+				invert: true,
+			}),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a _nistarts_with with null value`, () => {
+		const mockFieldFilter = { field: { _nistarts_with: null } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(true),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
 	it(`returns the correct schema for an ends_with match`, () => {
 		const mockFieldFilter = { field: { _ends_with: 'field' } } as FieldFilter;
 
@@ -413,6 +466,59 @@ describe(`generateJoi`, () => {
 
 	it(`returns the correct schema for a doesnt _nends_with with null value`, () => {
 		const mockFieldFilter = { field: { _nends_with: null } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(true),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an iends_with match`, () => {
+		const mockFieldFilter = { field: { _iends_with: 'field' } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.string().pattern(new RegExp(`.*field$`, 'i'), {
+				name: 'iends_with',
+			}),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an iends_with with null value`, () => {
+		const mockFieldFilter = { field: { _iends_with: null } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(true),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a doesnt _niends_with match`, () => {
+		const mockFieldFilter = { field: { _niends_with: 'field' } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.string().pattern(new RegExp(`.*field$`, 'i'), {
+				name: 'iends_with',
+				invert: true,
+			}),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a doesnt _niends_with with null value`, () => {
+		const mockFieldFilter = { field: { _niends_with: null } } as FieldFilter;
 
 		const mockSchema = Joi.object({
 			field: Joi.any().equal(true),

@@ -53,9 +53,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
-      '@directus/exceptions':
+      '@directus/errors':
         specifier: workspace:*
-        version: link:../packages/exceptions
+        version: link:../packages/errors
       '@directus/extensions-sdk':
         specifier: workspace:*
         version: link:../packages/extensions-sdk
@@ -92,6 +92,9 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
+      '@directus/validation':
+        specifier: workspace:*
+        version: link:../packages/validation
       '@godaddy/terminus':
         specifier: 4.12.0
         version: 4.12.0
@@ -361,6 +364,9 @@ importers:
         specifier: 16.1.0
         version: 16.1.0
     devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../packages/random
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
@@ -514,9 +520,9 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
-      '@directus/exceptions':
+      '@directus/errors':
         specifier: workspace:*
-        version: link:../packages/exceptions
+        version: link:../packages/errors
       '@directus/extensions-sdk':
         specifier: workspace:*
         version: link:../packages/extensions-sdk
@@ -532,6 +538,9 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
+      '@directus/validation':
+        specifier: workspace:*
+        version: link:../packages/validation
       '@editorjs/attaches':
         specifier: 1.3.0
         version: 1.3.0
@@ -892,18 +901,9 @@ importers:
 
   docs:
     dependencies:
-      highlight.js:
-        specifier: ^11.8.0
-        version: 11.8.0
       node-fetch:
         specifier: 3.3.1
         version: 3.3.1
-      outdent:
-        specifier: ^0.8.0
-        version: 0.8.0
-      typedoc-plugin-frontmatter:
-        specifier: ^0.0.2
-        version: 0.0.2
     devDependencies:
       '@directus/format-title':
         specifier: 10.0.0
@@ -917,15 +917,27 @@ importers:
       '@unhead/vue':
         specifier: 1.1.26
         version: 1.1.26(vue@3.3.4)
+      highlight.js:
+        specifier: 11.8.0
+        version: 11.8.0
+      outdent:
+        specifier: 0.8.0
+        version: 0.8.0
       spellchecker-cli:
         specifier: 6.1.1
         version: 6.1.1
       typedoc:
-        specifier: ^0.24.7
+        specifier: 0.24.7
         version: 0.24.7(typescript@5.0.4)
+      typedoc-plugin-frontmatter:
+        specifier: 0.0.2
+        version: 0.0.2
       typedoc-plugin-markdown:
         specifier: 4.0.0-next.13
         version: 4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7)
+      typedoc-plugin-zod:
+        specifier: 1.0.2
+        version: 1.0.2(typedoc@0.24.7)
       typedoc-vitepress-theme:
         specifier: 1.0.0-next.2
         version: 1.0.0-next.2(typedoc-plugin-markdown@4.0.0-next.13)
@@ -1153,23 +1165,29 @@ importers:
         specifier: 0.31.1
         version: 0.31.1(jsdom@22.0.0)
 
-  packages/exceptions:
+  packages/errors:
     devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
       '@directus/types':
         specifier: workspace:*
         version: link:../types
-      '@ngneat/falso':
-        specifier: 6.4.0
-        version: 6.4.0
+      '@types/ms':
+        specifier: 0.7.31
+        version: 0.7.31
+      '@types/node':
+        specifier: 18.16.12
+        version: 18.16.12
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
-      joi:
-        specifier: 17.9.2
-        version: 17.9.2
+      tsup:
+        specifier: 6.7.0
+        version: 6.7.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1736,6 +1754,9 @@ importers:
         specifier: 3.3.4
         version: 3.3.4
     devDependencies:
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -1760,6 +1781,40 @@ importers:
       concurrently:
         specifier: 8.0.1
         version: 8.0.1
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.1
+        version: 0.31.1(jsdom@22.0.0)
+
+  packages/validation:
+    dependencies:
+      '@directus/errors':
+        specifier: workspace:*
+        version: link:../errors
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+      joi:
+        specifier: 17.9.2
+        version: 17.9.2
+    devDependencies:
+      '@directus/random':
+        specifier: workspace:*
+        version: link:../random
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      '@vitest/coverage-c8':
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 6.7.0
+        version: 6.7.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -5369,11 +5424,13 @@ packages:
 
   /@hapi/hoek@9.3.0:
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
+    dev: false
 
   /@hapi/topo@5.1.0:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: false
 
   /@histoire/app@0.16.1(vite@4.3.7):
     resolution: {integrity: sha512-13komnhVk1Pk0wMmkJKDPWT8RKpA5HfAbeeXSHAq29pvFP9Faq+dAa62g1wqOpoyJD5C7SkI0OPI3eJwJHgTiQ==}
@@ -6870,12 +6927,15 @@ packages:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: false
 
   /@sideway/formula@3.0.1:
     resolution: {integrity: sha512-/poHZJJVjx3L+zVD6g9KgHfYnb443oi7wLu/XKojDviHy6HOEOA6z1Trk5aR1dGcmPenJEgb2sK2I80LeS3MIg==}
+    dev: false
 
   /@sideway/pinpoint@2.0.0:
     resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
+    dev: false
 
   /@sinclair/typebox@0.25.24:
     resolution: {integrity: sha512-XJfwUVUKDHF5ugKwIcxEgc9k8b7HbznCp6eUfWgu710hMPNIO4aw4/zB5RogDQz8nd6gyCDpU9O/m6qYEWY6yQ==}
@@ -13170,7 +13230,7 @@ packages:
   /highlight.js@11.8.0:
     resolution: {integrity: sha512-MedQhoqVdr0U6SSnWPzfiadUcDHfN/Wzq25AkXiQv9oiOO/sG0S7XkvpFIqWBl9Yq1UYyYOOVORs5UW2XlPyzg==}
     engines: {node: '>=12.0.0'}
-    dev: false
+    dev: true
 
   /histoire@0.16.1(vite@4.3.7):
     resolution: {integrity: sha512-TIzJ0Wqe8epfTYMd7yuS0Zcuy86ysJ5t4p6qt0zjHAinoNgEH2M9biHtuKQzd96/QuUy3oc2dcXiFLFSZGdSyw==}
@@ -14365,6 +14425,7 @@ packages:
       '@sideway/address': 4.1.4
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
+    dev: false
 
   /jose@4.14.4:
     resolution: {integrity: sha512-j8GhLiKmUAh+dsFXlX1aJCbt5KMibuKb+d7j1JaOJG6s2UjX1PQlW+OKB/sD4a/5ZYF4RcmYmLSndOoU3Lt/3g==}
@@ -16764,7 +16825,7 @@ packages:
 
   /outdent@0.8.0:
     resolution: {integrity: sha512-KiOAIsdpUTcAXuykya5fnVVT+/5uS0Q1mrkRHcF89tpieSmY33O/tmc54CqwA+bfhbtEfZUNLHaPUiB9X3jt1A==}
-    dev: false
+    dev: true
 
   /outvariant@1.4.0:
     resolution: {integrity: sha512-AlWY719RF02ujitly7Kk/0QlV+pXGFDHrHf9O2OKqyqgBieaPOIeuSkL8sRK6j2WK+/ZAURq2kZsY0d8JapUiw==}
@@ -20687,7 +20748,7 @@ packages:
     resolution: {integrity: sha512-xPw76L4S4/zbd01Tt89CVsJdPiMxztlmkXaA2Wu/l0KEbIrsqSHPv/sGsPI1O+pkZrSpaFr94qLA3ls1MrpKKw==}
     dependencies:
       yaml: 2.2.2
-    dev: false
+    dev: true
 
   /typedoc-plugin-markdown@4.0.0-next.13(prettier@2.8.8)(typedoc@0.24.7):
     resolution: {integrity: sha512-ZOcLsJoGN4QI5x1iS2M5lj6bA3MABf6hA183W1KebbxcBA+SFr+XIu73Uovv3SiwqPa+viBftLzkZlLyA6J9bg==}
@@ -20696,6 +20757,14 @@ packages:
       typedoc: '>=0.24.0'
     dependencies:
       prettier: 2.8.8
+      typedoc: 0.24.7(typescript@5.0.4)
+    dev: true
+
+  /typedoc-plugin-zod@1.0.2(typedoc@0.24.7):
+    resolution: {integrity: sha512-83JOctc7wyUJfKiFjXuqjL2DF/b5hOd0xdwMmMwtLs9sIWSAsqqntoO3yFB0aY+phRnzkV0z31SXtwR7gYBDmw==}
+    peerDependencies:
+      typedoc: 0.23.x || 0.24.x
+    dependencies:
       typedoc: 0.24.7(typescript@5.0.4)
     dev: true
 
@@ -22058,7 +22127,6 @@ packages:
   /yaml@2.2.2:
     resolution: {integrity: sha512-CBKFWExMn46Foo4cldiChEzn7S7SRV+wqiluAb6xmueD/fGyRHIhX8m14vVGgeFWjN540nKCNVj6P21eQjgTuA==}
     engines: {node: '>= 14'}
-    dev: false
 
   /yargs-parser@18.1.3:
     resolution: {integrity: sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==}
