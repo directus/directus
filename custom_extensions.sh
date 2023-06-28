@@ -70,7 +70,7 @@ do
         echo "Adding ${ext_type}/${ext_name}"
         pwd
 #        cp -r ${ext_name} ${DIRECTUS_EXTENSIONS}/${ext_type}/
-        mv ./${ext_name} ${DIRECTUS_EXTENSIONS}/${ext_type}
+        mv "./${ext_name}" "${DIRECTUS_EXTENSIONS}/${ext_type}/"
         ls -la ${DIRECTUS_EXTENSIONS}/${ext_type}/
 
     done
