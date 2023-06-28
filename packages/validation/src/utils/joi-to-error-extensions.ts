@@ -94,6 +94,11 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.invalid = validationErrorItem.context?.value;
 	}
 
+	if (joiType.endsWith('.pattern.name')) {
+		extensions.type = validationErrorItem.context?.['name'];
+		extensions.substring = validationErrorItem.context?.value;
+	}
+
 	if (!extensions.type) {
 		throw new Error(`Couldn't extract validation error type from Joi validation error item`);
 	}

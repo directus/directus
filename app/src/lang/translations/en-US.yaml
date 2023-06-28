@@ -148,6 +148,10 @@ validationError:
   required: Value is required
   unique: Value has to be unique
   regex: Value doesn't have the correct format
+  starts_with: Value has to start with {substring}
+  nstarts_with: Value can't start with {substring}
+  ends_with: Value has to end with {substring}
+  nends_with: Value can't end with {substring}
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
