@@ -96,7 +96,22 @@ export const joiValidationErrorItemToErrorExtensions = (
 
 	if (joiType.endsWith('.pattern.name')) {
 		extensions.type = validationErrorItem.context?.['name'];
-		extensions.substring = validationErrorItem.context?.value;
+		const regex = validationErrorItem.context?.['regex']?.toString();
+
+		switch (extensions.type) {
+			case 'starts_with':
+			case 'nstarts_with':
+			case 'istarts_with':
+			case 'nistarts_with':
+				extensions.substring = regex.substring(2, regex.lastIndexOf('/') - 2);
+				break;
+			case 'ends_with':
+			case 'nends_with':
+			case 'iends_with':
+			case 'niends_with':
+				extensions.substring = regex.substring(3, regex.lastIndexOf('/') - 1);
+				break;
+		}
 	}
 
 	if (!extensions.type) {
