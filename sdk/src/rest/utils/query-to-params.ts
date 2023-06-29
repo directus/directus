@@ -14,7 +14,7 @@ export const queryToParams = <Schema extends object, Item>(query: Query<Schema, 
 	if (query.fields) {
 		type FieldItem = (typeof query.fields)[number];
 
-		const walkFields = (value: FieldItem, chain: string[] = []): string => {
+		const walkFields = (value: FieldItem, chain: string[] = []): string | string[] => {
 			if (typeof value === 'object') {
 				const result = [];
 
@@ -26,7 +26,7 @@ export const queryToParams = <Schema extends object, Item>(query: Query<Schema, 
 					}
 				}
 
-				return result.join('.');
+				return result.flatMap((items) => items);
 			}
 
 			return [...chain, String(value)].join('.');
