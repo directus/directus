@@ -36,8 +36,8 @@ export default {
 
 - `id` — The unique key for this module. It is good practice to scope proprietary modules with an author prefix.
 - `name` — The human-readable name for this module.
-- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list of
-  Directus custom icons.
+- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list
+  of Directus custom icons.
 - `color` — A color associated with the module.
 - `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
   serving as the base path.

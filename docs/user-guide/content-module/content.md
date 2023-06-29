@@ -15,8 +15,8 @@ readTime: 3 min read
 ::: tip Before You Begin
 
 A solid understanding about [Collections](/user-guide/overview/glossary#collections),
-[Items](/user-guide/overview/glossary#items) and [Fields](/user-guide/overview/glossary#fields) will help you use the Content
-module efficiently.
+[Items](/user-guide/overview/glossary#items) and [Fields](/user-guide/overview/glossary#fields) will help you use the
+Content module efficiently.
 
 <!--
 @TODO getting-started > 30-90 min tutorial
@@ -31,9 +31,9 @@ Link to tutorial
 
 The Content Module consists of Collection Pages and Item Pages. Use the Navigation Bar on the left to move between
 Collections. Each Collection Page displays all Items in its Collection and comes with highly configurable
-[Layouts](/user-guide/overview/glossary#layouts) for browsing, visualizing, and managing Items. The Page Header includes key
-action buttons for sorting, searching, filtering, creating, editing, archiving, and deleting multiple Items. To learn
-more, see our guide on the [Collection Page](/user-guide/content-module/content/collections).
+[Layouts](/user-guide/overview/glossary#layouts) for browsing, visualizing, and managing Items. The Page Header includes
+key action buttons for sorting, searching, filtering, creating, editing, archiving, and deleting multiple Items. To
+learn more, see our guide on the [Collection Page](/user-guide/content-module/content/collections).
 
 :::tip
 
@@ -59,4 +59,5 @@ form. To learn more, see our guide on the [Item Page](/user-guide/content-module
 In any project, certain Collections will have limited access permissions. In some cases, you may need to share one of
 the Items within the collection with an individual or group of individuals who don't yet have permission. In this case,
 use Shares. Shares enable you to share an Item from a Collection with anyone, regardless of their permissions, and even
-if they are not Users within the project. To learn more, see our guide on [Data Sharing](/user-guide/content-module/content/shares).
+if they are not Users within the project. To learn more, see our guide on
+[Data Sharing](/user-guide/content-module/content/shares).

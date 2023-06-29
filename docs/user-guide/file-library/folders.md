@@ -11,8 +11,8 @@ readTime: 1 min read
 
 They can be named, renamed, and nested as sub-folders anywhere in the Folder hierarchy. Once a Folder is selected from
 the Navigation Bar, File Listing Page opens. The File Listing Page displays all Files within a Folder. It also enables
-all other features and functionalities from the [Collections Page](/user-guide/content-module/content/collections) such as batch editing,
-batch deleting, sorting, filtering, searching, etc. Folders can also be managed
+all other features and functionalities from the [Collections Page](/user-guide/content-module/content/collections) such
+as batch editing, batch deleting, sorting, filtering, searching, etc. Folders can also be managed
 [programmatically via the API](/reference/system/folders).
 
 ## Create a Folder

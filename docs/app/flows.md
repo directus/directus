@@ -130,7 +130,8 @@ create a flow, which we discuss in the next section.
 
 :::tip
 
-To learn more, see the section below on [Logs](#logs) as well as the [Activity Log](/user-guide/settings/activity-log) documentation.
+To learn more, see the section below on [Logs](#logs) as well as the [Activity Log](/user-guide/settings/activity-log)
+documentation.
 
 :::
 

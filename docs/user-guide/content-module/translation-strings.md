@@ -52,8 +52,8 @@ have the option assign a Translation String. To assign a Translation String, fol
 Your Translation String is set! Now the language-appropriate text will be shown based on the current language of the
 app. There are two ways to change the app language. First, administrators can set the Project's
 [default language](/user-guide/cloud/project-settings#general). Second, Users can choose their own personal
-[language preference](/user-guide/user-management/user-directory#user-preferences). Also note that if a language is chosen for which there is
-no Translation String, the translation key _(from step three)_ will be displayed instead.
+[language preference](/user-guide/user-management/user-directory#user-preferences). Also note that if a language is
+chosen for which there is no Translation String, the translation key _(from step three)_ will be displayed instead.
 
 :::tip <span mi icon prmry>add</span> New Translation String
 

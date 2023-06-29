@@ -13,8 +13,8 @@ readTime: 3 min read
 :::tip Before You Begin
 
 We recommend you read through the [Quickstart Guide](/getting-started/quickstart) to get an overview of the platform
-first, then see our guide on the [Collection Page](/user-guide/content-module/content/collections) so you're familiar with its features and
-functionalities.
+first, then see our guide on the [Collection Page](/user-guide/content-module/content/collections) so you're familiar
+with its features and functionalities.
 
 :::
 
@@ -24,10 +24,11 @@ To manage Presets and Bookmarks programmatically, see our [API guide on Presets]
 
 :::
 
-Remember, a [Collection Page](/user-guide/content-module/content/collections) enables you to customize how its items are presented. That is,
-it lets you sort, search, or filter items and even change [Layouts](/user-guide/content-module/layouts). In some cases, you may need to apply
-the same display adjustments again and again. Presets save these adjustments, like a snapshot. You can create presets
-for all project collections, as well as `directus_activity`, `directus_files` and `directus_users`.
+Remember, a [Collection Page](/user-guide/content-module/content/collections) enables you to customize how its items are
+presented. That is, it lets you sort, search, or filter items and even change
+[Layouts](/user-guide/content-module/layouts). In some cases, you may need to apply the same display adjustments again
+and again. Presets save these adjustments, like a snapshot. You can create presets for all project collections, as well
+as `directus_activity`, `directus_files` and `directus_users`.
 
 Admins can access and manage all presets under **Settings > Presets and Bookmarks**.
 
@@ -45,7 +46,8 @@ and then returns.
 
 A _Bookmark_ creates another custom display of the Collection Page, which can be accessed any time on the
 [Navigation Bar](/user-guide/overview/data-studio-app#_2-navigation-bar). Users can also
-[create a Bookmark](/user-guide/content-module/content/collections#create-a-bookmark) for personal use from within the Content Module.
+[create a Bookmark](/user-guide/content-module/content/collections#create-a-bookmark) for personal use from within the
+Content Module.
 
 The method to create a preset shown here is for Admin use only. For Administrators, the process to create either a
 Default or a Bookmark is almost exactly the same. The key difference is that if you set a value for **Name**, the preset

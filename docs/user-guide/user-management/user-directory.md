@@ -5,9 +5,10 @@ readTime: 7 min read
 
 # User Directory
 
-> The User Directory is the management system for all Users within a Project. [Users](/user-guide/overview/glossary#users)
-> are the individual accounts for logging in to the App. Each User belongs to a [Role](/user-guide/overview/glossary#roles)
-> which defines its [Permissions](/user-guide/overview/glossary#permissions).
+> The User Directory is the management system for all Users within a Project.
+> [Users](/user-guide/overview/glossary#users) are the individual accounts for logging in to the App. Each User belongs
+> to a [Role](/user-guide/overview/glossary#roles) which defines its
+> [Permissions](/user-guide/overview/glossary#permissions).
 
 ![User Directory Page](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-directory-20220222A.webp)
 
@@ -30,8 +31,8 @@ When a User is created, they must also be assigned a Role. This Role defines the
 Directus. In other words, it determines what a User can see and do inside the app.
 
 The User Directory is composed of two pages: The User Directory Page and the User Details Page. It has all the same
-features and functionality as the [Content Module](/user-guide/content-module/content/collections) such as manual and automatic sorting, batch
-edit/delete/archive, import/export from files, etc.
+features and functionality as the [Content Module](/user-guide/content-module/content/collections) such as manual and
+automatic sorting, batch edit/delete/archive, import/export from files, etc.
 
 ## User Directory Page
 
@@ -51,8 +52,8 @@ page has the same functionality as the [Collection Page](/user-guide/content-mod
 - **Sort Direction** — Toggles ascending & descending sort order.
 - **Search** — Enables classic type-based searching.
 - **Filter** — Enables advanced query-based search.
-- <span mi btn sec>person_add</span> — [Invite people](/user-guide/user-management/users-roles-permissions#inviting-a-user) to become Users via
-  email.
+- <span mi btn sec>person_add</span> —
+  [Invite people](/user-guide/user-management/users-roles-permissions#inviting-a-user) to become Users via email.
 - <span mi btn>add</span> — [Create User](/user-guide/user-management/users-roles-permissions#creating-a-user) manually.
 
 _The following are only visible once Users are selected._
@@ -72,9 +73,9 @@ adjust how Users are displayed on the User Directory. To learn more, see [Layout
 ![The User Page](https://cdn.directus.io/docs/v9/app-guide/user-directory/user-directory-20220222A/user-profile-20220222A.webp)
 
 A User's profile page can be accessed from the User Directory or by clicking the User Menu at the bottom of the
-[Module Bar](/user-guide/overview/data-studio-app#_1-module-bar). The profile page has the same features and functionality as the
-[Item Page](/user-guide/content-module/content/items). Administrators can add and customize Fields under
-[Settings > Data Model > Directus Users](/app/data-model), but the following are available by default.
+[Module Bar](/user-guide/overview/data-studio-app#_1-module-bar). The profile page has the same features and
+functionality as the [Item Page](/user-guide/content-module/content/items). Administrators can add and customize Fields
+under [Settings > Data Model > Directus Users](/app/data-model), but the following are available by default.
 
 - **First Name** — The given name.
 - **Last Name** — The family/surname.

@@ -212,15 +212,16 @@ data within the App, such as Gantt charts, seating maps, or spreadsheets.
 Modules are the highest and broadest level of organization within the App. There are several modules included
 out-of-the-box, however you can also add your own.
 
-The [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar) lists all available Modules and allows you to switch between them. Each
-module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality within the
-App can be bucketed into one of the following modules:
+The [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar) lists all available Modules and allows you to
+switch between them. Each module also controls its own navigation bar to provide tailored access to sub-pages. All core
+functionality within the App can be bucketed into one of the following modules:
 
 - [Content](/user-guide/content-module/content/collections) — The primary way to view and interact with database content
 - [User Directory](/user-guide/user-management/user-directory) — A dedicated section for the platform's system Users
 - [File Library](/user-guide/file-library/files) — An aggregate of all files uploaded and managed within the platform
 - [Insights](/user-guide/insights/dashboards) — Access to infinitely customizable data dashboards
-- [App Guide](/user-guide/overview/data-studio-app) — A tailored, in-app portal for the platform's concepts, guides, and reference
+- [App Guide](/user-guide/overview/data-studio-app) — A tailored, in-app portal for the platform's concepts, guides, and
+  reference
 - [Settings](/user-guide/settings/settings) — An admin-only section for configuring the project and system settings
 
 In addition to these core modules, custom modules offer a _blank canvas_ for creating altogether new/different
@@ -245,8 +246,8 @@ two main ways to achieve multitenancy:
 
 ## Panels
 
-Panels are modular units of data visualization that exist within the [Insights module](/user-guide/insights/dashboards). Each panel exists
-within a [Dashboard](#dashboards) and can be positioned and resized as needed.
+Panels are modular units of data visualization that exist within the [Insights module](/user-guide/insights/dashboards).
+Each panel exists within a [Dashboard](#dashboards) and can be positioned and resized as needed.
 
 ### Relevant Guides
 

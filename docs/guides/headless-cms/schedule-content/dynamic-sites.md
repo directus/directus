@@ -145,5 +145,5 @@ const articles = await response.json();
 **Tips**
 
 - If you're not receiving the data you expect, double-check your [filter rule](/reference/filter-rules) syntax.
-- Also be sure you have enabled the proper [permissions](/user-guide/user-management/users-roles-permissions/permissions) for your content
-  Collection.
+- Also be sure you have enabled the proper
+  [permissions](/user-guide/user-management/users-roles-permissions/permissions) for your content Collection.

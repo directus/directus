@@ -107,8 +107,8 @@ bought rock songs, where the `customers` and `genres` Collections are linked by 
 `invoice-items` -> `tracks` -> `genres`.
 
 You will notice a <span mi icon>chevron_right</span> icon beside relational Fields. When you click on any
-[Alias](/user-guide/overview/glossary#alias) Field, all the Fields for that associated Collection pop down. If you select
-one of these Fields, you can run Filters on the current Collection by Field values in a related Collection.
+[Alias](/user-guide/overview/glossary#alias) Field, all the Fields for that associated Collection pop down. If you
+select one of these Fields, you can run Filters on the current Collection by Field values in a related Collection.
 
 Here are step-by-step instructions on how to filter by Fields in other Collections:
 

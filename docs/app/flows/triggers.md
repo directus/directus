@@ -185,8 +185,8 @@ automatically. These item IDs are passed in to `$trigger`.
 - **Collection Page (Requires Selection)** — Toggle whether a selection is required in the Collection Page to trigger.
 - **Require Confirmation** - Toggle whether a confirmation dialog will be shown before the flow is executed.
 
-After the operation runs, a toast notification will appear in your [sidebar](/user-guide/overview/data-studio-app#4-sidebar) indicating whether
-the flow ran successfully.
+After the operation runs, a toast notification will appear in your
+[sidebar](/user-guide/overview/data-studio-app#4-sidebar) indicating whether the flow ran successfully.
 
 ### Confirmation Dialog
 

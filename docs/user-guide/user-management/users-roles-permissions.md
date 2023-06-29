@@ -8,8 +8,8 @@ readTime: 7 min read
 # Users, Roles & Permissions
 
 > Users, roles, and permissions work together to determine _who can access what_ inside your database.
-> [Users](/user-guide/overview/glossary#users) are the individual accounts for authenticating into the project. Each user is
-> assigned a [role](/user-guide/overview/glossary#roles) which defines its
+> [Users](/user-guide/overview/glossary#users) are the individual accounts for authenticating into the project. Each
+> user is assigned a [role](/user-guide/overview/glossary#roles) which defines its
 > [access permissions](/user-guide/overview/glossary#permissions).
 
 ![Users, Roles and Permissions](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/users-roles-permissions-20220907A.webp)
@@ -139,8 +139,8 @@ optional. You may configure your own system as desired.
 
 ![Users in the Directus Data Studio](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/users-20220807A.webp)
 
-Within the Data Studio, users are managed within the [User Directory](/user-guide/user-management/user-directory). However, there are some
-controls available to assign users to roles in **Settings > Roles and Permissions**.
+Within the Data Studio, users are managed within the [User Directory](/user-guide/user-management/user-directory).
+However, there are some controls available to assign users to roles in **Settings > Roles and Permissions**.
 
 To learn more, please see our guide on [users](/user-guide/user-management/users-roles-permissions/users).
 
@@ -169,10 +169,11 @@ Directus offers an extremely granular, yet easy to configure permissions system.
 as desired.
 
 There are two other key points to note about Directus. First, the term
-[custom access permissions](/user-guide/user-management/users-roles-permissions/permissions#configure-custom-permissions) is used in place of
-[business rules](#business-rules), however the concept is the same. Second, instead of the standard CRUD permissions,
-Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of permission, share,
-defines whether a user has permissions to perform [data sharing](/user-guide/content-module/content/shares) on items in a collection.
+[custom access permissions](/user-guide/user-management/users-roles-permissions/permissions#configure-custom-permissions)
+is used in place of [business rules](#business-rules), however the concept is the same. Second, instead of the standard
+CRUD permissions, Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of
+permission, share, defines whether a user has permissions to perform
+[data sharing](/user-guide/content-module/content/shares) on items in a collection.
 
 To learn more, see our guide on [permissions](/user-guide/user-management/users-roles-permissions/permissions).
 

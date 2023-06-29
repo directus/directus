@@ -29,7 +29,8 @@ import { Directus } from '@directus/sdk';
 const directus = new Directus('http://directus.example.com');
 ```
 
-You can always access data available to the [public role](/user-guide/user-management/users-roles-permissions#directus-roles).
+You can always access data available to the
+[public role](/user-guide/user-management/users-roles-permissions#directus-roles).
 
 ```js
 async function publicData() {
@@ -44,7 +45,8 @@ async function publicData() {
 
 ### Basic Authentication
 
-To access anything that is not available to the [public role](/user-guide/user-management/users-roles-permissions#directus-roles), you must be
+To access anything that is not available to the
+[public role](/user-guide/user-management/users-roles-permissions#directus-roles), you must be
 [authenticated](/reference/authentication).
 
 ```js

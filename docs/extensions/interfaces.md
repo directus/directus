@@ -34,8 +34,8 @@ export default {
 
 - `id` — The unique key for this interface. It is good practice to scope proprietary interfaces with an author prefix.
 - `name` — The human-readable name for this interface.
-- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list of
-  Directus custom icons.
+- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list
+  of Directus custom icons.
 - `description` — A short description (<80 characters) of this interface shown in the App.
 - `component` — A reference to your interface component.
 - `options` — The options of your interface. Can be either an options object or a dedicated Vue component.

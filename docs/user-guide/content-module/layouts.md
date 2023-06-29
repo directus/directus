@@ -117,8 +117,8 @@ Settings.
 </video>
 
 This tiled Layout is ideal for Collections that prioritize an image _(e.g. a user or blog post)_. This is the default
-for both the [User Directory](/user-guide/user-management/user-directory) and [File Library](/user-guide/file-library/files). It includes the following
-controls.
+for both the [User Directory](/user-guide/user-management/user-directory) and
+[File Library](/user-guide/file-library/files). It includes the following controls.
 
 **Layout Options**
 

@@ -92,8 +92,8 @@ template wizard.
 Within a relational database, an O2M relationship is the exact same type of relationship as an M2O. Remember, at the end
 of the [M2O](#many-to-one-m2o) section, we learned that configuring an M2O in Directus does not let us access related
 items within an Item Page on the related collection. In Directus, configuring an O2M creates an
-[Alias](/user-guide/overview/glossary#alias) field, which lets us access related items. To demonstrate this, let's continue
-with the `cities` and `countries` example relationship used in the M2O section.
+[Alias](/user-guide/overview/glossary#alias) field, which lets us access related items. To demonstrate this, let's
+continue with the `cities` and `countries` example relationship used in the M2O section.
 
 ![One-to-Many Relational Diagram](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/relations-20221026/o2m-20221026A.webp)
 

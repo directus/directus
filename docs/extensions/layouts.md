@@ -42,8 +42,8 @@ export default {
 
 - `id` — The unique key for this layout. It is good practice to scope proprietary layouts with an author prefix.
 - `name` — The human-readable name for this layout.
-- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list of
-  Directus custom icons.
+- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list
+  of Directus custom icons.
 - `component` — A reference to your layout component.
 - `slots` — Additional components to be added by your layout.
   - `options` — A reference to an options component.

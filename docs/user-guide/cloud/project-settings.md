@@ -34,10 +34,11 @@ All configuration options are described in detail below.
 
 ![How to Configure General Project Settings](https://cdn.directus.io/docs/v9/configuration/project-settings/project-settings-20220815/general-project-settings-20220811A.webp)
 
-- **Project Name** — Sets the name on the [Navigation Bar](/user-guide/overview/data-studio-app#_2-navigation-bar), as well as login and public
-  pages.
+- **Project Name** — Sets the name on the [Navigation Bar](/user-guide/overview/data-studio-app#_2-navigation-bar), as
+  well as login and public pages.
 - **Project Descriptor** — Sets the descriptor shown below the Project Name.
-- **Project URL** — Sets URL when clicking the logo at the top of the [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar).
+- **Project URL** — Sets URL when clicking the logo at the top of the
+  [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar).
 - **Default Language** — Sets the default language used within the app.
 
 ## Branding & Style
@@ -47,9 +48,9 @@ All configuration options are described in detail below.
 </video>
 
 - **Project Color** — Sets color on the project logo, FavIcon and login/public pages.
-- **Project Logo** — Adds a 40x40px logo at the top of the [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar) and on the
-  login/public pages. The image is inset within a 64x64px square filled with the project color. We recommend using a PNG
-  file for optimal compatibility.
+- **Project Logo** — Adds a 40x40px logo at the top of the
+  [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar) and on the login/public pages. The image is inset
+  within a 64x64px square filled with the project color. We recommend using a PNG file for optimal compatibility.
 - **Public Foreground** — Adds image on the public page's right-pane _(max-width 400px)_.
 - **Public Background** — Adds image displayed behind the public foreground image, shown full-bleed within the public
   page's right-pane. When a public background image is not set, the project color is used instead.
@@ -80,7 +81,8 @@ it easier to identify different Directus projects.
   - **Add Link** — To add a new custom link, click **Add Link** and fill in the details below.
     - **Name** — Sets the title of the module link, also shown in a tooltip on hover.
     - **Icon** — Selects an icon for the module button.
-    - **URL** — Should start with a `/` for links within the [Directus Data Studio](/user-guide/overview/data-studio-app).
+    - **URL** — Should start with a `/` for links within the
+      [Directus Data Studio](/user-guide/overview/data-studio-app).
 
 ## Security
 
@@ -146,7 +148,8 @@ To learn more, please see the API guide on [transformation presets](/reference/f
 <source src="https://cdn.directus.io/docs/v9/configuration/project-settings/project-settings-20220815/image-editor-20220815A.mp4" type="video/mp4" />
 </video>
 
-- **Custom Aspect Ratios** — Adds custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-an-image).
+- **Custom Aspect Ratios** — Adds custom aspect ratios in the
+  [image editor](/user-guide/file-library/files#edit-an-image).
   - **Text** — Sets a name to identify the aspect ratio.
   - **Value** — Sets the aspect ratio with a fraction.
 
