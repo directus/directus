@@ -79,7 +79,8 @@ a {
 	list-style: none;
 	font-weight: 600;
 	justify-content: space-between;
-	gap: 24px;
+	gap: 12px;
+	max-width: 500px;
 }
 
 .content .logo,
@@ -96,7 +97,7 @@ a {
 	fill: white;
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 1000px) {
 	.content {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
@@ -107,6 +108,7 @@ a {
 	.content ul {
 		margin: 0;
 		width: 100%;
+		gap: 24px;
 	}
 
 	.content .links {
