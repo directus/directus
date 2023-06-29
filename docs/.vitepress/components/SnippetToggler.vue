@@ -75,7 +75,7 @@ const onPrefChange = (event: Event) => {
 
 .snippet-toggler-header {
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
-	color: #a6accd;
+	color: var(--vp-c-gray-light-2);
 	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 	height: 40px;
 	display: flex;
@@ -96,22 +96,25 @@ const onPrefChange = (event: Event) => {
 .snippet-toggler-header-lang-container {
 	display: flex;
 	align-items: center;
-	gap: 2px;
+}
+
+.snippet-toggler-header-lang-container:hover {
+	color: white;
 }
 
 .snippet-toggler-header-lang {
 	background-color: transparent;
 	text-align: right;
 	border: 0;
-	padding: 0;
-	border: 0;
 	border-color: transparent;
+	padding: 0;
 	font-family: inherit;
 	color: inherit;
 	appearance: none;
 	line-height: inherit;
-	color: inherit;
+	position: relative;
 	font-size: 12px;
+	padding-inline-end: 20px;
 }
 
 .snippet-toggler-header-lang:focus {
@@ -119,7 +122,9 @@ const onPrefChange = (event: Event) => {
 }
 
 .snippet-toggler-header-lang-arrow {
-	fill: #a6accd;
+	position: absolute;
+	right: 24px;
+	fill: currentColor;
 	user-select: none;
 	pointer-events: none;
 }
