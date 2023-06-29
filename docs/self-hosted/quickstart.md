@@ -13,9 +13,12 @@ You should have [Docker](https://docs.docker.com/get-docker/) installed and runn
 
 :::info What Is Docker?
 
-Docker is a developer tool that allows software-creators to distribute their work along with all dependencies and required environment settings. This means that applications can run reliably and consistently, making it the perfect way to use Directus both locally and in-production.
+Docker is a developer tool that allows software-creators to distribute their work along with all dependencies and
+required environment settings. This means that applications can run reliably and consistently, making it the perfect way
+to use Directus both locally and in-production.
 
-As soon as there are new releases of Directus, we publish them on [Docker Hub](https://hub.docker.com/r/directus/directus).
+As soon as there are new releases of Directus, we publish them on
+[Docker Hub](https://hub.docker.com/r/directus/directus).
 
 :::
 
@@ -44,14 +47,19 @@ services:
 Save the file. Let's step through it:
 
 - This file defines a single Docker container that will use the latest version of the `directus/directus` image.
-- The `ports` list maps internal port `8055` is made available to our machine using the same port number, meaning we can access it from our computer's browser.
-- The`volumes` section maps internal `directus/database` and `directus/uploads` to our local file system alongside the `docker-compose.yml` - meaning data is backed up outside of Docker containers.
+- The `ports` list maps internal port `8055` is made available to our machine using the same port number, meaning we can
+  access it from our computer's browser.
+- The`volumes` section maps internal `directus/database` and `directus/uploads` to our local file system alongside the
+  `docker-compose.yml` - meaning data is backed up outside of Docker containers.
 - The `environment` section contains any [configuration variables](/self-hosted/config-options.html) we wish to set.
-  - `KEY` and `SECRET` are required and should be long random values. `KEY` is used for telemetry and health tracking, and `SECRET` is used to sign access tokens.
+  - `KEY` and `SECRET` are required and should be long random values. `KEY` is used for telemetry and health tracking,
+    and `SECRET` is used to sign access tokens.
   - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch.
   - `WEBSOCKETS_ENABLED` is not required, but enables [Directus Realtime](/guides/real-time/getting-started/index.html).
 
-The volumes section is not required, but without this, our database and file uploads will be destroyed when the Docker container stops running. The default database is SQLite - a self-contained server-less database that stores data to a file.
+The volumes section is not required, but without this, our database and file uploads will be destroyed when the Docker
+container stops running. The default database is SQLite - a self-contained server-less database that stores data to a
+file.
 
 ## Run Directus
 

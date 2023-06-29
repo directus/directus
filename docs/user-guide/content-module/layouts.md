@@ -26,7 +26,7 @@ human-friendly way to view the data. Layouts provide intuitive displays to view 
 
 To adjust an Item's Layout, follow these steps.
 
-1. Navigate to the [Content Module](/app/content) and select the desired Collection.
+1. Navigate to the [Content Module](/user-guide/content-module/content) and select the desired Collection.
 2. In the page Sidebar, click **"Layout Options"**.
 3. Choose the desired Layout you want to use.
 4. Customize the Layout as desired.
@@ -117,8 +117,8 @@ Settings.
 </video>
 
 This tiled Layout is ideal for Collections that prioritize an image _(e.g. a user or blog post)_. This is the default
-for both the [User Directory](/app/user-directory) and [File Library](/app/file-library). It includes the following
-controls.
+for both the [User Directory](/user-guide/user-management/user-directory) and
+[File Library](/user-guide/file-library/files). It includes the following controls.
 
 **Layout Options**
 

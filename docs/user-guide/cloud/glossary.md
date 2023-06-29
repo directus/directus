@@ -176,9 +176,7 @@ The term _Extension_ refers to any feature or component that adds to the functio
 been architected to be [completely modular and extensible](/extensions/introduction) to ensure you will never hit a hard
 feature ceiling within the platform.
 
-All Cloud Projects have access to the [Cloud Exclusive Extensions](/cloud/exclusives), which are developed and
-maintained by the Core Team. Enterprise Projects get all Cloud Exclusives, but also have the option to implement their
-own custom Extensions as needed.
+Enterprise Projects have the option to implement their own custom Extensions as needed.
 
 ## Global CDN
 
@@ -189,7 +187,7 @@ data will be delivered with the lowest possible latency.
 
 In the context of these docs, Infrastructure refers to the hardware running your Project, including the
 [database](#multi-tenancy), [asset storage](#asset-storage) and [global CDN](#global-cdn). Infrastructure differs by
-Project tier. Please refer to [Projects](/cloud/projects) as well as the Infrastructure section on the
+Project tier. Please refer to [Projects](/user-guide/cloud/projects) as well as the Infrastructure section on the
 [Pricing page](https://directus.io/pricing) for side-by-side comparisons.
 
 ## Rate Limiting

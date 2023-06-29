@@ -167,6 +167,7 @@ export default ({ embed }, { env }) => {
 		'head',
 		'<script src="https://browser.sentry-cdn.com/7.21.1/bundle.min.js" integrity="sha384-xOL2QebDu7YNMtC6jW2i5RpQ5RcWOyQMTwrWBiEDezpjjXM7mXhYGz3vze77V91Q" crossorigin="anonymous"></script>'
 	);
+
 	embed(
 		'body',
 		() => `<script>
@@ -310,6 +311,7 @@ export default ({ filter }, { services }) => {
 
 		try {
 			await axios.post('https://example.com/recipes', input);
+
 			await mailService.send({
 				to: 'person@example.com',
 				template: {
@@ -339,6 +341,7 @@ import '@sentry/tracing';
 
 export default defineHook(({ init }, { env }) => {
 	const { SENTRY_DSN } = env;
+
 	Sentry.init({
 		dsn: SENTRY_DSN,
 	});

@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const parts = computed<HighlightPart[]>(() => {
-	let searchText = removeDiacritics(props.text.toLowerCase());
+	const searchText = removeDiacritics(props.text.toLowerCase());
 
 	const queries = toArray(props.query);
 

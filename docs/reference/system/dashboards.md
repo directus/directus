@@ -8,7 +8,7 @@ pageClass: page-reference
 
 > Dashboards within the Insights module organize different Panels into an at-a-glance view. They can be used to group
 > data based on department, objective, business process or anything you choose.
-> [Learn more about Dashboards](/app/insights).
+> [Learn more about Dashboards](/user-guide/insights/dashboards).
 
 ---
 
@@ -263,16 +263,7 @@ type Mutation {
 ```graphql
 mutation {
 	create_dashboards_items(
-		data: [
-			{
-				"name": "My Dashboard",
-				"icon": "dashboard"
-			},
-			{
-				"name": "Another Dashboard",
-				"icon": "person"
-			}
-		]
+		data: [{ name: "My Dashboard", icon: "dashboard" }, { name: "Another Dashboard", icon: "person" }]
 	) {
 		id
 		name
@@ -396,7 +387,7 @@ type Mutation {
 mutation {
 	update_dashboards_items(
 		ids: ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"]
-		data: { "color": "#6644FF" }
+		data: { color: "#6644FF" }
 	) {
 		id
 		name

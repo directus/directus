@@ -12,8 +12,8 @@ readTime: 4 min read
 
 :::tip Before You Begin
 
-To use this utility, you will need to be familiar with [Collections](/getting-started/glossary#collections),
-[Items](/getting-started/glossary#items), and [Fields](/getting-started/glossary#fields).
+To use this utility, you will need to be familiar with [Collections](/user-guide/overview/glossary#collections),
+[Items](/user-guide/overview/glossary#items), and [Fields](/user-guide/overview/glossary#fields).
 
 <!--
 @TODO Getting Started > Introduction
@@ -123,7 +123,7 @@ they are exported.
 Some Collections may directly or relationally include Fields referencing images, videos or other file types. It is not
 possible to import or export files with this utility.
 
-To import and export files, please see the [File Library Module](/app/file-library).
+To import and export files, please see the [File Library Module](/user-guide/file-library/files).
 
 :::tip What does Import/Export do in the File Library?!
 

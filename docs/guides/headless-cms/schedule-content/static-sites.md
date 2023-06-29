@@ -76,7 +76,7 @@ field `status` that controls the published state.
 
 ### Add Some Content and Set a Publish Date
 
-4. [Create or update an Item](/app/content/items) inside your Collection
+4. [Create or update an Item](/user-guide/content-module/content/items) inside your Collection
 
    ![A content item within the Articles collection is shown. The title is "What is Headless CMS?". English translations are also shown with a Summary field. The Summary reads "A quick overview of what Headless CMS is and how it's beneficial to your team."](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-create-content-scheduled.webp)
 
@@ -133,7 +133,7 @@ field `status` that controls the published state.
 
    ```json
    {
-     "status": "published"
+   	"status": "published"
    }
    ```
 
@@ -141,20 +141,20 @@ field `status` that controls the published state.
 
    ```json
    {
-     "filter": {
-       "_and": [
-         {
-           "status": {
-             "_eq": "scheduled"
-           }
-         },
-         {
-           "date_published": {
-             "_lte": "$NOW"
-           }
-         }
-       ]
-     }
+   	"filter": {
+   		"_and": [
+   			{
+   				"status": {
+   					"_eq": "scheduled"
+   				}
+   			},
+   			{
+   				"date_published": {
+   					"_lte": "$NOW"
+   				}
+   			}
+   		]
+   	}
    }
    ```
 
