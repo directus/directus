@@ -1,4 +1,4 @@
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlQuery, CompareValueNode } from '@directus/data-sql';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { where, getComparison } from './where.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
@@ -28,7 +28,10 @@ describe('Where clause:', () => {
 						column: randomIdentifier(),
 						table: randomIdentifier(),
 					},
-					parameterIndexes: [randomInteger(1, 10)],
+					compareTo: {
+						type: 'value',
+						parameterIndexes: [randomInteger(1, 10)],
+					},
 					negation: false,
 				},
 				parameters: [],
@@ -39,7 +42,7 @@ describe('Where clause:', () => {
 	test('Where clause', () => {
 		expect(where(sample.statement)).toStrictEqual(
 			`WHERE "${sample.statement.where!.target.table}"."${sample.statement.where!.target.column}" > $${
-				sample.statement.where!.parameterIndexes[0]! + 1
+				(sample.statement.where!.compareTo as CompareValueNode).parameterIndexes[0]! + 1
 			}`
 		);
 	});
@@ -49,7 +52,7 @@ describe('Where clause:', () => {
 
 		expect(where(sample.statement)).toStrictEqual(
 			`WHERE NOT "${sample.statement.where!.target.table}"."${sample.statement.where!.target.column}" > $${
-				sample.statement.where!.parameterIndexes[0]! + 1
+				(sample.statement.where!.compareTo as CompareValueNode).parameterIndexes[0]! + 1
 			}`
 		);
 	});

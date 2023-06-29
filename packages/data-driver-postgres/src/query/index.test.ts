@@ -1,5 +1,5 @@
 import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlQuery, CompareValueNode } from '@directus/data-sql';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import { constructSqlQuery } from './index.js';
@@ -88,7 +88,10 @@ test('statement with all possible modifiers', () => {
 			column: randomIdentifier(),
 			table: randomIdentifier(),
 		},
-		parameterIndexes: [2],
+		compareTo: {
+			type: 'value',
+			parameterIndexes: [2],
+		},
 		negation: false,
 	};
 
@@ -109,7 +112,9 @@ test('statement with all possible modifiers', () => {
 			sample.statement.select[1]!.table
 		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" WHERE "${
 			sample.statement.where.target.table
-		}"."${sample.statement.where.target.column}" > $${sample.statement.where.parameterIndexes[0]! + 1} ORDER BY "${
+		}"."${sample.statement.where.target.column}" > $${
+			(sample.statement.where.compareTo as CompareValueNode).parameterIndexes[0]! + 1
+		} ORDER BY "${
 			(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field
 		}" ASC LIMIT $1 OFFSET $2;`,
 		parameters: sample.statement.parameters,

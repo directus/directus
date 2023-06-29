@@ -16,12 +16,13 @@ export const where = ({ where }: AbstractSqlQuery): string | null => {
 		return null;
 	}
 
-	if (where.type !== 'condition' || where.target.type !== 'primitive') {
-		throw new Error('Logical operators and functions are not yet supported in where clause.');
+	if (where.type !== 'condition' || where.target.type !== 'primitive' || where.compareTo.type !== 'value') {
+		throw new Error('The provided where node is not yet supported.');
 	}
 
 	const target = wrapColumn(where.target.table, where.target.column);
-	const comparison = getComparison(where.operation, where.parameterIndexes);
+
+	const comparison = getComparison(where.operation, where.compareTo.parameterIndexes);
 	const condition = `${target} ${comparison}`;
 	return where.negation ? `WHERE NOT ${condition}` : `WHERE ${condition}`;
 };

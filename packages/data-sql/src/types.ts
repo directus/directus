@@ -1,9 +1,11 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
 
-export interface SqlStatementSelectPrimitive {
+interface SqlStatementColumn {
 	type: 'primitive';
 	table: string;
 	column: string;
+}
+export interface SqlStatementSelectColumn extends SqlStatementColumn {
 	as?: string;
 }
 
@@ -33,7 +35,7 @@ type ParameterIndex = {
 };
 
 /**
- * This is an abstract SQL query.
+ * This is an abstract SQL query which can be passen to all SQL drivers.
  *
  * @example
  * ```ts
@@ -46,47 +48,50 @@ type ParameterIndex = {
  * ```
  */
 export interface AbstractSqlQuery {
-	select: SqlStatementSelectPrimitive[];
+	select: SqlStatementSelectColumn[];
 	from: string;
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
-	order?: AbstractSqlOrder[];
-	where?: AbstractSqlQueryNodeCondition;
+	order?: AbstractSqlQueryOrderNode[];
+	where?: AbstractSqlQueryWhereNode;
+	intersects?: AbstractSqlQuery;
 	parameters: (string | boolean | number)[];
 }
 
-export type AbstractSqlOrder = {
+export type AbstractSqlQueryOrderNode = {
 	orderBy: AbstractQueryNodeSortTargets;
 	direction: 'ASC' | 'DESC';
 };
 
 /**
  * An abstract WHERE clause.
- *
- * @remarks
- * So far only comparisons to _primitives_ are supported. Functions will be supported soon.
- * How we'll handle relational values here, needs to be discussed.
  */
-export interface AbstractSqlQueryNodeCondition {
+export interface AbstractSqlQueryWhereNode {
 	type: 'condition';
+
+	/* indicated of the condition should be negated using NOT */
 	negation: boolean;
-	target: Omit<SqlStatementSelectPrimitive, 'as'>;
-	operation:
-		| 'eq'
-		| 'lt'
-		| 'lte'
-		| 'gt'
-		| 'gte'
-		| 'in'
-		| 'between'
-		| 'contains'
-		| 'starts_with'
-		| 'ends_with'
-		| 'intersects'
-		| 'intersects_bounding_box';
+
+	/* value which will be compared to another value or expression. Functions will be supported soon. */
+	target: SqlStatementColumn;
+
+	/* an abstract comparator. maybe this needs to be optional for some comparisons to sets */
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'between' | 'contains' | 'starts_with' | 'ends_with';
+
+	/* a value to which the target will be compared */
+	compareTo: CompareValueNode | CompareSetNode;
+}
+
+export interface CompareValueNode {
+	type: 'value';
 	parameterIndexes: number[];
 }
 
+export interface CompareSetNode {
+	type: 'set';
+	additionalOperator: 'all' | 'some' | 'none';
+	subQuery: AbstractSqlQuery;
+}
 /**
  * An actual vendor specific SQL statement with its parameters.
  * @example
