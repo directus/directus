@@ -57,7 +57,7 @@ const activeTab = ref(props.tabs[0]);
 
 .tab-buttons button.active {
 	background: var(--vp-c-purple-dimm-3);
-	border-radius: 5px;
+	border-radius: 6px;
 	width: 100%;
 }
 
