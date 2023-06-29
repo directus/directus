@@ -22,6 +22,10 @@
 	to = "/app/:splat"
 	status = 301
 
+##### 
+##### Consolidated Guides Section
+##### 
+
 [[redirects]]
 	from = "/cookbook/*"
 	to = "/guides/:splat"
@@ -61,6 +65,10 @@
 	from = "/getting-started/backing-directus"
 	to = "/contributing/sponsor"
 	status = 301
+
+##### 
+##### User Guide
+#####
 
 [[redirects]]
 	from = "/app/content/*"

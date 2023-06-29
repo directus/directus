@@ -14,7 +14,7 @@ To configure users programmatically, see our API documentation on [users](/refer
 
 :::
 
-Within the Data Studio, the [User Directory](/app/user-directory) is the primary place to manage users. However,
+Within the Data Studio, the [User Directory](/user-guide/user-management/user-directory) is the primary place to manage users. However,
 certain controls are included in **Settings > Roles & Permissions > [Role]** as well, which is what the following
 sections will focus on.
 

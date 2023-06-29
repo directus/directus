@@ -9,7 +9,7 @@ pageClass: page-reference
 > Panels are modular units of data visualization that exist within the Insights module. Each panel exists within a
 > Dashboard and can be positioned and resized as needed.
 
-[Learn more about Panels](/app/insights).
+[Learn more about Panels](/user-guide/insights/dashboards).
 
 ---
 

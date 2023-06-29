@@ -92,7 +92,7 @@ the template wizard.
 Within a relational database, an O2M relationship is the exact same type of relationship as an M2O. Remember, at the end
 of the [M2O](#many-to-one-m2o) section, we learned that configuring an M2O in Directus does not let us access related
 items within an Item Page on the related collection. In Directus, configuring an O2M creates an
-[Alias](/getting-started/glossary#alias) field, which lets us access related items. To demonstrate this, let's continue
+[Alias](/user-guide/overview/glossary#alias) field, which lets us access related items. To demonstrate this, let's continue
 with the `cities` and `countries` example relationship used in the M2O section.
 
 ![One-to-Many Relational Diagram](https://cdn.directus.io/docs/v9/configuration/data-model/relationships/relations-20221026/o2m-20221026A.webp)
@@ -292,7 +292,7 @@ the template wizard.
 
 Sometimes called a _matrix field_ or _replicator_, an M2A relationship allows you to link items from the parent
 collection to any item in any collection in the database. When you configure an M2A in Directus, an M2A
-[Alias](/getting-started/glossary#alias) field is created as well as a junction collection, like we saw on M2M
+[Alias](/user-guide/overview/glossary#alias) field is created as well as a junction collection, like we saw on M2M
 relationships. The difference is that the junction collection on an M2A also has a field to store the **collection key**
 _(the name of the collection)_ for related collections.
 

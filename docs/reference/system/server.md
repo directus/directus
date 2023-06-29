@@ -7,7 +7,7 @@ pageClass: page-reference
 # Server
 
 > Provides detailed information about the project server, its schema, and its health.
-> [Learn more about Projects](/getting-started/glossary#projects).
+> [Learn more about Projects](/user-guide/overview/glossary#projects).
 
 ---
 

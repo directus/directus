@@ -120,9 +120,9 @@ can create fully granular permissions for roles as well as individual users.
 :::tip Directus Vocabulary
 
 To keep things simpler, _especially for the no-code users_, Directus uses friendlier names for many database terms and
-technical concepts, including [Project](/getting-started/glossary#projects) (database),
-[Collection](/getting-started/glossary#collections) (table), [Field](/getting-started/glossary#fields) (column),
-[Item](/getting-started/glossary#items) (record), and [Type](/getting-started/glossary#types) (datatype).
+technical concepts, including [Project](/user-guide/overview/glossary#projects) (database),
+[Collection](/user-guide/overview/glossary#collections) (table), [Field](/user-guide/overview/glossary#fields) (column),
+[Item](/user-guide/overview/glossary#items) (record), and [Type](/user-guide/overview/glossary#types) (datatype).
 
 <!--
 @TODO getting-started > learn-directus

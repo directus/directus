@@ -28,9 +28,9 @@ To manage the Activity Log programmatically, please see our guide on the [Activi
 	<source src="https://cdn.directus.io/docs/v9/configuration/activity-log/activity-log-20220816/activity-log-20220816A.mp4" type="video/mp4" />
 </video>
 
-The Activity Log is the only Module in Directus Core that is not found in the [Module Bar](/app/overview#_1-module-bar).
-Instead, it is accessed via the notifications tray of the [Sidebar](/app/overview#_4-sidebar). The Activity Log page has
-the same features and functionality as the [Collection Page](/app/content/collections).
+The Activity Log is the only Module in Directus Core that is not found in the [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar).
+Instead, it is accessed via the notifications tray of the [Sidebar](/user-guide/overview/data-studio-app#_4-sidebar). The Activity Log page has
+the same features and functionality as the [Collection Page](/user-guide/content-module/content/collections).
 
 ::: warning External Changes
 
@@ -42,7 +42,7 @@ _directly_ are not tracked.
 :::tip
 
 You can also view and revert the activity of _specific items_ under **Item Page > Sidebar > Revisions**. To learn more,
-please see [Revert an Item](/app/content/items#revert-an-item).
+please see [Revert an Item](/user-guide/content-module/content/items#revert-an-item).
 
 :::
 
@@ -68,7 +68,7 @@ is stored for each item.
 	<source src="https://cdn.directus.io/docs/v9/configuration/activity-log/activity-log-20220816/filter-by-activity-20220817A.mp4" type="video/mp4" />
 </video>
 
-In addition to the filter and display functionality inherited from the [Collection Page](/app/content/collections), you
+In addition to the filter and display functionality inherited from the [Collection Page](/user-guide/content-module/content/collections), you
 can also filter items by activity from the Navigation Bar.
 
 ## Modify an Activity

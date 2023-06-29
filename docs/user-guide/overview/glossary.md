@@ -176,10 +176,10 @@ Items are referenced (both individually and relationally) by their unique [prima
 
 #### Relevant Guides
 
-- [Creating an Item](/app/content/items#create-an-item)
-- [Archiving an Item](/app/content/items#archive-an-item)
-- [Manually Sorting Items](/app/content/collections#manually-sort-items)
-- [Deleting an Item](/app/content/items#delete-an-item)
+- [Creating an Item](/user-guide/content-module/content/items#create-an-item)
+- [Archiving an Item](/user-guide/content-module/content/items#archive-an-item)
+- [Manually Sorting Items](/user-guide/content-module/content/collections#manually-sort-items)
+- [Deleting an Item](/user-guide/content-module/content/items#delete-an-item)
 
 ## Junction Collections
 
@@ -212,16 +212,16 @@ data within the App, such as Gantt charts, seating maps, or spreadsheets.
 Modules are the highest and broadest level of organization within the App. There are several modules included
 out-of-the-box, however you can also add your own.
 
-The [Module Bar](/app/overview#_1-module-bar) lists all available Modules and allows you to switch between them. Each
+The [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar) lists all available Modules and allows you to switch between them. Each
 module also controls its own navigation bar to provide tailored access to sub-pages. All core functionality within the
 App can be bucketed into one of the following modules:
 
-- [Content](/app/content/collections) — The primary way to view and interact with database content
-- [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
-- [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform
-- [Insights](/app/insights) — Access to infinitely customizable data dashboards
-- [App Guide](/app/overview) — A tailored, in-app portal for the platform's concepts, guides, and reference
-- [Settings](/app/settings) — An admin-only section for configuring the project and system settings
+- [Content](/user-guide/content-module/content/collections) — The primary way to view and interact with database content
+- [User Directory](/user-guide/user-management/user-directory) — A dedicated section for the platform's system Users
+- [File Library](/user-guide/file-library/files) — An aggregate of all files uploaded and managed within the platform
+- [Insights](/user-guide/insights/dashboards) — Access to infinitely customizable data dashboards
+- [App Guide](/user-guide/overview/data-studio-app) — A tailored, in-app portal for the platform's concepts, guides, and reference
+- [Settings](/user-guide/settings/settings) — An admin-only section for configuring the project and system settings
 
 In addition to these core modules, custom modules offer a _blank canvas_ for creating altogether new/different
 experiences within the App, such as proprietary dashboards, compound datasets, or third-party integrations (e.g., a
@@ -245,7 +245,7 @@ two main ways to achieve multitenancy:
 
 ## Panels
 
-Panels are modular units of data visualization that exist within the [Insights module](/app/insights). Each panel exists
+Panels are modular units of data visualization that exist within the [Insights module](/user-guide/insights/dashboards). Each panel exists
 within a [Dashboard](#dashboards) and can be positioned and resized as needed.
 
 ### Relevant Guides
@@ -282,7 +282,7 @@ file, asset storage, and any custom extensions. Projects are the highest level o
 
 - [Creating a Project](/self-hosted/quickstart)
 - [Configuring a Project](/self-hosted/config-options)
-- [Adjusting Project Settings](/app/project-settings)
+- [Adjusting Project Settings](/user-guide/cloud/project-settings)
 - [Upgrading a Project](/self-hosted/upgrades-migrations)
 - [Backing-up a Project](/self-hosted/upgrades-migrations#backing-up-a-project)
 - [Migrating a Project](/self-hosted/upgrades-migrations#migrating-a-project)
@@ -315,11 +315,11 @@ There is also a "Public" role that determines access for unauthenticated access.
 
 ### Relevant Guides
 
-- [Creating a Role](/app/users-roles-permissions#creating-a-role)
-- [Configuring a Role](/app/users-roles-permissions#configure-a-role)
-- [Configuring Role Permissions](/app/users-roles-permissions#configure-permissions)
-- [Configuring System Permissions](/app/users-roles-permissions#configure-system-permissions)
-- [Deleting a Role](/app/users-roles-permissions#deleting-a-role)
+- [Creating a Role](/user-guide/user-management/users-roles-permissions#creating-a-role)
+- [Configuring a Role](/user-guide/user-management/users-roles-permissions#configure-a-role)
+- [Configuring Role Permissions](/user-guide/user-management/users-roles-permissions#configure-permissions)
+- [Configuring System Permissions](/user-guide/user-management/users-roles-permissions#configure-system-permissions)
+- [Deleting a Role](/user-guide/user-management/users-roles-permissions#deleting-a-role)
 
 ## Singleton
 

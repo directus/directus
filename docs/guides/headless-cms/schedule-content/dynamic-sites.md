@@ -67,7 +67,7 @@ field `status` that controls the published state.
 
 ### Add Some Content and Set a Publish Date
 
-4. [Create or update an Item](/app/content/items) inside your Collection
+4. [Create or update an Item](/user-guide/content-module/content/items) inside your Collection
 
    ![A content item within the Articles collection is shown. The title is "What is Headless CMS?". English translations are also shown with a Summary field. The Summary reads "A quick overview of what Headless CMS is and how it's beneficial to your team."](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-create-content-published.webp)
 
@@ -142,5 +142,5 @@ const articles = await response.json()
 **Tips**
 
 - If you're not receiving the data you expect, double-check your [filter rule](/reference/filter-rules) syntax.
-- Also be sure you have enabled the proper [permissions](/app/users-roles-permissions/permissions) for your content
+- Also be sure you have enabled the proper [permissions](/user-guide/user-management/users-roles-permissions/permissions) for your content
   Collection.

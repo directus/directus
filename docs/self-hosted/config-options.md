@@ -696,7 +696,7 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variab
 | `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                   | --               |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                       | `false`          |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                   | --               |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/getting-started/glossary#icons). | `account_circle` |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons). | `account_circle` |
 | `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                | `<PROVIDER>`     |
 | `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                     | --               |
 
@@ -717,7 +717,7 @@ OpenID is an authentication protocol built on OAuth 2.0, and should be preferred
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                       | `false`                |
 | `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                       | `false`                |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                   | --                     |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/getting-started/glossary#icons). | `account_circle`       |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons). | `account_circle`       |
 | `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                | `<PROVIDER>`           |
 | `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                     | --                     |
 

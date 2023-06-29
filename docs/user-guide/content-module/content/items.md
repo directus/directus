@@ -119,7 +119,7 @@ settings.
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-items/content-items-20220415A/revert-an-item-20220415A.mp4" type="video/mp4" />
 </video>
 
-As you update Field Values on Items, Directus saves these [Revisions](/getting-started/glossary#revisions), and they can
+As you update Field Values on Items, Directus saves these [Revisions](/user-guide/overview/glossary#revisions), and they can
 be compared side-by-side to the current state. To revert an Item, follow these steps.
 
 1. Navigate to the Content Module and select the desired Collection.

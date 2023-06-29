@@ -21,11 +21,11 @@ Only Administrators have access to the Settings Module.
 
 Settings are split into five distinct sections, each described below.
 
-- [Project Settings](/app/project-settings) — Setup branding and other global style options.
-- [Data Model](/app/data-model) — Create and modify [Collections](/getting-started/glossary#collections),
-  [Relationships](/getting-started/glossary#relationships), form layout, and [Fields](/getting-started/glossary#fields).
-- [Roles & Permissions](/app/users-roles-permissions) — Create and manage access via Roles and Permissions.
-- [Presets & Bookmarks](/app/presets-bookmarks) — Set default views of data and configure bookmarks.
+- [Project Settings](/user-guide/cloud/project-settings) — Setup branding and other global style options.
+- [Data Model](/app/data-model) — Create and modify [Collections](/user-guide/overview/glossary#collections),
+  [Relationships](/user-guide/overview/glossary#relationships), form layout, and [Fields](/user-guide/overview/glossary#fields).
+- [Roles & Permissions](/user-guide/user-management/users-roles-permissions) — Create and manage access via Roles and Permissions.
+- [Presets & Bookmarks](/user-guide/settings/presets-bookmarks) — Set default views of data and configure bookmarks.
 - [Webhooks](/app/webhooks) — Use platform events to trigger external services.
 
 Aside from the above pages, there are three shorthand links:

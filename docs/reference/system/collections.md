@@ -7,7 +7,7 @@ pageClass: page-reference
 # Collections
 
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
-> alter the schema of the database. [Learn more about Collections](/getting-started/glossary#collections).
+> alter the schema of the database. [Learn more about Collections](/user-guide/overview/glossary#collections).
 
 ---
 
