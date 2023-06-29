@@ -2,7 +2,7 @@
  * @todo
  * Move this module outside of src/query because it's not only used for query, but also for modifications like update and delete.
  */
-import type { AbstractSqlQuery } from '@directus/data-sql';
+import type { AbstractSqlQuery, CompareSetNode, CompareValueNode } from '@directus/data-sql';
 import { wrapColumn } from '../utils/wrap-column.js';
 
 /**
@@ -16,13 +16,14 @@ export const where = ({ where }: AbstractSqlQuery): string | null => {
 		return null;
 	}
 
+	// Support for multiple conditions (type === 'logical') will be added soon
 	if (where.type !== 'condition' || where.target.type !== 'primitive' || where.compareTo.type !== 'value') {
 		throw new Error('The provided where node is not yet supported.');
 	}
 
 	const target = wrapColumn(where.target.table, where.target.column);
 
-	const comparison = getComparison(where.operation, where.compareTo.parameterIndexes);
+	const comparison = getComparison(where.operation, where.compareTo);
 	const condition = `${target} ${comparison}`;
 	return where.negation ? `WHERE NOT ${condition}` : `WHERE ${condition}`;
 };
@@ -35,8 +36,12 @@ export const where = ({ where }: AbstractSqlQuery): string | null => {
  * @param providedIndexes - The indexes of all parameters.
  * @returns An operator with a parameter reference to a value to which the target will be compared.
  */
-export function getComparison(operation: string, providedIndexes: number[]) {
-	const parameterIndex = providedIndexes[0]! + 1;
+export function getComparison(operation: string, compareTo: CompareValueNode | CompareSetNode) {
+	if (compareTo.type !== 'value') {
+		throw new Error('Comparisons to sets, f.e. with the IN operator, are not yet supported.');
+	}
+
+	const parameterIndex = compareTo.parameterIndexes[0]! + 1;
 
 	switch (operation) {
 		case 'eq':
@@ -56,7 +61,7 @@ export function getComparison(operation: string, providedIndexes: number[]) {
 		case 'ends_with':
 			return `LIKE '%$${parameterIndex}'`;
 		case 'in':
-			return `IN (${providedIndexes.map((i) => `$${i + 1}`).join(', ')})`;
+			return `IN (${compareTo.parameterIndexes.map((i) => `$${i + 1}`).join(', ')})`;
 		default:
 			throw new Error(`Unsupported operation: ${operation}`);
 	}

@@ -59,51 +59,55 @@ describe('Where clause:', () => {
 });
 
 describe('Where clause operator mapping and parameter index insertion: ', () => {
+	let compareTo: CompareValueNode;
+
+	beforeEach(() => {
+		compareTo = {
+			type: 'value',
+			parameterIndexes: [randomInteger(1, 10)],
+		};
+	});
+
 	test('eq', () => {
-		const randomIndexes = [randomInteger(1, 10)];
-		expect(getComparison('eq', randomIndexes)).toStrictEqual(`= $${randomIndexes[0]! + 1}`);
+		expect(getComparison('eq', compareTo)).toStrictEqual(`= $${compareTo.parameterIndexes[0]! + 1}`);
 	});
 
 	test('gt', () => {
-		const randomIndexes = [randomInteger(1, 10)];
-		expect(getComparison('gt', randomIndexes)).toStrictEqual(`> $${randomIndexes[0]! + 1}`);
+		expect(getComparison('gt', compareTo)).toStrictEqual(`> $${compareTo.parameterIndexes[0]! + 1}`);
 	});
 
 	test('gte', () => {
-		const randomIndexes = [randomInteger(1, 10)];
-		expect(getComparison('gte', randomIndexes)).toStrictEqual(`>= $${randomIndexes[0]! + 1}`);
+		expect(getComparison('gte', compareTo)).toStrictEqual(`>= $${compareTo.parameterIndexes[0]! + 1}`);
 	});
 
 	test('lt', () => {
-		const randomIndexes = [randomInteger(1, 10)];
-		expect(getComparison('lt', randomIndexes)).toStrictEqual(`< $${randomIndexes[0]! + 1}`);
+		expect(getComparison('lt', compareTo)).toStrictEqual(`< $${compareTo.parameterIndexes[0]! + 1}`);
 	});
 
 	test('lte', () => {
-		const randomIndexes = [randomInteger(1, 10)];
-		expect(getComparison('lte', randomIndexes)).toStrictEqual(`<= $${randomIndexes[0]! + 1}`);
+		expect(getComparison('lte', compareTo)).toStrictEqual(`<= $${compareTo.parameterIndexes[0]! + 1}`);
 	});
 
 	test('contains', () => {
-		const randomIndexes = [randomInteger(1, 10)];
-		expect(getComparison('contains', randomIndexes)).toStrictEqual(`LIKE '%$${randomIndexes[0]! + 1}%'`);
+		expect(getComparison('contains', compareTo)).toStrictEqual(`LIKE '%$${compareTo.parameterIndexes[0]! + 1}%'`);
 	});
 
 	test('starts_with', () => {
-		const randomIndexes = [randomInteger(1, 10)];
-		expect(getComparison('starts_with', randomIndexes)).toStrictEqual(`LIKE '$${randomIndexes[0]! + 1}%'`);
+		expect(getComparison('starts_with', compareTo)).toStrictEqual(`LIKE '$${compareTo.parameterIndexes[0]! + 1}%'`);
 	});
 
 	test('ends_with', () => {
-		const randomIndexes = [randomInteger(1, 10)];
-		expect(getComparison('ends_with', randomIndexes)).toStrictEqual(`LIKE '%$${randomIndexes[0]! + 1}'`);
+		expect(getComparison('ends_with', compareTo)).toStrictEqual(`LIKE '%$${compareTo.parameterIndexes[0]! + 1}'`);
 	});
 
 	test('in', () => {
-		const randomIndexes = [randomInteger(1, 10), randomInteger(1, 10)];
+		compareTo = {
+			type: 'value',
+			parameterIndexes: [randomInteger(1, 10), randomInteger(1, 10)],
+		};
 
-		expect(getComparison('in', randomIndexes)).toStrictEqual(
-			`IN ($${randomIndexes[0]! + 1}, $${randomIndexes[1]! + 1})`
+		expect(getComparison('in', compareTo)).toStrictEqual(
+			`IN ($${compareTo.parameterIndexes[0]! + 1}, $${compareTo.parameterIndexes[1]! + 1})`
 		);
 	});
 });
