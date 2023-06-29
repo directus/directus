@@ -1,5 +1,5 @@
 {
-	"extends": ["@directus/tsconfig/node18-esm.json", "@vue/tsconfig/tsconfig.dom.json"],
+	"extends": "@vue/tsconfig/tsconfig.dom.json",
 	"compilerOptions": {
 		"lib": ["esnext", "dom", "dom.iterable"]
 	},
