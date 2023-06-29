@@ -14,10 +14,10 @@ layout: home
 </script>
 
 <section class="hero padding-box">
-  <div class="section-container section-padding--hero flex">
-    <div class="hero-content">
+  <div class="section-container flex">
+    <div class="hero-content section-padding--hero">
       <p class="hero-badge">Resource Hub</p>
-      <h1 class="m-20 ">Directus Documentation</h1>
+      <h1 class="m-20">Directus Documentation</h1>
       <p class="m-20">
        Explore our resources and powerful data engine to build your projects confidently.
       </p>
