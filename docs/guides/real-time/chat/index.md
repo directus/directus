@@ -1,7 +1,6 @@
 ---
-description: Find various tutorials on building a real-time multi-user chat. 
+description: Find various tutorials on building a real-time multi-user chat.
 ---
-
 
 # Build a Multi-User Chat
 

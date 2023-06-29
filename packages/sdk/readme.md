@@ -45,8 +45,8 @@ See [the docs](https://docs.directus.io/reference/sdk/) for a full usage referen
 
 The following `pnpm` scripts are available:
 
-- `pnpm lint` – Lint the code using Eslint / Prettier
-- `pnpm test` – Run the unit tests
+- `pnpm lint` – Lint the code using Eslint / Prettier
+- `pnpm test` – Run the unit tests
 
 Make sure that both commands pass locally before creating a Pull Request.
 
