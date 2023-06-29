@@ -24,17 +24,16 @@ In this guide, we'll cover some best practices for keeping your Directus Headles
 
 Directus makes it super easy to share your content with our REST and GraphQL APIs.
 
-The Public role within [Roles and Permissions](/app/users-roles-permissions#roles) defines what content is
-available without authentication. To be safe, all permissions are turned off by default. This means that no data is
-available via the API without providing a proper [access token](/reference/authentication#access-tokens). Your use case
-may allow all data to be public, but it may instead require restricted access.
+The Public role within [Roles and Permissions](/app/users-roles-permissions#roles) defines what content is available
+without authentication. To be safe, all permissions are turned off by default. This means that no data is available via
+the API without providing a proper [access token](/reference/authentication#access-tokens). Your use case may allow all
+data to be public, but it may instead require restricted access.
 
 **If you do want to make data public, we recommend these guidelines.**
 
 - On your public role, only enable read access.
-- Consider defining a
-  [Custom Permission](/app/users-roles-permissions/permissions#configure-custom-permissions) for read
-  operations to control which items are available and which fields within those items consumers can see.
+- Consider defining a [Custom Permission](/app/users-roles-permissions/permissions#configure-custom-permissions) for
+  read operations to control which items are available and which fields within those items consumers can see.
 
   ![The custom permissions interface for the Public role is displayed. The Item Permissions table is active and one Rule is active - "Status" Equals "Published".](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/custom-permissions.webp)
 

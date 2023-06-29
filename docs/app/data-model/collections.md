@@ -59,9 +59,9 @@ each system collection is responsible for, as well as where to find relevant App
 | Revisions         | Revisions are changes/edits made to Items. Directus keeps track of edits made, so you're able to revert to a previous state at will. | [Revert an Item](/user-guide/content-module/content/items#revert-an-item)         | [Revisions](/reference/system/revisions)         |
 | Roles             | Stores information about each role created.                                                                                          | [Users, Roles, and Permissions](/app/users-roles-permissions)                     | [Roles](/reference/system/roles)                 |
 | Sessions          | Stores information about each user session, for system purposes.                                                                     | **N/A**                                                                           | **N/A**                                          |
-| Settings          | Stores all configurations made within **Settings > Project Settings**.                                                               | [Project Settings](/user-guide/cloud/project-settings)                                         | [settings](/reference/system/settings)           |
-| Shares            | Stores all information regarding data shares.                                                                                        | [Data Sharing](/user-guide/content-module/content/shares)                                               |                                                  |
-| Users             | Stores information about each user within the platform.                                                                              | [User Directory](/user-guide/user-management/user-directory)                                             | [Users](/reference/system/relations)             |
+| Settings          | Stores all configurations made within **Settings > Project Settings**.                                                               | [Project Settings](/user-guide/cloud/project-settings)                            | [settings](/reference/system/settings)           |
+| Shares            | Stores all information regarding data shares.                                                                                        | [Data Sharing](/user-guide/content-module/content/shares)                         |                                                  |
+| Users             | Stores information about each user within the platform.                                                                              | [User Directory](/user-guide/user-management/user-directory)                      | [Users](/reference/system/relations)             |
 | Webhooks          | Stores all information about configured webhooks.                                                                                    | [Webhooks](/app/webhooks)                                                         | [Webhooks](/reference/system/relations)          |
 
 ## Create a Collection
@@ -132,8 +132,9 @@ To toggle whether a collection is hidden by default in the Content Module, follo
 
 :::tip
 
-Assuming a user has [access permissions](/user-guide/user-management/users-roles-permissions), hidden collections can still be viewed. They
-must right-click on the Navigation Bar and choose <span mi icon>visibility</span> **Show Hidden Collections**.
+Assuming a user has [access permissions](/user-guide/user-management/users-roles-permissions), hidden collections can
+still be viewed. They must right-click on the Navigation Bar and choose <span mi icon>visibility</span> **Show Hidden
+Collections**.
 
 :::
 
@@ -225,17 +226,17 @@ These controls allow you to modify how the collection is displayed within the Co
 - **Hidden** — Toggle whether the collection should be globally hidden in the other app modules, even for admin users.
   You cannot hide collections for admins via permissions like other roles, so this comes in handy to tidy up the Content
   Module.
-- **Singleton** — Toggle to bypass the [Collection Page](/user-guide/content-module/content/collections) and take users to the
-  [Item Details Page](/user-guide/content-module/content/items).
+- **Singleton** — Toggle to bypass the [Collection Page](/user-guide/content-module/content/collections) and take users
+  to the [Item Details Page](/user-guide/content-module/content/items).
 - **Collection Naming Translations** — Translate the collection name across multiple languages. When the default
   language is changed in [Project Settings](/user-guide/cloud/project-settings#general) or
-  [User Details Page]( /user-guide/user-management/user-directoryy#user-details-page), the relevant translation, if any exists, will be used
-  throughout the app.
+  [User Details Page](/user-guide/user-management/user-directoryy#user-details-page), the relevant translation, if any
+  exists, will be used throughout the app.
 
 :::tip Collection Naming Translations
 
-By default, Directus uses the [Title Formatter](/user-guide/overview/glossary#title-formatter) to display collection keys as
-human readable names, but you can also use translations to explicitly rename more technical table keys.
+By default, Directus uses the [Title Formatter](/user-guide/overview/glossary#title-formatter) to display collection
+keys as human readable names, but you can also use translations to explicitly rename more technical table keys.
 
 :::
 
@@ -289,9 +290,10 @@ filtered out. This gives you the flexibility to manage archived items however yo
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/manually-sort-items-20220415A.mp4" type="video/mp4" />
 </video>
 
-The sort feature enables users to [manually sort Items](/user-guide/content-module/content/collections#manually-sort-items) within the Data
-Studio. This is typically shown on the **Content Module > Collection Page**. It can also be used for sorting items
-within [Junction Collections](/user-guide/overview/glossary#junction-collections). A standard field, configured with an
+The sort feature enables users to
+[manually sort Items](/user-guide/content-module/content/collections#manually-sort-items) within the Data Studio. This
+is typically shown on the **Content Module > Collection Page**. It can also be used for sorting items within
+[Junction Collections](/user-guide/overview/glossary#junction-collections). A standard field, configured with an
 `INTEGER` data type, is required. As shown in the video, fields which cannot serve as sort fields will be grayed out and
 unselectable in the Sort Field dropdown.
 

@@ -1,10 +1,8 @@
-const defaultRules = {
-	// No console statements in production
+const basicRules = {
+	// No console & debugger statements in production
 	'no-console': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
-	// No debugger statements in production
 	'no-debugger': process.env.NODE_ENV !== 'development' ? 'error' : 'off',
-	// Enforce prettier formatting
-	'prettier/prettier': 'error',
+	// Require empty line between certain statements
 	'padding-line-between-statements': [
 		'error',
 		{
@@ -36,66 +34,81 @@ const defaultRules = {
 		},
 		{ blankLine: 'any', prev: ['export', 'import'], next: ['export', 'import'] },
 	],
+	// Require empty line between class members
 	'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+	// Disallow nested ternary expressions
 	'no-nested-ternary': 'error',
+	// Require brace style for multi-line control statements
 	curly: ['error', 'multi-line'],
 };
 
+const tsRules = {
+	// Allow unused arguments and variables when they begin with an underscore
+	'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+	// Allow ts-directive comments (used to suppress TypeScript compiler errors)
+	'@typescript-eslint/ban-ts-comment': 'off',
+	// Allow usage of the any type (consider enabling this rule later on)
+	'@typescript-eslint/no-explicit-any': 'off',
+	// Allow usage of require statements (consider enabling this rule later on)
+	'@typescript-eslint/no-var-requires': 'off',
+	// Allow non-null assertions (consider enabling this rule later on)
+	'@typescript-eslint/no-non-null-assertion': 'off',
+};
+
+const vueRules = {
+	'vue/multi-word-component-names': 'off',
+	'vue/require-default-prop': 'off',
+};
+
+const getExtends = (configs = []) => [
+	// Enables a subset of core rules that report common problems
+	'eslint:recommended',
+	...configs,
+	// Turns off rules from other configs that are
+	// unnecessary or might conflict with Prettier
+	// (should always be the last entry in 'extends')
+	'prettier',
+];
+
+/** @type {import('eslint').Linter.Config} */
 module.exports = {
-	// Stop looking for ESLint configurations in parent folders
+	// Stop looking for other ESLint configurations in parent folders
 	root: true,
 	// Global variables: Browser and Node.js
 	env: {
 		browser: true,
 		node: true,
 	},
-	// Basic configuration for js files
-	plugins: ['@typescript-eslint', 'prettier'],
-	extends: ['eslint:recommended', 'prettier'],
-	rules: defaultRules,
+	// Basic configuration
+	extends: getExtends(),
+	rules: basicRules,
 	parserOptions: {
 		ecmaVersion: 2022,
 		sourceType: 'module',
 	},
+	reportUnusedDisableDirectives: true,
 	overrides: [
-		// Jest
-		{
-			files: ['**/*.test.js'],
-			env: {
-				jest: true,
-			},
-			plugins: ['jest'],
-			rules: defaultRules,
-		},
-		// Configuration for ts/vue files
+		// TypeScript & Vue files
 		{
 			files: ['*.ts', '*.vue'],
 			parser: 'vue-eslint-parser',
 			parserOptions: {
 				parser: '@typescript-eslint/parser',
 			},
-			extends: [
-				'plugin:vue/vue3-recommended',
-				'eslint:recommended',
+			plugins: ['@typescript-eslint'],
+			extends: getExtends([
+				// Recommended TypeScript rules for code correctness
 				'plugin:@typescript-eslint/recommended',
-				'prettier',
-			],
+				// Enables Vue plugin and recommended rules
+				'plugin:vue/vue3-recommended',
+			]),
 			rules: {
-				...defaultRules,
-				'vue/multi-word-component-names': 'off',
-				'vue/require-default-prop': 'off',
-				// It's recommended to turn off this rule on TypeScript projects
-				'no-undef': 'off',
-				// Allow ts-directive comments (used to suppress TypeScript compiler errors)
-				'@typescript-eslint/ban-ts-comment': 'off',
-				// Allow usage of the any type (consider to enable this rule later on)
-				'@typescript-eslint/no-explicit-any': 'off',
-				// Allow usage of require statements (consider to enable this rule later on)
-				'@typescript-eslint/no-var-requires': 'off',
-				// Allow non-null assertions for now (consider to enable this rule later on)
-				'@typescript-eslint/no-non-null-assertion': 'off',
-				// Allow unused arguments and variables when they begin with an underscore
-				'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+				// Disables core rules which are already handled by TypeScript and
+				// enables rules that make sense due to TS's typechecking / transpilation
+				// (fetched directly to enable it for Vue files too)
+				...require('@typescript-eslint/eslint-plugin').configs['eslint-recommended'].overrides[0].rules,
+				...tsRules,
+				...vueRules,
 			},
 		},
 	],

@@ -138,8 +138,8 @@ field will not be copied.
 </video>
 
 For users with any _non-admin_ role, a field's visibility can be adjusted via
-[access permissions](/app/users-roles-permissions). However, you may want to hide certain fields for admins
-as well. This is handy if the field is distracting or has no need to be seen on the item details page.
+[access permissions](/app/users-roles-permissions). However, you may want to hide certain fields for admins as well.
+This is handy if the field is distracting or has no need to be seen on the item details page.
 
 ## Adjust Field Width
 

@@ -4,6 +4,6 @@
 		"lib": ["es2022", "DOM"]
 	},
 	"typedocOptions": {
-        "entryPoints": ["./src/index.ts"]
-    }
+		"entryPoints": ["./src/index.ts"]
+	}
 }
