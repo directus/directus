@@ -29,9 +29,9 @@ Link to tutorial
 </video>
 
 Some projects may have dozens or even hundreds of collections, which can be overwhelming to sort through. To ease this
-problem, Admins can choose to
-[hide collections by default](/app/data-model/collections#toggle-collection-visibility) on the Navigation
-bar. Users can then show or hide hidden collections as desired. To toggle collection visibility, follow these steps.
+problem, Admins can choose to [hide collections by default](/app/data-model/collections#toggle-collection-visibility) on
+the Navigation bar. Users can then show or hide hidden collections as desired. To toggle collection visibility, follow
+these steps.
 
 1. Navigate to the Content Module.
 2. Right-click in the Navigation Bar.
@@ -87,8 +87,8 @@ and more. To Learn More, see our guide on [Filters](/user-guide/content-module/f
 Drag and drop Items to custom sort them as desired. This is only possible on certain Layouts, such as the default
 [Table Layout](/user-guide/content-module/layouts#table-layout). To sort a Collection's Items, follow these steps.
 
-1. Be sure [a sort field](/app/data-model/collections#sort-field) has been configured under **"Settings > Data
-   Model > Collection"**.\
+1. Be sure [a sort field](/app/data-model/collections#sort-field) has been configured under **"Settings > Data Model >
+   Collection"**.\
    _(Shown in the video)_
 2. Navigate to the Content Module and select the desired Collection.
 3. In the Sidebar, be sure a [Layout](#adjust-page-layout) is chosen that supports manual sorting.
@@ -132,8 +132,9 @@ Automatic sorting is a non-destructive action which does not change your data.
 </video>
 
 The no-code app allows you to hide archived Items, display them alongside other Items, or display archived Items only.
-To learn how to archive an Item, see our guide on the [Item Page](/user-guide/content-module/content/items#archive-an-item). To change whether
-an archived Item is displayed, follow these steps.
+To learn how to archive an Item, see our guide on the
+[Item Page](/user-guide/content-module/content/items#archive-an-item). To change whether an archived Item is displayed,
+follow these steps.
 
 1. Navigate to the Content Module and select the desired Collection.
 2. Click **"Archive"** in the Sidebar.

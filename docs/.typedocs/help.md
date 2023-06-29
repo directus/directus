@@ -6,7 +6,7 @@ To add packages to the Typedocs in the Docs, just follow these steps.
 
 1. In the package itself, add a TypeDoc config to the TSConfig file.
 
-```ts
+```diff
 {
 	"extends": "@directus/tsconfig/node18-esm.json",
 	"compilerOptions": {

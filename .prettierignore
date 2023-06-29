@@ -1,5 +1,8 @@
-dist
-coverage
-node_modules
+dist/
+coverage/
 pnpm-lock.yaml
-app/src/lang/translations/*.yaml
+**/.vitepress/cache/
+/.changeset/*.md
+/app/src/lang/translations/*.yaml
+!/app/src/lang/translations/en-US.yaml
+/docs/packages/

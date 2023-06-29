@@ -29,6 +29,6 @@
 	},
 	"include": ["./src/**/*.ts"],
 	"typedocOptions": {
-        "entryPoints": ["./src"]
-    }
+		"entryPoints": ["./src"]
+	}
 }

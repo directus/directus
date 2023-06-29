@@ -131,27 +131,22 @@ called `api`, which is an authenticated Axios instance. Here's an example of how
 <template>
 	<private-view title="Example Collection List">
 		<v-list>
-			<v-list-item v-for="col in collections" v-bind:key="col.collection">
+			<v-list-item v-for="col in collections" :key="col.collection">
 				{{ col.collection }}
 			</v-list-item>
 		</v-list>
-		<v-button v-on:click="logToConsole">Log collections to console</v-button>
+		<v-button @click="logToConsole">Log collections to console</v-button>
 	</private-view>
 </template>
 
 <script>
 export default {
+	inject: ['api'],
 	data() {
 		return {
 			collections: null,
 		};
 	},
-	methods: {
-		logToConsole: function () {
-			console.log(this.collections);
-		},
-	},
-	inject: ['api'],
 	mounted() {
 		// log the system field so you can see what attributes are available under it
 		// remove this line when you're done.
@@ -161,6 +156,11 @@ export default {
 		this.api.get('/collections?limit=-1').then((res) => {
 			this.collections = res.data.data;
 		});
+	},
+	methods: {
+		logToConsole: function () {
+			console.log(this.collections);
+		},
 	},
 };
 </script>

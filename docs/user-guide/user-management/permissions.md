@@ -26,8 +26,8 @@ To configure permissions programmatically, see our API documentation on [permiss
 To configure a role's access permissions, follow these steps.
 
 1. Navigate to **Settings > Roles & Permissions > [Role]** and scroll to **Permissions**.\
-   Each collection is a row. Its [CRUDS permissions](/user-guide/user-management/users-roles-permissions#directus-permissions) are
-   in columns.
+   Each collection is a row. Its [CRUDS permissions](/user-guide/user-management/users-roles-permissions#directus-permissions)
+   are in columns.
 2. Click the icon of the collection and permission type that you want to set and a tooltip will appear. If you'd like to
    adjust permissions for Directus system collections, then click **System Collections** to expand the menu and access
    these collections.
@@ -44,8 +44,8 @@ To configure a role's access permissions, follow these steps.
 
 ::: warning Admin Roles
 
-If you [configured the role's details](/user-guide/user-management/users-roles-permissions/roles#configure-role-details) to have
-**Admin Access**, permission configuration is disabled.
+If you [configured the role's details](/user-guide/user-management/users-roles-permissions/roles#configure-role-details)
+to have **Admin Access**, permission configuration is disabled.
 
 :::
 
@@ -62,9 +62,11 @@ To configure custom access permissions for a role, follow these steps.
 2. Configure custom access permission validations as desired. For each CRUDS permission, you will have one or more of
    the following sub-menus:
 
-   - **Item Permissions** — Set [filters](/user-guide/content-module/filters) to define items the role is granted permissions.
+   - **Item Permissions** — Set [filters](/user-guide/content-module/filters) to define items the role is granted
+     permissions.
    - **Field Permissions** — Toggle to limit which fields the role is granted permissions.
-   - **Field Validation** — Set [filters](/user-guide/content-module/filters) to define valid field values on create or update.
+   - **Field Validation** — Set [filters](/user-guide/content-module/filters) to define valid field values on create or
+     update.
    - **Field Presets** — Use JSON to set default field values on [create](/reference/items#create-an-item) or
      [update](/reference/items#update-an-item) of an item. The value will then appear on the item page, and can be
      overwritten if desired.
@@ -91,8 +93,9 @@ To grant or restrict all CRUDS permissions to a collection at once, follow these
 </video>
 
 This is only available when **App Access** is enabled when you
-[configure role details](/user-guide/user-management/users-roles-permissions/roles#configure-role-details). If you made any custom
-configurations to system collections, these will be reverted. To reset system permissions, follow these steps.
+[configure role details](/user-guide/user-management/users-roles-permissions/roles#configure-role-details). If you made
+any custom configurations to system collections, these will be reverted. To reset system permissions, follow these
+steps.
 
 1. Navigate to **Settings > Roles & Permissions > [Role]**.
 2. At the bottom of **Permissions**, click **System Collections** to show system collections.

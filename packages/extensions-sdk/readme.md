@@ -10,7 +10,8 @@ For more information about Directus, visit the [official website](https://direct
 
 ## License
 
-This package is licensed under the MIT License. See the [LICENSE](https://github.com/directus/directus/blob/main/packages/composables/license) file for more information.
+This package is licensed under the MIT License. See the
+[LICENSE](https://github.com/directus/directus/blob/main/packages/composables/license) file for more information.
 
 ## Additional Resources
 

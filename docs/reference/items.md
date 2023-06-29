@@ -491,13 +491,17 @@ DELETE /items/articles
 ```json
 // Array of primary keys
 [15, 16, 21]
+```
 
-// OR Object containing keys
+```json
+// Object containing keys
 {
 	"keys": [15, 16, 21]
 }
+```
 
-// OR Object containing query
+```json
+// Object containing query
 {
 	"query": {
 		"filter": {

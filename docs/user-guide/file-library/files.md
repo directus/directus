@@ -148,4 +148,3 @@ When a file is replaced, its existing info and all relationships are kept.
    - Drag a file from your desktop to the popup.
    - Click the popup area to manually select a file from your device.
    - Click <span mi icon>more_vert</span> in the popover and choose **"Import from URL"**.
-

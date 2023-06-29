@@ -36,5 +36,6 @@ An alert or notice interface to notify users of important information.
 
 - **Color**: `Primary`, `Normal`, `Info`, `Success`, `Warning`, `Danger`
 - **Icon**: Icon to display in the Notice.
-- **Text**: Enter your notice content. You can also use [Translation Strings](/user-guide/content-module/translation-strings.html) here
-  to provide notices in different languages.
+- **Text**: Enter your notice content. You can also use
+  [Translation Strings](/user-guide/content-module/translation-strings.html) here to provide notices in different
+  languages.

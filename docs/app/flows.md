@@ -298,7 +298,7 @@ You can also use dot-notation and array indexing to retrieve sub-nested values.
 
 You **cannot** pass any type of computation using double-moustache syntax.
 
-```js
+```json
 {
 	"key": "{{ 2 + 2 }}",
 	"key2": "{{ $trigger.payload.toLowerCase() }}"

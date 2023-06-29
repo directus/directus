@@ -208,10 +208,12 @@ class MyAuth extends IAuth {
 	async login() {
 		return { access_token: '', expires: 0 };
 	}
+
 	async logout() {}
 	async refresh() {
 		return { access_token: '', expires: 0 };
 	}
+
 	async static() {
 		return true;
 	}
@@ -245,7 +247,7 @@ If you want to use multiple instances of the SDK you should set a different [`pr
 The axios instance can be used for custom requests by calling:
 
 ```ts
-await directus.transport.<method>('/path/to/endpoint', {
+await directus.transport<method>('/path/to/endpoint', {
 	/* body, params, ... */
 });
 ```
@@ -285,9 +287,11 @@ class SessionStorage extends BaseStorage {
 	get(key) {
 		return sessionStorage.getItem(key);
 	}
+
 	set(key, value) {
 		return sessionStorage.setItem(key, value);
 	}
+
 	delete(key) {
 		return sessionStorage.removeItem(key);
 	}
@@ -388,21 +392,27 @@ class MyTransport extends ITransport {
 	async get(path, options) {
 		return this.buildResponse();
 	}
+
 	async head(path, options) {
 		return this.buildResponse();
 	}
+
 	async options(path, options) {
 		return this.buildResponse();
 	}
+
 	async delete(path, data, options) {
 		return this.buildResponse();
 	}
+
 	async post(path, data, options) {
 		return this.buildResponse();
 	}
+
 	async put(path, data, options) {
 		return this.buildResponse();
 	}
+
 	async patch(path, data, options) {
 		return this.buildResponse();
 	}
@@ -792,7 +802,9 @@ directus.comments;
 ### Create a comment
 
 ```js
-await directus.comments.create({...});
+await directus.comments.create({
+	// ...
+});
 ```
 
 ### Update a comment
@@ -828,13 +840,13 @@ await directus.collections.readAll(); //does not currently support query or sear
 ### Create a collection
 
 ```js
-await directus.collections.createOne({collection: 'articles', ...});
+await directus.collections.createOne({ collection: 'articles', /* ... */ });
 ```
 
 ### Create multiple collections
 
 ```js
-await directus.collections.createMany([{collection: 'articles', ...},...]);
+await directus.collections.createMany([{ collection: 'articles', /* ... */ }, /* ... */]);
 ```
 
 ### Update a collection
@@ -876,7 +888,7 @@ await directus.fields.readAll(); //does not currently support query or searching
 ### Create a field
 
 ```js
-await directus.fields.createOne(/* collection name */ 'articles', {field: 'alt_title', ...});
+await directus.fields.createOne(/* collection name */ 'articles', { field: 'alt_title', /* ... */ });
 ```
 
 ### Update a field
@@ -909,7 +921,7 @@ addition: import.
 In addition to the items common methods, the files property adds the import method for importing files.
 
 ```js
-directus.files.import(...);
+directus.files.import(/* ... */);
 ```
 
 See [API File Import](https://docs.directus.io/reference/files/#import-a-file)
@@ -945,15 +957,16 @@ if (form && form instanceof HTMLFormElement) {
 
 ```html
 <!-- index.html -->
-<head></head>
-<body>
-	<form id="upload-file">
-		<input type="text" name="title" />
-		<input type="file" name="file" />
-    	<button>Send</button>
-	</form>
-	<script src="/index.js" type="module"></script>
-</body>
+<html>
+	<head></head>
+	<body>
+		<form id="upload-file">
+			<input type="text" name="title" />
+			<input type="file" name="file" />
+			<button>Send</button>
+		</form>
+		<script src="/index.js" type="module"></script>
+	</body>
 </html>
 ```
 
@@ -972,14 +985,18 @@ const directus = new Directus('https://example.directus.app', {
 });
 
 const form = new FormData();
-form.append("file", fs.createReadStream("./to_upload.jpeg"));
+form.append('file', fs.createReadStream('./to_upload.jpeg'));
 
-await directus.files.createOne(form, {}, {
-  requestOptions: {
-    headers: {
-      ...form.getHeaders()
-    }
-  }
+await directus.files.createOne(
+	form,
+	{},
+	{
+		requestOptions: {
+			headers: {
+				...form.getHeaders(),
+			},
+		},
+	}
 );
 ```
 
