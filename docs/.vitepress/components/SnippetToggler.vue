@@ -99,7 +99,7 @@ const onPrefChange = (event: Event) => {
 }
 
 .snippet-toggler-header-lang-container:hover {
-	color: white;
+	color: var(--vp-c-gray-light-5);
 }
 
 .snippet-toggler-header-lang {
