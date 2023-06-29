@@ -7,5 +7,5 @@ pnpm-lock.yaml
 !/app/src/lang/translations/en-US.yaml
 /docs/packages/
 storybook-static/
-uploads/
-extensions/
+/api/uploads/
+/api/extensions/
