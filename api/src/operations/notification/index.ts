@@ -8,12 +8,14 @@ type Options = {
 	subject: string;
 	message?: unknown | null;
 	permissions: string; // $public, $trigger, $full, or UUID of a role
+	collection?: string;
+	item?: string;
 };
 
 export default defineOperationApi<Options>({
 	id: 'notification',
 
-	handler: async ({ recipient, subject, message, permissions }, { accountability, database, getSchema }) => {
+	handler: async ({ recipient, subject, message, permissions, collection, item }, { accountability, database, getSchema }) => {
 		const schema = await getSchema({ database });
 		let customAccountability: Accountability | null;
 
@@ -34,6 +36,8 @@ export default defineOperationApi<Options>({
 		});
 
 		const messageString = message ? optionToString(message) : null;
+		const collectionString = message ? optionToString(collection) : null;
+		const itemString = message ? optionToString(item) : null;
 
 		const payload = toArray(recipient).map((userId) => {
 			return {
@@ -41,6 +45,8 @@ export default defineOperationApi<Options>({
 				sender: customAccountability?.user ?? null,
 				subject,
 				message: messageString,
+				collection: collectionString,
+				item: itemString,
 			};
 		});
 
