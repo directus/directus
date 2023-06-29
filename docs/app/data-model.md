@@ -359,7 +359,7 @@ model design and configuration. The difference is that Directus handles all SQL,
 Studio which lets business users work with data in a human-friendly way.
 
 The Data Studio also offers features and functionalities to display and interact with your data intuitively. Once your
-data model is configured, the data is accessible across the other [modules](/getting-started/glossary#modules).
+data model is configured, the data is accessible across the other [modules](/user-guide/overview/glossary#modules).
 
 <!-- Data model configuration takes place across the following pages and menus:
 
@@ -401,8 +401,8 @@ Fields are database columns, but with a twist.
 Remember, SQL database columns store pure, raw data. From there, developers build out custom logic and UIs to determine
 how this data is displayed and interacted with. In Directus, fields encompass column configurations, as well as custom
 configuration over how to the data is displayed and interacted with in the Data Studio. Directus also has
-[alias fields](/getting-started/glossary#alias), which are virtual and do not match directly to a column. To learn more,
-see our guide on [fields](/app/data-model/fields).
+[alias fields](/user-guide/overview/glossary#alias), which are virtual and do not match directly to a column. To learn
+more, see our guide on [fields](/app/data-model/fields).
 
 ## Items
 
@@ -417,13 +417,13 @@ Unfortunately, normalized data is not always the easiest for people to imagine o
 spread across multiple data tables. Therefore, when you access an item, you may get more than just the current
 collection's row level-data, _in some cases an item may provide access to the data in related rows._
 
-You access items from other app modules, such as [Content](/app/content), [User Directory](/app/user-directory), and
-[File Library](/app/file-library).
+You access items from other app modules, such as [Content](/user-guide/content-module/content),
+[User Directory](/user-guide/user-management/user-directory), and [File Library](/user-guide/file-library/files).
 
 ## Data Type Superset
 
 Directus abstracts type differences between SQL vendors with a
-[Data Type Superset](/getting-started/glossary#data-type-superset).
+[Data Type Superset](/user-guide/overview/glossary#data-type-superset).
 
 ## Keys and IDs
 

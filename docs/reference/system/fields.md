@@ -7,7 +7,7 @@ pageClass: page-reference
 # Fields
 
 > Fields are individual pieces of content within an item. They are mapped to columns in the database.
-> [Learn more about Fields](/getting-started/glossary#fields).
+> [Learn more about Fields](/user-guide/overview/glossary#fields).
 
 ---
 
@@ -20,7 +20,7 @@ Name of the collection the field resides in.
 The identifier of the field. This matches the table column name.
 
 `type` **string**\
-The Directus data type of the field. See [Types](/getting-started/glossary#types) for possible options.
+The Directus data type of the field. See [Types](/user-guide/overview/glossary#types) for possible options.
 
 #### Meta
 

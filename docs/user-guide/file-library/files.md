@@ -22,17 +22,18 @@ This is a non-technical, no-code guide to the File Library Module. Please note t
 
 ::: tip Required Knowledge
 
-Familiarity with the [Collections Page](/app/content/collections) will be helpful but not necessary.
+Familiarity with the [Collections Page](/user-guide/content-module/content/collections) will be helpful but not
+necessary.
 
 :::
 
 The File Library acts as one big [Folder](#folders) to store all uploaded [Files](#files). Sub-folders can be created
 within the File Library to help Files stay organized. Folders and File information are stored in regular Collections,
-which means [User and Role access permissions](/app/users-roles-permissions) are fully configurable and granular on both
-Folders and Files. Multiple files can be uploaded at once through the app and also programmatically via the API. Any
-type of file can be uploaded, _not just images_. When a Folder is selected from the Navigation Bar, the
-[File Listing Page](#folders) is presented. This page has all the same features and functionalities as the
-[Collections Page](/app/content/collections).
+which means [User and Role access permissions](/user-guide/user-management/users-roles-permissions) are fully
+configurable and granular on both Folders and Files. Multiple files can be uploaded at once through the app and also
+programmatically via the API. Any type of file can be uploaded, _not just images_. When a Folder is selected from the
+Navigation Bar, the [File Listing Page](#folders) is presented. This page has all the same features and functionalities
+as the [Collections Page](/user-guide/content-module/content/collections).
 
 <video title="How the File Library Works" autoplay playsinline muted loop controls>
 	<source src="https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/how-it-works-20220305A.mp4" type="video/mp4"/>
@@ -55,7 +56,8 @@ type of file can be uploaded, _not just images_. When a Folder is selected from 
 
 When a file is clicked in the File Listing Page, the File Details Page appears. This is a custom form for viewing assets
 and embeds, with core Fields included out-of-the-box (see below), and the ability for Administrators to add additional
-custom Fields. This page has the same features and functionality as the [Item Page](/getting-started/glossary#items).
+custom Fields. This page has the same features and functionality as the
+[Item Page](/user-guide/overview/glossary#items).
 
 ![Files](https://cdn.directus.io/docs/v9/app-guide/file-library/file-library-20220305A/files-20220305A.webp)
 

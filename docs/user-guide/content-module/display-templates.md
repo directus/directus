@@ -16,8 +16,9 @@ readTime: 1 min read
 	<source src="https://cdn.directus.io/docs/v9/app-guide/display-templates/display-templates-20220523A/set-display-templates-20220523A.mp4" type="video/mp4" />
 </video>
 
-Display Templates can be found in various places all throughout the App, such as [Layout Options](/app/layouts) and the
-[List Panel](/app/insights#lists) in Insights. Display Templates are easy to setup, just follow these steps:
+Display Templates can be found in various places all throughout the App, such as
+[Layout Options](/user-guide/content-module/layouts) and the [List Panel](/user-guide/insights/dashboards#lists) in
+Insights. Display Templates are easy to setup, just follow these steps:
 
 - Click <span mi icon>add_box</span> to add a Field or relationally linked Field.
 - Type in any custom text as desired.

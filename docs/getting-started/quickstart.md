@@ -100,8 +100,8 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 
 :::tip Learn More About Items
 
-- [The Content Module](/app/content)
-- [The Item Page](/app/content/items)
+- [The Content Module](/user-guide/content-module/content)
+- [The Item Page](/user-guide/content-module/content/items)
 
 :::
 

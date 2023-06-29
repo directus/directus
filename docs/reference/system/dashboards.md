@@ -8,7 +8,7 @@ pageClass: page-reference
 
 > Dashboards within the Insights module organize different Panels into an at-a-glance view. They can be used to group
 > data based on department, objective, business process or anything you choose.
-> [Learn more about Dashboards](/app/insights).
+> [Learn more about Dashboards](/user-guide/insights/dashboards).
 
 ---
 

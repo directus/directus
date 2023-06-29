@@ -32,10 +32,10 @@ Teams.
 ## Getting Started
 
 To make life easy, you have the option to
-[create and login to your free Cloud Account](/cloud/accounts#create-account-and-login) automatically with GitHub. If
-you don't have a GitHub account or prefer not to use this login method, email-and-password login is available, as well.
-Once logged in, create a new Team or select an existing Team. Then you can access and manage the Team's associated
-Projects, billing details, Team Members, Activity and Settings.
+[create and login to your free Cloud Account](/user-guide/cloud/accounts#create-account-and-login) automatically with
+GitHub. If you don't have a GitHub account or prefer not to use this login method, email-and-password login is
+available, as well. Once logged in, create a new Team or select an existing Team. Then you can access and manage the
+Team's associated Projects, billing details, Team Members, Activity and Settings.
 
 <video alt="Cloud Dashboard Overview" loop muted controls autoplay playsinline>
   <source src="https://cdn.directus.io/docs/v9/cloud/overview/overview-20220322A/cloud-dashboard-overview-20220329A.mp4" type="video/mp4">
@@ -54,7 +54,7 @@ layout relates to each of these components:
 - <span mi icon>help_outline</span> — Documentation, Community Support and Request for Premium Support.
 - <span mi icon>expand_more</span> — [Create new Teams](/user-guide/cloud/teams#create-a-team) and navigate between
   Teams you are on.
-- <span mi icon>account_circle</span> — [Access, edit or destroy Account](/cloud/accounts).
+- <span mi icon>account_circle</span> — [Access, edit or destroy Account](/user-guide/cloud/accounts).
 
 ## Teams
 
