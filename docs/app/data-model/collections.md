@@ -231,7 +231,7 @@ These controls allow you to modify how the collection is displayed within the Co
   to the [Item Details Page](/user-guide/content-module/content/items).
 - **Collection Naming Translations** — Translate the collection name across multiple languages. When the default
   language is changed in [Project Settings](/user-guide/cloud/project-settings#general) or
-  [User Details Page](/user-guide/user-management/user-directoryy#user-details-page), the relevant translation, if any
+  [User Details Page](/user-guide/user-management/user-directory#user-details-page), the relevant translation, if any
   exists, will be used throughout the app.
 
 :::tip Collection Naming Translations

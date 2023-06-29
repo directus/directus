@@ -73,8 +73,7 @@ details, follow these steps.
 
 Roles with _App Access_ enabled are created with the minimum permissions required to login to the app and access their
 own profile information. Roles that have neither _Admin_ nor _App Access_ enabled are created with public permissions.
-You can always
-[reconfigure permissions](/user-guide/user-management/users-roles-permissions/permissions#configure-permissions) later.
+You can always [reconfigure permissions](/user-guide/user-management/permissions#configure-permissions) later.
 
 :::
 
@@ -94,7 +93,7 @@ To delete a role, follow these steps.
 
 If you delete a role that still has users in it, those users will be given a `NULL` role, which limits them to public
 permissions. However, you can always
-[assign them a new role](/user-guide/user-management/users-roles-permissions/users#assign-role-to-existing-user).
+[assign them a new role](/user-guide/user-management/users#assign-role-to-existing-user).
 
 :::
 

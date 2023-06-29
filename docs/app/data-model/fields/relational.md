@@ -33,8 +33,8 @@ This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many
 added to the [Data Model](/app/data-model) for your [Collection](/app/data-model/collections).
 
 - **Folder**: Folder for the uploaded files. Does not affect the location of existing files.
-- [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
-  places in the App Studio.
+- [**Display Template**](/user-guide/content-module/display-templates): Fields or custom text that represent the
+  specific item through various places in the App Studio.
 - **Creating Items**: Allow users to upload new files.
 - **Selecting Items**: Allow users to select existing files.
 - **Per Page**: The number of Items to show per page.
@@ -101,8 +101,8 @@ the same collection.
 The Tree View interface is only available on self-referencing (recursive) relationships. See
 [Many-to-Any (O2M) Relationships](/app/data-model/relationships#many-to-any-m2a).
 
-- [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
-  places in the App Studio.
+- [**Display Template**](/user-guide/content-module/display-templates): Fields or custom text that represent the
+  specific item through various places in the App Studio.
 - **Creating Items**: Allow users to create new Items in the collection.
 - **Selecting Items**: Allow users to select existing files in the collection.
 - **Filter**: [Filter Rule](/reference/filter-rules) to filter down the list of Items a user can select.
@@ -116,8 +116,8 @@ collection.
 
 See [Many-to-One (M20) Relationships](/app/data-model/relationships#many-to-one-m2o)
 
-- [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
-  places in the App Studio.
+- [**Display Template**](/user-guide/content-module/display-templates): Fields or custom text that represent the
+  specific item through various places in the App Studio.
 - **Creating Items**: `Enable Create Button`
 - **Selecting Items**: `Enable Select Button`
 - **Filter**: [Filter Rule](/reference/filter-rules) to filter down the list of Items a user can select.

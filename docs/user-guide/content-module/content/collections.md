@@ -179,7 +179,7 @@ To learn more, see our guide on [Presets and Bookmarks](/user-guide/settings/pre
 The Content, User Directory and File Library modules allow importing and exporting of multiple Items stored as files.
 This makes it quick and easy to handle tasks like uploading and downloading new customer information; pulling down sales
 data for transformation, reports, analysis, and beyond. To learn more, see how to
-[Import and Export Items](/app/import-export) in file format.
+[Import and Export Items](/user-guide/content-module/import-export) in file format.
 
 ## Batch Delete, Archive or Edit Items
 

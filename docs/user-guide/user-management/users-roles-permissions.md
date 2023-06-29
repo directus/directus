@@ -117,9 +117,9 @@ It is common to have multiple, complex business rules in a project.
 While you have full reign to configure these using SQL, Directus also provides a complete system to configure and manage
 users, roles, and permissions without writing a single line of SQL. The process has three key steps.
 
-1. [Create a Role](/user-guide/user-management/users-roles-permissions/roles#create-a-role)
-2. [Configure its Permissions](/user-guide/user-management/users-roles-permissions/permissions#configure-role-permissions)
-3. [Assign Role to User](/user-guide/user-management/users-roles-permissions/roles#assign-role-to-user)
+1. [Create a Role](/user-guide/user-management/roles#create-a-role)
+2. [Configure its Permissions](/user-guide/user-management/permissions#configure-role-permissions)
+3. [Assign Role to User](/user-guide/user-management/roles#assign-role-to-user)
 
 :::tip No Artificial Limits
 
@@ -142,7 +142,7 @@ optional. You may configure your own system as desired.
 Within the Data Studio, users are managed within the [User Directory](/user-guide/user-management/user-directory).
 However, there are some controls available to assign users to roles in **Settings > Roles and Permissions**.
 
-To learn more, please see our guide on [users](/user-guide/user-management/users-roles-permissions/users).
+To learn more, please see our guide on [users](/user-guide/user-management/users).
 
 ## Directus Roles
 
@@ -158,7 +158,7 @@ The public role comes with all access permissions turned off by default, but thi
 Remember, any access permissions granted to this role will apply to everyone, including unauthenticated web traffic _and
 all existing users_. If you wish to keep the project private, simply keep all permissions turned off.
 
-To learn more, see our guide on [roles](/user-guide/user-management/users-roles-permissions/roles).
+To learn more, see our guide on [roles](/user-guide/user-management/roles).
 
 ## Directus Permissions
 
@@ -169,13 +169,13 @@ Directus offers an extremely granular, yet easy to configure permissions system.
 as desired.
 
 There are two other key points to note about Directus. First, the term
-[custom access permissions](/user-guide/user-management/users-roles-permissions/permissions#configure-custom-permissions)
-is used in place of [business rules](#business-rules), however the concept is the same. Second, instead of the standard
-CRUD permissions, Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of
-permission, share, defines whether a user has permissions to perform
-[data sharing](/user-guide/content-module/content/shares) on items in a collection.
+[custom access permissions](/user-guide/user-management/permissions#configure-custom-permissions) is used in place of
+[business rules](#business-rules), however the concept is the same. Second, instead of the standard CRUD permissions,
+Directus provides CRUDS permissions: _create, read, update, delete, and share_. This _fifth_ type of permission, share,
+defines whether a user has permissions to perform [data sharing](/user-guide/content-module/content/shares) on items in
+a collection.
 
-To learn more, see our guide on [permissions](/user-guide/user-management/users-roles-permissions/permissions).
+To learn more, see our guide on [permissions](/user-guide/user-management/permissions).
 
 ## Workflows
 
