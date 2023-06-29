@@ -887,7 +887,7 @@ interface_group_relational: Relacijski
 interface_group_presentation: Prezentacija
 interface_group_groups: Grupe
 interface_group_other: Drugo
-tooltip: Tooltip
+tooltip: Kratka Poruka
 tooltip_placeholder: Unesite tooltip...
 unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
@@ -1013,7 +1013,7 @@ page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazu
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
 page_help_settings_flows_collection: '**Pregledaj tokove** — Popisuje sve tokove unutar projekta.'
 page_help_settings_flows_item: '**Detalji toka** — Radni prostor za upravljanje jednom ili više operacija.'
-page_help_settings_translations_collection: '**Pregledaj Prilagođene Prijevode** — Prikazuje popis svih prilagođenih prijevoda unutar projekta.'
+page_help_settings_translations_collection: '**Pregledaj Prilagođene Prijevode** — Prikazuje popis svih prilagođenih prijevoda u projektu.'
 page_help_settings_translations_item: '**Detalji Prilagođenih Prijevoda** — Obrazac za pregledavanje i upravljanje ovom stavkom.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
 page_help_users_item: >-
@@ -1712,7 +1712,7 @@ interfaces:
     description: Unesite običan tekst u više redaka
   input-translated-string:
     input-translated-string: Prevedeni nizovi
-    description: Odaberi ili dodaj prijevodni niz
+    description: Odaberite ili dodajte prilagođeni prijevod
     search_placeholder: Traži...
     new_custom_translation: Novi Prilagođeni Prijevod
   boolean:
@@ -1753,7 +1753,7 @@ interfaces:
     imageToken_label: Statički pristupni token se dodaje URL-u
   input-block-editor:
     input-block-editor: Uređivač Blokova
-    description: Uređivač u stilu blokova za obogaćene medijske priče, izlazni podaci u čistom JSON formatu koristeći Editor.js
+    description: Blok-stilizirani uređivač za obogaćene medijske priče, izlazni podaci u čistom JSON-u koristi Editor.js
     tools: Alatna traka
     tools_options:
       header: Zaglavlje
@@ -1964,7 +1964,7 @@ layouts:
   kanban:
     name: Kanban
     group_field: Grupiraj po
-    group_field_placeholder: Polje za grupiranje prema...
+    group_field_placeholder: Polje grupiranja prema...
     group_title: Naslov Grupe
     group_title_placeholder: Polje za naslove grupa...
     title: Naslov Kartice
@@ -1995,9 +1995,9 @@ vertical: Uspravno
 x_axis: X-Os
 y_axis: Y-Os
 y_axis_function: Funkcija Y-Osi
-show_x_only: Prikaži samo X-Os
-show_y_only: Prikaži samo Y-Os
-show_data_label: Prikaži Podatkovnu Oznaku
+show_x_only: Prikaži Samo X-Os
+show_y_only: Prikaži Samo Y-Os
+show_data_label: Prikaži Oznaku Podatka
 both: Oboje
 show_axis_labels: Prikaži Oznaku Osi
 function: Funkcija
@@ -2093,7 +2093,7 @@ triggers:
     item_only: Samo stranica stavki
     collection_page: Stranica Kolekcije
     require_selection: Zahtjeva Odabir
-a_flow_uuid: Odaberite tok "Flow" koji želite pokrenuti...
+a_flow_uuid: Odaberite Tok za pokretanje...
 any_string_or_json: Bilo koji string ili JSON...
 item_payload_placeholder: Ovo je JSON koji se koristi za ažuriranje vrijednosti polja stavke...
 operation_variables_note: Podacima o toku možete pristupiti pomoću varijabli kao što su **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, ili referencirajte prethodne operacije koristeći **{'{ '}{'{'}operation_key{'}'}{'}'}**.'
