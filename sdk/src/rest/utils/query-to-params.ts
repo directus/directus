@@ -7,10 +7,9 @@ import type { Query } from '../../types/index.js';
  *
  * @returns Flat query parameters
  */
-export const queryToParams = <Schema extends object, Item extends object>(
-	query: Query<Schema, Item>
-): Record<string, string> => {
+export const queryToParams = <Schema extends object, Item>(query: Query<Schema, Item>): Record<string, string> => {
 	const params: Record<string, string> = {};
+	// TODO better type/value guarding
 
 	if (query.fields) {
 		type FieldItem = (typeof query.fields)[number];
@@ -34,6 +33,38 @@ export const queryToParams = <Schema extends object, Item extends object>(
 		};
 
 		params['fields'] = query.fields.flatMap((value) => walkFields(value)).join(',');
+	}
+
+	if (query.filter) {
+		params['filter'] = JSON.stringify(query.filter);
+	}
+
+	if (query.search) {
+		params['search'] = query.search;
+	}
+
+	if (query.sort) {
+		params['sort'] = query.sort.join(',');
+	}
+
+	if (query.limit) {
+		params['limit'] = String(query.limit);
+	}
+
+	if (query.offset) {
+		params['offset'] = String(query.offset);
+	}
+
+	if (query.page) {
+		params['offset'] = String(query.offset);
+	}
+
+	if (query.deep) {
+		params['deep'] = JSON.stringify(query.deep);
+	}
+
+	if (query.alias) {
+		params['alias'] = JSON.stringify(query.alias);
 	}
 
 	return params;

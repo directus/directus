@@ -7,12 +7,12 @@ export interface Query<Schema extends object, Item> {
 	fields?: QueryFields<Schema, Item> | undefined;
 	filter?: QueryFilter<Schema, Item> | undefined;
 	search?: string | undefined;
-	// sort?: QuerySort<Schema, Item> | undefined;
+	sort?: QuerySort<Schema, Item> | undefined;
 	limit?: number | undefined;
 	offset?: number | undefined;
 	page?: number | undefined;
-	// deep?: QueryDeep<Schema, Item> | undefined; 
-	// alias?: QueryAlias<Schema, Item> | undefined;
+	deep?: QueryDeep<Schema, Item> | undefined;
+	alias?: QueryAlias<Schema, Item> | undefined;
 }
 
 /**
@@ -150,29 +150,31 @@ type FilterOperatorsByType<T> = {
  * Query sort
  * TODO expand to relational sorting (same object notation as fields i guess)
  */
-// type QuerySort<_Schema extends object, Item> = {
-// 	[Field in keyof Item]: Field extends string ? Field | `-${Field}` : never;
-// }[keyof Item][];
+type QuerySort<_Schema extends object, Item> = {
+	[Field in keyof Item]: Field | `-${Field & string}`;
+}[keyof Item][];
 
-// /**
-//  * Deep filter object
-//  */
-// type QueryDeep<Schema extends object, Item> = RelationalFields<Schema, Item> extends never
-// 	? never
-// 	: {
-// 			[Field in RelationalFields<Schema, Item>]?: Query<Schema, Item[Field]> extends infer TQuery
-// 				? MergeObjects<
-// 						QueryDeep<Schema, Item[Field]>,
-// 						{
-// 							[Key in keyof Omit<TQuery, 'deep' | 'alias'> as `_${string & Key}`]: TQuery[Key];
-// 						}
-// 				  >
-// 				: never;
-// 	  };
+/**
+ * Deep filter object
+ */
+type QueryDeep<Schema extends object, Item> = RelationalFields<Schema, Item> extends never
+	? never
+	: {
+			[Field in RelationalFields<Schema, Item>]?: Query<Schema, Item[Field]> extends infer TQuery
+				? MergeObjects<
+						QueryDeep<Schema, Item[Field]>,
+						{
+							[Key in keyof Omit<TQuery, 'deep' | 'alias'> as `_${string & Key}`]: TQuery[Key];
+						}
+				  >
+				: never;
+	  };
 
-// type MergeObjects<A, B extends object> = A extends object ? A & B : never;
+type MergeObjects<A, B extends object> = A extends object ? A & B : never;
 
-// /**
-//  * Alias object
-//  */
-// type QueryAlias<_Schema extends object, Item> = Record<string, keyof Item>;
+/**
+ * Alias object
+ *
+ * TODO somehow include these aliases in the Field Types!!
+ */
+type QueryAlias<_Schema extends object, Item> = Record<string, keyof Item>;

@@ -18,14 +18,9 @@ export type CreateItemsOutput<
  * @returns Returns the item objects of the item that were created.
  */
 export const createItems =
-	<
-		Schema extends object,
-		Collection extends keyof Schema,
-		TQuery extends Query<Schema, Schema[Collection]>,
-		Item = Schema[Collection]
-	>(
+	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		items: Partial<Item>[],
+		items: Partial<Schema[Collection]>[],
 		query?: TQuery
 	): RestCommand<CreateItemsOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
