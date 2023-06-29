@@ -61,7 +61,6 @@ query {
 
 <template #sdk>
 
-<!-- prettier-ignore -->
 ```js
 await directus.items('articles').readOne(4, {
 	fields: [
