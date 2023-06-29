@@ -5,6 +5,14 @@ import type { ItemType, RelationalFields, RemoveRelationships } from './schema.j
  */
 export interface Query<Schema extends object, Item> {
 	fields?: QueryFields<Schema, Item> | undefined;
+	filter?: QueryFilter<Schema, Item> | undefined;
+	search?: string | undefined;
+	sort?: QuerySort<Schema, Item>;
+	limit?: number | undefined;
+	offset?: number | undefined;
+	page?: number | undefined;
+	deep?: QueryDeep<Schema, Item> | undefined; // todo
+	alias?: QueryAlias<Schema, Item> | undefined; // todo
 }
 
 /**
@@ -24,7 +32,7 @@ type QueryFieldsRelational<Schema extends object, Item> = {
 /**
  * Returns Item types that are available in the root Schema
  */
-export type ExtractItem<Schema extends object, Item extends object> = Extract<UnpackList<Item>, ItemType<Schema>>;
+type ExtractItem<Schema extends object, Item extends object> = Extract<UnpackList<Item>, ItemType<Schema>>;
 
 /**
  * Returns the relation type from the current item by key
@@ -40,7 +48,7 @@ type ExtractRelation<Schema extends object, Item extends object, Key> = Key exte
 /**
  * Flatten array types to their singular root
  */
-export type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
+type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
 
 /**
  * Returns true if the Fields has any nested field
@@ -93,3 +101,78 @@ export type ApplyQueryFields<Schema extends object, Item, Fields> = Item extends
 		  }
 		: never
 	: never;
+
+/**
+ * Filters
+ */
+export type QueryFilter<Schema extends object, Item> = {
+	[Field in keyof Item]?:
+		| (Field extends RelationalFields<Schema, Item> ? QueryFilter<Schema, Item[Field]> : never)
+		| FilterOperatorsByType<Item[Field]>;
+};
+
+/**
+ * All available filter operators
+ * TODO would love to filter this based on field type but thats not accurate enough in the schema atm
+ */
+type FilterOperatorsByType<T> = {
+	_eq?: T;
+	_neq?: T;
+	_gt?: T;
+	_gte?: T;
+	_lt?: T;
+	_lte?: T;
+	_in?: T[];
+	_nin?: T[];
+	_between?: [T, T];
+	_nbetween?: [T, T];
+	_contains?: T;
+	_ncontains?: T;
+	_starts_with?: T;
+	_istarts_with?: T;
+	_nstarts_with?: T;
+	_nistarts_with?: T;
+	_ends_with?: T;
+	_iends_with?: T;
+	_nends_with?: T;
+	_niends_with?: T;
+	_empty?: boolean;
+	_nempty?: boolean;
+	_nnull?: boolean;
+	_null?: boolean;
+	_intersects?: T;
+	_nintersects?: T;
+	_intersects_bbox?: T;
+	_nintersects_bbox?: T;
+};
+
+/**
+ * Query sort
+ * TODO expand to relational sorting (same object notation as fields i guess)
+ */
+type QuerySort<_Schema extends object, Item> = {
+	[Field in keyof Item]: Field extends string ? Field | `-${Field}` : never;
+}[keyof Item][];
+
+/**
+ * Deep filter object
+ */
+type QueryDeep<Schema extends object, Item> = RelationalFields<Schema, Item> extends never
+	? never
+	: {
+			[Field in RelationalFields<Schema, Item>]?: Query<Schema, Item[Field]> extends infer TQuery
+				? MergeObjects<
+						QueryDeep<Schema, Item[Field]>,
+						{
+							[Key in keyof Omit<TQuery, 'deep' | 'alias'> as `_${string & Key}`]: TQuery[Key];
+						}
+				  >
+				: never;
+	  };
+
+type MergeObjects<A, B extends object> = A extends object ? A & B : never;
+
+/**
+ * Alias object
+ */
+type QueryAlias<_Schema extends object, Item> = Record<string, keyof Item>;
