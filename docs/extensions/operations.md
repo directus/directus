@@ -92,7 +92,6 @@ options as properties and their respective already interpolated values. `context
 properties:
 
 - `services` — All API internal services.
-- `exceptions` — API exception objects that can be used to throw "proper" errors.
 - `database` — Knex instance that is connected to the current database.
 - `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables.

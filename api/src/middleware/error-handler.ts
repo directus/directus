@@ -1,10 +1,10 @@
-import { BaseException } from '@directus/exceptions';
+import { isDirectusError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import env from '../env.js';
-import { MethodNotAllowedException } from '../exceptions/index.js';
+import { ErrorCode, MethodNotAllowedError } from '../errors/index.js';
 import logger from '../logger.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
@@ -16,7 +16,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 
 	const errors = toArray(err);
 
-	if (errors.some((err) => err instanceof BaseException === false)) {
+	if (errors.some((err) => isDirectusError(err) === false)) {
 		res.status(500);
 	} else {
 		let status = errors[0].status;
@@ -40,7 +40,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 			};
 		}
 
-		if (err instanceof BaseException) {
+		if (isDirectusError(err)) {
 			logger.debug(err);
 
 			res.status(err.status);
@@ -49,12 +49,12 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 				message: err.message,
 				extensions: {
 					code: err.code,
-					...err.extensions,
+					...(err.extensions ?? {}),
 				},
 			});
 
-			if (err instanceof MethodNotAllowedException) {
-				res.header('Allow', err.extensions['allow'].join(', '));
+			if (isDirectusError(err, ErrorCode.MethodNotAllowed)) {
+				res.header('Allow', (err as InstanceType<typeof MethodNotAllowedError>).extensions.allowed.join(', '));
 			}
 		} else {
 			logger.error(err);

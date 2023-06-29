@@ -1,6 +1,6 @@
 # This compose file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
 # For production use see the docker compose file example in the docs:
-#     https://docs.directus.io/self-hosted/installation/docker/#docker-compose
+#     https://docs.directus.io/self-hosted/docker-guide.html#example-docker-compose
 #
 # ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #

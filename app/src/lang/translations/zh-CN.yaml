@@ -227,6 +227,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Date
 date_range: 时间段
+translation_key_placeholder: 请输入键...
 datetime: DateTime
 dateTime: DateTime
 precision: 精度
@@ -310,6 +311,7 @@ updated_on: 更新于
 updated_by: 更新，由
 primary_key: 主键
 foreign_key: 外键
+field_key: 字段键
 finish_setup: 完成安装
 dismiss: 关闭
 toggle_raw_editor: 切换原始编辑器
@@ -796,6 +798,7 @@ run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上
 run_flow: 运行流程
 run_flow_success: 流程 "{flow}" 运行成功
 field_name_placeholder: 输入字段名称...
+field_key_placeholder: 请输入字段键...
 trigger: 触发器
 trigger_options: 触发器选项
 view_trigger: 查看触发器
@@ -1743,6 +1746,7 @@ interfaces:
     imageToken: 静态访问令牌
     imageToken_label: 静态访问令牌已被附加到资源的 URL
   input-block-editor:
+    input-block-editor: 块编辑器
     description: 用于富媒体故事的块式编辑器，使用 Editor.js 以 JSON 格式输出干净的数据
     tools: 工具栏
     tools_options:

@@ -15,7 +15,7 @@ export abstract class AuthDriver {
 	 * Get user id for a given provider payload
 	 *
 	 * @param payload Any data that the user might've provided
-	 * @throws InvalidCredentialsException
+	 * @throws InvalidCredentialsError
 	 * @return User id of the identifier
 	 */
 	abstract getUserID(payload: Record<string, any>): Promise<string>;
@@ -25,7 +25,7 @@ export abstract class AuthDriver {
 	 *
 	 * @param user User information
 	 * @param password User password
-	 * @throws InvalidCredentialsException
+	 * @throws InvalidCredentialsError
 	 */
 	abstract verify(user: User, password?: string): Promise<void>;
 
@@ -34,7 +34,7 @@ export abstract class AuthDriver {
 	 *
 	 * @param _user User information
 	 * @param _payload Any data that the user might've provided
-	 * @throws InvalidCredentialsException
+	 * @throws InvalidCredentialsError
 	 * @returns Data to be stored with the session
 	 */
 	async login(_user: User, _payload: Record<string, any>): Promise<void> {
@@ -45,7 +45,7 @@ export abstract class AuthDriver {
 	 * Handle user session refresh
 	 *
 	 * @param _user User information
-	 * @throws InvalidCredentialsException
+	 * @throws InvalidCredentialsError
 	 */
 	async refresh(_user: User): Promise<void> {
 		return;
