@@ -4,7 +4,7 @@
 			<div class="article-img">
 				<img :src="img" alt="" />
 			</div>
-			<Tag :tag="tag" />
+			<Tag v-if="tag" :tag="tag" />
 			<h3 class="sub-headline article-heading">{{ title }}</h3>
 			<p class="m-6 text-muted">{{ desc }}</p>
 			<div v-if="author" class="m-6 gray">

@@ -4,7 +4,6 @@ layout: home
 
 <script setup>
 import Footer from "./.vitepress/components/home/Footer.vue"
-import SelfHosting from "./.vitepress/components/home/SelfHosting.vue"
 import Article from "./.vitepress/components/home/Article.vue"
 import Github from "./.vitepress/components/home/icons/Github.vue"
 import Divider from "./.vitepress/components/Divider.vue"
@@ -171,7 +170,7 @@ await directus.items('articles').readOne(4, {
 				Combine Directus with your favorite framework to create dynamic and efficient web applications
 			</p>
 		</div>
-		<div class="grid-3">
+		<div class="grid-3 m-60">
 			<Article
 				title="Build a Static Website with Nuxt.js"
 				tag="Nuxt.js"
@@ -183,7 +182,7 @@ await directus.items('articles').readOne(4, {
 				title="Set up Live Preview in a Next.js project"
 				tag="Next.js"
 				desc="By adding a preview URL, you can instantly see live changes made to your collection."
-				img="/assets/next-guide1.png"
+				img="/assets/next-guide.png"
 				url="/guides/headless-cms/live-preview/nextjs"
 			/>
 			<Article
@@ -198,8 +197,8 @@ await directus.items('articles').readOne(4, {
 </section>
 
 <section class="section-padding--md padding-box">
-	<div class="section-container flex">
-		<div class="header vp-doc max-width">
+	<div class="section-container section-container--sh">
+		<div class="header vp-doc header--sh">
 			<h2 class="sh-heading">
 				Self Hosted
 				<span style="white-space: nowrap">Directus</span>
@@ -208,23 +207,22 @@ await directus.items('articles').readOne(4, {
 				Learn how to run Directus on your own machine, customize settings, and deploy with confidence.
 			</p>
 		</div>
-		<div class="grid-2 m-20 ml-20">
-			<SelfHosting
-				class="m-20"
+		<div class="grid-2 m-60">
+			<Article
 				title="Get Started with Docker"
 				desc="Get up and running with our Docker Guide."
 				img="/assets/docker.png"
 				url="/self-hosted/docker-guide"
 			/>
-			<SelfHosting
-				class="m-20"
-				title="Config Options"
-				desc="A reference of all possible settings in your project."
-				img="/assets/config-options.png"
-				url="/self-hosted/config-options"
-			/>
-		</div>
-	</div>
+			<Article
+    			title="Config Options"
+    			desc="A reference of all possible settings in your project."
+    			img="/assets/config-options.png"
+    			url="/self-hosted/config-options"
+    		/>
+    	</div>
+    </div>
+
 </section>
 
 <div class="padding-box">
@@ -255,7 +253,7 @@ await directus.items('articles').readOne(4, {
 				</a>
 			</div>
 		</div>
-		<div class="grid-3">
+		<div class="grid-3 m-60">
 			<Card
 				h="3"
 				title="Request a Feature"

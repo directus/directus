@@ -165,16 +165,20 @@ a {
 	margin: 0 auto;
 }
 
-.m-20 {
-	margin: 20px 0;
+.m-6 {
+	margin: 6px 0;
 }
 
 .m-10 {
 	margin: 10px 0;
 }
 
-.m-6 {
-	margin: 6px 0;
+.m-20 {
+	margin: 20px 0;
+}
+
+.m-60 {
+	margin: 60px 0;
 }
 
 .ml-20 {
@@ -191,14 +195,23 @@ a {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 24px;
-	margin: 60px 0;
 }
 
-.max-width {
+.section-container--sh {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	gap: 48px;
+}
+
+.header--sh {
 	max-width: 420px;
 }
 
 @media only screen and (min-width: 768px) {
+	.header--sh {
+		align-self: center;
+	}
+
 	.sh-heading {
 		max-width: 10ch;
 	}
@@ -229,6 +242,16 @@ a {
 	.grid-2,
 	.grid-3 {
 		grid-template-columns: 1fr;
+	}
+
+	.section-container--sh {
+		display: block;
+	}
+
+	.header--sh {
+		text-align: center;
+		max-width: 680px;
+		margin: 0 auto;
 	}
 
 	.hero-content h1 {
