@@ -336,9 +336,11 @@ would find it easy to work with pinpoints on a map, yet find it nearly impossibl
 from raw latitude and longitude points stored as JSON.
 
 ```json
-"location": {
-  "lat": 36.088010,
-  "lng": 120.379771
+{
+	"location": {
+		"lat": 36.08801,
+		"lng": 120.379771
+	}
 }
 ```
 

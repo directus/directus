@@ -247,7 +247,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 			let addSpaceBefore = '';
 			let addSpaceAfter = '';
 
-			let htmlMatchIndex = newHTML.indexOf(match, lastMatchIndex);
+			const htmlMatchIndex = newHTML.indexOf(match, lastMatchIndex);
 			const charCodeBefore = newHTML.charCodeAt(htmlMatchIndex - 1);
 			const charCodeAfter = newHTML.charCodeAt(htmlMatchIndex + match.length);
 
@@ -265,9 +265,9 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 				addSpaceAfter = '&nbsp;';
 			}
 
-			let searchString = replaceSpaceBefore + match + replaceSpaceAfter;
+			const searchString = replaceSpaceBefore + match + replaceSpaceAfter;
 
-			let replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
+			const replacementString = `${addSpaceBefore}<mark class="preview" data-preview="${
 				props.items[match.substring(props.triggerCharacter.length)]
 			}" contenteditable="false">${match}</mark>${addSpaceAfter}`;
 
@@ -292,7 +292,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	lastMatchIndex = 0;
 
 	for (const match of matches ?? []) {
-		let matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
+		const matchIndex = input.value.innerText.indexOf(match, lastMatchIndex);
 		matchedPositions.push(matchIndex, matchIndex + match.length);
 		lastMatchIndex = matchIndex + match.length;
 	}

@@ -73,8 +73,7 @@ details, follow these steps.
 
 Roles with _App Access_ enabled are created with the minimum permissions required to login to the app and access their
 own profile information. Roles that have neither _Admin_ nor _App Access_ enabled are created with public permissions.
-You can always [reconfigure permissions](/app/users-roles-permissions/permissions#configure-permissions)
-later.
+You can always [reconfigure permissions](/app/users-roles-permissions/permissions#configure-permissions) later.
 
 :::
 

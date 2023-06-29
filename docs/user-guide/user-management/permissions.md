@@ -26,8 +26,7 @@ To configure permissions programmatically, see our API documentation on [permiss
 To configure a role's access permissions, follow these steps.
 
 1. Navigate to **Settings > Roles & Permissions > [Role]** and scroll to **Permissions**.\
-   Each collection is a row. Its [CRUDS permissions](/app/users-roles-permissions#directus-permissions) are
-   in columns.
+   Each collection is a row. Its [CRUDS permissions](/app/users-roles-permissions#directus-permissions) are in columns.
 2. Click the icon of the collection and permission type that you want to set and a tooltip will appear. If you'd like to
    adjust permissions for Directus system collections, then click **System Collections** to expand the menu and access
    these collections.
@@ -44,8 +43,8 @@ To configure a role's access permissions, follow these steps.
 
 ::: warning Admin Roles
 
-If you [configured the role's details](/app/users-roles-permissions/roles#configure-role-details) to have
-**Admin Access**, permission configuration is disabled.
+If you [configured the role's details](/app/users-roles-permissions/roles#configure-role-details) to have **Admin
+Access**, permission configuration is disabled.
 
 :::
 

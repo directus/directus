@@ -102,8 +102,8 @@ To keep things organized, we recommend that you namespace each collection with a
 
 ### Create the Rich Text Block
 
-1. [Create a new Collection](/app/data-model/collections#create-a-collection) named `block_richtext` and add
-   the following fields.
+1. [Create a new Collection](/app/data-model/collections#create-a-collection) named `block_richtext` and add the
+   following fields.
 
    ```md
    block_richtext
@@ -115,8 +115,8 @@ To keep things organized, we recommend that you namespace each collection with a
 
 ### Create the Hero Block
 
-2. [Create a new Collection](/app/data-model/collections#create-a-collection) named `block_hero` and add the
-   following fields.
+2. [Create a new Collection](/app/data-model/collections#create-a-collection) named `block_hero` and add the following
+   fields.
 
    ```md
    block_hero
@@ -133,8 +133,8 @@ To keep things organized, we recommend that you namespace each collection with a
 
 ### Create the Card Group Block
 
-1. [Create a new Collection](/app/data-model/collections#create-a-collection) named `block_cardgroup` and add
-   the following fields.
+1. [Create a new Collection](/app/data-model/collections#create-a-collection) named `block_cardgroup` and add the
+   following fields.
 
    ```md
    block_cardgroup
@@ -149,8 +149,8 @@ To keep things organized, we recommend that you namespace each collection with a
 
 ### Create the Pages Collection
 
-4. [Create a new Collection](/app/data-model/collections#create-a-collection) named `pages` and add the
-   following fields.
+4. [Create a new Collection](/app/data-model/collections#create-a-collection) named `pages` and add the following
+   fields.
 
    ```md
    pages
@@ -201,8 +201,7 @@ Mode option.
 ### Fetching Page Data From the APIs
 
 Next, you'll want to access these with the API. If you try to use `/items/pages` then `blocks` returns an array of IDs.
-Instead, you'll want to add a [field parameter](/reference/query#many-to-any-union-types) to get nested relational
-data.
+Instead, you'll want to add a [field parameter](/reference/query#many-to-any-union-types) to get nested relational data.
 
 :::tip
 
@@ -334,8 +333,8 @@ Directus returns for Many To Any (M2A) relationships.
 ### Check Your Permissions
 
 If you notice you aren't receiving the data that you expect,
-[check the Permissions settings](/app/users-roles-permissions/permissions#permissions) for your Public or
-chosen role. You'll have to enable Read access for each collection using in the Pages > Blocks Many-To-Any field.
+[check the Permissions settings](/app/users-roles-permissions/permissions#permissions) for your Public or chosen role.
+You'll have to enable Read access for each collection using in the Pages > Blocks Many-To-Any field.
 
 ### Use Typescript
 
@@ -343,15 +342,15 @@ We recommend adding types for each of your different collections to your fronten
 
 ### Organize Your Data Model with Folders
 
-Consider using [data model folders](/app/data-model/collections#create-a-folder) to keep things nicely
-organized and your collections easy to find.
+Consider using [data model folders](/app/data-model/collections#create-a-folder) to keep things nicely organized and
+your collections easy to find.
 
 ![In the data model settings, a folder is highlighted. It is named blocks. There is a caption that reads "Data Model Folders help you keep collections well-organized and easy to find."](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/reusable-page-components-folders.webp)
 
 ### Use Translations for Collection Names
 
-When [setting up Collections](/app/data-model/collections#collection-setup) within your data model, use the
-Collection Naming Translations to create names that easier for the Data Studio users to understand.
+When [setting up Collections](/app/data-model/collections#collection-setup) within your data model, use the Collection
+Naming Translations to create names that easier for the Data Studio users to understand.
 
 ![In the data model settings for the hero collection a section is highlighted. It reads "Collection naming translations" with a single item called "Hero".](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/reusable-page-components-translations.webp)
 

@@ -97,44 +97,47 @@ Using the [Directus JavaScript SDK](/reference/sdk) (preferred)
 
 ```js
 const articles = await directus.items('articles').readByQuery({
-  filter: {
-    _and: [
-      {
-        status: {
-          _eq: 'published',
-        },
-      },
-      {
-        date_published: {
-          _lte: '$NOW',
-        },
-      },
-    ],
-  },
+	filter: {
+		_and: [
+			{
+				status: {
+					_eq: 'published',
+				},
+			},
+			{
+				date_published: {
+					_lte: '$NOW',
+				},
+			},
+		],
+	},
 });
 ```
 
 Using the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) (JavaScript)
 
 ```js
-const response = await fetch('https://yourdirectusurl.com/items/articles?' + new URLSearchParams({
-		filter: {
-			_and: [
-				{
-					status: {
-						_eq: "published"
-					}
-				},
-				{
-					date_published: {
-						_lte: "$NOW"
-					}
-				},
-			]
-		}
-})
-const articles = await response.json()
+const response = await fetch(
+	'https://yourdirectusurl.com/items/articles?' +
+		new URLSearchParams({
+			filter: {
+				_and: [
+					{
+						status: {
+							_eq: 'published',
+						},
+					},
+					{
+						date_published: {
+							_lte: '$NOW',
+						},
+					},
+				],
+			},
+		})
+);
 
+const articles = await response.json();
 ```
 
 ## Final Tips

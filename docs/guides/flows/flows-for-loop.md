@@ -34,15 +34,14 @@ Sometimes you may have an array of data you'd like to iterate over and run opera
 have noticed that each operation in a flow executes just one time. Because of this, you can't create a "for-loop" within
 the operations of a single flow.
 
-However, to achieve a "for-loop", you can instead use the
-[trigger flow](/app/flows/operations#trigger-flow) operation to pass the data into an
-[another flow](/app/flows/triggers#another-flow) trigger. When this type of trigger receives an array as a
-Payload, the flow runs for each item in the array individually.
+However, to achieve a "for-loop", you can instead use the [trigger flow](/app/flows/operations#trigger-flow) operation
+to pass the data into an [another flow](/app/flows/triggers#another-flow) trigger. When this type of trigger receives an
+array as a Payload, the flow runs for each item in the array individually.
 
 :::tip
 
-Remember: for some use-cases, you can also iterate through data in a
-[Run Script](/app/flows/operations#run-script) operation.
+Remember: for some use-cases, you can also iterate through data in a [Run Script](/app/flows/operations#run-script)
+operation.
 
 :::
 
@@ -64,8 +63,7 @@ VIDEO IS OPTIONAL: delete if not needed
 
 ### Configure the Starting Flow
 
-1. Configure a [flow](/app/flows#configure-a-flow) a
-   [trigger flow](/app/flows/operations#trigger-flow) operation.
+1. Configure a [flow](/app/flows#configure-a-flow) a [trigger flow](/app/flows/operations#trigger-flow) operation.
 2. Under **Payload**, be sure to add the desired array.
 3. Save and exit the flow.
 
@@ -73,8 +71,7 @@ VIDEO IS OPTIONAL: delete if not needed
 
 Once your starting flow is configured as desired, follow these steps.
 
-1. [Create a flow](/app/flows#create-a-flow) using the
-   [another flow](/app/flows/triggers#another-flow) trigger.
+1. [Create a flow](/app/flows#create-a-flow) using the [another flow](/app/flows/triggers#another-flow) trigger.
 2. [Configure operations](/app/flows#configure-an-operation) as desired.
 
 ## Final Tips
@@ -86,8 +83,8 @@ First, you could simple let the "for-loop" flow process each element in the **Pa
 Second, you could also configure a **Response Body** in the trigger of your "for-loop" flow. The **Response Body** gets
 appended under the [trigger flow](/app/flows/operations#trigger-flow) operation in the starting flow.
 
-Third, you could add another [trigger flow](/app/flows/operations#trigger-flow) operation into the
-"for-loop" flow, to create complex flow chains. If you do this, just keep API performance in mind. If you configure a
-**Response Body**, the parent flow will halt execution until it receives **Response Body**.
+Third, you could add another [trigger flow](/app/flows/operations#trigger-flow) operation into the "for-loop" flow, to
+create complex flow chains. If you do this, just keep API performance in mind. If you configure a **Response Body**, the
+parent flow will halt execution until it receives **Response Body**.
 
 Good luck and have fun! :cook:

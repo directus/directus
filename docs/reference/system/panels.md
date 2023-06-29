@@ -291,18 +291,7 @@ type Mutation {
 
 ```graphql
 mutation {
-	create_panels_items(
-		data: [
-			{
-				"name": "My Panel",
-				"icon": "architecture"
-			},
-			{
-				"name": "Another Panel",
-				"icon": "person"
-			}
-		]
-	) {
+	create_panels_items(data: [{ name: "My Panel", icon: "architecture" }, { name: "Another Panel", icon: "person" }]) {
 		id
 		name
 	}
@@ -425,7 +414,7 @@ type Mutation {
 mutation {
 	update_panels_items(
 		ids: ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"]
-		data: { "color": "#6644FF" }
+		data: { color: "#6644FF" }
 	) {
 		id
 		name

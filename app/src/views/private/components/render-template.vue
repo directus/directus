@@ -62,12 +62,12 @@ const parts = computed(() =>
 		.map((part) => {
 			if (part.startsWith('{{') === false) return part;
 
-			let fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-			let fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
-			let fieldKeyAfter = fieldKey.split('.').slice(-1)[0];
+			const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+			const fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
+			const fieldKeyAfter = fieldKey.split('.').slice(-1)[0];
 
 			// Try getting the value from the item, return some question marks if it doesn't exist
-			let value = get(props.item, fieldKeyBefore);
+			const value = get(props.item, fieldKeyBefore);
 
 			return Array.isArray(value) ? handleArray(fieldKeyBefore, fieldKeyAfter) : handleObject(fieldKey);
 		})

@@ -133,7 +133,7 @@ field `status` that controls the published state.
 
    ```json
    {
-     "status": "published"
+   	"status": "published"
    }
    ```
 
@@ -141,20 +141,20 @@ field `status` that controls the published state.
 
    ```json
    {
-     "filter": {
-       "_and": [
-         {
-           "status": {
-             "_eq": "scheduled"
-           }
-         },
-         {
-           "date_published": {
-             "_lte": "$NOW"
-           }
-         }
-       ]
-     }
+   	"filter": {
+   		"_and": [
+   			{
+   				"status": {
+   					"_eq": "scheduled"
+   				}
+   			},
+   			{
+   				"date_published": {
+   					"_lte": "$NOW"
+   				}
+   			}
+   		]
+   	}
    }
    ```
 

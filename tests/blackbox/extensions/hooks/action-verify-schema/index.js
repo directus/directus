@@ -23,6 +23,7 @@ module.exports = function registerHooks({ action }) {
 				} else {
 					await database(logsCollection).insert({ key, value: '0' });
 				}
+
 				break;
 			case 'collections.update':
 				if (!data.keys[0].startsWith('test_collections_crud')) break;
@@ -34,6 +35,7 @@ module.exports = function registerHooks({ action }) {
 				} else {
 					await database(logsCollection).insert({ key, value: '0' });
 				}
+
 				break;
 			case 'collections.delete':
 				if (!data.payload[0].startsWith('test_collections_crud')) break;
@@ -45,6 +47,7 @@ module.exports = function registerHooks({ action }) {
 				} else {
 					await database(logsCollection).insert({ key, value: '0' });
 				}
+
 				break;
 		}
 	}
@@ -65,6 +68,7 @@ module.exports = function registerHooks({ action }) {
 					} else {
 						await database(logConnection).insert({ key, value: '0' });
 					}
+
 					break;
 				case 'fields.update':
 					if (data.keys[0] !== 'test_field') break;
@@ -76,6 +80,7 @@ module.exports = function registerHooks({ action }) {
 					} else {
 						await database(logConnection).insert({ key, value: '0' });
 					}
+
 					break;
 				case 'fields.delete':
 					if (data.payload[0] !== 'test_field') break;
@@ -87,6 +92,7 @@ module.exports = function registerHooks({ action }) {
 					} else {
 						await database(logConnection).insert({ key, value: '0' });
 					}
+
 					break;
 			}
 		}

@@ -50,7 +50,9 @@ file that can be imported later. Create a new directory called `lib` and a new f
 
 ```js
 import { Directus } from '@directus/sdk';
+
 const directus = new Directus('https://your-project-id.directus.app/');
+
 export default directus;
 ```
 
@@ -75,7 +77,7 @@ give Read access to the Global collection.
 
 Inside of the `app` directory, create a new file called `page.tsx` inside of it.
 
-```js
+```jsx
 import directus from 'lib/directus';
 
 async function getGlobals() {
@@ -110,7 +112,7 @@ Public role read access to the new collection. Create 3 items in the new collect
 Inside of `app`, create a new directory called `[slug]` with a file called `page.tsx`. This is a dynamic route, so a
 single file can be used for all of the top-level pages.
 
-```js
+```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
 
@@ -166,7 +168,7 @@ Create 3 items in the posts collection -
 
 Inside of the `app` directory, create a new subdirectory called `blog` and a new file called `page.tsx` inside of it.
 
-```js
+```jsx
 import directus from 'lib/directus';
 
 async function getPosts() {
@@ -174,6 +176,7 @@ async function getPosts() {
 		fields: ['slug', 'title', 'publish_date', 'author.name'],
 		sort: ['-publish_date'],
 	});
+
 	return posts.data;
 }
 
@@ -193,22 +196,24 @@ related `author` item.
 
 Update the returned HTML:
 
-```html
+```jsx
 <div>
-  <h1>Blog</h1>
-  <ul>
-    {posts.map(post => {
-      return (
-        <li key={post.slug}>
-          <a href={`/blog/${post.slug}`}>
-            <h2>{post.title}</h2>
-          </a>
-          <span>{post.publish_date} &bull; {post.author.name}</span>
-        </li>
-      )
-    })}
-  </ul>
-</div>
+	<h1>Blog</h1>
+	<ul>
+		{posts.map((post) => {
+			return (
+				<li key={post.slug}>
+					<a href={`/blog/${post.slug}`}>
+						<h2>{post.title}</h2>
+					</a>
+					<span>
+						{post.publish_date} &bull; {post.author.name}
+					</span>
+				</li>
+			);
+		})}
+	</ul>
+</div>;
 ```
 
 Visit `http://localhost:3000` and you should now see a blog post listing, with latest items first.
@@ -220,7 +225,7 @@ Visit `http://localhost:3000` and you should now see a blog post listing, with l
 Each blog post links to a page that does not yet exist. In the `app/blog` directory, create a new directory called
 `[slug]`, and within it a `page.tsx` file:
 
-```js
+```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
 
@@ -229,6 +234,7 @@ async function getPost(slug) {
 		const post = await directus.items('posts').readOne(slug, {
 			fields: ['*.*'],
 		});
+
 		return post;
 	} catch (error) {
 		notFound();
@@ -264,14 +270,14 @@ Click on any of the blog post links, and it will take you to a blog post page co
 While not strictly Directus-related, there are now several pages that aren't linked to each other. In `app/layout.tsx`,
 above the `{children}` rendering, add a navigation. Don't forget to use your specific page slugs.
 
-```html
+```jsx
 <nav>
-  <Link href="/">Home</Link>
-  <Link href="/about">About</Link>
-  <Link href="/conduct">Code of Conduct</Link>
-  <Link href="/privacy">Privacy Policy</Link>
-  <Link href="/blog">Blog</Link>
-</nav>
+	<Link href="/">Home</Link>
+	<Link href="/about">About</Link>
+	<Link href="/conduct">Code of Conduct</Link>
+	<Link href="/privacy">Privacy Policy</Link>
+	<Link href="/blog">Blog</Link>
+</nav>;
 ```
 
 ## Next Steps

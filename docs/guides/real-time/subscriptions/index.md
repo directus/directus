@@ -1,5 +1,5 @@
 ---
-description: "Learn how to get started with Directus real-time subscriptons."
+description: 'Learn how to get started with Directus real-time subscriptons.'
 ---
 
 # Real-Time Subscriptions

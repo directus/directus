@@ -46,6 +46,7 @@ function getRatingOption(rating: number) {
 async function handleSubmission(rating?: number) {
 	loading.value = true;
 	if (rating) feedback.rating = rating;
+
 	const body = {
 		id: feedback.id,
 		rating: feedback.rating,
@@ -53,6 +54,7 @@ async function handleSubmission(rating?: number) {
 		title: props.title,
 		url: props.url,
 	};
+
 	try {
 		const response = await fetch('/api/feedback', {
 			method: 'POST',
