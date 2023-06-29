@@ -4,7 +4,7 @@ import type { AbstractSqlQuery } from '../types.js';
 /**
  * Extracts the filer values and replaces it with parameter indexes.
  *
- * @param filter - all filter conditions 
+ * @param filter - all filter conditions
  * @param collection - the name of the collection
  * @param firstParameterIndex - The index of the parameter. Mandatory for all operators.
  * @param secondParameterIndex - The index of an additional parameter. Only needed for some operators like BETWEEN.
