@@ -24,6 +24,10 @@ export const convertFilter = (
 		throw new Error('Only primitives are currently supported.');
 	}
 
+	if (filter.operation === 'intersects' || filter.operation === 'intersects_bounding_box') {
+		throw new Error('The intersects operators are not yet supported.');
+	}
+
 	const parameterIndexes = [firstParameterIndex];
 
 	if (secondParameterIndex !== null) {

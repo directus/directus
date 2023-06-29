@@ -6,7 +6,7 @@ import type {
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test, beforeEach } from 'vitest';
 import { convertFilter } from './convert-filter.js';
-import type { AbstractSqlQueryConditionNode } from '../types.js';
+import type { AbstractSqlQueryWhereNode } from '../types.js';
 
 let sample: {
 	condition: AbstractQueryNodeCondition;
@@ -39,7 +39,7 @@ beforeEach(() => {
 });
 
 test('Convert filter with one parameter', () => {
-	const expectedWhere: AbstractSqlQueryConditionNode = {
+	const expectedWhere: AbstractSqlQueryWhereNode = {
 		type: 'condition',
 		negation: false,
 		target: {
@@ -63,7 +63,7 @@ test('Convert filter with one parameter', () => {
 test('Convert filter with one parameter and negation', () => {
 	sample.condition.negation = true;
 
-	const expectedWhere: AbstractSqlQueryConditionNode = {
+	const expectedWhere: AbstractSqlQueryWhereNode = {
 		type: 'condition',
 		negation: true,
 		target: {
