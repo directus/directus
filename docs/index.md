@@ -212,7 +212,7 @@ await directus.items('articles').readOne(4, {
 				title="Get Started with Docker"
 				desc="Get up and running with our Docker Guide."
 				img="/assets/docker.png"
-				url="/self-hosted/docker-guide"
+				url="/self-hosted/quickstart"
 			/>
 			<Article
     			title="Config Options"
