@@ -11,7 +11,7 @@ const activeTab = ref(props.tabs[0]);
 <template>
 	<div class="tabs">
 		<div role="tablist" class="tab-buttons">
-			<template v-for="tab in tabs">
+			<template v-for="tab in tabs" :key="tab">
 				<button
 					type="button"
 					role="tab"
@@ -24,8 +24,8 @@ const activeTab = ref(props.tabs[0]);
 			</template>
 		</div>
 		<div>
-			<template v-for="tab in tabs">
-				<div role="tabpanel" class="tab-content" v-if="activeTab === tab">
+			<template v-for="tab in tabs" :key="tab">
+				<div v-if="activeTab === tab" role="tabpanel" class="tab-content">
 					<slot :name="tab.toLowerCase().replaceAll(' ', '-')" />
 				</div>
 			</template>

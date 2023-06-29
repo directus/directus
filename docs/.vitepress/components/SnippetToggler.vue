@@ -7,14 +7,17 @@ const props = defineProps<{
 }>();
 
 const storageKey = 'toggler-value';
+
 const getStorageValue = () => {
 	const value = localStorage.getItem(storageKey);
 	return value || props.choices[0];
 };
+
 const setStorageValue = (value: string) => localStorage.setItem(storageKey, value);
 
 onMounted(() => {
 	const value = getStorageValue();
+
 	if (value) {
 		setStorageValue(value);
 	}
@@ -38,7 +41,7 @@ const onPrefChange = (event: Event) => {
 
 			<div class="snippet-toggler-header-lang-container">
 				<select class="snippet-toggler-header-lang" :value="pref" @change="onPrefChange">
-					<option v-for="choice in choices" :value="choice">
+					<option v-for="choice in choices" :key="choice" :value="choice">
 						{{ choice }}
 					</option>
 				</select>
@@ -55,7 +58,7 @@ const onPrefChange = (event: Event) => {
 		</div>
 
 		<div class="content-area">
-			<template v-for="choice in choices">
+			<template v-for="choice in choices" :key="choice">
 				<div v-if="choice === pref">
 					<slot :name="choice.toLowerCase()"></slot>
 				</div>

@@ -6,12 +6,12 @@ import Divider from '../Divider.vue';
 
 <script lang="ts">
 export default {
+	components: { SocialIcon },
 	data() {
 		return {
 			currentYear: new Date().getFullYear(),
 		};
 	},
-	components: { SocialIcon },
 };
 </script>
 
