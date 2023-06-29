@@ -286,16 +286,8 @@ type Mutation {
 mutation {
 	create_operations_items(
 		data: [
-			{
-				"name": "My Log",
-				"key": "my_log",
-				"type": "log"
-			},
-			{
-				"name": "Send Notification",
-				"key": "send_notification",
-				"type": "notification"
-			}
+			{ name: "My Log", key: "my_log", type: "log" }
+			{ name: "Send Notification", key: "send_notification", type: "notification" }
 		]
 	) {
 		id
@@ -549,7 +541,7 @@ POST /operations/trigger/:operation_uuid
 
 ##### Example
 
-```json
+```
 // POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122
 // Payload here
 ```

@@ -80,14 +80,6 @@ create_user: Vytvořit uživatele
 message: Zpráva
 delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
-create_translation_string: Vytvořit překlad
-no_translation_string: Žádné překlady
-no_translation_string_copy: Zatím neexistují žádné překlady.
-translation_string_key_placeholder: Textový klíč k překladu...
-translation_string_translations_placeholder: Přidat nový překlad
-edit_translation_string: Upravit překlad
-delete_translation_string_copy: >-
-  Opravdu chcete odstranit překlad "{key}"? Tuto akci nelze vrátit zpět.
 invite_users: Pozvat uživatele
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
@@ -118,13 +110,6 @@ public_label: Veřejný
 public_description: Určuje, která API data jsou dostupná bez ověřování.
 admin_description: Počáteční administrativní role s neomezeným přístupem k Aplikaci/API.
 not_allowed: Nepovoleno
-directus_version: Verze Directusu
-node_version: Node verze
-node_uptime: Doba provozu Node
-os_type: Typ OS
-os_version: Verze OS
-os_uptime: Dobra provozu operačního systému
-os_totalmem: Pamět OS
 archive: Archivovat
 archive_confirm: Skutečně chcete tuto položku archivovat?
 archive_confirm_count: >-
@@ -343,7 +328,7 @@ revision_delta_reverted: Vrácena
 revision_delta_update_message: Toto pole bylo aktualizováno, ale jeho hodnota je skryta z bezpečnostních důvodů.
 revision_delta_other: Revize
 revision_delta_by: '{date} od {user}'
-presentation_text_values_cannot_be_reimported: "Používá text prezentace, hodnoty nelze znovu importovat."
+presentation_text_values_cannot_be_reimported: 'Používá text prezentace, hodnoty nelze znovu importovat.'
 download_page_as_csv: 'Stáhnout stránku jako CSV'
 private_user: Soukromý uživatel
 creation_preview: Náhled vytvoření
@@ -483,7 +468,6 @@ enable_select_button: Povolit tlačítko Vybrat
 allow_duplicates: Povolit duplicity
 comments: Komentáře
 no_comments: Zatím bez komentářů
-click_to_expand: Kliknutím rozbalíte
 select_item: Vybrat položku
 no_items: Žádné položky
 search_items: Hledat položky...
@@ -927,7 +911,6 @@ settings_project: Nastavení projektu
 settings_webhooks: Webhooky
 settings_flows: Toky
 settings_presets: Předvolby a záložky
-settings_translation_strings: Překlady
 one_or_more_options_are_missing: Chybí jedna nebo více možností
 scope: Rozsah
 actions: Akce
@@ -977,7 +960,6 @@ page_help_settings_webhooks_collection: '**Procházet webhooky** — Zobrazuje v
 page_help_settings_webhooks_item: '**Detail webhooku** — Formulář pro tvorbu a správu webhooků projektu.'
 page_help_settings_flows_collection: '**Procházet toky** — Zobrazuje všechny toky v rámci projektu.'
 page_help_settings_flows_item: '**Detail toku** – Pracovní prostor pro správu jedné nebo více operací.'
-page_help_settings_translation_strings_collection: '**Procházet překlady** — Seznam všech překladů v rámci projektu.'
 page_help_users_collection: '**Uživatelé** — Zobrazuje všechny systémové uživatele v rámci tohoto projektu.'
 page_help_users_item: >-
   **Detaily uživatele** — Správa informací o Vašem účtu nebo zobrazení detailů ostatních uživatelů.
@@ -1237,6 +1219,7 @@ field_options:
     sort_field: Vyberte pole...
     accountability_divider: Odpovědnost
     duplication_divider: Duplikace
+    preview_divider: Náhled
   directus_files:
     title: Jedinečný název...
     description: Volitelný popis...
@@ -1294,6 +1277,8 @@ start_collapsed: Začít sbalený
 block: Blok
 inline: Řádek
 comment: Komentář
+live_preview:
+  new_window: Otevřít v novém okně
 shares: Sdílení
 unlimited_usage: Neomezené použití
 uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
@@ -1645,7 +1630,6 @@ interfaces:
     input-translated-string: Překlady
     description: Vyberte nebo přidejte překlad
     search_placeholder: Hledat...
-    new_translation_string: Nový překlad
   boolean:
     toggle: Přepínač
     description: Přepínání mezi zapnutím a vypnutím
@@ -1681,6 +1665,16 @@ interfaces:
     folder_note: Složka pro nahrané soubory. Nemá vliv na existující soubory.
     imageToken: Statický přístupový token
     imageToken_label: Statický přístupový token je připojen k URL aktiva
+  input-block-editor:
+    tools: Nástrojová lišta
+    tools_options:
+      header: Hlavička
+      nestedlist: Seznam
+      embed: Vložení
+      code: Kód
+      image: Obrázek
+      table: Tabulka
+      underline: Podtržení
   input-autocomplete-api:
     input-autocomplete-api: Vstup s našeptávačem (API)
     description: Vyhledávání typeahead pro externí hodnoty API.
@@ -1973,7 +1967,7 @@ operations:
     message: Zpráva
   request:
     name: Webhook / Request URL
-    description: "Poslat žádost na adresu URL"
+    description: 'Poslat žádost na adresu URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Metoda

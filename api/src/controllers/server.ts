@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { Router } from 'express';
-import { RouteNotFoundException } from '../exceptions/index.js';
+import { RouteNotFoundError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
@@ -37,7 +37,7 @@ router.get(
 
 		const scope = req.params['scope'] || 'items';
 
-		if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundException(req.path);
+		if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundError({ path: req.path });
 
 		const info = await serverService.serverInfo();
 		const result = await service.graphql.generate(scope as 'items' | 'system');

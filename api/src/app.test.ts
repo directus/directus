@@ -160,6 +160,7 @@ describe('createApp', async () => {
 					{
 						extensions: {
 							code: 'ROUTE_NOT_FOUND',
+							path: '/custom-endpoint-to-test',
 						},
 						message: `Route ${testRoute} doesn't exist.`,
 					},
@@ -197,6 +198,7 @@ describe('createApp', async () => {
 					{
 						extensions: {
 							code: 'ROUTE_NOT_FOUND',
+							path: '/this-route-does-not-exist',
 						},
 						message: `Route ${testRoute} doesn't exist.`,
 					},

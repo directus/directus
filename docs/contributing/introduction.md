@@ -20,22 +20,29 @@ harassing, insulting, or other unacceptable behavior by participants will not be
 
 ## Code Contributions
 
-Check out our docs providing an [overview to the codebase](/contributing/codebase-overview), how to [run Directus locally](/contributing/running-locally) for development, and how to [write and run tests](/contributing/tests).
+Check out our docs providing an [overview to the codebase](/contributing/codebase-overview), how to
+[run Directus locally](/contributing/running-locally) for development, and how to
+[write and run tests](/contributing/tests).
 
 ### Create a Pull Request
 
 The whole Directus project is open source, and community code contributions are always welcome! Fixing issues or
 implementing new features is an excellent way to contribute back to the platform.
 
-Please do make sure you read through [our Pull Request Process](/contributing/pull-request-process) before you start! That ensures you have the highest likelihood that your contribution will make it to the core codebase.
+Please do make sure you read through [our Pull Request Process](/contributing/pull-request-process) before you start!
+That ensures you have the highest likelihood that your contribution will make it to the core codebase.
 
 ## Community Contributions
 
-We love all kinds of [community contributions](/contributing/community), including making our online spaces as respectful and productive as possible, running in-person user groups throughout the world, or producing educational material to support developers in understanding and implementing Directus.
+We love all kinds of [community contributions](/contributing/community), including making our online spaces as
+respectful and productive as possible, running in-person user groups throughout the world, or producing educational
+material to support developers in understanding and implementing Directus.
 
 ## Sponsorship & Advocacy
 
-Directus requires significant resources to build and maintain, especially as our community rapidly grows. You can support the project by becoming a [GitHub Sponsor](https://github.com/sponsors/directus), by providing testimonials and reviews, and by sharing Directus with others. 
+Directus requires significant resources to build and maintain, especially as our community rapidly grows. You can
+support the project by becoming a [GitHub Sponsor](https://github.com/sponsors/directus), by providing testimonials and
+reviews, and by sharing Directus with others.
 
 ## Other Ways To Support Directus
 
@@ -43,8 +50,8 @@ Directus requires significant resources to build and maintain, especially as our
 
 If you have a great idea for an improvement of the platform, or any other feedback, please make sure to open a new
 discussion on [our GitHub Discussions board](https://github.com/directus/directus/discussions). Feature requests are
-reviewed and triaged according to our feature request workflow. For more information, please see our [process for handling feature requests](/contributing/feature-request-process).
-
+reviewed and triaged according to our feature request workflow. For more information, please see our
+[process for handling feature requests](/contributing/feature-request-process).
 
 ### Report a Bug
 

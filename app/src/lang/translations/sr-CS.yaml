@@ -80,14 +80,6 @@ create_user: Napravi korisnika
 message: Poruka
 delete_panel: Obriši Panel
 create_webhook: Napravi Webhook
-create_translation_string: Kreiraj String za Prevod
-no_translation_string: Nema Stringova za Prevod
-no_translation_string_copy: Još uvek nema Stringova za Prevod.
-translation_string_key_placeholder: Ključ stringa za prevod...
-translation_string_translations_placeholder: Dodaj prevod
-edit_translation_string: Izmeni String za Prevod
-delete_translation_string_copy: >-
-  Da li ste zigurni da želite da izbrišete String za Prevod "{key}"? Ova radnja se ne može opozvati.
 invite_users: Pozovi korisnike
 invite: Pozovi
 email_already_invited: Na ovu "{email}" adresu je već poslat poziv
@@ -117,13 +109,6 @@ logoutReason:
 public_label: Javno
 public_description: Kontroliše koji podaci sa API su dostupni bez potrebe za provjerom autentičnosti korisnika.
 not_allowed: Nije dozvoljeno
-directus_version: Directus verzija
-node_version: Node Verzija
-node_uptime: Node Aktivno vrijeme rada
-os_type: OS tip
-os_version: OS Verzija
-os_uptime: OS Aktivno vrijeme rada
-os_totalmem: OS Memorija
 archive: Arhiviraj
 archive_confirm: Da li ste sigurni da želite da arhivirate ovu stavku?
 archive_confirm_count: >-
@@ -388,7 +373,6 @@ selecting_items: Odabir stavki
 enable_select_button: Omogući Dugme za Odabir
 comments: Komentari
 no_comments: Nema komentara
-click_to_expand: Klikni za proširivanje
 select_item: Odaberi Stavku
 no_items: Nema stavki
 search_items: Pretraži Stavke...
@@ -888,6 +872,8 @@ save_current_datetime: Sačuvaj Trenutni Datum/Vrijeme
 block: Blok
 inline: Linijski
 comment: Komentar
+live_preview:
+  new_window: Otvori u Novom Prozoru
 relational_triggers: Relacioni Okidači
 referential_action_field_label_m2o: Kod Brisanja {collection}...
 referential_action_field_label_o2m: Kod Poništenog odabira {collection}...
@@ -1149,6 +1135,14 @@ interfaces:
     toolbar: Traka sa alatkama
     custom_formats: Prilagođeni Formati
     options_override: Opcije Prepisivanja
+  input-block-editor:
+    tools: Traka sa alatkama
+    tools_options:
+      embed: Ugradi
+      code: Kod
+      image: Slika
+      table: Tabela
+      underline: Podvučeno
   input-autocomplete-api:
     input-autocomplete-api: Autokompletirani Ulaz (API)
     description: Tip pretrage za spoljašne API vrijednosti.

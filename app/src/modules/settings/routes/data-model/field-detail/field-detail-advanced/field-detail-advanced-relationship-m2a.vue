@@ -206,7 +206,7 @@ const availableCollections = computed(() => {
 });
 
 const unsortableJunctionFields = computed(() => {
-	let fields = ['item', 'collection'];
+	const fields = ['item', 'collection'];
 
 	if (junctionCollection.value) {
 		const relations = relationsStore.getRelationsForCollection(junctionCollection.value);

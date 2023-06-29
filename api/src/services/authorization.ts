@@ -1,4 +1,3 @@
-import { FailedValidationException } from '@directus/exceptions';
 import type {
 	Accountability,
 	Aggregate,
@@ -9,14 +8,15 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { validatePayload } from '@directus/utils';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { ForbiddenException } from '../exceptions/index.js';
+import { ForbiddenError } from '../errors/forbidden.js';
 import type {
-	AbstractServiceOptions,
 	AST,
+	AbstractServiceOptions,
 	FieldNode,
 	FunctionFieldNode,
 	Item,
@@ -63,7 +63,7 @@ export class AuthorizationService {
 		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;
 
 		if (uniqueCollectionsRequestedCount !== permissionsForCollections.length) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		validateFields(ast);
@@ -135,7 +135,7 @@ export class AuthorizationService {
 
 						for (const column of Object.values(aliasMap)) {
 							if (column === '*') continue;
-							if (allowedFields.includes(column) === false) throw new ForbiddenException();
+							if (allowedFields.includes(column) === false) throw new ForbiddenError();
 						}
 					}
 				}
@@ -151,7 +151,7 @@ export class AuthorizationService {
 					const fieldKey = stripFunction(childNode.name);
 
 					if (allowedFields.includes(fieldKey) === false) {
-						throw new ForbiddenException();
+						throw new ForbiddenError();
 					}
 				}
 			}
@@ -277,7 +277,7 @@ export class AuthorizationService {
 								});
 
 								// Filter key not found in parent collection
-								if (!relation) throw new ForbiddenException();
+								if (!relation) throw new ForbiddenError();
 
 								const relatedCollectionName =
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
@@ -304,7 +304,7 @@ export class AuthorizationService {
 								});
 
 								// Filter key not found in parent collection
-								if (!relation) throw new ForbiddenException();
+								if (!relation) throw new ForbiddenError();
 
 								parentCollection =
 									relation.related_collection === parentCollection ? relation.collection : relation.related_collection!;
@@ -387,14 +387,14 @@ export class AuthorizationService {
 						);
 
 						if (!actionPermission || !actionPermission.fields) {
-							throw new ForbiddenException();
+							throw new ForbiddenError();
 						}
 
 						allowedFields = permission?.fields
 							? [...permission.fields, schema.collections[collection]!.primary]
 							: [schema.collections[collection]!.primary];
 					} else if (!permission || !permission.fields) {
-						throw new ForbiddenException();
+						throw new ForbiddenError();
 					} else {
 						allowedFields = permission.fields;
 					}
@@ -413,7 +413,7 @@ export class AuthorizationService {
 						}
 
 						if (!allowedFields.includes(originalFieldName)) {
-							throw new ForbiddenException();
+							throw new ForbiddenError();
 						}
 					}
 				}
@@ -499,7 +499,7 @@ export class AuthorizationService {
 				return permission.collection === collection && permission.action === action;
 			});
 
-			if (!permission) throw new ForbiddenException();
+			if (!permission) throw new ForbiddenError();
 
 			// Check if you have permission to access the fields you're trying to access
 
@@ -510,7 +510,7 @@ export class AuthorizationService {
 				const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
 
 				if (invalidKeys.length > 0) {
-					throw new ForbiddenException();
+					throw new ForbiddenError();
 				}
 			}
 		}
@@ -574,12 +574,12 @@ export class AuthorizationService {
 			}
 		}
 
-		const validationErrors: FailedValidationException[] = [];
+		const validationErrors: InstanceType<typeof FailedValidationError>[] = [];
 
 		validationErrors.push(
 			...flatten(
 				validatePayload(permission.validation!, payloadWithPresets).map((error) =>
-					error.details.map((details) => new FailedValidationException(details))
+					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)))
 				)
 			)
 		);
@@ -604,11 +604,11 @@ export class AuthorizationService {
 
 		if (Array.isArray(pk)) {
 			const result = await itemsService.readMany(pk, { ...query, limit: pk.length }, { permissionsAction: action });
-			if (!result) throw new ForbiddenException();
-			if (result.length !== pk.length) throw new ForbiddenException();
+			if (!result) throw new ForbiddenError();
+			if (result.length !== pk.length) throw new ForbiddenError();
 		} else {
 			const result = await itemsService.readOne(pk, query, { permissionsAction: action });
-			if (!result) throw new ForbiddenException();
+			if (!result) throw new ForbiddenError();
 		}
 	}
 }

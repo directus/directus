@@ -65,9 +65,13 @@
 (U|u)tils?
 (URI|URIs)
 (URL|url)
+(V|v)ite
+(V|v)itest
 (W|w)alkthrough
 (W|w)ebhook.?
 (W|w)ebhooks?
+(W|w)ebSocket
+(W|w)ebSockets
 [0-9]*(KB|MB|GB|K|px|pm|am)
 [0-9]*[Kk]i?B
 [0-9]*x[0-9]*
@@ -285,6 +289,7 @@ performant
 phpMyAdmin
 Phusion
 Pinia
+Pinia-based
 pino
 Pino
 Plesk
@@ -308,8 +313,11 @@ px.
 reactively
 readonly
 readTime
+(R|r)ealtime
+(R|r)eal-(T|t)ime
 rebase
 reconfigurations
+reconnection
 reframe
 REKT
 relationally
@@ -345,6 +353,7 @@ SSR
 StackOverflow
 stylization
 subdirectory
+subfolder
 substring
 SuperAdmins?
 superset
@@ -362,6 +371,8 @@ truthy
 TTL
 TTY
 UI
+UID
+UIDs
 UIs?
 unarchives
 Ungrouped
@@ -382,8 +393,6 @@ vCPU
 Vercel
 viewability
 VitePress
-(V|v)itest
-(V|v)ite
 volta
 VPC
 Vue

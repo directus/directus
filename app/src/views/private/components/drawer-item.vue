@@ -398,7 +398,7 @@ function useActions() {
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
 		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
 
-		let errors = validateItem(
+		const errors = validateItem(
 			merge({}, defaultValues.value, existingValues, editsToValidate),
 			fieldsToValidate,
 			isNew.value

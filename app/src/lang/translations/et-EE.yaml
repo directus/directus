@@ -79,14 +79,6 @@ create_user: Loo Kasutaja
 message: Sõnum
 delete_panel: Kustutamise Paneel
 create_webhook: Loo Veebikonks
-create_translation_string: Loo Tõlkestring
-no_translation_string: Puuduvad Tõlkestringid
-no_translation_string_copy: Tõlkestringe veel pole.
-translation_string_key_placeholder: Tõlkestringi võti...
-translation_string_translations_placeholder: Loo uus tõlge
-edit_translation_string: Muuda Tõlkestringi
-delete_translation_string_copy: >-
-  Oled kindel, et soovid tõlkestringi "{key}" kustutada? Seda toimingut ei saa tagasi võtta.
 invite_users: Kutsu Kasutajaid
 invite: Kutsu
 email_already_invited: Meilile "{email}" on kutse juba saadetud
@@ -117,13 +109,6 @@ public_label: Avalik
 public_description: Kontrollib, millised API andmed on saadaval autentimata kasutajale.
 admin_description: Esialgne administraatoriroll. Administraatoril on piiramatu juurdepääs rakendusele ja API-le.
 not_allowed: Ei ole lubatud
-directus_version: Directuse Versioon
-node_version: Node Versioon
-node_uptime: Node ülevaloleku aeg
-os_type: OS Tüüp
-os_version: OS Versioon
-os_uptime: OS Ülevaloleku Aeg
-os_totalmem: OS Mälu
 archive: Arhiiv
 archive_confirm: Oled kindel, et soovid arhiveerida selle kirje?
 archive_confirm_count: >-
@@ -437,7 +422,6 @@ enable_select_button: Luba valimise nupp
 allow_duplicates: Luba duplikaadid
 comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
-click_to_expand: Kliki suurendamiseks
 select_item: Vali kirje
 no_items: Kirjeid pole
 search_items: Otsi kirjeid...
@@ -963,6 +947,7 @@ field_options:
     collection_name: Andmekogu nimetus
     archive_divider: Arhiiv
     sort_divider: Sorteeri
+    preview_divider: Eelvaade
   directus_roles:
     fields:
       icon_name: Ikoon
@@ -989,6 +974,8 @@ save_current_datetime: Salvesta hetke kuupäev/kellaaeg
 block: Blokeeri
 inline: Tekstisisene
 comment: Kommentaar
+live_preview:
+  new_window: Ava Uues Aknas
 relational_triggers: Suhtelised lülitid
 referential_action_field_label_m2o: Andmekogu {collection} kustutamisel...
 referential_action_field_label_o2m: Andmekogu {collection} mittevalimisel...
@@ -1274,6 +1261,14 @@ interfaces:
     custom_formats: Kohandatud vormingud
     options_override: Valikute ülekirjutamine
     folder_note: Üles laetud failide kaust. Ei mõjuta olemasolevaid faile.
+  input-block-editor:
+    tools: Tööriistariba
+    tools_options:
+      embed: Põimitud
+      code: Kood
+      image: Pilt
+      table: Tabel
+      underline: Allajoonitud
   input-autocomplete-api:
     input-autocomplete-api: Automaatselt täidetav väli (API)
     description: Otsingutulemused välisest APIst.

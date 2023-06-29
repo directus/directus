@@ -1,6 +1,6 @@
 <!--
 
-Heya! Thanks for opening a Pull Request! Please make sure your PR adheres to the following requirements:
+Heya! Thanks for opening a Pull Request! If your PR is implementing a new feature or fix for Directus, please make sure your PR adheres to the following requirements:
 
 - The PR closes an Issue (not Discussion)
 - Tests are added/updated and are passing locally if applicable

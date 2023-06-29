@@ -177,8 +177,8 @@ watch(splitViewWritable, () => {
 	const previousContentOverflowY = contentEl.value.style.overflowY;
 	contentEl.value.style.overflowY = 'hidden';
 
-	let headerBarTransitionTimer: ReturnType<typeof setTimeout>;
-	let cleanupListener: () => void;
+	let headerBarTransitionTimer: ReturnType<typeof setTimeout> | undefined = undefined;
+	let cleanupListener: (() => void) | undefined = undefined;
 
 	const resetContentOverflowY = () => {
 		if (contentEl.value) {
@@ -186,7 +186,7 @@ watch(splitViewWritable, () => {
 		}
 
 		clearTimeout(headerBarTransitionTimer);
-		cleanupListener();
+		cleanupListener?.();
 	};
 
 	headerBarTransitionTimer = setTimeout(resetContentOverflowY, 1500);
@@ -444,6 +444,7 @@ function getWidth(input: unknown, fallback: number): number {
 		font-size: 15px;
 		line-height: 24px;
 
+		.content-wrapper,
 		main {
 			display: contents;
 		}

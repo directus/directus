@@ -1,6 +1,6 @@
 {
 	"name": "@directus/constants",
-	"version": "10.2.0",
+	"version": "10.2.1",
 	"description": "Shared constants for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
