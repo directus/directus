@@ -22,8 +22,5 @@ export const tsup: Options = {
 		'src/graphql/index.ts',
 		'src/realtime/index.ts',
 		'src/rest/index.ts',
-		// commands
-		'src/rest/commands/index.ts',
-		'src/realtime/commands/index.ts',
 	],
 };
