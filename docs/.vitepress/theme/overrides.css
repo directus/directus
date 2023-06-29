@@ -6,6 +6,16 @@
 }
 
 /**
+ * Scroll workaround for navbar getting collapsed too early and overlapping page
+ * -------------------------------------------------------------------------- */
+@media only screen and (min-width: 768px) and (max-width: 940px) {
+	.VPNav .VPNavBar .container {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+}
+
+/**
  * Border radius on inline media
  * -------------------------------------------------------------------------- */
 .vp-doc img,
