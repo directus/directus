@@ -35,7 +35,7 @@ tile_size: Veličina pločice
 edit_field: Uredi polje
 conditions: Uvjeti
 location: Lokacija
-collection_names_are_case_sensitive: Imena ili nazivi kolekcija su osjetljiva na velika i mala slova
+collection_names_are_case_sensitive: Imena ili nazivi zbirki su osjetljiva na velika i mala slova
 condition_rules: Uvjetna pravila
 input: Unos
 maps: Karte
@@ -665,7 +665,7 @@ one_filtered_item: '1 filtrirana stavka'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati zbirku "{collection}"? Ovo će izbrisati zbirku i sve stavke u njoj. Ova akcija je trajna.
 delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati mapu "{folder}"? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
-delete_collection_peer_dependencies: Sljedeća polja također će biti izbrisana, budući da su povezana s trenutnom kolekcijom.
+delete_collection_peer_dependencies: Sljedeća polja također će biti izbrisana, budući da su povezana s trenutnom zbirkom.
 collections_shown: Prikazane zbirke
 visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke
@@ -796,7 +796,7 @@ flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
 run_flow_confirm: Jeste li sigurni da želite izvršiti ovaj tok?
-run_flow_on_current_collection: Pokreni Tok na Trenutnoj Kolekciji
+run_flow_on_current_collection: Pokreni Tok na Trenutnoj Zbirci
 run_flow_on_current: Pokreni Tok na Trenutnoj Stavci
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 run_flow_on_selected: Prvo Odaberite Jednu ili Više Stavki | Pokreni Tok na 1 Odabranoj Stavci | Pokreni Tok na {n} Odabranih Stavki
@@ -1616,8 +1616,8 @@ interfaces:
     description: Odaberite jednu srodnu stavku
     display_template: Predložak prikaza
   collection-item-dropdown:
-    collection-item-dropdown: Padajući Izbornik Stavki Kolekcije
-    description: Odaberite stavku iz kolekcije u JSON formatu
+    collection-item-dropdown: Padajući Izbornik Stavki Zbirke
+    description: Odaberite stavku iz zbirke u JSON formatu
   input-rich-text-md:
     markdown: Markdown
     description: Unesite i pregledajte markdown
@@ -2091,7 +2091,7 @@ triggers:
     collection_and_item: Stranice o zbirkama i stavkama
     collection_only: Samo stranica zbirke
     item_only: Samo stranica stavki
-    collection_page: Stranica Kolekcije
+    collection_page: Stranica Zbirke
     require_selection: Zahtjeva Odabir
 a_flow_uuid: Odaberite Tok za pokretanje...
 any_string_or_json: Bilo koji string ili JSON...
