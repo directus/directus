@@ -1,12 +1,12 @@
+<template>
+	<p class="tag">{{ tag }}</p>
+</template>
+
 <script lang="ts" setup>
 defineProps<{
 	tag?: string;
 }>();
 </script>
-
-<template>
-	<p class="tag">{{ tag }}</p>
-</template>
 
 <style scoped>
 .tag {

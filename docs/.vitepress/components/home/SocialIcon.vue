@@ -1,3 +1,9 @@
+<template>
+	<a class="social-icons" :href="url" target="_blank" rel="noreferrer noopener">
+		<Comp />
+	</a>
+</template>
+
 <script setup lang="ts">
 import LinkedIn from './icons/LinkedIn.vue';
 import Docker from './icons/Docker.vue';
@@ -24,12 +30,6 @@ const props = defineProps<{
 
 const Comp = iconsMap[props.icon];
 </script>
-
-<template>
-	<a class="social-icons" :href="url" target="_blank" rel="noreferrer noopener">
-		<Comp />
-	</a>
-</template>
 
 <style scoped>
 .social-icons {

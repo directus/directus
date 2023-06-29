@@ -1,12 +1,3 @@
-<script setup lang="ts">
-defineProps<{
-	title: string;
-	desc?: string;
-	url: string;
-	img: string;
-}>();
-</script>
-
 <template>
 	<div class="sh">
 		<img :src="img" alt="" class="sh-img" />
@@ -15,6 +6,15 @@ defineProps<{
 		<a :href="url" class="outline-btn">Read More</a>
 	</div>
 </template>
+
+<script setup lang="ts">
+defineProps<{
+	title: string;
+	desc?: string;
+	url: string;
+	img: string;
+}>();
+</script>
 
 <style scoped>
 .sh-img {

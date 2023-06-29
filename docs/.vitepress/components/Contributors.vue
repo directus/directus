@@ -1,7 +1,3 @@
-<script setup lang="ts">
-defineProps<{ contributors: string }>();
-</script>
-
 <template>
 	<div v-if="contributors">
 		<p>
@@ -10,6 +6,10 @@ defineProps<{ contributors: string }>();
 		</p>
 	</div>
 </template>
+
+<script setup lang="ts">
+defineProps<{ contributors: string }>();
+</script>
 
 <style scoped>
 p {

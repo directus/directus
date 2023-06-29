@@ -1,17 +1,3 @@
-<script setup lang="ts">
-import Tag from './Tag.vue';
-
-defineProps<{
-	title: string;
-	tag?: string;
-	url: string;
-	img: string;
-	author?: string;
-	date?: string;
-	desc?: string;
-}>();
-</script>
-
 <template>
 	<div class="article">
 		<a :href="url">
@@ -31,6 +17,20 @@ defineProps<{
 		</a>
 	</div>
 </template>
+
+<script setup lang="ts">
+import Tag from './Tag.vue';
+
+defineProps<{
+	title: string;
+	tag?: string;
+	url: string;
+	img: string;
+	author?: string;
+	date?: string;
+	desc?: string;
+}>();
+</script>
 
 <style scoped>
 .article-heading {

@@ -1,37 +1,3 @@
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
-
-const props = defineProps<{
-	choices: string[];
-	label?: string;
-}>();
-
-const storageKey = 'toggler-value';
-
-const getStorageValue = () => {
-	const value = localStorage.getItem(storageKey);
-	return value || props.choices[0];
-};
-
-const setStorageValue = (value: string) => localStorage.setItem(storageKey, value);
-
-onMounted(() => {
-	const value = getStorageValue();
-
-	if (value) {
-		setStorageValue(value);
-	}
-});
-
-const pref = ref(getStorageValue());
-
-const onPrefChange = (event: Event) => {
-	const selectedValue = (event.target as HTMLSelectElement).value;
-	pref.value = selectedValue;
-	setStorageValue(selectedValue);
-};
-</script>
-
 <template>
 	<div class="snippet-toggler">
 		<div class="snippet-toggler-header">
@@ -66,6 +32,40 @@ const onPrefChange = (event: Event) => {
 		</div>
 	</div>
 </template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+
+const props = defineProps<{
+	choices: string[];
+	label?: string;
+}>();
+
+const storageKey = 'toggler-value';
+
+const getStorageValue = () => {
+	const value = localStorage.getItem(storageKey);
+	return value || props.choices[0];
+};
+
+const setStorageValue = (value: string) => localStorage.setItem(storageKey, value);
+
+onMounted(() => {
+	const value = getStorageValue();
+
+	if (value) {
+		setStorageValue(value);
+	}
+});
+
+const pref = ref(getStorageValue());
+
+const onPrefChange = (event: Event) => {
+	const selectedValue = (event.target as HTMLSelectElement).value;
+	pref.value = selectedValue;
+	setStorageValue(selectedValue);
+};
+</script>
 
 <style scoped>
 .snippet-toggler {

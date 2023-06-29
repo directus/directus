@@ -1,13 +1,3 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-
-const props = defineProps<{
-	tabs: string[];
-}>();
-
-const activeTab = ref(props.tabs[0]);
-</script>
-
 <template>
 	<div class="tabs">
 		<div role="tablist" class="tab-buttons">
@@ -32,6 +22,16 @@ const activeTab = ref(props.tabs[0]);
 		</div>
 	</div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const props = defineProps<{
+	tabs: string[];
+}>();
+
+const activeTab = ref(props.tabs[0]);
+</script>
 
 <style scoped>
 .tab-buttons {

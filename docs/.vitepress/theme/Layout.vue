@@ -1,3 +1,5 @@
+<template><Layout /></template>
+
 <script setup>
 import getImageUrl from '@thumbsmith/url';
 import { useHead } from '@unhead/vue';
@@ -74,5 +76,3 @@ const meta = computed(() => {
 
 useHead({ meta });
 </script>
-
-<template><Layout /></template>

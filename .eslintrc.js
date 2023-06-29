@@ -56,6 +56,13 @@ const tsRules = {
 };
 
 const vueRules = {
+	// Same component tags order everywhere
+	'vue/component-tags-order': [
+		'error',
+		{
+			order: ['template', 'script', 'style'],
+		},
+	],
 	'vue/multi-word-component-names': 'off',
 	'vue/require-default-prop': 'off',
 };
