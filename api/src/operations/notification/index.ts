@@ -15,7 +15,10 @@ type Options = {
 export default defineOperationApi<Options>({
 	id: 'notification',
 
-	handler: async ({ recipient, subject, message, permissions, collection, item }, { accountability, database, getSchema }) => {
+	handler: async (
+		{ recipient, subject, message, permissions, collection, item },
+		{ accountability, database, getSchema }
+	) => {
 		const schema = await getSchema({ database });
 		let customAccountability: Accountability | null;
 
