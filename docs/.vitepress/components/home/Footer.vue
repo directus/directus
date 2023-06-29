@@ -1,18 +1,9 @@
 <script setup lang="ts">
-import Logo from './icons/Logo.vue';
-import SocialIcon from './SocialIcon.vue';
 import Divider from '../Divider.vue';
-</script>
+import SocialIcon from './SocialIcon.vue';
+import Logo from './icons/Logo.vue';
 
-<script lang="ts">
-export default {
-	components: { SocialIcon },
-	data() {
-		return {
-			currentYear: new Date().getFullYear(),
-		};
-	},
-};
+const currentYear = new Date().getFullYear();
 </script>
 
 <template>
@@ -75,6 +66,7 @@ footer {
 	padding-bottom: 60px;
 	background: var(--vp-docs-section-bg);
 }
+
 hr {
 	border-color: gray;
 }
@@ -82,11 +74,13 @@ hr {
 a {
 	color: var(--vp-c-text-dark-2);
 }
+
 .footer {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
+
 .footer-container {
 	padding: 24px 120px;
 }
@@ -110,6 +104,7 @@ a {
 	font-weight: 500;
 	margin-top: 32px;
 }
+
 .social-links {
 	display: flex;
 	justify-content: space-between;
