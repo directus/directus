@@ -186,7 +186,7 @@ Mode option.
 
 ### Create Your Page Content
 
-6. [Create a new item](/app/content/items#create-an-item) in the `pages` collection
+6. [Create a new item](/user-guide/content-module/content/items#create-an-item) in the `pages` collection
 
    <video title="Create Your Page Content" autoplay muted loop controls playsinline>
    <source src="https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/reusable-page-components-adding-content.mp4"> type="video/mp4" />
@@ -333,8 +333,8 @@ Directus returns for Many To Any (M2A) relationships.
 ### Check Your Permissions
 
 If you notice you aren't receiving the data that you expect,
-[check the Permissions settings](/app/users-roles-permissions/permissions#permissions) for your Public or chosen role.
-You'll have to enable Read access for each collection using in the Pages > Blocks Many-To-Any field.
+[check the Permissions settings](/user-guide/user-management/permissions) for your Public or chosen role. You'll have to
+enable Read access for each collection using in the Pages > Blocks Many-To-Any field.
 
 ### Use Typescript
 

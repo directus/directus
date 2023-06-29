@@ -53,7 +53,8 @@ will end up in another folder like "Social" or "Promotions".
 
 ## 3. Create a Collection
 
-Once logged in, you're greeted with the option to create your first [Collection](/getting-started/glossary#collections).
+Once logged in, you're greeted with the option to create your first
+[Collection](/user-guide/overview/glossary#collections).
 
 1. Navigate into the Content Module.
 2. Click **"Create Collection"** and a side menu will appear.
@@ -66,7 +67,7 @@ Once logged in, you're greeted with the option to create your first [Collection]
 
 :::tip Learn More About Collections
 
-- [The Content Module](/app/content)
+- [The Content Module](/user-guide/content-module/content)
 - [Create and Manage a Collection](/app/data-model/collections)
 - [Build Relationships Between Collections](/app/data-model/relationships)
 
@@ -74,7 +75,7 @@ Once logged in, you're greeted with the option to create your first [Collection]
 
 ## 4. Create a Field
 
-With your first Collection created, it's time to start adding some [Fields](/getting-started/glossary#fields).
+With your first Collection created, it's time to start adding some [Fields](/user-guide/overview/glossary#fields).
 
 1. Navigate to **Settings Module > Data Model > `Collection-Name`**.
 2. Click the **"Create Field"** button and select the **"Input"** Field type.
@@ -90,7 +91,7 @@ With your first Collection created, it's time to start adding some [Fields](/get
 
 ## 5. Create an Item
 
-Now that we have a Collection with a Field configured, it's time to add an [Item](/getting-started/glossary#).
+Now that we have a Collection with a Field configured, it's time to add an [Item](/user-guide/overview/glossary#).
 
 1. Navigate to the Content Module.
 2. Click <span mi btn>add</span> in the page header to open the Item Page.
@@ -99,7 +100,7 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 
 :::tip Learn More About Items
 
-- [The Content Module](/app/content)
-- [The Item Page](/app/content/items)
+- [The Content Module](/user-guide/content-module/content)
+- [The Item Page](/user-guide/content-module/content/items)
 
 :::
