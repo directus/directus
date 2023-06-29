@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import Tag from './Tag.vue';
 
 defineProps<{

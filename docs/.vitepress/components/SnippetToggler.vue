@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
 
 const props = defineProps<{
@@ -9,12 +9,15 @@ const props = defineProps<{
 const storageKey = 'toggler-value';
 const getStorageValue = () => {
 	const value = localStorage.getItem(storageKey);
-	return value === 'undefined' || value == null ? props.choices[0] : value;
+	return value || props.choices[0];
 };
 const setStorageValue = (value: string) => localStorage.setItem(storageKey, value);
 
 onMounted(() => {
-	setStorageValue(getStorageValue());
+	const value = getStorageValue();
+	if (value) {
+		setStorageValue(value);
+	}
 });
 
 const pref = ref(getStorageValue());
@@ -65,7 +68,6 @@ const onPrefChange = (event: Event) => {
 .snippet-toggler {
 	overflow: hidden;
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
-	tab-size: 2;
 }
 
 .snippet-toggler-header {
@@ -140,5 +142,6 @@ const onPrefChange = (event: Event) => {
 	padding-bottom: 32px;
 	scrollbar-width: none;
 	overflow-y: auto;
+	tab-size: 2;
 }
 </style>

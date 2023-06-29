@@ -61,9 +61,17 @@ query {
 
 <template #sdk>
 
+<!-- prettier-ignore -->
 ```js
 await directus.items('articles').readOne(4, {
-	fields: ['id', 'status', 'title', 'category', 'image.id', 'image.name'],
+	fields: [
+		'id',
+		'status',
+		'title',
+		'category',
+		'image.id',
+		'image.name'
+	],
 });
 ```
 
@@ -221,7 +229,7 @@ await directus.items('articles').readOne(4, {
     />
     <Card
     h="3"
-    title="Contribute via code"
+    title="Contribute via Code"
     text="Make a significant impact with code contributions. Read our Pull Request process and find out about our CLA."
     url="/contributing/introduction"
     icon="code"

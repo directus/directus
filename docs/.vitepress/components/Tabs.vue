@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-interface TabsProps {
+const props = defineProps<{
 	tabs: string[];
-}
-
-const props = defineProps<TabsProps>();
+}>();
 
 const activeTab = ref(props.tabs[0]);
 </script>

@@ -917,6 +917,9 @@ importers:
       '@unhead/vue':
         specifier: 1.1.26
         version: 1.1.26(vue@3.3.4)
+      '@vue/tsconfig':
+        specifier: 0.4.0
+        version: 0.4.0
       spellchecker-cli:
         specifier: 6.1.1
         version: 6.1.1
@@ -8920,6 +8923,10 @@ packages:
     optionalDependencies:
       '@vue/compiler-dom': 3.3.4
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
+    dev: true
+
+  /@vue/tsconfig@0.4.0:
+    resolution: {integrity: sha512-CPuIReonid9+zOG/CGTT05FXrPYATEqoDGNrEaqS4hwcw5BUNM2FguC0mOwJD4Jr16UpRVl9N0pY3P+srIbqmg==}
     dev: true
 
   /@vueuse/core@10.1.2(vue@3.3.4):

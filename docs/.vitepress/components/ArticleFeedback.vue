@@ -1,30 +1,17 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 
-const props = defineProps({
-	title: {
-		type: String,
-		required: true,
-	},
-	url: {
-		type: String,
-		required: true,
-	},
-});
+const props = defineProps<{ title: string; url: string }>();
 
 const loading = ref(false);
-const error = ref(null);
+const error = ref<unknown>(null);
 const success = ref(false);
 
 const feedback = reactive<{
 	id?: string;
 	rating?: number;
 	comments?: string;
-}>({
-	id: undefined,
-	rating: undefined,
-	comments: undefined,
-});
+}>({});
 
 const prompts = [
 	'Make it count',
@@ -81,7 +68,6 @@ async function handleSubmission(rating?: number) {
 		}
 	} catch (err) {
 		error.value = err;
-		console.error(err);
 	} finally {
 		loading.value = false;
 	}
@@ -181,7 +167,7 @@ async function handleSubmission(rating?: number) {
 	padding: 1.5rem;
 	border: 1px solid var(--vp-c-divider);
 	border-radius: 8px;
-	background: var(--vp-c-bg-alt)
+	background: var(--vp-c-bg-alt);
 }
 
 .input {

@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-interface CardProps {
-	title: string;
-	h?: '1' | '2' | '3' | '4' | '5';
-	text: string;
-	icon?: string;
-	url?: string;
-	addMargin?: boolean;
-}
-
-const props = withDefaults(defineProps<CardProps>(), {
-	h: '2',
-	icon: 'link',
-});
+const props = withDefaults(
+	defineProps<{
+		title: string;
+		h?: '1' | '2' | '3' | '4' | '5';
+		text: string;
+		icon?: string;
+		url?: string;
+		addMargin?: boolean;
+	}>(),
+	{
+		h: '2',
+		icon: 'link',
+	}
+);
 
 const tagType = computed(() => (props.url ? 'a' : 'div'));
 const headerType = computed(() => 'h' + props.h);

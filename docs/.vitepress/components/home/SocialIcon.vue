@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import LinkedIn from './icons/LinkedIn.vue';
 import Docker from './icons/Docker.vue';
 import NPM from './icons/NPM.vue';

@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import Logo from './icons/Logo.vue';
 import SocialIcon from './SocialIcon.vue';
 import Divider from '../Divider.vue';

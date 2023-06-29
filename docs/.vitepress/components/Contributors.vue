@@ -1,7 +1,5 @@
-<script setup>
-const props = defineProps({
-	contributors: { type: String, required: true },
-});
+<script setup lang="ts">
+defineProps<{ contributors: string }>();
 </script>
 
 <template>
