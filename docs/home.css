@@ -134,7 +134,7 @@ hr {
 	width: 100%;
 	max-width: 590px;
 	border: 1px solid rgba(255, 255, 255, 0.1);
-	filter: drop-shadow(0px 0px 120px rgba(255, 255, 255, 0.1));
+	box-shadow: 0 0 80px 20px rgba(255, 255, 255, 0.1);
 	backdrop-filter: blur(4px);
 	z-index: 1;
 	margin-left: 20px;
