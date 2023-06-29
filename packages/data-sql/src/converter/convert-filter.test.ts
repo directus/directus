@@ -1,8 +1,12 @@
-import type { AbstractQueryFieldNodePrimitive, AbstractQueryNodeCondition } from '@directus/data';
+import type {
+	AbstractQueryFieldNodePrimitive,
+	AbstractQueryNodeCondition,
+	AbstractQueryNodeConditionValue,
+} from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test, beforeEach } from 'vitest';
 import { convertFilter } from './convert-filter.js';
-import type { AbstractSqlQueryWhereNode } from '../types.js';
+import type { AbstractSqlQueryConditionNode } from '../types.js';
 
 let sample: {
 	condition: AbstractQueryNodeCondition;
@@ -22,7 +26,10 @@ beforeEach(() => {
 				field: randomIdentifier(),
 			},
 			operation: 'gt',
-			values: [randomInteger(1, 100)],
+			compareTo: {
+				type: 'value',
+				values: [randomInteger(1, 100)],
+			},
 			negation: false,
 		},
 		firstIndex,
@@ -32,7 +39,7 @@ beforeEach(() => {
 });
 
 test('Convert filter with one parameter', () => {
-	const expectedWhere: AbstractSqlQueryWhereNode = {
+	const expectedWhere: AbstractSqlQueryConditionNode = {
 		type: 'condition',
 		negation: false,
 		target: {
@@ -41,19 +48,22 @@ test('Convert filter with one parameter', () => {
 			type: 'primitive',
 		},
 		operation: 'gt',
-		parameterIndexes: [sample.firstIndex],
+		compareTo: {
+			type: 'value',
+			parameterIndexes: [sample.firstIndex],
+		},
 	};
 
 	expect(convertFilter(sample.condition, sample.randomCollection, sample.firstIndex, null)).toStrictEqual({
 		where: expectedWhere,
-		parameters: sample.condition.values,
+		parameters: (sample.condition.compareTo as AbstractQueryNodeConditionValue).values,
 	});
 });
 
 test('Convert filter with one parameter and negation', () => {
 	sample.condition.negation = true;
 
-	const expectedWhere: AbstractSqlQueryWhereNode = {
+	const expectedWhere: AbstractSqlQueryConditionNode = {
 		type: 'condition',
 		negation: true,
 		target: {
@@ -62,12 +72,15 @@ test('Convert filter with one parameter and negation', () => {
 			type: 'primitive',
 		},
 		operation: 'gt',
-		parameterIndexes: [sample.firstIndex],
+		compareTo: {
+			type: 'value',
+			parameterIndexes: [sample.firstIndex],
+		},
 	};
 
 	expect(convertFilter(sample.condition, sample.randomCollection, sample.firstIndex, null)).toStrictEqual({
 		where: expectedWhere,
-		parameters: sample.condition.values,
+		parameters: (sample.condition.compareTo as AbstractQueryNodeConditionValue).values,
 	});
 });
 
@@ -85,9 +98,12 @@ test('Convert filter with two parameters', () => {
 					type: 'primitive',
 				},
 				operation: 'between',
-				parameterIndexes: [sample.firstIndex, sample.secondIndex!],
+				compareTo: {
+					type: 'value',
+					parameterIndexes: [sample.firstIndex, sample.secondIndex],
+				},
 			},
-			parameters: sample.condition.values,
+			parameters: (sample.condition.compareTo as AbstractQueryNodeConditionValue).values,
 		}
 	);
 });

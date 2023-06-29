@@ -20,7 +20,7 @@ export const convertFilter = (
 		return null;
 	}
 
-	if (filter.target.type !== 'primitive') {
+	if (filter.target.type !== 'primitive' || filter.compareTo.type !== 'value') {
 		throw new Error('Only primitives are currently supported.');
 	}
 
@@ -35,13 +35,16 @@ export const convertFilter = (
 			type: 'condition',
 			negation: filter.negation,
 			operation: filter.operation,
-			parameterIndexes,
 			target: {
 				column: filter.target.field,
 				table: collection,
 				type: 'primitive',
 			},
+			compareTo: {
+				type: 'value',
+				parameterIndexes,
+			},
 		},
-		parameters: filter.values,
+		parameters: filter.compareTo.values,
 	};
 };

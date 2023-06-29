@@ -53,8 +53,7 @@ export interface AbstractSqlQuery {
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
 	order?: AbstractSqlQueryOrderNode[];
-	where?: AbstractSqlQueryWhereNode;
-	intersects?: AbstractSqlQuery;
+	where?: AbstractSqlQueryConditionNode;
 	parameters: (string | boolean | number)[];
 }
 
@@ -66,7 +65,7 @@ export type AbstractSqlQueryOrderNode = {
 /**
  * An abstract WHERE clause.
  */
-export interface AbstractSqlQueryWhereNode {
+export interface AbstractSqlQueryConditionNode {
 	type: 'condition';
 
 	/* indicated of the condition should be negated using NOT */
@@ -76,7 +75,19 @@ export interface AbstractSqlQueryWhereNode {
 	target: SqlStatementColumn;
 
 	/* an abstract comparator. maybe this needs to be optional for some comparisons to sets */
-	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'between' | 'contains' | 'starts_with' | 'ends_with';
+	operation:
+		| 'eq'
+		| 'lt'
+		| 'lte'
+		| 'gt'
+		| 'gte'
+		| 'in'
+		| 'between'
+		| 'contains'
+		| 'starts_with'
+		| 'ends_with'
+		| 'intersects'
+		| 'intersects_bounding_box';
 
 	/* a value to which the target will be compared */
 	compareTo: CompareValueNode | CompareSetNode;

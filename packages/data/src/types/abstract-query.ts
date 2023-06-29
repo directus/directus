@@ -359,8 +359,18 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	/** the above operations can be negated by setting the following attribute to true. */
 	negation: boolean;
 
-	/** the conditional values. Might be also a function or sub query in the future */
+	/** the conditional values. Might be also a function in the future. */
+	compareTo: AbstractQueryNodeConditionValue | AbstractQueryNodeConditionSet;
+}
+
+export interface AbstractQueryNodeConditionValue {
+	type: 'value';
 	values: (string | number | boolean)[];
+}
+
+export interface AbstractQueryNodeConditionSet {
+	type: 'set';
+	query: AbstractQuery;
 }
 
 /**

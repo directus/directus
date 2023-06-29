@@ -37,9 +37,9 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 			throw new Error('Logical operators are not supported yet');
 		}
 
-		// for those two operators a second parameter is needed
 		let secondIndex = null;
 
+		// for the below two operators a second parameter is needed
 		if (['between', 'in'].includes(abstractQuery.modifiers.filter.operation!)) {
 			secondIndex = idGen.next().value;
 		}

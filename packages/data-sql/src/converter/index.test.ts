@@ -1,4 +1,9 @@
-import type { AbstractQuery, AbstractQueryFieldNodePrimitive, AbstractQueryNodeCondition } from '@directus/data';
+import type {
+	AbstractQuery,
+	AbstractQueryFieldNodePrimitive,
+	AbstractQueryNodeCondition,
+	AbstractQueryNodeConditionValue,
+} from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types.js';
 import { convertAbstractQueryToAbstractSqlQuery } from './index.js';
@@ -60,7 +65,10 @@ test('Convert query with filter', () => {
 				field: randomIdentifier(),
 			},
 			operation: 'gt',
-			values: [randomInteger(1, 100)],
+			compareTo: {
+				type: 'value',
+				values: [randomInteger(1, 100)],
+			},
 			negation: false,
 		},
 	};
@@ -92,9 +100,14 @@ test('Convert query with filter', () => {
 			},
 			negation: false,
 			operation: 'gt',
-			parameterIndexes: [0],
+			compareTo: {
+				type: 'value',
+				parameterIndexes: [0],
+			},
 		},
-		parameters: (sample.query.modifiers.filter! as AbstractQueryNodeCondition).values,
+		parameters: (
+			(sample.query.modifiers.filter! as AbstractQueryNodeCondition).compareTo as AbstractQueryNodeConditionValue
+		).values,
 	};
 
 	expect(res).toStrictEqual(expected);
