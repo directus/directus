@@ -172,21 +172,21 @@ await directus.items('articles').readOne(4, {
 			</p>
 		</div>
 		<div class="grid-3">
-			<article
+			<Article
 				title="Build a Static Website with Nuxt.js"
 				tag="Nuxt.js"
 				desc="Learn how to build a website using Directus as a CMS and Nuxt 3."
 				img="/assets/nuxt-guide.png"
 				url="/guides/headless-cms/build-static-website/nuxt-3"
 			/>
-			<article
+			<Article
 				title="Set up Live Preview in a Next.js project"
 				tag="Next.js"
 				desc="By adding a preview URL, you can instantly see live changes made to your collection."
 				img="/assets/next-guide1.png"
 				url="/guides/headless-cms/live-preview/nextjs"
 			/>
-			<article
+			<Article
 				title="Build a Multi-User Chat With React.js"
 				tag="React.js"
 				desc="Deep dive into how to use Directus websockets to build an interactive chat application."
