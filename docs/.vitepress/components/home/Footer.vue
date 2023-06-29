@@ -8,23 +8,11 @@ const currentYear = new Date().getFullYear();
 
 <template>
 	<footer>
-		<div class="footer footer-container flex">
-			<div>
-				<ul class="footer-links m-20">
-					<li>
-						<a href="https://github.com/directus/directus/blob/main/license" target="_blank" rel="noreferrer noopener">
-							License
-						</a>
-					</li>
-					<li><a href="https://directus.io/terms/" target="_blank" rel="noreferrer noopener">Terms</a></li>
-					<li><a href="https://directus.io/privacy/" target="_blank" rel="noreferrer noopener">Privacy</a></li>
-				</ul>
-			</div>
-			<div class="m-20">
-				<Logo />
-			</div>
-			<div>
-				<ul class="social-links m-20">
+		<div class="container">
+			<div class="content">
+				<Logo class="logo" />
+
+				<ul class="social">
 					<li>
 						<SocialIcon url="https://www.linkedin.com/company/directus-io" icon="linkedin" />
 					</li>
@@ -47,16 +35,25 @@ const currentYear = new Date().getFullYear();
 						<SocialIcon url="https://github.com/directus" icon="github" />
 					</li>
 				</ul>
-			</div>
-		</div>
 
-		<div class="section-container dark">
+				<ul class="links">
+					<li>
+						<a href="https://github.com/directus/directus/blob/main/license" target="_blank" rel="noreferrer noopener">
+							License
+						</a>
+					</li>
+					<li><a href="https://directus.io/terms/" target="_blank" rel="noreferrer noopener">Terms</a></li>
+					<li><a href="https://directus.io/privacy/" target="_blank" rel="noreferrer noopener">Privacy</a></li>
+				</ul>
+			</div>
+
 			<Divider />
-		</div>
-		<div class="footer-copyright">
-			<a href="https://monospace.io/" target="_blank" rel="noreferrer noopener">
-				&copy; {{ currentYear }} Monospace Inc
-			</a>
+
+			<small>
+				<a href="https://monospace.io/" target="_blank" rel="noreferrer noopener">
+					&copy; {{ currentYear }} Monospace Inc
+				</a>
+			</small>
 		</div>
 	</footer>
 </template>
@@ -65,27 +62,19 @@ const currentYear = new Date().getFullYear();
 footer {
 	padding-bottom: 60px;
 	background: var(--vp-docs-section-bg);
+	padding: 24px 120px;
 }
 
-hr {
-	border-color: gray;
+.container {
+	max-width: calc(var(--vp-layout-max-width) - 64px);
+	margin-inline: auto;
 }
 
 a {
 	color: var(--vp-c-text-dark-2);
 }
 
-.footer {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.footer-container {
-	padding: 24px 120px;
-}
-
-.footer-links {
+.content ul {
 	display: flex;
 	list-style: none;
 	font-weight: 600;
@@ -93,25 +82,49 @@ a {
 	gap: 24px;
 }
 
-.footer-links li {
-	color: white;
-	margin-right: 20px;
+.content .logo,
+.content ul {
+	margin-inline: auto;
+	margin-block-end: 24px;
 }
 
-.footer-copyright {
+.content ul a:hover {
+	color: white;
+}
+
+.content ul a:hover :deep(path) {
+	fill: white;
+}
+
+@media screen and (min-width: 1200px) {
+	.content {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 24px;
+	}
+
+	.content .links {
+		order: 1;
+		justify-content: start;
+		margin: 0;
+	}
+
+	.content .logo {
+		order: 2;
+	}
+
+	.content .social {
+		order: 3;
+		justify-content: end;
+		margin: 0;
+	}
+}
+
+small {
 	text-align: center;
 	color: var(--vp-c-text-dark-2);
 	font-weight: 500;
-	margin-top: 32px;
-}
-
-.social-links {
-	display: flex;
-	justify-content: space-between;
-	list-style: none;
-}
-
-.social-links li {
-	margin-left: 20px;
+	margin-block-start: 24px;
+	display: block;
 }
 </style>
