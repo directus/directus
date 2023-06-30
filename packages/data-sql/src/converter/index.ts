@@ -40,15 +40,13 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 	// TODO: Create a generic function for this and add unit tests. This way we might can save some tests in index.test.ts
 
 	if (abstractQuery.modifiers?.limit) {
-		const idx = idGen.next().value;
-		statement.limit = { parameterIndex: idx };
-		statement.parameters[idx] = abstractQuery.modifiers.limit.value;
+		statement.limit = { parameterIndex: idGen.next().value };
+		statement.parameters.push(abstractQuery.modifiers.limit.value);
 	}
 
 	if (abstractQuery.modifiers?.offset) {
-		const idx = idGen.next().value;
-		statement.offset = { parameterIndex: idx };
-		statement.parameters[idx] = abstractQuery.modifiers.offset.value;
+		statement.offset = { parameterIndex: idGen.next().value };
+		statement.parameters.push(abstractQuery.modifiers.offset.value);
 	}
 
 	if (abstractQuery.modifiers?.sort) {
