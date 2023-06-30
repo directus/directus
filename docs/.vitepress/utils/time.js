@@ -40,8 +40,12 @@ function getRelativeTime(d1, d2 = new Date()) {
 
 	const elapsed = d1 - d2;
 	// "Math.abs" accounts for both "past" & "future" scenarios
-	for (const u in units)
-		if (Math.abs(elapsed) > units[u] || u === 'second') return rtf.format(Math.round(elapsed / units[u]), u);
+
+	for (const u in units) {
+		if (Math.abs(elapsed) > units[u] || u === 'second') {
+			return rtf.format(Math.round(elapsed / units[u]), u);
+		}
+	}
 }
 
 // Format date to be more readable
@@ -49,8 +53,10 @@ function getFriendlyDate(dateString) {
 	const d = new Date(dateString);
 	const year = d.getFullYear();
 	const date = d.getDate();
+
 	const dateSuffix = (date) => {
 		if (date > 3 && d < 21) return 'th';
+
 		switch (date % 10) {
 			case 1:
 				return 'st';
@@ -62,6 +68,7 @@ function getFriendlyDate(dateString) {
 				return 'th';
 		}
 	};
+
 	const monthIndex = d.getMonth();
 	const monthName = months[monthIndex];
 	const dayName = daysAbbr[d.getDay()];
