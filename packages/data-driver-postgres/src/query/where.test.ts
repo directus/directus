@@ -1,4 +1,4 @@
-import type { AbstractSqlQuery, CompareValueNode } from '@directus/data-sql';
+import type { AbstractSqlQuery, AbstractSqlQueryWhereConditionNode, CompareValueNode } from '@directus/data-sql';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { where, getComparison } from './where.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
@@ -23,6 +23,7 @@ describe('Where clause:', () => {
 				where: {
 					type: 'condition',
 					operation: 'gt',
+					negate: false,
 					target: {
 						type: 'primitive',
 						column: randomIdentifier(),
@@ -30,29 +31,28 @@ describe('Where clause:', () => {
 					},
 					compareTo: {
 						type: 'value',
-						parameterIndexes: [randomInteger(1, 10)],
+						parameterIndexes: [0],
 					},
-					negation: false,
 				},
-				parameters: [],
+				parameters: [randomInteger(1, 10)],
 			},
 		};
 	});
 
 	test('Where clause', () => {
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${sample.statement.where!.target.table}"."${sample.statement.where!.target.column}" > $${
-				(sample.statement.where!.compareTo as CompareValueNode).parameterIndexes[0]! + 1
+			`WHERE "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column}" > $${
+				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode).parameterIndexes[0]! + 1
 			}`
 		);
 	});
 
 	test('Where clause with negation', () => {
-		sample.statement.where!.negation = true;
+		sample.statement.where!.negate = true;
 
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE NOT "${sample.statement.where!.target.table}"."${sample.statement.where!.target.column}" > $${
-				(sample.statement.where!.compareTo as CompareValueNode).parameterIndexes[0]! + 1
+			`WHERE NOT "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column}" > $${
+				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode).parameterIndexes[0]! + 1
 			}`
 		);
 	});
