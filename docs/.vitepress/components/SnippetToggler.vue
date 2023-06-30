@@ -34,14 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 
 const props = defineProps<{
 	choices: string[];
 	label?: string;
 }>();
 
-const selected = ref(props.choices[0]);
+const selected = ref();
 
 const useStorage = (key: string) => {
 	const getStorageValue = () => {
@@ -55,12 +55,10 @@ const useStorage = (key: string) => {
 
 const { getStorageValue, setStorageValue } = useStorage('toggler-value');
 
-onMounted(() => {
+onBeforeMount(() => {
 	const value = getStorageValue();
 
-	if (value) {
-		selected.value = value;
-	}
+	selected.value = value || props.choices[0];
 
 	watch(selected, (value) => {
 		setStorageValue(value);
