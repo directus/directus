@@ -372,6 +372,7 @@ TrustRadius
 truthy
 TTL
 TTY
+TypeDoc
 UI
 UID
 UIDs
