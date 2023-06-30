@@ -13,7 +13,7 @@ import type { AbstractSqlQuery } from '../types.js';
 export const convertFilter = (
 	filter: AbstractQueryFilterNode,
 	collection: string,
-	generator: Generator<number>
+	generator:  Generator<number, never, never>
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
 	return convertFilterWithNegate(filter, collection, generator, false);
 };
@@ -21,7 +21,7 @@ export const convertFilter = (
 const convertFilterWithNegate = (
 	filter: AbstractQueryFilterNode,
 	collection: string,
-	generator: Generator<number>,
+	generator:  Generator<number, never, never>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
 	if (filter.type === 'condition') {
