@@ -1,4 +1,4 @@
-import type { AbstractQueryNodeCondition } from '@directus/data';
+import type { AbstractQueryFilterNode } from '@directus/data';
 import type { AbstractSqlQuery } from '../types.js';
 
 /**
@@ -11,15 +11,10 @@ import type { AbstractSqlQuery } from '../types.js';
  * @returns
  */
 export const convertFilter = (
-	filter: AbstractQueryNodeCondition,
+	filter: AbstractQueryFilterNode,
 	collection: string,
-	firstParameterIndex: number,
-	secondParameterIndex: number | null
-): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> | null => {
-	if (filter === undefined) {
-		return null;
-	}
-
+	generator: Generator<number>
+): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
 	if (filter.target.type !== 'primitive' || filter.compareTo.type !== 'value') {
 		throw new Error('Only primitives are currently supported.');
 	}
@@ -30,14 +25,10 @@ export const convertFilter = (
 
 	const parameterIndexes = [firstParameterIndex];
 
-	if (secondParameterIndex !== null) {
-		parameterIndexes.push(secondParameterIndex);
-	}
-
 	return {
 		where: {
 			type: 'condition',
-			negation: filter.negation,
+			negate: false,
 			operation: filter.operation,
 			target: {
 				column: filter.target.field,

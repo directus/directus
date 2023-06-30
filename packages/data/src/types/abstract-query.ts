@@ -181,7 +181,7 @@ export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
 	offset?: AbstractQueryNodeOffset;
 	sort?: AbstractQueryNodeSort[];
-	filter?: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
+	filter?: AbstractQueryFilterNode;
 }
 
 interface AbstractQueryModifierNode {
@@ -310,20 +310,22 @@ export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
  * }
  * ```
  */
+export type AbstractQueryFilterNode = AbstractQueryNodeLogical | AbstractQueryNodeNegate | AbstractQueryNodeCondition;
+
 export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
 
 	operator: 'and' | 'or';
 
 	/** the values for the the operation. */
-	childNodes: (AbstractQueryNodeLogical | AbstractQueryNodeCondition)[];
+	childNodes: AbstractQueryFilterNode[];
 }
 
 export interface AbstractQueryNodeNegate extends AbstractQueryModifierNode {
 	type: 'negate';
 
 	/** the values for the the operation. */
-	childNode: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
+	childNode: AbstractQueryFilterNode;
 }
 
 /**
@@ -349,15 +351,7 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 		| AbstractQueryFieldNodeRelatedAnyToOne;
 
 	/** the operation to perform on the target */
-	operation:
-		| 'eq'
-		| 'lt'
-		| 'gt'
-		| 'contains'
-		| 'starts_with'
-		| 'ends_with'
-		| 'intersects'
-		| 'intersects_bounding_box';
+	operation: 'eq' | 'lt' | 'gt' | 'contains' | 'starts_with' | 'ends_with' | 'intersects' | 'intersects_bounding_box';
 
 	/** the conditional values. Might be also a function in the future. */
 	compareTo: AbstractQueryNodeConditionValue | AbstractQueryNodeConditionSet;
@@ -365,7 +359,7 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 
 export interface AbstractQueryNodeConditionValue {
 	type: 'value';
-	values: (string | number | boolean)[];
+	value: string | number | boolean;
 }
 
 export interface AbstractQueryNodeConditionSet {

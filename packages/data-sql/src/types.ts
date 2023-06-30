@@ -53,7 +53,7 @@ export interface AbstractSqlQuery {
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
 	order?: AbstractSqlQueryOrderNode[];
-	where?: AbstractSqlQueryWhereNode;
+	where?: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode;
 	intersect?: AbstractSqlQuery;
 	parameters: (string | boolean | number)[];
 }
@@ -66,34 +66,28 @@ export type AbstractSqlQueryOrderNode = {
 /**
  * An abstract WHERE clause.
  */
-export interface AbstractSqlQueryWhereNode {
+export interface AbstractSqlQueryWhereConditionNode {
 	type: 'condition';
-
-	/* indicated of the condition should be negated using NOT */
-	negate: boolean;
 
 	/* value which will be compared to another value or expression. Functions will be supported soon. */
 	target: SqlStatementColumn;
 
 	/* an abstract comparator */
-	operation:
-		| 'eq'
-		| 'lt'
-		| 'lte'
-		| 'gt'
-		| 'gte'
-		| 'in'
-		| 'contains'
-		| 'starts_with'
-		| 'intersects';
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'contains' | 'starts_with' | 'ends_with' | 'intersects';
+
+	/* indicated of the condition should be negated using NOT */
+	negate: boolean;
 
 	/* a value to which the target will be compared */
 	compareTo: CompareValueNode | CompareSetNode;
 }
 
-/**
- * @TODO missing logical type
- */
+export interface AbstractSqlQueryWhereLogicalNode {
+	type: 'logical';
+	operator: 'and' | 'or';
+	negate: boolean;
+	childNodes: (AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode)[];
+}
 
 export interface CompareValueNode {
 	type: 'value';

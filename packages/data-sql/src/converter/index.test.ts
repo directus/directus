@@ -69,7 +69,6 @@ test('Convert query with filter', () => {
 				type: 'value',
 				values: [randomInteger(1, 100)],
 			},
-			negation: false,
 		},
 	};
 
@@ -98,7 +97,7 @@ test('Convert query with filter', () => {
 				table: sample.query.collection,
 				type: 'primitive',
 			},
-			negation: false,
+			negate: false,
 			operation: 'gt',
 			compareTo: {
 				type: 'value',
