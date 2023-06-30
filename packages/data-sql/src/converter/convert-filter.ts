@@ -15,31 +15,54 @@ export const convertFilter = (
 	collection: string,
 	generator: Generator<number>
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
-	if (filter.target.type !== 'primitive' || filter.compareTo.type !== 'value') {
-		throw new Error('Only primitives are currently supported.');
-	}
+	return convertFilterWithNegate(filter, collection, generator, false);
+};
 
-	if (filter.operation === 'intersects' || filter.operation === 'intersects_bounding_box') {
-		throw new Error('The intersects operators are not yet supported.');
-	}
+const convertFilterWithNegate = (
+	filter: AbstractQueryFilterNode,
+	collection: string,
+	generator: Generator<number>,
+	negate: boolean
+): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
+	if (filter.type === 'condition') {
+		if (filter.target.type !== 'primitive' || filter.compareTo.type !== 'value') {
+			throw new Error('Only primitives are currently supported.');
+		}
 
-	const parameterIndexes = [firstParameterIndex];
+		if (filter.operation === 'intersects' || filter.operation === 'intersects_bounding_box') {
+			throw new Error('The intersects operators are not yet supported.');
+		}
 
-	return {
-		where: {
-			type: 'condition',
-			negate: false,
-			operation: filter.operation,
-			target: {
-				column: filter.target.field,
-				table: collection,
-				type: 'primitive',
+		return {
+			where: {
+				type: 'condition',
+				negate,
+				operation: filter.operation,
+				target: {
+					column: filter.target.field,
+					table: collection,
+					type: 'primitive',
+				},
+				compareTo: {
+					type: 'value',
+					parameterIndexes: [generator.next().value],
+				},
 			},
-			compareTo: {
-				type: 'value',
-				parameterIndexes,
+			parameters: [filter.compareTo.value],
+		};
+	} else if (filter.type === 'negate') {
+		return convertFilterWithNegate(filter.childNode, collection, generator, !negate);
+	} else {
+		const children = filter.childNodes.map((childNode) => convertFilterWithNegate(childNode, collection, generator, false));
+
+		return {
+			where: {
+				type: 'logical',
+				negate,
+				operator: filter.operator,
+				childNodes: children.map((child) => child.where),
 			},
-		},
-		parameters: filter.compareTo.values,
-	};
+			parameters: children.flatMap((child) => child.parameters),
+		};
+	}
 };
