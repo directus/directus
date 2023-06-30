@@ -7,6 +7,7 @@
 		</div>
 	</div>
 </template>
+
 <script setup lang="ts">
 defineProps<{
 	image: string;
@@ -14,6 +15,7 @@ defineProps<{
 	title: string;
 }>();
 </script>
+
 <style scoped>
 .avatar {
 	position: relative;
