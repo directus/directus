@@ -18,7 +18,7 @@ const { params } = useData()
 <h1>{{ params.title }}</h1>
 <p>{{ params.summary }}</p>
 
-<Avatar :image="`https://marketing.directus.app/assets/${params.user_created.avatar}?key=circle`" :name="params.user_created.first_name + ' ' + params.user_created.last_name" :title="params.user_created.title ?? 'Contributor'" />
+<Avatar :image="`https://marketing.directus.app/assets/${params.author.avatar}?key=circle`" :name="params.author.first_name + ' ' + params.author.last_name" :title="params.author.title ?? 'Contributor'" />
 
 <hr />
 

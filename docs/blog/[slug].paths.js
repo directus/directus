@@ -2,7 +2,7 @@ export default {
 	async paths() {
 		const articles = await (
 			await fetch(
-				'https://marketing.directus.app/items/articles?fields=*,user_created.first_name,user_created.last_name,user_created.avatar,user_created.title'
+				'https://marketing.directus.app/items/developer_articles?fields=*,author.first_name,author.last_name,author.avatar,author.title'
 			)
 		).json();
 
@@ -10,12 +10,12 @@ export default {
 			params: {
 				slug: article.id,
 				title: article.title,
-				publish_date: article.publish_date,
+				date_published: article.date_published,
 				summary: article.summary,
 				image: article.image,
-				user_created: article.user_created,
+				author: article.author,
 			},
-			content: article.body,
+			content: article.content,
 		}));
 
 		return posts;

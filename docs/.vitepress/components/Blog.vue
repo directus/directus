@@ -15,14 +15,12 @@
 				<div class="heroToggler">
 					<Badge>Featured Article</Badge>
 					<Article
-						v-for="article in [data.blog.articles[0]]"
-						:key="article.id"
-						:title="article.title"
-						:desc="article.description"
-						:author="article.user_created.first_name + ' ' + article.user_created.last_name"
-						:date="getFriendlyDate(article.publish_date)"
-						:url="`/blog/${article.id}`"
-						:img="`https://marketing.directus.app/assets/${article.image}?key=card`"
+						:title="data.blog.featured.title"
+						:desc="data.blog.featured.description"
+						:author="data.blog.featured.author.first_name + ' ' + data.blog.featured.author.last_name"
+						:date="getFriendlyDate(data.blog.featured.date_published)"
+						:url="`/blog/${data.blog.featured.id}`"
+						:img="`https://marketing.directus.app/assets/${data.blog.featured.image}?key=card`"
 					/>
 				</div>
 			</div>
@@ -36,8 +34,8 @@
 						:key="article.id"
 						:title="article.title"
 						:desc="article.description"
-						:author="article.user_created.first_name + ' ' + article.user_created.last_name"
-						:date="getFriendlyDate(article.publish_date)"
+						:author="article.author.first_name + ' ' + article.author.last_name"
+						:date="getFriendlyDate(article.date_published)"
 						:url="`/blog/${article.id}`"
 						:img="`https://marketing.directus.app/assets/${article.image}?key=card`"
 					/>
