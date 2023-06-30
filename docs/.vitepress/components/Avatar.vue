@@ -30,6 +30,8 @@ defineProps<{
 
 .avatar > img {
 	height: 2.5rem;
+	object-fit: cover;
+	object-position: top;
 	width: 2.5rem;
 	border-radius: 9999px;
 	background-color: gray;
