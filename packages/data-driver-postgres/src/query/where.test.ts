@@ -270,6 +270,6 @@ test('Convert filter nested and with negation', () => {
 	};
 
 	expect(where(statement)).toStrictEqual(
-		`WHERE "${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" != $2 OR (NOT ("${randomTable}"."${thirdColumn}" >= $3 AND "${randomTable}"."${fourthColumn}" = $4))`
+		`WHERE "${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" != $2 OR NOT ("${randomTable}"."${thirdColumn}" >= $3 AND "${randomTable}"."${fourthColumn}" = $4)`
 	);
 });

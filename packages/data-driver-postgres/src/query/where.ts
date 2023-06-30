@@ -38,7 +38,9 @@ const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQuer
 		return `${target} ${comparison}`;
 	} else {
 		const logicalGroup = where.childNodes
-			.map((childNode) => (childNode.type === 'condition' ? whereString(childNode) : `(${whereString(childNode)})`))
+			.map((childNode) =>
+				childNode.type === 'condition' || childNode.negate ? whereString(childNode) : `(${whereString(childNode)})`
+			)
 			.join(where.operator === 'and' ? ' AND ' : ' OR ');
 
 		return where.negate ? `NOT (${logicalGroup})` : logicalGroup;
