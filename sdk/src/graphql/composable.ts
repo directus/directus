@@ -1,5 +1,4 @@
 import type { DirectusClient } from '../client.js';
-import type { RequestOptions } from '../types/request.js';
 import type { GraphqlClient } from './types.js';
 import { request } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
@@ -17,9 +16,8 @@ export const graphql = () => {
 				variables?: Record<string, unknown>,
 				scope: 'items' | 'system' = 'items'
 			): Promise<Output> {
-				const options: RequestOptions = {
+				const options: RequestInit = {
 					method: 'POST',
-					path: scope === 'items' ? '/graphql' : '/graphql/system',
 					body: JSON.stringify({ query, variables }),
 					headers: {},
 				};
@@ -27,11 +25,11 @@ export const graphql = () => {
 				const token = await client.getToken();
 
 				if (token) {
-					if (!options.headers) options.headers = {};
-					options.headers['Authorization'] = `Bearer ${token}`;
+					options.headers = { 'Authorization': `Bearer ${token}` };
 				}
 
-				const requestUrl = getRequestUrl(client.url, options);
+				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
+				const requestUrl = getRequestUrl(client.url, requestPath);
 
 				return await request<Output>(requestUrl.toString(), options);
 			},

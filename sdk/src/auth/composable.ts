@@ -1,6 +1,4 @@
 import type { DirectusClient } from '../client.js';
-import { extractJsonData } from '../rest/utils/extract-json-data.js';
-import type { RequestOptions } from '../types/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';
@@ -22,7 +20,7 @@ const defaultConfigValues = {
 export const authentication = (mode: AuthenticationMode = 'cookie', config: AuthenticationConfig = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
 		config = { ...defaultConfigValues, ...config };
-		let refreshPromise: Promise<unknown> | null = null;
+		let refreshPromise: Promise<AuthenticationData> | null = null;
 		let refreshTimeout: NodeJS.Timer | null = null;
 		const storage = config.storage ?? memoryStorage();
 
@@ -54,7 +52,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 			}
 
 			if (authData.expires_at < new Date().getTime() + msRefreshBeforeExpires) {
-				refresh();
+				refresh().catch((_err) => { /* throw err; */ });
 			}
 
 			await activeRefresh();
@@ -70,7 +68,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 				refreshTimeout = setTimeout(() => {
 					refreshTimeout = null;
-					refresh();
+					refresh().catch((_err) => { /* throw err; */ });
 				}, expires - msRefreshBeforeExpires);
 			}
 		};
@@ -81,12 +79,11 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				resetStorage();
 
 				const options = {
-					path: '/auth/refresh',
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-				} as RequestOptions;
+				} as RequestInit;
 
 				if (mode === 'json' && authData?.refresh_token) {
 					options.body = JSON.stringify({
@@ -94,20 +91,16 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 					});
 				}
 
-				const requestUrl = getRequestUrl(client.url, options);
+				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request(requestUrl.toString(), options)
-					.then((resp) => extractJsonData<AuthenticationData>(resp))
-					.catch((err) => console.error(err));
+				const data = await request<AuthenticationData>(requestUrl.toString(), options)
+					.catch((err) => { throw err; });
 
-				if (data) {
-					setCredentials(data);
-				}
-				
+				setCredentials(data);
 				return data;
 			};
 
-			refreshPromise = awaitRefresh();
+			refreshPromise = awaitRefresh().catch((err) => { throw err; });
 			return refreshPromise;
 		};
 
@@ -117,22 +110,15 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
-				const options = {
-					path: '/auth/login',
+				const requestUrl = getRequestUrl(client.url, '/auth/login');
+
+				const data = await request<AuthenticationData>(requestUrl.toString(), {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
 					body: JSON.stringify({
 						email,
 						password,
 					}),
-				} as RequestOptions;
-
-				const requestUrl = getRequestUrl(client.url, options);
-
-				const data = await request(requestUrl.toString(), options)
-					.then((resp) => extractJsonData<AuthenticationData>(resp));
+				});
 
 				setCredentials(data);
 				return data;
@@ -140,13 +126,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 			async logout() {
 				const authData = await storage.get();
 
-				const options = {
-					path: '/auth/logout',
+				const options: RequestInit = {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-				} as RequestOptions;
+				};
 
 				if (mode === 'json' && authData?.refresh_token) {
 					options.body = JSON.stringify({
@@ -154,9 +136,10 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 					});
 				}
 
-				const requestUrl = getRequestUrl(client.url, options);
-				await request(requestUrl.toString(), options);
+				const requestUrl = getRequestUrl(client.url, '/auth/logout');
+				await request(requestUrl.toString(), options, false);
 
+				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();
 			},
 			async getToken() {

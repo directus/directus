@@ -1,18 +1,3 @@
-import type { RequestOptions } from '../types/index.js';
-
-function defaultTransform(options: RequestOptions) {
-	const fetchOptions: RequestInit = {
-		method: options.method ?? 'GET',
-		headers: options.headers ?? {},
-	};
-	
-	if (options.body) {
-		fetchOptions['body'] = options.body;
-	}
-
-	return fetchOptions;
-}
-
 /**
  * Request helper providing default settings
  *
@@ -21,10 +6,27 @@ function defaultTransform(options: RequestOptions) {
  *
  * @returns The API result if successful
  */
-export const request = async (url: string, options: RequestOptions): Promise<Response> => {
-	const fetchOptions: RequestInit = defaultTransform(options);
+export const request = async <Output = any>(url: string, options: RequestInit, formatter?: ((data: any) => Output) | false): Promise<Output> => {
+	const headers = typeof options.headers === "object" && !Array.isArray(options.headers) ?
+		options.headers as Record<string, string> : {};
 
-	return globalThis.fetch(url, fetchOptions);
+	const outputFormatter = formatter !== undefined && formatter !== false
+		? formatter : (({ data }: { data: Output }) => data);
+
+	// use json content by default but allow overrides
+	if ('Content-Type' in headers === false) {
+		headers['Content-Type'] = 'application/json';
+	}
+
+	options.headers = headers;
+
+	const response = await globalThis.fetch(url, options)
+		.then(async (response) => {
+			if (!response.ok) throw await response.json();
+			if (formatter === false) return response;
+			return response.json();
+		})
+		.catch((err) => { throw err; });
+	
+	return outputFormatter(response)
 };
-
-//  @TODO: stop relying on this for the authentication

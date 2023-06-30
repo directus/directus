@@ -1,7 +1,7 @@
 import type { DirectusClient } from '../client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
+import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
-import { extractJsonData } from './utils/extract-json-data.js';
 
 /**
  * Creates a client to communicate with the Directus REST API.
@@ -20,10 +20,6 @@ export const rest = (config: RestConfig = {}) => {
 					options.headers['Content-Type'] = 'application/json';
 				}
 
-				if (!options.processResponse) {
-					options.processResponse = extractJsonData;
-				}
-
 				// we need to use THIS here instead of client allow for overridden functions
 				const self = this as RestClient<Schema> & DirectusClient<Schema>;
 				const token = await self.getToken();
@@ -33,7 +29,7 @@ export const rest = (config: RestConfig = {}) => {
 					options.headers['Authorization'] = `Bearer ${token}`;
 				}
 
-				const requestUrl = getRequestUrl(client.url, options);
+				const requestUrl = getRequestUrl(client.url, options.path, options.params);
 
 				const fetchOptions: RequestInit = {
 					...(config.globalOptions ?? {}),
@@ -48,11 +44,10 @@ export const rest = (config: RestConfig = {}) => {
 					fetchOptions['body'] = options.body;
 				}
 			
-				const response = await globalThis.fetch(requestUrl.toString(), fetchOptions)
+				const response = await request(requestUrl.toString(), fetchOptions, options.processResponse)
 					.catch(onError);
 				
-				return options.processResponse(response)
-					.catch(onError);
+				return response as Output;
 			},
 		};
 	};
