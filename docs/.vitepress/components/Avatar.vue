@@ -3,7 +3,7 @@
 		<img :src="image" alt="" />
 		<div>
 			<p class="avatar_name">{{ name }}</p>
-			<p class="avatar_title">{{ title }}</p>
+			<p>{{ title }}</p>
 		</div>
 	</div>
 </template>
@@ -39,8 +39,5 @@ defineProps<{
 
 .avatar_name {
 	font-weight: 700;
-}
-
-.avatar_title {
 }
 </style>
