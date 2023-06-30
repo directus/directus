@@ -10,16 +10,13 @@
 		"dev": "pnpm build:typedocs && vitepress dev",
 		"preview": "vitepress preview",
 		"spellcheck": "spellchecker -p spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
-		"code-blocks-check": "eslint --config .eslintrc-code-blocks.cjs \"**/*.md\"",
-		"update-thumbnail": "thumbsmith deploy .thumbsmith/docs.thumbnail.html || exit 0"
+		"code-blocks-check": "eslint --config .eslintrc-code-blocks.cjs \"**/*.md\""
 	},
 	"dependencies": {
 		"node-fetch": "3.3.1"
 	},
 	"devDependencies": {
 		"@directus/format-title": "10.0.0",
-		"@thumbsmith/url": "0.1.3",
-		"@unhead/vue": "1.1.26",
 		"@vue/tsconfig": "0.4.0",
 		"eslint-parser-plain": "0.1.0",
 		"eslint-plugin-markdown": "3.0.0",

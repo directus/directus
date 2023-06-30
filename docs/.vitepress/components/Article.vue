@@ -1,13 +1,12 @@
 <template>
 	<div class="article">
 		<a :href="url">
-			<div class="article-img">
+			<div class="image">
 				<img :src="img" alt="" />
 			</div>
-			<Tag v-if="tag" :tag="tag" />
-			<h3 class="sub-headline article-heading">{{ title }}</h3>
-			<p class="m-6 text-muted">{{ desc }}</p>
-			<div v-if="author" class="m-6 gray">
+			<h3 class="heading">{{ title }}</h3>
+			<p class="description">{{ desc }}</p>
+			<div v-if="author" class="author">
 				<span>{{ author }}</span>
 				&nbsp;
 				<span>•</span>
@@ -19,8 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import Tag from './Tag.vue';
-
 defineProps<{
 	title: string;
 	tag?: string;
@@ -33,18 +30,19 @@ defineProps<{
 </script>
 
 <style scoped>
-.article-heading {
+.heading {
 	font-weight: 600;
+	margin-top: 12px;
 }
 
-.article-img {
+.image {
 	width: 100%;
 	border-radius: 8px;
 	aspect-ratio: 16 / 9;
 	overflow: hidden;
 }
 
-.article-img img {
+.image img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
@@ -52,15 +50,20 @@ defineProps<{
 	transition: scale 150ms ease-out;
 }
 
-.gray {
+.description {
+	color: var(--vp-c-text-2);
+	padding-inline-end: 8px;
+}
+
+.author {
 	color: var(--vp-c-gray);
 }
 
-.article:hover .article-heading {
+.article:hover .heading {
 	text-decoration: underline;
 }
 
-.article:hover .article-img img {
+.article:hover .image img {
 	scale: 1.05;
 }
 </style>

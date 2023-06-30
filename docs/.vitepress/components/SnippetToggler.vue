@@ -6,7 +6,7 @@
 			<span class="spacer" />
 
 			<div class="snippet-toggler-header-lang-container">
-				<select class="snippet-toggler-header-lang" :value="pref" @change="onPrefChange">
+				<select v-model="selected" class="snippet-toggler-header-lang">
 					<option v-for="choice in choices" :key="choice" :value="choice">
 						{{ choice }}
 					</option>
@@ -25,7 +25,7 @@
 
 		<div class="content-area">
 			<template v-for="choice in choices" :key="choice">
-				<div v-if="choice === pref">
+				<div v-if="choice === selected">
 					<slot :name="choice.toLowerCase()"></slot>
 				</div>
 			</template>
@@ -34,37 +34,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps<{
 	choices: string[];
 	label?: string;
 }>();
 
-const storageKey = 'toggler-value';
+const selected = ref(props.choices[0]);
 
-const getStorageValue = () => {
-	const value = localStorage.getItem(storageKey);
-	return value || props.choices[0];
+const useStorage = (key: string) => {
+	const getStorageValue = () => {
+		return localStorage.getItem(key);
+	};
+
+	const setStorageValue = (value: string) => localStorage.setItem(key, value);
+
+	return { getStorageValue, setStorageValue };
 };
 
-const setStorageValue = (value: string) => localStorage.setItem(storageKey, value);
+const { getStorageValue, setStorageValue } = useStorage('toggler-value');
 
 onMounted(() => {
 	const value = getStorageValue();
 
 	if (value) {
-		setStorageValue(value);
+		selected.value = value;
 	}
+
+	watch(selected, (value) => {
+		setStorageValue(value);
+	});
 });
-
-const pref = ref(getStorageValue());
-
-const onPrefChange = (event: Event) => {
-	const selectedValue = (event.target as HTMLSelectElement).value;
-	pref.value = selectedValue;
-	setStorageValue(selectedValue);
-};
 </script>
 
 <style scoped>

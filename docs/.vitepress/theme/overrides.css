@@ -6,7 +6,7 @@
 }
 
 /**
- * Scroll workaround for navbar getting collapsed too early and overlapping page
+ * Workaround for navbar getting collapsed too late and overlapping page
  * -------------------------------------------------------------------------- */
 @media only screen and (min-width: 768px) and (max-width: 940px) {
 	.VPNav .VPNavBar .container {
@@ -63,6 +63,9 @@
 	padding-bottom: 0 !important;
 }
 
-.VPNavBar {
+/**
+ * Prevent flash effect in navbar on home page when scrolling down
+ * -------------------------------------------------------------------------- */
+.isHome .VPNavBar {
 	background-color: var(--vp-nav-bg-color);
 }

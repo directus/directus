@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ contributors: string }>();
+defineProps<{ contributors?: string }>();
 </script>
 
 <style scoped>
