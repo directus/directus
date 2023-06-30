@@ -16,7 +16,7 @@ import Github from './.vitepress/components/home/icons/Github.vue';
 			<p>Explore our resources and powerful data engine to build your projects confidently.</p>
 			<div :class="[$style.heroButtons, $style.buttonGroup]">
 				<Button href="/getting-started/quickstart">Get Started</Button>
-				<Button secondary :icon="Github" href="https://github.com/directus/directus/" target="_blank">GitHub</Button>
+				<Button secondary :icon="Github" href="https://github.com/directus/directus/" external>GitHub</Button>
 			</div>
 		</div>
 		<div :class="$style.heroToggler">
@@ -225,8 +225,8 @@ await directus.items('articles').readOne(4, {
 			There are many ways in which you can contribute to the health and growth of the Directus project.
 		</p>
 		<div :class="$style.buttonGroup">
-			<Button href="https://discord.com/invite/directus">Join the Community</Button>
-			<Button secondary :icon="Github" href="https://github.com/directus/directus/" target="_blank">GitHub</Button>
+			<Button href="https://discord.com/invite/directus" external>Join the Community</Button>
+			<Button secondary :icon="Github" href="https://github.com/directus/directus/" external>GitHub</Button>
 		</div>
 	</div>
 	<div :class="[$style.grid3, $style.m60]">

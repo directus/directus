@@ -11,6 +11,7 @@ import { computed, type Component } from 'vue';
 const props = defineProps<{
 	secondary?: boolean;
 	href?: string;
+	external?: boolean;
 	icon?: Component;
 }>();
 
@@ -22,9 +23,11 @@ const component = computed(() => {
 const additionalProps = computed(() => {
 	if (component.value === 'a') {
 		return {
-			href: props.href,
-			target: '_blank',
-			rel: 'noopener noreferrer',
+			...(props.href && { href: props.href }),
+			...(props.external && {
+				target: '_blank',
+				rel: 'noopener noreferrer',
+			}),
 		};
 	}
 
