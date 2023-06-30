@@ -53,7 +53,7 @@ test('Convert filter with one parameter', () => {
 
 	expect(convertFilter(sample.condition, sample.randomCollection, idGen)).toStrictEqual({
 		where: expectedWhere,
-		parameters: (sample.condition.compareTo as AbstractQueryNodeConditionValue).value,
+		parameters: [(sample.condition.compareTo as AbstractQueryNodeConditionValue).value],
 	});
 });
 
@@ -78,7 +78,7 @@ test.skip('Convert filter with one parameter and negation', () => {
 
 	expect(convertFilter(sample.condition, sample.randomCollection, idGen)).toStrictEqual({
 		where: expectedWhere,
-		parameters: (sample.condition.compareTo as AbstractQueryNodeConditionValue).value,
+		parameters: [(sample.condition.compareTo as AbstractQueryNodeConditionValue).value],
 	});
 });
 
@@ -101,11 +101,11 @@ test.skip('Convert filter with two parameters', () => {
 				parameterIndexes: [0, 1],
 			},
 		},
-		parameters: (sample.condition.compareTo as AbstractQueryNodeConditionValue).value,
+		parameters: [(sample.condition.compareTo as AbstractQueryNodeConditionValue).value],
 	});
 });
 
-test('Convert filter', () => {
+test('Convert filter with logical', () => {
 	const idGen = parameterIndexGenerator();
 
 	const randomCollection = randomIdentifier();
@@ -184,25 +184,28 @@ test('Convert filter', () => {
 		],
 	};
 
-	expect(result).toStrictEqual(expectedWhere);
+	expect(result).toStrictEqual({
+		where: expectedWhere,
+		parameters: [firstValue, secondValue],
+	});
 });
 
-// "firstField" > 1 OR NOT "secondField" = 2 OR NOT (NOT "thirdField" < 3 AND NOT (NOT ("fourthField" = 4)))
-test('Convert filter', () => {
+test('Convert filter nested and with negation', () => {
 	const idGen = parameterIndexGenerator();
-
+	
 	const randomCollection = randomIdentifier();
-
+	
 	const firstField = randomIdentifier();
 	const secondField = randomIdentifier();
 	const thirdField = randomIdentifier();
 	const fourthField = randomIdentifier();
-
+	
 	const firstValue = randomInteger(1, 100);
 	const secondValue = randomInteger(1, 100);
 	const thirdValue = randomInteger(1, 100);
 	const fourthValue = randomInteger(1, 100);
-
+	
+	// "firstField" > 1 OR NOT "secondField" = 2 OR NOT (NOT "thirdField" < 3 AND NOT (NOT ("fourthField" = 4)))
 	const filter: AbstractQueryFilterNode = {
 		type: 'logical',
 		operator: 'or',
@@ -352,5 +355,8 @@ test('Convert filter', () => {
 		],
 	};
 
-	expect(result).toStrictEqual(expectedWhere);
+	expect(result).toStrictEqual({
+		where: expectedWhere,
+		parameters: [firstValue, secondValue, thirdValue, fourthValue],
+	});
 });
