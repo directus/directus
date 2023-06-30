@@ -1,9 +1,3 @@
-<script setup>
-defineProps({
-	contributors: { type: String, required: true },
-});
-</script>
-
 <template>
 	<div v-if="contributors">
 		<p>
@@ -12,6 +6,10 @@ defineProps({
 		</p>
 	</div>
 </template>
+
+<script setup lang="ts">
+defineProps<{ contributors?: string }>();
+</script>
 
 <style scoped>
 p {
