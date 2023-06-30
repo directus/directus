@@ -5,8 +5,7 @@
  */
 export async function extractJsonData<Output>(response: Response) {
 	if (!response.ok) {
-		/** @TODO Do better error handling */
-		throw new Error('Request errored');
+		throw response;
 	}
 
 	const data = (await response.json()) as { data: Output };

@@ -5,7 +5,7 @@ function defaultTransform(options: RequestOptions) {
 		method: options.method ?? 'GET',
 		headers: options.headers ?? {},
 	};
-
+	
 	if (options.body) {
 		fetchOptions['body'] = options.body;
 	}
@@ -22,9 +22,9 @@ function defaultTransform(options: RequestOptions) {
  * @returns The API result if successful
  */
 export const request = async (url: string, options: RequestOptions): Promise<Response> => {
-	const fetchOptions: RequestInit = options.transformRequest
-		? await options.transformRequest(options)
-		: defaultTransform(options);
+	const fetchOptions: RequestInit = defaultTransform(options);
 
 	return globalThis.fetch(url, fetchOptions);
 };
+
+//  @TODO: stop relying on this for the authentication

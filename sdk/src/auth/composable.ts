@@ -97,9 +97,13 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				const requestUrl = getRequestUrl(client.url, options);
 
 				const data = await request(requestUrl.toString(), options)
-					.then((resp) => extractJsonData<AuthenticationData>(resp));
+					.then((resp) => extractJsonData<AuthenticationData>(resp))
+					.catch((err) => console.error(err));
 
-				setCredentials(data);
+				if (data) {
+					setCredentials(data);
+				}
+				
 				return data;
 			};
 

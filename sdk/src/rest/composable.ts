@@ -1,6 +1,5 @@
 import type { DirectusClient } from '../client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
-import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
 import { extractJsonData } from './utils/extract-json-data.js';
 
@@ -9,19 +8,20 @@ import { extractJsonData } from './utils/extract-json-data.js';
  *
  * @returns A Directus REST client.
  */
-export const rest = (_config: RestConfig = {}) => {
+export const rest = (config: RestConfig = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): RestClient<Schema> => {
 		return {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
+				const onError = config.onError ?? ((_err: any) => undefined);
 
 				if (!options.headers?.['Content-Type']) {
 					if (!options.headers) options.headers = {};
 					options.headers['Content-Type'] = 'application/json';
 				}
 
-				if (!options.transformResponse) {
-					options.transformResponse = extractJsonData;
+				if (!options.processResponse) {
+					options.processResponse = extractJsonData;
 				}
 
 				// we need to use THIS here instead of client allow for overridden functions
@@ -35,8 +35,24 @@ export const rest = (_config: RestConfig = {}) => {
 
 				const requestUrl = getRequestUrl(client.url, options);
 
-				return request(requestUrl.toString(), options)
-					.then(options.transformResponse);
+				const fetchOptions: RequestInit = {
+					...(config.globalOptions ?? {}),
+					method: options.method ?? 'GET',
+					headers: {
+						...(config.globalOptions?.headers ?? {}),
+						...(options.headers ?? {}),
+					},
+				};
+			
+				if (options.body) {
+					fetchOptions['body'] = options.body;
+				}
+			
+				const response = await globalThis.fetch(requestUrl.toString(), fetchOptions)
+					.catch(onError);
+				
+				return options.processResponse(response)
+					.catch(onError);
 			},
 		};
 	};

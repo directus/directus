@@ -6,8 +6,7 @@ export interface RequestOptions {
 	params?: Record<string, string>;
 	headers?: Record<string, string>;
 	body?: string;
-	transformRequest?: RequestTransformer;
-	transformResponse?: ResponseTransformer;
+	processResponse?: ResponseTransformer;
 }
 
 export interface RequestTransformer {
