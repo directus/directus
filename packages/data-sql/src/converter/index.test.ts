@@ -67,7 +67,7 @@ test('Convert query with filter', () => {
 			operation: 'gt',
 			compareTo: {
 				type: 'value',
-				values: [randomInteger(1, 100)],
+				value: randomInteger(1, 100),
 			},
 		},
 	};
@@ -104,9 +104,9 @@ test('Convert query with filter', () => {
 				parameterIndexes: [0],
 			},
 		},
-		parameters: (
+		parameters: [(
 			(sample.query.modifiers.filter! as AbstractQueryNodeCondition).compareTo as AbstractQueryNodeConditionValue
-		).values,
+		).value],
 	};
 
 	expect(res).toStrictEqual(expected);
