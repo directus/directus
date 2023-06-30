@@ -1,5 +1,5 @@
 <template>
-	<Layout :class="{ isHome: path === '/' }">
+	<Layout :class="{ isHome }">
 		<template #doc-footer-before>
 			<Feedback :url="path" :title="title" />
 			<Contributors id="contributors" :contributors="contributors" />
@@ -19,6 +19,7 @@ const route = useRoute();
 const title = computed(() => page.value.title);
 const contributors = computed(() => page.value.frontmatter.contributors);
 const path = computed(() => route.path);
+const isHome = computed(() => ['/', '/index.html'].includes(path.value));
 </script>
 
 <style scoped>
