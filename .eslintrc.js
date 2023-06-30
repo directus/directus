@@ -63,7 +63,7 @@ const vueRules = {
 			order: ['template', 'script', 'style'],
 		},
 	],
-	// Require empty line component tags
+	// Require empty line between component tags
 	'vue/padding-line-between-blocks': 'error',
 	// Allow single word component names ("Example" instead of "MyExample")
 	'vue/multi-word-component-names': 'off',
