@@ -185,7 +185,7 @@ export interface AbstractQueryModifiers {
 }
 
 interface AbstractQueryModifierNode {
-	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition';
+	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition' | 'negate';
 }
 
 /**
@@ -313,10 +313,17 @@ export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
 export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
 
-	operator: 'and' | 'or' | 'not';
+	operator: 'and' | 'or';
 
 	/** the values for the the operation. */
 	childNodes: (AbstractQueryNodeLogical | AbstractQueryNodeCondition)[];
+}
+
+export interface AbstractQueryNodeNegate extends AbstractQueryModifierNode {
+	type: 'negate';
+
+	/** the values for the the operation. */
+	childNode: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
 }
 
 /**
@@ -345,19 +352,12 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	operation:
 		| 'eq'
 		| 'lt'
-		| 'lte'
 		| 'gt'
-		| 'gte'
-		| 'in'
-		| 'between'
 		| 'contains'
 		| 'starts_with'
 		| 'ends_with'
 		| 'intersects'
 		| 'intersects_bounding_box';
-
-	/** the above operations can be negated by setting the following attribute to true. */
-	negation: boolean;
 
 	/** the conditional values. Might be also a function in the future. */
 	compareTo: AbstractQueryNodeConditionValue | AbstractQueryNodeConditionSet;

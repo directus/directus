@@ -70,17 +70,30 @@ export interface AbstractSqlQueryWhereNode {
 	type: 'condition';
 
 	/* indicated of the condition should be negated using NOT */
-	negation: boolean;
+	negate: boolean;
 
 	/* value which will be compared to another value or expression. Functions will be supported soon. */
 	target: SqlStatementColumn;
 
 	/* an abstract comparator */
-	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'between' | 'contains' | 'starts_with' | 'ends_with';
+	operation:
+		| 'eq'
+		| 'lt'
+		| 'lte'
+		| 'gt'
+		| 'gte'
+		| 'in'
+		| 'contains'
+		| 'starts_with'
+		| 'intersects';
 
 	/* a value to which the target will be compared */
 	compareTo: CompareValueNode | CompareSetNode;
 }
+
+/**
+ * @TODO missing logical type
+ */
 
 export interface CompareValueNode {
 	type: 'value';
