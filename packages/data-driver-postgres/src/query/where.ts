@@ -2,7 +2,13 @@
  * @todo
  * Move this module outside of src/query because it's not only used for query, but also for modifications like update and delete.
  */
-import type { AbstractSqlQuery, CompareSetNode, CompareValueNode } from '@directus/data-sql';
+import type {
+	AbstractSqlQuery,
+	AbstractSqlQueryWhereConditionNode,
+	AbstractSqlQueryWhereLogicalNode,
+	CompareSetNode,
+	CompareValueNode,
+} from '@directus/data-sql';
 import { wrapColumn } from '../utils/wrap-column.js';
 
 /**
@@ -16,16 +22,28 @@ export const where = ({ where }: AbstractSqlQuery): string | null => {
 		return null;
 	}
 
-	// Support for multiple conditions (type === 'logical') will be added soon
-	if (where.type !== 'condition' || where.target.type !== 'primitive' || where.compareTo.type !== 'value') {
-		throw new Error('The provided where node is not yet supported.');
+	return `WHERE ${whereString(where)}`;
+};
+
+const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode): string => {
+	if (where.type === 'condition') {
+		if (where.target.type !== 'primitive' || where.compareTo.type !== 'value') {
+			throw new Error('The provided where node is not yet supported.');
+		}
+
+		const target = wrapColumn(where.target.table, where.target.column);
+
+		const comparison = getComparison(where.operation, where.compareTo);
+		const condition = `${target} ${comparison}`;
+
+		return where.negate ? `NOT ${condition}` : condition;
+	} else {
+		const logicalGroup = where.childNodes
+			.map((childNode) => (childNode.type === 'condition' ? whereString(childNode) : `(${whereString(childNode)})`))
+			.join(where.operator === 'and' ? ' AND ' : ' OR ');
+
+		return where.negate ? `NOT (${logicalGroup})` : logicalGroup;
 	}
-
-	const target = wrapColumn(where.target.table, where.target.column);
-
-	const comparison = getComparison(where.operation, where.compareTo);
-	const condition = `${target} ${comparison}`;
-	return where.negation ? `WHERE NOT ${condition}` : `WHERE ${condition}`;
 };
 
 /**
