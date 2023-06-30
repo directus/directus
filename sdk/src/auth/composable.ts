@@ -1,4 +1,5 @@
 import type { DirectusClient } from '../client.js';
+import { extractJsonData } from '../rest/utils/extract-json-data.js';
 import type { RequestOptions } from '../types/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
@@ -82,6 +83,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				const options = {
 					path: '/auth/refresh',
 					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				} as RequestOptions;
 
 				if (mode === 'json' && authData?.refresh_token) {
@@ -91,7 +95,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				}
 
 				const requestUrl = getRequestUrl(client.url, options);
-				const data = await request<AuthenticationData>(requestUrl.toString(), options);
+
+				const data = await request(requestUrl.toString(), options)
+					.then((resp) => extractJsonData<AuthenticationData>(resp));
 
 				setCredentials(data);
 				return data;
@@ -110,6 +116,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				const options = {
 					path: '/auth/login',
 					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
 					body: JSON.stringify({
 						email,
 						password,
@@ -117,7 +126,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				} as RequestOptions;
 
 				const requestUrl = getRequestUrl(client.url, options);
-				const data = await request<AuthenticationData>(requestUrl.toString(), options);
+
+				const data = await request(requestUrl.toString(), options)
+					.then((resp) => extractJsonData<AuthenticationData>(resp));
 
 				setCredentials(data);
 				return data;
@@ -128,6 +139,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				const options = {
 					path: '/auth/logout',
 					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				} as RequestOptions;
 
 				if (mode === 'json' && authData?.refresh_token) {
