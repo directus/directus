@@ -199,3 +199,9 @@
 		padding-block: 32px;
 	}
 }
+
+@media only screen and (max-width: 380px) {
+	.heroContent h1 {
+		font-size: 36px;
+	}
+}
