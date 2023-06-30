@@ -9,6 +9,9 @@ import Github from './.vitepress/components/home/icons/Github.vue';
 </script>
 
 <section :class="[$style.hero, $style.paddingBox]">
+	<div :class="$style.heroPattern">
+		 <Pattern />
+	</div>
 	<div :class="[$style.sectionContainer, $style.flex]">
 		<div :class="[$style.heroContent, $style.sectionPaddingHero]">
 			<div :class="$style.heroBadge">Resource Hub</div>
@@ -67,9 +70,7 @@ await directus.items('articles').readOne(4, {
 </SnippetToggler>
 		</div>
 	</div>
-	<div :class="$style.heroPattern">
-		 <Pattern />
-	</div>
+
 </section>
 
 <section :class="[$style.sectionPaddingLg, $style.paddingBox]">

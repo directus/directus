@@ -49,6 +49,7 @@
 
 .heroContent {
 	max-width: 580px;
+	position: relative;
 }
 
 .heroContent h1 {
