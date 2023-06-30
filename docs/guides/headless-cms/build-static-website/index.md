@@ -5,11 +5,15 @@
   h="2"
   text="Build a website with dynamic content, pages, and posts with Next.js 13."
   url="/guides/headless-cms/build-static-website/next-13"
-  icon="/icons/nextjs.png" />
+  icon="/icons/nextjs.png"
+  add-margin
+/>
 
 <Card
   title="Nuxt.js"
   h="2"
   text="Build a website with dynamic content, pages, and posts with Nuxt.js 3."
   url="/guides/headless-cms/build-static-website/nuxt-3"
-  icon="/icons/nuxtjs.svg" />
+  icon="/icons/nuxtjs.svg"
+  add-margin
+/>
