@@ -6,12 +6,13 @@ layout: home
 import Pattern from './.vitepress/components/home/Pattern.vue';
 import Footer from './.vitepress/components/home/Footer.vue';
 import Github from './.vitepress/components/home/icons/Github.vue';
+import Badge from './.vitepress/components/Badge.vue'
 </script>
 
 <section :class="[$style.hero, $style.paddingBox]">
 	<div :class="[$style.sectionContainer, $style.flex]">
 		<div :class="[$style.heroContent, $style.sectionPaddingHero]">
-			<div :class="$style.heroBadge">Resource Hub</div>
+			<Badge>Resource Hub</Badge>
 			<h1>Directus Documentation</h1>
 			<p>Explore our resources and powerful data engine to build your projects confidently.</p>
 			<div :class="[$style.heroButtons, $style.buttonGroup]">

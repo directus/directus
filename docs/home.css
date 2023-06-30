@@ -40,13 +40,6 @@
 	opacity: 0.5;
 }
 
-.heroBadge {
-	color: #fe97dc;
-	font-size: 14px;
-	font-weight: 700;
-	text-transform: uppercase;
-}
-
 .heroContent {
 	max-width: 580px;
 }
