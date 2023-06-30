@@ -6,12 +6,18 @@
  *
  * @returns The API result if successful
  */
-export const request = async <Output = any>(url: string, options: RequestInit, formatter?: ((data: any) => Output) | false): Promise<Output> => {
-	const headers = typeof options.headers === "object" && !Array.isArray(options.headers) ?
-		options.headers as Record<string, string> : {};
+export const request = async <Output = any>(
+	url: string,
+	options: RequestInit,
+	formatter?: ((data: any) => Output) | false
+): Promise<Output> => {
+	const headers =
+		typeof options.headers === 'object' && !Array.isArray(options.headers)
+			? (options.headers as Record<string, string>)
+			: {};
 
-	const outputFormatter = formatter !== undefined && formatter !== false
-		? formatter : (({ data }: { data: Output }) => data);
+	const outputFormatter =
+		formatter !== undefined && formatter !== false ? formatter : ({ data }: { data: Output }) => data;
 
 	// use json content by default but allow overrides
 	if ('Content-Type' in headers === false) {
@@ -20,13 +26,16 @@ export const request = async <Output = any>(url: string, options: RequestInit, f
 
 	options.headers = headers;
 
-	const response = await globalThis.fetch(url, options)
+	const response = await globalThis
+		.fetch(url, options)
 		.then(async (response) => {
 			if (!response.ok) throw await response.json();
 			if (formatter === false) return response;
 			return response.json();
 		})
-		.catch((err) => { throw err; });
-	
-	return outputFormatter(response)
+		.catch((err) => {
+			throw err;
+		});
+
+	return outputFormatter(response);
 };

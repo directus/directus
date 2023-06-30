@@ -52,7 +52,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 			}
 
 			if (authData.expires_at < new Date().getTime() + msRefreshBeforeExpires) {
-				refresh().catch((_err) => { /* throw err; */ });
+				refresh().catch((_err) => {
+					/* throw err; */
+				});
 			}
 
 			await activeRefresh();
@@ -68,7 +70,10 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 				refreshTimeout = setTimeout(() => {
 					refreshTimeout = null;
-					refresh().catch((_err) => { /* throw err; */ });
+
+					refresh().catch((_err) => {
+						/* throw err; */
+					});
 				}, expires - msRefreshBeforeExpires);
 			}
 		};
@@ -93,14 +98,18 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 				const requestUrl = getRequestUrl(client.url, '/auth/refresh');
 
-				const data = await request<AuthenticationData>(requestUrl.toString(), options)
-					.catch((err) => { throw err; });
+				const data = await request<AuthenticationData>(requestUrl.toString(), options).catch((err) => {
+					throw err;
+				});
 
 				setCredentials(data);
 				return data;
 			};
 
-			refreshPromise = awaitRefresh().catch((err) => { throw err; });
+			refreshPromise = awaitRefresh().catch((err) => {
+				throw err;
+			});
+
 			return refreshPromise;
 		};
 

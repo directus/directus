@@ -39,14 +39,13 @@ export const rest = (config: RestConfig = {}) => {
 						...(options.headers ?? {}),
 					},
 				};
-			
+
 				if (options.body) {
 					fetchOptions['body'] = options.body;
 				}
-			
-				const response = await request(requestUrl.toString(), fetchOptions, options.processResponse)
-					.catch(onError);
-				
+
+				const response = await request(requestUrl.toString(), fetchOptions, options.processResponse).catch(onError);
+
 				return response as Output;
 			},
 		};
