@@ -146,6 +146,7 @@
 @media only screen and (min-width: 768px) {
 	.headerSelfHosted {
 		align-self: center;
+		text-align: unset;
 	}
 
 	.headingSelfHosted {
