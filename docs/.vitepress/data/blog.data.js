@@ -1,6 +1,10 @@
 export default {
 	async load() {
-		const articles = await (await fetch('https://marketing.directus.app/items/articles')).json();
+		const articles = await (
+			await fetch(
+				'https://marketing.directus.app/items/articles?fields=*,user_created.first_name,user_created.last_name,user_created.avatar,user_created.title'
+			)
+		).json();
 
 		let posts = articles.data.map((article) => ({
 			id: article.id,
