@@ -104,9 +104,10 @@ test('Convert query with filter', () => {
 				parameterIndexes: [0],
 			},
 		},
-		parameters: [(
-			(sample.query.modifiers.filter! as AbstractQueryNodeCondition).compareTo as AbstractQueryNodeConditionValue
-		).value],
+		parameters: [
+			((sample.query.modifiers.filter! as AbstractQueryNodeCondition).compareTo as AbstractQueryNodeConditionValue)
+				.value,
+		],
 	};
 
 	expect(res).toStrictEqual(expected);

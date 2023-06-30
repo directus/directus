@@ -41,8 +41,11 @@ describe('Where clause:', () => {
 
 	test('Where clause', () => {
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column}" > $${
-				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode).parameterIndexes[0]! + 1
+			`WHERE "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${
+				(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column
+			}" > $${
+				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode)
+					.parameterIndexes[0]! + 1
 			}`
 		);
 	});
@@ -51,8 +54,11 @@ describe('Where clause:', () => {
 		sample.statement.where!.negate = true;
 
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column}" <= $${
-				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode).parameterIndexes[0]! + 1
+			`WHERE "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${
+				(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column
+			}" <= $${
+				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode)
+					.parameterIndexes[0]! + 1
 			}`
 		);
 	});

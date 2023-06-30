@@ -192,19 +192,19 @@ test('Convert filter with logical', () => {
 
 test('Convert filter nested and with negation', () => {
 	const idGen = parameterIndexGenerator();
-	
+
 	const randomCollection = randomIdentifier();
-	
+
 	const firstField = randomIdentifier();
 	const secondField = randomIdentifier();
 	const thirdField = randomIdentifier();
 	const fourthField = randomIdentifier();
-	
+
 	const firstValue = randomInteger(1, 100);
 	const secondValue = randomInteger(1, 100);
 	const thirdValue = randomInteger(1, 100);
 	const fourthValue = randomInteger(1, 100);
-	
+
 	// "firstField" > 1 OR NOT "secondField" = 2 OR NOT (NOT "thirdField" < 3 AND NOT (NOT ("fourthField" = 4)))
 	const filter: AbstractQueryFilterNode = {
 		type: 'logical',
@@ -351,7 +351,7 @@ test('Convert filter nested and with negation', () => {
 						},
 					},
 				],
-			}
+			},
 		],
 	};
 
