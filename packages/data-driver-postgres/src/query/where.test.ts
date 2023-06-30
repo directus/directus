@@ -51,7 +51,7 @@ describe('Where clause:', () => {
 		sample.statement.where!.negate = true;
 
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE NOT "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column}" > $${
+			`WHERE "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column}" <= $${
 				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode).parameterIndexes[0]! + 1
 			}`
 		);
@@ -270,6 +270,6 @@ test('Convert filter nested and with negation', () => {
 	};
 
 	expect(where(statement)).toStrictEqual(
-		`WHERE "${randomTable}"."${firstColumn}" > $1 OR NOT "${randomTable}"."${secondColumn}" = $2 OR (NOT (NOT "${randomTable}"."${thirdColumn}" < $3 AND "${randomTable}"."${fourthColumn}" = $4))`
+		`WHERE "${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" != $2 OR (NOT ("${randomTable}"."${thirdColumn}" >= $3 AND "${randomTable}"."${fourthColumn}" = $4))`
 	);
 });

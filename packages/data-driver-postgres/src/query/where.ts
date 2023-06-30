@@ -33,10 +33,9 @@ const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQuer
 
 		const target = wrapColumn(where.target.table, where.target.column);
 
-		const comparison = getComparison(where.operation, where.compareTo);
-		const condition = `${target} ${comparison}`;
+		const comparison = getComparison(where.operation, where.compareTo, where.negate);
 
-		return where.negate ? `NOT ${condition}` : condition;
+		return `${target} ${comparison}`;
 	} else {
 		const logicalGroup = where.childNodes
 			.map((childNode) => (childNode.type === 'condition' ? whereString(childNode) : `(${whereString(childNode)})`))
@@ -54,7 +53,7 @@ const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQuer
  * @param providedIndexes - The indexes of all parameters.
  * @returns An operator with a parameter reference to a value to which the target will be compared.
  */
-export function getComparison(operation: string, compareTo: CompareValueNode | CompareSetNode) {
+export function getComparison(operation: string, compareTo: CompareValueNode | CompareSetNode, negate = false) {
 	if (compareTo.type !== 'value') {
 		throw new Error('Comparisons to sets, f.e. with the IN operator, are not yet supported.');
 	}
@@ -63,23 +62,23 @@ export function getComparison(operation: string, compareTo: CompareValueNode | C
 
 	switch (operation) {
 		case 'eq':
-			return `= $${parameterIndex}`;
+			return `${negate ? '!=' : '='} $${parameterIndex}`;
 		case 'gt':
-			return `> $${parameterIndex}`;
+			return `${negate ? '<=' : '>'} $${parameterIndex}`;
 		case 'gte':
-			return `>= $${parameterIndex}`;
+			return `${negate ? '<' : '>='} $${parameterIndex}`;
 		case 'lt':
-			return `< $${parameterIndex}`;
+			return `${negate ? '>=' : '<'} $${parameterIndex}`;
 		case 'lte':
-			return `<= $${parameterIndex}`;
+			return `${negate ? '>' : '<='} $${parameterIndex}`;
 		case 'contains':
-			return `LIKE '%$${parameterIndex}%'`;
+			return `${negate ? 'NOT LIKE' : 'LIKE'} '%$${parameterIndex}%'`;
 		case 'starts_with':
-			return `LIKE '$${parameterIndex}%'`;
+			return `${negate ? 'NOT LIKE' : 'LIKE'} '$${parameterIndex}%'`;
 		case 'ends_with':
-			return `LIKE '%$${parameterIndex}'`;
+			return `${negate ? 'NOT LIKE' : 'LIKE'} '%$${parameterIndex}'`;
 		case 'in':
-			return `IN (${compareTo.parameterIndexes.map((i) => `$${i + 1}`).join(', ')})`;
+			return `${negate ? 'NOT IN' : 'IN'} (${compareTo.parameterIndexes.map((i) => `$${i + 1}`).join(', ')})`;
 		default:
 			throw new Error(`Unsupported operation: ${operation}`);
 	}
