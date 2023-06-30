@@ -2,7 +2,7 @@
 	<div class="article">
 		<a :href="url">
 			<div class="image">
-				<img :src="img" alt="" />
+				<img :src="img" alt="" loading="lazy" />
 			</div>
 			<h3 class="heading">{{ title }}</h3>
 			<p class="description">{{ desc }}</p>
