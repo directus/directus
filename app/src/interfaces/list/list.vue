@@ -49,13 +49,21 @@
 			</template>
 
 			<template #actions>
-				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="saveItem(active!)">
+				<v-button
+					id="saveButton"
+					v-tooltip.bottom="t('save')"
+					icon
+					rounded
+					:disabled="isSaveDisabled"
+					@click="saveItem(active!)"
+				>
 					<v-icon name="check" />
 				</v-button>
 			</template>
 
 			<div class="drawer-item-content">
 				<v-form
+					:handle-last-field-tab="focusSaveButton"
 					:disabled="disabled"
 					:fields="fieldsWithNames"
 					:model-value="activeItem"
@@ -287,6 +295,10 @@ function closeDrawer() {
 	edits.value = {};
 	active.value = null;
 }
+
+function focusSaveButton() {
+	document.querySelector<HTMLElement>('#saveButton > button')?.focus();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -314,5 +326,13 @@ function closeDrawer() {
 
 .add-new {
 	margin-top: 8px;
+}
+
+#saveButton {
+	padding: 2px;
+}
+
+#saveButton:focus-within {
+	background-color: var(--background-inverted);
 }
 </style>

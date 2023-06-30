@@ -13,6 +13,13 @@
 				rounded
 				secondary
 				@click="$emit('cancel')"
+				@keydown.tab="
+						(e:MouseEvent) => {
+							if (e.shiftKey) {
+								e.preventDefault();
+							}
+						}
+					"
 			>
 				<v-icon name="close" />
 			</v-button>

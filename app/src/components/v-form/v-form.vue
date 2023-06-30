@@ -79,6 +79,14 @@
 					@unset="unsetValue(fieldsMap[fieldName]!)"
 					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
 					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
+					@keydown.tab="
+						(e:MouseEvent) => {
+							if (index === lastEditableFieldIndex && !e.shiftKey) {
+								e.preventDefault();
+								handleLastFieldTab();
+							}
+						}
+					"
 				/>
 			</template>
 		</template>
@@ -124,6 +132,7 @@ interface Props {
 	direction?: string;
 	showDivider?: boolean;
 	inline?: boolean;
+	handleLastFieldTab?: () => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -145,6 +154,9 @@ const props = withDefaults(defineProps<Props>(), {
 	direction: undefined,
 	showDivider: false,
 	inline: false,
+	handleLastFieldTab: () => {
+		return;
+	},
 });
 
 const { t } = useI18n();
@@ -181,6 +193,18 @@ const { toggleRawField, rawActiveFields } = useRawEditor();
 
 const firstEditableFieldIndex = computed(() => {
 	for (let i = 0; i < fieldNames.value.length; i++) {
+		const field = fieldsMap.value[fieldNames.value[i]];
+
+		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
+			return i;
+		}
+	}
+
+	return null;
+});
+
+const lastEditableFieldIndex = computed(() => {
+	for (let i = fieldNames.value.length - 1; i >= 0; i--) {
 		const field = fieldsMap.value[fieldNames.value[i]];
 
 		if (field?.meta && !field.meta?.readonly && !field.meta?.hidden) {
