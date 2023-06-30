@@ -9,10 +9,10 @@ export interface RequestOptions {
 	processResponse?: ResponseTransformer;
 }
 
-export interface RequestTransformer {
-	(options: RequestOptions): RequestInit | Promise<RequestInit>;
-}
+// export interface RequestTransformer {
+// 	(options: RequestOptions): RequestInit | Promise<RequestInit>;
+// }
 
 export interface ResponseTransformer {
-	<Output = any>(response: Response): Output | Promise<Output>;
+	<Output = any>(data: any): Output | Promise<Output>;
 }
