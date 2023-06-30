@@ -6,6 +6,16 @@
 }
 
 /**
+ * Workaround for navbar getting collapsed too late and overlapping page
+ * -------------------------------------------------------------------------- */
+@media only screen and (min-width: 768px) and (max-width: 940px) {
+	.VPNav .VPNavBar .container {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+}
+
+/**
  * Border radius on inline media
  * -------------------------------------------------------------------------- */
 .vp-doc img,
@@ -34,6 +44,9 @@
 	color-scheme: auto;
 }
 
+/**
+ * Spacing in notices
+ * -------------------------------------------------------------------------- */
 .vp-doc .custom-block li + li {
 	margin: 0;
 }
@@ -41,4 +54,18 @@
 .vp-doc .custom-block a {
 	font-weight: 500;
 	text-decoration: underline;
+}
+
+/**
+ * Homepage container
+ * -------------------------------------------------------------------------- */
+.VPHome {
+	padding-bottom: 0 !important;
+}
+
+/**
+ * Prevent flash effect in navbar on home page when scrolling down
+ * -------------------------------------------------------------------------- */
+.isHome .VPNavBar {
+	background-color: var(--vp-nav-bg-color);
 }
