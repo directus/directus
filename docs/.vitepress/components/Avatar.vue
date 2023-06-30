@@ -1,19 +1,3 @@
-<script setup lang="ts">
-const props = defineProps({
-	image: {
-		type: String,
-		required: true,
-	},
-	name: {
-		type: String,
-		required: true,
-	},
-	title: {
-		type: String,
-		required: true,
-	},
-});
-</script>
 <template>
 	<div class="avatar">
 		<img :src="image" alt="" />
@@ -23,6 +7,13 @@ const props = defineProps({
 		</div>
 	</div>
 </template>
+<script setup lang="ts">
+defineProps<{
+	image: string;
+	name: string;
+	title: string;
+}>();
+</script>
 <style scoped>
 .avatar {
 	position: relative;
@@ -34,6 +25,7 @@ const props = defineProps({
 
 .avatar p {
 	margin: 0;
+	line-height: normal;
 }
 
 .avatar > img {
@@ -44,11 +36,9 @@ const props = defineProps({
 }
 
 .avatar_name {
-	font-weight: 600;
-	color: black;
+	font-weight: 700;
 }
 
 .avatar_title {
-	color: gray;
 }
 </style>
