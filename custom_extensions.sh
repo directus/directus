@@ -52,8 +52,17 @@ fi
 # Corresponding migrations to skip
 skip_migrations="add-chat add-saved-searches add-collaboration"
 
-for ext_type in *
+for folder in *
 do
+    # If the folder name starts with directus-extension, this is a bundle
+    if echo "$folder" | grep -q "^directus-extension"; then
+        echo "Adding bundle ${folder}"
+        mv "./${folder}" "${DIRECTUS_EXTENSIONS}/"
+        ls -la ${DIRECTUS_EXTENSIONS}/
+        continue
+    fi
+
+    ext_type="${folder}"
     # Skip all migrations here
     if [ "$ext_type" = "migrations" ]; then
         continue
