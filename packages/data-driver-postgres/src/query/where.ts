@@ -28,6 +28,7 @@ export const where = ({ where }: AbstractSqlQuery): string | null => {
 const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode): string => {
 	if (where.type === 'condition') {
 		if (where.target.type !== 'primitive' || where.compareTo.type !== 'value') {
+			/** @todo */
 			throw new Error('The provided where node is not yet supported.');
 		}
 
@@ -57,6 +58,7 @@ const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQuer
  */
 export function getComparison(operation: string, compareTo: CompareValueNode | CompareSetNode, negate = false) {
 	if (compareTo.type !== 'value') {
+		/** @todo */
 		throw new Error('Comparisons to sets, f.e. with the IN operator, are not yet supported.');
 	}
 

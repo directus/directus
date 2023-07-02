@@ -26,10 +26,12 @@ const convertFilterWithNegate = (
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
 	if (filter.type === 'condition') {
 		if (filter.target.type !== 'primitive' || filter.compareTo.type !== 'value') {
+			/** @todo */
 			throw new Error('Only primitives are currently supported.');
 		}
 
 		if (filter.operation === 'intersects' || filter.operation === 'intersects_bounding_box') {
+			/** @todo */
 			throw new Error('The intersects operators are not yet supported.');
 		}
 
