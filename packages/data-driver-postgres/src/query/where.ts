@@ -6,8 +6,7 @@ import type {
 	AbstractSqlQuery,
 	AbstractSqlQueryWhereConditionNode,
 	AbstractSqlQueryWhereLogicalNode,
-	CompareSetNode,
-	CompareValueNode,
+	CompareValueNode
 } from '@directus/data-sql';
 import { wrapColumn } from '../utils/wrap-column.js';
 
@@ -56,12 +55,7 @@ const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQuer
  * @param providedIndexes - The indexes of all parameters.
  * @returns An operator with a parameter reference to a value to which the target will be compared.
  */
-export function getComparison(operation: string, compareTo: CompareValueNode | CompareSetNode, negate = false) {
-	if (compareTo.type !== 'value') {
-		/** @todo */
-		throw new Error('Comparisons to sets, f.e. with the IN operator, are not yet supported.');
-	}
-
+export function getComparison(operation: string, compareTo: CompareValueNode, negate = false) {
 	const parameterIndex = compareTo.parameterIndexes[0]! + 1;
 
 	switch (operation) {

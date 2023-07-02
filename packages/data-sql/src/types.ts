@@ -79,7 +79,7 @@ export interface AbstractSqlQueryWhereConditionNode {
 	negate: boolean;
 
 	/* a value to which the target will be compared */
-	compareTo: CompareValueNode | CompareSetNode;
+	compareTo: CompareValueNode;
 }
 
 export interface AbstractSqlQueryWhereLogicalNode {
@@ -94,11 +94,6 @@ export interface CompareValueNode {
 	parameterIndexes: number[];
 }
 
-export interface CompareSetNode {
-	type: 'set';
-	additionalOperator?: 'all' | 'some' | 'none';
-	subQuery: AbstractSqlQuery;
-}
 /**
  * An actual vendor specific SQL statement with its parameters.
  * @example
