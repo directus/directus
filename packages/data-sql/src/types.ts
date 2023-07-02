@@ -104,7 +104,7 @@ export interface CompareValueNode {
  * }
  * ```
  */
-export interface ParameterizedSQLStatement {
+export interface ParameterizedSqlStatement {
 	statement: string;
 	parameters: (string | number | boolean)[];
 }

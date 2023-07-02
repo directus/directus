@@ -1,5 +1,5 @@
 import type { AbstractSqlQuery } from '@directus/data-sql';
-import type { ParameterizedSQLStatement } from '@directus/data-sql';
+import type { ParameterizedSqlStatement } from '@directus/data-sql';
 import { select } from './select.js';
 import { from } from './from.js';
 import { limit } from './limit.js';
@@ -18,7 +18,7 @@ import { orderBy } from './orderBy.js';
  * @param query - The abstract SQL statement
  * @returns An actual SQL query with parameters
  */
-export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSQLStatement {
+export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSqlStatement {
 	const statementParts = [select, from, where, orderBy, limit, offset];
 
 	const statement = `${statementParts
