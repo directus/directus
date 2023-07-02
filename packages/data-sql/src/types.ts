@@ -5,6 +5,7 @@ interface SqlStatementColumn {
 	table: string;
 	column: string;
 }
+
 export interface SqlStatementSelectColumn extends SqlStatementColumn {
 	as?: string;
 }
@@ -18,6 +19,7 @@ export interface SqlStatementSelectColumn extends SqlStatementColumn {
 // 	as?: string;
 // }
 
+/** @TODO */
 // export interface SqlStatementSelectJson {
 // 	type: 'json';
 // 	table: string;
@@ -35,7 +37,7 @@ type ParameterIndex = {
 };
 
 /**
- * This is an abstract SQL query which can be passen to all SQL drivers.
+ * This is an abstract SQL query which can be passed to all SQL drivers.
  *
  * @example
  * ```ts
@@ -50,23 +52,44 @@ type ParameterIndex = {
 export interface AbstractSqlQuery {
 	select: SqlStatementSelectColumn[];
 	from: string;
+	join?: AbstractSqlQueryJoinNode[];
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
 	order?: AbstractSqlQueryOrderNode[];
 	where?: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode;
-	intersect?: AbstractSqlQuery;
 	parameters: (string | boolean | number)[];
+	aliasMap: Map<string, string>;
 }
 
-export type AbstractSqlQueryOrderNode = {
+type AbstractSqlQueryNodeType = 'order' | 'join' | 'condition' | 'logical' | 'value';
+
+/**
+ * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.
+ * With this in place it can easily be determined how to technically handle this field.
+ * @see `AbstractQueryNodeType` for all possible types.
+ */
+interface AbstractSqlQueryNode {
+	/** the type of the node */
+	type: AbstractSqlQueryNodeType;
+}
+
+export interface AbstractSqlQueryOrderNode extends AbstractSqlQueryNode {
+	type: 'order';
 	orderBy: AbstractQueryNodeSortTargets;
 	direction: 'ASC' | 'DESC';
-};
+}
+
+export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
+	type: 'join';
+	table: string;
+	as?: string;
+	on: AbstractSqlQueryWhereConditionNode;
+}
 
 /**
  * An abstract WHERE clause.
  */
-export interface AbstractSqlQueryWhereConditionNode {
+export interface AbstractSqlQueryWhereConditionNode extends AbstractSqlQueryNode {
 	type: 'condition';
 
 	/* value which will be compared to another value or expression. Functions will be supported soon. */
@@ -79,10 +102,10 @@ export interface AbstractSqlQueryWhereConditionNode {
 	negate: boolean;
 
 	/* a value to which the target will be compared */
-	compareTo: CompareValueNode;
+	compareTo: CompareValueNode | SqlStatementColumn;
 }
 
-export interface AbstractSqlQueryWhereLogicalNode {
+export interface AbstractSqlQueryWhereLogicalNode extends AbstractSqlQueryNode {
 	type: 'logical';
 	operator: 'and' | 'or';
 	negate: boolean;

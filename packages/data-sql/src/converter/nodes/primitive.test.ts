@@ -1,6 +1,6 @@
 import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
-import { convertPrimitive } from './convert-primitive.js';
+import { convertPrimitive } from './primitive.js';
 import { randomIdentifier } from '@directus/random';
 
 let sample: {

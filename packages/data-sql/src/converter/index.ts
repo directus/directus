@@ -1,9 +1,8 @@
 import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlQuery } from '../types.js';
-import { convertPrimitive } from './convert-primitive.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
-import { convertSort } from './convert-sort.js';
-import { convertFilter } from './convert-filter.js';
+import { convertFilter, convertSort } from './modifiers/index.js';
+import { convertPrimitive } from './nodes/index.js';
 
 /**
  * @param abstractQuery the abstract query to convert
@@ -26,6 +25,7 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 		}),
 		from: abstractQuery.collection,
 		parameters: [],
+		aliasMap: new Map(),
 	};
 
 	const idGen = parameterIndexGenerator();

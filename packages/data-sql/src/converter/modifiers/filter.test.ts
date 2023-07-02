@@ -5,10 +5,10 @@ import type {
 	AbstractQueryNodeConditionValue,
 } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
-import { expect, test, beforeEach } from 'vitest';
-import { convertFilter } from './convert-filter.js';
-import type { AbstractSqlQueryWhereConditionNode, AbstractSqlQueryWhereLogicalNode } from '../types.js';
-import { parameterIndexGenerator } from '../utils/param-index-generator.js';
+import { beforeEach, expect, test } from 'vitest';
+import type { AbstractSqlQueryWhereConditionNode, AbstractSqlQueryWhereLogicalNode } from '../../types.js';
+import { parameterIndexGenerator } from '../../utils/param-index-generator.js';
+import { convertFilter } from './filter.js';
 
 let sample: {
 	condition: AbstractQueryNodeCondition;
