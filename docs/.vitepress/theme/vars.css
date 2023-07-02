@@ -99,3 +99,15 @@
 	--vp-custom-block-danger-border: var(--vp-c-red-dimm-2);
 	--vp-custom-block-danger-text: var(--vp-c-red);
 }
+
+/**
+ * Component: Docs Landing Page
+ * -------------------------------------------------------------------------- */
+
+:root {
+	--vp-docs-section-bg: #0e1c2f;
+}
+
+.dark {
+	--vp-docs-section-bg: #000;
+}
