@@ -26,11 +26,6 @@ export const where = ({ where }: AbstractSqlQuery): string | null => {
 
 const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode): string => {
 	if (where.type === 'condition') {
-		if (where.target.type !== 'primitive' || where.compareTo.type !== 'value') {
-			/** @todo */
-			throw new Error('The provided where node is not yet supported.');
-		}
-
 		const target = wrapColumn(where.target.table, where.target.column);
 
 		const comparison = getComparison(where.operation, where.compareTo, where.negate);
