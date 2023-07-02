@@ -59,6 +59,7 @@ do
         echo "Adding bundle ${folder}"
         mv "./${folder}" "${DIRECTUS_EXTENSIONS}/"
         ls -la ${DIRECTUS_EXTENSIONS}/
+        ls -la ${DIRECTUS_EXTENSIONS}/${folder}/
         continue
     fi
 
@@ -78,9 +79,17 @@ do
         fi
         echo "Adding ${ext_type}/${ext_name}"
         pwd
-#        cp -r ${ext_name} ${DIRECTUS_EXTENSIONS}/${ext_type}/
-        mv "./${ext_name}" "${DIRECTUS_EXTENSIONS}/${ext_type}/"
-        ls -la ${DIRECTUS_EXTENSIONS}/${ext_type}/
+        # Ensure that the destination directory exists
+        mkdir -p ${DIRECTUS_EXTENSIONS}/${ext_type}/${ext_name}
+        # Move all the files from the extension to the directory (recursive)
+        mv "./${ext_name}"/* "${DIRECTUS_EXTENSIONS}/${ext_type}/${ext_name}/"
+        # Sanity check: list the files in the resulting directory
+        echo "Contents of extensions/${ext_type}/${ext_name}:"
+        ls -la ${DIRECTUS_EXTENSIONS}/${ext_type}/${ext_name}/
+        # Sanity check: see that index.js has not been created in the ext_type folder instead of ext_name
+        if [ -f "${DIRECTUS_EXTENSIONS}/${ext_type}/index.js" ]; then
+            echo "[?!] index.js found in ${DIRECTUS_EXTENSIONS}/${ext_type}"
+        fi
 
     done
     cd ..
