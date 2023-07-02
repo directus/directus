@@ -25,7 +25,7 @@ const convertFilterWithNegate = (
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
 	if (filter.type === 'condition') {
-		if (filter.target.type !== 'primitive' || filter.compareTo.type !== 'value') {
+		if (filter.target.type !== 'primitive') {
 			/** @todo */
 			throw new Error('Only primitives are currently supported.');
 		}

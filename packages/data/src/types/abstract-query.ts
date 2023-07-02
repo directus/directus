@@ -353,18 +353,12 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	/** the operation to perform on the target */
 	operation: 'eq' | 'lt' | 'gt' | 'contains' | 'starts_with' | 'ends_with' | 'intersects' | 'intersects_bounding_box';
 
-	/** the conditional values. Might be also a function in the future. */
-	compareTo: AbstractQueryNodeConditionValue | AbstractQueryNodeConditionSet;
+	compareTo: AbstractQueryNodeConditionValue;
 }
 
 export interface AbstractQueryNodeConditionValue {
 	type: 'value';
 	value: string | number | boolean;
-}
-
-export interface AbstractQueryNodeConditionSet {
-	type: 'set';
-	query: AbstractQuery;
 }
 
 /**
