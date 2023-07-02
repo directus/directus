@@ -78,7 +78,6 @@ do
             continue
         fi
         echo "Adding ${ext_type}/${ext_name}"
-        pwd
         # Ensure that the destination directory exists
         mkdir -p ${DIRECTUS_EXTENSIONS}/${ext_type}/${ext_name}
         # Move all the files from the extension to the directory (recursive)

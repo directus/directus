@@ -18,15 +18,19 @@ mkdir -p ${DIRECTUS_HOOKS}/hide-modules
 
 ls -la ./directus-custom-extensions-release
 
-cp -r ./directus-custom-extensions-release/modules/dashboard ${DIRECTUS_MODULES}/
-cp -r ./directus-custom-extensions-release/modules/leads ${DIRECTUS_MODULES}/
-cp -r ./directus-custom-extensions-release/modules/areas ${DIRECTUS_MODULES}/
-cp -r ./directus-custom-extensions-release/modules/saved-searches ${DIRECTUS_MODULES}/
+# cp is sometimes aliased to cp -i, which will prompt before overwriting
+# The leading backslash will skip the alias and use the default cp
+\cp -r ./directus-custom-extensions-release/modules/dashboard ${DIRECTUS_MODULES}/
+\cp -r ./directus-custom-extensions-release/modules/leads ${DIRECTUS_MODULES}/
+\cp -r ./directus-custom-extensions-release/modules/areas ${DIRECTUS_MODULES}/
+\cp -r ./directus-custom-extensions-release/modules/saved-searches ${DIRECTUS_MODULES}/
 
-cp -r ./directus-custom-extensions-release/hooks/area-hook ${DIRECTUS_HOOKS}/
-cp -r ./directus-custom-extensions-release/hooks/hide-modules ${DIRECTUS_HOOKS}/
+\cp -r ./directus-custom-extensions-release/hooks/area-hook ${DIRECTUS_HOOKS}/
+\cp -r ./directus-custom-extensions-release/hooks/hide-modules ${DIRECTUS_HOOKS}/
 
-cp -r ./directus-custom-extensions-release/migrations/*saved-searches* ${DIRECTUS_EXTENSIONS}/migrations
+\cp -r ./directus-custom-extensions-release/migrations/*saved-searches* ${DIRECTUS_EXTENSIONS}/migrations
 
+echo "Contents of ${DIRECTUS_MODULES}:"
 ls -la ${DIRECTUS_MODULES}
+echo "Contents of ${DIRECTUS_HOOKS}:"
 ls -la ${DIRECTUS_HOOKS}

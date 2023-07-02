@@ -12,15 +12,18 @@ curl --header "Private-Token: ${GITLAB_PIPELINE_TOKEN}" -LO ${CI_API_V4_URL}/pro
 
 unzip directus-custom-extensions-release.zip
 
+echo "Contents of directus-custom-extensions-release:"
 ls -la ./directus-custom-extensions-release
 
-cp -r ./directus-custom-extensions-release/hooks/collab-hook ${DIRECTUS_HOOKS}
+# cp is sometimes aliased to cp -i, which will prompt before overwriting
+# The leading backslash will skip the alias and use the default cp
+\cp -r ./directus-custom-extensions-release/hooks/collab-hook ${DIRECTUS_HOOKS}
 
-cp -r ./directus-custom-extensions-release/hooks/marketplace-filters ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/hooks/workflows-defaults ${DIRECTUS_HOOKS}
-cp -r ./directus-custom-extensions-release/interfaces/filter-ext ${DIRECTUS_INTERFACES}
+\cp -r ./directus-custom-extensions-release/hooks/marketplace-filters ${DIRECTUS_HOOKS}
+\cp -r ./directus-custom-extensions-release/hooks/workflows-defaults ${DIRECTUS_HOOKS}
+\cp -r ./directus-custom-extensions-release/interfaces/filter-ext ${DIRECTUS_INTERFACES}
 
-cp -r ./directus-custom-extensions-release/endpoints/extended-api ${DIRECTUS_ENDPOINTS}
+\cp -r ./directus-custom-extensions-release/endpoints/extended-api ${DIRECTUS_ENDPOINTS}
 
 # Migrations
-cp -r ./directus-custom-extensions-release/migrations/*add-collaboration* ${DIRECTUS_EXTENSIONS}/migrations
+\cp -r ./directus-custom-extensions-release/migrations/*add-collaboration* ${DIRECTUS_EXTENSIONS}/migrations
