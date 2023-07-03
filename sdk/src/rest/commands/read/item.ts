@@ -19,7 +19,11 @@ export type ReadItemOutput<
  * @returns Returns an item object if a valid primary key was provided.
  */
 export const readItem =
-	<Schema extends object, Collection extends RegularCollections<Schema>, TQuery extends Query<Schema, Schema[Collection]>>(
+	<
+		Schema extends object,
+		Collection extends RegularCollections<Schema>,
+		TQuery extends Query<Schema, Schema[Collection]>
+	>(
 		collection: Collection,
 		key: PrimaryKey,
 		query?: TQuery

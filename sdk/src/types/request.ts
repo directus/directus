@@ -8,7 +8,6 @@ export interface RequestOptions {
 	body?: string;
 	onRequest?: RequestTransformer;
 	onResponse?: ResponseTransformer;
-
 }
 
 export interface RequestTransformer {

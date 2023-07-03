@@ -17,7 +17,11 @@ export type ReadItemsOutput<
  * @returns An array of up to limit item objects. If no items are available, data will be an empty array.
  */
 export const readItems =
-	<Schema extends object, Collection extends RegularCollections<Schema>, TQuery extends Query<Schema, Schema[Collection]>>(
+	<
+		Schema extends object,
+		Collection extends RegularCollections<Schema>,
+		TQuery extends Query<Schema, Schema[Collection]>
+	>(
 		collection: Collection,
 		query?: TQuery
 	): RestCommand<ReadItemsOutput<Schema, Collection, TQuery>, Schema> =>

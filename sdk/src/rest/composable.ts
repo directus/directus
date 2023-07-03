@@ -56,16 +56,16 @@ export const rest = (config: RestConfig = {}) => {
 
 				// chain response parsers if needed
 				if (config.onResponse && options.onResponse) {
-					onResponse = ((data: any) => Promise.resolve(data).then(options.onResponse).then(config.onResponse)) as ResponseTransformer;
+					onResponse = ((data: any) =>
+						Promise.resolve(data).then(options.onResponse).then(config.onResponse)) as ResponseTransformer;
 				} else if (options.onResponse) {
 					onResponse = options.onResponse;
 				} else if (config.onResponse) {
 					onResponse = config.onResponse;
 				}
 
-				const response = await request(requestUrl.toString(), fetchOptions, onResponse)
-					.catch(onError);
-				
+				const response = await request(requestUrl.toString(), fetchOptions, onResponse).catch(onError);
+
 				return response as Output;
 			},
 		};
