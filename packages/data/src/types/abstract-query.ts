@@ -207,7 +207,7 @@ interface AbstractQueryNodeOffset extends AbstractQueryModifierNode {
 export type AbstractQueryNodeSortTargets =
 	| AbstractQueryFieldNodePrimitive
 	| AbstractQueryFieldNodeFn
-	// TDB when we implement relations:
+	/**  @TODO when we implement relations: */
 	| AbstractQueryFieldNodeRelatedManyToOne
 	| AbstractQueryFieldNodeRelatedAnyToOne;
 

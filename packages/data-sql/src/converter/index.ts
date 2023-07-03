@@ -20,12 +20,14 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 				case 'a2o':
 				case 'o2a':
 				default:
-					throw new Error(`Type ${abstractNode.type} hasn't been implemented yet`);
+					throw new Error(`Abstract Query node type ${abstractNode.type} is not supported`);
 			}
 		}),
 		from: abstractQuery.collection,
 		parameters: [],
-		aliasMap: new Map(),
+
+		aliases: new Map(),
+		paths: new Map()
 	};
 
 	const idGen = parameterIndexGenerator();

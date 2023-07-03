@@ -4,8 +4,8 @@
  */
 import type {
 	AbstractSqlQuery,
-	AbstractSqlQueryWhereConditionNode,
-	AbstractSqlQueryWhereLogicalNode,
+	AbstractSqlQueryConditionNode,
+	AbstractSqlQueryLogicalNode,
 	CompareValueNode
 } from '@directus/data-sql';
 import { wrapColumn } from '../utils/wrap-column.js';
@@ -24,7 +24,7 @@ export const where = ({ where }: AbstractSqlQuery): string | null => {
 	return `WHERE ${whereString(where)}`;
 };
 
-const whereString = (where: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode): string => {
+const whereString = (where: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode): string => {
 	if (where.type === 'condition') {
 		const target = wrapColumn(where.target.table, where.target.column);
 

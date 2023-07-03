@@ -20,6 +20,25 @@ const query: AbstractQuery = {
 		{
 			type: 'primitive',
 			field: 'title',
+		},
+		{
+			type: 'm2o',
+			join: {
+				current: {
+					fields: ['author']
+				},
+				external: {
+					store: 'postgres',
+					collection: 'authors',
+					fields: ['id']
+				}
+			},
+			nodes: [
+				{
+					type: 'primitive',
+					field: 'name',
+				}
+			],
 		}
 	]
 }

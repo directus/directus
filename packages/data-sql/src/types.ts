@@ -56,9 +56,20 @@ export interface AbstractSqlQuery {
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
 	order?: AbstractSqlQueryOrderNode[];
-	where?: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode;
+	where?: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 	parameters: (string | boolean | number)[];
-	aliasMap: Map<string, string>;
+
+	/**
+	 * To prevent naming conflicts, all column selections should have a unique alias. This map
+	 * contains the alias back to the original name.
+	 */
+	aliases: Map<string, string>;
+
+	/**
+	 * SQL returns data as a flat object. This map contains the flat property names and the JSON path
+	 * they correspond to.
+	 */
+	paths: Map<string, string[]>;
 }
 
 type AbstractSqlQueryNodeType = 'order' | 'join' | 'condition' | 'logical' | 'value';
@@ -82,14 +93,11 @@ export interface AbstractSqlQueryOrderNode extends AbstractSqlQueryNode {
 export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
 	type: 'join';
 	table: string;
+	on: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 	as?: string;
-	on: AbstractSqlQueryWhereConditionNode;
 }
 
-/**
- * An abstract WHERE clause.
- */
-export interface AbstractSqlQueryWhereConditionNode extends AbstractSqlQueryNode {
+export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
 	type: 'condition';
 
 	/* value which will be compared to another value or expression. Functions will be supported soon. */
@@ -105,11 +113,11 @@ export interface AbstractSqlQueryWhereConditionNode extends AbstractSqlQueryNode
 	compareTo: CompareValueNode | SqlStatementColumn;
 }
 
-export interface AbstractSqlQueryWhereLogicalNode extends AbstractSqlQueryNode {
+export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
 	type: 'logical';
 	operator: 'and' | 'or';
 	negate: boolean;
-	childNodes: (AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode)[];
+	childNodes: (AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode)[];
 }
 
 export interface CompareValueNode {

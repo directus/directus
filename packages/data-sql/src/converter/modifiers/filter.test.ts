@@ -6,7 +6,7 @@ import type {
 } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
-import type { AbstractSqlQueryWhereConditionNode, AbstractSqlQueryWhereLogicalNode } from '../../types.js';
+import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../types.js';
 import { parameterIndexGenerator } from '../../utils/param-index-generator.js';
 import { convertFilter } from './filter.js';
 
@@ -36,7 +36,7 @@ beforeEach(() => {
 test('Convert filter with one parameter', () => {
 	const idGen = parameterIndexGenerator();
 
-	const expectedWhere: AbstractSqlQueryWhereConditionNode = {
+	const expectedWhere: AbstractSqlQueryConditionNode = {
 		type: 'condition',
 		negate: false,
 		target: {
@@ -61,7 +61,7 @@ test.skip('Convert filter with one parameter and negation', () => {
 	// sample.condition.negate = true;
 	const idGen = parameterIndexGenerator();
 
-	const expectedWhere: AbstractSqlQueryWhereConditionNode = {
+	const expectedWhere: AbstractSqlQueryConditionNode = {
 		type: 'condition',
 		negate: true,
 		target: {
@@ -148,7 +148,7 @@ test('Convert filter with logical', () => {
 
 	const result = convertFilter(filter, randomCollection, idGen);
 
-	const expectedWhere: AbstractSqlQueryWhereLogicalNode = {
+	const expectedWhere: AbstractSqlQueryLogicalNode = {
 		type: 'logical',
 		operator: 'or',
 		negate: false,
@@ -284,7 +284,7 @@ test('Convert filter nested and with negation', () => {
 
 	const result = convertFilter(filter, randomCollection, idGen);
 
-	const expectedWhere: AbstractSqlQueryWhereLogicalNode = {
+	const expectedWhere: AbstractSqlQueryLogicalNode = {
 		type: 'logical',
 		operator: 'or',
 		negate: false,
