@@ -20,8 +20,8 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsup src/index.ts",
+		"dev": "tsup src/index.ts --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -34,6 +34,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/node": "18.16.12",
 		"@vitest/coverage-c8": "0.31.1",
+		"tsup": "7.1.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	}
