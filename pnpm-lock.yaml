@@ -1052,6 +1052,9 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
