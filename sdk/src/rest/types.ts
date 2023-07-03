@@ -9,7 +9,6 @@ export interface RestClient<Schema extends object> {
 }
 
 export interface RestConfig {
-	globalOptions?: Partial<RequestInit>;
 	onError?: (error: any) => any;
 	onRequest?: RequestTransformer;
 	onResponse?: ResponseTransformer;

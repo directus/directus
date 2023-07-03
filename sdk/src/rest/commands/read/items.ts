@@ -1,10 +1,10 @@
-import type { ApplyQueryFields, CollectionType, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query, RegularCollections } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadItemsOutput<
 	Schema extends object,
-	Collection extends keyof Schema,
+	Collection extends RegularCollections<Schema>,
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>[];
 
@@ -17,7 +17,7 @@ export type ReadItemsOutput<
  * @returns An array of up to limit item objects. If no items are available, data will be an empty array.
  */
 export const readItems =
-	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
+	<Schema extends object, Collection extends RegularCollections<Schema>, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		query?: TQuery
 	): RestCommand<ReadItemsOutput<Schema, Collection, TQuery>, Schema> =>

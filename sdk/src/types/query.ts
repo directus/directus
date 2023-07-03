@@ -18,7 +18,11 @@ export interface Query<Schema extends object, Item> {
 /**
  * Fields querying, including nested relational fields
  */
-export type QueryFields<Schema extends object, Item> = ('*' | keyof UnpackList<Item> | QueryFieldsRelational<Schema, UnpackList<Item>>)[];
+export type QueryFields<Schema extends object, Item> = (
+	| '*'
+	| keyof UnpackList<Item>
+	| QueryFieldsRelational<Schema, UnpackList<Item>>
+)[];
 
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
@@ -100,11 +104,13 @@ export type ApplyQueryFields<Schema extends object, Item, Fields> = Item extends
 /**
  * Filters
  */
-export type QueryFilter<Schema extends object, Item> = {
-	[Field in keyof Item]?:
-		| (Field extends RelationalFields<Schema, Item> ? QueryFilter<Schema, Item[Field]> : never)
-		| FilterOperatorsByType<Item[Field]>;
-};
+export type QueryFilter<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
+	? {
+			[Field in keyof FlatItem]?:
+				| (Field extends RelationalFields<Schema, FlatItem> ? QueryFilter<Schema, FlatItem[Field]> : never)
+				| FilterOperatorsByType<FlatItem[Field]>;
+	  }
+	: never;
 
 /**
  * All available filter operators
@@ -145,25 +151,29 @@ type FilterOperatorsByType<T> = {
  * Query sort
  * TODO expand to relational sorting (same object notation as fields i guess)
  */
-type QuerySort<_Schema extends object, Item> = {
-	[Field in keyof Item]: Field | `-${Field & string}`;
-}[keyof Item][];
+type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
+	? {
+			[Field in keyof FlatItem]: Field | `-${Field & string}`;
+	  }[keyof FlatItem][]
+	: never;
 
 /**
  * Deep filter object
  */
-type QueryDeep<Schema extends object, Item> = RelationalFields<Schema, Item> extends never
-	? never
-	: {
-			[Field in RelationalFields<Schema, Item>]?: Query<Schema, Item[Field]> extends infer TQuery
-				? MergeObjects<
-						QueryDeep<Schema, Item[Field]>,
-						{
-							[Key in keyof Omit<TQuery, 'deep' | 'alias'> as `_${string & Key}`]: TQuery[Key];
-						}
-				  >
-				: never;
-	  };
+type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
+	? RelationalFields<Schema, FlatItem> extends never
+		? never
+		: {
+				[Field in RelationalFields<Schema, FlatItem>]?: Query<Schema, FlatItem[Field]> extends infer TQuery
+					? MergeObjects<
+							QueryDeep<Schema, FlatItem[Field]>,
+							{
+								[Key in keyof Omit<TQuery, 'deep' | 'alias'> as `_${string & Key}`]: TQuery[Key];
+							}
+					  >
+					: never;
+		  }
+	: never;
 
 type MergeObjects<A, B extends object> = A extends object ? A & B : never;
 

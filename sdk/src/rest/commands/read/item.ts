@@ -1,11 +1,11 @@
 import type { PrimaryKey } from '@directus/types';
-import type { ApplyQueryFields, CollectionType, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query, RegularCollections } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadItemOutput<
 	Schema extends object,
-	Collection extends keyof Schema,
+	Collection extends RegularCollections<Schema>,
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
 
@@ -19,7 +19,7 @@ export type ReadItemOutput<
  * @returns Returns an item object if a valid primary key was provided.
  */
 export const readItem =
-	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
+	<Schema extends object, Collection extends RegularCollections<Schema>, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		key: PrimaryKey,
 		query?: TQuery

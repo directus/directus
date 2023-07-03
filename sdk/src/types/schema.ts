@@ -7,7 +7,22 @@ export type ItemType<Schema extends object> =
 			[K in keyof Schema]: Schema[K] extends any[] ? Schema[K][number] : never;
 	  }[keyof Schema];
 
+/**
+ * Return singular collection type
+ */
 export type CollectionType<Schema extends object, Collection extends keyof Schema> = UnpackList<Schema[Collection]>;
+
+/**
+ * Returns a list of singleton collections in the schema
+ */
+export type SingletonCollections<Schema extends object> = {
+	[Key in keyof Schema]: Schema[Key] extends any[] ? never : Key;
+}[keyof Schema];
+
+/**
+ * Returns a list of regular collections in the schema
+ */
+export type RegularCollections<Schema extends object> = Exclude<keyof Schema, SingletonCollections<Schema>>;
 
 /**
  * Return string keys of all Primitive fields in the given schema Item
