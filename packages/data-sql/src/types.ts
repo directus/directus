@@ -1,22 +1,29 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
 
-interface SqlStatementColumn {
-	type: 'primitive';
+interface ColumnSelection {
 	table: string;
 	column: string;
 }
-export interface SqlStatementSelectColumn extends SqlStatementColumn {
+
+export interface SqlStatementColumn extends ColumnSelection {
+	type: 'primitive';
+
+	/* This can only be applied when using the function it within the SELECT clause */
 	as?: string;
 }
 
-// export interface SqlStatementSelectFn {
-// 	type: 'fn';
-// 	fn: string;
-// 	args: (string | number | boolean)[];
-// 	table: string;
-// 	column: string;
-// 	as?: string;
-// }
+export interface SqlStatementFn extends ColumnSelection {
+	type: 'fn';
+
+	/* Same as the the abstract functions */
+	fn: string;
+
+	/* The index of the argument within the list parameters */
+	parameterIndexes: number[];
+
+	/* This can only be applied when using the function it within the SELECT clause */
+	as?: string;
+}
 
 // export interface SqlStatementSelectJson {
 // 	type: 'json';
@@ -48,7 +55,7 @@ type ParameterIndex = {
  * ```
  */
 export interface AbstractSqlQuery {
-	select: SqlStatementSelectColumn[];
+	select: SqlStatementColumn[];
 	from: string;
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
@@ -70,7 +77,7 @@ export interface AbstractSqlQueryWhereConditionNode {
 	type: 'condition';
 
 	/* value which will be compared to another value or expression. Functions will be supported soon. */
-	target: SqlStatementColumn;
+	target: SqlStatementColumn | SqlStatementFn;
 
 	/* an abstract comparator */
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'contains' | 'starts_with' | 'ends_with' | 'intersects';

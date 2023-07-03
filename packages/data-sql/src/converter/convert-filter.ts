@@ -1,5 +1,6 @@
-import type { AbstractQueryFilterNode } from '@directus/data';
+import type { AbstractQueryFieldNodeFn, AbstractQueryFilterNode } from '@directus/data';
 import type { AbstractSqlQuery } from '../types.js';
+import type { SqlStatementFn, SqlStatementColumn } from '../types.js';
 
 /**
  * Extracts the filer values and replaces it with parameter indexes.
@@ -25,14 +26,26 @@ const convertFilterWithNegate = (
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
 	if (filter.type === 'condition') {
-		if (filter.target.type !== 'primitive') {
-			/** @todo */
-			throw new Error('Only primitives are currently supported.');
-		}
-
 		if (filter.operation === 'intersects' || filter.operation === 'intersects_bounding_box') {
 			/** @todo */
 			throw new Error('The intersects operators are not yet supported.');
+		}
+
+		let target: SqlStatementFn | SqlStatementColumn;
+		const parameters = [];
+
+		if (filter.target.type === 'primitive') {
+			target = {
+				type: 'primitive',
+				table: collection,
+				column: filter.target.field,
+			};
+		} else if (filter.target.type === 'fn') {
+			const convertedFn = convertFn(collection, filter.target, generator);
+			target = convertedFn.fn;
+			parameters.push(...convertedFn.parameters);
+		} else {
+			throw new Error('The related field types are not yet supported.');
 		}
 
 		return {
@@ -40,17 +53,13 @@ const convertFilterWithNegate = (
 				type: 'condition',
 				negate,
 				operation: filter.operation,
-				target: {
-					column: filter.target.field,
-					table: collection,
-					type: 'primitive',
-				},
+				target,
 				compareTo: {
 					type: 'value',
 					parameterIndexes: [generator.next().value],
 				},
 			},
-			parameters: [filter.compareTo.value],
+			parameters: [...parameters, filter.compareTo.value],
 		};
 	} else if (filter.type === 'negate') {
 		return convertFilterWithNegate(filter.childNode, collection, generator, !negate);
@@ -70,3 +79,35 @@ const convertFilterWithNegate = (
 		};
 	}
 };
+
+/**
+ * @param collection
+ * @param abstractFunction
+ * @param idxGenerator
+ */
+export function convertFn(
+	collection: string,
+	abstractFunction: AbstractQueryFieldNodeFn,
+	idxGenerator: Generator
+): { fn: SqlStatementFn; parameters: (string | number | boolean)[] } {
+	if (abstractFunction.targetNode.type !== 'primitive') {
+		throw new Error('Nested functions are not yet supported.');
+	}
+
+	const fn: SqlStatementFn = {
+		type: 'fn',
+		fn: abstractFunction.fn,
+		table: collection,
+		column: abstractFunction.targetNode.field,
+		parameterIndexes: [],
+	};
+
+	if (abstractFunction.args && abstractFunction.args?.length > 0) {
+		fn.parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
+	}
+
+	return {
+		fn,
+		parameters: abstractFunction.args?.map((arg) => arg) ?? [],
+	};
+}

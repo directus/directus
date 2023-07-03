@@ -1,13 +1,14 @@
 import type {
+	AbstractQueryFieldNodeFn,
 	AbstractQueryFieldNodePrimitive,
 	AbstractQueryFilterNode,
 	AbstractQueryNodeCondition,
 	AbstractQueryNodeConditionValue,
 } from '@directus/data';
-import { randomIdentifier, randomInteger } from '@directus/random';
-import { expect, test, beforeEach } from 'vitest';
-import { convertFilter } from './convert-filter.js';
-import type { AbstractSqlQueryWhereConditionNode, AbstractSqlQueryWhereLogicalNode } from '../types.js';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { expect, test, beforeEach, describe } from 'vitest';
+import { convertFilter, convertFn } from './convert-filter.js';
+import type { AbstractSqlQueryWhereConditionNode, AbstractSqlQueryWhereLogicalNode, SqlStatementFn } from '../types.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 
 let sample: {
@@ -33,16 +34,52 @@ beforeEach(() => {
 	};
 });
 
-test('Convert filter with one parameter', () => {
+test('Convert filter with primitive target', () => {
 	const idGen = parameterIndexGenerator();
 
 	const expectedWhere: AbstractSqlQueryWhereConditionNode = {
 		type: 'condition',
 		negate: false,
 		target: {
-			column: (sample.condition.target as AbstractQueryFieldNodePrimitive).field,
-			table: sample.randomCollection,
 			type: 'primitive',
+			table: sample.randomCollection,
+			column: (sample.condition.target as AbstractQueryFieldNodePrimitive).field,
+		},
+		operation: 'gt',
+		compareTo: {
+			type: 'value',
+			parameterIndexes: [0],
+		},
+	};
+
+	expect(convertFilter(sample.condition, sample.randomCollection, idGen)).toStrictEqual({
+		where: expectedWhere,
+		parameters: [(sample.condition.compareTo as AbstractQueryNodeConditionValue).value],
+	});
+});
+
+test('Convert filter with function target', () => {
+	const idGen = parameterIndexGenerator();
+	const sampleColumn = randomIdentifier();
+
+	sample.condition.target = {
+		type: 'fn',
+		fn: 'month',
+		targetNode: {
+			type: 'primitive',
+			field: sampleColumn,
+		},
+	};
+
+	const expectedWhere: AbstractSqlQueryWhereConditionNode = {
+		type: 'condition',
+		negate: false,
+		target: {
+			type: 'fn',
+			fn: 'month',
+			column: sampleColumn,
+			table: sample.randomCollection,
+			parameterIndexes: [],
 		},
 		operation: 'gt',
 		compareTo: {
@@ -358,5 +395,68 @@ test('Convert filter nested and with negation', () => {
 	expect(result).toStrictEqual({
 		where: expectedWhere,
 		parameters: [firstValue, secondValue, thirdValue, fourthValue],
+	});
+});
+
+describe('Convert function', () => {
+	test('With no args', () => {
+		const sampleField = randomIdentifier();
+		const idGen = parameterIndexGenerator();
+
+		const sampleFn: AbstractQueryFieldNodeFn = {
+			type: 'fn',
+			fn: 'month',
+			targetNode: {
+				type: 'primitive',
+				field: sampleField,
+			},
+		};
+
+		const res = convertFn(sample.randomCollection, sampleFn, idGen);
+
+		const sampleSqlFn: SqlStatementFn = {
+			type: 'fn',
+			fn: 'month',
+			table: sample.randomCollection,
+			column: sampleField,
+			parameterIndexes: [],
+		};
+
+		expect(res).toStrictEqual({
+			fn: sampleSqlFn,
+			parameters: [],
+		});
+	});
+
+	test('With args', () => {
+		const sampleField = randomIdentifier();
+		const idGen = parameterIndexGenerator();
+		const randomArgument1 = randomAlpha(5);
+		const randomArgument2 = randomAlpha(5);
+
+		const sampleFn: AbstractQueryFieldNodeFn = {
+			type: 'fn',
+			fn: 'month',
+			targetNode: {
+				type: 'primitive',
+				field: sampleField,
+			},
+			args: [randomArgument1, randomArgument2],
+		};
+
+		const res = convertFn(sample.randomCollection, sampleFn, idGen);
+
+		const sampleSqlFn: SqlStatementFn = {
+			type: 'fn',
+			fn: 'month',
+			table: sample.randomCollection,
+			column: sampleField,
+			parameterIndexes: [0, 1],
+		};
+
+		expect(res).toStrictEqual({
+			fn: sampleSqlFn,
+			parameters: [randomArgument1, randomArgument2],
+		});
 	});
 });
