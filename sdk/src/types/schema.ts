@@ -1,7 +1,11 @@
 /**
  * Get all available top level Item types from a given Schema
  */
-export type ItemType<Schema extends object> = Schema[keyof Schema] | { [K in keyof Schema]: Schema[K][] }[keyof Schema];
+export type ItemType<Schema extends object> =
+	| Schema[keyof Schema]
+	| {
+			[K in keyof Schema]: Schema[K] extends any[] ? Schema[K][number] : never;
+	  }[keyof Schema];
 
 /**
  * Return string keys of all Primitive fields in the given schema Item

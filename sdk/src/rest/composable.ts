@@ -15,6 +15,7 @@ export const rest = (config: RestConfig = {}) => {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
 
+				// all api requests require this content type
 				if (!options.headers?.['Content-Type']) {
 					if (!options.headers) options.headers = {};
 					options.headers['Content-Type'] = 'application/json';
