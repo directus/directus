@@ -1,5 +1,5 @@
 import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
-import type { AbstractSqlQuery, CompareValueNode } from '@directus/data-sql';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import { constructSqlQuery } from './index.js';
@@ -8,12 +8,22 @@ let sample: {
 	statement: AbstractSqlQuery;
 };
 
+let firstSelectTable: string;
+let firstSelectColumn: string;
+let secondSelectTable: string;
+let secondSelectColumn: string;
+
 beforeEach(() => {
+	firstSelectTable = randomIdentifier();
+	firstSelectColumn = randomIdentifier();
+	secondSelectTable = randomIdentifier();
+	secondSelectColumn = randomIdentifier();
+
 	sample = {
 		statement: {
 			select: [
-				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
-				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
+				{ type: 'primitive', column: firstSelectColumn, table: firstSelectTable },
+				{ type: 'primitive', column: secondSelectColumn, table: secondSelectTable },
 			],
 			from: randomIdentifier(),
 			parameters: [],
@@ -23,9 +33,7 @@ beforeEach(() => {
 
 test('basic statement', () => {
 	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
-			sample.statement.select[1]!.table
-		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}";`,
+		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.statement.from}";`,
 		parameters: [],
 	});
 });
@@ -35,9 +43,7 @@ test('statement with a limit', () => {
 	sample.statement.parameters = [randomInteger(1, 100)];
 
 	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
-			sample.statement.select[1]!.table
-		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1;`,
+		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.statement.from}" LIMIT $1;`,
 		parameters: sample.statement.parameters,
 	});
 });
@@ -48,9 +54,7 @@ test('statement with limit and offset', () => {
 	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100)];
 
 	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
-			sample.statement.select[1]!.table
-		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" LIMIT $1 OFFSET $2;`,
+		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${sample.statement.from}" LIMIT $1 OFFSET $2;`,
 		parameters: sample.statement.parameters,
 	});
 });
@@ -67,11 +71,9 @@ test('statement with order', () => {
 	];
 
 	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
-			sample.statement.select[1]!.table
-		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" ORDER BY "${
-			(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field
-		}" ASC;`,
+		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
+			sample.statement.from
+		}" ORDER BY "${(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field}" ASC;`,
 		parameters: sample.statement.parameters,
 	});
 });
@@ -80,43 +82,76 @@ test('statement with all possible modifiers', () => {
 	sample.statement.limit = { parameterIndex: 0 };
 	sample.statement.offset = { parameterIndex: 1 };
 
-	sample.statement.where = {
-		type: 'condition',
-		operation: 'gt',
-		target: {
-			type: 'primitive',
-			column: randomIdentifier(),
-			table: randomIdentifier(),
-		},
-		compareTo: {
-			type: 'value',
-			parameterIndexes: [2],
-		},
-		negation: false,
-	};
+	// variables to easily access the values from the expected statement
+	const firstConditionTable = randomIdentifier();
+	const firstConditionColumn = randomIdentifier();
+	const firstConditionParameterIndex = 2;
+	const secondConditionTable = randomIdentifier();
+	const secondConditionColumn = randomIdentifier();
+	const secondConditionParameterIndex = 3;
+	const orderField = randomIdentifier();
 
-	sample.statement.parameters = [randomInteger(1, 100), randomInteger(1, 100), randomInteger(1, 100)];
+	sample.statement.where = {
+		type: 'logical',
+		operator: 'and',
+		negate: false,
+		childNodes: [
+			{
+				type: 'condition',
+				operation: 'gt',
+				target: {
+					type: 'primitive',
+					table: firstConditionTable,
+					column: firstConditionColumn,
+				},
+				compareTo: {
+					type: 'value',
+					parameterIndexes: [firstConditionParameterIndex],
+				},
+				negate: false,
+			},
+			{
+				type: 'condition',
+				operation: 'lt',
+				target: {
+					type: 'primitive',
+					table: secondConditionTable,
+					column: secondConditionColumn,
+				},
+				compareTo: {
+					type: 'value',
+					parameterIndexes: [secondConditionParameterIndex],
+				},
+				negate: false,
+			},
+		],
+	};
 
 	sample.statement.order = [
 		{
 			orderBy: {
 				type: 'primitive',
-				field: randomIdentifier(),
+				field: orderField,
 			},
 			direction: 'ASC',
 		},
 	];
 
+	sample.statement.parameters = [
+		randomInteger(1, 100),
+		randomInteger(1, 100),
+		randomInteger(1, 100),
+		randomInteger(1, 100),
+	];
+
 	expect(constructSqlQuery(sample.statement)).toEqual({
-		statement: `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}", "${
-			sample.statement.select[1]!.table
-		}"."${sample.statement.select[1]!.column}" FROM "${sample.statement.from}" WHERE "${
-			sample.statement.where.target.table
-		}"."${sample.statement.where.target.column}" > $${
-			(sample.statement.where.compareTo as CompareValueNode).parameterIndexes[0]! + 1
-		} ORDER BY "${
-			(sample.statement.order[0]!.orderBy as AbstractQueryFieldNodePrimitive).field
-		}" ASC LIMIT $1 OFFSET $2;`,
+		statement: `SELECT "${firstSelectTable}"."${firstSelectColumn}", "${secondSelectTable}"."${secondSelectColumn}" FROM "${
+			sample.statement.from
+		}" WHERE "${firstConditionTable}"."${firstConditionColumn}" > $${
+			firstConditionParameterIndex + 1
+		} AND "${secondConditionTable}"."${secondConditionColumn}" < $${
+			secondConditionParameterIndex + 1
+		} ORDER BY "${orderField}" ASC LIMIT $1 OFFSET $2;`,
 		parameters: sample.statement.parameters,
 	});
 });
