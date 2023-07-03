@@ -7,6 +7,7 @@
 import type { AbstractQuery, DataDriver } from '@directus/data';
 import { convertAbstractQueryToAbstractSqlQuery } from '@directus/data-sql';
 import type { Readable } from 'node:stream';
+import type { PoolClient } from 'pg';
 import pg from 'pg';
 import QueryStream from 'pg-query-stream';
 import { constructSqlQuery } from './query/index.js';
@@ -32,12 +33,18 @@ export default class DataDriverPostgres implements DataDriver {
 	}
 
 	async query(query: AbstractQuery): Promise<Readable> {
+		let client: PoolClient | null = null;
+
 		try {
+			client = await this.#pool.connect();
 			const abstractSqlQuery = convertAbstractQueryToAbstractSqlQuery(query);
 			const sql = constructSqlQuery(abstractSqlQuery);
 			const queryStream = new QueryStream(sql.statement, sql.parameters);
-			return this.#pool.query(queryStream);
+			const stream = client.query(queryStream);
+			stream.on('end', () => client?.release());
+			return stream;
 		} catch (err) {
+			client?.release();
 			throw new Error('Could not query the PostgreSQL datastore: ' + err);
 		}
 	}
