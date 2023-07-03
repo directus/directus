@@ -1,3 +1,4 @@
+import type { AuthenticationClient } from '../auth/types.js';
 import type { DirectusClient } from '../client.js';
 import type { ResponseTransformer } from '../index.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
@@ -22,12 +23,13 @@ export const rest = (config: RestConfig = {}) => {
 				}
 
 				// we need to use THIS here instead of client allow for overridden functions
-				const self = this as RestClient<Schema> & DirectusClient<Schema>;
-				const token = await self.getToken();
-
-				if (token) {
-					if (!options.headers) options.headers = {};
-					options.headers['Authorization'] = `Bearer ${token}`;
+				if ('getToken' in this) {
+					const token = await (this.getToken as AuthenticationClient<Schema>['getToken'])();
+					
+					if (token) {
+						if (!options.headers) options.headers = {};
+						options.headers['Authorization'] = `Bearer ${token}`;
+					}
 				}
 
 				const requestUrl = getRequestUrl(client.url, options.path, options.params);
