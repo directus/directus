@@ -1,4 +1,5 @@
 import type { DirectusClient } from '../client.js';
+import type { ResponseTransformer } from '../index.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { RestClient, RestCommand, RestConfig } from './types.js';
@@ -13,7 +14,6 @@ export const rest = (config: RestConfig = {}) => {
 		return {
 			async request<Output = any>(getOptions: RestCommand<Output, Schema>): Promise<Output> {
 				const options = getOptions();
-				const onError = config.onError ?? ((_err: any) => undefined);
 
 				if (!options.headers?.['Content-Type']) {
 					if (!options.headers) options.headers = {};
@@ -44,11 +44,29 @@ export const rest = (config: RestConfig = {}) => {
 					fetchOptions['body'] = options.body;
 				}
 
+				// apply onRequest hook from command
 				if (options.onRequest) {
 					fetchOptions = await options.onRequest(fetchOptions);
 				}
-			
-				const response = await request(requestUrl.toString(), fetchOptions, options.onResponse)
+
+				// apply global onRequest hook
+				if (config.onRequest) {
+					fetchOptions = await config.onRequest(fetchOptions);
+				}
+
+				const onError = config.onError ?? ((_err: any) => undefined);
+				let onResponse: ResponseTransformer | undefined;
+
+				// chain response parsers if needed
+				if (config.onResponse && options.onResponse) {
+					onResponse = ((data: any) => Promise.resolve(data).then(options.onResponse).then(config.onResponse)) as ResponseTransformer;
+				} else if (options.onResponse) {
+					onResponse = options.onResponse;
+				} else if (config.onResponse) {
+					onResponse = config.onResponse;
+				}
+
+				const response = await request(requestUrl.toString(), fetchOptions, onResponse)
 					.catch(onError);
 				
 				return response as Output;

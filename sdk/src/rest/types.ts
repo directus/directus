@@ -1,4 +1,4 @@
-import type { RequestOptions } from '../types/request.js';
+import type { RequestOptions, RequestTransformer, ResponseTransformer } from '../types/request.js';
 
 export interface RestCommand<_Output extends object | unknown, _Schema extends object> {
 	(): RequestOptions;
@@ -11,4 +11,6 @@ export interface RestClient<Schema extends object> {
 export interface RestConfig {
 	globalOptions?: Partial<RequestInit>;
 	onError?: (error: any) => any;
+	onRequest?: RequestTransformer;
+	onResponse?: ResponseTransformer;
 }
