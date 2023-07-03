@@ -31,7 +31,7 @@ export const rest = (config: RestConfig = {}) => {
 
 				const requestUrl = getRequestUrl(client.url, options.path, options.params);
 
-				const fetchOptions: RequestInit = {
+				let fetchOptions: RequestInit = {
 					...(config.globalOptions ?? {}),
 					method: options.method ?? 'GET',
 					headers: {
@@ -43,8 +43,12 @@ export const rest = (config: RestConfig = {}) => {
 				if (options.body) {
 					fetchOptions['body'] = options.body;
 				}
+
+				if (options.onRequest) {
+					fetchOptions = await options.onRequest(fetchOptions);
+				}
 			
-				const response = await request(requestUrl.toString(), fetchOptions, options.processResponse)
+				const response = await request(requestUrl.toString(), fetchOptions, options.onResponse)
 					.catch(onError);
 				
 				return response as Output;

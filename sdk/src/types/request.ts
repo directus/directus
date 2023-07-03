@@ -6,12 +6,14 @@ export interface RequestOptions {
 	params?: Record<string, string>;
 	headers?: Record<string, string>;
 	body?: string;
-	processResponse?: ResponseTransformer;
+	onRequest?: RequestTransformer;
+	onResponse?: ResponseTransformer;
+
 }
 
-// export interface RequestTransformer {
-// 	(options: RequestOptions): RequestInit | Promise<RequestInit>;
-// }
+export interface RequestTransformer {
+	(options: RequestInit): RequestInit | Promise<RequestInit>;
+}
 
 export interface ResponseTransformer {
 	<Output = any>(data: any): Output | Promise<Output>;
