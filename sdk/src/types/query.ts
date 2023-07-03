@@ -18,7 +18,7 @@ export interface Query<Schema extends object, Item> {
 /**
  * Fields querying, including nested relational fields
  */
-export type QueryFields<Schema extends object, Item> = ('*' | keyof Item | QueryFieldsRelational<Schema, Item>)[];
+export type QueryFields<Schema extends object, Item> = ('*' | keyof UnpackList<Item> | QueryFieldsRelational<Schema, UnpackList<Item>>)[];
 
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
