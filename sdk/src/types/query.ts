@@ -1,4 +1,4 @@
-import type { ItemType, RelationalFields, RemoveRelationships } from './schema.js';
+import type { ItemType, RelationalFields, RemoveRelationships, UnpackList } from './schema.js';
 
 /**
  * All query options available
@@ -44,11 +44,6 @@ type ExtractRelation<Schema extends object, Item extends object, Key> = Key exte
 			: Relation
 		: never
 	: never;
-
-/**
- * Flatten array types to their singular root
- */
-type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
 
 /**
  * Returns true if the Fields has any nested field

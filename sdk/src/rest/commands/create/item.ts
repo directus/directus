@@ -1,4 +1,4 @@
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
@@ -6,7 +6,7 @@ export type CreateItemOutput<
 	Schema extends object,
 	Collection extends keyof Schema,
 	TQuery extends Query<Schema, Schema[Collection]>
-> = ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>;
+> = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
 
 /**
  * Create a new item in the given collection.
