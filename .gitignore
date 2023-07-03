@@ -25,7 +25,6 @@ debug
 
 # IDEs / Editors
 .vscode/*
-!.vscode/settings.json
 !.vscode/extensions.json
 .idea/
 *.code-workspace

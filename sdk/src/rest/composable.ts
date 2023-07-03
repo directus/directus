@@ -36,7 +36,7 @@ export const rest = (config: RestConfig = {}) => {
 					method: options.method ?? 'GET',
 					headers: options.headers ?? {},
 				};
-			
+
 				if (options.body) {
 					fetchOptions['body'] = options.body;
 				}

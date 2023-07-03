@@ -1,4 +1,3 @@
-
 const SEPARATOR = '/';
 
 const mergePaths = (a: string, b: string) => {

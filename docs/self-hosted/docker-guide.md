@@ -83,36 +83,27 @@ project:
 version: '3'
 services:
   database:
-    container_name: database
     image: postgis/postgis:13-master
     # Required when running on platform other than amd64, like Apple M1/M2:
     # platform: linux/amd64
     volumes:
       - ./data/database:/var/lib/postgresql/data
-    networks:
-      - directus
     environment:
       POSTGRES_USER: 'directus'
       POSTGRES_PASSWORD: 'directus'
       POSTGRES_DB: 'directus'
 
   cache:
-    container_name: cache
     image: redis:6
-    networks:
-      - directus
 
   directus:
-    container_name: directus
-    image: directus/directus:10.0.0
+    image: directus/directus:10.4.0
     ports:
       - 8055:8055
     volumes:
       - ./uploads:/directus/uploads
       # If you want to load extensions from the host
       # - ./extensions:/directus/extensions
-    networks:
-      - directus
     depends_on:
       - cache
       - database

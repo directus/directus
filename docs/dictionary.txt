@@ -187,6 +187,7 @@ frontend
 G2
 Gantt
 gcloud
+graphql
 GCP
 GCS
 GDPR
@@ -330,6 +331,7 @@ SAML
 scalable
 Scalable
 SCSS
+sdk
 SDK
 SDL
 semver
@@ -370,6 +372,7 @@ TrustRadius
 truthy
 TTL
 TTY
+TypeDoc
 UI
 UID
 UIDs

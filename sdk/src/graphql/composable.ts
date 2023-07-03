@@ -25,7 +25,7 @@ export const graphql = () => {
 				const token = await client.getToken();
 
 				if (token) {
-					options.headers = { 'Authorization': `Bearer ${token}` };
+					options.headers = { Authorization: `Bearer ${token}` };
 				}
 
 				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
