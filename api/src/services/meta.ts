@@ -57,7 +57,7 @@ export class MetaService {
 	}
 
 	async filterCount(collection: string, query: Query): Promise<number> {
-		const dbQuery = this.knex(collection).count('*', { as: 'count' });
+		const dbQuery = this.knex(collection).countDistinct(`${collection}.*`, { as: 'count' });
 
 		let filter = query.filter || {};
 
