@@ -12,3 +12,4 @@
 
 export * from './converter/index.js';
 export * from './types.js';
+export { expand } from './utils/expand.js';

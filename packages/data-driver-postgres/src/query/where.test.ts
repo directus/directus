@@ -1,4 +1,4 @@
-import type { AbstractSqlQuery, AbstractSqlQueryWhereConditionNode, CompareValueNode } from '@directus/data-sql';
+import type { AbstractSqlQuery, AbstractSqlQueryConditionNode, CompareValueNode } from '@directus/data-sql';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { where, getComparison } from './where.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
@@ -41,10 +41,10 @@ describe('Where clause:', () => {
 
 	test('Where clause', () => {
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${
-				(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column
+			`WHERE "${(sample.statement.where as AbstractSqlQueryConditionNode).target.table}"."${
+				(sample.statement.where as AbstractSqlQueryConditionNode).target.column
 			}" > $${
-				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode)
+				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as CompareValueNode)
 					.parameterIndexes[0]! + 1
 			}`
 		);
@@ -54,10 +54,10 @@ describe('Where clause:', () => {
 		sample.statement.where!.negate = true;
 
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.table}"."${
-				(sample.statement.where as AbstractSqlQueryWhereConditionNode).target.column
+			`WHERE "${(sample.statement.where as AbstractSqlQueryConditionNode).target.table}"."${
+				(sample.statement.where as AbstractSqlQueryConditionNode).target.column
 			}" <= $${
-				((sample.statement.where as AbstractSqlQueryWhereConditionNode).compareTo as CompareValueNode)
+				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as CompareValueNode)
 					.parameterIndexes[0]! + 1
 			}`
 		);

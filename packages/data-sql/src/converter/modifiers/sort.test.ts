@@ -1,7 +1,7 @@
 import type { AbstractQueryNodeSort } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import { randomIdentifier } from '@directus/random';
-import { convertSort } from './convert-sort.js';
+import { convertSort } from './sort.js';
 
 let sample: {
 	sort: AbstractQueryNodeSort[];

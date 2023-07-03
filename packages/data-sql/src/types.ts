@@ -1,18 +1,19 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
 
-interface ColumnSelection {
+export interface AbstractSqlQueryColumn {
 	table: string;
 	column: string;
 }
 
-export interface SqlStatementColumn extends ColumnSelection {
+export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn {
 	type: 'primitive';
 
 	/* This can only be applied when using the function it within the SELECT clause */
+
 	as?: string;
 }
 
-export interface SqlStatementFn extends ColumnSelection {
+export interface AbstractSqlQueryFnNode extends AbstractSqlQueryColumn {
 	type: 'fn';
 
 	/* Same as the the abstract functions */
@@ -25,6 +26,7 @@ export interface SqlStatementFn extends ColumnSelection {
 	as?: string;
 }
 
+/** @TODO */
 // export interface SqlStatementSelectJson {
 // 	type: 'json';
 // 	table: string;
@@ -42,7 +44,7 @@ type ParameterIndex = {
 };
 
 /**
- * This is an abstract SQL query which can be passen to all SQL drivers.
+ * This is an abstract SQL query which can be passed to all SQL drivers.
  *
  * @example
  * ```ts
@@ -55,29 +57,58 @@ type ParameterIndex = {
  * ```
  */
 export interface AbstractSqlQuery {
-	select: SqlStatementColumn[];
+	select: AbstractSqlQuerySelectNode[];
 	from: string;
+	join?: AbstractSqlQueryJoinNode[];
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
 	order?: AbstractSqlQueryOrderNode[];
-	where?: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode;
-	intersect?: AbstractSqlQuery;
+	where?: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 	parameters: (string | boolean | number)[];
+
+	/**
+	 * To prevent naming conflicts, all column selections should have a unique alias. This map
+	 * contains the alias back to the original name.
+	 */
+	aliases: Map<string, string>;
+
+	/**
+	 * SQL returns data as a flat object. This map contains the flat property names and the JSON path
+	 * they correspond to.
+	 */
+	paths: Map<string, string[]>;
 }
 
-export type AbstractSqlQueryOrderNode = {
-	orderBy: AbstractQueryNodeSortTargets;
-	direction: 'ASC' | 'DESC';
-};
+type AbstractSqlQueryNodeType = 'order' | 'join' | 'condition' | 'logical' | 'value';
 
 /**
- * An abstract WHERE clause.
+ * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.
+ * With this in place it can easily be determined how to technically handle this field.
+ * @see `AbstractQueryNodeType` for all possible types.
  */
-export interface AbstractSqlQueryWhereConditionNode {
+interface AbstractSqlQueryNode {
+	/** the type of the node */
+	type: AbstractSqlQueryNodeType;
+}
+
+export interface AbstractSqlQueryOrderNode extends AbstractSqlQueryNode {
+	type: 'order';
+	orderBy: AbstractQueryNodeSortTargets;
+	direction: 'ASC' | 'DESC';
+}
+
+export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
+	type: 'join';
+	table: string;
+	on: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
+	as: string;
+}
+
+export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
 	type: 'condition';
 
 	/* value which will be compared to another value or expression. Functions will be supported soon. */
-	target: SqlStatementColumn | SqlStatementFn;
+	target: AbstractSqlQueryColumn | AbstractSqlQueryFnNode;
 
 	/* an abstract comparator */
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'contains' | 'starts_with' | 'ends_with' | 'intersects';
@@ -86,14 +117,14 @@ export interface AbstractSqlQueryWhereConditionNode {
 	negate: boolean;
 
 	/* a value to which the target will be compared */
-	compareTo: CompareValueNode;
+	compareTo: CompareValueNode | AbstractSqlQueryColumn;
 }
 
-export interface AbstractSqlQueryWhereLogicalNode {
+export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
 	type: 'logical';
 	operator: 'and' | 'or';
 	negate: boolean;
-	childNodes: (AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode)[];
+	childNodes: (AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode)[];
 }
 
 export interface CompareValueNode {
@@ -111,7 +142,7 @@ export interface CompareValueNode {
  * }
  * ```
  */
-export interface ParameterizedSQLStatement {
+export interface ParameterizedSqlStatement {
 	statement: string;
 	parameters: (string | number | boolean)[];
 }
