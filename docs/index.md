@@ -12,7 +12,7 @@ import Github from './.vitepress/components/home/icons/Github.vue';
 	<div :class="$style.heroPattern">
 		 <Pattern />
 	</div>
-	<div :class="[$style.sectionContainer, $style.flex]">
+	<div :class="[$style.sectionContainer, $style.sectionContainerHero, $style.flex]">
 		<div :class="[$style.heroContent, $style.sectionPaddingHero]">
 			<div :class="$style.heroBadge">Resource Hub</div>
 			<h1>Directus Documentation</h1>

@@ -7,6 +7,10 @@
 	margin-inline: auto;
 }
 
+.sectionContainerHero {
+	position: relative;
+}
+
 .sectionPaddingHero {
 	padding-block: 108px;
 }
@@ -49,7 +53,6 @@
 
 .heroContent {
 	max-width: 580px;
-	position: relative;
 }
 
 .heroContent h1 {
@@ -76,7 +79,6 @@
 	box-shadow: 0 0 100px 24px rgba(255, 255, 255, 0.3);
 	backdrop-filter: blur(4px);
 	margin-left: 20px;
-	z-index: 1;
 }
 
 .flex {
