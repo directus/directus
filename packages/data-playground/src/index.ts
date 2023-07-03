@@ -53,8 +53,8 @@ const query: AbstractQuery = {
 
 const dataStream = await engine.query(query);
 
-dataStream.on('data', (data) => {
-	console.log(data);
-});
+for await (const record of dataStream) {
+	console.log(record);
+}
 
 await engine.destroy();

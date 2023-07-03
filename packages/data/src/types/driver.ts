@@ -1,4 +1,5 @@
 import type { AbstractQuery } from './abstract-query.js';
+import type { ReadableStream } from 'node:stream/web';
 
 export interface DataDriver {
 	/**
@@ -15,5 +16,5 @@ export interface DataDriver {
 }
 
 export abstract class DataDriver {
-	abstract query: (query: AbstractQuery) => Promise<NodeJS.ReadableStream>;
+	abstract query: (query: AbstractQuery) => Promise<ReadableStream>;
 }

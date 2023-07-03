@@ -1142,6 +1142,10 @@ importers:
         version: 3.12.7
 
   packages/data-sql:
+    dependencies:
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
     devDependencies:
       '@directus/data':
         specifier: workspace:*
@@ -1155,6 +1159,9 @@ importers:
       '@directus/types':
         specifier: workspace:*
         version: link:../types
+      '@types/lodash-es':
+        specifier: 4.17.7
+        version: 4.17.7
       '@types/node':
         specifier: 18.16.12
         version: 18.16.12

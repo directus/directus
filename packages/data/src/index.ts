@@ -1,3 +1,4 @@
+import type { ReadableStream } from 'node:stream/web';
 import type { AbstractQuery } from './types/abstract-query.js';
 import type { DataDriver } from './types/driver.js';
 
@@ -26,7 +27,7 @@ export class DataEngine {
 	}
 
 	/** Execute a root abstract query */
-	async query(query: AbstractQuery): Promise<NodeJS.ReadableStream> {
+	async query(query: AbstractQuery): Promise<ReadableStream> {
 		return this.store(query.store).query(query);
 	}
 
