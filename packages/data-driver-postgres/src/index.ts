@@ -7,7 +7,7 @@
 import type { AbstractQuery, DataDriver } from '@directus/data';
 import { convertAbstractQueryToAbstractSqlQuery } from '@directus/data-sql';
 import type { Readable } from 'node:stream';
-import { Pool } from 'pg';
+import pg from 'pg';
 import QueryStream from 'pg-query-stream';
 import { constructSqlQuery } from './query/index.js';
 
@@ -17,12 +17,12 @@ export interface DataDriverPostgresConfig {
 
 export default class DataDriverPostgres implements DataDriver {
 	#config: DataDriverPostgresConfig;
-	#pool: Pool;
+	#pool: pg.Pool;
 
 	constructor(config: DataDriverPostgresConfig) {
 		this.#config = config;
 
-		this.#pool = new Pool({
+		this.#pool = new pg.Pool({
 			connectionString: this.#config.connectionString,
 		});
 	}
