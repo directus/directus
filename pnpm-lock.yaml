@@ -1035,7 +1035,7 @@ importers:
         version: 2.3.2(vue@3.3.4)
       tsup:
         specifier: 7.1.0
-        version: 7.1.0(typescript@5.0.4)
+        version: 7.1.0(postcss@8.4.23)(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1054,7 +1054,7 @@ importers:
         version: link:../tsconfig
       tsup:
         specifier: 7.1.0
-        version: 7.1.0(typescript@5.0.4)
+        version: 7.1.0(postcss@8.4.23)(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -1279,6 +1279,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(postcss@8.4.23)(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -17929,7 +17932,7 @@ packages:
       yaml: 1.10.2
     dev: true
 
-  /postcss-load-config@4.0.1:
+  /postcss-load-config@4.0.1(postcss@8.4.23):
     resolution: {integrity: sha512-vEJIc8RdiBRu3oRAI0ymerOn+7rPuMvRXslTvZUKZonDHFIczxztIyJ1urxM1x9JXEikvpWWTUUqal5j/8QgvA==}
     engines: {node: '>= 14'}
     peerDependencies:
@@ -17942,6 +17945,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.1.0
+      postcss: 8.4.23
       yaml: 2.2.2
     dev: true
 
@@ -21069,7 +21073,7 @@ packages:
       - ts-node
     dev: true
 
-  /tsup@7.1.0(typescript@5.0.4):
+  /tsup@7.1.0(postcss@8.4.23)(typescript@5.0.4):
     resolution: {integrity: sha512-mazl/GRAk70j8S43/AbSYXGgvRP54oQeX8Un4iZxzATHt0roW0t6HYDVZIXMw0ZQIpvr1nFMniIVnN5186lW7w==}
     engines: {node: '>=16.14'}
     hasBin: true
@@ -21093,7 +21097,8 @@ packages:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      postcss-load-config: 4.0.1
+      postcss: 8.4.23
+      postcss-load-config: 4.0.1(postcss@8.4.23)
       resolve-from: 5.0.0
       rollup: 3.22.0
       source-map: 0.8.0-beta.0

@@ -19,15 +19,15 @@
 	},
 	"main": "dist/index.js",
 	"bin": {
-		"directus-extension": "cli.js"
+		"directus-extension": "dist/cli/run.js"
 	},
 	"files": [
 		"dist",
 		"templates"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json",
-		"dev": "tsc --watch",
+		"build": "tsup",
+		"dev": "tsup --watch",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
@@ -60,6 +60,7 @@
 		"@types/fs-extra": "11.0.1",
 		"@types/inquirer": "9.0.3",
 		"@vitest/coverage-c8": "0.31.1",
+		"tsup": "7.1.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	},

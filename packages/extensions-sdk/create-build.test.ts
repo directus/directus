@@ -57,7 +57,7 @@ test.each(
 			expect(fse.pathExistsSync(resolve(testExtensionPath, configFileName))).toBe(true);
 
 			// Build
-			await execa('node', ['../cli.js', 'build'], { cwd: testExtensionPath });
+			await execa('node', ['../dist/cli/run.js', 'build'], { cwd: testExtensionPath });
 
 			if (extensionType === 'operation') {
 				expect(fse.pathExistsSync(resolve(testExtensionPath, 'dist', 'api.js'))).toBe(true);

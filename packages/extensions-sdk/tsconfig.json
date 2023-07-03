@@ -1,9 +1,6 @@
 {
 	"extends": "@directus/tsconfig/node18-esm.json",
-	"compilerOptions": {
-		"outDir": "dist"
-	},
-	"include": ["src"],
+	"include": ["src", "create-build.test.ts"],
 	"typedocOptions": {
 		"entryPoints": ["./src/index.ts"]
 	}
