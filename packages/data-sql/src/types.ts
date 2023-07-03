@@ -1,6 +1,6 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
 
-interface AbstractSqlQueryColumn {
+export interface AbstractSqlQueryColumn {
 	type: 'primitive';
 	table: string;
 	column: string;
@@ -94,7 +94,7 @@ export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
 	type: 'join';
 	table: string;
 	on: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
-	as?: string;
+	as: string;
 }
 
 export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
