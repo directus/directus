@@ -65,13 +65,6 @@ export interface AbstractSqlQuery {
 	order?: AbstractSqlQueryOrderNode[];
 	where?: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 	parameters: (string | boolean | number)[];
-
-	/**
-	 * To prevent naming conflicts, all column selections should have a unique alias. This map
-	 * contains the alias back to the original name.
-	 */
-	aliases: Map<string, string>;
-
 	/**
 	 * SQL returns data as a flat object. This map contains the flat property names and the JSON path
 	 * they correspond to.
