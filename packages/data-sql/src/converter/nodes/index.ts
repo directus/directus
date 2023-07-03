@@ -28,6 +28,14 @@ export const convertNodes = (
 		if (node.type === 'm2o') {
 			const externalCollectionAlias = createUniqueIdentifier(node.join.external.collection);
 
+			/**
+			 * Always fetch the current context foreign key as well. We need it to check if the current
+			 * item has a related item so we don't expand `null` values in a nested object where every
+			 * value is null
+			 *
+			 * @TODO
+			 */
+
 			join.push(
 				createJoin(
 					collection,
