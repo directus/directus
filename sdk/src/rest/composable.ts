@@ -33,12 +33,8 @@ export const rest = (config: RestConfig = {}) => {
 				const requestUrl = getRequestUrl(client.url, options.path, options.params);
 
 				let fetchOptions: RequestInit = {
-					...(config.globalOptions ?? {}),
 					method: options.method ?? 'GET',
-					headers: {
-						...(config.globalOptions?.headers ?? {}),
-						...(options.headers ?? {}),
-					},
+					headers: options.headers ?? {},
 				};
 			
 				if (options.body) {
