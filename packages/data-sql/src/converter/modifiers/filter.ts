@@ -1,6 +1,6 @@
 import type { AbstractQueryFieldNodeFn, AbstractQueryFilterNode } from '@directus/data';
-import type { AbstractSqlQuery } from '../types.js';
-import type { AbstractSqlQueryFnNode, SqlStatementColumn } from '../types.js';
+import type { AbstractSqlQuery } from '../../types.js';
+import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from '../../types.js';
 
 /**
  * Extracts the filer values and replaces it with parameter indexes.
@@ -31,7 +31,7 @@ const convertFilterWithNegate = (
 			throw new Error('The intersects operators are not yet supported.');
 		}
 
-		let target: AbstractSqlQueryFnNode | SqlStatementColumn;
+		let target: AbstractSqlQueryFnNode | AbstractSqlQuerySelectNode;
 		const parameters = [];
 
 		if (filter.target.type === 'primitive') {
@@ -102,12 +102,16 @@ export function convertFn(
 		parameterIndexes: [],
 	};
 
+	if (abstractFunction.alias) {
+		fn.as = abstractFunction.alias;
+	}
+
 	if (abstractFunction.args && abstractFunction.args?.length > 0) {
 		fn.parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
 	}
 
 	return {
 		fn,
-		parameters: abstractFunction.args?.map((arg) => arg) ?? [],
+		parameters: abstractFunction.args ?? [],
 	};
 }

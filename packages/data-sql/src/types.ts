@@ -9,7 +9,6 @@ export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn {
 	type: 'primitive';
 
 	/* This can only be applied when using the function it within the SELECT clause */
-
 	as?: string;
 }
 
@@ -19,7 +18,7 @@ export interface AbstractSqlQueryFnNode extends AbstractSqlQueryColumn {
 	/* Same as the the abstract functions */
 	fn: string;
 
-	/* The index of the argument within the list parameters */
+	/* Indexes of additional arguments within the parameter list  */
 	parameterIndexes: number[];
 
 	/* This can only be applied when using the function it within the SELECT clause */
@@ -101,7 +100,7 @@ export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
 	type: 'condition';
 
 	/* value which will be compared to another value or expression. Functions will be supported soon. */
-	target: AbstractSqlQueryColumn | AbstractSqlQueryFnNode;
+	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 
 	/* an abstract comparator */
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'contains' | 'starts_with' | 'ends_with' | 'intersects';
@@ -110,7 +109,7 @@ export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
 	negate: boolean;
 
 	/* a value to which the target will be compared */
-	compareTo: CompareValueNode | AbstractSqlQueryColumn;
+	compareTo: ValueNode | AbstractSqlQuerySelectNode;
 }
 
 export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
@@ -120,7 +119,7 @@ export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
 	childNodes: (AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode)[];
 }
 
-export interface CompareValueNode {
+export interface ValueNode {
 	type: 'value';
 	parameterIndexes: number[];
 }

@@ -77,8 +77,8 @@ test('Convert filter with function target', () => {
 		target: {
 			type: 'fn',
 			fn: 'month',
-			column: sampleColumn,
 			table: sample.randomCollection,
+			column: sampleColumn,
 			parameterIndexes: [],
 		},
 		operation: 'gt',
