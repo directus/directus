@@ -1054,6 +1054,9 @@ importers:
       '@vue/test-utils':
         specifier: 2.3.2
         version: 2.3.2(vue@3.3.4)
+      tsup:
+        specifier: 7.1.0
+        version: 7.1.0(typescript@5.0.4)
       typescript:
         specifier: 5.0.4
         version: 5.0.4
