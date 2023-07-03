@@ -2,7 +2,7 @@ import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlQuery } from '../types.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 import { convertFilter, convertSort } from './modifiers/index.js';
-import { convertPrimitive } from './nodes/index.js';
+import { convertNodes } from './nodes/index.js';
 
 /**
  * @param abstractQuery the abstract query to convert
@@ -10,24 +10,9 @@ import { convertPrimitive } from './nodes/index.js';
  */
 export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
 	const statement: AbstractSqlQuery = {
-		select: abstractQuery.nodes.map((abstractNode) => {
-			switch (abstractNode.type) {
-				case 'primitive':
-					return convertPrimitive(abstractNode, abstractQuery.collection);
-				case 'fn':
-				case 'm2o':
-				case 'o2m':
-				case 'a2o':
-				case 'o2a':
-				default:
-					throw new Error(`Abstract Query node type ${abstractNode.type} is not supported`);
-			}
-		}),
+		...convertNodes(abstractQuery.collection, abstractQuery.nodes),
 		from: abstractQuery.collection,
 		parameters: [],
-
-		aliases: new Map(),
-		paths: new Map()
 	};
 
 	const idGen = parameterIndexGenerator();

@@ -35,7 +35,7 @@ const convertFilterWithNegate = (
 			throw new Error('The intersects operators are not yet supported.');
 		}
 
-		/** @todo support SqlStatementColumn as compareTo value */
+		/** @todo support AbstractSqlQueryColumn as compareTo value */
 
 		return {
 			where: {

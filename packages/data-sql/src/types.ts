@@ -1,12 +1,12 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
 
-interface SqlStatementColumn {
+interface AbstractSqlQueryColumn {
 	type: 'primitive';
 	table: string;
 	column: string;
 }
 
-export interface SqlStatementSelectColumn extends SqlStatementColumn {
+export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn {
 	as?: string;
 }
 
@@ -50,7 +50,7 @@ type ParameterIndex = {
  * ```
  */
 export interface AbstractSqlQuery {
-	select: SqlStatementSelectColumn[];
+	select: AbstractSqlQuerySelectNode[];
 	from: string;
 	join?: AbstractSqlQueryJoinNode[];
 	limit?: ParameterIndex;
@@ -101,7 +101,7 @@ export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
 	type: 'condition';
 
 	/* value which will be compared to another value or expression. Functions will be supported soon. */
-	target: SqlStatementColumn;
+	target: AbstractSqlQueryColumn;
 
 	/* an abstract comparator */
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'contains' | 'starts_with' | 'ends_with' | 'intersects';
@@ -110,7 +110,7 @@ export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
 	negate: boolean;
 
 	/* a value to which the target will be compared */
-	compareTo: CompareValueNode | SqlStatementColumn;
+	compareTo: CompareValueNode | AbstractSqlQueryColumn;
 }
 
 export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {

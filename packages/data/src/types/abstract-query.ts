@@ -96,7 +96,7 @@ export interface AbstractQueryFieldNodeRelatedBase {
 	/** Regardless of the type of the relationship, it always possible to add modifiers to the foreign collection to adjust the results. */
 	modifiers?: AbstractQueryModifiers;
 
-	alias?: string;
+	alias: string;
 }
 
 /**
@@ -122,7 +122,7 @@ export type AbstractQueryFieldNodeRelated =
  * }
  * ```
  */
-interface AbstractQueryFieldNodeRelatedJoinMany {
+export interface AbstractQueryFieldNodeRelatedJoinMany {
 	/** the field of the current collection which has the relational value to an external collection or item */
 	current: {
 		fields: string[];
@@ -136,7 +136,7 @@ interface AbstractQueryFieldNodeRelatedJoinMany {
 	};
 }
 
-interface AbstractQueryFieldNodeRelatedJoinAny {
+export interface AbstractQueryFieldNodeRelatedJoinAny {
 	current: {
 		collectionField: string;
 		fields: string[];

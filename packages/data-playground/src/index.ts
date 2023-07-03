@@ -4,9 +4,12 @@ import { DataEngine } from '../../data/src/index.js';
 
 const engine = new DataEngine();
 
-await engine.registerStore('postgres', new DataDriverPostgres({
-	connectionString: 'postgresql://postgres:secret@localhost:5100/data'
-}));
+await engine.registerStore(
+	'postgres',
+	new DataDriverPostgres({
+		connectionString: 'postgresql://postgres:secret@localhost:5100/data',
+	})
+);
 
 const query: AbstractQuery = {
 	root: true,
@@ -23,25 +26,30 @@ const query: AbstractQuery = {
 		},
 		{
 			type: 'm2o',
+			alias: 'author',
 			join: {
 				current: {
-					fields: ['author']
+					fields: ['author'],
 				},
 				external: {
 					store: 'postgres',
 					collection: 'authors',
-					fields: ['id']
-				}
+					fields: ['id'],
+				},
 			},
 			nodes: [
 				{
 					type: 'primitive',
+					field: 'id',
+				},
+				{
+					type: 'primitive',
 					field: 'name',
-				}
+				},
 			],
-		}
-	]
-}
+		},
+	],
+};
 
 const dataStream = await engine.query(query);
 

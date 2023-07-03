@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { randomBytes } from 'node:crypto';
 
 /**
  * Appends a pseudo-random hash to the end of a given identifier to make sure it's unique within the
@@ -8,6 +8,6 @@ import { randomBytes } from "node:crypto";
  * ensure that, or should that be on the DB level?
  */
 export const createUniqueIdentifier = (identifier: string) => {
-	const hash = randomBytes(2).toString('hex');
+	const hash = randomBytes(3).toString('hex');
 	return `${identifier}_${hash}`;
-}
+};
