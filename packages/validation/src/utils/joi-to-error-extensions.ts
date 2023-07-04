@@ -94,6 +94,7 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.invalid = validationErrorItem.context?.value;
 	}
 
+	// TODO Find a better way of passing the expected value down to the client
 	if (joiType.endsWith('.pattern.name')) {
 		extensions.type = validationErrorItem.context?.['name'];
 		const regex = validationErrorItem.context?.['regex']?.toString();
