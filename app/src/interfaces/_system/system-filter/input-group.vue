@@ -171,7 +171,7 @@ const value = computed<unknown | unknown[]>({
 const choices = computed(() => fieldInfo.value?.meta?.options?.choices ?? []);
 
 function setValueAt(index: number, newVal: any) {
-	let newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
+	const newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
 	newArray[index] = newVal;
 	value.value = newArray;
 }

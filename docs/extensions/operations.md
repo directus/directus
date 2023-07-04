@@ -45,8 +45,8 @@ export default {
 
 - `id` — The unique key for this operation. It is good practice to scope proprietary operations with an author prefix.
 - `name` — The human-readable name for this operation.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
-  Directus custom icons.
+- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list
+  of Directus custom icons.
 - `description` — A short description (<80 characters) of this operation shown in the App.
 - `overview` — An overview that will be shown on the operation's tile. Can be either a function that receives the
   options of the operation and returns an array of objects containing `label` and `text` or a dedicated Vue component.

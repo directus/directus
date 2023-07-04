@@ -7,7 +7,7 @@ pageClass: page-reference
 # Roles
 
 > Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
-> platform. [Learn more about Roles](/getting-started/glossary#roles).
+> platform. [Learn more about Roles](/user-guide/overview/glossary#roles).
 
 ---
 

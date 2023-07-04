@@ -1,5 +1,5 @@
 import type { AbstractQueryFieldNodePrimitive } from '@directus/data';
-import type { SqlStatementSelectPrimitive } from '../types.js';
+import type { SqlStatementSelectColumn } from '../types.js';
 
 /**
  * @param abstractPrimitive
@@ -9,8 +9,8 @@ import type { SqlStatementSelectPrimitive } from '../types.js';
 export const convertPrimitive = (
 	abstractPrimitive: AbstractQueryFieldNodePrimitive,
 	collection: string
-): SqlStatementSelectPrimitive => {
-	const statement: SqlStatementSelectPrimitive = {
+): SqlStatementSelectColumn => {
+	const statement: SqlStatementSelectColumn = {
 		type: 'primitive',
 		table: collection,
 		column: abstractPrimitive.field,

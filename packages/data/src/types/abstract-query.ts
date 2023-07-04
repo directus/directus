@@ -181,11 +181,11 @@ export interface AbstractQueryModifiers {
 	limit?: AbstractQueryNodeLimit;
 	offset?: AbstractQueryNodeOffset;
 	sort?: AbstractQueryNodeSort[];
-	filter?: AbstractQueryNodeLogical | AbstractQueryNodeCondition;
+	filter?: AbstractQueryFilterNode;
 }
 
 interface AbstractQueryModifierNode {
-	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition';
+	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition' | 'negate';
 }
 
 /**
@@ -310,13 +310,22 @@ export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
  * }
  * ```
  */
+export type AbstractQueryFilterNode = AbstractQueryNodeLogical | AbstractQueryNodeNegate | AbstractQueryNodeCondition;
+
 export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
 
-	operator: 'and' | 'or' | 'not';
+	operator: 'and' | 'or';
 
 	/** the values for the the operation. */
-	childNodes: (AbstractQueryNodeLogical | AbstractQueryNodeCondition)[];
+	childNodes: AbstractQueryFilterNode[];
+}
+
+export interface AbstractQueryNodeNegate extends AbstractQueryModifierNode {
+	type: 'negate';
+
+	/** the values for the the operation. */
+	childNode: AbstractQueryFilterNode;
 }
 
 /**
@@ -335,30 +344,20 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
 	type: 'condition';
 
 	/** the node on which the condition should be applied */
-	targetNode:
+	target:
 		| AbstractQueryFieldNodePrimitive
 		| AbstractQueryFieldNodeFn
 		| AbstractQueryFieldNodeRelatedManyToOne
 		| AbstractQueryFieldNodeRelatedAnyToOne;
 
 	/** the operation to perform on the target */
-	operation:
-		| 'eq'
-		| 'lt'
-		| 'lte'
-		| 'gt'
-		| 'gte'
-		| 'in'
-		| 'contains'
-		| 'starts_with'
-		| 'ends_with'
-		| 'intersects'
-		| 'intersects_bounding_box';
+	operation: 'eq' | 'lt' | 'gt' | 'contains' | 'starts_with' | 'ends_with' | 'intersects' | 'intersects_bounding_box';
 
-	/** the above operations can be negated by setting the following attribute to true. */
-	negation: boolean;
+	compareTo: AbstractQueryNodeConditionValue;
+}
 
-	/** the conditional value. Might be also a function or sub query in the future */
+export interface AbstractQueryNodeConditionValue {
+	type: 'value';
 	value: string | number | boolean;
 }
 
@@ -366,5 +365,4 @@ export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
  * @TODO
  * - Should we support "Distinct", if so where does it live (field level vs collection level)
  * - Rethink every / some
- * - Should logical "not" be a node with a single child? --> it's seems easier to work with a boolean flag here - see 'negation' onAbstractQueryNodeCondition
  */

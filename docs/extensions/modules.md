@@ -6,7 +6,7 @@ readTime: 5 min read
 # Custom Modules <small></small>
 
 > Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
-> platform. [Learn more about Modules](/getting-started/glossary#modules).
+> platform. [Learn more about Modules](/user-guide/overview/glossary#modules).
 
 ## Extension Entrypoint
 
@@ -36,8 +36,8 @@ export default {
 
 - `id` — The unique key for this module. It is good practice to scope proprietary modules with an author prefix.
 - `name` — The human-readable name for this module.
-- `icon` — An icon name from the [material icon set](/getting-started/glossary#material-icons), or the extended list of
-  Directus custom icons.
+- `icon` — An icon name from the [material icon set](/user-guide/overview/glossary#material-icons), or the extended list
+  of Directus custom icons.
 - `color` — A color associated with the module.
 - `routes` — Details the routes in your module. The routes are registered as nested routes with the module's `id`
   serving as the base path.
@@ -131,27 +131,22 @@ called `api`, which is an authenticated Axios instance. Here's an example of how
 <template>
 	<private-view title="Example Collection List">
 		<v-list>
-			<v-list-item v-for="col in collections" v-bind:key="col.collection">
+			<v-list-item v-for="col in collections" :key="col.collection">
 				{{ col.collection }}
 			</v-list-item>
 		</v-list>
-		<v-button v-on:click="logToConsole">Log collections to console</v-button>
+		<v-button @click="logToConsole">Log collections to console</v-button>
 	</private-view>
 </template>
 
 <script>
 export default {
+	inject: ['api'],
 	data() {
 		return {
 			collections: null,
 		};
 	},
-	methods: {
-		logToConsole: function () {
-			console.log(this.collections);
-		},
-	},
-	inject: ['api'],
 	mounted() {
 		// log the system field so you can see what attributes are available under it
 		// remove this line when you're done.
@@ -161,6 +156,11 @@ export default {
 		this.api.get('/collections?limit=-1').then((res) => {
 			this.collections = res.data.data;
 		});
+	},
+	methods: {
+		logToConsole: function () {
+			console.log(this.collections);
+		},
 	},
 };
 </script>

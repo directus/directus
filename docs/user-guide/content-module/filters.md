@@ -27,7 +27,7 @@ This page is a non-technical guide to using Filters. For more technical info, se
 
 Filters are intuitive to use, but get quite nuanced as complexity increases. In order to use Filters effectively, you
 will need to understand the Field _(aka [data model](/app/data-model))_ being filtered as well as any relevant
-[Users, Roles and Permissions](/app/users-roles-permissions).
+[Users, Roles and Permissions](/user-guide/user-management/users-roles-permissions).
 
 :::
 
@@ -107,8 +107,8 @@ bought rock songs, where the `customers` and `genres` Collections are linked by 
 `invoice-items` -> `tracks` -> `genres`.
 
 You will notice a <span mi icon>chevron_right</span> icon beside relational Fields. When you click on any
-[Alias](/getting-started/glossary#alias) Field, all the Fields for that associated Collection pop down. If you select
-one of these Fields, you can run Filters on the current Collection by Field values in a related Collection.
+[Alias](/user-guide/overview/glossary#alias) Field, all the Fields for that associated Collection pop down. If you
+select one of these Fields, you can run Filters on the current Collection by Field values in a related Collection.
 
 Here are step-by-step instructions on how to filter by Fields in other Collections:
 

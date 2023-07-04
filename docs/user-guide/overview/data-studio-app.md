@@ -23,14 +23,18 @@ The leftmost section of the App is the module bar, which includes the:
   If configured, clicking this component will navigate to the Project URL. During platform activity, an indeterminate
   progress indicator will also be shown here.
 - **Module Navigation** — Allows navigating between the different modules your user has access to. Customizing the
-  Module Navigation is done within the [Project Settings](/app/settings), but the default module list includes:
-  - [Content](/app/content/collections) — The primary way to view and interact with database content
-  - [User Directory](/app/user-directory) — A dedicated section for the platform's system Users
-  - [File Library](/app/file-library) — An aggregate of all files uploaded and managed within the platform
-  - [Insights](/app/insights) — Access to infinitely customizable data dashboards
-  - [App Guide](/app/overview) — A tailored, in-app portal for the platform's concepts, guides, and reference
-  - [Settings](/app/settings) — An admin-only section for configuring the project and system settings
-- **Notifications** - Opens a drawer of notifications, such as from [mentions](/app/content/items#mentions).
+  Module Navigation is done within the [Project Settings](/user-guide/settings/settings), but the default module list
+  includes:
+  - [Content](/user-guide/content-module/content/collections) — The primary way to view and interact with database
+    content
+  - [User Directory](/user-guide/user-management/user-directory) — A dedicated section for the platform's system Users
+  - [File Library](/user-guide/file-library/files) — An aggregate of all files uploaded and managed within the platform
+  - [Insights](/user-guide/insights/dashboards) — Access to infinitely customizable data dashboards
+  - [App Guide](/user-guide/overview/data-studio-app) — A tailored, in-app portal for the platform's concepts, guides,
+    and reference
+  - [Settings](/user-guide/settings/settings) — An admin-only section for configuring the project and system settings
+- **Notifications** - Opens a drawer of notifications, such as from
+  [mentions](/user-guide/content-module/content/items#mentions).
 - **Current User Menu** — This component displays the authenticated user's name and avatar.
   - Sign Out — Hovering over the User Menu exposes the button to log out of the platform.
 
@@ -39,9 +43,9 @@ The leftmost section of the App is the module bar, which includes the:
 The navigation bar is based on the current module, and includes:
 
 - **Project Name** — Shows an icon and tooltip indicating the API's connection strength, and the name of your current
-  project, which can be configured under [Project Settings](/app/settings).
+  project, which can be configured under [Project Settings](/user-guide/settings/settings).
 - **Navigation** — This is a dynamic navigation based on your current module. Some modules also support
-  [Bookmark Presets](/getting-started/glossary#presets), which are a customizable links to specific data-sets.
+  [Bookmark Presets](/user-guide/overview/glossary#presets), which are a customizable links to specific data-sets.
 
 ## 3. Page
 
