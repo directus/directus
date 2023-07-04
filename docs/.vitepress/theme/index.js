@@ -1,22 +1,28 @@
 import DefaultTheme from 'vitepress/theme';
-import { createHead } from '@unhead/vue';
 
-import Layout from './DocLayout.vue';
+import Article from '../components/Article.vue';
+import Button from '../components/Button.vue';
 import Card from '../components/Card.vue';
 import Contributors from '../components/Contributors.vue';
+import Divider from '../components/Divider.vue';
+import SnippetToggler from '../components/SnippetToggler.vue';
+import Tabs from '../components/Tabs.vue';
+import Layout from './Layout.vue';
 
-import './vars.css';
-import './overrides.css';
 import './icons.css';
+import './overrides.css';
+import './vars.css';
 
 export default {
-	...DefaultTheme,
+	extends: DefaultTheme,
 	Layout,
-	enhanceApp(ctx) {
-		DefaultTheme.enhanceApp(ctx);
-		const head = createHead();
-		ctx.app.use(head);
-		ctx.app.component('Card', Card);
-		ctx.app.component('Contributors', Contributors);
+	enhanceApp({ app }) {
+		app.component('Article', Article);
+		app.component('Button', Button);
+		app.component('Card', Card);
+		app.component('Contributors', Contributors);
+		app.component('Divider', Divider);
+		app.component('SnippetToggler', SnippetToggler);
+		app.component('Tabs', Tabs);
 	},
 };

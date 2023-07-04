@@ -316,7 +316,7 @@ const title = computed(() => {
 });
 
 const tabTitle = computed(() => {
-	let tabTitle = (collectionInfo.value?.name || '') + ' | ';
+	const tabTitle = (collectionInfo.value?.name || '') + ' | ';
 
 	if (collectionInfo.value && collectionInfo.value.meta) {
 		if (collectionInfo.value.meta.singleton === true) {

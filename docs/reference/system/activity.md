@@ -7,7 +7,7 @@ pageClass: page-reference
 # Activity
 
 > All events within Directus are tracked and stored in the activities collection. This gives you full accountability
-> over everything that happens. [Learn more about Activity](/getting-started/glossary#activity).
+> over everything that happens. [Learn more about Activity](/user-guide/overview/glossary#activity).
 
 ---
 
@@ -99,7 +99,7 @@ type Query {
 ```graphql
 query {
 	activity {
-		...
+		# ...
 	}
 }
 ```
@@ -141,7 +141,7 @@ type Query {
 ```graphql
 query {
 	activity_by_id(id: 15) {
-		...
+		# ...
 	}
 }
 ```
@@ -201,11 +201,9 @@ type Mutation {
 
 ```graphql
 mutation {
-	create_comment(
-		collection: "pages",
-		item: 3,
-		comment: "Hello World"
-	) { ... }
+	create_comment(collection: "pages", item: 3, comment: "Hello World") {
+		# ...
+	}
 }
 ```
 
@@ -256,10 +254,9 @@ type Mutation {
 
 ```graphql
 mutation {
-	update_comment(
-		id: 3,
-		comment: "Hello World",
-	) { ... }
+	update_comment(id: 3, comment: "Hello World") {
+		# ...
+	}
 }
 ```
 

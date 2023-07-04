@@ -17,4 +17,6 @@ jobs:
           days-before-stale: -1
           days-before-close: 7
           stale-issue-label: 'Needs More Info'
-          close-issue-message: "Heya! There isn't enough information available to keep investigating this issue at present time, so it'll be closed until more information becomes available. Thanks!"
+          close-issue-message:
+            "Heya! There isn't enough information available to keep investigating this issue at present time, so it'll
+            be closed until more information becomes available. Thanks!"

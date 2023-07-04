@@ -1,92 +1,3 @@
-<script setup lang="ts">
-import { ref, reactive } from 'vue';
-
-const props = defineProps({
-	title: {
-		type: String,
-		required: true,
-	},
-	url: {
-		type: String,
-		required: true,
-	},
-});
-
-const loading = ref(false);
-const error = ref(null);
-const success = ref(false);
-
-const feedback = reactive<{
-	id?: string;
-	rating?: number;
-	comments?: string;
-}>({
-	id: undefined,
-	rating: undefined,
-	comments: undefined,
-});
-
-const prompts = [
-	'Make it count',
-	'Leave some feedback',
-	'Help us improve',
-	`We're all ears 🐰`,
-	'Tell us what is missing',
-	'Your thoughts matter to us',
-	'Feedback is a gift',
-	'What do you think?',
-];
-
-function getPrompt() {
-	return prompts[Math.floor(Math.random() * prompts.length)];
-}
-
-const ratingOptions = [
-	{ label: 'Worst Doc Ever 🗑️', value: 1, message: 'Woof! 🤦‍♂️ Sorry about that. How do we fix it?' },
-	{ label: 'Not Helpful 😡', value: 2, message: '🧐 Help us do better. How can we improve this article?' },
-	{ label: 'Helpful 😃', value: 3, message: 'Nice! 👍 Anything we can improve upon?' },
-	{
-		label: 'Super Helpful 🤩',
-		value: 4,
-		message: `Awesome! The whole team is rejoicing in celebration! 🥳🎉🎊 Anything you'd like to say to them?`,
-	},
-];
-
-function getRatingOption(rating: number) {
-	return ratingOptions.find((option) => option.value === rating);
-}
-
-async function handleSubmission(rating?: number) {
-	loading.value = true;
-	if (rating) feedback.rating = rating;
-	const body = {
-		id: feedback.id,
-		rating: feedback.rating,
-		comments: feedback.comments,
-		title: props.title,
-		url: props.url,
-	};
-	try {
-		const response = await fetch('/api/feedback', {
-			method: 'POST',
-			body: JSON.stringify(body),
-		});
-
-		const data = await response.json();
-		feedback.id = data.id;
-
-		// If the reponse has comments, we can assume they've completed the second step.
-		if (data.comments) {
-			success.value = true;
-		}
-	} catch (err) {
-		error.value = err;
-		console.error(err);
-	} finally {
-		loading.value = false;
-	}
-}
-</script>
 <template>
 	<div class="wrapper">
 		<Transition name="fade" mode="out-in">
@@ -125,6 +36,84 @@ async function handleSubmission(rating?: number) {
 		</Transition>
 	</div>
 </template>
+
+<script setup lang="ts">
+import { ref, reactive } from 'vue';
+
+const props = defineProps<{ title: string; url: string }>();
+
+const loading = ref(false);
+const error = ref<unknown>(null);
+const success = ref(false);
+
+const feedback = reactive<{
+	id?: string;
+	rating?: number;
+	comments?: string;
+}>({});
+
+const prompts = [
+	'Make it count',
+	'Leave some feedback',
+	'Help us improve',
+	`We're all ears 🐰`,
+	'Tell us what is missing',
+	'Your thoughts matter to us',
+	'Feedback is a gift',
+	'What do you think?',
+];
+
+function getPrompt() {
+	return prompts[Math.floor(Math.random() * prompts.length)];
+}
+
+const ratingOptions = [
+	{ label: 'Worst Doc Ever 🗑️', value: 1, message: 'Woof! 🤦‍♂️ Sorry about that. How do we fix it?' },
+	{ label: 'Not Helpful 😡', value: 2, message: '🧐 Help us do better. How can we improve this article?' },
+	{ label: 'Helpful 😃', value: 3, message: 'Nice! 👍 Anything we can improve upon?' },
+	{
+		label: 'Super Helpful 🤩',
+		value: 4,
+		message: `Awesome! The whole team is rejoicing in celebration! 🥳🎉🎊 Anything you'd like to say to them?`,
+	},
+];
+
+function getRatingOption(rating: number) {
+	return ratingOptions.find((option) => option.value === rating);
+}
+
+async function handleSubmission(rating?: number) {
+	loading.value = true;
+	if (rating) feedback.rating = rating;
+
+	const body = {
+		id: feedback.id,
+		rating: feedback.rating,
+		comments: feedback.comments,
+		title: props.title,
+		url: props.url,
+	};
+
+	try {
+		const response = await fetch('/api/feedback', {
+			method: 'POST',
+			body: JSON.stringify(body),
+		});
+
+		const data = await response.json();
+		feedback.id = data.id;
+
+		// If the reponse has comments, we can assume they've completed the second step.
+		if (data.comments) {
+			success.value = true;
+		}
+	} catch (err) {
+		error.value = err;
+	} finally {
+		loading.value = false;
+	}
+}
+</script>
 
 <style scoped>
 .step > * + * {
@@ -181,7 +170,7 @@ async function handleSubmission(rating?: number) {
 	padding: 1.5rem;
 	border: 1px solid var(--vp-c-divider);
 	border-radius: 8px;
-	background: var(--vp-c-bg-alt)
+	background: var(--vp-c-bg-alt);
 }
 
 .input {

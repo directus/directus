@@ -1,4 +1,9 @@
-import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
+import type {
+	AbstractQuery,
+	AbstractQueryFieldNodePrimitive,
+	AbstractQueryNodeCondition,
+	AbstractQueryNodeConditionValue,
+} from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types.js';
 import { convertAbstractQueryToAbstractSqlQuery } from './index.js';
@@ -46,6 +51,63 @@ test('Convert simple query', () => {
 		],
 		from: sample.query.collection,
 		parameters: [],
+	};
+
+	expect(res).toStrictEqual(expected);
+});
+
+test('Convert query with filter', () => {
+	sample.query.modifiers = {
+		filter: {
+			type: 'condition',
+			target: {
+				type: 'primitive',
+				field: randomIdentifier(),
+			},
+			operation: 'gt',
+			compareTo: {
+				type: 'value',
+				value: randomInteger(1, 100),
+			},
+		},
+	};
+
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+
+	const expected: AbstractSqlQuery = {
+		select: [
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+			},
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+			},
+		],
+		from: sample.query.collection,
+		where: {
+			type: 'condition',
+			target: {
+				column: (
+					(sample.query.modifiers.filter as AbstractQueryNodeCondition).target as AbstractQueryFieldNodePrimitive
+				).field,
+				table: sample.query.collection,
+				type: 'primitive',
+			},
+			negate: false,
+			operation: 'gt',
+			compareTo: {
+				type: 'value',
+				parameterIndexes: [0],
+			},
+		},
+		parameters: [
+			((sample.query.modifiers.filter! as AbstractQueryNodeCondition).compareTo as AbstractQueryNodeConditionValue)
+				.value,
+		],
 	};
 
 	expect(res).toStrictEqual(expected);
