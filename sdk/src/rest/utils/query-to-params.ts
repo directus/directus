@@ -19,10 +19,22 @@ export const queryToParams = <Schema extends object, Item>(query: Query<Schema, 
 				const result = [];
 
 				for (const key in value) {
-					const fieldList = value[key as keyof typeof value] ?? [];
+					const nestedField = value[key as keyof typeof value] ?? [];
 
-					for (const item of fieldList) {
-						result.push(walkFields(item as FieldItem, [...chain, key]));
+					if (Array.isArray(nestedField)) {
+						// regular nested fields
+						for (const item of nestedField) {
+							result.push(walkFields(item as FieldItem, [...chain, key]));
+						}
+					} else if (typeof nestedField === 'object') {
+						// many to any nested
+						for (const scope of Object.keys(nestedField)) {
+							const fields = nestedField[scope as keyof typeof nestedField] as FieldItem[];
+							
+							for (const item of fields) {
+								result.push(walkFields(item as FieldItem, [...chain, `${key}:${scope}`]));
+							}
+						}
 					}
 				}
 

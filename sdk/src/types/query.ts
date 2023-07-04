@@ -28,19 +28,14 @@ export type QueryFields<Schema extends object, Item> = (
  * Object of nested relational fields in a given Item with it's own fields available for selection
  */
 export type QueryFieldsRelational<Schema extends object, Item> = {
-	[Key in keyof Pick<Item, RelationalFields<Schema, Item>>]?: Item[Key] extends object
+	[Key in RelationalFields<Schema, Item>]?: Item[Key] extends object
 		? QueryFields<Schema, ExtractItem<Schema, Item[Key]>>
-		: ManyToAnyFields<Schema, ExtractItem<Schema, Item[Key]>>;
-};
-
-/**
- * Deal with many-to-any relational fields
- */
-export type ManyToAnyFields<Schema extends object, Item> = {
-	[Collection in keyof Schema as Item extends UnpackList<Schema[Collection]> ? Collection : never]?: QueryFields<
-		Schema,
-		Schema[Collection]
-	>;
+		: ExtractItem<Schema, Item[Key]> extends infer Fields
+			? {
+				[Collection in keyof Schema as Fields extends UnpackList<Schema[Collection]> ? Collection : never ]: 
+					QueryFields<Schema, Schema[Collection]>
+			}
+			: never
 };
 
 /**
@@ -105,15 +100,26 @@ export type ApplyQueryFields<Schema extends object, Item, Fields> = Item extends
 	? HasNestedFields<Fields> extends never
 		? PickFlatFields<Schema, Item, FieldsWildcard<Item, Fields>> // no relation
 		: RelationalQueryFields<Fields> extends infer RelatedFields // infer related fields
-		? PickFlatFields<Schema, Item, Exclude<FieldsWildcard<Item, Fields>, keyof RelatedFields>> & {
-				[K in keyof RelatedFields]: ExtractRelation<Schema, Item, K> extends infer Relation
-					? Relation extends object
-						? ApplyQueryFields<Schema, Relation, RelatedFields[K]> // recursively build the result
-						: never
-					: never;
-		  }
-		: never
+			? PickFlatFields<Schema, Item, Exclude<FieldsWildcard<Item, Fields>, keyof RelatedFields>> & {
+				[K in keyof RelatedFields]-?: K extends keyof Item
+					? QueryFields<Schema, ExtractItem<Schema, Item[K]>> extends RelatedFields[K]
+						? ExtractRelation<Schema, Item, K> extends infer Relation
+							? Relation extends object
+								? ApplyQueryFields<Schema, Relation, RelatedFields[K]> // recursively build the result
+								: never
+							: never
+						: ApplyManyToAny<Schema, RelatedFields[K]> // TODO FIX M2A OUTPUT
+					: never
+			}
+			: never
 	: never;
+
+type ApplyManyToAny<Schema extends object, Scopes> = Scopes extends object ? {
+	[Scope in keyof Scopes]: Scope extends keyof Schema
+		? ApplyQueryFields<Schema, UnpackList<Schema[Scope]>, Scopes[Scope]> // TODO FIX THIS! does not work!
+		: never
+} : never;
+
 
 /**
  * Filters
