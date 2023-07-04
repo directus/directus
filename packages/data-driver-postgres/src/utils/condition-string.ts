@@ -5,18 +5,18 @@ import { extractDateTime } from './functions.js';
 
 export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode): string => {
 	if (where.type === 'condition') {
-		const target = wrapColumn(where.target.table, where.target.column);
+		const column = wrapColumn(where.target.table, where.target.column);
+		const comparison = getComparison(where.operation, where.compareTo, where.negate);
 
 		if (where.target.type === 'primitive') {
-			const comparison = getComparison(where.operation, where.compareTo, where.negate);
-			return `${target} ${comparison}`;
+			return `${column} ${comparison}`;
 		}
 
 		if (where.target.type === 'fn') {
-			return extractDateTime(where.target.fn, target);
+			return `${extractDateTime(where.target.fn, column)} ${comparison}`;
 		}
 
-		throw new Error(`Unsupported target type: ${JSON.stringify(where.target)}`);
+		throw new Error(`Unsupported condition target: ${JSON.stringify(where.target)}`);
 	} else {
 		const logicalGroup = where.childNodes
 			.map((childNode) =>
@@ -29,4 +29,3 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		return where.negate ? `NOT (${logicalGroup})` : logicalGroup;
 	}
 };
-

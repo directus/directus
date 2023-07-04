@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryLogicalNode } from '@directus/data-sql';
+import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '@directus/data-sql';
 import { expect, test } from 'vitest';
 import { randomIdentifier } from '@directus/random';
 import { conditionString } from './condition-string.js';
@@ -47,6 +47,32 @@ test('Convert filter with logical', () => {
 
 	expect(conditionString(where)).toStrictEqual(
 		`"${randomTable}"."${firstColumn}" > $1 OR "${randomTable}"."${secondColumn}" = $2`
+	);
+});
+
+test('Convert filter condition', () => {
+	const randomTable = randomIdentifier();
+	const aColumn = randomIdentifier();
+
+	const where: AbstractSqlQueryConditionNode = {
+		type: 'condition',
+		negate: false,
+		target: {
+			type: 'fn',
+			fn: 'month',
+			table: randomTable,
+			column: aColumn,
+			parameterIndexes: [],
+		},
+		operation: 'gt',
+		compareTo: {
+			type: 'value',
+			parameterIndexes: [0],
+		},
+	};
+
+	expect(conditionString(where)).toStrictEqual(
+		`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $1`
 	);
 });
 
