@@ -135,7 +135,7 @@
 					<v-notice v-else>{{ t('not_available_for_local_downloads') }}</v-notice>
 				</div>
 
-				<v-notice class="full" :type="lockedToFiles !== null ? 'warning' : 'normal'">
+				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
 						<p v-if="itemCountLoading">
 							{{ t('loading') }}
@@ -164,16 +164,12 @@
 							}}
 						</p>
 
-						<p v-if="lockedToFiles?.lockedBy === 'batchThreshold'">
-							{{ t('exporting_batch_hint_forced', { format: t(format) }) }}
-						</p>
-
-						<p v-else-if="lockedToFiles?.lockedBy === 'queryLimitThreshold'">
-							{{ t('exporting_query_limit_hint_forced', { format: t(format) }) }}
+						<p v-if="lockedToFiles">
+							{{ t('exporting_library_hint_forced', { format: t(format) }) }}
 						</p>
 
 						<p v-else-if="location === 'files'">
-							{{ t('exporting_batch_hint', { format: t(format) }) }}
+							{{ t('exporting_library_hint', { format: t(format) }) }}
 						</p>
 
 						<p v-else>
@@ -335,9 +331,7 @@ const format = ref('csv');
 const location = ref('download');
 const folder = ref<string | null>(null);
 
-const lockedToFiles = ref<{ lockedBy: 'batchThreshold' | 'queryLimitThreshold'; previousLocation: string } | null>(
-	null
-);
+const lockedToFiles = ref<{ previousLocation: string } | null>(null);
 
 const itemCountTotal = ref<number>();
 const itemCount = ref<number>();
@@ -403,22 +397,25 @@ const exportCount = computed(() => {
 	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
 });
 
-watch(exportCount, () => {
-	const queryLimitThreshold = exportCount.value > queryLimitMax;
-	const batchThreshold = exportCount.value >= 2500;
+watch(
+	exportCount,
+	() => {
+		const queryLimitThreshold = exportCount.value > queryLimitMax;
+		const batchThreshold = exportCount.value >= 2500;
 
-	if (queryLimitThreshold || batchThreshold) {
-		lockedToFiles.value = {
-			lockedBy: queryLimitThreshold ? 'queryLimitThreshold' : 'batchThreshold',
-			previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
-		};
+		if (queryLimitThreshold || batchThreshold) {
+			lockedToFiles.value = {
+				previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
+			};
 
-		location.value = 'files';
-	} else if (lockedToFiles.value) {
-		location.value = lockedToFiles.value.previousLocation;
-		lockedToFiles.value = null;
-	}
-});
+			location.value = 'files';
+		} else if (lockedToFiles.value) {
+			location.value = lockedToFiles.value.previousLocation;
+			lockedToFiles.value = null;
+		}
+	},
+	{ immediate: true }
+);
 
 watch(primaryKeyField, (newVal) => {
 	exportSettings.sort = newVal?.field ?? '';
@@ -455,7 +452,6 @@ const exporting = ref(false);
 
 async function openExportDialog() {
 	itemCountTotal.value = await getItemCount();
-
 	exportDialogActive.value = true;
 }
 
