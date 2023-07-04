@@ -1,4 +1,4 @@
-import type { CompareValueNode, AbstractSqlQueryColumn } from '@directus/data-sql';
+import type { ValueNode, AbstractSqlQuerySelectNode } from '@directus/data-sql';
 import { wrapColumn } from './wrap-column.js';
 
 /**
@@ -9,7 +9,7 @@ import { wrapColumn } from './wrap-column.js';
  * @param providedIndexes - The indexes of all parameters.
  * @returns An operator with a parameter reference to a value to which the target will be compared.
  */
-export function getComparison(operation: string, compareTo: CompareValueNode | AbstractSqlQueryColumn, negate = false) {
+export function getComparison(operation: string, compareTo: ValueNode | AbstractSqlQuerySelectNode, negate = false) {
 	let value: string;
 
 	if (compareTo.type === 'value') {

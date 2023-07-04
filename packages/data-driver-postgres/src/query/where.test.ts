@@ -1,6 +1,6 @@
-import type { AbstractSqlQuery, AbstractSqlQueryConditionNode, CompareValueNode } from '@directus/data-sql';
+import type { AbstractSqlQuery, AbstractSqlQueryConditionNode, ValueNode } from '@directus/data-sql';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { where, getComparison } from './where.js';
+import { where } from './where.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 
 let sample: {
@@ -44,8 +44,7 @@ describe('Where clause:', () => {
 			`WHERE "${(sample.statement.where as AbstractSqlQueryConditionNode).target.table}"."${
 				(sample.statement.where as AbstractSqlQueryConditionNode).target.column
 			}" > $${
-				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as CompareValueNode)
-					.parameterIndexes[0]! + 1
+				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndexes[0]! + 1
 			}`
 		);
 	});
@@ -57,63 +56,8 @@ describe('Where clause:', () => {
 			`WHERE "${(sample.statement.where as AbstractSqlQueryConditionNode).target.table}"."${
 				(sample.statement.where as AbstractSqlQueryConditionNode).target.column
 			}" <= $${
-				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as CompareValueNode)
-					.parameterIndexes[0]! + 1
+				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndexes[0]! + 1
 			}`
-		);
-	});
-});
-
-describe('Where clause operator mapping and parameter index insertion: ', () => {
-	let compareTo: CompareValueNode;
-
-	beforeEach(() => {
-		compareTo = {
-			type: 'value',
-			parameterIndexes: [randomInteger(1, 10)],
-		};
-	});
-
-	test('eq', () => {
-		expect(getComparison('eq', compareTo)).toStrictEqual(`= $${compareTo.parameterIndexes[0]! + 1}`);
-	});
-
-	test('gt', () => {
-		expect(getComparison('gt', compareTo)).toStrictEqual(`> $${compareTo.parameterIndexes[0]! + 1}`);
-	});
-
-	test('gte', () => {
-		expect(getComparison('gte', compareTo)).toStrictEqual(`>= $${compareTo.parameterIndexes[0]! + 1}`);
-	});
-
-	test('lt', () => {
-		expect(getComparison('lt', compareTo)).toStrictEqual(`< $${compareTo.parameterIndexes[0]! + 1}`);
-	});
-
-	test('lte', () => {
-		expect(getComparison('lte', compareTo)).toStrictEqual(`<= $${compareTo.parameterIndexes[0]! + 1}`);
-	});
-
-	test('contains', () => {
-		expect(getComparison('contains', compareTo)).toStrictEqual(`LIKE '%$${compareTo.parameterIndexes[0]! + 1}%'`);
-	});
-
-	test('starts_with', () => {
-		expect(getComparison('starts_with', compareTo)).toStrictEqual(`LIKE '$${compareTo.parameterIndexes[0]! + 1}%'`);
-	});
-
-	test('ends_with', () => {
-		expect(getComparison('ends_with', compareTo)).toStrictEqual(`LIKE '%$${compareTo.parameterIndexes[0]! + 1}'`);
-	});
-
-	test('in', () => {
-		compareTo = {
-			type: 'value',
-			parameterIndexes: [randomInteger(1, 10), randomInteger(1, 10)],
-		};
-
-		expect(getComparison('in', compareTo)).toStrictEqual(
-			`IN ($${compareTo.parameterIndexes[0]! + 1}, $${compareTo.parameterIndexes[1]! + 1})`
 		);
 	});
 });
