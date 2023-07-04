@@ -4,7 +4,7 @@ import { createError } from '@directus/errors';
 
 export interface FailedValidationErrorExtensions {
 	field: string;
-	type: ClientFilterOperator | 'required' | 'regex';
+	type: ClientFilterOperator | 'required';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
