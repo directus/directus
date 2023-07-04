@@ -156,7 +156,7 @@ validationError:
   nstarts_with: Value can't start with {substring}
   nistarts_with: Value can't start with {substring}
   ends_with: Value has to end with {substring}
-  iends_with: Value has to end with {substring} 
+  iends_with: Value has to end with {substring}
   nends_with: Value can't end with {substring}
   niends_with: Value can't end with {substring}
 all_access: All Access
