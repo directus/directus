@@ -7,7 +7,7 @@ import { escapeIdentifier } from './escape-identifier.js';
  * @param as
  * @returns the selection for the primitive field
  */
-export function wrapColumn(table: string, column: string, as: string | undefined): string {
+export function wrapColumn(table: string, column: string, as?: string): string {
 	let base = `${escapeIdentifier(table)}.${escapeIdentifier(column)}`;
 
 	if (as) {

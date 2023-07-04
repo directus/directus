@@ -137,51 +137,47 @@
 
 				<v-notice class="full" :type="lockedToFiles !== null ? 'warning' : 'normal'">
 					<div>
-						<p>
-							<template v-if="itemCountLoading">
-								{{ t('loading') }}
-							</template>
-
-							<template v-else-if="exportCount === 0">
-								{{ t('exporting_no_items_to_export') }}
-							</template>
-
-							<template v-else-if="itemCountTotal && exportCount >= itemCountTotal">
-								{{
-									t('exporting_all_items_in_collection', {
-										total: itemCountTotal ? n(itemCountTotal) : '??',
-										collection: collectionInfo?.name,
-									})
-								}}
-							</template>
-
-							<template v-else-if="itemCountTotal && exportCount < itemCountTotal">
-								{{
-									t('exporting_limited_items_in_collection', {
-										count: n(exportCount),
-										total: itemCountTotal ? n(itemCountTotal) : '??',
-										collection: collectionInfo?.name,
-									})
-								}}
-							</template>
+						<p v-if="itemCountLoading">
+							{{ t('loading') }}
 						</p>
 
-						<p>
-							<template v-if="lockedToFiles?.lockedBy === 'batchThreshold'">
-								{{ t('exporting_batch_hint_forced', { format: t(format) }) }}
-							</template>
+						<p v-else-if="exportCount === 0">
+							{{ t('exporting_no_items_to_export') }}
+						</p>
 
-							<template v-else-if="lockedToFiles?.lockedBy === 'queryLimitThreshold'">
-								{{ t('exporting_query_limit_hint_forced', { format: t(format) }) }}
-							</template>
+						<p v-else-if="itemCountTotal && exportCount >= itemCountTotal">
+							{{
+								t('exporting_all_items_in_collection', {
+									total: itemCountTotal ? n(itemCountTotal) : '??',
+									collection: collectionInfo?.name,
+								})
+							}}
+						</p>
 
-							<template v-else-if="location === 'files'">
-								{{ t('exporting_batch_hint', { format: t(format) }) }}
-							</template>
+						<p v-else-if="itemCountTotal && exportCount < itemCountTotal">
+							{{
+								t('exporting_limited_items_in_collection', {
+									count: n(exportCount),
+									total: itemCountTotal ? n(itemCountTotal) : '??',
+									collection: collectionInfo?.name,
+								})
+							}}
+						</p>
 
-							<template v-else>
-								{{ t('exporting_download_hint', { format: t(format) }) }}
-							</template>
+						<p v-if="lockedToFiles?.lockedBy === 'batchThreshold'">
+							{{ t('exporting_batch_hint_forced', { format: t(format) }) }}
+						</p>
+
+						<p v-else-if="lockedToFiles?.lockedBy === 'queryLimitThreshold'">
+							{{ t('exporting_query_limit_hint_forced', { format: t(format) }) }}
+						</p>
+
+						<p v-else-if="location === 'files'">
+							{{ t('exporting_batch_hint', { format: t(format) }) }}
+						</p>
+
+						<p v-else>
+							{{ t('exporting_download_hint', { format: t(format) }) }}
 						</p>
 					</div>
 				</v-notice>
@@ -544,7 +540,7 @@ function exportDataLocal() {
 	// usually getEndpoint contains leading slash, but here we need to remove it
 	const url = getPublicURL() + endpoint.substring(1);
 
-	let params: Record<string, unknown> = {
+	const params: Record<string, unknown> = {
 		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: format.value,
 	};

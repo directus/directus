@@ -135,7 +135,7 @@ function searchChoices(text: string, target: Record<string, any>[]) {
 function findSelectedChoices(choices: Record<string, any>[], checked: (string | number)[]) {
 	function selectedChoices(item: Record<string, any>): (string | number)[] {
 		if (!item[props.itemValue]) return [];
-		let result: (string | number)[] = [];
+		const result: (string | number)[] = [];
 
 		const itemValue: string | number = item[props.itemValue];
 		if (checked.includes(itemValue)) result.push(itemValue);

@@ -1707,11 +1707,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(400);
 					expect(response.body.errors).toHaveLength(1);
-					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+					expect(response.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
 
 					expect(gqlResponse.body.errors).toBeDefined();
 					expect(gqlResponse.body.errors.length).toEqual(1);
-					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+					expect(gqlResponse.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
 				});
 			});
 
@@ -1824,7 +1824,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(400);
 					expect(response.body.errors).toHaveLength(1);
-					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+					expect(response.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
 				});
 			});
 
@@ -2019,11 +2019,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(400);
 					expect(response.body.errors).toHaveLength(1);
-					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+					expect(response.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
 
 					expect(gqlResponse.body.errors).toBeDefined();
 					expect(gqlResponse.body.errors.length).toEqual(1);
-					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+					expect(gqlResponse.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
 				});
 			});
 
@@ -2181,11 +2181,11 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(400);
 					expect(response.body.errors).toHaveLength(1);
-					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+					expect(response.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
 
 					expect(gqlResponse.body.errors).toBeDefined();
 					expect(gqlResponse.body.errors.length).toEqual(1);
-					expect(gqlResponse.body.errors[0].message).toBe('Max relational depth exceeded.');
+					expect(gqlResponse.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
 				});
 			});
 
@@ -2275,7 +2275,7 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					// Assert
 					expect(response.statusCode).toEqual(400);
 					expect(response.body.errors).toHaveLength(1);
-					expect(response.body.errors[0].message).toBe('Max relational depth exceeded.');
+					expect(response.body.errors[0].message).toBe('Invalid query. Max relational depth exceeded.');
 				});
 			});
 		});
@@ -2401,14 +2401,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
@@ -2532,14 +2532,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000
@@ -2770,14 +2770,14 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							expect(response.body.errors).toBeDefined();
 
 							expect(response.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 
 							expect(gqlResponse.statusCode).toBe(200);
 							expect(gqlResponse.body.errors).toBeDefined();
 
 							expect(gqlResponse.body.errors[0].message).toBe(
-								`Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
+								`Invalid payload. Exceeded max batch mutation limit of ${config.envs[vendor].MAX_BATCH_MUTATION}.`
 							);
 						},
 						120000

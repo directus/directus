@@ -68,7 +68,7 @@ describe('getAccountabilityForToken', async () => {
 
 	test('throws token invalid error', async () => {
 		const token = jwt.sign({ role: '123-456-789' }, 'bad-secret', { issuer: 'directus' });
-		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Token invalid.');
+		expect(() => getAccountabilityForToken(token)).rejects.toThrow('Invalid token.');
 	});
 
 	test('find user in database', async () => {

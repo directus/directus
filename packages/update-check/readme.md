@@ -16,7 +16,8 @@ npm install @directus/update-check
 
 ## License
 
-This package is licensed under the MIT License. See the [LICENSE](https://github.com/directus/directus/blob/main/packages/update-check/license) file for more information.
+This package is licensed under the MIT License. See the
+[LICENSE](https://github.com/directus/directus/blob/main/packages/update-check/license) file for more information.
 
 ## Additional Resources
 

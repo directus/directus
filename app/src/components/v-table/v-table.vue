@@ -292,6 +292,10 @@ function onItemSelected(event: ItemSelectEvent) {
 		});
 	}
 
+	if (props.showSelect === 'one') {
+		selection = selection.slice(-1);
+	}
+
 	emit('update:modelValue', selection);
 }
 

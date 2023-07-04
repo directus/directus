@@ -1,7 +1,21 @@
 ---
+avatar: រូបតំណាង
+application: កម្មវិធី
+default_provider: លំនាំដើម
+method: វិធីសាស្ត្រ
+published: អ្នក​​បោះ​ពុម្ព​ផ្សាយ
+draft: សេចក្តីព្រាង
+archived: ឯកសារ
+edit_field: កែ​សម្រួលព័ត៌មាន
+conditions: លក្ខខណ្ឌ
+location: ទីតាំង
+maps: ផែនទី
+switch_user: ប្ដូរ​អ្នកប្រេី
+role_name: ឈ្មោះតួនាទី
 children: កូន
 show_all_items: បង្ហាញធាតុទាំងអស់
 edited: តម្លៃបានកែ
+invite_users: អញ្ជើញអ្នកប្រើប្រាស់
 archive: Archive
 archive_confirm: តើ​អ្នក​ប្រាកដ​ជា​ចង់លាក់​ទុក​ធាតុ​នេះក្នុងArchive?
 archive_confirm_count: >-
@@ -18,6 +32,9 @@ field_m2a: M2A Relationship
 field_o2m: O2M Relationship
 field_m2m: M2M Relationship
 field_translations: ការបកប្រែ
+fields:
+  directus_roles:
+    name: ឈ្មោះតួនាទី
 field_options:
   directus_collections:
     archive_divider: Archive

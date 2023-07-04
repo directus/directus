@@ -50,32 +50,37 @@ readTime: 5 min read
 
 ## Filter Operators
 
-| Operator Title _(in app)_      | Operator                           | Description                            |
-| ------------------------------ | ---------------------------------- | -------------------------------------- |
-| Equals                         | `_eq`                              | Equal to                               |
-| Doesn't equal                  | `_neq`                             | Not equal to                           |
-| Less than                      | `_lt`                              | Less than                              |
-| Less than or equal to          | `_lte`                             | Less than or equal to                  |
-| Greater than                   | `_gt`                              | Greater than                           |
-| Greater than or equal to       | `_gte`                             | Greater than or equal to               |
-| Is one of                      | `_in`                              | Matches any of the values              |
-| Is not one of                  | `_nin`                             | Doesn't match any of the values        |
-| Is null                        | `_null`                            | Is `null`                              |
-| Isn't null                     | `_nnull`                           | Is not `null`                          |
-| Contains                       | `_contains`                        | Contains the substring                 |
-| Doesn't contain                | `_ncontains`                       | Doesn't contain the substring          |
-| Starts with                    | `_starts_with`                     | Starts with                            |
-| Doesn't start with             | `_nstarts_with`                    | Doesn't start with                     |
-| Ends with                      | `_ends_with`                       | Ends with                              |
-| Doesn't end with               | `_nends_with`                      | Doesn't end with                       |
-| Is between                     | `_between`                         | Is between two values (inclusive)      |
-| Isn't between                  | `_nbetween`                        | Is not between two values (inclusive)  |
-| Is empty                       | `_empty`                           | Is empty (`null` or falsy)             |
-| Isn't empty                    | `_nempty`                          | Is not empty (`null` or falsy)         |
-| Intersects                     | `_intersects` <sup>[1]</sup>       | Value intersects a given point         |
-| Doesn't intersect              | `_nintersects` <sup>[1]</sup>      | Value does not intersect a given point |
-| Intersects Bounding box        | `_intersects_bbox` <sup>[1]</sup>  | Value is in a bounding box             |
-| Doesn't intersect bounding box | `_nintersects_bbox` <sup>[1]</sup> | Value is not in a bounding box         |
+| Operator Title _(in app)_      | Operator                           | Description                             |
+| ------------------------------ | ---------------------------------- | --------------------------------------- |
+| Equals                         | `_eq`                              | Equal to                                |
+| Doesn't equal                  | `_neq`                             | Not equal to                            |
+| Less than                      | `_lt`                              | Less than                               |
+| Less than or equal to          | `_lte`                             | Less than or equal to                   |
+| Greater than                   | `_gt`                              | Greater than                            |
+| Greater than or equal to       | `_gte`                             | Greater than or equal to                |
+| Is one of                      | `_in`                              | Matches any of the values               |
+| Is not one of                  | `_nin`                             | Doesn't match any of the values         |
+| Is null                        | `_null`                            | Is `null`                               |
+| Isn't null                     | `_nnull`                           | Is not `null`                           |
+| Contains                       | `_contains`                        | Contains the substring                  |
+| Contains (case-insensitive)    | `_icontains`                       | Contains the case-insensitive substring |
+| Doesn't contain                | `_ncontains`                       | Doesn't contain the substring           |
+| Starts with                    | `_starts_with`                     | Starts with                             |
+| Starts with                    | `_istarts_with`                    | Starts with, case-insensitive           |
+| Doesn't start with             | `_nstarts_with`                    | Doesn't start with                      |
+| Doesn't start with             | `_nistarts_with`                   | Doesn't start with, case-insensitive    |
+| Ends with                      | `_ends_with`                       | Ends with                               |
+| Ends with                      | `_iends_with`                      | Ends with, case-insensitive             |
+| Doesn't end with               | `_nends_with`                      | Doesn't end with                        |
+| Doesn't end with               | `_niends_with`                     | Doesn't end with, case-insensitive      |
+| Is between                     | `_between`                         | Is between two values (inclusive)       |
+| Isn't between                  | `_nbetween`                        | Is not between two values (inclusive)   |
+| Is empty                       | `_empty`                           | Is empty (`null` or falsy)              |
+| Isn't empty                    | `_nempty`                          | Is not empty (`null` or falsy)          |
+| Intersects                     | `_intersects` <sup>[1]</sup>       | Value intersects a given point          |
+| Doesn't intersect              | `_nintersects` <sup>[1]</sup>      | Value does not intersect a given point  |
+| Intersects Bounding box        | `_intersects_bbox` <sup>[1]</sup>  | Value is in a bounding box              |
+| Doesn't intersect bounding box | `_nintersects_bbox` <sup>[1]</sup> | Value is not in a bounding box          |
 
 The following operator has no Title on the Filter Interface as it is **only available in validation permissions**:
 

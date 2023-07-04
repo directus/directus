@@ -7,7 +7,7 @@ pageClass: page-reference
 # Server
 
 > Provides detailed information about the project server, its schema, and its health.
-> [Learn more about Projects](/getting-started/glossary#projects).
+> [Learn more about Projects](/user-guide/overview/glossary#projects).
 
 ---
 
@@ -69,21 +69,23 @@ GraphQL SDL file.
 
 ```graphql
 type about_us {
-  id: Int
-  introduction: String
-  our_process: String
-  sales_email: String
-  general_email: String
-  primary_color: String
-  secondary_color: String
-  logo: directus_files
-  mark: directus_files
+	id: Int
+	introduction: String
+	our_process: String
+	sales_email: String
+	general_email: String
+	primary_color: String
+	secondary_color: String
+	logo: directus_files
+	mark: directus_files
 }
 
 type articles {
-  id: Int
-  status: String
-	...
+	id: Int
+	status: String
+	# ...
+}
+
 # etc
 ```
 
@@ -235,59 +237,61 @@ Google Cloud Platform or AWS Elastic Beanstalk.
 By default, the endpoint only returns a `status` of `ok`, `warn` or `error`. By authenticating as an admin, it will
 return more in-depth information about the current health status of the system.
 
-```json
-// Response
+::: code-group
 
-// Non-admin
+```json [Non-Admin Response]
 {
-  "status": "ok"
-}
-
-// Admin
-{
-  "status": "ok",
-  "releaseId": "10.0.0",
-  "serviceId": "3292c816-ae02-43b4-ba91-f0bb549f040c",
-  "checks": {
-    "pg:responseTime": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedUnit": "ms",
-        "observedValue": 0.489
-      }
-    ],
-    "pg:connectionsAvailable": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedValue": 2
-      }
-    ],
-    "pg:connectionsUsed": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedValue": 0
-      }
-    ],
-    "storage:local:responseTime": [
-      {
-        "status": "ok",
-        "componentType": "objectstore",
-        "observedValue": 1.038,
-        "observedUnit": "ms"
-      }
-    ],
-    "email:connection": [
-      {
-        "status": "ok",
-        "componentType": "email"
-      }
-    ]
-  }
+	"status": "ok"
 }
 ```
+
+```json [Admin Response]
+{
+	"status": "ok",
+	"releaseId": "10.0.0",
+	"serviceId": "3292c816-ae02-43b4-ba91-f0bb549f040c",
+	"checks": {
+		"pg:responseTime": [
+			{
+				"status": "ok",
+				"componentType": "datastore",
+				"observedUnit": "ms",
+				"observedValue": 0.489
+			}
+		],
+		"pg:connectionsAvailable": [
+			{
+				"status": "ok",
+				"componentType": "datastore",
+				"observedValue": 2
+			}
+		],
+		"pg:connectionsUsed": [
+			{
+				"status": "ok",
+				"componentType": "datastore",
+				"observedValue": 0
+			}
+		],
+		"storage:local:responseTime": [
+			{
+				"status": "ok",
+				"componentType": "objectstore",
+				"observedValue": 1.038,
+				"observedUnit": "ms"
+			}
+		],
+		"email:connection": [
+			{
+				"status": "ok",
+				"componentType": "email"
+			}
+		]
+	}
+}
+```
+
+:::
 
 ### Returns
 

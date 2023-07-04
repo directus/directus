@@ -65,6 +65,8 @@
 (U|u)tils?
 (URI|URIs)
 (URL|url)
+(V|v)ite
+(V|v)itest
 (W|w)alkthrough
 (W|w)ebhook.?
 (W|w)ebhooks?
@@ -185,6 +187,7 @@ frontend
 G2
 Gantt
 gcloud
+graphql
 GCP
 GCS
 GDPR
@@ -287,6 +290,7 @@ performant
 phpMyAdmin
 Phusion
 Pinia
+Pinia-based
 pino
 Pino
 Plesk
@@ -310,6 +314,8 @@ px.
 reactively
 readonly
 readTime
+(R|r)ealtime
+(R|r)eal-(T|t)ime
 rebase
 reconfigurations
 reconnection
@@ -325,6 +331,7 @@ SAML
 scalable
 Scalable
 SCSS
+sdk
 SDK
 SDL
 semver
@@ -348,6 +355,7 @@ SSR
 StackOverflow
 stylization
 subdirectory
+subfolder
 substring
 SuperAdmins?
 superset
@@ -365,6 +373,8 @@ truthy
 TTL
 TTY
 UI
+UID
+UIDs
 UIs?
 unarchives
 Ungrouped
@@ -375,8 +385,6 @@ upscaled
 upvotes
 userbase
 uuid
-UID
-UIDs
 UUID
 UUIDs
 UUIDv4
@@ -387,8 +395,6 @@ vCPU
 Vercel
 viewability
 VitePress
-(V|v)itest
-(V|v)ite
 volta
 VPC
 Vue

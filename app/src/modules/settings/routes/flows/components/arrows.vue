@@ -214,7 +214,7 @@ const arrows = computed(() => {
 		const outerPoints = range(min[otherAxis], max[otherAxis], (axis === 'x' ? PANEL_WIDTH : PANEL_HEIGHT) * 20);
 		const innerPoints = range(min[axis], max[axis], 20);
 
-		for (let outer of outerPoints) {
+		for (const outer of outerPoints) {
 			for (let inner = 0; inner < innerPoints.length; inner++) {
 				const point = axis === 'x' ? new Vector2(innerPoints[inner], outer) : new Vector2(outer, innerPoints[inner]);
 				possiblePlaces[inner] = (possiblePlaces[inner] ?? true) && !isPointInPanel(point);

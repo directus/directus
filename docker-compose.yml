@@ -1,6 +1,6 @@
 # This compose file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
 # For production use see the docker compose file example in the docs:
-#     https://docs.directus.io/self-hosted/installation/docker/#docker-compose
+#     https://docs.directus.io/self-hosted/docker-guide.html#example-docker-compose
 #
 # ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
 #
@@ -14,7 +14,6 @@
 #   Minio (S3):      5106
 #   Azure            5107
 #   MySQL (5.7):     5108
-#   Memcached:       5109
 #   Keycloak:        5110
 #   Postgres (10):   5111
 #   Minio Admin:     5112
@@ -55,9 +54,6 @@
 #     Name:          devstoreaccount1
 #     Key:           Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
 #     Container:     devstoreaccount1
-#
-#   Memcached
-#     n/a
 #
 #   Keycloak
 #     User:          admin
@@ -137,11 +133,6 @@ services:
       MYSQL_DATABASE: directus
     ports:
       - 5108:3306
-
-  memcached:
-    image: memcached:latest
-    ports:
-      - 5109:11211
 
   keycloak:
     image: jboss/keycloak:latest

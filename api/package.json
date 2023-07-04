@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "11.1.0",
+	"version": "12.0.2",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -68,7 +68,7 @@
 		"@aws-sdk/client-ses": "3.332.0",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
-		"@directus/exceptions": "workspace:*",
+		"@directus/errors": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
 		"@directus/format-title": "10.0.0",
 		"@directus/pressure": "workspace:*",
@@ -81,6 +81,7 @@
 		"@directus/storage-driver-local": "workspace:*",
 		"@directus/storage-driver-s3": "workspace:*",
 		"@directus/utils": "workspace:*",
+		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "4.12.0",
 		"@rollup/plugin-alias": "5.0.0",
 		"@rollup/plugin-node-resolve": "15.0.2",
@@ -165,6 +166,7 @@
 		"zod-validation-error": "1.0.1"
 	},
 	"devDependencies": {
+		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "6.4.0",
@@ -214,8 +216,6 @@
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.5.8",
-		"keyv-memcache": "1.3.3",
-		"memcached": "2.2.2",
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
