@@ -62,6 +62,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.search = rawQuery['search'];
 	}
 
+	if (rawQuery['branch']) {
+		query.branch = rawQuery['branch'];
+	}
+
 	if (rawQuery['export']) {
 		query.export = rawQuery['export'] as 'json' | 'csv';
 	}
