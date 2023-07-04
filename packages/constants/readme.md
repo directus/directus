@@ -16,7 +16,8 @@ npm install @directus/constants
 
 ## License
 
-This package is licensed under the MIT License. See the [LICENSE](https://github.com/directus/directus/blob/main/packages/constants/license) file for more information.
+This package is licensed under the MIT License. See the
+[LICENSE](https://github.com/directus/directus/blob/main/packages/constants/license) file for more information.
 
 ## Additional Resources
 

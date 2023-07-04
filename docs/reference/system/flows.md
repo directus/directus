@@ -283,16 +283,8 @@ type Mutation {
 mutation {
 	create_flows_items(
 		data: [
-			{
-				"name": "My Flow",
-				"status": "active",
-				"trigger": "manual"
-			},
-			{
-				"name": "Another Flow",
-				"status": "active",
-				"trigger": "webhook"
-			}
+			{ name: "My Flow", status: "active", trigger: "manual" }
+			{ name: "Another Flow", status: "active", trigger: "webhook" }
 		]
 	) {
 		id
@@ -542,7 +534,7 @@ GET /flows/trigger/:flow_uuid
 
 ##### Example
 
-```json
+```
 // GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122
 // Payload here
 ```
@@ -567,7 +559,7 @@ POST /flows/trigger/:flow_uuid
 
 ##### Example
 
-```json
+```
 // POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122
 // Payload here
 ```

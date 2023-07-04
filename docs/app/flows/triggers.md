@@ -178,15 +178,15 @@ _grayed out_ until you select some number of items. From the item page, the curr
 automatically. These item IDs are passed in to `$trigger`.
 
 - **Collections** — Choose the Collection(s) to add the button to.
-- **Location** — Choose to display the button on the [Item Page](/app/content#item-page),
-  [Collection Page](/app/content#collection-page), or both.
+- **Location** — Choose to display the button on the [Item Page](/user-guide/content-module/content#item-page),
+  [Collection Page](/user-guide/content-module/content#collection-page), or both.
 - **Asynchronous** — Toggle whether the Flow executes asynchronously. If enabled, you can immediately trigger the flow
   again. If not, you must wait for the flow to complete to use it again.
 - **Collection Page (Requires Selection)** — Toggle whether a selection is required in the Collection Page to trigger.
 - **Require Confirmation** - Toggle whether a confirmation dialog will be shown before the flow is executed.
 
-After the operation runs, a toast notification will appear in your [sidebar](/app/overview#4-sidebar) indicating whether
-the flow ran successfully.
+After the operation runs, a toast notification will appear in your
+[sidebar](/user-guide/overview/data-studio-app#4-sidebar) indicating whether the flow ran successfully.
 
 ### Confirmation Dialog
 

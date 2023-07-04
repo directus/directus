@@ -53,7 +53,8 @@ will end up in another folder like "Social" or "Promotions".
 
 ## 3. Create a Collection
 
-Once logged in, you're greeted with the option to create your first [Collection](/user-guide/overview/glossary#collections).
+Once logged in, you're greeted with the option to create your first
+[Collection](/user-guide/overview/glossary#collections).
 
 1. Navigate into the Content Module.
 2. Click **"Create Collection"** and a side menu will appear.
@@ -99,8 +100,8 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 
 :::tip Learn More About Items
 
-- [The Content Module](/app/content)
-- [The Item Page](/app/content/items)
+- [The Content Module](/user-guide/content-module/content)
+- [The Item Page](/user-guide/content-module/content/items)
 
 :::
 

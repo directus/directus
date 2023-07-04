@@ -423,7 +423,7 @@ type Mutation {
 mutation {
 	update_shares_items(
 		ids: ["c86c2761-65d3-43c3-897f-6f74ad6a5bd7", "6fc3d5d3-a37b-4da8-a2f4-ed62ad5abe03"]
-		data: { "date_end": "2023-02-14T17:00:00Z" }
+		data: { date_end: "2023-02-14T17:00:00Z" }
 	) {
 		id
 		name
@@ -620,7 +620,7 @@ POST /shares/invite
 POST /graphql/system
 ```
 
-```graphql
+```
 # Not currently available in GraphQL
 ```
 
@@ -662,7 +662,7 @@ GET /shares/info/:id
 POST /graphql/system
 ```
 
-```graphql
+```
 # Not currently available in GraphQL
 ```
 

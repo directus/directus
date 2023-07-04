@@ -6,6 +6,6 @@
 	},
 	"include": ["src"],
 	"typedocOptions": {
-        "entryPoints": ["./src"]
-    }
+		"entryPoints": ["./src"]
+	}
 }

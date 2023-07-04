@@ -8,7 +8,7 @@
 ![A file type form input where user can pick from three options: "Upload File From Device", "Choose Files from Library", "Import File from URL"](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-file.webp)
 
 Interface that allows uses to upload a single file of any mime-type, choose an existing file from the
-[File Library](/app/file-library), or import a file from a URL.
+[File Library](/user-guide/file-library/files), or import a file from a URL.
 
 - **Folder**: Folder for the uploaded files. Does not affect the location of existing files.
 
@@ -17,7 +17,7 @@ Interface that allows uses to upload a single file of any mime-type, choose an e
 ![A file type form input where user can pick from three options: "Upload File From Device", "Choose Files from Library", "Import File from URL"](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-image.webp)
 
 Interface that allows uses to upload a single image file, choose an existing image from the
-[File Library](/app/file-library), or import an image from a URL.
+[File Library](/user-guide/file-library/files), or import an image from a URL.
 
 - **Folder**: Folder for the uploaded files. Does not affect the location of existing files.
 - **Crop to Fit**: Crop the image as needed when displaying the image.
@@ -27,14 +27,14 @@ Interface that allows uses to upload a single image file, choose an existing ima
 ![A file type form input where user can select and upload multiple files.](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-files.webp)
 
 Interface that allows uses to upload multiple files, choose an existing image from the
-[File Library](/app/file-library), or import an image from a URL.
+[File Library](/user-guide/file-library/files), or import an image from a URL.
 
 This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many-to-many-m2m) junction collection when
 added to the [Data Model](/app/data-model) for your [Collection](/app/data-model/collections).
 
 - **Folder**: Folder for the uploaded files. Does not affect the location of existing files.
-- [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
-  places in the App Studio.
+- [**Display Template**](/user-guide/content-module/display-templates): Fields or custom text that represent the
+  specific item through various places in the App Studio.
 - **Creating Items**: Allow users to upload new files.
 - **Selecting Items**: Allow users to select existing files.
 - **Per Page**: The number of Items to show per page.
@@ -101,8 +101,8 @@ the same collection.
 The Tree View interface is only available on self-referencing (recursive) relationships. See
 [Many-to-Any (O2M) Relationships](/app/data-model/relationships#many-to-any-m2a).
 
-- [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
-  places in the App Studio.
+- [**Display Template**](/user-guide/content-module/display-templates): Fields or custom text that represent the
+  specific item through various places in the App Studio.
 - **Creating Items**: Allow users to create new Items in the collection.
 - **Selecting Items**: Allow users to select existing files in the collection.
 - **Filter**: [Filter Rule](/reference/filter-rules) to filter down the list of Items a user can select.
@@ -116,8 +116,8 @@ collection.
 
 See [Many-to-One (M20) Relationships](/app/data-model/relationships#many-to-one-m2o)
 
-- [**Display Template**](/app/display-templates): Fields or custom text that represent the specific item through various
-  places in the App Studio.
+- [**Display Template**](/user-guide/content-module/display-templates): Fields or custom text that represent the
+  specific item through various places in the App Studio.
 - **Creating Items**: `Enable Create Button`
 - **Selecting Items**: `Enable Select Button`
 - **Filter**: [Filter Rule](/reference/filter-rules) to filter down the list of Items a user can select.
