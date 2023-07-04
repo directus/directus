@@ -27,21 +27,31 @@ export type QueryFields<Schema extends object, Item> = (
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
  */
-type QueryFieldsRelational<Schema extends object, Item> = {
+export type QueryFieldsRelational<Schema extends object, Item> = {
 	[Key in keyof Pick<Item, RelationalFields<Schema, Item>>]?: Item[Key] extends object
 		? QueryFields<Schema, ExtractItem<Schema, Item[Key]>>
-		: never;
+		: ManyToAnyFields<Schema, ExtractItem<Schema, Item[Key]>>;
+};
+
+/**
+ * Deal with many-to-any relational fields
+ */
+export type ManyToAnyFields<Schema extends object, Item> = {
+	[Collection in keyof Schema as Item extends UnpackList<Schema[Collection]> ? Collection : never]?: QueryFields<
+		Schema,
+		Schema[Collection]
+	>;
 };
 
 /**
  * Returns Item types that are available in the root Schema
  */
-type ExtractItem<Schema extends object, Item extends object> = Extract<UnpackList<Item>, ItemType<Schema>>;
+export type ExtractItem<Schema extends object, Item> = Extract<UnpackList<Item>, ItemType<Schema>>;
 
 /**
  * Returns the relation type from the current item by key
  */
-type ExtractRelation<Schema extends object, Item extends object, Key> = Key extends keyof Item
+export type ExtractRelation<Schema extends object, Item extends object, Key> = Key extends keyof Item
 	? ExtractItem<Schema, Item> extends infer Relation
 		? Relation extends never
 			? never
@@ -52,12 +62,16 @@ type ExtractRelation<Schema extends object, Item extends object, Key> = Key exte
 /**
  * Returns true if the Fields has any nested field
  */
-type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field ? (Field extends object ? true : never) : never;
+export type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field
+	? Field extends object
+		? true
+		: never
+	: never;
 
 /**
  * Return all keys if Fields is undefined or contains '*'
  */
-type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> extends infer Field
+export type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> extends infer Field
 	? Field extends undefined
 		? keyof Item
 		: Field extends '*'
@@ -70,7 +84,7 @@ type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> extends in
 /**
  * Returns the relational fields from the fields list
  */
-type RelationalQueryFields<Fields> = UnpackList<Fields> extends infer Field
+export type RelationalQueryFields<Fields> = UnpackList<Fields> extends infer Field
 	? Field extends object
 		? Field
 		: never
@@ -79,7 +93,7 @@ type RelationalQueryFields<Fields> = UnpackList<Fields> extends infer Field
 /**
  * Extract the required fields from an item
  */
-type PickFlatFields<Schema extends object, Item, Fields> = Pick<
+export type PickFlatFields<Schema extends object, Item, Fields> = Pick<
 	RemoveRelationships<Schema, Item>,
 	Extract<Fields, keyof Item>
 >;
@@ -116,7 +130,7 @@ export type QueryFilter<Schema extends object, Item> = UnpackList<Item> extends 
  * All available filter operators
  * TODO would love to filter this based on field type but thats not accurate enough in the schema atm
  */
-type FilterOperatorsByType<T> = {
+export type FilterOperatorsByType<T> = {
 	_eq?: T;
 	_neq?: T;
 	_gt?: T;
@@ -151,7 +165,7 @@ type FilterOperatorsByType<T> = {
  * Query sort
  * TODO expand to relational sorting (same object notation as fields i guess)
  */
-type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
+export type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
 	? {
 			[Field in keyof FlatItem]: Field | `-${Field & string}`;
 	  }[keyof FlatItem][]
@@ -160,7 +174,7 @@ type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends infer Fl
 /**
  * Deep filter object
  */
-type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
+export type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
 	? RelationalFields<Schema, FlatItem> extends never
 		? never
 		: {
@@ -175,11 +189,11 @@ type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends infer Fla
 		  }
 	: never;
 
-type MergeObjects<A, B extends object> = A extends object ? A & B : never;
+export type MergeObjects<A, B extends object> = A extends object ? A & B : never;
 
 /**
  * Alias object
  *
  * TODO somehow include these aliases in the Field Types!!
  */
-type QueryAlias<_Schema extends object, Item> = Record<string, keyof Item>;
+export type QueryAlias<_Schema extends object, Item> = Record<string, keyof Item>;
