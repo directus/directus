@@ -1,17 +1,19 @@
+import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
+
 /**
  * @todo Check datatype of the column. If timestamp then add "AT TIME ZONE 'UTC'" to the result string
  * @todo Probably add count support
  *
- * @param fn - The function to use
+ * @param fnNode - The function to use
  * @param column - The column which will be used as the argument for the function
  * @returns - EXTRACT(xy FROM ...)
  */
-export const extractDateTime = (fn: string, column: string): string => {
+export const extractDateTime = (fnNode: AbstractSqlQueryFnNode, wrappedColumn: string): string => {
 	function getFnString(fn: string) {
-		return `EXTRACT(${fn} FROM ${column})`;
+		return `EXTRACT(${fn} FROM ${wrappedColumn}${fnNode.isTimestampType ? " AT TIME ZONE 'UTC'" : ''})`;
 	}
 
-	switch (fn) {
+	switch (fnNode.fn) {
 		case 'year':
 			return getFnString('YEAR');
 		case 'month':
@@ -29,6 +31,6 @@ export const extractDateTime = (fn: string, column: string): string => {
 		case 'second':
 			return getFnString('SECOND');
 		default:
-			throw new Error(`Function ${fn} is not supported.`);
+			throw new Error(`Function ${fnNode} is not supported.`);
 	}
 };

@@ -18,8 +18,10 @@ export interface AbstractSqlQueryFnNode extends AbstractSqlQueryColumn {
 	/* Same as the the abstract functions */
 	fn: string;
 
+	isTimestampType?: boolean;
+
 	/* Indexes of additional arguments within the parameter list  */
-	arguments: ValueNode;
+	arguments?: ValueNode;
 
 	/* This can only be applied when using the function it within the SELECT clause */
 	as?: string;
