@@ -8,6 +8,8 @@ export const joiValidationErrorItemToErrorExtensions = (
 		field: validationErrorItem.path[0] as string,
 	};
 
+	console.log(validationErrorItem);
+
 	const joiType = validationErrorItem.type;
 
 	// eq | in | null | empty
@@ -95,7 +97,7 @@ export const joiValidationErrorItemToErrorExtensions = (
 	}
 
 	// TODO Find a better way of passing the expected value down to the client
-	if (joiType.endsWith('.pattern.name')) {
+	if (joiType.endsWith('.pattern.name') || joiType.endsWith('.pattern.invert.name')) {
 		extensions.type = validationErrorItem.context?.['name'];
 		const regex = validationErrorItem.context?.['regex']?.toString();
 
