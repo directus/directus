@@ -8,6 +8,7 @@ import type { AbstractSqlQueryOrderNode } from '../types.js';
 export const convertSort = (abstractSorts: AbstractQueryNodeSort[]): AbstractSqlQueryOrderNode[] => {
 	return abstractSorts.map((abstractSort) => {
 		return {
+			type: 'order',
 			orderBy: abstractSort.target,
 			direction: abstractSort.direction === 'descending' ? 'DESC' : 'ASC',
 		};

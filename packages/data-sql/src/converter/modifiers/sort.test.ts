@@ -27,6 +27,7 @@ test('convert ascending sort with a single field', () => {
 
 	expect(res).toStrictEqual([
 		{
+			type: 'order',
 			orderBy: sample.sort[0]!.target,
 			direction: 'ASC',
 		},
@@ -39,6 +40,7 @@ test('convert descending sort with a single field', () => {
 
 	expect(res).toStrictEqual([
 		{
+			type: 'order',
 			orderBy: sample.sort[0]!.target,
 			direction: 'DESC',
 		},
@@ -59,10 +61,12 @@ test('convert ascending sort with multiple fields', () => {
 
 	expect(res).toStrictEqual([
 		{
+			type: 'order',
 			orderBy: sample.sort[0]!.target,
 			direction: 'ASC',
 		},
 		{
+			type: 'order',
 			orderBy: sample.sort[1]!.target,
 			direction: 'ASC',
 		},
