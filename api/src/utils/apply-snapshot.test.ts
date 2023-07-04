@@ -43,6 +43,7 @@ describe('applySnapshot', () => {
 				collection: 'test_table_2',
 				meta: {
 					accountability: 'all',
+					branches_enabled: false,
 					collection: 'test_table_2',
 					group: null,
 					hidden: true,
@@ -124,6 +125,7 @@ describe('applySnapshot', () => {
 				collection: 'test_table_2',
 				meta: {
 					accountability: 'all',
+					branches_enabled: false,
 					collection: 'test_table_2',
 					group: 'test_table',
 					hidden: true,
