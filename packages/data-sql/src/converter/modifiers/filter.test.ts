@@ -7,7 +7,11 @@ import type {
 } from '@directus/data';
 import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
 import { beforeEach, describe, expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode, AbstractSqlQueryFnNode } from '../../types.js';
+import type {
+	AbstractSqlQueryConditionNode,
+	AbstractSqlQueryLogicalNode,
+	AbstractSqlQueryFnNode,
+} from '../../types.js';
 import { parameterIndexGenerator } from '../../utils/param-index-generator.js';
 import { convertFilter, convertFn } from './filter.js';
 
@@ -79,7 +83,10 @@ test('Convert filter with function target', () => {
 			fn: 'month',
 			table: sample.randomCollection,
 			column: sampleColumn,
-			parameterIndexes: [],
+			arguments: {
+				type: 'value',
+				parameterIndexes: [],
+			},
 		},
 		operation: 'gt',
 		compareTo: {
@@ -419,7 +426,10 @@ describe('Convert function', () => {
 			fn: 'month',
 			table: sample.randomCollection,
 			column: sampleField,
-			parameterIndexes: [],
+			arguments: {
+				type: 'value',
+				parameterIndexes: [],
+			}
 		};
 
 		expect(res).toStrictEqual({
@@ -451,7 +461,10 @@ describe('Convert function', () => {
 			fn: 'month',
 			table: sample.randomCollection,
 			column: sampleField,
-			parameterIndexes: [0, 1],
+			arguments: {
+				type: 'value',
+				parameterIndexes: [0, 1],
+			}
 		};
 
 		expect(res).toStrictEqual({

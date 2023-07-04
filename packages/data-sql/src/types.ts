@@ -19,7 +19,7 @@ export interface AbstractSqlQueryFnNode extends AbstractSqlQueryColumn {
 	fn: string;
 
 	/* Indexes of additional arguments within the parameter list  */
-	parameterIndexes: number[];
+	arguments: ValueNode;
 
 	/* This can only be applied when using the function it within the SELECT clause */
 	as?: string;

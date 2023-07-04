@@ -99,7 +99,10 @@ export function convertFn(
 		fn: abstractFunction.fn,
 		table: collection,
 		column: abstractFunction.targetNode.field,
-		parameterIndexes: [],
+		arguments: {
+			type: 'value',
+			parameterIndexes: [],
+		},
 	};
 
 	if (abstractFunction.alias) {
@@ -107,7 +110,7 @@ export function convertFn(
 	}
 
 	if (abstractFunction.args && abstractFunction.args?.length > 0) {
-		fn.parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
+		fn.arguments.parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
 	}
 
 	return {

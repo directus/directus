@@ -62,7 +62,10 @@ test('Convert filter condition', () => {
 			fn: 'month',
 			table: randomTable,
 			column: aColumn,
-			parameterIndexes: [],
+			arguments: {
+				type: 'value',
+				parameterIndexes: [],
+			}
 		},
 		operation: 'gt',
 		compareTo: {
