@@ -8,8 +8,6 @@ export const joiValidationErrorItemToErrorExtensions = (
 		field: validationErrorItem.path[0] as string,
 	};
 
-	console.log(validationErrorItem);
-
 	const joiType = validationErrorItem.type;
 
 	// eq | in | null | empty
