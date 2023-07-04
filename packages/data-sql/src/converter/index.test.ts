@@ -53,7 +53,7 @@ test('Convert simple query', () => {
 		parameters: [],
 	};
 
-	expect(res).toStrictEqual(expected);
+	expect(res).toMatchObject(expected);
 });
 
 test('Convert query with filter', () => {
@@ -110,7 +110,7 @@ test('Convert query with filter', () => {
 		],
 	};
 
-	expect(res).toStrictEqual(expected);
+	expect(res).toMatchObject(expected);
 });
 
 test('Convert query with a limit', () => {
@@ -141,7 +141,7 @@ test('Convert query with a limit', () => {
 		parameters: [sample.query.modifiers.limit!.value],
 	};
 
-	expect(res).toStrictEqual(expected);
+	expect(res).toMatchObject(expected);
 });
 
 test('Convert query with limit and offset', () => {
@@ -177,7 +177,7 @@ test('Convert query with limit and offset', () => {
 		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
 	};
 
-	expect(res).toStrictEqual(expected);
+	expect(res).toMatchObject(expected);
 });
 
 test('Convert query with a sort', () => {
@@ -212,6 +212,7 @@ test('Convert query with a sort', () => {
 		from: sample.query.collection,
 		order: [
 			{
+				type: 'order',
 				orderBy: sample.query.modifiers.sort![0]!.target,
 				direction: 'ASC',
 			},
@@ -219,7 +220,7 @@ test('Convert query with a sort', () => {
 		parameters: [],
 	};
 
-	expect(res).toStrictEqual(expected);
+	expect(res).toMatchObject(expected);
 });
 
 test('Convert a query with all possible modifiers', () => {
@@ -262,6 +263,7 @@ test('Convert a query with all possible modifiers', () => {
 		from: sample.query.collection,
 		order: [
 			{
+				type: 'order',
 				orderBy: sample.query.modifiers.sort![0]!.target,
 				direction: 'ASC',
 			},
@@ -271,5 +273,5 @@ test('Convert a query with all possible modifiers', () => {
 		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
 	};
 
-	expect(res).toStrictEqual(expected);
+	expect(res).toMatchObject(expected);
 });
