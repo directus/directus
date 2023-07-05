@@ -32,12 +32,14 @@
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.7",
 		"@types/node": "18.16.12",
+		"@types/wellknown": "0.5.4",
 		"@vitest/coverage-c8": "0.31.1",
 		"tsup": "6.7.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	},
 	"dependencies": {
-		"lodash-es": "4.17.21"
+		"lodash-es": "4.17.21",
+		"wellknown": "0.5.0"
 	}
 }

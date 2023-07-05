@@ -1,4 +1,5 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
+import type { GeoJSONGeometry } from 'wellknown';
 
 export interface AbstractSqlQueryColumn {
 	table: string;
@@ -65,13 +66,15 @@ export interface AbstractSqlQuery {
 	offset?: ParameterIndex;
 	order?: AbstractSqlQueryOrderNode[];
 	where?: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
-	parameters: (string | boolean | number)[];
+	parameters: ParameterTypes[];
 	/**
 	 * SQL returns data as a flat object. This map contains the flat property names and the JSON path
 	 * they correspond to.
 	 */
 	paths: Map<string, string[]>;
 }
+
+export type ParameterTypes = string | boolean | number | GeoJSONGeometry;
 
 type AbstractSqlQueryNodeType = 'order' | 'join' | 'condition' | 'logical' | 'value';
 

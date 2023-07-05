@@ -3,6 +3,7 @@ import type { AbstractSqlQuery } from '../types.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 import { convertFilter, convertSort } from './modifiers/index.js';
 import { convertNodes } from './nodes/index.js';
+import { convertGeoValues } from './Geometry/index.js';
 
 /**
  * @param abstractQuery the abstract query to convert
@@ -39,6 +40,8 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 	if (abstractQuery.modifiers?.sort) {
 		statement.order = convertSort(abstractQuery.modifiers.sort);
 	}
+
+	statement.parameters = convertGeoValues(statement.parameters);
 
 	return statement;
 };
