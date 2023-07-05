@@ -62,7 +62,7 @@
 
 		<small v-if="validationError" class="validation-error selectable">
 			<template v-if="field.meta?.validation_message">
-				{{ field.meta?.validation_message }}
+				{{ validationError.code === 'RECORD_NOT_UNIQUE' ? validationMessage : field.meta?.validation_message }}
 				<v-icon v-tooltip="validationMessage" small right name="help" />
 			</template>
 			<template v-else>{{ validationPrefix }}{{ validationMessage }}</template>

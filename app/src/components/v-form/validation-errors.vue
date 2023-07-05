@@ -19,7 +19,11 @@
 					</strong>
 					<span>:&nbsp;</span>
 					<template v-if="validationError.customValidationMessage">
-						{{ validationError.customValidationMessage }}
+						{{
+							validationError.code === 'RECORD_NOT_UNIQUE'
+								? t('validationError.unique', validationError)
+								: validationError.customValidationMessage
+						}}
 						<v-icon
 							v-tooltip="
 								validationError.code === 'RECORD_NOT_UNIQUE'
