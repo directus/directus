@@ -1,5 +1,5 @@
 import type { PrimaryKey } from '@directus/types';
-import type { ApplyQueryFields, CollectionType, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
@@ -23,7 +23,7 @@ export const updatedItems =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		keys: PrimaryKey[],
-		item: Partial<Schema[Collection]>,
+		item: Partial<UnpackList<Schema[Collection]>>,
 		query?: TQuery
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
@@ -52,7 +52,7 @@ export const updateItem =
 		Schema extends object,
 		Collection extends keyof Schema,
 		TQuery extends Query<Schema, Schema[Collection]>,
-		Item = Schema[Collection]
+		Item = UnpackList<Schema[Collection]>
 	>(
 		collection: Collection,
 		key: PrimaryKey,

@@ -1,4 +1,4 @@
-import type { ApplyQueryFields, CollectionType, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
@@ -20,7 +20,7 @@ export type CreateItemOutput<
 export const createItems =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		items: Partial<Schema[Collection]>[],
+		items: Partial<UnpackList<Schema[Collection]>>[],
 		query?: TQuery
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
@@ -50,7 +50,7 @@ export const createItems =
 export const createItem =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		item: Schema[Collection],
+		item: UnpackList<Schema[Collection]>,
 		query?: TQuery
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {

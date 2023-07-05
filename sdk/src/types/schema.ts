@@ -57,4 +57,4 @@ export type CoreCollection<
 	Schema extends object,
 	Collection extends keyof Schema | string,
 	Fallback
-> = Collection extends keyof Schema ? Schema[Collection] : Fallback;
+> = Collection extends keyof Schema ? UnpackList<Schema[Collection]> : Fallback;
