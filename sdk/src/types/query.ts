@@ -7,7 +7,7 @@ export interface Query<Schema extends object, Item> {
 	fields?: QueryFields<Schema, Item> | undefined;
 	filter?: QueryFilter<Schema, Item> | undefined;
 	search?: string | undefined;
-	sort?: QuerySort<Schema, Item> | undefined;
+	sort?: QuerySort<Schema, Item> | QuerySort<Schema, Item>[] | undefined;
 	limit?: number | undefined;
 	offset?: number | undefined;
 	page?: number | undefined;
@@ -31,11 +31,13 @@ export type QueryFieldsRelational<Schema extends object, Item> = {
 	[Key in RelationalFields<Schema, Item>]?: Item[Key] extends object
 		? QueryFields<Schema, ExtractItem<Schema, Item[Key]>>
 		: ExtractItem<Schema, Item[Key]> extends infer Fields
-			? {
-				[Collection in keyof Schema as Fields extends UnpackList<Schema[Collection]> ? Collection : never ]: 
-					QueryFields<Schema, Schema[Collection]>
-			}
-			: never
+		? {
+				[Collection in keyof Schema as Fields extends UnpackList<Schema[Collection]> ? Collection : never]: QueryFields<
+					Schema,
+					Schema[Collection]
+				>;
+		  }
+		: never;
 };
 
 /**
@@ -100,7 +102,7 @@ export type ApplyQueryFields<Schema extends object, Item, Fields> = Item extends
 	? HasNestedFields<Fields> extends never
 		? PickFlatFields<Schema, Item, FieldsWildcard<Item, Fields>> // no relation
 		: RelationalQueryFields<Fields> extends infer RelatedFields // infer related fields
-			? PickFlatFields<Schema, Item, Exclude<FieldsWildcard<Item, Fields>, keyof RelatedFields>> & {
+		? PickFlatFields<Schema, Item, Exclude<FieldsWildcard<Item, Fields>, keyof RelatedFields>> & {
 				[K in keyof RelatedFields]-?: K extends keyof Item
 					? QueryFields<Schema, ExtractItem<Schema, Item[K]>> extends RelatedFields[K]
 						? ExtractRelation<Schema, Item, K> extends infer Relation
@@ -109,17 +111,18 @@ export type ApplyQueryFields<Schema extends object, Item, Fields> = Item extends
 								: never
 							: never
 						: ApplyManyToAny<Schema, RelatedFields[K]> // TODO FIX M2A OUTPUT
-					: never
-			}
-			: never
+					: never;
+		  }
+		: never
 	: never;
 
-type ApplyManyToAny<Schema extends object, Scopes> = Scopes extends object ? {
-	[Scope in keyof Scopes]: Scope extends keyof Schema
-		? ApplyQueryFields<Schema, UnpackList<Schema[Scope]>, Scopes[Scope]> // TODO FIX THIS! does not work!
-		: never
-} : never;
-
+type ApplyManyToAny<Schema extends object, Scopes> = Scopes extends object
+	? {
+			[Scope in keyof Scopes]: Scope extends keyof Schema
+				? ApplyQueryFields<Schema, UnpackList<Schema[Scope]>, Scopes[Scope]> // TODO FIX THIS! does not work!
+				: never;
+	  }
+	: never;
 
 /**
  * Filters
@@ -174,7 +177,7 @@ export type FilterOperatorsByType<T> = {
 export type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
 	? {
 			[Field in keyof FlatItem]: Field | `-${Field & string}`;
-	  }[keyof FlatItem][]
+	  }[keyof FlatItem]
 	: never;
 
 /**

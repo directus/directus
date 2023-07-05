@@ -9,9 +9,8 @@ import type { Query } from '../../types/index.js';
  */
 export const queryToParams = <Schema extends object, Item>(query: Query<Schema, Item>): Record<string, string> => {
 	const params: Record<string, string> = {};
-	// TODO better type/value guarding
 
-	if (query.fields) {
+	if (Array.isArray(query.fields) && query.fields.length > 0) {
 		type FieldItem = (typeof query.fields)[number];
 
 		const walkFields = (value: FieldItem, chain: string[] = []): string | string[] => {
@@ -29,8 +28,8 @@ export const queryToParams = <Schema extends object, Item>(query: Query<Schema, 
 					} else if (typeof nestedField === 'object') {
 						// many to any nested
 						for (const scope of Object.keys(nestedField)) {
-							const fields = nestedField[scope as keyof typeof nestedField] as FieldItem[];
-							
+							const fields = (nestedField as Record<string, FieldItem[]>)[scope]!;
+
 							for (const item of fields) {
 								result.push(walkFields(item as FieldItem, [...chain, `${key}:${scope}`]));
 							}
@@ -47,35 +46,35 @@ export const queryToParams = <Schema extends object, Item>(query: Query<Schema, 
 		params['fields'] = query.fields.flatMap((value) => walkFields(value)).join(',');
 	}
 
-	if (query.filter) {
+	if (query.filter && Object.keys(query.filter).length > 0) {
 		params['filter'] = JSON.stringify(query.filter);
 	}
 
-	if (query.search) {
+	if (query.search) { // covers both empty string and undefined
 		params['search'] = query.search;
 	}
 
-	if (query.sort) {
-		params['sort'] = query.sort.join(',');
+	if ('sort' in query && query.sort) { // covers empty array and undefined
+		params['sort'] = typeof query.sort === 'string' ? query.sort : query.sort.join(',');
 	}
 
-	if (query.limit) {
+	if (typeof query.limit === 'number' && query.limit >= 0) {
 		params['limit'] = String(query.limit);
 	}
 
-	if (query.offset) {
+	if (typeof query.offset === 'number' && query.offset >= 0) {
 		params['offset'] = String(query.offset);
 	}
 
-	if (query.page) {
-		params['offset'] = String(query.offset);
+	if (typeof query.page === 'number' && query.page >= 1) {
+		params['page'] = String(query.page);
 	}
 
-	if (query.deep) {
+	if (query.deep && Object.keys(query.deep).length > 0) {
 		params['deep'] = JSON.stringify(query.deep);
 	}
 
-	if (query.alias) {
+	if (query.alias && Object.keys(query.alias).length > 0) {
 		params['alias'] = JSON.stringify(query.alias);
 	}
 
