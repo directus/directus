@@ -50,7 +50,7 @@ export const createItems =
 export const createItem =
 	<Schema extends object, Collection extends keyof Schema, TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		item: UnpackList<Schema[Collection]>,
+		item: Partial<UnpackList<Schema[Collection]>>,
 		query?: TQuery
 	): RestCommand<CreateItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
