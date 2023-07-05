@@ -1,6 +1,6 @@
 import type { PrimaryKey } from '@directus/types';
 import type { DirectusUser } from '../../../schema/user.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, CoreCollection, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
@@ -8,7 +8,7 @@ export type ReadUserOutput<
 	Schema extends object,
 	Collection extends keyof Schema | string,
 	TQuery extends Query<Schema, Item>,
-    Item = Collection extends keyof Schema ? Schema[Collection] : DirectusUser
+	Item = CoreCollection<Schema, Collection, DirectusUser>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -21,16 +21,16 @@ export type ReadUserOutput<
 export const readUsers =
 	<
 		Schema extends object,
-		TQuery extends Query<Schema, Collection extends keyof Schema ? Schema[Collection] : DirectusUser>,
-        Collection extends keyof Schema | string = "directus_users",
+		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
+		Collection extends keyof Schema | string = 'directus_users'
 	>(
 		query?: TQuery
 	): RestCommand<ReadUserOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => ({
-        path: `/users`,
-        params: queryToParams(query ?? {}),
-        method: 'GET',
-    });
+		path: `/users`,
+		params: queryToParams(query ?? {}),
+		method: 'GET',
+	});
 
 /**
  * List an existing user by primary key.
@@ -43,16 +43,16 @@ export const readUsers =
 export const readUser =
 	<
 		Schema extends object,
-		TQuery extends Query<Schema, Collection extends keyof Schema ? Schema[Collection] : DirectusUser>,
-        Collection extends keyof Schema | string = "directus_users",
+		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
+		Collection extends keyof Schema | string = 'directus_users'
 	>(
 		key: PrimaryKey,
 		query?: TQuery
 	): RestCommand<ReadUserOutput<Schema, Collection, TQuery>, Schema> =>
 	() => ({
-        path: `/users/${key}`,
-        params: queryToParams(query ?? {}),
-        method: 'GET',
+		path: `/users/${key}`,
+		params: queryToParams(query ?? {}),
+		method: 'GET',
 	});
 
 /**
@@ -65,13 +65,13 @@ export const readUser =
 export const readMe =
 	<
 		Schema extends object,
-		TQuery extends Query<Schema, Collection extends keyof Schema ? Schema[Collection] : DirectusUser>,
-        Collection extends keyof Schema | string = "directus_users",
+		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
+		Collection extends keyof Schema | string = 'directus_users'
 	>(
 		query?: TQuery
 	): RestCommand<ReadUserOutput<Schema, Collection, TQuery>, Schema> =>
 	() => ({
-        path: `/users/me`,
-        params: queryToParams(query ?? {}),
-        method: 'GET',
+		path: `/users/me`,
+		params: queryToParams(query ?? {}),
+		method: 'GET',
 	});

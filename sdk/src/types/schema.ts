@@ -49,3 +49,12 @@ export type RemoveRelationships<Schema extends object, Item> = {
  * Flatten array types to their singular root
  */
 export type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
+
+/**
+ * Get a core collection from the schema or fallback to builtin
+ */
+export type CoreCollection<
+	Schema extends object,
+	Collection extends keyof Schema | string,
+	Fallback
+> = Collection extends keyof Schema ? Schema[Collection] : Fallback;
