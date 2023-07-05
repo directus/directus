@@ -1,11 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ClientConfig {
-	token?: string;
+	//token?: string;
 }
 
 export interface DirectusClient<Schema extends object> {
 	url: URL;
-	getToken: () => Promise<string | null>;
-	setToken: (token: string | null) => void;
 	use: <Extension extends object>(createExtension: (client: DirectusClient<Schema>) => Extension) => this & Extension;
 }
 
@@ -19,13 +18,10 @@ export interface DirectusClient<Schema extends object> {
  */
 export const useDirectus = <Schema extends object = any>(
 	url: string,
-	config?: ClientConfig
+	_config?: ClientConfig
 ): DirectusClient<Schema> => {
-	let token = config?.token ?? null;
 	return {
 		url: new URL(url),
-		getToken: async () => token,
-		setToken: (newToken) => (token = newToken),
 		use(createExtension) {
 			return {
 				...this,

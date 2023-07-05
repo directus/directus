@@ -4,6 +4,9 @@ import { messageCallback } from './utils/message-callback.js';
 import { generateUid } from './utils/generate-uid.js';
 import { pong } from './commands/pong.js';
 import { auth } from './commands/auth.js';
+import type { AuthenticationClient } from '../auth/types.js';
+
+type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
 /**
  * Creates a client to communicate with a Directus REST WebSocket.
@@ -17,8 +20,10 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 		let socket: globalThis.WebSocket | null = null;
 		let uid = generateUid();
 
-		const withStrictAuth = async (url: URL, currentClient: WebSocketClient<Schema> & DirectusClient<Schema>) => {
-			if (config.authMode === 'strict') {
+		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
+
+		const withStrictAuth = async (url: URL, currentClient: AuthWSClient<Schema>) => {
+			if (config.authMode === 'strict' && hasAuth(currentClient)) {
 				const token = await currentClient.getToken();
 				if (token) url.searchParams.set('access_token', token);
 			}
@@ -26,7 +31,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 			return url;
 		};
 
-		const getSocketUrl = async (currentClient: WebSocketClient<Schema> & DirectusClient<Schema>) => {
+		const getSocketUrl = async (currentClient: AuthWSClient<Schema>) => {
 			if ('url' in config) return await withStrictAuth(new URL(config.url), currentClient);
 
 			// if the main URL is a websocket URL use it directly!
@@ -48,14 +53,11 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 			// TODO reconnecting strategy
 		};
 
-		const handleMessages = async (
-			ws: globalThis.WebSocket,
-			currentClient: WebSocketClient<Schema> & DirectusClient<Schema>
-		) => {
+		const handleMessages = async (ws: globalThis.WebSocket, currentClient: AuthWSClient<Schema>) => {
 			while (ws.readyState !== WebSocket.CLOSED) {
 				const message = await messageCallback(ws);
 
-				if ('type' in message && message['type'] === 'auth') {
+				if ('type' in message && message['type'] === 'auth' && hasAuth(currentClient)) {
 					const access_token = await currentClient.getToken();
 					if (access_token) ws.send(auth({ access_token }));
 				}
@@ -68,8 +70,8 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 
 		return {
 			async connect() {
-				// we need to use THIS here instead of client allow for overridden functions
-				const self = this as WebSocketClient<Schema> & DirectusClient<Schema>;
+				// we need to use THIS here instead of client to access overridden functions
+				const self = this as AuthWSClient<Schema>;
 				const url = await getSocketUrl(self);
 
 				return new Promise<void>((resolve, reject) => {
@@ -77,7 +79,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 					const ws = new globalThis.WebSocket(url);
 
 					ws.addEventListener('open', async () => {
-						if (config.authMode === 'handshake') {
+						if (config.authMode === 'handshake' && hasAuth(self)) {
 							const access_token = await self.getToken();
 
 							if (access_token) ws.send(auth({ access_token }));

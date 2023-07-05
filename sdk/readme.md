@@ -137,7 +137,7 @@ interface CollectionAB_Many {
   collection_b_id: CollectionB;
 }
 
-// Many-to-Any junction table (DOESNT WORK YET!)
+// Many-to-Any junction table
 interface CollectionAB_Any {
   id: number;
   collection_a_id: CollectionA;

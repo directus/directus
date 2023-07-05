@@ -26,3 +26,8 @@ export interface AuthenticationClient<_Schema extends object> {
 	getToken(): Promise<string | null>;
 	setToken(access_token: string | null): void;
 }
+
+export interface StaticTokenClient<_Schema extends object> {
+	getToken(): Promise<string | null>;
+	setToken(access_token: string | null): void;
+}

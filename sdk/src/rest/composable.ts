@@ -1,4 +1,4 @@
-import type { AuthenticationClient } from '../auth/types.js';
+import type { StaticTokenClient } from '../auth/types.js';
 import type { DirectusClient } from '../client.js';
 import type { ResponseTransformer } from '../index.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
@@ -22,10 +22,10 @@ export const rest = (config: RestConfig = {}) => {
 					options.headers['Content-Type'] = 'application/json';
 				}
 
-				// we need to use THIS here instead of client allow for overridden functions
+				// we need to use THIS here instead of client to access overridden functions
 				if ('getToken' in this) {
-					const token = await (this.getToken as AuthenticationClient<Schema>['getToken'])();
-					
+					const token = await (this.getToken as StaticTokenClient<Schema>['getToken'])();
+
 					if (token) {
 						if (!options.headers) options.headers = {};
 						options.headers['Authorization'] = `Bearer ${token}`;
@@ -56,10 +56,10 @@ export const rest = (config: RestConfig = {}) => {
 				const onError = config.onError ?? ((_err: any) => undefined);
 				let onResponse: ResponseTransformer | undefined;
 
-				// chain response parsers if needed
+				// chain response handlers if needed
 				if (config.onResponse && options.onResponse) {
 					onResponse = ((data: any) =>
-						Promise.resolve(data).then(options.onResponse).then(config.onResponse)) as ResponseTransformer;
+						Promise.resolve(data).then(config.onResponse).then(options.onResponse)) as ResponseTransformer;
 				} else if (options.onResponse) {
 					onResponse = options.onResponse;
 				} else if (config.onResponse) {

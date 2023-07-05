@@ -2,6 +2,7 @@ import type { DirectusClient } from '../client.js';
 import type { GraphqlClient } from './types.js';
 import { request } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
+import type { AuthenticationClient } from '../auth/types.js';
 
 /**
  * Creates a client to communicate with Directus GraphQL.
@@ -22,10 +23,13 @@ export const graphql = () => {
 					headers: {},
 				};
 
-				const token = await client.getToken();
+				if ('getToken' in this) {
+					const token = await (this.getToken as AuthenticationClient<Schema>['getToken'])();
 
-				if (token) {
-					options.headers = { Authorization: `Bearer ${token}` };
+					if (token) {
+						if (!options.headers) options.headers = {};
+						options.headers = { Authorization: `Bearer ${token}` };
+					}
 				}
 
 				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
