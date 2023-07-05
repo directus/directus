@@ -10,13 +10,12 @@ import { convertGeoValues } from './Geometry/index.js';
  * @returns a format very close to actual SQL but without making assumptions about the actual SQL dialect
  */
 export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
-	const statement: AbstractSqlQuery = {
-		...convertNodes(abstractQuery.collection, abstractQuery.nodes),
-		from: abstractQuery.collection,
-		parameters: [],
-	};
-
 	const idGen = parameterIndexGenerator();
+
+	const statement: AbstractSqlQuery = {
+		...convertNodes(abstractQuery.collection, abstractQuery.nodes, idGen),
+		from: abstractQuery.collection,
+	};
 
 	if (abstractQuery.modifiers?.filter) {
 		const convertedFilter = convertFilter(abstractQuery.modifiers.filter, abstractQuery.collection, idGen);

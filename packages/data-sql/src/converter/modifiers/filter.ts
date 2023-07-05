@@ -1,6 +1,7 @@
-import type { AbstractQueryFieldNodeFn, AbstractQueryFilterNode } from '@directus/data';
+import type { AbstractQueryFilterNode } from '@directus/data';
 import type { AbstractSqlQuery } from '../../types.js';
 import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from '../../types.js';
+import { convertFn } from '../functions.js';
 
 /**
  * Extracts the filer values and replaces it with parameter indexes.
@@ -79,45 +80,3 @@ const convertFilterWithNegate = (
 		};
 	}
 };
-
-/**
- * @param collection
- * @param abstractFunction
- * @param idxGenerator
- */
-export function convertFn(
-	collection: string,
-	abstractFunction: AbstractQueryFieldNodeFn,
-	idxGenerator: Generator
-): { fn: AbstractSqlQueryFnNode; parameters: (string | number | boolean)[] } {
-	if (abstractFunction.targetNode.type !== 'primitive') {
-		throw new Error('Nested functions are not yet supported.');
-	}
-
-	const fn: AbstractSqlQueryFnNode = {
-		type: 'fn',
-		fn: abstractFunction.fn,
-		input: {
-			type: 'primitive',
-			table: collection,
-			column: abstractFunction.targetNode.field,
-		},
-		arguments: {
-			type: 'value',
-			parameterIndexes: [],
-		},
-	};
-
-	if (abstractFunction.alias) {
-		fn.as = abstractFunction.alias;
-	}
-
-	if (abstractFunction.args && abstractFunction.args?.length > 0) {
-		fn.arguments!.parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
-	}
-
-	return {
-		fn,
-		parameters: abstractFunction.args ?? [],
-	};
-}

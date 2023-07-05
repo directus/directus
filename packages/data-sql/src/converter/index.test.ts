@@ -223,6 +223,49 @@ test('Convert query with a sort', () => {
 	expect(res).toMatchObject(expected);
 });
 
+test('Convert a query with a function as field select', () => {
+	const randomField = randomIdentifier();
+
+	sample.query.nodes.push({
+		type: 'fn',
+		fn: 'count',
+		targetNode: {
+			type: 'primitive',
+			field: randomField,
+		},
+	});
+
+	const res = convertAbstractQueryToAbstractSqlQuery(sample.query);
+
+	const expected: AbstractSqlQuery = {
+		select: [
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[0] as AbstractQueryFieldNodePrimitive).field,
+			},
+			{
+				type: 'primitive',
+				table: sample.query.collection,
+				column: (sample.query.nodes[1] as AbstractQueryFieldNodePrimitive).field,
+			},
+			{
+				type: 'fn',
+				fn: 'count',
+				input: {
+					type: 'primitive',
+					table: sample.query.collection,
+					column: randomField,
+				},
+			},
+		],
+		from: sample.query.collection,
+		parameters: [],
+	};
+
+	expect(res).toMatchObject(expected);
+});
+
 test('Convert a query with all possible modifiers', () => {
 	sample.query.modifiers = {
 		limit: {

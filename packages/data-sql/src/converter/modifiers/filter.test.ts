@@ -1,19 +1,17 @@
 import type {
-	AbstractQueryFieldNodeFn,
 	AbstractQueryFieldNodePrimitive,
 	AbstractQueryFilterNode,
 	AbstractQueryNodeCondition,
-	AbstractQueryNodeConditionValue,
+	AbstractQueryNodeConditionValue
 } from '@directus/data';
-import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { randomIdentifier, randomInteger } from '@directus/random';
+import { beforeEach, expect, test } from 'vitest';
 import type {
 	AbstractSqlQueryConditionNode,
-	AbstractSqlQueryLogicalNode,
-	AbstractSqlQueryFnNode,
+	AbstractSqlQueryLogicalNode
 } from '../../types.js';
 import { parameterIndexGenerator } from '../../utils/param-index-generator.js';
-import { convertFilter, convertFn } from './filter.js';
+import { convertFilter } from './filter.js';
 
 let sample: {
 	condition: AbstractQueryNodeCondition;
@@ -405,80 +403,5 @@ test('Convert filter nested and with negation', () => {
 	expect(result).toStrictEqual({
 		where: expectedWhere,
 		parameters: [firstValue, secondValue, thirdValue, fourthValue],
-	});
-});
-
-describe('Convert function', () => {
-	test('With no args', () => {
-		const sampleField = randomIdentifier();
-		const idGen = parameterIndexGenerator();
-
-		const sampleFn: AbstractQueryFieldNodeFn = {
-			type: 'fn',
-			fn: 'month',
-			targetNode: {
-				type: 'primitive',
-				field: sampleField,
-			},
-		};
-
-		const res = convertFn(sample.randomCollection, sampleFn, idGen);
-
-		const sampleSqlFn: AbstractSqlQueryFnNode = {
-			type: 'fn',
-			fn: 'month',
-			input: {
-				type: 'primitive',
-				table: sample.randomCollection,
-				column: sampleField,
-			},
-			arguments: {
-				type: 'value',
-				parameterIndexes: [],
-			}
-		};
-
-		expect(res).toStrictEqual({
-			fn: sampleSqlFn,
-			parameters: [],
-		});
-	});
-
-	test('With args', () => {
-		const sampleField = randomIdentifier();
-		const idGen = parameterIndexGenerator();
-		const randomArgument1 = randomAlpha(5);
-		const randomArgument2 = randomAlpha(5);
-
-		const sampleFn: AbstractQueryFieldNodeFn = {
-			type: 'fn',
-			fn: 'month',
-			targetNode: {
-				type: 'primitive',
-				field: sampleField,
-			},
-			args: [randomArgument1, randomArgument2],
-		};
-
-		const res = convertFn(sample.randomCollection, sampleFn, idGen);
-
-		const sampleSqlFn: AbstractSqlQueryFnNode = {
-			type: 'fn',
-			fn: 'month',
-			input: {
-				type: 'primitive',
-				table: sample.randomCollection,
-				column: sampleField,
-			},
-			arguments: {
-				type: 'value',
-				parameterIndexes: [0, 1],
-			}
-		};
-
-		expect(res).toStrictEqual({
-			fn: sampleSqlFn,
-			parameters: [randomArgument1, randomArgument2],
-		});
 	});
 });

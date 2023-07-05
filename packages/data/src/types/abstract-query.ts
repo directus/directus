@@ -58,7 +58,7 @@ export interface AbstractQueryFieldNodePrimitive extends AbstractQueryNode {
 	alias?: string;
 }
 
-export type AbstractQueryFn = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
+export type AbstractQueryFn = 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second' | 'count';
 
 /**
  * Used to apply a function to a specific field before returning it.

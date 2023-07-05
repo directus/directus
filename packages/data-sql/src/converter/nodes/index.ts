@@ -3,17 +3,20 @@ import type { AbstractSqlQuery } from '../../types.js';
 import { createUniqueIdentifier } from '../../utils/create-unique-identifier.js';
 import { createPrimitiveSelect } from './create-primitive-select.js';
 import { createJoin } from './create-join.js';
+import { convertFn } from '../functions.js';
 
-export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'join' | 'paths'>;
+export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'join' | 'paths' | 'parameters'>;
 
 export const convertNodes = (
 	collection: string,
 	nodes: AbstractQueryFieldNode[],
+	idxGenerator: Generator,
 	path: string[] = []
 ): ConvertSelectOutput => {
 	const select: ConvertSelectOutput['select'] = [];
 	const join: ConvertSelectOutput['join'] = [];
 	const paths: ConvertSelectOutput['paths'] = new Map();
+	const parameters: AbstractSqlQuery['parameters'] = [];
 
 	for (const node of nodes) {
 		if (node.type === 'primitive') {
@@ -46,7 +49,7 @@ export const convertNodes = (
 				)
 			);
 
-			const nestedOutput = convertNodes(externalCollectionAlias, node.nodes, [...path, node.alias]);
+			const nestedOutput = convertNodes(externalCollectionAlias, node.nodes, idxGenerator, [...path, node.alias]);
 
 			select.push(...nestedOutput.select);
 			nestedOutput.paths.forEach((value, key) => paths.set(key, value));
@@ -54,8 +57,15 @@ export const convertNodes = (
 			continue;
 		}
 
+		if (node.type === 'fn') {
+			const fn = convertFn(collection, node, idxGenerator);
+			select.push(fn.fn);
+			parameters.push(...fn.parameters);
+			continue;
+		}
+
 		throw new Error(`Node type ${node.type} is not supported`);
 	}
 
-	return { select, join, paths };
+	return { select, join, paths, parameters };
 };

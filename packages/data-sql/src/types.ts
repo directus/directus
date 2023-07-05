@@ -61,7 +61,7 @@ type ParameterIndex = {
  * ```
  */
 export interface AbstractSqlQuery {
-	select: AbstractSqlQuerySelectNode[];
+	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
 	from: string;
 	join?: AbstractSqlQueryJoinNode[];
 	limit?: ParameterIndex;
