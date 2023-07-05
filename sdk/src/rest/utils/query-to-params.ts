@@ -50,11 +50,13 @@ export const queryToParams = <Schema extends object, Item>(query: Query<Schema, 
 		params['filter'] = JSON.stringify(query.filter);
 	}
 
-	if (query.search) { // covers both empty string and undefined
+	if (query.search) {
+		// covers both empty string and undefined
 		params['search'] = query.search;
 	}
 
-	if ('sort' in query && query.sort) { // covers empty array and undefined
+	if ('sort' in query && query.sort) {
+		// covers empty array and undefined
 		params['sort'] = typeof query.sort === 'string' ? query.sort : query.sort.join(',');
 	}
 

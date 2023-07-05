@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "11.0.0-beta.1",
+	"version": "11.0.0-beta.2",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -40,6 +40,7 @@
 		"./package.json": "./package.json"
 	},
 	"types": "./dist/index.d.ts",
+	"main": "./dist/index.js",
 	"scripts": {
 		"build": "NODE_ENV=production tsup",
 		"dev": "NODE_ENV=development tsup"

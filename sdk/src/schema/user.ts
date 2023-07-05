@@ -1,4 +1,4 @@
-import type { DirectusFile } from "./file.js";
+import type { DirectusFile } from './file.js';
 
 // Base type for directus_users
 export interface DirectusUser {
