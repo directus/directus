@@ -17,7 +17,7 @@ export const deleteUsers =
 		path: `/users`,
 		body: JSON.stringify(Array.isArray(keysOrQuery) ? { keys: keysOrQuery } : { query: keysOrQuery }),
 		method: 'DELETE',
-        onResponse: null,
+		onResponse: null,
 	});
 
 /**
@@ -32,5 +32,5 @@ export const deleteUser =
 	() => ({
 		path: `/users/${key}`,
 		method: 'DELETE',
-        onResponse: null,
+		onResponse: null,
 	});

@@ -66,7 +66,7 @@ export const rest = (config: RestConfig = {}) => {
 					onResponse = config.onResponse;
 				}
 
-				const response = await request(requestUrl.toString(), fetchOptions, onResponse);//.catch(onError);
+				const response = await request(requestUrl.toString(), fetchOptions, onResponse); //.catch(onError);
 
 				return response as Output;
 			},
