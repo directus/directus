@@ -1,4 +1,3 @@
-import type { PrimaryKey } from '@directus/types';
 import type { DirectusUser } from '../../../schema/user.js';
 import type { ApplyQueryFields, CoreCollection, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
@@ -46,7 +45,7 @@ export const readUser =
 		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
 		Collection extends keyof Schema | string = 'directus_users'
 	>(
-		key: PrimaryKey,
+		key: DirectusUser['id'],
 		query?: TQuery
 	): RestCommand<ReadUserOutput<Schema, Collection, TQuery>, Schema> =>
 	() => ({

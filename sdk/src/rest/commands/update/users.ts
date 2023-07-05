@@ -1,4 +1,3 @@
-import type { PrimaryKey } from '@directus/types';
 import type { ApplyQueryFields, CoreCollection, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
@@ -26,7 +25,7 @@ export const updatedUsers =
 		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
 		Collection extends keyof Schema | string = 'directus_users'
 	>(
-		keys: PrimaryKey[],
+		keys: DirectusUser['id'][],
 		item: Partial<CoreCollection<Schema, Collection, DirectusUser>>,
 		query?: TQuery
 	): RestCommand<UpdateUserOutput<Schema, Collection, TQuery>[], Schema> =>
@@ -52,7 +51,7 @@ export const updateUser =
 		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
 		Collection extends keyof Schema | string = 'directus_users'
 	>(
-		key: PrimaryKey,
+		key: DirectusUser['id'],
 		item: Partial<CoreCollection<Schema, Collection, DirectusUser>>,
 		query?: TQuery
 	): RestCommand<UpdateUserOutput<Schema, Collection, TQuery>, Schema> =>
