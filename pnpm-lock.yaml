@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -348,6 +348,9 @@ importers:
       nodemailer-sendgrid:
         specifier: 1.0.3
         version: 1.0.3
+      oracledb:
+        specifier: 6.0.2
+        version: 6.0.2
       pg:
         specifier: 8.11.0
         version: 8.11.0
@@ -498,7 +501,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   app:
     devDependencies:
@@ -995,7 +998,7 @@ importers:
         version: 2.3.0(rollup@3.22.0)(vite@4.3.7)
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/composables:
     dependencies:
@@ -1038,7 +1041,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/constants:
     dependencies:
@@ -1087,7 +1090,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/data-driver-postgres:
     dependencies:
@@ -1127,7 +1130,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/data-sql:
     devDependencies:
@@ -1157,7 +1160,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/errors:
     devDependencies:
@@ -1187,7 +1190,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/extensions-sdk:
     dependencies:
@@ -1278,7 +1281,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/pressure:
     dependencies:
@@ -1303,7 +1306,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/random:
     devDependencies:
@@ -1324,7 +1327,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/release-notes-generator:
     dependencies:
@@ -1355,7 +1358,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/schema:
     dependencies:
@@ -1433,7 +1436,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1461,7 +1464,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1492,7 +1495,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1520,7 +1523,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-local:
     dependencies:
@@ -1545,7 +1548,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/storage-driver-s3:
     dependencies:
@@ -1582,7 +1585,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/stores:
     dependencies:
@@ -1638,7 +1641,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/tsconfig: {}
 
@@ -1780,7 +1783,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   packages/validation:
     dependencies:
@@ -1814,7 +1817,7 @@ importers:
         version: 5.0.4
       vitest:
         specifier: 0.31.1
-        version: 0.31.1(jsdom@22.0.0)
+        version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   tests/blackbox:
     devDependencies:
@@ -8742,7 +8745,7 @@ packages:
       magic-string: 0.30.0
       picocolors: 1.0.0
       std-env: 3.3.3
-      vitest: 0.31.1(jsdom@22.0.0)
+      vitest: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
     dev: true
 
   /@vitest/expect@0.31.1:
@@ -16970,6 +16973,13 @@ packages:
       strip-ansi: 7.0.1
       wcwidth: 1.0.1
     dev: false
+
+  /oracledb@6.0.2:
+    resolution: {integrity: sha512-d87rreuIyVNkS7n1qw54rPpl6qoTAsh65NAza2ZkuqAzNfSkhdGaeA0cRTYKdvp1TGRO7VQXvmUkpcz1cKpI9Q==}
+    engines: {node: '>=14.6'}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
