@@ -24,8 +24,11 @@ add some features. The following composables are available/in progress:
   - adds `.request(...)` on the client
 - `graphql()` GraphQL request functions
   - adds `.query(...)` on the client
+- `staticToken()` authentication functions
+  - adds `.getToken()` and `.setToken()` on the client
 - `authenticate()` authentication functions
   - adds `.login({ email, password })`, `.logout()`, `.refresh()` on the client
+  - adds `.getToken()` and `.setToken()` on the client
 - `realtime()` websocket connectivity
   - adds `.subscribe(...)`, `.message(...)`, `.receive((message) => {})` on the client
 - `subscription()` GraphQL Subscriptions [not available]
@@ -59,6 +62,12 @@ const gqlResult = await client.query<OutputType>(`
 const client = useDirectus<Schema>('https://api.directus.io').use(rest()).use(authentication('json'));
 
 await client.login('admin@example.com', 'd1r3ctu5');
+
+// do authenticated requests
+```
+
+```ts
+const client = useDirectus<Schema>('https://api.directus.io').use(rest()).use(staticToken('super-secure-token'));
 
 // do authenticated requests
 ```
