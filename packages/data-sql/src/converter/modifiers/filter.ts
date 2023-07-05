@@ -97,8 +97,11 @@ export function convertFn(
 	const fn: AbstractSqlQueryFnNode = {
 		type: 'fn',
 		fn: abstractFunction.fn,
-		table: collection,
-		column: abstractFunction.targetNode.field,
+		input: {
+			type: 'primitive',
+			table: collection,
+			column: abstractFunction.targetNode.field,
+		},
 		arguments: {
 			type: 'value',
 			parameterIndexes: [],
@@ -110,7 +113,7 @@ export function convertFn(
 	}
 
 	if (abstractFunction.args && abstractFunction.args?.length > 0) {
-		fn.arguments.parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
+		fn.arguments!.parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
 	}
 
 	return {

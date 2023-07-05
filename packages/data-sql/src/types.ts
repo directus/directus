@@ -13,11 +13,13 @@ export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn {
 	as?: string;
 }
 
-export interface AbstractSqlQueryFnNode extends AbstractSqlQueryColumn {
+export interface AbstractSqlQueryFnNode {
 	type: 'fn';
 
 	/* Same as the the abstract functions */
 	fn: string;
+
+	input: AbstractSqlQuerySelectNode;
 
 	isTimestampType?: boolean;
 

@@ -81,8 +81,11 @@ test('Convert filter with function target', () => {
 		target: {
 			type: 'fn',
 			fn: 'month',
-			table: sample.randomCollection,
-			column: sampleColumn,
+			input: {
+				type: 'primitive',
+				table: sample.randomCollection,
+				column: sampleColumn,
+			},
 			arguments: {
 				type: 'value',
 				parameterIndexes: [],
@@ -424,8 +427,11 @@ describe('Convert function', () => {
 		const sampleSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: 'month',
-			table: sample.randomCollection,
-			column: sampleField,
+			input: {
+				type: 'primitive',
+				table: sample.randomCollection,
+				column: sampleField,
+			},
 			arguments: {
 				type: 'value',
 				parameterIndexes: [],
@@ -459,8 +465,11 @@ describe('Convert function', () => {
 		const sampleSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: 'month',
-			table: sample.randomCollection,
-			column: sampleField,
+			input: {
+				type: 'primitive',
+				table: sample.randomCollection,
+				column: sampleField,
+			},
 			arguments: {
 				type: 'value',
 				parameterIndexes: [0, 1],
