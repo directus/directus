@@ -65,7 +65,7 @@ test('Convert filter condition', () => {
 			arguments: {
 				type: 'value',
 				parameterIndexes: [],
-			}
+			},
 		},
 		operation: 'gt',
 		compareTo: {
@@ -74,9 +74,7 @@ test('Convert filter condition', () => {
 		},
 	};
 
-	expect(conditionString(where)).toStrictEqual(
-		`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $1`
-	);
+	expect(conditionString(where)).toStrictEqual(`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $1`);
 });
 
 test('Convert filter nested and with negation', () => {

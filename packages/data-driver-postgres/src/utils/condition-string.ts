@@ -1,7 +1,7 @@
 import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '@directus/data-sql';
 import { getComparison } from '../utils/get-comparison.js';
 import { wrapColumn } from '../utils/wrap-column.js';
-import { extractDateTime } from './functions.js';
+import { convertGeoFn, convertDateTimeFn } from './functions.js';
 
 export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode): string => {
 	if (where.type === 'condition') {
@@ -9,7 +9,11 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		const comparison = getComparison(where.operation, where.compareTo, where.negate);
 
 		if (where.target.type === 'fn') {
-			return `${extractDateTime(where.target, wrappedColumn)} ${comparison}`;
+			if (where.operation === 'intersects') {
+				return convertGeoFn(where, wrappedColumn);
+			}
+
+			return `${convertDateTimeFn(where.target, wrappedColumn)} ${comparison}`;
 		}
 
 		return `${wrappedColumn} ${comparison}`;
