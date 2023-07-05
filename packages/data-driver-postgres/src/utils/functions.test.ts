@@ -59,6 +59,6 @@ describe('Intersects', () => {
 
 		const wrappedCol = `${randomTable}"."${randomColumn}`;
 
-		expect(convertGeoFn(where, wrappedCol)).toStrictEqual(`st_intersects(${wrappedCol}, $1)`);
+		expect(convertGeoFn(where, wrappedCol)).toStrictEqual(`ST_Intersects(${wrappedCol}, $1)`);
 	});
 });

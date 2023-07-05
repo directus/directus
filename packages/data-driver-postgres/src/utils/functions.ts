@@ -1,5 +1,10 @@
 import type { AbstractSqlQueryFnNode, AbstractSqlQueryConditionNode } from '@directus/data-sql';
-
+/**
+ * @see [PostGIS Manual](http://www.postgis.net/docs/ST_Intersects.html)
+ * @param whereNode - the node with all conditions
+ * @param wrappedColumn - the column with its table name
+ * @returns
+ */
 export const convertGeoFn = (whereNode: AbstractSqlQueryConditionNode, wrappedColumn: string): string => {
 	if (whereNode.compareTo.type !== 'value') {
 		throw new Error('Only values are supported as comparison for geo functions.');
@@ -8,7 +13,7 @@ export const convertGeoFn = (whereNode: AbstractSqlQueryConditionNode, wrappedCo
 	const parameterIndex = whereNode.compareTo.parameterIndexes[0]! + 1;
 
 	if (whereNode.operation === 'intersects') {
-		return `st_intersects(${wrappedColumn}, $${parameterIndex})`;
+		return `ST_Intersects(${wrappedColumn}, $${parameterIndex})`;
 	}
 
 	throw new Error(`Function ${whereNode.operation} is currently not supported.`);
