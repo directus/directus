@@ -146,7 +146,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				}
 
 				const requestUrl = getRequestUrl(client.url, '/auth/logout');
-				await request(requestUrl.toString(), options, false);
+				await request(requestUrl.toString(), options, null);
 
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 				resetStorage();

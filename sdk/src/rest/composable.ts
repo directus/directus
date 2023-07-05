@@ -54,15 +54,15 @@ export const rest = (config: RestConfig = {}) => {
 				}
 
 				//const onError = config.onError ?? ((_err: any) => undefined);
-				let onResponse: ResponseTransformer | undefined;
+				let onResponse: ResponseTransformer | undefined | null;
 
 				// chain response handlers if needed
 				if (config.onResponse && options.onResponse) {
 					onResponse = ((data: any) =>
 						Promise.resolve(data).then(config.onResponse).then(options.onResponse)) as ResponseTransformer;
-				} else if (options.onResponse) {
+				} else if ('onResponse' in options) {
 					onResponse = options.onResponse;
-				} else if (config.onResponse) {
+				} else if ('onResponse' in config) {
 					onResponse = config.onResponse;
 				}
 
