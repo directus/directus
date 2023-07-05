@@ -2,29 +2,31 @@ import type { ApplyQueryFields, CollectionType, Query, SingletonCollections } fr
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-export type ReadSingletonOutput<
+export type UpdateSingletonOutput<
 	Schema extends object,
 	Collection extends SingletonCollections<Schema>,
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
 
 /**
- * List the singleton item in Directus.
+ * Update a singleton item
  *
  * @param collection The collection of the items
  * @param query The query parameters
  *
  * @returns An array of up to limit item objects. If no items are available, data will be an empty array.
  */
-export const readSingleton =
+export const updateSingleton =
 	<
 		Schema extends object,
 		Collection extends SingletonCollections<Schema>,
-		TQuery extends Query<Schema, Schema[Collection]>
+		TQuery extends Query<Schema, Schema[Collection]>,
+		Item = Schema[Collection]
 	>(
 		collection: Collection,
+		item: Partial<Item>,
 		query?: TQuery
-	): RestCommand<ReadSingletonOutput<Schema, Collection, TQuery>, Schema> =>
+	): RestCommand<UpdateSingletonOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {
 		const _collection = String(collection);
 
@@ -35,6 +37,7 @@ export const readSingleton =
 		return {
 			path: `/items/${_collection}`,
 			params: queryToParams(query ?? {}),
-			method: 'GET',
+			body: JSON.stringify(item),
+			method: 'PATCH',
 		};
 	};
