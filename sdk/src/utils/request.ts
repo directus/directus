@@ -9,7 +9,7 @@
 export const request = async <Output = any>(
 	url: string,
 	options: RequestInit,
-	formatter?: ((data: any) => Output) | false
+	formatter?: ((data: any) => Output) | null
 ): Promise<Output> => {
 	const headers =
 		typeof options.headers === 'object' && !Array.isArray(options.headers)
@@ -17,7 +17,7 @@ export const request = async <Output = any>(
 			: {};
 
 	const outputFormatter =
-		formatter !== undefined && formatter !== false ? formatter : ({ data }: { data: Output }) => data;
+		formatter !== undefined && formatter !== null ? formatter : ({ data }: { data: Output }) => data;
 
 	// use json content by default but allow overrides
 	if ('Content-Type' in headers === false) {
@@ -30,7 +30,7 @@ export const request = async <Output = any>(
 		.fetch(url, options)
 		.then(async (response) => {
 			if (!response.ok) throw await response.json();
-			if (formatter === false) return response;
+			if (formatter === null) return response;
 			return response.json();
 		})
 		.catch((err) => {

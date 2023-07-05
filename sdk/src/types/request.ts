@@ -7,7 +7,7 @@ export interface RequestOptions {
 	headers?: Record<string, string>;
 	body?: string;
 	onRequest?: RequestTransformer;
-	onResponse?: ResponseTransformer;
+	onResponse?: ResponseTransformer | null;
 }
 
 export interface RequestTransformer {
