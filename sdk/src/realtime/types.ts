@@ -54,7 +54,7 @@ export type SubscriptionOutput<
 	[Event in Events]: SubscriptionPayload<TItem>[Event];
 }[Events];
 
-type SubscriptionPayload<Item> = {
+export type SubscriptionPayload<Item> = {
 	init: Item[];
 	create: Item[];
 	update: Item[];

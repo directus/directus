@@ -1,4 +1,4 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../types/client.js';
 import type { StaticTokenClient } from './types.js';
 
 /**

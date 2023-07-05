@@ -1,5 +1,5 @@
 import type { StaticTokenClient } from '../auth/types.js';
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../types/client.js';
 import type { ResponseTransformer } from '../index.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';

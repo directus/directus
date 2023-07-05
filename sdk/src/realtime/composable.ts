@@ -1,4 +1,4 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../types/client.js';
 import type { SubscribeOptions, WebSocketClient, WebSocketConfig } from './types.js';
 import { messageCallback } from './utils/message-callback.js';
 import { generateUid } from './utils/generate-uid.js';

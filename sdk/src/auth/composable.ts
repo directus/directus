@@ -1,4 +1,4 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
 import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';

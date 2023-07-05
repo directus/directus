@@ -1,4 +1,4 @@
-import type { DirectusClient } from '../client.js';
+import type { DirectusClient } from '../types/client.js';
 import type { GraphqlClient } from './types.js';
 import { request } from '../utils/request.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
