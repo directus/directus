@@ -1,6 +1,10 @@
-import { dirname, resolve } from 'node:path';
+import { findPackageRoot } from '@directus/utils/node';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export default function getTemplatePath(): string {
-	return resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'templates');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default async function getTemplatePath(): Promise<string> {
+	const root = await findPackageRoot(__dirname);
+	return path.join(root, 'templates');
 }

@@ -50,7 +50,7 @@ async function getTypeTemplateFiles(templateTypePath: string, language?: Languag
 }
 
 async function getTemplateFiles(type: ExtensionType, language?: Language): Promise<TemplateFile[]> {
-	const templatePath = getTemplatePath();
+	const templatePath = await getTemplatePath();
 
 	const [commonTemplateFiles, typeTemplateFiles] = await Promise.all([
 		getTypeTemplateFiles(path.join(templatePath, 'common'), language),

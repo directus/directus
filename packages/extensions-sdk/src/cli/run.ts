@@ -8,7 +8,7 @@ import getSdkVersion from './utils/get-sdk-version.js';
 const program = new Command();
 
 program.name('directus-extension').usage('[command] [options]');
-program.version(getSdkVersion(), '-v, --version');
+program.version(await getSdkVersion(), '-v, --version');
 
 program
 	.command('create')
