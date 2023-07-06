@@ -48,6 +48,14 @@ readTime: 5 min read
 }
 ```
 
+```json
+{
+	"category": {
+		"_null": true
+	}
+}
+```
+
 ## Filter Operators
 
 | Operator Title _(in app)_      | Operator                           | Description                             |
