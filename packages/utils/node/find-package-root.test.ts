@@ -1,22 +1,23 @@
-import fs from 'node:fs';
 import { join } from 'path';
 import { describe, expect, it, vi } from 'vitest';
 import { findPackageRoot } from './find-package-root.js';
 
+vi.mock('node:fs/promises', () => {
+	return {
+		stat: vi.fn().mockImplementation(async (path) => {
+			if (path === join(process.cwd(), 'package.json')) {
+				return { isFile: () => true };
+			}
+
+			throw new Error();
+		}),
+	};
+});
+
 describe('findPackageRoot', () => {
-	const cwd = join(process.cwd(), 'src', 'test');
-
-	// @ts-ignore
-	vi.spyOn(fs.promises, 'stat').mockImplementation((path) => {
-		if (path === join(process.cwd(), 'package.json')) {
-			return { isFile: () => true };
-		}
-
-		throw new Error();
-	});
-
-	it('finds and returns package root', async () => {
-		const packageRoot = await findPackageRoot(cwd);
+	it.each(['src/test', 'src', '.'])(`finds package root for '%s'`, async (insidePackagePath: string) => {
+		const sourcePath = join(process.cwd(), ...insidePackagePath.split('/'));
+		const packageRoot = await findPackageRoot(sourcePath);
 
 		expect(packageRoot).toBe(process.cwd());
 	});

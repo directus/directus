@@ -1,29 +1,29 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import { stat } from 'node:fs/promises';
+import { dirname, join, parse } from 'node:path';
 import pMemoize from 'p-memoize';
 
 /**
  * Find the root directory of a package.
- * @param cwd Path within the package used for the lookup
+ * @param sourcePath Path within the package to start the lookup from
  * @returns The root directory of the package
  */
-export async function findPackageRoot(cwd: string): Promise<string> {
-	let directory = cwd;
-	const { root } = path.parse(directory);
+export async function findPackageRoot(sourcePath: string): Promise<string> {
+	let path = sourcePath;
+	const { root } = parse(path);
 
 	// eslint-disable-next-line no-constant-condition
 	while (true) {
-		const foundPackageJson = await fileExists(path.join(directory, 'package.json'));
+		const foundPackageJson = await fileExists(join(path, 'package.json'));
 
 		if (foundPackageJson) {
-			return directory;
+			return path;
 		}
 
-		if (directory === root) {
+		if (path === root) {
 			break;
 		}
 
-		directory = path.dirname(directory);
+		path = dirname(path);
 	}
 
 	throw new Error(`Couldn't locate package root`);
@@ -31,8 +31,8 @@ export async function findPackageRoot(cwd: string): Promise<string> {
 
 async function fileExists(file: string) {
 	try {
-		const stat = await fs.promises.stat(file);
-		return stat.isFile();
+		const fileStat = await stat(file);
+		return fileStat.isFile();
 	} catch {
 		return false;
 	}
