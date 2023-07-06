@@ -146,6 +146,14 @@ validationError:
   required: Vrijednost je obavezna
   unique: Vrijednost mora biti jedinsrvena
   regex: Vrijednost nije ispravno formatirana
+  starts_with: Vrijednost mora zapoćeti sa {substring}
+  istarts_with: Vrijednost mora zapoćeti sa {substring}
+  nstarts_with: Vrijednost ne može zapoćeti sa {substring}
+  nistarts_with: Vrijednost ne može zapoćeti sa {substring}
+  ends_with: Vrijednost mora završiti sa {substring}
+  iends_with: Vrijednost mora završiti sa {substring}
+  nends_with: Vrijednost ne može završiti sa {substring}
+  niends_with: Vrijednost ne može završiti sa {substring}
 all_access: Puni prostup
 no_access: Bez pristupa
 use_custom: Prilagođeno
@@ -1457,6 +1465,7 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
+weeks: { }
 report_error: Prijavi grešku
 start: Započni
 table: Tablica
