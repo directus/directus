@@ -10,10 +10,6 @@ export const convertGeoFn = (whereNode: AbstractSqlQueryConditionNode, wrappedCo
 		throw new Error('Only values are supported as comparison for geo functions.');
 	}
 
-	if (whereNode.target.type !== 'fn') {
-		throw new Error('Only functions are supported as target for geo functions.');
-	}
-
 	const parameterIndex = whereNode.compareTo.parameterIndexes[0]! + 1;
 
 	if (whereNode.operation === 'intersects') {

@@ -60,8 +60,11 @@ test('Convert filter condition', () => {
 		target: {
 			type: 'fn',
 			fn: 'month',
-			table: randomTable,
-			column: aColumn,
+			input: {
+				type: 'primitive',
+				table: randomTable,
+				column: aColumn,
+			},
 			arguments: {
 				type: 'value',
 				parameterIndexes: [],

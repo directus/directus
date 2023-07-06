@@ -10,8 +10,11 @@ describe('Extract date time', () => {
 
 		const fnNode: AbstractSqlQueryFnNode = {
 			type: 'fn',
-			table: randomTableName,
-			column: randomIdentifier(),
+			input: {
+				type: 'primitive',
+				table: randomTableName,
+				column: randomIdentifier(),
+			},
 			fn: 'year',
 			isTimestampType: false,
 		};
@@ -25,8 +28,11 @@ describe('Extract date time', () => {
 
 		const fnNode: AbstractSqlQueryFnNode = {
 			type: 'fn',
-			table: randomTableName,
-			column: randomIdentifier(),
+			input: {
+				type: 'primitive',
+				table: randomTableName,
+				column: randomIdentifier(),
+			},
 			fn: 'year',
 			isTimestampType: true,
 		};
