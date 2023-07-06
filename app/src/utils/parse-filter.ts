@@ -13,8 +13,10 @@ export function parseFilter(filter: Filter | null): Filter {
 		user: currentUser.id,
 	};
 
-	return parseFilterShared(filter, accountability, {
-		$CURRENT_ROLE: currentUser.role as Role,
-		$CURRENT_USER: currentUser as User,
-	}) ?? {};
+	return (
+		parseFilterShared(filter, accountability, {
+			$CURRENT_ROLE: currentUser.role as Role,
+			$CURRENT_USER: currentUser as User,
+		}) ?? {}
+	);
 }
