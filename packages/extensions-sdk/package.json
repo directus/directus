@@ -19,7 +19,7 @@
 	},
 	"main": "dist/index.js",
 	"bin": {
-		"directus-extension": "dist/cli/run.js"
+		"directus-extension": "cli.js"
 	},
 	"files": [
 		"dist",
