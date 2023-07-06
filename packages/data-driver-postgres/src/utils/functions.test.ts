@@ -1,5 +1,5 @@
 import { expect, test, describe } from 'vitest';
-import { convertGeoFn, convertDateTimeFn } from './functions.js';
+import { convertGeoFn, convertDateTimeFn, convertCount } from './functions.js';
 import type { AbstractSqlQueryFnNode, AbstractSqlQueryConditionNode } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 
@@ -66,5 +66,41 @@ describe('Intersects', () => {
 		const wrappedCol = `${randomTable}"."${randomColumn}`;
 
 		expect(convertGeoFn(where, wrappedCol)).toStrictEqual(`ST_Intersects(${wrappedCol}, $1)`);
+	});
+});
+
+describe('Count', () => {
+	const randomTable = 'sldfjlk';
+	const randomColumn = 'oiioii';
+
+	test('on an actual column', () => {
+		const fnNode: AbstractSqlQueryFnNode = {
+			type: 'fn',
+			fn: 'count',
+			input: {
+				type: 'primitive',
+				table: randomTable,
+				column: randomColumn,
+			},
+		};
+
+		const res = convertCount(fnNode);
+		expect(res).toStrictEqual(`COUNT("${randomTable}"."${randomColumn}")`);
+	});
+
+	test('without a specific column', () => {
+
+		const fnNode: AbstractSqlQueryFnNode = {
+			type: 'fn',
+			fn: 'count',
+			input: {
+				type: 'primitive',
+				table: randomTable,
+				column: "*",
+			},
+		};
+
+		const res = convertCount(fnNode);
+		expect(res).toStrictEqual(`COUNT("${randomTable}"."*")`);
 	});
 });

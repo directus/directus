@@ -7,17 +7,27 @@ let sample: {
 	statement: AbstractSqlQuery;
 };
 
+const randomTable1 = randomIdentifier();
+const randomTable2 = randomIdentifier();
+const randomColumn1 = randomIdentifier();
+const randomColumn2 = randomIdentifier();
+const randomAlias = randomIdentifier();
+
 beforeEach(() => {
 	sample = {
 		statement: {
 			select: [
 				{
 					type: 'primitive',
-					column: randomIdentifier(),
-					table: randomIdentifier(),
-					as: randomIdentifier(),
+					table: randomTable1,
+					column: randomColumn1,
+					as: randomAlias,
 				},
-				{ type: 'primitive', column: randomIdentifier(), table: randomIdentifier() },
+				{
+					type: 'primitive',
+					table: randomTable2,
+					column: randomColumn2,
+				},
 			],
 			from: randomIdentifier(),
 			parameters: [],
@@ -27,10 +37,28 @@ beforeEach(() => {
 
 test('With multiple provided fields and an alias', () => {
 	const res = select(sample.statement);
+	const expected = `SELECT "${randomTable1}"."${randomColumn1}" AS "${randomAlias}", "${randomTable2}"."${randomColumn2}"`;
+	expect(res).toStrictEqual(expected);
+});
 
-	const expected = `SELECT "${sample.statement.select[0]!.table}"."${sample.statement.select[0]!.column}" AS "${
-		sample.statement.select[0]!.as
-	}", "${sample.statement.select[1]!.table}"."${sample.statement.select[1]!.column}"`;
+test('With a count', () => {
+	const randomTable = randomIdentifier();
+
+	sample.statement.select = [
+		{
+			type: 'fn',
+			fn: 'count',
+			input: {
+				type: 'primitive',
+				table: randomTable,
+				column: '*',
+			},
+		},
+	];
+
+	const res = select(sample.statement);
+
+	const expected = `SELECT COUNT("${randomTable}"."*")`;
 
 	expect(res).toStrictEqual(expected);
 });

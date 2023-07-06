@@ -16,7 +16,7 @@ export interface AbstractSqlQuerySelectNode extends AbstractSqlQueryColumn {
 export interface AbstractSqlQueryFnNode {
 	type: 'fn';
 
-	/* Same as the the abstract functions */
+	/* Same as the the abstract functions @todo: add restrictions */
 	fn: string;
 
 	input: AbstractSqlQuerySelectNode;

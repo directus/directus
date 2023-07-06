@@ -1,4 +1,5 @@
 import type { AbstractSqlQueryFnNode, AbstractSqlQueryConditionNode } from '@directus/data-sql';
+import { wrapColumn } from './wrap-column.js';
 /**
  * @see [PostGIS Manual](http://www.postgis.net/docs/ST_Intersects.html)
  * @param whereNode - the node with all conditions
@@ -51,4 +52,9 @@ export const convertDateTimeFn = (fnNode: AbstractSqlQueryFnNode, wrappedColumn:
 		default:
 			throw new Error(`Function ${fnNode} is not supported.`);
 	}
+};
+
+export const convertCount = (fnNode: AbstractSqlQueryFnNode) => {
+	const wrappedCol = wrapColumn(fnNode.input.table, fnNode.input.column);
+	return `COUNT(${wrappedCol})`;
 };
