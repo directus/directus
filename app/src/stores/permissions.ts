@@ -52,7 +52,7 @@ export const usePermissionsStore = defineStore({
 					} else if (value.startsWith('$CURRENT_ROLE.')) {
 						fields.add(value.replace('$CURRENT_ROLE.', 'role.'));
 					}
-				}
+				};
 
 				rawPermissions.forEach((rawPermission: Permission) => {
 					deepMap(rawPermission.presets, checkDynamicVariable);

@@ -11,13 +11,13 @@ describe('parse-preset', () => {
 			role: {
 				id: 1,
 				name: 'admin',
-			}
+			},
 		} as any;
 
 		const preset = {
 			role: '$CURRENT_ROLE.id',
 			user: '$CURRENT_USER.name',
-		}
+		};
 
 		const parsedPreset = parsePreset(preset);
 

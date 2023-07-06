@@ -11,13 +11,13 @@ describe('parse-filter', () => {
 			role: {
 				id: 1,
 				name: 'admin',
-			}
+			},
 		} as any;
 
 		const filter = {
 			role: { _eq: '$CURRENT_ROLE.id' },
 			user: { _eq: '$CURRENT_USER.name' },
-		}
+		};
 
 		const parsedFilter = parseFilter(filter);
 
