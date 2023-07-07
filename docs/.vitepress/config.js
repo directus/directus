@@ -154,7 +154,13 @@ gtag('config', 'UA-24637628-7');
 			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
-			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
+			pattern: ({ filePath }) => {
+				if (filePath.includes('blog/')) {
+					return '/blog/guest-author';
+				} else {
+					return `https://github.com/directus/directus/edit/main/docs/${filePath}`;
+				}
+			},
 		},
 	},
 });
