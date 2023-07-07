@@ -7,9 +7,8 @@ next: false
 
 <script setup>
 import { useData } from 'vitepress'
-import { getFriendlyDate } from '../.vitepress/utils/time.js';
-import Avatar from '../.vitepress/components/Avatar.vue'
 import Badge from '../.vitepress/components/Badge.vue'
+import PostMeta from '../.vitepress/components/PostMeta.vue'
 const { params } = useData()
 </script>
 
@@ -18,8 +17,6 @@ const { params } = useData()
 <h1>{{ params.title }}</h1>
 <p>{{ params.summary }}</p>
 
-<Avatar :image="`https://marketing.directus.app/assets/${params.author.avatar}?key=circle`" :name="params.author.first_name + ' ' + params.author.last_name" :title="params.author.title ?? 'Contributor'" />
-
-<hr />
+<PostMeta :params="params" />
 
 <!-- @content -->
