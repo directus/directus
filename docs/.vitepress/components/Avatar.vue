@@ -2,8 +2,8 @@
 	<div class="avatar">
 		<img :src="image" alt="" />
 		<div>
-			<p class="avatar_name">{{ name }}</p>
-			<p>{{ title }}</p>
+			<div class="avatar_name">{{ name }}</div>
+			<div>{{ title }}</div>
 		</div>
 	</div>
 </template>
@@ -22,12 +22,6 @@ defineProps<{
 	display: flex;
 	align-items: center;
 	column-gap: 1rem;
-	font-size: 0.875rem;
-}
-
-.avatar p {
-	margin: 0;
-	line-height: normal;
 }
 
 .avatar > img {
