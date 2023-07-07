@@ -10,7 +10,10 @@ import Badge from './.vitepress/components/Badge.vue'
 </script>
 
 <section :class="[$style.hero, $style.paddingBox]">
-	<div :class="[$style.sectionContainer, $style.flex]">
+	<div :class="$style.heroPattern">
+		 <Pattern />
+	</div>
+	<div :class="[$style.sectionContainer, $style.sectionContainerHero, $style.flex]">
 		<div :class="[$style.heroContent, $style.sectionPaddingHero]">
 			<Badge>Resource Hub</Badge>
 			<h1>Directus Documentation</h1>
@@ -68,9 +71,7 @@ await directus.items('articles').readOne(4, {
 </SnippetToggler>
 		</div>
 	</div>
-	<div :class="$style.heroPattern">
-		 <Pattern />
-	</div>
+
 </section>
 
 <section :class="[$style.sectionPaddingLg, $style.paddingBox]">

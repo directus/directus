@@ -1,9 +1,11 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
 
-export interface SqlStatementSelectPrimitive {
+interface SqlStatementColumn {
 	type: 'primitive';
 	table: string;
 	column: string;
+}
+export interface SqlStatementSelectColumn extends SqlStatementColumn {
 	as?: string;
 }
 
@@ -33,7 +35,7 @@ type ParameterIndex = {
 };
 
 /**
- * This is an abstract SQL query.
+ * This is an abstract SQL query which can be passen to all SQL drivers.
  *
  * @example
  * ```ts
@@ -46,18 +48,51 @@ type ParameterIndex = {
  * ```
  */
 export interface AbstractSqlQuery {
-	select: SqlStatementSelectPrimitive[];
+	select: SqlStatementSelectColumn[];
 	from: string;
 	limit?: ParameterIndex;
 	offset?: ParameterIndex;
-	order?: AbstractSqlOrder[];
+	order?: AbstractSqlQueryOrderNode[];
+	where?: AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode;
+	intersect?: AbstractSqlQuery;
 	parameters: (string | boolean | number)[];
 }
 
-export type AbstractSqlOrder = {
+export type AbstractSqlQueryOrderNode = {
 	orderBy: AbstractQueryNodeSortTargets;
 	direction: 'ASC' | 'DESC';
 };
+
+/**
+ * An abstract WHERE clause.
+ */
+export interface AbstractSqlQueryWhereConditionNode {
+	type: 'condition';
+
+	/* value which will be compared to another value or expression. Functions will be supported soon. */
+	target: SqlStatementColumn;
+
+	/* an abstract comparator */
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'contains' | 'starts_with' | 'ends_with' | 'intersects';
+
+	/* indicated of the condition should be negated using NOT */
+	negate: boolean;
+
+	/* a value to which the target will be compared */
+	compareTo: CompareValueNode;
+}
+
+export interface AbstractSqlQueryWhereLogicalNode {
+	type: 'logical';
+	operator: 'and' | 'or';
+	negate: boolean;
+	childNodes: (AbstractSqlQueryWhereConditionNode | AbstractSqlQueryWhereLogicalNode)[];
+}
+
+export interface CompareValueNode {
+	type: 'value';
+	parameterIndexes: number[];
+}
 
 /**
  * An actual vendor specific SQL statement with its parameters.
