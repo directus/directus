@@ -56,5 +56,7 @@ export type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
 export type CoreCollection<
 	Schema extends object,
 	Collection extends keyof Schema | string,
-	Fallback
-> = Collection extends keyof Schema ? UnpackList<Schema[Collection]> : Fallback;
+	BuiltinCollection
+> = Collection extends keyof Schema
+	? BuiltinCollection & UnpackList<Schema[Collection]>
+	: BuiltinCollection;

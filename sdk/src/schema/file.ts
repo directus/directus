@@ -1,17 +1,19 @@
+import type { CoreCollection } from '../index.js';
 import type { DirectusUser } from './user.js';
+import type { DirectusFolder } from './folder.js';
 
 // Base type for directus_files
-export interface DirectusFile {
+export type DirectusFile<Schema extends object> = CoreCollection<Schema, 'directus_files', {
 	id: string;
 	storage: string;
 	filename_disk: string;
 	filename_download: string;
 	title: string;
 	type: string;
-	folder: /* DirectusFolder | */ string;
-	uploaded_by: DirectusUser | string;
+	folder: DirectusFolder<Schema> | string;
+	uploaded_by: DirectusUser<Schema> | string;
 	uploaded_on: string;
-	modified_by: DirectusUser | string;
+	modified_by: DirectusUser<Schema> | string;
 	modified_on: string;
 	charset: string | null;
 	filesize: string;
@@ -23,4 +25,4 @@ export interface DirectusFile {
 	location: string | null;
 	tags: string[];
 	metadata: Record<string, any> | null;
-}
+}>;

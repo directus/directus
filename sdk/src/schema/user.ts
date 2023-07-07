@@ -1,7 +1,10 @@
+import type { CoreCollection } from '../index.js';
 import type { DirectusFile } from './file.js';
 
-// Base type for directus_users
-export interface DirectusUser {
+/**
+ * directus_users type
+ */
+export type DirectusUser<Schema extends object> = CoreCollection<Schema, 'directus_users', {
 	id: string; // uuid
 	first_name: string | null;
 	last_name: string | null;
@@ -11,7 +14,7 @@ export interface DirectusUser {
 	title: string | null;
 	description: string | null;
 	tags: string[];
-	avatar: DirectusFile | string;
+	avatar: DirectusFile<Schema> | string;
 	language: string | null;
 	theme: string;
 	tfa_secret: string | null;
@@ -24,4 +27,4 @@ export interface DirectusUser {
 	external_identifier: string;
 	auth_data: Record<string, any> | null;
 	email_notifications: boolean;
-}
+}>;
