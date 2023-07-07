@@ -43,12 +43,6 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Install Oracle client
-        if: matrix.vendor == 'oracle'
-        run: |
-          pnpm -w -D add oracledb@6.0.2
-
-
       - name: Start services (SQLite)
         if: matrix.vendor == 'sqlite3'
         run:
