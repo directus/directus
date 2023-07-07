@@ -1,4 +1,3 @@
-// Define the time units
 const months = [
 	'January',
 	'February',
@@ -71,26 +70,9 @@ function getFriendlyDate(dateString) {
 
 	const monthIndex = d.getMonth();
 	const monthName = months[monthIndex];
-	const dayName = daysAbbr[d.getDay()];
-	const formatted = `${dayName}, ${monthName} ${date}${dateSuffix()}, ${year}`;
+	// const dayName = daysAbbr[d.getDay()];
+	const formatted = ` ${monthName} ${date}${dateSuffix()}, ${year}`;
 	return formatted;
 }
 
-function getMonth(dateString) {
-	const d = new Date(dateString);
-	const monthIndex = d.getMonth();
-	return monthsAbbr[monthIndex];
-}
-
-function getDate(dateString) {
-	const d = new Date(dateString);
-	return d.getDate();
-}
-
-function getDay(dateString) {
-	const d = new Date(dateString);
-	const dayIndex = d.getDay();
-	return days[dayIndex];
-}
-
-export { getRelativeTime, getFriendlyDate, getMonth, getDate, getDay };
+export { getRelativeTime, getFriendlyDate };
