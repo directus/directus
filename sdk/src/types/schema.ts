@@ -1,3 +1,5 @@
+import type { CoreSchema } from '../schema/core.js';
+
 /**
  * Get all available top level Item types from a given Schema
  */
@@ -51,12 +53,25 @@ export type RemoveRelationships<Schema extends object, Item> = {
 export type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
 
 /**
- * Get a core collection from the schema or fallback to builtin
+ * Merge a core collection from the schema with the builtin schema
  */
-export type CoreCollection<
+export type MergeCoreCollection<
 	Schema extends object,
 	Collection extends keyof Schema | string,
 	BuiltinCollection
 > = Collection extends keyof Schema
-	? BuiltinCollection & UnpackList<Schema[Collection]>
+	? UnpackList<Schema[Collection]> extends infer Item
+		? {
+				[Field in Exclude<keyof Item, keyof BuiltinCollection>]: Item[Field];
+		  } & BuiltinCollection
+		: never
 	: BuiltinCollection;
+
+/**
+ * Merge custom and core schema objects
+ */
+export type CompleteSchema<Schema extends object> = CoreSchema<Schema> extends infer Core
+	? {
+			[Collection in keyof Schema & keyof Core]: Collection extends keyof Core ? Core[Collection] : Schema[Collection];
+	  }
+	: never;
