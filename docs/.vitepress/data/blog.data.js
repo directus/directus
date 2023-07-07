@@ -1,19 +1,19 @@
+const tagBaseUrl = '/blog/tags';
+
 export default {
 	async load() {
-		const articles = await (
+		const { data: articles } = await (
 			await fetch(
-				'https://marketing.directus.app/items/developer_articles?fields=*,author.first_name,author.last_name,author.avatar,author.title'
+				'https://marketing.directus.app/items/developer_articles?fields=*,author.first_name,author.last_name,author.avatar,author.title,tags.directus_tags_id.title,tags.directus_tags_id.slug,tags.directus_tags_id.type'
 			)
 		).json();
 
-		const blogSettings = await (
-			await fetch(
-				'https://marketing.directus.app/items/developer_blog?fields=featured_article.*,featured_article.author.first_name,featured_article.author.last_name,featured_article.author.avatar,featured_article.author.title'
-			)
+		const { data: tags } = await (
+			await fetch('https://marketing.directus.app/items/docs_tags?fields=*&sort=-count(developer_articles)')
 		).json();
 
-		let posts = articles.data.map((article) => ({
-			id: article.id,
+		let posts = articles.map((article) => ({
+			id: article.slug,
 			title: article.title,
 			date_published: article.date_published,
 			summary: article.summary,
@@ -21,10 +21,24 @@ export default {
 			author: article.author,
 		}));
 
+		// Create tags for the sidebar
+		let tagsForSidebar = [];
+
+		tags.forEach((tag) => {
+			// If tag has no articles, don't add it to the sidebar
+			if (!tag.developer_articles.length) return;
+
+			tagsForSidebar.push({
+				text: tag.title,
+				link: `${tagBaseUrl}/${tag.slug}`,
+			});
+		});
+
 		return {
 			blog: {
-				featured: blogSettings.data.featured_article,
 				articles: posts,
+				tags,
+				tagsForSidebar,
 			},
 		};
 	},
