@@ -29,7 +29,7 @@
 			</div>
 		</div>
 
-		<div v-if="params.tags" class="tags">
+		<div v-if="params.tags.length > 0" class="tags">
 			<span class="sm-gray-text">Tags:</span>
 			<Tag class="tag" v-for="tag in params.tags" :key="tag.slug" :href="`/blog/tags/${tag.slug}`">{{ tag.title }}</Tag>
 		</div>
