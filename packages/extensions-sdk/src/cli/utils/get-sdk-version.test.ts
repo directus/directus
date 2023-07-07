@@ -5,6 +5,6 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-test('Returns a string for sdk version', () => {
-	expect(getSdkVersion()).toEqual(expect.any(String));
+test('Returns a string for sdk version', async () => {
+	expect(await getSdkVersion()).toEqual(expect.any(String));
 });
