@@ -1,6 +1,6 @@
-import { findPackageRoot } from '@directus/utils/node';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { findPackageRoot } from './find-package-root.js';
 
 type JSONValue = string | number | boolean | { [x: string]: JSONValue } | Array<JSONValue>;
 
