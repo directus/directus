@@ -1,6 +1,9 @@
 import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
+import blog from './data/blog.data.js';
+
+const tagsForSidebar = await blog.load().then((data) => data.blog.tagsForSidebar);
 
 export default defineConfig({
 	base: '/',
@@ -644,6 +647,7 @@ function sidebar() {
 					link: '/blog/',
 					text: 'All Posts',
 				},
+				...tagsForSidebar,
 			],
 		},
 	];
