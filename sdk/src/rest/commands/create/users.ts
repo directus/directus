@@ -1,13 +1,12 @@
 import type { DirectusUser } from '../../../schema/user.js';
-import type { ApplyQueryFields, CoreCollection, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateUserOutput<
 	Schema extends object,
-	Collection extends keyof Schema | string,
 	TQuery extends Query<Schema, Item>,
-	Item = CoreCollection<Schema, Collection, DirectusUser>
+	Item = DirectusUser<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -21,12 +20,11 @@ export type CreateUserOutput<
 export const createUsers =
 	<
 		Schema extends object,
-		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
-		Collection extends keyof Schema | string = 'directus_users'
+		TQuery extends Query<Schema, DirectusUser<Schema>>
 	>(
-		items: Partial<CoreCollection<Schema, Collection, DirectusUser>>[],
+		items: Partial<DirectusUser<Schema>>[],
 		query?: TQuery
-	): RestCommand<CreateUserOutput<Schema, Collection, TQuery>[], Schema> =>
+	): RestCommand<CreateUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/users`,
 		params: queryToParams(query ?? {}),
@@ -45,12 +43,11 @@ export const createUsers =
 export const createUser =
 	<
 		Schema extends object,
-		Collection extends keyof Schema,
-		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>
+		TQuery extends Query<Schema, DirectusUser<Schema>>
 	>(
-		item: Partial<CoreCollection<Schema, Collection, DirectusUser>>,
+		item: Partial<DirectusUser<Schema>>,
 		query?: TQuery
-	): RestCommand<CreateUserOutput<Schema, Collection, TQuery>, Schema> =>
+	): RestCommand<CreateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users`,
 		params: queryToParams(query ?? {}),

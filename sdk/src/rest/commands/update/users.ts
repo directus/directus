@@ -1,13 +1,12 @@
-import type { ApplyQueryFields, CoreCollection, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 import type { DirectusUser } from '../../../schema/user.js';
 
 export type UpdateUserOutput<
 	Schema extends object,
-	Collection extends keyof Schema | string,
 	TQuery extends Query<Schema, Item>,
-	Item = CoreCollection<Schema, Collection, DirectusUser>
+	Item = DirectusUser<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -22,13 +21,12 @@ export type UpdateUserOutput<
 export const updatedUsers =
 	<
 		Schema extends object,
-		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
-		Collection extends keyof Schema | string = 'directus_users'
+		TQuery extends Query<Schema, DirectusUser<Schema>>
 	>(
-		keys: DirectusUser['id'][],
-		item: Partial<CoreCollection<Schema, Collection, DirectusUser>>,
+		keys: DirectusUser<Schema>['id'][],
+		item: Partial<DirectusUser<Schema>>,
 		query?: TQuery
-	): RestCommand<UpdateUserOutput<Schema, Collection, TQuery>[], Schema> =>
+	): RestCommand<UpdateUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/users`,
 		params: queryToParams(query ?? {}),
@@ -48,13 +46,12 @@ export const updatedUsers =
 export const updateUser =
 	<
 		Schema extends object,
-		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
-		Collection extends keyof Schema | string = 'directus_users'
+		TQuery extends Query<Schema,DirectusUser<Schema>>
 	>(
-		key: DirectusUser['id'],
-		item: Partial<CoreCollection<Schema, Collection, DirectusUser>>,
+		key: DirectusUser<Schema>['id'],
+		item: Partial<DirectusUser<Schema>>,
 		query?: TQuery
-	): RestCommand<UpdateUserOutput<Schema, Collection, TQuery>, Schema> =>
+	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users/${key}`,
 		params: queryToParams(query ?? {}),
@@ -73,12 +70,11 @@ export const updateUser =
 export const updateMe =
 	<
 		Schema extends object,
-		TQuery extends Query<Schema, CoreCollection<Schema, Collection, DirectusUser>>,
-		Collection extends keyof Schema | string = 'directus_users'
+		TQuery extends Query<Schema, DirectusUser<Schema>>
 	>(
-		item: Partial<CoreCollection<Schema, Collection, DirectusUser>>,
+		item: Partial<DirectusUser<Schema>>,
 		query?: TQuery
-	): RestCommand<UpdateUserOutput<Schema, Collection, TQuery>, Schema> =>
+	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users/me`,
 		params: queryToParams(query ?? {}),

@@ -1,4 +1,4 @@
-import type { CoreCollection, Query } from '../../../types/index.js';
+import type { Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import type { DirectusUser } from '../../../schema/user.js';
 
@@ -10,8 +10,8 @@ import type { DirectusUser } from '../../../schema/user.js';
  * @returns Nothing
  */
 export const deleteUsers =
-	<Schema extends object, TQuery extends Query<Schema, CoreCollection<Schema, 'directus_users', DirectusUser>>>(
-		keysOrQuery: DirectusUser['id'][] | TQuery
+	<Schema extends object, TQuery extends Query<Schema, DirectusUser<Schema>>>(
+		keysOrQuery: DirectusUser<Schema>['id'][] | TQuery
 	): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users`,
@@ -28,7 +28,7 @@ export const deleteUsers =
  * @returns Nothing
  */
 export const deleteUser =
-	<Schema extends object>(key: DirectusUser['id']): RestCommand<void, Schema> =>
+	<Schema extends object>(key: DirectusUser<Schema>['id']): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users/${key}`,
 		method: 'DELETE',
