@@ -43,12 +43,12 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { rollup } from 'rollup';
-import { CONTEXT_ROOT } from './constants.js';
 import getDatabase from './database/index.js';
 import emitter, { Emitter } from './emitter.js';
 import env from './env.js';
 import { getFlowManager } from './flows.js';
 import logger from './logger.js';
+import internalOperations from './operations/index.js';
 import * as services from './services/index.js';
 import type { EventHandler } from './types/index.js';
 import getModuleDefault from './utils/get-module-default.js';
@@ -466,17 +466,8 @@ class ExtensionManager {
 	}
 
 	private async registerOperations(): Promise<void> {
-		const internalOperationsPath = path.join(CONTEXT_ROOT, 'operations');
-		const internalOperations = await readdir(internalOperationsPath);
-
-		for (const operation of internalOperations) {
-			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(
-				`./operations/${operation}/index.js`
-			);
-
-			const config = getModuleDefault(operationInstance);
-
-			this.registerOperation(config);
+		for (const operation of Object.values(internalOperations)) {
+			this.registerOperation(operation as OperationApiConfig);
 		}
 
 		const operations = this.extensions.filter(
