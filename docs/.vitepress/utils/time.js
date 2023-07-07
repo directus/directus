@@ -13,12 +13,6 @@ const months = [
 	'December',
 ];
 
-const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-const monthsAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-const daysAbbr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
 const units = {
 	year: 24 * 60 * 60 * 1000 * 365,
 	month: (24 * 60 * 60 * 1000 * 365) / 12,
