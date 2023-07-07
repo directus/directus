@@ -6,7 +6,7 @@ export default defineDisplay({
 	id: 'user',
 	name: '$t:displays.user.user',
 	description: '$t:displays.user.description',
-	types: ['uuid','string'],
+	types: ['uuid', 'string'],
 	localTypes: ['m2o'],
 	icon: 'person',
 	component: DisplayUser,
