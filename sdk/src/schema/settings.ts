@@ -1,17 +1,18 @@
-import type { CoreCollection } from "../index.js";
+import type { MergeCoreCollection } from "../index.js";
+import type { DirectusFolder } from "./folder.js";
 
-export type DirectusSettings<Schema extends object> = CoreCollection<Schema, 'directus_settings', {
+export type DirectusSettings<Schema extends object> = MergeCoreCollection<Schema, 'directus_settings', {
 	id: 1;
-	auth_login_attempts: number;
-	auth_password_policy: string | null;
-	custom_css: string | null;
-	project_color: string | null;
-	project_logo: string | null;
 	project_name: string;
 	project_url: string;
-	public_background: string | null;
+	project_color: string | null;
+	project_logo: string | null;
 	public_foreground: string | null;
+	public_background: string | null;
 	public_note: string | null;
+	auth_login_attempts: number;
+	auth_password_policy: string | null;
+	storage_asset_transform: 'all' | 'none' | 'presets';
 	storage_asset_presets:
 		| {
 				fit: string;
@@ -22,5 +23,12 @@ export type DirectusSettings<Schema extends object> = CoreCollection<Schema, 'di
 				withoutEnlargement: boolean;
 		  }[]
 		| null;
-	storage_asset_transform: 'all' | 'none' | 'presets';
+	custom_css: string | null;
+	storage_default_folder: DirectusFolder<Schema> | string | null;
+	basemaps: Record<string, any> | null;
+	mapbox_key: string | null;
+	module_bar: any | null;
+	project_descriptor: string | null;
+	default_language: string;
+	custom_aspect_ratios: Record<string, any> | null;
 }>;

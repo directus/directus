@@ -1,9 +1,9 @@
-import type { CoreCollection } from "../index.js";
+import type { MergeCoreCollection } from "../index.js";
 
 export type DirectusCollection<Schema extends object> = {
-	collection: string;
-	meta: CoreCollection<Schema, 'directus_collections', {
-		collection: string;
+	collection: string; // TODO keyof complete schema
+	meta: MergeCoreCollection<Schema, 'directus_collections', {
+		collection: string; // TODO keyof complete schema
 		icon: string | null;
 		note: string | null;
 		display_template: string | null;

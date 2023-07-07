@@ -1,19 +1,19 @@
-import type { CoreCollection } from "../index.js";
+import type { MergeCoreCollection } from "../index.js";
 import type { DirectusRole } from './role.js';
 import type { DirectusUser } from "./user.js";
 
-export type DirectusPreset<Schema extends object> = CoreCollection<Schema, 'directus_presets', {
+export type DirectusPreset<Schema extends object> = MergeCoreCollection<Schema, 'directus_presets', {
     id: number;
-    bookmark: string;
-    user: DirectusUser<Schema> | string;
-    role: DirectusRole<Schema> | string;
-    collection: string;
-    search: string;
-    layout: string;
+    bookmark: string | null;
+    user: DirectusUser<Schema> | string | null;
+    role: DirectusRole<Schema> | string | null;
+    collection: string | null; // TODO keyof complete schema
+    search: string | null;
+    layout: string | null;
     layout_query: Record<string, any> | null;
     layout_options: Record<string, any> | null;
-    refresh_interval: number;
+    refresh_interval: number | null;
     filter: Record<string, any> | null;
-    icon: string;
-    color: string;
+    icon: string | null;
+    color: string | null;
 }>;

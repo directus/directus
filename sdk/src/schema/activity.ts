@@ -1,18 +1,17 @@
-import type { CoreCollection } from "../index.js";
+import type { MergeCoreCollection } from "../index.js";
+import type { DirectusRevision } from "./revision.js";
 import type { DirectusUser } from "./user.js";
 
-export interface DirectusActivity<Schema extends object> {
+export type DirectusActivity<Schema extends object> = MergeCoreCollection<Schema, 'directus_activity', {
 	id: number;
 	action: string;
-	user: DirectusUser<Schema> | string;
+	user: DirectusUser<Schema> | string | null;
 	timestamp: string;
-	ip: string;
-	user_agent: string;
+	ip: string | null;
+	user_agent: string | null;
 	collection: string;
 	item: string;
 	comment: string | null;
 	origin: string | null;
-	revisions: number[];
-}
-
-export type DirectusActivityType<Schema extends object> = CoreCollection<Schema, 'directus_activity', DirectusActivity<Schema>>;
+	revisions: DirectusRevision<Schema>[] | number[] | null;
+}>;

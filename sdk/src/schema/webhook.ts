@@ -1,6 +1,6 @@
-import type { CoreCollection } from "../index.js";
+import type { MergeCoreCollection } from "../index.js";
 
-export type DirectusWebhook<Schema extends object> = CoreCollection<Schema, 'directus_webhooks', {
+export type DirectusWebhook<Schema extends object> = MergeCoreCollection<Schema, 'directus_webhooks', {
     id: number;
     name: string;
     method: string;

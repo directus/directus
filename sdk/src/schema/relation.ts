@@ -1,16 +1,16 @@
-import type { CoreCollection } from "../index.js";
+import type { MergeCoreCollection } from "../index.js";
 
 export type DirectusRelation<Schema extends object> = {
-	collection: string;
+	collection: string; // TODO keyof complete schema
 	field: string;
-	related_collection: string;
-	meta: CoreCollection<Schema, 'directus_relations', {
-        id: number | null;
+	related_collection: string; // TODO keyof complete schema
+	meta: MergeCoreCollection<Schema, 'directus_relations', {
+        id: number;
         junction_field: string | null;
-        many_collection: string | null;
+        many_collection: string | null; // TODO keyof complete schema
         many_field: string | null;
         one_allowed_collections: string | null;
-        one_collection: string | null;
+        one_collection: string | null; // TODO keyof complete schema
         one_collection_field: string | null;
         one_deselect_action: string;
         one_field: string | null;

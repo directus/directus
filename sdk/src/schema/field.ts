@@ -1,30 +1,29 @@
-import type { CoreCollection } from "../index.js";
+import type { MergeCoreCollection } from "../index.js";
 
 export type DirectusField<Schema extends object> = {
-    collection: string;
+    collection: string; // TODO keyof complete schema
     field: string;
     type: string;
-    meta: CoreCollection<Schema, 'directus_fields', {
-        collection: string;
-        conditions: FieldMetaConditionType[] | null;
-        display: string | null;
-        display_options: string | null;
-        field: string;
-        group: string | null;
-        hidden: boolean;
+    meta: MergeCoreCollection<Schema, 'directus_fields', {
         id: number;
-        interface: string;
-        note: string | null;
-        // TODO: options vary by field type
-        options: Record<string, any> | null;
-        readonly: boolean;
-        required: boolean;
-        sort: number | null;
+        collection: string; // TODO keyof complete schema
+        field: string;
         special: string[] | null;
+        interface: string | null;
+        options: Record<string, any> | null;
+        display: string | null;
+        display_options: Record<string, any> | null;
+        readonly: boolean;
+        hidden: boolean;
+        sort: number | null;
+        width: string | null;
         translations: FieldMetaTranslationType[] | null;
+        note: string | null;
+        conditions: FieldMetaConditionType[] | null;
+        required: boolean;
+        group: string | null;
         validation: Record<string, any> | null;
         validation_message: string | null;
-        width: string;
     }>;
     schema: {
         name: string;

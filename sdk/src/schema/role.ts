@@ -1,11 +1,11 @@
-import type { CoreCollection } from "../index.js";
+import type { MergeCoreCollection } from "../index.js";
 
-export type DirectusRole<Schema extends object> = CoreCollection<Schema, 'directus_roles', {
+export type DirectusRole<Schema extends object> = MergeCoreCollection<Schema, 'directus_roles', {
     id: string;
     name: string;
     icon: string;
-    description: string;
-    ip_access: string;
+    description: string | null;
+    ip_access: string | null;
     enforce_tfa: boolean;
     admin_access: boolean;
     app_access: boolean;
