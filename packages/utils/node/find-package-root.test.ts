@@ -2,15 +2,17 @@ import path from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { findPackageRoot } from './find-package-root.js';
 
-vi.mock('node:fs/promises', () => {
+vi.mock('node:fs', () => {
 	return {
-		stat: vi.fn().mockImplementation(async (path) => {
-			if (path === path.join(process.cwd(), 'package.json')) {
-				return { isFile: () => true };
-			}
+		promises: {
+			stat: vi.fn().mockImplementation(async (path) => {
+				if (path === path.join(process.cwd(), 'package.json')) {
+					return { isFile: () => true };
+				}
 
-			throw new Error();
-		}),
+				throw new Error();
+			}),
+		},
 	};
 });
 
