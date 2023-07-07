@@ -6,7 +6,7 @@ export default defineConfig({
 	format: 'esm',
 	async onSuccess() {
 		await mkdist({
-			pattern: ['**/*.{yaml,liquid}', 'database/migrations/!(run).ts'],
+			pattern: ['**/*.{yaml,liquid}', 'database/migrations/!(run).ts', 'operations/**/!(*.test).ts'],
 			ext: 'js',
 			cleanDist: false,
 		});
