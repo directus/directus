@@ -1,5 +1,5 @@
 import { useUserStore } from '@/stores/user';
-import { Accountability, Role, User } from '@directus/types';
+import type { Accountability, Role, User } from '@directus/types';
 import { parsePreset as parsePresetShared } from '@directus/utils';
 
 export function parsePreset(preset: Record<string, any> | null): Record<string, any> {

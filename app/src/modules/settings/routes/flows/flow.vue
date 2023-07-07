@@ -191,7 +191,7 @@ import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Vector2 } from '@/utils/vector2';
-import { FlowRaw, OperationRaw } from '@directus/types';
+import type { FlowRaw, OperationRaw } from '@directus/types';
 import { cloneDeep, isEmpty, merge, omit } from 'lodash';
 import { customAlphabet, nanoid } from 'nanoid/non-secure';
 import { computed, ref } from 'vue';

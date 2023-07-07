@@ -104,7 +104,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { useSync } from '@directus/composables';
-import {
+import type {
 	FieldFilter,
 	FieldFilterOperator,
 	FieldFunction,

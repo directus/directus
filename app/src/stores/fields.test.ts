@@ -4,7 +4,7 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { i18n } from '@/lang';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { merge } from 'lodash';
 import { useFieldsStore } from './fields';
 

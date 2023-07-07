@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { formatFieldFunction } from '@/utils/format-field-function';
-import { ValidationError } from '@directus/types';
+import type { ValidationError } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { computed, ref, watch } from 'vue';

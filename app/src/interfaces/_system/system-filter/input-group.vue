@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { FieldFilter } from '@directus/types';
+import type { FieldFilter } from '@directus/types';
 import { clone, get } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

@@ -135,7 +135,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { DeepPartial, Field, Relation } from '@directus/types';
+import type { DeepPartial, Field, Relation } from '@directus/types';
 import { cloneDeep } from 'lodash';
 import { reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

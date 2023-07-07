@@ -24,7 +24,7 @@ import { getFolderFilter } from '@/utils/get-folder-filter';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { FolderTarget, SpecialFolder } from '@/types/folders';
-import { Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 
 const props = withDefaults(defineProps<{ collection?: string; folder?: string; filter?: Filter }>(), {

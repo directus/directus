@@ -210,7 +210,7 @@ import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil } from 'lodash';
 import { render } from 'micromustache';

@@ -60,7 +60,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { useAppStore } from '@directus/stores';
-import { Item, Notification } from '@directus/types';
+import type { Item, Notification } from '@directus/types';
 import { parseISO } from 'date-fns';
 import { storeToRefs } from 'pinia';
 import { ref, watch } from 'vue';

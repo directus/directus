@@ -53,7 +53,7 @@
 import { useFieldsStore } from '@/stores/fields';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { useCollection } from '@directus/composables';
-import { Field, LocalType } from '@directus/types';
+import type { Field, LocalType } from '@directus/types';
 import { isNil, orderBy } from 'lodash';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';

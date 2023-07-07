@@ -87,7 +87,7 @@
 <script setup lang="ts">
 import { useTFASetup } from '@/composables/use-tfa-setup';
 import { useUserStore } from '@/stores/user';
-import { User } from '@directus/types';
+import type { User } from '@directus/types';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

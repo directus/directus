@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { has, isEmpty, orderBy, cloneDeep } from 'lodash';
-import { InterfaceConfig, DisplayConfig, DeepPartial, Field, Relation, Collection, LocalType } from '@directus/types';
+import type { InterfaceConfig, DisplayConfig, DeepPartial, Field, Relation, Collection, LocalType } from '@directus/types';
 import { LOCAL_TYPES } from '@directus/constants';
 import { computed } from 'vue';
 import { get, set } from 'lodash';

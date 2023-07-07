@@ -20,7 +20,7 @@
 import { useItem } from '@/composables/use-item';
 import { useCollection } from '@directus/composables';
 import { RELATIONAL_TYPES } from '@directus/constants';
-import { Query } from '@directus/types';
+import type { Query } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { omit } from 'lodash';
 import { render } from 'micromustache';

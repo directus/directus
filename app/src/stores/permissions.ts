@@ -1,5 +1,5 @@
 import api from '@/api';
-import { Permission } from '@directus/types';
+import type { Permission } from '@directus/types';
 import { deepMap } from '@directus/utils';
 import { parseFilter } from '@/utils/parse-filter';
 import { parsePreset } from '@/utils/parse-preset';

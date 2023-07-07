@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { Type } from '@directus/types';
+import type { Type } from '@directus/types';
 import { computed } from 'vue';
 import { useInsightsStore } from '@/stores/insights';
 

@@ -65,7 +65,7 @@ import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Props as VDrawerProps } from '@/components/v-drawer.vue';

@@ -11,7 +11,7 @@
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
 import formatTitle from '@directus/format-title';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { set } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

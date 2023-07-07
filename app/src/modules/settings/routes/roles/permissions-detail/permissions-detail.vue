@@ -50,7 +50,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { useCollectionsStore } from '@/stores/collections';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Permission, Role } from '@directus/types';
+import type { Permission, Role } from '@directus/types';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { useExtensions } from '@/extensions';
-import { InterfaceConfig } from '@directus/types';
+import type { InterfaceConfig } from '@directus/types';
 import { computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

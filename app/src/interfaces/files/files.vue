@@ -134,7 +134,7 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { computed, ref, toRefs } from 'vue';

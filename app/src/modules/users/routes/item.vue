@@ -199,7 +199,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

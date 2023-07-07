@@ -138,7 +138,7 @@ import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
-import { Preset, Filter } from '@directus/types';
+import type { Preset, Filter } from '@directus/types';
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';

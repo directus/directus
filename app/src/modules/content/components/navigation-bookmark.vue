@@ -90,7 +90,7 @@ import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Preset } from '@directus/types';
+import type { Preset } from '@directus/types';
 import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';

@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { Field, ValidationError } from '@directus/types';
+import type { Field, ValidationError } from '@directus/types';
 import { isNil, merge } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

@@ -10,7 +10,7 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
-import { Field, Query, Relation } from '@directus/types';
+import type { Field, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';

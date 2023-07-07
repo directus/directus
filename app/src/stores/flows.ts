@@ -1,7 +1,7 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { fetchAll } from '@/utils/fetch-all';
-import { FlowRaw } from '@directus/types';
+import type { FlowRaw } from '@directus/types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 

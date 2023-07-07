@@ -1,4 +1,4 @@
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { validatePayload } from '@directus/utils';
 import { merge } from 'lodash';

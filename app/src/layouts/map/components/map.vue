@@ -11,7 +11,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { getBasemapSources, getStyleFromBasemapSource } from '@/utils/geometry/basemap';
 import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
 import { useAppStore } from '@directus/stores';
-import { ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import maplibre, {

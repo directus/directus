@@ -4,7 +4,7 @@ import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Filter, Item } from '@directus/types';
+import type { Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
 import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
 import { Ref, computed, ref, unref, watch } from 'vue';

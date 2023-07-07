@@ -79,7 +79,7 @@ export default {
 import { usePageSize } from '@/composables/use-page-size';
 import { Collection } from '@/types/collections';
 import { useElementSize, useSync } from '@directus/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/types';
+import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { Ref, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Card from './components/card.vue';

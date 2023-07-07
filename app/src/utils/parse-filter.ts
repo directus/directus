@@ -1,5 +1,5 @@
 import { useUserStore } from '@/stores/user';
-import { Accountability, Filter } from '@directus/types';
+import type { Accountability, Filter } from '@directus/types';
 import { parseFilter as parseFilterShared } from '@directus/utils';
 
 export function parseFilter(filter: Filter | null): Filter {

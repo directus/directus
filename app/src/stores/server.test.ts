@@ -1,6 +1,6 @@
 import api, * as apiFunctions from '@/api';
 import * as setLanguageDefault from '@/lang/set-language';
-import { User } from '@directus/types';
+import type { User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';

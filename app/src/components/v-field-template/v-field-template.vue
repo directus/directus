@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { useFieldTree } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
-import { Field, Relation } from '@directus/types';
+import type { Field, Relation } from '@directus/types';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';

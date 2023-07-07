@@ -41,7 +41,7 @@
 import { getBasemapSources } from '@/utils/geometry/basemap';
 import { useSync } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
-import { GeometryOptions, Item } from '@directus/types';
+import type { GeometryOptions, Item } from '@directus/types';
 import { toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 

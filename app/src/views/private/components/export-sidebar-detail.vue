@@ -237,7 +237,7 @@ import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import { useCollection } from '@directus/composables';
-import { Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import type { AxiosProgressEvent } from 'axios';
 import { debounce, pick } from 'lodash';

@@ -1,4 +1,4 @@
-import { DeepPartial, Field } from '@directus/types';
+import type { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';

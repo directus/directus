@@ -186,7 +186,7 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
-import { Field, Filter, Item, ShowSelect } from '@directus/types';
+import type { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -1,6 +1,6 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Role } from '@directus/types';
+import type { Role } from '@directus/types';
 import { ref, Ref } from 'vue';
 
 let roles: Ref<BasicRole[] | null> | null = null;

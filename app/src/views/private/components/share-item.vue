@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { isAllowed } from '@/utils/is-allowed';
-import { Share } from '@directus/types';
+import type { Share } from '@directus/types';
 import { format } from 'date-fns';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';

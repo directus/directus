@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { getJSType } from './get-js-type';
 
 test('Returns object for relational fields', () => {

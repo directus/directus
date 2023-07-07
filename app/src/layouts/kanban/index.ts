@@ -5,7 +5,7 @@ import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
-import { User } from '@directus/types';
+import type { User } from '@directus/types';
 import { defineLayout, getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import KanbanActions from './actions.vue';

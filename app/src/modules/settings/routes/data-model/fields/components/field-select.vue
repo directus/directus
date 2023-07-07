@@ -162,7 +162,7 @@ import { getLocalTypeForField } from '@/utils/get-local-type';
 import { getSpecialForType } from '@/utils/get-special-for-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import FieldSelectMenu from './field-select-menu.vue';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';

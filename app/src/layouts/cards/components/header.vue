@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
-import { Field, ShowSelect } from '@directus/types';
+import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 

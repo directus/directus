@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { computed, unref } from 'vue';
-import { Field, DeepPartial } from '@directus/types';
+import type { Field, DeepPartial } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
 import { storeToRefs } from 'pinia';

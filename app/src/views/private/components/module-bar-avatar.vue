@@ -56,7 +56,7 @@ import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getRootPath } from '@/utils/get-root-path';
 import { useAppStore } from '@directus/stores';
-import { User } from '@directus/types';
+import type { User } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { Ref, computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';

@@ -3,7 +3,7 @@ import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
-import { Field, Filter, GeometryOptions } from '@directus/types';
+import type { Field, Filter, GeometryOptions } from '@directus/types';
 import { defineLayout, getFieldsFromTemplate } from '@directus/utils';
 import { cloneDeep, merge } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';

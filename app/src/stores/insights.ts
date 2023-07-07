@@ -2,7 +2,7 @@ import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
 import { queryToGqlString } from '@/utils/query-to-gql-string';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Item, Panel } from '@directus/types';
+import type { Item, Panel } from '@directus/types';
 import { getSimpleHash, toArray, applyOptionsData } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { assign, clone, get, isUndefined, mapKeys, omit, omitBy, pull, uniq } from 'lodash';

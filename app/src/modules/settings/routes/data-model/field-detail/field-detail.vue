@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 import { ref, computed, toRefs, watch } from 'vue';
-import { LocalType } from '@directus/types';
+import type { LocalType } from '@directus/types';
 import { useFieldDetailStore } from './store/';
 import FieldDetailSimple from './field-detail-simple/field-detail-simple.vue';
 import FieldDetailAdvanced from './field-detail-advanced/field-detail-advanced.vue';

@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import { FIELD_TYPES_SELECT } from '@/constants';
 import { translate } from '@/utils/translate-object-values';
-import { DeepPartial, Field, FieldMeta } from '@directus/types';
+import type { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Repeater from './list.vue';

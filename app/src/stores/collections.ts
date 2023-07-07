@@ -6,7 +6,7 @@ import { getLiteralInterpolatedTranslation } from '@/utils/get-literal-interpola
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
-import { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
+import type { Collection as CollectionRaw, DeepPartial, Field } from '@directus/types';
 import { getCollectionType } from '@directus/utils';
 import { isEqual, isNil, omit, orderBy } from 'lodash';
 import { defineStore } from 'pinia';

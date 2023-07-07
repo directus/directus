@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { userName } from '@/utils/user-name';
-import { User } from '@directus/types';
+import type { User } from '@directus/types';
 import { computed } from 'vue';
 
 const props = withDefaults(

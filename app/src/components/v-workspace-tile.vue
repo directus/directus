@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { Panel } from '@directus/types';
+import type { Panel } from '@directus/types';
 import { computed, ref, reactive, StyleValue } from 'vue';
 import { throttle } from 'lodash';
 import { useI18n } from 'vue-i18n';

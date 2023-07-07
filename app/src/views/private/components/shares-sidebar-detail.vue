@@ -79,7 +79,7 @@ import { useI18n } from 'vue-i18n';
 import { computed, ref } from 'vue';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Share } from '@directus/types';
+import type { Share } from '@directus/types';
 import { useClipboard } from '@/composables/use-clipboard';
 
 import api from '@/api';

@@ -69,7 +69,7 @@ import { usePreset } from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';

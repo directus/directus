@@ -45,7 +45,7 @@ import { login, logout } from '@/auth';
 import { hydrate } from '@/hydrate';
 import { useAppStore } from '@directus/stores';
 import { useCollection } from '@directus/composables';
-import { Share } from '@directus/types';
+import type { Share } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';

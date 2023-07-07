@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed } from 'vue';
-import { ValidationError, Field } from '@directus/types';
+import type { ValidationError, Field } from '@directus/types';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 

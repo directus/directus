@@ -45,7 +45,7 @@ import { useTFASetup } from '@/composables/use-tfa-setup';
 import { router } from '@/router';
 import { useUserStore } from '@/stores/user';
 import { useAppStore } from '@directus/stores';
-import { User } from '@directus/types';
+import type { User } from '@directus/types';
 import { nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -60,7 +60,7 @@ import { Header as TableHeader } from '@/components/v-table/types';
 import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Role } from '@directus/types';
+import type { Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

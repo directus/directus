@@ -189,7 +189,7 @@ import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

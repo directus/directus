@@ -100,7 +100,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref, useSlots } from 'vue';
-import { ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/types';
 import { useEventListener } from '@/composables/use-event-listener';
 import { Header, Sort } from './types';
 import { throttle, clone } from 'lodash';

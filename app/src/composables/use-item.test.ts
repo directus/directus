@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useCollection } from '@directus/composables';
-import { AppCollection, Field } from '@directus/types';
+import type { AppCollection, Field } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';

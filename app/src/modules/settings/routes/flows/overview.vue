@@ -136,7 +136,7 @@ import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
 import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { FlowRaw } from '@directus/types';
+import type { FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
 import { computed, ref, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';

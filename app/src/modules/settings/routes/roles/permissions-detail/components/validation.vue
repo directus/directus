@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
-import { Permission, Role } from '@directus/types';
+import type { Permission, Role } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -2,7 +2,7 @@ import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
 import type { User } from '@directus/types';
-import { Filter, Preset } from '@directus/types';
+import type { Filter, Preset } from '@directus/types';
 import { assign, debounce, isEqual } from 'lodash';
 import { ComputedRef, Ref, computed, ref, watch } from 'vue';
 

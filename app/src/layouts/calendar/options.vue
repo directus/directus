@@ -35,7 +35,7 @@ export default {
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { useSync } from '@directus/composables';
 import { localizedFormat } from '@/utils/localized-format';
 import { add, startOfWeek } from 'date-fns';

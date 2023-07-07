@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Collection } from '@/types/collections';
-import { Preset } from '@directus/types';
+import type { Preset } from '@directus/types';
 import { useUserStore } from '@/stores/user';
 import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';

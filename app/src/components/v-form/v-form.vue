@@ -93,7 +93,7 @@ import { applyConditions } from '@/utils/apply-conditions';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { useElementSize } from '@directus/composables';
-import { Field, ValidationError } from '@directus/types';
+import type { Field, ValidationError } from '@directus/types';
 import { assign, cloneDeep, isEqual, isNil, omit, pick } from 'lodash';
 import { ComputedRef, computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

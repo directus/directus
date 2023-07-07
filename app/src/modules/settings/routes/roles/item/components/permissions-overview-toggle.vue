@@ -65,7 +65,7 @@
 
 <script setup lang="ts">
 import api from '@/api';
-import { Collection, Permission } from '@directus/types';
+import type { Collection, Permission } from '@directus/types';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

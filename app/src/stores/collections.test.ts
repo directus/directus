@@ -3,7 +3,7 @@ import { setActivePinia } from 'pinia';
 import { beforeEach, expect, test, vi } from 'vitest';
 
 import { i18n } from '@/lang';
-import { Collection } from '@directus/types';
+import type { Collection } from '@directus/types';
 import { merge } from 'lodash';
 import { useCollectionsStore } from './collections';
 

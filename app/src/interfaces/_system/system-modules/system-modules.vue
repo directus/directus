@@ -63,7 +63,7 @@ import { MODULE_BAR_DEFAULT } from '@/constants';
 import { useExtensions } from '@/extensions';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { translate } from '@/utils/translate-object-values';
-import { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
+import type { DeepPartial, Field, Settings, SettingsModuleBarLink, SettingsModuleBarModule } from '@directus/types';
 import { assign } from 'lodash';
 import { nanoid } from 'nanoid';
 import { computed, ref } from 'vue';

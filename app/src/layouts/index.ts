@@ -1,5 +1,5 @@
 import { App } from 'vue';
-import { LayoutConfig } from '@directus/types';
+import type { LayoutConfig } from '@directus/types';
 import { sortBy } from 'lodash';
 
 export function getInternalLayouts(): LayoutConfig[] {

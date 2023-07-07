@@ -99,7 +99,7 @@ import { useExtension } from '@/composables/use-extension';
 import { useExtensions } from '@/extensions';
 import { useInsightsStore } from '@/stores/insights';
 import { CreatePanel } from '@/stores/insights';
-import { Panel } from '@directus/types';
+import type { Panel } from '@directus/types';
 import { assign, clone, omitBy, isUndefined } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
 import { storeToRefs } from 'pinia';

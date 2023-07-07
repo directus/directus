@@ -9,7 +9,7 @@ import { syncRefProperty } from '@/utils/sync-ref-property';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
-import { Field, Item } from '@directus/types';
+import type { Field, Item } from '@directus/types';
 import { defineLayout, getEndpoint, getFieldsFromTemplate } from '@directus/utils';
 import { Calendar, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';

@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { computed, inject, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 

@@ -176,7 +176,7 @@
 <script setup lang="ts">
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
-import { SettingsStorageAssetPreset } from '@directus/types';
+import type { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
 import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

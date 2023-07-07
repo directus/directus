@@ -69,7 +69,7 @@
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
 import { translate } from '@/utils/translate-object-values';
-import { FlowRaw } from '@directus/types';
+import type { FlowRaw } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

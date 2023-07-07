@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import { i18n } from '@/lang/';
 import { hideDragImage } from '@/utils/hide-drag-image';
-import { ShowSelect } from '@directus/types';
+import type { ShowSelect } from '@directus/types';
 import { clone, forEach, pick } from 'lodash';
 import { computed, ref, useSlots } from 'vue';
 import Draggable from 'vuedraggable';

@@ -1,6 +1,6 @@
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { get, getFieldsFromTemplate } from '@directus/utils';
 import { set } from 'lodash';
 import { render, renderFn } from 'micromustache';

@@ -8,7 +8,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 import { defineLayout } from '@directus/utils';
 import { debounce } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';

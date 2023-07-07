@@ -287,7 +287,7 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
-import { Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

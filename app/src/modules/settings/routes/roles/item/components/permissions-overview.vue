@@ -66,7 +66,7 @@
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Permission } from '@directus/types';
+import type { Permission } from '@directus/types';
 import { orderBy } from 'lodash';
 import { computed, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

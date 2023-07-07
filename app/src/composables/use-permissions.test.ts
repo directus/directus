@@ -16,7 +16,7 @@ import { useUserStore } from '@/stores/user';
 import { usePermissionsStore } from '@/stores/permissions';
 import { usePermissions } from './use-permissions';
 import { useCollection } from '@directus/composables';
-import { Field } from '@directus/types';
+import type { Field } from '@directus/types';
 
 vi.mock('@directus/composables');
 

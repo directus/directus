@@ -10,7 +10,7 @@
 import api from '@/api';
 import { isPermissionEmpty } from '@/utils/is-permission-empty';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Permission } from '@directus/types';
+import type { Permission } from '@directus/types';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';

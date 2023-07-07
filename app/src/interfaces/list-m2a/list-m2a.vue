@@ -146,7 +146,7 @@ import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
+import type { Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';

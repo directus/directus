@@ -86,7 +86,7 @@
 import { i18n } from '@/lang';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import formatTitle from '@directus/format-title';
-import { DeepPartial, Field, FieldMeta } from '@directus/types';
+import type { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';

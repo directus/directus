@@ -134,7 +134,7 @@
 
 <script setup lang="ts">
 import { translate } from '@/utils/translate-object-values';
-import { Type } from '@directus/types';
+import type { Type } from '@directus/types';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { TranslateResult, useI18n } from 'vue-i18n';

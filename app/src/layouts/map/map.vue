@@ -79,7 +79,7 @@ export default {
 <script setup lang="ts">
 import { usePageSize } from '@/composables/use-page-size';
 import { useSync } from '@directus/composables';
-import { GeometryOptions } from '@directus/types';
+import type { GeometryOptions } from '@directus/types';
 import { useI18n } from 'vue-i18n';
 import MapComponent from './components/map.vue';
 

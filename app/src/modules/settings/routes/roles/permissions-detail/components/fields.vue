@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
 import { useSync } from '@directus/composables';
-import { Field, Permission, Role } from '@directus/types';
+import type { Field, Permission, Role } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 

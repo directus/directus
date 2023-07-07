@@ -89,7 +89,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import FilePreview from '@/views/private/components/file-preview.vue';
 import { useCollection } from '@directus/composables';
-import { Field, Relation } from '@directus/types';
+import type { Field, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
