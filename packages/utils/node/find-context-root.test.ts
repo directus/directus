@@ -1,4 +1,4 @@
-import { join } from 'path';
+import path from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { findContextRoot } from './find-context-root.js';
 
@@ -17,9 +17,9 @@ describe('findContextRoot', () => {
 	});
 
 	it.each(['src/test', 'src'])(`context root 'src' from '%s'`, async (insideContextPath: string) => {
-		const sourcePath = join(process.cwd(), ...insideContextPath.split('/'));
+		const sourcePath = path.join(process.cwd(), ...insideContextPath.split('/'));
 		const contextRoot = await findContextRoot(sourcePath);
 
-		expect(contextRoot).toBe(join(process.cwd(), 'src'));
+		expect(contextRoot).toBe(path.join(process.cwd(), 'src'));
 	});
 });

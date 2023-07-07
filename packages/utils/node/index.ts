@@ -4,6 +4,7 @@ export * from './find-context-root.js';
 export * from './find-package-root.js';
 export * from './generate-extensions-entrypoint.js';
 export * from './get-extensions.js';
+export * from './get-package-json.js';
 export * from './is-readable-stream.js';
 export * from './list-folders.js';
 export * from './path-to-relative-url.js';

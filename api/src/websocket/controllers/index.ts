@@ -1,4 +1,4 @@
-import type { Server as httpServer } from 'http';
+import type { Server as httpServer } from 'node:http';
 import env from '../../env.js';
 import { ServiceUnavailableError } from '../../errors/index.js';
 import { toBoolean } from '../../utils/to-boolean.js';

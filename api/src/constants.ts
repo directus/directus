@@ -1,7 +1,14 @@
+import { findContextRoot } from '@directus/utils/node';
 import type { CookieOptions } from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import env from './env.js';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export const CONTEXT_ROOT = await findContextRoot(__dirname);
 
 export const SYSTEM_ASSET_ALLOW_LIST: TransformationParams[] = [
 	{

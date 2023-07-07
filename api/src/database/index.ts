@@ -1,14 +1,13 @@
-import { createInspector } from '@directus/schema';
 import type { SchemaInspector } from '@directus/schema';
+import { createInspector } from '@directus/schema';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { merge } from 'lodash-es';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
+import path from 'node:path';
+import { promisify } from 'node:util';
 import { performance } from 'perf_hooks';
-import { promisify } from 'util';
+import { CONTEXT_ROOT } from '../constants.js';
 import env from '../env.js';
 import logger from '../logger.js';
 import type { DatabaseClient } from '../types/index.js';
@@ -19,8 +18,6 @@ import { getHelpers } from './helpers/index.js';
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
 let databaseVersion: string | null = null;
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default function getDatabase(): Knex {
 	if (database) {
@@ -248,7 +245,8 @@ export async function validateMigrations(): Promise<boolean> {
 	const database = getDatabase();
 
 	try {
-		let migrationFiles = await fse.readdir(path.join(__dirname, 'migrations'));
+		const migrationsPath = path.join(CONTEXT_ROOT, 'database', 'migrations');
+		let migrationFiles = await fse.readdir(migrationsPath);
 
 		const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
 
@@ -263,7 +261,7 @@ export async function validateMigrations(): Promise<boolean> {
 
 		migrationFiles.push(...customMigrationFiles);
 
-		const requiredVersions = migrationFiles.map((filePath) => filePath.split('-')[0]);
+		const requiredVersions = migrationFiles.map((file) => file.split('-')[0]);
 
 		const completedVersions = (await database.select('version').from('directus_migrations')).map(
 			({ version }) => version

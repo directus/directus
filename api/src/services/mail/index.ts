@@ -2,9 +2,9 @@ import type { Accountability, SchemaOverview } from '@directus/types';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { Liquid } from 'liquidjs';
+import path from 'node:path';
 import type { SendMailOptions, Transporter } from 'nodemailer';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { CONTEXT_ROOT } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import env from '../../env.js';
 import { InvalidPayloadError } from '../../errors/index.js';
@@ -13,10 +13,10 @@ import getMailer from '../../mailer.js';
 import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const templatesPath = path.join(CONTEXT_ROOT, 'services', 'mail', 'templates');
 
 const liquidEngine = new Liquid({
-	root: [path.resolve(env['EXTENSIONS_PATH'], 'templates'), path.resolve(__dirname, 'templates')],
+	root: [path.resolve(env['EXTENSIONS_PATH'], 'templates'), templatesPath],
 	extname: '.liquid',
 });
 
@@ -82,7 +82,7 @@ export class MailService {
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
 		const customTemplatePath = path.resolve(env['EXTENSIONS_PATH'], 'templates', template + '.liquid');
-		const systemTemplatePath = path.join(__dirname, 'templates', template + '.liquid');
+		const systemTemplatePath = path.join(templatesPath, template + '.liquid');
 
 		const templatePath = (await fse.pathExists(customTemplatePath)) ? customTemplatePath : systemTemplatePath;
 

@@ -35,7 +35,6 @@
 		"joi": "17.9.2",
 		"lodash-es": "4.17.21",
 		"micromustache": "8.0.3",
-		"p-memoize": "7.1.1",
 		"tmp": "0.2.1",
 		"vue": "3.3.4"
 	},

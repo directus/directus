@@ -58,7 +58,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
+		"build": "tsup",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=false tsx watch --clear-screen=false src/start.ts",
 		"test": "vitest --watch=false"
@@ -207,10 +207,11 @@
 		"@types/wellknown": "0.5.4",
 		"@types/ws": "8.5.4",
 		"@vitest/coverage-c8": "0.31.1",
-		"copyfiles": "2.4.1",
 		"form-data": "4.0.0",
 		"knex-mock-client": "2.0.0",
+		"mkdist": "1.2.0",
 		"supertest": "6.3.3",
+		"tsup": "7.1.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	},

@@ -1,7 +1,7 @@
 import type { Permission } from '@directus/types';
 import { merge } from 'lodash-es';
-import path, { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import { CONTEXT_ROOT } from '../../../constants.js';
 import { requireYAML } from '../../../utils/require-yaml.js';
 
 const defaults: Partial<Permission> = {
@@ -13,10 +13,13 @@ const defaults: Partial<Permission> = {
 	system: true,
 };
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const permissionsPath = path.join(CONTEXT_ROOT, 'database', 'system-data', 'app-access-permissions');
 
-const schemaPermissionsRaw = requireYAML(path.resolve(__dirname, './schema-access-permissions.yaml')) as Permission[];
-const permissions = requireYAML(path.resolve(__dirname, './app-access-permissions.yaml')) as Permission[];
+const schemaPermissionsRaw = requireYAML(
+	path.join(permissionsPath, './schema-access-permissions.yaml')
+) as Permission[];
+
+const permissions = requireYAML(path.join(permissionsPath, './app-access-permissions.yaml')) as Permission[];
 
 export const schemaPermissions: Permission[] = schemaPermissionsRaw.map((row) => merge({}, defaults, row));
 export const appAccessMinimalPermissions: Permission[] = [...schemaPermissions, ...permissions].map((row) =>

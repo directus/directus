@@ -1,10 +1,10 @@
+import inquirer from 'inquirer';
+import { dump as toYaml } from 'js-yaml';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import getDatabase from '../../../database/index.js';
 import logger from '../../../logger.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
-import { constants as fsConstants, promises as fs } from 'fs';
-import path from 'path';
-import inquirer from 'inquirer';
-import { dump as toYaml } from 'js-yaml';
 
 export async function snapshot(
 	snapshotPath?: string,
@@ -29,7 +29,7 @@ export async function snapshot(
 			let snapshotExists: boolean;
 
 			try {
-				await fs.access(filename, fsConstants.F_OK);
+				await fs.access(filename, fs.constants.F_OK);
 				snapshotExists = true;
 			} catch {
 				snapshotExists = false;

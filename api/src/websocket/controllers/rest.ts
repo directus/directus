@@ -1,5 +1,5 @@
 import { parseJSON } from '@directus/utils';
-import type { Server as httpServer } from 'http';
+import type { Server as httpServer } from 'node:http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import env from '../../env.js';

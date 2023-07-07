@@ -2,19 +2,18 @@ import formatTitle from '@directus/format-title';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import { orderBy } from 'lodash-es';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
+import path from 'node:path';
 import { flushCaches } from '../../cache.js';
+import { CONTEXT_ROOT } from '../../constants.js';
 import env from '../../env.js';
 import logger from '../../logger.js';
 import type { Migration } from '../../types/index.js';
 import getModuleDefault from '../../utils/get-module-default.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest', log = true): Promise<void> {
-	let migrationFiles = await fse.readdir(__dirname);
+	const migrationsPath = path.join(CONTEXT_ROOT, 'database', 'migrations');
+
+	let migrationFiles = await fse.readdir(migrationsPath);
 
 	const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
 
@@ -28,8 +27,8 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
 
 	const migrations = [
-		...migrationFiles.map((path) => parseFilePath(path)),
-		...customMigrationFiles.map((path) => parseFilePath(path, true)),
+		...migrationFiles.map((file) => parseFileName(file)),
+		...customMigrationFiles.map((file) => parseFileName(file, true)),
 	].sort((a, b) => (a.version! > b.version! ? 1 : -1));
 
 	const migrationKeys = new Set(migrations.map((m) => m.version));
@@ -38,13 +37,13 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		throw new Error('Migration keys collide! Please ensure that every migration uses a unique key.');
 	}
 
-	function parseFilePath(filePath: string, custom = false) {
-		const version = filePath.split('-')[0];
-		const name = formatTitle(filePath.split('-').slice(1).join('_').split('.')[0]!);
+	function parseFileName(file: string, custom = false) {
+		const version = file.split('-')[0];
+		const name = formatTitle(file.split('-').slice(1).join('_').split('.')[0]!);
 		const completed = !!completedMigrations.find((migration) => migration.version === version);
 
 		return {
-			file: custom ? path.join(customMigrationsPath, filePath) : path.join(__dirname, filePath),
+			file: custom ? path.join(customMigrationsPath, file) : path.join(migrationsPath, file),
 			version,
 			name,
 			completed,

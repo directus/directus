@@ -1,10 +1,10 @@
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
-import type { IncomingMessage, Server as httpServer } from 'http';
-import type { ParsedUrlQuery } from 'querystring';
+import type { IncomingMessage, Server as httpServer } from 'node:http';
+import type { ParsedUrlQuery } from 'node:querystring';
+import type internal from 'node:stream';
+import { parse } from 'node:url';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
-import type internal from 'stream';
-import { parse } from 'url';
 import { v4 as uuid } from 'uuid';
 import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';

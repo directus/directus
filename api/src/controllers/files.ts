@@ -7,7 +7,7 @@ import type { RequestHandler } from 'express';
 import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
-import path from 'path';
+import path from 'node:path';
 import env from '../env.js';
 import { ContentTooLargeError, ErrorCode, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';

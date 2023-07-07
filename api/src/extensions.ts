@@ -40,10 +40,10 @@ import express, { Router } from 'express';
 import { clone, escapeRegExp } from 'lodash-es';
 import { readdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
-import { dirname } from 'node:path';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import path from 'path';
 import { rollup } from 'rollup';
+import { CONTEXT_ROOT } from './constants.js';
 import getDatabase from './database/index.js';
 import emitter, { Emitter } from './emitter.js';
 import env from './env.js';
@@ -63,7 +63,7 @@ const alias = aliasDefault as unknown as typeof aliasDefault.default;
 const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.default;
 
 const require = createRequire(import.meta.url);
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 let extensionManager: ExtensionManager | undefined;
 
@@ -466,7 +466,8 @@ class ExtensionManager {
 	}
 
 	private async registerOperations(): Promise<void> {
-		const internalOperations = await readdir(path.join(__dirname, 'operations'));
+		const internalOperationsPath = path.join(CONTEXT_ROOT, 'operations');
+		const internalOperations = await readdir(internalOperationsPath);
 
 		for (const operation of internalOperations) {
 			const operationInstance: OperationApiConfig | { default: OperationApiConfig } = await import(

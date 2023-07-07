@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 const filename = ({ filepath }: { filepath: string }): Record<string, string> => ({
 	type: 'input',

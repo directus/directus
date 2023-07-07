@@ -1,5 +1,4 @@
-import { join, relative, sep } from 'node:path';
-import pMemoize from 'p-memoize';
+import path from 'node:path';
 import { findPackageRoot } from './find-package-root.js';
 
 /**
@@ -10,13 +9,8 @@ import { findPackageRoot } from './find-package-root.js';
 export async function findContextRoot(sourcePath: string): Promise<string> {
 	const packageRoot = await findPackageRoot(sourcePath);
 
-	const relativeCwd = relative(packageRoot, sourcePath);
-	const sourceDir = relativeCwd.split(sep)[0] || '';
+	const relativeCwd = path.relative(packageRoot, sourcePath);
+	const sourceDir = relativeCwd.split(path.sep)[0] || '';
 
-	return join(packageRoot, sourceDir);
+	return path.join(packageRoot, sourceDir);
 }
-
-/**
- * Memoized version of {@link findContextRoot}.
- */
-export const findRootMem = pMemoize(findContextRoot);

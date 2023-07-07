@@ -1,17 +1,18 @@
 import type { TerminusOptions } from '@godaddy/terminus';
 import { createTerminus } from '@godaddy/terminus';
 import type { Request } from 'express';
-import * as http from 'http';
-import * as https from 'https';
 import { once } from 'lodash-es';
+import http from 'node:http';
+import https from 'node:https';
+import url from 'node:url';
 import qs from 'qs';
-import url from 'url';
 import createApp from './app.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
 import logger from './logger.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { toBoolean } from './utils/to-boolean.js';
 import {
 	createSubscriptionController,
 	createWebSocketController,
@@ -19,7 +20,6 @@ import {
 	getWebSocketController,
 } from './websocket/controllers/index.js';
 import { startWebSocketHandlers } from './websocket/handlers/index.js';
-import { toBoolean } from './utils/to-boolean.js';
 
 export let SERVER_ONLINE = true;
 

@@ -5,10 +5,10 @@
 
 import { parseJSON, toArray } from '@directus/utils';
 import dotenv from 'dotenv';
-import fs from 'fs';
 import { clone, toNumber, toString } from 'lodash-es';
+import fs from 'node:fs';
 import { createRequire } from 'node:module';
-import path from 'path';
+import path from 'node:path';
 import { requireYAML } from './utils/require-yaml.js';
 import { toBoolean } from './utils/to-boolean.js';
 

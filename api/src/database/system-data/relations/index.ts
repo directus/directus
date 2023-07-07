@@ -1,12 +1,12 @@
 import type { RelationMeta } from '@directus/types';
 import { merge } from 'lodash-es';
+import path from 'node:path';
+import { CONTEXT_ROOT } from '../../../constants.js';
 import { requireYAML } from '../../../utils/require-yaml.js';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const relationsPath = path.join(CONTEXT_ROOT, 'database', 'system-data', 'relations', 'relations.yaml');
 
-const systemData = requireYAML(resolve(__dirname, './relations.yaml')) as {
+const systemData = requireYAML(relationsPath) as {
 	data: RelationMeta[];
 	defaults: Partial<RelationMeta>;
 };

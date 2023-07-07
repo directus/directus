@@ -1,24 +1,23 @@
+import formatTitle from '@directus/format-title';
 import type { FieldMeta } from '@directus/types';
 import fse from 'fs-extra';
 import { merge } from 'lodash-es';
-import path from 'path';
+import path from 'node:path';
+import { CONTEXT_ROOT } from '../../../constants.js';
 import { getAuthProviders } from '../../../utils/get-auth-providers.js';
 import { requireYAML } from '../../../utils/require-yaml.js';
-import formatTitle from '@directus/format-title';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const fieldsPath = path.join(CONTEXT_ROOT, 'database', 'system-data', 'fields');
 
-const defaults = requireYAML(path.join(__dirname, './_defaults.yaml'));
-const fieldData = fse.readdirSync(path.resolve(__dirname));
+const defaults = requireYAML(path.join(fieldsPath, './_defaults.yaml'));
+const fieldsFiles = fse.readdirSync(fieldsPath);
 
 export const systemFieldRows: FieldMeta[] = [];
 
-for (const filepath of fieldData) {
-	if (filepath.includes('_defaults') || filepath.includes('index')) continue;
+for (const file of fieldsFiles) {
+	if (file.includes('_defaults') || file.includes('index')) continue;
 
-	const systemFields = requireYAML(path.resolve(__dirname, filepath));
+	const systemFields = requireYAML(path.join(fieldsPath, file));
 
 	(systemFields['fields'] as FieldMeta[]).forEach((field, index) => {
 		const systemField = merge({ system: true }, defaults, field, {

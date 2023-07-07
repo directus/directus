@@ -1,9 +1,9 @@
 import { parseJSON } from '@directus/utils';
 import chalk from 'chalk';
-import { promises as fs } from 'fs';
 import inquirer from 'inquirer';
 import { load as loadYaml } from 'js-yaml';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import logger from '../../../logger.js';
 import type { Snapshot } from '../../../types/index.js';

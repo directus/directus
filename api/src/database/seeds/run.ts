@@ -3,12 +3,9 @@ import fse from 'fs-extra';
 import yaml from 'js-yaml';
 import type { Knex } from 'knex';
 import { isObject } from 'lodash-es';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
+import path from 'node:path';
+import { CONTEXT_ROOT } from '../../constants.js';
 import { getHelpers } from '../helpers/index.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 type TableSeed = {
 	table: string;
@@ -38,12 +35,14 @@ export default async function runSeed(database: Knex): Promise<void> {
 		throw new Error('Database is already installed');
 	}
 
-	const tableSeeds = await fse.readdir(path.resolve(__dirname));
+	const tableSeedsPath = path.join(CONTEXT_ROOT, 'database', 'seeds');
+
+	const tableSeeds = await fse.readdir(tableSeedsPath);
 
 	for (const tableSeedFile of tableSeeds) {
 		if (tableSeedFile.startsWith('run')) continue;
 
-		const yamlRaw = await fse.readFile(path.resolve(__dirname, tableSeedFile), 'utf8');
+		const yamlRaw = await fse.readFile(path.join(tableSeedsPath, tableSeedFile), 'utf8');
 
 		const seedData = yaml.load(yamlRaw) as TableSeed;
 

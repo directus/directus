@@ -14,7 +14,7 @@ import keyGenerate from './commands/security/key.js';
 import secretGenerate from './commands/security/secret.js';
 import usersCreate from './commands/users/create.js';
 import usersPasswd from './commands/users/passwd.js';
-import * as pkg from '../utils/package.js';
+import { version } from '../utils/package.js';
 
 export async function createCli(): Promise<Command> {
 	const program = new Command();
@@ -26,7 +26,7 @@ export async function createCli(): Promise<Command> {
 	await emitter.emitInit('cli.before', { program });
 
 	program.name('directus').usage('[command] [options]');
-	program.version(pkg.version, '-v, --version');
+	program.version(version, '-v, --version');
 
 	program.command('start').description('Start the Directus API').action(startServer);
 	program.command('init').description('Create a new Directus Project').action(init);

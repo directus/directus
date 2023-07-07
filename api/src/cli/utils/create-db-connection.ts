@@ -1,12 +1,9 @@
-import knex from 'knex';
 import type { Knex } from 'knex';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import path from 'path';
-import { promisify } from 'util';
+import knex from 'knex';
+import path from 'node:path';
+import { promisify } from 'node:util';
+import { CONTEXT_ROOT } from '../../constants.js';
 import type { Driver } from '../../types/index.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export type Credentials = {
 	filename?: string;
@@ -58,7 +55,7 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 		connection: connection,
 		seeds: {
 			extension: 'js',
-			directory: path.resolve(__dirname, '../../database/seeds/'),
+			directory: path.join(CONTEXT_ROOT, 'database', 'seeds'),
 		},
 		pool: {},
 	};

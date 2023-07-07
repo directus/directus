@@ -1,12 +1,11 @@
 import { merge } from 'lodash-es';
 import type { CollectionMeta } from '../../../types/index.js';
 import { requireYAML } from '../../../utils/require-yaml.js';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import { CONTEXT_ROOT } from '../../../constants.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const systemData = requireYAML(resolve(__dirname, './collections.yaml'));
+const collectionsPath = path.join(CONTEXT_ROOT, 'database', 'system-data', 'collections', 'collections.yaml');
+const systemData = requireYAML(collectionsPath);
 
 export const systemCollectionRows: CollectionMeta[] = systemData['data'].map((row: Record<string, any>) => {
 	return merge({ system: true }, systemData['defaults'], row);
