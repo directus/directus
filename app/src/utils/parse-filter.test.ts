@@ -1,29 +1,48 @@
+import { createTestingPinia } from '@pinia/testing';
+import { setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+beforeEach(() => {
+	setActivePinia(
+		createTestingPinia({
+			createSpy: vi.fn,
+			initialState: {
+				currentUser: {
+					first_name: 'john',
+					role: {
+						id: '1',
+						name: 'admin',
+					},
+				},
+			},
+		})
+	);
+});
+
 import { useUserStore } from '@/stores/user';
-import { describe, expect, it } from 'vitest';
 import { parseFilter } from './parse-filter';
 
 describe('parse-filter', () => {
 	it('Should return filter with populated variables', () => {
 		const userStore = useUserStore();
+		expect(userStore.currentUser).toHaveProperty('first_name', 'john');
 
-		userStore.currentUser = {
-			name: 'john',
-			role: {
-				id: 1,
-				name: 'admin',
-			},
-		} as any;
+		userStore.currentUser = Object.assign({}, userStore.currentUser, {
+			org: {
+				name: 'Directus',
+			}
+		});
 
 		const filter = {
-			role: { _eq: '$CURRENT_ROLE.id' },
-			user: { _eq: '$CURRENT_USER.name' },
+			role: { _in: ["$CURRENT_ROLE", '2'] },
+			orgName: { _eq: '$CURRENT_USER.org.name' },
 		};
 
 		const parsedFilter = parseFilter(filter);
 
 		expect(parsedFilter).toEqual({
-			role: { _eq: 1 },
-			user: { _eq: 'john' },
+			role: { _in: ['1', '2'] },
+			orgName: { _eq: 'john' },
 		});
 	});
 });
