@@ -233,6 +233,7 @@ const flow = computed<FlowRaw | undefined>({
 		if (!existing) return undefined;
 
 		return merge({}, existing, {
+			status: stagedFlow.value?.status ?? existing.status,
 			operation: stagedFlow.value?.operation ?? existing.operation,
 			operations: stagedFlow.value?.operations ?? existing.operations,
 		});
