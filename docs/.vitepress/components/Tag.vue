@@ -31,4 +31,8 @@ const tagProps = computed(() => (props.href ? { href: props.href } : {}));
 	padding: 0.25em 0.75em;
 	border-radius: 8px;
 }
+.dark .badge {
+	color: var(--vp-c-purple);
+	background: var(--vp-c-purple-dimm-3);
+}
 </style>

@@ -123,6 +123,9 @@ function getTag(person: Contributor) {
 	text-transform: capitalize;
 	color: var(--vp-c-gray);
 }
+.dark .date {
+	color: var(--vp-c-gray-light-1);
+}
 .wrapper {
 	border: 1px solid var(--vp-c-divider);
 	border-radius: 8px;

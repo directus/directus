@@ -66,6 +66,10 @@ defineProps<{
 	transition: scale 150ms ease-out;
 }
 
+.dark .image img {
+	filter: brightness(0.9);
+}
+
 .heading {
 	font-weight: 600;
 	margin-top: 12px;
