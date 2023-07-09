@@ -1,19 +1,8 @@
-import type { HeadObjectCommandOutput } from '@aws-sdk/client-s3';
-import {
-	CopyObjectCommand,
-	DeleteObjectCommand,
-	GetObjectCommand,
-	HeadObjectCommand,
-	ListObjectsV2Command,
-	S3Client,
-} from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
-import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
+import { StorageClient } from '@supabase/storage-js';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
-	randBoolean,
 	randGitBranch as randBucket,
 	randDirectoryPath,
 	randDomainName,
@@ -28,17 +17,16 @@ import {
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import type { DriverS3Config } from './index.js';
-import { DriverS3 } from './index.js';
+import type { DriverSupabaseConfig } from './index.js';
+import { DriverSupabase } from './index.js';
 
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
-vi.mock('@aws-sdk/client-s3');
-vi.mock('@aws-sdk/lib-storage');
+vi.mock('@supabase/storage-js');
 vi.mock('node:path');
 
 let sample: {
-	config: Required<DriverS3Config>;
+	config: Required<DriverSupabaseConfig>;
 	path: {
 		input: string;
 		inputFull: string;
@@ -60,20 +48,17 @@ let sample: {
 	};
 };
 
-let driver: DriverS3;
+let driver: DriverSupabase;
 
 beforeEach(() => {
 	sample = {
 		config: {
-			key: randAlphaNumeric({ length: 20 }).join(''),
-			secret: randAlphaNumeric({ length: 40 }).join(''),
+			serviceRole: randAlphaNumeric({ length: 40 }).join(''),
 			bucket: randBucket(),
-			acl: randWord(),
-			serverSideEncryption: randWord(),
+			projectId: randAlphaNumeric({ length: 10 }).join(''),
 			root: randDirectoryPath(),
 			endpoint: randDomainName(),
-			region: randWord(),
-			forcePathStyle: randBoolean(),
+			resumableUpload: false,
 		},
 		path: {
 			input: randUnique() + randFilePath(),
@@ -96,18 +81,10 @@ beforeEach(() => {
 		},
 	};
 
-	driver = new DriverS3({
-		key: sample.config.key,
-		secret: sample.config.secret,
+	driver = new DriverSupabase({
+		serviceRole: sample.config.serviceRole,
 		bucket: sample.config.bucket,
-	});
-
-	driver['fullPath'] = vi.fn().mockImplementation((input) => {
-		if (input === sample.path.src) return sample.path.srcFull;
-		if (input === sample.path.dest) return sample.path.destFull;
-		if (input === sample.path.input) return sample.path.inputFull;
-
-		return '';
+		projectId: sample.config.projectId,
 	});
 });
 
@@ -116,26 +93,26 @@ afterEach(() => {
 });
 
 describe('#constructor', () => {
-	let getClientBackup: (typeof DriverS3.prototype)['getClient'];
-	let sampleClient: S3Client;
+	let getClientBackup: (typeof DriverSupabase.prototype)['getClient'];
+	let sampleClient: StorageClient;
 
 	beforeEach(() => {
-		getClientBackup = DriverS3.prototype['getClient'];
-		sampleClient = {} as S3Client;
-		DriverS3.prototype['getClient'] = vi.fn().mockReturnValue(sampleClient);
+		getClientBackup = DriverSupabase.prototype['getClient'];
+		sampleClient = {} as StorageClient;
+		DriverSupabase.prototype['getClient'] = vi.fn().mockReturnValue(sampleClient);
 	});
 
 	afterEach(() => {
-		DriverS3.prototype['getClient'] = getClientBackup;
+		DriverSupabase.prototype['getClient'] = getClientBackup;
 	});
 
 	test('Saves passed config to local property', () => {
-		const driver = new DriverS3(sample.config);
+		const driver = new DriverSupabase(sample.config);
 		expect(driver['config']).toBe(sample.config);
 	});
 
 	test('Creates shared client', () => {
-		const driver = new DriverS3(sample.config);
+		const driver = new DriverSupabase(sample.config);
 		expect(driver['getClient']).toHaveBeenCalledOnce();
 		expect(driver['client']).toBe(sampleClient);
 	});
@@ -149,9 +126,8 @@ describe('#constructor', () => {
 
 		vi.mocked(normalizePath).mockReturnValue(mockRoot);
 
-		const driver = new DriverS3({
-			key: sample.config.key,
-			secret: sample.config.secret,
+		const driver = new DriverSupabase({
+			serviceRole: sample.config.serviceRole,
 			bucket: sample.config.bucket,
 			root: sample.config.root,
 		});
@@ -162,139 +138,63 @@ describe('#constructor', () => {
 });
 
 describe('#getClient', () => {
-	// The constructor calls getClient(), so we don't have to call it separately
-
-	test('Throws error if key defined but secret missing', () => {
+	test('Throws error if serviceRole is missing', () => {
 		try {
-			new DriverS3({ key: 'key', bucket: 'bucket' });
+			new DriverSupabase({ bucket: 'bucket' } as any);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('Both `serviceRole` and `secret` are required when defined');
+		}
+	});
+
+	test('Throws error if bucket missing', () => {
+		try {
+			new DriverSupabase({ serviceRole: 'key' } as any);
+		} catch (err: any) {
+			expect(err).toBeInstanceOf(Error);
+			expect(err.message).toBe('Both `serviceRole` and `secret` are required when defined');
+		}
+	});
+
+	test('Throws error if projectId and endpoint are both missing', () => {
+		try {
+			new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket' });
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe('Both `key` and `secret` are required when defined');
 		}
 	});
 
-	test('Throws error if secret defined but key missing', () => {
-		try {
-			new DriverS3({ secret: 'secret', bucket: 'bucket' });
-		} catch (err: any) {
-			expect(err).toBeInstanceOf(Error);
-			expect(err.message).toBe('Both `key` and `secret` are required when defined');
-		}
+	test('Is valid if projectId is given', () => {
+		const projectId = 'project';
+		const driver = new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', projectId });
+		expect(driver).toBeInstanceOf(DriverSupabase);
+		expect(driver['endpoint']).toEqual(`https://${projectId}.supabase.co/storage/v1`);
 	});
 
-	test('Creates S3Client without key / secret (based on machine config)', () => {
-		const driver = new DriverS3({ bucket: 'bucket' });
-
-		expect(S3Client).toHaveBeenCalledWith({ requestHandler: expect.any(NodeHttpHandler) });
-
-		expect(driver['client']).toBeInstanceOf(S3Client);
+	test('Is valid if endpoint is given', () => {
+		const endpoint = 'https://example.com';
+		const driver = new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket', endpoint });
+		expect(driver).toBeInstanceOf(DriverSupabase);
+		expect(driver['endpoint']).toEqual(endpoint);
 	});
 
-	test('Creates S3Client with key / secret configuration', () => {
-		expect(S3Client).toHaveBeenCalledWith({
-			credentials: {
-				accessKeyId: sample.config.key,
-				secretAccessKey: sample.config.secret,
-			},
-			requestHandler: expect.any(NodeHttpHandler),
+	test('Creates storage client', () => {
+		expect(StorageClient).toHaveBeenCalledWith(sample.config.endpoint, {
+			apikey: sample.config.serviceRole,
+			Authorization: `Bearer ${sample.config.serviceRole}`,
 		});
 
-		expect(driver['client']).toBeInstanceOf(S3Client);
-	});
-
-	test('Sets http endpoints', () => {
-		const sampleDomain = randDomainName();
-		const sampleHttpEndpoint = `http://${sampleDomain}`;
-
-		new DriverS3({
-			key: sample.config.key,
-			secret: sample.config.secret,
-			bucket: sample.config.bucket,
-			endpoint: sampleHttpEndpoint,
-		});
-
-		expect(S3Client).toHaveBeenCalledWith({
-			endpoint: {
-				hostname: sampleDomain,
-				protocol: 'http:',
-				path: '/',
-			},
-			credentials: {
-				accessKeyId: sample.config.key,
-				secretAccessKey: sample.config.secret,
-			},
-			requestHandler: expect.any(NodeHttpHandler),
-		});
-	});
-
-	test('Sets https endpoints', () => {
-		const sampleDomain = randDomainName();
-		const sampleHttpEndpoint = `https://${sampleDomain}`;
-
-		new DriverS3({
-			key: sample.config.key,
-			secret: sample.config.secret,
-			bucket: sample.config.bucket,
-			endpoint: sampleHttpEndpoint,
-		});
-
-		expect(S3Client).toHaveBeenCalledWith({
-			endpoint: {
-				hostname: sampleDomain,
-				protocol: 'https:',
-				path: '/',
-			},
-			credentials: {
-				accessKeyId: sample.config.key,
-				secretAccessKey: sample.config.secret,
-			},
-			requestHandler: expect.any(NodeHttpHandler),
-		});
-	});
-
-	test('Sets region', () => {
-		new DriverS3({
-			key: sample.config.key,
-			secret: sample.config.secret,
-			bucket: sample.config.bucket,
-			region: sample.config.region,
-		});
-
-		expect(S3Client).toHaveBeenCalledWith({
-			region: sample.config.region,
-			credentials: {
-				accessKeyId: sample.config.key,
-				secretAccessKey: sample.config.secret,
-			},
-			requestHandler: expect.any(NodeHttpHandler),
-		});
-	});
-
-	test('Sets force path style', () => {
-		new DriverS3({
-			key: sample.config.key,
-			secret: sample.config.secret,
-			bucket: sample.config.bucket,
-			forcePathStyle: sample.config.forcePathStyle,
-		});
-
-		expect(S3Client).toHaveBeenCalledWith({
-			forcePathStyle: sample.config.forcePathStyle,
-			credentials: {
-				accessKeyId: sample.config.key,
-				secretAccessKey: sample.config.secret,
-			},
-			requestHandler: expect.any(NodeHttpHandler),
-		});
+		expect(driver['client']).toBeInstanceOf(StorageClient);
 	});
 });
 
 describe('#fullPath', () => {
 	test('Returns normalized joined path', () => {
-		const driver = new DriverS3({
-			key: sample.config.key,
-			secret: sample.config.secret,
+		const driver = new DriverSupabase({
+			serviceRole: sample.config.serviceRole,
 			bucket: sample.config.bucket,
+			endpoint: sample.config.endpoint,
 		});
 
 		vi.mocked(join).mockReturnValue(sample.path.inputFull);
