@@ -52,9 +52,12 @@ export class DriverSupabase implements Driver {
 		return this.client.from(this.config.bucket);
 	}
 
+	private fullPath(filepath: string) {
+		return normalizePath(join(this.root, filepath));
+	}
+
 	private getAuthenticatedUrl(filepath: string) {
-		const fullPath = normalizePath(join(this.root, filepath));
-		return `${this.endpoint}/object/authenticated/${this.config.bucket}/${fullPath}`
+		return `${this.endpoint}/object/authenticated/${this.config.bucket}/${this.fullPath(filepath)}`
 	}
 
 	async read(filepath: string, range?: Range) {
