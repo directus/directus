@@ -461,11 +461,6 @@ open_file_in_tab: Apri il file in una nuova scheda
 start_export: Avvia l'esportazione
 not_available_for_local_downloads: Non disponibile per i download locali
 exporting_all_items_in_collection: Esportazione di tutti i {total} elementi in {collection}.
-exporting_limited_items_in_collection: Esportazione di {limit} su {total} elementi in {collection}.
-exporting_no_items_to_export: Nessun elemento da esportare. Modifica la configurazione di esportazione qui sotto.
-exporting_download_hint: Una volta completato, questo file {format} verrà automaticamente scaricato sul tuo dispositivo.
-exporting_batch_hint: Questa esportazione verrà elaborata in batch e una volta completata il file {format} verrà salvato nella libreria file.
-exporting_batch_hint_forced: A causa del gran numero di elementi questa esportazione deve essere elaborata in batch e una volta completata il file {format} verrà salvato nella libreria file.
 collection_key: Chiave Di Raccolta
 name: Nome
 primary_key_field: Campo Chiave Primaria
@@ -2148,6 +2143,7 @@ operations:
     recipient_placeholder: Inserisci un UUID...
     recipient_note: Aggiungi l'UUID del'utente e premi invio...
     message: Messaggio
+    subject: Oggetto
   request:
     name: URL webhook / chiamata
     description: 'Fai una chiamata a un URL'
