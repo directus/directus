@@ -469,11 +469,6 @@ open_file_in_tab: Otvori datoteku u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
-exporting_limited_items_in_collection: Izvoz {limit} od {total} stavki unutar {collection}.
-exporting_no_items_to_export: Nema stavki za izvoz. Podesite konfiguraciju izvoza u nastavku.
-exporting_download_hint: Nakon dovršetka, {format} tip datoteke automatski će se preuzeti na vaš uređaj.
-exporting_batch_hint: Ovaj će se izvoz obraditi u serijama, a nakon dovršetka, {format} datoteka bit će spremljena u biblioteku datoteka.
-exporting_batch_hint_forced: Zbog velikog broja stavki, ovaj izvoz se mora obraditi u serijama, a nakon dovršetka, {format} datoteka bit će spremljena u biblioteku datoteka.
 collection_key: Ključ zbirke
 name: Naziv
 primary_key_field: Polje primarnog ključa
@@ -1465,7 +1460,6 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
-weeks: { }
 report_error: Prijavi grešku
 start: Započni
 table: Tablica
@@ -2157,6 +2151,7 @@ operations:
     recipient_placeholder: Unesite UUID...
     recipient_note: Dodajte UUID korisnika i pritisnite Enter...
     message: Poruka
+    subject: Predmet
   request:
     name: Web dojavnik / URL zahtjeva
     description: 'Pošaljite zahtjev na URL'
