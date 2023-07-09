@@ -1573,6 +1573,8 @@ interfaces:
     include_seconds: Include Seconds
     set_to_now: Set to Now
     use_24: Use 24-Hour Format
+    display_set_to_now: Display "Set to Now"
+    display_done: Display "Done"
     placeholder: Choose a datetime...
   system-fields:
     select_a_collection: Select a Collection

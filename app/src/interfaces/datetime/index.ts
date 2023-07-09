@@ -44,6 +44,30 @@ export default defineInterface({
 					default_value: true,
 				},
 			},
+			{
+				field: 'displaySetToNow',
+				name: '$t:interfaces.datetime.display_set_to_now',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+				},
+				schema: {
+					default_value: true,
+				},
+			},
+			{
+				field: 'displayDone',
+				name: '$t:interfaces.datetime.display_done',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+				},
+				schema: {
+					default_value: false,
+				},
+			},
 		];
 	},
 	recommendedDisplays: ['datetime'],

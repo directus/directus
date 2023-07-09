@@ -25,6 +25,8 @@
 			:disabled="disabled"
 			:include-seconds="includeSeconds"
 			:use-24="use24"
+			:display-set-to-now="displaySetToNow"
+			:display-done="displayDone"
 			:model-value="value"
 			@update:model-value="$emit('input', $event)"
 			@close="dateTimeMenu?.deactivate"
@@ -45,9 +47,12 @@ const props = withDefaults(
 		disabled?: boolean;
 		includeSeconds?: boolean;
 		use24?: boolean;
+		displaySetToNow?: boolean;
+		displayDone?: boolean;
 	}>(),
 	{
 		use24: true,
+		displaySetToNow: true,
 	}
 );
 

@@ -17,6 +17,8 @@ interface Props {
 	disabled?: boolean;
 	includeSeconds?: boolean;
 	use24?: boolean;
+	displaySetToNow?: boolean;
+	displayDone?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,6 +26,8 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 	includeSeconds: false,
 	use24: true,
+	displaySetToNow: false,
+	displayDone: true,
 });
 
 const emit = defineEmits(['update:modelValue', 'close']);
@@ -77,12 +81,15 @@ const defaultOptions = {
 		emitValue(selectedDate);
 	},
 	onReady(_selectedDates: Date[], _dateStr: string, instance: Flatpickr.Instance) {
-		const setToNowButton: HTMLElement = document.createElement('button');
-		setToNowButton.innerHTML = t('interfaces.datetime.set_to_now');
-		setToNowButton.classList.add('set-to-now-button');
-		setToNowButton.tabIndex = -1;
-		setToNowButton.addEventListener('click', setToNow);
-		instance.calendarContainer.appendChild(setToNowButton);
+		if (props.displaySetToNow) {
+			const setToNowButton = createCustomButton(t('interfaces.datetime.set_to_now'), props.displayDone, setToNow);
+			instance.calendarContainer.appendChild(setToNowButton);
+		}
+
+		if (props.displayDone) {
+			const doneButton = createCustomButton(t('done'), props.displaySetToNow, close);
+			instance.calendarContainer.appendChild(doneButton);
+		}
 
 		if (!props.use24) {
 			instance.amPM?.addEventListener('keyup', enterToClose);
@@ -133,8 +140,22 @@ function setToNow() {
 
 function enterToClose(e: any) {
 	if (e.key !== 'Enter') return;
+	close();
+}
+
+function close() {
 	flatpickr?.close();
 	emit('close');
+}
+
+function createCustomButton(innerHtml: string, isHalfWidth: boolean, onClick: () => void): HTMLElement {
+	const button: HTMLElement = document.createElement('button');
+	button.innerHTML = innerHtml;
+	button.classList.add('custom-button');
+	isHalfWidth && button.classList.add('half-width');
+	button.tabIndex = -1;
+	button.addEventListener('click', onClick);
+	return button;
 }
 </script>
 
