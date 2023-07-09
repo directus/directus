@@ -11,10 +11,11 @@ export type DriverSupabaseConfig = {
 	bucket: string;
 	serviceRole: string;
 	projectId?: string;
-	// Allows a custom supabase endpoint to be set
+	// Allows a custom Supabase endpoint incase self-hosting
 	endpoint?: string;
 	root?: string;
-	simpleUpload?: boolean;
+	// NOTE: Still in beta
+	resumableUpload?: boolean;
 };
 
 export class DriverSupabase implements Driver {
@@ -26,10 +27,6 @@ export class DriverSupabase implements Driver {
 		this.config = config;
 		this.client = this.getClient();
 		this.root = this.config.root ? normalizePath(this.config.root, { removeLeading: true }) : '';
-
-		if (this.config.simpleUpload === false) {
-			console.warn('Chunked upload is still supabase beta');
-		}
 	}
 
 	private getClient() {
@@ -55,12 +52,8 @@ export class DriverSupabase implements Driver {
 		return this.client.from(this.config.bucket);
 	}
 
-	private fullPath(filepath: string) {
-		return normalizePath(join(this.root, filepath));
-	}
-
 	private getAuthenticatedUrl(filepath: string) {
-		const fullPath = this.fullPath(filepath);
+		const fullPath = normalizePath(join(this.root, filepath));
 		return `${this.endpoint}/object/authenticated/${this.config.bucket}/${fullPath}`
 	}
 
@@ -126,20 +119,20 @@ export class DriverSupabase implements Driver {
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
-		if (this.config.simpleUpload !== false) {
+		if (this.config.resumableUpload) {
+			await this.resumableUpload(filepath, content, type);
+		} else {
 			await this.bucket.upload(filepath, content, {
 				contentType: type ?? '',
 				cacheControl: '3600',
 				upsert: true,
 				duplex: 'half'
 			});
-		} else {
-			await this.chunkUpload(filepath, content, type);
 		}
 	}
 
 	// https://supabase.com/docs/guides/storage/uploads#resumable-upload
-	async chunkUpload(filepath: string, content: Readable, type?: string) {
+	async resumableUpload(filepath: string, content: Readable, type?: string) {
 		const endpoint = normalizePath(join(this.endpoint, '/upload/resumable'));
 
 		await new Promise<void>((resolve, reject) => {
@@ -158,17 +151,14 @@ export class DriverSupabase implements Driver {
 					contentType: type ?? '',
 					cacheControl: '3600',
 				},
-				chunkSize: 6 * 1024 * 1024, // NOTE: it must be set to 6MB (for now) do not change it
+				// NOTE: Supabase only supports 6MB chunks (for now), so it must be set to 6MB
+				chunkSize: 6 * 1024 * 1024, 
 				onError(error) {
 					reject(error)
 				},
 				onSuccess() {
 					resolve()
 				},
-				// onProgress(bytesUploaded, bytesTotal) {
-				// 	const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2)
-				// 	console.log(bytesUploaded, bytesTotal, percentage + '%')
-				// },
 			})
 	
 			// Check if there are any previous uploads to continue.
@@ -178,7 +168,6 @@ export class DriverSupabase implements Driver {
 					upload.resumeFromPreviousUpload(previousUploads[0])
 				}
 	
-				// Start the upload
 				upload.start()
 			})
 		})
