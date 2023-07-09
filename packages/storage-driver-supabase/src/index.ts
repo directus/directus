@@ -2,17 +2,19 @@ import { StorageClient, } from '@supabase/storage-js';
 import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { Upload } from 'tus-js-client'
+import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
 
 export type DriverSupabaseConfig = {
 	bucket: string;
-	secret: string;
+	serviceRole: string;
 	projectId?: string;
 	// Allows a custom supabase endpoint to be set
 	endpoint?: string;
 	root?: string;
+	simpleUpload?: boolean;
 };
 
 export class DriverSupabase implements Driver {
@@ -24,21 +26,24 @@ export class DriverSupabase implements Driver {
 		this.config = config;
 		this.client = this.getClient();
 		this.root = this.config.root ? normalizePath(this.config.root, { removeLeading: true }) : '';
-	}
 
+		if (this.config.simpleUpload === false) {
+			console.warn('Chunked upload is still supabase beta');
+		}
+	}
 
 	private getClient() {
 		if (!this.config.projectId && !this.config.endpoint) {
-			throw new Error('`projectId` or `endpoint` is required');
+			throw new Error('`project_id` or `endpoint` is required');
 		}
 
-		if (!this.config.secret || !this.config.bucket) {
-			throw new Error('`secret` and `bucket` are required');
+		if (!this.config.serviceRole || !this.config.bucket) {
+			throw new Error('`service_role` and `bucket` are required');
 		}
 
 		return new StorageClient(this.endpoint, {
-			apikey: this.config.secret,
-			Authorization: `Bearer ${this.config.secret}`,
+			apikey: this.config.serviceRole,
+			Authorization: `Bearer ${this.config.serviceRole}`,
 		});	
 	}
 
@@ -60,13 +65,17 @@ export class DriverSupabase implements Driver {
 	}
 
 	async read(filepath: string, range?: Range) {
-		const response = await fetch(this.getAuthenticatedUrl(filepath), {
-			method: 'GET',
-			headers: {
-				Authorization: `Bearer ${this.config.secret}` ,
-				Range: range ? `bytes=${range.start ?? ''}-${range.end ?? ''}` : undefined,
-			}
-		});
+		const requestInit: RequestInit = { method: 'GET' };
+
+		requestInit.headers = {
+			Authorization: `Bearer ${this.config.serviceRole}` ,
+		};
+
+		if (range) {
+			requestInit.headers['Range'] = `bytes=${range.start ?? ''}-${range.end ?? ''}`;
+		}
+
+		const response = await fetch(this.getAuthenticatedUrl(filepath), requestInit);
 
 		if (response.status >= 400 || !response.body) {
 			throw new Error(`No stream returned for file "${filepath}"`);
@@ -79,9 +88,13 @@ export class DriverSupabase implements Driver {
 		const response = await fetch(this.getAuthenticatedUrl(filepath), {
 			method: 'HEAD',
 			headers: {
-				Authorization: `Bearer ${this.config.secret}` ,
+				Authorization: `Bearer ${this.config.serviceRole}` ,
 			}
 		});
+
+		if (response.status >= 400) {
+			throw new Error('File not found')
+		}
 
 		return response.headers;
 	}
@@ -90,8 +103,8 @@ export class DriverSupabase implements Driver {
 		const headers = await this.head(filepath);
 
 		return {
-			size: parseInt(headers['content-length'] || ''),
-			modified: new Date(headers['last-modified'] || ''),
+			size: parseInt(headers.get('content-length') || ''),
+			modified: new Date(headers.get('last-modified') || ''),
 		};
 	}
 
@@ -112,9 +125,21 @@ export class DriverSupabase implements Driver {
 		await this.bucket.copy(src, dest);
 	}
 
-	// Chunked upload
-	// https://supabase.com/docs/guides/storage/uploads#resumable-upload
 	async write(filepath: string, content: Readable, type?: string) {
+		if (this.config.simpleUpload !== false) {
+			await this.bucket.upload(filepath, content, {
+				contentType: type ?? '',
+				cacheControl: '3600',
+				upsert: true,
+				duplex: 'half'
+			});
+		} else {
+			await this.chunkUpload(filepath, content, type);
+		}
+	}
+
+	// https://supabase.com/docs/guides/storage/uploads#resumable-upload
+	async chunkUpload(filepath: string, content: Readable, type?: string) {
 		const endpoint = normalizePath(join(this.endpoint, '/upload/resumable'));
 
 		await new Promise<void>((resolve, reject) => {
@@ -122,14 +147,15 @@ export class DriverSupabase implements Driver {
 				endpoint,
 				retryDelays: [0, 3000, 5000, 10000, 20000],
 				headers: {
-					authorization: `Bearer ${this.config.secret}`,
-					'x-upsert': 'true', // optionally set upsert to true to overwrite existing files
+					Authorization: `Bearer ${this.config.serviceRole}`,
+					'x-upsert': 'true',
 				},
+				uploadLengthDeferred: true,
 				uploadDataDuringCreation: true,
 				metadata: {
 					bucketName: this.config.bucket,
 					objectName: filepath,
-					contentType: type,
+					contentType: type ?? '',
 					cacheControl: '3600',
 				},
 				chunkSize: 6 * 1024 * 1024, // NOTE: it must be set to 6MB (for now) do not change it
@@ -148,7 +174,7 @@ export class DriverSupabase implements Driver {
 			// Check if there are any previous uploads to continue.
 			return upload.findPreviousUploads().then(function (previousUploads) {
 				// Found previous uploads so we select the first one.
-				if (previousUploads.length) {
+				if (previousUploads[0]) {
 					upload.resumeFromPreviousUpload(previousUploads[0])
 				}
 	
@@ -168,14 +194,17 @@ export class DriverSupabase implements Driver {
 		let itemCount = 0;
 
 		do {
-			const { data } = await this.bucket.list(this.fullPath(prefix), { limit, offset }, {})
+			const { data, error } = await this.bucket.list(this.root, { limit, offset, search: prefix }, {})
+
+			if (!data || error) {
+				break;
+			}
 
 			itemCount = data.length;
 			offset += itemCount;
 
 			for (const item of data) {
-				// TODO: Check if should be id or name
-				yield item.id;
+				yield item.name;
 			}
 		} while (itemCount === limit);
 	}
