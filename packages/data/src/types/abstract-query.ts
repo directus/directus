@@ -185,7 +185,7 @@ export interface AbstractQueryModifiers {
 }
 
 interface AbstractQueryModifierNode {
-	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition' | 'negate';
+	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition' | 'negate' | 'quantifier';
 }
 
 /**
@@ -310,19 +310,38 @@ export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
  * }
  * ```
  */
-export type AbstractQueryFilterNode = AbstractQueryNodeLogical | AbstractQueryNodeNegate | AbstractQueryNodeCondition;
+export type AbstractQueryFilterNode =
+	| AbstractQueryNodeLogical
+	| AbstractQueryNodeNegate
+	| AbstractQueryQuantifierNode
+	| AbstractQueryNodeCondition;
 
 export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
 
 	operator: 'and' | 'or';
 
-	/** the values for the the operation. */
+	/** the values for the operation. */
 	childNodes: AbstractQueryFilterNode[];
 }
 
 export interface AbstractQueryNodeNegate extends AbstractQueryModifierNode {
 	type: 'negate';
+
+	/** the values for the operation. */
+	childNode: AbstractQueryFilterNode;
+}
+
+export interface AbstractQueryQuantifierNode extends AbstractQueryModifierNode {
+	type: 'quantifier';
+
+	operator: 'every' | 'some';
+
+	/** The o2m field that the every/some should be applied on */
+	target: AbstractQueryFieldNodeRelatedOneToMany | AbstractQueryFieldNodeRelatedOneToAny;
+
+	/** An alias to reference the o2m item */
+	alias: string;
 
 	/** the values for the the operation. */
 	childNode: AbstractQueryFilterNode;
@@ -330,6 +349,8 @@ export interface AbstractQueryNodeNegate extends AbstractQueryModifierNode {
 
 /**
  * Used to set conditions on a query. The item in question needs to match all conditions to be returned.
+ * @TODO support for eq null
+ *
  * @example
  * ```
  * {

@@ -106,17 +106,29 @@ export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
 export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
 	type: 'condition';
 
-	/* value which will be compared to another value or expression. Functions will be supported soon. */
+	/* value which will be compared to another value or expression. */
 	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 
 	/* an abstract comparator */
-	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in' | 'contains' | 'starts_with' | 'ends_with' | 'intersects';
+	operation:
+		| 'eq'
+		| 'lt'
+		| 'lte'
+		| 'gt'
+		| 'gte'
+		| 'in'
+		| 'contains'
+		| 'starts_with'
+		| 'ends_with'
+		| 'intersects'
+		| 'every'
+		| 'some';
 
 	/* indicated of the condition should be negated using NOT */
 	negate: boolean;
 
-	/* a value to which the target will be compared */
-	compareTo: ValueNode | AbstractSqlQuerySelectNode;
+	/** a value to which the target will be compared */
+	compareTo: ValueNode | AbstractSqlQuerySelectNode | AbstractSqlQuery;
 }
 
 export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
