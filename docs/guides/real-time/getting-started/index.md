@@ -14,10 +14,14 @@ Subscriptions.
   title="WebSockets"
   h="2"
   text="Learn how to use Directus' WebSockets Interface."
-  url="/guides/real-time/getting-started/websockets" />
+  url="/guides/real-time/getting-started/websockets"
+  add-margin
+/>
 
 <Card
   title="GraphQL Subscriptions"
   h="2"
   text="Learn how to use GraphQL Subscriptions."
-  url="/guides/real-time/getting-started/graphql" />
+  url="/guides/real-time/getting-started/graphql"
+  add-margin
+/>

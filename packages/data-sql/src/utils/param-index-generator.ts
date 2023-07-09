@@ -1,7 +1,7 @@
 /**
  * Generator function to generate parameter indices.
  */
-export function* parameterIndexGenerator(): Generator<number> {
+export function* parameterIndexGenerator(): Generator<number, never, never> {
 	let index = 0;
 
 	while (true) {

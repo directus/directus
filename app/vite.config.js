@@ -76,7 +76,7 @@ function getExtensionsRealPaths() {
 				.readdirSync(EXTENSIONS_PATH)
 				.flatMap((typeDir) => {
 					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-					if (!fs.lstatSync(extensionTypeDir).isDirectory()) return;
+					if (!fs.statSync(extensionTypeDir).isDirectory()) return;
 					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
 				})
 				.filter((v) => v)
