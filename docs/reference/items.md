@@ -7,7 +7,7 @@ pageClass: page-reference
 # Accessing Items
 
 > Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
-> [Learn more about Items](/getting-started/glossary#items).
+> [Learn more about Items](/user-guide/overview/glossary#items).
 
 ---
 
@@ -464,9 +464,13 @@ mutation {
 
 Delete multiple existing items.
 
+### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
 ### Request Body
 
-An array of item primary keys.
+An array of item primary keys or an object containing either `keys` or `query` to select what items to update.
 
 ### Returns
 
@@ -485,7 +489,28 @@ DELETE /items/articles
 ```
 
 ```json
+// Array of primary keys
 [15, 16, 21]
+```
+
+```json
+// Object containing keys
+{
+	"keys": [15, 16, 21]
+}
+```
+
+```json
+// Object containing query
+{
+	"query": {
+		"filter": {
+			"status": {
+				"_eq": "draft"
+			}
+		}
+	}
+}
 ```
 
 ### GraphQL

@@ -80,14 +80,6 @@ create_user: Създаване на потребител
 message: Съобщение
 delete_panel: Изтриване на панела
 create_webhook: Създаване на уеб-кука
-create_translation_string: Създаване на нов превод на низ
-no_translation_string: Няма преводи на низове
-no_translation_string_copy: Все още няма низове за превод.
-translation_string_key_placeholder: Ключ на низа за превод...
-translation_string_translations_placeholder: Добавяне на нов превод
-edit_translation_string: Редакция на превода на низа
-delete_translation_string_copy: >-
-  Сигурни ли сте, че искате да изтриете превода на низа „{key}“? Действието не може да бъде отменено.
 invite_users: Покана до потребители
 invite: Поканване
 email_already_invited: Вече е изпратена покана в пощата на „{email}“
@@ -118,13 +110,6 @@ public_label: Публичен
 public_description: Контрол на позволенията към API-то, без нужда от оторизиране.
 admin_description: Първоначална администраторска роля с неограничен достъп до API и приложението.
 not_allowed: Не е позволено
-directus_version: Версия на Directus
-node_version: Версия на Node
-node_uptime: Време от старт на Node
-os_type: Тип на ОС
-os_version: Версия на ОС
-os_uptime: Време от старт на ОС
-os_totalmem: Памет на ОС
 archive: Архивиране
 archive_confirm: Сигурни ли сте, че искате да архивирате записа?
 archive_confirm_count: >-
@@ -349,7 +334,7 @@ revision_delta_reverted: Възстановен
 revision_delta_update_message: Това поле бе обновено, но поради мерки за сигурност стойността му е прикрита.
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
-presentation_text_values_cannot_be_reimported: "Използват се презентационни текстове, стойностите не могат да бъдат импортирани наново."
+presentation_text_values_cannot_be_reimported: 'Използват се презентационни текстове, стойностите не могат да бъдат импортирани наново.'
 download_page_as_csv: 'Изтегляне като CSV'
 private_user: Частни потребители
 creation_preview: Първоначален вид
@@ -489,7 +474,6 @@ enable_select_button: Показване на бутон за избор
 allow_duplicates: Позволяване на дублирането
 comments: Коментари
 no_comments: Все още няма коментари
-click_to_expand: Натиснете за разширяване
 select_item: Избор на запис
 no_items: Няма записи
 search_items: Търсене в записите...
@@ -947,7 +931,6 @@ settings_project: Настройки на проекта
 settings_webhooks: Уеб-куки
 settings_flows: Автоматизирани процеси
 settings_presets: Заготовки и отметки
-settings_translation_strings: Преводи на низове
 one_or_more_options_are_missing: Липсват една или повече настройки
 scope: Обхват
 actions: Действия
@@ -997,7 +980,6 @@ page_help_settings_webhooks_collection: '**Преглед на уеб-куки**
 page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
 page_help_settings_flows_collection: '**Преглед на автоматизираните процеси** — Показват се всички налични автоматизирани процеси в проекта.'
 page_help_settings_flows_item: '**Детайлен изглед на автоматизиран процес** — Работен плот за управление на един или множество операции.'
-page_help_settings_translation_strings_collection: '**Преглед на преводите на низовете** — Показват се всички преводни низове в проекта.'
 page_help_users_collection: '**Потребители** — Показват се всички потребители в системата на проекта.'
 page_help_users_item: >-
   **Детайли за потребител** — Управление на информацията на вашия потребителския профил, или детайлен преглед на друг потребител.
@@ -1260,6 +1242,7 @@ field_options:
     sort_field: Избор на поле...
     accountability_divider: Профилиране
     duplication_divider: Дублиране
+    preview_divider: Преглед
   directus_files:
     title: Уникално заглавие...
     description: Незадължително описание...
@@ -1317,6 +1300,8 @@ start_collapsed: Затворена в началото
 block: Блок
 inline: Вложен
 comment: Коментиране
+live_preview:
+  new_window: Отваряне в нов прозорец
 shares: Споделяния
 unlimited_usage: Неограничено използване
 uses_left: Не е налична | Остава 1 използване | Остават {n} използвания
@@ -1679,7 +1664,6 @@ interfaces:
     input-translated-string: Преведени низове
     description: Избор или добавяне на превод на низ
     search_placeholder: Търсене...
-    new_translation_string: Нов превод на низ
   boolean:
     toggle: Превключвател
     description: Превключване между активно и неактивно състояние
@@ -1716,6 +1700,16 @@ interfaces:
     folder_note: Папка за качване на файловете. Съществуващите файлове не се променят.
     imageToken: Статичен токен за достъп
     imageToken_label: Статичния токен за достъп се добавя след URL-a на файла
+  input-block-editor:
+    tools: Лента с инструменти
+    tools_options:
+      header: Хедър
+      nestedlist: Списък
+      embed: Вграждане
+      code: Код
+      image: Изображение
+      table: Таблица
+      underline: Подчертан
   input-autocomplete-api:
     input-autocomplete-api: Поле с автоматично дописване (API)
     description: Автоматично дописване на стойности чрез външно API.
@@ -2071,7 +2065,7 @@ operations:
     message: Съобщение
   request:
     name: Уеб-кука / URL заявка
-    description: "Изпълняване на HTTP заявка до URL адрес"
+    description: 'Изпълняване на HTTP заявка до URL адрес'
     url: URL
     url_placeholder: https://example.com/example
     method: Метод

@@ -5,6 +5,7 @@ import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import UserPopover from '@/views/private/components/user-popover.vue';
 import ValueNull from '@/views/private/components/value-null.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
+import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import { App } from 'vue';
@@ -54,6 +55,7 @@ import VPagination from './v-pagination.vue';
 import VProgressCircular from './v-progress-circular.vue';
 import VProgressLinear from './v-progress-linear.vue';
 import VRadio from './v-radio.vue';
+import VResizeable from './v-resizeable.vue';
 import VSelect from './v-select/v-select.vue';
 import VSheet from './v-sheet.vue';
 import VSkeletonLoader from './v-skeleton-loader.vue';
@@ -117,6 +119,7 @@ export function registerComponents(app: App): void {
 	app.component('VProgressCircular', VProgressCircular);
 	app.component('VProgressLinear', VProgressLinear);
 	app.component('VRadio', VRadio);
+	app.component('VResizeable', VResizeable);
 	app.component('VSelect', VSelect);
 	app.component('VSheet', VSheet);
 	app.component('VSkeletonLoader', VSkeletonLoader);
@@ -147,6 +150,7 @@ export function registerComponents(app: App): void {
 	app.component('UserPopover', UserPopover);
 	app.component('ValueNull', ValueNull);
 	app.component('DrawerCollection', DrawerCollection);
+	app.component('DrawerFiles', DrawerFiles);
 	app.component('DrawerItem', DrawerItem);
 	app.component('DrawerBatch', DrawerBatch);
 }

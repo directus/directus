@@ -7,7 +7,7 @@ pageClass: page-reference
 # Collections
 
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
-> alter the schema of the database. [Learn more about Collections](/getting-started/glossary#collections).
+> alter the schema of the database. [Learn more about Collections](/user-guide/overview/glossary#collections).
 
 ---
 
@@ -87,14 +87,12 @@ The table comment.
 #### Fields
 
 This holds an array of initial fields used for the collection. You can use the same model as used in
-[Fields](/reference/system/fields) to submit fields here. You can use this to set a custom primary key type as
-well. If a primary key field is omitted, the request will auto-generate an auto-incremented primary key field named
-`id`.
+[Fields](/reference/system/fields) to submit fields here. You can use this to set a custom primary key type as well. If
+a primary key field is omitted, the request will auto-generate an auto-incremented primary key field named `id`.
 
 ::: tip
 
-["folder" collections do not hold any data](/app/data-model#sorting-grouping), hence their schema would be
-`null`.
+["folder" collections do not hold any data](/app/data-model#sorting-grouping), hence their schema would be `null`.
 
 :::
 
@@ -186,7 +184,7 @@ type Query {
 ```graphql
 query {
 	collections {
-		...
+		# ...
 	}
 }
 ```
@@ -234,7 +232,7 @@ type Query {
 ```graphql
 query {
 	collections_by_name(name: "articles") {
-		...
+		# ...
 	}
 }
 ```
@@ -304,13 +302,8 @@ type Mutation {
 
 ```graphql
 mutation {
-	create_collections_item(data: {
-		collection: "testimonials",
-		meta: {
-			icon: "format_quote"
-		}
-	}) {
-		...
+	create_collections_item(data: { collection: "testimonials", meta: { icon: "format_quote" } }) {
+		# ...
 	}
 }
 ```

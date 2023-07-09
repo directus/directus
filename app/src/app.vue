@@ -20,12 +20,12 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
-import { useAppStore } from '@/stores/app';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import { setFavicon } from '@/utils/set-favicon';
+import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
 import { StyleValue, computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';

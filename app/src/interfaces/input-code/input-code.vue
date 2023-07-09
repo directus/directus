@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { useWindowSize } from '@/composables/use-window-size';
 import CodeMirror, { ModeSpec } from 'codemirror';
-import { computed, onMounted, ref, watch } from 'vue';
+import { Ref, computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import importCodemirrorMode from './import-codemirror-mode';
 
@@ -30,7 +30,7 @@ import 'codemirror/keymap/sublime.js';
 
 const props = withDefaults(
 	defineProps<{
-		value: string | Record<string, unknown> | unknown[] | boolean | number | null;
+		value?: string | Record<string, unknown> | unknown[] | boolean | number | null;
 		disabled?: boolean;
 		altOptions?: Record<string, any>;
 		template?: string;
@@ -52,7 +52,7 @@ const { t } = useI18n();
 
 const { width } = useWindowSize();
 
-const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
+const codemirrorEl: Ref<HTMLTextAreaElement | null> = ref(null);
 let codemirror: CodeMirror.Editor | null;
 let previousContent: string | null = null;
 
@@ -99,8 +99,8 @@ onMounted(async () => {
 	}
 });
 
-const stringValue = computed<string>(() => {
-	if (props.value === null) return '';
+const stringValue = computed(() => {
+	if (props.value === null || props.value === undefined) return '';
 
 	if (props.type === 'json' || typeof props.value === 'object') {
 		return JSON.stringify(props.value, null, 4);

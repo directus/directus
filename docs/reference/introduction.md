@@ -223,7 +223,7 @@ GET /items/articles?filter[title][_eq]=Hello World
 
 **After:**
 
-```json
+```http
 SEARCH /items/articles
 
 {

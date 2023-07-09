@@ -68,11 +68,8 @@ Custom tiles to overriding the Mapbox defaults.
 `module_bar` **array**\
 What modules are enabled/added globally.
 
-`translation_strings` **array**\
-The key and translations for Translation Strings.
-
 `custom_aspect_ratios` **array**\
-Custom aspect ratios in the [image editor](/app/file-library#edit-an-image).
+Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-an-image).
 
 ```json
 {
@@ -104,15 +101,6 @@ Custom aspect ratios in the [image editor](/app/file-library#edit-an-image).
 		"basemaps": null,
 		"mapbox_key": null,
 		"module_bar": null,
-		"translation_strings": [
-			{
-				"key": "draft",
-				"translations": {
-					"de-DE": "Entwurf",
-					"en-US": "Draft"
-				}
-			}
-		],
 		"custom_aspect_ratios": [
 			{
 				"text": "16:10",

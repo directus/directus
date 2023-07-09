@@ -5,6 +5,7 @@ import { adjustDate } from './adjust-date.js';
 import { deepMap } from './deep-map.js';
 import { get } from './get-with-arrays.js';
 import { isDynamicVariable } from './is-dynamic-variable.js';
+import { parseJSON } from './parse-json.js';
 import { toArray } from './to-array.js';
 
 type ParseFilterContext = {
@@ -102,6 +103,10 @@ function parseFilterEntry(
 		return { [key]: value.map((filter: Filter) => parseFilterRecursive(filter, accountability, context)) };
 	} else if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 		return { [key]: toArray(value).flatMap((value) => parseFilterValue(value, accountability, context)) } as Filter;
+	} else if (['_intersects', '_nintersects', '_intersects_bbox', '_nintersects_bbox'].includes(String(key))) {
+		// Geometry filters always expect to operate against a GeoJSON object. Parse the
+		// value to JSON in case a stringified JSON blob is passed
+		return { [key]: parseFilterValue(typeof value === 'string' ? parseJSON(value) : value, accountability, context) };
 	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
 		return { [key]: parseFilterValue(value, accountability, context) };
 	} else if (String(key).startsWith('item__') && isObjectLike(value)) {

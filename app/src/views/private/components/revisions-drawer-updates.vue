@@ -6,27 +6,27 @@
 			{{ t('no_relational_data') }}
 		</v-notice>
 
-		<div v-for="change in changes" :key="change.name" class="change">
-			<div class="type-label">{{ change.name }}</div>
-			<template v-if="change.updated">
-				<revisions-drawer-updates-change updated :changes="change.changes" />
+		<div v-for="change in changes" :key="change!.name" class="change">
+			<div class="type-label">{{ change!.name }}</div>
+			<template v-if="change!.updated">
+				<revisions-drawer-updates-change updated :changes="change!.changes" />
 			</template>
 			<template v-else>
-				<revisions-drawer-updates-change deleted :changes="change.changes" />
-				<revisions-drawer-updates-change added :changes="change.changes" />
+				<revisions-drawer-updates-change deleted :changes="change!.changes" />
+				<revisions-drawer-updates-change added :changes="change!.changes" />
 			</template>
 		</div>
 	</div>
 </template>
 
-<script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { Revision } from '@/types/revisions';
+<script setup lang="ts">
 import { useFieldsStore } from '@/stores/fields';
-import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
-import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';
+import { Revision } from '@/types/revisions';
+import { diffArrays, diffJson, diffWordsWithSpace } from 'diff';
 import { isEqual } from 'lodash';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';
 
 const props = defineProps<{
 	revision: Revision;

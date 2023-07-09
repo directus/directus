@@ -3,7 +3,7 @@
  * expecting an item vs any other generic object.
  */
 
-import type { BaseException } from '@directus/exceptions';
+import type { DirectusError } from '@directus/errors';
 import type { EventContext } from '@directus/types';
 import type { MutationTracker } from '../services/items.js';
 
@@ -61,7 +61,7 @@ export type MutationOptions = {
 	/*
 	 * The validation error to throw right before the mutation takes place
 	 */
-	preMutationException?: BaseException | undefined;
+	preMutationError?: DirectusError | undefined;
 };
 
 export type ActionEventParams = {

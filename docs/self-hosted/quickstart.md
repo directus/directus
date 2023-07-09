@@ -1,26 +1,32 @@
 ---
 description:
-  If you're looking for the fastest way to get up-and-running with Directus, this guide will walk you through getting
-  things installed, configured, and modeled.
-readTime: 5 min read
+  If you're looking for the fastest way to get up-and-running with Directus locally, this guide will get you there in minutes.
 ---
 
-# Quickstart Guide
+# Self-Hosting Quickstart
 
-> If you're looking for the fastest way to get up-and-running with Directus, this guide will walk you through getting
-> things installed, configured, and modeled.
+<iframe style="width:100%; aspect-ratio:16/9; margin-top: 2em;" src="https://www.youtube.com/embed/J7tFWxAGkh4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-## Requirements
+## Install Docker
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/) (often included with newer Docker installations)
+You should have [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
-## 1. Installation
+:::info What Is Docker?
 
-You can use the following configuration to get started using Docker Compose. Make sure to change all sensitive values
-like `KEY`, `SECRET`, `ADMIN_PASSWORD`, _etc._
+Docker is a developer tool that allows software-creators to distribute their work along with all dependencies and
+required environment settings. This means that applications can run reliably and consistently, making it the perfect way
+to use Directus both locally and in-production.
 
-```yaml
+As soon as there are new releases of Directus, we publish them on
+[Docker Hub](https://hub.docker.com/r/directus/directus).
+
+:::
+
+## Create a Docker Compose File
+
+Create a new empty directory, and open it in a text editor. Create a `docker-compose.yml` file and paste the following:
+
+```yml
 version: '3'
 services:
   directus:
@@ -28,129 +34,39 @@ services:
     ports:
       - 8055:8055
     volumes:
-      - ./uploads:/directus/uploads
       - ./database:/directus/database
+      - ./uploads:/directus/uploads
     environment:
-      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
-      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
-
-      DB_CLIENT: 'sqlite3'
-      DB_FILENAME: './database/data.db'
-
+      KEY: 'replace-with-random-value'
+      SECRET: 'replace-with-random-value'
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
+      WEBSOCKETS_ENABLED: true
 ```
 
-Save this in your project as a file named `docker-compose.yml` and run:
+Save the file. Let's step through it:
+
+- This file defines a single Docker container that will use the latest version of the `directus/directus` image.
+- The `ports` list maps internal port `8055` is made available to our machine using the same port number, meaning we can
+  access it from our computer's browser.
+- The`volumes` section maps internal `directus/database` and `directus/uploads` to our local file system alongside the
+  `docker-compose.yml` - meaning data is backed up outside of Docker containers.
+- The `environment` section contains any [configuration variables](/self-hosted/config-options.html) we wish to set.
+  - `KEY` and `SECRET` are required and should be long random values. `KEY` is used for telemetry and health tracking,
+    and `SECRET` is used to sign access tokens.
+  - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch.
+  - `WEBSOCKETS_ENABLED` is not required, but enables [Directus Realtime](/guides/real-time/getting-started/index.html).
+
+The volumes section is not required, but without this, our database and file uploads will be destroyed when the Docker
+container stops running. The default database is SQLite - a self-contained server-less database that stores data to a
+file.
+
+## Run Directus
+
+Run the following in your terminal:
 
 ```
-docker-compose up -d
+docker compose up
 ```
 
-::: tip More Info on Docker
-
-To learn more, visit the [Docker Guide](/self-hosted/docker-guide).
-
-:::
-
-## 2. Login to App
-
-With the server running, you're now able to login to your new Directus project and start using it.
-
-Our start command stated that the server started at port `8055`, which means we can navigate to `http://localhost:8055`
-to open Directus in the browser.
-
-Login using the admin credentials you configured during the installation in Step 1.
-
-## 3. Create a Collection
-
-Once logged in, you're greeted with the option to create your first Collection:
-
-![Directus Empty State](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/empty-state-20220217A.webp)
-
-Follow the prompts and create a Collection. For the sake of this demo, we'll be calling ours `articles`, but feel free
-to make it your own!
-
-::: tip More Info on Collections
-
-To learn more, see our documentation [Collections](/app/content/collections).
-
-:::
-
-## 4. Create a Field
-
-With the Collection created, it's time to start adding some Fields. Click the **"Create Field"** button, and select
-**"Input"**:
-
-<video autoplay playsinline muted loop controls>
-<source src="https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/add-field-20220217A.mp4" type="video/mp4" />
-</video>
-
-We'll be calling our Field `title`. While Directus offers a range of powerful field customization options, we'll be
-sticking to the defaults for now. These defaults use the "String" datatype.
-
-::: tip More Info on Fields
-
-To learn more, see our documentation on [Fields](/getting-started/glossary#fields).
-
-:::
-
-## 5. Create an Item
-
-Now that we have a Collection with a Field configured, it's time to start adding some content. Navigate to the Content
-Module (top left), and click <span mi btn>add</span> in the top-right to get started. This will take you to the
-Create/Edit Item page:
-
-![Directus Create Item](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/create-item-20220217A.webp)
-
-Once you're happy with your creation, click <span mi btn>check</span> in the top-right to save your Item to the
-database.
-
-::: tip More Info on Items
-
-To learn more, see our documentation on [Items](/app/content/items).
-
-:::
-
-## 6. Set Role/Public Permissions
-
-By default, all content entered into Directus is considered private. This means that no data will be returned by the
-API, unless requested by an authenticated user that has the correct permissions. In order to have the API return our
-items, we'll have to setup some permissions. Navigate to **Settings Module <span mi icon dark>chevron_right</span> Roles
-& Permissions**.
-
-Directus ships with a special **"Public"** role that controls what data is returned to non-authenticated users. Select
-the Public Role, find your Collection, and click the icon under the <span mi icon>visibility</span> icon (read/view
-permission) to allow the Public Role to read the Items in your Collection.
-
-![Directus Permissions](https://cdn.directus.io/docs/v9/getting-started/quickstart/quickstart-20220217A/permissions-20220217A.webp)
-
-::: tip More Info on Roles & Permissions
-
-Roles & Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting these
-up, see [Roles](/reference/system/roles) & [Permissions](/reference/system/permissions).
-
-:::
-
-## 7. Connect to the API
-
-Now that your project has some content in it, it's time to start using this content externally. Data can be accessed in
-a number of ways, including the REST API, GraphQL, the CLI, or even straight from the database. In this case, we'll use
-[the `/items/` REST API endpoint](/reference/items) to retrieve the item we just created.
-
-Use your browser or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud) to open
-`http://localhost:8055/items/articles`.
-
-And there it is! The Article Item you just created is being served in beautiful JSON, ready to be used anywhere and
-everywhere!
-
-```json
-{
-	"data": [
-		{
-			"id": 1,
-			"title": "Hello World!"
-		}
-	]
-}
-```
+Directus should now be available at http://0.0.0.0:8055

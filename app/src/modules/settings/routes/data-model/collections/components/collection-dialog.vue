@@ -30,7 +30,7 @@
 						:fields="[
 							{
 								field: 'language',
-								name: '$t:language',
+								name: t('language'),
 								type: 'string',
 								schema: {
 									default_value: 'en-US',
@@ -42,7 +42,7 @@
 							},
 							{
 								field: 'translation',
-								name: '$t:field_options.directus_collections.collection_name',
+								name: t('field_options.directus_collections.collection_name'),
 								type: 'string',
 								meta: {
 									interface: 'input',
@@ -79,15 +79,10 @@ import { useI18n } from 'vue-i18n';
 import { isEqual } from 'lodash';
 import { Collection } from '@/types/collections';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue?: boolean;
-		collection?: Collection;
-	}>(),
-	{
-		modelValue: false,
-	}
-);
+const props = defineProps<{
+	modelValue?: boolean;
+	collection?: Collection;
+}>();
 
 const emit = defineEmits(['update:modelValue']);
 

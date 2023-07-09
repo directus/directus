@@ -3,8 +3,13 @@
 		<slot />
 		<notification-item
 			v-for="(notification, index) in queue"
+			:id="notification.id"
 			:key="notification.id"
-			v-bind="notification"
+			:title="notification.title"
+			:icon="notification.icon"
+			:type="notification.type"
+			:loading="notification.loading"
+			:progress="notification.progress"
 			:tail="index === queue.length - 1"
 			:dense="sidebarOpen === false"
 			:show-close="notification.persist === true && notification.closeable !== false"
@@ -12,9 +17,9 @@
 	</transition-group>
 </template>
 
-<script lang="ts" setup>
-import { toRefs } from 'vue';
+<script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
+import { toRefs } from 'vue';
 import NotificationItem from './notification-item.vue';
 
 defineProps<{

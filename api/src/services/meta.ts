@@ -1,7 +1,7 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
-import { ForbiddenException } from '../exceptions/index.js';
+import { ForbiddenError } from '../errors/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { applyFilter, applySearch } from '../utils/apply-query.js';
 
@@ -16,7 +16,6 @@ export class MetaService {
 		this.schema = options.schema;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	async getMetaForQuery(collection: string, query: any): Promise<Record<string, any> | undefined> {
 		if (!query || !query.meta) return;
 
@@ -44,7 +43,7 @@ export class MetaService {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
-			if (!permissionsRecord) throw new ForbiddenException();
+			if (!permissionsRecord) throw new ForbiddenError();
 
 			const permissions = permissionsRecord.permissions ?? {};
 
@@ -66,7 +65,7 @@ export class MetaService {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
-			if (!permissionsRecord) throw new ForbiddenException();
+			if (!permissionsRecord) throw new ForbiddenError();
 
 			const permissions = permissionsRecord.permissions ?? {};
 

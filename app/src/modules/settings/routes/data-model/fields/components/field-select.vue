@@ -177,7 +177,6 @@ const props = withDefaults(
 		fields?: Field[];
 	}>(),
 	{
-		disabled: false,
 		fields: () => [],
 	}
 );

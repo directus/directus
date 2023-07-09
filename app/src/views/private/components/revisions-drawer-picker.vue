@@ -22,13 +22,13 @@
 	</v-menu>
 </template>
 
-<script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { computed, watch, ref } from 'vue';
+<script setup lang="ts">
 import { Revision } from '@/types/revisions';
-import { useSync } from '@directus/composables';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
+import { useSync } from '@directus/composables';
+import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
@@ -37,7 +37,7 @@ type Option = {
 
 const props = defineProps<{
 	revisions: Revision[];
-	current: number;
+	current: number | null;
 }>();
 
 const emit = defineEmits<{

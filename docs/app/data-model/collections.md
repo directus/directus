@@ -23,7 +23,8 @@ API documentation
 	<source src="https://cdn.directus.io/docs/v9/configuration/data-model/data-model-20220805/collections-20220805A.mp4" type="video/mp4" />
 </video>
 
-Collections are data tables. Typically, you access items within a collection in the [Content Module](/app/content).
+Collections are data tables. Typically, you access items within a collection in the
+[Content Module](/user-guide/content-module/content).
 
 ## System Collections
 
@@ -40,29 +41,29 @@ configure new fields on a system collection. This lets you safely customize your
 System collections are not displayed in the Content Module. The following table will go over the logic and functionality
 each system collection is responsible for, as well as where to find relevant App and API documentation.
 
-| System Collection | Purpose                                                                                                                              | APP                                                                               | API                                              |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Activity          | Tracks and stores all events within Directus, giving full accountability over everything.                                            | [Activity Log](/app/activity-log)                                       | [Activity](/reference/system/activity)           |
-| Collections       | Stores data table & configuration details each and every Collection.                                                                 | [Collections](/app/data-model/collections)                              | [Collections](/reference/system/collections)     |
-| Dashboards        | Stores dashboard configuration details and all relationally linked panels.                                                           | [Insights](/app/insights)                                                         | **N/A**                                          |
-| Fields            | Stores configuration details for each field.                                                                                         | [Fields](/app/data-model/fields)                                       | [Fields](/reference/system/fields)               |
-| Files             | This stores file location from asset storage as well as any data associated with that file.                                          | [File Library](/app/file-library)                                                 | [Files](/reference/files)                        |
-| Flows             | Stores basic logic required for Flows, which enable event-triggered task automation.                                                 | [Flows](/app/flows)                                                     | [Flows](/reference/system/flows)                 |
-| Folders           | Stores information required for Folders, which provide virtual file asset management.                                                | [Folders](/app/file-library#folders)                                              | [Folders](/reference/system/folders)             |
-| Migrations        | Used by our install/upgrade process to track when migration scripts for a specific release have been run.                            | It has no relevant app functionality.                                             | **N/A**                                          |
-| Notifications     | Stores details about in-app notifications.                                                                                           | [Module Bar](/app/overview#_1-module-bar) and [Sidebar](/app/overview#_4-sidebar) | [Notifications](/reference/system/notifications) |
-| Operations        | Stores information required for Operations, which are a part of [Flows](#flows).                                                     | [Operations](/app/flows)                                                | [Operations](/reference/system/operations)    |
-| Panels            | This stores information about individual analytics panels, which are displayed on [Dashboards](#dashboards).                         | [Insights](/app/insights)                                                         | **N/A**                                          |
-| Permissions       | This stores the access permissions configured for roles.                                                                             | [Users, Roles & Permissions](/app/users-roles-permissions)              | [Permissions](/reference/system/permissions)     |
-| Presets           | This stores details for presets and bookmarks.                                                                                       | [Presents & Bookmarks](/app/presets-bookmarks)                          | [Presets](/reference/system/presets)             |
-| Relations         | This stores information about relationships between collections.                                                                     | [Relationships](/app/data-model/relationships)                          | [Relations](/reference/system/relations)         |
-| Revisions         | Revisions are changes/edits made to Items. Directus keeps track of edits made, so you're able to revert to a previous state at will. | [Revert an Item](/app/content/items#revert-an-item)                               | [Revisions](/reference/system/revisions)         |
-| Roles             | Stores information about each role created.                                                                                          | [Users, Roles, and Permissions](/app/users-roles-permissions)           | [Roles](/reference/system/roles)                 |
-| Sessions          | Stores information about each user session, for system purposes.                                                                     | **N/A**                                                                           | **N/A**                                          |
-| Settings          | Stores all configurations made within **Settings > Project Settings**.                                                               | [Project Settings](/app/project-settings)                               | [settings](/reference/system/settings)           |
-| Shares            | Stores all information regarding data shares.                                                                                        | [Data Sharing](/app/content/shares)                                               |                                                  |
-| Users             | Stores information about each user within the platform.                                                                              | [User Directory](/app/user-directory)                                             | [Users](/reference/system/relations)             |
-| Webhooks          | Stores all information about configured webhooks.                                                                                    | [Webhooks](/app/webhooks)                                               | [Webhooks](/reference/system/relations)          |
+| System Collection | Purpose                                                                                                                              | APP                                                                                                                             | API                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Activity          | Tracks and stores all events within Directus, giving full accountability over everything.                                            | [Activity Log](/user-guide/settings/activity-log)                                                                               | [Activity](/reference/system/activity)           |
+| Collections       | Stores data table & configuration details each and every Collection.                                                                 | [Collections](/app/data-model/collections)                                                                                      | [Collections](/reference/system/collections)     |
+| Dashboards        | Stores dashboard configuration details and all relationally linked panels.                                                           | [Insights](/user-guide/insights/dashboards)                                                                                     | **N/A**                                          |
+| Fields            | Stores configuration details for each field.                                                                                         | [Fields](/app/data-model/fields)                                                                                                | [Fields](/reference/system/fields)               |
+| Files             | This stores file location from asset storage as well as any data associated with that file.                                          | [File Library](/user-guide/file-library/files)                                                                                  | [Files](/reference/files)                        |
+| Flows             | Stores basic logic required for Flows, which enable event-triggered task automation.                                                 | [Flows](/app/flows)                                                                                                             | [Flows](/reference/system/flows)                 |
+| Folders           | Stores information required for Folders, which provide virtual file asset management.                                                | [Folders](/user-guide/file-library/folders)                                                                                     | [Folders](/reference/system/folders)             |
+| Migrations        | Used by our install/upgrade process to track when migration scripts for a specific release have been run.                            | It has no relevant app functionality.                                                                                           | **N/A**                                          |
+| Notifications     | Stores details about in-app notifications.                                                                                           | [Module Bar](/user-guide/overview/data-studio-app#_1-module-bar) and [Sidebar](/user-guide/overview/data-studio-app#_4-sidebar) | [Notifications](/reference/system/notifications) |
+| Operations        | Stores information required for Operations, which are a part of [Flows](#flows).                                                     | [Operations](/app/flows/operations)                                                                                             | [Operations](/reference/system/operations)       |
+| Panels            | This stores information about individual analytics panels, which are displayed on [Dashboards](#dashboards).                         | [Insights](/user-guide/insights/panels)                                                                                         | **N/A**                                          |
+| Permissions       | This stores the access permissions configured for roles.                                                                             | [Users, Roles & Permissions](/user-guide/user-management/users-roles-permissions)                                               | [Permissions](/reference/system/permissions)     |
+| Presets           | This stores details for presets and bookmarks.                                                                                       | [Presents & Bookmarks](/user-guide/settings/presets-bookmarks)                                                                  | [Presets](/reference/system/presets)             |
+| Relations         | This stores information about relationships between collections.                                                                     | [Relationships](/app/data-model/relationships)                                                                                  | [Relations](/reference/system/relations)         |
+| Revisions         | Revisions are changes/edits made to Items. Directus keeps track of edits made, so you're able to revert to a previous state at will. | [Revert an Item](/user-guide/content-module/content/items#revert-an-item)                                                       | [Revisions](/reference/system/revisions)         |
+| Roles             | Stores information about each role created.                                                                                          | [Users, Roles, and Permissions](/user-guide/user-management/users-roles-permissions)                                            | [Roles](/reference/system/roles)                 |
+| Sessions          | Stores information about each user session, for system purposes.                                                                     | **N/A**                                                                                                                         | **N/A**                                          |
+| Settings          | Stores all configurations made within **Settings > Project Settings**.                                                               | [Project Settings](/user-guide/cloud/project-settings)                                                                          | [settings](/reference/system/settings)           |
+| Shares            | Stores all information regarding data shares.                                                                                        | [Data Sharing](/user-guide/content-module/content/shares)                                                                       |                                                  |
+| Users             | Stores information about each user within the platform.                                                                              | [User Directory](/user-guide/user-management/user-directory)                                                                    | [Users](/reference/system/relations)             |
+| Webhooks          | Stores all information about configured webhooks.                                                                                    | [Webhooks](/app/webhooks)                                                                                                       | [Webhooks](/reference/system/relations)          |
 
 ## Create a Collection
 
@@ -132,8 +133,8 @@ To toggle whether a collection is hidden by default in the Content Module, follo
 
 :::tip
 
-Assuming a user has [access permissions](/app/users-roles-permissions), hidden collections can still be
-viewed. They must right-click on the Navigation Bar and choose <span mi icon>visibility</span> **Show Hidden
+Assuming a user has [access permissions](/user-guide/user-management/users-roles-permissions), hidden collections can
+still be viewed. They must right-click on the Navigation Bar and choose <span mi icon>visibility</span> **Show Hidden
 Collections**.
 
 :::
@@ -206,7 +207,7 @@ To configure a collection, follow these steps.
 </video>
 
 This section allows you to create and configure fields, as well as configure how fields are displayed on the
-[Item Details Page](/app/content/items). To learn more, please see the documentation on
+[Item Details Page](/user-guide/content-module/content/items). To learn more, please see the documentation on
 [fields](/app/data-model/fields).
 
 ### Collection Setup
@@ -222,21 +223,21 @@ These controls allow you to modify how the collection is displayed within the Co
 - **Note** — Set a helpful note that explains the collection's purpose.
 - **Icon** — Set an icon used throughout the app when referencing this collection.
 - **Color** — Set a color for the icon, shown in the Navigation Bar and its page header.
-- **Display Template** — Create a [Display Template](/app/display-templates) for the collection.
+- **Display Template** — Create a [Display Template](/user-guide/content-module/display-templates) for the collection.
 - **Hidden** — Toggle whether the collection should be globally hidden in the other app modules, even for admin users.
   You cannot hide collections for admins via permissions like other roles, so this comes in handy to tidy up the Content
   Module.
-- **Singleton** — Toggle to bypass the [Collection Page](/app/content/collections) and take users to the
-  [Item Details Page](/app/content/items).
+- **Singleton** — Toggle to bypass the [Collection Page](/user-guide/content-module/content/collections) and take users
+  to the [Item Details Page](/user-guide/content-module/content/items).
 - **Collection Naming Translations** — Translate the collection name across multiple languages. When the default
-  language is changed in [Project Settings](/app/project-settings#general) or
-  [User Details Page](/app/user-directory#user-details-page), the relevant translation, if any exists, will be used
-  throughout the app.
+  language is changed in [Project Settings](/user-guide/cloud/project-settings#general) or
+  [User Details Page](/user-guide/user-management/user-directory#user-details-page), the relevant translation, if any
+  exists, will be used throughout the app.
 
 :::tip Collection Naming Translations
 
-By default, Directus uses the [Title Formatter](/getting-started/glossary#title-formatter) to display collection keys as
-human readable names, but you can also use translations to explicitly rename more technical table keys.
+By default, Directus uses the [Title Formatter](/user-guide/overview/glossary#title-formatter) to display collection
+keys as human readable names, but you can also use translations to explicitly rename more technical table keys.
 
 :::
 
@@ -258,11 +259,11 @@ archive field, set the following four input fields as desired.
 
 - **Archive Field** — Selects the archive field from a dropdown menu.
 - **Archive App Filter** — Toggles whether app users can
-  [filter for archived items](/app/content/collections#view-archived-items).
+  [filter for archived items](/user-guide/content-module/content/collections#view-archived-items).
 - **Archive Value** — A value that is assigned to the field when an item is
-  [archived](/app/content/items#archive-an-item).
+  [archived](/user-guide/content-module/content/items#archive-an-item).
 - **Unarchive Value** — A value that is assigned to the field when an item is
-  [unarchived](/app/content/items#archive-an-item).
+  [unarchived](/user-guide/content-module/content/items#archive-an-item).
 
 :::tip Automatic Setup
 
@@ -290,9 +291,10 @@ filtered out. This gives you the flexibility to manage archived items however yo
 	<source src="https://cdn.directus.io/docs/v9/app-guide/content/content-collections/content-collections-20220415A/manually-sort-items-20220415A.mp4" type="video/mp4" />
 </video>
 
-The sort feature enables users to [manually sort Items](/app/content/collections#manually-sort-items) within the Data
-Studio. This is typically shown on the **Content Module > Collection Page**. It can also be used for sorting items
-within [Junction Collections](/getting-started/glossary#junction-collections). A standard field, configured with an
+The sort feature enables users to
+[manually sort Items](/user-guide/content-module/content/collections#manually-sort-items) within the Data Studio. This
+is typically shown on the **Content Module > Collection Page**. It can also be used for sorting items within
+[Junction Collections](/user-guide/overview/glossary#junction-collections). A standard field, configured with an
 `INTEGER` data type, is required. As shown in the video, fields which cannot serve as sort fields will be grayed out and
 unselectable in the Sort Field dropdown.
 
@@ -305,13 +307,13 @@ To configure a sort field, follow these steps.
 3. Click <span mi btn>check</span> to confirm.
 
 Once you sort field is configured, you may want to learn how to
-[manually sort Items](/app/content/collections#manually-sort-items).
+[manually sort Items](/user-guide/content-module/content/collections#manually-sort-items).
 
 ::: tip Automatic Setup
 
-When you [create a Collection](/app/data-model/collections#create-a-collection), you have the option of
-creating a **Sort** field. If you choose to include this field, the collection's sort settings will automatically be
-configured for you.
+When you [create a Collection](/app/data-model/collections#create-a-collection), you have the option of creating a
+**Sort** field. If you choose to include this field, the collection's sort settings will automatically be configured for
+you.
 
 :::
 
@@ -378,5 +380,26 @@ To delete a collection, follow these steps.
 ::: danger
 
 This action is permanent and irreversible. Please proceed with caution.
+
+:::
+
+## Set Up Live Preview For a Collection
+
+The live preview feature allows users to instantly preview draft content without publishing or manually refreshing the
+browser.
+
+To enable this feature, navigate to the **Settings** menu and select **Data Model.** Choose the collection you want to
+allow the live preview feature.
+
+Add your URL as the **Preview URL** in the collection settings and select the `ID`. For example, the preview URL of a
+posts collection running on localhost:3000 will be `http://localhost:3000/posts/ID`.
+
+<video title="Set live preview URL" autoplay playsinline muted loop controls>
+	<source src="https://marketing.directus.app/assets/6d6bc718-ceb9-4e55-9a2d-d377156da7f9.mp4" type="video/mp4" />
+</video>
+
+:::tip Preview URL
+
+You can set up any URL pattern with dynamic values derived from the specific items you wish to preview
 
 :::

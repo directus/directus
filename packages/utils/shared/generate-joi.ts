@@ -170,7 +170,28 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				schema[key] = Joi.any().equal(true);
 			} else {
 				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`), {
-					name: 'starts_with',
+					name: 'nstarts_with',
+					invert: true,
+				});
+			}
+		}
+
+		if (operator === '_istarts_with') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`, 'i'), {
+					name: 'istarts_with',
+				});
+			}
+		}
+
+		if (operator === '_nistarts_with') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`^${escapeRegExp(compareValue)}.*`, 'i'), {
+					name: 'nistarts_with',
 					invert: true,
 				});
 			}
@@ -191,7 +212,28 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				schema[key] = Joi.any().equal(true);
 			} else {
 				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`), {
-					name: 'ends_with',
+					name: 'nends_with',
+					invert: true,
+				});
+			}
+		}
+
+		if (operator === '_iends_with') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`, 'i'), {
+					name: 'iends_with',
+				});
+			}
+		}
+
+		if (operator === '_niends_with') {
+			if (compareValue === null || compareValue === undefined || typeof compareValue !== 'string') {
+				schema[key] = Joi.any().equal(true);
+			} else {
+				schema[key] = getStringSchema().pattern(new RegExp(`.*${escapeRegExp(compareValue)}$`, 'i'), {
+					name: 'niends_with',
 					invert: true,
 				});
 			}

@@ -74,17 +74,12 @@ import { appMinimalPermissions, appRecommendedPermissions } from '../../app-perm
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 
-const props = withDefaults(
-	defineProps<{
-		role?: string;
-		// the permission row primary key in case we're on the permission detail modal view
-		permission?: string;
-		appAccess?: boolean;
-	}>(),
-	{
-		appAccess: false,
-	}
-);
+const props = defineProps<{
+	role?: string;
+	// the permission row primary key in case we're on the permission detail modal view
+	permission?: string;
+	appAccess?: boolean;
+}>();
 
 const { t } = useI18n();
 
@@ -105,8 +100,6 @@ const { permissions, fetchPermissions, refreshing } = usePermissions();
 
 const { resetActive, resetSystemPermissions, resetting } = useReset();
 
-fetchPermissions();
-
 watch(() => props.permission, fetchPermissions, { immediate: true });
 
 provide('refresh-permissions', fetchPermissions);
@@ -122,7 +115,7 @@ function usePermissions() {
 		loading.value = true;
 
 		try {
-			const params: any = { filter: { role: {} }, limit: -1 };
+			const params: any = { filter: { role: {} } };
 
 			if (props.role === null) {
 				params.filter.role = { _null: true };
@@ -131,7 +124,6 @@ function usePermissions() {
 			}
 
 			const response = await api.get('/permissions', { params });
-
 			permissions.value = response.data.data;
 		} catch (err: any) {
 			unexpectedError(err);

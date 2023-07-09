@@ -59,7 +59,7 @@ const options = computed(() => {
 	];
 
 	if (isItem.value) {
-		const [type, id] = props.value.split('_');
+		const [type, id] = props.value!.split('_');
 
 		options = [
 			{
@@ -83,9 +83,9 @@ function onSelect(value: string) {
 	collection.value = value;
 }
 
-function onSelectItem(value: string[]) {
-	if (collection.value === 'directus_users') return emit('input', 'user_' + value[0]);
-	if (collection.value === 'directus_roles') return emit('input', 'role_' + value[0]);
+function onSelectItem(value: (string | number)[] | null) {
+	if (collection.value === 'directus_users') return emit('input', 'user_' + value![0]);
+	if (collection.value === 'directus_roles') return emit('input', 'role_' + value![0]);
 }
 
 async function loadItemName() {
@@ -96,7 +96,7 @@ async function loadItemName() {
 
 	loading.value = true;
 
-	const [endpoint, id] = props.value.split('_');
+	const [endpoint, id] = props.value!.split('_');
 
 	try {
 		if (endpoint === 'role') {

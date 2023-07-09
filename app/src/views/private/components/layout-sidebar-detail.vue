@@ -4,8 +4,8 @@
 			<div class="field">
 				<div class="type-label">{{ t('layout') }}</div>
 				<v-select v-model="layout" :items="layouts" item-text="name" item-value="id" item-icon="icon">
-					<template v-if="currentLayout.icon" #prepend>
-						<v-icon :name="currentLayout.icon" />
+					<template v-if="currentLayout!.icon" #prepend>
+						<v-icon :name="currentLayout!.icon" />
 					</template>
 				</v-select>
 			</div>
@@ -15,12 +15,12 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts" setup>
-import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
-import { useSync } from '@directus/composables';
-import { useExtensions } from '@/extensions';
+<script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import { useExtensions } from '@/extensions';
+import { useSync } from '@directus/composables';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
 	defineProps<{

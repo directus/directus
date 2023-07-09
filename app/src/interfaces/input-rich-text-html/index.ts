@@ -252,9 +252,6 @@ export default defineInterface({
 					interface: 'system-folder',
 					note: '$t:interfaces.input-rich-text-html.folder_note',
 				},
-				schema: {
-					default_value: undefined,
-				},
 			},
 			{
 				field: 'imageToken',

@@ -1,3 +1,4 @@
+import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
 import express from 'express';
@@ -33,6 +34,7 @@ import schemaRouter from './controllers/schema.js';
 import serverRouter from './controllers/server.js';
 import settingsRouter from './controllers/settings.js';
 import sharesRouter from './controllers/shares.js';
+import translationsRouter from './controllers/translations.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import webhooksRouter from './controllers/webhooks.js';
@@ -44,7 +46,7 @@ import {
 } from './database/index.js';
 import emitter from './emitter.js';
 import env from './env.js';
-import { InvalidPayloadException } from './exceptions/invalid-payload.js';
+import { InvalidPayloadError, ServiceUnavailableError } from './errors/index.js';
 import { getExtensionManager } from './extensions.js';
 import { getFlowManager } from './flows.js';
 import logger, { expressLogger } from './logger.js';
@@ -105,6 +107,26 @@ export default async function createApp(): Promise<express.Application> {
 	app.set('trust proxy', env['IP_TRUST_PROXY']);
 	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
+	if (env['PRESSURE_LIMITER_ENABLED']) {
+		const sampleInterval = Number(env['PRESSURE_LIMITER_SAMPLE_INTERVAL']);
+
+		if (Number.isNaN(sampleInterval) === true || Number.isFinite(sampleInterval) === false) {
+			throw new Error(`Invalid value for PRESSURE_LIMITER_SAMPLE_INTERVAL environment variable`);
+		}
+
+		app.use(
+			handlePressure({
+				sampleInterval,
+				maxEventLoopUtilization: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION'],
+				maxEventLoopDelay: env['PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY'],
+				maxMemoryRss: env['PRESSURE_LIMITER_MAX_MEMORY_RSS'],
+				maxMemoryHeapUsed: env['PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED'],
+				error: new ServiceUnavailableError({ service: 'api', reason: 'Under pressure' }),
+				retryAfter: env['PRESSURE_LIMITER_RETRY_AFTER'],
+			})
+		);
+	}
+
 	app.use(
 		helmet.contentSecurityPolicy(
 			merge(
@@ -120,11 +142,10 @@ export default async function createApp(): Promise<express.Application> {
 						upgradeInsecureRequests: null,
 
 						// These are required for MapLibre
-						// https://cdn.directus.io is required for images/videos in the official docs
 						workerSrc: ["'self'", 'blob:'],
 						childSrc: ["'self'", 'blob:'],
-						imgSrc: ["'self'", 'data:', 'blob:', 'https://cdn.directus.io'],
-						mediaSrc: ["'self'", 'https://cdn.directus.io'],
+						imgSrc: ["'self'", 'data:', 'blob:'],
+						mediaSrc: ["'self'"],
 						connectSrc: ["'self'", 'https://*'],
 					},
 				},
@@ -159,7 +180,7 @@ export default async function createApp(): Promise<express.Application> {
 			}) as RequestHandler
 		)(req, res, (err: any) => {
 			if (err) {
-				return next(new InvalidPayloadException(err.message));
+				return next(new InvalidPayloadError({ reason: err.message }));
 			}
 
 			return next();
@@ -260,6 +281,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
 	app.use('/presets', presetsRouter);
+	app.use('/translations', translationsRouter);
 	app.use('/relations', relationsRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);

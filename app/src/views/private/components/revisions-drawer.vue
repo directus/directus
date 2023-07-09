@@ -40,7 +40,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Revision } from '@/types/revisions';
 import { useSync } from '@directus/composables';
 import { isEqual } from 'lodash';
@@ -52,14 +52,14 @@ import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 
 const props = defineProps<{
 	revisions: Revision[];
-	current?: number | string | null;
+	current: number | null;
 	active: boolean;
 }>();
 
 const emit = defineEmits<{
 	(e: 'revert', value: Record<string, unknown>): void;
 	(e: 'update:active', value: boolean): void;
-	(e: 'update:current', value: number | string | null): void;
+	(e: 'update:current', value: number | string): void;
 }>();
 
 const { t } = useI18n();
@@ -74,7 +74,7 @@ const title = computed(() => {
 });
 
 const currentRevision = computed(() => {
-	return props.revisions.find((revision) => revision.id === props.current);
+	return props.revisions.find((revision) => revision.id === props.current)!;
 });
 
 const previousRevision = computed<Revision | undefined>(() => {

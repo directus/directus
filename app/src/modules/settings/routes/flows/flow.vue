@@ -182,30 +182,27 @@
 </template>
 
 <script setup lang="ts">
-import { FlowRaw, OperationRaw } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-
-import { computed, ref, watch } from 'vue';
-import { useFlowsStore } from '@/stores/flows';
-import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
+import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
-import { isEmpty, merge, omit, cloneDeep } from 'lodash';
-import { router } from '@/router';
-import { nanoid, customAlphabet } from 'nanoid/non-secure';
-
-import SettingsNotFound from '../not-found.vue';
-import SettingsNavigation from '../../components/navigation.vue';
-import Operation, { ArrowInfo, Target } from './components/operation.vue';
-import { AppTile } from '@/components/v-workspace-tile.vue';
-import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
-import Arrows from './components/arrows.vue';
-import { Vector2 } from '@/utils/vector2';
-import FlowDrawer from './flow-drawer.vue';
-
-import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
 import { useExtensions } from '@/extensions';
+import { router } from '@/router';
+import { useFlowsStore } from '@/stores/flows';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { Vector2 } from '@/utils/vector2';
+import { FlowRaw, OperationRaw } from '@directus/types';
+import { cloneDeep, isEmpty, merge, omit } from 'lodash';
+import { customAlphabet, nanoid } from 'nanoid/non-secure';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import SettingsNavigation from '../../components/navigation.vue';
+import SettingsNotFound from '../not-found.vue';
+import Arrows from './components/arrows.vue';
+import LogsSidebarDetail from './components/logs-sidebar-detail.vue';
+import Operation, { ArrowInfo, Target } from './components/operation.vue';
+import { ATTACHMENT_OFFSET, PANEL_HEIGHT, PANEL_WIDTH } from './constants';
+import FlowDrawer from './flow-drawer.vue';
 
 // Maps the x and y coordinates of attachments of panels to their id
 export type Attachments = Record<number, Record<number, string>>;
@@ -229,12 +226,17 @@ useShortcut('meta+s', () => {
 const flowsStore = useFlowsStore();
 const stagedFlow = ref<Partial<FlowRaw>>({});
 
-const fetchedFlow = ref<FlowRaw>();
-
 const flow = computed<FlowRaw | undefined>({
 	get() {
-		if (!fetchedFlow.value) return undefined;
-		return merge({}, fetchedFlow.value, stagedFlow.value);
+		const existing = flowsStore.flows.find((flow) => flow.id === props.primaryKey);
+
+		if (!existing) return undefined;
+
+		return merge({}, existing, {
+			status: stagedFlow.value?.status ?? existing.status,
+			operation: stagedFlow.value?.operation ?? existing.operation,
+			operations: stagedFlow.value?.operations ?? existing.operations,
+		});
 	},
 	set(newFlow) {
 		stagedFlow.value = newFlow ?? {};
@@ -242,34 +244,6 @@ const flow = computed<FlowRaw | undefined>({
 });
 
 const loading = ref(false);
-
-watch(
-	() => props.primaryKey,
-	() => {
-		loadCurrentFlow();
-	},
-	{ immediate: true }
-);
-
-async function loadCurrentFlow() {
-	if (!props.primaryKey) return;
-
-	loading.value = true;
-
-	try {
-		const response = await api.get(`/flows/${props.primaryKey}`, {
-			params: {
-				fields: ['*', 'operations.*'],
-			},
-		});
-
-		fetchedFlow.value = response.data.data;
-	} catch (err: any) {
-		unexpectedError(err);
-	} finally {
-		loading.value = false;
-	}
-}
 
 const exitingOperationKeys = computed(() => [
 	...(flow.value?.operations || []).map((operation) => operation.key),
@@ -500,7 +474,6 @@ async function saveChanges() {
 		}
 
 		await flowsStore.hydrate();
-		await loadCurrentFlow();
 
 		stagedPanels.value = [];
 		panelsToBeDeleted.value = [];

@@ -141,7 +141,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			function createViewOption<T>(key: keyof LayoutOptions, defaultValue: any) {
 				return computed<T>({
 					get() {
-						return layoutOptions.value?.[key] !== undefined ? layoutOptions.value?.[key] : defaultValue;
+						return layoutOptions.value?.[key] !== undefined ? layoutOptions.value[key] : defaultValue;
 					},
 					set(newValue: T) {
 						layoutOptions.value = {

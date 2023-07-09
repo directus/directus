@@ -71,20 +71,14 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import useUpdatePermissions from '../composables/use-update-permissions';
 
-const props = withDefaults(
-	defineProps<{
-		collection: Collection;
-		action: string;
-		role?: string;
-		permissions?: Permission[];
-		loading?: boolean;
-		appMinimal?: false | Partial<Permission>;
-	}>(),
-	{
-		loading: false,
-		appMinimal: false,
-	}
-);
+const props = defineProps<{
+	collection: Collection;
+	action: string;
+	role?: string;
+	permissions?: Permission[];
+	loading?: boolean;
+	appMinimal?: Partial<Permission>;
+}>();
 
 const { t } = useI18n();
 
@@ -114,7 +108,7 @@ const saving = ref(false);
 const refresh = inject<() => Promise<void>>('refresh-permissions');
 
 const appMinimalLevel = computed(() => {
-	if (props.appMinimal === false) return null;
+	if (!props.appMinimal) return null;
 	if (Object.keys(props.appMinimal).length === 2) return 'full';
 	return 'partial';
 });

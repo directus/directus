@@ -273,7 +273,7 @@ const view = ref(['editor']);
 
 const imageDialogOpen = ref(false);
 
-let count = ref(0);
+const count = ref(0);
 
 const readOnly = computed(() => {
 	if (width.value < 600) {

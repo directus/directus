@@ -7,7 +7,11 @@
 		<div class="content">
 			<span class="time">{{ time }}</span>
 			–
-			<user-popover v-if="revision.activity.user" class="user" :user="revision.activity.user.id">
+			<user-popover
+				v-if="revision.activity.user"
+				class="user"
+				:user="typeof revision.activity.user === 'string' ? revision.activity.user : revision.activity.user.id"
+			>
 				<span>{{ user }}</span>
 			</user-popover>
 
@@ -16,7 +20,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Revision } from '@/types/revisions';
 import { userName } from '@/utils/user-name';
 import { format } from 'date-fns';

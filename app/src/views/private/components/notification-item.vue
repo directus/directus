@@ -15,21 +15,26 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useNotificationsStore } from '@/stores/notifications';
 
-const props = defineProps<{
-	id: string;
-	title: string;
-	text?: string;
-	icon?: string;
-	type?: 'info' | 'success' | 'warning' | 'error';
-	tail?: boolean;
-	dense?: boolean;
-	showClose?: boolean;
-	loading?: boolean;
-	progress?: number;
-}>();
+const props = withDefaults(
+	defineProps<{
+		id: string;
+		title: string;
+		text?: string;
+		icon?: string | null;
+		type?: 'info' | 'success' | 'warning' | 'error';
+		tail?: boolean;
+		dense?: boolean;
+		showClose?: boolean;
+		loading?: boolean;
+		progress?: number;
+	}>(),
+	{
+		type: 'info',
+	}
+);
 
 const notificationsStore = useNotificationsStore();
 

@@ -7,7 +7,7 @@ pageClass: page-reference
 # Server
 
 > Provides detailed information about the project server, its schema, and its health.
-> [Learn more about Projects](/getting-started/glossary#projects).
+> [Learn more about Projects](/user-guide/overview/glossary#projects).
 
 ---
 
@@ -69,21 +69,23 @@ GraphQL SDL file.
 
 ```graphql
 type about_us {
-  id: Int
-  introduction: String
-  our_process: String
-  sales_email: String
-  general_email: String
-  primary_color: String
-  secondary_color: String
-  logo: directus_files
-  mark: directus_files
+	id: Int
+	introduction: String
+	our_process: String
+	sales_email: String
+	general_email: String
+	primary_color: String
+	secondary_color: String
+	logo: directus_files
+	mark: directus_files
 }
 
 type articles {
-  id: Int
-  status: String
-	...
+	id: Int
+	status: String
+	# ...
+}
+
 # etc
 ```
 
@@ -181,28 +183,11 @@ If rate-limiter is enabled, amount of allowed points per duration
 `rateLimit.duration` **number**\
 If rate-limiter is enabled, duration in seconds in which points are counted
 
-Admin users also get the following information:
+`queryLimit.default` **number**\
+The default query limit used when not defined in the API request
 
-`directus.version` **string**\
-Current version of Directus used.
-
-`node.version` **string**\
-Current version of Node used.
-
-`node.uptime` **integer**\
-How long the current process has been running.
-
-`os.type` **string**\
-What type of operation system is used.
-
-`os.version` **string**\
-What version of the operation system is used.
-
-`os.uptime` **string**\
-How long the operating system has been up.
-
-`os.totalmem` **string**\
-How much memory is available on the operating system.
+`queryLimit.max` **number**\
+The maximum query limit accepted on API requests
 
 ### REST API
 
@@ -227,8 +212,8 @@ type Query {
 ```graphql
 query {
 	server_info {
-		directus {
-			version
+		project {
+			project_name
 		}
 	}
 }
@@ -252,59 +237,61 @@ Google Cloud Platform or AWS Elastic Beanstalk.
 By default, the endpoint only returns a `status` of `ok`, `warn` or `error`. By authenticating as an admin, it will
 return more in-depth information about the current health status of the system.
 
-```json
-// Response
+::: code-group
 
-// Non-admin
+```json [Non-Admin Response]
 {
-  "status": "ok"
-}
-
-// Admin
-{
-  "status": "ok",
-  "releaseId": "10.0.0",
-  "serviceId": "3292c816-ae02-43b4-ba91-f0bb549f040c",
-  "checks": {
-    "pg:responseTime": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedUnit": "ms",
-        "observedValue": 0.489
-      }
-    ],
-    "pg:connectionsAvailable": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedValue": 2
-      }
-    ],
-    "pg:connectionsUsed": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedValue": 0
-      }
-    ],
-    "storage:local:responseTime": [
-      {
-        "status": "ok",
-        "componentType": "objectstore",
-        "observedValue": 1.038,
-        "observedUnit": "ms"
-      }
-    ],
-    "email:connection": [
-      {
-        "status": "ok",
-        "componentType": "email"
-      }
-    ]
-  }
+	"status": "ok"
 }
 ```
+
+```json [Admin Response]
+{
+	"status": "ok",
+	"releaseId": "10.0.0",
+	"serviceId": "3292c816-ae02-43b4-ba91-f0bb549f040c",
+	"checks": {
+		"pg:responseTime": [
+			{
+				"status": "ok",
+				"componentType": "datastore",
+				"observedUnit": "ms",
+				"observedValue": 0.489
+			}
+		],
+		"pg:connectionsAvailable": [
+			{
+				"status": "ok",
+				"componentType": "datastore",
+				"observedValue": 2
+			}
+		],
+		"pg:connectionsUsed": [
+			{
+				"status": "ok",
+				"componentType": "datastore",
+				"observedValue": 0
+			}
+		],
+		"storage:local:responseTime": [
+			{
+				"status": "ok",
+				"componentType": "objectstore",
+				"observedValue": 1.038,
+				"observedUnit": "ms"
+			}
+		],
+		"email:connection": [
+			{
+				"status": "ok",
+				"componentType": "email"
+			}
+		]
+	}
+}
+```
+
+:::
 
 ### Returns
 

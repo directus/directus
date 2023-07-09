@@ -59,6 +59,15 @@ Extensive configuration options are also available as global variables in the co
 authentication method, caching details, default file storage location (local, S3, google, etc.) for digital assets, emails,
 _and much more._
 
+### What Do Teams Use Directus For?
+
+- [Headless CMS](https://directus.io/headless-cms)
+- [Learning Management System](https://directus.io/headless-cms)
+- [Product Inventory Management](https://directus.io/studio)
+- [No-Code Data Platform](https://directus.io/studio)
+- [Backend-as-a-Service](https://directus.io/engine)
+- [Full API-Based Data Architecture](https://directus.io/engine)
+
 :::tip Ready to dive in?
 
 Get a project running in minutes. Learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
@@ -111,9 +120,9 @@ can create fully granular permissions for roles as well as individual users.
 :::tip Directus Vocabulary
 
 To keep things simpler, _especially for the no-code users_, Directus uses friendlier names for many database terms and
-technical concepts, including [Project](/getting-started/glossary#projects) (database),
-[Collection](/getting-started/glossary#collections) (table), [Field](/getting-started/glossary#fields) (column),
-[Item](/getting-started/glossary#items) (record), and [Type](/getting-started/glossary#types) (datatype).
+technical concepts, including [Project](/user-guide/overview/glossary#projects) (database),
+[Collection](/user-guide/overview/glossary#collections) (table), [Field](/user-guide/overview/glossary#fields) (column),
+[Item](/user-guide/overview/glossary#items) (record), and [Type](/user-guide/overview/glossary#types) (datatype).
 
 <!--
 @TODO getting-started > learn-directus
@@ -171,10 +180,9 @@ Get a Project running in minutes. Learn Directus hands-on in the [Quickstart Gui
 **Directus is a simple, data-first solution to complex problems with no downsides.**
 
 Directus was created in 2004 and has been slowly, iteratively improved on for a long time. The core team has carefully
-thought through the app, beginning to end, and strives to make this platform is an all-benefit and no downside
-experience. It is also plug-and-play, so you're free to link or remove it anytime, with zero impact on your data. You
-have no vendor lock-in whatsoever, _your data is yours_. There are no artificial data limits _(e.g. limits on users or
-roles)_.
+thought through the app, beginning to end, and strives to make this platform an all-benefit and no downside experience.
+It is also plug-and-play, so you're free to link or remove it anytime, with zero impact on your data. You have no vendor
+lock-in whatsoever, _your data is yours_. There are no artificial data limits _(e.g. limits on users or roles)_.
 
 Consider competing platforms in the four general use cases [mentioned above](#when-to-use-it). Due diligence to select a
 viable solution from one of these categories can easily take six months to ensure the feature list, pricing,

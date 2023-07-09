@@ -1,3 +1,4 @@
+import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
 import Joi from 'joi';
@@ -6,15 +7,15 @@ import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import {
-	InvalidConfigException,
-	InvalidCredentialsException,
-	InvalidPayloadException,
-	InvalidProviderException,
-	ServiceUnavailableException,
-	UnexpectedResponseException,
-} from '../../exceptions/index.js';
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderError,
+	InvalidProviderConfigError,
+	ServiceUnavailableError,
+	UnexpectedResponseError,
+} from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -58,7 +59,8 @@ export class LDAPAuthDriver extends AuthDriver {
 			!provider ||
 			(!clientUrl && !config['client']?.socketPath)
 		) {
-			throw new InvalidConfigException('Invalid provider config', { provider });
+			logger.error('Invalid provider config');
+			throw new InvalidProviderConfigError({ provider });
 		}
 
 		const clientConfig = typeof config['client'] === 'object' ? config['client'] : {};
@@ -94,8 +96,9 @@ export class LDAPAuthDriver extends AuthDriver {
 						if (err) {
 							const error = handleError(err);
 
-							if (error instanceof InvalidCredentialsException) {
-								reject(new InvalidConfigException('Invalid bind user', { provider }));
+							if (isDirectusError(error, ErrorCode.InvalidCredentials)) {
+								logger.warn('Invalid bind user');
+								reject(new InvalidProviderConfigError({ provider }));
 							} else {
 								reject(error);
 							}
@@ -108,7 +111,8 @@ export class LDAPAuthDriver extends AuthDriver {
 				res.on('end', (result: LDAPResult | null) => {
 					// Handle edge case where authenticated bind user cannot read their own DN
 					if (result?.status === 0) {
-						reject(new UnexpectedResponseException('Failed to find bind user record'));
+						logger.warn('[LDAP] Failed to find bind user record');
+						reject(new UnexpectedResponseError());
 					}
 				});
 			});
@@ -224,7 +228,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload['identifier']) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		await this.validateBindClient();
@@ -241,7 +245,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		);
 
 		if (!userInfo?.dn) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		let userRole;
@@ -292,7 +296,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		}
 
 		if (!userInfo) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const userPayload = {
@@ -316,9 +320,9 @@ export class LDAPAuthDriver extends AuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (e instanceof RecordNotUniqueException) {
+			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
 				logger.warn(e, '[LDAP] Failed to register user. User not unique');
-				throw new InvalidProviderException();
+				throw new InvalidProviderError();
 			}
 
 			throw e;
@@ -329,7 +333,7 @@ export class LDAPAuthDriver extends AuthDriver {
 
 	async verify(user: User, password?: string): Promise<void> {
 		if (!user.external_identifier || !password) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		return new Promise((resolve, reject) => {
@@ -367,7 +371,7 @@ export class LDAPAuthDriver extends AuthDriver {
 		const userInfo = await this.fetchUserInfo(user.external_identifier!);
 
 		if (userInfo?.userAccountControl && userInfo.userAccountControl & INVALID_ACCOUNT_FLAGS) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 	}
 }
@@ -378,12 +382,12 @@ const handleError = (e: Error) => {
 		e instanceof ldap.InvalidCredentialsError ||
 		e instanceof ldap.InsufficientAccessRightsError
 	) {
-		return new InvalidCredentialsException();
+		return new InvalidCredentialsError();
 	}
 
-	return new ServiceUnavailableException('Service returned unexpected error', {
+	return new ServiceUnavailableError({
 		service: 'ldap',
-		message: e.message,
+		reason: `Service returned unexpected error: ${e.message}`,
 	});
 };
 
@@ -423,7 +427,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 			const { error } = loginSchema.validate(req.body);
 
 			if (error) {
-				throw new InvalidPayloadException(error.message);
+				throw new InvalidPayloadError({ reason: error.message });
 			}
 
 			const mode = req.body.mode || 'json';

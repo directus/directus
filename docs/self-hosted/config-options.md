@@ -156,8 +156,8 @@ STORAGE_LOCATIONS="s3,local,example"
 ```
 
 In cases where the environment variables are converted to a configuration object for third party library use, like in
-`DB_*` or `RATE_LIMITER_REDIS_*`, the environment variable will be converted to camelCase. You can use a double
-underscore (`__`) for nested objects:
+`DB_*` or `REDIS_*`, the environment variable will be converted to camelCase. You can use a double underscore (`__`) for
+nested objects:
 
 ```
 DB_CLIENT="pg"
@@ -205,6 +205,8 @@ prefixing the value with `{type}:`. The following types are available:
 | `GRAPHQL_INTROSPECTION`    | Whether or not to enable GraphQL Introspection                                                             | `true`                       |
 | `MAX_BATCH_MUTATION`       | The maximum number of items for batch mutations when creating, updating and deleting.                      | `Infinity`                   |
 | `MAX_RELATIONAL_DEPTH`     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                | `10`                         |
+| `QUERY_LIMIT_DEFAULT`      | The default query limit used when not defined in the API request.                                          | `100`                        |
+| `QUERY_LIMIT_MAX`          | The maximum query limit accepted on API requests.                                                          | `-1`                         |
 | `ROBOTS_TXT`               | What the `/robots.txt` endpoint should return                                                              | `User-agent: *\nDisallow: /` |
 | `ACTIVITY_RETENTION`       | How long to save activity logs for. Set to `infinite` to keep records forever                              | `180 days`                   |
 | `REVISIONS_RETENTION`      | How long to save revisions history for. Set to `infinite` to keep records forever                          | `90 days`                    |
@@ -275,6 +277,21 @@ All the `DB_POOL__` prefixed options are passed to [`tarn.js`](https://github.co
 [Knex](http://knexjs.org#Installation-pooling)
 
 :::
+
+## Redis
+
+Directus requires Redis for multi-container deployments. This ensures that things like caching, rate-limiting, and
+WebSockets work reliably across multiple containers of Directus.
+
+| Variable         | Description                                                                                                                                                | Default Value |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `REDIS`          | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4`. Using this will ignore the other Redis connection parameter environment variables | --            |
+| `REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`                                                                                                        | --            |
+| `REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                                                                                                                   | --            |
+| `REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`                                                                                                        | --            |
+| `REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"`                                                                                              | --            |
+
+Redis is required when you run Directus load balanced across multiple containers/processes.
 
 ## Security
 
@@ -356,65 +373,22 @@ For more details about each configuration variable, please see the
 ## Rate Limiting
 
 You can use the built-in rate-limiter to prevent users from hitting the API too much. Simply enabling the rate-limiter
-will set a default maximum of 50 requests per second, tracked in memory. Once you have multiple copies of Directus
-running under a load balancer, or your user base grows so much that memory is no longer a viable place to store the rate
-limiter information, you can use an external `memcache` or `redis` instance to store the rate limiter data.
+will set a default maximum of 50 requests per second, tracked in memory.
 
-| Variable                                    | Description                                                                      | Default Value |
-| ------------------------------------------- | -------------------------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.                        | `false`       |
-| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                                         | `50`          |
-| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.                      | `1`           |
-| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`, or `memcache`. | `memory`      |
-| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                                             | `150`         |
-| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.                        | `false`       |
-| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                                   | `1000`        |
-| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.                      | `1`           |
-| `RATE_LIMITER_GLOBAL_STORE`                 | Where to store the rate limiter counts. One of `memory`, `redis`, or `memcache`. | `memory`      |
-| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                             | `150`         |
+| Variable                                    | Description                                                       | Default Value |
+| ------------------------------------------- | ----------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_ENABLED`                      | Whether or not to enable rate limiting per IP on the API.         | `false`       |
+| `RATE_LIMITER_POINTS`                       | The amount of allowed hits per duration.                          | `50`          |
+| `RATE_LIMITER_DURATION`                     | The time window in seconds in which the points are counted.       | `1`           |
+| `RATE_LIMITER_STORE`                        | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
+| `RATE_LIMITER_HEALTHCHECK_THRESHOLD`        | Healthcheck timeout threshold in ms.                              | `150`         |
+| `RATE_LIMITER_GLOBAL_ENABLED`               | Whether or not to enable global rate limiting on the API.         | `false`       |
+| `RATE_LIMITER_GLOBAL_POINTS`                | The total amount of allowed hits per duration.                    | `1000`        |
+| `RATE_LIMITER_GLOBAL_DURATION`              | The time window in seconds in which the points are counted.       | `1`           |
+| `RATE_LIMITER_GLOBAL_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                              | `150`         |
+| `RATE_LIMITER_GLOBAL_STORE`                 | Where to store the rate limiter counts. One of `memory`, `redis`. | `memory`      |
 
 Based on the `RATE_LIMITER_STORE`/`RATE_LIMITER_GLOBAL_STORE` used, you must also provide the following configurations:
-
-### Memory
-
-No additional configuration required.
-
-### Redis
-
-| Variable                    | Description                                                             | Default Value |
-| --------------------------- | ----------------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_REDIS`        | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
-| `RATE_LIMITER_GLOBAL_REDIS` | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable                             | Description                                                   | Default Value |
-| ------------------------------------ | ------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_REDIS_HOST`            | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `RATE_LIMITER_REDIS_PORT`            | Port of the Redis instance, e.g., `6379`                      | --            |
-| `RATE_LIMITER_REDIS_USERNAME`        | Username for your Redis instance, e.g., `"default"`           | --            |
-| `RATE_LIMITER_REDIS_PASSWORD`        | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `RATE_LIMITER_REDIS_DB`              | Database of your Redis instance to connect, e.g., `1`         | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `RATE_LIMITER_GLOBAL_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
-
-### Memcache
-
-| Variable                       | Description                                                                                                                                                             | Default Value |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `RATE_LIMITER_MEMCACHE`        | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), e.g., `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
-| `RATE_LIMITER_GLOBAL_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), e.g., `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
-
-::: tip Additional Rate Limiter Variables
-
-All `RATE_LIMITER_*`/`RATE_LIMITER_GLOBAL_*` variables are passed directly to a `rate-limiter-flexible` instance.
-Depending on your project's needs, you can extend the above environment variables to configure any of
-[the `rate-limiter-flexible` options](https://github.com/animir/node-rate-limiter-flexible/wiki/Options).
-
-:::
 
 ### Example: Basic
 
@@ -428,25 +402,21 @@ RATE_LIMITER_GLOBAL_POINTS="100"
 RATE_LIMITER_GLOBAL_DURATION="5"
 ```
 
-### Example: Redis
+### Pressure-based rate limiter
 
-```
-RATE_LIMITER_ENABLED="true"
+This rate-limiter prevents the API from accepting new requests while the server is experiencing high load. This
+continuously monitors the current event loop and memory usage, and error out requests with a 503 early when the system
+is overloaded.
 
-RATE_LIMITER_POINTS="10"
-RATE_LIMITER_DURATION="5"
-
-RATE_LIMITER_STORE="redis"
-
-RATE_LIMITER_REDIS="redis://@127.0.0.1"
-
-# If you are using Redis ACL
-RATE_LIMITER_REDIS_USERNAME="default"
-RATE_LIMITER_REDIS_PASSWORD="yourRedisPassword"
-RATE_LIMITER_REDIS_HOST="127.0.0.1"
-RATE_LIMITER_REDIS_PORT=6379
-RATE_LIMITER_REDIS_DB=0
-```
+| Variable                                      | Description                                                         | Default Value |
+| --------------------------------------------- | ------------------------------------------------------------------- | ------------- |
+| `PRESSURE_LIMITER_ENABLED`                    | Whether or not to enable pressure-based rate limiting on the API.   | `true`        |
+| `PRESSURE_LIMITER_SAMPLE_INTERVAL`            | The time window for measuring pressure in ms.                       | `250`         |
+| `PRESSURE_LIMITER_MAX_EVENT_LOOP_UTILIZATION` | The maximum allowed utilization where `1` is 100% loop utilization. | `0.99`        |
+| `PRESSURE_LIMITER_MAX_EVENT_LOOP_DELAY`       | The maximum amount of time the current loop can be delayed in ms.   | `500`         |
+| `PRESSURE_LIMITER_MAX_MEMORY_RSS`             | The maximum allowed memory Resident Set Size (RSS) in bytes.        | `false`       |
+| `PRESSURE_LIMITER_MAX_MEMORY_HEAP_USED`       | The maximum allowed heap usage in bytes.                            | `false`       |
+| `PRESSURE_LIMITER_RETRY_AFTER`                | Sets the `Retry-After` header when the rate limiter is triggered.   | `false`       |
 
 ## Cache
 
@@ -460,8 +430,7 @@ middleman servers (like CDNs) and even the browser.
 
 In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` and `CACHE_PERMISSIONS` which
 are enabled by default. These speed up the overall performance of Directus, as we don't want to introspect the whole
-database or check all permissions on every request. When running Directus load balanced, you'll need to use a shared
-cache storage (like [Redis](#redis-2) or [Memcache](#memcache-2)) or else disable all caching.
+database or check all permissions on every request.
 
 :::
 
@@ -473,21 +442,22 @@ than you would cache database content. To learn more, see [Assets](#assets).
 
 :::
 
-| Variable                          | Description                                                                                                             | Default Value    |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| `CACHE_ENABLED`                   | Whether or not data caching is enabled.                                                                                 | `false`          |
-| `CACHE_TTL`<sup>[1]</sup>         | How long the data cache is persisted.                                                                                   | `5m`             |
-| `CACHE_CONTROL_S_MAXAGE`          | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`              |
-| `CACHE_AUTO_PURGE`<sup>[2]</sup>  | Automatically purge the data cache on `create`, `update`, and `delete` actions.                                         | `false`          |
-| `CACHE_SYSTEM_TTL`<sup>[3]</sup>  | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --               |
-| `CACHE_SCHEMA`<sup>[3]</sup>      | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`           |
-| `CACHE_PERMISSIONS`<sup>[3]</sup> | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`           |
-| `CACHE_NAMESPACE`                 | How to scope the cache data.                                                                                            | `directus-cache` |
-| `CACHE_STORE`<sup>[4]</sup>       | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                                                 | `memory`         |
-| `CACHE_STATUS_HEADER`             | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --               |
-| `CACHE_VALUE_MAX_SIZE`            | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false            |
-| `CACHE_SKIP_ALLOWED`              | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                 | false            |
-| `CACHE_HEALTHCHECK_THRESHOLD`     | Healthcheck timeout threshold in ms.                                                                                    | `150`            |
+| Variable                                     | Description                                                                                                             | Default Value                        |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                 | `false`                              |
+| `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                   | `5m`                                 |
+| `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                               | `0`                                  |
+| `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on `create`, `update`, and `delete` actions.                                         | `false`                              |
+| `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                      | `directus_activity,directus_presets` |
+| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                          | --                                   |
+| `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                    | `true`                               |
+| `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                  | `true`                               |
+| `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                            | `directus-cache`                     |
+| `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                | `memory`                             |
+| `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                        | --                                   |
+| `CACHE_VALUE_MAX_SIZE`                       | Maximum size of values that will be cached. Accepts number of bytes, or human readable string. Use `false` for no limit | false                                |
+| `CACHE_SKIP_ALLOWED`                         | Whether requests can use the Cache-Control header with `no-store` to skip data caching.                                 | false                                |
+| `CACHE_HEALTHCHECK_THRESHOLD`                | Healthcheck timeout threshold in ms.                                                                                    | `150`                                |
 
 <sup>[1]</sup> `CACHE_TTL` Based on your project's needs, you might be able to aggressively cache your data, only
 requiring new data to be fetched every hour or so. This allows you to squeeze the most performance out of your Directus
@@ -498,37 +468,13 @@ so you configure it using human readable values (like `2 days`, `7 hrs`, `5m`).
 <sup>[2]</sup> `CACHE_AUTO_PURGE` allows you to keep the Directus API real-time, while still getting the performance
 benefits on quick subsequent reads.
 
-<sup>[3]</sup> Not affected by the `CACHE_ENABLED` value.
+<sup>[3]</sup> The cache has to be manually cleared when requiring to access updated results for collections in
+`CACHE_AUTO_PURGE_IGNORE_LIST`.
 
-<sup>[4]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
-Instead, you can use the above `CACHE_STORE` environment variable to use either `memcache` or `redis` as the cache
-store. Based on the chosen `CACHE_STORE`, you must also provide the following configurations:
+<sup>[4]</sup> Not affected by the `CACHE_ENABLED` value.
 
-### Memory
-
-No additional configuration required.
-
-### Redis
-
-| Variable      | Description                                                             | Default Value |
-| ------------- | ----------------------------------------------------------------------- | ------------- |
-| `CACHE_REDIS` | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
-
-Alternatively, you can provide the individual connection parameters:
-
-| Variable               | Description                                                   | Default Value |
-| ---------------------- | ------------------------------------------------------------- | ------------- |
-| `CACHE_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `CACHE_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
-| `CACHE_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
-| `CACHE_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `CACHE_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
-
-### Memcache
-
-| Variable         | Description                                                                                                                                                             | Default Value |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `CACHE_MEMCACHE` | Location of your memcache instance. You can use [`array:` syntax](#environment-syntax-prefix), e.g., `array:<instance-1>,<instance-2>` for multiple memcache instances. | ---           |
+<sup>[5]</sup> `CACHE_STORE` For larger projects, you most likely don't want to rely on local memory for caching.
+Instead, you can use the above `CACHE_STORE` environment variable to use `redis` as the cache store.
 
 ## File Storage
 
@@ -660,6 +606,13 @@ purposes, collection of additional metadata must be configured:
 
 <sup>[1]</sup>: Extracting all metadata might cause memory issues when the file has an unusually large set of metadata
 
+### Upload Limits
+
+| Variable                     | Description                                                                      | Default Value |
+| ---------------------------- | -------------------------------------------------------------------------------- | ------------- |
+| `FILES_MAX_UPLOAD_SIZE`      | Maximum file upload size allowed. For example `10mb`, `1gb`, `10kb`              | --            |
+| `FILES_MIME_TYPE_ALLOW_LIST` | Allow list of mime types that are allowed to be uploaded. Supports `glob` syntax | `*/*`         |
+
 ## Assets
 
 | Variable                                 | Description                                                                                                                         | Default Value |
@@ -731,23 +684,23 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variab
 
 ### OAuth 2.0
 
-| Variable                                    | Description                                                                                   | Default Value    |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------- | ---------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the OAuth provider.                                                     | --               |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the OAuth provider.                                                         | --               |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                       | `email`          |
-| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the OAuth provider.                                                 | --               |
-| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the OAuth provider.                                                       | --               |
-| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the OAuth provider.                                                       | --               |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                      | --               |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                       | `email`          |
-| `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                  | --               |
-| `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                   | --               |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                       | `false`          |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                   | --               |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/getting-started/glossary#icons). | `account_circle` |
-| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                | `<PROVIDER>`     |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                     | --               |
+| Variable                                    | Description                                                                                       | Default Value    |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the OAuth provider.                                                         | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the OAuth provider.                                                             | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                           | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the OAuth provider.                                                     | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the OAuth provider.                                                           | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the OAuth provider.                                                           | --               |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                          | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                           | `email`          |
+| `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                      | --               |
+| `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                       | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                           | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                       | --               |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons). | `account_circle` |
+| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                    | `<PROVIDER>`     |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                         | --               |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
@@ -756,19 +709,19 @@ Directus users "External Identifier".
 
 OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
 
-| Variable                                    | Description                                                                                   | Default Value          |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------- | ---------------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                   | --                     |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                       | --                     |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                       | `openid profile email` |
-| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                          | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                   | `sub`<sup>[2]</sup>    |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                       | `false`                |
-| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                       | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                   | --                     |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/getting-started/glossary#icons). | `account_circle`       |
-| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                | `<PROVIDER>`           |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                     | --                     |
+| Variable                                    | Description                                                                                       | Default Value          |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                       | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                           | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                           | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                              | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                       | `sub`<sup>[2]</sup>    |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                           | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                           | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                       | --                     |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons). | `account_circle`       |
+| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                    | `<PROVIDER>`           |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                         | --                     |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
@@ -917,23 +870,17 @@ By default, extensions are not cached. The input data type for this environment 
 
 ## Messenger
 
-| Variable              | Description                                                             | Default Value |
-| --------------------- | ----------------------------------------------------------------------- | ------------- |
-| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup>                                  | `memory`      |
-| `MESSENGER_NAMESPACE` | How to scope the channels in Redis                                      | `directus`    |
-| `MESSENGER_REDIS`     | Redis connection string, e.g., `redis://user:password@127.0.0.1:6380/4` | ---           |
+| Variable              | Description                            | Default Value        |
+| --------------------- | -------------------------------------- | -------------------- |
+| `MESSENGER_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`             |
+| `MESSENGER_NAMESPACE` | How to scope the channels in Redis     | `directus-messenger` |
 
-Alternatively, you can provide the individual connection parameters:
+## Synchronization
 
-| Variable                   | Description                                                   | Default Value |
-| -------------------------- | ------------------------------------------------------------- | ------------- |
-| `MESSENGER_REDIS_HOST`     | Hostname of the Redis instance, e.g., `"127.0.0.1"`           | --            |
-| `MESSENGER_REDIS_PORT`     | Port of the Redis instance, e.g., `6379`                      | --            |
-| `MESSENGER_REDIS_USERNAME` | Username for your Redis instance, e.g., `"default"`           | --            |
-| `MESSENGER_REDIS_PASSWORD` | Password for your Redis instance, e.g., `"yourRedisPassword"` | --            |
-| `MESSENGER_REDIS_DB`       | Database of your Redis instance to connect, e.g., `1`         | --            |
-
-<sup>[1]</sup> `redis` should be used in load-balanced installations of Directus
+| Variable                    | Description                            | Default Value   |
+| --------------------------- | -------------------------------------- | --------------- |
+| `SYNCHRONIZATION_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`        |
+| `SYNCHRONIZATION_NAMESPACE` | How to scope the channels in Redis     | `directus-sync` |
 
 ## Email
 
@@ -1015,3 +962,31 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | ----------------------- | ----------------------------------------------------------------------------------------- | ------------- |
 | `RELATIONAL_BATCH_SIZE` | How many rows are read into memory at a time when constructing nested relational datasets | 25000         |
 | `EXPORT_BATCH_SIZE`     | How many rows are read into memory at a time when constructing exports                    | 5000          |
+
+## WebSockets
+
+| Variable                       | Description                                                                                                                      | Default Value |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_ENABLED`           | Whether or not to enable all WebSocket functionality.                                                                            | `false`       |
+| `WEBSOCKETS_HEARTBEAT_ENABLED` | Whether or not to enable the heartbeat ping signal.                                                                              | `true`        |
+| `WEBSOCKETS_HEARTBEAT_PERIOD`  | The period in seconds at which to send the ping. This period doubles as the timeout used for closing an unresponsive connection. | 30            |
+
+### REST
+
+| Variable                       | Description                                                                         | Default Value |
+| ------------------------------ | ----------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_REST_ENABLED`      | Whether or not to enable the REST message handlers.                                 | `true`        |
+| `WEBSOCKETS_REST_PATH`         | The URL path at which the WebSocket REST endpoint will be available.                | `/websocket`  |
+| `WEBSOCKETS_REST_CONN_LIMIT`   | How many simultaneous connections are allowed.                                      | `Infinity`    |
+| `WEBSOCKETS_REST_AUTH`         | What method of authentication to require for this connection.                       | `handshake`   |
+| `WEBSOCKETS_REST_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection. | 30            |
+
+### GraphQL
+
+| Variable                          | Description                                                                         | Default Value |
+| --------------------------------- | ----------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_GRAPHQL_ENABLED`      | Whether or not to enable the GraphQL Subscriptions.                                 | `true`        |
+| `WEBSOCKETS_GRAPHQL_PATH`         | The URL path at which the WebSocket GraphQL endpoint will be available.             | `/graphql`    |
+| `WEBSOCKETS_GRAPHQL_CONN_LIMIT`   | How many simultaneous connections are allowed.                                      | `Infinity`    |
+| `WEBSOCKETS_GRAPHQL_AUTH`         | What method of authentication to require for this connection.                       | `handshake`   |
+| `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection. | 30            |

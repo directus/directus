@@ -1,7 +1,8 @@
+import { isDirectusError } from '@directus/errors';
 import type { Role } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { ForbiddenException, InvalidCredentialsException, InvalidPayloadException } from '../exceptions/index.js';
+import { ErrorCode, ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -45,7 +46,7 @@ router.post(
 				res.locals['payload'] = { data: item };
 			}
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -96,7 +97,7 @@ router.get(
 		}
 
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const service = new UsersService({
@@ -108,7 +109,7 @@ router.get(
 			const item = await service.readOne(req.accountability.user, req.sanitizedQuery);
 			res.locals['payload'] = { data: item || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				res.locals['payload'] = { data: { id: req.accountability.user } };
 				return next();
 			}
@@ -143,7 +144,7 @@ router.patch(
 	'/me',
 	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const service = new UsersService({
@@ -164,15 +165,15 @@ router.patch(
 	'/me/track/page',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.body.last_page) {
-			throw new InvalidPayloadException(`"last_page" key is required.`);
+			throw new InvalidPayloadError({ reason: `"last_page" key is required` });
 		}
 
 		const service = new UsersService({ schema: req.schema });
-		await service.updateOne(req.accountability.user, { last_page: req.body.last_page });
+		await service.updateOne(req.accountability.user, { last_page: req.body.last_page }, { autoPurgeCache: false });
 
 		return next();
 	}),
@@ -203,7 +204,7 @@ router.patch(
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals['payload'] = { data: result };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -229,7 +230,7 @@ router.patch(
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals['payload'] = { data: item || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -289,7 +290,7 @@ router.post(
 	'/invite',
 	asyncHandler(async (req, _res, next) => {
 		const { error } = inviteSchema.validate(req.body);
-		if (error) throw new InvalidPayloadException(error.message);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		const service = new UsersService({
 			accountability: req.accountability,
@@ -311,7 +312,7 @@ router.post(
 	'/invite/accept',
 	asyncHandler(async (req, _res, next) => {
 		const { error } = acceptInviteSchema.validate(req.body);
-		if (error) throw new InvalidPayloadException(error.message);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		const service = new UsersService({
 			accountability: req.accountability,
@@ -328,11 +329,11 @@ router.post(
 	'/me/tfa/generate/',
 	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.body.password) {
-			throw new InvalidPayloadException(`"password" is required`);
+			throw new InvalidPayloadError({ reason: `"password" is required` });
 		}
 
 		const service = new TFAService({
@@ -359,15 +360,15 @@ router.post(
 	'/me/tfa/enable/',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.body.secret) {
-			throw new InvalidPayloadException(`"secret" is required`);
+			throw new InvalidPayloadError({ reason: `"secret" is required` });
 		}
 
 		if (!req.body.otp) {
-			throw new InvalidPayloadException(`"otp" is required`);
+			throw new InvalidPayloadError({ reason: `"otp" is required` });
 		}
 
 		// Override permissions only when enforce TFA is enabled in role
@@ -418,11 +419,11 @@ router.post(
 	'/me/tfa/disable',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.body.otp) {
-			throw new InvalidPayloadException(`"otp" is required`);
+			throw new InvalidPayloadError({ reason: `"otp" is required` });
 		}
 
 		// Override permissions only when enforce TFA is enabled in role
@@ -465,7 +466,7 @@ router.post(
 		const otpValid = await service.verifyOTP(req.accountability.user, req.body.otp);
 
 		if (otpValid === false) {
-			throw new InvalidPayloadException(`"otp" is invalid`);
+			throw new InvalidPayloadError({ reason: `"otp" is invalid` });
 		}
 
 		await service.disableTFA(req.accountability.user);
@@ -478,11 +479,11 @@ router.post(
 	'/:pk/tfa/disable',
 	asyncHandler(async (req, _res, next) => {
 		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		if (!req.accountability.admin || !req.params['pk']) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const service = new TFAService({

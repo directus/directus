@@ -1,0 +1,37 @@
+{
+	"name": "@directus/data",
+	"version": "0.1.0",
+	"description": "Data storage abstraction layer for Directus",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/data"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "BUSL-1.1",
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"test": "vitest --watch=false"
+	},
+	"devDependencies": {
+		"@directus/random": "workspace:*",
+		"@directus/tsconfig": "workspace:*",
+		"@types/node": "18.16.12",
+		"@vitest/coverage-c8": "0.31.1",
+		"tsup": "6.7.0",
+		"typescript": "5.0.4",
+		"vitest": "0.31.1"
+	}
+}

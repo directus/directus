@@ -7,7 +7,7 @@ pageClass: page-reference
 # Relations
 
 > What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever
-> other structures you can think of. [Learn more about Relationships](/getting-started/glossary#relationships).
+> other structures you can think of. [Learn more about Relationships](/user-guide/overview/glossary#relationships).
 
 ---
 

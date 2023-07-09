@@ -29,6 +29,7 @@
 
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -57,18 +58,17 @@ const options = computed({
 
 const values = inject('values', ref<Record<string, any>>({}));
 
-const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField] ?? null);
+const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField!] ?? null);
 const selectedInterface = useExtension('interface', selectedInterfaceId);
 
 const usesCustomComponent = computed(() => {
 	if (!selectedInterface.value) return false;
-	return selectedInterface.value.options && 'render' in selectedInterface.value.options;
+
+	return isVueComponent(selectedInterface.value.options);
 });
 
 const optionsFields = computed(() => {
-	if (!selectedInterface.value) return [];
-	if (!selectedInterface.value.options) return [];
-	if (usesCustomComponent.value === true) return [];
+	if (!selectedInterface.value?.options || usesCustomComponent.value) return [];
 
 	let optionsObjectOrArray;
 

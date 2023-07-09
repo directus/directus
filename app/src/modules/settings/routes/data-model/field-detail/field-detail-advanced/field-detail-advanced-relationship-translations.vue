@@ -15,7 +15,7 @@
 			</div>
 			<div class="field">
 				<div class="type-label">{{ t('languages_collection') }}</div>
-				<related-collection-select v-model="relatedCollection" :disabled="isExisting" />
+				<related-collection-select v-model="relatedCollection" :disabled="type === 'files' || isExisting" />
 			</div>
 			<v-input disabled :model-value="currentPrimaryKey" />
 			<related-field-select
@@ -159,7 +159,7 @@ const { t } = useI18n();
 const fieldDetailStore = useFieldDetailStore();
 const fieldsStore = useFieldsStore();
 
-const { collection, editing } = storeToRefs(fieldDetailStore);
+const { field, collection, editing } = storeToRefs(fieldDetailStore);
 
 const junctionCollection = syncFieldDetailStoreProperty('relations.o2m.collection');
 const junctionFieldCurrent = syncFieldDetailStoreProperty('relations.o2m.field');
@@ -170,6 +170,7 @@ const onDeleteCurrent = syncFieldDetailStoreProperty('relations.o2m.schema.on_de
 const onDeleteRelated = syncFieldDetailStoreProperty('relations.m2o.schema.on_delete');
 const deselectAction = syncFieldDetailStoreProperty('relations.o2m.meta.one_deselect_action');
 
+const type = computed(() => field.value.type);
 const isExisting = computed(() => editing.value !== '+');
 
 const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);

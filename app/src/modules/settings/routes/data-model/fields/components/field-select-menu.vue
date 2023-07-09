@@ -82,15 +82,10 @@ import { Field } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = withDefaults(
-	defineProps<{
-		field: Field;
-		noDelete?: boolean;
-	}>(),
-	{
-		noDelete: false,
-	}
-);
+const props = defineProps<{
+	field: Field;
+	noDelete?: boolean;
+}>();
 
 defineEmits(['toggleVisibility', 'duplicate', 'delete', 'setWidth']);
 

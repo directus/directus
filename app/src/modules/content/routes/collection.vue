@@ -20,6 +20,7 @@
 			:title="bookmark ? bookmarkTitle : currentCollection.name"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
+			:sidebar-shadow="currentLayout?.sidebarShadow"
 		>
 			<template #title-outer:prepend>
 				<v-button class="header-icon" :class="{ archive }" rounded icon secondary disabled>

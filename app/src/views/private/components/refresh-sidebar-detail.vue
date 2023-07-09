@@ -9,18 +9,13 @@
 	</sidebar-detail>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { computed, ref, watch } from 'vue';
 
-const props = withDefaults(
-	defineProps<{
-		modelValue: number | null;
-	}>(),
-	{
-		modelValue: null,
-	}
-);
+const props = defineProps<{
+	modelValue: number | null;
+}>();
 
 const emit = defineEmits<{
 	(e: 'update:modelValue', value: number | null): void;

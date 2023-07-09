@@ -35,6 +35,7 @@ tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 location: Posizione
+collection_names_are_case_sensitive: I nomi delle raccolte fanno distinzione tra maiuscole e minuscole
 condition_rules: Regole per la condizione
 input: Input
 maps: Mappe
@@ -80,14 +81,10 @@ create_user: Crea utente
 message: Messaggio
 delete_panel: Elimina Pannello
 create_webhook: Crea webhook
-create_translation_string: Crea stringa di traduzione
-no_translation_string: Nessuna stringa di traduzione
-no_translation_string_copy: Non ci sono ancora stringhe di traduzione.
-translation_string_key_placeholder: Chiave della stringa di traduzione...
-translation_string_translations_placeholder: Aggiungi una nuova traduzione
-edit_translation_string: Modifica stringa di traduzione
-delete_translation_string_copy: >-
-  Sei sicuro di voler eliminare la stringa di traduzione "{key}"? Questa azione non può essere annullata.
+create_custom_translation: Crea traduzione personalizzata
+edit_custom_translation: Modifica traduzione personalizzata
+no_custom_translations: Nessuna traduzione personalizzata
+no_custom_translations_copy: Non ci sono ancora traduzioni personalizzate.
 invite_users: Invita utenti
 invite: Invita
 email_already_invited: Email "{email}" è già stata invitata
@@ -118,19 +115,13 @@ public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
 admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
 not_allowed: Non consentito
-directus_version: Versione di Directus
-node_version: Versione Node
-node_uptime: Uptime Node
-os_type: Tipo sistema operativo
-os_version: Versione sistema operativo
-os_uptime: Uptime sistema operativo
-os_totalmem: Memoria sistema operativo
 archive: Archivio
 archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
 archive_confirm_count: >-
   Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
 reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
+the_following_are_minimum_permissions: Le seguenti autorizzazioni minime vengono applicate automaticamente quando è abilitato l'accesso all'applicazione. Puoi concedere permessi aggiuntivi se necessario, ma non puoi ridurre i permessi al di sotto di questo livello.
 app_access_minimum: Accesso App Minimo
 recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
@@ -181,6 +172,7 @@ permissions_for_role: 'Oggetti per cui è abilitata l''azione {action} per il ru
 fields_for_role: 'Campi per cui è abilitata l''azione {action} per il ruolo {role}.'
 validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare all''azione {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
+presets_field_warning: 'Le preimpostazioni relazionali per il campo "{field}" dovrebbero essere configurate con la sintassi "dettagliata".'
 presentation_and_aliases: Presentazione e Alias
 revision_post_create: Ecco come appariva questo elemento quando è stato creato.
 revision_post_update: Ecco come appariva questo elemento dopo l'aggiornamento.
@@ -236,6 +228,7 @@ bigInteger: Big Integer
 boolean: Boolean
 date: Data
 date_range: Intervallo di date
+translation_key_placeholder: Inserisci una chiave...
 datetime: DateTime
 dateTime: DateTime
 precision: Precisione
@@ -356,7 +349,7 @@ revision_delta_reverted: Ripristinato
 revision_delta_update_message: Questo campo è stato aggiornato, ma il suo valore è nascosto per motivi di sicurezza.
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
-presentation_text_values_cannot_be_reimported: "Usa il testo di presentazione, i valori non possono essere reimportati."
+presentation_text_values_cannot_be_reimported: 'Usa il testo di presentazione, i valori non possono essere reimportati.'
 download_page_as_csv: 'Scarica la pagina in formato CSV'
 private_user: Utenti privati
 creation_preview: Anteprima della creazione
@@ -448,6 +441,7 @@ checksum: Checksum
 owner: Proprietario
 edited_by: Modificato da
 folder: Cartella
+folders: Cartelle
 zoom: Zoom
 download: Scarica
 open: Apri
@@ -496,7 +490,8 @@ enable_select_button: Abilita il pulsante di selezione
 allow_duplicates: Consenti duplicati
 comments: Commenti
 no_comments: Non ci sono ancora commenti
-click_to_expand: Fare clic per espandere
+expand: Espandi
+collapse: Chiudi
 select_item: Seleziona Elemento
 no_items: Nessun elemento
 search_items: Ricerca elementi...
@@ -624,6 +619,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Intervallo non valido
   METHOD_NOT_ALLOWED: Metodo non consentito
   REQUESTS_EXCEEDED: Limite di richieste raggiunto
+  CONTENT_TOO_LARGE: L'oggetto/file inviato è troppo grande
 security: Sicurezza
 value_hashed: Valore cifrato in sicurezza
 bookmark_name: Nome segnalibro...
@@ -713,8 +709,12 @@ operators:
   icontains: Contiene (ignora maiuscole/minuscole)
   starts_with: Inizia con
   nstarts_with: Non inizia con
+  istarts_with: Inizia con (maiuscolo o minuscolo)
+  nistarts_with: Non inizia con (maiuscolo o minuscolo)
   ends_with: Finisce con
   nends_with: Non finisce con
+  iends_with: Termina con (maiuscolo o minuscolo)
+  niends_with: Non termina con (maiuscolo o minuscolo)
   between: È compreso tra
   nbetween: Non è compreso tra
   empty: È vuoto
@@ -963,7 +963,7 @@ settings_project: Impostazioni progetto
 settings_webhooks: Webhooks
 settings_flows: Flussi
 settings_presets: Preset & Segnalibri
-settings_translation_strings: Stringhe di Traduzione
+settings_translations: Traduzioni personalizzate
 one_or_more_options_are_missing: Mancano una o più opzioni
 scope: Ambito
 actions: Azioni
@@ -1013,7 +1013,8 @@ page_help_settings_webhooks_collection: '**Sfoglia i webhooks** — Elenca tutti
 page_help_settings_webhooks_item: '**Dettaglio Webhook** — Un modulo per creare e gestire webhook del progetto.'
 page_help_settings_flows_collection: '**Sfoglia i flussi** — Elenca tutti i flussi nel progetto.'
 page_help_settings_flows_item: '**Dettagli del flusso** — Spazio di lavoro per gestire una o più operazioni.'
-page_help_settings_translation_strings_collection: '**Sfoglia le stringhe di traduzione** — Elenca tutte le stringhe di traduzione nel progetto.'
+page_help_settings_translations_collection: '**Sfoglia traduzioni personalizzate** — Elenca tutte le traduzioni personalizzate all''interno del progetto.'
+page_help_settings_translations_item: '**Dettaglio traduzioni personalizzate** — Un modulo per la visualizzazione e la gestione di questo elemento.'
 page_help_users_collection: '**Elenco utenti** — Elenca tutti gli utenti di sistema all''interno di questo progetto.'
 page_help_users_item: >-
   **Dettagli utente** — Gestisci le informazioni del tuo account o visualizza i dettagli di altri utenti.
@@ -1057,6 +1058,7 @@ directus_collection:
   directus_shares: Traccia gli elementi condivisi esternamente
   directus_users: Utenti di sistema per la piattaforma
   directus_webhooks: Configurazione per le richieste HTTP basate su eventi
+  directus_translations: Traduzioni personalizzate
 fields:
   directus_activity:
     item: Chiave primaria elemento
@@ -1277,6 +1279,7 @@ field_options:
     sort_field: Scegli un campo...
     accountability_divider: Autorizzazioni
     duplication_divider: Duplicazione
+    preview_divider: Anteprima
   directus_files:
     title: Un titolo unico...
     description: Una descrizione opzionale...
@@ -1334,6 +1337,14 @@ start_collapsed: Inizia chiuse
 block: Blocco
 inline: In linea
 comment: Commento
+live_preview:
+  enable: Abilita l'anteprima
+  disable: Disabilita l'anteprima
+  change_size: Cambia dimensioni display
+  refresh: Aggiorna l'anteprima
+  new_window: Apri in una Nuova Finestra
+  close_window: Apri in Split View
+  toggle_3d: Attiva/disattiva 3D
 shares: Condivisioni
 unlimited_usage: Utilizzo illimitato
 uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
@@ -1446,6 +1457,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
@@ -1640,6 +1652,7 @@ interfaces:
     notice: Avviso
     description: Mostra un avviso breve
     text: Inserisci qui il contenuto dell'avviso...
+    no_text: Nessun testo configurato...
   list-o2m:
     one-to-many: Uno a Molti
     description: Seleziona più elementi correlati
@@ -1701,7 +1714,7 @@ interfaces:
     input-translated-string: Stringhe tradotte
     description: Seleziona o aggiungi stringa di traduzione
     search_placeholder: Cerca...
-    new_translation_string: Nuova stringa di traduzione
+    new_custom_translation: Nuova traduzione personalizzata
   boolean:
     toggle: Interrutore
     description: Cambia tra attivato e disattivato
@@ -1738,6 +1751,27 @@ interfaces:
     folder_note: Cartella per i file caricati. Non influisce sui file esistenti.
     imageToken: Token di accesso statico
     imageToken_label: Il token di accesso statico sarà aggiunto all'URL degli asset
+  input-block-editor:
+    input-block-editor: Editor a blocchi
+    description: Editor a blocchi per contenuti multimediali, produce dati puliti in JSON utilizzando Editor.js
+    tools: Barra degli strumenti
+    tools_options:
+      header: Header
+      nestedlist: Elenco
+      embed: Embed
+      paragraph: Paragrafo
+      code: Codice
+      image: Immagine
+      attaches: Allegati
+      table: Tabella
+      quote: Citazione
+      underline: Sottolineato
+      inlinecode: Codice in linea
+      delimiter: Separatore
+      checklist: Elenco di controllo
+      toggle: Blocco espandibile
+      alignment: Allineamento
+      raw: Codice HTML
   input-autocomplete-api:
     input-autocomplete-api: Input di completamento automatico (API)
     description: Una ricerca durante la digitazione per valori API esterni.
@@ -2117,7 +2151,7 @@ operations:
     message: Messaggio
   request:
     name: URL webhook / chiamata
-    description: "Fai una chiamata a un URL"
+    description: 'Fai una chiamata a un URL'
     url: URL
     url_placeholder: https://esempio.it/esempio
     method: Metodo
@@ -2145,3 +2179,4 @@ operations:
     parallel: Parallela
     batch: A gruppi
     batch_size: Dimensione dei gruppi
+    cache: Cache

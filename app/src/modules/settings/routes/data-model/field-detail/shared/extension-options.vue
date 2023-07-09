@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import { isVueComponent } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -46,10 +47,7 @@ const props = withDefaults(
 		rawEditorEnabled?: boolean;
 	}>(),
 	{
-		showAdvanced: false,
 		modelValue: () => ({}),
-		disabled: false,
-		rawEditorEnabled: false,
 	}
 );
 
@@ -67,7 +65,7 @@ const extensionInfo = useExtension(type, extension);
 const usesCustomComponent = computed(() => {
 	if (!extensionInfo.value) return false;
 
-	return extensionInfo.value.options && 'render' in extensionInfo.value.options;
+	return isVueComponent(extensionInfo.value.options);
 });
 
 const optionsFields = computed(() => {
