@@ -1,5 +1,6 @@
-import type { ValueNode, AbstractSqlQuerySelectNode } from '@directus/data-sql';
+import type { CompareToNodeTypes } from '@directus/data-sql';
 import { wrapColumn } from './wrap-column.js';
+import { constructSqlQuery } from '../query/index.js';
 
 /**
  * Converts the abstract operators to SQL operators and adds the value to which should be compared.
@@ -9,14 +10,19 @@ import { wrapColumn } from './wrap-column.js';
  * @param providedIndexes - The indexes of all parameters.
  * @returns An operator with a parameter reference to a value to which the target will be compared.
  */
-export function getComparison(operation: string, compareTo: ValueNode | AbstractSqlQuerySelectNode, negate = false) {
+export function getComparison(operation: string, compareTo: CompareToNodeTypes, negate = false) {
 	let value: string;
 
 	if (compareTo.type === 'value') {
 		const parameterIndex = compareTo.parameterIndexes[0]! + 1;
 		value = `$${parameterIndex}`;
-	} else {
+	} else if (compareTo.type === 'primitive') {
 		value = wrapColumn(compareTo.table, compareTo.column);
+	} else if (compareTo.type === 'query') {
+		const subQuery = constructSqlQuery(compareTo);
+		value = subQuery.statement;
+	} else {
+		throw new Error(`Unsupported compareTo value`);
 	}
 
 	switch (operation) {
@@ -36,6 +42,8 @@ export function getComparison(operation: string, compareTo: ValueNode | Abstract
 			return `${negate ? 'NOT LIKE' : 'LIKE'} '${value}%'`;
 		case 'ends_with':
 			return `${negate ? 'NOT LIKE' : 'LIKE'} '%${value}'`;
+		case 'in':
+			return `IN (${value})`;
 		default:
 			throw new Error(`Unsupported operation: ${operation}`);
 	}

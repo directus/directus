@@ -1,7 +1,20 @@
-/** The root query to be executed */
+
+/**
+ * The query can be seen as a tree with various nodes.
+ * Each node has a type and different attributes.
+ *
+ * @module abstract-query
+ */
+
+/**
+ * The abstract root query
+ */
 export interface AbstractQuery {
 	/** Marked as entrypoint of the query */
-	root: true;
+	root: boolean;
+
+	/** Meta data to implement sub queries */
+	type: 'query';
 
 	/** Location where the data is stored */
 	store: string;

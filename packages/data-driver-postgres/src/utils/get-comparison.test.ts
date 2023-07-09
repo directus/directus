@@ -1,6 +1,6 @@
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test, describe } from 'vitest';
 import type { ValueNode } from '@directus/data-sql';
-import { randomInteger } from '@directus/random';
+import { randomInteger, randomIdentifier } from '@directus/random';
 import { getComparison } from './get-comparison.js';
 
 let compareTo: ValueNode;
@@ -54,4 +54,27 @@ test.skip('in', () => {
 	};
 
 	expect(getComparison('in', compareTo)).toStrictEqual(`IN ($${value}, $${compareTo.parameterIndexes[1]! + 1})`);
+});
+
+describe('sub query', () => {
+	test('in operator', () => {
+		const randomFrom = randomIdentifier();
+		const table = randomIdentifier();
+		const column = randomIdentifier();
+
+		const compareTo = {
+			type: 'query',
+			select: [
+				{
+					type: 'primitive',
+					table,
+					column,
+				},
+			],
+			from: randomFrom,
+			parameters: [],
+		};
+
+		expect(getComparison('in', compareTo)).toStrictEqual(`IN (SELECT "${table}"."${column}" FROM "${randomFrom}")`);
+	});
 });

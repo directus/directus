@@ -61,6 +61,8 @@ type ParameterIndex = {
  * ```
  */
 export interface AbstractSqlQuery {
+	type: 'query';
+	root?: boolean;
 	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
 	from: string;
 	join?: AbstractSqlQueryJoinNode[];
@@ -127,9 +129,14 @@ export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
 	/* indicated of the condition should be negated using NOT */
 	negate: boolean;
 
-	/** a value to which the target will be compared */
-	compareTo: ValueNode | AbstractSqlQuerySelectNode | AbstractSqlQuery;
+	/**
+	 * The node to which the target should be be compared.
+	 * Can be a value, a column or a sub query.
+	 */
+	compareTo: CompareToNodeTypes;
 }
+
+export type CompareToNodeTypes = ValueNode | AbstractSqlQuerySelectNode | AbstractSqlQuery;
 
 export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
 	type: 'logical';

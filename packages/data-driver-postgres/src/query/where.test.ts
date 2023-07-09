@@ -7,8 +7,14 @@ let sample: {
 	statement: AbstractSqlQuery;
 };
 
+let conditionTargetTable = '';
+let conditionTargetColumn = '';
+
 describe('Where clause:', () => {
 	beforeEach(() => {
+		conditionTargetTable = randomIdentifier();
+		conditionTargetColumn = randomIdentifier();
+
 		sample = {
 			statement: {
 				select: [
@@ -26,8 +32,8 @@ describe('Where clause:', () => {
 					negate: false,
 					target: {
 						type: 'primitive',
-						column: randomIdentifier(),
-						table: randomIdentifier(),
+						table: conditionTargetTable,
+						column: conditionTargetColumn,
 					},
 					compareTo: {
 						type: 'value',
@@ -41,9 +47,7 @@ describe('Where clause:', () => {
 
 	test('Where clause', () => {
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${(sample.statement.where as AbstractSqlQueryConditionNode).target.table}"."${
-				(sample.statement.where as AbstractSqlQueryConditionNode).target.column
-			}" > $${
+			`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" > $${
 				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndexes[0]! + 1
 			}`
 		);
@@ -53,9 +57,7 @@ describe('Where clause:', () => {
 		sample.statement.where!.negate = true;
 
 		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${(sample.statement.where as AbstractSqlQueryConditionNode).target.table}"."${
-				(sample.statement.where as AbstractSqlQueryConditionNode).target.column
-			}" <= $${
+			`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" <= $${
 				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndexes[0]! + 1
 			}`
 		);
