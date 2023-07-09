@@ -34,12 +34,11 @@ describe('Flows Schedule Hook Tests', () => {
 
 			const envRedis1 = cloneDeep(config.envs);
 			envRedis1[vendor].FLOWS_ENV_ALLOW_LIST = envTargetVariable;
+			envRedis1[vendor].REDIS = `redis://localhost:6108/4`;
 			envRedis1[vendor].MESSENGER_STORE = 'redis';
 			envRedis1[vendor].MESSENGER_NAMESPACE = `directus-${vendor}`;
-			envRedis1[vendor].MESSENGER_REDIS = `redis://localhost:6108/4`;
 			envRedis1[vendor].SYNCHRONIZATION_STORE = 'redis';
 			envRedis1[vendor].SYNCHRONIZATION_NAMESPACE = `directus-${vendor}`;
-			envRedis1[vendor].SYNCHRONIZATION_REDIS = `redis://localhost:6108/4`;
 			envRedis1[vendor][envTargetVariable] = 'redis-1';
 
 			const envRedis2 = cloneDeep(envRedis1);
@@ -47,7 +46,6 @@ describe('Flows Schedule Hook Tests', () => {
 
 			const envMemory = cloneDeep(envRedis1);
 			delete envMemory[vendor].SYNCHRONIZATION_STORE;
-			delete envMemory[vendor].SYNCHRONIZATION_REDIS;
 			envMemory[vendor][envTargetVariable] = 'memory-1';
 
 			const newServerPort1 = Number(envRedis1[vendor]!.PORT) + 150;

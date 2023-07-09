@@ -86,7 +86,7 @@ export async function clearSystemCache(opts?: {
 	forced?: boolean | undefined;
 	autoPurgeCache?: false | undefined;
 }): Promise<void> {
-	const { systemCache, localSchemaCache, lockCache } = getCache();
+	const { systemCache, localSchemaCache, lockCache, sharedSchemaCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
 	if (opts?.forced || !(await lockCache.get('system-cache-lock'))) {
@@ -95,6 +95,7 @@ export async function clearSystemCache(opts?: {
 		await lockCache.delete('system-cache-lock');
 	}
 
+	await sharedSchemaCache.clear();
 	await localSchemaCache.clear();
 	messenger.publish('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
@@ -170,7 +171,7 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 
 	if (store === 'redis') {
 		const KeyvRedis = require('@keyv/redis');
-		config.store = new KeyvRedis(env['CACHE_REDIS'] || getConfigFromEnv('CACHE_REDIS_'));
+		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'));
 	}
 
 	return config;

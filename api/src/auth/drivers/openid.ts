@@ -1,4 +1,4 @@
-import { BaseException } from '@directus/exceptions';
+import { isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
@@ -10,14 +10,14 @@ import { getAuthProvider } from '../../auth.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import env from '../../env.js';
-import { RecordNotUniqueException } from '../../exceptions/database/record-not-unique.js';
 import {
-	InvalidConfigException,
-	InvalidCredentialsException,
-	InvalidProviderException,
-	InvalidTokenException,
-	ServiceUnavailableException,
-} from '../../exceptions/index.js';
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidProviderError,
+	InvalidProviderConfigError,
+	InvalidTokenError,
+	ServiceUnavailableError,
+} from '../../errors/index.js';
 import logger from '../../logger.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
@@ -42,7 +42,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
 
 		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
-			throw new InvalidConfigException('Invalid provider config', { provider: additionalConfig['provider'] });
+			logger.error('Invalid provider config');
+			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
 		}
 
 		const redirectUrl = new Url(env['PUBLIC_URL']).addPath('auth', 'login', additionalConfig['provider'], 'callback');
@@ -63,8 +64,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 					const supportedTypes = issuer.metadata['response_types_supported'] as string[] | undefined;
 
 					if (!supportedTypes?.includes('code')) {
+						logger.error('OpenID provider does not support required code flow');
+
 						reject(
-							new InvalidConfigException('OpenID provider does not support required code flow', {
+							new InvalidProviderConfigError({
 								provider: additionalConfig['provider'],
 							})
 						);
@@ -126,7 +129,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	override async getUserID(payload: Record<string, any>): Promise<string> {
 		if (!payload['code'] || !payload['codeVerifier'] || !payload['state']) {
 			logger.warn('[OpenID] No code, codeVerifier or state in payload');
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		let tokenSet;
@@ -165,7 +168,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		if (!identifier) {
 			logger.warn(`[OpenID] Failed to find user identifier for provider "${provider}"`);
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		const userPayload = {
@@ -205,7 +208,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		// Is public registration allowed?
 		if (!allowPublicRegistration || !isEmailVerified) {
 			logger.warn(`[OpenID] User doesn't exist, and public registration not allowed for provider "${provider}"`);
-			throw new InvalidCredentialsException();
+			throw new InvalidCredentialsError();
 		}
 
 		// Run hook so the end user has the chance to augment the
@@ -224,9 +227,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		try {
 			await this.usersService.createOne(updatedUserPayload);
 		} catch (e) {
-			if (e instanceof RecordNotUniqueException) {
+			if (isDirectusError(e, ErrorCode.RecordNotUnique)) {
 				logger.warn(e, '[OpenID] Failed to register user. User not unique');
-				throw new InvalidProviderException();
+				throw new InvalidProviderError();
 			}
 
 			throw e;
@@ -273,19 +276,19 @@ const handleError = (e: any) => {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
 			logger.trace(e, `[OpenID] Invalid grant`);
-			return new InvalidTokenException();
+			return new InvalidTokenError();
 		}
 
 		// Server response error
 		logger.trace(e, `[OpenID] Unknown OP error`);
-		return new ServiceUnavailableException('Service returned unexpected response', {
+		return new ServiceUnavailableError({
 			service: 'openid',
-			message: e.error_description,
+			reason: `Service returned unexpected response: ${e.error_description}`,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
 		logger.trace(e, `[OpenID] Unknown RP error`);
-		return new InvalidCredentialsException();
+		return new InvalidCredentialsError();
 	}
 
 	logger.trace(e, `[OpenID] Unknown error`);
@@ -345,7 +348,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
-				throw new InvalidCredentialsException();
+				throw new InvalidCredentialsError();
 			}
 
 			const { verifier, redirect, prompt } = tokenData;
@@ -379,7 +382,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				});
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
-				if (error instanceof InvalidTokenException && !prompt) {
+				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {
 					return res.redirect(`./?${redirect ? `redirect=${redirect}&` : ''}prompt=true`);
 				}
 
@@ -388,7 +391,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				if (redirect) {
 					let reason = 'UNKNOWN_EXCEPTION';
 
-					if (error instanceof BaseException) {
+					if (isDirectusError(error)) {
 						reason = error.code;
 					} else {
 						logger.warn(error, `[OpenID] Unexpected error during OpenID login`);

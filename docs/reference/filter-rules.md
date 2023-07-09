@@ -48,6 +48,14 @@ readTime: 5 min read
 }
 ```
 
+```json
+{
+	"category": {
+		"_null": true
+	}
+}
+```
+
 ## Filter Operators
 
 | Operator Title _(in app)_      | Operator                           | Description                             |
@@ -66,9 +74,13 @@ readTime: 5 min read
 | Contains (case-insensitive)    | `_icontains`                       | Contains the case-insensitive substring |
 | Doesn't contain                | `_ncontains`                       | Doesn't contain the substring           |
 | Starts with                    | `_starts_with`                     | Starts with                             |
+| Starts with                    | `_istarts_with`                    | Starts with, case-insensitive           |
 | Doesn't start with             | `_nstarts_with`                    | Doesn't start with                      |
+| Doesn't start with             | `_nistarts_with`                   | Doesn't start with, case-insensitive    |
 | Ends with                      | `_ends_with`                       | Ends with                               |
+| Ends with                      | `_iends_with`                      | Ends with, case-insensitive             |
 | Doesn't end with               | `_nends_with`                      | Doesn't end with                        |
+| Doesn't end with               | `_niends_with`                     | Doesn't end with, case-insensitive      |
 | Is between                     | `_between`                         | Is between two values (inclusive)       |
 | Isn't between                  | `_nbetween`                        | Is not between two values (inclusive)   |
 | Is empty                       | `_empty`                           | Is empty (`null` or falsy)              |

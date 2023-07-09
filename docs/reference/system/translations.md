@@ -45,8 +45,8 @@ Supports all [global query parameters](/reference/query).
 
 ### Returns
 
-An array of up to [limit](/reference/query#limit) [translation objects](#the-translations-object). If no items are available, data
-will be an empty array.
+An array of up to [limit](/reference/query#limit) [translation objects](#the-translations-object). If no items are
+available, data will be an empty array.
 
 ### REST API
 
@@ -115,7 +115,7 @@ POST /translations
 {
 	"key": "Test",
 	"language": "en-US",
-	"value": "My Test",
+	"value": "My Test"
 }
 ```
 
@@ -285,4 +285,3 @@ DELETE /translations
 // DELETE /translations
 ["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
 ```
-

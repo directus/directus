@@ -1705,6 +1705,7 @@ interfaces:
     input-translated-string: رشته‌های ترجمه شده
     description: Select or add translation string
     search_placeholder: جست‌وجو...
+    new_custom_translation: ترجمه سفارشی تازه
   boolean:
     toggle: تغییر وضعیت
     description: Switch between on and off
@@ -1742,15 +1743,25 @@ interfaces:
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
   input-block-editor:
+    input-block-editor: ویرایشگر بلوک
     tools: نوار ابزار
     tools_options:
       header: سربرگ
       nestedlist: لیست
       embed: درج
+      paragraph: بند
       code: کد
       image: عکس
+      attaches: پیوست‌شده
       table: جدول
+      quote: نقل‌قول
       underline: زیر خطدار
+      inlinecode: کد درون‌خطی
+      delimiter: جداساز
+      checklist: فهرست هم‌سنجی
+      toggle: کارگذاری بلوک
+      alignment: ترازبندی
+      raw: HTML خام
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete Input (API)
     description: A search typeahead for external API values.

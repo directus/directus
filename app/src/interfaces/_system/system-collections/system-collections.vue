@@ -35,15 +35,17 @@ const { t } = useI18n();
 const collectionsStore = useCollectionsStore();
 
 const collections = computed(() => {
-	let collections = collectionsStore.collections;
+	let collections = collectionsStore.collections.filter((collection) => collection.type === 'table');
 
 	if (!props.includeSingleton) {
 		collections = collections.filter((collection) => collection?.meta?.singleton === false);
 	}
 
-	if (props.includeSystem) return collections;
+	if (!props.includeSystem) {
+		collections = collections.filter((collection) => !collection.collection.startsWith('directus_'));
+	}
 
-	return collections.filter((collection) => collection.collection.startsWith('directus_') === false);
+	return collections;
 });
 
 const items = computed(() => {

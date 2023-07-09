@@ -69,7 +69,7 @@ Custom tiles to overriding the Mapbox defaults.
 What modules are enabled/added globally.
 
 `custom_aspect_ratios` **array**\
-Custom aspect ratios in the [image editor](/app/file-library#edit-an-image).
+Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-an-image).
 
 ```json
 {

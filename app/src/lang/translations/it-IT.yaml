@@ -35,6 +35,7 @@ tile_size: Dimensione della casella
 edit_field: Modifica campo
 conditions: Condizioni
 location: Posizione
+collection_names_are_case_sensitive: I nomi delle raccolte fanno distinzione tra maiuscole e minuscole
 condition_rules: Regole per la condizione
 input: Input
 maps: Mappe
@@ -708,8 +709,12 @@ operators:
   icontains: Contiene (ignora maiuscole/minuscole)
   starts_with: Inizia con
   nstarts_with: Non inizia con
+  istarts_with: Inizia con (maiuscolo o minuscolo)
+  nistarts_with: Non inizia con (maiuscolo o minuscolo)
   ends_with: Finisce con
   nends_with: Non finisce con
+  iends_with: Termina con (maiuscolo o minuscolo)
+  niends_with: Non termina con (maiuscolo o minuscolo)
   between: È compreso tra
   nbetween: Non è compreso tra
   empty: È vuoto

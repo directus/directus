@@ -8,7 +8,7 @@ readTime: 4 min read
 # Upgrades & Migrations
 
 > A Project is a complete instance of Directus, including its **Database**, config file, asset storage, and any custom
-> extensions. [Learn more about Projects](/getting-started/glossary#projects).
+> extensions. [Learn more about Projects](/user-guide/overview/glossary#projects).
 
 ## Upgrading / Updating a Project
 

@@ -35,6 +35,7 @@ tile_size: Розмір плитки
 edit_field: Редагувати поле
 conditions: Умови
 location: Розташування
+collection_names_are_case_sensitive: Назви колекції чутливі до регістру букв
 condition_rules: Правила умов
 input: Введення
 maps: Мапи
