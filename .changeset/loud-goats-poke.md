@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-fix: getExtensionsRealPaths() function is unable to correctly recogni…
+Fixed issue that would prevent Vite from hot reloading local app extensions during development
