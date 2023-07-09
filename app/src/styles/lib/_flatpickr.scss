@@ -320,7 +320,7 @@ span.flatpickr-weekday {
 	background: none !important;
 }
 
-.flatpickr-calendar .set-to-now-button {
+.flatpickr-calendar .custom-button {
 	width: 100%;
 	padding: 8px 0;
 	color: var(--primary);
@@ -328,6 +328,10 @@ span.flatpickr-weekday {
 	transition: background-color var(--fast) var(--transition);
 }
 
-.flatpickr-calendar .set-to-now-button:hover {
+.flatpickr-calendar .custom-button.half-width {
+	width: 50%;
+}
+
+.flatpickr-calendar .custom-button:hover {
 	background-color: var(--background-normal);
 }
