@@ -2189,7 +2189,9 @@ operations:
     recipient: User
     recipient_placeholder: Enter a UUID...
     recipient_note: Add user UUID and press enter...
+    item_note: Item Key or Relative URL
     message: Message
+    subject: Subject
   request:
     name: Webhook / Request URL
     description: 'Make a request to a URL'
