@@ -250,37 +250,50 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 
 List all files that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [file objects](#the-file-object). If no items are available, data will
-be an empty array.
+`GET /files`
+`SEARCH /files`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /files
-SEARCH /files
-```
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
 	files: [directus_files]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [file objects](#the-file-object). If no items are available, data will
+be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /files`
+`SEARCH /files`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
@@ -290,6 +303,9 @@ query {
 	}
 }
 ```
+</template>
+
+</SnippetToggler>
 
 ---
 
@@ -297,40 +313,48 @@ query {
 
 Retrieve a single file by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns a [file object](#the-file-object) if a valid primary key was provided.
+`GET /files/:id`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /files/:id
-```
-
-##### Example
-
-```
-GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
 	files_by_id(id: ID!): directus_files
 }
 ```
+</template>
 
-##### Example
+</SnippetToggler>
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns a [file object](#the-file-object) if a valid primary key was provided.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	files_by_id(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d") {
@@ -339,6 +363,9 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ## Upload a File
 
@@ -396,11 +423,11 @@ formData.append('file', fileInput.files[0]);
 await axios.post('/files', formData);
 ```
 
-### Query Parameters
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Returns
+### Response
 
 Returns the [file object](#the-file-object) for the uploaded file, or an array of [file objects](#the-file-object) if
 multiple files were uploaded at once.
@@ -429,11 +456,42 @@ descü^cprt\wtpthbkpt|rXYZgXYZ¤bXYZ¸rTRCÌ@gTRCÌ@bTRCÌ@desc
 
 Import a file from the web
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /files/import`
+
+```json
+{
+	"url": "download source",
+	"data": {
+		"field_1": "value_1"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	import_file(url: String!, data: create_directus_files_input!): directus_files
+}
+```
+</template>
+
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `url` **Required**\
 The URL to download the file from.
@@ -441,43 +499,31 @@ The URL to download the file from.
 `data`\
 Any of [the file object](#the-file-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [file object](#the-file-object) for the imported file.
 
-### REST API
 
-```
-POST /files/import
-```
+### Example
 
-##### Example
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
+<template #rest>
+
+`POST /files/import`
 ```json
-// POST /files/import
-
-{
+{ 
 	"url": "https://source.unsplash.com/random",
 	"data": {
 		"title": "Example"
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	import_file(url: String!, data: create_directus_files_input!): directus_files
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	import_file(url: "https://source.unsplash.com/random", data: { title: "Example" }) {
@@ -485,6 +531,9 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -492,50 +541,64 @@ mutation {
 
 Update an existing file, and/or replace it's file contents.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-You can either submit a JSON object consisting of a partial [file object](#the-file-object) to update the file meta, or
-send a multipart/form-data request to replace the file contents on disk. See [Upload a File](#upload-a-file) for more
-information on the structure of this `multipart/form-data` request.
-
-### Returns
-
-Returns the [file object](#the-file-object) for the updated file.
-
-### REST API
-
-```
-PATCH /files/:id
-```
-
-##### Example
+`PATCH /files/:id`
 
 ```json
-// PATCH /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
-
 {
-	"title": "Example"
+	"field": "value"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
 	update_files_item(id: ID!, data: update_directus_files_input!): directus_files
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+You can either submit a JSON object consisting of a partial [file object](#the-file-object) to update the file meta, or
+send a multipart/form-data request to replace the file contents on disk. See [Upload a File](#upload-a-file) for more
+information on the structure of this `multipart/form-data` request.
+
+### Response
+
+Returns the [file object](#the-file-object) for the updated file.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+```json
+{
+	"title": "Example"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_files_item(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d", data: { title: "Example" }) {
@@ -544,6 +607,9 @@ mutation {
 	}
 }
 ```
+</template>
+
+</SnippetToggler>
 
 ---
 
@@ -551,11 +617,42 @@ mutation {
 
 Update multiple files at the same time.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+
+`PATCH /files`
+```json
+{
+	"keys": ["key_1", "key_2"],
+	"data": {
+		"field_1": ["value_1"]
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_files_items(ids: [ID!]!, data: update_directus_files!): [directus_files]
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the files you'd like to update.
@@ -563,20 +660,18 @@ Array of primary keys of the files you'd like to update.
 `data` **Required**\
 Any of [the file object](#the-file-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [file objects](#the-file-object) for the updated files.
 
-### REST API
+### Example
 
-```
-PATCH /files
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /files`
 ```json
-// PATCH /files
 
 {
 	"keys": ["b6123925-2fc0-4a30-9d86-863eafc0a6e7", "d17c10aa-0bad-4864-9296-84f522c753e5"],
@@ -586,20 +681,11 @@ PATCH /files
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
-```graphql
-type Mutation {
-	update_files_items(ids: [ID!]!, data: update_directus_files!): [directus_files]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_files_items(
@@ -608,6 +694,9 @@ mutation {
 	)
 }
 ```
+
+</template>
+</SnippetToggler>
 
 ---
 
@@ -621,31 +710,19 @@ This will also delete the file from disk.
 
 :::
 
-### Query Parameters
+### Request  
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
 
-Empty response.
+<template #rest>
 
-### REST API
+`DELETE /files/:id`
+</template>
 
-```
-DELETE /files/:id
-```
+<template #graphql>
 
-##### Example
-
-```
-DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -653,6 +730,30 @@ type Mutation {
 }
 ```
 
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Empty response.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_files_item(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d") {
@@ -660,6 +761,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -673,7 +776,32 @@ This will also delete the files from disk.
 
 :::
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /files`
+```json
+["file_id", "file_id"]
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	delete_files_items(ids: [ID!]!): delete_many
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 Array of file primary keys
 
@@ -681,33 +809,22 @@ Array of file primary keys
 
 Empty response.
 
-### REST API
+### Example
 
-```
-DELETE /files
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
+
+`DELETE /files`
 
 ```json
-// DELETE /files
-
 ["d17c10aa-0bad-4864-9296-84f522c753e5", "b6123925-2fc0-4a30-9d86-863eafc0a6e7"]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	delete_files_items(ids: [ID!]!): delete_many
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -716,3 +833,6 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
