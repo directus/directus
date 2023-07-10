@@ -6,7 +6,7 @@ import type {
 	AbstractSqlQuery,
 	AbstractSqlQueryWhereConditionNode,
 	AbstractSqlQueryWhereLogicalNode,
-	CompareValueNode
+	CompareValueNode,
 } from '@directus/data-sql';
 import { wrapColumn } from '../utils/wrap-column.js';
 

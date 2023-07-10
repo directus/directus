@@ -115,6 +115,9 @@ onBeforeMount(() => {
 	font-size: 12px;
 	padding-inline-end: 20px;
 }
+.snippet-toggler-header-lang option {
+	color: var(--vp-c-black);
+}
 
 .snippet-toggler-header-lang:focus {
 	outline: none;
