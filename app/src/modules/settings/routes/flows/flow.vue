@@ -194,7 +194,7 @@ import { Vector2 } from '@/utils/vector2';
 import { FlowRaw, OperationRaw } from '@directus/types';
 import { cloneDeep, isEmpty, merge, omit } from 'lodash';
 import { customAlphabet, nanoid } from 'nanoid/non-secure';
-import { computed, ref } from 'vue';
+import { computed, ref, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import SettingsNotFound from '../not-found.vue';
@@ -218,6 +218,10 @@ const props = defineProps<{
 const saving = ref(false);
 
 useShortcut('meta+s', () => {
+	// If currentOperation exists, the operation edit drawer is opened and we should prevent the
+	// saving of the top level flow from the shortcut #19104
+	if (unref(currentOperation)) return;
+
 	saveChanges();
 });
 
@@ -233,6 +237,7 @@ const flow = computed<FlowRaw | undefined>({
 		if (!existing) return undefined;
 
 		return merge({}, existing, {
+			status: stagedFlow.value?.status ?? existing.status,
 			operation: stagedFlow.value?.operation ?? existing.operation,
 			operations: stagedFlow.value?.operations ?? existing.operations,
 		});
