@@ -40,10 +40,29 @@ jobs:
         with:
           registry: https://registry.npmjs.org
 
-      - name: Publish packages to NPM
+      - if: ${{ !contains(github.ref_name, '-rc') && !contains(github.ref_name, '-beta') && !contains(github.ref_name, '-alpha') }}
+        name: Publish packages to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --recursive publish --access=public --no-git-checks
+
+      - if: ${{ contains(github.ref_name, '-rc') && !contains(github.ref_name, '-beta') && !contains(github.ref_name, '-alpha') }}
+        name: Publish packages to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --recursive publish --access=public --no-git-checks --tag rc
+
+      - if: ${{ !contains(github.ref_name, '-rc') && contains(github.ref_name, '-beta') && !contains(github.ref_name, '-alpha') }}
+        name: Publish packages to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --recursive publish --access=public --no-git-checks --tag beta
+
+      - if: ${{ !contains(github.ref_name, '-rc') && !contains(github.ref_name, '-beta') && contains(github.ref_name, '-alpha') }}
+        name: Publish packages to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --recursive publish --access=public --no-git-checks --tag alpha
 
   build-images:
     name: Build Images
