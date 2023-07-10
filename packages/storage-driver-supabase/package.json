@@ -23,7 +23,8 @@
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest --watch=false",
+		"test:watch": "vitest"
 	},
 	"dependencies": {
 		"@directus/storage": "workspace:*",
