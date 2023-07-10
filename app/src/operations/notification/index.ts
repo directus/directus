@@ -61,7 +61,7 @@ export default defineOperationApp({
 		},
 		{
 			field: 'subject',
-			name: '$t:title',
+			name: '$t:operations.notification.subject',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -78,6 +78,28 @@ export default defineOperationApp({
 			meta: {
 				width: 'full',
 				interface: 'input-rich-text-md',
+			},
+		},
+		{
+			field: 'collection',
+			name: '$t:collection',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'system-collection',
+			},
+		},
+		{
+			field: 'item',
+			name: '$t:item',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'input',
+				options: {
+					iconRight: 'vpn_key',
+				},
+				note: '$t:operations.notification.item_note',
 			},
 		},
 	],
