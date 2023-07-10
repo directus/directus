@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateNotificationOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdateNotificationOutput<
 
 /**
  * Update multiple existing notifications.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the notification objects for the updated notifications.
  */
 export const updatedNotifications =
@@ -32,9 +31,9 @@ export const updatedNotifications =
 
 /**
  * Update an existing notification.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the notification object for the updated notification.
  */
 export const updateNotification =

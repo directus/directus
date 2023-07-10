@@ -11,8 +11,8 @@ export type CreateTranslationOutput<
 
 /**
  * Create multiple new translation.
- * @param items 
- * @param query 
+ * @param items
+ * @param query
  * @returns Returns the translation object for the created translation.
  */
 export const createTranslations =
@@ -29,8 +29,8 @@ export const createTranslations =
 
 /**
  * Create a new translation.
- * @param item 
- * @param query 
+ * @param item
+ * @param query
  * @returns Returns the translation object for the created translation.
  */
 export const createTranslation =

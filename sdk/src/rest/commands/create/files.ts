@@ -23,7 +23,6 @@ export type CreateFileOutput<
 // 		method: 'POST',
 // 	});
 
-
 // export const createFile =
 // 	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
 // 		item: Partial<DirectusFile<Schema>>,

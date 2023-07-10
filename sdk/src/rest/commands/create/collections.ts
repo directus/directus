@@ -12,7 +12,7 @@ export type CreateCollectionOutput<
 /**
  * Create a new Collection. This will create a new table in the database as well.
  * @param item This endpoint doesn't currently support any query parameters.
- * @param query 
+ * @param query
  * @returns The collection object for the collection created in this request.
  */
 export const createCollection =

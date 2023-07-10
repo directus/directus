@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateFolderOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdateFolderOutput<
 
 /**
  * Update multiple existing folders.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the folder objects of the folders that were updated.
  */
 export const updatedFolders =
@@ -32,9 +31,9 @@ export const updatedFolders =
 
 /**
  * Update an existing folder.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the folder object of the folder that was updated.
  */
 export const updateFolder =

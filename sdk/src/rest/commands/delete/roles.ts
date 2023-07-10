@@ -3,13 +3,11 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete multiple existing roles.
- * @param keys 
- * @returns 
+ * @param keys
+ * @returns
  */
 export const deleteRoles =
-	<Schema extends object>(
-		keys: DirectusRole<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusRole<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/roles`,
 		body: JSON.stringify(keys),
@@ -19,8 +17,8 @@ export const deleteRoles =
 
 /**
  * Delete an existing role.
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const deleteRole =
 	<Schema extends object>(key: DirectusRole<Schema>['id']): RestCommand<void, Schema> =>

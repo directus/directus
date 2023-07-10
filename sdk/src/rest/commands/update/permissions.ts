@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdatePermissionOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdatePermissionOutput<
 
 /**
  * Update multiple existing permissions rules.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the permission object for the updated permissions.
  */
 export const updatedPermissions =
@@ -32,9 +31,9 @@ export const updatedPermissions =
 
 /**
  * Update an existing permissions rule.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the permission object for the updated permission.
  */
 export const updatePermission =

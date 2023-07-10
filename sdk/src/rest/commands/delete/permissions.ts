@@ -4,12 +4,10 @@ import type { RestCommand } from '../../types.js';
 /**
  * Delete multiple existing permissions rules
  * @param keys
- * @returns 
+ * @returns
  */
 export const deletePermissions =
-	<Schema extends object>(
-		keys: DirectusPermission<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusPermission<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/permissions`,
 		body: JSON.stringify(keys),
@@ -19,8 +17,8 @@ export const deletePermissions =
 
 /**
  * Delete an existing permissions rule
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const deletePermission =
 	<Schema extends object>(key: DirectusPermission<Schema>['id']): RestCommand<void, Schema> =>

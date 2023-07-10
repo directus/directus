@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateSettingOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -11,9 +10,9 @@ export type UpdateSettingOutput<
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
- * Update Settings 
- * @param item 
- * @param query 
+ * Update Settings
+ * @param item
+ * @param query
  * @returns Returns the settings object.
  */
 export const updatedSettings =

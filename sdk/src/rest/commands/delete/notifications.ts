@@ -3,13 +3,11 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete multiple existing notifications.
- * @param keys 
- * @returns 
+ * @param keys
+ * @returns
  */
 export const deleteNotifications =
-	<Schema extends object>(
-		keys: DirectusNotification<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusNotification<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/notifications`,
 		body: JSON.stringify(keys),
@@ -19,8 +17,8 @@ export const deleteNotifications =
 
 /**
  * Delete an existing notification.
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const deleteNotification =
 	<Schema extends object>(key: DirectusNotification<Schema>['id']): RestCommand<void, Schema> =>

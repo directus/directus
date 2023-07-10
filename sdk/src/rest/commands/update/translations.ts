@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateTranslationOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdateTranslationOutput<
 
 /**
  * Update multiple existing translations.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the translation objects for the updated translations.
  */
 export const updatedTranslations =
@@ -32,9 +31,9 @@ export const updatedTranslations =
 
 /**
  * Update an existing translation.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the translation object for the updated translation.
  */
 export const updateTranslation =

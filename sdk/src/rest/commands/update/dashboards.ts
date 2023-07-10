@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateDashboardOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdateDashboardOutput<
 
 /**
  * Update multiple existing dashboards.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the dashboard objects for the updated dashboards.
  */
 export const updatedDashboards =
@@ -32,9 +31,9 @@ export const updatedDashboards =
 
 /**
  * Update an existing dashboard.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the dashboard object for the updated dashboard.
  */
 export const updateDashboard =

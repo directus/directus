@@ -3,13 +3,11 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete multiple existing panels.
- * @param keys 
- * @returns 
+ * @param keys
+ * @returns
  */
 export const deletePanels =
-	<Schema extends object>(
-		keys: DirectusPanel<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusPanel<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/panels`,
 		body: JSON.stringify(keys),
@@ -19,8 +17,8 @@ export const deletePanels =
 
 /**
  * Delete an existing panel.
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const deletePanel =
 	<Schema extends object>(key: DirectusPanel<Schema>['id']): RestCommand<void, Schema> =>

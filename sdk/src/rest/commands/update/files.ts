@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateFileOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdateFileOutput<
 
 /**
  * Update multiple files at the same time.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the file objects for the updated files.
  */
 export const updatedFiles =
@@ -32,9 +31,9 @@ export const updatedFiles =
 
 /**
  * Update an existing file, and/or replace it's file contents.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the file object for the updated file.
  */
 export const updateFile =

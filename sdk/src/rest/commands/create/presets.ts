@@ -11,8 +11,8 @@ export type CreatePresetOutput<
 
 /**
  * Create multiple new presets.
- * @param items 
- * @param query 
+ * @param items
+ * @param query
  * @returns Returns the preset object for the created preset.
  */
 export const createPresets =
@@ -29,8 +29,8 @@ export const createPresets =
 
 /**
  * Create a new preset.
- * @param item 
- * @param query 
+ * @param item
+ * @param query
  * @returns Returns the preset object for the created preset.
  */
 export const createPreset =

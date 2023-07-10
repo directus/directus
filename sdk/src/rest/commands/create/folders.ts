@@ -31,7 +31,7 @@ export const createFolders =
  * Create a new (virtual) folder.
  * @param item The folder to create
  * @param query Optional return data query
- * @returns 
+ * @returns
  */
 export const createFolder =
 	<Schema extends object, TQuery extends Query<Schema, DirectusFolder<Schema>>>(

@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdatePanelOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdatePanelOutput<
 
 /**
  * Update multiple existing panels.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the panel objects for the updated panels.
  */
 export const updatedPanels =
@@ -32,9 +31,9 @@ export const updatedPanels =
 
 /**
  * Update an existing panel.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the panel object for the updated panel.
  */
 export const updatePanel =

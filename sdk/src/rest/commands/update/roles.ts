@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateRoleOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdateRoleOutput<
 
 /**
  * Update multiple existing roles.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the role objects for the updated roles.
  */
 export const updatedRoles =
@@ -32,9 +31,9 @@ export const updatedRoles =
 
 /**
  * Update an existing role.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the role object for the updated role.
  */
 export const updateRole =

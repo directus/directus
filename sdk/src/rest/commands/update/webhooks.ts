@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateWebhookOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdateWebhookOutput<
 
 /**
  * Update multiple existing webhooks.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the webhook objects for the updated webhooks.
  */
 export const updatedWebhooks =
@@ -32,9 +31,9 @@ export const updatedWebhooks =
 
 /**
  * Update an existing webhook.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the webhook object for the updated webhook.
  */
 export const updateWebhook =

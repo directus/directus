@@ -27,7 +27,6 @@ export const createDashboards =
 		method: 'POST',
 	});
 
-
 /**
  * Create a new dashboard.
  * @param item The dashboard to create

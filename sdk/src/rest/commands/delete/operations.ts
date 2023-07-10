@@ -3,13 +3,11 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete multiple existing operations.
- * @param keys 
- * @returns 
+ * @param keys
+ * @returns
  */
 export const deleteOperations =
-	<Schema extends object>(
-		keys: DirectusOperation<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusOperation<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/operations`,
 		body: JSON.stringify(keys),
@@ -19,8 +17,8 @@ export const deleteOperations =
 
 /**
  * Delete an existing operation.
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const deleteOperation =
 	<Schema extends object>(key: DirectusOperation<Schema>['id']): RestCommand<void, Schema> =>

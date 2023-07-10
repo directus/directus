@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdatePresetOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdatePresetOutput<
 
 /**
  * Update multiple existing presets.
- * @param keys 
- * @param item 
- * @param query 
+ * @param keys
+ * @param item
+ * @param query
  * @returns Returns the preset objects for the updated presets.
  */
 export const updatedPresets =
@@ -32,9 +31,9 @@ export const updatedPresets =
 
 /**
  * Update an existing preset.
- * @param key 
- * @param item 
- * @param query 
+ * @param key
+ * @param item
+ * @param query
  * @returns Returns the preset object for the updated preset.
  */
 export const updatePreset =

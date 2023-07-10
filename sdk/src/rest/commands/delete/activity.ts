@@ -3,7 +3,7 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Deletes a comment.
- * @param key 
+ * @param key
  * @returns Nothing
  */
 export const deleteComment =

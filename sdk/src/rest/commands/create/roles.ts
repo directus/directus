@@ -11,8 +11,8 @@ export type CreateRoleOutput<
 
 /**
  * Create multiple new roles.
- * @param items 
- * @param query 
+ * @param items
+ * @param query
  * @returns Returns the role objects for the created roles.
  */
 export const createRoles =
@@ -29,8 +29,8 @@ export const createRoles =
 
 /**
  * Create a new role.
- * @param item 
- * @param query 
+ * @param item
+ * @param query
  * @returns Returns the role object for the created role.
  */
 export const createRole =

@@ -3,13 +3,11 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete multiple existing presets.
- * @param keys 
- * @returns 
+ * @param keys
+ * @returns
  */
 export const deletePresets =
-	<Schema extends object>(
-		keys: DirectusPreset<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusPreset<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/presets`,
 		body: JSON.stringify(keys),
@@ -19,8 +17,8 @@ export const deletePresets =
 
 /**
  * Delete an existing preset.
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const deletePreset =
 	<Schema extends object>(key: DirectusPreset<Schema>['id']): RestCommand<void, Schema> =>

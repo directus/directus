@@ -11,8 +11,8 @@ export type CreatePanelOutput<
 
 /**
  * Create multiple new panels.
- * @param items 
- * @param query 
+ * @param items
+ * @param query
  * @returns Returns the panel object for the created panel.
  */
 export const createPanels =
@@ -29,8 +29,8 @@ export const createPanels =
 
 /**
  * Create a new panel.
- * @param item 
- * @param query 
+ * @param item
+ * @param query
  * @returns Returns the panel object for the created panel.
  */
 export const createPanel =

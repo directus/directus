@@ -3,13 +3,11 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete multiple existing folders.
- * @param keys 
- * @returns 
+ * @param keys
+ * @returns
  */
 export const deleteFolders =
-	<Schema extends object>(
-		keys: DirectusFolder<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusFolder<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/folders`,
 		body: JSON.stringify(keys),
@@ -19,8 +17,8 @@ export const deleteFolders =
 
 /**
  * Delete multiple existing folders.
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const deleteFolder =
 	<Schema extends object>(key: DirectusFolder<Schema>['id']): RestCommand<void, Schema> =>

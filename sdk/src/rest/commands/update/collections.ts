@@ -3,7 +3,6 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-
 export type UpdateCollectionOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
@@ -12,9 +11,9 @@ export type UpdateCollectionOutput<
 
 /**
  * Update the metadata for an existing collection.
- * @param collection 
- * @param item 
- * @param query 
+ * @param collection
+ * @param item
+ * @param query
  * @returns The collection object for the updated collection in this request.
  */
 export const updateCollection =

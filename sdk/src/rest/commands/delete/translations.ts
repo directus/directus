@@ -3,13 +3,11 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete multiple existing translations.
- * @param keys 
- * @returns 
+ * @param keys
+ * @returns
  */
 export const deleteTranslations =
-	<Schema extends object>(
-		keys: DirectusTranslation<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusTranslation<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/`,
 		body: JSON.stringify(keys),
@@ -19,8 +17,8 @@ export const deleteTranslations =
 
 /**
  * Delete an existing translation.
- * @param key 
- * @returns 
+ * @param key
+ * @returns
  */
 export const deleteTranslation =
 	<Schema extends object>(key: DirectusTranslation<Schema>['id']): RestCommand<void, Schema> =>

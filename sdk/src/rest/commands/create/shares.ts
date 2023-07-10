@@ -11,8 +11,8 @@ export type CreateShareOutput<
 
 /**
  * Create multiple new shares.
- * @param items 
- * @param query 
+ * @param items
+ * @param query
  * @returns Returns the share objects for the created shares.
  */
 export const createShares =
@@ -29,8 +29,8 @@ export const createShares =
 
 /**
  * Create a new share.
- * @param item 
- * @param query 
+ * @param item
+ * @param query
  * @returns Returns the share object for the created share.
  */
 export const createShare =

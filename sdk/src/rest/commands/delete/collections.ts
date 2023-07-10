@@ -3,8 +3,8 @@ import type { RestCommand } from '../../types.js';
 
 /**
  * Delete a collection.
- * @param collection 
- * @returns 
+ * @param collection
+ * @returns
  */
 export const deleteCollection =
 	<Schema extends object>(collection: DirectusCollection<Schema>['collection']): RestCommand<void, Schema> =>

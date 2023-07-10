@@ -9,9 +9,7 @@ import type { DirectusUser } from '../../../schema/user.js';
  * @returns Nothing
  */
 export const deleteUsers =
-	<Schema extends object>(
-		keys: DirectusUser<Schema>['id'][]
-	): RestCommand<void, Schema> =>
+	<Schema extends object>(keys: DirectusUser<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users`,
 		body: JSON.stringify(keys),
