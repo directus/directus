@@ -129,7 +129,7 @@ export class UtilsService {
 		// check if cache should be cleared
 		const cache = getCache().cache;
 
-		if(shouldClearCache(cache, undefined, collection)){
+		if (shouldClearCache(cache, undefined, collection)) {
 			await cache.clear();
 		}
 
