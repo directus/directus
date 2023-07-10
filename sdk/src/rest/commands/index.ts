@@ -1,3 +1,4 @@
+export * from './auth/index.js';
 export * from './create/items.js';
 export * from './create/users.js';
 export * from './delete/items.js';
