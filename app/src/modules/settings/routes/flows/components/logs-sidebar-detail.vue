@@ -235,6 +235,7 @@ const steps = computed(() => {
 	padding: 20px;
 	margin-top: 20px;
 	white-space: pre-wrap;
+	overflow-wrap: break-word; 
 }
 
 .steps {
