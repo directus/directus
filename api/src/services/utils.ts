@@ -7,6 +7,7 @@ import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
 import { getEnv } from '../env.js';
 import { getCache } from '../cache.js';
+import { shouldClearCache } from '../utils/should-clear-cache.js';
 
 export class UtilsService {
 	knex: Knex;
@@ -132,7 +133,7 @@ export class UtilsService {
 		if (env['CACHE_AUTO_PURGE']) {
 			const cache = getCache().cache;
 
-			if (cache && !env['CACHE_AUTO_PURGE_IGNORE_LIST'].includes(collection)) {
+			if(shouldClearCache(cache, undefined, collection)){
 				await cache.clear();
 			}
 		}
