@@ -150,37 +150,53 @@ a primary key field is omitted, the request will auto-generate an auto-increment
 
 List the available collections.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of [collection objects](#the-collection-object).
+`GET /collections`
 
-### REST API
+`SEARCH /collections`
+</template>
 
-```
-GET /collections
-SEARCH /collections
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
 	collections: [directus_collections]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+An array of [collection objects](#the-collection-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /collections`
+
+`SEARCH /collections`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	collections {
@@ -188,6 +204,9 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -195,40 +214,47 @@ query {
 
 Retrieve a single collection by table name.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-A [collection object](#the-collection-object).
+`GET /collections/:collection`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /collections/:collection
-```
-
-##### Example
-
-```
-GET /collections/articles
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
 	collections_by_name(name: String!): directus_collections
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+A [collection object](#the-collection-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /collections/articles`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	collections_by_name(name: "articles") {
@@ -236,6 +262,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -243,11 +271,39 @@ query {
 
 Create a new Collection. This will create a new table in the database as well.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /collections`
+```json
+{
+	"collection": "collection_name",
+	"field_1": {
+		"field_1.1": "value_1"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_collections_item(data: directus_collections): directus_collections
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Body
+#### Request Body
 
 The `collection` property is required, all other properties of the [collection object](#the-collection-object) are
 optional.
@@ -256,10 +312,6 @@ You are able to provide an array of `fields` to be created during the creation o
 [fields object](/reference/system/fields#the-fields-object) for more information on what properties are available in a
 field.
 
-### Returns
-
-The [collection object](#the-collection-object) for the collection created in this request.
-
 ::: tip
 
 Make sure to pass an empty object for schema (`schema: {}`) when creating collections. Alternatively, you can omit it
@@ -267,17 +319,18 @@ entirely or use `schema: null` to create ["folder" collections](/app/data-model#
 
 :::
 
-### REST API
+### Returns
 
-```
-POST /collections
-```
+The [collection object](#the-collection-object) for the collection created in this request.
 
-##### Example
+### Example
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /collections`
 ```json
-// POST /collections
-
 {
 	"collection": "testimonials",
 	"meta": {
@@ -285,21 +338,11 @@ POST /collections
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_collections_item(data: directus_collections): directus_collections
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_collections_item(data: { collection: "testimonials", meta: { icon: "format_quote" } }) {
@@ -307,6 +350,9 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -314,51 +360,65 @@ mutation {
 
 Update the metadata for an existing collection.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /collections/:collection`
+```json
+{
+	"meta": {
+		"field_1": "value_1"
+	}
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_collections_item(collection: String!, data: update_directus_collections_input!): directus_collections
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Body
+#### Request Body
 
 You can only update the `meta` values of the [collection object](#the-collection-object). Updating the collection name
 is not supported at this time.
 
-### Returns
+### Response
 
 The [collection object](#the-collection-object) for the updated collection in this request.
 
-### REST API
+### Example
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-```
-PATCH /collections/:collection
-```
+<template #rest>
 
-##### Example
-
+`PATCH /collections/testimonials`
 ```json
-// PATCH /collections/testimonials
-
 {
 	"meta": {
 		"note": "Short quotes from happy customers."
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_collections_item(collection: String!, data: update_directus_collections_input!): directus_collections
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_collections_item(collection: "testimonials", data: { meta: { note: "Short quotes from happy customers." } }) {
@@ -366,6 +426,9 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -379,23 +442,18 @@ Be aware, this will delete the table from the database, including all items in i
 
 :::
 
-### REST API
+### Request
 
-```
-DELETE /collections/:collection
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-DELETE /collections/articles
-```
+`DELETE /collections/:collection`
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -403,8 +461,21 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /collections/articles`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_collections_item(collection: "articles") {
@@ -412,5 +483,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
