@@ -201,10 +201,8 @@ function saveChanges() {
 const textFieldConfiguration = computed<Field | undefined>(() => {
 	/* Extra information is stored in fieldsInCollection,
 	but we need to find the config for the field used as the card's text field */
-	return props.fieldsInCollection.find(
-		field => field.field === props.layoutOptions.textField
-	);
-})
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
+});
 </script>
 
 <style lang="scss" scoped>
