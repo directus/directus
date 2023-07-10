@@ -53,7 +53,16 @@
 							<router-link :to="getItemRoute(collection, element.id)" class="item">
 								<div v-if="element.title" class="title">{{ element.title }}</div>
 								<img v-if="element.image" class="image" :src="element.image" />
-								<div v-if="element.text" class="text">{{ element.text }}</div>
+								<render-display
+									v-if="element.text && textFieldConfiguration"
+									:collection="collection"
+									:value="element.text"
+									:type="textFieldConfiguration.type"
+									:field="layoutOptions.textField"
+									:display="textFieldConfiguration.meta?.display"
+									:options="textFieldConfiguration.meta?.options"
+									:interface="textFieldConfiguration.meta?.interface"
+								/>
 								<display-labels
 									v-if="element.tags"
 									:value="element.tags"
@@ -111,16 +120,17 @@ export default {
 import { addTokenToURL } from '@/api';
 import { getItemRoute } from '@/utils/get-item-route';
 import { getRootPath } from '@/utils/get-root-path';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
-import type { ChangeEvent, Group, Item } from './types';
+import type { ChangeEvent, Group, Item, LayoutOptions } from './types';
+import type { Field } from '@directus/types';
 
 const props = withDefaults(
 	defineProps<{
 		collection?: string | null;
 		groupCollection?: string | null;
-		fieldsInCollection?: Record<string, any>[];
+		fieldsInCollection?: Field[];
 		primaryKeyField?: Record<string, any> | null;
 		groupedItems?: Group[];
 		groupTitle?: string | null;
@@ -134,6 +144,7 @@ const props = withDefaults(
 		sortField?: string | null;
 		userField?: string | null;
 		groupsSortField?: string | null;
+		layoutOptions: LayoutOptions;
 	}>(),
 	{
 		collection: null,
@@ -185,6 +196,15 @@ function saveChanges() {
 	editDialogOpen.value = null;
 	editTitle.value = '';
 }
+
+// Used to find relevant information to display cards' formatted text with <render-display>
+const textFieldConfiguration = computed<Field | undefined>(() => {
+	/* Extra information is stored in fieldsInCollection,
+	but we need to find the config for the field used as the card's text field */
+	return props.fieldsInCollection.find(
+		field => field.field === props.layoutOptions.textField
+	);
+})
 </script>
 
 <style lang="scss" scoped>
