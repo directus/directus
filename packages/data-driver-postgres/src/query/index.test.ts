@@ -108,7 +108,7 @@ test('statement with all possible modifiers', () => {
 				},
 				compareTo: {
 					type: 'value',
-					parameterIndexes: [firstConditionParameterIndex],
+					parameterIndex: firstConditionParameterIndex,
 				},
 				negate: false,
 			},
@@ -122,7 +122,7 @@ test('statement with all possible modifiers', () => {
 				},
 				compareTo: {
 					type: 'value',
-					parameterIndexes: [secondConditionParameterIndex],
+					parameterIndex: secondConditionParameterIndex,
 				},
 				negate: false,
 			},

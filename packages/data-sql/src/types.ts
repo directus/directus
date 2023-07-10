@@ -24,7 +24,7 @@ export interface AbstractSqlQueryFnNode {
 	isTimestampType?: boolean;
 
 	/* Indexes of additional arguments within the parameter list  */
-	arguments?: ValueNode;
+	arguments?: ValuesNode;
 
 	/* This can only be applied when using the function it within the SELECT clause */
 	as?: string;
@@ -163,7 +163,7 @@ export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
 
 export interface ValueNode {
 	type: 'value';
-	parameterIndexes: number[];
+	parameterIndex: number;
 }
 
 export interface ValuesNode {

@@ -8,7 +8,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		where = where as AbstractSqlQueryConditionNode;
 
 		if (where.type === 'number-condition') {
-			const compareValue = `$${where.compareTo.parameterIndexes[0]! + 1}`;
+			const compareValue = `$${where.compareTo.parameterIndex + 1}`;
 			const operation = convertClassicOperations(where.operation, where.negate);
 
 			if (where.target.type === 'fn') {
@@ -25,7 +25,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			// TODO: support functions comparison here if needed
 
 			const wrappedColumn = wrapColumn(where.target.table, where.target.column);
-			const compareValue = `$${where.compareTo.parameterIndexes[0]! + 1}`;
+			const compareValue = `$${where.compareTo.parameterIndex + 1}`;
 
 			if (where.operation === 'eq') {
 				return `${wrappedColumn} ${where.negate ? '!=' : '='} ${compareValue}`;
@@ -51,7 +51,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		if (where.type === 'geo-condition') {
 			// PostGIS Manual: http://www.postgis.net/docs/ST_Intersects.html
 			const wrappedColumn = wrapColumn(where.target.table, where.target.column);
-			const compareValue = `$${where.compareTo.parameterIndexes[0]! + 1}`;
+			const compareValue = `$${where.compareTo.parameterIndex + 1}`;
 
 			if (where.operation === 'intersects') {
 				return `ST_Intersects(${wrappedColumn}, ${compareValue})`;

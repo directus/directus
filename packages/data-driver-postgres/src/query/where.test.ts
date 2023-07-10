@@ -37,7 +37,7 @@ describe('Where clause:', () => {
 					},
 					compareTo: {
 						type: 'value',
-						parameterIndexes: [0],
+						parameterIndex: 0,
 					},
 				},
 				parameters: [randomInteger(1, 10)],
@@ -48,7 +48,7 @@ describe('Where clause:', () => {
 	test('Where clause', () => {
 		expect(where(sample.statement)).toStrictEqual(
 			`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" > $${
-				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndexes[0]! + 1
+				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndex + 1
 			}`
 		);
 	});
@@ -58,7 +58,7 @@ describe('Where clause:', () => {
 
 		expect(where(sample.statement)).toStrictEqual(
 			`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" <= $${
-				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndexes[0]! + 1
+				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndex + 1
 			}`
 		);
 	});

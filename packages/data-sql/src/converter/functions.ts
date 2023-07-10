@@ -31,7 +31,7 @@ export function convertFn(
 
 	if (abstractFunction.args && abstractFunction.args?.length > 0) {
 		const parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
-		fn.arguments = { type: 'value', parameterIndexes };
+		fn.arguments = { type: 'values', parameterIndexes };
 	}
 
 	return {

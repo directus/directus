@@ -64,7 +64,7 @@ describe('Convert function', () => {
 				column: sampleField,
 			},
 			arguments: {
-				type: 'value',
+				type: 'values',
 				parameterIndexes: [0, 1],
 			},
 		};

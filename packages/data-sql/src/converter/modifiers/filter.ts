@@ -82,7 +82,7 @@ function convertCondition(
 		target,
 		compareTo: {
 			type: 'value',
-			parameterIndexes: [generator.next().value],
+			parameterIndex: generator.next().value,
 		},
 	};
 

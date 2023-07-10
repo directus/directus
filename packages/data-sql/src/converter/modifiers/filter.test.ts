@@ -57,7 +57,7 @@ test('Filter by number', () => {
 		operation: 'gt',
 		compareTo: {
 			type: 'value',
-			parameterIndexes: [0],
+			parameterIndex: 0,
 		},
 	};
 
@@ -99,7 +99,7 @@ test('Filter by number with function', () => {
 		operation: 'gt',
 		compareTo: {
 			type: 'value',
-			parameterIndexes: [0],
+			parameterIndex: 0,
 		},
 	};
 
@@ -124,7 +124,7 @@ test.skip('Convert filter with one parameter and negation', () => {
 		operation: 'gt',
 		compareTo: {
 			type: 'value',
-			parameterIndexes: [0],
+			parameterIndex: 0,
 		},
 	};
 
@@ -187,7 +187,7 @@ test('Convert filter with logical', () => {
 				operation: 'gt',
 				compareTo: {
 					type: 'value',
-					parameterIndexes: [0],
+					parameterIndex: 0,
 				},
 			},
 			{
@@ -201,7 +201,7 @@ test('Convert filter with logical', () => {
 				operation: 'eq',
 				compareTo: {
 					type: 'value',
-					parameterIndexes: [1],
+					parameterIndex: 1,
 				},
 			},
 		],
@@ -311,7 +311,7 @@ test('Convert filter nested and with negation', () => {
 				operation: 'gt',
 				compareTo: {
 					type: 'value',
-					parameterIndexes: [0],
+					parameterIndex: 0,
 				},
 			},
 			{
@@ -325,7 +325,7 @@ test('Convert filter nested and with negation', () => {
 				operation: 'eq',
 				compareTo: {
 					type: 'value',
-					parameterIndexes: [1],
+					parameterIndex: 1,
 				},
 			},
 			{
@@ -344,7 +344,7 @@ test('Convert filter nested and with negation', () => {
 						operation: 'lt',
 						compareTo: {
 							type: 'value',
-							parameterIndexes: [2],
+							parameterIndex: 2,
 						},
 					},
 					{
@@ -358,7 +358,7 @@ test('Convert filter nested and with negation', () => {
 						operation: 'eq',
 						compareTo: {
 							type: 'value',
-							parameterIndexes: [3],
+							parameterIndex: 3,
 						},
 					},
 				],

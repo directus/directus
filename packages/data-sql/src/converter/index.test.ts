@@ -94,11 +94,12 @@ test('Convert query with filter', () => {
 			operation: 'gt',
 			compareTo: {
 				type: 'value',
-				parameterIndexes: [0],
+				parameterIndex: 0,
 			},
 		},
 		parameters: [compareToValue],
 		type: 'query',
+		root: true,
 	};
 
 	expect(res).toMatchObject(expected);
