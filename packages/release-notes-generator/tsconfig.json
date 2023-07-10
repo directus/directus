@@ -2,7 +2,8 @@
 	"extends": "@directus/tsconfig/node18-esm.json",
 	"compilerOptions": {
 		"module": "CommonJS",
-		"verbatimModuleSyntax": false
+		"verbatimModuleSyntax": false,
+		"outDir": "dist"
 	},
 	"include": ["src"]
 }
