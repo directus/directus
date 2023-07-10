@@ -5,6 +5,8 @@ import { systemCollectionRows } from '../database/system-data/collections/index.
 import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
+import { getEnv } from '../env.js';
+import { getCache } from '../cache.js';
 
 export class UtilsService {
 	knex: Knex;
@@ -122,6 +124,17 @@ export class UtilsService {
 				.where(sortField, '>=', targetSortValue)
 				.andWhere(sortField, '<=', sourceSortValue)
 				.andWhereNot({ [primaryKeyField]: item });
+		}
+
+		// auto purge cache if enabled, there is a cache, and the collection is not in the ignore list
+		const env = getEnv();
+
+		if (env['CACHE_AUTO_PURGE']) {
+			const cache = getCache().cache;
+
+			if (cache && !env['CACHE_AUTO_PURGE_IGNORE_LIST'].includes(collection)) {
+				await cache.clear();
+			}
 		}
 
 		emitter.emitAction(
