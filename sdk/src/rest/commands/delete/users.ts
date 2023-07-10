@@ -1,4 +1,3 @@
-import type { Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import type { DirectusUser } from '../../../schema/user.js';
 
@@ -10,12 +9,12 @@ import type { DirectusUser } from '../../../schema/user.js';
  * @returns Nothing
  */
 export const deleteUsers =
-	<Schema extends object, TQuery extends Query<Schema, DirectusUser<Schema>>>(
-		keysOrQuery: DirectusUser<Schema>['id'][] | TQuery
+	<Schema extends object>(
+		keys: DirectusUser<Schema>['id'][]
 	): RestCommand<void, Schema> =>
 	() => ({
 		path: `/users`,
-		body: JSON.stringify(Array.isArray(keysOrQuery) ? { keys: keysOrQuery } : { query: keysOrQuery }),
+		body: JSON.stringify(keys),
 		method: 'DELETE',
 		onResponse: null,
 	});
