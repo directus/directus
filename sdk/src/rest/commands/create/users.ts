@@ -18,10 +18,7 @@ export type CreateUserOutput<
  * @returns Returns the user objects for the created users.
  */
 export const createUsers =
-	<
-		Schema extends object,
-		TQuery extends Query<Schema, DirectusUser<Schema>>
-	>(
+	<Schema extends object, TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		items: Partial<DirectusUser<Schema>>[],
 		query?: TQuery
 	): RestCommand<CreateUserOutput<Schema, TQuery>[], Schema> =>
@@ -35,16 +32,13 @@ export const createUsers =
 /**
  * Create a new user.
  *
- * @param items The user to create
+ * @param item The user to create
  * @param query Optional return data query
  *
  * @returns Returns the user object for the created user.
  */
 export const createUser =
-	<
-		Schema extends object,
-		TQuery extends Query<Schema, DirectusUser<Schema>>
-	>(
+	<Schema extends object, TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		item: Partial<DirectusUser<Schema>>,
 		query?: TQuery
 	): RestCommand<CreateUserOutput<Schema, TQuery>, Schema> =>

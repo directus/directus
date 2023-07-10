@@ -1,0 +1,46 @@
+import type { DirectusPanel } from '../../../schema/panel.js';
+import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { RestCommand } from '../../types.js';
+import { queryToParams } from '../../utils/query-to-params.js';
+
+export type CreatePanelOutput<
+	Schema extends object,
+	TQuery extends Query<Schema, Item>,
+	Item = DirectusPanel<Schema>
+> = ApplyQueryFields<Schema, Item, TQuery['fields']>;
+
+/**
+ * Create multiple new panels.
+ * @param items 
+ * @param query 
+ * @returns Returns the panel object for the created panel.
+ */
+export const createPanels =
+	<Schema extends object, TQuery extends Query<Schema, DirectusPanel<Schema>>>(
+		items: Partial<DirectusPanel<Schema>>[],
+		query?: TQuery
+	): RestCommand<CreatePanelOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/panels`,
+		params: queryToParams(query ?? {}),
+		body: JSON.stringify(items),
+		method: 'POST',
+	});
+
+/**
+ * Create a new panel.
+ * @param item 
+ * @param query 
+ * @returns Returns the panel object for the created panel.
+ */
+export const createPanel =
+	<Schema extends object, TQuery extends Query<Schema, DirectusPanel<Schema>>>(
+		item: Partial<DirectusPanel<Schema>>,
+		query?: TQuery
+	): RestCommand<CreatePanelOutput<Schema, TQuery>, Schema> =>
+	() => ({
+		path: `/panels`,
+		params: queryToParams(query ?? {}),
+		body: JSON.stringify(item),
+		method: 'POST',
+	});
