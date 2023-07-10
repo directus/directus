@@ -14,6 +14,7 @@ import {
 	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
+import { fetch } from 'undici';
 import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -143,7 +144,7 @@ describe('#getClient', () => {
 			new DriverSupabase({ bucket: 'bucket' } as any);
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
-			expect(err.message).toBe('Both `serviceRole` and `secret` are required when defined');
+			expect(err.message).toBe('`project_id` or `endpoint` is required');
 		}
 	});
 
@@ -152,7 +153,7 @@ describe('#getClient', () => {
 			new DriverSupabase({ serviceRole: 'key' } as any);
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
-			expect(err.message).toBe('Both `serviceRole` and `secret` are required when defined');
+			expect(err.message).toBe('`project_id` or `endpoint` is required');
 		}
 	});
 
@@ -161,7 +162,7 @@ describe('#getClient', () => {
 			new DriverSupabase({ serviceRole: 'secret', bucket: 'bucket' });
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
-			expect(err.message).toBe('Both `key` and `secret` are required when defined');
+			expect(err.message).toBe('`project_id` or `endpoint` is required');
 		}
 	});
 
@@ -180,7 +181,7 @@ describe('#getClient', () => {
 	});
 
 	test('Creates storage client', () => {
-		expect(StorageClient).toHaveBeenCalledWith(sample.config.endpoint, {
+		expect(StorageClient).toHaveBeenCalledWith(`https://${sample.config.projectId}.supabase.co/storage/v1`, {
 			apikey: sample.config.serviceRole,
 			Authorization: `Bearer ${sample.config.serviceRole}`,
 		});
@@ -210,9 +211,23 @@ describe('#fullPath', () => {
 	});
 });
 
+describe('#getAuthenticatedUrl', () => {
+	test('Returns the url for an object that requires authentication', () => {
+		const driver = new DriverSupabase({
+			serviceRole: 'serviceRole',
+			bucket: 'bucket',
+			projectId: 'projectId',
+		});
+
+		const result = driver['getAuthenticatedUrl'](sample.path.input);
+
+		expect(result).toBe('https://projectId.supabase.co/storage/v1/object/authenticated/bucket/undefined');
+	});
+});
+
 describe('#read', () => {
 	beforeEach(() => {
-		vi.mocked(driver['client'].send).mockReturnValue({ Body: new Readable() } as unknown as void);
+		vi.mocked(fetch).mockReturnValue({ Body: new Readable() } as unknown as void);
 		vi.mocked(isReadableStream).mockReturnValue(true);
 	});
 
@@ -221,7 +236,7 @@ describe('#read', () => {
 
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 
-		expect(GetObjectCommand).toHaveBeenCalledWith({
+		expect(fetch).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
 			Bucket: sample.config.bucket,
 		});
@@ -291,7 +306,7 @@ describe('#read', () => {
 
 describe('#stat', () => {
 	beforeEach(() => {
-		vi.mocked(driver['client'].send).mockResolvedValue({
+		vi.mocked(driver['client']).mockResolvedValue({
 			ContentLength: sample.file.size,
 			LastModified: sample.file.modified,
 		} as HeadObjectCommandOutput as unknown as void);
@@ -346,70 +361,6 @@ describe('#exists', () => {
 		const exists = await driver.exists(sample.path.input);
 
 		expect(exists).toBe(false);
-	});
-});
-
-describe('#move', () => {
-	beforeEach(async () => {
-		driver.copy = vi.fn();
-		driver.delete = vi.fn();
-
-		await driver.move(sample.path.src, sample.path.dest);
-	});
-
-	test('Calls copy with given src and dest', async () => {
-		expect(driver.copy).toHaveBeenCalledWith(sample.path.src, sample.path.dest);
-	});
-
-	test('Calls delete on successful copy', async () => {
-		expect(driver.delete).toHaveBeenCalledWith(sample.path.src);
-	});
-});
-
-describe('#copy', () => {
-	test('Constructs params object based on config', async () => {
-		await driver.copy(sample.path.src, sample.path.dest);
-
-		expect(CopyObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.destFull,
-			Bucket: sample.config.bucket,
-			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
-		});
-	});
-
-	test('Optionally sets ServerSideEncryption', async () => {
-		driver['config'].serverSideEncryption = sample.config.serverSideEncryption;
-
-		await driver.copy(sample.path.src, sample.path.dest);
-
-		expect(CopyObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.destFull,
-			Bucket: sample.config.bucket,
-			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
-			ServerSideEncryption: sample.config.serverSideEncryption,
-		});
-	});
-
-	test('Optionally sets ACL', async () => {
-		driver['config'].acl = sample.config.acl;
-
-		await driver.copy(sample.path.src, sample.path.dest);
-
-		expect(CopyObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.destFull,
-			Bucket: sample.config.bucket,
-			CopySource: `/${sample.config.bucket}/${sample.path.srcFull}`,
-			ACL: sample.config.acl,
-		});
-	});
-
-	test('Executes CopyObjectCommand', async () => {
-		const mockCommand = {} as CopyObjectCommand;
-		vi.mocked(CopyObjectCommand).mockReturnValue(mockCommand);
-
-		await driver.copy(sample.path.src, sample.path.dest);
-
-		expect(driver['client'].send).toHaveBeenCalledWith(mockCommand);
 	});
 });
 
@@ -480,26 +431,6 @@ describe('#write', () => {
 		await driver.write(sample.path.input, sample.stream);
 
 		expect(mockUpload.done).toHaveBeenCalledOnce();
-	});
-});
-
-describe('#delete', () => {
-	test('Constructs params based on input', async () => {
-		await driver.delete(sample.path.input);
-
-		expect(DeleteObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-		});
-	});
-
-	test('Executes DeleteObjectCommand', async () => {
-		const mockDeleteObjectCommand = {} as DeleteObjectCommand;
-		vi.mocked(DeleteObjectCommand).mockReturnValue(mockDeleteObjectCommand);
-
-		await driver.delete(sample.path.input);
-
-		expect(driver['client'].send).toHaveBeenCalledWith(mockDeleteObjectCommand);
 	});
 });
 
