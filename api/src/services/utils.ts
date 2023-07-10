@@ -5,7 +5,6 @@ import { systemCollectionRows } from '../database/system-data/collections/index.
 import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
-import { getEnv } from '../env.js';
 import { getCache } from '../cache.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 
@@ -127,15 +126,11 @@ export class UtilsService {
 				.andWhereNot({ [primaryKeyField]: item });
 		}
 
-		// auto purge cache if enabled, there is a cache, and the collection is not in the ignore list
-		const env = getEnv();
+		// check if cache should be cleared
+		const cache = getCache().cache;
 
-		if (env['CACHE_AUTO_PURGE']) {
-			const cache = getCache().cache;
-
-			if(shouldClearCache(cache, undefined, collection)){
-				await cache.clear();
-			}
+		if(shouldClearCache(cache, undefined, collection)){
+			await cache.clear();
 		}
 
 		emitter.emitAction(
