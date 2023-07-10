@@ -63,6 +63,7 @@ test('statement with limit and offset', () => {
 test('statement with order', () => {
 	sample.statement.order = [
 		{
+			type: 'order',
 			orderBy: {
 				type: 'primitive',
 				field: randomIdentifier(),
@@ -98,7 +99,7 @@ test('statement with all possible modifiers', () => {
 		negate: false,
 		childNodes: [
 			{
-				type: 'condition',
+				type: 'number-condition',
 				operation: 'gt',
 				target: {
 					type: 'primitive',
@@ -112,7 +113,7 @@ test('statement with all possible modifiers', () => {
 				negate: false,
 			},
 			{
-				type: 'condition',
+				type: 'number-condition',
 				operation: 'lt',
 				target: {
 					type: 'primitive',
@@ -130,6 +131,7 @@ test('statement with all possible modifiers', () => {
 
 	sample.statement.order = [
 		{
+			type: 'order',
 			orderBy: {
 				type: 'primitive',
 				field: orderField,

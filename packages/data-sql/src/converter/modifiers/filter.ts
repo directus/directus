@@ -1,6 +1,11 @@
-import type { AbstractQueryFilterNode, AbstractQueryNodeCondition, AbstractQueryNodeLogical } from '@directus/data';
-import type { AbstractSqlQuery } from '../../types.js';
-import type { AbstractSqlQueryFnNode, AbstractSqlQuerySelectNode } from '../../types.js';
+import type { AbstractQueryFilterNode, AbstractQueryNodeLogical, AbstractQueryConditionNode } from '@directus/data';
+import type {
+	AbstractSqlQuery,
+	AbstractSqlQueryConditionNode,
+	AbstractSqlQueryFnNode,
+	AbstractSqlQuerySelectNode,
+	ParameterTypes,
+} from '../../types.js';
 import { convertFn } from '../functions.js';
 
 /**
@@ -36,31 +41,25 @@ const convertFilterWithNegate = (
 	generator: Generator<number, never, never>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
-	switch (filter.type) {
-		case 'condition':
-			return convertCondition(filter, collection, generator, negate);
-		case 'negate':
-			return convertFilterWithNegate(filter.childNode, collection, generator, !negate);
-		case 'logical':
-			return convertLogical(filter, collection, generator, negate);
-		default:
-			throw new Error(`Unknown filter type`);
+	if (filter.type.endsWith('-condition')) {
+		return convertCondition(filter as AbstractQueryConditionNode, collection, generator, negate);
+	} else if (filter.type === 'negate') {
+		return convertFilterWithNegate(filter.childNode, collection, generator, !negate);
+	} else if (filter.type === 'logical') {
+		return convertLogical(filter, collection, generator, negate);
+	} else {
+		throw new Error(`Unknown filter type`);
 	}
 };
 
 function convertCondition(
-	filter: AbstractQueryNodeCondition,
+	filter: AbstractQueryConditionNode,
 	collection: string,
 	generator: Generator<number, never, never>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
-	if (filter.operation === 'intersects' || filter.operation === 'intersects_bounding_box') {
-		/** @todo */
-		throw new Error('The intersects operators are not yet supported.');
-	}
-
 	let target: AbstractSqlQueryFnNode | AbstractSqlQuerySelectNode;
-	const parameters = [];
+	const parameters: ParameterTypes[] = [];
 
 	if (filter.target.type === 'primitive') {
 		target = {
@@ -76,18 +75,20 @@ function convertCondition(
 		throw new Error('The related field types are not yet supported.');
 	}
 
-	return {
-		where: {
-			type: 'condition',
-			negate,
-			operation: filter.operation,
-			target,
-			compareTo: {
-				type: 'value',
-				parameterIndexes: [generator.next().value],
-			},
+	const res = {
+		type: filter.type,
+		operation: filter.operation,
+		negate,
+		target,
+		compareTo: {
+			type: 'value',
+			parameterIndexes: [generator.next().value],
 		},
-		parameters: [...parameters, filter.compareTo.value],
+	};
+
+	return {
+		where: res as AbstractSqlQueryConditionNode,
+		parameters: [...parameters, filter.compareTo],
 	};
 }
 

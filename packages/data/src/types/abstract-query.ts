@@ -1,4 +1,3 @@
-
 /**
  * The query can be seen as a tree with various nodes.
  * Each node has a type and different attributes.
@@ -198,7 +197,8 @@ export interface AbstractQueryModifiers {
 }
 
 interface AbstractQueryModifierNode {
-	type: 'limit' | 'offset' | 'sort' | 'logical' | 'condition' | 'negate' | 'quantifier';
+	type: string;
+	// 'limit' | 'offset' | 'sort' | 'logical' | 'letter-condition' | 'nu'| 'negate' | 'quantifier';
 }
 
 /**
@@ -327,7 +327,9 @@ export type AbstractQueryFilterNode =
 	| AbstractQueryNodeLogical
 	| AbstractQueryNodeNegate
 	| AbstractQueryQuantifierNode
-	| AbstractQueryNodeCondition;
+	| LetterConditionNode
+	| NumberConditionNode
+	| GeoConditionNode;
 
 export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
@@ -367,27 +369,51 @@ export interface AbstractQueryQuantifierNode extends AbstractQueryModifierNode {
  * @example
  * ```
  * {
- * 		type: 'condition',
+ * 		type: 'number-condition',
  * 		operation: 'lt',
- *		targetNode: { type: 'field', field: 'b' }
+ *		target: { type: 'field', field: 'b' }
  * 		value: 5
  * }
  * ```
  */
-export interface AbstractQueryNodeCondition extends AbstractQueryModifierNode {
-	type: 'condition';
-
+type AbstractQueryConditionNodeBase = {
 	/** the node on which the condition should be applied */
-	target:
-		| AbstractQueryFieldNodePrimitive
-		| AbstractQueryFieldNodeFn
-		| AbstractQueryFieldNodeRelatedManyToOne
-		| AbstractQueryFieldNodeRelatedAnyToOne;
+	target: any;
 
-	/** the operation to perform on the target */
-	operation: 'eq' | 'lt' | 'gt' | 'contains' | 'starts_with' | 'ends_with' | 'intersects' | 'intersects_bounding_box';
+	/** the operation to perform on the target, aka the comparator */
+	operation: string;
 
-	compareTo: AbstractQueryNodeConditionValue;
+	/** the node or value to which will be compared  */
+	compareTo: any;
+} & AbstractQueryModifierNode;
+
+export type AbstractQueryConditionNode = LetterConditionNode | NumberConditionNode | GeoConditionNode;
+
+export interface LetterConditionNode extends AbstractQueryConditionNodeBase {
+	type: 'letter-condition';
+	target: AbstractQueryFieldNodePrimitive;
+	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';
+	compareTo: string;
+}
+
+export interface NumberConditionNode extends AbstractQueryConditionNodeBase {
+	type: 'number-condition';
+	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
+	compareTo: number;
+}
+
+export interface GeoConditionNode extends AbstractQueryConditionNodeBase {
+	type: 'geo-condition';
+	target: AbstractQueryFieldNodePrimitive;
+	operation: 'intersects' | 'intersects_bbox';
+	compareTo: string; // or 'wellknown' type? TODO: figure out
+}
+
+export interface SetConditionNode extends AbstractQueryConditionNodeBase {
+	type: 'set-condition';
+	operation: 'in';
+	compareTo: (string | number)[] | AbstractQuery;
 }
 
 export interface AbstractQueryNodeConditionValue {

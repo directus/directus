@@ -48,7 +48,7 @@ test('With a count', () => {
 		{
 			type: 'fn',
 			fn: 'count',
-			input: {
+			field: {
 				type: 'primitive',
 				table: randomTable,
 				column: '*',

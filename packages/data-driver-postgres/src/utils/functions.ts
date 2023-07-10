@@ -1,24 +1,6 @@
-import type { AbstractSqlQueryFnNode, AbstractSqlQueryConditionNode } from '@directus/data-sql';
+import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
 import { wrapColumn } from './wrap-column.js';
-/**
- * @see [PostGIS Manual](http://www.postgis.net/docs/ST_Intersects.html)
- * @param whereNode - the node with all conditions
- * @param wrappedColumn - the column with its table name
- * @returns
- */
-export const convertGeoFn = (whereNode: AbstractSqlQueryConditionNode, wrappedColumn: string): string => {
-	if (whereNode.compareTo.type !== 'value') {
-		throw new Error('Only values are supported as comparison for geo functions.');
-	}
 
-	const parameterIndex = whereNode.compareTo.parameterIndexes[0]! + 1;
-
-	if (whereNode.operation === 'intersects') {
-		return `ST_Intersects(${wrappedColumn}, $${parameterIndex})`;
-	}
-
-	throw new Error(`Function ${whereNode.operation} is currently not supported.`);
-};
 /**
  * @todo Check datatype of the column. If timestamp then add "AT TIME ZONE 'UTC'" to the result string
  * @todo Probably add count support
@@ -55,6 +37,6 @@ export const convertDateTimeFn = (fnNode: AbstractSqlQueryFnNode, wrappedColumn:
 };
 
 export const convertCount = (fnNode: AbstractSqlQueryFnNode) => {
-	const wrappedCol = wrapColumn(fnNode.input.table, fnNode.input.column);
+	const wrappedCol = wrapColumn(fnNode.field.table, fnNode.field.column);
 	return `COUNT(${wrappedCol})`;
 };

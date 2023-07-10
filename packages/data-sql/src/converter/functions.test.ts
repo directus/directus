@@ -24,14 +24,10 @@ describe('Convert function', () => {
 		const sampleSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: 'month',
-			input: {
+			field: {
 				type: 'primitive',
 				table: 'randomCollection',
 				column: sampleField,
-			},
-			arguments: {
-				type: 'value',
-				parameterIndexes: [],
 			},
 		};
 
@@ -62,7 +58,7 @@ describe('Convert function', () => {
 		const sampleSqlFn: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: 'month',
-			input: {
+			field: {
 				type: 'primitive',
 				table: 'sakjfhdl',
 				column: sampleField,

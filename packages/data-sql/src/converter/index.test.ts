@@ -1,9 +1,4 @@
-import type {
-	AbstractQuery,
-	AbstractQueryFieldNodePrimitive,
-	AbstractQueryNodeCondition,
-	AbstractQueryNodeConditionValue,
-} from '@directus/data';
+import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQuery } from '../types.js';
 import { convertAbstractQueryToAbstractSqlQuery } from './index.js';
@@ -57,18 +52,18 @@ test('Convert simple query', () => {
 });
 
 test('Convert query with filter', () => {
+	const randomField = randomIdentifier();
+	const compareToValue = randomInteger(1, 100);
+
 	sample.query.modifiers = {
 		filter: {
-			type: 'condition',
+			type: 'number-condition',
 			target: {
 				type: 'primitive',
-				field: randomIdentifier(),
+				field: randomField,
 			},
 			operation: 'gt',
-			compareTo: {
-				type: 'value',
-				value: randomInteger(1, 100),
-			},
+			compareTo: compareToValue,
 		},
 	};
 
@@ -89,11 +84,9 @@ test('Convert query with filter', () => {
 		],
 		from: sample.query.collection,
 		where: {
-			type: 'condition',
+			type: 'number-condition',
 			target: {
-				column: (
-					(sample.query.modifiers.filter as AbstractQueryNodeCondition).target as AbstractQueryFieldNodePrimitive
-				).field,
+				column: randomField,
 				table: sample.query.collection,
 				type: 'primitive',
 			},
@@ -104,10 +97,8 @@ test('Convert query with filter', () => {
 				parameterIndexes: [0],
 			},
 		},
-		parameters: [
-			((sample.query.modifiers.filter! as AbstractQueryNodeCondition).compareTo as AbstractQueryNodeConditionValue)
-				.value,
-		],
+		parameters: [compareToValue],
+		type: 'query',
 	};
 
 	expect(res).toMatchObject(expected);
@@ -139,6 +130,7 @@ test('Convert query with a limit', () => {
 		from: sample.query.collection,
 		limit: { parameterIndex: 0 },
 		parameters: [sample.query.modifiers.limit!.value],
+		type: 'query',
 	};
 
 	expect(res).toMatchObject(expected);
@@ -175,6 +167,7 @@ test('Convert query with limit and offset', () => {
 		limit: { parameterIndex: 0 },
 		offset: { parameterIndex: 1 },
 		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
+		type: 'query',
 	};
 
 	expect(res).toMatchObject(expected);
@@ -218,6 +211,7 @@ test('Convert query with a sort', () => {
 			},
 		],
 		parameters: [],
+		type: 'query',
 	};
 
 	expect(res).toMatchObject(expected);
@@ -252,7 +246,7 @@ test('Convert a query with a function as field select', () => {
 			{
 				type: 'fn',
 				fn: 'count',
-				input: {
+				field: {
 					type: 'primitive',
 					table: sample.query.collection,
 					column: randomField,

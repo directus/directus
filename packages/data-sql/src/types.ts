@@ -19,7 +19,7 @@ export interface AbstractSqlQueryFnNode {
 	/* Same as the the abstract functions @todo: add restrictions */
 	fn: string;
 
-	input: AbstractSqlQuerySelectNode;
+	field: AbstractSqlQuerySelectNode;
 
 	isTimestampType?: boolean;
 
@@ -80,8 +80,6 @@ export interface AbstractSqlQuery {
 
 export type ParameterTypes = string | boolean | number | GeoJSONGeometry;
 
-type AbstractSqlQueryNodeType = 'order' | 'join' | 'condition' | 'logical' | 'value';
-
 /**
  * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.
  * With this in place it can easily be determined how to technically handle this field.
@@ -89,7 +87,7 @@ type AbstractSqlQueryNodeType = 'order' | 'join' | 'condition' | 'logical' | 'va
  */
 interface AbstractSqlQueryNode {
 	/** the type of the node */
-	type: AbstractSqlQueryNodeType;
+	type: string;
 }
 
 export interface AbstractSqlQueryOrderNode extends AbstractSqlQueryNode {
@@ -101,40 +99,58 @@ export interface AbstractSqlQueryOrderNode extends AbstractSqlQueryNode {
 export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
 	type: 'join';
 	table: string;
-	on: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
+	on: SqlJoinConditionNode | AbstractSqlQueryLogicalNode;
 	as: string;
 }
 
-export interface AbstractSqlQueryConditionNode extends AbstractSqlQueryNode {
-	type: 'condition';
+type ConditionNodeBase = {
+	target: any;
+	operation: string;
+	compareTo: any;
+} & AbstractSqlQueryNode;
 
-	/* value which will be compared to another value or expression. */
-	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
-
-	/* an abstract comparator */
-	operation:
-		| 'eq'
-		| 'lt'
-		| 'lte'
-		| 'gt'
-		| 'gte'
-		| 'in'
-		| 'contains'
-		| 'starts_with'
-		| 'ends_with'
-		| 'intersects'
-		| 'every'
-		| 'some';
-
-	/* indicated of the condition should be negated using NOT */
-	negate: boolean;
-
-	/**
-	 * The node to which the target should be be compared.
-	 * Can be a value, a column or a sub query.
-	 */
-	compareTo: CompareToNodeTypes;
+export interface SqlJoinConditionNode extends ConditionNodeBase {
+	type: 'join-condition';
+	target: AbstractSqlQuerySelectNode;
+	compareTo: AbstractSqlQuerySelectNode;
 }
+
+export interface SqlLetterConditionNode extends ConditionNodeBase {
+	type: 'letter-condition';
+	target: AbstractSqlQuerySelectNode;
+	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';
+	compareTo: ValueNode;
+	negate: boolean;
+}
+
+export interface SqlNumberConditionNode extends ConditionNodeBase {
+	type: 'number-condition';
+	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
+	compareTo: ValueNode;
+	negate: boolean;
+}
+
+export interface SqlSetConditionNode extends ConditionNodeBase {
+	type: 'set-condition';
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
+	compareTo: ValuesNode | AbstractSqlQuery;
+	negate: boolean;
+}
+
+export interface SqlGeoConditionNode extends ConditionNodeBase {
+	type: 'geo-condition';
+	target: AbstractSqlQuerySelectNode;
+	operation: 'intersects' | 'intersects_bbox';
+	compareTo: ValueNode;
+	negate: boolean;
+}
+
+export type AbstractSqlQueryConditionNode =
+	| SqlLetterConditionNode
+	| SqlNumberConditionNode
+	| SqlSetConditionNode
+	| SqlGeoConditionNode;
 
 export type CompareToNodeTypes = ValueNode | AbstractSqlQuerySelectNode | AbstractSqlQuery;
 
@@ -147,6 +163,11 @@ export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
 
 export interface ValueNode {
 	type: 'value';
+	parameterIndexes: number[];
+}
+
+export interface ValuesNode {
+	type: 'values';
 	parameterIndexes: number[];
 }
 

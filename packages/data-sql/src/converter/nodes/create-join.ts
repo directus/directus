@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryJoinNode } from '@directus/data-sql';
+import type { AbstractSqlQueryJoinNode } from '../../types.js';
 
 export const createJoin = (
 	currentCollection: string,
@@ -23,9 +23,7 @@ export const createJoin = (
 				}
 
 				return {
-					type: 'condition',
-					operation: 'eq',
-					negate: false,
+					type: 'join-condition',
 					target: {
 						type: 'primitive',
 						table: currentCollection,

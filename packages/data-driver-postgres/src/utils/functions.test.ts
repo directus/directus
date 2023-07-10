@@ -1,6 +1,6 @@
 import { expect, test, describe } from 'vitest';
-import { convertGeoFn, convertDateTimeFn, convertCount } from './functions.js';
-import type { AbstractSqlQueryFnNode, AbstractSqlQueryConditionNode } from '@directus/data-sql';
+import { convertDateTimeFn, convertCount } from './functions.js';
+import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 
 describe('Extract date time', () => {
@@ -10,7 +10,7 @@ describe('Extract date time', () => {
 
 		const fnNode: AbstractSqlQueryFnNode = {
 			type: 'fn',
-			input: {
+			field: {
 				type: 'primitive',
 				table: randomTableName,
 				column: randomIdentifier(),
@@ -28,7 +28,7 @@ describe('Extract date time', () => {
 
 		const fnNode: AbstractSqlQueryFnNode = {
 			type: 'fn',
-			input: {
+			field: {
 				type: 'primitive',
 				table: randomTableName,
 				column: randomIdentifier(),
@@ -43,32 +43,6 @@ describe('Extract date time', () => {
 	});
 });
 
-describe('Intersects', () => {
-	test('st intersects', () => {
-		const randomTable = randomIdentifier();
-		const randomColumn = randomIdentifier();
-
-		const where: AbstractSqlQueryConditionNode = {
-			type: 'condition',
-			negate: false,
-			target: {
-				type: 'primitive',
-				table: randomTable,
-				column: randomColumn,
-			},
-			operation: 'intersects',
-			compareTo: {
-				type: 'value',
-				parameterIndexes: [0],
-			},
-		};
-
-		const wrappedCol = `${randomTable}"."${randomColumn}`;
-
-		expect(convertGeoFn(where, wrappedCol)).toStrictEqual(`ST_Intersects(${wrappedCol}, $1)`);
-	});
-});
-
 describe('Count', () => {
 	const randomTable = 'sldfjlk';
 	const randomColumn = 'oiioii';
@@ -77,7 +51,7 @@ describe('Count', () => {
 		const fnNode: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: 'count',
-			input: {
+			field: {
 				type: 'primitive',
 				table: randomTable,
 				column: randomColumn,
@@ -89,14 +63,13 @@ describe('Count', () => {
 	});
 
 	test('without a specific column', () => {
-
 		const fnNode: AbstractSqlQueryFnNode = {
 			type: 'fn',
 			fn: 'count',
-			input: {
+			field: {
 				type: 'primitive',
 				table: randomTable,
-				column: "*",
+				column: '*',
 			},
 		};
 

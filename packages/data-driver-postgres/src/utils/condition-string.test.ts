@@ -1,7 +1,171 @@
-import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '@directus/data-sql';
-import { expect, test } from 'vitest';
+import type {
+	AbstractSqlQueryConditionNode,
+	AbstractSqlQueryLogicalNode,
+	SqlGeoConditionNode,
+	SqlSetConditionNode,
+} from '@directus/data-sql';
+import { expect, test, describe } from 'vitest';
 import { randomIdentifier } from '@directus/random';
 import { conditionString } from './condition-string.js';
+
+describe('Conditions', () => {
+	test('number', () => {
+		const randomTable = randomIdentifier();
+		const aColumn = randomIdentifier();
+
+		const where: AbstractSqlQueryConditionNode = {
+			type: 'number-condition',
+			negate: false,
+			target: {
+				type: 'primitive',
+				table: randomTable,
+				column: aColumn,
+			},
+			operation: 'gt',
+			compareTo: {
+				type: 'value',
+				parameterIndexes: [0],
+			},
+		};
+
+		expect(conditionString(where)).toStrictEqual(`"${randomTable}"."${aColumn}" > $1`);
+	});
+
+	test('letter', () => {
+		const randomTable = randomIdentifier();
+		const aColumn = randomIdentifier();
+
+		const where: AbstractSqlQueryConditionNode = {
+			type: 'letter-condition',
+			negate: false,
+			target: {
+				type: 'primitive',
+				table: randomTable,
+				column: aColumn,
+			},
+			operation: 'starts_with',
+			compareTo: {
+				type: 'value',
+				parameterIndexes: [0],
+			},
+		};
+
+		expect(conditionString(where)).toStrictEqual(`"${randomTable}"."${aColumn}" LIKE '$1%'`);
+	});
+
+	test('month function', () => {
+		const randomTable = randomIdentifier();
+		const aColumn = randomIdentifier();
+
+		const where: AbstractSqlQueryConditionNode = {
+			type: 'number-condition',
+			negate: false,
+			target: {
+				type: 'fn',
+				fn: 'month',
+				field: {
+					type: 'primitive',
+					table: randomTable,
+					column: aColumn,
+				},
+			},
+			operation: 'gt',
+			compareTo: {
+				type: 'value',
+				parameterIndexes: [0],
+			},
+		};
+
+		expect(conditionString(where)).toStrictEqual(`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $1`);
+	});
+
+	test('st_intersects', () => {
+		const randomTable = randomIdentifier();
+		const randomColumn = randomIdentifier();
+
+		const where: SqlGeoConditionNode = {
+			type: 'geo-condition',
+			negate: false,
+			target: {
+				type: 'primitive',
+				table: randomTable,
+				column: randomColumn,
+			},
+			operation: 'intersects',
+			compareTo: {
+				type: 'value',
+				parameterIndexes: [0],
+			},
+		};
+
+		const wrappedCol = `"${randomTable}"."${randomColumn}"`;
+
+		expect(conditionString(where)).toStrictEqual(`ST_Intersects(${wrappedCol}, $1)`);
+	});
+
+	test('explicit sub set', () => {
+		const randomTable = randomIdentifier();
+		const randomColumn = randomIdentifier();
+
+		const where: SqlSetConditionNode = {
+			type: 'set-condition',
+			negate: false,
+			target: {
+				type: 'primitive',
+				table: randomTable,
+				column: randomColumn,
+			},
+			operation: 'in',
+			compareTo: {
+				type: 'values',
+				parameterIndexes: [2, 3, 4],
+			},
+		};
+
+		const wrappedCol = `"${randomTable}"."${randomColumn}"`;
+
+		expect(conditionString(where)).toStrictEqual(`${wrappedCol} IN ($3, $4, $5)`);
+	});
+
+	test('sub query', () => {
+		const randomTable = randomIdentifier();
+		const randomColumn = randomIdentifier();
+		const randomTable2 = randomIdentifier();
+		const randomColumn2 = randomIdentifier();
+		const randomTable3 = randomIdentifier();
+
+		const where: SqlSetConditionNode = {
+			type: 'set-condition',
+			negate: false,
+			target: {
+				type: 'primitive',
+				table: randomTable,
+				column: randomColumn,
+			},
+			operation: 'lt',
+			compareTo: {
+				type: 'query',
+				select: [
+					{
+						type: 'fn',
+						fn: 'count',
+						field: {
+							type: 'primitive',
+							table: randomTable2,
+							column: randomColumn2,
+						},
+					},
+				],
+				from: randomTable3,
+				parameters: [],
+			},
+		};
+
+		expect(conditionString(where)).toStrictEqual(
+			`"${randomTable}"."${randomColumn}" < (SELECT COUNT("${randomTable2}"."${randomColumn2}") FROM "${randomTable3}")`
+		);
+	});
+});
 
 test('Convert filter with logical', () => {
 	const randomTable = randomIdentifier();
@@ -15,7 +179,7 @@ test('Convert filter with logical', () => {
 		negate: false,
 		childNodes: [
 			{
-				type: 'condition',
+				type: 'number-condition',
 				negate: false,
 				target: {
 					type: 'primitive',
@@ -29,7 +193,7 @@ test('Convert filter with logical', () => {
 				},
 			},
 			{
-				type: 'condition',
+				type: 'number-condition',
 				negate: false,
 				target: {
 					type: 'primitive',
@@ -50,36 +214,6 @@ test('Convert filter with logical', () => {
 	);
 });
 
-test('Convert filter condition', () => {
-	const randomTable = randomIdentifier();
-	const aColumn = randomIdentifier();
-
-	const where: AbstractSqlQueryConditionNode = {
-		type: 'condition',
-		negate: false,
-		target: {
-			type: 'fn',
-			fn: 'month',
-			input: {
-				type: 'primitive',
-				table: randomTable,
-				column: aColumn,
-			},
-			arguments: {
-				type: 'value',
-				parameterIndexes: [],
-			},
-		},
-		operation: 'gt',
-		compareTo: {
-			type: 'value',
-			parameterIndexes: [0],
-		},
-	};
-
-	expect(conditionString(where)).toStrictEqual(`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $1`);
-});
-
 test('Convert filter nested and with negation', () => {
 	const randomTable = randomIdentifier();
 
@@ -94,7 +228,7 @@ test('Convert filter nested and with negation', () => {
 		negate: false,
 		childNodes: [
 			{
-				type: 'condition',
+				type: 'number-condition',
 				negate: false,
 				target: {
 					type: 'primitive',
@@ -108,7 +242,7 @@ test('Convert filter nested and with negation', () => {
 				},
 			},
 			{
-				type: 'condition',
+				type: 'number-condition',
 				negate: true,
 				target: {
 					type: 'primitive',
@@ -127,7 +261,7 @@ test('Convert filter nested and with negation', () => {
 				negate: true,
 				childNodes: [
 					{
-						type: 'condition',
+						type: 'number-condition',
 						negate: true,
 						target: {
 							type: 'primitive',
@@ -141,7 +275,7 @@ test('Convert filter nested and with negation', () => {
 						},
 					},
 					{
-						type: 'condition',
+						type: 'number-condition',
 						negate: false,
 						target: {
 							type: 'primitive',

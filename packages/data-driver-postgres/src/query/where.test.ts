@@ -27,7 +27,7 @@ describe('Where clause:', () => {
 				],
 				from: randomIdentifier(),
 				where: {
-					type: 'condition',
+					type: 'number-condition',
 					operation: 'gt',
 					negate: false,
 					target: {
