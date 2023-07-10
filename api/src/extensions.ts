@@ -48,7 +48,7 @@ import emitter, { Emitter } from './emitter.js';
 import env from './env.js';
 import { getFlowManager } from './flows.js';
 import logger from './logger.js';
-import internalOperations from './operations/index.js';
+import * as internalOperations from './operations/index.js';
 import * as services from './services/index.js';
 import type { EventHandler } from './types/index.js';
 import getModuleDefault from './utils/get-module-default.js';

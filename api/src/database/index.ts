@@ -7,13 +7,13 @@ import { merge } from 'lodash-es';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { performance } from 'perf_hooks';
-import { CONTEXT_ROOT } from '../constants.js';
 import env from '../env.js';
 import logger from '../logger.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
 import { getHelpers } from './helpers/index.js';
+import * as internalMigrations from './index.js';
 
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
@@ -245,23 +245,18 @@ export async function validateMigrations(): Promise<boolean> {
 	const database = getDatabase();
 
 	try {
-		const migrationsPath = path.join(CONTEXT_ROOT, 'database', 'migrations');
-		let migrationFiles = await fse.readdir(migrationsPath);
+		const migrations = Object.keys(internalMigrations).map((name) => name.substring(10).replaceAll('_', '-'));
 
 		const customMigrationsPath = path.resolve(env['EXTENSIONS_PATH'], 'migrations');
 
 		let customMigrationFiles =
 			((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
-		migrationFiles = migrationFiles.filter(
-			(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
-		);
-
 		customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
 
-		migrationFiles.push(...customMigrationFiles);
+		migrations.push(...customMigrationFiles);
 
-		const requiredVersions = migrationFiles.map((file) => file.split('-')[0]);
+		const requiredVersions = migrations.map((name) => name.split('-')[0]);
 
 		const completedVersions = (await database.select('version').from('directus_migrations')).map(
 			({ version }) => version

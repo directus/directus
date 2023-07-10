@@ -1,15 +1,11 @@
-import { mkdist } from 'mkdist';
+import cpy from 'cpy';
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
 	entry: ['src/index.ts', 'src/cli/run.ts'],
 	format: 'esm',
 	async onSuccess() {
-		await mkdist({
-			pattern: ['**/*.{yaml,liquid}', 'database/migrations/!(run).ts'],
-			ext: 'js',
-			cleanDist: false,
-		});
+		await cpy(['src/**/*.{yaml,liquid}'], 'dist');
 	},
 	dts: 'src/index.ts',
 });
