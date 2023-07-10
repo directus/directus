@@ -64,7 +64,35 @@ Any changes that were made in this activity. One-to-many to [revisions](/referen
 
 Returns a list of activity actions.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /activity`
+
+`SEARCH /activity`
+
+</template>
+
+<template #graphql>
+
+
+`POST /graphql/system`
+
+```graphql
+type Query {
+	activity: [directus_activity]
+}
+```
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
@@ -73,28 +101,19 @@ Supports all [global query parameters](/reference/query).
 An array of up to [limit](/reference/query#limit) [activity objects](#the-activity-object). If no items are available,
 data will be an empty array.
 
-### REST API
+### Example
 
-```
-GET /activity
-SEARCH /activity
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+<template #rest>
 
-### GraphQL
+`GET /activity`
 
-```
-POST /graphql/system
-```
+`SEARCH /activity`
 
-```graphql
-type Query {
-	activity: [directus_activity]
-}
-```
+</template>
 
-##### Example
+<template #graphql>
 
 ```graphql
 query {
@@ -104,39 +123,57 @@ query {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Retrieve Activity Action
 
 Returns a single activity action by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns an [activity object](#the-activity-object) if a valid identifier was provided.
+`GET /activity/:id`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /activity/:id
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
 	activity_by_id(id: ID!): directus_activity
 }
 ```
+</template>
 
-##### Example
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns an [activity object](#the-activity-object) if a valid identifier was provided.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /activity/15`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -145,6 +182,9 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -152,7 +192,36 @@ query {
 
 Creates a new comment on a given item.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /activity/comment`
+```json
+
+{
+	"collection": "collection_name",
+	"item": item_key,
+	"comment": "comment content"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
+}
+```
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `collection` **Required**\
 Collection in which the item resides.
@@ -163,41 +232,29 @@ Primary Key of the item to comment on.
 `comment` **Required**\
 The comment content. Supports Markdown.
 
-### Returns
+### Response
 
 Returns the [activity object](#the-activity-object) of the created comment.
 
-### REST API
+### Example
 
-```
-POST /activity/comment
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /activity/comment`
 ```json
-// POST /activity/comment
-
 {
 	"collection": "pages",
 	"item": 3,
 	"comment": "Hello World"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -206,6 +263,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -213,44 +272,59 @@ mutation {
 
 Updates an existing comment by activity action primary key.
 
-### Request Body
+### Response
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /activity/comment/:id`
+```json
+{
+	"comment": "comment content"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	delete_comment(id: ID): delete_one
+}
+```
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `comment` **Required**\
 The updated comment content. Supports Markdown.
 
-### Returns
+### Response
 
 Returns the [activity object](#the-activity-object) of the created comment.
 
-### REST API
+### Example
 
-```
-PATCH /activity/comment/:id
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /activity/comment/15`
 ```json
-// PATCH /activity/comment/15
-
 {
 	"comment": "Hello World!!"
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
-```graphql
-type Mutation {
-	update_comment(id: ID!, comment: String!): directus_activity
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -259,6 +333,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -266,31 +342,38 @@ mutation {
 
 Deletes a comment.
 
-### REST API
+### Request
 
-```
-DELETE /activity/comment/:id
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-DELETE /activity/comment/15
-```
+`DELETE /activity/comment/:id`
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_comment(id: ID): delete_one
 }
 ```
+</template>
 
-##### Example
+</SnippetToggler>
+
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /activity/comment/15`
+</template>
+
+<template #graphql>
 
 ```graphql
 mutation {
@@ -299,3 +382,8 @@ mutation {
 	}
 }
 ```
+</template>
+
+</SnippetToggler>
+
+
