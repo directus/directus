@@ -172,7 +172,6 @@ type Query {
 
 </SnippetToggler>
 
-<br>
 
 #### Query Parameters
 
@@ -250,7 +249,6 @@ type Mutation {
 
 </SnippetToggler>
 
-<br>
 
 #### Query Parameters
 
@@ -360,7 +358,6 @@ type Mutation {
 
 </SnippetToggler> 
 
-<br>
 
 #### Query Parameters
 
@@ -455,7 +452,6 @@ type Mutation {
 
 </SnippetToggler>
 
-<br>
 
 #### Query Parameters
 
@@ -506,34 +502,58 @@ mutation {
 
 Update multiple items at the same time.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /items/:collection`
+```json
+{
+	"field": [value_1, value_2],
+	"field_2": {
+		"field_2.1": "value_3"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql`
+```graphql
+type Mutation {
+	update_<collection>_items(ids: [ID!]!, data: [update_<collection>_input]): [<collection>]
+}
+```
+</template>
+
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 Object containing `data` for the values to set, and either `keys` or `query` to select what items to update.
 
-### Returns
+::: tip Singleton
+If your collection is a singleton, this endpoint will act the same as the [Update an Item](#update-an-item) endpoint.
+:::
+
+### Response
 
 Returns the [item objects](#the-item-object) for the updated items.
 
-#### Singleton
+### Example
 
-If your collection is a singleton, this endpoint will act the same as the [Update an Item](#update-an-item) endpoint.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-PATCH /items/:collection
-```
-
-##### Example
-
-```
-PATCH /items/articles
-```
-
+`PATCH /items/articles`
 ```json
 {
 	"keys": [1, 2],
@@ -542,21 +562,11 @@ PATCH /items/articles
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql
-```
-
-```graphql
-type Mutation {
-	update_<collection>_items(ids: [ID!]!, data: [update_<collection>_input]): [<collection>]
-}
-```
-
-##### Example
-
+`POST /graphql`
 ```graphql
 mutation {
 	update_articles_items(ids: [1, 2], data: { status: "published" }) {
@@ -565,6 +575,9 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -572,36 +585,42 @@ mutation {
 
 Delete an existing item.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /items/:collection/:id
-```
+`DELETE /items/:collection/:id`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-DELETE /items/articles/15
-```
-
-### GraphQL
-
-```
-POST /graphql
-```
-
+`POST /graphql`
 ```graphql
 type Mutation {
 	delete_<collection>_item(id: ID!): delete_one
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Response
 
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /items/articles/15`
+</template>
+
+<template #graphql>
+
+`POST /graphql`
 ```graphql
 mutation {
 	delete_articles_item(id: 15) {
@@ -609,6 +628,9 @@ mutation {
 	}
 }
 ```
+</template>
+
+</SnippetToggler>
 
 ---
 
@@ -616,30 +638,69 @@ mutation {
 
 Delete multiple existing items.
 
-### Query Parameters
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /items/:collection`
+```json
+// Array
+[value_1, value_2, value_3]
+```
+
+```json
+// Object 
+{
+	"field": [value_1, value_2, value_3]
+}
+```
+
+```json
+// Object containing query
+{
+	"query": {
+		"query_type": {
+			"field_1": {
+				"filter_condition": "value_1"
+			}
+		}
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+type Mutation {
+	delete_<collection>_items(ids: [ID!]!): delete_many
+}
+```
+</template>
+
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of item primary keys or an object containing either `keys` or `query` to select what items to update.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-DELETE /items/:collection
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-DELETE /items/articles
-```
-
+`DELETE /items/articles`
 ```json
 // Array of primary keys
 [15, 16, 21]
@@ -664,21 +725,11 @@ DELETE /items/articles
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql
-```
-
-```graphql
-type Mutation {
-	delete_<collection>_items(ids: [ID!]!): delete_many
-}
-```
-
-##### Example
-
+`POST /graphql`
 ```graphql
 mutation {
 	delete_articles_items(ids: [15, 16, 21]) {
@@ -686,3 +737,10 @@ mutation {
 	}
 }
 ```
+</template>
+
+</SnippetToggler>
+
+
+
+
