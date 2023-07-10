@@ -1,0 +1,42 @@
+import type { DirectusNotification } from '../../../schema/notification.js';
+import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { RestCommand } from '../../types.js';
+import { queryToParams } from '../../utils/query-to-params.js';
+
+export type ReadNotificationOutput<
+	Schema extends object,
+	TQuery extends Query<Schema, Item>,
+	Item = DirectusNotification<Schema>
+> = ApplyQueryFields<Schema, Item, TQuery['fields']>;
+
+/**
+ * List all notifications that exist in Directus.
+ * @param query The query parameters
+ * @returns An array of up to limit notification objects. If no items are available, data will be an empty array.
+ */
+export const readNotifications =
+	<Schema extends object, TQuery extends Query<Schema, DirectusNotification<Schema>>>(
+		query?: TQuery
+	): RestCommand<ReadNotificationOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/notifications`,
+		params: queryToParams(query ?? {}),
+		method: 'GET',
+	});
+
+/**
+ * List an existing notification by primary key.
+ * @param key The primary key of the dashboard
+ * @param query The query parameters
+ * @returns Returns the requested notification object.
+ */
+export const readNotification =
+	<Schema extends object, TQuery extends Query<Schema, DirectusNotification<Schema>>>(
+		key: DirectusNotification<Schema>['id'],
+		query?: TQuery
+	): RestCommand<ReadNotificationOutput<Schema, TQuery>, Schema> =>
+	() => ({
+		path: `/notifications/${key}`,
+		params: queryToParams(query ?? {}),
+		method: 'GET',
+	});
