@@ -41,7 +41,43 @@ learn more.
 
 List all items that exist in Directus.
 
-### Query Parameters
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /items/:collection`
+
+`SEARCH /items/:collection`
+
+</template>
+
+
+<template #graphql>
+
+`POST /graphql`
+```graphql
+type Query {
+	<collection>: [<collection>]
+}
+```
+
+</template>
+
+<template #sdk>
+
+
+</template>
+
+</SnippetToggler>
+
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
@@ -51,45 +87,34 @@ The [Field Parameter](/reference/query#fields) is required to return nested rela
 
 :::
 
-### Returns
+
+### Response
 
 An array of up to [limit](/reference/query#limit) [item objects](#the-item-object). If no items are available, data will
 be an empty array.
 
-#### Singleton
+::: tip Singleton
 
 If your collection is a singleton, this endpoint will return the item. If the item doesn't exist in the database, the
 default values will be returned.
 
-### REST API
+:::
 
-```
-GET /items/:collection
-SEARCH /items/:collection
-```
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+### Example
 
-##### Example
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-```
-GET /items/articles
-```
+<template #rest>
 
-### GraphQL
+`GET /items/articles`
 
-```
-POST /graphql
-```
+</template>
 
-```graphql
-type Query {
-	<collection>: [<collection>]
-}
-```
 
-##### Example
+<template #graphql>
 
+`POST /graphql`
 ```graphql
 query {
 	articles {
@@ -102,37 +127,35 @@ query {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+
+</template>
+
+</SnippetToggler>
+
 ---
 
 ## Get Item by ID
 
 Get an item that exists in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns an [item object](#the-item-object) if a valid primary key was provided.
+`GET /items/:collection/:id`
 
-### REST API
+</template>
 
-```
-GET /items/:collection/:id
-```
 
-##### Example
+<template #graphql>
 
-```
-GET /items/articles/15
-```
-
-### GraphQL
-
-```
-POST /graphql
-```
+`POST /graphql`
 
 ```graphql
 type Query {
@@ -140,16 +163,55 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+
+<template #sdk>
+
+
+</template>
+
+</SnippetToggler>
+
+<br>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns an [item object](#the-item-object) if a valid primary key was provided.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /items/articles/15`
+
+</template>
+
+
+<template #graphql>
+
+`POST /graphql`
 
 ```graphql
-query {
-	articles_by_id(id: 15) {
-		id
-		title
-	}
+type Query {
+	<collection>_by_id(id: ID!): <collection>
 }
 ```
+
+</template>
+
+<template #sdk>
+
+
+</template>
+
+</SnippetToggler>
+
 
 ---
 
@@ -157,11 +219,44 @@ query {
 
 Create a new item in the given collection.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /items/:collection`
+
+```json
+{
+	"field": "value",
+	"field_two": "value"
+}
+```
+</template>
+
+
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+type Mutation {
+	create_<collection>_item(data: create_<collection>_input): <collection>
+}
+```
+
+</template>
+
+</SnippetToggler>
+
+<br>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [item objects](#the-item-object).
 
@@ -172,21 +267,17 @@ Relational data needs to be correctly nested to add new items successfully. Chec
 
 :::
 
-### Returns
+### Response
 
 Returns the [item objects](#the-item-object) of the item that were created.
 
-### REST API
+### Example
 
-```
-POST /items/:collection
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-POST /items/articles
-```
+`POST /items/articles`
 
 ```json
 {
@@ -195,19 +286,12 @@ POST /items/articles
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql
-```
 
-```graphql
-type Mutation {
-	create_<collection>_item(data: create_<collection>_input): <collection>
-}
-```
+<template #graphql>
 
-##### Example
+`POST /graphql`
 
 ```graphql
 mutation {
@@ -218,35 +302,85 @@ mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+
+</template>
+
+</SnippetToggler>
+
 ---
 
 ## Create Multiple Items
 
 Create new items in the given collection.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /items/:collection`
+
+```json
+[
+	{
+		"field_1": "value",
+		"field_1.1": "value"
+	},
+	{
+		"field_2": "value",
+		"field_2.1": "value"
+	}
+]
+```
+
+</template>
+
+
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+type Mutation {
+	create_<collection>_items(data: [create_<collection>_input]): [<collection>]
+}
+```
+
+</template>
+
+<template #sdk>
+
+
+</template>
+
+</SnippetToggler> 
+
+<br>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [item objects](#the-item-object).
 
-### Returns
+### Response
 
 Returns the [item objects](#the-item-object) of the item that were created.
 
-### REST API
+### Example
 
-```
-POST /items/:collection
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-POST /items/articles
-```
+`POST /items/articles`
 
 ```json
 [
@@ -261,19 +395,11 @@ POST /items/articles
 ]
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql
-```
+<template #graphql>
 
-```graphql
-type Mutation {
-	create_<collection>_items(data: [create_<collection>_input]): [<collection>]
-}
-```
-
-##### Example
+`POST /graphql`
 
 ```graphql
 mutation {
@@ -289,47 +415,35 @@ mutation {
 }
 ```
 
+</template>
+
+</SnippetToggler>
+
 ---
 
 ## Update an Item
 
 Update an existing item.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [item object](#the-item-object).
-
-### Returns
-
-Returns the [item object](#the-item-object) of the item that was updated.
-
-### REST API
-
-```
-PATCH /items/:collection/:id
-```
-
-##### Example
-
-```
-PATCH /items/articles/15
-```
+`PATCH /items/:collection/:id`
 
 ```json
 {
-	"title": "An updated title"
+	"field": "value"
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql
-```
+<template #graphql>
+
+`POST /graphql`
 
 ```graphql
 type Mutation {
@@ -337,7 +451,42 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+
+</SnippetToggler>
+
+<br>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [item object](#the-item-object).
+
+### Response
+
+Returns the [item object](#the-item-object) of the item that was updated.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /items/articles/15`
+```json
+{
+	"title": "An updated title"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql`
 
 ```graphql
 mutation {
@@ -347,6 +496,9 @@ mutation {
 	}
 }
 ```
+</template>
+
+</SnippetToggler>
 
 ---
 
