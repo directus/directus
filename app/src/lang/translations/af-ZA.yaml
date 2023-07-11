@@ -252,3 +252,4 @@ operations:
     template: Modelvorm
   notification:
     message: Boodskap
+    subject: Onderwerp

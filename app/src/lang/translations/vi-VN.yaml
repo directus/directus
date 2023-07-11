@@ -395,8 +395,6 @@ no_file_selected: Chưa Có Tập Tin Nào Được Chọn
 download_file: Tải Xuống Tập Tin
 open_file_in_tab: Mở file trong tab mới
 exporting_all_items_in_collection: Xuất tất cả {total} bản ghi trong {collection}.
-exporting_no_items_to_export: Không có mục nào để xuất dữ liệu. Điều chỉnh cấu hình xuất dữ liệu ở bên dưới.
-exporting_download_hint: Một khi hoàn thành, tập tin {format} sẽ tự động tải về thiết bị.
 collection_key: Khóa Của Danh Mục
 name: Tên
 primary_key_field: Khóa Chính
@@ -1133,6 +1131,7 @@ operations:
   notification:
     recipient: Người dùng
     message: Tin nhắn
+    subject: Chủ đề
   request:
     url: Đường Dẫn
     method: Phương thức
