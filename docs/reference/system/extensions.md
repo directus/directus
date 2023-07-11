@@ -16,40 +16,48 @@ pageClass: page-reference
 List the available extensions in the project. The types of extensions that you can list are interfaces, displays,
 layouts, modules.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of interface extension keys.
+`GET /extensions/:type`
 
-### REST API
+</template>
 
-```
-GET /extensions/:type
-```
+<template #graphql>
 
-##### Example
-
-```
-GET /extensions/interfaces
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
 	extensions: extensions
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+An array of interface extension keys.
+
+### Example
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /extensions/interfaces`
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	extensions {
@@ -57,3 +65,6 @@ query {
 	}
 }
 ```
+
+</template>
+</SnippetToggler>
