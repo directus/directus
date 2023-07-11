@@ -59,38 +59,53 @@ Primary key of the item this notification references.
 
 List all notifications that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [notification objects](#the-notification-object). If no items are
-available, data will be an empty array.
+`GET /notifications`
 
-### REST API
+`SEARCH /notifications`
+</template>
 
-```
-GET /notifications
-SEARCH /notifications
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	notifications: [directus_notifications]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [notification objects](#the-notification-object). If no items are
+available, data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /notifications`
+
+`SEARCH /notifications`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	notifications {
@@ -100,6 +115,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -107,39 +124,45 @@ query {
 
 List an existing notification by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the requested [notification object](#the-notification-object).
+`GET /notifications/:id`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /notifications/:id
-```
-
-##### Example
-
-```
-GET /notifications/42
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	notifications_by_id(id: ID!): directus_notifications
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [notification object](#the-notification-object).
+
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /notifications/42`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
@@ -152,6 +175,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -159,49 +184,65 @@ query {
 
 Create a new notification.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [notification object](#the-notification-object).
-
-### Returns
-
-Returns the [notification object](#the-notification-object) for the created notification.
-
-### REST API
-
-```
-POST /notifications
-```
-
-##### Example
-
+`POST /notifications`
 ```json
-// POST /notifications
-
 {
-	"recipient": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
-	"subject": "Hi there!"
+	"notification_object_field_1": "value_1",
+	"notification_object_field_2": "value_2"
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	create_notifications_item(data: create_directus_notifications_input!): directus_notifications
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [notification object](#the-notification-object).
+
+### Response
+
+Returns the [notification object](#the-notification-object) for the created notification.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /notifications`
+```json
+{
+	"recipient": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
+	"subject": "Hi there!"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_notifications_item(data: { recipient: "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca", subject: "Hi there!" }) {
@@ -211,35 +252,67 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Create Multiple Notifications
 
 Create multiple new notifications.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /notifications`
+```json
+[
+	{
+		"notification_1_object_field_1": "value_1",
+		"notification_1_object_field_2": "value_2"
+	}
+	{
+		"notification_2_object_field_1": "value_3",
+		"notification_2_object_field_2": "value_4"
+	}
+]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_notifications_items(data: [create_directus_notifications_input!]!): [directus_notifications]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [notification objects](#the-notification-object).
 
-### Returns
+### Response
 
 Returns the [notification object](#the-notification-object) for the created notification.
 
-### REST API
+### Example
 
-```
-POST /notifications
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /notifications`
 ```json
-// POST /notifications
-
 [
 	{
 		"collection": "directus_files",
@@ -253,21 +326,11 @@ POST /notifications
 	}
 ]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_notifications_items(data: [create_directus_notifications_input!]!): [directus_notifications]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_notifications_items(
@@ -289,6 +352,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -303,48 +368,60 @@ notification email to be sent.
 
 :::
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [notification object](#the-notification-object).
-
-### Returns
-
-Returns the [notification object](#the-notification-object) for the updated notification.
-
-### REST API
-
-```
-PATCH /notifications/:id
-```
-
-##### Example
-
+`PATCH /notifications/:id`
 ```json
-// PATCH /notifications/34
-
 {
-	"message": "This is my updated notification"
+	"notification_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_notifications_item(id: ID!, data: update_directus_notifications_input): directus_notifications
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [notification object](#the-notification-object).
+
+### Response
+
+Returns the [notification object](#the-notification-object) for the updated notification.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /notifications/34`
+```json
+{
+	"message": "This is my updated notification"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_notifications_item(id: 32, data: { message: "This is my updated notification" }) {
@@ -353,6 +430,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -360,11 +439,41 @@ mutation {
 
 Update multiple existing notifications.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /notifications`
+```json
+{
+	"keys": [notification_key_1, notification_key_2],
+	"data": {
+		"notification_object_field": "field_1"
+	}
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_notifications_items(ids: [ID!]!, data: update_directus_notifications_input): [directus_notifications]
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the notifications you'd like to update.
@@ -372,21 +481,18 @@ Array of primary keys of the notifications you'd like to update.
 `data` **Required**\
 Any of [the notification object](#the-notification-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [notification objects](#the-notification-object) for the updated notifications.
 
-### REST API
+### Example
 
-```
-PATCH /notifications
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```json
-// PATCH /notifications
-
+`PATCH /notifications`
+``` json
 {
 	"keys": [15, 64],
 	"data": {
@@ -394,21 +500,11 @@ PATCH /notifications
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_notifications_items(ids: [ID!]!, data: update_directus_notifications_input): [directus_notifications]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_notifications_items(ids: [15, 64], data: { message: "Updated message!" }) {
@@ -418,42 +514,51 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Delete a Notification
 
 Delete an existing notification.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /notifications/:id
-```
+`DELETE /notifications/:id`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-DELETE /notifications/34
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_notifications_item(id: ID!): delete_one
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Response
 
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /notifications/34`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_notifications_item(id: 32) {
@@ -461,6 +566,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -468,41 +575,52 @@ mutation {
 
 Delete multiple existing notifications.
 
-### Request Body
+### Request
 
-An array of notification primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
-
-Empty body.
-
-### REST API
-
-```
-DELETE /notifications
-```
-
-##### Example
+<template #rest>
 
 ```json
 // DELETE /notifications
-[15, 251, 810]
+[notification_key_1, notification_key_2, notification_key_3]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_notifications_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
 
+An array of notification primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /notifications`
+```json
+[15, 251, 810]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_notifications_items(ids: [15, 251, 810]) {
@@ -510,3 +628,5 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
