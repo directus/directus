@@ -70,38 +70,53 @@ UUID of the operation connected to the trigger in the flow.
 
 List all flows that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [flow objects](#the-flow-object). If no items are available, data will
-be an empty array.
+`GET /flows`
 
-### REST API
+`SEARCH /flows`
+</template>
 
-```
-GET /flows
-SEARCH /flows
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	flows: [directus_flows]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [flow objects](#the-flow-object). If no items are available, data will
+be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /flows`
+
+`SEARCH /flows`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	flows {
@@ -111,6 +126,9 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -118,40 +136,47 @@ query {
 
 List an existing flow by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the requested [flow object](#the-flow-object).
+`GET /flows/:id`
 
-### REST API
+</template>
 
-```
-GET /flows/:id
-```
+<template #graphql>
 
-##### Example
-
-```
-GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	flows_by_id(id: ID!): directus_flows
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [flow object](#the-flow-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	flows_by_id(id: "2fc325fb-299b-4d20-a9e7-a34349dee8b2") {
@@ -161,6 +186,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -168,50 +195,66 @@ query {
 
 Create a new flow.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [flow object](#the-flow-object).
-
-### Returns
-
-Returns the [flow object](#the-flow-object) for the created flow.
-
-### REST API
-
-```
-POST /flows
-```
-
-##### Example
-
+`POST /flows`
 ```json
-// POST /flows
-
 {
-	"name": "My Flow",
-	"status": "active",
-	"trigger": "manual"
+	"flow_object_field_1": "value_1",
+	"flow_object_field_2": "value_2",
+	"flow_object_field_3": "value_3"
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	create_flows_item(data: create_directus_flows_input!): directus_flows
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [flow object](#the-flow-object).
+
+### Response
+
+Returns the [flow object](#the-flow-object) for the created flow.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /flows`
+```json
+{
+	"name": "My Flow",
+	"status": "active",
+	"trigger": "manual"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_flows_item(data: { name: "My Flow", status: "active", trigger: "manual" }) {
@@ -221,6 +264,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -228,29 +273,62 @@ mutation {
 
 Create multiple new flows.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /flows`
+```json
+[
+	{
+		"flow_object_1_field_1": "value_1",
+		"flow_object_1_field_2": "value_2",
+		"flow_object_1_field_3": "value_3"
+	},
+	{
+		"flow_object_2_field_1": "value_4",
+		"flow_object_2_field_2": "value_5",
+		"flow_object_2_field_3": "value_6"
+	},
+]
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+    create_flows_items(data: [create_directus_flows_input!]!): [directus_flows]
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [flow objects](#the-flow-object).
 
-### Returns
+### Response
 
 Returns the [flow object](#the-flow-object) for the created flow.
 
-### REST API
+### Example
 
-```
-POST /flows
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /flows`
 ```json
-// POST /flows
-
 [
 	{
 		"name": "My Flow",
@@ -264,21 +342,11 @@ POST /flows
 	}
 ]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_flows_items(data: [create_directus_flows_input!]!): [directus_flows]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_flows_items(
@@ -294,54 +362,70 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Update a Flow
 
 Update an existing flow.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [flow object](#the-flow-object).
-
-### Returns
-
-Returns the [flow object](#the-flow-object) for the updated flow.
-
-### REST API
-
-```
-PATCH /flows/:id
-```
-
-##### Example
-
+`PATCH /flows/:id`
 ```json
-// PATCH /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-
 {
-	"name": "My Updated Flow"
+	"flow_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_flows_item(id: ID!, data: update_directus_flows_input): directus_flows
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [flow object](#the-flow-object).
+
+### Response
+
+Returns the [flow object](#the-flow-object) for the updated flow.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+```json
+{
+	"name": "My Updated Flow"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_flows_item(id: "2fc325fb-299b-4d20-a9e7-a34349dee8b2", data: { name: "My Updated Flow" }) {
@@ -350,6 +434,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -357,11 +443,41 @@ mutation {
 
 Update multiple existing flows.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+
+`PATCH /flows`
+```json
+{
+	"keys": ["flow_1_key", "flow_2_key"],
+	"data": {
+		"flow_object_field": "value_1"
+	}
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_flows_items(ids: [ID!]!, data: update_directus_flows_input): [directus_flows]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the flows you'd like to update.
@@ -369,21 +485,18 @@ Array of primary keys of the flows you'd like to update.
 `data` **Required**\
 Any of [the flow object](#the-flow-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [flow objects](#the-flow-object) for the updated flows.
 
-### REST API
+### Example
 
-```
-PATCH /flows
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /flows`
 ```json
-// PATCH /flows
-
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
 	"data": {
@@ -391,21 +504,11 @@ PATCH /flows
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_flows_items(ids: [ID!]!, data: update_directus_flows_input): [directus_flows]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_flows_items(
@@ -418,6 +521,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -425,36 +530,44 @@ mutation {
 
 Delete an existing flow.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /flows/:id
-```
+`DELETE /flows/:id`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_flows_item(id: ID!): delete_one
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+
+#### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_flows_item(id: "12204ee2-2c82-4d9a-b044-2f4842a11dba") {
@@ -462,6 +575,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -469,41 +584,52 @@ mutation {
 
 Delete multiple existing flows.
 
-### Request Body
+### Request
 
-An array of flows primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty body.
-
-### REST API
-
-```
-DELETE /flows
-```
-
-##### Example
-
+`DELETE /flows`
 ```json
-// DELETE /flows
-["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
+["flow_1_key", "flow_2_key", "flow_3_key"]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_flows_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
 
+An array of flows primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /flows`
+```json
+["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_flows_items(
@@ -517,49 +643,76 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
+---
 
 ## Flow with GET webhook trigger
 
 Start a flow with GET webhook trigger.
 
-### Returns
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /flows/trigger/:flow_uuid`
+</template>
+
+</SnippetToggler>
+
+### Response
 
 Result of the flow, if any.
 
-### REST API
+### Example
 
-```
-GET /flows/trigger/:flow_uuid
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-// GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122
-// Payload here
-```
+`GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
+`// Payload here`
+</template>
+
+</SnippetToggler>
+
 
 ## Flow with POST webhook trigger
 
 Start a flow with POST webhook trigger.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /flows/trigger/:flow_uuid`
+
+</template>
+
+</SnippetToggler>
+
+#### Request Body
 
 Payload for the POST request.
 
-### Returns
+### Response
 
 Result of the flow, if any.
 
-### REST API
+### Example
 
-```
-POST /flows/trigger/:flow_uuid
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122
-// Payload here
-```
+`POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
+`// Payload here`
+
+</template>
+
+</SnippetToggler>
