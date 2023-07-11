@@ -30,7 +30,7 @@ export const request = async <Output = any>(
 		.fetch(url, options)
 		.then(async (response) => {
 			if (!response.ok) throw await response.json();
-			if (formatter === null) return response;
+			if (formatter === null) return response.text();
 			return response.json();
 		})
 		.catch((err) => {

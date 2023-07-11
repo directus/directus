@@ -11,4 +11,5 @@ export const logout =
 		path: '/auth/logout',
 		method: 'POST',
 		body: JSON.stringify({ refresh_token }),
+		onResponse: null,
 	});

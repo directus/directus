@@ -3,7 +3,7 @@ export type HttpMethod = 'GET' | 'SEARCH' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 export interface RequestOptions {
 	path: string;
 	method?: HttpMethod;
-	params?: Record<string, string>;
+	params?: Record<string, any>;
 	headers?: Record<string, string>;
 	body?: string | FormData;
 	onRequest?: RequestTransformer;

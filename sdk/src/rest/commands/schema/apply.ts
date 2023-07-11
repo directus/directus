@@ -12,4 +12,5 @@ export const schemaApply =
 		method: 'POST',
 		path: '/schema/apply',
 		body: JSON.stringify(diff),
+		onResponse: null,
 	});
