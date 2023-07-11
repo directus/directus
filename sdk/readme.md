@@ -14,7 +14,7 @@ The client is split up in separate features you can mix and match to compose a c
 want.
 
 ```ts
-const client = useDirectus<Schema>('https://api.directus.io');
+const client = createDirectus<Schema>('https://api.directus.io');
 ```
 
 This client is currently an empty wrapper without any functionality.Before you can do anything with it you'll need to
@@ -37,7 +37,7 @@ add some features. The following composables are available/in progress:
 For this example we'll build a client including `rest` and `graphql`:
 
 ```ts
-const client = useDirectus<Schema>('https://api.directus.io').use(rest()).use(graphql());
+const client = createDirectus<Schema>('https://api.directus.io').with(rest()).with(graphql());
 
 // do a REST request
 const restResult = await client.request(readItems('articles'));
@@ -59,7 +59,7 @@ const gqlResult = await client.query<OutputType>(`
 ## Authentication
 
 ```ts
-const client = useDirectus<Schema>('https://api.directus.io').use(rest()).use(authentication('json'));
+const client = createDirectus<Schema>('https://api.directus.io').with(rest()).with(authentication('json'));
 
 await client.login('admin@example.com', 'd1r3ctu5');
 
@@ -67,7 +67,7 @@ await client.login('admin@example.com', 'd1r3ctu5');
 ```
 
 ```ts
-const client = useDirectus<Schema>('https://api.directus.io').use(rest()).use(staticToken('super-secure-token'));
+const client = createDirectus<Schema>('https://api.directus.io').with(rest()).with(staticToken('super-secure-token'));
 
 // do authenticated requests
 ```
@@ -79,7 +79,7 @@ The `realtime()` extension allows you to work with a Directus REST WebSocket.
 Subscribing to updates:
 
 ```ts
-const client = useDirectus<Schema>('https://api.directus.io').use(
+const client = createDirectus<Schema>('https://api.directus.io').with(
 	realtime({
 		authMode: 'public',
 	})
@@ -99,7 +99,7 @@ for await (const item of subscription) {
 Receive/Send messages:
 
 ```ts
-const client = useDirectus<Schema>('https://api.directus.io').use(
+const client = createDirectus<Schema>('https://api.directus.io').with(
 	realtime({
 		authMode: 'public',
 	})

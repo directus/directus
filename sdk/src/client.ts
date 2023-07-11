@@ -8,10 +8,10 @@ import type { DirectusClient } from './types/client.js';
  *
  * @returns A Directus client.
  */
-export const useDirectus = <Schema extends object = any>(url: string): DirectusClient<Schema> => {
+export const createDirectus = <Schema extends object = any>(url: string): DirectusClient<Schema> => {
 	return {
 		url: new URL(url),
-		use(createExtension) {
+		with(createExtension) {
 			return {
 				...this,
 				...createExtension(this),

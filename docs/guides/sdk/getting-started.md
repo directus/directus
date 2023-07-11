@@ -36,18 +36,18 @@ npm install @directus/sdk@beta
 
 ## Basic Usage
 
-Create a Directus client using the `useDirectus` hook from `@directus/sdk`. The client gives you access to your Directus
+Create a Directus client using the `createDirectus` hook from `@directus/sdk`. The client gives you access to your Directus
 project and data.
 
 ```ts
-import { useDirectus } from '@directus/sdk';
+import { createDirectus } from '@directus/sdk';
 
 // Your Directus collection schema
 interface Schema {
 	// ...
 }
 
-const client = useDirectus<Schema>('http://directus.example.com');
+const client = createDirectus<Schema>('http://directus.example.com');
 ```
 
 ## Creating a Composable Client
@@ -66,15 +66,15 @@ The client starts as an empty wrapper without any functionality. To add features
 For example, to create a client with REST or GraphQL support, use the following:
 
 ```js
-import { useDirectus } from '@directus/sdk';
+import { createDirectus } from '@directus/sdk';
 import { rest } from '@directus/sdk/rest';
 import { graphql } from '@directus/sdk/graphql';
 
 // Client with REST support
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = createDirectus('http://directus.example.com').with(rest());
 
 // Client with GraphQL support
-const client = useDirectus('http://directus.example.com').use(graphql());
+const client = createDirectus('http://directus.example.com').with(graphql());
 ```
 
 ## Authentication
@@ -84,10 +84,10 @@ Use the `authentication()` composable to add user login and tokens auto-refresh 
 For example, to login to your directus instance, invoke the `login` method
 
 ```js
-import { useDirectus } from '@directus/sdk';
+import { createDirectus } from '@directus/sdk';
 import { authentication } from '@directus/sdk/auth';
 
-const client = useDirectus('http://directus.example.com').use(authentication());
+const client = createDirectus('http://directus.example.com').with(authentication());
 
 await client.login(email, password);
 ```
@@ -107,11 +107,11 @@ For example, to make a request to an `articles` collection.
 JavaScript
 
 ```js
-import { useDirectus } from '@directus/sdk@beta';
+import { createDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItem } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = createDirectus('http://directus.example.com').with(rest());
 
 const result = await client.request(readItem('articles', 5));
 ```
@@ -119,7 +119,7 @@ const result = await client.request(readItem('articles', 5));
 TypeScript
 
 ```ts
-import { useDirectus } from '@directus/sdk@beta';
+import { createDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItem } from '@directus/sdk@beta/rest/commands';
 
@@ -133,7 +133,7 @@ interface Schema {
 	articles: Article[];
 }
 
-const client = useDirectus<Schema>('http://directus.example.com').use(rest());
+const client = createDirectus<Schema>('http://directus.example.com').with(rest());
 
 const result = await client.request(readItem('articles', 5));
 ```
@@ -141,11 +141,11 @@ const result = await client.request(readItem('articles', 5));
 #### Read all items
 
 ```js
-import { useDirectus } from '@directus/sdk@beta';
+import { createDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = createDirectus('http://directus.example.com').with(rest());
 
 const result = await client.request(readItems('articles'));
 ```
@@ -153,11 +153,11 @@ const result = await client.request(readItems('articles'));
 #### Read specific fields
 
 ```js
-import { useDirectus } from '@directus/sdk@beta';
+import { createDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = createDirectus('http://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('articles', {
@@ -169,11 +169,11 @@ const result = await client.request(
 #### Read all fields
 
 ```js
-import { useDirectus } from '@directus/sdk@beta';
+import { createDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = createDirectus('http://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('articles', {
@@ -185,11 +185,11 @@ const result = await client.request(
 #### Read nested fields
 
 ```js
-import { useDirectus } from '@directus/sdk@beta';
+import { createDirectus } from '@directus/sdk@beta';
 import { rest } from '@directus/sdk@beta/rest';
 import { readItems } from '@directus/sdk@beta/rest/commands';
 
-const client = useDirectus('http://directus.example.com').use(rest());
+const client = createDirectus('http://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('articles', {
@@ -205,7 +205,7 @@ Add the `graphql()` composable to the client, this enables the `.query(...)` met
 For example, to make a request to an `articles` collection.
 
 ```ts
-import { useDirectus } from '@directus/sdk';
+import { createDirectus } from '@directus/sdk';
 import { graphql } from '@directus/sdk/graphql';
 
 interface Article {
@@ -218,7 +218,7 @@ interface Schema {
 	articles: Article[];
 }
 
-const client = useDirectus<Schema>('http://directus.example.com').use(graphql());
+const client = createDirectus<Schema>('http://directus.example.com').with(graphql());
 
 const result = await client.query<Article[]>(`
     query {
