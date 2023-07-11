@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-added auto cache purging to sorting utility
+Added auto cache purging to sorting utility
