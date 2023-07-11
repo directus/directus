@@ -349,6 +349,7 @@ describe('#head', () => {
 			status: 200,
 			headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified },
 		} as unknown as Promise<Response>);
+
 		driver['getAuthenticatedUrl'] = vi.fn();
 
 		await driver.head(sample.path.input);
