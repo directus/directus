@@ -407,6 +407,7 @@ operations:
     message: Μήνυμα
   notification:
     message: Μήνυμα
+    subject: Θέμα
   trigger:
     description: Πέρασμα δεδομένων σε άλλη ροή
     flows: Ροές

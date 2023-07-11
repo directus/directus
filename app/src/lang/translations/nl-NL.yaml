@@ -452,11 +452,6 @@ open_file_in_tab: Openen in nieuw tabblad
 start_export: Start exporteren
 not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
 exporting_all_items_in_collection: Alle {total} items uit {collection} aan het exporteren.
-exporting_limited_items_in_collection: '{limit} van de {total} items uit {collection} aan het exporteren.'
-exporting_no_items_to_export: Geen items om te exporteren. Pas de exportconfiguratie hieronder aan.
-exporting_download_hint: Eenmaal voltooid, zal dit {format}-bestand automatisch worden gedownload naar je apparaat.
-exporting_batch_hint: Deze export zal worden verwerkt in batches, en wanneer voltooid, zal het {format}-bestand worden opgeslagen in de Bestandsbibliotheek.
-exporting_batch_hint_forced: Vanwege het grote aantal items moet deze export in batches worden verwerkt, en wanneer voltooid, zal het {format}-bestand worden opgeslagen in de Bestandsbibliotheek.
 collection_key: Collectie Key
 name: Naam
 primary_key_field: Primary Key veld
@@ -1729,6 +1724,7 @@ operations:
   notification:
     recipient: Gebruiker
     message: Bericht
+    subject: Onderwerp
   request:
     url: URL
     url_placeholder: https://example.com/voorbeeld

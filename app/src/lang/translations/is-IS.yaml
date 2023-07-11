@@ -632,6 +632,7 @@ operations:
     name: Senda Tilkynningu
     recipient: Notandi
     message: Skilaboð
+    subject: Viðfangsefni
   request:
     url: URL
     method: Aðferð

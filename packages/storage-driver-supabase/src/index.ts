@@ -14,19 +14,23 @@ export type DriverSupabaseConfig = {
 	// Allows a custom Supabase endpoint incase self-hosting
 	endpoint?: string;
 	root?: string;
-	// NOTE: Still in beta
+	// NOTE: Still in Supabase beta
 	resumableUpload?: boolean;
 };
 
 export class DriverSupabase implements Driver {
 	private config: DriverSupabaseConfig;
 	private client: StorageClient;
-	private root: string;
+	private bucket: ReturnType<StorageClient['from']>;
 
 	constructor(config: DriverSupabaseConfig) {
 		this.config = config;
 		this.client = this.getClient();
-		this.root = this.config.root ? normalizePath(this.config.root, { removeLeading: true }) : '';
+		this.bucket = this.getBucket();
+	}
+
+	private get endpoint() {
+		return this.config.endpoint ?? `https://${this.config.projectId}.supabase.co/storage/v1`;
 	}
 
 	private getClient() {
@@ -34,8 +38,8 @@ export class DriverSupabase implements Driver {
 			throw new Error('`project_id` or `endpoint` is required');
 		}
 
-		if (!this.config.serviceRole || !this.config.bucket) {
-			throw new Error('`service_role` and `bucket` are required');
+		if (!this.config.serviceRole) {
+			throw new Error('`service_role` is required');
 		}
 
 		return new StorageClient(this.endpoint, {
@@ -44,20 +48,20 @@ export class DriverSupabase implements Driver {
 		});	
 	}
 
-	private get endpoint() {
-		return this.config.endpoint ?? `https://${this.config.projectId}.supabase.co/storage/v1`
-	}
+	private getBucket() {
+		if (!this.config.bucket) {
+			throw new Error('`bucket` is required');
+		}
 
-	private get bucket() {
 		return this.client.from(this.config.bucket);
 	}
 
 	private fullPath(filepath: string) {
-		return normalizePath(join(this.root, filepath));
+		return this.config.root ? normalizePath(join(this.config.root, filepath)) : filepath;
 	}
 
 	private getAuthenticatedUrl(filepath: string) {
-		return `${this.endpoint}/object/authenticated/${this.config.bucket}/${this.fullPath(filepath)}`
+		return `${this.endpoint}/${join('object/authenticated', this.config.bucket, this.fullPath(filepath))}`;
 	}
 
 	async read(filepath: string, range?: Range) {
@@ -186,7 +190,7 @@ export class DriverSupabase implements Driver {
 		let itemCount = 0;
 
 		do {
-			const { data, error } = await this.bucket.list(this.root, { limit, offset, search: prefix }, {})
+			const { data, error } = await this.bucket.list(this.config.root, { limit, offset, search: prefix })
 
 			if (!data || error) {
 				break;
