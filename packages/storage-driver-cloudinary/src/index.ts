@@ -43,7 +43,7 @@ export class DriverCloudinary implements Driver {
 			entries = entries.sort(([keyA], [keyB]) => keyA.localeCompare(keyB));
 		}
 
-		return new URLSearchParams(entries).toString();
+		return decodeURIComponent(new URLSearchParams(entries).toString());
 	}
 
 	/**
@@ -106,8 +106,7 @@ export class DriverCloudinary implements Driver {
 	 * leading slash is removed.
 	 */
 	private getFolderPath(filepath: string) {
-		const file = parse(filepath);
-		return file.dir.substring(1);
+		return parse(filepath).dir;
 	}
 
 	/**
@@ -146,9 +145,10 @@ export class DriverCloudinary implements Driver {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
+		const folder = this.getFolderPath(fullPath);
 
 		const parameters = {
-			public_id: publicId,
+			public_id: join(folder, publicId),
 			type: 'upload',
 			api_key: this.apiKey,
 			timestamp: this.getTimestamp(),
@@ -157,8 +157,8 @@ export class DriverCloudinary implements Driver {
 		const signature = this.getFullSignature(parameters);
 
 		const body = this.toFormUrlEncoded({
-			...parameters,
 			signature,
+			...parameters,
 		});
 
 		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/explicit`;
@@ -352,13 +352,16 @@ export class DriverCloudinary implements Driver {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
 		const publicId = this.getPublicId(fullPath);
+		const folderPath = this.getFolderPath(fullPath);
 		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/destroy`;
+
+		console.log(filepath, fullPath, folderPath, publicId);
 
 		const parameters = {
 			timestamp: this.getTimestamp(),
 			api_key: this.apiKey,
 			resource_type: resourceType,
-			public_id: publicId,
+			public_id: join(folderPath, publicId),
 		};
 
 		const signature = this.getFullSignature(parameters);
@@ -377,13 +380,12 @@ export class DriverCloudinary implements Driver {
 
 	async *list(prefix = '') {
 		const fullPath = this.fullPath(prefix);
-		const publicId = this.getPublicId(fullPath);
 
 		let nextCursor = '';
 
 		do {
 			const response = await fetch(
-				`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/search?expression=${publicId}*&next_cursor=${nextCursor}`,
+				`https://api.cloudinary.com/v1_1/${this.cloudName}/resources/search?expression=${fullPath}*&next_cursor=${nextCursor}`,
 				{
 					method: 'GET',
 					headers: {
@@ -407,7 +409,7 @@ export class DriverCloudinary implements Driver {
 			nextCursor = json.next_cursor;
 
 			for (const file of json.resources) {
-				yield file.public_id;
+				yield file.public_id.substring(this.root.length);
 			}
 		} while (nextCursor);
 	}
