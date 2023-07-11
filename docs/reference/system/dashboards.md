@@ -57,29 +57,21 @@ Panels that are in this dashboard. One-to-may to [panels](/reference/system/pane
 
 List all dashboards that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [dashboard objects](#the-dashboard-object). If no items are available,
-data will be an empty array.
+`GET /dashboards`
 
-### REST API
+`SEARCH /dashboards`
 
-```
-GET /dashboards
-SEARCH /dashboards
-```
+</template>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -87,8 +79,35 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [dashboard objects](#the-dashboard-object). If no items are available,
+data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /dashboards`
+
+`SEARCH /dashboards`
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	dashboards {
@@ -98,37 +117,28 @@ query {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Retrieve a Dashboard
 
 List an existing dashboard by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the requested [dashboard object](#the-dashboard-object).
+`GET /dashboards/:id`
 
-### REST API
+</template>
 
-```
-GET /dashboards/:id
-```
+<template #graphql>
 
-##### Example
-
-```
-GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -136,7 +146,27 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [dashboard object](#the-dashboard-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
@@ -147,55 +177,74 @@ query {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Create a Dashboard
 
 Create a new dashboard.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [dashboard object](#the-dashboard-object).
-
-### Returns
-
-Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
-
-### REST API
-
-```
-POST /dashboards
-```
-
-##### Example
-
+`POST /dashboards`
 ```json
-// POST /dashboards
 
 {
-	"name": "My Dashboard",
-	"icon": "dashboard"
+	"dashboard_object_field": "value_1",
+	"dashboard_object_field": "value_2"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
 	create_dashboards_item(data: create_directus_dashboards_input!): directus_dashboards
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [dashboard object](#the-dashboard-object).
+
+### Response
+
+Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /dashboards`
+```json
+{
+	"name": "My Dashboard",
+	"icon": "dashboard"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_dashboards_item(data: { name: "My Dashboard", icon: "dashboards" }) {
@@ -204,6 +253,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -211,29 +262,60 @@ mutation {
 
 Create multiple new dashboards.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`// POST /dashboards`
+```json
+[
+	{
+		"dashboard_1_object_field": "value_1",
+		"dashboard_1_object_field": "value_2"
+	},
+	{
+		"dashboard_2_object_field": "value_3",
+		"dashboard_2_object_field": "value_4",
+	}
+]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_dashboards_items(data: [create_directus_dashboards_input!]!): [directus_dashboards]
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [dashboard objects](#the-dashboard-object).
 
-### Returns
+### Response
 
 Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 
-### REST API
+### Example
 
-```
-POST /dashboards
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`// POST /dashboards`
 ```json
-// POST /dashboards
-
 [
 	{
 		"name": "My Dashboard",
@@ -245,21 +327,11 @@ POST /dashboards
 	}
 ]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_dashboards_items(data: [create_directus_dashboards_input!]!): [directus_dashboards]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_dashboards_items(
@@ -271,54 +343,70 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Update a Dashboard
 
 Update an existing dashboard.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [dashboard object](#the-dashboard-object).
-
-### Returns
-
-Returns the [dashboard object](#the-dashboard-object) for the updated dashboard.
-
-### REST API
-
-```
-PATCH /dashboards/:id
-```
-
-##### Example
-
+`PATCH /dashboards/:id`
 ```json
-// PATCH /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-
 {
-	"name": "My Updated Dashboard"
+	"dashboard_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_dashboards_item(id: ID!, data: update_directus_dashboards_input): directus_dashboards
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [dashboard object](#the-dashboard-object).
+
+### Response
+
+Returns the [dashboard object](#the-dashboard-object) for the updated dashboard.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+```json
+{
+	"name": "My Updated Dashboard"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_dashboards_item(id: "2fc325fb-299b-4d20-a9e7-a34349dee8b2", data: { name: "My Updated Dashboard" }) {
@@ -328,17 +416,49 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Update Multiple Dashboards
 
 Update multiple existing dashboards.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /dashboards`
+```json
+{
+	"keys": ["dashboard_key_1", "dashboard_key_2"],
+	"data": {
+		"dashboard_object_field": "value_1"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_dashboards_items(ids: [ID!]!, data: update_directus_dashboards_input): [directus_dashboards]
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the dashboards you'd like to update.
@@ -346,20 +466,18 @@ Array of primary keys of the dashboards you'd like to update.
 `data` **Required**\
 Any of [the dashboard](#the-dashboard-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [dashboard objects](#the-dashboard-object) for the updated dashboards.
 
-### REST API
+### Example
 
-```
-PATCH /dashboards
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /dashboards`
 ```json
-// PATCH /dashboards
 
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
@@ -369,20 +487,11 @@ PATCH /dashboards
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
-```graphql
-type Mutation {
-	update_dashboards_items(ids: [ID!]!, data: update_directus_dashboards_input): [directus_dashboards]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_dashboards_items(
@@ -395,42 +504,54 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Delete a Dashboard
 
 Delete an existing dashboard.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /dashboards/:id
-```
+`DELETE /dashboards/:id`
 
-##### Example
+</template>
 
-```
-DELETE /dashboards/12204ee2-2c82-4d9a-b044-2f4842a11dba
-```
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
 	delete_dashboards_item(id: ID!): delete_one
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Response
 
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /dashboards/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_dashboards_item(id: "12204ee2-2c82-4d9a-b044-2f4842a11dba") {
@@ -438,6 +559,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -445,41 +568,53 @@ mutation {
 
 Delete multiple existing dashboards.
 
-### Request Body
+### Request
 
-An array of dashboards primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty body.
-
-### REST API
-
-```
-DELETE /dashboards
-```
-
-##### Example
-
+`DELETE /dashboards`
 ```json
-// DELETE /dashboards
-["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
+["dashboard_key_1", "dashboard_key_2", "dashboard_key_3"]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
 	delete_dashboards_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
 
+An array of dashboards primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /dashboards`
+```json
+["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_dashboards_items(
@@ -493,3 +628,6 @@ mutation {
 	}
 }
 ```
+
+</template>
+</SnippetToggler>
