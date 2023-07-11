@@ -6,7 +6,7 @@ import { extname, join, parse } from 'node:path';
 import { Readable } from 'node:stream';
 import PQueue from 'p-queue';
 import type { RequestInit } from 'undici';
-import { fetch, FormData } from 'undici';
+import { FormData, fetch } from 'undici';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
 
 export type DriverCloudinaryConfig = {
@@ -98,6 +98,16 @@ export class DriverCloudinary implements Driver {
 		const resourceType = this.getResourceType(filepath);
 		if (resourceType === 'raw') return filepath;
 		return parse(filepath).name;
+	}
+
+	/**
+	 * Cloudinary sometimes treats the folder path leading up to the file ID as a separate request
+	 * entity. This method will return the folder path without the filename for those uses. The
+	 * leading slash is removed.
+	 */
+	private getFolderPath(filepath: string) {
+		const file = parse(filepath);
+		return file.dir.substring(1);
 	}
 
 	/**
@@ -228,6 +238,7 @@ export class DriverCloudinary implements Driver {
 			type: 'upload',
 			access_mode: this.accessMode,
 			public_id: this.getPublicId(fullPath),
+			folder: this.getFolderPath(fullPath),
 		};
 
 		const signature = this.getFullSignature(uploadParameters);
