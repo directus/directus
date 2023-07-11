@@ -130,6 +130,17 @@ watch(
 	},
 	{ immediate: true }
 );
+
+watch(
+	() => props.value,
+	(newValue) => {
+		const currentValue = codemirror?.getValue();
+
+		if (currentValue !== newValue) {
+			codemirror?.setValue(unref(isObjectLike) ? JSON.stringify(newValue, null, 4) : String(newValue ?? ''));
+		}
+	}
+);
 </script>
 
 <style lang="scss" scoped>
