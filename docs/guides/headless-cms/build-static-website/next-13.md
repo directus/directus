@@ -49,9 +49,9 @@ To share a single instance of the Directus JavaScript SDK between multiple pages
 file that can be imported later. Create a new directory called `lib` and a new file called `directus.js` inside of it.
 
 ```js
-import { Directus } from '@directus/sdk';
+import { createDirectus } from '@directus/sdk';
 
-const directus = new Directus('https://your-project-id.directus.app/');
+const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
 
 export default directus;
 ```
@@ -81,8 +81,8 @@ Inside of the `app` directory, create a new file called `page.tsx` inside of it.
 import directus from 'lib/directus';
 
 async function getGlobals() {
-	const { data } = await directus.items('global').readByQuery();
-	return data;
+  const { data } = await directus.request(readItems('global'));
+  return data;
 }
 
 export default async function HomePage() {
@@ -117,12 +117,12 @@ import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
 
 async function getPage(slug) {
-	try {
-		const page = await directus.items('pages').readOne(slug);
-		return page;
-	} catch (error) {
-		notFound();
-	}
+  try {
+    const page = await directus.request(readItem('pages', slug));
+    return page;
+  } catch (error) {
+    notFound();
+  }
 }
 
 export default async function DynamicPage({ params }) {
@@ -137,8 +137,8 @@ export default async function DynamicPage({ params }) {
 ```
 
 Go to `http://localhost:3000/about`, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK,
-the single item with that slug is retrieved, and the page should show your data. `readOne()` only checks against your
-`slug` Primary ID Field.
+the single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the
+`slug` or Primary ID Field.
 
 _Note that we check if a returned value exists, and return a 404 if not. Please also note that
 [`dangerouslySetInnerHTML` should only be used for trusted content](https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml)._
@@ -172,12 +172,13 @@ Inside of the `app` directory, create a new subdirectory called `blog` and a new
 import directus from 'lib/directus';
 
 async function getPosts() {
-	const posts = await directus.items('posts').readByQuery({
-		fields: ['slug', 'title', 'publish_date', 'author.name'],
-		sort: ['-publish_date'],
-	});
-
-	return posts.data;
+  const posts = await directus.request(
+    readItems('posts', {
+      fields: ['slug', 'title', 'publish_date', 'author.name'],
+      sort: ['-publish_date']
+    })
+  );
+  return posts.data;
 }
 
 export default async function DynamicPage() {
@@ -230,15 +231,16 @@ import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
 
 async function getPost(slug) {
-	try {
-		const post = await directus.items('posts').readOne(slug, {
-			fields: ['*.*'],
-		});
-
-		return post;
-	} catch (error) {
-		notFound();
-	}
+  try {
+    const post = await directus.request(
+      readItem('posts', slug, {
+        fields: ['*.*'],
+      })
+    );
+    return post;
+  } catch (error) {
+    notFound();
+  }
 }
 
 export default async function DynamicPage({ params }) {
