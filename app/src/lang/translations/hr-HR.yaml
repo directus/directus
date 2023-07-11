@@ -472,7 +472,8 @@ exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}
 exporting_limited_items_in_collection: '{count} od {total} stavki unutar {collection} bit će izvezeno.'
 exporting_no_items_to_export: Nema stavki za izvoz. Prilagodite postavke izvoza i/ili dodajte stavke u kolekciju.
 exporting_download_hint: Nakon što se datoteka {format} stvori, preuzet će se na vaš uređaj.
-exporting_library_hint: Nakon što se datoteka {format} stvori, bit će spremljena u mjesto s datotekama.
+exporting_library_hint: Nakon što se datoteka {format} stvori, bit će spremljena u biblioteku datoteka.
+exporting_library_hint_forced: Ovaj izvoz mora biti obrađen u serijama. Nakon završetka, datoteka {format} bit će spremljena u biblioteku datoteka.
 collection_key: Ključ zbirke
 name: Naziv
 primary_key_field: Polje primarnog ključa
@@ -1464,6 +1465,7 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
+weeks: { }
 report_error: Prijavi grešku
 start: Započni
 table: Tablica
@@ -2154,6 +2156,7 @@ operations:
     recipient: Korisnik
     recipient_placeholder: Unesite UUID...
     recipient_note: Dodajte UUID korisnika i pritisnite Enter...
+    item_note: Ključ Stavke ili Relativni URL
     message: Poruka
     subject: Predmet
   request:
