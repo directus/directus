@@ -443,11 +443,6 @@ open_file_in_tab: Åbn fil i nyt faneblad
 start_export: Start eksport
 not_available_for_local_downloads: Ikke tilgængelig for lokale downloads
 exporting_all_items_in_collection: Eksporterer alle {total} elementer inden for {collection}.
-exporting_limited_items_in_collection: Eksporterer {limit} ud af {total} elementer inden for {collection}.
-exporting_no_items_to_export: Ingen elementer at eksportere. Juster eksportkonfigurationen nedenfor.
-exporting_download_hint: Når den er færdig, vil denne {format}-fil automatisk blive hentet til din enhed.
-exporting_batch_hint: Denne eksport vil blive behandlet i batcher, og når den er fuldført, vil {format}-filen blive gemt i filbiblioteket.
-exporting_batch_hint_forced: På grund af det stort antal elementer skal denne eksport forarbejdes i partier og når den er færdig, gemmes {format}-filen i Filbiblioteket.
 collection_key: Samlings nøgle
 name: Navn
 primary_key_field: Primær nøglefelt
@@ -2038,6 +2033,7 @@ operations:
     description: Send en meddelelse i appen til en eller flere brugere
     recipient: Bruger
     message: besked
+    subject: Emne
   request:
     description: 'Lav en anmodning til en URL'
     url: URL

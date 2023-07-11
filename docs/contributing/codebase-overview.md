@@ -29,7 +29,7 @@ folders are inside there.
 | `/cli`         | The CLI commands and matching functions that the `directus` package ships with.                                                                                                                 |
 | `/controllers` | Route handler controllers for the endpoints in the API.                                                                                                                                         |
 | `/database`    | Database manipulation abstraction, system migrations, and system data. Also where you'd find the main query runner.                                                                             |
-| `/exceptions`  | Classes for the different errors the API is expected to throw. Used to set the HTTP status and error codes.                                                                                     |
+| `/errors`      | Classes for the different errors the API is expected to throw. Used to set the HTTP status and error codes.                                                                                     |
 | `/middleware`  | Various (express) routing middleware. Includes things like cache-checker, authenticator, etc.                                                                                                   |
 | `/services`    | Internal services. The main abstraction for interfacing with the data in the database. Both GraphQL and REST requests are "translated" to use these services as the main logic in the platform. |
 | `/types`       | TypeScript types that are shared between the different parts of the API.                                                                                                                        |

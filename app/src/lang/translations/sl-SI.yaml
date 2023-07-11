@@ -1450,6 +1450,7 @@ operations:
   notification:
     recipient: Uporabnik
     message: Sporočilo
+    subject: Zadeva
   request:
     url: URL
     method: Metoda
