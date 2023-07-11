@@ -32,7 +32,7 @@ visitor requests a page from your site, all you need to do is add a filter to yo
 :::info Note
 
 If your site is statically generated and your content fetched at build time, please
-[follow the recipe for static sites](/guides/headless-cms/schedule-content/static-sites).
+[follow the guide for static sites](/guides/headless-cms/schedule-content/static-sites).
 
 :::
 
@@ -96,22 +96,24 @@ articles that have a publish date AND have the `published` state are displayed o
 Using the [Directus JavaScript SDK](/reference/sdk) (preferred)
 
 ```js
-const articles = await directus.items('articles').readByQuery({
-	filter: {
-		_and: [
-			{
-				status: {
-					_eq: 'published',
-				},
-			},
-			{
-				date_published: {
-					_lte: '$NOW',
-				},
-			},
-		],
-	},
-});
+const articles = await directus.request(
+  readItems('articles', {
+    filter: {
+      _and: [
+        {
+          status: {
+            _eq: 'published',
+          },
+        },
+        {
+          date_published: {
+            _lte: '$NOW',
+          },
+        },
+      ],
+    },
+  })
+);
 ```
 
 Using the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) (JavaScript)

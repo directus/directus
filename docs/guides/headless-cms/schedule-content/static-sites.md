@@ -24,7 +24,7 @@ author: Bryant Gillespie
 
 ## Explanation
 
-This recipe explains how to schedule content to be published on a future date for a statically generated site (SSG).
+This guide explains how to schedule content to be published on a future date for a statically generated site (SSG).
 
 We'll be using [Flows](/app/flows) to publish articles when the current date matches the published date.
 
@@ -41,7 +41,7 @@ Last, we'll kick off a new deployment of your static site at your hosting provid
 ::: info Note
 
 If your site fetches content at runtime or at the time of a page request, please
-[follow the recipe for dynamic sites](/guides/headless-cms/schedule-content/dynamic-sites).
+[follow the guide for dynamic sites](/guides/headless-cms/schedule-content/dynamic-sites).
 
 :::
 
