@@ -175,28 +175,26 @@ const slug = 'slug-in-english';
 const languageCode = 'en-US';
 
 // Call the Directus API using the SDK using the locale of the frontend and the slug.
-const response = await directus.items('articles').readByQuery({
-	deep: {
-		translations: {
-			_filter: {
-				_and: [
-					{
-						languages_code: {
-							_eq: languageCode,
-						},
-					},
-					{
-						slug: {
-							_eq: slug,
-						},
-					},
-				],
-			},
-		},
-	},
-	fields: ['*', 'translations.*'],
-	limit: 1,
-});
+const response = await directus.request(
+  readItems('articles', {
+    deep: {
+      translations: {
+        _filter: {
+          _and: [
+            {
+              languages_code: { _eq: languageCode },
+            },
+            {
+              slug: { _eq: slug },
+            },
+          ],
+        },
+      },
+    },
+    fields: ['*', 'translations.*'],
+    limit: 1,
+  })
+);
 const page = response.data[0];
 ```
 
