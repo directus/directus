@@ -447,11 +447,6 @@ open_file_in_tab: Open file in new tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_all_items_in_collection: Exporting all {total} items within {collection}.
-exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
-exporting_no_items_to_export: No items to export. Adjust the exporting configuration below.
-exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
-exporting_batch_hint: This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
-exporting_batch_hint_forced: Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will be saved to the File Library.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -2090,6 +2085,7 @@ operations:
     recipient: User
     recipient_placeholder: Enter a text...
     message: Message
+    subject: Subject
   request:
     name: Webhook / Request URL
     description: 'Make a request to a URL'
