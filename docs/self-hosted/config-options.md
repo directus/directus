@@ -477,10 +477,10 @@ Instead, you can use the above `CACHE_STORE` environment variable to use `redis`
 ## File Storage
 
 By default, Directus stores all uploaded files locally on disk. However, you can also configure Directus to use S3,
-Google Cloud Storage, Azure, Cloudinary or Supabase. You can also configure _multiple_ storage adapters at the same time. This
-allows you to choose where files are being uploaded on a file-by-file basis. In the Admin App, files will automatically
-be uploaded to the first configured storage location (in this case `local`). The used storage location is saved under
-`storage` in `directus_files`.
+Google Cloud Storage, Azure, Cloudinary or Supabase. You can also configure _multiple_ storage adapters at the same
+time. This allows you to choose where files are being uploaded on a file-by-file basis. In the Admin App, files will
+automatically be uploaded to the first configured storage location (in this case `local`). The used storage location is
+saved under `storage` in `directus_files`.
 
 ::: tip File Storage Default
 
@@ -579,12 +579,12 @@ Directus _won't_ rely on Cloudinary's asset transformations in the `/assets` end
 
 ### Supabase (`supabase`)
 
-| Variable                          | Description                 | Default Value |
-| --------------------------------- | --------------------------- | ------------- |
-| `STORAGE_<LOCATION>_SERVICE_ROLE` | The admin service role JWT  | --            |
-| `STORAGE_<LOCATION>_BUCKET`       | Storage bucket              | --            |
-| `STORAGE_<LOCATION>_PROJECT_ID`   | Project id                  | --            |
-| `STORAGE_<LOCATION>_ENDPOINT`     | Custom endpoint             | --            |
+| Variable                          | Description                | Default Value |
+| --------------------------------- | -------------------------- | ------------- |
+| `STORAGE_<LOCATION>_SERVICE_ROLE` | The admin service role JWT | --            |
+| `STORAGE_<LOCATION>_BUCKET`       | Storage bucket             | --            |
+| `STORAGE_<LOCATION>_PROJECT_ID`   | Project id                 | --            |
+| `STORAGE_<LOCATION>_ENDPOINT`     | Custom endpoint            | --            |
 
 ::: warning Endpoint
 

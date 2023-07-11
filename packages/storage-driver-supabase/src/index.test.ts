@@ -18,9 +18,8 @@ import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
 import { ReadableStream } from 'node:stream/web';
 
-vi.mock('@supabase/storage-js')
-vi.mock('undici')
-
+vi.mock('@supabase/storage-js');
+vi.mock('undici');
 
 let sample: {
 	config: Required<DriverSupabaseConfig>;
@@ -104,7 +103,6 @@ describe('#constructor', () => {
 		DriverSupabase.prototype['getBucket'] = getBucketBackup;
 	});
 
-
 	test('Saves passed config to local property', () => {
 		const driver = new DriverSupabase(sample.config);
 		expect(driver['config']).toBe(sample.config);
@@ -183,14 +181,14 @@ describe('#getFullPath', () => {
 
 		const result = driver['getFullPath'](sample.path.input);
 		expect(result).toBe(sample.path.input);
-	})
+	});
 
 	test('Returns normalized joined path', () => {
 		const driver = new DriverSupabase({
 			serviceRole: sample.config.serviceRole,
 			bucket: sample.config.bucket,
 			endpoint: sample.config.endpoint,
-			root: sample.config.root
+			root: sample.config.root,
 		});
 
 		const result = driver['getFullPath'](sample.path.input);
@@ -216,7 +214,7 @@ describe('#getAuthenticatedUrl', () => {
 			serviceRole: 'serviceRole',
 			bucket: 'bucket',
 			projectId: 'projectId',
-			root: 'testing'
+			root: 'testing',
 		});
 
 		const result = driver['getAuthenticatedUrl']('testing.png');
@@ -228,7 +226,7 @@ describe('#getAuthenticatedUrl', () => {
 describe('#read', () => {
 	let rootEndpoint: string;
 	let endpoint: string;
-	
+
 	beforeEach(() => {
 		rootEndpoint = `https://projectId.supabase.co/storage/v1/object/authenticated/bucket/testing/${sample.path.input}.png`;
 		endpoint = `https://projectId.supabase.co/storage/v1/object/authenticated/bucket/${sample.path.input}.png`;
@@ -241,33 +239,31 @@ describe('#read', () => {
 
 		expect(driver['getAuthenticatedUrl']).toHaveBeenCalledWith(sample.path.input);
 
-		expect(fetch).toHaveBeenCalledWith(endpoint,
-		{
-		  headers: {
-		    Authorization: `Bearer ${sample.config.serviceRole}`,
-		  },
-		  method: 'GET',
+		expect(fetch).toHaveBeenCalledWith(endpoint, {
+			headers: {
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+			},
+			method: 'GET',
 		});
 	});
 
 	test('Uses getAuthenticatedUrl to get endpoint when a root is set', async () => {
 		driver['getAuthenticatedUrl'] = vi.fn().mockReturnValue(rootEndpoint);
-		
+
 		await driver.read(sample.path.input);
 
 		expect(driver['getAuthenticatedUrl']).toHaveBeenCalledWith(sample.path.input);
 
-		expect(fetch).toHaveBeenCalledWith(rootEndpoint,
-		{
-		  headers: {
-		    Authorization: `Bearer ${sample.config.serviceRole}`,
-		  },
-		  method: 'GET',
+		expect(fetch).toHaveBeenCalledWith(rootEndpoint, {
+			headers: {
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+			},
+			method: 'GET',
 		});
 	});
 
 	test('Optionally allows setting start range offset', async () => {
-		await driver.read(sample.path.input,{ start: sample.range.start } as any);
+		await driver.read(sample.path.input, { start: sample.range.start } as any);
 
 		expect(fetch).toHaveBeenCalledWith(endpoint, {
 			headers: {
@@ -338,7 +334,10 @@ describe('#read', () => {
 
 describe('#head', () => {
 	test('Returns object headers', async () => {
-		vi.mocked(fetch).mockReturnValue({ status: 200, headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified } } as unknown as Promise<Response>);
+		vi.mocked(fetch).mockReturnValue({
+			status: 200,
+			headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified },
+		} as unknown as Promise<Response>);
 
 		const result = await driver.head(sample.path.input);
 
@@ -346,7 +345,10 @@ describe('#head', () => {
 	});
 
 	test('Ensures input is passed to getAuthenticatedUrl', async () => {
-		vi.mocked(fetch).mockReturnValue({ status: 200, headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified } } as unknown as Promise<Response>);
+		vi.mocked(fetch).mockReturnValue({
+			status: 200,
+			headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified },
+		} as unknown as Promise<Response>);
 		driver['getAuthenticatedUrl'] = vi.fn();
 
 		await driver.head(sample.path.input);
@@ -355,19 +357,20 @@ describe('#head', () => {
 	});
 
 	test('Throws an error when a status >= 400 is sent', async () => {
-		vi.mocked(fetch).mockReturnValue({ status: 400, headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified } } as unknown as Promise<Response>);
+		vi.mocked(fetch).mockReturnValue({
+			status: 400,
+			headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified },
+		} as unknown as Promise<Response>);
 
-		expect(driver.head(sample.path.input)).rejects.toThrowError(
-			new Error(`File not found`)
-		);
+		expect(driver.head(sample.path.input)).rejects.toThrowError(new Error(`File not found`));
 	});
 });
 
 describe('#stat', () => {
 	test('Returns size/modified from returned send data', async () => {
-		vi.mocked(fetch).mockReturnValue({ 
+		vi.mocked(fetch).mockReturnValue({
 			status: 200,
-			headers: { 
+			headers: {
 				get(key: any) {
 					if (key === 'content-length') {
 						return sample.file.size;
@@ -375,9 +378,9 @@ describe('#stat', () => {
 						return sample.file.modified;
 					}
 
-					return null
-				} 
-			} 
+					return null;
+				},
+			},
 		} as unknown as Promise<Response>);
 
 		const result = await driver.stat(sample.path.input);
@@ -389,13 +392,11 @@ describe('#stat', () => {
 	});
 
 	test('Throws an error when a status >= 400 is sent', async () => {
-		vi.mocked(fetch).mockReturnValue({ 
+		vi.mocked(fetch).mockReturnValue({
 			status: 400,
 		} as unknown as Promise<Response>);
 
-		expect(driver.stat(sample.path.input)).rejects.toThrowError(
-			new Error(`File not found`)
-		);
+		expect(driver.stat(sample.path.input)).rejects.toThrowError(new Error(`File not found`));
 	});
 });
 
@@ -425,8 +426,8 @@ describe('#move', () => {
 	test('passes arguments to move', async () => {
 		driver['bucket'] = {
 			move: vi.fn(),
-		} as any
-		
+		} as any;
+
 		await driver.move(sample.path.input, 'new/path');
 		expect(driver['bucket'].move).toHaveBeenCalledWith(sample.path.input, 'new/path');
 	});
@@ -436,8 +437,8 @@ describe('#copy', () => {
 	test('passes arguments to copy', async () => {
 		driver['bucket'] = {
 			copy: vi.fn(),
-		} as any
-		
+		} as any;
+
 		await driver.copy(sample.path.input, 'new/path');
 		expect(driver['bucket'].copy).toHaveBeenCalledWith(sample.path.input, 'new/path');
 	});
@@ -447,8 +448,8 @@ describe('#write', () => {
 	beforeEach(() => {
 		driver['bucket'] = {
 			upload: vi.fn(),
-		} as any
-	})
+		} as any;
+	});
 
 	test('Passes streams to body as is', async () => {
 		await driver.write(sample.path.input, sample.stream);
@@ -479,15 +480,15 @@ describe('#write', () => {
 		});
 	});
 
-	test.todo('Test resumableUpload when it is out of beta')
+	test.todo('Test resumableUpload when it is out of beta');
 });
 
 describe('#delete', () => {
 	test('Ensures input is passed to getFullPath', async () => {
 		driver['bucket'] = {
 			remove: vi.fn(),
-		} as any
-		
+		} as any;
+
 		driver['getFullPath'] = vi.fn();
 
 		await driver.delete(sample.path.input);
@@ -500,8 +501,8 @@ describe('#list', () => {
 		// TODO: Probably a better way to do this?
 		driver['bucket'] = {
 			list: vi.fn().mockReturnValue({ data: [], error: null }),
-		} as any
-		
+		} as any;
+
 		await driver.list(sample.path.input).next();
 
 		expect(driver['bucket'].list).toHaveBeenCalledWith(undefined, {
@@ -517,15 +518,15 @@ describe('#list', () => {
 
 		// TODO: Probably a better way to do this?
 		driver['bucket'] = {
-			list: vi.fn().mockReturnValue({ 
+			list: vi.fn().mockReturnValue({
 				data: [
 					{
 						name: sampleFile,
 					},
 				],
-				error: null
+				error: null,
 			}),
-		} as any
+		} as any;
 
 		driver['config'].root = sampleRoot;
 
@@ -548,19 +549,20 @@ describe('#list', () => {
 	test('Continuously fetches until all pages are returned', async () => {
 		const firstContents = Array.from({ length: 1000 }, () => ({ name: randFilePath() }));
 		const secondContents = Array.from({ length: 256 }, () => ({ name: randFilePath() }));
-		
+
 		// TODO: Probably a better way to do this?
 		driver['bucket'] = {
-			list: vi.fn()
+			list: vi
+				.fn()
 				.mockResolvedValueOnce({
 					data: firstContents,
-					error: null
+					error: null,
 				})
 				.mockResolvedValueOnce({
 					data: secondContents,
-					error: null
-				})
-			} as any
+					error: null,
+				}),
+		} as any;
 
 		const iterator = driver.list(sample.path.input);
 

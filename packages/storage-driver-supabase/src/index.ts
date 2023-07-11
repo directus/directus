@@ -1,7 +1,7 @@
-import { StorageClient, } from '@supabase/storage-js';
+import { StorageClient } from '@supabase/storage-js';
 import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
-import { Upload } from 'tus-js-client'
+import { Upload } from 'tus-js-client';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
 import { join } from 'node:path';
@@ -45,7 +45,7 @@ export class DriverSupabase implements Driver {
 		return new StorageClient(this.endpoint, {
 			apikey: this.config.serviceRole,
 			Authorization: `Bearer ${this.config.serviceRole}`,
-		});	
+		});
 	}
 
 	private getBucket() {
@@ -68,7 +68,7 @@ export class DriverSupabase implements Driver {
 		const requestInit: RequestInit = { method: 'GET' };
 
 		requestInit.headers = {
-			Authorization: `Bearer ${this.config.serviceRole}` ,
+			Authorization: `Bearer ${this.config.serviceRole}`,
 		};
 
 		if (range) {
@@ -88,12 +88,12 @@ export class DriverSupabase implements Driver {
 		const response = await fetch(this.getAuthenticatedUrl(filepath), {
 			method: 'HEAD',
 			headers: {
-				Authorization: `Bearer ${this.config.serviceRole}` ,
-			}
+				Authorization: `Bearer ${this.config.serviceRole}`,
+			},
 		});
 
 		if (response.status >= 400) {
-			throw new Error('File not found')
+			throw new Error('File not found');
 		}
 
 		return response.headers;
@@ -117,19 +117,19 @@ export class DriverSupabase implements Driver {
 		}
 	}
 
-	// CHECK: Should src/dest use fullpath? 
+	// CHECK: Should src/dest use fullpath?
 	async move(src: string, dest: string) {
 		await this.bucket.move(src, dest);
 	}
-	
-	// CHECK: Should src/dest use fullpath? 
+
+	// CHECK: Should src/dest use fullpath?
 	async copy(src: string, dest: string) {
 		await this.bucket.copy(src, dest);
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
 		const fullPath = this.getFullPath(filepath);
-		
+
 		if (this.config.resumableUpload) {
 			await this.resumableUpload(fullPath, content, type);
 		} else {
@@ -137,7 +137,7 @@ export class DriverSupabase implements Driver {
 				contentType: type ?? '',
 				cacheControl: '3600',
 				upsert: true,
-				duplex: 'half'
+				duplex: 'half',
 			});
 		}
 	}
@@ -163,25 +163,25 @@ export class DriverSupabase implements Driver {
 					cacheControl: '3600',
 				},
 				// NOTE: Supabase only supports 6MB chunks (for now), so it must be set to 6MB
-				chunkSize: 6 * 1024 * 1024, 
+				chunkSize: 6 * 1024 * 1024,
 				onError(error) {
-					reject(error)
+					reject(error);
 				},
 				onSuccess() {
-					resolve()
+					resolve();
 				},
-			})
-	
+			});
+
 			// Check if there are any previous uploads to continue.
 			return upload.findPreviousUploads().then(function (previousUploads) {
 				// Found previous uploads so we select the first one.
 				if (previousUploads[0]) {
-					upload.resumeFromPreviousUpload(previousUploads[0])
+					upload.resumeFromPreviousUpload(previousUploads[0]);
 				}
-	
-				upload.start()
-			})
-		})
+
+				upload.start();
+			});
+		});
 	}
 
 	async delete(filepath: string) {
@@ -194,7 +194,7 @@ export class DriverSupabase implements Driver {
 		let itemCount = 0;
 
 		do {
-			const { data, error } = await this.bucket.list(this.config.root, { limit, offset, search: prefix })
+			const { data, error } = await this.bucket.list(this.config.root, { limit, offset, search: prefix });
 
 			if (!data || error) {
 				break;
