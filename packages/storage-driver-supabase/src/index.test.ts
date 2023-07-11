@@ -1,5 +1,4 @@
 import { StorageClient } from '@supabase/storage-js';
-import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
@@ -15,16 +14,12 @@ import {
 	randWord,
 } from '@ngneat/falso';
 import { fetch } from 'undici';
-import { join } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
 
-vi.mock('@directus/utils/node');
-vi.mock('@directus/utils');
-vi.mock('@supabase/storage-js');
-vi.mock('node:path');
+vi.mock('@supabase/storage-js')
 
 let sample: {
 	config: Required<DriverSupabaseConfig>;
@@ -119,22 +114,7 @@ describe('#constructor', () => {
 	});
 
 	test('Defaults root to empty string', () => {
-		expect(driver['root']).toBe('');
-	});
-
-	test('Normalizes config path when root is given', () => {
-		const mockRoot = randDirectoryPath();
-
-		vi.mocked(normalizePath).mockReturnValue(mockRoot);
-
-		const driver = new DriverSupabase({
-			serviceRole: sample.config.serviceRole,
-			bucket: sample.config.bucket,
-			root: sample.config.root,
-		});
-
-		expect(normalizePath).toHaveBeenCalledWith(sample.config.root, { removeLeading: true });
-		expect(driver['root']).toBe(mockRoot);
+		expect(driver['config'].root).toBe(undefined);
 	});
 });
 
@@ -198,16 +178,12 @@ describe('#fullPath', () => {
 			endpoint: sample.config.endpoint,
 		});
 
-		vi.mocked(join).mockReturnValue(sample.path.inputFull);
-		vi.mocked(normalizePath).mockReturnValue(sample.path.inputFull);
+		let result = driver['fullPath'](sample.path.input);
+		expect(result).toBe(sample.path.input);
 
-		driver['root'] = sample.config.root;
-
-		const result = driver['fullPath'](sample.path.input);
-
-		expect(join).toHaveBeenCalledWith(sample.config.root, sample.path.input);
-		expect(normalizePath).toHaveBeenCalledWith(sample.path.inputFull);
-		expect(result).toBe(sample.path.inputFull);
+		driver['config'].root = sample.config.root;
+		result = driver['fullPath'](sample.path.input);
+		expect(result).toBe(`${sample.config.root}/${sample.path.input}`);
 	});
 });
 
@@ -217,11 +193,12 @@ describe('#getAuthenticatedUrl', () => {
 			serviceRole: 'serviceRole',
 			bucket: 'bucket',
 			projectId: 'projectId',
+			root: 'testing'
 		});
 
-		const result = driver['getAuthenticatedUrl'](sample.path.input);
+		const result = driver['getAuthenticatedUrl']('testing.png');
 
-		expect(result).toBe('https://projectId.supabase.co/storage/v1/object/authenticated/bucket/undefined');
+		expect(result).toBe('https://projectId.supabase.co/storage/v1/object/authenticated/bucket/testing/testing.png');
 	});
 });
 
@@ -304,34 +281,18 @@ describe('#read', () => {
 	});
 });
 
-describe('#stat', () => {
-	beforeEach(() => {
-		vi.mocked(driver['client']).mockResolvedValue({
-			ContentLength: sample.file.size,
-			LastModified: sample.file.modified,
-		} as HeadObjectCommandOutput as unknown as void);
-	});
+describe('#head', () => {
+	test('Returns object headers', async () => {
+		const result = await driver.stat(sample.path.input);
 
-	test('Uses HeadObjectCommand with fullPath', async () => {
-		await driver.stat(sample.path.input);
-
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
-
-		expect(HeadObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
+		expect(result).toStrictEqual({
+			size: sample.file.size,
+			modified: sample.file.modified,
 		});
 	});
+});
 
-	test('Calls #send with HeadObjectCommand', async () => {
-		const mockHeadObjectCommand = {} as HeadObjectCommand;
-		vi.mocked(HeadObjectCommand).mockReturnValue(mockHeadObjectCommand);
-
-		await driver.stat(sample.path.input);
-
-		expect(driver['client'].send).toHaveBeenCalledWith(mockHeadObjectCommand);
-	});
-
+describe('#stat', () => {
 	test('Returns size/modified from returned send data', async () => {
 		const result = await driver.stat(sample.path.input);
 
@@ -390,47 +351,6 @@ describe('#write', () => {
 				ContentType: sample.file.type,
 			},
 		});
-	});
-
-	test('Optionally sets ServerSideEncryption', async () => {
-		driver['config'].serverSideEncryption = sample.config.serverSideEncryption;
-
-		await driver.write(sample.path.input, sample.stream);
-
-		expect(Upload).toHaveBeenCalledWith({
-			client: driver['client'],
-			params: {
-				Key: sample.path.inputFull,
-				Bucket: sample.config.bucket,
-				Body: sample.stream,
-				ServerSideEncryption: sample.config.serverSideEncryption,
-			},
-		});
-	});
-
-	test('Optionally sets ACL', async () => {
-		driver['config'].acl = sample.config.acl;
-
-		await driver.write(sample.path.input, sample.stream);
-
-		expect(Upload).toHaveBeenCalledWith({
-			client: driver['client'],
-			params: {
-				Key: sample.path.inputFull,
-				Bucket: sample.config.bucket,
-				Body: sample.stream,
-				ACL: sample.config.acl,
-			},
-		});
-	});
-
-	test('Waits for upload to be done', async () => {
-		const mockUpload = { done: vi.fn() };
-		vi.mocked(Upload).mockReturnValue(mockUpload as unknown as Upload);
-
-		await driver.write(sample.path.input, sample.stream);
-
-		expect(mockUpload.done).toHaveBeenCalledOnce();
 	});
 });
 

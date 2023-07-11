@@ -21,12 +21,10 @@ export type DriverSupabaseConfig = {
 export class DriverSupabase implements Driver {
 	private config: DriverSupabaseConfig;
 	private client: StorageClient;
-	private root: string;
 
 	constructor(config: DriverSupabaseConfig) {
 		this.config = config;
 		this.client = this.getClient();
-		this.root = this.config.root ? normalizePath(this.config.root, { removeLeading: true }) : '';
 	}
 
 	private getClient() {
@@ -45,7 +43,7 @@ export class DriverSupabase implements Driver {
 	}
 
 	private get endpoint() {
-		return this.config.endpoint ?? `https://${this.config.projectId}.supabase.co/storage/v1`
+		return this.config.endpoint ?? `https://${this.config.projectId}.supabase.co/storage/v1`;
 	}
 
 	private get bucket() {
@@ -53,11 +51,11 @@ export class DriverSupabase implements Driver {
 	}
 
 	private fullPath(filepath: string) {
-		return normalizePath(join(this.root, filepath));
+		return this.config.root ? normalizePath(join(this.config.root, filepath)) : filepath;
 	}
 
 	private getAuthenticatedUrl(filepath: string) {
-		return `${this.endpoint}/object/authenticated/${this.config.bucket}/${this.fullPath(filepath)}`
+		return `${this.endpoint}/${join('object/authenticated', this.config.bucket, this.fullPath(filepath))}`;
 	}
 
 	async read(filepath: string, range?: Range) {
@@ -186,7 +184,7 @@ export class DriverSupabase implements Driver {
 		let itemCount = 0;
 
 		do {
-			const { data, error } = await this.bucket.list(this.root, { limit, offset, search: prefix }, {})
+			const { data, error } = await this.bucket.list(this.config.root ?? '', { limit, offset, search: prefix }, {})
 
 			if (!data || error) {
 				break;
