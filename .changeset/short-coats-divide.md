@@ -18,4 +18,9 @@
 
 ---
 
+::: notice
+- `@directus/app` no longer exposes internal files, except for `index.js` (`createApp`) and `cli/run.js`! It's recommended to switch to [dedicated packages](https://docs.directus.io/contributing/codebase-overview.html#packages-packages) which are constantly being expanded.
+- Types from `@directus/types` should now be imported via [`import type`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export) syntax!
+:::
+
 Enabled bundling of packages
