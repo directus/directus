@@ -57,4 +57,3 @@ Notices can contain any markdown syntax
 
 Normal changeset summary
 ```
-
