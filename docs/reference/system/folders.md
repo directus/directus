@@ -38,38 +38,54 @@ Parent folder. Many-to-one to folders (recursive).
 
 List all folders that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [folder objects](#the-folder-object). If no items are available, data
-will be an empty array.
+`GET /folders`
 
-### REST API
+`SEARCH /folders`
+</template>
 
-```
-GET /folders
-SEARCH /folders
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	folders: directus_folders
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [folder objects](#the-folder-object). If no items are available, data
+will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /folders`
+
+`SEARCH /folders`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	folders {
@@ -77,47 +93,56 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
 ## Retrieve a Folder
 
-List all folders that exist in Directus.
+List an existing folder by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns a [folder object](#the-folder-object) if a valid primary key was provided.
+`GET /folders/:id`
 
-### REST API
+</template>
 
-```
-GET /folders/:id
-```
+<template #graphql>
 
-##### Example
-
-```
-GET /folders/fc02d733-95b8-4e27-bd4b-08a32cbe4e66
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	folders_by_id(id: ID!): directus_folders
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns a [folder object](#the-folder-object) if a valid primary key was provided.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /folders/fc02d733-95b8-4e27-bd4b-08a32cbe4e66`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	folders_by_id(id: "fc02d733-95b8-4e27-bd4b-08a32cbe4e66") {
@@ -125,6 +150,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -132,48 +159,61 @@ query {
 
 Create a new (virtual) folder.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [folder object](#the-folder-object). `name` is required.
-
-### Returns
-
-Returns the [folder object](#the-folder-object) of the folder that was created.
-
-### REST API
-
-```
-POST /folders
-```
-
-##### Example
-
+`POST /folders`
 ```json
-// POST /folders
-
 {
-	"name": "Nature"
+	"name": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	create_folders_item(data: create_directus_folders_input): directus_folders
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [folder object](#the-folder-object). `name` is required.
+
+### Response
+
+Returns the [folder object](#the-folder-object) of the folder that was created.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /folders`
+```json
+{
+	"name": "Nature"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_folders_item(data: { name: "Nature" }) {
@@ -182,6 +222,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -189,29 +231,57 @@ mutation {
 
 Create multiple new (virtual) folders.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /folders`
+```json
+[
+	{
+		"name": "value_1"
+	},
+	{
+		"name": "value_2"
+	}
+]
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_folders_items(data: [create_directus_folders_input]): [directus_folders]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [folder objects](#the-folder-object). `name` is required.
 
-### Returns
+### Response
 
 Returns the [folder object](#the-folder-object) of the folder that was created.
 
-### REST API
+### Example
 
-```
-POST /folders
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /folders`
 ```json
-// POST /folders
-
 [
 	{
 		"name": "Nature"
@@ -222,20 +292,11 @@ POST /folders
 ]
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
-```graphql
-type Mutation {
-	create_folders_items(data: [create_directus_folders_input]): [directus_folders]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_folders_items(data: [{ name: "Nature" }, { name: "Cities" }]) {
@@ -244,6 +305,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -251,48 +314,60 @@ mutation {
 
 Update an existing folder.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [folder object](#the-folder-object).
-
-### Returns
-
-Returns the [folder object](#the-folder-object) of the folder that was updated.
-
-### REST API
-
-```
-PATCH /folders/:id
-```
-
-##### Example
-
+`PATCH /folders/:id`
 ```json
-// PATCH /folders/fac21847-d5ce-4e4b-a288-9abafbdfbc87
-
 {
-	"parent": "d97c2e0e-293d-4eb5-9e1c-27d3460ad29d"
+	"folder_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_folders_item(id: ID!, data: update_directus_folders_input): directus_folders
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [folder object](#the-folder-object).
+
+### Response
+
+Returns the [folder object](#the-folder-object) of the folder that was updated.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /folders/fac21847-d5ce-4e4b-a288-9abafbdfbc87`
+```json
+{
+	"parent": "d97c2e0e-293d-4eb5-9e1c-27d3460ad29d"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_folders_item(
@@ -304,6 +379,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -311,11 +388,41 @@ mutation {
 
 Update multiple existing folders.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /folders`
+```json
+{
+	"keys": ["folder_1_key", "folder_2_key"],
+	"data": {
+		"folder_object_field": "value_1"
+	}
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_folders_items(ids: [ID!]!, data: update_directus_folders_input): [directus_folders]
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the folders you'd like to update.
@@ -323,21 +430,18 @@ Array of primary keys of the folders you'd like to update.
 `data` **Required**\
 Any of [the folder object](#the-folder-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [folder objects](#the-folder-object) of the folders that were updated.
 
-### REST API
+### Example
 
-```
-PATCH /folders
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /folders`
 ```json
-// PATCH /folders
-
 {
 	"keys": ["fac21847-d5ce-4e4b-a288-9abafbdfbc87", "a5bdb793-dd85-4ac9-882a-b42862092983"],
 	"data": {
@@ -346,20 +450,11 @@ PATCH /folders
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
-```graphql
-type Mutation {
-	update_folders_items(ids: [ID!]!, data: update_directus_folders_input): [directus_folders]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_folders_items(
@@ -371,6 +466,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -384,36 +481,44 @@ Any files in this folder will be moved to the root folder.
 
 :::
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /folders/:id
-```
+`DELETE /folders/:id`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-// DELETE /folders/a5bdb793-dd85-4ac9-882a-b42862092983
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_folders_item(id: ID!): delete_one
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /folders/a5bdb793-dd85-4ac9-882a-b42862092983`
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_folders_item(id: "fac21847-d5ce-4e4b-a288-9abafbdfbc87") {
@@ -421,6 +526,9 @@ mutation {
 	}
 }
 ```
+
+</template>
+</SnippetToggler>
 
 ---
 
@@ -434,7 +542,32 @@ Any files in these folders will be moved to the root folder.
 
 :::
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /folders`
+```json
+["folder_1_key", "folder_2_key"]
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	delete_folders_items(ids: [ID!]!): delete_many
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 An array of folder primary keys.
 
@@ -442,33 +575,19 @@ An array of folder primary keys.
 
 Empty body.
 
-### REST API
+### Example
 
-```
-DELETE /folders
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`DELETE /folders`
 ```json
-// DELETE /folders
-
 ["d97c2e0e-293d-4eb5-9e1c-27d3460ad29d", "fc02d733-95b8-4e27-bd4b-08a32cbe4e66"]
 ```
+</template>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	delete_folders_items(ids: [ID!]!): delete_many
-}
-```
-
-##### Example
+<template #graphql>
 
 ```graphql
 mutation {
@@ -477,3 +596,6 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
