@@ -30,9 +30,9 @@ export const uploadFile =
 
 /**
  * Import a file from the web
- * @param url 
- * @param data 
- * @param query 
+ * @param url
+ * @param data
+ * @param query
  * @returns Returns the file object for the imported file.
  */
 export const importFile =
