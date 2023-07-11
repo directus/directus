@@ -104,7 +104,12 @@ interface Props {
 	collectionName?: string;
 	collectionField?: string;
 	collectionRequired?: boolean;
+
+	/**
+	 * Lock the interface to only allow configuring filters for the given fieldName
+	 */
 	fieldName?: string;
+
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;

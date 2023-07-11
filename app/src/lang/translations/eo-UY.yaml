@@ -1242,6 +1242,7 @@ operations:
     recipient_placeholder: Entajpu UUID...
     recipient_note: Aldoni UUID de la uzanto kaj premi Enter...
     message: Mesaĝo
+    subject: Temo
   request:
     url: URL
     url_placeholder: https://example.com/ekzemplo
