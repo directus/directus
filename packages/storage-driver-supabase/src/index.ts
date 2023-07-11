@@ -6,6 +6,7 @@ import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
+import type StorageFileApi from '@supabase/storage-js/dist/module/packages/StorageFileApi.js';
 
 export type DriverSupabaseConfig = {
 	bucket: string;
@@ -21,10 +22,16 @@ export type DriverSupabaseConfig = {
 export class DriverSupabase implements Driver {
 	private config: DriverSupabaseConfig;
 	private client: StorageClient;
+	private bucket: StorageFileApi.default;
 
 	constructor(config: DriverSupabaseConfig) {
 		this.config = config;
 		this.client = this.getClient();
+		this.bucket = this.getBucket();
+	}
+
+	private get endpoint() {
+		return this.config.endpoint ?? `https://${this.config.projectId}.supabase.co/storage/v1`;
 	}
 
 	private getClient() {
@@ -32,8 +39,8 @@ export class DriverSupabase implements Driver {
 			throw new Error('`project_id` or `endpoint` is required');
 		}
 
-		if (!this.config.serviceRole || !this.config.bucket) {
-			throw new Error('`service_role` and `bucket` are required');
+		if (!this.config.serviceRole) {
+			throw new Error('`service_role` is required');
 		}
 
 		return new StorageClient(this.endpoint, {
@@ -42,11 +49,11 @@ export class DriverSupabase implements Driver {
 		});	
 	}
 
-	private get endpoint() {
-		return this.config.endpoint ?? `https://${this.config.projectId}.supabase.co/storage/v1`;
-	}
+	private getBucket() {
+		if (!this.config.bucket) {
+			throw new Error('`bucket` is required');
+		}
 
-	private get bucket() {
 		return this.client.from(this.config.bucket);
 	}
 

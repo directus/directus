@@ -13,13 +13,15 @@ import {
 	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
-import { fetch } from 'undici';
+import { Response, fetch } from 'undici';
 import { PassThrough, Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
+import type StorageFileApi from '@supabase/storage-js/dist/module/packages/StorageFileApi.js';
 
 vi.mock('@supabase/storage-js')
+vi.mock('undici')
 
 let sample: {
 	config: Required<DriverSupabaseConfig>;
@@ -90,17 +92,25 @@ afterEach(() => {
 
 describe('#constructor', () => {
 	let getClientBackup: (typeof DriverSupabase.prototype)['getClient'];
+	let getBucketBackup: (typeof DriverSupabase.prototype)['getBucket'];
 	let sampleClient: StorageClient;
+	let sampleBucket: StorageFileApi.default;
 
 	beforeEach(() => {
 		getClientBackup = DriverSupabase.prototype['getClient'];
 		sampleClient = {} as StorageClient;
 		DriverSupabase.prototype['getClient'] = vi.fn().mockReturnValue(sampleClient);
+
+		getBucketBackup = DriverSupabase.prototype['getBucket'];
+		sampleBucket = {} as StorageFileApi.default;
+		DriverSupabase.prototype['getBucket'] = vi.fn().mockReturnValue(sampleBucket);
 	});
 
 	afterEach(() => {
 		DriverSupabase.prototype['getClient'] = getClientBackup;
+		DriverSupabase.prototype['getBucket'] = getBucketBackup;
 	});
+
 
 	test('Saves passed config to local property', () => {
 		const driver = new DriverSupabase(sample.config);
@@ -271,7 +281,6 @@ describe('#read', () => {
 	test('Returns stream from S3 client', async () => {
 		const mockGetObjectCommand = {} as GetObjectCommand;
 
-		vi.mocked(driver['client'].send).mockReturnValue({ Body: sample.stream } as unknown as void);
 		vi.mocked(GetObjectCommand).mockReturnValue(mockGetObjectCommand);
 
 		const stream = await driver.read(sample.path.input, sample.range);
@@ -283,6 +292,39 @@ describe('#read', () => {
 
 describe('#head', () => {
 	test('Returns object headers', async () => {
+		vi.mocked(fetch).mockReturnValue({ status: 200, headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified } } as unknown as Promise<Response>);
+
+		const result = await driver.head(sample.path.input);
+
+		expect(result).toStrictEqual({ 'content-length': sample.file.size, 'last-modified': sample.file.modified });
+	});
+
+	test('Throws an error when a status >= 400 is sent', async () => {
+		vi.mocked(fetch).mockReturnValue({ status: 400, headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified } } as unknown as Promise<Response>);
+
+		expect(driver.head(sample.path.input)).rejects.toThrowError(
+			new Error(`File not found`)
+		);
+	});
+});
+
+describe('#stat', () => {
+	test('Returns size/modified from returned send data', async () => {
+		vi.mocked(fetch).mockReturnValue({ 
+			status: 200,
+			headers: { 
+				get(key: any) {
+					if (key === 'content-length') {
+						return sample.file.size;
+					} else if (key === 'last-modified') {
+						return sample.file.modified;
+					}
+
+					return null
+				} 
+			} 
+		} as unknown as Promise<Response>);
+
 		const result = await driver.stat(sample.path.input);
 
 		expect(result).toStrictEqual({
@@ -290,16 +332,15 @@ describe('#head', () => {
 			modified: sample.file.modified,
 		});
 	});
-});
 
-describe('#stat', () => {
-	test('Returns size/modified from returned send data', async () => {
-		const result = await driver.stat(sample.path.input);
+	test('Throws an error when a status >= 400 is sent', async () => {
+		vi.mocked(fetch).mockReturnValue({ 
+			status: 400,
+		} as unknown as Promise<Response>);
 
-		expect(result).toStrictEqual({
-			size: sample.file.size,
-			modified: sample.file.modified,
-		});
+		expect(driver.stat(sample.path.input)).rejects.toThrowError(
+			new Error(`File not found`)
+		);
 	});
 });
 
@@ -326,30 +367,34 @@ describe('#exists', () => {
 });
 
 describe('#write', () => {
+	// TODO: Probably a better way to do this?
+	beforeEach(() => {
+		driver['bucket'] = {
+			upload: vi.fn(),
+		} as any
+	})
+
+	test.todo('Test resumableUpload when it is out of beta')
+	
 	test('Passes streams to body as is', async () => {
 		await driver.write(sample.path.input, sample.stream);
 
-		expect(Upload).toHaveBeenCalledWith({
-			client: driver['client'],
-			params: {
-				Key: sample.path.inputFull,
-				Bucket: sample.config.bucket,
-				Body: sample.stream,
-			},
+		expect(driver['bucket'].upload).toHaveBeenCalledWith(sample.path.input, sample.stream, {
+			cacheControl: '3600',
+			contentType: '',
+			duplex: 'half',
+			upsert: true,
 		});
 	});
 
 	test('Optionally sets ContentType', async () => {
 		await driver.write(sample.path.input, sample.stream, sample.file.type);
 
-		expect(Upload).toHaveBeenCalledWith({
-			client: driver['client'],
-			params: {
-				Key: sample.path.inputFull,
-				Bucket: sample.config.bucket,
-				Body: sample.stream,
-				ContentType: sample.file.type,
-			},
+		expect(driver['bucket'].upload).toHaveBeenCalledWith(sample.path.input, sample.stream, {
+			cacheControl: '3600',
+			contentType: sample.file.type,
+			duplex: 'half',
+			upsert: true,
 		});
 	});
 });
