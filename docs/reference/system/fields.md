@@ -156,34 +156,48 @@ Comment as stored in the database.
 
 List the available fields.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of [field objects](#the-field-object).
+`GET /fields`
 
-### REST API
+</template>
 
-```
-GET /fields
-```
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	fields: [directus_fields]
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+An array of [field objects](#the-field-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /fields`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	fields {
@@ -192,6 +206,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -199,31 +215,19 @@ query {
 
 List the available fields in a given collection.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of [field objects](#the-field-object).
+`GET /fields/:collection`
 
-### REST API
+</template>
 
-```
-GET /fields/:collection
-```
+<template #graphql>
 
-##### Example
-
-```
-GET /fields/articles
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -231,7 +235,30 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+An array of [field objects](#the-field-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /fields/articles`
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -242,46 +269,56 @@ query {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Retrieve a Field
 
 Get a single field in a given collection.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-A [field object](#the-field-object).
+`GET /fields/:collection/:field`
 
-### REST API
+</template>
 
-```
-GET /fields/:collection/:field
-```
+<template #graphql>
 
-##### Example
-
-```
-GET /fields/articles/title
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	fields_by_name(collection: String!, field: String!): directus_fields
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+A [field object](#the-field-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /fields/articles/title`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	fields_by_name(collection: "articles", field: "title") {
@@ -290,6 +327,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -297,11 +336,45 @@ query {
 
 Create a new field in the given collection.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /fields/:collection`
+
+```json
+{
+	"field": "field_key",
+	"type": "value_type",
+	"meta": {
+		"field_meta_field": "value_1"
+	},
+	"schema": {
+		"field_schema_field": "value_2"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_fields_item(collection: String!, data: create_directus_fields_input!): directus_fields
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Body
+#### Request Body
 
 `field` **Required**\
 Field key, also used as the column name.
@@ -316,20 +389,19 @@ Any of the optional meta values in the [field object](#the-field-object).
 `schema`\
 Any of the optional schema values in the [field object](#the-field-object).
 
-### Returns
+### Response
 
 The [field object](#the-field-object) for the created field.
 
-### REST API
 
-```
-POST /fields/:collection
-```
+### Example
 
-##### Example
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
+<template #rest>
+
+`POST /fields/articles`
 ```json
-// POST /fields/articles
 
 {
 	"field": "title",
@@ -342,21 +414,11 @@ POST /fields/:collection
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_fields_item(collection: String!, data: create_directus_fields_input!): directus_fields
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_fields_item(
@@ -369,17 +431,49 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Update a Field
 
 Updates the given field in the given collection.
 
-### Query Parameters
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /fields/articles/title`
+```json
+{
+	"field_object_field": {
+		"field_object_field_field": "value_1"
+	},
+	"field_object_field": {
+		"field_object_field_field": "value_2"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_fields_item(collection: String!, field: String!, data: update_directus_fields_input!): directus_fields
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Body
+#### Request Body
 
 `type`\
 The new type for the field.
@@ -399,20 +493,18 @@ Any of the optional schema values in the [field object](#the-field-object).
 
 Updating the field name is not supported at this time.
 
-### Returns
+### Response
 
 The [field object](#the-field-object) for the updated field.
 
-### REST API
+### Example
 
-```
-PATCH /fields/:collection/:field
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /fields/articles/title`
 ```json
-// PATCH /fields/articles/title
 
 {
 	"meta": {
@@ -424,20 +516,11 @@ PATCH /fields/:collection/:field
 }
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
-```graphql
-type Mutation {
-	update_fields_item(collection: String!, field: String!, data: update_directus_fields_input!): directus_fields
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_fields_item(
@@ -451,6 +534,9 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Delete a Field
@@ -463,32 +549,40 @@ Be aware, this will delete the column from the database, including all data in i
 
 :::
 
-### REST API
+### Request
 
-```
-DELETE /fields/:collection/:field
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-DELETE /fields/articles/title
-```
+`DELETE /fields/:collection/:field`
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
 	delete_fields_item(collection: String!, field: String!): delete_field
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Example
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /fields/articles/title`
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_fields_item(collection: "articles", field: "title") {
@@ -497,3 +591,5 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
