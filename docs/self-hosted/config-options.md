@@ -477,7 +477,7 @@ Instead, you can use the above `CACHE_STORE` environment variable to use `redis`
 ## File Storage
 
 By default, Directus stores all uploaded files locally on disk. However, you can also configure Directus to use S3,
-Google Cloud Storage, Azure, or Cloudinary. You can also configure _multiple_ storage adapters at the same time. This
+Google Cloud Storage, Azure, Cloudinary or Supabase. You can also configure _multiple_ storage adapters at the same time. This
 allows you to choose where files are being uploaded on a file-by-file basis. In the Admin App, files will automatically
 be uploaded to the first configured storage location (in this case `local`). The used storage location is saved under
 `storage` in `directus_files`.
@@ -518,11 +518,11 @@ STORAGE_S3_DRIVER="s3" # Will work, "s3" is uppercased ✅
 
 For each of the storage locations listed, you must provide the following configuration:
 
-| Variable                                   | Description                                                             | Default Value |
-| ------------------------------------------ | ----------------------------------------------------------------------- | ------------- |
-| `STORAGE_<LOCATION>_DRIVER`                | Which driver to use, either `local`, `s3`, `gcs`, `azure`, `cloudinary` |               |
-| `STORAGE_<LOCATION>_ROOT`                  | Where to store the files on disk                                        | `''`          |
-| `STORAGE_<LOCATION>_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                    | `750`         |
+| Variable                                   | Description                                                                         | Default Value |
+| ------------------------------------------ | ----------------------------------------------------------------------------------- | ------------- |
+| `STORAGE_<LOCATION>_DRIVER`                | Which driver to use, either `local`, `s3`, `gcs`, `azure`, `cloudinary`, `supabase` |               |
+| `STORAGE_<LOCATION>_ROOT`                  | Where to store the files on disk                                                    | `''`          |
+| `STORAGE_<LOCATION>_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                                | `750`         |
 
 Based on your configured driver, you must also provide the following configurations:
 
@@ -574,6 +574,21 @@ Based on your configured driver, you must also provide the following configurati
 
 Cloudinary is supported as a _storage_ driver. Changes made on Cloudinary are _not_ synced back to Directus, and
 Directus _won't_ rely on Cloudinary's asset transformations in the `/assets` endpoint.
+
+:::
+
+### Supabase (`supabase`)
+
+| Variable                          | Description                 | Default Value |
+| --------------------------------- | --------------------------- | ------------- |
+| `STORAGE_<LOCATION>_SERVICE_ROLE` | The admin service role JWT  | --            |
+| `STORAGE_<LOCATION>_BUCKET`       | Storage bucket              | --            |
+| `STORAGE_<LOCATION>_PROJECT_ID`   | Project id                  | --            |
+| `STORAGE_<LOCATION>_ENDPOINT`     | Custom endpoint             | --            |
+
+::: warning Endpoint
+
+Using a custom endpoint will overwrite the project id, so you need to provide the full endpoint url.
 
 :::
 
