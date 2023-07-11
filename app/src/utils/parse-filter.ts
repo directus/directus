@@ -1,5 +1,5 @@
 import { useUserStore } from '@/stores/user';
-import { Accountability, Filter, Role, User } from '@directus/types';
+import { Accountability, Filter } from '@directus/types';
 import { parseFilter as parseFilterShared } from '@directus/utils';
 
 export function parseFilter(filter: Filter | null): Filter {
@@ -15,8 +15,8 @@ export function parseFilter(filter: Filter | null): Filter {
 
 	return (
 		parseFilterShared(filter, accountability, {
-			$CURRENT_ROLE: currentUser.role as Role,
-			$CURRENT_USER: currentUser as User,
+			$CURRENT_ROLE: currentUser.role,
+			$CURRENT_USER: currentUser,
 		}) ?? {}
 	);
 }
