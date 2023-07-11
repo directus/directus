@@ -16,6 +16,7 @@ import { Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
+import { ReadableStream } from 'node:stream/web';
 
 vi.mock('@supabase/storage-js')
 vi.mock('undici')
@@ -172,24 +173,44 @@ describe('#getClient', () => {
 	});
 });
 
-describe('#fullPath', () => {
-	test('Returns normalized joined path', () => {
+describe('#getFullPath', () => {
+	test('Returns the input value if no root is given', () => {
 		const driver = new DriverSupabase({
 			serviceRole: sample.config.serviceRole,
 			bucket: sample.config.bucket,
 			endpoint: sample.config.endpoint,
 		});
 
-		let result = driver['fullPath'](sample.path.input);
+		const result = driver['getFullPath'](sample.path.input);
 		expect(result).toBe(sample.path.input);
+	})
 
-		driver['config'].root = sample.config.root;
-		result = driver['fullPath'](sample.path.input);
+	test('Returns normalized joined path', () => {
+		const driver = new DriverSupabase({
+			serviceRole: sample.config.serviceRole,
+			bucket: sample.config.bucket,
+			endpoint: sample.config.endpoint,
+			root: sample.config.root
+		});
+
+		const result = driver['getFullPath'](sample.path.input);
 		expect(result).toBe(`${sample.config.root}/${sample.path.input}`);
 	});
 });
 
 describe('#getAuthenticatedUrl', () => {
+	test('Returns the url for an object with no root that requires authentication', () => {
+		const driver = new DriverSupabase({
+			serviceRole: 'serviceRole',
+			bucket: 'bucket',
+			projectId: 'projectId',
+		});
+
+		const result = driver['getAuthenticatedUrl']('testing.png');
+
+		expect(result).toBe('https://projectId.supabase.co/storage/v1/object/authenticated/bucket/testing.png');
+	});
+
 	test('Returns the url for an object that requires authentication', () => {
 		const driver = new DriverSupabase({
 			serviceRole: 'serviceRole',
@@ -205,20 +226,38 @@ describe('#getAuthenticatedUrl', () => {
 });
 
 describe('#read', () => {
+	let rootEndpoint: string;
 	let endpoint: string;
 	
 	beforeEach(() => {
-		endpoint = `https://projectId.supabase.co/storage/v1/object/authenticated/bucket/testing/${sample.path.input}.png`;
+		rootEndpoint = `https://projectId.supabase.co/storage/v1/object/authenticated/bucket/testing/${sample.path.input}.png`;
+		endpoint = `https://projectId.supabase.co/storage/v1/object/authenticated/bucket/${sample.path.input}.png`;
 		vi.mocked(fetch).mockReturnValue({ status: 200, body: new ReadableStream() } as unknown as Promise<Response>);
 		driver['getAuthenticatedUrl'] = vi.fn().mockReturnValue(endpoint);
 	});
 
-	test('Uses getAuthenticatedUrl to get endpoint', async () => {
+	test('Uses getAuthenticatedUrl to get endpoint when no root is set', async () => {
 		await driver.read(sample.path.input);
 
 		expect(driver['getAuthenticatedUrl']).toHaveBeenCalledWith(sample.path.input);
 
 		expect(fetch).toHaveBeenCalledWith(endpoint,
+		{
+		  headers: {
+		    Authorization: `Bearer ${sample.config.serviceRole}`,
+		  },
+		  method: 'GET',
+		});
+	});
+
+	test('Uses getAuthenticatedUrl to get endpoint when a root is set', async () => {
+		driver['getAuthenticatedUrl'] = vi.fn().mockReturnValue(rootEndpoint);
+		
+		await driver.read(sample.path.input);
+
+		expect(driver['getAuthenticatedUrl']).toHaveBeenCalledWith(sample.path.input);
+
+		expect(fetch).toHaveBeenCalledWith(rootEndpoint,
 		{
 		  headers: {
 		    Authorization: `Bearer ${sample.config.serviceRole}`,
@@ -306,6 +345,15 @@ describe('#head', () => {
 		expect(result).toStrictEqual({ 'content-length': sample.file.size, 'last-modified': sample.file.modified });
 	});
 
+	test('Ensures input is passed to getAuthenticatedUrl', async () => {
+		vi.mocked(fetch).mockReturnValue({ status: 200, headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified } } as unknown as Promise<Response>);
+		driver['getAuthenticatedUrl'] = vi.fn();
+
+		await driver.head(sample.path.input);
+
+		expect(driver['getAuthenticatedUrl']).toHaveBeenCalledWith(sample.path.input);
+	});
+
 	test('Throws an error when a status >= 400 is sent', async () => {
 		vi.mocked(fetch).mockReturnValue({ status: 400, headers: { 'content-length': sample.file.size, 'last-modified': sample.file.modified } } as unknown as Promise<Response>);
 
@@ -373,8 +421,29 @@ describe('#exists', () => {
 	});
 });
 
+describe('#move', () => {
+	test('passes arguments to move', async () => {
+		driver['bucket'] = {
+			move: vi.fn(),
+		} as any
+		
+		await driver.move(sample.path.input, 'new/path');
+		expect(driver['bucket'].move).toHaveBeenCalledWith(sample.path.input, 'new/path');
+	});
+});
+
+describe('#copy', () => {
+	test('passes arguments to copy', async () => {
+		driver['bucket'] = {
+			copy: vi.fn(),
+		} as any
+		
+		await driver.copy(sample.path.input, 'new/path');
+		expect(driver['bucket'].copy).toHaveBeenCalledWith(sample.path.input, 'new/path');
+	});
+});
+
 describe('#write', () => {
-	// TODO: Probably a better way to do this?
 	beforeEach(() => {
 		driver['bucket'] = {
 			upload: vi.fn(),
@@ -392,6 +461,13 @@ describe('#write', () => {
 		});
 	});
 
+	test('Ensures input is passed to getFullPath', async () => {
+		driver['getFullPath'] = vi.fn();
+
+		await driver.write(sample.path.input, sample.stream);
+		expect(driver['getFullPath']).toHaveBeenCalledWith(sample.path.input);
+	});
+
 	test('Optionally sets ContentType', async () => {
 		await driver.write(sample.path.input, sample.stream, sample.file.type);
 
@@ -404,6 +480,19 @@ describe('#write', () => {
 	});
 
 	test.todo('Test resumableUpload when it is out of beta')
+});
+
+describe('#delete', () => {
+	test('Ensures input is passed to getFullPath', async () => {
+		driver['bucket'] = {
+			remove: vi.fn(),
+		} as any
+		
+		driver['getFullPath'] = vi.fn();
+
+		await driver.delete(sample.path.input);
+		expect(driver['getFullPath']).toHaveBeenCalledWith(sample.path.input);
+	});
 });
 
 describe('#list', () => {

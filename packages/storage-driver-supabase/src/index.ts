@@ -56,12 +56,12 @@ export class DriverSupabase implements Driver {
 		return this.client.from(this.config.bucket);
 	}
 
-	private fullPath(filepath: string) {
+	private getFullPath(filepath: string) {
 		return this.config.root ? normalizePath(join(this.config.root, filepath)) : filepath;
 	}
 
 	private getAuthenticatedUrl(filepath: string) {
-		return `${this.endpoint}/${join('object/authenticated', this.config.bucket, this.fullPath(filepath))}`;
+		return `${this.endpoint}/${join('object/authenticated', this.config.bucket, this.getFullPath(filepath))}`;
 	}
 
 	async read(filepath: string, range?: Range) {
@@ -117,19 +117,23 @@ export class DriverSupabase implements Driver {
 		}
 	}
 
+	// CHECK: Should src/dest use fullpath? 
 	async move(src: string, dest: string) {
 		await this.bucket.move(src, dest);
 	}
-
+	
+	// CHECK: Should src/dest use fullpath? 
 	async copy(src: string, dest: string) {
 		await this.bucket.copy(src, dest);
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
+		const fullPath = this.getFullPath(filepath);
+		
 		if (this.config.resumableUpload) {
-			await this.resumableUpload(filepath, content, type);
+			await this.resumableUpload(fullPath, content, type);
 		} else {
-			await this.bucket.upload(filepath, content, {
+			await this.bucket.upload(fullPath, content, {
 				contentType: type ?? '',
 				cacheControl: '3600',
 				upsert: true,
@@ -181,7 +185,7 @@ export class DriverSupabase implements Driver {
 	}
 
 	async delete(filepath: string) {
-		await this.bucket.remove([filepath]);
+		await this.bucket.remove([this.getFullPath(filepath)]);
 	}
 
 	async *list(prefix = '') {
