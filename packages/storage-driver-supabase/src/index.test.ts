@@ -1,5 +1,4 @@
 import { StorageClient } from '@supabase/storage-js';
-import { isReadableStream } from '@directus/utils/node';
 import {
 	randAlphaNumeric,
 	randGitBranch as randBucket,
@@ -11,33 +10,29 @@ import {
 	randPastDate,
 	randText,
 	randGitShortSha as randUnique,
-	randWord,
 } from '@ngneat/falso';
 import { Response, fetch } from 'undici';
-import { PassThrough, Readable } from 'node:stream';
+import { Readable } from 'node:stream';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { DriverSupabaseConfig } from './index.js';
 import { DriverSupabase } from './index.js';
-import type StorageFileApi from '@supabase/storage-js/dist/module/packages/StorageFileApi.js';
 
 vi.mock('@supabase/storage-js')
 vi.mock('undici')
+
 
 let sample: {
 	config: Required<DriverSupabaseConfig>;
 	path: {
 		input: string;
-		inputFull: string;
 		src: string;
-		srcFull: string;
 		dest: string;
-		destFull: string;
 	};
 	range: {
 		start: number;
 		end: number;
 	};
-	stream: PassThrough;
+	stream: Readable;
 	text: string;
 	file: {
 		type: string;
@@ -60,17 +55,14 @@ beforeEach(() => {
 		},
 		path: {
 			input: randUnique() + randFilePath(),
-			inputFull: randUnique() + randFilePath(),
 			src: randUnique() + randFilePath(),
-			srcFull: randUnique() + randFilePath(),
 			dest: randUnique() + randFilePath(),
-			destFull: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),
 			end: randNumber(),
 		},
-		stream: new PassThrough(),
+		stream: new Readable(),
 		text: randText(),
 		file: {
 			type: randFileType(),
@@ -94,7 +86,7 @@ describe('#constructor', () => {
 	let getClientBackup: (typeof DriverSupabase.prototype)['getClient'];
 	let getBucketBackup: (typeof DriverSupabase.prototype)['getBucket'];
 	let sampleClient: StorageClient;
-	let sampleBucket: StorageFileApi.default;
+	let sampleBucket: ReturnType<StorageClient['from']>;
 
 	beforeEach(() => {
 		getClientBackup = DriverSupabase.prototype['getClient'];
@@ -102,7 +94,7 @@ describe('#constructor', () => {
 		DriverSupabase.prototype['getClient'] = vi.fn().mockReturnValue(sampleClient);
 
 		getBucketBackup = DriverSupabase.prototype['getBucket'];
-		sampleBucket = {} as StorageFileApi.default;
+		sampleBucket = {} as ReturnType<StorageClient['from']>;
 		DriverSupabase.prototype['getBucket'] = vi.fn().mockReturnValue(sampleBucket);
 	});
 
@@ -213,54 +205,66 @@ describe('#getAuthenticatedUrl', () => {
 });
 
 describe('#read', () => {
+	let endpoint: string;
+	
 	beforeEach(() => {
-		vi.mocked(fetch).mockReturnValue({ Body: new Readable() } as unknown as void);
-		vi.mocked(isReadableStream).mockReturnValue(true);
+		endpoint = `https://projectId.supabase.co/storage/v1/object/authenticated/bucket/testing/${sample.path.input}.png`;
+		vi.mocked(fetch).mockReturnValue({ status: 200, body: new ReadableStream() } as unknown as Promise<Response>);
+		driver['getAuthenticatedUrl'] = vi.fn().mockReturnValue(endpoint);
 	});
 
-	test('Uses fullPath key / bucket in command input', async () => {
+	test('Uses getAuthenticatedUrl to get endpoint', async () => {
 		await driver.read(sample.path.input);
 
-		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
+		expect(driver['getAuthenticatedUrl']).toHaveBeenCalledWith(sample.path.input);
 
-		expect(fetch).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
+		expect(fetch).toHaveBeenCalledWith(endpoint,
+		{
+		  headers: {
+		    Authorization: `Bearer ${sample.config.serviceRole}`,
+		  },
+		  method: 'GET',
 		});
 	});
 
 	test('Optionally allows setting start range offset', async () => {
-		await driver.read(sample.path.input, { start: sample.range.start });
+		await driver.read(sample.path.input,{ start: sample.range.start } as any);
 
-		expect(GetObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-			Range: `bytes=${sample.range.start}-`,
+		expect(fetch).toHaveBeenCalledWith(endpoint, {
+			headers: {
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+				Range: `bytes=${sample.range.start}-`,
+			},
+			method: 'GET',
 		});
 	});
 
 	test('Optionally allows setting end range offset', async () => {
-		await driver.read(sample.path.input, { end: sample.range.end });
+		await driver.read(sample.path.input, { end: sample.range.end } as any);
 
-		expect(GetObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-			Range: `bytes=-${sample.range.end}`,
+		expect(fetch).toHaveBeenCalledWith(endpoint, {
+			headers: {
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+				Range: `bytes=-${sample.range.end}`,
+			},
+			method: 'GET',
 		});
 	});
 
 	test('Optionally allows setting start and end range offset', async () => {
 		await driver.read(sample.path.input, sample.range);
 
-		expect(GetObjectCommand).toHaveBeenCalledWith({
-			Key: sample.path.inputFull,
-			Bucket: sample.config.bucket,
-			Range: `bytes=${sample.range.start}-${sample.range.end}`,
+		expect(fetch).toHaveBeenCalledWith(endpoint, {
+			headers: {
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+				Range: `bytes=${sample.range.start}-${sample.range.end}`,
+			},
+			method: 'GET',
 		});
 	});
 
 	test('Throws an error when no stream is returned', async () => {
-		vi.mocked(driver['client'].send).mockReturnValue({ Body: undefined } as unknown as void);
+		vi.mocked(fetch).mockReturnValue({ status: 400, body: new ReadableStream() } as unknown as Promise<Response>);
 
 		try {
 			await driver.read(sample.path.input, sample.range);
@@ -271,22 +275,25 @@ describe('#read', () => {
 	});
 
 	test('Throws an error when returned stream is not a readable stream', async () => {
-		vi.mocked(isReadableStream).mockReturnValue(false);
+		vi.mocked(fetch).mockReturnValue({ status: 200, body: undefined } as unknown as Promise<Response>);
 
 		expect(driver.read(sample.path.input, sample.range)).rejects.toThrowError(
 			new Error(`No stream returned for file "${sample.path.input}"`)
 		);
 	});
 
-	test('Returns stream from S3 client', async () => {
-		const mockGetObjectCommand = {} as GetObjectCommand;
-
-		vi.mocked(GetObjectCommand).mockReturnValue(mockGetObjectCommand);
-
+	test('Returns stream', async () => {
 		const stream = await driver.read(sample.path.input, sample.range);
 
-		expect(driver['client'].send).toHaveBeenCalledWith(mockGetObjectCommand);
-		expect(stream).toBe(sample.stream);
+		expect(fetch).toHaveBeenCalledWith(endpoint, {
+			headers: {
+				Authorization: `Bearer ${sample.config.serviceRole}`,
+				Range: `bytes=${sample.range.start}-${sample.range.end}`,
+			},
+			method: 'GET',
+		});
+
+		expect(stream).toBeInstanceOf(Readable);
 	});
 });
 
@@ -374,8 +381,6 @@ describe('#write', () => {
 		} as any
 	})
 
-	test.todo('Test resumableUpload when it is out of beta')
-	
 	test('Passes streams to body as is', async () => {
 		await driver.write(sample.path.input, sample.stream);
 
@@ -397,96 +402,85 @@ describe('#write', () => {
 			upsert: true,
 		});
 	});
+
+	test.todo('Test resumableUpload when it is out of beta')
 });
 
 describe('#list', () => {
 	test('Constructs list objects params based on input prefix', async () => {
-		vi.mocked(driver['client'].send).mockResolvedValue({} as unknown as void);
-
+		// TODO: Probably a better way to do this?
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({ data: [], error: null }),
+		} as any
+		
 		await driver.list(sample.path.input).next();
 
-		expect(ListObjectsV2Command).toHaveBeenCalledWith({
-			Bucket: sample.config.bucket,
-			Prefix: sample.path.inputFull,
-			MaxKeys: 1000,
+		expect(driver['bucket'].list).toHaveBeenCalledWith(undefined, {
+			limit: 1000,
+			offset: 0,
+			search: sample.path.input,
 		});
 	});
 
-	test('Calls send with the command', async () => {
-		const mockListObjectsV2Command = {} as ListObjectsV2Command;
-		vi.mocked(ListObjectsV2Command).mockReturnValue(mockListObjectsV2Command);
-		vi.mocked(driver['client'].send).mockResolvedValue({} as unknown as void);
-
-		await driver.list(sample.path.input).next();
-
-		expect(driver['client'].send).toHaveBeenCalledWith(mockListObjectsV2Command);
-	});
-
-	test('Yields file Key omitting root', async () => {
+	test('Yields file name omitting root', async () => {
 		const sampleRoot = randDirectoryPath();
 		const sampleFile = randFilePath();
-		const sampleFull = `${sampleRoot}${sampleFile}`;
 
-		vi.mocked(driver['client'].send).mockResolvedValue({
-			Contents: [
-				{
-					Key: sampleFull,
-				},
-			],
-		} as unknown as void);
+		// TODO: Probably a better way to do this?
+		driver['bucket'] = {
+			list: vi.fn().mockReturnValue({ 
+				data: [
+					{
+						name: sampleFile,
+					},
+				],
+				error: null
+			}),
+		} as any
 
-		driver['root'] = sampleRoot;
+		driver['config'].root = sampleRoot;
 
 		const iterator = driver.list(sample.path.input);
-
-		const output = [];
+		const output: string[] = [];
 
 		for await (const filepath of iterator) {
 			output.push(filepath);
 		}
+
+		expect(driver['bucket'].list).toHaveBeenCalledWith(sampleRoot, {
+			limit: 1000,
+			offset: 0,
+			search: sample.path.input,
+		});
 
 		expect(output).toStrictEqual([sampleFile]);
 	});
 
 	test('Continuously fetches until all pages are returned', async () => {
-		vi.mocked(driver['client'].send)
-			.mockResolvedValueOnce({
-				NextContinuationToken: randWord(),
-				Contents: [
-					{
-						Key: randFilePath(),
-					},
-					{
-						Key: randFilePath(),
-					},
-				],
-			} as unknown as void)
-			.mockResolvedValueOnce({
-				NextContinuationToken: randWord(),
-				Contents: [
-					{
-						Key: randFilePath(),
-					},
-				],
-			} as unknown as void)
-			.mockResolvedValueOnce({
-				NextContinuationToken: undefined,
-				Contents: [
-					{
-						Key: randFilePath(),
-					},
-				],
-			} as unknown as void);
+		const firstContents = Array.from({ length: 1000 }, () => ({ name: randFilePath() }));
+		const secondContents = Array.from({ length: 256 }, () => ({ name: randFilePath() }));
+		
+		// TODO: Probably a better way to do this?
+		driver['bucket'] = {
+			list: vi.fn()
+				.mockResolvedValueOnce({
+					data: firstContents,
+					error: null
+				})
+				.mockResolvedValueOnce({
+					data: secondContents,
+					error: null
+				})
+			} as any
 
 		const iterator = driver.list(sample.path.input);
 
-		const output = [];
+		const output: string[] = [];
 
 		for await (const filepath of iterator) {
 			output.push(filepath);
 		}
 
-		expect(driver['client'].send).toHaveBeenCalledTimes(3);
-		expect(output.length).toBe(4);
+		expect(output.length).toBe(1256);
 	});
 });

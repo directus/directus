@@ -6,7 +6,6 @@ import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
-import type StorageFileApi from '@supabase/storage-js/dist/module/packages/StorageFileApi.js';
 
 export type DriverSupabaseConfig = {
 	bucket: string;
@@ -15,14 +14,14 @@ export type DriverSupabaseConfig = {
 	// Allows a custom Supabase endpoint incase self-hosting
 	endpoint?: string;
 	root?: string;
-	// NOTE: Still in beta
+	// NOTE: Still in Supabase beta
 	resumableUpload?: boolean;
 };
 
 export class DriverSupabase implements Driver {
 	private config: DriverSupabaseConfig;
 	private client: StorageClient;
-	private bucket: StorageFileApi.default;
+	private bucket: ReturnType<StorageClient['from']>;
 
 	constructor(config: DriverSupabaseConfig) {
 		this.config = config;
@@ -191,7 +190,7 @@ export class DriverSupabase implements Driver {
 		let itemCount = 0;
 
 		do {
-			const { data, error } = await this.bucket.list(this.config.root ?? '', { limit, offset, search: prefix }, {})
+			const { data, error } = await this.bucket.list(this.config.root, { limit, offset, search: prefix })
 
 			if (!data || error) {
 				break;
