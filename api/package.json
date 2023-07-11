@@ -49,7 +49,6 @@
 	"type": "module",
 	"exports": {
 		".": "./dist/index.js",
-		"./*": "./dist/*.js",
 		"./cli/run.js": "./dist/cli/run.js",
 		"./package.json": "./package.json"
 	},
