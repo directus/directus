@@ -36,8 +36,8 @@ npm install @directus/sdk@beta
 
 ## Basic Usage
 
-Create a Directus client using the `createDirectus` hook from `@directus/sdk`. The client gives you access to your Directus
-project and data.
+Create a Directus client using the `createDirectus` hook from `@directus/sdk`. The client gives you access to your
+Directus project and data.
 
 ```ts
 import { createDirectus } from '@directus/sdk';
