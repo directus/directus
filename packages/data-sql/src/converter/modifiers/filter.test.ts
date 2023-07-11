@@ -3,11 +3,11 @@ import type {
 	AbstractQueryFilterNode,
 	AbstractQueryConditionNode,
 } from '@directus/data';
-import { randomIdentifier, randomInteger } from '@directus/random';
-import { beforeEach, expect, test } from 'vitest';
+import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { beforeEach, describe, expect, test } from 'vitest';
 import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../types.js';
 import { parameterIndexGenerator } from '../../utils/param-index-generator.js';
-import { convertFilter } from './filter.js';
+import { convertCondition, convertFilter } from './filter.js';
 
 let sample: {
 	condition: AbstractQueryConditionNode;
@@ -21,91 +21,199 @@ beforeEach(() => {
 
 	sample = {
 		condition: {
-			type: 'number-condition',
-			target: {
-				type: 'primitive',
-				field: randomIdentifier(),
+			type: 'condition',
+			condition: {
+				type: 'number-condition',
+				target: {
+					type: 'primitive',
+					field: randomIdentifier(),
+				},
+				operation: 'gt',
+				compareTo: randomCompareTo,
 			},
-			operation: 'gt',
-			compareTo: randomCompareTo,
 		},
 		randomCollection: randomIdentifier(),
 	};
 });
 
-test('Filter by number', () => {
-	const idGen = parameterIndexGenerator();
+describe('Convert condition', () => {
+	test('number', () => {
+		const idGen = parameterIndexGenerator();
+		const randomCollection = randomIdentifier();
+		const randomField = randomIdentifier();
 
-	const con: AbstractQueryConditionNode = {
-		type: 'number-condition',
-		target: {
-			type: 'primitive',
-			field: 'randomFieldajskdh',
-		},
-		operation: 'gt',
-		compareTo: 6,
-	};
+		const con: AbstractQueryConditionNode = {
+			type: 'condition',
+			condition: {
+				type: 'number-condition',
+				target: {
+					type: 'primitive',
+					field: randomField,
+				},
+				operation: 'gt',
+				compareTo: 6,
+			},
+		};
 
-	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'number-condition',
-		negate: false,
-		target: {
-			type: 'primitive',
-			table: 'randomCollection',
-			column: 'randomFieldajskdh',
-		},
-		operation: 'gt',
-		compareTo: {
-			type: 'value',
-			parameterIndex: 0,
-		},
-	};
+		const expectedWhere: AbstractSqlQueryConditionNode = {
+			type: 'condition',
+			negate: false,
+			condition: {
+				type: 'number-condition',
+				target: {
+					type: 'primitive',
+					table: randomCollection,
+					column: randomField,
+				},
+				operation: 'gt',
+				compareTo: {
+					type: 'value',
+					parameterIndex: 0,
+				},
+			},
+		};
 
-	expect(convertFilter(con, 'randomCollection', idGen)).toStrictEqual({
-		where: expectedWhere,
-		parameters: [con.compareTo],
+		expect(convertCondition(con, randomCollection, idGen, false)).toStrictEqual({
+			where: expectedWhere,
+			parameters: [con.condition.compareTo],
+		});
 	});
-});
 
-test('Filter by number with function', () => {
-	const idGen = parameterIndexGenerator();
+	test('number with function', () => {
+		const idGen = parameterIndexGenerator();
+		const randomCollection = randomIdentifier();
+		const randomField = randomIdentifier();
+		const randomValue = randomInteger(1, 100);
 
-	const con: AbstractQueryConditionNode = {
-		type: 'number-condition',
-		target: {
-			type: 'fn',
-			targetNode: {
-				type: 'primitive',
-				field: 'randomFieldajskdh',
+		const con: AbstractQueryConditionNode = {
+			type: 'condition',
+			condition: {
+				type: 'number-condition',
+				target: {
+					type: 'fn',
+					targetNode: {
+						type: 'primitive',
+						field: randomField,
+					},
+					fn: 'month',
+				},
+				operation: 'gt',
+				compareTo: randomValue,
 			},
-			fn: 'month',
-		},
-		operation: 'gt',
-		compareTo: 68,
-	};
+		};
 
-	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'number-condition',
-		negate: false,
-		target: {
-			type: 'fn',
-			field: {
-				type: 'primitive',
-				table: 'randomCollection',
-				column: 'randomFieldajskdh',
+		const expectedWhere: AbstractSqlQueryConditionNode = {
+			type: 'condition',
+			condition: {
+				type: 'number-condition',
+				target: {
+					type: 'fn',
+					field: {
+						type: 'primitive',
+						table: randomCollection,
+						column: randomField,
+					},
+					fn: 'month',
+				},
+				operation: 'gt',
+				compareTo: {
+					type: 'value',
+					parameterIndex: 0,
+				},
 			},
-			fn: 'month',
-		},
-		operation: 'gt',
-		compareTo: {
-			type: 'value',
-			parameterIndex: 0,
-		},
-	};
+			negate: false,
+		};
 
-	expect(convertFilter(con, 'randomCollection', idGen)).toStrictEqual({
-		where: expectedWhere,
-		parameters: [68],
+		expect(convertCondition(con, randomCollection, idGen, false)).toStrictEqual({
+			where: expectedWhere,
+			parameters: [randomValue],
+		});
+	});
+
+	test('set', () => {
+		const idGen = parameterIndexGenerator();
+		const randomCollection = randomIdentifier();
+		const randomField = randomIdentifier();
+		const randomValues = [randomInteger(1, 100), randomInteger(1, 100), randomInteger(1, 100)];
+
+		const con: AbstractQueryConditionNode = {
+			type: 'condition',
+			condition: {
+				type: 'set-condition',
+				target: {
+					type: 'primitive',
+					field: randomField,
+				},
+				operation: 'gt',
+				compareTo: randomValues,
+			},
+		};
+
+		const expectedWhere: AbstractSqlQueryConditionNode = {
+			type: 'condition',
+			condition: {
+				type: 'set-condition',
+				target: {
+					type: 'primitive',
+					table: randomCollection,
+					column: randomField,
+				},
+				operation: 'gt',
+				compareTo: {
+					type: 'values',
+					parameterIndexes: [0, 1, 2],
+				},
+			},
+			negate: false,
+		};
+
+		expect(convertCondition(con, randomCollection, idGen, false)).toStrictEqual({
+			where: expectedWhere,
+			parameters: randomValues,
+		});
+	});
+
+	test('geo', () => {
+		const idGen = parameterIndexGenerator();
+		const randomCollection = randomIdentifier();
+		const randomField = randomIdentifier();
+		const pseudoGisValue = randomAlpha(200);
+
+		const con: AbstractQueryConditionNode = {
+			type: 'condition',
+			condition: {
+				type: 'geo-condition',
+				target: {
+					type: 'primitive',
+					field: randomField,
+				},
+				operation: 'intersects',
+				compareTo: pseudoGisValue,
+			},
+		};
+
+		const expectedWhere: AbstractSqlQueryConditionNode = {
+			type: 'condition',
+			condition: {
+				type: 'geo-condition',
+				target: {
+					type: 'primitive',
+					table: randomCollection,
+					column: randomField,
+				},
+				operation: 'intersects',
+				compareTo: {
+					type: 'value',
+					parameterIndex: 0,
+				},
+			},
+			negate: false,
+		};
+
+		expect(convertCondition(con, randomCollection, idGen, false)).toStrictEqual({
+			where: expectedWhere,
+			parameters: [pseudoGisValue],
+		});
 	});
 });
 
@@ -114,17 +222,20 @@ test.skip('Convert filter with one parameter and negation', () => {
 	const idGen = parameterIndexGenerator();
 
 	const expectedWhere: AbstractSqlQueryConditionNode = {
-		type: 'number-condition',
+		type: 'condition',
 		negate: true,
-		target: {
-			column: (sample.condition.target as AbstractQueryFieldNodePrimitive).field,
-			table: sample.randomCollection,
-			type: 'primitive',
-		},
-		operation: 'gt',
-		compareTo: {
-			type: 'value',
-			parameterIndex: 0,
+		condition: {
+			type: 'number-condition',
+			target: {
+				column: (sample.condition.target as AbstractQueryFieldNodePrimitive).field,
+				table: sample.randomCollection,
+				type: 'primitive',
+			},
+			operation: 'gt',
+			compareTo: {
+				type: 'value',
+				parameterIndex: 0,
+			},
 		},
 	};
 
@@ -149,22 +260,28 @@ test('Convert filter with logical', () => {
 		operator: 'or',
 		childNodes: [
 			{
-				type: 'number-condition',
-				target: {
-					type: 'primitive',
-					field: firstField,
+				type: 'condition',
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						field: firstField,
+					},
+					operation: 'gt',
+					compareTo: firstValue,
 				},
-				operation: 'gt',
-				compareTo: firstValue,
 			},
 			{
-				type: 'number-condition',
-				target: {
-					type: 'primitive',
-					field: secondField,
+				type: 'condition',
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						field: secondField,
+					},
+					operation: 'eq',
+					compareTo: secondValue,
 				},
-				operation: 'eq',
-				compareTo: secondValue,
 			},
 		],
 	};
@@ -177,31 +294,37 @@ test('Convert filter with logical', () => {
 		negate: false,
 		childNodes: [
 			{
-				type: 'number-condition',
+				type: 'condition',
 				negate: false,
-				target: {
-					type: 'primitive',
-					table: randomCollection,
-					column: firstField,
-				},
-				operation: 'gt',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 0,
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						table: randomCollection,
+						column: firstField,
+					},
+					operation: 'gt',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
 				},
 			},
 			{
-				type: 'number-condition',
+				type: 'condition',
 				negate: false,
-				target: {
-					type: 'primitive',
-					table: randomCollection,
-					column: secondField,
-				},
-				operation: 'eq',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 1,
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						table: randomCollection,
+						column: secondField,
+					},
+					operation: 'eq',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 1,
+					},
 				},
 			},
 		],
@@ -234,24 +357,30 @@ test('Convert filter nested and with negation', () => {
 		operator: 'or',
 		childNodes: [
 			{
-				type: 'number-condition',
-				target: {
-					type: 'primitive',
-					field: firstField,
+				type: 'condition',
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						field: firstField,
+					},
+					operation: 'gt',
+					compareTo: firstValue,
 				},
-				operation: 'gt',
-				compareTo: firstValue,
 			},
 			{
 				type: 'negate',
 				childNode: {
-					type: 'number-condition',
-					target: {
-						type: 'primitive',
-						field: secondField,
+					type: 'condition',
+					condition: {
+						type: 'number-condition',
+						target: {
+							type: 'primitive',
+							field: secondField,
+						},
+						operation: 'eq',
+						compareTo: secondValue,
 					},
-					operation: 'eq',
-					compareTo: secondValue,
 				},
 			},
 			{
@@ -263,13 +392,16 @@ test('Convert filter nested and with negation', () => {
 						{
 							type: 'negate',
 							childNode: {
-								type: 'number-condition',
-								target: {
-									type: 'primitive',
-									field: thirdField,
+								type: 'condition',
+								condition: {
+									type: 'number-condition',
+									target: {
+										type: 'primitive',
+										field: thirdField,
+									},
+									operation: 'lt',
+									compareTo: thirdValue,
 								},
-								operation: 'lt',
-								compareTo: thirdValue,
 							},
 						},
 						{
@@ -277,13 +409,16 @@ test('Convert filter nested and with negation', () => {
 							childNode: {
 								type: 'negate',
 								childNode: {
-									type: 'number-condition',
-									target: {
-										type: 'primitive',
-										field: fourthField,
+									type: 'condition',
+									condition: {
+										type: 'number-condition',
+										target: {
+											type: 'primitive',
+											field: fourthField,
+										},
+										operation: 'eq',
+										compareTo: fourthValue,
 									},
-									operation: 'eq',
-									compareTo: fourthValue,
 								},
 							},
 						},
@@ -301,31 +436,37 @@ test('Convert filter nested and with negation', () => {
 		negate: false,
 		childNodes: [
 			{
-				type: 'number-condition',
+				type: 'condition',
 				negate: false,
-				target: {
-					type: 'primitive',
-					table: randomCollection,
-					column: firstField,
-				},
-				operation: 'gt',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 0,
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						table: randomCollection,
+						column: firstField,
+					},
+					operation: 'gt',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
 				},
 			},
 			{
-				type: 'number-condition',
+				type: 'condition',
 				negate: true,
-				target: {
-					type: 'primitive',
-					table: randomCollection,
-					column: secondField,
-				},
-				operation: 'eq',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 1,
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						table: randomCollection,
+						column: secondField,
+					},
+					operation: 'eq',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 1,
+					},
 				},
 			},
 			{
@@ -334,31 +475,37 @@ test('Convert filter nested and with negation', () => {
 				negate: true,
 				childNodes: [
 					{
-						type: 'number-condition',
+						type: 'condition',
 						negate: true,
-						target: {
-							type: 'primitive',
-							table: randomCollection,
-							column: thirdField,
-						},
-						operation: 'lt',
-						compareTo: {
-							type: 'value',
-							parameterIndex: 2,
+						condition: {
+							type: 'number-condition',
+							target: {
+								type: 'primitive',
+								table: randomCollection,
+								column: thirdField,
+							},
+							operation: 'lt',
+							compareTo: {
+								type: 'value',
+								parameterIndex: 2,
+							},
 						},
 					},
 					{
-						type: 'number-condition',
+						type: 'condition',
 						negate: false,
-						target: {
-							type: 'primitive',
-							table: randomCollection,
-							column: fourthField,
-						},
-						operation: 'eq',
-						compareTo: {
-							type: 'value',
-							parameterIndex: 3,
+						condition: {
+							type: 'number-condition',
+							target: {
+								type: 'primitive',
+								table: randomCollection,
+								column: fourthField,
+							},
+							operation: 'eq',
+							compareTo: {
+								type: 'value',
+								parameterIndex: 3,
+							},
 						},
 					},
 				],

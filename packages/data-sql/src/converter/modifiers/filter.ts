@@ -5,8 +5,11 @@ import type {
 	AbstractSqlQueryFnNode,
 	AbstractSqlQuerySelectNode,
 	ParameterTypes,
+	ValueNode,
+	ValuesNode,
 } from '../../types.js';
 import { convertFn } from '../functions.js';
+import { convertAbstractQueryToAbstractSqlQuery } from '../index.js';
 
 /**
  * Basically extracts the filter values and replaces it with parameter indexes.
@@ -41,7 +44,7 @@ const convertFilterWithNegate = (
 	generator: Generator<number, never, never>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
-	if (filter.type.endsWith('-condition')) {
+	if (filter.type === 'condition') {
 		return convertCondition(filter as AbstractQueryConditionNode, collection, generator, negate);
 	} else if (filter.type === 'negate') {
 		return convertFilterWithNegate(filter.childNode, collection, generator, !negate);
@@ -52,43 +55,66 @@ const convertFilterWithNegate = (
 	}
 };
 
-function convertCondition(
-	filter: AbstractQueryConditionNode,
+export function convertCondition(
+	condition: AbstractQueryConditionNode,
 	collection: string,
 	generator: Generator<number, never, never>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
+	// convert target
 	let target: AbstractSqlQueryFnNode | AbstractSqlQuerySelectNode;
 	const parameters: ParameterTypes[] = [];
 
-	if (filter.target.type === 'primitive') {
+	if (condition.condition.target.type === 'primitive') {
 		target = {
 			type: 'primitive',
 			table: collection,
-			column: filter.target.field,
+			column: condition.condition.target.field,
 		};
-	} else if (filter.target.type === 'fn') {
-		const convertedFn = convertFn(collection, filter.target, generator);
+	} else if (condition.condition.target.type === 'fn') {
+		const convertedFn = convertFn(collection, condition.condition.target, generator);
 		target = convertedFn.fn;
 		parameters.push(...convertedFn.parameters);
 	} else {
 		throw new Error('The related field types are not yet supported.');
 	}
 
-	const res = {
-		type: filter.type,
-		operation: filter.operation,
-		negate,
-		target,
-		compareTo: {
+	// convert compareTo
+	let compareTo: ValueNode | ValuesNode | AbstractSqlQuery;
+
+	if (typeof condition.condition.compareTo === 'string' || typeof condition.condition.compareTo === 'number') {
+		compareTo = {
 			type: 'value',
 			parameterIndex: generator.next().value,
+		} as ValueNode;
+
+		parameters.push(condition.condition.compareTo);
+	} else if (Array.isArray(condition.condition.compareTo)) {
+		compareTo = {
+			type: 'values',
+			parameterIndexes: condition.condition.compareTo.map(() => generator.next().value),
+		} as ValuesNode;
+
+		parameters.push(...condition.condition.compareTo);
+	} else {
+		// against a sub query
+		compareTo = convertAbstractQueryToAbstractSqlQuery(condition.condition.compareTo);
+	}
+
+	const res = {
+		type: condition.type,
+		negate,
+		condition: {
+			type: condition.condition.type,
+			operation: condition.condition.operation,
+			target,
+			compareTo,
 		},
 	};
 
 	return {
 		where: res as AbstractSqlQueryConditionNode,
-		parameters: [...parameters, filter.compareTo],
+		parameters: [...parameters],
 	};
 }
 

@@ -4,36 +4,36 @@ import { wrapColumn } from './wrap-column.js';
 import { constructSqlQuery } from '../query/index.js';
 
 export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode): string => {
-	if (where.type.endsWith('condition')) {
-		where = where as AbstractSqlQueryConditionNode;
+	if (where.type === 'condition') {
+		const target = where.condition.target;
 
-		if (where.type === 'number-condition') {
-			const compareValue = `$${where.compareTo.parameterIndex + 1}`;
-			const operation = convertClassicOperations(where.operation, where.negate);
+		if (where.condition.type === 'number-condition') {
+			const compareValue = `$${where.condition.compareTo.parameterIndex + 1}`;
+			const operation = convertClassicOperations(where.condition.operation, where.negate);
 
-			if (where.target.type === 'fn') {
-				const wrappedColumn = wrapColumn(where.target.field.table, where.target.field.column);
-				return `${convertDateTimeFn(where.target, wrappedColumn)} ${operation} ${compareValue}`;
+			if (target.type === 'fn') {
+				const wrappedColumn = wrapColumn(target.field.table, target.field.column);
+				return `${convertDateTimeFn(target, wrappedColumn)} ${operation} ${compareValue}`;
 			}
 
-			const wrappedColumn = wrapColumn(where.target.table, where.target.column);
+			const wrappedColumn = wrapColumn(target.table, target.column);
 
 			return `${wrappedColumn} ${operation} ${compareValue}`;
 		}
 
-		if (where.type === 'letter-condition') {
+		if (where.condition.type === 'letter-condition') {
 			// TODO: support functions comparison here if needed
 
-			const wrappedColumn = wrapColumn(where.target.table, where.target.column);
-			const compareValue = `$${where.compareTo.parameterIndex + 1}`;
+			const wrappedColumn = wrapColumn(target.table, target.column);
+			const compareValue = `$${where.condition.compareTo.parameterIndex + 1}`;
 
-			if (where.operation === 'eq') {
+			if (where.condition.operation === 'eq') {
 				return `${wrappedColumn} ${where.negate ? '!=' : '='} ${compareValue}`;
 			}
 
 			let likeValue = '';
 
-			switch (where.operation) {
+			switch (where.condition.operation) {
 				case 'contains':
 					likeValue = `'%${compareValue}%'`;
 					break;
@@ -48,37 +48,36 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			return `${wrappedColumn} ${where.negate ? 'NOT LIKE' : 'LIKE'} ${likeValue}`;
 		}
 
-		if (where.type === 'geo-condition') {
+		if (where.condition.type === 'geo-condition') {
 			// PostGIS Manual: http://www.postgis.net/docs/ST_Intersects.html
-			const wrappedColumn = wrapColumn(where.target.table, where.target.column);
-			const compareValue = `$${where.compareTo.parameterIndex + 1}`;
+			const wrappedColumn = wrapColumn(target.table, target.column);
+			const compareValue = `$${where.condition.compareTo.parameterIndex + 1}`;
 
-			if (where.operation === 'intersects') {
+			if (where.condition.operation === 'intersects') {
 				return `ST_Intersects(${wrappedColumn}, ${compareValue})`;
 			} else {
 				throw new Error(`Intersects_bbox is not yet supported.`);
 			}
 		}
 
-		if (where.type === 'set-condition') {
-			const wrappedColumn = wrapColumn(where.target.table, where.target.column);
+		if (where.condition.type === 'set-condition') {
+			const wrappedColumn = wrapColumn(target.table, target.column);
 
 			let mappedOperation = '';
 
-			if (where.operation === 'in') {
+			if (where.condition.operation === 'in') {
 				mappedOperation = 'IN';
 			} else {
-				mappedOperation = convertClassicOperations(where.operation, where.negate);
+				mappedOperation = convertClassicOperations(where.condition.operation, where.negate);
 			}
 
-			if (where.compareTo.type === 'query') {
-				const subQuery = constructSqlQuery(where.compareTo);
-				// TODO: handle (sub) parameters
+			if (where.condition.compareTo.type === 'query') {
+				const subQuery = constructSqlQuery(where.condition.compareTo);
 				return `${wrappedColumn} ${mappedOperation} (${subQuery.statement})`;
 			}
 
-			if (where.compareTo.type === 'values') {
-				const compareValues = where.compareTo.parameterIndexes.map((index) => `$${index + 1}`).join(', ');
+			if (where.condition.compareTo.type === 'values') {
+				const compareValues = where.condition.compareTo.parameterIndexes.map((i) => `$${i + 1}`).join(', ');
 				return `${wrappedColumn} ${mappedOperation} (${compareValues})`;
 			}
 		}
@@ -96,7 +95,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 
 		return where.negate ? `NOT (${logicalGroup})` : logicalGroup;
 	} else {
-		throw new Error(`Unsupported where node type: ${where.type}`);
+		throw new Error(`Unsupported where node type`);
 	}
 };
 

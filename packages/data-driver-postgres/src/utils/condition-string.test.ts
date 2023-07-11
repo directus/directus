@@ -14,17 +14,20 @@ describe('Conditions', () => {
 		const aColumn = randomIdentifier();
 
 		const where: AbstractSqlQueryConditionNode = {
-			type: 'number-condition',
+			type: 'condition',
 			negate: false,
-			target: {
-				type: 'primitive',
-				table: randomTable,
-				column: aColumn,
-			},
-			operation: 'gt',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
+			condition: {
+				type: 'number-condition',
+				target: {
+					type: 'primitive',
+					table: randomTable,
+					column: aColumn,
+				},
+				operation: 'gt',
+				compareTo: {
+					type: 'value',
+					parameterIndex: 0,
+				},
 			},
 		};
 
@@ -36,17 +39,20 @@ describe('Conditions', () => {
 		const aColumn = randomIdentifier();
 
 		const where: AbstractSqlQueryConditionNode = {
-			type: 'letter-condition',
+			type: 'condition',
 			negate: false,
-			target: {
-				type: 'primitive',
-				table: randomTable,
-				column: aColumn,
-			},
-			operation: 'starts_with',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
+			condition: {
+				type: 'letter-condition',
+				target: {
+					type: 'primitive',
+					table: randomTable,
+					column: aColumn,
+				},
+				operation: 'starts_with',
+				compareTo: {
+					type: 'value',
+					parameterIndex: 0,
+				},
 			},
 		};
 
@@ -58,21 +64,24 @@ describe('Conditions', () => {
 		const aColumn = randomIdentifier();
 
 		const where: AbstractSqlQueryConditionNode = {
-			type: 'number-condition',
+			type: 'condition',
 			negate: false,
-			target: {
-				type: 'fn',
-				fn: 'month',
-				field: {
-					type: 'primitive',
-					table: randomTable,
-					column: aColumn,
+			condition: {
+				type: 'number-condition',
+				target: {
+					type: 'fn',
+					fn: 'month',
+					field: {
+						type: 'primitive',
+						table: randomTable,
+						column: aColumn,
+					},
 				},
-			},
-			operation: 'gt',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
+				operation: 'gt',
+				compareTo: {
+					type: 'value',
+					parameterIndex: 0,
+				},
 			},
 		};
 
@@ -83,18 +92,21 @@ describe('Conditions', () => {
 		const randomTable = randomIdentifier();
 		const randomColumn = randomIdentifier();
 
-		const where: SqlGeoConditionNode = {
-			type: 'geo-condition',
+		const where: AbstractSqlQueryConditionNode = {
+			type: 'condition',
 			negate: false,
-			target: {
-				type: 'primitive',
-				table: randomTable,
-				column: randomColumn,
-			},
-			operation: 'intersects',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
+			condition: {
+				type: 'geo-condition',
+				target: {
+					type: 'primitive',
+					table: randomTable,
+					column: randomColumn,
+				},
+				operation: 'intersects',
+				compareTo: {
+					type: 'value',
+					parameterIndex: 0,
+				},
 			},
 		};
 
@@ -107,18 +119,21 @@ describe('Conditions', () => {
 		const randomTable = randomIdentifier();
 		const randomColumn = randomIdentifier();
 
-		const where: SqlSetConditionNode = {
-			type: 'set-condition',
+		const where: AbstractSqlQueryConditionNode = {
+			type: 'condition',
 			negate: false,
-			target: {
-				type: 'primitive',
-				table: randomTable,
-				column: randomColumn,
-			},
-			operation: 'in',
-			compareTo: {
-				type: 'values',
-				parameterIndexes: [2, 3, 4],
+			condition: {
+				type: 'set-condition',
+				target: {
+					type: 'primitive',
+					table: randomTable,
+					column: randomColumn,
+				},
+				operation: 'in',
+				compareTo: {
+					type: 'values',
+					parameterIndexes: [2, 3, 4],
+				},
 			},
 		};
 
@@ -134,30 +149,33 @@ describe('Conditions', () => {
 		const randomColumn2 = randomIdentifier();
 		const randomTable3 = randomIdentifier();
 
-		const where: SqlSetConditionNode = {
-			type: 'set-condition',
+		const where: AbstractSqlQueryConditionNode = {
+			type: 'condition',
 			negate: false,
-			target: {
-				type: 'primitive',
-				table: randomTable,
-				column: randomColumn,
-			},
-			operation: 'lt',
-			compareTo: {
-				type: 'query',
-				select: [
-					{
-						type: 'fn',
-						fn: 'count',
-						field: {
-							type: 'primitive',
-							table: randomTable2,
-							column: randomColumn2,
+			condition: {
+				type: 'set-condition',
+				target: {
+					type: 'primitive',
+					table: randomTable,
+					column: randomColumn,
+				},
+				operation: 'lt',
+				compareTo: {
+					type: 'query',
+					select: [
+						{
+							type: 'fn',
+							fn: 'count',
+							field: {
+								type: 'primitive',
+								table: randomTable2,
+								column: randomColumn2,
+							},
 						},
-					},
-				],
-				from: randomTable3,
-				parameters: [],
+					],
+					from: randomTable3,
+					parameters: [],
+				},
 			},
 		};
 
@@ -179,31 +197,37 @@ test('Convert filter with logical', () => {
 		negate: false,
 		childNodes: [
 			{
-				type: 'number-condition',
+				type: 'condition',
 				negate: false,
-				target: {
-					type: 'primitive',
-					table: randomTable,
-					column: firstColumn,
-				},
-				operation: 'gt',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 0,
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						table: randomTable,
+						column: firstColumn,
+					},
+					operation: 'gt',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
 				},
 			},
 			{
-				type: 'number-condition',
+				type: 'condition',
 				negate: false,
-				target: {
-					type: 'primitive',
-					table: randomTable,
-					column: secondColumn,
-				},
-				operation: 'eq',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 1,
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						table: randomTable,
+						column: secondColumn,
+					},
+					operation: 'eq',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 1,
+					},
 				},
 			},
 		],
@@ -228,31 +252,37 @@ test('Convert filter nested and with negation', () => {
 		negate: false,
 		childNodes: [
 			{
-				type: 'number-condition',
+				type: 'condition',
 				negate: false,
-				target: {
-					type: 'primitive',
-					table: randomTable,
-					column: firstColumn,
-				},
-				operation: 'gt',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 0,
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						table: randomTable,
+						column: firstColumn,
+					},
+					operation: 'gt',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 0,
+					},
 				},
 			},
 			{
-				type: 'number-condition',
+				type: 'condition',
 				negate: true,
-				target: {
-					type: 'primitive',
-					table: randomTable,
-					column: secondColumn,
-				},
-				operation: 'eq',
-				compareTo: {
-					type: 'value',
-					parameterIndex: 1,
+				condition: {
+					type: 'number-condition',
+					target: {
+						type: 'primitive',
+						table: randomTable,
+						column: secondColumn,
+					},
+					operation: 'eq',
+					compareTo: {
+						type: 'value',
+						parameterIndex: 1,
+					},
 				},
 			},
 			{
@@ -261,31 +291,37 @@ test('Convert filter nested and with negation', () => {
 				negate: true,
 				childNodes: [
 					{
-						type: 'number-condition',
+						type: 'condition',
 						negate: true,
-						target: {
-							type: 'primitive',
-							table: randomTable,
-							column: thirdColumn,
-						},
-						operation: 'lt',
-						compareTo: {
-							type: 'value',
-							parameterIndex: 2,
+						condition: {
+							type: 'number-condition',
+							target: {
+								type: 'primitive',
+								table: randomTable,
+								column: thirdColumn,
+							},
+							operation: 'lt',
+							compareTo: {
+								type: 'value',
+								parameterIndex: 2,
+							},
 						},
 					},
 					{
-						type: 'number-condition',
+						type: 'condition',
 						negate: false,
-						target: {
-							type: 'primitive',
-							table: randomTable,
-							column: fourthColumn,
-						},
-						operation: 'eq',
-						compareTo: {
-							type: 'value',
-							parameterIndex: 3,
+						condition: {
+							type: 'number-condition',
+							target: {
+								type: 'primitive',
+								table: randomTable,
+								column: fourthColumn,
+							},
+							operation: 'eq',
+							compareTo: {
+								type: 'value',
+								parameterIndex: 3,
+							},
 						},
 					},
 				],

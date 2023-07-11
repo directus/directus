@@ -99,30 +99,36 @@ test('statement with all possible modifiers', () => {
 		negate: false,
 		childNodes: [
 			{
-				type: 'number-condition',
-				operation: 'gt',
-				target: {
-					type: 'primitive',
-					table: firstConditionTable,
-					column: firstConditionColumn,
-				},
-				compareTo: {
-					type: 'value',
-					parameterIndex: firstConditionParameterIndex,
+				type: 'condition',
+				condition: {
+					type: 'number-condition',
+					operation: 'gt',
+					target: {
+						type: 'primitive',
+						table: firstConditionTable,
+						column: firstConditionColumn,
+					},
+					compareTo: {
+						type: 'value',
+						parameterIndex: firstConditionParameterIndex,
+					},
 				},
 				negate: false,
 			},
 			{
-				type: 'number-condition',
-				operation: 'lt',
-				target: {
-					type: 'primitive',
-					table: secondConditionTable,
-					column: secondConditionColumn,
-				},
-				compareTo: {
-					type: 'value',
-					parameterIndex: secondConditionParameterIndex,
+				type: 'condition',
+				condition: {
+					type: 'number-condition',
+					operation: 'lt',
+					target: {
+						type: 'primitive',
+						table: secondConditionTable,
+						column: secondConditionColumn,
+					},
+					compareTo: {
+						type: 'value',
+						parameterIndex: secondConditionParameterIndex,
+					},
 				},
 				negate: false,
 			},

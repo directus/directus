@@ -1,4 +1,4 @@
-import type { AbstractSqlQuery, AbstractSqlQueryConditionNode, ValueNode } from '@directus/data-sql';
+import type { AbstractSqlQuery } from '@directus/data-sql';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { where } from './where.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
@@ -27,17 +27,20 @@ describe('Where clause:', () => {
 				],
 				from: randomIdentifier(),
 				where: {
-					type: 'number-condition',
-					operation: 'gt',
+					type: 'condition',
 					negate: false,
-					target: {
-						type: 'primitive',
-						table: conditionTargetTable,
-						column: conditionTargetColumn,
-					},
-					compareTo: {
-						type: 'value',
-						parameterIndex: 0,
+					condition: {
+						type: 'number-condition',
+						operation: 'gt',
+						target: {
+							type: 'primitive',
+							table: conditionTargetTable,
+							column: conditionTargetColumn,
+						},
+						compareTo: {
+							type: 'value',
+							parameterIndex: 0,
+						},
 					},
 				},
 				parameters: [randomInteger(1, 10)],
@@ -46,20 +49,12 @@ describe('Where clause:', () => {
 	});
 
 	test('Where clause', () => {
-		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" > $${
-				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndex + 1
-			}`
-		);
+		expect(where(sample.statement)).toStrictEqual(`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" > $1`);
 	});
 
 	test('Where clause with negation', () => {
 		sample.statement.where!.negate = true;
 
-		expect(where(sample.statement)).toStrictEqual(
-			`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" <= $${
-				((sample.statement.where as AbstractSqlQueryConditionNode).compareTo as ValueNode).parameterIndex + 1
-			}`
-		);
+		expect(where(sample.statement)).toStrictEqual(`WHERE "${conditionTargetTable}"."${conditionTargetColumn}" <= $1`);
 	});
 });

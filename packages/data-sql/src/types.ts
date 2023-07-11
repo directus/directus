@@ -1,5 +1,5 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
-import type { GeoJSONGeometry } from 'wellknown';
+// import type { GeoJSONGeometry } from 'wellknown';
 
 export interface AbstractSqlQueryColumn {
 	table: string;
@@ -78,7 +78,7 @@ export interface AbstractSqlQuery {
 	paths: Map<string, string[]>;
 }
 
-export type ParameterTypes = string | boolean | number | GeoJSONGeometry;
+export type ParameterTypes = string | boolean | number; //GeoJSONGeometry
 
 /**
  * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.
@@ -103,16 +103,23 @@ export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
 	as: string;
 }
 
-type ConditionNodeBase = {
-	target: any;
-	operation: string;
-	compareTo: any;
-} & AbstractSqlQueryNode;
-
-export interface SqlJoinConditionNode extends ConditionNodeBase {
+interface SqlJoinConditionNode {
 	type: 'join-condition';
 	target: AbstractSqlQuerySelectNode;
 	compareTo: AbstractSqlQuerySelectNode;
+}
+
+export interface AbstractSqlQueryConditionNode {
+	type: 'condition';
+	condition: SqlLetterConditionNode | SqlNumberConditionNode | SqlGeoConditionNode | SqlSetConditionNode;
+	negate: boolean;
+}
+
+interface ConditionNodeBase extends AbstractSqlQueryNode {
+	type: string;
+	target: any;
+	operation: string;
+	compareTo: any;
 }
 
 export interface SqlLetterConditionNode extends ConditionNodeBase {
@@ -120,7 +127,6 @@ export interface SqlLetterConditionNode extends ConditionNodeBase {
 	target: AbstractSqlQuerySelectNode;
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';
 	compareTo: ValueNode;
-	negate: boolean;
 }
 
 export interface SqlNumberConditionNode extends ConditionNodeBase {
@@ -128,29 +134,20 @@ export interface SqlNumberConditionNode extends ConditionNodeBase {
 	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: ValueNode;
-	negate: boolean;
-}
-
-export interface SqlSetConditionNode extends ConditionNodeBase {
-	type: 'set-condition';
-	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
-	compareTo: ValuesNode | AbstractSqlQuery;
-	negate: boolean;
 }
 
 export interface SqlGeoConditionNode extends ConditionNodeBase {
 	type: 'geo-condition';
 	target: AbstractSqlQuerySelectNode;
 	operation: 'intersects' | 'intersects_bbox';
-	compareTo: ValueNode;
-	negate: boolean;
+	compareTo: ValueNode; // GeoJSONGeometry instead of string?
 }
 
-export type AbstractSqlQueryConditionNode =
-	| SqlLetterConditionNode
-	| SqlNumberConditionNode
-	| SqlSetConditionNode
-	| SqlGeoConditionNode;
+export interface SqlSetConditionNode extends ConditionNodeBase {
+	type: 'set-condition';
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
+	compareTo: ValuesNode | AbstractSqlQuery;
+}
 
 export type CompareToNodeTypes = ValueNode | AbstractSqlQuerySelectNode | AbstractSqlQuery;
 
@@ -183,5 +180,5 @@ export interface ValuesNode {
  */
 export interface ParameterizedSqlStatement {
 	statement: string;
-	parameters: (string | number | boolean)[];
+	parameters: ParameterTypes[];
 }

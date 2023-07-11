@@ -57,13 +57,16 @@ test('Convert query with filter', () => {
 
 	sample.query.modifiers = {
 		filter: {
-			type: 'number-condition',
-			target: {
-				type: 'primitive',
-				field: randomField,
+			type: 'condition',
+			condition: {
+				type: 'number-condition',
+				target: {
+					type: 'primitive',
+					field: randomField,
+				},
+				operation: 'gt',
+				compareTo: compareToValue,
 			},
-			operation: 'gt',
-			compareTo: compareToValue,
 		},
 	};
 
@@ -84,17 +87,20 @@ test('Convert query with filter', () => {
 		],
 		from: sample.query.collection,
 		where: {
-			type: 'number-condition',
-			target: {
-				column: randomField,
-				table: sample.query.collection,
-				type: 'primitive',
-			},
+			type: 'condition',
 			negate: false,
-			operation: 'gt',
-			compareTo: {
-				type: 'value',
-				parameterIndex: 0,
+			condition: {
+				type: 'number-condition',
+				target: {
+					column: randomField,
+					table: sample.query.collection,
+					type: 'primitive',
+				},
+				operation: 'gt',
+				compareTo: {
+					type: 'value',
+					parameterIndex: 0,
+				},
 			},
 		},
 		parameters: [compareToValue],

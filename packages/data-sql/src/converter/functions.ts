@@ -1,5 +1,5 @@
 import type { AbstractQueryFieldNodeFn } from '@directus/data';
-import type { AbstractSqlQueryFnNode } from '../types.js';
+import type { AbstractSqlQueryFnNode, ParameterTypes, ValuesNode } from '../types.js';
 
 /**
  * @param collection
@@ -10,7 +10,7 @@ export function convertFn(
 	collection: string,
 	abstractFunction: AbstractQueryFieldNodeFn,
 	idxGenerator: Generator
-): { fn: AbstractSqlQueryFnNode; parameters: (string | number | boolean)[] } {
+): { fn: AbstractSqlQueryFnNode; parameters: ParameterTypes[] } {
 	if (abstractFunction.targetNode.type !== 'primitive') {
 		throw new Error('Nested functions are not yet supported.');
 	}
@@ -30,8 +30,10 @@ export function convertFn(
 	}
 
 	if (abstractFunction.args && abstractFunction.args?.length > 0) {
-		const parameterIndexes = abstractFunction.args.map(() => idxGenerator.next().value);
-		fn.arguments = { type: 'values', parameterIndexes };
+		fn.arguments = {
+			type: 'values',
+			parameterIndexes: abstractFunction.args.map(() => idxGenerator.next().value),
+		} as ValuesNode;
 	}
 
 	return {

@@ -327,9 +327,7 @@ export type AbstractQueryFilterNode =
 	| AbstractQueryNodeLogical
 	| AbstractQueryNodeNegate
 	| AbstractQueryQuantifierNode
-	| LetterConditionNode
-	| NumberConditionNode
-	| GeoConditionNode;
+	| AbstractQueryConditionNode;
 
 export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
@@ -387,7 +385,10 @@ type AbstractQueryConditionNodeBase = {
 	compareTo: any;
 } & AbstractQueryModifierNode;
 
-export type AbstractQueryConditionNode = LetterConditionNode | NumberConditionNode | GeoConditionNode;
+export interface AbstractQueryConditionNode {
+	type: 'condition';
+	condition: LetterConditionNode | NumberConditionNode | GeoConditionNode | SetConditionNode;
+}
 
 export interface LetterConditionNode extends AbstractQueryConditionNodeBase {
 	type: 'letter-condition';
@@ -412,7 +413,7 @@ export interface GeoConditionNode extends AbstractQueryConditionNodeBase {
 
 export interface SetConditionNode extends AbstractQueryConditionNodeBase {
 	type: 'set-condition';
-	operation: 'in';
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
 	compareTo: (string | number)[] | AbstractQuery;
 }
 
