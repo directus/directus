@@ -114,7 +114,7 @@
 		</template>
 
 		<div class="file-item">
-			<div v-if="isBatch === false && item" class="preview">
+			<div v-if="item" class="preview">
 				<file-preview :src="fileSrc" :mime="item.type" :width="item.width" :height="item.height" :title="item.title" />
 
 				<button class="replace-toggle" @click="replaceFileDialogActive = true">
@@ -135,7 +135,6 @@
 				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="item"
-				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
 				:validation-errors="validationErrors"
@@ -158,16 +157,12 @@
 		<template #sidebar>
 			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false && revisionsAllowed"
+				v-if="isNew === false && revisionsAllowed"
 				ref="revisionsDrawerDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
 			/>
-			<comments-sidebar-detail
-				v-if="isBatch === false && isNew === false"
-				collection="directus_files"
-				:primary-key="primaryKey"
-			/>
+			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>
 
 		<replace-file v-model="replaceFileDialogActive" :file="item" @replaced="refresh" />
@@ -215,21 +210,8 @@ const replaceFileDialogActive = ref(false);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const {
-	isNew,
-	edits,
-	hasEdits,
-	item,
-	saving,
-	loading,
-	save,
-	remove,
-	deleting,
-	saveAsCopy,
-	isBatch,
-	refresh,
-	validationErrors,
-} = useItem(ref('directus_files'), primaryKey);
+const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, refresh, validationErrors } =
+	useItem(ref('directus_files'), primaryKey);
 
 const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 

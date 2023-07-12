@@ -445,11 +445,6 @@ open_file_in_tab: Otvoriť súbor v novej záložke
 start_export: Spustiť export
 not_available_for_local_downloads: Nedostupné na lokálne stiahnutie
 exporting_all_items_in_collection: Exportuje sa všetkých {total} položiek z {collection}.
-exporting_limited_items_in_collection: Exportuje sa {limit} z celkovo {total} položiek z {collection}.
-exporting_no_items_to_export: Žiadne položky na export. Upravte nastavenia exportu nižšie.
-exporting_download_hint: Po dokončení, bude tento {format} súbor automaticky stiahnutý na vaše zariadenie.
-exporting_batch_hint: Tento export bude vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
-exporting_batch_hint_forced: Kvôli veľkému množstu položiek musí byť tento export vykonaný po dávkach. Po skončení bude {format} súbor uložený v knižnici súborov.
 collection_key: Kľúč zbierky
 name: Názov
 primary_key_field: Pole primárneho kľúča
@@ -2057,6 +2052,7 @@ operations:
     description: Pošle internú notifikáciu jednému alebo viacerým používateľom
     recipient: Používateľ
     message: Správa
+    subject: Predmet
   request:
     name: Webhook / URL požiadavka
     description: 'Spraví požiadavku na URL'

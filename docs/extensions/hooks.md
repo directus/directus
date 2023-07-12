@@ -46,15 +46,17 @@ the event.
 
 Filter hooks act on the event's payload before the event is fired. They allow you to check, modify, or cancel an event.
 
-Below is an example of canceling a `create` event by throwing a standard Directus exception.
+Below is an example of canceling a `create` event by throwing a Directus error.
 
 ```js
-import { InvalidPayloadError } from '@directus/errors';
+import { createError } from '@directus/errors';
+
+const InvalidPayloadError = createError('INVALID_PAYLOAD_ERROR', 'Something went wrong...', 500);
 
 export default ({ filter }) => {
 	filter('items.create', async (input) => {
 		if (LOGIC_TO_CANCEL_EVENT) {
-			throw new InvalidPayloadException();
+			throw new InvalidPayloadError();
 		}
 
 		return input;

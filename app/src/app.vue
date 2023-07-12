@@ -27,6 +27,7 @@ import { useUserStore } from '@/stores/user';
 import { setFavicon } from '@/utils/set-favicon';
 import { useAppStore } from '@directus/stores';
 import type { User } from '@directus/types';
+import { useHead } from '@unhead/vue';
 import { StyleValue, computed, onMounted, onUnmounted, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { startIdleTracking, stopIdleTracking } from './idle';
@@ -43,6 +44,27 @@ const brandStyle = computed(() => {
 	return {
 		'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
 	} as StyleValue;
+});
+
+useHead({
+	titleTemplate: computed((title?: string) => {
+		const projectName = serverStore.info?.project?.project_name ?? 'Directus';
+		return !title ? projectName : `${title} · ${projectName}`;
+	}),
+	meta: computed(() => {
+		const content = serverStore.info?.project?.project_color ?? '#6644ff';
+
+		return [
+			{
+				name: 'msapplication-TileColor',
+				content,
+			},
+			{
+				name: 'theme-color',
+				content,
+			},
+		];
+	}),
 });
 
 onMounted(() => startIdleTracking());
@@ -74,14 +96,6 @@ watch(
 			// Default to auto mode
 			document.body.classList.add('auto');
 		}
-	},
-	{ immediate: true }
-);
-
-watch(
-	() => serverStore.info?.project?.project_name,
-	(projectName) => {
-		document.title = projectName || 'Directus';
 	},
 	{ immediate: true }
 );

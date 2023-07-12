@@ -392,9 +392,6 @@ download_file: Descarregar Ficheiro
 open_file_in_tab: Abrir ficheiro num novo separador
 start_export: Iniciar exportação
 exporting_all_items_in_collection: A exportar todos os {total} itens dentro de {collection}.
-exporting_limited_items_in_collection: A exportar {limit} de {total} itens em {collection}.
-exporting_no_items_to_export: Sem itens para exportar. Verifique a configuração abaixo.
-exporting_download_hint: Uma vez concluído, este arquivo {format} será transferido automaticamente para o dispositivo.
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -972,6 +969,7 @@ operations:
   notification:
     recipient: Utilizador
     message: Mensagem
+    subject: Assunto
   request:
     url: URL
     url_placeholder: https://exemplo.com/exemplo
