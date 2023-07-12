@@ -217,7 +217,9 @@ async function setupChart() {
 }
 
 function getPercentage(value: number) {
-	return typeof props.decimals === 'number' && props.decimals >= 0 ? n(Number(value.toFixed(props.decimals))) : n(value);
+	return typeof props.decimals === 'number' && props.decimals >= 0
+		? n(Number(value.toFixed(props.decimals)))
+		: n(value);
 }
 
 function formatColor(color: string | number, value: string | number) {
