@@ -197,10 +197,7 @@ function saveChanges() {
 	editTitle.value = '';
 }
 
-// Used to find relevant information to display cards' formatted text with <render-display>
 const textFieldConfiguration = computed<Field | undefined>(() => {
-	/* Extra information is stored in fieldsInCollection,
-	but we need to find the config for the field used as the card's text field */
 	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
 });
 </script>
