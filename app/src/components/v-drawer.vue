@@ -14,9 +14,9 @@
 				secondary
 				@click="$emit('cancel')"
 				@keydown.tab="
-						(e:MouseEvent) => {
-							if (e.shiftKey) {
-								e.preventDefault();
+						(event: MouseEvent) => {
+							if (event.shiftKey) {
+								event.preventDefault();
 							}
 						}
 					"

@@ -50,7 +50,7 @@
 
 			<template #actions>
 				<v-button
-					id="saveButton"
+					ref="saveButton"
 					v-tooltip.bottom="t('save')"
 					icon
 					rounded
@@ -96,7 +96,7 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldMeta } from '@directus/types';
 import { isEqual, sortBy } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 
@@ -128,6 +128,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
+const saveButton = ref<HTMLElement>();
 const active = ref<number | null>(null);
 const drawerOpen = computed(() => active.value !== null);
 const { value } = toRefs(props);
@@ -297,7 +298,7 @@ function closeDrawer() {
 }
 
 function focusSaveButton() {
-	document.querySelector<HTMLElement>('#saveButton > button')?.focus();
+	unref(saveButton)?.focus();
 }
 </script>
 
@@ -326,13 +327,5 @@ function focusSaveButton() {
 
 .add-new {
 	margin-top: 8px;
-}
-
-#saveButton {
-	padding: 2px;
-}
-
-#saveButton:focus-within {
-	background-color: var(--background-inverted);
 }
 </style>

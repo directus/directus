@@ -80,9 +80,9 @@
 					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
 					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
 					@keydown.tab="
-						(e:MouseEvent) => {
-							if (index === lastEditableFieldIndex && !e.shiftKey) {
-								e.preventDefault();
+						(event: MouseEvent) => {
+							if (handleLastFieldTab && index === lastEditableFieldIndex && !event.shiftKey) {
+								event.preventDefault();
 								handleLastFieldTab();
 							}
 						}
@@ -154,9 +154,6 @@ const props = withDefaults(defineProps<Props>(), {
 	direction: undefined,
 	showDivider: false,
 	inline: false,
-	handleLastFieldTab: () => {
-		return;
-	},
 });
 
 const { t } = useI18n();
