@@ -51,6 +51,20 @@ useHead({
 		const projectName = serverStore.info?.project?.project_name ?? 'Directus';
 		return !title ? projectName : `${title} · ${projectName}`;
 	}),
+	meta: computed(() => {
+		const content = serverStore.info?.project?.project_color ?? '#6644ff';
+
+		return [
+			{
+				name: 'msapplication-TileColor',
+				content,
+			},
+			{
+				name: 'theme-color',
+				content,
+			},
+		];
+	}),
 });
 
 onMounted(() => startIdleTracking());
