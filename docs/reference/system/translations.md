@@ -39,23 +39,33 @@ The translation value.
 
 List all translations that exist in Directus.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /translations`
+
+`SEARCH /translations`
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Returns
+### Response
 
 An array of up to [limit](/reference/query#limit) [translation objects](#the-translations-object). If no items are
 available, data will be an empty array.
-
-### REST API
-
-```
-GET /translations
-SEARCH /translations
-```
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
 ---
 
@@ -63,25 +73,43 @@ SEARCH /translations
 
 List an existing translation by primary key.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /translations/:id`
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Returns
+### Response
 
 Returns the requested [translation object](#the-translations-object).
 
-### REST API
+### Example
 
-```
-GET /translations/:id
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-GET /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-```
+`GET /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
 
 ---
 
@@ -89,35 +117,61 @@ GET /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2
 
 Create a new translation.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /translations`
+```json
+{
+	"translation_object_field_1": "value_1",
+	"translation_object_field_2": "value_2",
+	"translation_object_field_3": "value_3"
+}
+```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 A partial [translation object](#the-translations-object).
 
-### Returns
+### Response
 
 Returns the [translation object](#the-translations-object) for the created translation.
 
-### REST API
+### Example
 
-```
-POST /translations
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /translations`
 ```json
-// POST /translations
-
 {
 	"key": "Test",
 	"language": "en-US",
 	"value": "My Test"
 }
 ```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
 
 ---
 
@@ -125,29 +179,55 @@ POST /translations
 
 Create multiple new translation.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /translations`
+```json
+[
+	{
+		"translation_1_object_field_1": "value_1",
+		"translation_1_object_field_2": "value_2",
+		"translation_1_object_field_3": "value_3"
+	},
+	{
+		"translation_2_object_field_1": "value_4",
+		"translation_2_object_field_2": "value_5",
+		"translation_2_object_field_3": "value_6"
+	}
+]
+```
+</template>
+
+<template #graphql>
+
+</template>
+
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [translation object](#the-translations-object).
 
-### Returns
+### Response
 
 Returns the [translation object](#the-translations-object) for the created translation.
 
-### REST API
+### Example
 
-```
-POST /translations
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /translations`
 ```json
-// POST /translations
-
 [
 	{
 		"key": "translation.key",
@@ -162,11 +242,39 @@ POST /translations
 ]
 ```
 
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
 ---
 
 ## Update a Translation
 
 Update an existing translation.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /translations/:id`
+```json
+{
+	"translation_object_field": "value_1"
+}
+```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
 
 ### Query Parameters
 
@@ -176,25 +284,29 @@ Supports all [global query parameters](/reference/query).
 
 A partial [translation object](#the-translations-object).
 
-### Returns
+### Response
 
 Returns the [translation object](#the-translations-object) for the updated translation.
 
-### REST API
+### Example
 
-```
-PATCH /translations/:id
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
 ```json
-// PATCH /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2
-
 {
 	"value": "My Updated Translations"
 }
 ```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
 
 ---
 
@@ -202,11 +314,35 @@ PATCH /translations/:id
 
 Update multiple existing translations.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /translations`
+```json
+{
+	"keys": ["translation_1_key", "translation_2_key"],
+	"data": {
+		"field": "value"
+	}
+}
+```
+
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the translations you'd like to update.
@@ -214,21 +350,18 @@ Array of primary keys of the translations you'd like to update.
 `data` **Required**\
 Any of [translation object](#the-translations-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [translation objects](#the-translations-object) for the updated translations.
 
-### REST API
+### Example
 
-```
-PATCH /translations
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /translations`
 ```json
-// PATCH /translations
-
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
 	"data": {
@@ -237,27 +370,52 @@ PATCH /translations
 }
 ```
 
+</template>
+
+<template #graphql>
+
+</template>
+</SnippetToggler>
+
 ---
 
 ## Delete a Translation
 
 Delete an existing translation.
 
-### Returns
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /translations/:id`
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-DELETE /translations/:id
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-DELETE /translations/12204ee2-2c82-4d9a-b044-2f4842a11dba
-```
+`DELETE /translations/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
 
 ---
 
@@ -265,23 +423,47 @@ DELETE /translations/12204ee2-2c82-4d9a-b044-2f4842a11dba
 
 Delete multiple existing translations.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /translations`
+```json
+["translation_1_key", "translation_2_key", "translation_3_key"]
+```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 An array of translations primary keys
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-DELETE /translations
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`DELETE /translations`
 ```json
-// DELETE /translations
 ["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
 ```
+
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
