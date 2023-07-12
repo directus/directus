@@ -12,11 +12,11 @@ pageClass: page-reference
 
 Retrieve the current schema. This endpoint is only available to admin users.
 
-### Query Parameters
+#### Query Parameters
 
 Supports the [export](/reference/query#export) query parameter.
 
-### Returns
+### Response
 
 Returns the JSON object containing schema details by default, or downloads it in an alternative format when `export`
 query parameter is used.
@@ -27,7 +27,7 @@ query parameter is used.
 GET /schema/snapshot
 ```
 
-##### Example
+### Example
 
 ```
 // returns JSON object
@@ -56,12 +56,12 @@ unintentional diffs from being generated. You can opt in to bypass these checks 
 
 :::
 
-### Query Parameters
+#### Query Parameters
 
 `force` **boolean**\
 Bypass version and database vendor restrictions.
 
-### Request Body
+#### Request Body
 
 JSON object containing [collections](/reference/system/collections#the-collection-object),
 [fields](/reference/system/fields#the-field-object), and [relations](/reference/system/relations#the-relation-object) to
@@ -70,7 +70,7 @@ apply.
 Alternatively, send a JSON or YAML schema file in a `multipart/form-data` request. See
 [Upload a File](/reference/files#upload-a-file) for more information.
 
-### Returns
+### Response
 
 Returns the differences between the current instance's schema and the schema passed in the request body.
 
@@ -362,11 +362,11 @@ n/a
 Update the instance's schema by passing the diff previously retrieved via `/schema/diff` endpoint in the request body.
 This endpoint is only available to admin users.
 
-### Query Parameters
+#### Query Parameters
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Body
+#### Request Body
 
 JSON object containing hash and diffs of [collections](/reference/system/collections#the-collection-object),
 [fields](/reference/system/fields#the-field-object), and [relations](/reference/system/relations#the-relation-object) to
@@ -375,7 +375,7 @@ apply.
 Alternatively, upload a JSON or YAML schema file. Relies on a `multipart/form-data` encoded request like regular file
 uploads. Check [Upload a File](/reference/files#upload-a-file) for more information.
 
-### Returns
+### Response
 
 Empty body.
 
