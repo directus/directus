@@ -109,37 +109,51 @@ When this is enabled, the user will receive emails for notifications.
 
 List all users that exist in Directus.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /users`
+
+`SEARCH /users`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Query {
+    users: [directus_users]
+}
+```
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Returns
+### Response
 
 An array of up to [limit](/reference/query#limit) [user objects](#the-user-object). If no items are available, data will
 be an empty array.
 
-### REST API
+### Example
 
-```
-GET /users
-SEARCH /users
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+<template #rest>
 
-### GraphQL
+`GET /users`
 
-```
-POST /graphql/system
-```
+`SEARCH /users`
+</template>
 
-```graphql
-type Query {
-	users: [directus_users]
-}
-```
-
-##### Example
+<template #graphql>
 
 ```graphql
 query {
@@ -150,6 +164,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -157,40 +173,46 @@ query {
 
 List an existing user by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the requested [user object](#the-user-object).
+`GET /users/:id`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /users/:id
-```
-
-##### Example
-
-```
-GET /users/72a1ce24-4748-47de-a05f-ce9af3033727
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	users_by_id(id: ID!): directus_users
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [user object](#the-user-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	users_by_id(id: "72a1ce24-4748-47de-a05f-ce9af3033727") {
@@ -200,6 +222,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -207,33 +231,44 @@ query {
 
 Retrieve the currently authenticated user.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the [user object](#the-user-object) for the currently authenticated user.
+`GET /users/me`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /users/me
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	users_me: directus_users
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the [user object](#the-user-object) for the currently authenticated user.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /users/me`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
@@ -242,6 +277,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -249,42 +286,56 @@ query {
 
 Update the authenticated user.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the updated [user object](#the-user-object) for the authenticated user.
-
-### REST API
-
-```
-PATCH /users/me
-```
-
+`PATCH /users/me`
 ```json
-// PATCH /users/me
-
 {
-	"email": "new.email@example.com"
+	"user_object_field": "value"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_users_me(data: update_directus_users_input!): directus_users
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the updated [user object](#the-user-object) for the authenticated user.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /users/me`
+```json
+{
+	"email": "new.email@example.com"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_users_me(data: { email: "new.email@example.com" }) {
@@ -292,6 +343,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -299,52 +352,67 @@ mutation {
 
 Create a new user
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /users`
+```json
+{
+	"email": "user_email",
+	"password": "user_password",
+	"user_object_field": "value"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_users_item(data: create_directus_users_input!): directus_users
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 A partial [user object](#the-user-object).
 
 `email` and `password` are required to authenticate with the default authentication provider.
 
-### Returns
+### Response
 
 Returns the [user object](#the-user-object) for the created user.
 
-### REST API
+### Example
 
-```
-POST /users
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /users`
 ```json
-// POST /users
-
 {
 	"email": "another@example.com",
 	"password": "d1r3ctu5",
 	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_users_item(data: create_directus_users_input!): directus_users
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_users_item(
@@ -355,6 +423,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -362,31 +432,63 @@ mutation {
 
 Create multiple new users
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /users`
+```json
+[
+	{
+		"email": "user_email",
+		"password": "user_password",
+		"user_object_field": "value"
+	},
+	{
+		"email": "user_email",
+		"password": "user_password",
+		"user_object_field": "value"
+	}
+]
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_users_items(data: [create_directus_users_input!]!): [directus_users]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [user objects](#the-user-object).
 
 `email` and `password` are required.
 
-### Returns
+### Response
 
 Returns the [user objects](#the-user-object) for the created users.
 
-### REST API
+### Example
 
-```
-POST /users
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /users`
 ```json
-// POST /users
-
 [
 	{
 		"email": "admin@example.com",
@@ -400,21 +502,11 @@ POST /users
 	}
 ]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_users_items(data: [create_directus_users_input!]!): [directus_users]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_users_items(
@@ -428,6 +520,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -435,48 +529,60 @@ mutation {
 
 Update an existing user.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [user object](#the-user-object).
-
-### Returns
-
-Returns the [user object](#the-user-object) for the updated user.
-
-### REST API
-
-```
-PATCH /users/:id
-```
-
-##### Example
-
+`PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
 ```json
-// PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727
-
 {
-	"title": "CTO"
+	"user_object_field": "value"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_users_item(id: ID!, data: update_directus_users_input!): directus_users
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [user object](#the-user-object).
+
+### Response
+
+Returns the [user object](#the-user-object) for the updated user.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+```json
+{
+	"title": "CTO"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_users_item(id: "72a1ce24-4748-47de-a05f-ce9af3033727", data: { title: "CTO" }) {
@@ -485,6 +591,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -492,11 +600,40 @@ mutation {
 
 Update multiple existing users.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /users`
+```json
+{
+	"keys": ["user_1_key", "user_2_key"],
+	"data": {
+		"user_object_field": "value"
+	}
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the users you'd like to update.
@@ -504,21 +641,18 @@ Array of primary keys of the users you'd like to update.
 `data` **Required**\
 Any of [the user object](#the-user-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [user objects](#the-user-object) for the updated users.
 
-### REST API
+### Example
 
-```
-PATCH /users
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /users`
 ```json
-// PATCH /users
-
 {
 	"keys": ["72a1ce24-4748-47de-a05f-ce9af3033727", "9c3d75a8-7a5f-41a4-be0a-1488fd974511"],
 	"data": {
@@ -526,21 +660,11 @@ PATCH /users
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_users_items(
@@ -552,6 +676,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -559,36 +685,42 @@ mutation {
 
 Delete an existing user.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /users/:id
-```
+`DELETE /users/:id`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727
-```
-
-### GraphQL
-
-```
 POST /graphql/system
-```
-
 ```graphql
 type Mutation {
 	delete_users_item(id: ID!): delete_one
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Response
 
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_users_item(id: "72a1ce24-4748-47de-a05f-ce9af3033727") {
@@ -596,6 +728,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -603,40 +737,50 @@ mutation {
 
 Delete multiple existing users.
 
-### Request Body
+### Request
 
-An array of user primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty body.
-
-### REST API
-
-```
-DELETE /users
-```
-
-##### Example
-
+`DELETE /users`
 ```json
-// Request
-["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+["user_1_key", "user_2_key"]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_users_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
+
+An array of user primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /users`
+```json
+["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+```
+</template>
+
+<template #graphql>
 
 ```graphql
 mutation {
@@ -645,6 +789,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -652,7 +798,33 @@ mutation {
 
 Invite a new user by email.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /users/invite`
+```json
+{
+	"email": "invited_user_email",
+	"role": "invited_user_role"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	users_invite(email: String!, role: String!, invite_url: String): Boolean
+}
+```
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `email` **Required**\
 User email to invite.
@@ -665,46 +837,35 @@ Provide a custom invite url which the link in the email will lead to. The invite
 **Note**: You need to configure the
 [`USER_INVITE_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-POST /users/invite
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /users/invite`
 ```json
-// POST /users/invite
-
 {
 	"email": "another@example.com",
 	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	users_invite(email: String!, role: String!, invite_url: String): Boolean
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	users_invite(email: "another@example.com", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7")
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -714,7 +875,34 @@ Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the ema
 
 This link includes a token, which is then used to activate the invited user.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /users/invisponse/accept`
+```json
+{
+	"token": "invite_tokem",
+	"password": "user_password"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	users_invite_accept(token: String!, password: String!): Boolean
+}
+```
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `token` **Required**\
 Accept invite token.
@@ -722,46 +910,34 @@ Accept invite token.
 `password` **Required**\
 Password for the user.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-POST /users/invite/accept
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /users/invite/accept`
 ```json
-// POST /users/invite/accept
-
 {
 	"token": "eyJh...KmUk",
 	"password": "d1r3ctu5"
 }
 ```
+</template>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	users_invite_accept(token: String!, password: String!): Boolean
-}
-```
-
-##### Example
+<template #graphql>
 
 ```graphql
 mutation {
 	users_invite_accept(token: "eyJh...KmUk", password: "d1r3ctu5")
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -769,12 +945,37 @@ mutation {
 
 Generates a secret and returns the URL to be used in an authenticator app.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /users/me/tfa/generate`
+```json
+{
+	"password": "user_password"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	users_me_tfa_generate(password: String!): users_me_tfa_generate_data
+}
+```
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `password` **Required**\
 The user's password.
 
-### Returns
+### Response
 
 `secret` **string**\
 OTP secret to be saved in the authenticator app.
@@ -782,35 +983,23 @@ OTP secret to be saved in the authenticator app.
 `otpauth_url` **string**\
 `otpauth://` formatted URL. Can be rendered as QR code and used in most authenticator apps.
 
-### REST API
+### Example
 
-```
-POST /users/me/tfa/generate
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /users/me/tfa/generate`
 ```json
-// POST /users/me/tfa/generate
 {
 	"password": "d1r3ctu5"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	users_me_tfa_generate(password: String!): users_me_tfa_generate_data
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	users_me_tfa_generate(password: "d1r3ctu5") {
@@ -819,6 +1008,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -826,7 +1017,33 @@ mutation {
 
 Adds a TFA secret to the user account.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /users/me/tfa/enable`
+```json
+{
+	"otp": "One Time Password",
+	"secret": "Two-Factor_Authorization_secret"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	users_me_tfa_enable(otp: String!, secret: String!): Boolean
+}
+```
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `secret` **Required**\
 The TFA secret from tfa/generate.
@@ -834,45 +1051,35 @@ The TFA secret from tfa/generate.
 `otp` **Required**\
 OTP generated with the secret, to recheck if the user has a correct TFA setup
 
-### Returns
+### Response
 
 Empty response.
 
-### REST API
+### Example
 
-```
-POST /users/me/tfa/enable
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /users/me/tfa/enable`
 ```json
-// POST /users/me/tfa/enable
 {
 	"otp": "123456",
 	"secret": "3CtiutsNBmY3szHE"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	users_me_tfa_enable(otp: String!, secret: String!): Boolean
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	users_me_tfa_enable(otp: "123456", secret: "3CtiutsNBmY3szHE")
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -880,47 +1087,61 @@ mutation {
 
 Disables two-factor authentication by removing the OTP secret from the user.
 
-### Request Body
+### Request
 
-`otp` **Required**\
-One-time password generated by the authenticator app.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty response.
-
-### REST API
-
-```
-POST /users/me/tfa/disable
-```
-
-##### Example
-
+`POST /users/me/tfa/disable`
 ```json
-// POST /users/me/tfa/disable
-
 {
-	"otp": "859014"
+	"otp": "One-time password"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	users_me_tfa_disable(otp: String!): Boolean
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
 
+`otp` **Required**\
+One-time password generated by the authenticator app.
+
+### Response
+
+Empty response.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /users/me/tfa/disable`
+```json
+{
+	"otp": "859014"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	users_me_tfa_disable(otp: "591763")
 }
 ```
+</template>
+</SnippetToggler>
