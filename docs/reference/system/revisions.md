@@ -63,38 +63,53 @@ to a collection that the current user doesn't have access to are stripped out.
 
 :::
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [revision objects](#the-revision-object). If no items are available,
-data will be an empty array.
+`GET /revisions`
 
-### REST API
+`SEARCH /revisions`
+</template>
 
-```
-GET /revisions
-SEARCH /revisions
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	revisions: [directus_revisions]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Examples
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [revision objects](#the-revision-object). If no items are available,
+data will be an empty array.
+
+### Examples
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /revisions`
+
+`SEARCH /revisions`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	revisions {
@@ -104,6 +119,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -111,40 +128,46 @@ query {
 
 List an existing revision by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the requested [revision object](#the-revision-object).
+`GET /revisions/:id`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /revisions/:id
-```
-
-##### Example
-
-```
-GET /revisions/322
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	revisions_by_id(id: ID!): directus_revisions
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [revision object](#the-revision-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /revisions/322`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	revisions_by_id(id: 322) {
@@ -154,3 +177,5 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
