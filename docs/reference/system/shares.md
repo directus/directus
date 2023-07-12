@@ -69,38 +69,54 @@ The maximum number of times the shared item can be viewed.
 
 List all shares that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [share objects](#the-share-object). If no items are available, data
-will be an empty array.
+`GET /shares`
 
-### REST API
+`SEARCH /shares`
 
-```
-GET /shares
-SEARCH /shares
-```
+</template>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+<template #graphql>
 
-### GraphQL
-
-```
 POST /graphql/system
-```
-
 ```graphql
 type Query {
 	shares: [directus_shares]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [share objects](#the-share-object). If no items are available, data
+will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /shares`
+
+`SEARCH /shares`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	shares {
@@ -111,6 +127,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -118,40 +136,44 @@ query {
 
 List an existing share by primary key.
 
-### Query Parameters
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-Supports all [global query parameters](/reference/query).
+<template #rest>
 
-### Returns
+`GET /shares/:id`
+</template>
 
-Returns the requested [share object](#the-share-object).
+<template #graphql>
 
-### REST API
-
-```
-GET /shares/:id
-```
-
-##### Example
-
-```
-GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	shares_by_id(id: ID!): directus_shares
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [share object](#the-share-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	shares_by_id(id: 2) {
@@ -162,6 +184,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -169,29 +193,54 @@ query {
 
 Create a new share.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /shares`
+```json
+{
+	"share_object_field_1": "value_1",
+	"share_object_field_2": "value_2",
+	"share_object_field_3": "value_3",
+	"share_object_field_4": "value_4"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_shares_item(data: create_directus_shares_input!): directus_shares
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 A partial [share object](#the-share-object).
 
-### Returns
+### Response
 
 Returns the [share object](#the-share-object) for the created share.
 
-### REST API
+### Example
 
-```
-POST /shares
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /shares`
 ```json
-// POST /shares
-
 {
 	"name": "External Review",
 	"collection": "articles",
@@ -199,21 +248,11 @@ POST /shares
 	"max_uses": "5"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_shares_item(data: create_directus_shares_input!): directus_shares
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_shares_item(data: { name: "External Review", collection: "articles", item: "15", max_uses: "5" }) {
@@ -224,6 +263,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -231,29 +272,62 @@ mutation {
 
 Create multiple new shares.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /shares`
+```json
+[
+	{
+		"share_object_1_field_1": "value_1",
+		"share_object_1_field_2": "value_2",
+		"share_object_1_field_3": "value_3",
+		"share_object_1_field_4": "value_4"
+	},
+	{
+		"share_object_2_field_1": "value_5",
+		"share_object_2_field_2": "value_6",
+		"share_object_2_field_3": "value_7",
+		"share_object_2_field_4": "value_8"
+	}
+]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+    create_shares_items(data: [create_directus_shares_input!]!): [directus_shares]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [share objects](#the-share-object).
 
-### Returns
+### Response
 
 Returns the [share objects](#the-share-object) for the created shares.
 
-### REST API
+### Example
 
-```
-POST /shares
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /shares`
 ```json
-// POST /shares
-
 [
 	{
 		"name": "External Review",
@@ -269,21 +343,11 @@ POST /shares
 	}
 ]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_shares_items(data: [create_directus_shares_input!]!): [directus_shares]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_shares_items(
@@ -304,6 +368,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -311,48 +377,60 @@ mutation {
 
 Update an existing share.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [share object](#the-share-object).
-
-### Returns
-
-Returns the [share object](#the-share-object) for the updated share.
-
-### REST API
-
-```
-PATCH /shares/:id
-```
-
-##### Example
-
+`PATCH /shares/:id`
 ```json
-// PATCH /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
-
 {
-	"max_uses": "30"
+	"share_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_shares_item(id: ID!, data: update_directus_shares_input): directus_shares
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [share object](#the-share-object).
+
+### Response
+
+Returns the [share object](#the-share-object) for the updated share.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+```json
+{
+	"max_uses": "30"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_shares_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", data: { icon: "attractions" }) {
@@ -363,6 +441,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -370,11 +450,39 @@ mutation {
 
 Update multiple existing shares.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /shares`
+```json
+{
+	"keys": ["share_1_key", "share_2_key"],
+	"data": {
+		"share_object_field": "value_1"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_shares_items(ids: [ID!]!, data: update_directus_shares_input): [directus_shares]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the shares you'd like to update.
@@ -382,21 +490,18 @@ Array of primary keys of the shares you'd like to update.
 `data` **Required**\
 Any of [the share object](#the-share-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [share objects](#the-share-object) for the updated shares.
 
-### REST API
+### Example
 
-```
-PATCH /shares
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /shares`
 ```json
-// PATCH /shares
-
 {
 	"keys": ["c86c2761-65d3-43c3-897f-6f74ad6a5bd7", "6fc3d5d3-a37b-4da8-a2f4-ed62ad5abe03"],
 	"data": {
@@ -404,21 +509,11 @@ PATCH /shares
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_shares_items(ids: [ID!]!, data: update_directus_shares_input): [directus_shares]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_shares_items(
@@ -432,6 +527,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -439,36 +536,42 @@ mutation {
 
 Delete an existing share.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /shares/:id
-```
+`DELETE /shares/:id`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_shares_item(id: ID!): delete_one
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Response
 
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_shares_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7") {
@@ -476,6 +579,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -483,41 +588,52 @@ mutation {
 
 Delete multiple existing shares.
 
-### Request Body
+### Request
 
-An array of share primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty body.
-
-### REST API
-
-```
-DELETE /shares
-```
-
-##### Example
-
+`DELETE /shares`
 ```json
-// DELETE /shares
-["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+["share_1_key", "share_2_key"]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_shares_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
 
+An array of share primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /shares`
+```json
+["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_shares_items(ids: ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]) {
@@ -525,6 +641,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -535,7 +653,30 @@ endpoints). These tokens are limited to a permissions set that only allows acces
 relationally linked items that that associated role has access to. This means that all regular endpoints can be used
 with the credentials set returned by this endpoint.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /shares/auth`
+```json
+{
+	"share": "share_key",
+	"password": "password"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `share` **Required**\
 Primary key of the share you're authenticating against.
@@ -543,7 +684,7 @@ Primary key of the share you're authenticating against.
 `password` **string**\
 Password for the share, if one is configured.
 
-### Returns
+### Response
 
 `access_token` **string**\
 Temporary access token to be used in follow-up requests.
@@ -555,18 +696,13 @@ How long before the access token will expire. Value is in milliseconds.
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
 as the mode in the request, the refresh token won't be returned in the JSON.
 
-### REST API
+### Example
 
-```
-POST /shares/auth
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```
-POST /shares/auth
-```
-
+`POST /shares/auth`
 ```json
 {
 	"share": "61e8a1b6-6eba-438c-91e8-8d912ef655d3",
@@ -574,11 +710,15 @@ POST /shares/auth
 }
 ```
 
-### GraphQL
+</template>
 
-```
-# Not currently available in GraphQL
-```
+<template #graphql>
+
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -586,7 +726,29 @@ POST /shares/auth
 
 Sends an email to the provided email addresses with a link to the share.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /shares/invite`
+```json
+{
+	"share": "share_key",
+	"emails": ["email_addr_1", "email_addr_2"]
+}
+```
+
+</template>
+
+<template #graphql>
+
+`// Not currently available in GraphQL`
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `share` **Required**\
 Primary key of the share you're inviting people to.
@@ -594,35 +756,30 @@ Primary key of the share you're inviting people to.
 `emails` **array**\
 Array of email strings to send the share link to.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-POST /shares/invite
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /shares/invite`
 ```json
-// POST /shares/invite
 {
 	"share": "653925a9-970e-487a-bfc0-ab6c96affcdc",
 	"emails": ["allison@example.com", "mike@example.com"]
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```
-# Not currently available in GraphQL
-```
+`// Not currently available in GraphQL`
+</template>
+</SnippetToggler>
 
 ---
 
@@ -630,40 +787,34 @@ POST /graphql/system
 
 Allows unauthenticated users to retrieve information about the share.
 
-### Returns
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /shares/info/:id`
+</template>
+
+<template #graphql>
+
+// Not currently available in GraphQL
+</template>
+</SnippetToggler>
+
+### Response
 
 The [share objects](#the-share-object) for the given UUID, if it's still valid.
 
-### REST API
+### Example
 
-```
-GET /shares/info/:id
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
-```json
-// GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc
-{
-	"id": "653925a9-970e-487a-bfc0-ab6c96affcdc",
-	"collection": "authors",
-	"item": "1",
-	"password": "**********",
-	"max_uses": 15,
-	"times_used": 0,
-	"date_start": "2023-01-26T17:00:00.000Z",
-	"date_end": "2023-01-28T17:00:00.000Z"
-}
-```
+`GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc`
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```
-# Not currently available in GraphQL
-```
-
----
+`// Not currently available in GraphQL`
+</template>
+</SnippetToggler>
