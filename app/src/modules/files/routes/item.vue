@@ -314,6 +314,7 @@ async function saveAndStay() {
 	try {
 		await save();
 		revisionsDrawerDetailRef.value?.refresh?.();
+		refresh();
 	} catch {
 		// `save` will show unexpected error dialog
 	}

@@ -336,11 +336,13 @@ async function saveAndStay() {
 		await setLang(savedItem);
 		await refreshCurrentUser();
 
-		revisionsDrawerDetail.value?.refresh?.();
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem.id;
 			router.replace(`/users/${newPrimaryKey}`);
+		} else {
+			revisionsDrawerDetail.value?.refresh?.();
+			refresh();
 		}
 	} catch {
 		// `save` will show unexpected error dialog
