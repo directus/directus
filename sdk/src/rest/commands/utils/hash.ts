@@ -10,7 +10,7 @@ export const generateHash =
 	() => ({
 		method: 'POST',
 		path: `/utils/hash/generate`,
-        body: JSON.stringify({ string }),
+		body: JSON.stringify({ string }),
 	});
 
 /**
@@ -20,12 +20,9 @@ export const generateHash =
  * @returns Boolean.
  */
 export const verifyHash =
-<Schema extends object>(
-    string: string,
-    hash: string,
-): RestCommand<boolean, Schema> =>
-() => ({
-    method: 'POST',
-    path: `/utils/hash/verify`,
-    body: JSON.stringify({ string, hash }),
-});
+	<Schema extends object>(string: string, hash: string): RestCommand<boolean, Schema> =>
+	() => ({
+		method: 'POST',
+		path: `/utils/hash/verify`,
+		body: JSON.stringify({ string, hash }),
+	});
