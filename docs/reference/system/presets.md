@@ -86,38 +86,54 @@ other than the current user's role won't be returned.
 
 :::
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [preset objects](#the-preset-object). If no items are available, data
-will be an empty array.
+`GET /presets`
 
-### REST API
+`SEARCH /presets`
+</template>
 
-```
-GET /presets
-SEARCH /presets
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	presets: [directus_presets]
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [preset objects](#the-preset-object). If no items are available, data
+will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /presets`
+
+`SEARCH /presets`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	presets {
@@ -126,6 +142,9 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -133,40 +152,47 @@ query {
 
 List an existing preset by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the requested [preset object](#the-preset-object).
-
-### REST API
-
-```
 GET /presets/:id
-```
+</template>
 
-##### Example
+<template #graphql>
 
-```
-GET /presets/42
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	presets_by_id(id: ID!): directus_presets
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [preset object](#the-preset-object).
+
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /presets/42`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	presets_by_id(id: 42) {
@@ -175,6 +201,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -182,50 +210,65 @@ query {
 
 Create a new preset.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [preset object](#the-preset-object).
-
-### Returns
-
-Returns the [preset object](#the-preset-object) for the created preset.
-
-### REST API
-
-```
-POST /presets
-```
-
-##### Example
-
+`POST /presets`
 ```json
-// POST /presets
-
 {
-	"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
-	"layout": "cards",
-	"search": "Directus"
+	"preset_object_field_1": "value_1",
+	"preset_object_field_2": "value_2",
+	"preset_object_field_3": "value_3"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	create_presets_item(data: create_directus_presets_input!): directus_presets
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [preset object](#the-preset-object).
+
+### Response
+
+Returns the [preset object](#the-preset-object) for the created preset.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /presets`
+```json
+{
+	"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
+	"layout": "cards",
+	"search": "Directus"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_presets_item(data: { user: "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca", layout: "cards", search: "Directus" }) {
@@ -234,6 +277,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -241,29 +286,60 @@ mutation {
 
 Create multiple new presets.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /presets`
+```json
+[
+	{
+		"preset_object_field_1": "value_1",
+		"preset_object_field_2": "value_2",
+		"preset_object_field_3": "value_3"
+	},
+	{
+		"preset_object_field_1": "value_1",
+		"preset_object_field_2": "value_2",
+		"preset_object_field_3": "value_3"
+	}
+]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_presets_items(data: [create_directus_presets_input!]!): [directus_presets]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [preset objects](#the-preset-object).
 
-### Returns
+### Response
 
 Returns the [preset object](#the-preset-object) for the created preset.
 
-### REST API
+### Example
 
-```
-POST /presets
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /presets`
 ```json
-// POST /presets
-
 [
 	{
 		"collection": "directus_files",
@@ -278,21 +354,11 @@ POST /presets
 	}
 ]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_presets_items(data: [create_directus_presets_input!]!): [directus_presets]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_presets_items(
@@ -311,6 +377,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -318,48 +386,62 @@ mutation {
 
 Update an existing preset.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [preset object](#the-preset-object).
-
-### Returns
-
-Returns the [preset object](#the-preset-object) for the updated preset.
-
-### REST API
-
-```
-PATCH /presets/:id
-```
-
-##### Example
-
+`PATCH /presets/:id`
 ```json
-// PATCH /presets/34
-
 {
-	"layout": "tabular"
+	"preset_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_presets_item(id: ID!, data: update_directus_presets_input): directus_presets
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [preset object](#the-preset-object).
+
+### Response
+
+Returns the [preset object](#the-preset-object) for the updated preset.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /presets/34`
+```json
+{
+	"layout": "tabular"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_presets_item(id: 32, data: { layout: "tabular" }) {
@@ -369,17 +451,51 @@ mutation {
 }
 ```
 
+</template>
+</SnippetToggler>
+
 ---
 
 ## Update Multiple Presets
 
 Update multiple existing presets.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /presets`
+```json
+{
+	"keys": [preset_1_key, preset_2_key],
+	"data": {
+		"preset_object_field": "value_1"
+
+	}
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+    update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
+}
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the presets you'd like to update.
@@ -387,21 +503,18 @@ Array of primary keys of the presets you'd like to update.
 `data` **Required**\
 Any of [the preset object](#the-preset-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [preset objects](#the-preset-object) for the updated presets.
 
-### REST API
+### Example
 
-```
-PATCH /presets
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /presets`
 ```json
-// PATCH /presets
-
 {
 	"keys": [15, 64],
 	"data": {
@@ -409,21 +522,11 @@ PATCH /presets
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_presets_items(ids: [15, 64], data: { layout: "tabular" }) {
@@ -432,6 +535,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -439,36 +544,44 @@ mutation {
 
 Delete an existing preset.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /presets/:id
-```
+`DELETE /presets/:id`
 
-##### Example
+</template>
 
-```
-DELETE /presets/34
-```
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_presets_item(id: ID!): delete_one
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /presets/34`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_presets_item(id: 32) {
@@ -476,6 +589,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -483,41 +598,52 @@ mutation {
 
 Delete multiple existing presets.
 
-### Request Body
+### Request
 
-An array of preset primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty body.
-
-### REST API
-
-```
-DELETE /presets
-```
-
-##### Example
-
+`DELETE /presets`
 ```json
-// DELETE /presets
-[15, 251, 810]
+[preset_1_key, preset_2_key, preset_3_key]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_presets_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
 
+An array of preset primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /presets`
+```json
+[15, 251, 810]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_presets_items(ids: [15, 251, 810]) {
@@ -525,3 +651,6 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
