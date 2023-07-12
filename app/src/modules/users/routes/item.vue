@@ -238,6 +238,7 @@ const {
 	archiving,
 	isArchived,
 	validationErrors,
+	refresh,
 } = useItem(ref('directus_users'), primaryKey);
 
 if (props.role) {
@@ -335,7 +336,6 @@ async function saveAndStay() {
 		const savedItem: Record<string, any> = await save();
 		await setLang(savedItem);
 		await refreshCurrentUser();
-
 
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem.id;
