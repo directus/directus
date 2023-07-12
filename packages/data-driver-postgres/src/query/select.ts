@@ -5,6 +5,9 @@ import { convertCount } from '../utils/functions.js';
 /**
  * Generates the `SELECT x, y` part of a SQL statement.
  * The fields are always prefixed with the table name.
+ *
+ * @param AbstractSqlQuery the whole query object
+ * @returns the `SELECT x, y` part of a SQL statement
  */
 export const select = ({ select }: AbstractSqlQuery): string => {
 	const escapedColumns = select.map((node) => {

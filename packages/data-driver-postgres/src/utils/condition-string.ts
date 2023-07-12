@@ -49,14 +49,16 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		}
 
 		if (where.condition.type === 'geo-condition') {
-			// PostGIS Manual: http://www.postgis.net/docs/ST_Intersects.html
 			const wrappedColumn = wrapColumn(target.table, target.column);
 			const compareValue = `$${where.condition.compareTo.parameterIndex + 1}`;
 
-			if (where.condition.operation === 'intersects') {
-				return `ST_Intersects(${wrappedColumn}, ${compareValue})`;
-			} else {
-				throw new Error(`Intersects_bbox is not yet supported.`);
+			switch (where.condition.operation) {
+				case 'intersects':
+					// PostGIS Manual: http://www.postgis.net/docs/ST_Intersects.html
+					return `ST_Intersects(${wrappedColumn}, ${compareValue})`;
+				case 'intersects_bbox':
+					// https://postgis.net/docs/geometry_overlaps.html
+					return `${wrappedColumn} && ${compareValue})`;
 			}
 		}
 

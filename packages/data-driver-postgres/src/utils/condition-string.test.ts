@@ -1,17 +1,13 @@
-import type {
-	AbstractSqlQueryConditionNode,
-	AbstractSqlQueryLogicalNode,
-	SqlGeoConditionNode,
-	SqlSetConditionNode,
-} from '@directus/data-sql';
+import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '@directus/data-sql';
 import { expect, test, describe } from 'vitest';
-import { randomIdentifier } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { conditionString } from './condition-string.js';
 
 describe('Conditions', () => {
 	test('number', () => {
 		const randomTable = randomIdentifier();
 		const aColumn = randomIdentifier();
+		const parameterIndex = randomInteger(0, 100);
 
 		const where: AbstractSqlQueryConditionNode = {
 			type: 'condition',
@@ -26,17 +22,18 @@ describe('Conditions', () => {
 				operation: 'gt',
 				compareTo: {
 					type: 'value',
-					parameterIndex: 0,
+					parameterIndex,
 				},
 			},
 		};
 
-		expect(conditionString(where)).toStrictEqual(`"${randomTable}"."${aColumn}" > $1`);
+		expect(conditionString(where)).toStrictEqual(`"${randomTable}"."${aColumn}" > $${parameterIndex + 1}`);
 	});
 
 	test('letter', () => {
 		const randomTable = randomIdentifier();
 		const aColumn = randomIdentifier();
+		const parameterIndex = randomInteger(0, 100);
 
 		const where: AbstractSqlQueryConditionNode = {
 			type: 'condition',
@@ -51,17 +48,18 @@ describe('Conditions', () => {
 				operation: 'starts_with',
 				compareTo: {
 					type: 'value',
-					parameterIndex: 0,
+					parameterIndex,
 				},
 			},
 		};
 
-		expect(conditionString(where)).toStrictEqual(`"${randomTable}"."${aColumn}" LIKE '$1%'`);
+		expect(conditionString(where)).toStrictEqual(`"${randomTable}"."${aColumn}" LIKE '$${parameterIndex + 1}%'`);
 	});
 
 	test('month function', () => {
 		const randomTable = randomIdentifier();
 		const aColumn = randomIdentifier();
+		const parameterIndex = randomInteger(0, 100);
 
 		const where: AbstractSqlQueryConditionNode = {
 			type: 'condition',
@@ -80,17 +78,20 @@ describe('Conditions', () => {
 				operation: 'gt',
 				compareTo: {
 					type: 'value',
-					parameterIndex: 0,
+					parameterIndex,
 				},
 			},
 		};
 
-		expect(conditionString(where)).toStrictEqual(`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $1`);
+		expect(conditionString(where)).toStrictEqual(
+			`EXTRACT(MONTH FROM "${randomTable}"."${aColumn}") > $${parameterIndex + 1}`
+		);
 	});
 
-	test('st_intersects', () => {
+	test('intersects', () => {
 		const randomTable = randomIdentifier();
 		const randomColumn = randomIdentifier();
+		const parameterIndex = randomInteger(0, 100);
 
 		const where: AbstractSqlQueryConditionNode = {
 			type: 'condition',
@@ -105,14 +106,42 @@ describe('Conditions', () => {
 				operation: 'intersects',
 				compareTo: {
 					type: 'value',
-					parameterIndex: 0,
+					parameterIndex,
 				},
 			},
 		};
 
 		const wrappedCol = `"${randomTable}"."${randomColumn}"`;
 
-		expect(conditionString(where)).toStrictEqual(`ST_Intersects(${wrappedCol}, $1)`);
+		expect(conditionString(where)).toStrictEqual(`ST_Intersects(${wrappedCol}, $${parameterIndex + 1})`);
+	});
+
+	test('intersects_bbox', () => {
+		const randomTable = randomIdentifier();
+		const randomColumn = randomIdentifier();
+		const parameterIndex = randomInteger(0, 100);
+
+		const where: AbstractSqlQueryConditionNode = {
+			type: 'condition',
+			negate: false,
+			condition: {
+				type: 'geo-condition',
+				target: {
+					type: 'primitive',
+					table: randomTable,
+					column: randomColumn,
+				},
+				operation: 'intersects_bbox',
+				compareTo: {
+					type: 'value',
+					parameterIndex,
+				},
+			},
+		};
+
+		const wrappedCol = `"${randomTable}"."${randomColumn}"`;
+
+		expect(conditionString(where)).toStrictEqual(`${wrappedCol} && $${parameterIndex + 1})`);
 	});
 
 	test('explicit sub set', () => {
