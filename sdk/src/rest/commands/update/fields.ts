@@ -1,0 +1,32 @@
+import type { DirectusField } from '../../../schema/field.js';
+import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { RestCommand } from '../../types.js';
+import { queryToParams } from '../../utils/query-to-params.js';
+
+export type UpdateFieldOutput<
+	Schema extends object,
+	TQuery extends Query<Schema, Item>,
+	Item = DirectusField<Schema>
+> = ApplyQueryFields<Schema, Item, TQuery['fields']>;
+
+/**
+ * Updates the given field in the given collection.
+ * @param collection
+ * @param field
+ * @param item
+ * @param query
+ * @returns
+ */
+export const updateField =
+	<Schema extends object, TQuery extends Query<Schema, DirectusField<Schema>>>(
+		collection: DirectusField<Schema>['collection'],
+		field: DirectusField<Schema>['field'],
+		item: Partial<DirectusField<Schema>>,
+		query?: TQuery
+	): RestCommand<UpdateFieldOutput<Schema, TQuery>, Schema> =>
+	() => ({
+		path: `/fields/${collection}/${field}`,
+		params: queryToParams(query ?? {}),
+		body: JSON.stringify(item),
+		method: 'PATCH',
+	});

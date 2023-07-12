@@ -1,0 +1,60 @@
+{
+	"name": "@directus/sdk",
+	"version": "11.0.0-beta.3",
+	"description": "Directus JavaScript SDK",
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "sdk"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs",
+			"types": "./dist/index.d.ts"
+		},
+		"./auth": {
+			"import": "./dist/auth/index.js",
+			"require": "./dist/auth/index.cjs",
+			"types": "./dist/auth/index.d.ts"
+		},
+		"./graphql": {
+			"import": "./dist/graphql/index.js",
+			"require": "./dist/graphql/index.cjs",
+			"types": "./dist/graphql/index.d.ts"
+		},
+		"./realtime": {
+			"import": "./dist/realtime/index.js",
+			"require": "./dist/realtime/index.cjs",
+			"types": "./dist/realtime/index.d.ts"
+		},
+		"./rest": {
+			"import": "./dist/rest/index.js",
+			"require": "./dist/rest/index.cjs",
+			"types": "./dist/rest/index.d.ts"
+		},
+		"./package.json": "./package.json"
+	},
+	"types": "./dist/index.d.ts",
+	"main": "./dist/index.js",
+	"scripts": {
+		"build": "NODE_ENV=production tsup",
+		"dev": "NODE_ENV=development tsup"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "workspace:*",
+		"@directus/types": "workspace:*",
+		"@types/node-fetch": "2.6.4",
+		"@vitest/coverage-c8": "0.31.1",
+		"tsup": "7.1.0",
+		"typescript": "5.0.4",
+		"vitest": "0.31.1"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	}
+}

@@ -1,0 +1,42 @@
+import type { DirectusTranslation } from '../../../schema/translation.js';
+import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { RestCommand } from '../../types.js';
+import { queryToParams } from '../../utils/query-to-params.js';
+
+export type ReadTranslationOutput<
+	Schema extends object,
+	TQuery extends Query<Schema, Item>,
+	Item = DirectusTranslation<Schema>
+> = ApplyQueryFields<Schema, Item, TQuery['fields']>;
+
+/**
+ * List all Translations that exist in Directus.
+ * @param query The query parameters
+ * @returns An array of up to limit Translation objects. If no items are available, data will be an empty array.
+ */
+export const readTranslations =
+	<Schema extends object, TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
+		query?: TQuery
+	): RestCommand<ReadTranslationOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/translations`,
+		params: queryToParams(query ?? {}),
+		method: 'GET',
+	});
+
+/**
+ * List an existing Translation by primary key.
+ * @param key The primary key of the dashboard
+ * @param query The query parameters
+ * @returns Returns a Translation object if a valid primary key was provided.
+ */
+export const readTranslation =
+	<Schema extends object, TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
+		key: DirectusTranslation<Schema>['id'],
+		query?: TQuery
+	): RestCommand<ReadTranslationOutput<Schema, TQuery>, Schema> =>
+	() => ({
+		path: `/translations/${key}`,
+		params: queryToParams(query ?? {}),
+		method: 'GET',
+	});

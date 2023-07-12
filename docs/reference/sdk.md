@@ -12,6 +12,12 @@ readTime: 14 min read
 > Node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
 > storing state. Advanced customizations are available.
 
+<Card
+  title="Explore the New JavaScript SDK (Beta)"
+  h="2"
+  text="Learn how to compose a Directus client using our new modular SDK."
+  url="/guides/sdk/getting-started" />
+
 ## Installation
 
 ```bash

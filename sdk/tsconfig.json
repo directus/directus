@@ -1,0 +1,12 @@
+{
+	"extends": "@directus/tsconfig/node18-esm.json",
+	"compilerOptions": {
+		"outDir": "dist",
+		"lib": ["DOM"]
+	},
+	"include": ["src"],
+	"typedocOptions": {
+		"entryPoints": ["./src/client.ts", "./src/*/index.ts"],
+		"name": "@directus/SDK (beta)"
+	}
+}
