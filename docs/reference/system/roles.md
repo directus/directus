@@ -60,38 +60,53 @@ The users in this role. One-to-many to [users](/reference/system/users).
 
 List all roles that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [role objects](#the-role-object). If no items are available, data will
-be an empty array.
+`GET /roles`
 
-### REST API
+`SEARCH /roles`
+</template>
 
-```
-GET /roles
-SEARCH /roles
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	roles: [directus_roles]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [role objects](#the-role-object). If no items are available, data will
+be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /roles`
+
+`SEARCH /roles`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	roles {
@@ -103,6 +118,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -110,40 +127,44 @@ query {
 
 List an existing role by primary key.
 
-### Query Parameters
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-Supports all [global query parameters](/reference/query).
+<template #rest>
 
-### Returns
+`GET /roles/:id`
+</template>
 
-Returns the requested [role object](#the-role-object).
+<template #graphql>
 
-### REST API
-
-```
-GET /roles/:id
-```
-
-##### Example
-
-```
-GET /roles/b4cb3b64-8580-4ad9-a099-eade6da24302
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	roles_by_id(id: ID!): directus_roles
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [role object](#the-role-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /roles/b4cb3b64-8580-4ad9-a099-eade6da24302`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	roles_by_id(id: 2) {
@@ -155,6 +176,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -162,29 +185,55 @@ query {
 
 Create a new role.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /roles`
+```json
+{
+	"role_object_field_1": "value_1",
+	"role_object_field_2": "value_2",
+	"role_object_field_3": value_3,
+	"role_object_field_4": value_4,
+	"role_object_field_5": value_5,
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_roles_item(data: create_directus_roles_input!): directus_roles
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 A partial [role object](#the-role-object).
 
-### Returns
+### Response
 
 Returns the [role object](#the-role-object) for the created role.
 
-### REST API
+### Example
 
-```
-POST /roles
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /roles`
 ```json
-// POST /roles
-
 {
 	"name": "Interns",
 	"icon": "verified_user",
@@ -193,21 +242,11 @@ POST /roles
 	"app_access": true
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_roles_item(data: create_directus_roles_input!): directus_roles
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_roles_item(
@@ -221,6 +260,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -228,28 +269,64 @@ mutation {
 
 Create multiple new roles.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /roles`
+```json
+[
+{
+	"role_object_1_field_1": "value_1",
+	"role_object_1_field_2": "value_2",
+	"role_object_1_field_3": value_3,
+	"role_object_1_field_4": value_4,
+	"role_object_1_field_5": value_5,
+},
+{
+	"role_object_2_field_1": "value_6",
+	"role_object_2_field_2": "value_7",
+	"role_object_2_field_3": value_8,
+	"role_object_2_field_4": value_9,
+	"role_object_2_field_5": value_10,
+},
+]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_roles_items(data: [create_directus_roles_input!]!): [directus_roles]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [role objects](#the-role-object).
 
-### Returns
+### Response
 
 Returns the [role objects](#the-role-object) for the created roles.
 
-### REST API
+### Example
 
-```
-POST /roles
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /roles`
 ```json
-// POST /roles
 
 [
 	{
@@ -268,21 +345,11 @@ POST /roles
 	}
 ]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_roles_items(data: [create_directus_roles_input!]!): [directus_roles]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_roles_items(
@@ -299,6 +366,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -306,48 +375,60 @@ mutation {
 
 Update an existing role.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [role object](#the-role-object).
-
-### Returns
-
-Returns the [role object](#the-role-object) for the updated role.
-
-### REST API
-
-```
-PATCH /roles/:id
-```
-
-##### Example
-
+`PATCH /roles/:id`
 ```json
-// PATCH /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
-
 {
-	"icon": "attractions"
+	"roles_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_roles_item(id: ID!, data: update_directus_roles_input): directus_roles
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [role object](#the-role-object).
+
+### Response
+
+Returns the [role object](#the-role-object) for the updated role.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+```json
+{
+	"icon": "attractions"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_roles_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", data: { icon: "attractions" }) {
@@ -359,6 +440,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -366,11 +449,39 @@ mutation {
 
 Update multiple existing roles.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /roles`
+```json
+{
+	"keys": ["role_1_key", "role_2_key"],
+	"data": {
+		"role_object_field": "value_1"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+    update_roles_items(ids: [ID!]!, data: update_directus_roles_input): [directus_roles]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the roles you'd like to update.
@@ -378,21 +489,18 @@ Array of primary keys of the roles you'd like to update.
 `data` **Required**\
 Any of [the role object](#the-role-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [role objects](#the-role-object) for the updated roles.
 
-### REST API
+### Example
 
-```
-PATCH /roles
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /roles`
 ```json
-// PATCH /roles
-
 {
 	"keys": ["c86c2761-65d3-43c3-897f-6f74ad6a5bd7", "6fc3d5d3-a37b-4da8-a2f4-ed62ad5abe03"],
 	"data": {
@@ -400,21 +508,11 @@ PATCH /roles
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_roles_items(ids: [ID!]!, data: update_directus_roles_input): [directus_roles]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_roles_items(
@@ -429,6 +527,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -436,36 +536,42 @@ mutation {
 
 Delete an existing role.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /roles/:id
-```
+`DELETE /roles/:id`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-DELETE /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_roles_item(id: ID!): delete_one
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Response
 
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_roles_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7") {
@@ -473,6 +579,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -480,41 +588,53 @@ mutation {
 
 Delete multiple existing roles.
 
-### Request Body
+### Request
 
-An array of role primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty body.
-
-### REST API
-
-```
-DELETE /roles
-```
-
-##### Example
-
+`DELETE /roles`
 ```json
-// DELETE /roles
-["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+["role_1_key", "role_2_key"]
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_roles_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
 
+An array of role primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /roles`
+```json
+["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_roles_items(ids: ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]) {
@@ -522,5 +642,5 @@ mutation {
 	}
 }
 ```
-
----
+</template>
+</SnippetToggler>
