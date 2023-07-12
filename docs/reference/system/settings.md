@@ -115,34 +115,46 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 
 ## Retrieve Settings
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the [settings object](#the-settings-object).
+`GET /settings`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /settings
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	settings: directus_settings
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the [settings object](#the-settings-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /settings`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	settings {
@@ -150,53 +162,67 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
 ## Update Settings
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [settings object](#the-settings-object).
-
-### Returns
-
-Returns the [settings object](#the-setting-object).
-
-### REST API
-
-```
-PATCH /settings
-```
-
-##### Example
-
+`PATCH /settings`
 ```json
-// PATCH /settings
-
 {
-	"project_url": "https://example.com/"
+	"settings_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_settings(data: update_directus_settings_input!): directus_settings
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [settings object](#the-settings-object).
+
+### Response
+
+Returns the [settings object](#the-setting-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /settings`
+```json
+{
+	"project_url": "https://example.com/"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_settings(data: { project_url: "https://example.com" }) {
@@ -205,3 +231,5 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
