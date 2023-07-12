@@ -21,35 +21,48 @@ This OAS spec is based on the read permissions of the currently authenticated us
 
 :::
 
-### Returns
+### Request
 
-Object conforming to [the OpenAPI Specification](https://swagger.io/specification)
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-GET /server/specs/oas
-```
+`GET /server/specs/oas`
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	server_specs_oas: String
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Response
+
+Object conforming to [the OpenAPI Specification](https://swagger.io/specification)
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /server/specs/oas`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
 	server_specs_oas
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -62,6 +75,28 @@ Retrieve the GraphQL SDL for the current project.
 The SDL is based on the permissions of the currently authenticated user.
 
 :::
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /server/specs/graphql/`
+
+`GET /server/specs/graphql/system`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Query {
+    server_specs_graphql(scope: graphql_sdl_scope): String
+}
+```
+</template>
+</SnippetToggler>
 
 ### Returns
 
@@ -89,32 +124,27 @@ type articles {
 # etc
 ```
 
-### REST API
+### Example
 
-```
-GET /server/specs/graphql/
-GET /server/specs/graphql/system
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### GraphQL
+<template #rest>
 
-```
-POST /graphql/system
-```
+`GET /server/specs/graphql/`
 
-```graphql
-type Query {
-	server_specs_graphql(scope: graphql_sdl_scope): String
-}
-```
+`GET /server/specs/graphql/system`
+</template>
 
-##### Example
+<template #graphql>
 
+`POST /graphql/system`
 ```graphql
 query {
 	server_specs_graphql(scope: system)
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -122,35 +152,49 @@ query {
 
 Ping... pong! 🏓
 
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /server/ping`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Query {
+    server_ping: String
+}
+```
+</template>
+</SnippetToggler>
+
 ### Returns
 
 Pong.
 
-### REST API
+### Example
 
-```
-GET /server/ping
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### GraphQL
+<template #rest>
 
-```
-POST /graphql/system
-```
+`GET /server/ping`
+</template>
 
-```graphql
-type Query {
-	server_ping: String
-}
-```
+<template #graphql>
 
-##### Example
-
+`POST /graphql/system`
 ```graphql
 query {
 	server_ping
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -164,7 +208,27 @@ The public information is returned for everybody. Admin users get additional inf
 
 :::
 
-### Returns
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /server/info`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Query {
+	server_info: server_info
+}
+```
+</template>
+</SnippetToggler>
+
+### Response
 
 `project` **object**\
 Public information about the project. Used to render the Admin App public pages.
@@ -189,26 +253,18 @@ The default query limit used when not defined in the API request
 `queryLimit.max` **number**\
 The maximum query limit accepted on API requests
 
-### REST API
+### Example
 
-```
-GET /server/info
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### GraphQL
+<template #rest>
 
-```
-POST /graphql/system
-```
+`GET /server/info`
+</template>
 
-```graphql
-type Query {
-	server_info: server_info
-}
-```
+<template #graphql>
 
-##### Example
-
+`POST /graphql/system`
 ```graphql
 query {
 	server_info {
@@ -218,6 +274,9 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -293,6 +352,26 @@ return more in-depth information about the current health status of the system.
 
 :::
 
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /server/health`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Query {
+	server_health: JSON
+}
+```
+</template>
+</SnippetToggler>
+
 ### Returns
 
 `status` **string**\
@@ -309,30 +388,22 @@ UUID of the current Directus instance.
 `checks` **array**\
 Array with the status of all individually connected services.
 
-### REST API
+### Example
 
-```
-GET /server/health
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### GraphQL
+<template #rest>
 
-```
-POST /graphql/system
-```
+`GET /server/health`
+</template>
 
-```graphql
-type Query {
-	server_health: JSON
-}
-```
+<template #graphql>
 
-##### Example
-
+`POST /graphql/system`
 ```graphql
 query {
 	server_health
 }
 ```
-
----
+</template>
+</SnippetToggler>
