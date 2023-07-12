@@ -124,34 +124,46 @@ to a collection that the current user doesn't have access to are stripped out.
 
 :::
 
-### Query Parameters
+### Request
 
-Doesn't support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Array of [relation objects](#the-relation-object). If no items are available, data will be an empty array.
+`GET /relations`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /relations
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	relations: [directus_relations]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Doesn't support any query parameters.
+
+### Response
+
+Array of [relation objects](#the-relation-object). If no items are available, data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /relations`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	relations {
@@ -160,6 +172,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -174,40 +188,47 @@ to a collection that the current user doesn't have access to are stripped out.
 
 :::
 
-### Query Parameters
+### Request
 
-Doesn't support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Array of [relation objects](#the-relation-object). If no items are available, data will be an empty array.
+`GET /relations/:collection`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /relations/:collection
-```
-
-##### Example
-
-```
-GET /relations/articles
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	relations_in_collection(collection: String!): [directus_relations]
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+#### Query Parameters
+
+Doesn't support any query parameters.
+
+### Response
+
+Array of [relation objects](#the-relation-object). If no items are available, data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /relations/articles`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	relations_in_collection(collection: "articles") {
@@ -216,6 +237,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -223,40 +246,46 @@ query {
 
 List an existing relation by collection/field name.
 
-### Query Parameters
+### Request
 
-Doesn't support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the requested [relation object](#the-relation-object).
+`GET /relations/:collection/:field`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /relations/:collection/:field
-```
-
-##### Example
-
-```
-GET /relations/articles/featured_image
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	relations_by_name(collection: String!, field: String!): directus_relations
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Doesn't support any query parameters.
+
+### Response
+
+Returns the requested [relation object](#the-relation-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /relations/articles/featured_image`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	relations_by_name(collection: "articles", field: "featured_image") {
@@ -266,6 +295,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -273,61 +304,77 @@ query {
 
 Create a new relation.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /relations`
+```json
+{
+	"relations_object_field_1": "value_1",
+	"relations_object_field_2": "value_2",
+	"relations_object_field_3": "value_3"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_relations_item(data: create_directus_relations_input!): directus_relations
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Doesn't support any query parameters.
 
-### Request Body
+#### Request Body
 
 A partial [relation object](#the-relation-object).
 
-### Returns
+### Response
 
 Returns the [relation object](#the-relation-object) for the created relation.
 
-### REST API
+### Example
 
-```
-POST /relations
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /relations`
 ```json
-// POST /relations
-
 {
 	"collection": "articles",
 	"field": "featured_image",
 	"related_collection": "directus_files"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_relations_item(data: create_directus_relations_input!): directus_relations
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
-	create_relations_item(
-		data: { collection: "articles", field: "featured_image", related_collection: "directus_files" }
-	) {
-		collection
-		field
-		related_collection
-	}
+    create_relations_item(
+        data: { collection: "articles", field: "featured_image", related_collection: "directus_files" }
+    ) {
+        collection
+        field
+        related_collection
+    }
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -335,50 +382,64 @@ mutation {
 
 Update an existing relation.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /relations/:collection/:field`
+```json
+{
+	"relations_object_field_1": {
+		"relations_object_field_1.1": "value"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_relations_item(collection: String!, field: String!, data: update_directus_relations_input!): directus_relations
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Doesn't support any query parameters.
 
-### Request Body
+#### Request Body
 
 A partial [relation object](#the-relation-object).
 
-### Returns
+### Response
 
 Returns the [relation object](#the-relation-object) for the created relation.
 
-### REST API
+### Example
 
-```
-PATCH /relations/:collection/:field
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /relations/articles/author`
 ```json
-// PATCH /relations/articles/author
-
 {
 	"meta": {
 		"one_field": "articles"
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_relations_item(collection: String!, field: String!, data: update_directus_relations_input!): directus_relations
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_relations_item(collection: "articles", field: "author", data: { meta: { one_field: "articles" } }) {
@@ -388,6 +449,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -395,36 +458,42 @@ mutation {
 
 Delete an existing relation.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /relations/:collection/:field
-```
+`DELETE /relations/:collection/:field`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-DELETE /relations/articles/author
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_relations_item(collection: String!, field: String!): delete_one
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Returns
 
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /relations/articles/author`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_relations_item(collection: "articles", field: "author") {
@@ -433,3 +502,5 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
