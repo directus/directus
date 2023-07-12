@@ -253,3 +253,4 @@ operations:
     message: הודעה
   notification:
     message: הודעה
+    subject: נושא

@@ -275,23 +275,23 @@ const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
-			logger.trace(e, `[OpenID] Invalid grant`);
+			logger.warn(e, `[OpenID] Invalid grant`);
 			return new InvalidTokenError();
 		}
 
 		// Server response error
-		logger.trace(e, `[OpenID] Unknown OP error`);
+		logger.warn(e, `[OpenID] Unknown OP error`);
 		return new ServiceUnavailableError({
 			service: 'openid',
 			reason: `Service returned unexpected response: ${e.error_description}`,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
-		logger.trace(e, `[OpenID] Unknown RP error`);
+		logger.warn(e, `[OpenID] Unknown RP error`);
 		return new InvalidCredentialsError();
 	}
 
-	logger.trace(e, `[OpenID] Unknown error`);
+	logger.warn(e, `[OpenID] Unknown error`);
 	return e;
 };
 

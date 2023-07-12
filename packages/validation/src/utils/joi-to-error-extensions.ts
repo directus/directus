@@ -94,6 +94,27 @@ export const joiValidationErrorItemToErrorExtensions = (
 		extensions.invalid = validationErrorItem.context?.value;
 	}
 
+	// TODO Find a better way of passing the expected value down to the client
+	if (joiType.endsWith('.pattern.name') || joiType.endsWith('.pattern.invert.name')) {
+		extensions.type = validationErrorItem.context?.['name'];
+		const regex = validationErrorItem.context?.['regex']?.toString();
+
+		switch (extensions.type) {
+			case 'starts_with':
+			case 'nstarts_with':
+			case 'istarts_with':
+			case 'nistarts_with':
+				extensions.substring = regex.substring(2, regex.lastIndexOf('/') - 2);
+				break;
+			case 'ends_with':
+			case 'nends_with':
+			case 'iends_with':
+			case 'niends_with':
+				extensions.substring = regex.substring(3, regex.lastIndexOf('/') - 1);
+				break;
+		}
+	}
+
 	if (!extensions.type) {
 		throw new Error(`Couldn't extract validation error type from Joi validation error item`);
 	}

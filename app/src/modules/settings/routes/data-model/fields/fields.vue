@@ -72,7 +72,6 @@
 				collection="directus_collections"
 				:loading="loading"
 				:initial-values="item && item.meta"
-				:batch-mode="isBatch"
 				:primary-key="collection"
 				:disabled="item && item.collection.startsWith('directus_')"
 			/>
@@ -128,10 +127,7 @@ const { info: collectionInfo } = useCollection(collection);
 const collectionsStore = useCollectionsStore();
 const fieldsStore = useFieldsStore();
 
-const { edits, item, saving, loading, save, remove, deleting, isBatch } = useItem(
-	ref('directus_collections'),
-	collection
-);
+const { edits, item, saving, loading, save, remove, deleting } = useItem(ref('directus_collections'), collection);
 
 const hasEdits = computed<boolean>(() => {
 	if (!edits.value.meta) return false;

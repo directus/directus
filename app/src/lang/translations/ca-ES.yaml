@@ -444,11 +444,6 @@ open_file_in_tab: Obre el fitxer en una nova pestanya
 start_export: Comença l'exportació
 not_available_for_local_downloads: No disponible per a descàrregues locals
 exporting_all_items_in_collection: Exportant tots els {total} elements de {collection}.
-exporting_limited_items_in_collection: Exportant {limit} dels {total} elements de {collection}.
-exporting_no_items_to_export: No hi ha elements a exportar. Ajusta d'exportació de sota.
-exporting_download_hint: Un cop completat, aquest fitxer {format} es descarregarà autormaticament al teu dispositiu.
-exporting_batch_hint: Aquesta exportació es processarà en lots, i un cop completada, es desarà el fitxer {format} a la biblioteca de fitxers.
-exporting_batch_hint_forced: Degut al gran nombre d'elements, aquesta exportació ha de ser processada en lots, i un cop completada, es desarà el fitxer {format} a la biblioteca de fitxers.
 collection_key: Clau de la col·lecció
 name: Nom
 primary_key_field: Camp de clau primària
@@ -1757,6 +1752,7 @@ operations:
   notification:
     recipient: Usuari
     message: Missatge
+    subject: Assumpte
   request:
     url: URL
     method: Mètode
