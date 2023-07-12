@@ -426,6 +426,8 @@ mutation {
   }
 }
 ```
+</template>
+</SnippetToggler>
 
 ::: tip
 
@@ -548,6 +550,8 @@ mutation {
   }
 }
 ```
+</template>
+</SnippetToggler>
 
 ::: tip
 
