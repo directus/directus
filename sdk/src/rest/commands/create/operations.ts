@@ -11,8 +11,10 @@ export type CreateOperationOutput<
 
 /**
  * Create multiple new operations.
- * @param items
- * @param query
+ *
+ * @param items The operation to create
+ * @param query Optional return data query
+ *
  * @returns Returns the operation object for the created operation.
  */
 export const createOperations =
@@ -29,8 +31,10 @@ export const createOperations =
 
 /**
  * Create a new operation.
- * @param item
- * @param query
+ *
+ * @param item The operation to create
+ * @param query Optional return data query
+ *
  * @returns Returns the operation object for the created operation.
  */
 export const createOperation =

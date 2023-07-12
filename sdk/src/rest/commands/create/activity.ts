@@ -11,8 +11,10 @@ export type CreateActivityOutput<
 
 /**
  * Creates a new comment on a given item.
+ *
  * @param items The items to create
  * @param query Optional return data query
+ *
  * @returns Returns the activity object of the created comment.
  */
 export const createComment =

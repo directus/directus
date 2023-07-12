@@ -11,8 +11,10 @@ export type CreateNotificationOutput<
 
 /**
  * Create multiple new notifications.
+ *
  * @param items The notifications to create
  * @param query Optional return data query
+ *
  * @returns Returns the notification object for the created notification.
  */
 export const createNotifications =
@@ -29,8 +31,10 @@ export const createNotifications =
 
 /**
  * Create a new notification.
+ *
  * @param item The notification to create
  * @param query Optional return data query
+ *
  * @returns Returns the notification object for the created notification.
  */
 export const createNotification =

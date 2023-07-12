@@ -11,8 +11,10 @@ export type CreatePermissionOutput<
 
 /**
  * Create multiple new permission rules
- * @param items
- * @param query
+ *
+ * @param items The permission rules to create
+ * @param query Optional return data query
+ *
  * @returns Returns the permission objects for the created permissions.
  */
 export const createPermissions =
@@ -29,8 +31,10 @@ export const createPermissions =
 
 /**
  * Create a new permission rule
- * @param item
- * @param query
+ *
+ * @param item The permission rule to create
+ * @param query Optional return data query
+ *
  * @returns Returns the permission object for the created permission.
  */
 export const createPermission =

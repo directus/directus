@@ -11,8 +11,10 @@ export type CreateDashboardOutput<
 
 /**
  * Create multiple new dashboards.
+ *
  * @param items The items to create
  * @param query Optional return data query
+ *
  * @returns Returns the dashboard object for the created dashboards.
  */
 export const createDashboards =
@@ -29,8 +31,10 @@ export const createDashboards =
 
 /**
  * Create a new dashboard.
+ *
  * @param item The dashboard to create
  * @param query Optional return data query
+ *
  * @returns Returns the dashboard object for the created dashboard.
  */
 export const createDashboard =

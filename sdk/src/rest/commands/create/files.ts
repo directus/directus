@@ -11,15 +11,17 @@ export type CreateFileOutput<
 
 /**
  * Upload/create a new file.
+ *
  * @param data Formdata object
  * @param query The query parameters
+ *
  * @returns Returns the file object for the uploaded file, or an array of file objects if multiple files were uploaded at once.
  */
 export const uploadFile =
 	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		data: FormData,
 		query?: TQuery
-	): RestCommand<CreateFileOutput<Schema, TQuery>[], Schema> =>
+	): RestCommand<CreateFileOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: '/files',
 		method: 'POST',
@@ -30,9 +32,11 @@ export const uploadFile =
 
 /**
  * Import a file from the web
- * @param url
- * @param data
- * @param query
+ *
+ * @param url The url to import the file from
+ * @param data Formdata object
+ * @param query The query parameters
+ *
  * @returns Returns the file object for the imported file.
  */
 export const importFile =
@@ -40,7 +44,7 @@ export const importFile =
 		url: string,
 		data: Partial<DirectusFile<Schema>> = {},
 		query?: TQuery
-	): RestCommand<CreateFileOutput<Schema, TQuery>[], Schema> =>
+	): RestCommand<CreateFileOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: '/files/import',
 		method: 'POST',

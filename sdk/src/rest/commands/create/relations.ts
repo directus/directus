@@ -10,8 +10,10 @@ export type CreateRelationOutput<Schema extends object, Item = DirectusRelation<
 
 /**
  * Create a new relation.
- * @param item
- * @param query
+ *
+ * @param item The relation to create
+ * @param query Optional return data query
+ *
  * @returns Returns the relation object for the created relation.
  */
 export const createRelation =
