@@ -69,38 +69,53 @@ other than the current user's role won't be returned.
 
 :::
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [permission objects](#the-permission-object). If no items are
-available, data will be an empty array.
+`GET /permissions`
 
-### REST API
+`SEARCH /permissions`
+</template>
 
-```
-GET /permissions
-SEARCH /permissions
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	permissions: directus_permissions
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [permission objects](#the-permission-object). If no items are
+available, data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /permissions`
+
+`SEARCH /permissions`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	permissions {
@@ -110,6 +125,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -117,59 +134,46 @@ query {
 
 List an existing permission by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Returns the requested [permission object](#the-permission-object).
+`GET /permissions/:id`
+</template>
 
-### REST API
+<template #graphql>
 
-```
-GET /permissions/:id
-```
-
-##### Example
-
-```json
-// GET /permissions/34
-
-{
-	"data": {
-		"id": 34,
-		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
-		"collection": "pages",
-		"action": "create",
-		"permissions": null,
-		"validation": {
-			"title": {
-				"_contains": "Directus"
-			}
-		},
-		"presets": {
-			"published": false
-		},
-		"fields": ["title", "translations"]
-	}
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	permissions_by_id(id: ID!): directus_permissions
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [permission object](#the-permission-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /permissions/34`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	permissions_by_id(id: 34) {
@@ -179,6 +183,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -186,29 +192,54 @@ query {
 
 Create a new permission rule
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /permissions`
+```json
+{
+	"permission_object_field_1": "value_1",
+	"permission_object_field_2": "value_2",
+	"permission_object_field_3": "value_3",
+	"permission_object_field_4": ["value_4", "value_5"]
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_permissions_item(data: create_directus_permissions_input!): directus_permissions
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 A partial [permissions object](#the-permission-object). `action` and `collection` are required.
 
-### Returns
+### Response
 
 Returns the [permission object](#the-permission-object) for the created permission.
 
-### REST API
+### Example
 
-```
-POST /permissions
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /permissions`
 ```json
-// Request
-
 {
 	"collection": "pages",
 	"action": "read",
@@ -216,21 +247,11 @@ POST /permissions
 	"fields": ["id", "title"]
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_permissions_item(data: create_directus_permissions_input!): directus_permissions
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_permissions_item(
@@ -242,6 +263,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -249,29 +272,63 @@ mutation {
 
 Create multiple new permission rules
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /permissions`
+```json
+[
+	{
+		"permission_object_1_field_1": "value_1",
+		"permission_object_1_field_2": "value_2",
+		"permission_object_1_field_3": "value_3",
+		"permission_object_1_field_4": ["value_4", "value_5"]
+	},
+	{
+		"permission_object_2_field_1": "value_6",
+		"permission_object_2_field_2": "value_7",
+		"permission_object_2_field_3": "value_8",
+		"permission_object_2_field_4": ["value_9", "value_10"]
+	}
+]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_permissions_items(data: [create_directus_permissions_input!]!): [directus_permissions]
+}
+```
+</template>
+</SnippetToggler>
+
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [permissions objects](#the-permission-object). `action` and `collection` are required.
 
-### Returns
+### Response
 
 Returns the [permission objects](#the-permission-object) for the created permissions.
 
-### REST API
+### Example
 
-```
-POST /permissions
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /permissions`
 ```json
-// Request
-
 [
 	{
 		"collection": "pages",
@@ -288,20 +345,11 @@ POST /permissions
 ]
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
-```graphql
-type Mutation {
-	create_permissions_items(data: [create_directus_permissions_input!]!): [directus_permissions]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_permissions_items(
@@ -316,6 +364,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -323,47 +373,60 @@ mutation {
 
 Update an existing permissions rule.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [permissions object](#the-permission-object).
-
-### Returns
-
-Returns the [permission object](#the-permission-object) for the updated permission.
-
-### REST API
-
-```
-PATCH /permissions/:id
-```
-
-##### Example
-
+`PATCH /permissions/:id`
 ```json
-// PATCH /permissions/34
-
 {
-	"fields": ["id", "title", "body"]
+	"permissions_object_fields": ["value_1", "value_2", "value_3"]
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_permissions_item(id: ID!, data: update_directus_permissions_input!): directus_permissions
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [permissions object](#the-permission-object).
+
+### Response
+
+Returns the [permission object](#the-permission-object) for the updated permission.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /permissions/34`
+```json
+{
+	"fields": ["id", "title", "body"]
+}
+```
+</template>
+
+<template #graphql>
+
 
 ```graphql
 mutation {
@@ -374,6 +437,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -381,13 +446,40 @@ mutation {
 
 Update multiple existing permissions rules.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+
+`PATCH /permissions`
+```json
+{
+	"keys": [permission_1_key, permission_2_key],
+	"data": {
+		"permissions_object_fields": ["value_1", "value_2", "value_3"]
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+    update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
-
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the permissions you'd like to update.
@@ -399,17 +491,14 @@ Any of [the permission object](#the-permission-object)'s properties.
 
 Returns the [permission object](#the-permission-object) for the updated permissions.
 
-### REST API
+### Example
 
-```
-PATCH /permissions
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`PATCH /permissions`
 ```json
-// PATCH /permissions
-
 {
 	"keys": [34, 65],
 	"data": {
@@ -417,20 +506,9 @@ PATCH /permissions
 	}
 }
 ```
+</template>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
-}
-```
-
-##### Example
+<template #graphql>
 
 ```graphql
 mutation {
@@ -441,6 +519,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -448,36 +528,44 @@ mutation {
 
 Delete an existing permissions rule
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /permissions/:id
-```
+`DELETE /permissions/:id`
 
-##### Example
+</template>
 
-```
-DELETE /permissions/34
-```
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_permissions_item(id: ID!): delete_one
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
 
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /permissions/34`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_permissions_item(id: 34) {
@@ -485,6 +573,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -492,41 +582,52 @@ mutation {
 
 Delete multiple existing permissions rules
 
-### Request Body
+### Request
 
-An array of permission primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty body.
-
-### REST API
-
-```
-DELETE /permissions
-```
-
-##### Example
-
+`DELETE /permissions`
 ```json
-// DELETE /permissions
-
-[34, 64]
+[permission_1_key, permission_2_key]
 ```
 
-### GraphQL
+</template>
 
-```
-POST /graphql/system
-```
+<template #graphql>
 
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_permissions_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+An array of permission primary keys
+
+### Response
+
+Empty body.
 
 ##### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /permissions`
+```json
+[34, 64]
+```
+
+</template>
+
+<template #graphql>
 
 ```graphql
 mutation {
@@ -535,5 +636,5 @@ mutation {
 	}
 }
 ```
-
----
+</template>
+</SnippetToggler>
