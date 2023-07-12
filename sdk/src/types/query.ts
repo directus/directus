@@ -147,15 +147,6 @@ type HasManyToAnyRelation<Item, Key> = UnpackList<Item> extends infer TItem
 			: true
 		: never
 	: never;
-// type HasManyToAnyRelation<FieldList> = UnpackList<FieldList> extends infer Fields
-// 	? Fields extends object
-// 		? 'item' extends keyof Fields
-// 			? Fields['item'] extends object
-// 				? true
-// 				: never
-// 			: never
-// 		: never
-// 	: never;
 
 /**
  * Merge union of optional objects
