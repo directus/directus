@@ -125,7 +125,7 @@ export type ApplyQueryFields<Schema extends object, Item, FieldsList> = Item ext
 export type ApplyManyToAnyFields<Schema extends object, Item, FieldList> = UnpackList<FieldList> extends infer Fields
 	? RelationalQueryFields<Fields> extends infer RelatedFields
 		? {
-				[Key in keyof RelatedFields]: Key extends keyof Schema 
+				[Key in keyof RelatedFields]: Key extends keyof Schema
 					? ApplyQueryFields<Schema, UnpackList<Schema[Key]>, RelatedFields[Key]>
 					: never;
 		  }[keyof RelatedFields] extends infer NestedQuery
@@ -141,12 +141,12 @@ export type ApplyManyToAnyFields<Schema extends object, Item, FieldList> = Unpac
  * TODO make this dynamic instead of relying on "item" as key
  */
 type HasManyToAnyRelation<Item, Key> = UnpackList<Item> extends infer TItem
-? Key extends keyof TItem
-  ? TItem[Key] extends object
-    ? never
-	: true
-  : never
-: never;
+	? Key extends keyof TItem
+		? TItem[Key] extends object
+			? never
+			: true
+		: never
+	: never;
 // type HasManyToAnyRelation<FieldList> = UnpackList<FieldList> extends infer Fields
 // 	? Fields extends object
 // 		? 'item' extends keyof Fields
