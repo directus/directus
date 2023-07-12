@@ -2,5 +2,4 @@
 '@directus/app': minor
 ---
 
-- Add support for the confirmation of entry of choices into Dropdown component with `Tab` key
-- Also, prevent the focus from leaving the sidebar when pressing `Shift + Tab`
+Enhanced UX in dropdown choice editor by leading the focus to the save button after the last field when using `Tab` key as well as preventing the focus from leaving the sidebar when pressing `Shift + Tab`
