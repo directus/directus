@@ -5,9 +5,8 @@ import { constructSqlQuery } from '../query/index.js';
 
 export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode): string => {
 	if (where.type === 'condition') {
-		const target = where.condition.target;
-
 		if (where.condition.type === 'number-condition') {
+			const target = where.condition.target;
 			const compareValue = `$${where.condition.compareTo.parameterIndex + 1}`;
 			const operation = convertClassicOperations(where.condition.operation, where.negate);
 
@@ -24,7 +23,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		if (where.condition.type === 'letter-condition') {
 			// TODO: support functions comparison here if needed
 
-			const wrappedColumn = wrapColumn(target.table, target.column);
+			const wrappedColumn = wrapColumn(where.condition.target.table, where.condition.target.column);
 			const compareValue = `$${where.condition.compareTo.parameterIndex + 1}`;
 
 			if (where.condition.operation === 'eq') {
@@ -49,21 +48,27 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		}
 
 		if (where.condition.type === 'geo-condition') {
-			const wrappedColumn = wrapColumn(target.table, target.column);
-			const compareValue = `$${where.condition.compareTo.parameterIndex + 1}`;
+			const wrappedColumn = wrapColumn(where.condition.target.table, where.condition.target.column);
+			const parameterIndex = where.condition.compareTo.parameterIndex;
+			const compareValue = `$${parameterIndex + 1}`;
+
+			// the arguments to the intersect functions need to be in specific 'geometry' object
+			// therefore it needs to be converted using another PostGis function
+			// https://postgis.net/docs/ST_GeomFromText.html
+			const geomConvertedText = `ST_GeomFromText($${compareValue})`;
 
 			switch (where.condition.operation) {
 				case 'intersects':
 					// PostGIS Manual: http://www.postgis.net/docs/ST_Intersects.html
-					return `ST_Intersects(${wrappedColumn}, ${compareValue})`;
+					return `ST_Intersects(${wrappedColumn}, ${geomConvertedText})`;
 				case 'intersects_bbox':
 					// https://postgis.net/docs/geometry_overlaps.html
-					return `${wrappedColumn} && ${compareValue})`;
+					return `${wrappedColumn} && ${geomConvertedText})`;
 			}
 		}
 
 		if (where.condition.type === 'set-condition') {
-			const wrappedColumn = wrapColumn(target.table, target.column);
+			const wrappedColumn = wrapColumn(where.condition.target.table, where.condition.target.column);
 
 			let mappedOperation = '';
 

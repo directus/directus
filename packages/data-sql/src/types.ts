@@ -1,5 +1,4 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
-// import type { GeoJSONGeometry } from 'wellknown';
 
 export interface AbstractSqlQueryColumn {
 	table: string;
@@ -78,7 +77,7 @@ export interface AbstractSqlQuery {
 	paths: Map<string, string[]>;
 }
 
-export type ParameterTypes = string | boolean | number; //GeoJSONGeometry
+export type ParameterTypes = string | boolean | number;
 
 /**
  * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.
@@ -133,12 +132,13 @@ export interface SqlGeoConditionNode {
 	type: 'geo-condition';
 	target: AbstractSqlQuerySelectNode;
 	operation: 'intersects' | 'intersects_bbox';
-	compareTo: ValueNode; // GeoJSONGeometry instead of string?
+	compareTo: ValueNode;
 }
 
 export interface SqlSetConditionNode {
 	type: 'set-condition';
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
+	target: AbstractSqlQuerySelectNode;
 	compareTo: ValuesNode | AbstractSqlQuery;
 }
 

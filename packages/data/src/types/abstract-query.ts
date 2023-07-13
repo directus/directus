@@ -1,3 +1,5 @@
+import type { GeoJSONGeometry } from 'wellknown';
+
 /**
  * The query can be seen as a tree with various nodes.
  * Each node has a type and different attributes.
@@ -441,7 +443,7 @@ export interface GeoConditionNode {
 	type: 'geo-condition';
 	target: AbstractQueryFieldNodePrimitive;
 	operation: 'intersects' | 'intersects_bbox';
-	compareTo: string; // or 'wellknown' type? TODO: figure out
+	compareTo: GeoJSONGeometry | string; // geojson or a wellknown text (wkt) string
 }
 
 /**

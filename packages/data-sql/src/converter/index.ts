@@ -3,7 +3,6 @@ import type { AbstractSqlQuery } from '../types.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 import { convertFilter, convertSort } from './modifiers/index.js';
 import { convertNodes } from './nodes/index.js';
-import { convertGeoValues } from './Geometry/index.js';
 
 /**
  * @param abstractQuery the abstract query to convert
@@ -26,8 +25,6 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 		statement.parameters.push(...convertedFilter.parameters);
 	}
 
-	// TODO: Create a generic function for this and add unit tests. This way we might can save some tests in index.test.ts
-
 	if (abstractQuery.modifiers?.limit) {
 		statement.limit = { parameterIndex: idGen.next().value };
 		statement.parameters.push(abstractQuery.modifiers.limit.value);
@@ -41,8 +38,6 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 	if (abstractQuery.modifiers?.sort) {
 		statement.order = convertSort(abstractQuery.modifiers.sort);
 	}
-
-	statement.parameters = convertGeoValues(statement.parameters);
 
 	return statement;
 };

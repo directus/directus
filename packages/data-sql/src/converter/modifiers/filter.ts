@@ -9,6 +9,8 @@ import type {
 	ValuesNode,
 } from '../../types.js';
 import { convertFn } from '../functions.js';
+import { stringify as geojsonToWKT } from 'wellknown';
+
 import { convertAbstractQueryToAbstractSqlQuery } from '../index.js';
 
 /**
@@ -82,23 +84,48 @@ export function convertCondition(
 	// convert compareTo
 	let compareTo: ValueNode | ValuesNode | AbstractSqlQuery;
 
-	if (typeof condition.condition.compareTo === 'string' || typeof condition.condition.compareTo === 'number') {
-		compareTo = {
-			type: 'value',
-			parameterIndex: generator.next().value,
-		} as ValueNode;
+	switch (condition.condition.type) {
+		case 'letter-condition':
+		case 'number-condition':
+			compareTo = {
+				type: 'value',
+				parameterIndex: generator.next().value,
+			} as ValueNode;
 
-		parameters.push(condition.condition.compareTo);
-	} else if (Array.isArray(condition.condition.compareTo)) {
-		compareTo = {
-			type: 'values',
-			parameterIndexes: condition.condition.compareTo.map(() => generator.next().value),
-		} as ValuesNode;
+			parameters.push(condition.condition.compareTo);
 
-		parameters.push(...condition.condition.compareTo);
-	} else {
-		// against a sub query
-		compareTo = convertAbstractQueryToAbstractSqlQuery(condition.condition.compareTo);
+			break;
+		case 'geo-condition':
+			compareTo = {
+				type: 'value',
+				parameterIndex: generator.next().value,
+			} as ValueNode;
+
+			if (typeof condition.condition.compareTo === 'string') {
+				parameters.push(condition.condition.compareTo);
+			} else {
+				// if the compare value isn't a sting, it must be a GeoJSONGeometry object
+				// then convert the geo json object to a wkt string
+				parameters.push(geojsonToWKT(condition.condition.compareTo));
+			}
+
+			break;
+		case 'set-condition':
+			if (Array.isArray(condition.condition.compareTo)) {
+				// some explicit values have been passed to which should be compared
+				compareTo = {
+					type: 'values',
+					parameterIndexes: condition.condition.compareTo.map(() => generator.next().value),
+				} as ValuesNode;
+
+				parameters.push(...condition.condition.compareTo);
+			} else {
+				// if no explicit values are passen, a sub query is passed
+				// then the converter function is called recursively
+				compareTo = convertAbstractQueryToAbstractSqlQuery(condition.condition.compareTo);
+			}
+
+			break;
 	}
 
 	const res = {
