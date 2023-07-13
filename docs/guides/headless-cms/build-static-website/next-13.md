@@ -173,7 +173,7 @@ import directus from 'lib/directus';
 async function getPosts() {
   const posts = await directus.request(
     readItems('posts', {
-      fields: ['slug', 'title', 'publish_date', 'author.name'],
+      fields: ['slug', 'title', 'publish_date', {'author': ['name']}],
       sort: ['-publish_date']
     })
   );
