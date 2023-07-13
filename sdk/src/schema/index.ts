@@ -1,5 +1,6 @@
 export * from './activity.js';
 export * from './collection.js';
+export * from './core.js';
 export * from './dashboard.js';
 export * from './field.js';
 export * from './file.js';

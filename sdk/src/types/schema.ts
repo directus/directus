@@ -1,4 +1,4 @@
-import type { CoreSchema } from '../schema/core.js';
+import type { CoreSchema } from '../schema/index.js';
 
 /**
  * Get all available top level Item types from a given Schema
@@ -72,6 +72,10 @@ export type MergeCoreCollection<
  */
 export type CompleteSchema<Schema extends object> = CoreSchema<Schema> extends infer Core
 	? {
-			[Collection in keyof Schema & keyof Core]: Collection extends keyof Core ? Core[Collection] : Schema[Collection];
+			[Collection in keyof Schema | keyof Core]: Collection extends keyof Core
+				? Core[Collection]
+				: Collection extends keyof Schema
+				? Schema[Collection]
+				: never;
 	  }
 	: never;
