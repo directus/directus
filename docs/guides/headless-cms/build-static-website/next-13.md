@@ -234,7 +234,7 @@ async function getPost(slug) {
   try {
     const post = await directus.request(
       readItem('posts', slug, {
-        fields: ['*.*'],
+        fields: ['*', { 'relation': ['*'] }],
       })
     );
     return post;
