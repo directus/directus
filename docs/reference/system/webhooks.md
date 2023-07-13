@@ -58,38 +58,53 @@ What collections to fire this webhook on.
 
 List all webhooks that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-An array of up to [limit](/reference/query#limit) [webhook objects](#the-webhook-object). If no items are available,
-data will be an empty array.
+`GET /webhooks`
 
-### REST API
+`SEARCH /webhooks`
+</template>
 
-```
-GET /webhooks
-SEARCH /webhooks
-```
+<template #graphql>
 
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Query {
 	webhooks: [directus_webhooks]
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
 
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [webhook objects](#the-webhook-object). If no items are available,
+data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /webhooks`
+
+`SEARCH /webhooks`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 query {
 	webhooks {
@@ -98,12 +113,34 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
 ## Retrieve a Webhook
 
 List an existing webhook by primary key.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /webhooks/:id`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Query {
+	webhooks_by_id(id: ID!): directus_webhooks
+}
+```
+</template>
+</SnippetToggler>
 
 ### Query Parameters
 
@@ -113,26 +150,18 @@ Supports all [global query parameters](/reference/query).
 
 Returns the requested [webhook object](#the-webhook-object).
 
-### REST API
+### Examples
 
-```
-GET /webhooks/:id
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### GraphQL
+<template #rest>
 
-```
-POST /graphql/system
-```
+`GET /webhooks/15`
+</template>
 
-```graphql
-type Query {
-	webhooks_by_id(id: ID!): directus_webhooks
-}
-```
+<template #graphql>
 
-##### Examples
-
+`POST /graphql/system`
 ```graphql
 query {
 	webhooks_by_id(id: 15) {
@@ -142,6 +171,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -149,31 +180,56 @@ query {
 
 Create a new webhook.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /webhooks`
+```json
+{
+	"name": "name",
+	"actions": ["webhook_action_1", "webhook_action_2"],
+	"collections": ["collection to act on"],
+	"url": "url of webhook"
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_webhooks_item(data: create_directus_webhooks_input!): directus_webhooks
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 A partial [webhook object](#the-webhook-object).
 
 `name`, `actions`, `collections`, and `url` are required.
 
-### Returns
+### Response
 
 Returns the [webhook object](#the-webhook-object) for the created webhook.
 
-### REST API
+### Example
 
-```
-POST /webhooks
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /webhooks`
 ```json
-// POST /webhooks
-
 {
 	"name": "Example",
 	"actions": ["create", "update"],
@@ -181,21 +237,11 @@ POST /webhooks
 	"url": "https://example.com"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_webhooks_item(data: create_directus_webhooks_input!): directus_webhooks
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_webhooks_item(
@@ -206,6 +252,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -213,31 +261,64 @@ mutation {
 
 Create multiple new webhooks.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /webhooks`
+```json
+[
+	{
+		"name": "name_1",
+		"actions": ["webhook_action_1", "webhook_action_2"],
+		"collections": ["collection to act on"],
+		"url": "url of webhook_1"
+	},
+	{
+		"name": "name_2",
+		"actions": ["webhook_action_1", "webhook_action_2"],
+		"collections": ["collection to act on"],
+		"url": "url of webhook_2"
+	}
+]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	create_webhooks_items(data: [create_directus_webhooks_input!]!): [directus_webhooks]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [webhook object](#the-webhook-object).
 
 `name`, `actions`, `collections`, and `url` are required.
 
-### Returns
+### Response
 
 Returns the [webhook objects](#the-webhook-object) for the created webhooks.
 
-### REST API
+### Example
 
-```
-POST /webhooks
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /webhooks`
 ```json
-// POST /webhooks
-
 [
 	{
 		"name": "Example",
@@ -253,21 +334,11 @@ POST /webhooks
 	}
 ]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_webhooks_items(data: [create_directus_webhooks_input!]!): [directus_webhooks]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	create_webhooks_items(
@@ -281,6 +352,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -288,48 +361,61 @@ mutation {
 
 Update an existing webhook.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-A partial [webhook object](#the-webhook-object).
-
-### Returns
-
-Returns the [webhook object](#the-webhook-object) for the updated webhook.
-
-### REST API
-
-```
-PATCH /webhooks/:id
-```
-
-##### Example
-
+`PATCH /webhooks/:id`
 ```json
-// PATCH /webhooks/15
-
 {
-	"name": "Build Website"
+	"webhook_object_field": "value_1"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	update_webhooks_item(id: ID!, data: update_directus_webhooks_input!): directus_webhooks
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Query Parameters
 
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [webhook object](#the-webhook-object).
+
+### Response
+
+Returns the [webhook object](#the-webhook-object) for the updated webhook.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /webhooks/15`
+```json
+{
+	"name": "Build Website"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_webhooks_item(id: 15, data: { name: "Build Website" }) {
@@ -337,6 +423,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -344,11 +432,39 @@ mutation {
 
 Update multiple existing webhooks.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`PATCH /webhooks`
+```json
+{
+	"keys": [webhook_1_key, webhook_2_key],
+	"data": {
+		"webhook_object_field": "value_1"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	update_webhooks_items(ids: [ID!]!, data: update_directus_webhooks_input!): [directus_webhooks]
+}
+```
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the webhooks you'd like to update.
@@ -356,21 +472,20 @@ Array of primary keys of the webhooks you'd like to update.
 `data` **Required**\
 Any of [the webhook object](#the-webhook-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [webhook objects](#the-webhook-object) for the updated webhooks.
 
 ### REST API
 
-```
-PATCH /webhooks
-```
+### Example
 
-##### Example
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
+<template #rest>
+
+`PATCH /webhooks`
 ```json
-// PATCH /webhooks
-
 {
 	"keys": [15, 41],
 	"data": {
@@ -378,21 +493,11 @@ PATCH /webhooks
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_webhooks_items(ids: [ID!]!, data: update_directus_webhooks_input!): [directus_webhooks]
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	update_webhooks_items(ids: [15, 41], data: { name: "Build Website" }) {
@@ -400,6 +505,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -407,36 +514,42 @@ mutation {
 
 Delete an existing webhook.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### REST API
+<template #rest>
 
-```
-DELETE /webhooks/:id
-```
+`DELETE /webhooks/:id`
+</template>
 
-##### Example
+<template #graphql>
 
-```
-DELETE /webhooks/15
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_webhooks_item(id: ID!): delete_one
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+### Response
 
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /webhooks/15`
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_webhooks_item(id: 15) {
@@ -444,6 +557,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -451,42 +566,52 @@ mutation {
 
 Delete multiple existing webhooks.
 
-### Request Body
+### Request
 
-An array of webhook primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Empty body.
-
-### REST API
-
-```
-DELETE /webhooks
-```
-
-##### Example
-
+`DELETE /webhooks`
 ```json
-// DELETE /webhooks
-
-[2, 15, 41]
+[webhook_1_key, webhook_2_key, webhook_3_key]
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	delete_webhooks_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
+</SnippetToggler>
 
-##### Example
+#### Request Body
 
+An array of webhook primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`DELETE /webhooks`
+```json
+[2, 15, 41]
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
 ```graphql
 mutation {
 	delete_webhooks_items(ids: [2, 15, 41]) {
@@ -494,5 +619,5 @@ mutation {
 	}
 }
 ```
-
----
+</template>
+</SnippetToggler>
