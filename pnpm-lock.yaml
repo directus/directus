@@ -1076,6 +1076,9 @@ importers:
       '@types/node':
         specifier: 18.16.12
         version: 18.16.12
+      '@types/wellknown':
+        specifier: 0.5.4
+        version: 0.5.4
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)
