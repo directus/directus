@@ -137,8 +137,7 @@ export default async function DynamicPage({ params }) {
 ```
 
 Go to `http://localhost:3000/about`, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK,
-the single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the
-`slug` or Primary ID Field.
+the single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the Primary ID Field.
 
 _Note that we check if a returned value exists, and return a 404 if not. Please also note that
 [`dangerouslySetInnerHTML` should only be used for trusted content](https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml)._
@@ -174,7 +173,7 @@ import directus from 'lib/directus';
 async function getPosts() {
   const posts = await directus.request(
     readItems('posts', {
-      fields: ['slug', 'title', 'publish_date', 'author.name'],
+      fields: ['slug', 'title', 'publish_date', {'author': ['name']}],
       sort: ['-publish_date']
     })
   );

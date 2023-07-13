@@ -222,7 +222,7 @@ const response = await directus.request(
     filter: {
       slug: { _eq: slug },
     },
-    fields: ['*', 'blocks.*', 'blocks.item.*', '*.collection'],
+    fields: ['*', { 'blocks': ['*', { 'item': [ { 'collection_a': ['*'], 'collection_b': ['*'] } ] }]],
     limit: 1,
   })
 );
