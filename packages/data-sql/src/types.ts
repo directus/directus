@@ -115,35 +115,28 @@ export interface AbstractSqlQueryConditionNode {
 	negate: boolean;
 }
 
-interface ConditionNodeBase extends AbstractSqlQueryNode {
-	type: string;
-	target: any;
-	operation: string;
-	compareTo: any;
-}
-
-export interface SqlLetterConditionNode extends ConditionNodeBase {
+export interface SqlLetterConditionNode {
 	type: 'letter-condition';
 	target: AbstractSqlQuerySelectNode;
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';
 	compareTo: ValueNode;
 }
 
-export interface SqlNumberConditionNode extends ConditionNodeBase {
+export interface SqlNumberConditionNode {
 	type: 'number-condition';
 	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: ValueNode;
 }
 
-export interface SqlGeoConditionNode extends ConditionNodeBase {
+export interface SqlGeoConditionNode {
 	type: 'geo-condition';
 	target: AbstractSqlQuerySelectNode;
 	operation: 'intersects' | 'intersects_bbox';
 	compareTo: ValueNode; // GeoJSONGeometry instead of string?
 }
 
-export interface SqlSetConditionNode extends ConditionNodeBase {
+export interface SqlSetConditionNode {
 	type: 'set-condition';
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
 	compareTo: ValuesNode | AbstractSqlQuery;

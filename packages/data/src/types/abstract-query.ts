@@ -362,61 +362,112 @@ export interface AbstractQueryQuantifierNode extends AbstractQueryModifierNode {
 
 /**
  * Used to set conditions on a query. The item in question needs to match all conditions to be returned.
- * @TODO support for eq null
+ * @TODO support for eq null (?)
  *
  * @example
  * ```
  * {
- * 		type: 'number-condition',
- * 		operation: 'lt',
- *		target: { type: 'field', field: 'b' }
- * 		value: 5
- * }
+ * 		type: 'condition',
+ * 		condition: {...}
+ * },
  * ```
  */
-type AbstractQueryConditionNodeBase = {
-	/** the node on which the condition should be applied */
-	target: any;
-
-	/** the operation to perform on the target, aka the comparator */
-	operation: string;
-
-	/** the node or value to which will be compared  */
-	compareTo: any;
-} & AbstractQueryModifierNode;
-
 export interface AbstractQueryConditionNode {
+	/* the type of the node */
 	type: 'condition';
+
+	/* the type of the node */
 	condition: LetterConditionNode | NumberConditionNode | GeoConditionNode | SetConditionNode;
 }
 
-export interface LetterConditionNode extends AbstractQueryConditionNodeBase {
+/**
+ * Used to compare a string field with a string value.
+ * @todo support for functions as targets?
+ * @example
+ * ```
+ * {
+ * 	type: 'letter-condition',
+ * 	target: {
+ * 		type: 'primitive',
+ * 		field: 'attribute_xy'
+ * 	},
+ * 	operation: 'contains',
+ * 	compareTo: 'someString'
+ * ```
+ */
+export interface LetterConditionNode {
 	type: 'letter-condition';
 	target: AbstractQueryFieldNodePrimitive;
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';
 	compareTo: string;
 }
 
-export interface NumberConditionNode extends AbstractQueryConditionNodeBase {
+/**
+ * Used to compare a number or date time field with a number value.
+ * @example
+ * ```
+ * {
+ * 	type: 'number-condition',
+ * 	target: {
+ * 		type: 'primitive',
+ * 		field: 'attribute_xy'
+ * 	},
+ * 	operation: 'lt',
+ * 	compareTo: 5
+ * ```
+ */
+export interface NumberConditionNode {
 	type: 'number-condition';
 	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: number;
 }
 
-export interface GeoConditionNode extends AbstractQueryConditionNodeBase {
+/**
+ * Checks if a geo field intersects with a given geo value as string.
+ * @example
+ * ```
+ * {
+ * 	type: 'geo-condition',
+ * 	target: {
+ * 		type: 'primitive',
+ * 		field: 'attribute_xy'
+ * 	},
+ * 	operation: 'intersects',
+ * 	compareTo: 'SRID=4326;POLYGON((28 53,27.707 52.293,27 52,26.293 52.293,26 53,26.293 53.707,27 54,27.707 53.707,28 53))'
+ * ```
+ */
+export interface GeoConditionNode {
 	type: 'geo-condition';
 	target: AbstractQueryFieldNodePrimitive;
 	operation: 'intersects' | 'intersects_bbox';
 	compareTo: string; // or 'wellknown' type? TODO: figure out
 }
 
-export interface SetConditionNode extends AbstractQueryConditionNodeBase {
+/**
+ * Used to compare a number field with a number value.
+ * @example
+ * ```
+ * {
+ * 	type: 'set-condition',
+ * 	target: {
+ * 		type: 'primitive',
+ * 		field: 'attribute_xy'
+ * 	},
+ * 	operation: 'lt',
+ * 	compareTo: 5
+ * ```
+ */
+export interface SetConditionNode {
 	type: 'set-condition';
+	target: AbstractQueryFieldNodePrimitive;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
 	compareTo: (string | number)[] | AbstractQuery;
 }
 
+/**
+ * Used to indicate that is should be compared to an explicit value.
+ */
 export interface AbstractQueryNodeConditionValue {
 	type: 'value';
 	value: string | number | boolean;
