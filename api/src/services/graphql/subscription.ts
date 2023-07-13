@@ -2,9 +2,11 @@ import { EventEmitter, on } from 'events';
 import { getMessenger } from '../../messenger.js';
 import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { ItemsService } from '../items.js';
-import type { Query } from '@directus/types';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
+import { refreshAccountability } from '../../websocket/authenticate.js';
+import { getSinglePayload } from '../../websocket/utils/items.js';
+import type { Subscription } from '../../websocket/types.js';
+import type { WebSocketEvent } from '../../websocket/messages.js';
 
 const messages = createPubSub(new EventEmitter());
 
@@ -22,28 +24,43 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 		const args = parseArguments(request);
 
 		for await (const payload of messages.subscribe(event)) {
-			const eventData = payload as Record<string, any>;
+			const eventData = payload as WebSocketEvent;
+
 
 			if ('event' in args && eventData['action'] !== args['event']) {
 				continue; // skip filtered events
 			}
 
+			const accountability = await refreshAccountability(self.accountability);
 			const schema = await getSchema();
 
+			const subscription: Omit<Subscription, 'client'> = {
+				collection: eventData['collection'],
+				event: eventData['action'],
+				query: { fields },
+			};
+
 			if (eventData['action'] === 'create') {
-				const { collection, key } = eventData;
-				const service = new ItemsService(collection, { schema });
-				const data = await service.readOne(key, { fields } as Query);
-				yield { [event]: { key, data, event: 'create' } };
+				try {
+					subscription.item = eventData['key'];
+					const data = await getSinglePayload(subscription, accountability, schema, eventData);
+					yield { [event]: { ...data, key: eventData['key'] } };
+				} catch {
+					/*-*/
+				}
 			}
 
 			if (eventData['action'] === 'update') {
-				const { collection, keys } = eventData;
-				const service = new ItemsService(collection, { schema });
+				// const service = new ItemsService(collection, { schema });
 
-				for (const key of keys) {
-					const data = await service.readOne(key, { fields } as Query);
-					yield { [event]: { key, data, event: 'update' } };
+				for (const key of eventData['keys']) {
+					try {
+						subscription.item = key;
+						const data = await getSinglePayload(subscription, accountability, schema, eventData);
+						yield { [event]: { ...data, key } };
+					} catch {
+						/*-*/
+					}
 				}
 			}
 
