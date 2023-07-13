@@ -166,7 +166,7 @@ function readLatestItem() {
 			type: 'items',
 			collection: 'messages',
 			action: 'read',
-			query: { limit: 1, sort: '-date_created' },
+			query: { limit: 1, sort: ['-date_created'] },
 		})
 	);
 }
@@ -260,7 +260,7 @@ operations over the connection. You have also created your first subscription.
 						type: 'items',
 						collection: 'messages',
 						action: 'read',
-						query: { limit: 1, sort: '-date_created' },
+						query: { limit: 1, sort: ['-date_created'] },
 					})
 				);
 			}
