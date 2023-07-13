@@ -9,20 +9,34 @@ pageClass: page-reference
 > Most Directus API Endpoint operations can be manipulated with the following parameters. It is important to understand
 > them to get the most out of the platform.
 
-- [Fields](#fields)
-- [Filter](#filter)
-- [Search](#search)
-- [Sort](#sort)
-- [Limit](#limit)
-- [Offset](#offset) / [Page](#page)
-- [Aggregation & Grouping](#aggregation-grouping)
-- [Deep](#deep)
-- [Aliases](#aliases)
-- [Export](#export)
-- [Functions](#functions)
-- [Metadata](#metadata)
-  - [Total Count](#total-count)
-  - [Filter Count](#filter-count)
+- [Global Query Parameters](#global-query-parameters)
+	- [Fields](#fields)
+		- [Examples](#examples)
+		- [Many-To-Any (Union Types)](#many-to-any-union-types)
+	- [Filter](#filter)
+		- [Examples](#examples-1)
+	- [Search](#search)
+		- [Example](#example)
+	- [Sort](#sort)
+		- [Examples](#examples-2)
+	- [Limit](#limit)
+		- [Examples](#examples-3)
+	- [Offset](#offset)
+		- [Examples](#examples-4)
+	- [Page](#page)
+		- [Examples](#examples-5)
+	- [Aggregation \& Grouping](#aggregation--grouping)
+		- [Grouping](#grouping)
+	- [Deep](#deep)
+		- [Examples](#examples-6)
+	- [Aliases](#aliases)
+	- [Export](#export)
+	- [Functions](#functions)
+		- [DateTime Functions](#datetime-functions)
+		- [Array Functions](#array-functions)
+	- [Metadata](#metadata)
+		- [Total Count](#total-count)
+		- [Filter Count](#filter-count)
 
 ---
 
@@ -76,7 +90,10 @@ sections.item:videos.source
 
 In GraphQL, this can be achieved using Union Types.
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
 
 ```
 ?fields=title,body,featured_image.*
@@ -88,9 +105,14 @@ In GraphQL, this can be achieved using Union Types.
 &fields[]=featured_image.*
 ```
 
-### GraphQL
+</template>
 
-_Natively supported in GraphQL_
+<template #graphql>
+
+` // Natively supported in GraphQL`
+
+</template>
+</SnippetToggler>
 
 ---
 
@@ -151,7 +173,9 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
 
 ```
 ?filter[first_name][_eq]=Rijk
@@ -160,8 +184,9 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 
 ?filter={ "first_name": { "_eq": "Rijk" }}
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
 ```graphql
 query {
@@ -170,6 +195,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -208,21 +235,24 @@ root item's fields, related item fields are not included.
 Find all items that mention Directus\
 `Directus`
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-```
-?search=Directus
-```
+<template #rest>
 
-### GraphQL
+`?search=Directus`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
-	articles(search: "Directus") {
-		id
-	}
+    articles(search: "Directus") {
+        id
+    }
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -243,7 +273,9 @@ Sort by a "sort" field, followed by publish date descending\
 Sort by a "sort" field, followed by a nested author's name\
 `sort, -author.name`
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
 
 ```
 ?sort=sort,-date_created,author.name
@@ -254,8 +286,9 @@ Sort by a "sort" field, followed by a nested author's name\
 &sort[]=-date_created
 &sort[]=-author.name
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
 ```graphql
 query {
@@ -264,6 +297,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -286,13 +321,14 @@ with caution.
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-```
-?limit=200
-```
+<template #rest>
 
-### GraphQL
+`?limit=200`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
@@ -301,6 +337,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -313,13 +351,14 @@ Skip the first `n` items in the response. Can be used for pagination.
 Get items 101—200\
 `100`
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-```
-?offset=100
-```
+<template #rest>
 
-### GraphQL
+`?offset=100`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
@@ -328,6 +367,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -344,13 +385,14 @@ Get items 1-100\
 Get items 101-200\
 `2`
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-```
-?page=2
-```
+<template #rest>
 
-### GraphQL
+`?page=2`
+</template>
+
+<template #graphql>
 
 ```graphql
 query {
@@ -359,6 +401,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -389,15 +433,18 @@ value. This allows for things like _"Average rating per month"_ or _"Total sales
 The `groupBy` query allows for grouping on multiple fields simultaneously. Combined with the [Functions](#functions),
 this allows for aggregate reporting per year-month-date.
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
 
 ```
 ?aggregate[avg]=cost
 &groupBy[]=author
 &groupBy[]=year(publish_date)
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
 ```graphql
 query {
@@ -409,6 +456,9 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
+
 
 ---
 
@@ -442,7 +492,9 @@ Only get 3 related articles, with only the top rated comment nested
 }
 ```
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
 
 ```
 ?deep[translations][_filter][languages_code][_eq]=en-US
@@ -451,10 +503,11 @@ Only get 3 related articles, with only the top rated comment nested
 
 ?deep={ "translations": { "_filter": { "languages_code": { "_eq": "en-US" }}}}
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-_Natively supported in GraphQL:_
+` // Natively supported in GraphQL`
 
 ```graphql
 query {
@@ -468,6 +521,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -482,15 +537,18 @@ Alias for nested fields, f.e. `field.nested`, will not work.
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
 
 ```
 ?alias[all_translations]=translations
 &alias[dutch_translations]=translations
 &deep[dutch_translations][_filter][code][_eq]=nl-NL
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
 _Natively supported in GraphQL:_
 
@@ -507,6 +565,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -516,7 +576,9 @@ Save the current API response to a file.
 
 Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
 
 ```
 ?export=csv
@@ -524,10 +586,13 @@ Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 ?export=xml
 ?export=yaml
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-n/a
+`// Not Applicable`
+</template>
+</SnippetToggler>
 
 ---
 
@@ -568,14 +633,17 @@ function name as the nested field (see the example that follows).
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
 
 ```
 ?fields=id,title,weekday(date_published)
 &filter[year(date_published)][_eq]=2021
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
 ```graphql
 query {
@@ -588,6 +656,8 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -613,7 +683,9 @@ For more details, see: [Aggregation & Grouping](#aggregation-grouping)
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
 
 ```
 ?meta=total_count
@@ -622,10 +694,11 @@ For more details, see: [Aggregation & Grouping](#aggregation-grouping)
 
 ?meta=*
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
+```graphql
 query {
 	articles_aggregated {
 		count {
@@ -634,3 +707,5 @@ query {
 	}
 }
 ```
+</template>
+</SnippetToggler>
