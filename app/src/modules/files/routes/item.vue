@@ -180,6 +180,7 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FilePreview from '@/views/private/components/file-preview.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
@@ -189,7 +190,6 @@ import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import ReplaceFile from '../components/replace-file.vue';
 import FilesNotFound from './not-found.vue';
 
@@ -314,6 +314,7 @@ async function saveAndStay() {
 	try {
 		await save();
 		revisionsDrawerDetailRef.value?.refresh?.();
+		refresh();
 	} catch {
 		// `save` will show unexpected error dialog
 	}

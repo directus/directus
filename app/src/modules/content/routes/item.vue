@@ -486,11 +486,12 @@ async function saveAndStay() {
 	try {
 		const savedItem: Record<string, any> = await save();
 
-		revisionsDrawerDetailRef.value?.refresh?.();
-
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 			router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+		} else {
+			revisionsDrawerDetailRef.value?.refresh?.();
+			refresh();
 		}
 	} catch {
 		// Save shows unexpected error dialog
