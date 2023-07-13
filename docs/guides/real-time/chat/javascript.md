@@ -134,8 +134,8 @@ if (data.type == 'auth' && data.status == 'ok') {
 			type: 'subscribe',
 			collection: 'messages',
 			query: {
-				fields: ['*', 'user_created.first_name'],
-				sort: 'date_created',
+				fields: ['*', {'user_created': ['first_name']}],
+				sort: ['date_created'],
 			},
 		})
 	);
@@ -298,8 +298,8 @@ This guide covers authentication, item creation, and subscription using WebSocke
 							type: 'subscribe',
 							collection: 'messages',
 							query: {
-								fields: ['*', 'user_created.first_name'],
-								sort: 'date_created',
+                fields: ['*', {'user_created': ['first_name']}],
+				        sort: ['date_created'],
 							},
 						})
 					);
