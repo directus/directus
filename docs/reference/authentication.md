@@ -44,7 +44,32 @@ Authorization: Bearer <token>
 
 Retrieve a temporary access token and refresh token.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /auth/login`
+
+`POST /auth/login/:provider`
+
+```json
+{
+	"email": "user_email",
+	"password": "user_password"
+}
+```
+
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `email` **Required**\
 Email address of the user you're retrieving the access token for.
@@ -59,7 +84,7 @@ The user's one-time-password (if MFA is enabled).
 Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
 Defaults to `json`.
 
-### Response Attributes
+### Response
 
 `access_token` **string**\
 Temporary access token to be used in follow-up requests.
@@ -78,15 +103,15 @@ The token's expiration time can be configured through
 
 :::
 
-### REST API
+### Example
 
-```
-POST /auth/login
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-```
-POST /auth/login/:provider
-```
+<template #rest>
+
+`POST /auth/login`
+
+`POST /auth/login/:provider`
 
 ```json
 {
@@ -94,13 +119,11 @@ POST /auth/login/:provider
 	"password": "d1r3ctu5"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	auth_login(email: "admin@example.com", password: "d1r3ctu5") {
@@ -109,6 +132,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -116,7 +141,28 @@ mutation {
 
 Retrieve a new access token using a refresh token.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /auth/refresh`
+```json
+{
+	"refresh_token": "gmPd...8wuB",
+	"mode": "json"
+}
+```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `refresh_token`\
 The refresh token to use. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have to submit
@@ -125,7 +171,7 @@ it here.
 `mode`\
 Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
 
-### Response Attributes
+### Response
 
 `access_token` **string**\
 Temporary access token to be used in follow-up requests.
@@ -137,25 +183,24 @@ How long before the access token will expire. Value is in milliseconds.
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
 as the mode in the request, the refresh token won't be returned in the JSON.
 
-### REST API
+### Example
 
-```
-POST /auth/refresh
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
+<template #rest>
+
+`POST /auth/refresh`
 ```json
 {
 	"refresh_token": "gmPd...8wuB",
 	"mode": "json"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	auth_refresh(refresh_token: "abc...def", mode: json) {
@@ -164,6 +209,8 @@ mutation {
 	}
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -171,35 +218,56 @@ mutation {
 
 Invalidate the refresh token thus destroying the user's session.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /auth/logout`
+```json
+{
+	"refresh_token": "refresh_token_value"
+}
+```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `refresh_token`\
 The refresh token to invalidate. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have
 to submit it here.
 
-### REST API
+### Example
 
-```
-POST /auth/logout
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
+<template #rest>
+
+`POST /auth/logout`
 ```json
 {
-	"refresh_token": "gmPd...8wuB"
+    "refresh_token": "gmPd...8wuB"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	auth_logout(refresh_token: "gmPd...8wuB")
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -207,7 +275,27 @@ mutation {
 
 Request a password reset email to be sent to the given user.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /auth/password/request`
+```json
+{
+    "email": "user_email"
+}
+```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `email` **Required**\
 Email address of the user you're requesting a password reset for.
@@ -217,29 +305,30 @@ Provide a custom reset url which the link in the email will lead to. The reset t
 **Note**: You need to configure the
 [`PASSWORD_RESET_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
 
-### REST API
+### Example
 
-```
-POST /auth/password/request
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
+<template #rest>
+
+`POST /auth/password/request`
 ```json
 {
 	"email": "admin@example.com"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	auth_password_request(email: "admin@example.com")
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -248,7 +337,28 @@ mutation {
 The request a password reset endpoint sends an email with a link to the admin app (or a custom route) which in turn uses
 this endpoint to allow the user to reset their password.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /auth/password/reset`
+```json
+{
+	"token": "password_reset_token",
+	"password": "password"
+}
+```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `token` **Required**\
 Password reset token, as provided in the email sent by the request endpoint.
@@ -256,30 +366,31 @@ Password reset token, as provided in the email sent by the request endpoint.
 `password` **Required**\
 New password for the user.
 
-### REST API
+### Example
 
-```
-POST /auth/password/reset
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
+<template #rest>
+
+`POST /auth/password/reset`
 ```json
 {
 	"token": "eyJh...KmUk",
 	"password": "d1r3ctu5"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	auth_password_reset(token: "eyJh...KmUk", password: "d1r3ctu5")
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -294,18 +405,13 @@ To learn more about setting up auth providers, see
 
 :::
 
-### Response Attributes
+### Request
 
-`data` **Array**\
-Array of configured auth providers.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-`disableDefault` **boolean**\
-Whether or not the default authentication provider is disabled.
+<template #rest>
 
-```
-GET /auth
-```
-
+`GET /auth`
 ```json
 {
 	"data": [
@@ -328,14 +434,76 @@ GET /auth
 }
 ```
 
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+### Response
+
+`data` **Array**\
+Array of configured auth providers.
+
+`disableDefault` **boolean**\
+Whether or not the default authentication provider is disabled.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /auth`
+```json
+{
+	"data": [
+		{
+			"name": "GitHub",
+			"driver": "oauth2",
+			"icon": "github"
+		},
+		{
+			"name": "Google",
+			"driver": "openid",
+			"icon": "google"
+		},
+		{
+			"name": "Okta",
+			"driver": "openid"
+		}
+	],
+	"disableDefault": false
+}
+```
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
+
+
 ---
 
 ## Login Using SSO Providers
 
 Will redirect to the configured SSO provider for the user to login.
 
-```
-GET /auth/login/:provider
-```
+### Request
 
----
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /auth/login/:provider`
+</template>
+
+<template #graphql>
+
+
+</template>
+</SnippetToggler>
