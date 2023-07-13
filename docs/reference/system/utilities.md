@@ -14,50 +14,65 @@ pageClass: page-reference
 
 Generate a hash for a given string.
 
-### Request Body
+### Request
 
-`string` **Required**\
-String to hash.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Returns
+<template #rest>
 
-Hashed string.
-
-### REST API
-
-```
-POST /utils/hash/generate
-```
-
-##### Example
-
+`POST /utils/hash/generate`
 ```json
-// POST /utils/hash/generate
 
 {
-	"string": "Hello World!"
+	"string": "hash"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
 	utils_hash_generate(string: String!): String
 }
 ```
 
-##### Example
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`string` **Required**\
+String to hash.
+
+### Response
+
+Hashed string.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /utils/hash/generate`
+```json
+{
+	"string": "Hello World!"
+}
+```
+</template>
+
+<template #graphql>
 
 ```graphql
 mutation {
 	utils_hash_generate(string: "Hello World!")
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -65,7 +80,34 @@ mutation {
 
 Verify a string with a hash.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /utils/hash/verify`
+```json
+{
+	"string": "test_string",
+	"hash": "hash"
+}
+```
+
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	utils_hash_verify(hash: String!, string: String!): Boolean
+}
+```
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `string` **Required**\
 Source string.
@@ -73,44 +115,67 @@ Source string.
 `hash` **Required**\
 Hash you want to verify against.
 
-### Returns
+### Response
 
 Boolean.
 
-### REST API
+### Example
 
-```
-POST /utils/hash/verify
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /utils/hash/verify`
 ```json
-// POST /utils/hash/verify
-
 {
 	"string": "Hello World!",
 	"hash": "$arg...fEfM"
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
+`POST /graphql/system`
 ```graphql
 type Mutation {
-	utils_hash_verify(hash: String!, string: String!): Boolean
+	utils_hash_verify(hash: "$arg...fEfM", string: "Hello World!")
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
 ## Manually Sort Items in Collection
 
 If a collection has a sort field, this util can be used to move items in that manual order.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /utils/sort/articles`
+```json
+{
+	"item": item_to_move,
+	"to": item_moving_to
+}
+```
+</template>
+
+<template #graphql>
+
+`POST /graphql/system`
+```graphql
+type Mutation {
+	utils_sort(collection: String!, item: ID!, to: ID!): Boolean
+}
+```
+</template>
+</SnippetToggler>
 
 ### Request Body
 
@@ -120,46 +185,35 @@ Primary key of the item you're moving in the collection.
 `to` **Required**\
 Primary key of the item you're moving the source item too.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-POST /utils/sort/:collection
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-##### Example
+<template #rest>
 
+`POST /utils/sort/articles`
 ```json
-// POST /utils/sort/articles
-
 {
 	"item": 16,
 	"to": 51
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	utils_sort(collection: String!, item: ID!, to: ID!): Boolean
-}
-```
-
-##### Example
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	utils_sort(collection: "articles", item: 16, to: 51)
 }
 ```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -171,26 +225,50 @@ just like regular file uploads. Check [Upload a File](/reference/files#upload-a-
 The import endpoint expects the file structure to match [the export query parameter](/reference/query#export). For JSON,
 this is an array of objects, where every object is an item. For CSV, the first line has to be the columns header.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /utils/import/:collection`
+```
+Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
+Content-Length: //CONTENT LENGTH
+
+--__X_BOUNDARY__
+Content-Disposition: form-data; name="file"; filename="filename"
+Content-Type: MIME Content Type
+
+//CONTENT
+
+...
+```
+</template>
+
+<template #graphql>
+
+`// Not currently available in GraphQL`
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 Send the file in a `multipart/form-data` request. See [Upload a File](/reference/files#upload-a-file) for more
 information.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /utils/import/articles`
 ```
-POST /utils/import/:collection
-```
-
-##### Example
-
-```
-POST /utils/import/articles
-
 Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
 Content-Length: 3442422
 
@@ -206,10 +284,13 @@ Content-Type: text/csv
 5,"My Fifth Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
 ...
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-n/a
+`// Not currently available in GraphQL`
+</template>
+</SnippetToggler>
 
 ---
 
@@ -217,37 +298,13 @@ n/a
 
 Export a larger data set to a file in the File Library
 
-### Query Parameters
+### Request
 
-Doesn't use any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-### Request Body
+<template #rest>
 
-`format` **Required**\
-What file format to save the export to. One of `csv`, `json`, `xml`, `yaml`.
-
-`query` **Required**\
-The query object to use for the export. Supports the [global query parameters](/reference/query).
-
-`file` **File Object**\
-Partial file object to tweak where / how the export file is saved.
-
-### Returns
-
-Empty body
-
-### REST API
-
-```
-POST /utils/export/:collection
-```
-
-##### Example
-
-```
-POST /utils/export/articles
-```
-
+`POST /utils/export/:collection`
 ```json
 {
 	"query": {
@@ -262,10 +319,61 @@ POST /utils/export/articles
 	}
 }
 ```
+</template>
 
-### GraphQL
+<template #graphql>
 
-n/a
+`// Not currently available in GraphQL`
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Doesn't use any query parameters.
+
+#### Request Body
+
+`format` **Required**\
+What file format to save the export to. One of `csv`, `json`, `xml`, `yaml`.
+
+`query` **Required**\
+The query object to use for the export. Supports the [global query parameters](/reference/query).
+
+`file` **File Object**\
+Partial file object to tweak where / how the export file is saved.
+
+### Response
+
+Empty body
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`POST /utils/export/articles`
+```json
+{
+	"query": {
+		"filter": {
+			"status": {
+				"_eq": "published"
+			}
+		}
+	},
+	"file": {
+		"folder": "34e95c19-cc50-42f2-83c8-b97616ac2390"
+	}
+}
+```
+</template>
+
+<template #graphql>
+
+`// Not currently available in GraphQL`
+</template>
+</SnippetToggler>
 
 ---
 
@@ -273,24 +381,24 @@ n/a
 
 Resets both the data and schema cache of Directus. This endpoint is only available to admin users.
 
-### Request Body
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
-n/a
+<template #rest>
 
-### Returns
+`POST /utils/cache/clear`
+</template>
 
-Empty body
+<template #graphql>
 
-### REST API
-
-```
-POST /utils/cache/clear
-```
-
-### GraphQL
-
+`POST /graphql/system`
 ```graphql
 mutation {
 	utils_cache_clear
 }
 ```
+</template>
+</SnippetToggler>
+
+### Returns
+
+Empty body
