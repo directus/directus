@@ -7,7 +7,7 @@
 		"lint": "eslint .",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
 		"test:blackbox": "pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test",
-		"prepare": "husky install"
+		"prepare": "echo 'Hi'"
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.26.1",

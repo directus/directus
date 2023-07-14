@@ -242,7 +242,7 @@
 				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
 				<export-sidebar-detail
 					:collection="collection"
-					:filter="mergeFilters(filter, archiveFilter)"
+					:filter="exportFiltersMerged"
 					:search="search"
 					:layout-query="layoutQuery"
 					@download="download"
@@ -276,6 +276,7 @@ import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
 import { usePreset } from '@/composables/use-preset';
 import { usePermissionsStore } from '@/stores/permissions';
+import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { unexpectedError } from '@/utils/unexpected-error';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';
@@ -311,6 +312,7 @@ const router = useRouter();
 
 const userStore = useUserStore();
 const permissionsStore = usePermissionsStore();
+const presetsStore = usePresetsStore();
 const layoutRef = ref();
 
 const { collection } = toRefs(props);
@@ -339,6 +341,16 @@ const {
 	clearLocalSave,
 } = usePreset(collection, bookmarkID);
 
+// Use a custom filter for the export sidebar detail
+const exportFilter = ref(null);
+const exportFiltersMerged = computed<Filter>(() => {
+	// Merge filters in order of specificity
+	return mergeFilters(
+		filter.value,
+		mergeFilters(exportFilter.value, archiveFilter.value)
+	);
+});
+
 const { layoutWrapper } = useLayout(layout);
 
 const {
@@ -358,10 +370,13 @@ const currentLayout = useExtension('layout', layout);
 
 watch(
 	collection,
-	() => {
+	async () => {
 		if (layout.value === null) {
 			layout.value = 'tabular';
 		}
+		// Update the export filter
+		const presetForAllLayouts = await presetsStore.getPresetForCollection(collection.value);
+		exportFilter.value = presetForAllLayouts?.layout_options?.['_export_filter'] || null;
 	},
 	{ immediate: true }
 );
