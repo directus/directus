@@ -74,7 +74,7 @@ export interface AbstractSqlQuery {
 	 * SQL returns data as a flat object. This map contains the flat property names and the JSON path
 	 * they correspond to.
 	 */
-	paths?: Map<string, string[]>;
+	paths: Map<string, string[]>;
 }
 
 export type ParameterTypes = string | boolean | number;
