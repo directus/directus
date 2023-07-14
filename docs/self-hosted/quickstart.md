@@ -41,6 +41,8 @@ services:
       SECRET: 'replace-with-random-value'
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
+      DB_CLIENT: 'sqlite3'
+      DB_FILENAME: '/directus/database/data.db'
       WEBSOCKETS_ENABLED: true
 ```
 
@@ -55,6 +57,7 @@ Save the file. Let's step through it:
   - `KEY` and `SECRET` are required and should be long random values. `KEY` is used for telemetry and health tracking,
     and `SECRET` is used to sign access tokens.
   - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch.
+  - `DB_CLIENT` and `DB_FILENAME` are defining the connection to your database.
   - `WEBSOCKETS_ENABLED` is not required, but enables [Directus Realtime](/guides/real-time/getting-started/index.html).
 
 The volumes section is not required, but without this, our database and file uploads will be destroyed when the Docker
