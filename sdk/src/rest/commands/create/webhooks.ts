@@ -11,8 +11,10 @@ export type CreateWebhookOutput<
 
 /**
  * Create multiple new webhooks.
- * @param items
- * @param query
+ *
+ * @param items The webhooks to create
+ * @param query Optional return data query
+ *
  * @returns Returns the webhook objects for the created webhooks.
  */
 export const createWebhooks =
@@ -29,8 +31,10 @@ export const createWebhooks =
 
 /**
  * Create a new webhook.
- * @param item
- * @param query
+ *
+ * @param item The webhook to create
+ * @param query Optional return data query
+ *
  * @returns Returns the webhook object for the created webhook.
  */
 export const createWebhook =

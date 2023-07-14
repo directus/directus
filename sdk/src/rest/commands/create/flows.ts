@@ -11,8 +11,10 @@ export type CreateFlowOutput<
 
 /**
  * Create multiple new flows.
+ *
  * @param items The flows to create
  * @param query Optional return data query
+ *
  * @returns Returns the flow object for the created flow.
  */
 export const createFlows =
@@ -29,8 +31,10 @@ export const createFlows =
 
 /**
  * Create a new flow.
+ *
  * @param item The flow to create
  * @param query Optional return data query
+ *
  * @returns Returns the flow object for the created flow.
  */
 export const createFlow =

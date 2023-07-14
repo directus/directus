@@ -20,7 +20,13 @@ export const getRequestUrl = (baseUrl: URL, path: string, params?: Record<string
 
 	if (params) {
 		for (const [k, v] of Object.entries(params)) {
-			url.searchParams.set(k, v);
+			if (v && typeof v === 'object' && !Array.isArray(v)) {
+				for (const [k2, v2] of Object.entries(v)) {
+					url.searchParams.set(`${k}[${k2}]`, String(v2));
+				}
+			} else {
+				url.searchParams.set(k, v);
+			}
 		}
 	}
 

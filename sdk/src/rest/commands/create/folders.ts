@@ -11,8 +11,10 @@ export type CreateFolderOutput<
 
 /**
  * Create multiple new (virtual) folders.
+ *
  * @param item The folder to create
  * @param query Optional return data query
+ *
  * @returns Returns the folder object of the folder that was created.
  */
 export const createFolders =
@@ -29,9 +31,11 @@ export const createFolders =
 
 /**
  * Create a new (virtual) folder.
+ *
  * @param item The folder to create
  * @param query Optional return data query
- * @returns
+ *
+ * @returns Returns the folder object of the folder that was created.
  */
 export const createFolder =
 	<Schema extends object, TQuery extends Query<Schema, DirectusFolder<Schema>>>(

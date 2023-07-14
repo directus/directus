@@ -1,10 +1,10 @@
-import type { AuthenticationData } from '../../../index.js';
+import type { AuthenticationData, AuthenticationMode } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
 
 export interface loginOptions {
 	otp?: string;
 	provider?: string;
-	mode?: 'json' | 'cookie';
+	mode?: AuthenticationMode;
 }
 
 /**
@@ -13,7 +13,8 @@ export interface loginOptions {
  * @param email Email address of the user you're retrieving the access token for.
  * @param password Password of the user.
  * @param options Optional login settings
- * @returns
+ *
+ * @returns The access and refresh tokens for the session
  */
 export const login =
 	<Schema extends object>(

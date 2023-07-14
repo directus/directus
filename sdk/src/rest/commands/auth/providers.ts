@@ -8,6 +8,7 @@ export interface ReadProviderOutput {
 
 /**
  * List all the configured auth providers.
+ *
  * @returns Array of configured auth providers.
  */
 export const readProviders =

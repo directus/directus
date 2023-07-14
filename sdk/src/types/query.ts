@@ -36,9 +36,11 @@ export type QueryFieldsRelational<Schema extends object, Item> = {
 					Schema,
 					Schema[Collection]
 				>;
-		  }
+		  }[]
 		: never;
 };
+
+// export type ManyToAnyItems<Schema extends object, Fields> =
 
 /**
  * Returns Item types that are available in the root Schema
@@ -49,11 +51,7 @@ export type ExtractItem<Schema extends object, Item> = Extract<UnpackList<Item>,
  * Returns the relation type from the current item by key
  */
 export type ExtractRelation<Schema extends object, Item extends object, Key> = Key extends keyof Item
-	? ExtractItem<Schema, Item> extends infer Relation
-		? Relation extends never
-			? never
-			: Relation
-		: never
+	? ExtractItem<Schema, Item[Key]>
 	: never;
 
 /**
@@ -90,39 +88,81 @@ export type RelationalQueryFields<Fields> = UnpackList<Fields> extends infer Fie
 /**
  * Extract the required fields from an item
  */
-export type PickFlatFields<Schema extends object, Item, Fields> = Pick<
-	RemoveRelationships<Schema, Item>,
-	Extract<Fields, keyof Item>
->;
+export type PickFlatFields<Schema extends object, Item, Fields> = Extract<Fields, keyof Item> extends never
+	? never
+	: Pick<RemoveRelationships<Schema, Item>, Extract<Fields, keyof Item>>;
 
 /**
  * Apply the configured fields query parameter on a given Item type
  */
-export type ApplyQueryFields<Schema extends object, Item, Fields> = Item extends object
-	? HasNestedFields<Fields> extends never
-		? PickFlatFields<Schema, Item, FieldsWildcard<Item, Fields>> // no relation
-		: RelationalQueryFields<Fields> extends infer RelatedFields // infer related fields
-		? PickFlatFields<Schema, Item, Exclude<FieldsWildcard<Item, Fields>, keyof RelatedFields>> & {
-				[K in keyof RelatedFields]-?: K extends keyof Item
-					? QueryFields<Schema, ExtractItem<Schema, Item[K]>> extends RelatedFields[K]
+export type ApplyQueryFields<Schema extends object, Item, FieldsList> = Item extends object
+	? MergeFields<FieldsList> extends infer Fields
+		? HasNestedFields<Fields> extends never
+			? PickFlatFields<Schema, Item, FieldsWildcard<Item, Fields>> // no relation
+			: RelationalQueryFields<Fields> extends infer RelatedFields // infer related fields
+			? {
+					[K in keyof RelatedFields]-?: K extends keyof Item
 						? ExtractRelation<Schema, Item, K> extends infer Relation
 							? Relation extends object
-								? ApplyQueryFields<Schema, Relation, RelatedFields[K]> // recursively build the result
+								? HasManyToAnyRelation<Item, K> extends never
+									? ApplyQueryFields<Schema, Relation, RelatedFields[K]> // recursively build the result
+									: ApplyManyToAnyFields<Schema, Relation, RelatedFields[K]>
 								: never
 							: never
-						: ApplyManyToAny<Schema, RelatedFields[K]> // TODO FIX M2A OUTPUT
-					: never;
-		  }
+						: never;
+			  } extends infer NestedQuery
+				? PickFlatFields<Schema, Item, Exclude<FieldsWildcard<Item, Fields>, keyof RelatedFields>> extends never
+					? NestedQuery
+					: NestedQuery & PickFlatFields<Schema, Item, Exclude<FieldsWildcard<Item, Fields>, keyof RelatedFields>>
+				: never
+			: never
 		: never
 	: never;
 
-type ApplyManyToAny<Schema extends object, Scopes> = Scopes extends object
+/**
+ * Apply the configured fields query parameter on a many to any relation
+ */
+export type ApplyManyToAnyFields<Schema extends object, Item, FieldList> = UnpackList<FieldList> extends infer Fields
+	? RelationalQueryFields<Fields> extends infer RelatedFields
+		? {
+				[Key in keyof RelatedFields]: Key extends keyof Schema
+					? ApplyQueryFields<Schema, UnpackList<Schema[Key]>, RelatedFields[Key]>
+					: never;
+		  }[keyof RelatedFields] extends infer NestedQuery
+			? PickFlatFields<Schema, Item, Fields> extends never
+				? NestedQuery
+				: NestedQuery & PickFlatFields<Schema, Item, Fields>
+			: never
+		: never
+	: never;
+
+/**
+ * Determine whether a field definition has a many-to-any relation
+ * TODO make this dynamic instead of relying on "item" as key
+ */
+type HasManyToAnyRelation<Item, Key> = UnpackList<Item> extends infer TItem
+	? Key extends keyof TItem
+		? TItem[Key] extends object
+			? never
+			: true
+		: never
+	: never;
+
+/**
+ * Merge union of optional objects
+ */
+export type MergeRelationalFields<FieldList> = Exclude<UnpackList<FieldList>, string> extends infer RelatedFields
 	? {
-			[Scope in keyof Scopes]: Scope extends keyof Schema
-				? ApplyQueryFields<Schema, UnpackList<Schema[Scope]>, Scopes[Scope]> // TODO FIX THIS! does not work!
-				: never;
+			[Key in RelatedFields extends any ? keyof RelatedFields : never]-?: Exclude<RelatedFields[Key], undefined>;
 	  }
 	: never;
+
+/**
+ * Merge separate relational objects together
+ */
+export type MergeFields<FieldList> = HasNestedFields<FieldList> extends never
+	? Extract<UnpackList<FieldList>, string>
+	: Extract<UnpackList<FieldList>, string> | MergeRelationalFields<FieldList>;
 
 /**
  * Filters

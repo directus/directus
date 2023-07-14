@@ -1,4 +1,5 @@
 export * from './activity.js';
+export * from './aggregate.js';
 export * from './collections.js';
 export * from './dashboards.js';
 export * from './extensions.js';
