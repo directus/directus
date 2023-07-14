@@ -72,4 +72,4 @@ Run the following in your terminal:
 docker compose up
 ```
 
-Directus should now be available at http://0.0.0.0:8055
+Directus should now be available at http://localhost:8055 or http://127.0.0.1:8055
