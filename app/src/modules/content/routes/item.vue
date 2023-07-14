@@ -226,7 +226,6 @@ import { useLocalStorage } from '@/composables/use-local-storage';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
-import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
@@ -234,6 +233,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
+import { useHead } from '@unhead/vue';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
@@ -315,23 +315,23 @@ const title = computed(() => {
 		: t('editing_in', { collection: collectionInfo.value?.name });
 });
 
-const tabTitle = computed(() => {
-	const tabTitle = (collectionInfo.value?.name || '') + ' | ';
+useHead({
+	title: () => {
+		const tabTitle = (collectionInfo.value?.name || '') + ' | ';
 
-	if (collectionInfo.value && collectionInfo.value.meta) {
-		if (collectionInfo.value.meta.singleton === true) {
-			return tabTitle + collectionInfo.value.name;
-		} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
-			const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
+		if (collectionInfo.value && collectionInfo.value.meta) {
+			if (collectionInfo.value.meta.singleton === true) {
+				return tabTitle + collectionInfo.value.name;
+			} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
+				const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
 
-			if (displayValue.value !== undefined) return tabTitle + displayValue.value;
+				if (displayValue.value !== undefined) return tabTitle + displayValue.value;
+			}
 		}
-	}
 
-	return tabTitle + title.value;
+		return tabTitle + title.value;
+	},
 });
-
-useTitle(tabTitle);
 
 const archiveTooltip = computed(() => {
 	if (archiveAllowed.value === false) return t('not_allowed');
@@ -486,11 +486,12 @@ async function saveAndStay() {
 	try {
 		const savedItem: Record<string, any> = await save();
 
-		revisionsDrawerDetailRef.value?.refresh?.();
-
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem[primaryKeyField.value!.field];
 			router.replace(`/content/${props.collection}/${encodeURIComponent(newPrimaryKey)}`);
+		} else {
+			revisionsDrawerDetailRef.value?.refresh?.();
+			refresh();
 		}
 	} catch {
 		// Save shows unexpected error dialog
