@@ -1,4 +1,5 @@
-export type * from './client.js';
-export type * from './query.js';
-export type * from './request.js';
-export type * from './schema.js';
+export * from './aggregate.js';
+export * from './client.js';
+export * from './query.js';
+export * from './request.js';
+export * from './schema.js';
