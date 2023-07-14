@@ -285,7 +285,7 @@ There are many ways to improve the project built in this guide:
 							type: 'subscribe',
 							collection: 'votes',
 							query: {
-								aggregate: { count: ['choice'] },
+								aggregate: { count: 'choice' },
 								groupBy: ['choice'],
 							},
 						})
