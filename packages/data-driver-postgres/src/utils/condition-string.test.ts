@@ -113,7 +113,7 @@ describe('Conditions', () => {
 
 		const wrappedCol = `"${randomTable}"."${randomColumn}"`;
 
-		expect(conditionString(where)).toStrictEqual(`ST_Intersects(${wrappedCol}, $${parameterIndex + 1})`);
+		expect(conditionString(where)).toStrictEqual(`ST_Intersects(${wrappedCol}, ST_GeomFromText($${parameterIndex + 1}))`);
 	});
 
 	test('intersects_bbox', () => {
@@ -141,7 +141,7 @@ describe('Conditions', () => {
 
 		const wrappedCol = `"${randomTable}"."${randomColumn}"`;
 
-		expect(conditionString(where)).toStrictEqual(`${wrappedCol} && $${parameterIndex + 1})`);
+		expect(conditionString(where)).toStrictEqual(`${wrappedCol} && ST_GeomFromText($${parameterIndex + 1}))`);
 	});
 
 	test('explicit sub set', () => {

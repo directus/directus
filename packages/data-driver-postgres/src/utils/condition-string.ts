@@ -50,12 +50,11 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		if (where.condition.type === 'geo-condition') {
 			const wrappedColumn = wrapColumn(where.condition.target.table, where.condition.target.column);
 			const parameterIndex = where.condition.compareTo.parameterIndex;
-			const compareValue = `$${parameterIndex + 1}`;
 
 			// the arguments to the intersect functions need to be in specific 'geometry' object
 			// therefore it needs to be converted using another PostGis function
 			// https://postgis.net/docs/ST_GeomFromText.html
-			const geomConvertedText = `ST_GeomFromText($${compareValue})`;
+			const geomConvertedText = `ST_GeomFromText($${parameterIndex + 1})`;
 
 			switch (where.condition.operation) {
 				case 'intersects':
