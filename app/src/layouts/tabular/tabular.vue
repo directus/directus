@@ -103,6 +103,16 @@
 							{{ t('hide_field') }}
 						</v-list-item-content>
 					</v-list-item>
+
+					<!-- Custom actions -->
+					<v-divider />
+
+					<v-list-item clickable @click="copyValues(header.value)">
+						<v-list-item-icon>
+							<v-icon name="content_copy" />
+						</v-list-item-icon>
+						<v-list-item-content>Copy values</v-list-item-content>
+					</v-list-item>
 				</v-list>
 			</template>
 
@@ -186,6 +196,7 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
+import { get } from '@directus/utils';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -301,6 +312,43 @@ function addField(fieldKey: string) {
 
 function removeField(fieldKey: string) {
 	fieldsWritable.value = fieldsWritable.value.filter((field) => field !== fieldKey);
+}
+
+/**
+ * Copies the values present in the given column to the clipboard
+ * @param fieldKey The name of the field
+ */
+ async function copyValues(fieldKey: string) {
+	function fallbackCopy(text: string) {
+		const textArea = document.createElement('textarea');
+		textArea.value = text;
+		document.body.appendChild(textArea);
+		textArea.focus();
+		textArea.select();
+		try {
+			const res = document.execCommand('copy');
+			if (!res) {
+				// console.error('Failed to copy using fallback method');
+			}
+		} catch (err) {
+			// console.error('Failed to copy using fallback method: ', err);
+		}
+		document.body.removeChild(textArea);
+	}
+
+	const values = props.items.map((item) => get(item, fieldKey));
+	const text = values.join('\n');
+	if (navigator.clipboard === undefined) {
+		// console.warn('Clipboard API is not available. Is this a secure context?');
+		fallbackCopy(text);
+	} else {
+		try {
+			await navigator.clipboard.writeText(text);
+		} catch (err) {
+			// console.error('Failed to copy: ', err);
+			fallbackCopy(text);
+		}
+	}
 }
 </script>
 
