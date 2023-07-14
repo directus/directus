@@ -1,59 +1,14 @@
-import type { CoreSchema, Query, RegularCollections, UnpackList } from '../../../index.js';
+
+import type { AggregationOptions, AggregationOutput, AllCollections } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
 
-export type AGGREGATION_FUNCTIONS =
-	| 'count'
-	| 'countDistinct'
-	| 'sum'
-	| 'sumDistinct'
-	| 'avg'
-	| 'avgDistinct'
-	| 'min'
-	| 'max';
-
-export type NumberAsString = string; // strings are used to ensure precision and prevent overflows
-
-type AllCollections<Schema extends object> = RegularCollections<Schema> | RegularCollections<CoreSchema<Schema>>;
-
-type GetCollection<
-	Schema extends object,
-	Collection extends AllCollections<Schema>
-> = Collection extends keyof CoreSchema<Schema>
-	? CoreSchema<Schema>[Collection]
-	: Collection extends keyof Schema
-	? Schema[Collection]
-	: never;
-
-export type WrappedFields<Fields, Funcs> = Fields extends string
-	? Funcs extends string
-		? `${Funcs}(${Fields})`
-		: never
-	: never;
-
-export type AggregationOptions<
-	Schema extends object,
-	Collection extends AllCollections<Schema>,
-	Fields = Collection extends keyof Schema ? keyof UnpackList<GetCollection<Schema, Collection>> : string,
-	Item = Collection extends keyof Schema ? UnpackList<GetCollection<Schema, Collection>> : object
-> = {
-	aggregate: Partial<Record<AGGREGATION_FUNCTIONS, Fields | '*'>>;
-	groupBy?: (Fields | WrappedFields<Fields, AGGREGATION_FUNCTIONS>)[];
-	query?: Omit<Query<Schema, Item>, 'fields' | 'deep' | 'alias'>;
-};
-
-export type AggregationOutput<
-	Schema extends object,
-	Collection extends AllCollections<Schema>,
-	Options extends AggregationOptions<Schema, Collection>
-> = {
-	[Func in keyof Options['aggregate']]: Options['aggregate'][Func] extends string
-		? Options['aggregate'][Func] extends '*'
-			? NumberAsString
-			: { [Field in Options['aggregate'][Func]]: NumberAsString }
-		: never;
-}[];
-
+/**
+ * Aggregate allow you to perform calculations on a set of values, returning a single result.
+ * @param collection The collection to aggregate
+ * @param options The aggregation options
+ * @returns Aggregated data
+ */
 export const aggregate =
 	<
 		Schema extends object,
