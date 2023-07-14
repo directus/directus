@@ -11,6 +11,7 @@ let sample: {
 beforeEach(() => {
 	sample = {
 		statement: {
+			type: 'query',
 			select: [
 				{
 					type: 'primitive',
@@ -37,6 +38,7 @@ test('Returns order part for one primitive field', () => {
 				type: 'primitive',
 				field: randomIdentifier(),
 			},
+			type: 'order',
 			direction: 'ASC',
 		},
 	];
@@ -53,6 +55,7 @@ test('Returns order part for multiple primitive fields', () => {
 				type: 'primitive',
 				field: randomIdentifier(),
 			},
+			type: 'order',
 			direction: 'ASC',
 		},
 		{
@@ -60,6 +63,7 @@ test('Returns order part for multiple primitive fields', () => {
 				type: 'primitive',
 				field: randomIdentifier(),
 			},
+			type: 'order',
 			direction: 'DESC',
 		},
 	];

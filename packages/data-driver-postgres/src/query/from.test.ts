@@ -10,6 +10,7 @@ let sample: {
 beforeEach(() => {
 	sample = {
 		statement: {
+			type: 'query',
 			select: [],
 			from: randomIdentifier(),
 			parameters: [],

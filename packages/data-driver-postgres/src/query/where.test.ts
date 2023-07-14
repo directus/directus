@@ -17,6 +17,7 @@ describe('Where clause:', () => {
 
 		sample = {
 			statement: {
+				type: 'query',
 				select: [
 					{
 						type: 'primitive',
