@@ -1,4 +1,3 @@
-
 import type { AggregationOptions, AggregationOutput, AllCollections } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
 import { queryToParams } from '../../utils/query-to-params.js';
