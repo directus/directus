@@ -157,7 +157,7 @@ if (data.type == 'auth' && data.status == 'ok') {
 			type: 'subscribe', // [!code ++]
 			collection: 'votes', // [!code ++]
 			query: { // [!code ++]
-				aggregate: { count: ['choice'] }, // [!code ++]
+				aggregate: { count: 'choice' }, // [!code ++]
 				groupBy: ['choice'], // [!code ++]
 			}, // [!code ++]
 		}) // [!code ++]
