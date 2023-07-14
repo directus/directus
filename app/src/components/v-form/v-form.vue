@@ -240,7 +240,6 @@ function useForm() {
 	const { formFields } = useFormFields(fields);
 
 	const fieldsMap: ComputedRef<Record<string, TFormField | undefined>> = computed(() => {
-		if (props.loading) return {} as Record<string, undefined>;
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 		return formFields.value.reduce((result: Record<string, Field>, field: Field) => {
 			const newField = applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field));

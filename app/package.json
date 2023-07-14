@@ -101,6 +101,8 @@
 		"@types/mime": "3.0.1",
 		"@types/qrcode": "1.5.0",
 		"@types/wellknown": "0.5.4",
+		"@unhead/addons": "1.1.30",
+		"@unhead/vue": "1.1.30",
 		"@vitejs/plugin-vue": "4.2.3",
 		"@vue/test-utils": "2.3.2",
 		"@vueuse/core": "10.1.2",
