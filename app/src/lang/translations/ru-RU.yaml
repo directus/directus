@@ -460,11 +460,6 @@ open_file_in_tab: Открыть файл в новой вкладке
 start_export: Начать экспорт
 not_available_for_local_downloads: Недоступно для локальных скачиваний
 exporting_all_items_in_collection: Экспортирование всех {total} элементов в {collection}.
-exporting_limited_items_in_collection: Экспортирование {limit} из {total} элементов в {collection}.
-exporting_no_items_to_export: Нет элементов для экспорта. Настройте конфигурацию экспорта ниже.
-exporting_download_hint: По завершении этот {format} файл будет автоматически скачан на ваше устройство.
-exporting_batch_hint: Этот экспорт будет обработан партиями, и по завершении {format} файл будет сохранен в Библиотеку файлов.
-exporting_batch_hint_forced: Из-за большого количества элементов этот экспорт будет обработан партиями, и по завершении {format} файл будет сохранен в Библиотеку файлов.
 collection_key: Ключ коллекции
 name: Название
 primary_key_field: Поле основного ключа
@@ -2103,6 +2098,7 @@ operations:
     recipient_placeholder: Введите UUID...
     recipient_note: Добавьте пользовательский UUID и нажмите Enter...
     message: Сообщение
+    subject: Тема
   request:
     name: Веб-хук / URL-адрес запроса
     description: 'Сделать запрос на URL-адрес'

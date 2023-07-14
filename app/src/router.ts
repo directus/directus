@@ -166,7 +166,7 @@ export const onAfterEach: NavigationHookAfter = (to) => {
 		}
 
 		trackTimeout = window.setTimeout(() => {
-			userStore.trackPage(to.fullPath);
+			userStore.trackPage(to);
 		}, 500);
 	}
 };

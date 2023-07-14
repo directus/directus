@@ -444,11 +444,6 @@ open_file_in_tab: Öppna fil i ny flik
 start_export: Påbörja exportering
 not_available_for_local_downloads: Inte tillgänglig för lokala nedladdningar
 exporting_all_items_in_collection: Exporterar alla {total} objekt inom {collection}.
-exporting_limited_items_in_collection: Exporterar {limit} av {total} objekt inom {collection}.
-exporting_no_items_to_export: Inga objekt att exportera. Justera exportkonfigurationen nedan.
-exporting_download_hint: När den är klar kommer den här {format}-filen att laddas ner till din enhet automatiskt.
-exporting_batch_hint: Denna export kommer att bearbetas i omgångar och när detta är slutfört kommer {format} -filen att sparas i filbiblioteket.
-exporting_batch_hint_forced: På grund av ett stort antal objekt kommer denna export att bearbetas i omgångar, och när detta är slutfört kommer {format} -filen att sparas i filbiblioteket.
 collection_key: Kollektionsnyckel
 name: Namn
 primary_key_field: Primär nyckelfält
@@ -1746,6 +1741,7 @@ operations:
   notification:
     recipient: Användare
     message: Meddelande
+    subject: Ämne
   request:
     url: URL
     method: Metod

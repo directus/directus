@@ -1,6 +1,6 @@
 {
 	"name": "@directus/composables",
-	"version": "10.0.6",
+	"version": "10.0.7",
 	"description": "Shared Vue composables for Directus use",
 	"homepage": "https://directus.io",
 	"repository": {
