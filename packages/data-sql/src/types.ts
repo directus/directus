@@ -98,19 +98,18 @@ export interface AbstractSqlQueryOrderNode extends AbstractSqlQueryNode {
 export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
 	type: 'join';
 	table: string;
-	on: SqlJoinConditionNode | AbstractSqlQueryLogicalNode;
+	on: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode;
 	as: string;
-}
-
-interface SqlJoinConditionNode {
-	type: 'join-condition';
-	target: AbstractSqlQuerySelectNode;
-	compareTo: AbstractSqlQuerySelectNode;
 }
 
 export interface AbstractSqlQueryConditionNode {
 	type: 'condition';
-	condition: SqlLetterConditionNode | SqlNumberConditionNode | SqlGeoConditionNode | SqlSetConditionNode;
+	condition:
+		| SqlLetterConditionNode
+		| SqlNumberConditionNode
+		| SqlGeoConditionNode
+		| SqlSetConditionNode
+		| SqlFieldConditionNode;
 	negate: boolean;
 }
 
@@ -140,6 +139,13 @@ export interface SqlSetConditionNode {
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
 	target: AbstractSqlQuerySelectNode;
 	compareTo: ValuesNode | AbstractSqlQuery;
+}
+
+export interface SqlFieldConditionNode {
+	type: 'field-condition';
+	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
+	target: AbstractSqlQuerySelectNode;
+	compareTo: AbstractSqlQuerySelectNode;
 }
 
 export type CompareToNodeTypes = ValueNode | AbstractSqlQuerySelectNode | AbstractSqlQuery;

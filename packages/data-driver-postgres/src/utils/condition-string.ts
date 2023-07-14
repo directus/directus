@@ -89,8 +89,17 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			}
 		}
 
+		if (where.condition.type === 'field-condition') {
+			const wrappedTargetColumn = wrapColumn(where.condition.target.table, where.condition.target.column);
+			const wrappedCompareToColumn = wrapColumn(where.condition.compareTo.table, where.condition.compareTo.column);
+			const operation = convertClassicOperations(where.condition.operation, where.negate);
+			return `${wrappedTargetColumn} ${operation} ${wrappedCompareToColumn}`;
+		}
+
 		throw new Error(`Unsupported condition type.`);
-	} else if (where.type === 'logical') {
+	}
+
+	if (where.type === 'logical') {
 		// the node is a logical node
 		const logicalGroup = where.childNodes
 			.map((childNode) =>
@@ -101,9 +110,9 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			.join(where.operator === 'and' ? ' AND ' : ' OR ');
 
 		return where.negate ? `NOT (${logicalGroup})` : logicalGroup;
-	} else {
-		throw new Error(`Unsupported where node type`);
 	}
+
+	throw new Error(`Unsupported where node type`);
 };
 
 function convertClassicOperations(operation: string, negate: boolean) {

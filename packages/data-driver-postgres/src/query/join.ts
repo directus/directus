@@ -3,8 +3,9 @@ import { conditionString } from '../utils/condition-string.js';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
 
 /**
- * Generates the `SELECT x, y` part of a SQL statement.
- * The fields are always prefixed with the table name.
+ * Generates `LEFT JOIN x ON y` part.
+ * @param query the whole abstract query
+ * @returns the JOIN part or null if there are no joins in the query
  */
 export const join = ({ join }: AbstractSqlQuery): string | null => {
 	if (join === undefined || join.length === 0) return null;
