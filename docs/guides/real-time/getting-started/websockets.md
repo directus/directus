@@ -31,7 +31,7 @@ Create an `index.html` file and open it in your code editor. Add the following b
 <html>
 	<body>
 		<script>
-			const url = 'wss://your-directus-url/websocket';
+			const url = 'ws://your-directus-url/websocket';
 			const access_token = 'your-access-token';
 			const collection = 'messages';
 		</script>
