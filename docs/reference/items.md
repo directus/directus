@@ -63,13 +63,25 @@ type Query {
 	<collection>: [<collection>]
 }
 ```
-
 </template>
 
 <template #sdk>
 
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest());
 
+const result = await client.request(
+    readItems('collection_name', {
+        fields : ['*']
+    })
+);
+
+console.log(result)
+```
 </template>
+
 
 </SnippetToggler>
 
@@ -131,6 +143,19 @@ query {
 
 <template #sdk>
 
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+    readItems('posts', {
+        fields : ['*']
+    })
+);
+
+console.log(result)
+```
 
 </template>
 
@@ -167,7 +192,15 @@ type Query {
 
 <template #sdk>
 
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItem} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
 
+const result = await client.request(readItem('collection_name', 'item_id'));
+
+console.log(result);
+```
 </template>
 
 </SnippetToggler>
@@ -206,7 +239,15 @@ type Query {
 
 <template #sdk>
 
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItem} from '@directus/sdk/rest';
+const client = createDirectus('https:/directus.example.com').with(rest())
 
+const result = await client.request(readItem('articles', '1'));
+
+console.log(result);
+```
 </template>
 
 </SnippetToggler>
@@ -229,11 +270,10 @@ Create a new item in the given collection.
 ```json
 {
 	"field": "value",
-	"field_two": "value"
+	"field_2": "value_2"
 }
 ```
 </template>
-
 
 <template #graphql>
 
@@ -244,7 +284,24 @@ type Mutation {
 	create_<collection>_item(data: create_<collection>_input): <collection>
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createItem} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createItem('collection_name', {
+            'field' : 'value_1',
+            'field_2' : 'value_2'
+    })
+);
+
+console.log(result);
+```
 </template>
 
 </SnippetToggler>
@@ -286,7 +343,6 @@ Returns the [item objects](#the-item-object) of the item that were created.
 
 </template>
 
-
 <template #graphql>
 
 `POST /graphql`
@@ -304,7 +360,20 @@ mutation {
 
 <template #sdk>
 
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createItem} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
 
+const result = await client.request(
+    createItem('articles', {
+            'title' : 'What is Directus?',
+            'content' : 'Directus is an Open Data Platform built to democratize the database.'
+    })
+);
+
+console.log(result);
+```
 </template>
 
 </SnippetToggler>
@@ -326,12 +395,12 @@ Create new items in the given collection.
 ```json
 [
 	{
-		"field_1": "value",
-		"field_1.1": "value"
+		"field_1": "value_1",
+		"field_2": "value_2"
 	},
 	{
-		"field_2": "value",
-		"field_2.1": "value"
+		"field_1": "value_3",
+		"field_2": "value_4"
 	}
 ]
 ```
@@ -353,7 +422,27 @@ type Mutation {
 
 <template #sdk>
 
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createItems} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
 
+const result = await client.request(
+    createItems('collection_name', 
+    [
+        {
+            'field_1' : 'value_1',
+            'field_2' : 'value_2'
+        },
+        {
+            'field_1' : 'value_3',
+            'field_2' : 'value_4'
+        }
+    ])
+);
+
+console.log(result);
+```
 </template>
 
 </SnippetToggler> 
@@ -411,7 +500,31 @@ mutation {
 	}
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createItems} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createItems('articles', 
+    [
+        {
+            'title' : 'What is Directus?',
+            'content' : 'Directus is an Open Data Platform built to democratize the database.'
+        },
+        {
+            'title' : 'Build your internal tools with Directus',
+            'content' : 'Flows enable custom, event-driven data processing and task automation within Directus.'
+        }
+    ])
+);
+
+console.log(result);
+```
 </template>
 
 </SnippetToggler>
@@ -447,9 +560,24 @@ type Mutation {
 	update_<collection>_item(id: ID!, data: update_<collection>_input!): <collection>
 }
 ```
-
 </template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateItem} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateItem('collection_name', 'item_id', {
+        'field' : 'value'
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 
@@ -494,6 +622,23 @@ mutation {
 ```
 </template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateItem} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateItem('articles', '5', {
+        'title' : 'What is Directus and how it can help you build your next app!?'
+    })
+);
+
+console.log(result);
+```
+</template>
+
 </SnippetToggler>
 
 ---
@@ -511,9 +656,9 @@ Update multiple items at the same time.
 `PATCH /items/:collection`
 ```json
 {
-	"field": [value_1, value_2],
-	"field_2": {
-		"field_2.1": "value_3"
+	"keys": ['id_1', 'id_2'],
+	"data": {
+		"field": "value"
 	}
 }
 ```
@@ -526,6 +671,23 @@ Update multiple items at the same time.
 type Mutation {
 	update_<collection>_items(ids: [ID!]!, data: [update_<collection>_input]): [<collection>]
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedItems} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedItems('collection_name', ['id_1', 'id_2'], {
+        'field' : 'value'
+    })
+);
+
+console.log(result);
 ```
 </template>
 
@@ -576,8 +738,25 @@ mutation {
 }
 ```
 </template>
-</SnippetToggler>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedItems} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedItems('articles', ['5', '6'], {
+        'status' : 'published'
+    })
+);
+
+console.log(result);
+```
+</template>
+
+</SnippetToggler>
 
 ---
 
@@ -601,6 +780,19 @@ Delete an existing item.
 type Mutation {
 	delete_<collection>_item(id: ID!): delete_one
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteItem} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deleteItem('collection_name', 'id'));
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -627,6 +819,19 @@ mutation {
 		id
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteItem} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteItem('articles', '5'));
+
+console.log(result);
 ```
 </template>
 
@@ -677,6 +882,34 @@ Delete multiple existing items.
 type Mutation {
 	delete_<collection>_items(ids: [ID!]!): delete_many
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteItems} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deleteItems('collection_name', ['id_1','id_2']));
+
+//or
+
+const result2 = await client.request(
+    deleteItems('collection_name', {
+        "query": {
+            "query_type": {
+                "field_1": {
+                    "filter_condition": "value_1"
+                }
+            }
+        }
+    }
+));
+
+console.log(result);
 ```
 </template>
 
@@ -736,6 +969,33 @@ mutation {
 		ids
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteItems} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteItems('articles', ['6','7']));
+
+//or
+
+const result2 = await client.request(
+    deleteItems('articles', {
+        "query": {
+            "filter": {
+                "status": {
+                    "_eq": "draft"
+                }
+            }
+        }
+    }
+));
+
+console.log(result);
 ```
 </template>
 
