@@ -39,7 +39,6 @@
 		"vitest": "0.31.1"
 	},
 	"dependencies": {
-		"lodash-es": "4.17.21",
-		"wellknown": "0.5.0"
+		"lodash-es": "4.17.21"
 	}
 }

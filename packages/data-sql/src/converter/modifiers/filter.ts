@@ -9,7 +9,6 @@ import type {
 	ValuesNode,
 } from '../../types.js';
 import { convertFn } from '../functions.js';
-import { stringify as geojsonToWKT } from 'wellknown';
 
 import { convertAbstractQueryToAbstractSqlQuery } from '../index.js';
 
@@ -101,13 +100,7 @@ export function convertCondition(
 				parameterIndex: generator.next().value,
 			} as ValueNode;
 
-			if (typeof condition.condition.compareTo === 'string') {
-				parameters.push(condition.condition.compareTo);
-			} else {
-				// if the compare value isn't a sting, it must be a GeoJSONGeometry object
-				// then convert the geo json object to a wkt string
-				parameters.push(geojsonToWKT(condition.condition.compareTo));
-			}
+			parameters.push(condition.condition.compareTo);
 
 			break;
 		case 'set-condition':

@@ -443,7 +443,7 @@ export interface GeoConditionNode {
 	type: 'geo-condition';
 	target: AbstractQueryFieldNodePrimitive;
 	operation: 'intersects' | 'intersects_bbox';
-	compareTo: GeoJSONGeometry | string; // geojson or a wellknown text (wkt) string
+	compareTo: GeoJSONGeometry;
 }
 
 /**

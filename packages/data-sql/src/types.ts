@@ -1,4 +1,5 @@
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
+import type { GeoJSONGeometry } from 'wellknown';
 
 export interface AbstractSqlQueryColumn {
 	table: string;
@@ -77,7 +78,7 @@ export interface AbstractSqlQuery {
 	paths: Map<string, string[]>;
 }
 
-export type ParameterTypes = string | boolean | number;
+export type ParameterTypes = string | boolean | number | GeoJSONGeometry;
 
 /**
  * All nodes which can be used within the `nodes` array of the `AbstractQuery` have a type attribute.

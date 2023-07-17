@@ -1109,6 +1109,9 @@ importers:
       pg-query-stream:
         specifier: ^4.5.0
         version: 4.5.0(pg@8.10.0)
+      wellknown:
+        specifier: 0.5.0
+        version: 0.5.0
     devDependencies:
       '@directus/data':
         specifier: workspace:*
@@ -1125,6 +1128,9 @@ importers:
       '@types/pg':
         specifier: 8.6.6
         version: 8.6.6
+      '@types/wellknown':
+        specifier: 0.5.4
+        version: 0.5.4
       '@vitest/coverage-c8':
         specifier: 0.31.1
         version: 0.31.1(vitest@0.31.1)

@@ -7,6 +7,7 @@ import { offset } from './offset.js';
 import { where } from './where.js';
 import { orderBy } from './orderBy.js';
 import { join } from './join.js';
+import { convertGeoJsonParameterToWKT } from './parameters.js';
 
 /**
  * Constructs an actual PostgreSQL query statement from a given abstract SQL query.
@@ -29,6 +30,6 @@ export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSqlStat
 
 	return {
 		statement,
-		parameters: query.parameters,
+		parameters: convertGeoJsonParameterToWKT(query.parameters),
 	};
 }
