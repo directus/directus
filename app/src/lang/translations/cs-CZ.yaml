@@ -439,11 +439,6 @@ open_file_in_tab: Otevřít soubor v nové kartě
 start_export: Zahájit export
 not_available_for_local_downloads: Není k dispozici pro lokální stahování
 exporting_all_items_in_collection: Exportuji všech {total} položek z {collection}.
-exporting_limited_items_in_collection: Exportuji {limit} z {total} položek z {collection}.
-exporting_no_items_to_export: Žádné položky k exportu. Upravte nastavení exportu níže.
-exporting_download_hint: Po dokončení bude tento soubor {format} automaticky stažen do vašeho zařízení.
-exporting_batch_hint: Tento export bude zpracován v dávkách a po dokončení bude soubor {format} uložen do knihovny souborů.
-exporting_batch_hint_forced: Vzhledem k velkému počtu položek musí být tento vývoz zpracován v dávkách, a po dokončení bude soubor {format} uložen do knihovny souborů.
 collection_key: Klíč kolekce
 name: Jméno
 primary_key_field: Pole primárního klíče
@@ -1965,6 +1960,7 @@ operations:
     name: Odeslat oznámení
     recipient: Uživatel
     message: Zpráva
+    subject: Předmět
   request:
     name: Webhook / Request URL
     description: 'Poslat žádost na adresu URL'
