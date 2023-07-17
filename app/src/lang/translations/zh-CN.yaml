@@ -460,11 +460,6 @@ open_file_in_tab: 在新标签页中打开文件
 start_export: 开始导出
 not_available_for_local_downloads: 本地下载不可用
 exporting_all_items_in_collection: 正在导出 {collection} 内所有的 {total} 项。
-exporting_limited_items_in_collection: 正在导出 {collection} 内 {total} 项中的 {limit} 项。
-exporting_no_items_to_export: 没有要导出的条目。调整下面的导出配置。
-exporting_download_hint: 完成后，此 {format} 文件将自动下载到您的设备。
-exporting_batch_hint: 此导出将分批处理，完成后 {format} 文件将被保存到文件库。
-exporting_batch_hint_forced: 由于条目数量过大，导出必须分批处理，完成后 {format} 文件将被保存到文件库。
 collection_key: 模型的主键
 name: 名称
 primary_key_field: 主键字段
@@ -2143,6 +2138,7 @@ operations:
     recipient_placeholder: 输入一个UUID...
     recipient_note: 添加用户UUID并按回车键...
     message: 消息
+    subject: 主題
   request:
     name: 互联网钩子 / 请求 URL
     description: '向一个 URL 地址发出请求'

@@ -445,11 +445,6 @@ open_file_in_tab: Отваряне в нов таб
 start_export: Започване на експорта
 not_available_for_local_downloads: Не е налично за локално изтегляне
 exporting_all_items_in_collection: Експортиране на всичките {total} записи от {collection}.
-exporting_limited_items_in_collection: Експортиране на {limit} от {total} записи от {collection}.
-exporting_no_items_to_export: Няма записи за експортиране. Променете следните настройки.
-exporting_download_hint: Веднъж приключил, {format}-ът ще бъде изтеглен автоматично на вашето устройство.
-exporting_batch_hint: Експортирането ще бъде извършено на части, след приключването, {format}-ът ще бъде запазен във файловата библиотека.
-exporting_batch_hint_forced: Поради наличието на големия брой записи, експортирането ще бъде извършено на части, при приключването, {format}-ът ще бъде запазен във файловата библиотека.
 collection_key: Ключ на колекция
 name: Име
 primary_key_field: Поле за първичния ключ
@@ -2063,6 +2058,7 @@ operations:
     description: Изпращане на известие в приложението до потребители
     recipient: Потребител
     message: Съобщение
+    subject: Относно
   request:
     name: Уеб-кука / URL заявка
     description: 'Изпълняване на HTTP заявка до URL адрес'

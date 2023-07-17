@@ -22,7 +22,7 @@
 		</div>
 
 		<div v-if="editMode" class="edit-actions" @pointerdown.stop>
-			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click.stop="$emit('edit')" />
+			<v-icon v-tooltip="t('edit')" class="edit-icon" name="edit" clickable @click="$emit('edit')" />
 
 			<v-menu v-if="showOptions" placement="bottom-end" show-arrow>
 				<template #activator="{ toggle }">

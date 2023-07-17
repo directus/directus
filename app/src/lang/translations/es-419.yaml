@@ -445,11 +445,6 @@ open_file_in_tab: Abrir archivo en nueva pestaña
 start_export: Iniciar Exportación
 not_available_for_local_downloads: No disponible para descargas locales
 exporting_all_items_in_collection: Exportando todos los {total} elementos de {collection}.
-exporting_limited_items_in_collection: Exportando {limit} de los {total} elementos en {collection}.
-exporting_no_items_to_export: No hay elementos para exportar. Ajuste la configuración de exportación a continuación.
-exporting_download_hint: Una vez completado, este archivo {format} se descargará automáticamente a tu dispositivo.
-exporting_batch_hint: Esta exportación se procesará por lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
-exporting_batch_hint_forced: Debido al gran número de artículos, esta exportación debe ser procesada en lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
 primary_key_field: Campo de la Llave Principal
@@ -2041,6 +2036,7 @@ operations:
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
     recipient: Usuario
     message: Mensaje
+    subject: Sujeto
   request:
     name: Webhook / Solicitud de URL
     description: 'Haz una solicitud a una URL'
