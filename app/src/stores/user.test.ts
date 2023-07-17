@@ -2,6 +2,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { AxiosRequestConfig } from 'axios';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { RouteLocationNormalized } from 'vue-router';
 
 beforeEach(() => {
 	setActivePinia(
@@ -149,7 +150,7 @@ describe('actions', () => {
 			vi.spyOn(latencyStore, 'save').mockReturnValue();
 
 			const userStore = useUserStore();
-			await userStore.trackPage(page);
+			await userStore.trackPage({ path: page, fullPath: page } as RouteLocationNormalized);
 
 			expect((userStore.currentUser as User)?.last_page).not.toBe(page);
 		});
@@ -160,7 +161,7 @@ describe('actions', () => {
 
 			const userStore = useUserStore();
 			await userStore.hydrate();
-			await userStore.trackPage(page);
+			await userStore.trackPage({ path: page, fullPath: page } as RouteLocationNormalized);
 
 			expect((userStore.currentUser as User).last_page).toBe(page);
 		});
