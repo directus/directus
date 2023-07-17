@@ -270,6 +270,27 @@ type Query {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFiles} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readFiles( {
+        "query": {
+            "query_type": {
+                "field": {
+                    "query_operator": "value"
+                }
+            }
+        }
+    })
+);
+```
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -305,6 +326,27 @@ query {
 ```
 </template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFiles} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readFiles( {
+        "query": {
+            "filter": {
+                "type": {
+                    "_eq": "image"
+                }
+            }
+        }
+    })
+);
+```
+</template>
+
 </SnippetToggler>
 
 ---
@@ -330,6 +372,21 @@ Retrieve a single file by primary key.
 type Query {
 	files_by_id(id: ID!): directus_files
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFile} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readFile('file_id', {
+        fields : ['*']
+    })
+)
 ```
 </template>
 
@@ -362,6 +419,21 @@ query {
 		filename_disk
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFile} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579', {
+        fields : ['*']
+    })
+)
 ```
 </template>
 </SnippetToggler>
@@ -485,6 +557,21 @@ type Mutation {
 ```
 </template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, importFile} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    importFile('file_url', {
+        file_field : 'value'
+    })
+)
+```
+</template>
+
 </SnippetToggler>
 
 #### Query Parameters
@@ -532,6 +619,21 @@ mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, importFile} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    importFile('https://upload.wikimedia.org/wikipedia/commons/c/ca/Entlebucher.jpg', {
+        title : 'Dog'
+    })
+)
+```
+</template>
 </SnippetToggler>
 
 
@@ -564,6 +666,21 @@ Update an existing file, and/or replace it's file contents.
 type Mutation {
 	update_files_item(id: ID!, data: update_directus_files_input!): directus_files
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFile} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateFile('file_id', {
+        file_field : 'value'
+    })
+)
 ```
 </template>
 </SnippetToggler>
@@ -609,6 +726,21 @@ mutation {
 ```
 </template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFile} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateFile('dc193671-13b9-4c37-a8af-42f17c036742', {
+        title : 'Entlebucher Mountain Dog'
+    })
+)
+```
+</template>
+
 </SnippetToggler>
 
 ---
@@ -623,13 +755,12 @@ Update multiple files at the same time.
 
 <template #rest>
 
-
 `PATCH /files`
 ```json
 {
-	"keys": ["key_1", "key_2"],
+	"keys": ["file_id", "file_id_2"],
 	"data": {
-		"field_1": ["value_1"]
+		"item_field": ["value"]
 	}
 }
 ```
@@ -644,7 +775,21 @@ type Mutation {
 	update_files_items(ids: [ID!]!, data: update_directus_files!): [directus_files]
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus} from '@directus/sdk';
+import { rest, updatedFiles} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedFiles(['file_id', 'file_id_2'], {
+        item_field : ['value']
+    })
+)
+```
 </template>
 </SnippetToggler>
 
@@ -694,7 +839,21 @@ mutation {
 	)
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedFiles} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedFiles(['dc193671-13b9-4c37-a8af-42f17c036742', 'e88b0344-84cf-4bfd-a90b-c0b5b66c17eb'], {
+        tags : ['dogs']
+    })
+)
+```
 </template>
 </SnippetToggler>
 
@@ -729,8 +888,19 @@ type Mutation {
 	delete_files_item(id: ID!): delete_one
 }
 ```
+</template>
 
+<template #sdk>
 
+```js
+import { createDirectus} from '@directus/sdk';
+import { rest, deleteFile} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579'));
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -760,6 +930,19 @@ mutation {
 		id
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFile} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579'));
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -797,9 +980,41 @@ type Mutation {
 	delete_files_items(ids: [ID!]!): delete_many
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFiles} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteFiles(['file_id_1','file_id_2'],)
+);
+
+//or
+
+const result = await client.request(
+    deleteFiles( {
+        'query': {
+            'query_type': {
+                'field': {
+                    'query_operator': 'value'
+                }
+            }
+        }
+    }
+));
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
@@ -832,6 +1047,38 @@ mutation {
 		ids
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { staticToken } from '@directus/sdk/auth'; // OMIT
+import { rest, deleteFiles} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+await client.setToken("s79J1cEaSuGIF40auEN6s0gvN-MOK9G4"); // OMIT
+
+const result = await client.request(
+    deleteFiles(['90a416f0-28e0-4d51-84a2-387d1789add9','840e2f08-d5cd-4caa-ac0a-31363626efb4'],)
+);
+
+//or
+
+const result = await client.request(
+    deleteFiles( {
+        'query': {
+            'filter': {
+                'type': {
+                    '_eq': 'image/jpeg'
+                }
+            }
+        }
+    }
+));
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
