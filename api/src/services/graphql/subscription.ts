@@ -4,7 +4,7 @@ import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { refreshAccountability } from '../../websocket/authenticate.js';
-import { getMultiPayload, getSinglePayload } from '../../websocket/utils/items.js';
+import { getSinglePayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 
