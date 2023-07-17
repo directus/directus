@@ -4,7 +4,7 @@ import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { refreshAccountability } from '../../websocket/authenticate.js';
-import { getSinglePayload } from '../../websocket/utils/items.js';
+import { getMultiPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 
@@ -26,7 +26,6 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 		for await (const payload of messages.subscribe(event)) {
 			const eventData = payload as WebSocketEvent;
 
-
 			if ('event' in args && eventData['action'] !== args['event']) {
 				continue; // skip filtered events
 			}
@@ -40,35 +39,46 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				query: { fields },
 			};
 
+			if (eventData['action'] === 'delete') {
+				// we have no data to send besides the key
+				for (const key of eventData.keys) {
+					yield { [event]: { key, data: null, event: eventData['action'] } };
+				}
+			}
+
 			if (eventData['action'] === 'create') {
 				try {
-					subscription.item = eventData['key'];
-					const data = await getSinglePayload(subscription, accountability, schema, eventData);
-					yield { [event]: { ...data, key: eventData['key'] } };
+					const result = await getMultiPayload(subscription, accountability, schema, eventData);
+					if (Array.isArray(result?.['data']) && result['data']?.length === 0) continue;
+
+					yield {
+						[event]: {
+							key: eventData['key'],
+							data: result['data'][0],
+							event: eventData['action'],
+						},
+					};
 				} catch {
-					/*-*/
+					// dont notify the subscription of permission errors
 				}
 			}
 
 			if (eventData['action'] === 'update') {
-				// const service = new ItemsService(collection, { schema });
-
 				for (const key of eventData['keys']) {
 					try {
-						subscription.item = key;
-						const data = await getSinglePayload(subscription, accountability, schema, eventData);
-						yield { [event]: { ...data, key } };
+						const result = await getMultiPayload(subscription, accountability, schema, eventData);
+						if (Array.isArray(result?.['data']) && result['data']?.length === 0) continue;
+
+						yield {
+							[event]: {
+								key,
+								data: result['data'][0],
+								event: eventData['action'],
+							},
+						};
 					} catch {
-						/*-*/
+						// dont notify the subscription of permission errors
 					}
-				}
-			}
-
-			if (eventData['action'] === 'delete') {
-				const { keys } = eventData;
-
-				for (const key of keys) {
-					yield { [event]: { key, data: null, event: 'delete' } };
 				}
 			}
 		}
