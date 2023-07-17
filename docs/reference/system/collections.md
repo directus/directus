@@ -171,6 +171,19 @@ type Query {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readCollections} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readCollections());
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -205,6 +218,20 @@ query {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readCollections} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readCollections());
+
+console.log(result);
+```
+</template>
+
 </SnippetToggler>
 
 
@@ -231,6 +258,19 @@ Retrieve a single collection by table name.
 type Query {
 	collections_by_name(name: String!): directus_collections
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readCollection} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readCollection('collection_name'));
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -263,6 +303,19 @@ query {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readCollection} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readCollection('articles'));
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -281,8 +334,8 @@ Create a new Collection. This will create a new table in the database as well.
 ```json
 {
 	"collection": "collection_name",
-	"field_1": {
-		"field_1.1": "value_1"
+	"field": {
+		"sub_field": "value"
 	}
 }
 ```
@@ -295,6 +348,26 @@ Create a new Collection. This will create a new table in the database as well.
 type Mutation {
 	create_collections_item(data: directus_collections): directus_collections
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createCollection} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createCollection({
+        'collection' : 'collection_name',
+        'field' : {
+            'sub_field' : 'value'
+        }
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -351,6 +424,25 @@ mutation {
 }
 ```
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createCollection} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createCollection({
+        'collection' : 'testimonials',
+        'meta' : {
+            'note' : 'Some quotes from our readers'
+        }
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 
@@ -370,7 +462,7 @@ Update the metadata for an existing collection.
 ```json
 {
 	"meta": {
-		"field_1": "value_1"
+		"field": "value"
 	}
 }
 ```
@@ -384,6 +476,25 @@ Update the metadata for an existing collection.
 type Mutation {
 	update_collections_item(collection: String!, data: update_directus_collections_input!): directus_collections
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateCollection} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateCollection( 'collection_name', {
+        'meta' : {
+            'field' : 'value'
+        }
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -427,6 +538,25 @@ mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateCollection} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateCollection( 'testimonials', {
+        'meta' : {
+            'note' : 'Will be removing these at the end of first quarter'
+        }
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 
@@ -460,7 +590,19 @@ type Mutation {
 	delete_collections_item(collection: String!): delete_collection
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteCollection} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deleteCollection('collection_name'));
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -482,6 +624,19 @@ mutation {
 		collection
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteCollection} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteCollection('testimonials'));
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
