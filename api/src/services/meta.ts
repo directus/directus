@@ -57,7 +57,14 @@ export class MetaService {
 	}
 
 	async filterCount(collection: string, query: Query): Promise<number> {
-		const dbQuery = this.knex(collection).countDistinct(`${collection}.*`, { as: 'count' });
+		let dbQuery;
+		// TODO: understand why this is necessary
+		if (collection === 'directus_revisions') {
+			dbQuery = this.knex(collection).count('*', { as: 'count' });
+		} else {
+			// TODO: this fails on directus_revisions because has a json field
+			dbQuery = this.knex(collection).countDistinct(`${collection}.*`, { as: 'count' });
+		}
 
 		let filter = query.filter || {};
 
