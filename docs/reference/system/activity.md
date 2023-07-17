@@ -78,15 +78,27 @@ Returns a list of activity actions.
 
 <template #graphql>
 
-
 `POST /graphql/system`
-
 ```graphql
 type Query {
 	activity: [directus_activity]
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readActivities} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readActivities({
+        fields: ['*']
+    })
+);
+```
 </template>
 </SnippetToggler>
 
@@ -122,7 +134,21 @@ query {
 	}
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readActivities} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readActivities({
+        fields: ['*']
+    })
+);
+```
 </template>
 </SnippetToggler>
 
@@ -149,6 +175,23 @@ Returns a single activity action by primary key.
 type Query {
 	activity_by_id(id: ID!): directus_activity
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readActivity} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readActivity('activity_id',{
+        fields: ['*']
+    })
+);
+
+console.log(result);
 ```
 </template>
 
@@ -183,8 +226,24 @@ query {
 }
 ```
 </template>
-</SnippetToggler>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readActivity} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readActivity('53281',{
+        fields: ['*']
+    })
+);
+
+console.log(result);
+```
+</template>
+</SnippetToggler>
 
 ---
 
@@ -203,7 +262,7 @@ Creates a new comment on a given item.
 
 {
 	"collection": "collection_name",
-	"item": item_key,
+	"item": "item_id",
 	"comment": "comment content"
 }
 ```
@@ -217,6 +276,26 @@ Creates a new comment on a given item.
 type Mutation {
 	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createComment} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createComment(
+    {
+        'collection' : 'collection_name',
+        'item' : 'item_id',
+        'comment' : 'value'
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -264,6 +343,26 @@ mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createComment} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createComment(
+    {
+        'collection' : 'articles',
+        'item' : '18',
+        'comment' : 'This is the wrong article to publish!'
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -281,7 +380,7 @@ Updates an existing comment by activity action primary key.
 `PATCH /activity/comment/:id`
 ```json
 {
-	"comment": "comment content"
+	"comment": "value"
 }
 ```
 </template>
@@ -294,6 +393,24 @@ Updates an existing comment by activity action primary key.
 type Mutation {
 	delete_comment(id: ID): delete_one
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateComment} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateComment('comment_id',
+    {
+        'comment' : 'value'
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -334,6 +451,27 @@ mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { staticToken } from '@directus/sdk/auth'; // OMIT
+import { rest, updateComment} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+await client.setToken("s79J1cEaSuGIF40auEN6s0gvN-MOK9G4"); // OMIT
+
+const result = await client.request(
+    updateComment('53727',
+    {
+        'comment' : 'Great work!'
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -361,6 +499,19 @@ type Mutation {
 ```
 </template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteComment} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deleteComment('comment_id'));
+
+console.log(result);
+```
+</template>
+
 </SnippetToggler>
 
 
@@ -381,6 +532,19 @@ mutation {
 		id
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteComment} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteComment('53727'));
+
+console.log(result);
 ```
 </template>
 
