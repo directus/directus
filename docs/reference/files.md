@@ -538,9 +538,9 @@ Import a file from the web
 
 ```json
 {
-	"url": "download source",
+	"url": "file_url",
 	"data": {
-		"field_1": "value_1"
+		"file_field": "value_1"
 	}
 }
 ```
@@ -895,9 +895,9 @@ type Mutation {
 ```js
 import { createDirectus} from '@directus/sdk';
 import { rest, deleteFile} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(deleteFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579'));
+const result = await client.request(deleteFile('file_id'));
 
 console.log(result);
 ```
