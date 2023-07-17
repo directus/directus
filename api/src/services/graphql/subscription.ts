@@ -4,7 +4,7 @@ import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { refreshAccountability } from '../../websocket/authenticate.js';
-import { getMultiPayload } from '../../websocket/utils/items.js';
+import { getMultiPayload, getSinglePayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
 
@@ -48,13 +48,13 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 
 			if (eventData['action'] === 'create') {
 				try {
-					const result = await getMultiPayload(subscription, accountability, schema, eventData);
-					if (Array.isArray(result?.['data']) && result['data']?.length === 0) continue;
+					subscription.item = eventData['key'];
+					const result = await getSinglePayload(subscription, accountability, schema, eventData);
 
 					yield {
 						[event]: {
 							key: eventData['key'],
-							data: result['data'][0],
+							data: result['data'],
 							event: eventData['action'],
 						},
 					};
@@ -66,13 +66,13 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 			if (eventData['action'] === 'update') {
 				for (const key of eventData['keys']) {
 					try {
-						const result = await getMultiPayload(subscription, accountability, schema, eventData);
-						if (Array.isArray(result?.['data']) && result['data']?.length === 0) continue;
+						subscription.item = key;
+						const result = await getSinglePayload(subscription, accountability, schema, eventData);
 
 						yield {
 							[event]: {
 								key,
-								data: result['data'][0],
+								data: result['data'],
 								event: eventData['action'],
 							},
 						};
