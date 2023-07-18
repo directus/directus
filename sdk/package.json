@@ -43,7 +43,8 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"build": "NODE_ENV=production tsup",
-		"dev": "NODE_ENV=development tsup"
+		"dev": "NODE_ENV=development tsup",
+		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
