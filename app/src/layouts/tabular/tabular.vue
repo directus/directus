@@ -178,6 +178,14 @@
 
 		<slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
+
+		<drawer-item
+			v-model:active="sideDrawerOpenWritable"
+			:collection="collection"
+			:primary-key="sideDrawerItemKey"
+			@input="saveItem"
+		/>
+
 	</div>
 </template>
 
@@ -196,10 +204,13 @@ import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
-import { get } from '@directus/utils';
+import { get, getEndpoint } from '@directus/utils';
 import { Field, Filter, Item, ShowSelect } from '@directus/types';
 import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { unexpectedError } from '@/utils/unexpected-error';
+import api from '@/api';
 
 interface Props {
 	collection: string;
@@ -231,6 +242,10 @@ interface Props {
 	aliasedKeys: string[];
 	onSortChange: (newSort: { by: string; desc: boolean }) => void;
 	onAlignChange?: (field: 'string', align: 'left' | 'center' | 'right') => void;
+	useSideDrawer: boolean;
+	sideDrawerOpen: boolean;
+	sideDrawerItemKey: string | null;
+	refresh: () => void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -247,14 +262,25 @@ const props = withDefaults(defineProps<Props>(), {
 	onAlignChange: () => undefined,
 });
 
-const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields']);
+const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields', 'update:sideDrawerOpen']);
 
 const { t } = useI18n();
-const { collection } = toRefs(props);
+const { collection, sideDrawerItemKey } = toRefs(props);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
 const limitWritable = useSync(props, 'limit', emit);
+const sideDrawerOpenWritable = useSync(props, 'sideDrawerOpen', emit);
+
+async function saveItem(values: Record<string, any>): Promise<void> {
+	try {
+		await api.patch(`${getEndpoint(collection.value)}/${sideDrawerItemKey.value}`, values);
+	} catch (err: any) {
+		unexpectedError(err);
+	}
+
+	await props.refresh();
+}
 
 const mainElement = inject<Ref<Element | undefined>>('main-element');
 
@@ -419,5 +445,9 @@ function removeField(fieldKey: string) {
 
 .flip {
 	transform: scaleY(-1);
+}
+
+.item-drawer-content {
+	padding: 0 var(--content-padding);
 }
 </style>
