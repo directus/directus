@@ -11,13 +11,18 @@ export function registerWebSocketEvents() {
 	registerActionHooks([
 		'items',
 		'activity',
-		'collections',
+		'collections', 
+		'dashboards',
 		'folders',
+		'notifications',
+		'operations',
+		'panels',
 		'permissions',
 		'presets',
 		'revisions',
 		'roles',
 		'settings',
+		'shares',
 		'users',
 		'webhooks',
 	]);
@@ -25,6 +30,7 @@ export function registerWebSocketEvents() {
 	registerFieldsHooks();
 	registerFilesHooks();
 	registerRelationsHooks();
+	registerSortHooks();
 }
 
 function registerActionHooks(modules: string[]) {
@@ -123,6 +129,15 @@ function registerRelationsHooks() {
 		keys: payload,
 		payload: { collection, fields: payload },
 	}));
+}
+
+function registerSortHooks() {
+	registerAction('items.sort', ({ collection, item }) => ({
+		collection,
+		action: 'update',
+		keys: [ item ],
+		payload: {}
+	}))
 }
 
 /**
