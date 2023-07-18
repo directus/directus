@@ -997,12 +997,10 @@ const result = await client.request(
 
 const result = await client.request(
     deleteFiles( {
-        'query': {
-            'query_type': {
-                'field': {
-                    'query_operator': 'value'
-                }
-            }
+		'query_type': {
+			'field': {
+				'query_operator': 'value'
+			}
         }
     }
 ));
@@ -1068,12 +1066,10 @@ const result = await client.request(
 
 const result = await client.request(
     deleteFiles( {
-        'query': {
-            'filter': {
-                'type': {
-                    '_eq': 'image/jpeg'
-                }
-            }
+		'filter': {
+			'type': {
+				'_eq': 'image/jpeg'
+			}
         }
     }
 ));

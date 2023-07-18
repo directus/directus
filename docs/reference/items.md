@@ -899,12 +899,10 @@ const result = await client.request(deleteItems('collection_name', ['id_1','id_2
 
 const result2 = await client.request(
     deleteItems('collection_name', {
-        "query": {
-            "query_type": {
-                "field_1": {
-                    "filter_condition": "value_1"
-                }
-            }
+		"query_type": {
+			"field_1": {
+				"filter_condition": "value_1"
+			}
         }
     }
 ));
@@ -985,12 +983,10 @@ const result = await client.request(deleteItems('articles', ['6','7']));
 
 const result2 = await client.request(
     deleteItems('articles', {
-        "query": {
-            "filter": {
-                "status": {
-                    "_eq": "draft"
-                }
-            }
+		"filter": {
+			"status": {
+				"_eq": "draft"
+			}
         }
     }
 ));
