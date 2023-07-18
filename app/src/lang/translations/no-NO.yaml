@@ -865,5 +865,6 @@ operations:
     message: Melding
   notification:
     message: Melding
+    subject: Emne
   request:
     url: URL
