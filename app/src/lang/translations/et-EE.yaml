@@ -1413,5 +1413,6 @@ operations:
   notification:
     recipient: Kasutaja
     message: Sõnum
+    subject: Teema
   request:
     url: URL
