@@ -1,6 +1,5 @@
 ---
 "@directus/api": patch
-"docs": patch
 "@directus/components": patch
 "@directus/composables": patch
 "@directus/constants": patch
