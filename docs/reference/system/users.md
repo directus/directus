@@ -365,7 +365,9 @@ mutation {
 }
 ```
 
-Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it could be modified by the user call.
+Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
+as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it
+could be modified by the user call.
 
 ---
 
@@ -458,7 +460,9 @@ mutation {
 }
 ```
 
-Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it could be modified by the user call.
+Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
+as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it
+could be modified by the user call.
 
 ---
 
