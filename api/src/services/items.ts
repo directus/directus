@@ -103,7 +103,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const { ActivityService } = await import('./activity.js');
 		const { RevisionsService } = await import('./revisions.js');
 
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
+		const primaryKeyFieldName = this.schema.collections[this.collection]!.primary;
+		const primaryKeyField = this.schema.collections[this.collection]!.fields[primaryKeyFieldName];
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
 
 		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
@@ -175,18 +176,26 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
 			// In case of manual string / UUID primary keys, the PK already exists in the object we're saving.
-			let primaryKey = payloadWithTypeCasting[primaryKeyField];
+			let primaryKey = payloadWithTypeCasting[primaryKeyFieldName];
 
 			try {
+				if (!payloadWithoutAliases[primaryKeyFieldName] && primaryKeyField?.defaultValue === 'AUTO_INCREMENT') {
+					const max = await trx(this.collection).max(primaryKeyFieldName, { as: 'id' }).first();
+
+					if (max?.id) {
+						payloadWithoutAliases[primaryKeyFieldName] = Number(max.id) + 1;
+					}
+				}
+
 				const result = await trx
 					.insert(payloadWithoutAliases)
 					.into(this.collection)
-					.returning(primaryKeyField)
+					.returning(primaryKeyFieldName)
 					.then((result) => result[0]);
 
-				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
+				const returnedKey = typeof result === 'object' ? result[primaryKeyFieldName] : result;
 
-				if (this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === 'uuid') {
+				if (this.schema.collections[this.collection]!.fields[primaryKeyFieldName]!.type === 'uuid') {
 					primaryKey = getHelpers(trx).schema.formatUUID(primaryKey ?? returnedKey);
 				} else {
 					primaryKey = primaryKey ?? returnedKey;
@@ -200,11 +209,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// fetching it based on the last inserted row
 			if (!primaryKey) {
 				// Fetching it with max should be safe, as we're in the context of the current transaction
-				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
+				const result = await trx.max(primaryKeyFieldName, { as: 'id' }).from(this.collection).first();
 				primaryKey = result.id;
 				// Set the primary key on the input item, in order for the "after" event hook to be able
 				// to read from it
-				payload[primaryKeyField] = primaryKey;
+				payload[primaryKeyFieldName] = primaryKey;
 			}
 
 			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
