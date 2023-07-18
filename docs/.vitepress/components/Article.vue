@@ -9,9 +9,7 @@
 				<p v-if="desc" class="description">{{ desc }}</p>
 				<div v-if="author" class="author">
 					<span>{{ author }}</span>
-					&nbsp;
 					<span>•</span>
-					&nbsp;
 					<span class="date">{{ date }}</span>
 				</div>
 			</div>
@@ -82,6 +80,10 @@ defineProps<{
 
 .author {
 	color: var(--vp-c-gray);
+	display: flex;
+	gap: 0.5em;
+	margin-top: 0.25em;
+	font-size: 0.8em;
 }
 
 .article:hover .heading {
@@ -91,4 +93,14 @@ defineProps<{
 .article:hover .image img {
 	scale: 1.05;
 }
-</style>
+
+/* @media only screen and (max-width: 1200px) {
+	.author {
+		flex-direction: column;
+		gap: 0;
+	}	
+	.author span:nth-child(2) {
+		display: none;
+	}
+}*/
+</style> 

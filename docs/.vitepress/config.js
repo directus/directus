@@ -137,7 +137,6 @@ gtag('config', 'UA-24637628-7');
 				link: '/user-guide/overview/data-studio-app',
 				activeMatch: '/user-guide',
 			},
-			{ text: 'Dev Blog', link: '/blog/', activeMatch: '/blog/' },
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
 			{ text: 'GitHub', link: 'https://github.com/directus/directus' },
