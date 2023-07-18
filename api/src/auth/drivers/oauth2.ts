@@ -244,23 +244,23 @@ const handleError = (e: any) => {
 	if (e instanceof errors.OPError) {
 		if (e.error === 'invalid_grant') {
 			// Invalid token
-			logger.trace(e, `[OAuth2] Invalid grant`);
+			logger.warn(e, `[OAuth2] Invalid grant`);
 			return new InvalidTokenError();
 		}
 
 		// Server response error
-		logger.trace(e, `[OAuth2] Unknown OP error`);
+		logger.warn(e, `[OAuth2] Unknown OP error`);
 		return new ServiceUnavailableError({
 			service: 'oauth2',
 			reason: `Service returned unexpected response: ${e.error_description}`,
 		});
 	} else if (e instanceof errors.RPError) {
 		// Internal client error
-		logger.trace(e, `[OAuth2] Unknown RP error`);
+		logger.warn(e, `[OAuth2] Unknown RP error`);
 		return new InvalidCredentialsError();
 	}
 
-	logger.trace(e, `[OAuth2] Unknown error`);
+	logger.warn(e, `[OAuth2] Unknown error`);
 	return e;
 };
 

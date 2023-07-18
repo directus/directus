@@ -144,7 +144,6 @@
 				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"
-				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
 			/>
@@ -166,17 +165,13 @@
 		<template #sidebar>
 			<user-info-sidebar-detail :is-new="isNew" :user="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false && revisionsAllowed"
+				v-if="isNew === false && revisionsAllowed"
 				ref="revisionsDrawerDetail"
 				collection="directus_users"
 				:primary-key="primaryKey"
 				@revert="revert"
 			/>
-			<comments-sidebar-detail
-				v-if="isBatch === false && isNew === false"
-				collection="directus_users"
-				:primary-key="primaryKey"
-			/>
+			<comments-sidebar-detail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
 	</private-view>
 </template>
@@ -239,11 +234,11 @@ const {
 	remove,
 	deleting,
 	saveAsCopy,
-	isBatch,
 	archive,
 	archiving,
 	isArchived,
 	validationErrors,
+	refresh,
 } = useItem(ref('directus_users'), primaryKey);
 
 if (props.role) {
@@ -342,11 +337,12 @@ async function saveAndStay() {
 		await setLang(savedItem);
 		await refreshCurrentUser();
 
-		revisionsDrawerDetail.value?.refresh?.();
-
 		if (props.primaryKey === '+') {
 			const newPrimaryKey = savedItem.id;
 			router.replace(`/users/${newPrimaryKey}`);
+		} else {
+			revisionsDrawerDetail.value?.refresh?.();
+			refresh();
 		}
 	} catch {
 		// `save` will show unexpected error dialog
