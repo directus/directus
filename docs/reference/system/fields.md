@@ -176,6 +176,19 @@ type Query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFields} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readFields());
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -207,6 +220,19 @@ query {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFields} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readFields());
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -235,6 +261,19 @@ type Query {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFieldsByCollection} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readFieldsByCollection('collection_name'));
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -270,6 +309,19 @@ query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFieldsByCollection} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readFieldsByCollection('articles'));
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -295,6 +347,19 @@ Get a single field in a given collection.
 type Query {
 	fields_by_name(collection: String!, field: String!): directus_fields
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readField} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readField('collection_name','field_name'));
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -328,6 +393,19 @@ query {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readField} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readField('articles','title'));
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -348,11 +426,8 @@ Create a new field in the given collection.
 {
 	"field": "field_key",
 	"type": "value_type",
-	"meta": {
-		"field_meta_field": "value_1"
-	},
-	"schema": {
-		"field_schema_field": "value_2"
+	"field_field": {
+		"field_sub_field": "value_1"
 	}
 }
 ```
@@ -366,6 +441,27 @@ Create a new field in the given collection.
 type Mutation {
 	create_fields_item(collection: String!, data: create_directus_fields_input!): directus_fields
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createField} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createField('collection_name', { 
+        'field' : 'field_name',
+        'type' : 'field_type',
+        'field_field' : {
+            'field_sub_field' : 'value_3'
+        }
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -432,6 +528,27 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createField} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createField('articles', { 
+        'field' : 'subject tags',
+        'type' : 'csv',
+        'meta' : {
+			'interface' : 'tags'
+            'note' : 'subject tags for an article'
+        }
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -447,11 +564,8 @@ Updates the given field in the given collection.
 `PATCH /fields/articles/title`
 ```json
 {
-	"field_object_field": {
-		"field_object_field_field": "value_1"
-	},
-	"field_object_field": {
-		"field_object_field_field": "value_2"
+	"field": {
+		"sub_field": "value_1"
 	}
 }
 ```
@@ -466,6 +580,25 @@ type Mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateField} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateField('collection_name', 'field_name', { 
+        'field' : {
+            'sub_field' : 'value'
+        }
+    })
+);
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -535,6 +668,24 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateField} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateField('articles', 'subject tags', { 
+        'meta' : {
+            'note' : 'tags for the article based on subjects addressed'
+        }
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -568,6 +719,19 @@ type Mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteField} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deleteField('collection_name','field_name'));
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ### Example
@@ -590,6 +754,19 @@ mutation {
 		field
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteField} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteField('articles','featured_quote'));
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
