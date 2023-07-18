@@ -11,7 +11,10 @@
 	"funding": "https://github.com/directus/directus?sponsor=1",
 	"license": "MIT",
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
-	"files": [
-		"./node18-esm.json"
-	]
+	"exports": {
+		"./base": "./base/tsconfig.json",
+		"./node18-cjs": "./node18-cjs/tsconfig.json",
+		"./node18-esm": "./node18-esm/tsconfig.json",
+		"./vue": "./vue/tsconfig.json"
+	}
 }

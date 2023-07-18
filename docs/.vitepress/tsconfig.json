@@ -1,7 +1,4 @@
 {
-	"extends": "@vue/tsconfig/tsconfig.dom.json",
-	"compilerOptions": {
-		"lib": ["esnext", "dom", "dom.iterable"]
-	},
+	"extends": "@directus/tsconfig/vue",
 	"include": ["env.d.ts", "**/*.vue"]
 }

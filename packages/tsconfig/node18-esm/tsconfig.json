@@ -1,0 +1,11 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "Node 18 ESM",
+	"extends": "../base/tsconfig.json",
+	"compilerOptions": {
+		"module": "ES2022",
+		"target": "ES2022",
+		"moduleResolution": "NodeNext",
+		"verbatimModuleSyntax": true
+	}
+}
