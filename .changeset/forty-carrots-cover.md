@@ -19,7 +19,12 @@
 "@directus/storage-driver-s3": patch
 "@directus/storage": patch
 "@directus/stores": patch
+"@directus/themes": patch
 "@directus/tsconfig": major
+"@directus/types": patch
+"@directus/update-check": patch
+"@directus/utils": patch
+"@directus/validation": patch
 ---
 
 Added tsconfig for Vue & CJS
