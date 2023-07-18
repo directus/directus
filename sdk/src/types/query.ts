@@ -1,3 +1,4 @@
+import type { HasManyToAnyRelation, QueryFields } from './fields.js';
 import type { ItemType, RelationalFields, RemoveRelationships, UnpackList } from './schema.js';
 
 /**
@@ -14,33 +15,6 @@ export interface Query<Schema extends object, Item> {
 	deep?: QueryDeep<Schema, Item> | undefined;
 	alias?: QueryAlias<Schema, Item> | undefined;
 }
-
-/**
- * Fields querying, including nested relational fields
- */
-export type QueryFields<Schema extends object, Item> = (
-	| '*'
-	| keyof UnpackList<Item>
-	| QueryFieldsRelational<Schema, UnpackList<Item>>
-)[];
-
-/**
- * Object of nested relational fields in a given Item with it's own fields available for selection
- */
-export type QueryFieldsRelational<Schema extends object, Item> = {
-	[Key in RelationalFields<Schema, Item>]?: Item[Key] extends object
-		? QueryFields<Schema, ExtractItem<Schema, Item[Key]>>
-		: ExtractItem<Schema, Item[Key]> extends infer Fields
-		? {
-				[Collection in keyof Schema as Fields extends UnpackList<Schema[Collection]> ? Collection : never]: QueryFields<
-					Schema,
-					Schema[Collection]
-				>;
-		  }[]
-		: never;
-};
-
-// export type ManyToAnyItems<Schema extends object, Fields> =
 
 /**
  * Returns Item types that are available in the root Schema
@@ -104,7 +78,7 @@ export type ApplyQueryFields<Schema extends object, Item, FieldsList> = Item ext
 					[K in keyof RelatedFields]-?: K extends keyof Item
 						? ExtractRelation<Schema, Item, K> extends infer Relation
 							? Relation extends object
-								? HasManyToAnyRelation<Item, K> extends never
+								? HasManyToAnyRelation<Item[K]> extends never
 									? ApplyQueryFields<Schema, Relation, RelatedFields[K]> // recursively build the result
 									: ApplyManyToAnyFields<Schema, Relation, RelatedFields[K]>
 								: never
@@ -136,17 +110,7 @@ export type ApplyManyToAnyFields<Schema extends object, Item, FieldList> = Unpac
 		: never
 	: never;
 
-/**
- * Determine whether a field definition has a many-to-any relation
- * TODO make this dynamic instead of relying on "item" as key
- */
-type HasManyToAnyRelation<Item, Key> = UnpackList<Item> extends infer TItem
-	? Key extends keyof TItem
-		? TItem[Key] extends object
-			? never
-			: true
-		: never
-	: never;
+
 
 /**
  * Merge union of optional objects
