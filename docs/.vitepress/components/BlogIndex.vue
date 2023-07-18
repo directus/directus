@@ -1,7 +1,6 @@
 <template>
 	<div class="">
 		<section class="hero padding-box">
-
 			<div class="hero-content section-padding-hero">
 				<h1>Directus Developer Blog</h1>
 				<p>Project tutorials, tips & tricks, and best practices from the Directus team and community.</p>
