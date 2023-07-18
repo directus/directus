@@ -78,7 +78,23 @@ type Query {
 	dashboards: [directus_dashboards]
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readDashboards} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readDashboards({
+        fields : ['*']
+    })
+)
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -118,6 +134,23 @@ query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readDashboards} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readDashboards({
+        fields : ['*']
+    })
+)
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -146,6 +179,23 @@ type Query {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readDashboard} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readDashboard('dashboard_id', {
+        fields : ['*']
+    })
+)
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -178,6 +228,22 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readDashboard} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readDashboard('751a81de-9e00-4ffe-a2c1-6e04619b859f', {
+        fields : ['*']
+    })
+)
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -196,8 +262,8 @@ Create a new dashboard.
 ```json
 
 {
-	"dashboard_object_field": "value_1",
-	"dashboard_object_field": "value_2"
+	"dashboard_field": "value_1",
+	"dashboard_field": "value_2"
 }
 ```
 </template>
@@ -210,6 +276,26 @@ Create a new dashboard.
 type Mutation {
 	create_dashboards_item(data: create_directus_dashboards_input!): directus_dashboards
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createDashboard} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createDashboard(
+        {
+            'dashboard_field' : 'value_1',
+            'dashboard_field' : 'value_2'
+        }
+    )
+)
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -239,7 +325,6 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 	"icon": "dashboard"
 }
 ```
-
 </template>
 
 <template #graphql>
@@ -252,6 +337,26 @@ mutation {
 		name
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createDashboard} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createDashboard(
+        {
+            'name' : 'User Retention',
+            'note' : 'Some insights on our users activity'
+        }
+    )
+)
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -292,7 +397,31 @@ type Mutation {
 	create_dashboards_items(data: [create_directus_dashboards_input!]!): [directus_dashboards]
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createDashboards} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createDashboards(
+    [
+        {
+            'dashboard_1_field' : 'value_1',
+            'dashboard_1_field' : 'value_2'
+        },
+        {
+            'dashboard_2_field' : 'value_3',
+            'dashboard_2_field' : 'value_4'
+        }
+    ])
+)
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -344,6 +473,31 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createDashboards} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createDashboards(
+    [
+        {
+            'name' : 'User Retention',
+            'note' : 'Some insights on our users activity'
+        },
+        {
+            'name' : 'Publishing report',
+            'note' : 'Some charts to track our outputs'
+        }
+    ])
+)
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -374,7 +528,23 @@ type Mutation {
 	update_dashboards_item(id: ID!, data: update_directus_dashboards_input): directus_dashboards
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateDashboard} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateDashboard('dashboard_id',{
+        'dashboard_field' : 'value'
+    })
+)
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -417,6 +587,23 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateDashboard} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9',{
+        'color' : '#6644FF'
+    })
+)
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -451,6 +638,23 @@ type Mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedDashboards} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedDashboards(['dashboard_2_id','dashboard_2_id'],{
+        'dashboard_field' : 'value'
+    })
+)
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -505,6 +709,23 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedDashboards} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedDashboards(['cfcc3702-33bd-4616-865c-99b59dc1cdc9','782c80a0-ad61-488d-b9e2-7d688f029421'],{
+        'color' : '#81D4FA'
+    })
+)
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -533,6 +754,19 @@ type Mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteDashboard} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deleteDashboard('dashboard_id'))
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ### Response
@@ -558,6 +792,19 @@ mutation {
 		id
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteDashboard} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9'))
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -588,6 +835,26 @@ Delete multiple existing dashboards.
 type Mutation {
 	delete_dashboards_items(ids: [ID!]!): delete_many
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteDashboards} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteDashboards(
+        [
+        'dashboard_id',
+        'dashboard_id'
+        ]
+    )
+)
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -629,5 +896,24 @@ mutation {
 }
 ```
 
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteDashboards} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteDashboards(
+        [
+        '751a81de-9e00-4ffe-a2c1-6e04619b859f',
+        '782c80a0-ad61-488d-b9e2-7d688f029421'
+        ]
+    )
+)
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
