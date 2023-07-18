@@ -85,7 +85,7 @@ export const joiValidationErrorItemToErrorExtensions = (
 	}
 
 	// required
-	if (joiType.endsWith('required')) {
+	if (joiType.endsWith('required') || joiType.endsWith('.base')) {
 		extensions.type = 'required';
 	}
 
