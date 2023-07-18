@@ -1,10 +1,6 @@
 <template>
 	<p class="date">
 		Published {{ getFriendlyDate(params.date_published) }}
-		&nbsp;
-		<span>•</span>
-		&nbsp;
-		{{ getRelativeTime(params.date_published) }}
 	</p>
 	<div class="wrapper">
 		<div class="author">
@@ -30,16 +26,16 @@
 		</div>
 
 		<div v-if="params.tags.length > 0" class="tags">
-			<span class="sm-gray-text">Tags:</span>
+			<span class="sm-gray-text">Tags</span>
 			<Tag class="tag" v-for="tag in params.tags" :key="tag.slug" :href="`/blog/tags/${tag.slug}`">{{ tag.title }}</Tag>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { getFriendlyDate, getRelativeTime } from '../utils/time.js';
+import { getFriendlyDate } from '../../utils/time.js';
 import Tag from './Tag.vue';
-import Avatar from './Avatar.vue';
+import Avatar from '../Avatar.vue';
 
 interface PostMetaProps {
 	params: {
@@ -95,16 +91,15 @@ function getTag(person: Contributor) {
 	border-top: 1px solid var(--vp-c-divider);
 	flex-wrap: wrap;
 	margin-top: 0.75em;
+	padding-top: 0.5em;
 	align-items: baseline;
+	gap: 0.75em;
 }
 
 .sm-gray-text {
 	color: var(--vp-c-gray-light-1);
-	font-size: 0.875rem;
+	font-size: 0.75rem;
 	font-weight: 500;
-}
-.tags * + * {
-	margin-left: 0.5em;
 }
 
 .tags span {
@@ -129,7 +124,7 @@ function getTag(person: Contributor) {
 .wrapper {
 	border: 1px solid var(--vp-c-divider);
 	border-radius: 8px;
-	padding: 11px 16px 13px;
+	padding: 11px 16px 9px;
 }
 
 @media only screen and (min-width: 768px) {

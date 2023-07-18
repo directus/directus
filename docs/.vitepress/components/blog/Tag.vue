@@ -25,14 +25,10 @@ const tagProps = computed(() => (props.href ? { href: props.href } : {}));
 .badge {
 	font-weight: 500;
 	color: var(--vp-c-gray);
-	background: var(--vp-c-gray-light-5);
 	display: flex;
-	margin-top: 0.75em;
-	padding: 0.25em 0.75em;
-	border-radius: 8px;
+	font-size: 0.75em;
 }
 .dark .badge {
-	color: var(--vp-c-purple);
-	background: var(--vp-c-purple-dimm-3);
+	color: var(--vp-c-gray-light);
 }
 </style>

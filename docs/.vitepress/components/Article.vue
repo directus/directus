@@ -93,14 +93,4 @@ defineProps<{
 .article:hover .image img {
 	scale: 1.05;
 }
-
-/* @media only screen and (max-width: 1200px) {
-	.author {
-		flex-direction: column;
-		gap: 0;
-	}	
-	.author span:nth-child(2) {
-		display: none;
-	}
-}*/
 </style> 

@@ -5,9 +5,9 @@ layout: page
 <script setup>
 import { useData } from 'vitepress'
 const { params } = useData()
-import TagsIndex from '../../.vitepress/components/TagsIndex.vue'
-
+import TagsIndex from '../../.vitepress/components/blog/TagsIndex.vue'
+import BlogHero from '../../.vitepress/components/blog/BlogHero.vue'
 </script>
 
-<!-- <pre>{{ params }}</pre> -->
+<BlogHero />
 <TagsIndex :tag="params" />

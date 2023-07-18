@@ -3,7 +3,9 @@ layout: page
 ---
 
 <script setup>
-import BlogIndex from '../.vitepress/components/BlogIndex.vue'
+import BlogHero from '../.vitepress/components/blog/BlogHero.vue'
+import BlogIndex from '../.vitepress/components/blog/BlogIndex.vue'
 </script>
 
+<BlogHero />
 <BlogIndex />
