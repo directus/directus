@@ -11,7 +11,7 @@ export function registerWebSocketEvents() {
 	registerActionHooks([
 		'items',
 		'activity',
-		'collections', 
+		'collections',
 		'dashboards',
 		'folders',
 		'notifications',
@@ -135,9 +135,9 @@ function registerSortHooks() {
 	registerAction('items.sort', ({ collection, item }) => ({
 		collection,
 		action: 'update',
-		keys: [ item ],
-		payload: {}
-	}))
+		keys: [item],
+		payload: {},
+	}));
 }
 
 /**
