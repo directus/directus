@@ -17,13 +17,11 @@ List the available extensions in the project. The types of extensions that you c
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /extensions/:type`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -48,13 +46,11 @@ An array of interface extension keys.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /extensions/interfaces`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

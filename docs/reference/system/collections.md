@@ -149,7 +149,6 @@ List the available collections.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /collections`
@@ -157,7 +156,6 @@ List the available collections.
 `SEARCH /collections`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -169,7 +167,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -198,7 +195,6 @@ An array of [collection objects](#the-collection-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /collections`
@@ -206,7 +202,6 @@ An array of [collection objects](#the-collection-object).
 `SEARCH /collections`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -220,7 +215,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -244,13 +238,11 @@ Retrieve a single collection by table name.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /collections/:collection`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -262,7 +254,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -289,13 +280,11 @@ A [collection object](#the-collection-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /collections/articles`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -309,7 +298,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -332,7 +320,6 @@ Create a new Collection. This will create a new table in the database as well.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /collections`
@@ -347,7 +334,6 @@ Create a new Collection. This will create a new table in the database as well.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -359,7 +345,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -409,7 +394,6 @@ The [collection object](#the-collection-object) for the collection created in th
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /collections`
@@ -424,7 +408,6 @@ The [collection object](#the-collection-object) for the collection created in th
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -467,7 +450,6 @@ Update the metadata for an existing collection.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /collections/:collection`
@@ -481,7 +463,6 @@ Update the metadata for an existing collection.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -493,7 +474,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -531,7 +511,6 @@ The [collection object](#the-collection-object) for the updated collection in th
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /collections/testimonials`
@@ -545,7 +524,6 @@ The [collection object](#the-collection-object) for the updated collection in th
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -559,7 +537,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -594,13 +571,11 @@ Be aware, this will delete the table from the database, including all items in i
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /collections/:collection`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -612,7 +587,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -631,13 +605,11 @@ console.log(result);
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /collections/articles`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -651,7 +623,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js

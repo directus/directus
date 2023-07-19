@@ -38,7 +38,6 @@ List all translations that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /translations`
@@ -46,7 +45,6 @@ List all translations that exist in Directus.
 `SEARCH /translations`
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -70,13 +68,11 @@ List an existing translation by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /translations/:id`
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -93,13 +89,11 @@ Returns the requested [translation object](#the-translations-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -112,7 +106,6 @@ Create a new translation.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /translations`
@@ -126,7 +119,6 @@ Create a new translation.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -147,7 +139,6 @@ Returns the [translation object](#the-translations-object) for the created trans
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /translations`
@@ -161,7 +152,6 @@ Returns the [translation object](#the-translations-object) for the created trans
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -174,7 +164,6 @@ Create multiple new translation.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /translations`
@@ -195,7 +184,6 @@ Create multiple new translation.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -217,7 +205,6 @@ Returns the [translation object](#the-translations-object) for the created trans
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /translations`
@@ -238,7 +225,6 @@ Returns the [translation object](#the-translations-object) for the created trans
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -251,7 +237,6 @@ Update an existing translation.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /translations/:id`
@@ -263,7 +248,6 @@ Update an existing translation.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -284,7 +268,6 @@ Returns the [translation object](#the-translations-object) for the updated trans
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -296,7 +279,6 @@ Returns the [translation object](#the-translations-object) for the updated trans
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -309,7 +291,6 @@ Update multiple existing translations.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /translations`
@@ -324,7 +305,6 @@ Update multiple existing translations.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -349,7 +329,6 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /translations`
@@ -364,7 +343,6 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -377,13 +355,11 @@ Delete an existing translation.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /translations/:id`
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -396,13 +372,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /translations/12204ee2-2c82-4d9a-b044-2f4842a11dba`
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -415,7 +389,6 @@ Delete multiple existing translations.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /translations`
@@ -425,7 +398,6 @@ Delete multiple existing translations.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -442,7 +414,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /translations`
@@ -452,7 +423,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>

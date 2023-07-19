@@ -123,13 +123,11 @@ to a collection that the current user doesn't have access to are stripped out.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /relations`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -154,13 +152,11 @@ Array of [relation objects](#the-relation-object). If no items are available, da
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /relations`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -191,13 +187,11 @@ to a collection that the current user doesn't have access to are stripped out.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /relations/:collection`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -222,13 +216,11 @@ Array of [relation objects](#the-relation-object). If no items are available, da
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /relations/articles`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -252,13 +244,11 @@ List an existing relation by collection/field name.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /relations/:collection/:field`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -283,13 +273,11 @@ Returns the requested [relation object](#the-relation-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /relations/articles/featured_image`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -314,7 +302,6 @@ Create a new relation.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /relations`
@@ -328,7 +315,6 @@ Create a new relation.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -357,7 +343,6 @@ Returns the [relation object](#the-relation-object) for the created relation.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /relations`
@@ -371,7 +356,6 @@ Returns the [relation object](#the-relation-object) for the created relation.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -398,7 +382,6 @@ Update an existing relation.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /relations/:collection/:field`
@@ -412,7 +395,6 @@ Update an existing relation.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -441,7 +423,6 @@ Returns the [relation object](#the-relation-object) for the created relation.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /relations/articles/author`
@@ -455,7 +436,6 @@ Returns the [relation object](#the-relation-object) for the created relation.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -480,13 +460,11 @@ Delete an existing relation.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /relations/:collection/:field`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -507,13 +485,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /relations/articles/author`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

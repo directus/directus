@@ -56,7 +56,6 @@ List all dashboards that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /dashboards`
@@ -64,7 +63,6 @@ List all dashboards that exist in Directus.
 `SEARCH /dashboards`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -76,7 +74,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -110,7 +107,6 @@ data will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /dashboards`
@@ -118,7 +114,6 @@ data will be an empty array.
 `SEARCH /dashboards`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -133,7 +128,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -160,13 +154,11 @@ List an existing dashboard by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /dashboards/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -178,7 +170,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -209,13 +200,11 @@ Returns the requested [dashboard object](#the-dashboard-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -254,7 +243,6 @@ Create a new dashboard.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /dashboards`
@@ -268,7 +256,6 @@ Create a new dashboard.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -280,7 +267,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -318,7 +304,6 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /dashboards`
@@ -331,7 +316,6 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -346,7 +330,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -376,7 +359,6 @@ Create multiple new dashboards.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `// POST /dashboards`
@@ -395,7 +377,6 @@ Create multiple new dashboards.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -407,7 +388,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -450,7 +430,6 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `// POST /dashboards`
@@ -469,7 +448,6 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -486,7 +464,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -521,7 +498,6 @@ Update an existing dashboard.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /dashboards/:id`
@@ -533,7 +509,6 @@ Update an existing dashboard.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -545,7 +520,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -580,7 +554,6 @@ Returns the [dashboard object](#the-dashboard-object) for the updated dashboard.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -592,7 +565,6 @@ Returns the [dashboard object](#the-dashboard-object) for the updated dashboard.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -607,7 +579,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -634,7 +605,6 @@ Update multiple existing dashboards.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /dashboards`
@@ -649,7 +619,6 @@ Update multiple existing dashboards.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -661,7 +630,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -700,7 +668,6 @@ Returns the [dashboard objects](#the-dashboard-object) for the updated dashboard
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /dashboards`
@@ -716,7 +683,6 @@ Returns the [dashboard objects](#the-dashboard-object) for the updated dashboard
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -734,7 +700,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -761,13 +726,11 @@ Delete an existing dashboard.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /dashboards/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -779,7 +742,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -802,13 +764,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /dashboards/12204ee2-2c82-4d9a-b044-2f4842a11dba`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -822,7 +782,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -845,7 +804,6 @@ Delete multiple existing dashboards.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /dashboards`
@@ -855,7 +813,6 @@ Delete multiple existing dashboards.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -867,7 +824,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -901,7 +857,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /dashboards`
@@ -911,7 +866,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

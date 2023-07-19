@@ -15,7 +15,6 @@ Generate a hash for a given string.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/hash/generate`
@@ -28,7 +27,6 @@ Generate a hash for a given string.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -54,7 +52,6 @@ Hashed string.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/hash/generate`
@@ -66,7 +63,6 @@ Hashed string.
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -85,7 +81,6 @@ Verify a string with a hash.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/hash/verify`
@@ -98,7 +93,6 @@ Verify a string with a hash.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -127,7 +121,6 @@ Boolean.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/hash/verify`
@@ -140,7 +133,6 @@ Boolean.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -161,7 +153,6 @@ If a collection has a sort field, this util can be used to move items in that ma
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/sort/articles`
@@ -174,7 +165,6 @@ If a collection has a sort field, this util can be used to move items in that ma
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -203,7 +193,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/sort/articles`
@@ -216,7 +205,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -241,7 +229,6 @@ this is an array of objects, where every object is an item. For CSV, the first l
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/import/:collection`
@@ -260,7 +247,6 @@ Content-Type: MIME Content Type
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -280,7 +266,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/import/articles`
@@ -303,7 +288,6 @@ Content-Type: text/csv
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -318,7 +302,6 @@ Export a larger data set to a file in the File Library
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/export/:collection`
@@ -339,7 +322,6 @@ Export a larger data set to a file in the File Library
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -369,7 +351,6 @@ Empty body
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/export/articles`
@@ -390,7 +371,6 @@ Empty body
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -403,13 +383,11 @@ Empty body
 Resets both the data and schema cache of Directus. This endpoint is only available to admin users.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /utils/cache/clear`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

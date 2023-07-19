@@ -37,7 +37,6 @@ List all folders that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /folders`
@@ -45,7 +44,6 @@ List all folders that exist in Directus.
 `SEARCH /folders`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -57,7 +55,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -72,6 +69,7 @@ const result = await client.request(readFolders({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -89,7 +87,6 @@ will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /folders`
@@ -97,7 +94,6 @@ will be an empty array.
 `SEARCH /folders`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -111,7 +107,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -126,6 +121,7 @@ const result = await client.request(readFolders({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -136,13 +132,11 @@ List an existing folder by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /folders/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -154,7 +148,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -169,6 +162,7 @@ const result = await client.request(readFolder('folder_id',{
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -183,13 +177,11 @@ Returns a [folder object](#the-folder-object) if a valid primary key was provide
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /folders/fc02d733-95b8-4e27-bd4b-08a32cbe4e66`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -203,7 +195,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -218,6 +209,7 @@ const result = await client.request(readFolder('a141336b-398a-44d0-ad1b-4e31b092
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -228,7 +220,6 @@ Create a new (virtual) folder.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /folders`
@@ -240,7 +231,6 @@ Create a new (virtual) folder.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -252,7 +242,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -267,6 +256,7 @@ const result = await client.request(createFolder({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -285,7 +275,6 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /folders`
@@ -297,7 +286,6 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -326,6 +314,7 @@ const result = await client.request(createFolder({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -336,7 +325,6 @@ Create multiple new (virtual) folders.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /folders`
@@ -353,7 +341,6 @@ Create multiple new (virtual) folders.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -363,8 +350,8 @@ type Mutation {
 	create_folders_items(data: [create_directus_folders_input]): [directus_folders]
 }
 ```
-</template>
 
+</template>
 <template #sdk>
 
 ```js
@@ -385,6 +372,7 @@ const result = await client.request(createFolders(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -403,7 +391,6 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /folders`
@@ -420,7 +407,6 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -435,7 +421,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -456,6 +441,7 @@ const result = await client.request(createFolders(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -466,7 +452,6 @@ Update an existing folder.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /folders/:id`
@@ -478,7 +463,6 @@ Update an existing folder.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -490,7 +474,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -505,6 +488,7 @@ const result = await client.request(updateFolder('folder_id',{
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -523,7 +507,6 @@ Returns the [folder object](#the-folder-object) of the folder that was updated.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /folders/fac21847-d5ce-4e4b-a288-9abafbdfbc87`
@@ -535,7 +518,6 @@ Returns the [folder object](#the-folder-object) of the folder that was updated.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -553,7 +535,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -568,6 +549,7 @@ const result = await client.request(updateFolder('a3c77ec8-35f0-467b-9dc5-5195c4
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -578,7 +560,6 @@ Update multiple existing folders.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /folders`
@@ -593,7 +574,6 @@ Update multiple existing folders.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -605,7 +585,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -620,6 +599,7 @@ const result = await client.request(updatedFolders(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -642,7 +622,6 @@ Returns the [folder objects](#the-folder-object) of the folders that were update
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /folders`
@@ -657,7 +636,6 @@ Returns the [folder objects](#the-folder-object) of the folders that were update
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -675,7 +653,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -690,6 +667,7 @@ const result = await client.request(updatedFolders(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -706,13 +684,11 @@ Any files in this folder will be moved to the root folder.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /folders/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -724,7 +700,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -736,6 +711,7 @@ const result = await client.request(deleteFolder('folder_id'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -746,13 +722,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /folders/a5bdb793-dd85-4ac9-882a-b42862092983`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -766,7 +740,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -778,6 +751,7 @@ const result = await client.request(deleteFolder('a3c77ec8-35f0-467b-9dc5-5195c4
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -794,7 +768,6 @@ Any files in these folders will be moved to the root folder.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /folders`
@@ -804,7 +777,6 @@ Any files in these folders will be moved to the root folder.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -816,7 +788,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -846,7 +817,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /folders`
@@ -856,7 +826,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -868,7 +837,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js

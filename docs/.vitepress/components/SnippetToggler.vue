@@ -39,10 +39,7 @@ import { onBeforeMount, ref, watch } from 'vue';
 const props = defineProps<{
 	choices: string[];
 	label?: string;
-	alwaysDark?: {
-		type: boolean;
-		default: false;
-	};
+	alwaysDark?: boolean;
 }>();
 
 const selected = ref();
@@ -103,7 +100,7 @@ onBeforeMount(() => {
 }
 
 .snippet-toggler-header-lang-container:hover {
-	color: var(--vp-c-gray-light-5);
+	color: var(--vp-snippet-toggler-lang-hover);
 }
 
 .snippet-toggler-header-lang {
@@ -136,14 +133,12 @@ onBeforeMount(() => {
 	pointer-events: none;
 }
 
-.snippet-toggler .content-area [class^='language-'] {
-	margin: 0;
-	border-radius: 0;
+.snippet-toggler .content-area :deep(.lang) {
 	display: none;
 }
 
-.snippet-toggler .content-area :global(.lang) {
-	display: none;
+.snippet-toggler.dark .content-area :deep(.vp-code-dark) {
+	display: block;
 }
 
 @media (min-width: 640px) {
@@ -156,7 +151,6 @@ onBeforeMount(() => {
 	padding-inline: 24px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	/* padding-bottom: 32px; */
 	scrollbar-width: none;
 	overflow-y: auto;
 	tab-size: 2;

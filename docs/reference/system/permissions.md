@@ -68,7 +68,6 @@ other than the current user's role won't be returned.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /permissions`
@@ -76,7 +75,6 @@ other than the current user's role won't be returned.
 `SEARCH /permissions`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -104,7 +102,6 @@ available, data will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /permissions`
@@ -112,7 +109,6 @@ available, data will be an empty array.
 `SEARCH /permissions`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -137,13 +133,11 @@ List an existing permission by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /permissions/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -168,13 +162,11 @@ Returns the requested [permission object](#the-permission-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /permissions/34`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -199,7 +191,6 @@ Create a new permission rule
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /permissions`
@@ -214,7 +205,6 @@ Create a new permission rule
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -243,7 +233,6 @@ Returns the [permission object](#the-permission-object) for the created permissi
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /permissions`
@@ -258,7 +247,6 @@ Returns the [permission object](#the-permission-object) for the created permissi
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -285,7 +273,6 @@ Create multiple new permission rules
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /permissions`
@@ -308,7 +295,6 @@ Create multiple new permission rules
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -337,7 +323,6 @@ Returns the [permission objects](#the-permission-object) for the created permiss
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /permissions`
@@ -360,7 +345,6 @@ Returns the [permission objects](#the-permission-object) for the created permiss
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -390,7 +374,6 @@ Update an existing permissions rule.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /permissions/:id`
@@ -402,7 +385,6 @@ Update an existing permissions rule.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -431,7 +413,6 @@ Returns the [permission object](#the-permission-object) for the updated permissi
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /permissions/34`
@@ -443,7 +424,6 @@ Returns the [permission object](#the-permission-object) for the updated permissi
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -466,7 +446,6 @@ Update multiple existing permissions rules.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /permissions`
@@ -481,7 +460,6 @@ Update multiple existing permissions rules.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -514,7 +492,6 @@ Returns the [permission object](#the-permission-object) for the updated permissi
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /permissions`
@@ -529,7 +506,6 @@ Returns the [permission object](#the-permission-object) for the updated permissi
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -552,13 +528,11 @@ Delete an existing permissions rule
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /permissions/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -579,13 +553,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /permissions/34`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -608,7 +580,6 @@ Delete multiple existing permissions rules
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /permissions`
@@ -618,7 +589,6 @@ Delete multiple existing permissions rules
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -643,7 +613,6 @@ Empty body.
 ##### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /permissions`
@@ -653,7 +622,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql

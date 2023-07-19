@@ -60,7 +60,6 @@ sections.item:videos.source
 In GraphQL, this can be achieved using Union Types.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -74,7 +73,6 @@ In GraphQL, this can be achieved using Union Types.
 ```
 
 </template>
-
 <template #graphql>
 
 ` // Natively supported in GraphQL`
@@ -140,7 +138,6 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 :::
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -152,7 +149,6 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -202,13 +198,11 @@ Find all items that mention Directus\
 `Directus`
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `?search=Directus`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -240,7 +234,6 @@ Sort by a "sort" field, followed by a nested author's name\
 `sort, -author.name`
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -254,7 +247,6 @@ Sort by a "sort" field, followed by a nested author's name\
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -288,13 +280,11 @@ with caution.
 :::
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `?limit=200`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -318,13 +308,11 @@ Get items 101—200\
 `100`
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `?offset=100`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -352,13 +340,11 @@ Get items 101-200\
 `2`
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `?page=2`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -400,7 +386,6 @@ The `groupBy` query allows for grouping on multiple fields simultaneously. Combi
 this allows for aggregate reporting per year-month-date.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -410,7 +395,6 @@ this allows for aggregate reporting per year-month-date.
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -458,7 +442,6 @@ Only get 3 related articles, with only the top rated comment nested
 ```
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -470,7 +453,6 @@ Only get 3 related articles, with only the top rated comment nested
 ```
 
 </template>
-
 <template #graphql>
 
 ` // Natively supported in GraphQL`
@@ -503,7 +485,6 @@ Alias for nested fields, f.e. `field.nested`, will not work.
 :::
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -513,7 +494,6 @@ Alias for nested fields, f.e. `field.nested`, will not work.
 ```
 
 </template>
-
 <template #graphql>
 
 _Natively supported in GraphQL:_
@@ -542,7 +522,6 @@ Save the current API response to a file.
 Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -553,7 +532,6 @@ Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not Applicable`
@@ -599,7 +577,6 @@ function name as the nested field (see the example that follows).
 :::
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -608,7 +585,6 @@ function name as the nested field (see the example that follows).
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -649,7 +625,6 @@ For more details, see: [Aggregation & Grouping](#aggregation-grouping)
 :::
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -661,7 +636,6 @@ For more details, see: [Aggregation & Grouping](#aggregation-grouping)
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
