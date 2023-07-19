@@ -67,7 +67,7 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readItems} from '@directus/sdk/rest';
+import { rest, readItems } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
@@ -143,7 +143,7 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readItems} from '@directus/sdk/rest';
+import { rest, readItems } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
@@ -191,7 +191,7 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readItem} from '@directus/sdk/rest';
+import { rest, readItem } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(readItem('collection_name', 'item_id'));
@@ -238,7 +238,7 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readItem} from '@directus/sdk/rest';
+import { rest, readItem } from '@directus/sdk/rest';
 const client = createDirectus('https:/directus.example.com').with(rest())
 
 const result = await client.request(readItem('articles', '1'));
@@ -286,7 +286,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createItem} from '@directus/sdk/rest';
+import { rest, createItem } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -358,7 +358,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createItem} from '@directus/sdk/rest';
+import { rest, createItem } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -419,7 +419,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createItems} from '@directus/sdk/rest';
+import { rest, createItems } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -501,7 +501,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createItems} from '@directus/sdk/rest';
+import { rest, createItems } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -560,7 +560,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateItem} from '@directus/sdk/rest';
+import { rest, updateItem } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -620,7 +620,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateItem} from '@directus/sdk/rest';
+import { rest, updateItem } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -671,7 +671,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedItems} from '@directus/sdk/rest';
+import { rest, updatedItems } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -736,7 +736,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedItems} from '@directus/sdk/rest';
+import { rest, updatedItems } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -779,7 +779,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteItem} from '@directus/sdk/rest';
+import { rest, deleteItem } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(deleteItem('collection_name', 'id'));
@@ -818,7 +818,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteItem} from '@directus/sdk/rest';
+import { rest, deleteItem } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteItem('articles', '5'));
@@ -881,7 +881,7 @@ type Mutation {
 ```js
 
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteItems} from '@directus/sdk/rest';
+import { rest, deleteItems } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(deleteItems('collection_name', ['id_1','id_2']));
@@ -965,7 +965,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteItems} from '@directus/sdk/rest';
+import { rest, deleteItems } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteItems('articles', ['6','7']));
