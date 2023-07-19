@@ -29,6 +29,7 @@ export const createJoin = (
 						table: currentCollection,
 						column: field,
 					},
+					operator: 'eq',
 					compareTo: {
 						type: 'primitive',
 						table: externalCollectionAlias,

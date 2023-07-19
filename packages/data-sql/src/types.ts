@@ -1,3 +1,9 @@
+/**
+ * Here are type declared, which form a abstract query which is closer to SQL.
+ *
+ * @module
+ */
+
 import type { AbstractQueryNodeSortTargets } from '@directus/data';
 import type { GeoJSONGeometry } from 'wellknown';
 
@@ -61,8 +67,6 @@ type ParameterIndex = {
  * ```
  */
 export interface AbstractSqlQuery {
-	type: 'query';
-	root?: boolean;
 	select: (AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode)[];
 	from: string;
 	join?: AbstractSqlQueryJoinNode[];
@@ -135,11 +139,12 @@ export interface SqlGeoConditionNode {
 	compareTo: ValueNode;
 }
 
+// remove set here - sub query it's a thing that the driver should take care of
 export interface SqlSetConditionNode {
 	type: 'set-condition';
-	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
+	operation: 'in';
 	target: AbstractSqlQuerySelectNode;
-	compareTo: ValuesNode | AbstractSqlQuery;
+	compareTo: ValuesNode;
 }
 
 export interface SqlFieldConditionNode {

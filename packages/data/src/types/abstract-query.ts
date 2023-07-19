@@ -14,9 +14,6 @@ export interface AbstractQuery {
 	/** Marked as entrypoint of the query */
 	root: boolean;
 
-	/** Meta data to implement sub queries */
-	type: 'query';
-
 	/** Location where the data is stored */
 	store: string;
 
@@ -460,11 +457,11 @@ export interface GeoConditionNode {
  * 	compareTo: 5
  * ```
  */
-export interface SetConditionNode {
+export interface SetConditionNode { // could also be called 'IncludesConditions'
 	type: 'set-condition';
 	target: AbstractQueryFieldNodePrimitive;
-	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte' | 'in';
-	compareTo: (string | number)[] | AbstractQuery;
+	operation: 'in'
+	compareTo: Set<string | number>;
 }
 
 /**
@@ -477,6 +474,5 @@ export interface AbstractQueryNodeConditionValue {
 
 /**
  * @TODO
- * - Should we support "Distinct", if so where does it live (field level vs collection level)
  * - Rethink every / some
  */

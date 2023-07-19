@@ -10,8 +10,6 @@ import type {
 } from '../../types.js';
 import { convertFn } from '../functions.js';
 
-import { convertAbstractQueryToAbstractSqlQuery } from '../index.js';
-
 /**
  * Basically extracts the filter values and replaces it with parameter indexes.
  * It also converts the negation format.
@@ -92,7 +90,6 @@ export function convertCondition(
 			} as ValueNode;
 
 			parameters.push(condition.condition.compareTo);
-
 			break;
 		case 'geo-condition':
 			compareTo = {
@@ -101,23 +98,14 @@ export function convertCondition(
 			} as ValueNode;
 
 			parameters.push(condition.condition.compareTo);
-
 			break;
 		case 'set-condition':
-			if (Array.isArray(condition.condition.compareTo)) {
-				// some explicit values have been passed to which should be compared
-				compareTo = {
-					type: 'values',
-					parameterIndexes: condition.condition.compareTo.map(() => generator.next().value),
-				} as ValuesNode;
+			compareTo = {
+				type: 'values',
+				parameterIndexes: Array.from(condition.condition.compareTo).map(() => generator.next().value),
+			} as ValuesNode;
 
-				parameters.push(...condition.condition.compareTo);
-			} else {
-				// if no explicit values are passen, a sub query is passed
-				// then the converter function is called recursively
-				compareTo = convertAbstractQueryToAbstractSqlQuery(condition.condition.compareTo);
-			}
-
+			parameters.push(...condition.condition.compareTo);
 			break;
 	}
 

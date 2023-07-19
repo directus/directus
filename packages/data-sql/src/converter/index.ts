@@ -14,8 +14,6 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 	const statement: AbstractSqlQuery = {
 		...convertNodes(abstractQuery.collection, abstractQuery.nodes, idGen),
 		from: abstractQuery.collection,
-		type: 'query',
-		root: true,
 	};
 
 	if (abstractQuery.modifiers?.filter) {

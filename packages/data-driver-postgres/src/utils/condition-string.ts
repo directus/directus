@@ -1,7 +1,6 @@
 import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '@directus/data-sql';
 import { convertDateTimeFn } from './functions.js';
 import { wrapColumn } from './wrap-column.js';
-import { constructSqlQuery } from '../query/index.js';
 
 export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode): string => {
 	if (where.type === 'condition') {
@@ -68,24 +67,8 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 
 		if (where.condition.type === 'set-condition') {
 			const wrappedColumn = wrapColumn(where.condition.target.table, where.condition.target.column);
-
-			let mappedOperation = '';
-
-			if (where.condition.operation === 'in') {
-				mappedOperation = 'IN';
-			} else {
-				mappedOperation = convertClassicOperations(where.condition.operation, where.negate);
-			}
-
-			if (where.condition.compareTo.type === 'query') {
-				const subQuery = constructSqlQuery(where.condition.compareTo);
-				return `${wrappedColumn} ${mappedOperation} (${subQuery.statement})`;
-			}
-
-			if (where.condition.compareTo.type === 'values') {
-				const compareValues = where.condition.compareTo.parameterIndexes.map((i) => `$${i + 1}`).join(', ');
-				return `${wrappedColumn} ${mappedOperation} (${compareValues})`;
-			}
+			const compareValues = where.condition.compareTo.parameterIndexes.map((i) => `$${i + 1}`).join(', ');
+			return `${wrappedColumn} ${where.condition.operation.toUpperCase()} (${compareValues})`;
 		}
 
 		if (where.condition.type === 'field-condition') {

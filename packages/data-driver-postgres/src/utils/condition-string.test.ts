@@ -113,7 +113,9 @@ describe('Conditions', () => {
 
 		const wrappedCol = `"${randomTable}"."${randomColumn}"`;
 
-		expect(conditionString(where)).toStrictEqual(`ST_Intersects(${wrappedCol}, ST_GeomFromText($${parameterIndex + 1}))`);
+		expect(conditionString(where)).toStrictEqual(
+			`ST_Intersects(${wrappedCol}, ST_GeomFromText($${parameterIndex + 1}))`
+		);
 	});
 
 	test('intersects_bbox', () => {
@@ -169,48 +171,6 @@ describe('Conditions', () => {
 		const wrappedCol = `"${randomTable}"."${randomColumn}"`;
 
 		expect(conditionString(where)).toStrictEqual(`${wrappedCol} IN ($3, $4, $5)`);
-	});
-
-	test('sub query', () => {
-		const randomTable = randomIdentifier();
-		const randomColumn = randomIdentifier();
-		const randomTable2 = randomIdentifier();
-		const randomColumn2 = randomIdentifier();
-		const randomTable3 = randomIdentifier();
-
-		const where: AbstractSqlQueryConditionNode = {
-			type: 'condition',
-			negate: false,
-			condition: {
-				type: 'set-condition',
-				target: {
-					type: 'primitive',
-					table: randomTable,
-					column: randomColumn,
-				},
-				operation: 'lt',
-				compareTo: {
-					type: 'query',
-					select: [
-						{
-							type: 'fn',
-							fn: 'count',
-							field: {
-								type: 'primitive',
-								table: randomTable2,
-								column: randomColumn2,
-							},
-						},
-					],
-					from: randomTable3,
-					parameters: [],
-				},
-			},
-		};
-
-		expect(conditionString(where)).toStrictEqual(
-			`"${randomTable}"."${randomColumn}" < (SELECT COUNT("${randomTable2}"."${randomColumn2}") FROM "${randomTable3}")`
-		);
 	});
 });
 

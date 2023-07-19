@@ -31,7 +31,6 @@ beforeEach(() => {
 			],
 			from: randomIdentifier(),
 			parameters: [],
-			type: 'query'
 		},
 	};
 });

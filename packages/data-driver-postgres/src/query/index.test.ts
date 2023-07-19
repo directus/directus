@@ -21,7 +21,6 @@ beforeEach(() => {
 
 	sample = {
 		statement: {
-			type: 'query',
 			select: [
 				{ type: 'primitive', column: firstSelectColumn, table: firstSelectTable },
 				{ type: 'primitive', column: secondSelectColumn, table: secondSelectTable },

@@ -104,8 +104,6 @@ test('Convert query with filter', () => {
 			},
 		},
 		parameters: [compareToValue],
-		type: 'query',
-		root: true,
 	};
 
 	expect(res).toMatchObject(expected);
@@ -137,7 +135,6 @@ test('Convert query with a limit', () => {
 		from: sample.query.collection,
 		limit: { parameterIndex: 0 },
 		parameters: [sample.query.modifiers.limit!.value],
-		type: 'query',
 	};
 
 	expect(res).toMatchObject(expected);
@@ -174,7 +171,6 @@ test('Convert query with limit and offset', () => {
 		limit: { parameterIndex: 0 },
 		offset: { parameterIndex: 1 },
 		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
-		type: 'query',
 	};
 
 	expect(res).toMatchObject(expected);
@@ -218,7 +214,6 @@ test('Convert query with a sort', () => {
 			},
 		],
 		parameters: [],
-		type: 'query',
 	};
 
 	expect(res).toMatchObject(expected);

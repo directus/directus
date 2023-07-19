@@ -10,7 +10,6 @@ let sample: {
 beforeEach(() => {
 	sample = {
 		statement: {
-			type: 'query',
 			select: [
 				{
 					type: 'primitive',
