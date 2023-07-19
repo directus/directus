@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
-import { NOTICE_TYPE, TYPE_MAP, UNTYPED_PACKAGES } from '../constants';
-import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types';
-import { generateMarkdown } from './generate-markdown';
+import { NOTICE_TYPE, TYPE_MAP, UNTYPED_PACKAGES } from '../constants.js';
+import type { Change, Notice, PackageVersion, Type, UntypedPackage } from '../types.js';
+import { generateMarkdown } from './generate-markdown.js';
 
 const change1: Change = {
 	summary: "Made Directus even more magical\nAnd here's some additional context",
