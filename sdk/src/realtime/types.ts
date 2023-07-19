@@ -23,11 +23,11 @@ export type WebSocketEventHandler = (this: WebSocket, ev: Event | CloseEvent | a
 export interface WebSocketClient<Schema extends object> {
 	connect(): Promise<void>;
 	disconnect(): void;
-	onWebsocket(event: 'open', callback: (this: WebSocket, ev: Event) => any): RemoveEventHandler;
-	onWebsocket(event: 'error', callback: (this: WebSocket, ev: Event) => any): RemoveEventHandler;
-	onWebsocket(event: 'close', callback: (this: WebSocket, ev: CloseEvent) => any): RemoveEventHandler;
-	onWebsocket(event: 'message', callback: (this: WebSocket, ev: any) => any): RemoveEventHandler;
-	onWebsocket(event: WebSocketEvents, callback: WebSocketEventHandler): RemoveEventHandler;
+	onWebSocket(event: 'open', callback: (this: WebSocket, ev: Event) => any): RemoveEventHandler;
+	onWebSocket(event: 'error', callback: (this: WebSocket, ev: Event) => any): RemoveEventHandler;
+	onWebSocket(event: 'close', callback: (this: WebSocket, ev: CloseEvent) => any): RemoveEventHandler;
+	onWebSocket(event: 'message', callback: (this: WebSocket, ev: any) => any): RemoveEventHandler;
+	onWebSocket(event: WebSocketEvents, callback: WebSocketEventHandler): RemoveEventHandler;
 	sendMessage(message: string | Record<string, any>): void;
 	subscribe<Collection extends keyof Schema, Options extends SubscribeOptions<Schema, Collection>>(
 		collection: Collection,

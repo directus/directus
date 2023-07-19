@@ -103,7 +103,7 @@ const client = createDirectus<Schema>('https://api.directus.io').with(
 	})
 );
 
-const stop = client.onWebsocket('message', (message) => {
+const stop = client.onWebSocket('message', (message) => {
 	if ('type' in message && message['type'] === 'pong') {
 		console.log('PONG received');
 		stop();

@@ -136,7 +136,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				socket = null;
 			},
-			onWebsocket(event: WebSocketEvents, callback: (this: WebSocket, ev: Event | CloseEvent | any) => any) {
+			onWebSocket(event: WebSocketEvents, callback: (this: WebSocket, ev: Event | CloseEvent | any) => any) {
 				if (event === 'message') { // add some message parsing
 					const updatedCallback = function (this: WebSocket, event: MessageEvent<any>) {
 						if (typeof event.data !== 'string') return callback.call(this, event);
@@ -174,7 +174,7 @@ export function realtime(config: WebSocketConfig = {}) {
 			},
 			async subscribe<Collection extends keyof Schema, Options extends SubscribeOptions<Schema, Collection>>(
 				collection: Collection,
-				options: Options = {} as Options
+				options = {} as Options
 			) {
 				if (!socket || socket.readyState !== WebSocket.OPEN) await this.connect();
 				if ('uid' in options === false) options.uid = uid.next().value;
