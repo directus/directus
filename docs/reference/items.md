@@ -661,8 +661,12 @@ Supports all [global query parameters](/reference/query).
 
 Object containing `data` for the values to set, and either `keys` or `query` to select what items to update.
 
-::: tip Singleton If your collection is a singleton, this endpoint will act the same as the
-[Update an Item](#update-an-item) endpoint. :::
+::: tip
+
+Singleton If your collection is a singleton, this endpoint will act the same as the [Update an Item](#update-an-item)
+endpoint.
+
+:::
 
 ### Response
 
