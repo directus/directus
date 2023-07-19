@@ -78,6 +78,24 @@ type Query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readNotifications } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readNotifications({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -118,6 +136,24 @@ query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readNotifications } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readNotifications({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve a notification
@@ -142,6 +178,24 @@ List an existing notification by primary key.
 type Query {
 	notifications_by_id(id: ID!): directus_notifications
 }
+```
+
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readNotification } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readNotification('4', {
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -180,6 +234,24 @@ query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readNotification } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readNotification('4', {
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a Notification
@@ -211,6 +283,24 @@ Create a new notification.
 type Mutation {
 	create_notifications_item(data: create_directus_notifications_input!): directus_notifications
 }
+```
+
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createNotification } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createNotification({
+	'notification_field': 'value_1',
+	'notification_field_2': 'value_2',
+	'notification_field_3': 'value_3'
+}));
+
+console.log(result);
 ```
 
 </template>
@@ -259,6 +349,25 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createNotification } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createNotification({
+		'recipient': '86eb0719-f5fc-4465-91f6-9d9cd527e105',
+		'subject': 'Hello there!',
+		'message': 'Hi fellow user',
+	}
+));
+
+console.log(result);
+
+```
+</template>
 </SnippetToggler>
 
 ## Create Multiple Notifications
@@ -276,12 +385,14 @@ Create multiple new notifications.
 ```json
 [
 	{
-		"notification_1_object_field_1": "value_1",
-		"notification_1_object_field_2": "value_2"
-	}
+		"notification_field": "value_1",
+		"notification_field_2": "value_2",
+		"notification_field_3": "value_3"
+	},
 	{
-		"notification_2_object_field_1": "value_3",
-		"notification_2_object_field_2": "value_4"
+		"notification_2_field": "value_3",
+		"notification_2_field_2": "value_4",
+		"notification_2_field_3": "value_5"
 	}
 ]
 ```
@@ -296,6 +407,34 @@ Create multiple new notifications.
 type Mutation {
 	create_notifications_items(data: [create_directus_notifications_input!]!): [directus_notifications]
 }
+```
+
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createNotifications } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createNotifications(
+    [
+        {
+		'notification_field': 'value_1',
+		'notification_field_2': 'value_2',
+		'notification_field_3': 'value_3'
+        },
+        {
+		'notification_2_field': 'value_4',
+		'notification_2_field_2': 'value_5',
+		'notification_2_field_3': 'value_6'
+        }
+    ]
+));
+
+console.log(result);
 ```
 
 </template>
@@ -365,6 +504,34 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createNotifications } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createNotifications(
+    [
+        {
+        "recipient": "86eb0719-f5fc-4465-91f6-9d9cd527e105",
+        "subject": "Hello there!",
+        "message": "Hi fellow user",
+        },
+        {
+        "recipient": "86eb0719-f5fc-4465-91f6-9d9cd527e105",
+        "subject": "How are you!",
+        "message": "I see you are a new contributor, can I help with anything?",
+        }
+    ]
+));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update a Notification
@@ -402,6 +569,24 @@ notification email to be sent.
 type Mutation {
 	update_notifications_item(id: ID!, data: update_directus_notifications_input): directus_notifications
 }
+```
+
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateNotification } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateNotification('notification_id', {
+        'field' : 'value'
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -449,6 +634,24 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateNotification } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateNotification('4', {
+        'status' : 'archive'
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Multiple Notifications
@@ -485,6 +688,25 @@ type Mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedNotifications } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'], {
+        'field' : 'value'
+    })
+);
+
+console.log(result);
+```
+
+</template>
+
 </SnippetToggler>
 
 #### Query Parameters
@@ -536,6 +758,25 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedNotifications } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedNotifications(['1', '2', '3'], {
+        'status' : 'archive'
+    })
+);
+
+console.log(result);
+```
+
+</template>
+
 </SnippetToggler>
 
 ## Delete a Notification
@@ -563,6 +804,23 @@ type Mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteNotification } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteNotification('notification_1_id')
+);
+
+console.log(result);
+```
+
+</template>
+
 </SnippetToggler>
 
 ### Response
@@ -592,6 +850,23 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteNotification } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteNotification('3')
+)
+
+console.log(result);
+```
+
+</template>
+
 </SnippetToggler>
 
 ## Delete Multiple Notifications
@@ -606,7 +881,7 @@ Delete multiple existing notifications.
 
 ```json
 // DELETE /notifications
-["notification_key_1", "notification_key_2", "notification_key_3"]
+["notification_1_id", "notification_2_id", "notification_3_id"]
 ```
 
 </template>
@@ -622,6 +897,23 @@ type Mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteNotifications } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'])
+);
+
+console.log(result);
+```
+
+</template>
+
 </SnippetToggler>
 
 #### Request Body
@@ -656,6 +948,22 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteNotifications } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteNotifications(['4', '5', '6', '7'])
+);
+
+console.log(result);
 ```
 
 </template>
