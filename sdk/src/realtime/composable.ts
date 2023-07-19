@@ -1,5 +1,5 @@
 import type { DirectusClient } from '../types/client.js';
-import type { SubscribeOptions, WebSocketClient, WebSocketConfig } from './types.js';
+import type { SubscribeOptions, WebSocketClient, WebSocketConfig, WebSocketEventHandler, WebSocketEvents } from './types.js';
 import { messageCallback } from './utils/message-callback.js';
 import { generateUid } from './utils/generate-uid.js';
 import { pong } from './commands/pong.js';
@@ -8,6 +8,11 @@ import type { AuthenticationClient } from '../auth/types.js';
 
 type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
+const defaultRealTimeConfig: WebSocketConfig = {
+	authMode: 'handshake',
+	heartbeat: true,
+}
+
 /**
  * Creates a client to communicate with a Directus REST WebSocket.
  *
@@ -15,8 +20,9 @@ type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & Authenticat
  *
  * @returns A Directus realtime client.
  */
-export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
+export function realtime(config: WebSocketConfig = {}) {
 	return <Schema extends object>(client: DirectusClient<Schema>) => {
+		config = { ...defaultRealTimeConfig, ...config };
 		let socket: globalThis.WebSocket | null = null;
 		let uid = generateUid();
 
@@ -53,18 +59,34 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 			// TODO reconnecting strategy
 		};
 
+		const eventHandlers: Record<WebSocketEvents, Set<WebSocketEventHandler>> = {
+			'open': new Set<WebSocketEventHandler>([]),
+			'error': new Set<WebSocketEventHandler>([]),
+			'close': new Set<WebSocketEventHandler>([]),
+			'message': new Set<WebSocketEventHandler>([]),
+		};
+
 		const handleMessages = async (ws: globalThis.WebSocket, currentClient: AuthWSClient<Schema>) => {
 			while (ws.readyState !== WebSocket.CLOSED) {
 				const message = await messageCallback(ws);
 
-				if ('type' in message && message['type'] === 'auth' && hasAuth(currentClient)) {
-					const access_token = await currentClient.getToken();
-					if (access_token) ws.send(auth({ access_token }));
+				if ('type' in message) {
+					if (message['type'] === 'auth' && hasAuth(currentClient)) {
+						const access_token = await currentClient.getToken();
+
+						if (access_token) {
+							ws.send(auth({ access_token }));
+							continue;
+						}
+					}
+
+					if (config.heartbeat && message['type'] === 'ping') {
+						ws.send(pong());
+						continue;
+					}
 				}
 
-				if ('type' in message && message['type'] === 'ping') {
-					ws.send(pong());
-				}
+				eventHandlers['message'].forEach(handler => handler.call(ws, message))
 			}
 		};
 
@@ -78,7 +100,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 					let resolved = false;
 					const ws = new globalThis.WebSocket(url);
 
-					ws.addEventListener('open', async () => {
+					ws.addEventListener('open', async (evt: Event) => {
 						if (config.authMode === 'handshake' && hasAuth(self)) {
 							const access_token = await self.getToken();
 
@@ -86,16 +108,20 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 						}
 
 						resolved = true;
+						eventHandlers['open'].forEach(handler => handler.call(ws, evt));
+
 						handleMessages(ws, self);
 						resolve();
 					});
 
-					ws.addEventListener('error', (evt) => {
+					ws.addEventListener('error', (evt: Event) => {
+						eventHandlers['error'].forEach(handler => handler.call(ws, evt))
 						resetConnection();
 						if (!resolved) reject(evt);
 					});
 
-					ws.addEventListener('close', (evt) => {
+					ws.addEventListener('close', (evt: CloseEvent) => {
+						eventHandlers['close'].forEach(handler => handler.call(ws, evt))
 						resetConnection();
 						if (!resolved) reject(evt);
 					});
@@ -110,10 +136,34 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 
 				socket = null;
 			},
-			message(message: Record<string, any>) {
+			onWebsocket(event: WebSocketEvents, callback: (this: WebSocket, ev: Event | CloseEvent | any) => any) {
+				if (event === 'message') { // add some message parsing
+					const updatedCallback = function (this: WebSocket, event: MessageEvent<any>) {
+						if (typeof event.data !== 'string') return callback.call(this, event);
+
+						try {
+							return callback.call(this, JSON.parse(event.data));
+						} catch {
+							return callback.call(this, event);
+						}
+					}
+
+					eventHandlers[event].add(updatedCallback);
+					return () => eventHandlers[event].delete(updatedCallback);
+				}
+
+				eventHandlers[event].add(callback);
+				return () => eventHandlers[event].delete(callback);
+			},
+			sendMessage(message: string | Record<string, any>) {
 				if (!socket || socket?.readyState !== WebSocket.OPEN) {
 					// TODO use directus error
 					throw new Error('websocket connection not OPEN');
+				}
+
+				if (typeof message === 'string') {
+					socket.send(message);
+					return;
 				}
 
 				if ('uid' in message === false) {
@@ -121,29 +171,6 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 				}
 
 				socket?.send(JSON.stringify(message));
-			},
-			receive(callback: (message: Record<string, any>) => any) {
-				if (!socket || socket?.readyState !== WebSocket.OPEN) {
-					// TODO use directus error
-					throw new Error('websocket connection not OPEN');
-				}
-
-				const handler = (data: MessageEvent<string>) => {
-					try {
-						const message = JSON.parse(data.data) as Record<string, any>;
-
-						if (typeof message === 'object' && !Array.isArray(message) && message !== null) {
-							callback(message);
-						}
-					} catch (err) {
-						// @TODO: either ignore or throw proper error
-						// eslint-disable-next-line no-console
-						console.warn('invalid message', err);
-					}
-				};
-
-				socket.addEventListener('message', handler);
-				return () => socket?.removeEventListener('message', handler);
 			},
 			async subscribe<Collection extends keyof Schema, Options extends SubscribeOptions<Schema, Collection>>(
 				collection: Collection,
@@ -162,7 +189,7 @@ export function realtime(config: WebSocketConfig = { authMode: 'handshake' }) {
 					while (subscribed && socket && socket.readyState === WebSocket.OPEN) {
 						const message = await messageCallback(socket);
 
-						if ('type' in message && message['type'] === 'subscription' && message['uid'] === options.uid) {
+						if ('type' in message && 'uid' in message  && message['type'] === 'subscription' && message['uid'] === options.uid) {
 							yield message;
 						}
 					}

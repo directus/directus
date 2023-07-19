@@ -5,7 +5,8 @@ export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
 export interface WebSocketConfig {
 	authMode?: WebSocketAuthModes;
-	reconnect?: boolean;
+	reconnect?: number | false; //
+	heartbeat?: boolean;
 	url?: string;
 }
 
@@ -15,11 +16,19 @@ export interface SubscribeOptions<Schema extends object, Collection extends keyo
 	uid?: string;
 }
 
+export type WebSocketEvents = 'open' | 'close' | 'error' | 'message';
+export type RemoveEventHandler = () => void;
+export type WebSocketEventHandler = (this: WebSocket, ev: Event | CloseEvent | any) => any;
+
 export interface WebSocketClient<Schema extends object> {
 	connect(): Promise<void>;
 	disconnect(): void;
-	message(message: Record<string, any>): void;
-	receive(callback: (message: Record<string, any>) => any): () => void;
+	onWebsocket(event: 'open', callback: (this: WebSocket, ev: Event) => any): RemoveEventHandler;
+	onWebsocket(event: 'error', callback: (this: WebSocket, ev: Event) => any): RemoveEventHandler;
+	onWebsocket(event: 'close', callback: (this: WebSocket, ev: CloseEvent) => any): RemoveEventHandler;
+	onWebsocket(event: 'message', callback: (this: WebSocket, ev: any) => any): RemoveEventHandler;
+	onWebsocket(event: WebSocketEvents, callback: WebSocketEventHandler): RemoveEventHandler;
+	sendMessage(message: string | Record<string, any>): void;
 	subscribe<Collection extends keyof Schema, Options extends SubscribeOptions<Schema, Collection>>(
 		collection: Collection,
 		options?: Options

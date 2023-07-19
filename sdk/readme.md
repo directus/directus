@@ -30,9 +30,7 @@ add some features. The following composables are available/in progress:
   - adds `.login({ email, password })`, `.logout()`, `.refresh()` on the client
   - adds `.getToken()` and `.setToken()` on the client
 - `realtime()` websocket connectivity
-  - adds `.subscribe(...)`, `.message(...)`, `.receive((message) => {})` on the client
-- `subscription()` GraphQL Subscriptions [not available]
-  - will add `.subscription()`
+  - adds `.subscribe(...)`, `.sendMessage(...)`, `.onWebsocket('message', (message) => {})` on the client
 
 For this example we'll build a client including `rest` and `graphql`:
 
@@ -105,7 +103,7 @@ const client = createDirectus<Schema>('https://api.directus.io').with(
 	})
 );
 
-const stop = client.receive((message) => {
+const stop = client.onWebsocket('message', (message) => {
 	if ('type' in message && message['type'] === 'pong') {
 		console.log('PONG received');
 		stop();
