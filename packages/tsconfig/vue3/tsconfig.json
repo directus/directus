@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"display": "Vue",
+	"display": "Vue.js 3",
 	"extends": "../base/tsconfig.json",
 	"compilerOptions": {
 		// It's recommended to author and ship in ES modules.
