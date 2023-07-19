@@ -110,8 +110,6 @@ export type ApplyManyToAnyFields<Schema extends object, Item, FieldList> = Unpac
 		: never
 	: never;
 
-
-
 /**
  * Merge union of optional objects
  */

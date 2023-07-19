@@ -6,11 +6,11 @@ export function asSearch<Schema extends object, Output>(
 	return () => {
 		const options = getOptions();
 
-        if (options.method === 'GET') {
-            options.method = 'SEARCH';
-            options.body = JSON.stringify({ query: options.params });
-            delete options.params;
-        }
+		if (options.method === 'GET') {
+			options.method = 'SEARCH';
+			options.body = JSON.stringify({ query: options.params });
+			delete options.params;
+		}
 
 		return options;
 	};

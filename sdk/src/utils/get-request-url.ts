@@ -1,4 +1,4 @@
-import { queryToParams } from "../index.js";
+import { queryToParams } from '../index.js';
 
 const SEPARATOR = '/';
 

@@ -142,7 +142,7 @@ type DateFields<Schema extends object, Item> = {
 
 /**
  * The types below are helpers for working with fields wrapped in functions
- * 
+ *
  * TODO this must be doable in a simpler way to handle the logic below!
  */
 type PermuteFields<Fields, Funcs> = Fields extends string ? (Funcs extends string ? [Fields, Funcs] : never) : never;
