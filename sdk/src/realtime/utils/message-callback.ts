@@ -10,7 +10,7 @@ interface WebSocketListener {
  * @returns Incoming message object
  */
 export const messageCallback = (socket: globalThis.WebSocket) =>
-	new Promise<Record<string, any> | MessageEvent<string>>((resolve) => {
+	new Promise<Record<string, any> | MessageEvent<string>>((resolve, reject) => {
 		const handler: WebSocketListener = (data) => {
 			try {
 				const message = JSON.parse(data.data) as Record<string, any>;
@@ -27,4 +27,6 @@ export const messageCallback = (socket: globalThis.WebSocket) =>
 		};
 
 		socket.addEventListener('message', handler);
+		socket.addEventListener('error', () => reject());
+		socket.addEventListener('close', () => reject());
 	});

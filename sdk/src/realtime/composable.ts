@@ -11,6 +11,10 @@ type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & Authenticat
 const defaultRealTimeConfig: WebSocketConfig = {
 	authMode: 'handshake',
 	heartbeat: true,
+	reconnect: {
+		delay: 1000, // 1 second
+		retries: 10,
+	},
 }
 
 /**
@@ -25,6 +29,8 @@ export function realtime(config: WebSocketConfig = {}) {
 		config = { ...defaultRealTimeConfig, ...config };
 		let socket: globalThis.WebSocket | null = null;
 		let uid = generateUid();
+		let reconnectAttempts = 0;
+		let reconnecting = false;
 
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
 
@@ -56,8 +62,27 @@ export function realtime(config: WebSocketConfig = {}) {
 		const resetConnection = () => {
 			socket = null;
 			uid = generateUid();
-			// TODO reconnecting strategy
 		};
+
+		function reconnect(this: WebSocketClient<Schema>) {
+			// try to reconnect
+			if (config.reconnect && !reconnecting && reconnectAttempts < config.reconnect.retries) {
+				reconnecting = true;
+
+				setTimeout(() => {
+					reconnectAttempts += 1;
+
+					this.connect()
+						.then(() => {
+							reconnectAttempts = 0;
+							reconnecting = false;
+						})
+						.catch(() => { /* failed to connect */ })
+				}, Math.max(1, config.reconnect.delay));
+			} else {
+				reconnecting = false;
+			}
+		}
 
 		const eventHandlers: Record<WebSocketEvents, Set<WebSocketEventHandler>> = {
 			'open': new Set<WebSocketEventHandler>([]),
@@ -68,7 +93,10 @@ export function realtime(config: WebSocketConfig = {}) {
 
 		const handleMessages = async (ws: globalThis.WebSocket, currentClient: AuthWSClient<Schema>) => {
 			while (ws.readyState !== WebSocket.CLOSED) {
-				const message = await messageCallback(ws);
+				const message = await messageCallback(ws)
+					.catch(() => { /* ignore invalid messages */ })
+				
+				if (!message) continue;
 
 				if ('type' in message) {
 					if (message['type'] === 'auth' && hasAuth(currentClient)) {
@@ -117,12 +145,14 @@ export function realtime(config: WebSocketConfig = {}) {
 					ws.addEventListener('error', (evt: Event) => {
 						eventHandlers['error'].forEach(handler => handler.call(ws, evt))
 						resetConnection();
+						reconnect.call(this);
 						if (!resolved) reject(evt);
 					});
 
 					ws.addEventListener('close', (evt: CloseEvent) => {
 						eventHandlers['close'].forEach(handler => handler.call(ws, evt))
 						resetConnection();
+						reconnect.call(this);
 						if (!resolved) reject(evt);
 					});
 
@@ -185,11 +215,24 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				send({ ...options, collection, type: 'subscribe' });
 
-				async function* subscriptionGenerator() {
-					while (subscribed && socket && socket.readyState === WebSocket.OPEN) {
-						const message = await messageCallback(socket);
+				const initialMessage = await messageCallback(ws);
 
-						if ('type' in message && 'uid' in message  && message['type'] === 'subscription' && message['uid'] === options.uid) {
+				if ('type' in initialMessage && 'status' in initialMessage && initialMessage['type'] === 'subscribe' && initialMessage['status'] === 'error') {
+					throw initialMessage;
+				}
+
+				async function* subscriptionGenerator() {
+					if ('type' in initialMessage && 'uid' in initialMessage && initialMessage['type'] === 'subscription' && initialMessage['uid'] === options.uid) {
+						yield initialMessage;
+					}
+
+					while (subscribed && socket && socket.readyState === WebSocket.OPEN) {
+						const message = await messageCallback(socket)
+							.catch(() => { /* let the loop continue */})
+						
+						if (!message) continue;
+
+						if ('type' in message && 'uid' in message && message['type'] === 'subscription' && message['uid'] === options.uid) {
 							yield message;
 						}
 					}
