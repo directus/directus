@@ -773,7 +773,7 @@ Delete an existing user.
 
 <template #graphql>
 
-POST /graphql/system
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
