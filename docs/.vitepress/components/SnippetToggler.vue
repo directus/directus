@@ -80,7 +80,7 @@ onBeforeMount(() => {
 .snippet-toggler-header {
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
 	color: var(--vp-c-gray-light-2);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid var(--vp-snippet-toggler-border);
 	height: 40px;
 	display: flex;
 	align-items: center;
@@ -154,7 +154,9 @@ onBeforeMount(() => {
 
 .content-area {
 	padding-inline: 24px;
-	padding-bottom: 32px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	/* padding-bottom: 32px; */
 	scrollbar-width: none;
 	overflow-y: auto;
 	tab-size: 2;
