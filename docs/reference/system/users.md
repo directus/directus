@@ -113,7 +113,9 @@ List all users that exist in Directus.
 
 `GET /users`
 
-`SEARCH /users` </template>
+`SEARCH /users`
+
+</template>
 
 <template #graphql>
 
@@ -147,7 +149,9 @@ be an empty array.
 
 `GET /users`
 
-`SEARCH /users` </template>
+`SEARCH /users`
+
+</template>
 
 <template #graphql>
 
@@ -174,7 +178,9 @@ List an existing user by primary key.
 
 <template #rest>
 
-`GET /users/:id` </template>
+`GET /users/:id`
+
+</template>
 
 <template #graphql>
 
@@ -203,7 +209,9 @@ Returns the requested [user object](#the-user-object).
 
 <template #rest>
 
-`GET /users/72a1ce24-4748-47de-a05f-ce9af3033727` </template>
+`GET /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
+</template>
 
 <template #graphql>
 
@@ -232,7 +240,9 @@ Retrieve the currently authenticated user.
 
 <template #rest>
 
-`GET /users/me` </template>
+`GET /users/me`
+
+</template>
 
 <template #graphql>
 
@@ -261,7 +271,9 @@ Returns the [user object](#the-user-object) for the currently authenticated user
 
 <template #rest>
 
-`GET /users/me` </template>
+`GET /users/me`
+
+</template>
 
 <template #graphql>
 
@@ -761,7 +773,9 @@ Delete an existing user.
 
 <template #rest>
 
-`DELETE /users/:id` </template>
+`DELETE /users/:id`
+
+</template>
 
 <template #graphql>
 
@@ -786,7 +800,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727` </template>
+`DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
+</template>
 
 <template #graphql>
 

@@ -142,7 +142,9 @@ List an existing operation by primary key.
 
 <template #rest>
 
-`GET /operations/:id` </template>
+`GET /operations/:id`
+
+</template>
 
 <template #graphql>
 
@@ -173,7 +175,9 @@ Returns the requested [operation object](#the-operation-object).
 
 <template #rest>
 
-`GET /operations/3c636d1c-4eb2-49cd-8a6d-3ec571ab3390` </template>
+`GET /operations/3c636d1c-4eb2-49cd-8a6d-3ec571ab3390`
+
+</template>
 
 <template #graphql>
 
@@ -551,7 +555,9 @@ Delete an existing operation.
 
 <template #rest>
 
-`DELETE /operations/:id` </template>
+`DELETE /operations/:id`
+
+</template>
 
 <template #graphql>
 
@@ -576,7 +582,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /operations/07ac467e-1900-4c62-9637-8dac2ab97f71` </template>
+`DELETE /operations/07ac467e-1900-4c62-9637-8dac2ab97f71`
+
+</template>
 
 <template #graphql>
 

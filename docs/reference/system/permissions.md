@@ -73,7 +73,9 @@ other than the current user's role won't be returned.
 
 `GET /permissions`
 
-`SEARCH /permissions` </template>
+`SEARCH /permissions`
+
+</template>
 
 <template #graphql>
 
@@ -107,7 +109,9 @@ available, data will be an empty array.
 
 `GET /permissions`
 
-`SEARCH /permissions` </template>
+`SEARCH /permissions`
+
+</template>
 
 <template #graphql>
 
@@ -136,7 +140,9 @@ List an existing permission by primary key.
 
 <template #rest>
 
-`GET /permissions/:id` </template>
+`GET /permissions/:id`
+
+</template>
 
 <template #graphql>
 
@@ -165,7 +171,9 @@ Returns the requested [permission object](#the-permission-object).
 
 <template #rest>
 
-`GET /permissions/34` </template>
+`GET /permissions/34`
+
+</template>
 
 <template #graphql>
 
@@ -574,7 +582,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /permissions/34` </template>
+`DELETE /permissions/34`
+
+</template>
 
 <template #graphql>
 

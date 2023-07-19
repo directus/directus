@@ -154,7 +154,9 @@ List the available collections.
 
 `GET /collections`
 
-`SEARCH /collections` </template>
+`SEARCH /collections`
+
+</template>
 
 <template #graphql>
 
@@ -201,7 +203,9 @@ An array of [collection objects](#the-collection-object).
 
 `GET /collections`
 
-`SEARCH /collections` </template>
+`SEARCH /collections`
+
+</template>
 
 <template #graphql>
 
@@ -243,7 +247,9 @@ Retrieve a single collection by table name.
 
 <template #rest>
 
-`GET /collections/:collection` </template>
+`GET /collections/:collection`
+
+</template>
 
 <template #graphql>
 
@@ -286,7 +292,9 @@ A [collection object](#the-collection-object).
 
 <template #rest>
 
-`GET /collections/articles` </template>
+`GET /collections/articles`
+
+</template>
 
 <template #graphql>
 
@@ -589,7 +597,9 @@ Be aware, this will delete the table from the database, including all items in i
 
 <template #rest>
 
-`DELETE /collections/:collection` </template>
+`DELETE /collections/:collection`
+
+</template>
 
 <template #graphql>
 
@@ -624,7 +634,9 @@ console.log(result);
 
 <template #rest>
 
-`DELETE /collections/articles` </template>
+`DELETE /collections/articles`
+
+</template>
 
 <template #graphql>
 

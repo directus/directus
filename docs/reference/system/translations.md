@@ -43,7 +43,9 @@ List all translations that exist in Directus.
 
 `GET /translations`
 
-`SEARCH /translations` </template>
+`SEARCH /translations`
+
+</template>
 
 <template #graphql>
 
@@ -71,7 +73,9 @@ List an existing translation by primary key.
 
 <template #rest>
 
-`GET /translations/:id` </template>
+`GET /translations/:id`
+
+</template>
 
 <template #graphql>
 
@@ -92,7 +96,9 @@ Returns the requested [translation object](#the-translations-object).
 
 <template #rest>
 
-`GET /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2` </template>
+`GET /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
+</template>
 
 <template #graphql>
 
@@ -374,7 +380,9 @@ Delete an existing translation.
 
 <template #rest>
 
-`DELETE /translations/:id` </template>
+`DELETE /translations/:id`
+
+</template>
 
 <template #graphql>
 
@@ -391,7 +399,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /translations/12204ee2-2c82-4d9a-b044-2f4842a11dba` </template>
+`DELETE /translations/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+
+</template>
 
 <template #graphql>
 

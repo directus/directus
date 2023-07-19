@@ -117,7 +117,9 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 
 <template #rest>
 
-`GET /settings` </template>
+`GET /settings`
+
+</template>
 
 <template #graphql>
 
@@ -146,7 +148,9 @@ Returns the [settings object](#the-settings-object).
 
 <template #rest>
 
-`GET /settings` </template>
+`GET /settings`
+
+</template>
 
 <template #graphql>
 

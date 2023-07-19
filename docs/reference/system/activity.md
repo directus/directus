@@ -163,7 +163,9 @@ Returns a single activity action by primary key.
 
 <template #rest>
 
-`GET /activity/:id` </template>
+`GET /activity/:id`
+
+</template>
 
 <template #graphql>
 
@@ -211,7 +213,9 @@ Returns an [activity object](#the-activity-object) if a valid identifier was pro
 
 <template #rest>
 
-`GET /activity/15` </template>
+`GET /activity/15`
+
+</template>
 
 <template #graphql>
 
@@ -496,7 +500,9 @@ Deletes a comment.
 
 <template #rest>
 
-`DELETE /activity/comment/:id` </template>
+`DELETE /activity/comment/:id`
+
+</template>
 
 <template #graphql>
 
@@ -532,7 +538,9 @@ console.log(result);
 
 <template #rest>
 
-`DELETE /activity/comment/15` </template>
+`DELETE /activity/comment/15`
+
+</template>
 
 <template #graphql>
 

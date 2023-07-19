@@ -111,7 +111,9 @@ will be an empty array.
 
 `GET /shares`
 
-`SEARCH /shares` </template>
+`SEARCH /shares`
+
+</template>
 
 <template #graphql>
 
@@ -139,7 +141,9 @@ List an existing share by primary key.
 
 <template #rest>
 
-`GET /shares/:id` </template>
+`GET /shares/:id`
+
+</template>
 
 <template #graphql>
 
@@ -168,7 +172,9 @@ Returns the requested [share object](#the-share-object).
 
 <template #rest>
 
-`GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302` </template>
+`GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302`
+
+</template>
 
 <template #graphql>
 
@@ -565,7 +571,9 @@ Delete an existing share.
 
 <template #rest>
 
-`DELETE /shares/:id` </template>
+`DELETE /shares/:id`
+
+</template>
 
 <template #graphql>
 
@@ -590,7 +598,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7` </template>
+`DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+
+</template>
 
 <template #graphql>
 
@@ -773,7 +783,10 @@ Sends an email to the provided email addresses with a link to the share.
 
 <template #graphql>
 
-`// Not currently available in GraphQL` </template> </SnippetToggler>
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>
 
 #### Request Body
 
@@ -806,7 +819,10 @@ Empty body.
 
 <template #graphql>
 
-`// Not currently available in GraphQL` </template> </SnippetToggler>
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>
 
 ## Get Share Public Info
 
@@ -816,7 +832,9 @@ Allows unauthenticated users to retrieve information about the share.
 
 <template #rest>
 
-`GET /shares/info/:id` </template>
+`GET /shares/info/:id`
+
+</template>
 
 <template #graphql>
 
@@ -835,8 +853,13 @@ The [share objects](#the-share-object) for the given UUID, if it's still valid.
 
 <template #rest>
 
-`GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc` </template>
+`GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc`
+
+</template>
 
 <template #graphql>
 
-`// Not currently available in GraphQL` </template> </SnippetToggler>
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>

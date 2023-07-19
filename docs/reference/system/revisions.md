@@ -67,7 +67,9 @@ to a collection that the current user doesn't have access to are stripped out.
 
 `GET /revisions`
 
-`SEARCH /revisions` </template>
+`SEARCH /revisions`
+
+</template>
 
 <template #graphql>
 
@@ -101,7 +103,9 @@ data will be an empty array.
 
 `GET /revisions`
 
-`SEARCH /revisions` </template>
+`SEARCH /revisions`
+
+</template>
 
 <template #graphql>
 
@@ -130,7 +134,9 @@ List an existing revision by primary key.
 
 <template #rest>
 
-`GET /revisions/:id` </template>
+`GET /revisions/:id`
+
+</template>
 
 <template #graphql>
 
@@ -159,7 +165,9 @@ Returns the requested [revision object](#the-revision-object).
 
 <template #rest>
 
-`GET /revisions/322` </template>
+`GET /revisions/322`
+
+</template>
 
 <template #graphql>
 

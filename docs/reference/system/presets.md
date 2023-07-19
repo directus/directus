@@ -90,7 +90,9 @@ other than the current user's role won't be returned.
 
 `GET /presets`
 
-`SEARCH /presets` </template>
+`SEARCH /presets`
+
+</template>
 
 <template #graphql>
 
@@ -124,7 +126,9 @@ will be an empty array.
 
 `GET /presets`
 
-`SEARCH /presets` </template>
+`SEARCH /presets`
+
+</template>
 
 <template #graphql>
 
@@ -152,7 +156,9 @@ List an existing preset by primary key.
 
 <template #rest>
 
-GET /presets/:id </template>
+GET /presets/:id
+
+</template>
 
 <template #graphql>
 
@@ -181,7 +187,9 @@ Returns the requested [preset object](#the-preset-object).
 
 <template #rest>
 
-`GET /presets/42` </template>
+`GET /presets/42`
+
+</template>
 
 <template #graphql>
 
@@ -588,7 +596,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /presets/34` </template>
+`DELETE /presets/34`
+
+</template>
 
 <template #graphql>
 

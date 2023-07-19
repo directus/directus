@@ -212,7 +212,9 @@ Returns the requested [dashboard object](#the-dashboard-object).
 
 <template #rest>
 
-`GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2` </template>
+`GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
+</template>
 
 <template #graphql>
 

@@ -263,7 +263,10 @@ Content-Type: MIME Content Type
 
 <template #graphql>
 
-`// Not currently available in GraphQL` </template> </SnippetToggler>
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>
 
 #### Request Body
 
@@ -303,7 +306,10 @@ Content-Type: text/csv
 
 <template #graphql>
 
-`// Not currently available in GraphQL` </template> </SnippetToggler>
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>
 
 ## Export Data to a File
 
@@ -336,7 +342,10 @@ Export a larger data set to a file in the File Library
 
 <template #graphql>
 
-`// Not currently available in GraphQL` </template> </SnippetToggler>
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>
 
 #### Query Parameters
 
@@ -384,7 +393,10 @@ Empty body
 
 <template #graphql>
 
-`// Not currently available in GraphQL` </template> </SnippetToggler>
+`// Not currently available in GraphQL`
+
+</template>
+</SnippetToggler>
 
 ## Clear the Internal Cache
 
@@ -394,7 +406,9 @@ Resets both the data and schema cache of Directus. This endpoint is only availab
 
 <template #rest>
 
-`POST /utils/cache/clear` </template>
+`POST /utils/cache/clear`
+
+</template>
 
 <template #graphql>
 

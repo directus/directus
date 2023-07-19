@@ -63,7 +63,9 @@ List all notifications that exist in Directus.
 
 `GET /notifications`
 
-`SEARCH /notifications` </template>
+`SEARCH /notifications`
+
+</template>
 
 <template #graphql>
 
@@ -97,7 +99,9 @@ available, data will be an empty array.
 
 `GET /notifications`
 
-`SEARCH /notifications` </template>
+`SEARCH /notifications`
+
+</template>
 
 <template #graphql>
 
@@ -126,7 +130,9 @@ List an existing notification by primary key.
 
 <template #rest>
 
-`GET /notifications/:id` </template>
+`GET /notifications/:id`
+
+</template>
 
 <template #graphql>
 
@@ -155,7 +161,9 @@ Returns the requested [notification object](#the-notification-object).
 
 <template #rest>
 
-`GET /notifications/42` </template>
+`GET /notifications/42`
+
+</template>
 
 <template #graphql>
 
@@ -540,7 +548,9 @@ Delete an existing notification.
 
 <template #rest>
 
-`DELETE /notifications/:id` </template>
+`DELETE /notifications/:id`
+
+</template>
 
 <template #graphql>
 
@@ -565,7 +575,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /notifications/34` </template>
+`DELETE /notifications/34`
+
+</template>
 
 <template #graphql>
 

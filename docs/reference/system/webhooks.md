@@ -62,7 +62,9 @@ List all webhooks that exist in Directus.
 
 `GET /webhooks`
 
-`SEARCH /webhooks` </template>
+`SEARCH /webhooks`
+
+</template>
 
 <template #graphql>
 
@@ -96,7 +98,9 @@ data will be an empty array.
 
 `GET /webhooks`
 
-`SEARCH /webhooks` </template>
+`SEARCH /webhooks`
+
+</template>
 
 <template #graphql>
 
@@ -124,7 +128,9 @@ List an existing webhook by primary key.
 
 <template #rest>
 
-`GET /webhooks/:id` </template>
+`GET /webhooks/:id`
+
+</template>
 
 <template #graphql>
 
@@ -153,7 +159,9 @@ Returns the requested [webhook object](#the-webhook-object).
 
 <template #rest>
 
-`GET /webhooks/15` </template>
+`GET /webhooks/15`
+
+</template>
 
 <template #graphql>
 
@@ -539,7 +547,9 @@ Delete an existing webhook.
 
 <template #rest>
 
-`DELETE /webhooks/:id` </template>
+`DELETE /webhooks/:id`
+
+</template>
 
 <template #graphql>
 
@@ -564,7 +574,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /webhooks/15` </template>
+`DELETE /webhooks/15`
+
+</template>
 
 <template #graphql>
 

@@ -42,7 +42,9 @@ List all folders that exist in Directus.
 
 `GET /folders`
 
-`SEARCH /folders` </template>
+`SEARCH /folders`
+
+</template>
 
 <template #graphql>
 
@@ -76,7 +78,9 @@ will be an empty array.
 
 `GET /folders`
 
-`SEARCH /folders` </template>
+`SEARCH /folders`
+
+</template>
 
 <template #graphql>
 
@@ -134,7 +138,9 @@ Returns a [folder object](#the-folder-object) if a valid primary key was provide
 
 <template #rest>
 
-`GET /folders/fc02d733-95b8-4e27-bd4b-08a32cbe4e66` </template>
+`GET /folders/fc02d733-95b8-4e27-bd4b-08a32cbe4e66`
+
+</template>
 
 <template #graphql>
 
@@ -501,7 +507,9 @@ Any files in this folder will be moved to the root folder.
 
 <template #rest>
 
-`DELETE /folders/:id` </template>
+`DELETE /folders/:id`
+
+</template>
 
 <template #graphql>
 

@@ -246,7 +246,9 @@ List all files that exist in Directus.
 
 <template #rest>
 
-`GET /files` `SEARCH /files` </template>
+`GET /files` `SEARCH /files`
+
+</template>
 
 <template #graphql>
 
@@ -300,7 +302,9 @@ be an empty array.
 
 <template #rest>
 
-`GET /files` `SEARCH /files` </template>
+`GET /files` `SEARCH /files`
+
+</template>
 
 <template #graphql>
 
@@ -349,7 +353,9 @@ Retrieve a single file by primary key.
 
 <template #rest>
 
-`GET /files/:id` </template>
+`GET /files/:id`
+
+</template>
 
 <template #graphql>
 
@@ -395,7 +401,9 @@ Returns a [file object](#the-file-object) if a valid primary key was provided.
 
 <template #rest>
 
-`GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d` </template>
+`GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+
+</template>
 
 <template #graphql>
 
@@ -879,7 +887,9 @@ This will also delete the file from disk.
 
 <template #rest>
 
-`DELETE /files/:id` </template>
+`DELETE /files/:id`
+
+</template>
 
 <template #graphql>
 
@@ -922,7 +932,9 @@ Empty response.
 
 <template #rest>
 
-`DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d` </template>
+`DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+
+</template>
 
 <template #graphql>
 

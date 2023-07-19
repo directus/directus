@@ -25,7 +25,9 @@ This OAS spec is based on the read permissions of the currently authenticated us
 
 <template #rest>
 
-`GET /server/specs/oas` </template>
+`GET /server/specs/oas`
+
+</template>
 
 <template #graphql>
 
@@ -50,7 +52,9 @@ Object conforming to [the OpenAPI Specification](https://swagger.io/specificatio
 
 <template #rest>
 
-`GET /server/specs/oas` </template>
+`GET /server/specs/oas`
+
+</template>
 
 <template #graphql>
 
@@ -81,7 +85,9 @@ The SDL is based on the permissions of the currently authenticated user.
 
 `GET /server/specs/graphql/`
 
-`GET /server/specs/graphql/system` </template>
+`GET /server/specs/graphql/system`
+
+</template>
 
 <template #graphql>
 
@@ -130,7 +136,9 @@ type articles {
 
 `GET /server/specs/graphql/`
 
-`GET /server/specs/graphql/system` </template>
+`GET /server/specs/graphql/system`
+
+</template>
 
 <template #graphql>
 
@@ -155,7 +163,9 @@ Ping... pong! 🏓
 
 <template #rest>
 
-`GET /server/ping` </template>
+`GET /server/ping`
+
+</template>
 
 <template #graphql>
 
@@ -180,7 +190,9 @@ Pong.
 
 <template #rest>
 
-`GET /server/ping` </template>
+`GET /server/ping`
+
+</template>
 
 <template #graphql>
 
@@ -211,7 +223,9 @@ The public information is returned for everybody. Admin users get additional inf
 
 <template #rest>
 
-`GET /server/info` </template>
+`GET /server/info`
+
+</template>
 
 <template #graphql>
 
@@ -257,7 +271,9 @@ The maximum query limit accepted on API requests
 
 <template #rest>
 
-`GET /server/info` </template>
+`GET /server/info`
+
+</template>
 
 <template #graphql>
 
@@ -354,7 +370,9 @@ return more in-depth information about the current health status of the system.
 
 <template #rest>
 
-`GET /server/health` </template>
+`GET /server/health`
+
+</template>
 
 <template #graphql>
 
@@ -391,7 +409,9 @@ Array with the status of all individually connected services.
 
 <template #rest>
 
-`GET /server/health` </template>
+`GET /server/health`
+
+</template>
 
 <template #graphql>
 

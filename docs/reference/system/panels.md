@@ -90,7 +90,9 @@ List all panels that exist in Directus.
 
 `GET /panels`
 
-`SEARCH /panels` </template>
+`SEARCH /panels`
+
+</template>
 
 <template #graphql>
 
@@ -124,7 +126,9 @@ will be an empty array.
 
 `GET /panels`
 
-`SEARCH /panels` </template>
+`SEARCH /panels`
+
+</template>
 
 <template #graphql>
 
@@ -152,7 +156,9 @@ List an existing panel by primary key.
 
 <template #rest>
 
-`GET /panels/:id` </template>
+`GET /panels/:id`
+
+</template>
 
 <template #graphql>
 
@@ -181,7 +187,9 @@ Returns the requested [panel object](#the-panel-object).
 
 <template #rest>
 
-`GET /panels/2fc325fb-299b-4d20-a9e7-a34349dee8b2` </template>
+`GET /panels/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
+</template>
 
 <template #graphql>
 
@@ -547,7 +555,9 @@ Delete an existing panel.
 
 <template #rest>
 
-`DELETE /panels/:id` </template>
+`DELETE /panels/:id`
+
+</template>
 
 <template #graphql>
 
@@ -572,7 +582,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /panels/12204ee2-2c82-4d9a-b044-2f4842a11dba` </template>
+`DELETE /panels/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+
+</template>
 
 <template #graphql>
 

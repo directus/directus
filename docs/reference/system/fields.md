@@ -203,7 +203,9 @@ An array of [field objects](#the-field-object).
 
 <template #rest>
 
-`GET /fields` </template>
+`GET /fields`
+
+</template>
 
 <template #graphql>
 
@@ -379,7 +381,9 @@ A [field object](#the-field-object).
 
 <template #rest>
 
-`GET /fields/articles/title` </template>
+`GET /fields/articles/title`
+
+</template>
 
 <template #graphql>
 
@@ -716,7 +720,9 @@ Be aware, this will delete the column from the database, including all data in i
 
 <template #rest>
 
-`DELETE /fields/:collection/:field` </template>
+`DELETE /fields/:collection/:field`
+
+</template>
 
 <template #graphql>
 

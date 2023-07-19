@@ -74,7 +74,9 @@ List all flows that exist in Directus.
 
 `GET /flows`
 
-`SEARCH /flows` </template>
+`SEARCH /flows`
+
+</template>
 
 <template #graphql>
 
@@ -108,7 +110,9 @@ be an empty array.
 
 `GET /flows`
 
-`SEARCH /flows` </template>
+`SEARCH /flows`
+
+</template>
 
 <template #graphql>
 
@@ -168,7 +172,9 @@ Returns the requested [flow object](#the-flow-object).
 
 <template #rest>
 
-`GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2` </template>
+`GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
+</template>
 
 <template #graphql>
 
@@ -548,7 +554,9 @@ Delete an existing flow.
 
 <template #rest>
 
-`DELETE /flows/:id` </template>
+`DELETE /flows/:id`
+
+</template>
 
 <template #graphql>
 
@@ -573,7 +581,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba` </template>
+`DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+
+</template>
 
 <template #graphql>
 
@@ -674,7 +684,9 @@ Start a flow with GET webhook trigger.
 
 <template #rest>
 
-`GET /flows/trigger/:flow_uuid` </template>
+`GET /flows/trigger/:flow_uuid`
+
+</template>
 
 </SnippetToggler>
 
@@ -688,7 +700,9 @@ Result of the flow, if any.
 
 <template #rest>
 
-`GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here` </template>
+`GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+
+</template>
 
 </SnippetToggler>
 

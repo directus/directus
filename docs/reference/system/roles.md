@@ -64,7 +64,9 @@ List all roles that exist in Directus.
 
 `GET /roles`
 
-`SEARCH /roles` </template>
+`SEARCH /roles`
+
+</template>
 
 <template #graphql>
 
@@ -98,7 +100,9 @@ be an empty array.
 
 `GET /roles`
 
-`SEARCH /roles` </template>
+`SEARCH /roles`
+
+</template>
 
 <template #graphql>
 
@@ -127,7 +131,9 @@ List an existing role by primary key.
 
 <template #rest>
 
-`GET /roles/:id` </template>
+`GET /roles/:id`
+
+</template>
 
 <template #graphql>
 
@@ -156,7 +162,9 @@ Returns the requested [role object](#the-role-object).
 
 <template #rest>
 
-`GET /roles/b4cb3b64-8580-4ad9-a099-eade6da24302` </template>
+`GET /roles/b4cb3b64-8580-4ad9-a099-eade6da24302`
+
+</template>
 
 <template #graphql>
 
@@ -562,7 +570,9 @@ Delete an existing role.
 
 <template #rest>
 
-`DELETE /roles/:id` </template>
+`DELETE /roles/:id`
+
+</template>
 
 <template #graphql>
 
@@ -587,7 +597,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7` </template>
+`DELETE /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+
+</template>
 
 <template #graphql>
 

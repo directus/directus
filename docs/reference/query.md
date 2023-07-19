@@ -205,7 +205,9 @@ Find all items that mention Directus\
 
 <template #rest>
 
-`?search=Directus` </template>
+`?search=Directus`
+
+</template>
 
 <template #graphql>
 
@@ -289,7 +291,9 @@ with caution.
 
 <template #rest>
 
-`?limit=200` </template>
+`?limit=200`
+
+</template>
 
 <template #graphql>
 
@@ -317,7 +321,9 @@ Get items 101—200\
 
 <template #rest>
 
-`?offset=100` </template>
+`?offset=100`
+
+</template>
 
 <template #graphql>
 
@@ -349,7 +355,9 @@ Get items 101-200\
 
 <template #rest>
 
-`?page=2` </template>
+`?page=2`
+
+</template>
 
 <template #graphql>
 
@@ -548,7 +556,10 @@ Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 
 <template #graphql>
 
-`// Not Applicable` </template> </SnippetToggler>
+`// Not Applicable`
+
+</template>
+</SnippetToggler>
 
 ## Functions
 

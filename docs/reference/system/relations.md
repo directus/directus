@@ -126,7 +126,9 @@ to a collection that the current user doesn't have access to are stripped out.
 
 <template #rest>
 
-`GET /relations` </template>
+`GET /relations`
+
+</template>
 
 <template #graphql>
 
@@ -155,7 +157,9 @@ Array of [relation objects](#the-relation-object). If no items are available, da
 
 <template #rest>
 
-`GET /relations` </template>
+`GET /relations`
+
+</template>
 
 <template #graphql>
 
@@ -190,7 +194,9 @@ to a collection that the current user doesn't have access to are stripped out.
 
 <template #rest>
 
-`GET /relations/:collection` </template>
+`GET /relations/:collection`
+
+</template>
 
 <template #graphql>
 
@@ -219,7 +225,9 @@ Array of [relation objects](#the-relation-object). If no items are available, da
 
 <template #rest>
 
-`GET /relations/articles` </template>
+`GET /relations/articles`
+
+</template>
 
 <template #graphql>
 
@@ -247,7 +255,9 @@ List an existing relation by collection/field name.
 
 <template #rest>
 
-`GET /relations/:collection/:field` </template>
+`GET /relations/:collection/:field`
+
+</template>
 
 <template #graphql>
 
@@ -276,7 +286,9 @@ Returns the requested [relation object](#the-relation-object).
 
 <template #rest>
 
-`GET /relations/articles/featured_image` </template>
+`GET /relations/articles/featured_image`
+
+</template>
 
 <template #graphql>
 
@@ -471,7 +483,9 @@ Delete an existing relation.
 
 <template #rest>
 
-`DELETE /relations/:collection/:field` </template>
+`DELETE /relations/:collection/:field`
+
+</template>
 
 <template #graphql>
 
@@ -496,7 +510,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /relations/articles/author` </template>
+`DELETE /relations/articles/author`
+
+</template>
 
 <template #graphql>
 

@@ -505,7 +505,9 @@ Will redirect to the configured SSO provider for the user to login.
 
 <template #rest>
 
-`GET /auth/login/:provider` </template>
+`GET /auth/login/:provider`
+
+</template>
 
 <template #graphql>
 

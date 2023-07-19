@@ -765,7 +765,9 @@ Delete an existing item.
 
 <template #rest>
 
-`DELETE /items/:collection/:id` </template>
+`DELETE /items/:collection/:id`
+
+</template>
 
 <template #graphql>
 
@@ -804,7 +806,9 @@ Empty body.
 
 <template #rest>
 
-`DELETE /items/articles/15` </template>
+`DELETE /items/articles/15`
+
+</template>
 
 <template #graphql>
 
