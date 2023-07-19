@@ -10,8 +10,6 @@ pageClass: page-reference
 > tracked within the `directus_files` system collection. Any requested file transformations are handled on the fly, and
 > are only saved to storage.
 
----
-
 ## Accessing a File
 
 The location of your actual file originals is based on the project's configuration, but you can consistently access them
@@ -46,8 +44,6 @@ permissions and other built-in features.
 ![Original File](https://cdn.directus.io/docs/v9/reference/files/original-20220216A.jpg) _Original File Used — 602KB and
 1800x1200_
 
----
-
 ## Downloading a File
 
 To download an asset with the correct filename, you need to add the `?download` query parameter to the request and the
@@ -60,8 +56,6 @@ download will work on the _same_ domain, however it will have the file's "id" as
 ```html
 <a href="https://your-directus.com/assets/<file-id>?download" target="_blank" download="Your File.pdf">Download</a>
 ```
-
----
 
 ## Requesting a Thumbnail
 
@@ -148,8 +142,6 @@ example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=cover&width=200&heig
 	["expand", { "right": 200, "bottom": 150 }]
 ]
 ```
-
----
 
 ## The File Object
 
@@ -244,8 +236,6 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 }
 ```
 
----
-
 ## List Files
 
 List all files that exist in Directus.
@@ -256,8 +246,8 @@ List all files that exist in Directus.
 
 <template #rest>
 
-`GET /files`
-`SEARCH /files`
+`GET /files` `SEARCH /files`
+
 </template>
 
 <template #graphql>
@@ -269,13 +259,14 @@ type Query {
 	files: [directus_files]
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFiles} from '@directus/sdk/rest';
+import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -290,6 +281,7 @@ const result = await client.request(
     })
 );
 ```
+
 </template>
 </SnippetToggler>
 
@@ -310,8 +302,8 @@ be an empty array.
 
 <template #rest>
 
-`GET /files`
-`SEARCH /files`
+`GET /files` `SEARCH /files`
+
 </template>
 
 <template #graphql>
@@ -324,13 +316,14 @@ query {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFiles} from '@directus/sdk/rest';
+import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -345,11 +338,10 @@ const result = await client.request(
     })
 );
 ```
+
 </template>
 
 </SnippetToggler>
-
----
 
 ## Retrieve a File
 
@@ -362,6 +354,7 @@ Retrieve a single file by primary key.
 <template #rest>
 
 `GET /files/:id`
+
 </template>
 
 <template #graphql>
@@ -373,13 +366,14 @@ type Query {
 	files_by_id(id: ID!): directus_files
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFile} from '@directus/sdk/rest';
+import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -388,6 +382,7 @@ const result = await client.request(
     })
 )
 ```
+
 </template>
 
 </SnippetToggler>
@@ -407,11 +402,13 @@ Returns a [file object](#the-file-object) if a valid primary key was provided.
 <template #rest>
 
 `GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	files_by_id(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d") {
@@ -420,13 +417,14 @@ query {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFile} from '@directus/sdk/rest';
+import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -435,9 +433,9 @@ const result = await client.request(
     })
 )
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Upload a File
 
@@ -522,8 +520,6 @@ Content-Type: image/jpeg
 descü^cprt\wtpthbkpt|rXYZgXYZ¤bXYZ¸rTRCÌ@gTRCÌ@bTRCÌ@descc2textIXXYZ öÖÓ-XYZ 3¤XYZ o¢8õXYZ b·ÚXYZ $ ¶ÏcurvËÉckö?Q4!ñ)2;FQw]íkpz±|¬i¿}ÓÃé0ÿÿÿÛ
 ```
 
----
-
 ## Import a File
 
 Import a file from the web
@@ -544,6 +540,7 @@ Import a file from the web
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -555,13 +552,14 @@ type Mutation {
 	import_file(url: String!, data: create_directus_files_input!): directus_files
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, importFile} from '@directus/sdk/rest';
+import { rest, importFils } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -570,6 +568,7 @@ const result = await client.request(
     })
 )
 ```
+
 </template>
 
 </SnippetToggler>
@@ -590,7 +589,6 @@ Any of [the file object](#the-file-object)'s properties.
 
 Returns the [file object](#the-file-object) for the imported file.
 
-
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
@@ -598,19 +596,22 @@ Returns the [file object](#the-file-object) for the imported file.
 <template #rest>
 
 `POST /files/import`
+
 ```json
-{ 
+{
 	"url": "https://source.unsplash.com/random",
 	"data": {
 		"title": "Example"
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	import_file(url: "https://source.unsplash.com/random", data: { title: "Example" }) {
@@ -618,13 +619,14 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, importFile} from '@directus/sdk/rest';
+import { rest, importFils } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -633,11 +635,9 @@ const result = await client.request(
     })
 )
 ```
+
 </template>
 </SnippetToggler>
-
-
----
 
 ## Update a File
 
@@ -656,6 +656,7 @@ Update an existing file, and/or replace it's file contents.
 	"field": "value"
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -667,13 +668,14 @@ type Mutation {
 	update_files_item(id: ID!, data: update_directus_files_input!): directus_files
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFile} from '@directus/sdk/rest';
+import { rest, updateFils } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -682,6 +684,7 @@ const result = await client.request(
     })
 )
 ```
+
 </template>
 </SnippetToggler>
 
@@ -706,16 +709,19 @@ Returns the [file object](#the-file-object) for the updated file.
 <template #rest>
 
 `PATCH /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+
 ```json
 {
 	"title": "Example"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_files_item(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d", data: { title: "Example" }) {
@@ -724,13 +730,14 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFile} from '@directus/sdk/rest';
+import { rest, updateFils } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -739,11 +746,10 @@ const result = await client.request(
     })
 )
 ```
+
 </template>
 
 </SnippetToggler>
-
----
 
 ## Update Multiple Files
 
@@ -756,6 +762,7 @@ Update multiple files at the same time.
 <template #rest>
 
 `PATCH /files`
+
 ```json
 {
 	"keys": ["file_id", "file_id_2"],
@@ -764,6 +771,7 @@ Update multiple files at the same time.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -775,13 +783,14 @@ type Mutation {
 	update_files_items(ids: [ID!]!, data: update_directus_files!): [directus_files]
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
-import { createDirectus} from '@directus/sdk';
-import { rest, updatedFiles} from '@directus/sdk/rest';
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedFiles } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -790,6 +799,7 @@ const result = await client.request(
     })
 )
 ```
+
 </template>
 </SnippetToggler>
 
@@ -816,6 +826,7 @@ Returns the [file objects](#the-file-object) for the updated files.
 <template #rest>
 
 `PATCH /files`
+
 ```json
 
 {
@@ -831,6 +842,7 @@ Returns the [file objects](#the-file-object) for the updated files.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_files_items(
@@ -839,13 +851,14 @@ mutation {
 	)
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFiles} from '@directus/sdk/rest';
+import { rest, updatedFiles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -854,10 +867,9 @@ const result = await client.request(
     })
 )
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete a File
 
@@ -869,14 +881,14 @@ This will also delete the file from disk.
 
 :::
 
-### Request  
+### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 
 <template #rest>
 
 `DELETE /files/:id`
+
 </template>
 
 <template #graphql>
@@ -888,19 +900,21 @@ type Mutation {
 	delete_files_item(id: ID!): delete_one
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
-import { createDirectus} from '@directus/sdk';
-import { rest, deleteFile} from '@directus/sdk/rest';
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFils } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(deleteFile('file_id'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -919,11 +933,13 @@ Empty response.
 <template #rest>
 
 `DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_files_item(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d") {
@@ -931,23 +947,23 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFile} from '@directus/sdk/rest';
+import { rest, deleteFils } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete Multiple Files
 
@@ -966,6 +982,7 @@ This will also delete the files from disk.
 <template #rest>
 
 `DELETE /files`
+
 ```json
 ["file_id", "file_id"]
 ```
@@ -975,18 +992,20 @@ This will also delete the files from disk.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_files_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFiles} from '@directus/sdk/rest';
+import { rest, deleteFiles } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -1007,6 +1026,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -1033,6 +1053,7 @@ Empty response.
 ```json
 ["d17c10aa-0bad-4864-9296-84f522c753e5", "b6123925-2fc0-4a30-9d86-863eafc0a6e7"]
 ```
+
 </template>
 
 <template #graphql>
@@ -1046,6 +1067,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -1053,7 +1075,7 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { staticToken } from '@directus/sdk/auth'; // OMIT
-import { rest, deleteFiles} from '@directus/sdk/rest';
+import { rest, deleteFiles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 await client.setToken("s79J1cEaSuGIF40auEN6s0gvN-MOK9G4"); // OMIT
@@ -1076,6 +1098,6 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-

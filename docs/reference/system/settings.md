@@ -9,8 +9,6 @@ pageClass: page-reference
 > Settings are key-value pairs that are stored in the database, and control different aspects of the project. Only
 > administrators have access to manage Settings.
 
----
-
 ## The Settings Object
 
 `id` **uuid**\
@@ -111,8 +109,6 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 }
 ```
 
----
-
 ## Retrieve Settings
 
 ### Request
@@ -122,16 +118,19 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 <template #rest>
 
 `GET /settings`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	settings: directus_settings
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -150,11 +149,13 @@ Returns the [settings object](#the-settings-object).
 <template #rest>
 
 `GET /settings`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	settings {
@@ -162,10 +163,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update Settings
 
@@ -176,21 +176,25 @@ query {
 <template #rest>
 
 `PATCH /settings`
+
 ```json
 {
 	"settings_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_settings(data: update_directus_settings_input!): directus_settings
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -213,16 +217,19 @@ Returns the [settings object](#the-setting-object).
 <template #rest>
 
 `PATCH /settings`
+
 ```json
 {
 	"project_url": "https://example.com/"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_settings(data: { project_url: "https://example.com" }) {
@@ -231,5 +238,6 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>

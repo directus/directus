@@ -8,8 +8,6 @@ pageClass: page-reference
 
 > Flows enable custom, event-driven data processing and task automation within Directus.
 
----
-
 ## The Flow Object
 
 `id` **uuid**\
@@ -64,8 +62,6 @@ UUID of the operation connected to the trigger in the flow.
 }
 ```
 
----
-
 ## List Flows
 
 List all flows that exist in Directus.
@@ -79,16 +75,19 @@ List all flows that exist in Directus.
 `GET /flows`
 
 `SEARCH /flows`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	flows: [directus_flows]
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -128,11 +127,13 @@ be an empty array.
 `GET /flows`
 
 `SEARCH /flows`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	flows {
@@ -142,6 +143,7 @@ query {
 	}
 }
 ```
+
 </template>
 <template #sdk>
 
@@ -160,9 +162,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
-
----
-
 ## Retrieve a flow
 
 List an existing flow by primary key.
@@ -180,11 +179,13 @@ List an existing flow by primary key.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	flows_by_id(id: ID!): directus_flows
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -219,11 +220,13 @@ Returns the requested [flow object](#the-flow-object).
 <template #rest>
 
 `GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	flows_by_id(id: "2fc325fb-299b-4d20-a9e7-a34349dee8b2") {
@@ -233,6 +236,7 @@ query {
 	}
 }
 ```
+
 </template>
 <template #sdk>
 
@@ -251,8 +255,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
-
 ## Create a Flow
 
 Create a new flow.
@@ -264,6 +266,7 @@ Create a new flow.
 <template #rest>
 
 `POST /flows`
+
 ```json
 {
 	"flow_object_field_1": "value_1",
@@ -277,6 +280,7 @@ Create a new flow.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_flows_item(data: create_directus_flows_input!): directus_flows
@@ -322,6 +326,7 @@ Returns the [flow object](#the-flow-object) for the created flow.
 <template #rest>
 
 `POST /flows`
+
 ```json
 {
 	"name": "My Flow",
@@ -329,11 +334,13 @@ Returns the [flow object](#the-flow-object) for the created flow.
 	"trigger": "manual"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_flows_item(data: { name: "My Flow", status: "active", trigger: "manual" }) {
@@ -343,6 +350,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -363,8 +371,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
-
 ## Create Multiple Flows
 
 Create multiple new flows.
@@ -376,6 +382,7 @@ Create multiple new flows.
 <template #rest>
 
 `POST /flows`
+
 ```json
 [
 	{
@@ -396,6 +403,7 @@ Create multiple new flows.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
     create_flows_items(data: [create_directus_flows_input!]!): [directus_flows]
@@ -448,6 +456,7 @@ Returns the [flow object](#the-flow-object) for the created flow.
 <template #rest>
 
 `POST /flows`
+
 ```json
 [
 	{
@@ -462,11 +471,13 @@ Returns the [flow object](#the-flow-object) for the created flow.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_flows_items(
@@ -509,8 +520,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
-
 ## Update a Flow
 
 Update an existing flow.
@@ -522,21 +531,25 @@ Update an existing flow.
 <template #rest>
 
 `PATCH /flows/:id`
+
 ```json
 {
 	"flow_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_flows_item(id: ID!, data: update_directus_flows_input): directus_flows
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -575,6 +588,7 @@ Returns the [flow object](#the-flow-object) for the updated flow.
 <template #rest>
 
 `PATCH /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
 ```json
 {
 	"name": "My Updated Flow"
@@ -586,6 +600,7 @@ Returns the [flow object](#the-flow-object) for the updated flow.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_flows_item(id: "2fc325fb-299b-4d20-a9e7-a34349dee8b2", data: { name: "My Updated Flow" }) {
@@ -594,6 +609,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 <template #sdk>
 
@@ -612,8 +628,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
-
 ## Update Multiple Flows
 
 Update multiple existing flows.
@@ -624,8 +638,8 @@ Update multiple existing flows.
 
 <template #rest>
 
-
 `PATCH /flows`
+
 ```json
 {
 	"keys": ["flow_1_key", "flow_2_key"],
@@ -640,11 +654,13 @@ Update multiple existing flows.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_flows_items(ids: [ID!]!, data: update_directus_flows_input): [directus_flows]
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -688,6 +704,7 @@ Returns the [flow objects](#the-flow-object) for the updated flows.
 <template #rest>
 
 `PATCH /flows`
+
 ```json
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
@@ -696,11 +713,13 @@ Returns the [flow objects](#the-flow-object) for the updated flows.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_flows_items(
@@ -713,6 +732,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -733,8 +753,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
-
 ## Delete a Flow
 
 Delete an existing flow.
@@ -746,11 +764,13 @@ Delete an existing flow.
 <template #rest>
 
 `DELETE /flows/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_flows_item(id: ID!): delete_one
@@ -773,7 +793,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
-
 #### Response
 
 Empty body.
@@ -785,11 +804,13 @@ Empty body.
 <template #rest>
 
 `DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_flows_item(id: "12204ee2-2c82-4d9a-b044-2f4842a11dba") {
@@ -797,6 +818,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -813,8 +835,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
-
 ## Delete Multiple Flows
 
 Delete multiple existing flows.
@@ -826,19 +846,23 @@ Delete multiple existing flows.
 <template #rest>
 
 `DELETE /flows`
+
 ```json
 ["flow_1_key", "flow_2_key", "flow_3_key"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_flows_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -872,14 +896,17 @@ Empty body.
 <template #rest>
 
 `DELETE /flows`
+
 ```json
 ["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_flows_items(
@@ -893,6 +920,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -911,8 +939,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
-
 ## Flow with GET webhook trigger
 
 Start a flow with GET webhook trigger.
@@ -924,6 +950,7 @@ Start a flow with GET webhook trigger.
 <template #rest>
 
 `GET /flows/trigger/:flow_uuid`
+
 </template>
 
 <template #sdk>
@@ -955,8 +982,8 @@ Result of the flow, if any.
 
 <template #rest>
 
-`GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
-`// Payload here`
+`GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
+
 </template>
 
 <template #sdk>
@@ -977,7 +1004,6 @@ console.log(result);
 </template>
 
 </SnippetToggler>
-
 
 ## Flow with POST webhook trigger
 
@@ -1026,8 +1052,7 @@ Result of the flow, if any.
 
 <template #rest>
 
-`POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
-`// Payload here`
+`POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
 
 </template>
 

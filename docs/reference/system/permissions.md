@@ -9,8 +9,6 @@ pageClass: page-reference
 > Permissions are assigned to Roles, and control data access throughout the platform.
 > [Learn more about Permissions](/user-guide/overview/glossary#permissions).
 
----
-
 ## The Permission Object
 
 `id` **uuid**\
@@ -56,8 +54,6 @@ What fields the user is allowed to alter.
 }
 ```
 
----
-
 ## List Permissions
 
 List all permissions that exist in Directus.
@@ -78,16 +74,19 @@ other than the current user's role won't be returned.
 `GET /permissions`
 
 `SEARCH /permissions`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	permissions: directus_permissions
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -111,11 +110,13 @@ available, data will be an empty array.
 `GET /permissions`
 
 `SEARCH /permissions`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	permissions {
@@ -125,10 +126,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Retrieve a Permission
 
@@ -141,16 +141,19 @@ List an existing permission by primary key.
 <template #rest>
 
 `GET /permissions/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	permissions_by_id(id: ID!): directus_permissions
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -169,11 +172,13 @@ Returns the requested [permission object](#the-permission-object).
 <template #rest>
 
 `GET /permissions/34`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	permissions_by_id(id: 34) {
@@ -183,10 +188,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create a Permission Rule
 
@@ -199,6 +203,7 @@ Create a new permission rule
 <template #rest>
 
 `POST /permissions`
+
 ```json
 {
 	"permission_object_field_1": "value_1",
@@ -207,16 +212,19 @@ Create a new permission rule
 	"permission_object_field_4": ["value_4", "value_5"]
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_permissions_item(data: create_directus_permissions_input!): directus_permissions
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -239,6 +247,7 @@ Returns the [permission object](#the-permission-object) for the created permissi
 <template #rest>
 
 `POST /permissions`
+
 ```json
 {
 	"collection": "pages",
@@ -247,11 +256,13 @@ Returns the [permission object](#the-permission-object) for the created permissi
 	"fields": ["id", "title"]
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_permissions_item(
@@ -263,10 +274,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create Multiple Permission Rules
 
@@ -279,6 +289,7 @@ Create multiple new permission rules
 <template #rest>
 
 `POST /permissions`
+
 ```json
 [
 	{
@@ -295,19 +306,21 @@ Create multiple new permission rules
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_permissions_items(data: [create_directus_permissions_input!]!): [directus_permissions]
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 #### Query Parameters
 
@@ -328,6 +341,7 @@ Returns the [permission objects](#the-permission-object) for the created permiss
 <template #rest>
 
 `POST /permissions`
+
 ```json
 [
 	{
@@ -350,6 +364,7 @@ Returns the [permission objects](#the-permission-object) for the created permiss
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_permissions_items(
@@ -364,10 +379,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update Permissions
 
@@ -380,16 +394,19 @@ Update an existing permissions rule.
 <template #rest>
 
 `PATCH /permissions/:id`
+
 ```json
 {
 	"permissions_object_fields": ["value_1", "value_2", "value_3"]
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_permissions_item(id: ID!, data: update_directus_permissions_input!): directus_permissions
@@ -418,15 +435,16 @@ Returns the [permission object](#the-permission-object) for the updated permissi
 <template #rest>
 
 `PATCH /permissions/34`
+
 ```json
 {
 	"fields": ["id", "title", "body"]
 }
 ```
+
 </template>
 
 <template #graphql>
-
 
 ```graphql
 mutation {
@@ -437,10 +455,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update Multiple Permissions
 
@@ -452,26 +469,29 @@ Update multiple existing permissions rules.
 
 <template #rest>
 
-
 `PATCH /permissions`
+
 ```json
 {
-	"keys": [permission_1_key, permission_2_key],
+	"keys": ["permission_1_key", "permission_2_key"],
 	"data": {
 		"permissions_object_fields": ["value_1", "value_2", "value_3"]
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
     update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -498,6 +518,7 @@ Returns the [permission object](#the-permission-object) for the updated permissi
 <template #rest>
 
 `PATCH /permissions`
+
 ```json
 {
 	"keys": [34, 65],
@@ -506,6 +527,7 @@ Returns the [permission object](#the-permission-object) for the updated permissi
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -519,10 +541,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete Permissions
 
@@ -541,6 +562,7 @@ Delete an existing permissions rule
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_permissions_item(id: ID!): delete_one
@@ -561,11 +583,13 @@ Empty body.
 <template #rest>
 
 `DELETE /permissions/34`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_permissions_item(id: 34) {
@@ -573,10 +597,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete Multiple Permissions
 
@@ -589,8 +612,9 @@ Delete multiple existing permissions rules
 <template #rest>
 
 `DELETE /permissions`
+
 ```json
-[permission_1_key, permission_2_key]
+["key_1", "key_2", "key_3"]
 ```
 
 </template>
@@ -598,11 +622,13 @@ Delete multiple existing permissions rules
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_permissions_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -621,6 +647,7 @@ Empty body.
 <template #rest>
 
 `DELETE /permissions`
+
 ```json
 [34, 64]
 ```
@@ -636,5 +663,6 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>

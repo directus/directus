@@ -8,8 +8,6 @@ pageClass: page-reference
 
 > Notifications allow you to send/receive messages to/from other users of the platform.
 
----
-
 ## The Notification Object
 
 `id` **integer**\
@@ -53,8 +51,6 @@ Primary key of the item this notification references.
 }
 ```
 
----
-
 ## List Notifications
 
 List all notifications that exist in Directus.
@@ -68,16 +64,19 @@ List all notifications that exist in Directus.
 `GET /notifications`
 
 `SEARCH /notifications`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	notifications: [directus_notifications]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -101,11 +100,13 @@ available, data will be an empty array.
 `GET /notifications`
 
 `SEARCH /notifications`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	notifications {
@@ -115,10 +116,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Retrieve a notification
 
@@ -131,16 +131,19 @@ List an existing notification by primary key.
 <template #rest>
 
 `GET /notifications/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	notifications_by_id(id: ID!): directus_notifications
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -152,7 +155,6 @@ Supports all [global query parameters](/reference/query).
 
 Returns the requested [notification object](#the-notification-object).
 
-
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
@@ -160,6 +162,7 @@ Returns the requested [notification object](#the-notification-object).
 <template #rest>
 
 `GET /notifications/42`
+
 </template>
 
 <template #graphql>
@@ -175,10 +178,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create a Notification
 
@@ -191,6 +193,7 @@ Create a new notification.
 <template #rest>
 
 `POST /notifications`
+
 ```json
 {
 	"notification_object_field_1": "value_1",
@@ -203,6 +206,7 @@ Create a new notification.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_notifications_item(data: create_directus_notifications_input!): directus_notifications
@@ -231,6 +235,7 @@ Returns the [notification object](#the-notification-object) for the created noti
 <template #rest>
 
 `POST /notifications`
+
 ```json
 {
 	"recipient": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
@@ -243,6 +248,7 @@ Returns the [notification object](#the-notification-object) for the created noti
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_notifications_item(data: { recipient: "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca", subject: "Hi there!" }) {
@@ -255,8 +261,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
-
 ## Create Multiple Notifications
 
 Create multiple new notifications.
@@ -268,6 +272,7 @@ Create multiple new notifications.
 <template #rest>
 
 `POST /notifications`
+
 ```json
 [
 	{
@@ -280,16 +285,19 @@ Create multiple new notifications.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_notifications_items(data: [create_directus_notifications_input!]!): [directus_notifications]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -312,6 +320,7 @@ Returns the [notification object](#the-notification-object) for the created noti
 <template #rest>
 
 `POST /notifications`
+
 ```json
 [
 	{
@@ -326,11 +335,13 @@ Returns the [notification object](#the-notification-object) for the created noti
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_notifications_items(
@@ -352,10 +363,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update a Notification
 
@@ -375,21 +385,25 @@ notification email to be sent.
 <template #rest>
 
 `PATCH /notifications/:id`
+
 ```json
 {
 	"notification_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_notifications_item(id: ID!, data: update_directus_notifications_input): directus_notifications
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -412,16 +426,19 @@ Returns the [notification object](#the-notification-object) for the updated noti
 <template #rest>
 
 `PATCH /notifications/34`
+
 ```json
 {
 	"message": "This is my updated notification"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_notifications_item(id: 32, data: { message: "This is my updated notification" }) {
@@ -430,10 +447,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update Multiple Notifications
 
@@ -446,9 +462,10 @@ Update multiple existing notifications.
 <template #rest>
 
 `PATCH /notifications`
+
 ```json
 {
-	"keys": [notification_key_1, notification_key_2],
+	"keys": ["notification_key_1", "notification_key_2"],
 	"data": {
 		"notification_object_field": "field_1"
 	}
@@ -460,6 +477,7 @@ Update multiple existing notifications.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_notifications_items(ids: [ID!]!, data: update_directus_notifications_input): [directus_notifications]
@@ -492,7 +510,8 @@ Returns the [notification objects](#the-notification-object) for the updated not
 <template #rest>
 
 `PATCH /notifications`
-``` json
+
+```json
 {
 	"keys": [15, 64],
 	"data": {
@@ -500,11 +519,13 @@ Returns the [notification objects](#the-notification-object) for the updated not
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_notifications_items(ids: [15, 64], data: { message: "Updated message!" }) {
@@ -517,8 +538,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
-
 ## Delete a Notification
 
 Delete an existing notification.
@@ -530,16 +549,19 @@ Delete an existing notification.
 <template #rest>
 
 `DELETE /notifications/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_notifications_item(id: ID!): delete_one
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -554,11 +576,13 @@ Empty body.
 <template #rest>
 
 `DELETE /notifications/34`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_notifications_item(id: 32) {
@@ -566,10 +590,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete Multiple Notifications
 
@@ -583,18 +606,21 @@ Delete multiple existing notifications.
 
 ```json
 // DELETE /notifications
-[notification_key_1, notification_key_2, notification_key_3]
+["notification_key_1", "notification_key_2", "notification_key_3"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_notifications_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -613,14 +639,17 @@ Empty body.
 <template #rest>
 
 `DELETE /notifications`
+
 ```json
 [15, 251, 810]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_notifications_items(ids: [15, 251, 810]) {
@@ -628,5 +657,6 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>

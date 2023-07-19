@@ -9,8 +9,6 @@ pageClass: page-reference
 > Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
 > platform. [Learn more about Roles](/user-guide/overview/glossary#roles).
 
----
-
 ## The Role Object
 
 `id` **uuid**\
@@ -54,8 +52,6 @@ The users in this role. One-to-many to [users](/reference/system/users).
 }
 ```
 
----
-
 ## List Roles
 
 List all roles that exist in Directus.
@@ -69,16 +65,19 @@ List all roles that exist in Directus.
 `GET /roles`
 
 `SEARCH /roles`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	roles: [directus_roles]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -102,11 +101,13 @@ be an empty array.
 `GET /roles`
 
 `SEARCH /roles`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	roles {
@@ -118,10 +119,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Retrieve a Role
 
@@ -132,16 +132,19 @@ List an existing role by primary key.
 <template #rest>
 
 `GET /roles/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	roles_by_id(id: ID!): directus_roles
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -160,11 +163,13 @@ Returns the requested [role object](#the-role-object).
 <template #rest>
 
 `GET /roles/b4cb3b64-8580-4ad9-a099-eade6da24302`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	roles_by_id(id: 2) {
@@ -176,10 +181,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create a Role
 
@@ -192,6 +196,7 @@ Create a new role.
 <template #rest>
 
 `POST /roles`
+
 ```json
 {
 	"role_object_field_1": "value_1",
@@ -201,16 +206,19 @@ Create a new role.
 	"role_object_field_5": value_5,
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_roles_item(data: create_directus_roles_input!): directus_roles
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -233,6 +241,7 @@ Returns the [role object](#the-role-object) for the created role.
 <template #rest>
 
 `POST /roles`
+
 ```json
 {
 	"name": "Interns",
@@ -242,11 +251,13 @@ Returns the [role object](#the-role-object) for the created role.
 	"app_access": true
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_roles_item(
@@ -260,10 +271,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create Multiple Roles
 
@@ -276,6 +286,7 @@ Create multiple new roles.
 <template #rest>
 
 `POST /roles`
+
 ```json
 [
 {
@@ -294,16 +305,19 @@ Create multiple new roles.
 },
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_roles_items(data: [create_directus_roles_input!]!): [directus_roles]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -326,6 +340,7 @@ Returns the [role objects](#the-role-object) for the created roles.
 <template #rest>
 
 `POST /roles`
+
 ```json
 
 [
@@ -345,11 +360,13 @@ Returns the [role objects](#the-role-object) for the created roles.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_roles_items(
@@ -366,10 +383,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update a Role
 
@@ -382,21 +398,25 @@ Update an existing role.
 <template #rest>
 
 `PATCH /roles/:id`
+
 ```json
 {
 	"roles_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_roles_item(id: ID!, data: update_directus_roles_input): directus_roles
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -419,16 +439,19 @@ Returns the [role object](#the-role-object) for the updated role.
 <template #rest>
 
 `PATCH /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+
 ```json
 {
 	"icon": "attractions"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_roles_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", data: { icon: "attractions" }) {
@@ -440,10 +463,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update Multiple Roles
 
@@ -456,6 +478,7 @@ Update multiple existing roles.
 <template #rest>
 
 `PATCH /roles`
+
 ```json
 {
 	"keys": ["role_1_key", "role_2_key"],
@@ -464,16 +487,19 @@ Update multiple existing roles.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
     update_roles_items(ids: [ID!]!, data: update_directus_roles_input): [directus_roles]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -500,6 +526,7 @@ Returns the [role objects](#the-role-object) for the updated roles.
 <template #rest>
 
 `PATCH /roles`
+
 ```json
 {
 	"keys": ["c86c2761-65d3-43c3-897f-6f74ad6a5bd7", "6fc3d5d3-a37b-4da8-a2f4-ed62ad5abe03"],
@@ -508,11 +535,13 @@ Returns the [role objects](#the-role-object) for the updated roles.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_roles_items(
@@ -527,10 +556,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete a Role
 
@@ -543,16 +571,19 @@ Delete an existing role.
 <template #rest>
 
 `DELETE /roles/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_roles_item(id: ID!): delete_one
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -567,11 +598,13 @@ Empty body.
 <template #rest>
 
 `DELETE /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_roles_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7") {
@@ -579,10 +612,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete Multiple Roles
 
@@ -595,6 +627,7 @@ Delete multiple existing roles.
 <template #rest>
 
 `DELETE /roles`
+
 ```json
 ["role_1_key", "role_2_key"]
 ```
@@ -604,11 +637,13 @@ Delete multiple existing roles.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_roles_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -627,14 +662,17 @@ Empty body.
 <template #rest>
 
 `DELETE /roles`
+
 ```json
 ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_roles_items(ids: ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]) {
@@ -642,5 +680,6 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>

@@ -9,8 +9,6 @@ pageClass: page-reference
 > Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
 > which defines its granular Permissions. [Learn more about Users](/user-guide/overview/glossary#users).
 
----
-
 ## The User Object
 
 `id` **uuid**\
@@ -103,8 +101,6 @@ When this is enabled, the user will receive emails for notifications.
 }
 ```
 
----
-
 ## List Users
 
 List all users that exist in Directus.
@@ -118,16 +114,19 @@ List all users that exist in Directus.
 `GET /users`
 
 `SEARCH /users`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
     users: [directus_users]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -151,6 +150,7 @@ be an empty array.
 `GET /users`
 
 `SEARCH /users`
+
 </template>
 
 <template #graphql>
@@ -164,10 +164,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Retrieve a User
 
@@ -180,16 +179,19 @@ List an existing user by primary key.
 <template #rest>
 
 `GET /users/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	users_by_id(id: ID!): directus_users
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -208,11 +210,13 @@ Returns the requested [user object](#the-user-object).
 <template #rest>
 
 `GET /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	users_by_id(id: "72a1ce24-4748-47de-a05f-ce9af3033727") {
@@ -222,10 +226,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Retrieve the Current User
 
@@ -238,16 +241,19 @@ Retrieve the currently authenticated user.
 <template #rest>
 
 `GET /users/me`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	users_me: directus_users
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -266,6 +272,7 @@ Returns the [user object](#the-user-object) for the currently authenticated user
 <template #rest>
 
 `GET /users/me`
+
 </template>
 
 <template #graphql>
@@ -277,10 +284,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update the Current User
 
@@ -293,21 +299,25 @@ Update the authenticated user.
 <template #rest>
 
 `PATCH /users/me`
+
 ```json
 {
 	"user_object_field": "value"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_users_me(data: update_directus_users_input!): directus_users
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -326,16 +336,19 @@ Returns the updated [user object](#the-user-object) for the authenticated user.
 <template #rest>
 
 `PATCH /users/me`
+
 ```json
 {
 	"email": "new.email@example.com"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_users_me(data: { email: "new.email@example.com" }) {
@@ -343,10 +356,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create a User
 
@@ -359,6 +371,7 @@ Create a new user
 <template #rest>
 
 `POST /users`
+
 ```json
 {
 	"email": "user_email",
@@ -372,11 +385,13 @@ Create a new user
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_users_item(data: create_directus_users_input!): directus_users
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -401,6 +416,7 @@ Returns the [user object](#the-user-object) for the created user.
 <template #rest>
 
 `POST /users`
+
 ```json
 {
 	"email": "another@example.com",
@@ -408,25 +424,43 @@ Returns the [user object](#the-user-object) for the created user.
 	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
-	create_users_item(
-		data: { email: "another@example.com", password: "d1r3ctu5", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
-	) {
-		email
-		role
-	}
+  create_users_item(
+    data: {
+      email: "another@example.com"
+      password: "d1r3ctu5"
+      role: {
+        id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+        name: "Public"
+        admin_access: false
+        enforce_tfa: false
+      }
+    }
+  ) {
+    email
+    role
+  }
 }
 ```
+
+::: tip
+
+Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
+as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it
+could be modified by the user call.
+
+:::
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create Multiple Users
 
@@ -439,6 +473,7 @@ Create multiple new users
 <template #rest>
 
 `POST /users`
+
 ```json
 [
 	{
@@ -459,11 +494,13 @@ Create multiple new users
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_users_items(data: [create_directus_users_input!]!): [directus_users]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -488,6 +525,7 @@ Returns the [user objects](#the-user-object) for the created users.
 <template #rest>
 
 `POST /users`
+
 ```json
 [
 	{
@@ -502,28 +540,55 @@ Returns the [user objects](#the-user-object) for the created users.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
-	create_users_items(
-		data: [
-			{ email: "admin@example.com", password: "p455w0rd", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
-			{ email: "another@example.com", password: "d1r3ctu5", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
-		]
-	) {
-		email
-		role
-	}
+  create_users_items(
+    data: [
+      {
+        email: "admin@example.com"
+        password: "p455w0rd"
+        role: {
+          id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+          name: "Public"
+          admin_access: false
+          enforce_tfa: false
+        }
+      }
+      {
+        email: "another@example.com"
+        password: "d1r3ctu5"
+        role: {
+          id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+          name: "Public"
+          admin_access: false
+          enforce_tfa: false
+        }
+      }
+    ]
+  ) {
+    email
+    role
+  }
 }
 ```
+
+::: tip
+
+Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
+as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it
+could be modified by the user call.
+
+:::
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update a User
 
@@ -536,21 +601,25 @@ Update an existing user.
 <template #rest>
 
 `PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
 ```json
 {
 	"user_object_field": "value"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_users_item(id: ID!, data: update_directus_users_input!): directus_users
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -573,16 +642,19 @@ Returns the [user object](#the-user-object) for the updated user.
 <template #rest>
 
 `PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
 ```json
 {
 	"title": "CTO"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_users_item(id: "72a1ce24-4748-47de-a05f-ce9af3033727", data: { title: "CTO" }) {
@@ -591,10 +663,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update Multiple Users
 
@@ -607,6 +678,7 @@ Update multiple existing users.
 <template #rest>
 
 `PATCH /users`
+
 ```json
 {
 	"keys": ["user_1_key", "user_2_key"],
@@ -621,11 +693,13 @@ Update multiple existing users.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -652,6 +726,7 @@ Returns the [user objects](#the-user-object) for the updated users.
 <template #rest>
 
 `PATCH /users`
+
 ```json
 {
 	"keys": ["72a1ce24-4748-47de-a05f-ce9af3033727", "9c3d75a8-7a5f-41a4-be0a-1488fd974511"],
@@ -660,11 +735,13 @@ Returns the [user objects](#the-user-object) for the updated users.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_users_items(
@@ -676,10 +753,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete a User
 
@@ -692,16 +768,19 @@ Delete an existing user.
 <template #rest>
 
 `DELETE /users/:id`
+
 </template>
 
 <template #graphql>
 
-POST /graphql/system
+`POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_users_item(id: ID!): delete_one
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -716,11 +795,13 @@ Empty body.
 <template #rest>
 
 `DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_users_item(id: "72a1ce24-4748-47de-a05f-ce9af3033727") {
@@ -728,10 +809,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete Multiple Users
 
@@ -744,19 +824,23 @@ Delete multiple existing users.
 <template #rest>
 
 `DELETE /users`
+
 ```json
 ["user_1_key", "user_2_key"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_users_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -775,9 +859,11 @@ Empty body.
 <template #rest>
 
 `DELETE /users`
+
 ```json
 ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
 ```
+
 </template>
 
 <template #graphql>
@@ -789,10 +875,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Invite a new User
 
@@ -805,22 +890,26 @@ Invite a new user by email.
 <template #rest>
 
 `POST /users/invite`
+
 ```json
 {
 	"email": "invited_user_email",
 	"role": "invited_user_role"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	users_invite(email: String!, role: String!, invite_url: String): Boolean
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -848,26 +937,28 @@ Empty body.
 <template #rest>
 
 `POST /users/invite`
+
 ```json
 {
 	"email": "another@example.com",
 	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	users_invite(email: "another@example.com", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7")
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Accept User Invite
 
@@ -882,6 +973,7 @@ This link includes a token, which is then used to activate the invited user.
 <template #rest>
 
 `POST /users/invisponse/accept`
+
 ```json
 {
 	"token": "invite_tokem",
@@ -894,11 +986,13 @@ This link includes a token, which is then used to activate the invited user.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	users_invite_accept(token: String!, password: String!): Boolean
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -921,12 +1015,14 @@ Empty body.
 <template #rest>
 
 `POST /users/invite/accept`
+
 ```json
 {
 	"token": "eyJh...KmUk",
 	"password": "d1r3ctu5"
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -936,10 +1032,9 @@ mutation {
 	users_invite_accept(token: "eyJh...KmUk", password: "d1r3ctu5")
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Generate Two-Factor Authentication Secret
 
@@ -952,21 +1047,25 @@ Generates a secret and returns the URL to be used in an authenticator app.
 <template #rest>
 
 `POST /users/me/tfa/generate`
+
 ```json
 {
 	"password": "user_password"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	users_me_tfa_generate(password: String!): users_me_tfa_generate_data
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -990,16 +1089,19 @@ OTP secret to be saved in the authenticator app.
 <template #rest>
 
 `POST /users/me/tfa/generate`
+
 ```json
 {
 	"password": "d1r3ctu5"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	users_me_tfa_generate(password: "d1r3ctu5") {
@@ -1008,10 +1110,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Enable Two-Factor Authentication
 
@@ -1024,22 +1125,26 @@ Adds a TFA secret to the user account.
 <template #rest>
 
 `POST /users/me/tfa/enable`
+
 ```json
 {
 	"otp": "One Time Password",
 	"secret": "Two-Factor_Authorization_secret"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	users_me_tfa_enable(otp: String!, secret: String!): Boolean
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -1062,26 +1167,28 @@ Empty response.
 <template #rest>
 
 `POST /users/me/tfa/enable`
+
 ```json
 {
 	"otp": "123456",
 	"secret": "3CtiutsNBmY3szHE"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	users_me_tfa_enable(otp: "123456", secret: "3CtiutsNBmY3szHE")
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Disable Two-Factor Authentication
 
@@ -1094,21 +1201,25 @@ Disables two-factor authentication by removing the OTP secret from the user.
 <template #rest>
 
 `POST /users/me/tfa/disable`
+
 ```json
 {
 	"otp": "One-time password"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	users_me_tfa_disable(otp: String!): Boolean
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -1128,20 +1239,24 @@ Empty response.
 <template #rest>
 
 `POST /users/me/tfa/disable`
+
 ```json
 {
 	"otp": "859014"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	users_me_tfa_disable(otp: "591763")
 }
 ```
+
 </template>
 </SnippetToggler>

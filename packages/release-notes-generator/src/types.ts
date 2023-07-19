@@ -1,6 +1,6 @@
 import { getInfo } from '@changesets/get-github-info';
 import type { NewChangesetWithCommit } from '@changesets/types';
-import { TYPE_MAP, UNTYPED_PACKAGES } from './constants';
+import { TYPE_MAP, UNTYPED_PACKAGES } from './constants.js';
 
 type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (...args: any) => Promise<infer R> ? R : any;
 

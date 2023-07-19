@@ -9,8 +9,6 @@ pageClass: page-reference
 > What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever
 > other structures you can think of. [Learn more about Relationships](/user-guide/overview/glossary#relationships).
 
----
-
 ## The Relation Object
 
 `collection` **string**\
@@ -111,8 +109,6 @@ Delete trigger for the foreign key constraint.
 }
 ```
 
----
-
 ## List relations
 
 List all relations that exist in Directus.
@@ -131,16 +127,19 @@ to a collection that the current user doesn't have access to are stripped out.
 <template #rest>
 
 `GET /relations`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	relations: [directus_relations]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -159,11 +158,13 @@ Array of [relation objects](#the-relation-object). If no items are available, da
 <template #rest>
 
 `GET /relations`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	relations {
@@ -172,10 +173,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## List relations in collection
 
@@ -195,11 +195,13 @@ to a collection that the current user doesn't have access to are stripped out.
 <template #rest>
 
 `GET /relations/:collection`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	relations_in_collection(collection: String!): [directus_relations]
@@ -224,11 +226,13 @@ Array of [relation objects](#the-relation-object). If no items are available, da
 <template #rest>
 
 `GET /relations/articles`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	relations_in_collection(collection: "articles") {
@@ -237,10 +241,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Retrieve a relation
 
@@ -253,16 +256,19 @@ List an existing relation by collection/field name.
 <template #rest>
 
 `GET /relations/:collection/:field`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	relations_by_name(collection: String!, field: String!): directus_relations
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -281,11 +287,13 @@ Returns the requested [relation object](#the-relation-object).
 <template #rest>
 
 `GET /relations/articles/featured_image`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	relations_by_name(collection: "articles", field: "featured_image") {
@@ -295,10 +303,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create a Relation
 
@@ -311,6 +318,7 @@ Create a new relation.
 <template #rest>
 
 `POST /relations`
+
 ```json
 {
 	"relations_object_field_1": "value_1",
@@ -318,16 +326,19 @@ Create a new relation.
 	"relations_object_field_3": "value_3"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_relations_item(data: create_directus_relations_input!): directus_relations
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -350,6 +361,7 @@ Returns the [relation object](#the-relation-object) for the created relation.
 <template #rest>
 
 `POST /relations`
+
 ```json
 {
 	"collection": "articles",
@@ -357,11 +369,13 @@ Returns the [relation object](#the-relation-object) for the created relation.
 	"related_collection": "directus_files"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
     create_relations_item(
@@ -373,10 +387,9 @@ mutation {
     }
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update a Relation
 
@@ -389,6 +402,7 @@ Update an existing relation.
 <template #rest>
 
 `PATCH /relations/:collection/:field`
+
 ```json
 {
 	"relations_object_field_1": {
@@ -396,16 +410,19 @@ Update an existing relation.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_relations_item(collection: String!, field: String!, data: update_directus_relations_input!): directus_relations
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -428,6 +445,7 @@ Returns the [relation object](#the-relation-object) for the created relation.
 <template #rest>
 
 `PATCH /relations/articles/author`
+
 ```json
 {
 	"meta": {
@@ -435,11 +453,13 @@ Returns the [relation object](#the-relation-object) for the created relation.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_relations_item(collection: "articles", field: "author", data: { meta: { one_field: "articles" } }) {
@@ -449,10 +469,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete a Relation
 
@@ -465,16 +484,19 @@ Delete an existing relation.
 <template #rest>
 
 `DELETE /relations/:collection/:field`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_relations_item(collection: String!, field: String!): delete_one
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -489,11 +511,13 @@ Empty body.
 <template #rest>
 
 `DELETE /relations/articles/author`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_relations_item(collection: "articles", field: "author") {
@@ -502,5 +526,6 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>

@@ -9,37 +9,6 @@ pageClass: page-reference
 > Most Directus API Endpoint operations can be manipulated with the following parameters. It is important to understand
 > them to get the most out of the platform.
 
-- [Global Query Parameters](#global-query-parameters)
-	- [Fields](#fields)
-		- [Examples](#examples)
-		- [Many-To-Any (Union Types)](#many-to-any-union-types)
-	- [Filter](#filter)
-		- [Examples](#examples-1)
-	- [Search](#search)
-		- [Example](#example)
-	- [Sort](#sort)
-		- [Examples](#examples-2)
-	- [Limit](#limit)
-		- [Examples](#examples-3)
-	- [Offset](#offset)
-		- [Examples](#examples-4)
-	- [Page](#page)
-		- [Examples](#examples-5)
-	- [Aggregation \& Grouping](#aggregation--grouping)
-		- [Grouping](#grouping)
-	- [Deep](#deep)
-		- [Examples](#examples-6)
-	- [Aliases](#aliases)
-	- [Export](#export)
-	- [Functions](#functions)
-		- [DateTime Functions](#datetime-functions)
-		- [Array Functions](#array-functions)
-	- [Metadata](#metadata)
-		- [Total Count](#total-count)
-		- [Filter Count](#filter-count)
-
----
-
 ## Fields
 
 Choose the fields that are returned in the current dataset. This parameter supports dot notation to request nested
@@ -94,7 +63,6 @@ In GraphQL, this can be achieved using Union Types.
 
 <template #rest>
 
-
 ```
 ?fields=title,body,featured_image.*
 
@@ -113,8 +81,6 @@ In GraphQL, this can be achieved using Union Types.
 
 </template>
 </SnippetToggler>
-
----
 
 ## Filter
 
@@ -184,6 +150,7 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 
 ?filter={ "first_name": { "_eq": "Rijk" }}
 ```
+
 </template>
 
 <template #graphql>
@@ -195,10 +162,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ::: tip Filtering M2A fields
 
@@ -240,6 +206,7 @@ Find all items that mention Directus\
 <template #rest>
 
 `?search=Directus`
+
 </template>
 
 <template #graphql>
@@ -251,10 +218,9 @@ query {
     }
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Sort
 
@@ -286,6 +252,7 @@ Sort by a "sort" field, followed by a nested author's name\
 &sort[]=-date_created
 &sort[]=-author.name
 ```
+
 </template>
 
 <template #graphql>
@@ -297,10 +264,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Limit
 
@@ -326,6 +292,7 @@ with caution.
 <template #rest>
 
 `?limit=200`
+
 </template>
 
 <template #graphql>
@@ -337,10 +304,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Offset
 
@@ -356,6 +322,7 @@ Get items 101—200\
 <template #rest>
 
 `?offset=100`
+
 </template>
 
 <template #graphql>
@@ -367,10 +334,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Page
 
@@ -390,6 +356,7 @@ Get items 101-200\
 <template #rest>
 
 `?page=2`
+
 </template>
 
 <template #graphql>
@@ -401,10 +368,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Aggregation & Grouping
 
@@ -442,6 +408,7 @@ this allows for aggregate reporting per year-month-date.
 &groupBy[]=author
 &groupBy[]=year(publish_date)
 ```
+
 </template>
 
 <template #graphql>
@@ -456,11 +423,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
-
----
 
 ## Deep
 
@@ -503,6 +468,7 @@ Only get 3 related articles, with only the top rated comment nested
 
 ?deep={ "translations": { "_filter": { "languages_code": { "_eq": "en-US" }}}}
 ```
+
 </template>
 
 <template #graphql>
@@ -521,10 +487,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Aliases
 
@@ -546,6 +511,7 @@ Alias for nested fields, f.e. `field.nested`, will not work.
 &alias[dutch_translations]=translations
 &deep[dutch_translations][_filter][code][_eq]=nl-NL
 ```
+
 </template>
 
 <template #graphql>
@@ -565,10 +531,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Export
 
@@ -586,15 +551,15 @@ Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 ?export=xml
 ?export=yaml
 ```
+
 </template>
 
 <template #graphql>
 
 `// Not Applicable`
+
 </template>
 </SnippetToggler>
-
----
 
 ## Functions
 
@@ -641,6 +606,7 @@ function name as the nested field (see the example that follows).
 ?fields=id,title,weekday(date_published)
 &filter[year(date_published)][_eq]=2021
 ```
+
 </template>
 
 <template #graphql>
@@ -656,10 +622,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Metadata
 
@@ -694,6 +659,7 @@ For more details, see: [Aggregation & Grouping](#aggregation-grouping)
 
 ?meta=*
 ```
+
 </template>
 
 <template #graphql>
@@ -707,5 +673,6 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>

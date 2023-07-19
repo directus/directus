@@ -9,8 +9,6 @@ pageClass: page-reference
 > Webhooks are configured within the App (no code required) and send HTTP requests to an external service when a
 > specific event is triggered.
 
----
-
 ## The Webhook Object
 
 `id` **integer**\
@@ -52,8 +50,6 @@ What collections to fire this webhook on.
 }
 ```
 
----
-
 ## List Webhooks
 
 List all webhooks that exist in Directus.
@@ -67,16 +63,19 @@ List all webhooks that exist in Directus.
 `GET /webhooks`
 
 `SEARCH /webhooks`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	webhooks: [directus_webhooks]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -100,11 +99,13 @@ data will be an empty array.
 `GET /webhooks`
 
 `SEARCH /webhooks`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	webhooks {
@@ -113,10 +114,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Retrieve a Webhook
 
@@ -129,16 +129,19 @@ List an existing webhook by primary key.
 <template #rest>
 
 `GET /webhooks/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	webhooks_by_id(id: ID!): directus_webhooks
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -157,11 +160,13 @@ Returns the requested [webhook object](#the-webhook-object).
 <template #rest>
 
 `GET /webhooks/15`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	webhooks_by_id(id: 15) {
@@ -171,10 +176,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create a Webhook
 
@@ -187,6 +191,7 @@ Create a new webhook.
 <template #rest>
 
 `POST /webhooks`
+
 ```json
 {
 	"name": "name",
@@ -195,16 +200,19 @@ Create a new webhook.
 	"url": "url of webhook"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_webhooks_item(data: create_directus_webhooks_input!): directus_webhooks
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -229,6 +237,7 @@ Returns the [webhook object](#the-webhook-object) for the created webhook.
 <template #rest>
 
 `POST /webhooks`
+
 ```json
 {
 	"name": "Example",
@@ -237,11 +246,13 @@ Returns the [webhook object](#the-webhook-object) for the created webhook.
 	"url": "https://example.com"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_webhooks_item(
@@ -252,10 +263,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Create Multiple Webhook
 
@@ -268,6 +278,7 @@ Create multiple new webhooks.
 <template #rest>
 
 `POST /webhooks`
+
 ```json
 [
 	{
@@ -284,16 +295,19 @@ Create multiple new webhooks.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_webhooks_items(data: [create_directus_webhooks_input!]!): [directus_webhooks]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -318,6 +332,7 @@ Returns the [webhook objects](#the-webhook-object) for the created webhooks.
 <template #rest>
 
 `POST /webhooks`
+
 ```json
 [
 	{
@@ -334,11 +349,13 @@ Returns the [webhook objects](#the-webhook-object) for the created webhooks.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_webhooks_items(
@@ -352,10 +369,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update a Webhook
 
@@ -368,21 +384,25 @@ Update an existing webhook.
 <template #rest>
 
 `PATCH /webhooks/:id`
+
 ```json
 {
 	"webhook_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_webhooks_item(id: ID!, data: update_directus_webhooks_input!): directus_webhooks
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -405,6 +425,7 @@ Returns the [webhook object](#the-webhook-object) for the updated webhook.
 <template #rest>
 
 `PATCH /webhooks/15`
+
 ```json
 {
 	"name": "Build Website"
@@ -416,6 +437,7 @@ Returns the [webhook object](#the-webhook-object) for the updated webhook.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_webhooks_item(id: 15, data: { name: "Build Website" }) {
@@ -423,10 +445,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Update Multiple Webhooks
 
@@ -439,24 +460,28 @@ Update multiple existing webhooks.
 <template #rest>
 
 `PATCH /webhooks`
+
 ```json
 {
-	"keys": [webhook_1_key, webhook_2_key],
+	"keys": ["webhook_1_key", "webhook_2_key"],
 	"data": {
 		"webhook_object_field": "value_1"
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_webhooks_items(ids: [ID!]!, data: update_directus_webhooks_input!): [directus_webhooks]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -485,6 +510,7 @@ Returns the [webhook objects](#the-webhook-object) for the updated webhooks.
 <template #rest>
 
 `PATCH /webhooks`
+
 ```json
 {
 	"keys": [15, 41],
@@ -493,11 +519,13 @@ Returns the [webhook objects](#the-webhook-object) for the updated webhooks.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_webhooks_items(ids: [15, 41], data: { name: "Build Website" }) {
@@ -505,10 +533,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete a Webhook
 
@@ -521,16 +548,19 @@ Delete an existing webhook.
 <template #rest>
 
 `DELETE /webhooks/:id`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_webhooks_item(id: ID!): delete_one
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -545,11 +575,13 @@ Empty body.
 <template #rest>
 
 `DELETE /webhooks/15`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_webhooks_item(id: 15) {
@@ -557,10 +589,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Delete Multiple Webhooks
 
@@ -573,19 +604,23 @@ Delete multiple existing webhooks.
 <template #rest>
 
 `DELETE /webhooks`
+
 ```json
-[webhook_1_key, webhook_2_key, webhook_3_key]
+["webhook_1_key", "webhook_2_key", "webhook_3_key"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_webhooks_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -604,14 +639,17 @@ Empty body.
 <template #rest>
 
 `DELETE /webhooks`
+
 ```json
 [2, 15, 41]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_webhooks_items(ids: [2, 15, 41]) {
@@ -619,5 +657,6 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>

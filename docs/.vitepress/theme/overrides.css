@@ -71,3 +71,12 @@
 .isHome .VPNavBar {
 	background-color: var(--vp-nav-bg-color);
 }
+
+/**
+ * Add spacing between h3 and snippet toggler for api ref pages
+ * -------------------------------------------------------------------------- */
+
+.vp-doc h3 + .snippet-toggler {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}

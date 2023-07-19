@@ -6,8 +6,6 @@ pageClass: page-reference
 
 # Custom Translations
 
----
-
 ## The Translations Object
 
 `id` **uuid**\
@@ -33,8 +31,6 @@ The translation value.
 }
 ```
 
----
-
 ## List Translations
 
 List all translations that exist in Directus.
@@ -48,10 +44,10 @@ List all translations that exist in Directus.
 `GET /translations`
 
 `SEARCH /translations`
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -67,8 +63,6 @@ Supports all [global query parameters](/reference/query).
 An array of up to [limit](/reference/query#limit) [translation objects](#the-translations-object). If no items are
 available, data will be an empty array.
 
----
-
 ## Retrieve a Translation
 
 List an existing translation by primary key.
@@ -80,10 +74,10 @@ List an existing translation by primary key.
 <template #rest>
 
 `GET /translations/:id`
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -103,15 +97,13 @@ Returns the requested [translation object](#the-translations-object).
 <template #rest>
 
 `GET /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
 </template>
 
 <template #graphql>
 
-
 </template>
 </SnippetToggler>
-
----
 
 ## Create a Translation
 
@@ -124,6 +116,7 @@ Create a new translation.
 <template #rest>
 
 `POST /translations`
+
 ```json
 {
 	"translation_object_field_1": "value_1",
@@ -131,10 +124,10 @@ Create a new translation.
 	"translation_object_field_3": "value_3"
 }
 ```
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -158,6 +151,7 @@ Returns the [translation object](#the-translations-object) for the created trans
 <template #rest>
 
 `POST /translations`
+
 ```json
 {
 	"key": "Test",
@@ -165,15 +159,13 @@ Returns the [translation object](#the-translations-object) for the created trans
 	"value": "My Test"
 }
 ```
+
 </template>
 
 <template #graphql>
 
-
 </template>
 </SnippetToggler>
-
----
 
 ## Create Multiple Translations
 
@@ -186,6 +178,7 @@ Create multiple new translation.
 <template #rest>
 
 `POST /translations`
+
 ```json
 [
 	{
@@ -200,6 +193,7 @@ Create multiple new translation.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
@@ -227,6 +221,7 @@ Returns the [translation object](#the-translations-object) for the created trans
 <template #rest>
 
 `POST /translations`
+
 ```json
 [
 	{
@@ -246,11 +241,8 @@ Returns the [translation object](#the-translations-object) for the created trans
 
 <template #graphql>
 
-
 </template>
 </SnippetToggler>
-
----
 
 ## Update a Translation
 
@@ -263,15 +255,16 @@ Update an existing translation.
 <template #rest>
 
 `PATCH /translations/:id`
+
 ```json
 {
 	"translation_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -295,20 +288,19 @@ Returns the [translation object](#the-translations-object) for the updated trans
 <template #rest>
 
 `PATCH /translations/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
 ```json
 {
 	"value": "My Updated Translations"
 }
 ```
+
 </template>
 
 <template #graphql>
 
-
 </template>
 </SnippetToggler>
-
----
 
 ## Update Multiple Translations
 
@@ -321,6 +313,7 @@ Update multiple existing translations.
 <template #rest>
 
 `PATCH /translations`
+
 ```json
 {
 	"keys": ["translation_1_key", "translation_2_key"],
@@ -333,7 +326,6 @@ Update multiple existing translations.
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -361,6 +353,7 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 <template #rest>
 
 `PATCH /translations`
+
 ```json
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
@@ -377,8 +370,6 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 </template>
 </SnippetToggler>
 
----
-
 ## Delete a Translation
 
 Delete an existing translation.
@@ -390,10 +381,10 @@ Delete an existing translation.
 <template #rest>
 
 `DELETE /translations/:id`
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -409,15 +400,13 @@ Empty body.
 <template #rest>
 
 `DELETE /translations/12204ee2-2c82-4d9a-b044-2f4842a11dba`
+
 </template>
 
 <template #graphql>
 
-
 </template>
 </SnippetToggler>
-
----
 
 ## Delete Multiple Translations
 
@@ -430,13 +419,14 @@ Delete multiple existing translations.
 <template #rest>
 
 `DELETE /translations`
+
 ```json
 ["translation_1_key", "translation_2_key", "translation_3_key"]
 ```
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -456,6 +446,7 @@ Empty body.
 <template #rest>
 
 `DELETE /translations`
+
 ```json
 ["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
 ```
@@ -463,7 +454,6 @@ Empty body.
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>

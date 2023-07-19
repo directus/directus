@@ -9,8 +9,6 @@ pageClass: page-reference
 > Provides detailed information about the project server, its schema, and its health.
 > [Learn more about Projects](/user-guide/overview/glossary#projects).
 
----
-
 ## Get OpenAPI Specification
 
 Retrieve the OpenAPI spec for the current project.
@@ -28,16 +26,19 @@ This OAS spec is based on the read permissions of the currently authenticated us
 <template #rest>
 
 `GET /server/specs/oas`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	server_specs_oas: String
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -52,6 +53,7 @@ Object conforming to [the OpenAPI Specification](https://swagger.io/specificatio
 <template #rest>
 
 `GET /server/specs/oas`
+
 </template>
 
 <template #graphql>
@@ -61,10 +63,9 @@ query {
 	server_specs_oas
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Get GraphQL SDL
 
@@ -85,16 +86,19 @@ The SDL is based on the permissions of the currently authenticated user.
 `GET /server/specs/graphql/`
 
 `GET /server/specs/graphql/system`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
     server_specs_graphql(scope: graphql_sdl_scope): String
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -133,20 +137,21 @@ type articles {
 `GET /server/specs/graphql/`
 
 `GET /server/specs/graphql/system`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	server_specs_graphql(scope: system)
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Ping
 
@@ -159,16 +164,19 @@ Ping... pong! 🏓
 <template #rest>
 
 `GET /server/ping`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
     server_ping: String
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -183,20 +191,21 @@ Pong.
 <template #rest>
 
 `GET /server/ping`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	server_ping
 }
 ```
+
 </template>
 </SnippetToggler>
-
----
 
 ## Info
 
@@ -215,16 +224,19 @@ The public information is returned for everybody. Admin users get additional inf
 <template #rest>
 
 `GET /server/info`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	server_info: server_info
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -260,11 +272,13 @@ The maximum query limit accepted on API requests
 <template #rest>
 
 `GET /server/info`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	server_info {
@@ -274,11 +288,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
-
----
 
 ## Health
 
@@ -359,16 +371,19 @@ return more in-depth information about the current health status of the system.
 <template #rest>
 
 `GET /server/health`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	server_health: JSON
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -395,15 +410,18 @@ Array with the status of all individually connected services.
 <template #rest>
 
 `GET /server/health`
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	server_health
 }
 ```
+
 </template>
 </SnippetToggler>
