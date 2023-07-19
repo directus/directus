@@ -86,6 +86,23 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPermissions } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+	readPermissions({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -124,6 +141,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPermissions } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+	readPermissions({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve a Permission
@@ -146,6 +180,23 @@ List an existing permission by primary key.
 type Query {
 	permissions_by_id(id: ID!): directus_permissions
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPermission } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readPermission('41', {
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -182,6 +233,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPermission } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readPermission('41', {
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a Permission Rule
@@ -197,10 +265,10 @@ Create a new permission rule
 
 ```json
 {
-	"permission_object_field_1": "value_1",
-	"permission_object_field_2": "value_2",
-	"permission_object_field_3": "value_3",
-	"permission_object_field_4": ["value_4", "value_5"]
+	"permission_field_1": "value_1",
+	"permission_field_2": "value_2",
+	"permission_field_3": "value_3",
+	"permission_field_4": ["value_4", "value_5"]
 }
 ```
 
@@ -213,6 +281,25 @@ Create a new permission rule
 type Mutation {
 	create_permissions_item(data: create_directus_permissions_input!): directus_permissions
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPermission } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createPermission({
+        'role' : 'role_id',
+        'collection' : 'collection_name',
+        'action' : 'action_name',
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -264,6 +351,26 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPermission } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createPermission({
+        'role' : '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+        'collection' : 'articles',
+        'action' : 'delete',
+        'fields' : [ '*' ]
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create Multiple Permission Rules
@@ -303,6 +410,33 @@ Create multiple new permission rules
 type Mutation {
 	create_permissions_items(data: [create_directus_permissions_input!]!): [directus_permissions]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPermissions } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createPermissions(
+    [
+        {
+        'role' : 'role_id',
+        'collection' : 'collection_name',
+        'action' : 'action_name',
+        },
+        {
+        'role' : 'role_id',
+        'collection' : 'collection_name',
+        'action' : 'action_name',
+        },
+    ]
+));
+
+console.log(result);
 ```
 
 </template>
@@ -365,6 +499,35 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPermissions } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createPermissions(
+    [
+        {
+        'role': '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+        'collection': 'articles',
+        'action': 'delete',
+        'fields': [ '*' ]
+        },
+        {
+        'role': '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+        'collection': 'articles',
+        'action': 'update',
+        'fields': [ '*' ]
+        },
+    ]
+));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Permissions
@@ -393,6 +556,23 @@ Update an existing permissions rule.
 type Mutation {
 	update_permissions_item(id: ID!, data: update_directus_permissions_input!): directus_permissions
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePermission } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatePermission('permission_id',{
+        "permission_field": ["value_1", "value_2"]
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -437,6 +617,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePermission } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatePermission('57',{
+        "fields": ["title", "body"]
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Multiple Permissions
@@ -468,6 +665,23 @@ Update multiple existing permissions rules.
 type Mutation {
 	update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePermissions } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatePermissions(['permission_1_id','permission_2_id'],{
+        "permission_field": ["value_1", "value_2"]
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -519,6 +733,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePermissions } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatePermissions(['56','57'],{
+        "fields": ["title", "body"]
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete Permissions
@@ -541,6 +772,21 @@ Delete an existing permissions rule
 type Mutation {
 	delete_permissions_item(id: ID!): delete_one
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePermission } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deletePermission('permission_1_id')
+);
+
+console.log(result);
 ```
 
 </template>
@@ -571,6 +817,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePermission } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deletePermissions('56')
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete Multiple Permissions
@@ -597,6 +858,21 @@ Delete multiple existing permissions rules
 type Mutation {
 	delete_permissions_items(ids: [ID!]!): delete_many
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePermissions } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deletePermissions(['permission_1_id','permission_2_id'])
+);
+
+console.log(result);
 ```
 
 </template>
@@ -630,6 +906,21 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePermissions } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deletePermissions(['56','57'])
+);
+
+console.log(result);
 ```
 
 </template>
