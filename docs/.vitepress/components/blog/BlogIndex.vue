@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { data } from './blog.data.js';
+import { data } from '../../data/blog.data.js';
 import { getFriendlyDate } from '../../utils/time.js';
 import Badge from '../Badge.vue';
 </script>
