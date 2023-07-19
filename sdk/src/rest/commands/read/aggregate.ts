@@ -1,6 +1,5 @@
 import type { AggregationOptions, AggregationOutput, AllCollections } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 /**
  * Aggregate allow you to perform calculations on a set of values, returning a single result.
@@ -26,7 +25,7 @@ export const aggregate =
 			path,
 			method: 'GET',
 			params: {
-				...(options.query ? queryToParams(options.query) : {}),
+				...(options.query ?? {}),
 				...(options.groupBy ? { groupBy: options.groupBy } : {}),
 				aggregate: options.aggregate,
 			},

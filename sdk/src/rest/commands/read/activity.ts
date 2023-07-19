@@ -1,7 +1,6 @@
 import type { DirectusActivity } from '../../../schema/activity.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadActivityOutput<
 	Schema extends object,
@@ -20,7 +19,7 @@ export const readActivities =
 	): RestCommand<ReadActivityOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/activity`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
 
@@ -37,6 +36,6 @@ export const readActivity =
 	): RestCommand<ReadActivityOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/activity/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});

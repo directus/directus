@@ -1,4 +1,9 @@
-import type { Query } from '../../types/index.js';
+import type { AggregationTypes, GroupByFields, Query } from '../../types/index.js';
+
+type ExtendedQuery<Schema extends object, Item> = Query<Schema, Item> & {
+	aggregate?: Record<keyof AggregationTypes, string>;
+	groupBy?: (string | GroupByFields<Schema, Item>)[]
+};
 
 /**
  * Transform nested query object to an url compatible format
@@ -7,7 +12,7 @@ import type { Query } from '../../types/index.js';
  *
  * @returns Flat query parameters
  */
-export const queryToParams = <Schema extends object, Item>(query: Query<Schema, Item>): Record<string, string> => {
+export const queryToParams = <Schema extends object, Item>(query: ExtendedQuery<Schema, Item>): Record<string, string> => {
 	const params: Record<string, string> = {};
 
 	if (Array.isArray(query.fields) && query.fields.length > 0) {
@@ -78,6 +83,14 @@ export const queryToParams = <Schema extends object, Item>(query: Query<Schema, 
 
 	if (query.alias && Object.keys(query.alias).length > 0) {
 		params['alias'] = JSON.stringify(query.alias);
+	}
+
+	if (query.aggregate && Object.keys(query.aggregate).length > 0) {
+		params['aggregate'] = JSON.stringify(query.aggregate);
+	}
+
+	if (query.groupBy && query.groupBy.length > 0) {
+		params['groupBy'] = query.groupBy.join(',');
 	}
 
 	return params;

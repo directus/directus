@@ -1,7 +1,6 @@
 import type { DirectusUser } from '../../../schema/user.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadUserOutput<
 	Schema extends object,
@@ -22,7 +21,7 @@ export const readUsers =
 	): RestCommand<ReadUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/users`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
 
@@ -41,7 +40,7 @@ export const readUser =
 	): RestCommand<ReadUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
 
@@ -58,6 +57,6 @@ export const readMe =
 	): RestCommand<ReadUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users/me`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});

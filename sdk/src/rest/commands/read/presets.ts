@@ -1,7 +1,6 @@
 import type { DirectusPreset } from '../../../schema/preset.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadPresetOutput<
 	Schema extends object,
@@ -20,7 +19,7 @@ export const readPresets =
 	): RestCommand<ReadPresetOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/presets`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
 
@@ -37,6 +36,6 @@ export const readPreset =
 	): RestCommand<ReadPresetOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/presets/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});

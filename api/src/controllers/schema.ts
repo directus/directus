@@ -10,6 +10,7 @@ import { SchemaService } from '../services/schema.js';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getVersionedHash } from '../utils/get-versioned-hash.js';
+import { getSchema } from '../utils/get-schema.js';
 
 const router = express.Router();
 
@@ -125,5 +126,45 @@ router.post(
 	}),
 	respond
 );
+
+// --- utility
+const capitalize = (str: string) => str.split('_').map((s: string) => s[0]!.toUpperCase() + s.substring(1)).join('');
+const translateType = (type: any) => {
+	switch (type) {
+		case 'timestamp': return 'number';
+		case 'integer': return 'number';
+		default: return 'string';
+	}
+}
+
+router.get(
+	'/types',
+	asyncHandler(async (req, res) => {
+		const schema = await getSchema();
+		const rootSchema: Record<string, string> = {};
+		let types = '// my-schema.d.ts\n';
+
+		for (const cName in schema.collections) {
+			const tName = capitalize(cName);
+			const collection = schema.collections[cName]!;
+			const pkType = translateType(collection.fields[collection.primary]?.type);
+			const singular = collection.singleton ? '' : '[]';
+			rootSchema[cName] = `${pkType}${singular} | ${tName}${singular}}`;
+			const fields = collection.fields ?? {};
+
+			types += `interface ${tName} {\n`;
+
+			for (const fName in fields) {
+				types += `\t${fName}: ${translateType(fields[fName]?.type)};\n`;
+			}
+
+			types += `}\n\n`;
+		}
+
+		res.header('content-type', 'text/plain');
+		res.send(types);
+	}),
+	respond
+)
 
 export default router;

@@ -1,7 +1,6 @@
 import type { DirectusRevision } from '../../../schema/revision.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadRevisionOutput<
 	Schema extends object,
@@ -20,7 +19,7 @@ export const readRevisions =
 	): RestCommand<ReadRevisionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/revisions`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
 
@@ -37,6 +36,6 @@ export const readRevision =
 	): RestCommand<ReadRevisionOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/revisions/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
