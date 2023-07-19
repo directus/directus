@@ -100,7 +100,7 @@ onBeforeMount(() => {
 }
 
 .snippet-toggler-header-lang-container:hover {
-	color: var(--vp-c-gray-light-5);
+	color: var(--vp-snippet-toggler-lang-hover);
 }
 
 .snippet-toggler-header-lang {
