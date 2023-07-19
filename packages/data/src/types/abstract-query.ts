@@ -398,7 +398,7 @@ export interface AbstractQueryConditionNode {
 export interface LetterConditionNode {
 	type: 'condition-letter';
 	target: AbstractQueryFieldNodePrimitive;
-	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq'; /** @TODO maybe regex? */
+	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq' /** @TODO maybe regex? */;
 	compareTo: string;
 }
 
