@@ -175,8 +175,9 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFields} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readFields } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(readFields());
 
@@ -220,8 +221,9 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFields} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readFields } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readFields());
 
@@ -258,8 +260,9 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFieldsByCollection} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readFieldsByCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(readFieldsByCollection('collection_name'));
 
@@ -303,8 +306,9 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFieldsByCollection} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readFieldsByCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readFieldsByCollection('articles'));
 
@@ -341,10 +345,11 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readField} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readField } from '@directus/sdk/rest';
 
-const result = await client.request(readField('collection_name','field_name'));
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(readField('collection_name', 'field_name'));
 
 console.log(result);
 ```
@@ -386,10 +391,11 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readField} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readField } from '@directus/sdk/rest';
 
-const result = await client.request(readField('articles','title'));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readField('articles', 'title'));
 
 console.log(result);
 ```
@@ -434,17 +440,18 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createField} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, createField } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    createField('collection_name', {
-        'field' : 'field_name',
-        'type' : 'field_type',
-        'field_field' : {
-            'field_sub_field' : 'value_3'
-        }
-    })
+	createField('collection_name', {
+		field: 'field_name',
+		type: 'field_type',
+		field_field: {
+			field_sub_field: 'value_3',
+		},
+	})
 );
 
 console.log(result);
@@ -484,7 +491,6 @@ The [field object](#the-field-object) for the created field.
 `POST /fields/articles`
 
 ```json
-
 {
 	"field": "title",
 	"type": "string",
@@ -519,18 +525,19 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createField} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, createField } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createField('articles', {
-        'field' : 'subject tags',
-        'type' : 'csv',
-        'meta' : {
-			'interface' : 'tags'
-            'note' : 'subject tags for an article'
-        }
-    })
+	createField('articles', {
+		field: 'subject tags',
+		type: 'csv',
+		meta: {
+			interface: 'tags',
+			note: 'subject tags for an article',
+		},
+	})
 );
 
 console.log(result);
@@ -572,15 +579,16 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateField} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, updateField } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updateField('collection_name', 'field_name', {
-        'field' : {
-            'sub_field' : 'value'
-        }
-    })
+	updateField('collection_name', 'field_name', {
+		field: {
+			sub_field: 'value',
+		},
+	})
 );
 
 console.log(result);
@@ -625,7 +633,6 @@ The [field object](#the-field-object) for the updated field.
 `PATCH /fields/articles/title`
 
 ```json
-
 {
 	"meta": {
 		"note": "Put the title here"
@@ -659,15 +666,16 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateField} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, updateField } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateField('articles', 'subject tags', {
-        'meta' : {
-            'note' : 'tags for the article based on subjects addressed'
-        }
-    })
+	updateField('articles', 'subject tags', {
+		meta: {
+			note: 'tags for the article based on subjects addressed',
+		},
+	})
 );
 
 console.log(result);
@@ -709,10 +717,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteField} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, deleteField } from '@directus/sdk/rest';
 
-const result = await client.request(deleteField('collection_name','field_name'));
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(deleteField('collection_name', 'field_name'));
 
 console.log(result);
 ```
@@ -746,10 +755,11 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteField} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, deleteField } from '@directus/sdk/rest';
 
-const result = await client.request(deleteField('articles','featured_quote'));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteField('articles', 'featured_quote'));
 
 console.log(result);
 ```

@@ -251,7 +251,6 @@ Returns the [panel object](#the-panel-object) for the created panel.
 `POST /panels`
 
 ```json
-
 {
 	"name": "My Panel",
 	"icon": "architecture"
@@ -288,14 +287,14 @@ Create multiple new panels.
 
 ```json
 [
-{
-	"panel_object_1_field_1": "value_1",
-	"panel_object_1_field_2": "value_2"
-},
-{
-	"panel_object_2_field_1": "value_3",
-	"panel_object_2_field_2": "value_4"
-},
+	{
+		"panel_object_1_field_1": "value_1",
+		"panel_object_1_field_2": "value_2"
+	},
+	{
+		"panel_object_2_field_1": "value_3",
+		"panel_object_2_field_2": "value_4"
+	}
 ]
 ```
 
@@ -352,10 +351,10 @@ Returns the [panel object](#the-panel-object) for the created panel.
 
 ```graphql
 mutation {
-    create_panels_items(data: [{ name: "My Panel", icon: "architecture" }, { name: "Another Panel", icon: "person" }]) {
-        id
-        name
-    }
+	create_panels_items(data: [{ name: "My Panel", icon: "architecture" }, { name: "Another Panel", icon: "person" }]) {
+		id
+		name
+	}
 }
 ```
 
@@ -508,13 +507,13 @@ Returns the [panel objects](#the-panel-object) for the updated panels.
 
 ```graphql
 mutation {
-    update_panels_items(
-        ids: ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"]
-        data: { color: "#6644FF" }
-    ) {
-        id
-        name
-    }
+	update_panels_items(
+		ids: ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"]
+		data: { color: "#6644FF" }
+	) {
+		id
+		name
+	}
 }
 ```
 

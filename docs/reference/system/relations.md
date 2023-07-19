@@ -362,13 +362,13 @@ Returns the [relation object](#the-relation-object) for the created relation.
 
 ```graphql
 mutation {
-    create_relations_item(
-        data: { collection: "articles", field: "featured_image", related_collection: "directus_files" }
-    ) {
-        collection
-        field
-        related_collection
-    }
+	create_relations_item(
+		data: { collection: "articles", field: "featured_image", related_collection: "directus_files" }
+	) {
+		collection
+		field
+		related_collection
+	}
 }
 ```
 

@@ -78,14 +78,15 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readDashboards} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readDashboards } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    readDashboards({
-        fields : ['*']
-    })
-)
+	readDashboards({
+		fields: ['*'],
+	})
+);
 
 console.log(result);
 ```
@@ -132,14 +133,15 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readDashboards} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readDashboards } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readDashboards({
-        fields : ['*']
-    })
-)
+	readDashboards({
+		fields: ['*'],
+	})
+);
 
 console.log(result);
 ```
@@ -174,14 +176,15 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readDashboard} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readDashboard } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    readDashboard('dashboard_id', {
-        fields : ['*']
-    })
-)
+	readDashboard('dashboard_id', {
+		fields: ['*'],
+	})
+);
 
 console.log(result);
 ```
@@ -221,14 +224,15 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readDashboard} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readDashboard } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readDashboard('751a81de-9e00-4ffe-a2c1-6e04619b859f', {
-        fields : ['*']
-    })
-)
+	readDashboard('751a81de-9e00-4ffe-a2c1-6e04619b859f', {
+		fields: ['*'],
+	})
+);
 
 console.log(result);
 ```
@@ -248,7 +252,6 @@ Create a new dashboard.
 `POST /dashboards`
 
 ```json
-
 {
 	"dashboard_field_1": "value_1",
 	"dashboard_field_2": "value_2"
@@ -271,17 +274,16 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createDashboard} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, createDashboard } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    createDashboard(
-        {
-            'dashboard_field_1' : 'value_1',
-            'dashboard_field_2' : 'value_2'
-        }
-    )
-)
+	createDashboard({
+		dashboard_field_1: 'value_1',
+		dashboard_field_2: 'value_2',
+	})
+);
 
 console.log(result);
 ```
@@ -334,17 +336,16 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createDashboard} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, createDashboard } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createDashboard(
-        {
-            'name' : 'User Retention',
-            'note' : 'Some insights on our users activity'
-        }
-    )
-)
+	createDashboard({
+		name: 'User Retention',
+		note: 'Some insights on our users activity',
+	})
+);
 
 console.log(result);
 ```
@@ -371,7 +372,7 @@ Create multiple new dashboards.
 	},
 	{
 		"dashboard_2_object_field_1": "value_3",
-		"dashboard_2_object_field_2": "value_4",
+		"dashboard_2_object_field_2": "value_4"
 	}
 ]
 ```
@@ -392,22 +393,22 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createDashboards} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, createDashboards } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    createDashboards(
-    [
-        {
-            'dashboard_1_field_1' : 'value_1',
-            'dashboard_1_field_2' : 'value_2'
-        },
-        {
-            'dashboard_2_field_1' : 'value_3',
-            'dashboard_2_field_2' : 'value_4'
-        }
-    ])
-)
+	createDashboards([
+		{
+			dashboard_1_field_1: 'value_1',
+			dashboard_1_field_2: 'value_2',
+		},
+		{
+			dashboard_2_field_1: 'value_3',
+			dashboard_2_field_2: 'value_4',
+		},
+	])
+);
 
 console.log(result);
 ```
@@ -468,22 +469,22 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createDashboards} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, createDashboards } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createDashboards(
-    [
-        {
-            'name' : 'User Retention',
-            'note' : 'Some insights on our users activity'
-        },
-        {
-            'name' : 'Publishing report',
-            'note' : 'Some charts to track our outputs'
-        }
-    ])
-)
+	createDashboards([
+		{
+			name: 'User Retention',
+			note: 'Some insights on our users activity',
+		},
+		{
+			name: 'Publishing report',
+			note: 'Some charts to track our outputs',
+		},
+	])
+);
 
 console.log(result);
 ```
@@ -524,14 +525,15 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateDashboard} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, updateDashboard } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updateDashboard('dashboard_id',{
-        'dashboard_field' : 'value'
-    })
-)
+	updateDashboard('dashboard_id', {
+		dashboard_field: 'value',
+	})
+);
 
 console.log(result);
 ```
@@ -583,14 +585,15 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateDashboard} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, updateDashboard } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9',{
-        'color' : '#6644FF'
-    })
-)
+	updateDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9', {
+		color: '#6644FF',
+	})
+);
 
 console.log(result);
 ```
@@ -634,14 +637,15 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedDashboards} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, updatedDashboards } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updatedDashboards(['dashboard_1_id','dashboard_2_id'],{
-        'dashboard_field' : 'value_1'
-    })
-)
+	updatedDashboards(['dashboard_1_id', 'dashboard_2_id'], {
+		dashboard_field: 'value_1',
+	})
+);
 
 console.log(result);
 ```
@@ -673,7 +677,6 @@ Returns the [dashboard objects](#the-dashboard-object) for the updated dashboard
 `PATCH /dashboards`
 
 ```json
-
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
 	"data": {
@@ -704,14 +707,15 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedDashboards} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, updatedDashboards } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatedDashboards(['cfcc3702-33bd-4616-865c-99b59dc1cdc9','782c80a0-ad61-488d-b9e2-7d688f029421'],{
-        'color' : '#81D4FA'
-    })
-)
+	updatedDashboards(['cfcc3702-33bd-4616-865c-99b59dc1cdc9', '782c80a0-ad61-488d-b9e2-7d688f029421'], {
+		color: '#81D4FA',
+	})
+);
 
 console.log(result);
 ```
@@ -746,10 +750,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboard} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, deleteDashboard } from '@directus/sdk/rest';
 
-const result = await client.request(deleteDashboard('dashboard_id'))
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(deleteDashboard('dashboard_id'));
 
 console.log(result);
 ```
@@ -786,10 +791,11 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboard} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, deleteDashboard } from '@directus/sdk/rest';
 
-const result = await client.request(deleteDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9'));
 
 console.log(result);
 ```
@@ -828,17 +834,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboards} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, deleteDashboards } from '@directus/sdk/rest';
 
-const result = await client.request(
-    deleteDashboards(
-        [
-					'dashboard_id_1',
-					'dashboard_id_2'
-        ]
-    )
-)
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(deleteDashboards(['dashboard_id_1', 'dashboard_id_2']));
 
 console.log(result);
 ```
@@ -889,17 +889,13 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteDashboards} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, deleteDashboards } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    deleteDashboards(
-        [
-					'751a81de-9e00-4ffe-a2c1-6e04619b859f',
-					'782c80a0-ad61-488d-b9e2-7d688f029421'
-        ]
-    )
-)
+	deleteDashboards(['751a81de-9e00-4ffe-a2c1-6e04619b859f', '782c80a0-ad61-488d-b9e2-7d688f029421'])
+);
 
 console.log(result);
 ```

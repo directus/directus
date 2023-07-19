@@ -45,7 +45,7 @@ Async/Sync ->
 {
 	"key": "string", // string
 	"key2": 1, // number
-	"key3": {}, //json
+	"key3": {}, // json
 	"key4": [], // array
 	"key5": true, // boolean
 	"key6": null // null

@@ -466,7 +466,7 @@ Update multiple existing permissions rules.
 
 ```graphql
 type Mutation {
-    update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
+	update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
 }
 ```
 
