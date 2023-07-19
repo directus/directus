@@ -9,7 +9,6 @@ pageClass: page-reference
 > Provides detailed information about the project server, its schema, and its health.
 > [Learn more about Projects](/user-guide/overview/glossary#projects).
 
----
 
 ## Get OpenAPI Specification
 
@@ -64,7 +63,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Get GraphQL SDL
 
@@ -146,7 +144,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Ping
 
@@ -196,7 +193,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Info
 
@@ -278,7 +274,6 @@ query {
 </SnippetToggler>
 
 
----
 
 ## Health
 

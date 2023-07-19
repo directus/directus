@@ -10,7 +10,6 @@ pageClass: page-reference
 > data based on department, objective, business process or anything you choose.
 > [Learn more about Dashboards](/user-guide/insights/dashboards).
 
----
 
 ## The Dashboard Object
 
@@ -51,7 +50,6 @@ Panels that are in this dashboard. One-to-may to [panels](/reference/system/pane
 }
 ```
 
----
 
 ## List Dashboards
 
@@ -153,7 +151,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a Dashboard
 
@@ -246,7 +243,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Dashboard
 
@@ -361,7 +357,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Dashboards
 
@@ -500,7 +495,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Dashboard
 
@@ -606,7 +600,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Dashboards
 
@@ -728,7 +721,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Dashboard
 
@@ -809,7 +801,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Dashboards
 

@@ -9,7 +9,6 @@ pageClass: page-reference
 > What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever
 > other structures you can think of. [Learn more about Relationships](/user-guide/overview/glossary#relationships).
 
----
 
 ## The Relation Object
 
@@ -111,7 +110,6 @@ Delete trigger for the foreign key constraint.
 }
 ```
 
----
 
 ## List relations
 
@@ -175,7 +173,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## List relations in collection
 
@@ -240,7 +237,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a relation
 
@@ -298,7 +294,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Relation
 
@@ -376,7 +371,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Relation
 
@@ -452,7 +446,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Relation
 

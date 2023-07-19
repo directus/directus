@@ -9,7 +9,6 @@ pageClass: page-reference
 > Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
 > [Learn more about Items](/user-guide/overview/glossary#items).
 
----
 
 ## The Item Object
 
@@ -35,7 +34,6 @@ learn more.
 }
 ```
 
----
 
 ## Get Items
 
@@ -161,7 +159,6 @@ console.log(result)
 
 </SnippetToggler>
 
----
 
 ## Get Item by ID
 
@@ -253,7 +250,6 @@ console.log(result);
 </SnippetToggler>
 
 
----
 
 ## Create an Item
 
@@ -378,7 +374,6 @@ console.log(result);
 
 </SnippetToggler>
 
----
 
 ## Create Multiple Items
 
@@ -529,7 +524,6 @@ console.log(result);
 
 </SnippetToggler>
 
----
 
 ## Update an Item
 
@@ -641,7 +635,6 @@ console.log(result);
 
 </SnippetToggler>
 
----
 
 ## Update Multiple Items
 
@@ -758,7 +751,6 @@ console.log(result);
 
 </SnippetToggler>
 
----
 
 ## Delete an Item
 
@@ -837,7 +829,6 @@ console.log(result);
 
 </SnippetToggler>
 
----
 
 ## Delete Multiple Items
 

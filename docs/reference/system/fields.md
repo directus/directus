@@ -9,7 +9,6 @@ pageClass: page-reference
 > Fields are individual pieces of content within an item. They are mapped to columns in the database.
 > [Learn more about Fields](/user-guide/overview/glossary#fields).
 
----
 
 ## The Field Object
 
@@ -150,7 +149,6 @@ Comment as stored in the database.
 }
 ```
 
----
 
 ## List All Fields
 
@@ -235,7 +233,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## List Fields in Collection
 
@@ -324,7 +321,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a Field
 
@@ -408,7 +404,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Field
 
@@ -551,7 +546,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Field
 
@@ -688,7 +682,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Field
 

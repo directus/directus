@@ -9,7 +9,6 @@ pageClass: page-reference
 > All events within Directus are tracked and stored in the activities collection. This gives you full accountability
 > over everything that happens. [Learn more about Activity](/user-guide/overview/glossary#activity).
 
----
 
 ## The Activity Object
 
@@ -58,7 +57,6 @@ Any changes that were made in this activity. One-to-many to [revisions](/referen
 }
 ```
 
----
 
 ## List Activity Actions
 
@@ -152,7 +150,6 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve Activity Action
 
@@ -245,7 +242,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Comment
 
@@ -365,7 +361,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Comment
 
@@ -474,7 +469,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Comment
 

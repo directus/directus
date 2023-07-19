@@ -9,7 +9,6 @@ pageClass: page-reference
 > Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
 > item listings and bookmarks for users of the app. [Learn more about Presets](/user-guide/overview/glossary#presets).
 
----
 
 ## The Preset Object
 
@@ -73,7 +72,6 @@ The options used by the layout. This structure is based on the used layout.
 }
 ```
 
----
 
 ## List Presets
 
@@ -146,7 +144,6 @@ query {
 </SnippetToggler>
 
 
----
 
 ## Retrieve a preset
 
@@ -204,7 +201,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Preset
 
@@ -280,7 +276,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Presets
 
@@ -380,7 +375,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Preset
 
@@ -454,7 +448,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Presets
 
@@ -538,7 +531,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Preset
 
@@ -592,7 +584,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Presets
 

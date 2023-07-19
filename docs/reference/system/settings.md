@@ -9,7 +9,6 @@ pageClass: page-reference
 > Settings are key-value pairs that are stored in the database, and control different aspects of the project. Only
 > administrators have access to manage Settings.
 
----
 
 ## The Settings Object
 
@@ -111,7 +110,6 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 }
 ```
 
----
 
 ## Retrieve Settings
 
@@ -165,7 +163,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Settings
 

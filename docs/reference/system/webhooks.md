@@ -9,7 +9,6 @@ pageClass: page-reference
 > Webhooks are configured within the App (no code required) and send HTTP requests to an external service when a
 > specific event is triggered.
 
----
 
 ## The Webhook Object
 
@@ -52,7 +51,6 @@ What collections to fire this webhook on.
 }
 ```
 
----
 
 ## List Webhooks
 
@@ -116,7 +114,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a Webhook
 
@@ -174,7 +171,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Webhook
 
@@ -255,7 +251,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Webhook
 
@@ -355,7 +350,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Webhook
 
@@ -426,7 +420,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Webhooks
 
@@ -508,7 +501,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Webhook
 
@@ -560,7 +552,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Webhooks
 

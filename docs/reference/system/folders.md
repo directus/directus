@@ -9,7 +9,6 @@ pageClass: page-reference
 > Folders can be used to organize files within the platform. Folders are virtual, and aren't mirrored within the storage
 > adapter.
 
----
 
 ## The Folder Object
 
@@ -32,7 +31,6 @@ Parent folder. Many-to-one to folders (recursive).
 }
 ```
 
----
 
 ## List Folders
 
@@ -96,7 +94,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a Folder
 
@@ -153,7 +150,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Folder
 
@@ -225,7 +221,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Folders
 
@@ -308,7 +303,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Folder
 
@@ -382,7 +376,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Folders
 
@@ -469,7 +462,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Folder
 
@@ -530,7 +522,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Folders
 

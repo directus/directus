@@ -10,8 +10,6 @@ pageClass: page-reference
 > [public role](/user-guide/user-management/users-roles-permissions#configure-permissions) can be configured to expose
 > data without authentication, or you can pass an access token to the API to access private data.
 
----
-
 ## Access Tokens
 
 There are two types of tokens that can be used to authenticate within Directus.
@@ -38,7 +36,6 @@ the request's Authorization Header.
 Authorization: Bearer <token>
 ```
 
----
 
 ## Login
 
@@ -135,7 +132,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Refresh
 
@@ -212,7 +208,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Logout
 
@@ -269,7 +264,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Request Password Reset
 
@@ -330,7 +324,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Reset a Password
 
@@ -392,7 +385,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## List Auth Providers
 
@@ -487,7 +479,6 @@ Whether or not the default authentication provider is disabled.
 </SnippetToggler>
 
 
----
 
 ## Login Using SSO Providers
 

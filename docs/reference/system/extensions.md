@@ -9,7 +9,6 @@ pageClass: page-reference
 > The extensions endpoints are used by the Admin App to retrieve what extensions to install.
 > [Learn more about Extensions](/user-guide/overview/glossary#extensions).
 
----
 
 ## List Extensions
 

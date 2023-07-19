@@ -11,7 +11,6 @@ pageClass: page-reference
 
 [Learn more about Panels](/user-guide/insights/dashboards).
 
----
 
 ## The Panel Object
 
@@ -80,7 +79,6 @@ User that created the panel. Many-to-one to [users](/reference/system/users).
 }
 ```
 
----
 
 ## List Panels
 
@@ -144,7 +142,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a Panel
 
@@ -202,7 +199,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Panel
 
@@ -278,7 +274,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Panels
 
@@ -365,7 +360,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Panel
 
@@ -437,7 +431,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Panels
 
@@ -524,7 +517,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Panel
 
@@ -576,7 +568,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Panels
 

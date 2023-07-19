@@ -38,7 +38,6 @@ pageClass: page-reference
 		- [Total Count](#total-count)
 		- [Filter Count](#filter-count)
 
----
 
 ## Fields
 
@@ -114,7 +113,6 @@ In GraphQL, this can be achieved using Union Types.
 </template>
 </SnippetToggler>
 
----
 
 ## Filter
 
@@ -198,7 +196,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ::: tip Filtering M2A fields
 
@@ -254,7 +251,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Sort
 
@@ -300,7 +296,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Limit
 
@@ -340,7 +335,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Offset
 
@@ -370,7 +364,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Page
 
@@ -404,7 +397,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Aggregation & Grouping
 
@@ -460,7 +452,6 @@ query {
 </SnippetToggler>
 
 
----
 
 ## Deep
 
@@ -524,7 +515,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Aliases
 
@@ -568,7 +558,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Export
 
@@ -594,7 +583,6 @@ Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 </template>
 </SnippetToggler>
 
----
 
 ## Functions
 
@@ -659,7 +647,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Metadata
 

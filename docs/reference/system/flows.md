@@ -8,7 +8,6 @@ pageClass: page-reference
 
 > Flows enable custom, event-driven data processing and task automation within Directus.
 
----
 
 ## The Flow Object
 
@@ -64,7 +63,6 @@ UUID of the operation connected to the trigger in the flow.
 }
 ```
 
----
 
 ## List Flows
 
@@ -130,7 +128,6 @@ query {
 </SnippetToggler>
 
 
----
 
 ## Retrieve a flow
 
@@ -189,7 +186,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Flow
 
@@ -267,7 +263,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Flows
 
@@ -365,7 +360,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Flow
 
@@ -437,7 +431,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Flows
 
@@ -524,7 +517,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Flow
 
@@ -578,7 +570,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Flows
 
@@ -646,7 +637,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Flow with GET webhook trigger
 

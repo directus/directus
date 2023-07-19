@@ -6,7 +6,6 @@ pageClass: page-reference
 
 # Custom Translations
 
----
 
 ## The Translations Object
 
@@ -33,7 +32,6 @@ The translation value.
 }
 ```
 
----
 
 ## List Translations
 
@@ -67,7 +65,6 @@ Supports all [global query parameters](/reference/query).
 An array of up to [limit](/reference/query#limit) [translation objects](#the-translations-object). If no items are
 available, data will be an empty array.
 
----
 
 ## Retrieve a Translation
 
@@ -111,7 +108,6 @@ Returns the requested [translation object](#the-translations-object).
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Translation
 
@@ -173,7 +169,6 @@ Returns the [translation object](#the-translations-object) for the created trans
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Translations
 
@@ -250,7 +245,6 @@ Returns the [translation object](#the-translations-object) for the created trans
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Translation
 
@@ -308,7 +302,6 @@ Returns the [translation object](#the-translations-object) for the updated trans
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Translations
 
@@ -377,7 +370,6 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Translation
 
@@ -417,7 +409,6 @@ Empty body.
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Translations
 

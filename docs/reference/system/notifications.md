@@ -8,7 +8,6 @@ pageClass: page-reference
 
 > Notifications allow you to send/receive messages to/from other users of the platform.
 
----
 
 ## The Notification Object
 
@@ -53,7 +52,6 @@ Primary key of the item this notification references.
 }
 ```
 
----
 
 ## List Notifications
 
@@ -118,7 +116,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a notification
 
@@ -178,7 +175,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Notification
 
@@ -255,7 +251,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Notifications
 
@@ -355,7 +350,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Notification
 
@@ -433,7 +427,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Notifications
 
@@ -517,7 +510,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Notification
 
@@ -569,7 +561,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Notifications
 

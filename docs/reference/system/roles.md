@@ -9,7 +9,6 @@ pageClass: page-reference
 > Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
 > platform. [Learn more about Roles](/user-guide/overview/glossary#roles).
 
----
 
 ## The Role Object
 
@@ -54,7 +53,6 @@ The users in this role. One-to-many to [users](/reference/system/users).
 }
 ```
 
----
 
 ## List Roles
 
@@ -121,7 +119,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a Role
 
@@ -179,7 +176,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Role
 
@@ -263,7 +259,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Roles
 
@@ -369,7 +364,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Role
 
@@ -443,7 +437,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Roles
 
@@ -530,7 +523,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Role
 
@@ -582,7 +574,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Roles
 

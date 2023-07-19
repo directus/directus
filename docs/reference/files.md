@@ -10,7 +10,6 @@ pageClass: page-reference
 > tracked within the `directus_files` system collection. Any requested file transformations are handled on the fly, and
 > are only saved to storage.
 
----
 
 ## Accessing a File
 
@@ -46,7 +45,6 @@ permissions and other built-in features.
 ![Original File](https://cdn.directus.io/docs/v9/reference/files/original-20220216A.jpg) _Original File Used — 602KB and
 1800x1200_
 
----
 
 ## Downloading a File
 
@@ -61,7 +59,6 @@ download will work on the _same_ domain, however it will have the file's "id" as
 <a href="https://your-directus.com/assets/<file-id>?download" target="_blank" download="Your File.pdf">Download</a>
 ```
 
----
 
 ## Requesting a Thumbnail
 
@@ -149,7 +146,6 @@ example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=cover&width=200&heig
 ]
 ```
 
----
 
 ## The File Object
 
@@ -244,7 +240,6 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 }
 ```
 
----
 
 ## List Files
 
@@ -349,7 +344,6 @@ const result = await client.request(
 
 </SnippetToggler>
 
----
 
 ## Retrieve a File
 
@@ -522,7 +516,6 @@ Content-Type: image/jpeg
 descü^cprt\wtpthbkpt|rXYZgXYZ¤bXYZ¸rTRCÌ@gTRCÌ@bTRCÌ@descc2textIXXYZ öÖÓ-XYZ 3¤XYZ o¢8õXYZ b·ÚXYZ $ ¶ÏcurvËÉckö?Q4!ñ)2;FQw]íkpz±|¬i¿}ÓÃé0ÿÿÿÛ
 ```
 
----
 
 ## Import a File
 
@@ -637,7 +630,6 @@ const result = await client.request(
 </SnippetToggler>
 
 
----
 
 ## Update a File
 
@@ -743,7 +735,6 @@ const result = await client.request(
 
 </SnippetToggler>
 
----
 
 ## Update Multiple Files
 
@@ -857,7 +848,6 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a File
 
@@ -947,7 +937,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Files
 

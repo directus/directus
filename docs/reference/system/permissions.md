@@ -9,7 +9,6 @@ pageClass: page-reference
 > Permissions are assigned to Roles, and control data access throughout the platform.
 > [Learn more about Permissions](/user-guide/overview/glossary#permissions).
 
----
 
 ## The Permission Object
 
@@ -56,7 +55,6 @@ What fields the user is allowed to alter.
 }
 ```
 
----
 
 ## List Permissions
 
@@ -128,7 +126,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a Permission
 
@@ -186,7 +183,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Permission Rule
 
@@ -266,7 +262,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Permission Rules
 
@@ -367,7 +362,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Permissions
 
@@ -440,7 +434,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Permissions
 
@@ -522,7 +515,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Permissions
 
@@ -576,7 +568,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Permissions
 

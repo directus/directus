@@ -8,7 +8,6 @@ pageClass: page-reference
 
 > Operations are the building blocks of Data Flows within Directus.
 
----
 
 ## The Operation Object
 
@@ -67,7 +66,6 @@ The flow containing this operation. Many-to-one to [flows](/reference/system/flo
 }
 ```
 
----
 
 ## List Operations
 
@@ -134,7 +132,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve an operation
 
@@ -192,7 +189,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create an Operation
 
@@ -271,7 +267,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Operations
 
@@ -367,7 +362,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update an Operation
 
@@ -438,7 +432,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Operations
 
@@ -521,7 +514,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete an Operation
 
@@ -572,7 +564,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Operations
 

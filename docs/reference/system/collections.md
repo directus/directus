@@ -9,7 +9,6 @@ pageClass: page-reference
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
 > alter the schema of the database. [Learn more about Collections](/user-guide/overview/glossary#collections).
 
----
 
 ## The Collection Object
 
@@ -144,7 +143,6 @@ a primary key field is omitted, the request will auto-generate an auto-increment
 }
 ```
 
----
 
 ## List Collections
 
@@ -235,7 +233,6 @@ console.log(result);
 </SnippetToggler>
 
 
----
 
 ## Retrieve a Collection
 
@@ -318,7 +315,6 @@ console.log(result);
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Collection
 
@@ -446,7 +442,6 @@ console.log(result);
 </SnippetToggler>
 
 
----
 
 ## Update a Collection
 
@@ -560,7 +555,6 @@ console.log(result);
 </SnippetToggler>
 
 
----
 
 ## Delete a Collection
 
@@ -642,4 +636,3 @@ console.log(result);
 </SnippetToggler>
 
 
----

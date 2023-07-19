@@ -9,7 +9,6 @@ pageClass: page-reference
 > Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
 > which defines its granular Permissions. [Learn more about Users](/user-guide/overview/glossary#users).
 
----
 
 ## The User Object
 
@@ -103,7 +102,6 @@ When this is enabled, the user will receive emails for notifications.
 }
 ```
 
----
 
 ## List Users
 
@@ -167,7 +165,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a User
 
@@ -225,7 +222,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve the Current User
 
@@ -280,7 +276,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Update the Current User
 
@@ -346,7 +341,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a User
 
@@ -426,7 +420,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Users
 
@@ -523,7 +516,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a User
 
@@ -594,7 +586,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Users
 
@@ -679,7 +670,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a User
 
@@ -731,7 +721,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Users
 
@@ -792,7 +781,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Invite a new User
 
@@ -867,7 +855,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Accept User Invite
 
@@ -939,7 +926,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Generate Two-Factor Authentication Secret
 
@@ -1011,7 +997,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Enable Two-Factor Authentication
 
@@ -1081,7 +1066,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Disable Two-Factor Authentication
 

@@ -8,7 +8,6 @@ pageClass: page-reference
 
 > Shares are a way to publicly share an otherwise private item.
 
----
 
 ## The Share Object
 
@@ -130,7 +129,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Retrieve a Share
 
@@ -187,7 +185,6 @@ query {
 </template>
 </SnippetToggler>
 
----
 
 ## Create a Share
 
@@ -266,7 +263,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Create Multiple Shares
 
@@ -371,7 +367,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update a Share
 
@@ -444,7 +439,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Update Multiple Shares
 
@@ -530,7 +524,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete a Share
 
@@ -582,7 +575,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Delete Multiple Shares
 
@@ -644,7 +636,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Authenticate a Share
 
@@ -720,7 +711,6 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 </SnippetToggler>
 
 
----
 
 ## Send a Share by Email
 
@@ -781,7 +771,6 @@ Empty body.
 </template>
 </SnippetToggler>
 
----
 
 ## Get Share Public Info
 

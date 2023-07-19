@@ -8,7 +8,6 @@ pageClass: page-reference
 
 > Utilities are the various helper endpoints located within the API.
 
----
 
 ## Generate a Hash
 
@@ -74,7 +73,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Verify a Hash
 
@@ -145,7 +143,6 @@ type Mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Manually Sort Items in Collection
 
@@ -215,7 +212,6 @@ mutation {
 </template>
 </SnippetToggler>
 
----
 
 ## Import Data from File
 
@@ -292,7 +288,6 @@ Content-Type: text/csv
 </template>
 </SnippetToggler>
 
----
 
 ## Export Data to a File
 
@@ -375,7 +370,6 @@ Empty body
 </template>
 </SnippetToggler>
 
----
 
 ## Clear the Internal Cache
 
