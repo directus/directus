@@ -114,8 +114,7 @@ export interface AbstractSqlQueryConditionNode {
 		| SqlNumberConditionNode
 		| SqlGeoConditionNode
 		| SqlSetConditionNode
-		| SqlFieldConditionNode
-		| SqlBetweenCondition;
+		| SqlFieldConditionNode;
 	negate: boolean;
 }
 
@@ -131,16 +130,6 @@ export interface SqlNumberConditionNode {
 	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: ValueNode;
-}
-
-export interface SqlBetweenCondition {
-	type: 'between-condition';
-	target: AbstractSqlQuerySelectNode;
-	operation: 'between';
-	compareTo: {
-		type: 'values';
-		parameterIndexes: [number, number];
-	};
 }
 
 export interface SqlGeoConditionNode {
