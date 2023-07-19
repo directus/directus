@@ -1,6 +1,6 @@
 # @directus/tsconfig
 
-The shared TSConfig files used by the projects in the Directus ecosystem.
+Shared TSConfig files used by the projects in the Directus ecosystem.
 
 The following configs are available:
 
@@ -15,7 +15,7 @@ The following configs are available:
 pnpm add @directus/tsconfig
 ```
 
-To use one of the configs, extend the `tsconfig.json` from it:
+To use one of the shared config, extend the local `tsconfig.json` from it:
 
 ```json
 {
