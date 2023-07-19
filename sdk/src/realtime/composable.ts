@@ -1,10 +1,19 @@
 import type { DirectusClient } from '../types/client.js';
-import type { SubscribeOptions, WebSocketClient, WebSocketConfig, WebSocketEventHandler, WebSocketEvents } from './types.js';
+import type {
+	SubscribeOptions,
+	SubscriptionEvents,
+	SubscriptionOutput,
+	WebSocketClient,
+	WebSocketConfig,
+	WebSocketEventHandler,
+	WebSocketEvents,
+} from './types.js';
 import { messageCallback } from './utils/message-callback.js';
 import { generateUid } from './utils/generate-uid.js';
 import { pong } from './commands/pong.js';
 import { auth } from './commands/auth.js';
 import type { AuthenticationClient } from '../auth/types.js';
+import { sleep } from './index.js';
 
 type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -15,7 +24,7 @@ const defaultRealTimeConfig: WebSocketConfig = {
 		delay: 1000, // 1 second
 		retries: 10,
 	},
-}
+};
 
 /**
  * Creates a client to communicate with a Directus REST WebSocket.
@@ -77,7 +86,9 @@ export function realtime(config: WebSocketConfig = {}) {
 							reconnectAttempts = 0;
 							reconnecting = false;
 						})
-						.catch(() => { /* failed to connect */ })
+						.catch(() => {
+							/* failed to connect */
+						});
 				}, Math.max(1, config.reconnect.delay));
 			} else {
 				reconnecting = false;
@@ -85,17 +96,18 @@ export function realtime(config: WebSocketConfig = {}) {
 		}
 
 		const eventHandlers: Record<WebSocketEvents, Set<WebSocketEventHandler>> = {
-			'open': new Set<WebSocketEventHandler>([]),
-			'error': new Set<WebSocketEventHandler>([]),
-			'close': new Set<WebSocketEventHandler>([]),
-			'message': new Set<WebSocketEventHandler>([]),
+			open: new Set<WebSocketEventHandler>([]),
+			error: new Set<WebSocketEventHandler>([]),
+			close: new Set<WebSocketEventHandler>([]),
+			message: new Set<WebSocketEventHandler>([]),
 		};
 
 		const handleMessages = async (ws: globalThis.WebSocket, currentClient: AuthWSClient<Schema>) => {
 			while (ws.readyState !== WebSocket.CLOSED) {
-				const message = await messageCallback(ws)
-					.catch(() => { /* ignore invalid messages */ })
-				
+				const message = await messageCallback(ws).catch(() => {
+					/* ignore invalid messages */
+				});
+
 				if (!message) continue;
 
 				if ('type' in message) {
@@ -114,7 +126,7 @@ export function realtime(config: WebSocketConfig = {}) {
 					}
 				}
 
-				eventHandlers['message'].forEach(handler => handler.call(ws, message))
+				eventHandlers['message'].forEach((handler) => handler.call(ws, message));
 			}
 		};
 
@@ -136,21 +148,21 @@ export function realtime(config: WebSocketConfig = {}) {
 						}
 
 						resolved = true;
-						eventHandlers['open'].forEach(handler => handler.call(ws, evt));
+						eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
 
 						handleMessages(ws, self);
 						resolve();
 					});
 
 					ws.addEventListener('error', (evt: Event) => {
-						eventHandlers['error'].forEach(handler => handler.call(ws, evt))
+						eventHandlers['error'].forEach((handler) => handler.call(ws, evt));
 						resetConnection();
 						reconnect.call(this);
 						if (!resolved) reject(evt);
 					});
 
 					ws.addEventListener('close', (evt: CloseEvent) => {
-						eventHandlers['close'].forEach(handler => handler.call(ws, evt))
+						eventHandlers['close'].forEach((handler) => handler.call(ws, evt));
 						resetConnection();
 						reconnect.call(this);
 						if (!resolved) reject(evt);
@@ -167,7 +179,8 @@ export function realtime(config: WebSocketConfig = {}) {
 				socket = null;
 			},
 			onWebSocket(event: WebSocketEvents, callback: (this: WebSocket, ev: Event | CloseEvent | any) => any) {
-				if (event === 'message') { // add some message parsing
+				if (event === 'message') {
+					// add some message parsing
 					const updatedCallback = function (this: WebSocket, event: MessageEvent<any>) {
 						if (typeof event.data !== 'string') return callback.call(this, event);
 
@@ -176,7 +189,7 @@ export function realtime(config: WebSocketConfig = {}) {
 						} catch {
 							return callback.call(this, event);
 						}
-					}
+					};
 
 					eventHandlers[event].add(updatedCallback);
 					return () => eventHandlers[event].delete(updatedCallback);
@@ -215,25 +228,49 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				send({ ...options, collection, type: 'subscribe' });
 
-				const initialMessage = await messageCallback(ws);
+				// const initialMessage = await messageCallback(ws);
 
-				if ('type' in initialMessage && 'status' in initialMessage && initialMessage['type'] === 'subscribe' && initialMessage['status'] === 'error') {
-					throw initialMessage;
-				}
+				
 
-				async function* subscriptionGenerator() {
-					if ('type' in initialMessage && 'uid' in initialMessage && initialMessage['type'] === 'subscription' && initialMessage['uid'] === options.uid) {
-						yield initialMessage;
-					}
-
+				async function* subscriptionGenerator(): AsyncGenerator<
+					SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>,
+					void,
+					unknown
+				> {
 					while (subscribed && socket && socket.readyState === WebSocket.OPEN) {
-						const message = await messageCallback(socket)
-							.catch(() => { /* let the loop continue */})
-						
+						const message = await messageCallback(socket).catch(() => {
+							/* let the loop continue */
+						});
+
 						if (!message) continue;
 
-						if ('type' in message && 'uid' in message && message['type'] === 'subscription' && message['uid'] === options.uid) {
-							yield message;
+						if (
+							'type' in message &&
+							'status' in message &&
+							message['type'] === 'subscribe' &&
+							message['status'] === 'error'
+						) {
+							throw message;
+						}
+
+						if (
+							'type' in message &&
+							'uid' in message &&
+							message['type'] === 'subscription' &&
+							message['uid'] === options.uid
+						) {
+							yield message as SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>;
+						}
+					}
+
+					if (config.reconnect && reconnecting) {
+						while (reconnecting) await sleep(10);
+
+						if (socket && socket.readyState === WebSocket.OPEN) {
+							// re-subscribe on the new connection
+							socket.send(JSON.stringify({ ...options, collection, type: 'subscribe' }));
+
+							yield* subscriptionGenerator();
 						}
 					}
 				}
