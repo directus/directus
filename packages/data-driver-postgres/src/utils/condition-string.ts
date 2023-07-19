@@ -25,13 +25,6 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			return `${firstOperand} ${operation} ${compareValue}`;
 		}
 
-		if (where.condition.type === 'between-condition') {
-			const column = wrapColumn(where.condition.target.table, where.condition.target.column);
-			const params = where.condition.compareTo.parameterIndexes;
-			const compareValue = `[$${params[0] + 1}, $${params[1] + 1}]`;
-			return `${column} BETWEEN ${compareValue}`;
-		}
-
 		if (where.condition.type === 'condition-letter') {
 			// TODO: support functions comparison here if needed
 

@@ -30,34 +30,6 @@ describe('Conditions', () => {
 		expect(conditionString(where)).toStrictEqual(`"${randomTable}"."${aColumn}" > $${parameterIndex + 1}`);
 	});
 
-	test('between', () => {
-		const randomTable = randomIdentifier();
-		const aColumn = randomIdentifier();
-		const parameterIndexes: [number, number] = [randomInteger(0, 100), randomInteger(0, 100)];
-
-		const where: AbstractSqlQueryConditionNode = {
-			type: 'condition',
-			negate: false,
-			condition: {
-				type: 'between-condition',
-				target: {
-					type: 'primitive',
-					table: randomTable,
-					column: aColumn,
-				},
-				operation: 'between',
-				compareTo: {
-					type: 'values',
-					parameterIndexes,
-				},
-			},
-		};
-
-		expect(conditionString(where)).toStrictEqual(
-			`"${randomTable}"."${aColumn}" BETWEEN [$${parameterIndexes[0] + 1}, $${parameterIndexes[1] + 1}]`
-		);
-	});
-
 	test('letter', () => {
 		const randomTable = randomIdentifier();
 		const aColumn = randomIdentifier();

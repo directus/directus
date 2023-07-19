@@ -91,14 +91,6 @@ export function convertCondition(
 
 			parameters.push(condition.condition.compareTo);
 			break;
-		case 'between-condition':
-			compareTo = {
-				type: 'values',
-				parameterIndexes: [generator.next().value, generator.next().value],
-			} as ValuesNode;
-
-			parameters.push(...condition.condition.compareTo);
-			break;
 		case 'condition-geo':
 			compareTo = {
 				type: 'value',

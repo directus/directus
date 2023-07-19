@@ -167,7 +167,7 @@ export interface AbstractQueryFieldNodeRelatedManyToOne extends AbstractQueryNod
 
 export interface AbstractQueryFieldNodeRelatedOneToMany extends AbstractQueryNode, AbstractQueryFieldNodeRelatedBase {
 	type: 'o2m';
-
+	// maybe every here
 	join: AbstractQueryFieldNodeRelatedJoinMany;
 }
 
@@ -344,6 +344,7 @@ export interface AbstractQueryNodeNegate extends AbstractQueryModifierNode {
 	childNode: AbstractQueryFilterNode;
 }
 
+// continue on it after relationships
 export interface AbstractQueryQuantifierNode extends AbstractQueryModifierNode {
 	type: 'quantifier';
 
@@ -376,7 +377,7 @@ export interface AbstractQueryConditionNode {
 	type: 'condition';
 
 	/* the type of the node */
-	condition: LetterConditionNode | NumberConditionNode | GeoConditionNode | SetConditionNode | BetweenCondition;
+	condition: LetterConditionNode | NumberConditionNode | GeoConditionNode | SetConditionNode;
 }
 
 /**
@@ -421,13 +422,6 @@ export interface NumberConditionNode {
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: number;
 }
-
-export interface BetweenCondition {
-	type: 'between-condition';
-	target: AbstractQueryFieldNodePrimitive; // function support needed here?
-	operation: 'between';
-	compareTo: [number, number];
-} /** @TODO remove between ^ */
 
 /**
  * Checks if a geo field intersects with a given geo value as string.
