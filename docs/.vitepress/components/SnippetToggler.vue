@@ -137,6 +137,10 @@ onBeforeMount(() => {
 	display: none;
 }
 
+.snippet-toggler.dark .content-area :deep(.vp-code-dark) {
+	display: block;
+}
+
 @media (min-width: 640px) {
 	.snippet-toggler {
 		border-radius: 12px;
