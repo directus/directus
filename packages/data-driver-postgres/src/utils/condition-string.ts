@@ -1,4 +1,8 @@
-import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '@directus/data-sql';
+import {
+	convertNumericOperators,
+	type AbstractSqlQueryConditionNode,
+	type AbstractSqlQueryLogicalNode,
+} from '@directus/data-sql';
 import { applyDataTimeFn } from './functions.js';
 import { wrapColumn } from './wrap-column.js';
 
@@ -16,7 +20,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			}
 
 			const compareValue = `$${where.condition.compareTo.parameterIndex + 1}`;
-			const operation = convertNumericOperations(where.condition.operation, where.negate);
+			const operation = convertNumericOperators(where.condition.operation, where.negate);
 
 			return `${firstOperand} ${operation} ${compareValue}`;
 		}
@@ -83,7 +87,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 		if (where.condition.type === 'field-condition') {
 			const column1 = wrapColumn(where.condition.target.table, where.condition.target.column);
 			const column2 = wrapColumn(where.condition.compareTo.table, where.condition.compareTo.column);
-			const operation = convertNumericOperations(where.condition.operation, where.negate);
+			const operation = convertNumericOperators(where.condition.operation, where.negate);
 			return `${column1} ${operation} ${column2}`;
 		}
 
@@ -105,27 +109,3 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 
 	throw new Error(`Unsupported where node type`);
 };
-
-function convertNumericOperations(operation: string, negate: boolean) {
-	let result = '';
-
-	switch (operation) {
-		case 'eq':
-			result = `${negate ? '!=' : '='}`;
-			break;
-		case 'gt':
-			result = `${negate ? '<=' : '>'}`;
-			break;
-		case 'gte':
-			result = `${negate ? '<' : '>='}`;
-			break;
-		case 'lt':
-			result = `${negate ? '>=' : '<'}`;
-			break;
-		case 'lte':
-			result = `${negate ? '>' : '<='}`;
-			break;
-	}
-
-	return result;
-}
