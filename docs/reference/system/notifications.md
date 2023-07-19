@@ -574,7 +574,7 @@ Delete multiple existing notifications.
 
 ```json
 // DELETE /notifications
-[notification_key_1, notification_key_2, notification_key_3]
+["notification_key_1", "notification_key_2", "notification_key_3"]
 ```
 </template>
 
