@@ -258,8 +258,8 @@ Create a new dashboard.
 ```json
 
 {
-	"dashboard_field": "value_1",
-	"dashboard_field": "value_2"
+	"dashboard_field_1": "value_1",
+	"dashboard_field_2": "value_2"
 }
 ```
 </template>
@@ -285,8 +285,8 @@ const client = createDirectus('app_url').with(rest())
 const result = await client.request(
     createDashboard(
         {
-            'dashboard_field' : 'value_1',
-            'dashboard_field' : 'value_2'
+            'dashboard_field_1' : 'value_1',
+            'dashboard_field_2' : 'value_2'
         }
     )
 )
@@ -372,12 +372,12 @@ Create multiple new dashboards.
 ```json
 [
 	{
-		"dashboard_1_object_field": "value_1",
-		"dashboard_1_object_field": "value_2"
+		"dashboard_1_object_field_1": "value_1",
+		"dashboard_1_object_field_2": "value_2"
 	},
 	{
-		"dashboard_2_object_field": "value_3",
-		"dashboard_2_object_field": "value_4",
+		"dashboard_2_object_field_1": "value_3",
+		"dashboard_2_object_field_2": "value_4",
 	}
 ]
 ```
@@ -405,12 +405,12 @@ const result = await client.request(
     createDashboards(
     [
         {
-            'dashboard_1_field' : 'value_1',
-            'dashboard_1_field' : 'value_2'
+            'dashboard_1_field_1' : 'value_1',
+            'dashboard_1_field_2' : 'value_2'
         },
         {
-            'dashboard_2_field' : 'value_3',
-            'dashboard_2_field' : 'value_4'
+            'dashboard_2_field_1' : 'value_3',
+            'dashboard_2_field_2' : 'value_4'
         }
     ])
 )
@@ -509,7 +509,7 @@ Update an existing dashboard.
 `PATCH /dashboards/:id`
 ```json
 {
-	"dashboard_object_field": "value_1"
+	"dashboard_field": "value_1"
 }
 ```
 </template>
@@ -616,7 +616,7 @@ Update multiple existing dashboards.
 {
 	"keys": ["dashboard_key_1", "dashboard_key_2"],
 	"data": {
-		"dashboard_object_field": "value_1"
+		"dashboard_field": "value_1"
 	}
 }
 ```
@@ -641,8 +641,8 @@ import { rest, updatedDashboards} from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
-    updatedDashboards(['dashboard_2_id','dashboard_2_id'],{
-        'dashboard_field' : 'value'
+    updatedDashboards(['dashboard_1_id','dashboard_2_id'],{
+        'dashboard_field' : 'value_1'
     })
 )
 
@@ -814,7 +814,7 @@ Delete multiple existing dashboards.
 
 `DELETE /dashboards`
 ```json
-["dashboard_key_1", "dashboard_key_2", "dashboard_key_3"]
+["dashboard_id_1", "dashboard_id_2", "dashboard_id_3"]
 ```
 </template>
 
@@ -839,8 +839,8 @@ const client = createDirectus('app_url').with(rest())
 const result = await client.request(
     deleteDashboards(
         [
-        'dashboard_id',
-        'dashboard_id'
+					'dashboard_id_1',
+					'dashboard_id_2'
         ]
     )
 )
@@ -898,8 +898,8 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteDashboards(
         [
-        '751a81de-9e00-4ffe-a2c1-6e04619b859f',
-        '782c80a0-ad61-488d-b9e2-7d688f029421'
+					'751a81de-9e00-4ffe-a2c1-6e04619b859f',
+					'782c80a0-ad61-488d-b9e2-7d688f029421'
         ]
     )
 )

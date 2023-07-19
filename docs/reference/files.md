@@ -270,7 +270,7 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFiles} from '@directus/sdk/rest';
+import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -325,7 +325,7 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFiles} from '@directus/sdk/rest';
+import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -373,7 +373,7 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFile} from '@directus/sdk/rest';
+import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -420,7 +420,7 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFile} from '@directus/sdk/rest';
+import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -554,7 +554,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, importFile} from '@directus/sdk/rest';
+import { rest, importFils } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -617,7 +617,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, importFile} from '@directus/sdk/rest';
+import { rest, importFils } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -665,7 +665,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFile} from '@directus/sdk/rest';
+import { rest, updateFils } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -722,7 +722,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFile} from '@directus/sdk/rest';
+import { rest, updateFils } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -771,8 +771,8 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus} from '@directus/sdk';
-import { rest, updatedFiles} from '@directus/sdk/rest';
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedFiles } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -836,7 +836,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFiles} from '@directus/sdk/rest';
+import { rest, updatedFiles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
@@ -883,8 +883,8 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus} from '@directus/sdk';
-import { rest, deleteFile} from '@directus/sdk/rest';
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFils } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(deleteFile('file_id'));
@@ -927,7 +927,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFile} from '@directus/sdk/rest';
+import { rest, deleteFils } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579'));
@@ -975,7 +975,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFiles} from '@directus/sdk/rest';
+import { rest, deleteFiles } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -1042,7 +1042,7 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { staticToken } from '@directus/sdk/auth'; // OMIT
-import { rest, deleteFiles} from '@directus/sdk/rest';
+import { rest, deleteFiles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 await client.setToken("s79J1cEaSuGIF40auEN6s0gvN-MOK9G4"); // OMIT
