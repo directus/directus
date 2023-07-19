@@ -1,5 +1,5 @@
 <template>
-	<div class="snippet-toggler">
+	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
 		<div class="snippet-toggler-header">
 			<span class="snippet-toggler-header-label">{{ label }}</span>
 
@@ -39,6 +39,10 @@ import { onBeforeMount, ref, watch } from 'vue';
 const props = defineProps<{
 	choices: string[];
 	label?: string;
+	alwaysDark?: {
+		type: boolean,
+		default: false
+	}
 }>();
 
 const selected = ref();
@@ -70,6 +74,7 @@ onBeforeMount(() => {
 .snippet-toggler {
 	overflow: hidden;
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
+	border: 1px solid var(--vp-snippet-toggler-border);
 }
 
 .snippet-toggler-header {

@@ -111,3 +111,15 @@
 .dark {
 	--vp-docs-section-bg: #000;
 }
+
+/**
+ * Component: Snippet Toggler
+ * -------------------------------------------------------------------------- */
+
+:root {
+	--vp-snippet-toggler-border: var(--vp-c-gray-light-4);
+}
+
+.dark {
+	--vp-snippet-toggler-border: transparent;
+}
