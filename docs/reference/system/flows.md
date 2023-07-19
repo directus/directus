@@ -90,6 +90,22 @@ type Query {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFlows} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readFlows({
+       fields : ['*']
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -127,6 +143,21 @@ query {
 }
 ```
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFlows} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readFlows({
+       fields : ['*']
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 
@@ -153,6 +184,22 @@ List an existing flow by primary key.
 type Query {
 	flows_by_id(id: ID!): directus_flows
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFlow} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readFlow('flow_id',{
+       fields : ['*']
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -185,6 +232,21 @@ query {
 		status
 	}
 }
+```
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFlow} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readFlow('4c01419e-0797-4f43-b95e-cbaebd2ac118',{
+       fields : ['*']
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -221,6 +283,23 @@ type Mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFlow} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(createFlow({
+       'flow_field_1' : 'value_1',
+       'flow_field_2' : 'value_2'
+    })
+);
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -265,6 +344,23 @@ mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFlow} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createFlow({
+       'name' : 'Email on article published',
+       'trigger' : 'operation'
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -283,14 +379,14 @@ Create multiple new flows.
 ```json
 [
 	{
-		"flow_object_1_field_1": "value_1",
-		"flow_object_1_field_2": "value_2",
-		"flow_object_1_field_3": "value_3"
+		"flow_1_field_1": "value_1",
+		"flow_1_field_2": "value_2",
+		"flow_1_field_3": "value_3"
 	},
 	{
-		"flow_object_2_field_1": "value_4",
-		"flow_object_2_field_2": "value_5",
-		"flow_object_2_field_3": "value_6"
+		"flow_2_field_1": "value_4",
+		"flow_2_field_2": "value_5",
+		"flow_2_field_3": "value_6"
 	},
 ]
 ```
@@ -306,6 +402,30 @@ type Mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFlows} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(createFlows(
+    [
+		{
+			"flow_1_field_1": "value_1",
+			"flow_1_field_2": "value_2",
+		},
+		{
+			"flow_2_field_1": "value_3",
+			"flow_2_field_2": "value_4",
+		}
+    ]
+));
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -363,6 +483,30 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFlows} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createFlows(
+    [
+        {
+            'name' : 'Email on article published',
+            'trigger' : 'operation'
+        },
+        {
+            'name' : 'Archive articles after 12 months',
+            'trigger' : 'schedule'
+        }
+    ]
+));
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -392,6 +536,22 @@ Update an existing flow.
 type Mutation {
 	update_flows_item(id: ID!, data: update_directus_flows_input): directus_flows
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFlow} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(updateFlow('flow_id', {
+        'flow_field' : 'value'
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -435,6 +595,21 @@ mutation {
 }
 ```
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFlow} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(updateFlow('53e623bd-cbeb-405d-8201-158af7e3ac83', {
+        'status' : 'inactive'
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -469,6 +644,23 @@ Update multiple existing flows.
 type Mutation {
 	update_flows_items(ids: [ID!]!, data: update_directus_flows_input): [directus_flows]
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedFlows} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedFlows(['flow_1_id', 'flow_2_id'] , {
+        'flow_field' : 'value'
+    })
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -522,6 +714,23 @@ mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedFlows} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'] , {
+        'status' : 'inactive'
+    },)
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -549,6 +758,19 @@ type Mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFlow} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deleteFlow('flow_id'));
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 
@@ -574,6 +796,19 @@ mutation {
 		id
 	}
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFlow} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteFlow('53e623bd-cbeb-405d-8201-158af7e3ac83'));
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -603,6 +838,21 @@ Delete multiple existing flows.
 type Mutation {
 	delete_flows_items(ids: [ID!]!): delete_many
 }
+```
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFlows} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteFlows(['flow_1_id', 'flow_2_id'])
+);
+
+console.log(result);
 ```
 </template>
 </SnippetToggler>
@@ -644,6 +894,21 @@ mutation {
 }
 ```
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFlows} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'])
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ---
@@ -661,6 +926,23 @@ Start a flow with GET webhook trigger.
 `GET /flows/trigger/:flow_uuid`
 </template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerFlow} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    triggerFlow('GET','flow_id', {
+        fields : '*'
+    })
+);
+
+console.log(result);
+```
+</template>
+
 </SnippetToggler>
 
 ### Response
@@ -669,12 +951,29 @@ Result of the flow, if any.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" label="API">
 
 <template #rest>
 
 `GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
 `// Payload here`
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerFlow} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    triggerFlow('GET','90a0fdd5-e760-4b4c-ac22-c14d48d44f26', {
+        fields : '*'
+    })
+);
+
+console.log(result);
+```
 </template>
 
 </SnippetToggler>
@@ -692,6 +991,23 @@ Start a flow with POST webhook trigger.
 
 `POST /flows/trigger/:flow_uuid`
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerFlow} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    triggerFlow('POST','flow_id', {
+        'field' : 'value' //payload for webhook
+    })
+);
+
+console.log(result);
+```
 </template>
 
 </SnippetToggler>
@@ -715,4 +1031,20 @@ Result of the flow, if any.
 
 </template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, triggerFlow} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    triggerFlow('POST','90a0fdd5-e760-4b4c-ac22-c14d48d44f26', {
+        'title' : 'Created with flows and webhooks'
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
