@@ -3,11 +3,12 @@ import type {
 	AbstractQueryFilterNode,
 	AbstractQueryConditionNode,
 } from '@directus/data';
-import { randomAlpha, randomIdentifier, randomInteger } from '@directus/random';
+import { randomIdentifier, randomInteger } from '@directus/random';
 import { beforeEach, describe, expect, test } from 'vitest';
 import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../types.js';
 import { parameterIndexGenerator } from '../../utils/param-index-generator.js';
 import { convertCondition, convertFilter } from './filter.js';
+import type { GeoJSONGeometry } from 'wellknown';
 
 let sample: {
 	condition: AbstractQueryConditionNode;
@@ -177,7 +178,37 @@ describe('Convert condition', () => {
 		const idGen = parameterIndexGenerator();
 		const randomCollection = randomIdentifier();
 		const randomField = randomIdentifier();
-		const pseudoGisValue = randomAlpha(200);
+
+		const gisValue: GeoJSONGeometry = {
+			type: 'MultiPolygon',
+			coordinates: [
+				[
+					[
+						[102.0, 2.0],
+						[103.0, 2.0],
+						[103.0, 3.0],
+						[102.0, 3.0],
+						[102.0, 2.0],
+					],
+				],
+				[
+					[
+						[100.0, 0.0],
+						[101.0, 0.0],
+						[101.0, 1.0],
+						[100.0, 1.0],
+						[100.0, 0.0],
+					],
+					[
+						[100.2, 0.2],
+						[100.2, 0.8],
+						[100.8, 0.8],
+						[100.8, 0.2],
+						[100.2, 0.2],
+					],
+				],
+			],
+		};
 
 		const con: AbstractQueryConditionNode = {
 			type: 'condition',
@@ -188,7 +219,7 @@ describe('Convert condition', () => {
 					field: randomField,
 				},
 				operation: 'intersects',
-				compareTo: pseudoGisValue,
+				compareTo: gisValue,
 			},
 		};
 
@@ -212,7 +243,7 @@ describe('Convert condition', () => {
 
 		expect(convertCondition(con, randomCollection, idGen, false)).toStrictEqual({
 			where: expectedWhere,
-			parameters: [pseudoGisValue],
+			parameters: [gisValue],
 		});
 	});
 });
