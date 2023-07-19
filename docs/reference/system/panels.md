@@ -103,6 +103,22 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPanels } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readPanels({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -140,6 +156,22 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPanels } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readPanels({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve a Panel
@@ -162,6 +194,22 @@ List an existing panel by primary key.
 type Query {
 	panels_by_id(id: ID!): directus_panels
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPanel } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readPanel('panel_id',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -197,6 +245,22 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPanel } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readPanel('bf5d1373-3eea-431f-aaac-54591ba5ecf1',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a Panel
@@ -212,8 +276,8 @@ Create a new panel.
 
 ```json
 {
-	"panel_object_field_1": "value_1",
-	"panel_object_field_2": "value_2"
+	"panel_field_1": "value_1",
+	"panel_field_2": "value_2"
 }
 ```
 
@@ -226,6 +290,29 @@ Create a new panel.
 type Mutation {
 	create_panels_item(data: create_directus_panels_input!): directus_panels
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPanel } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createPanel({
+        'name' : 'panel_name',
+        'type' : 'panel_type',
+        'dashboard' : 'dashboard_id',
+        'width' : panel_width,
+        'height' : panel_height,
+        'position_x' : panel_x,
+        'position_y' : panel_y,
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -273,6 +360,29 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPanel } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createPanel({
+        'name' : 'sales chart',
+        'type' : 'bar-chart',
+        'dashboard' : '2418e38c-2f0b-460a-b46d-37b63106bcdc',
+        'width' : 12,
+        'height' : 10,
+        'position_x' : 10,
+        'position_y' : 10,
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create Multiple Panels
@@ -289,12 +399,12 @@ Create multiple new panels.
 ```json
 [
 {
-	"panel_object_1_field_1": "value_1",
-	"panel_object_1_field_2": "value_2"
+	"panel_1_field_1": "value_1",
+	"panel_1_field_2": "value_2"
 },
 {
-	"panel_object_2_field_1": "value_3",
-	"panel_object_2_field_2": "value_4"
+	"panel_2_field_1": "value_3",
+	"panel_2_field_2": "value_4"
 },
 ]
 ```
@@ -308,6 +418,39 @@ Create multiple new panels.
 type Mutation {
 	create_panels_items(data: [create_directus_panels_input!]!): [directus_panels]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPanels } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createPanels(
+    [
+        {
+			'name' : 'panel_name',
+			'type' : 'panel_type',
+			'dashboard' : 'dashboard_id',
+			'width' : panel_width,
+			'height' : panel_height,
+			'position_x' : panel_x,
+			'position_y' : panel_y,
+        },
+        {
+			'name' : 'panel_2_name',
+			'type' : 'panel_2_type',
+			'dashboard' : 'dashboard_2_id',
+			'width' : panel_2_width,
+			'height' : panel_2_height,
+			'position_x' : panel_2_x,
+			'position_y' : panel_2_y,
+        }
+    ]
+));
 ```
 
 </template>
@@ -360,6 +503,39 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPanels } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createPanels(
+    [
+        {
+            'name' : 'sales chart',
+            'type' : 'bar-chart',
+            'dashboard' : '2418e38c-2f0b-460a-b46d-37b63106bcdc',
+            'width' : 12,
+            'height' : 10,
+            'position_x' : 20,
+            'position_y' : 10,
+        },
+        {
+            'name' : 'authorship percentage',
+            'type' : 'pie-chart',
+            'dashboard' : '2418e38c-2f0b-460a-b46d-37b63106bcdc',
+            'width' : 12,
+            'height' : 10,
+            'position_x' : 10,
+            'position_y' : 10,
+        }
+    ]
+));
+```
+
+</template>
 </SnippetToggler>
 
 ## Update a Panel
@@ -375,7 +551,7 @@ Update an existing panel.
 
 ```json
 {
-	"panel_object_field": "value_1"
+	"panel_field": "value"
 }
 ```
 
@@ -388,6 +564,23 @@ Update an existing panel.
 type Mutation {
 	update_panels_item(id: ID!, data: update_directus_panels_input): directus_panels
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePanel } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatePanel('panel_id', {
+        'field' : 'value'
+    }
+));
+
+console.log(result);
 ```
 
 </template>
@@ -433,6 +626,24 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePanel } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatePanel('8d4acee9-f266-4664-801d-11d0273e9bfe', {
+        'height' : 20,
+        'width' : 20
+    }
+));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Multiple Panels
@@ -448,7 +659,7 @@ Update multiple existing panels.
 
 ```json
 {
-	"keys": ["panel_1_key", "panel_2_key"],
+	"keys": ["panel_1_id", "panel_2_id"],
 	"data": {
 		"panel_object_field": "value_1"
 	}
@@ -464,6 +675,23 @@ Update multiple existing panels.
 type Mutation {
 	update_panels_items(ids: [ID!]!, data: update_directus_panels_input): [directus_panels]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedPanels } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(staticToken()).with(rest())
+
+const result = await client.request(
+    updatedPanels(['panel_1_id','panel_2_id'], {
+        'field' : 'value'
+    }
+));
+
+console.log(result);
 ```
 
 </template>
@@ -519,6 +747,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedPanels } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedPanels(['8d4acee9-f266-4664-801d-11d0273e9bfe','4a98c02e-62ac-4ceb-aabc-990ce603eb78'], {
+        'position_x' : 30
+    }
+));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete a Panel
@@ -541,6 +786,19 @@ Delete an existing panel.
 type Mutation {
 	delete_panels_item(id: ID!): delete_one
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePanel } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deletePanel('panel_id'));
+
+console.log(result);
 ```
 
 </template>
@@ -571,6 +829,19 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePanel } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deletePanel('8d4acee9-f266-4664-801d-11d0273e9bfe'));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete Multiple Panels
@@ -585,7 +856,7 @@ Delete multiple existing panels.
 `DELETE /panels`
 
 ```json
-["key_1", "key_2", "key_3"]
+["panel_1_id", "panel_2_id", "panel_3_id"]
 ```
 
 </template>
@@ -597,6 +868,21 @@ Delete multiple existing panels.
 type Mutation {
 	delete_panels_items(ids: [ID!]!): delete_many
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePanels } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deletePanels(
+    ['panel_1_id','panel_2_id']
+));
+
+console.log(result);
 ```
 
 </template>
@@ -638,6 +924,21 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePanels } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deletePanels(
+    ['8d4acee9-f266-4664-801d-11d0273e9bfe','4a98c02e-62ac-4ceb-aabc-990ce603eb78']
+));
+
+console.log(result);
 ```
 
 </template>
