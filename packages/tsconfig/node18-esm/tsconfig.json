@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"display": "Node 18 ESM",
+	"display": "Node.js 18 ESM",
 	"extends": "../base/tsconfig.json",
 	"compilerOptions": {
 		"module": "ES2022",
