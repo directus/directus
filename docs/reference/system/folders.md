@@ -37,7 +37,6 @@ List all folders that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /folders`
@@ -45,7 +44,6 @@ List all folders that exist in Directus.
 `SEARCH /folders`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -89,7 +87,6 @@ will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /folders`
@@ -97,7 +94,6 @@ will be an empty array.
 `SEARCH /folders`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -136,13 +132,11 @@ List an existing folder by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /folders/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -183,13 +177,11 @@ Returns a [folder object](#the-folder-object) if a valid primary key was provide
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /folders/fc02d733-95b8-4e27-bd4b-08a32cbe4e66`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -228,7 +220,6 @@ Create a new (virtual) folder.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /folders`
@@ -240,7 +231,6 @@ Create a new (virtual) folder.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -285,7 +275,6 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /folders`
@@ -297,7 +286,6 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -336,7 +324,6 @@ Create multiple new (virtual) folders.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /folders`
@@ -353,7 +340,6 @@ Create multiple new (virtual) folders.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -403,7 +389,6 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /folders`
@@ -420,7 +405,6 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -466,7 +450,6 @@ Update an existing folder.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /folders/:id`
@@ -478,7 +461,6 @@ Update an existing folder.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -523,7 +505,6 @@ Returns the [folder object](#the-folder-object) of the folder that was updated.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /folders/fac21847-d5ce-4e4b-a288-9abafbdfbc87`
@@ -535,7 +516,6 @@ Returns the [folder object](#the-folder-object) of the folder that was updated.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -578,7 +558,6 @@ Update multiple existing folders.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /folders`
@@ -593,7 +572,6 @@ Update multiple existing folders.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -642,7 +620,6 @@ Returns the [folder objects](#the-folder-object) of the folders that were update
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /folders`
@@ -657,7 +634,6 @@ Returns the [folder objects](#the-folder-object) of the folders that were update
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -706,13 +682,11 @@ Any files in this folder will be moved to the root folder.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /folders/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -746,13 +720,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /folders/a5bdb793-dd85-4ac9-882a-b42862092983`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -794,7 +766,6 @@ Any files in these folders will be moved to the root folder.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /folders`
@@ -804,7 +775,6 @@ Any files in these folders will be moved to the root folder.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -846,7 +816,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /folders`
@@ -856,7 +825,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql

@@ -40,7 +40,6 @@ List all items that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /items/:collection`
@@ -48,7 +47,6 @@ List all items that exist in Directus.
 `SEARCH /items/:collection`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -60,7 +58,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -108,13 +105,11 @@ default values will be returned.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /items/articles`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -132,7 +127,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -160,13 +154,11 @@ Get an item that exists in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /items/:collection/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -178,7 +170,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -206,13 +197,11 @@ Returns an [item object](#the-item-object) if a valid primary key was provided.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /items/articles/15`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -224,7 +213,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -248,7 +236,6 @@ Create a new item in the given collection.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /items/:collection`
@@ -261,7 +248,6 @@ Create a new item in the given collection.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -273,7 +259,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -317,7 +302,6 @@ Returns the [item objects](#the-item-object) of the item that were created.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /items/articles`
@@ -330,7 +314,6 @@ Returns the [item objects](#the-item-object) of the item that were created.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -345,7 +328,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -374,7 +356,6 @@ Create new items in the given collection.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /items/:collection`
@@ -393,7 +374,6 @@ Create new items in the given collection.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -405,7 +385,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -449,7 +428,6 @@ Returns the [item objects](#the-item-object) of the item that were created.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /items/articles`
@@ -468,7 +446,6 @@ Returns the [item objects](#the-item-object) of the item that were created.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -488,7 +465,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -524,7 +500,6 @@ Update an existing item.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /items/:collection/:id`
@@ -536,7 +511,6 @@ Update an existing item.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -548,7 +522,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -583,7 +556,6 @@ Returns the [item object](#the-item-object) of the item that was updated.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /items/articles/15`
@@ -595,7 +567,6 @@ Returns the [item object](#the-item-object) of the item that was updated.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -610,7 +581,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -638,7 +608,6 @@ Update multiple items at the same time.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /items/:collection`
@@ -653,7 +622,6 @@ Update multiple items at the same time.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -665,7 +633,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -704,7 +671,6 @@ Returns the [item objects](#the-item-object) for the updated items.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /items/articles`
@@ -719,7 +685,6 @@ Returns the [item objects](#the-item-object) for the updated items.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -734,7 +699,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -762,13 +726,11 @@ Delete an existing item.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /items/:collection/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -780,7 +742,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -803,13 +764,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /items/articles/15`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -823,7 +782,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -845,7 +803,6 @@ console.log(result);
 Delete multiple existing items.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /items/:collection`
@@ -876,7 +833,6 @@ Delete multiple existing items.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -888,7 +844,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -933,7 +888,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /items/articles`
@@ -964,7 +918,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql`
@@ -978,7 +931,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js

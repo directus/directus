@@ -243,13 +243,11 @@ List all files that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /files` `SEARCH /files`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -261,7 +259,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -299,13 +296,11 @@ be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /files` `SEARCH /files`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -318,7 +313,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -350,13 +344,11 @@ Retrieve a single file by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /files/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -368,7 +360,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -398,13 +389,11 @@ Returns a [file object](#the-file-object) if a valid primary key was provided.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -419,7 +408,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -527,7 +515,6 @@ Import a file from the web
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /files/import`
@@ -542,7 +529,6 @@ Import a file from the web
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -554,7 +540,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -592,7 +577,6 @@ Returns the [file object](#the-file-object) for the imported file.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /files/import`
@@ -607,7 +591,6 @@ Returns the [file object](#the-file-object) for the imported file.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -621,7 +604,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -646,7 +628,6 @@ Update an existing file, and/or replace it's file contents.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /files/:id`
@@ -658,7 +639,6 @@ Update an existing file, and/or replace it's file contents.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -670,7 +650,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -705,7 +684,6 @@ Returns the [file object](#the-file-object) for the updated file.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
@@ -717,7 +695,6 @@ Returns the [file object](#the-file-object) for the updated file.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -732,7 +709,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -758,7 +734,6 @@ Update multiple files at the same time.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /files`
@@ -773,7 +748,6 @@ Update multiple files at the same time.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -785,7 +759,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -822,7 +795,6 @@ Returns the [file objects](#the-file-object) for the updated files.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /files`
@@ -838,7 +810,6 @@ Returns the [file objects](#the-file-object) for the updated files.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -853,7 +824,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -884,13 +854,11 @@ This will also delete the file from disk.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /files/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -902,7 +870,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -929,13 +896,11 @@ Empty response.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -949,7 +914,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -978,7 +942,6 @@ This will also delete the files from disk.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /files`
@@ -988,7 +951,6 @@ This will also delete the files from disk.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -1000,7 +962,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -1045,7 +1006,6 @@ Empty response.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /files`
@@ -1055,7 +1015,6 @@ Empty response.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -1069,7 +1028,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js

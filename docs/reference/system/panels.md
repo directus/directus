@@ -85,7 +85,6 @@ List all panels that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /panels`
@@ -93,7 +92,6 @@ List all panels that exist in Directus.
 `SEARCH /panels`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -121,7 +119,6 @@ will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /panels`
@@ -129,7 +126,6 @@ will be an empty array.
 `SEARCH /panels`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -153,13 +149,11 @@ List an existing panel by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /panels/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -184,13 +178,11 @@ Returns the requested [panel object](#the-panel-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /panels/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -214,7 +206,6 @@ Create a new panel.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /panels`
@@ -227,7 +218,6 @@ Create a new panel.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -256,7 +246,6 @@ Returns the [panel object](#the-panel-object) for the created panel.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /panels`
@@ -270,7 +259,6 @@ Returns the [panel object](#the-panel-object) for the created panel.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -294,7 +282,6 @@ Create multiple new panels.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /panels`
@@ -313,7 +300,6 @@ Create multiple new panels.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -342,7 +328,6 @@ Returns the [panel object](#the-panel-object) for the created panel.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /panels`
@@ -361,7 +346,6 @@ Returns the [panel object](#the-panel-object) for the created panel.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -385,7 +369,6 @@ Update an existing panel.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /panels/:id`
@@ -397,7 +380,6 @@ Update an existing panel.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -426,7 +408,6 @@ Returns the [panel object](#the-panel-object) for the updated panel.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /panels/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -438,7 +419,6 @@ Returns the [panel object](#the-panel-object) for the updated panel.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -462,7 +442,6 @@ Update multiple existing panels.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /panels`
@@ -477,7 +456,6 @@ Update multiple existing panels.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -510,7 +488,6 @@ Returns the [panel objects](#the-panel-object) for the updated panels.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /panels`
@@ -525,7 +502,6 @@ Returns the [panel objects](#the-panel-object) for the updated panels.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -552,13 +528,11 @@ Delete an existing panel.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /panels/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -579,13 +553,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /panels/12204ee2-2c82-4d9a-b044-2f4842a11dba`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -608,7 +580,6 @@ Delete multiple existing panels.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /panels`
@@ -618,7 +589,6 @@ Delete multiple existing panels.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -643,7 +613,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /panels`
@@ -653,7 +622,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

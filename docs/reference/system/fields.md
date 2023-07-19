@@ -155,13 +155,11 @@ List the available fields.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /fields`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -173,7 +171,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -200,13 +197,11 @@ An array of [field objects](#the-field-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /fields`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -221,7 +216,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -244,13 +238,11 @@ List the available fields in a given collection.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /fields/:collection`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -262,7 +254,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -289,13 +280,11 @@ An array of [field objects](#the-field-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /fields/articles`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -310,7 +299,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -333,13 +321,11 @@ Get a single field in a given collection.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /fields/:collection/:field`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -351,7 +337,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -378,13 +363,11 @@ A [field object](#the-field-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /fields/articles/title`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -399,7 +382,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -422,7 +404,6 @@ Create a new field in the given collection.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /fields/:collection`
@@ -438,7 +419,6 @@ Create a new field in the given collection.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -450,7 +430,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -500,7 +479,6 @@ The [field object](#the-field-object) for the created field.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /fields/articles`
@@ -520,7 +498,6 @@ The [field object](#the-field-object) for the created field.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -567,7 +544,6 @@ console.log(result);
 Updates the given field in the given collection.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /fields/articles/title`
@@ -581,7 +557,6 @@ Updates the given field in the given collection.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -593,7 +568,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -646,7 +620,6 @@ The [field object](#the-field-object) for the updated field.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /fields/articles/title`
@@ -664,7 +637,6 @@ The [field object](#the-field-object) for the updated field.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -717,13 +689,11 @@ Be aware, this will delete the column from the database, including all data in i
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /fields/:collection/:field`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -735,7 +705,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -754,13 +723,11 @@ console.log(result);
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /fields/articles/title`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -775,7 +742,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js

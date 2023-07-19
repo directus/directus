@@ -108,7 +108,6 @@ List all users that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /users`
@@ -116,7 +115,6 @@ List all users that exist in Directus.
 `SEARCH /users`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -144,7 +142,6 @@ be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /users`
@@ -152,7 +149,6 @@ be an empty array.
 `SEARCH /users`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -175,13 +171,11 @@ List an existing user by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /users/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -206,13 +200,11 @@ Returns the requested [user object](#the-user-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /users/72a1ce24-4748-47de-a05f-ce9af3033727`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -237,13 +229,11 @@ Retrieve the currently authenticated user.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /users/me`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -268,13 +258,11 @@ Returns the [user object](#the-user-object) for the currently authenticated user
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /users/me`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -295,7 +283,6 @@ Update the authenticated user.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /users/me`
@@ -307,7 +294,6 @@ Update the authenticated user.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -332,7 +318,6 @@ Returns the updated [user object](#the-user-object) for the authenticated user.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /users/me`
@@ -344,7 +329,6 @@ Returns the updated [user object](#the-user-object) for the authenticated user.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -367,7 +351,6 @@ Create a new user
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users`
@@ -381,7 +364,6 @@ Create a new user
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -412,7 +394,6 @@ Returns the [user object](#the-user-object) for the created user.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users`
@@ -426,7 +407,6 @@ Returns the [user object](#the-user-object) for the created user.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -469,7 +449,6 @@ Create multiple new users
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users`
@@ -490,7 +469,6 @@ Create multiple new users
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -521,7 +499,6 @@ Returns the [user objects](#the-user-object) for the created users.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users`
@@ -542,7 +519,6 @@ Returns the [user objects](#the-user-object) for the created users.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -597,7 +573,6 @@ Update an existing user.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
@@ -609,7 +584,6 @@ Update an existing user.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -638,7 +612,6 @@ Returns the [user object](#the-user-object) for the updated user.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
@@ -650,7 +623,6 @@ Returns the [user object](#the-user-object) for the updated user.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -674,7 +646,6 @@ Update multiple existing users.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /users`
@@ -689,7 +660,6 @@ Update multiple existing users.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -722,7 +692,6 @@ Returns the [user objects](#the-user-object) for the updated users.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /users`
@@ -737,7 +706,6 @@ Returns the [user objects](#the-user-object) for the updated users.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -764,13 +732,11 @@ Delete an existing user.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /users/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -791,13 +757,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -820,7 +784,6 @@ Delete multiple existing users.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /users`
@@ -830,7 +793,6 @@ Delete multiple existing users.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -855,7 +817,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /users`
@@ -865,7 +826,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -886,7 +846,6 @@ Invite a new user by email.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/invite`
@@ -899,7 +858,6 @@ Invite a new user by email.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -933,7 +891,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/invite`
@@ -946,7 +903,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -969,7 +925,6 @@ This link includes a token, which is then used to activate the invited user.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/invisponse/accept`
@@ -982,7 +937,6 @@ This link includes a token, which is then used to activate the invited user.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -1011,7 +965,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/invite/accept`
@@ -1024,7 +977,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -1043,7 +995,6 @@ Generates a secret and returns the URL to be used in an authenticator app.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/me/tfa/generate`
@@ -1055,7 +1006,6 @@ Generates a secret and returns the URL to be used in an authenticator app.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -1085,7 +1035,6 @@ OTP secret to be saved in the authenticator app.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/me/tfa/generate`
@@ -1097,7 +1046,6 @@ OTP secret to be saved in the authenticator app.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -1121,7 +1069,6 @@ Adds a TFA secret to the user account.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/me/tfa/enable`
@@ -1134,7 +1081,6 @@ Adds a TFA secret to the user account.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -1163,7 +1109,6 @@ Empty response.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/me/tfa/enable`
@@ -1176,7 +1121,6 @@ Empty response.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -1197,7 +1141,6 @@ Disables two-factor authentication by removing the OTP secret from the user.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/me/tfa/disable`
@@ -1209,7 +1152,6 @@ Disables two-factor authentication by removing the OTP secret from the user.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -1235,7 +1177,6 @@ Empty response.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /users/me/tfa/disable`
@@ -1247,7 +1188,6 @@ Empty response.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

@@ -69,7 +69,6 @@ List all flows that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /flows`
@@ -77,7 +76,6 @@ List all flows that exist in Directus.
 `SEARCH /flows`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -104,6 +102,7 @@ const result = await client.request(readFlows({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -121,7 +120,6 @@ be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /flows`
@@ -129,7 +127,6 @@ be an empty array.
 `SEARCH /flows`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -159,6 +156,7 @@ const result = await client.request(readFlows({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -169,13 +167,11 @@ List an existing flow by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /flows/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -202,6 +198,7 @@ const result = await client.request(readFlow('flow_id',{
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -216,13 +213,11 @@ Returns the requested [flow object](#the-flow-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -252,6 +247,7 @@ const result = await client.request(readFlow('4c01419e-0797-4f43-b95e-cbaebd2ac1
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -262,7 +258,6 @@ Create a new flow.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /flows`
@@ -276,7 +271,6 @@ Create a new flow.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -304,6 +298,7 @@ const result = await client.request(createFlow({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -322,7 +317,6 @@ Returns the [flow object](#the-flow-object) for the created flow.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /flows`
@@ -336,7 +330,6 @@ Returns the [flow object](#the-flow-object) for the created flow.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -368,6 +361,7 @@ const result = await client.request(createFlow({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -378,7 +372,6 @@ Create multiple new flows.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /flows`
@@ -399,7 +392,6 @@ Create multiple new flows.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -434,6 +426,7 @@ const result = await client.request(createFlows(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -452,7 +445,6 @@ Returns the [flow object](#the-flow-object) for the created flow.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /flows`
@@ -473,7 +465,6 @@ Returns the [flow object](#the-flow-object) for the created flow.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -517,6 +508,7 @@ const result = await client.request(createFlows(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -527,7 +519,6 @@ Update an existing flow.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /flows/:id`
@@ -539,7 +530,6 @@ Update an existing flow.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -566,6 +556,7 @@ const result = await client.request(updateFlow('flow_id', {
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -584,7 +575,6 @@ Returns the [flow object](#the-flow-object) for the updated flow.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /flows/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
@@ -596,7 +586,6 @@ Returns the [flow object](#the-flow-object) for the updated flow.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -625,6 +614,7 @@ const result = await client.request(updateFlow('53e623bd-cbeb-405d-8201-158af7e3
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -635,7 +625,6 @@ Update multiple existing flows.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /flows`
@@ -650,7 +639,6 @@ Update multiple existing flows.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -678,6 +666,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -700,7 +689,6 @@ Returns the [flow objects](#the-flow-object) for the updated flows.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /flows`
@@ -715,7 +703,6 @@ Returns the [flow objects](#the-flow-object) for the updated flows.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -750,6 +737,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -760,13 +748,11 @@ Delete an existing flow.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /flows/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -790,6 +776,7 @@ const result = await client.request(deleteFlow('flow_id'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -800,13 +787,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /flows/12204ee2-2c82-4d9a-b044-2f4842a11dba`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -832,6 +817,7 @@ const result = await client.request(deleteFlow('53e623bd-cbeb-405d-8201-158af7e3
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -842,7 +828,6 @@ Delete multiple existing flows.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /flows`
@@ -852,7 +837,6 @@ Delete multiple existing flows.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -878,6 +862,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -892,7 +877,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /flows`
@@ -902,7 +886,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -936,6 +919,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -946,7 +930,6 @@ Start a flow with GET webhook trigger.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /flows/trigger/:flow_uuid`
@@ -968,6 +951,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 
 </SnippetToggler>
@@ -979,13 +963,11 @@ Result of the flow, if any.
 ### Example
 
 <SnippetToggler :choices="['REST', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -1001,8 +983,8 @@ const result = await client.request(
 
 console.log(result);
 ```
-</template>
 
+</template>
 </SnippetToggler>
 
 ## Flow with POST webhook trigger
@@ -1012,7 +994,6 @@ Start a flow with POST webhook trigger.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /flows/trigger/:flow_uuid`
@@ -1034,6 +1015,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 
 </SnippetToggler>
@@ -1049,7 +1031,6 @@ Result of the flow, if any.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
@@ -1071,5 +1052,6 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>

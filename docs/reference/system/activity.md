@@ -63,7 +63,6 @@ Returns a list of activity actions.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /activity`
@@ -71,7 +70,6 @@ Returns a list of activity actions.
 `SEARCH /activity`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -83,7 +81,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -115,7 +112,6 @@ data will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /activity`
@@ -123,7 +119,6 @@ data will be an empty array.
 `SEARCH /activity`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -135,7 +130,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -160,13 +154,11 @@ Returns a single activity action by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /activity/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -178,7 +170,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -210,13 +201,11 @@ Returns an [activity object](#the-activity-object) if a valid identifier was pro
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /activity/15`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -230,7 +219,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -257,7 +245,6 @@ Creates a new comment on a given item.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /activity/comment`
@@ -272,7 +259,6 @@ Creates a new comment on a given item.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -284,7 +270,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -325,7 +310,6 @@ Returns the [activity object](#the-activity-object) of the created comment.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /activity/comment`
@@ -339,7 +323,6 @@ Returns the [activity object](#the-activity-object) of the created comment.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -353,7 +336,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -383,7 +365,6 @@ Updates an existing comment by activity action primary key.
 ### Response
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /activity/comment/:id`
@@ -395,7 +376,6 @@ Updates an existing comment by activity action primary key.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -407,7 +387,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -440,7 +419,6 @@ Returns the [activity object](#the-activity-object) of the created comment.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /activity/comment/15`
@@ -452,7 +430,6 @@ Returns the [activity object](#the-activity-object) of the created comment.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -466,7 +443,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -497,13 +473,11 @@ Deletes a comment.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /activity/comment/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -515,7 +489,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -535,13 +508,11 @@ console.log(result);
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /activity/comment/15`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -553,7 +524,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js

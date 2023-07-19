@@ -59,7 +59,6 @@ List all roles that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /roles`
@@ -67,7 +66,6 @@ List all roles that exist in Directus.
 `SEARCH /roles`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -95,7 +93,6 @@ be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /roles`
@@ -103,7 +100,6 @@ be an empty array.
 `SEARCH /roles`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -128,13 +124,11 @@ query {
 List an existing role by primary key.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /roles/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -159,13 +153,11 @@ Returns the requested [role object](#the-role-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /roles/b4cb3b64-8580-4ad9-a099-eade6da24302`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -192,7 +184,6 @@ Create a new role.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /roles`
@@ -208,7 +199,6 @@ Create a new role.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -237,7 +227,6 @@ Returns the [role object](#the-role-object) for the created role.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /roles`
@@ -253,7 +242,6 @@ Returns the [role object](#the-role-object) for the created role.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -282,7 +270,6 @@ Create multiple new roles.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /roles`
@@ -307,7 +294,6 @@ Create multiple new roles.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -336,7 +322,6 @@ Returns the [role objects](#the-role-object) for the created roles.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /roles`
@@ -362,7 +347,6 @@ Returns the [role objects](#the-role-object) for the created roles.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -394,7 +378,6 @@ Update an existing role.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /roles/:id`
@@ -406,7 +389,6 @@ Update an existing role.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -435,7 +417,6 @@ Returns the [role object](#the-role-object) for the updated role.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
@@ -447,7 +428,6 @@ Returns the [role object](#the-role-object) for the updated role.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -474,7 +454,6 @@ Update multiple existing roles.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /roles`
@@ -489,7 +468,6 @@ Update multiple existing roles.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -522,7 +500,6 @@ Returns the [role objects](#the-role-object) for the updated roles.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /roles`
@@ -537,7 +514,6 @@ Returns the [role objects](#the-role-object) for the updated roles.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -567,13 +543,11 @@ Delete an existing role.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /roles/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -594,13 +568,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -623,7 +595,6 @@ Delete multiple existing roles.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /roles`
@@ -633,7 +604,6 @@ Delete multiple existing roles.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -658,7 +628,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /roles`
@@ -668,7 +637,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

@@ -58,7 +58,6 @@ List all notifications that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /notifications`
@@ -66,7 +65,6 @@ List all notifications that exist in Directus.
 `SEARCH /notifications`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -94,7 +92,6 @@ available, data will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /notifications`
@@ -102,7 +99,6 @@ available, data will be an empty array.
 `SEARCH /notifications`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -127,13 +123,11 @@ List an existing notification by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /notifications/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -158,13 +152,11 @@ Returns the requested [notification object](#the-notification-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /notifications/42`
 
 </template>
-
 <template #graphql>
 
 ```graphql
@@ -189,7 +181,6 @@ Create a new notification.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /notifications`
@@ -202,7 +193,6 @@ Create a new notification.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -231,7 +221,6 @@ Returns the [notification object](#the-notification-object) for the created noti
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /notifications`
@@ -244,7 +233,6 @@ Returns the [notification object](#the-notification-object) for the created noti
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -268,7 +256,6 @@ Create multiple new notifications.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /notifications`
@@ -287,7 +274,6 @@ Create multiple new notifications.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -316,7 +302,6 @@ Returns the [notification object](#the-notification-object) for the created noti
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /notifications`
@@ -337,7 +322,6 @@ Returns the [notification object](#the-notification-object) for the created noti
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -381,7 +365,6 @@ notification email to be sent.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /notifications/:id`
@@ -393,7 +376,6 @@ notification email to be sent.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -422,7 +404,6 @@ Returns the [notification object](#the-notification-object) for the updated noti
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /notifications/34`
@@ -434,7 +415,6 @@ Returns the [notification object](#the-notification-object) for the updated noti
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -458,7 +438,6 @@ Update multiple existing notifications.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /notifications`
@@ -473,7 +452,6 @@ Update multiple existing notifications.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -506,7 +484,6 @@ Returns the [notification objects](#the-notification-object) for the updated not
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /notifications`
@@ -521,7 +498,6 @@ Returns the [notification objects](#the-notification-object) for the updated not
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -545,13 +521,11 @@ Delete an existing notification.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /notifications/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -572,13 +546,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /notifications/34`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -601,7 +573,6 @@ Delete multiple existing notifications.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```json
@@ -610,7 +581,6 @@ Delete multiple existing notifications.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -635,7 +605,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /notifications`
@@ -645,7 +614,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

@@ -114,13 +114,11 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /settings`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -145,13 +143,11 @@ Returns the [settings object](#the-settings-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /settings`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -172,7 +168,6 @@ query {
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /settings`
@@ -184,7 +179,6 @@ query {
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -213,7 +207,6 @@ Returns the [settings object](#the-setting-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /settings`
@@ -225,7 +218,6 @@ Returns the [settings object](#the-setting-object).
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

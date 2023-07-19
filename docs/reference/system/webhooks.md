@@ -57,7 +57,6 @@ List all webhooks that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /webhooks`
@@ -65,7 +64,6 @@ List all webhooks that exist in Directus.
 `SEARCH /webhooks`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -93,7 +91,6 @@ data will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /webhooks`
@@ -101,7 +98,6 @@ data will be an empty array.
 `SEARCH /webhooks`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -125,13 +121,11 @@ List an existing webhook by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /webhooks/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -156,13 +150,11 @@ Returns the requested [webhook object](#the-webhook-object).
 ### Examples
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /webhooks/15`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -187,7 +179,6 @@ Create a new webhook.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /webhooks`
@@ -202,7 +193,6 @@ Create a new webhook.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -233,7 +223,6 @@ Returns the [webhook object](#the-webhook-object) for the created webhook.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /webhooks`
@@ -248,7 +237,6 @@ Returns the [webhook object](#the-webhook-object) for the created webhook.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -274,7 +262,6 @@ Create multiple new webhooks.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /webhooks`
@@ -297,7 +284,6 @@ Create multiple new webhooks.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -328,7 +314,6 @@ Returns the [webhook objects](#the-webhook-object) for the created webhooks.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /webhooks`
@@ -351,7 +336,6 @@ Returns the [webhook objects](#the-webhook-object) for the created webhooks.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -380,7 +364,6 @@ Update an existing webhook.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /webhooks/:id`
@@ -392,7 +375,6 @@ Update an existing webhook.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -421,7 +403,6 @@ Returns the [webhook object](#the-webhook-object) for the updated webhook.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /webhooks/15`
@@ -433,7 +414,6 @@ Returns the [webhook object](#the-webhook-object) for the updated webhook.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -456,7 +436,6 @@ Update multiple existing webhooks.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /webhooks`
@@ -471,7 +450,6 @@ Update multiple existing webhooks.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -506,7 +484,6 @@ Returns the [webhook objects](#the-webhook-object) for the updated webhooks.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /webhooks`
@@ -521,7 +498,6 @@ Returns the [webhook objects](#the-webhook-object) for the updated webhooks.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -544,13 +520,11 @@ Delete an existing webhook.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /webhooks/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -571,13 +545,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /webhooks/15`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -600,7 +572,6 @@ Delete multiple existing webhooks.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /webhooks`
@@ -610,7 +581,6 @@ Delete multiple existing webhooks.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -635,7 +605,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /webhooks`
@@ -645,7 +614,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

@@ -43,7 +43,6 @@ Retrieve a temporary access token and refresh token.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/login`
@@ -58,7 +57,6 @@ Retrieve a temporary access token and refresh token.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -101,7 +99,6 @@ The token's expiration time can be configured through
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/login`
@@ -116,7 +113,6 @@ The token's expiration time can be configured through
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -140,7 +136,6 @@ Retrieve a new access token using a refresh token.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/refresh`
@@ -153,7 +148,6 @@ Retrieve a new access token using a refresh token.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -183,7 +177,6 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/refresh`
@@ -196,7 +189,6 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -220,7 +212,6 @@ Invalidate the refresh token thus destroying the user's session.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/logout`
@@ -232,7 +223,6 @@ Invalidate the refresh token thus destroying the user's session.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -247,7 +237,6 @@ to submit it here.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/logout`
@@ -259,7 +248,6 @@ to submit it here.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -280,7 +268,6 @@ Request a password reset email to be sent to the given user.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/password/request`
@@ -292,7 +279,6 @@ Request a password reset email to be sent to the given user.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -311,7 +297,6 @@ Provide a custom reset url which the link in the email will lead to. The reset t
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/password/request`
@@ -323,7 +308,6 @@ Provide a custom reset url which the link in the email will lead to. The reset t
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -345,7 +329,6 @@ this endpoint to allow the user to reset their password.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/password/reset`
@@ -358,7 +341,6 @@ this endpoint to allow the user to reset their password.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -375,7 +357,6 @@ New password for the user.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /auth/password/reset`
@@ -388,7 +369,6 @@ New password for the user.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -416,7 +396,6 @@ To learn more about setting up auth providers, see
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /auth`
@@ -444,7 +423,6 @@ To learn more about setting up auth providers, see
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -461,7 +439,6 @@ Whether or not the default authentication provider is disabled.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /auth`
@@ -489,7 +466,6 @@ Whether or not the default authentication provider is disabled.
 ```
 
 </template>
-
 <template #graphql>
 
 </template>
@@ -502,13 +478,11 @@ Will redirect to the configured SSO provider for the user to login.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /auth/login/:provider`
 
 </template>
-
 <template #graphql>
 
 </template>

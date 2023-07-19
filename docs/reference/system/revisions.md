@@ -62,7 +62,6 @@ to a collection that the current user doesn't have access to are stripped out.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /revisions`
@@ -70,7 +69,6 @@ to a collection that the current user doesn't have access to are stripped out.
 `SEARCH /revisions`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -98,7 +96,6 @@ data will be an empty array.
 ### Examples
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /revisions`
@@ -106,7 +103,6 @@ data will be an empty array.
 `SEARCH /revisions`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -131,13 +127,11 @@ List an existing revision by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /revisions/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -162,13 +156,11 @@ Returns the requested [revision object](#the-revision-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /revisions/322`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`

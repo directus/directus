@@ -70,7 +70,6 @@ List all shares that exist in Directus.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /shares`
@@ -78,7 +77,6 @@ List all shares that exist in Directus.
 `SEARCH /shares`
 
 </template>
-
 <template #graphql>
 
 POST /graphql/system
@@ -106,7 +104,6 @@ will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /shares`
@@ -114,7 +111,6 @@ will be an empty array.
 `SEARCH /shares`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -138,13 +134,11 @@ query {
 List an existing share by primary key.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /shares/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -169,13 +163,11 @@ Returns the requested [share object](#the-share-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -201,7 +193,6 @@ Create a new share.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /shares`
@@ -216,7 +207,6 @@ Create a new share.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -245,7 +235,6 @@ Returns the [share object](#the-share-object) for the created share.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /shares`
@@ -260,7 +249,6 @@ Returns the [share object](#the-share-object) for the created share.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -286,7 +274,6 @@ Create multiple new shares.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /shares`
@@ -309,7 +296,6 @@ Create multiple new shares.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -338,7 +324,6 @@ Returns the [share objects](#the-share-object) for the created shares.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /shares`
@@ -361,7 +346,6 @@ Returns the [share objects](#the-share-object) for the created shares.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -397,7 +381,6 @@ Update an existing share.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /shares/:id`
@@ -409,7 +392,6 @@ Update an existing share.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -438,7 +420,6 @@ Returns the [share object](#the-share-object) for the updated share.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
@@ -450,7 +431,6 @@ Returns the [share object](#the-share-object) for the updated share.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -476,7 +456,6 @@ Update multiple existing shares.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /shares`
@@ -491,7 +470,6 @@ Update multiple existing shares.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -524,7 +502,6 @@ Returns the [share objects](#the-share-object) for the updated shares.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /shares`
@@ -539,7 +516,6 @@ Returns the [share objects](#the-share-object) for the updated shares.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -568,13 +544,11 @@ Delete an existing share.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /shares/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -595,13 +569,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -624,7 +596,6 @@ Delete multiple existing shares.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /shares`
@@ -634,7 +605,6 @@ Delete multiple existing shares.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -659,7 +629,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /shares`
@@ -669,7 +638,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -695,7 +663,6 @@ with the credentials set returned by this endpoint.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /shares/auth`
@@ -708,7 +675,6 @@ with the credentials set returned by this endpoint.
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -739,7 +705,6 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /shares/auth`
@@ -752,7 +717,6 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -767,7 +731,6 @@ Sends an email to the provided email addresses with a link to the share.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /shares/invite`
@@ -780,7 +743,6 @@ Sends an email to the provided email addresses with a link to the share.
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -803,7 +765,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /shares/invite`
@@ -816,7 +777,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -829,13 +789,11 @@ Empty body.
 Allows unauthenticated users to retrieve information about the share.
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /shares/info/:id`
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`
@@ -850,13 +808,11 @@ The [share objects](#the-share-object) for the given UUID, if it's still valid.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc`
 
 </template>
-
 <template #graphql>
 
 `// Not currently available in GraphQL`

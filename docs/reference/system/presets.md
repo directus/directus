@@ -85,7 +85,6 @@ other than the current user's role won't be returned.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /presets`
@@ -93,7 +92,6 @@ other than the current user's role won't be returned.
 `SEARCH /presets`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -121,7 +119,6 @@ will be an empty array.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /presets`
@@ -129,7 +126,6 @@ will be an empty array.
 `SEARCH /presets`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -153,13 +149,11 @@ List an existing preset by primary key.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 GET /presets/:id
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -184,13 +178,11 @@ Returns the requested [preset object](#the-preset-object).
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /presets/42`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -214,7 +206,6 @@ Create a new preset.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /presets`
@@ -228,7 +219,6 @@ Create a new preset.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -257,7 +247,6 @@ Returns the [preset object](#the-preset-object) for the created preset.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /presets`
@@ -271,7 +260,6 @@ Returns the [preset object](#the-preset-object) for the created preset.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -295,7 +283,6 @@ Create multiple new presets.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /presets`
@@ -316,7 +303,6 @@ Create multiple new presets.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -345,7 +331,6 @@ Returns the [preset object](#the-preset-object) for the created preset.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `POST /presets`
@@ -367,7 +352,6 @@ Returns the [preset object](#the-preset-object) for the created preset.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -401,7 +385,6 @@ Update an existing preset.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /presets/:id`
@@ -413,7 +396,6 @@ Update an existing preset.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -442,7 +424,6 @@ Returns the [preset object](#the-preset-object) for the updated preset.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /presets/34`
@@ -454,7 +435,6 @@ Returns the [preset object](#the-preset-object) for the updated preset.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -478,7 +458,6 @@ Update multiple existing presets.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /presets`
@@ -494,7 +473,6 @@ Update multiple existing presets.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -527,7 +505,6 @@ Returns the [preset objects](#the-preset-object) for the updated presets.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `PATCH /presets`
@@ -542,7 +519,6 @@ Returns the [preset objects](#the-preset-object) for the updated presets.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -566,13 +542,11 @@ Delete an existing preset.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /presets/:id`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -593,13 +567,11 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /presets/34`
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -622,7 +594,6 @@ Delete multiple existing presets.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /presets`
@@ -632,7 +603,6 @@ Delete multiple existing presets.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -657,7 +627,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `DELETE /presets`
@@ -667,7 +636,6 @@ Empty body.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
