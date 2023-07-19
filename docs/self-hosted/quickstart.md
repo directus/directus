@@ -11,7 +11,7 @@ description:
 
 You should have [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
-:::info What Is Docker?
+::: info What Is Docker?
 
 Docker is a developer tool that allows software-creators to distribute their work along with all dependencies and
 required environment settings. This means that applications can run reliably and consistently, making it the perfect way

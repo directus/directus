@@ -12,7 +12,7 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -29,7 +29,7 @@ This recipe explains how to schedule content to be published on a future date fo
 Scheduling content has fewer steps for a dynamic site. Since you are calling your Directus API at the time that a
 visitor requests a page from your site, all you need to do is add a filter to your query.
 
-:::info Note
+::: info Note
 
 If your site is statically generated and your content fetched at build time, please
 [follow the recipe for static sites](/guides/headless-cms/schedule-content/static-sites).
@@ -42,7 +42,7 @@ If your site is statically generated and your content fetched at build time, ple
 
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 You’ll need to have already created a collection for your site content like `articles` or `posts` or `pages` with a
 field `status` that controls the published state.
@@ -85,7 +85,7 @@ field `status` that controls the published state.
 
 #### Examples
 
-:::tip
+::: tip
 
 In these examples, we're using an [AND logical operator](/reference/filter-rules#logical-operators) to only return
 records that match both conditions. This provides a little more control over your published content by ensuring only

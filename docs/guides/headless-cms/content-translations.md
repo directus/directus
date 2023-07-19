@@ -11,7 +11,7 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 **Directus Version:** {{$frontmatter.directus_version}}
 
@@ -102,7 +102,7 @@ Before you can create translations, you need a collection of content to translat
    - For Language Direction Field, choose the `direction` field.
    - You can also select a Default Language by entering the primary key or `code` for that language.
 
-:::tip
+::: tip
 
 By default Directus will name this junction collection `articles_translations` following the convention
 `{collection_name}_translations`. If you want more control over the naming of your translation collection and the fields
@@ -160,7 +160,7 @@ Instead, you'll want to add a few parameters to your API call.
 - Limit parameter to only return the a single result.
 - Deep parameter to filter the related collection to only show the translations in the current language.
 
-:::tip
+::: tip
 
 Study the [Global Query Parameters > Fields > Deep](/reference/query#deep) parameter to learn how to filter nested
 relational data . It's incredible powerful.
@@ -200,7 +200,7 @@ const response = await directus.items('articles').readByQuery({
 const page = response.data[0];
 ```
 
-:::details **Toggle Open to See Sample Response**
+::: details **Toggle Open to See Sample Response**
 
 ```json
 {

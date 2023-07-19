@@ -37,7 +37,7 @@ these steps.
 2. Right-click in the Navigation Bar.
 3. Click **Show/Hide Hidden Collections** to toggle visibility.
 
-:::tip
+::: tip
 
 This functionality is purely aesthetic, provided to help you _visually cleanup_ the Navigation Bar. For admins who'd
 like to block users' access permissions, please see
@@ -102,7 +102,7 @@ Only available if a [sort field](/app/data-model/collections#sort-field) has bee
 
 :::
 
-:::tip
+::: tip
 
 Sorting saves a value in a [Sort Field](/reference/query#sort). This value is used to return data in a custom order.
 This means that while the values in this Sort Field do get updated and modified, values in other Fields are not changed.
@@ -143,7 +143,7 @@ follow these steps.
    - **"Show Archived Items"**
    - **"Show Items + Archived Items"**
 
-:::warning Archiving Requires Configuration
+::: warning Archiving Requires Configuration
 
 Only available if an [Archive field](/app/data-model/collections#archive) has been configured.
 
@@ -166,7 +166,7 @@ steps.
 
 Your Bookmark will appear in the Navigation Bar, under the associated Collection Page.
 
-:::tip Learn More
+::: tip Learn More
 
 To learn more, see our guide on [Presets and Bookmarks](/user-guide/settings/presets-bookmarks).
 

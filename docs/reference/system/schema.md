@@ -74,7 +74,7 @@ Alternatively, send a JSON or YAML schema file in a `multipart/form-data` reques
 
 Returns the differences between the current instance's schema and the schema passed in the request body.
 
-:::details **Toggle Open to See Sample Response**
+::: details **Toggle Open to See Sample Response**
 
 ```json
 {
@@ -233,7 +233,7 @@ Returns the differences between the current instance's schema and the schema pas
 POST /schema/diff
 ```
 
-:::details **Toggle Open to See Sample Body**
+::: details **Toggle Open to See Sample Body**
 
 ```
 POST /schema/diff
@@ -385,7 +385,7 @@ Empty body.
 POST /schema/apply
 ```
 
-:::details **Toggle Open to See Sample Body**
+::: details **Toggle Open to See Sample Body**
 
 ```
 POST /schema/apply

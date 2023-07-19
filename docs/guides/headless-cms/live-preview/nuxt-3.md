@@ -8,7 +8,7 @@ directus_version: 10.2.0
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 **Directus Version:** {{$frontmatter.directus_version}}
 

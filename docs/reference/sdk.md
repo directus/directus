@@ -168,7 +168,7 @@ const auth = {
   for JWT.
 - **Default** — Defaults to `'cookie'` on browsers and `'json'` otherwise.
 
-:::tip
+::: tip
 
 We recommend using cookies when possible to prevent any kind of attacks, mostly XSS.
 
@@ -238,7 +238,7 @@ const storage = {
 };
 ```
 
-:::tip Multiple Instances
+::: tip Multiple Instances
 
 If you want to use multiple instances of the SDK you should set a different [`prefix`](#prefix) for each one.
 
@@ -351,7 +351,7 @@ export default {
 - **Description** — Defines a callback function to indicate the upload progress.
 - **Default** — N/A
 
-:::tip ProgressEvent
+::: tip ProgressEvent
 
 Please see the MDN documentation to learn more about the
 [ProgressEvent](https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent).

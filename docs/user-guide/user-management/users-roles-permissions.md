@@ -14,13 +14,13 @@ readTime: 7 min read
 
 ![Users, Roles and Permissions](https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/users-roles-permissions-20220909/users-roles-permissions-20220907A.webp)
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 We recommend you try the [Quickstart Guide](/getting-started/quickstart) to get an overview of the platform.
 
 :::
 
-:::tip Learn More
+::: tip Learn More
 
 To manage users, role and permissions programmatically via the API, please see our API guides on
 [users](/reference/system/users), [roles](/reference/system/roles), and [permissions](/reference/system/permissions).
@@ -46,7 +46,7 @@ such as customers, subscribers, 3rd party sellers, _and beyond_ who need access 
 not be able to access any other business data. Therefore, we need to be able to create permissions to define what a user
 can and can't access.
 
-:::tip
+::: tip
 
 Another key point is that a user _does not need to be a person at all_. A user could be an AI bot, chat bot, API, or any
 other entity that can login and interact with the database.
@@ -121,14 +121,14 @@ users, roles, and permissions without writing a single line of SQL. The process 
 2. [Configure its Permissions](/user-guide/user-management/permissions#configure-role-permissions)
 3. [Assign Role to User](/user-guide/user-management/roles#assign-role-to-user)
 
-:::tip No Artificial Limits
+::: tip No Artificial Limits
 
 You can create as many roles as you need, (re)assign them to as many users as many times you please, and configure
 complex granular permissions as desired.
 
 :::
 
-:::tip
+::: tip
 
 Remember, the following users, role and permissions systems built into Directus cannot be deleted, however using them is
 optional. You may configure your own system as desired.
