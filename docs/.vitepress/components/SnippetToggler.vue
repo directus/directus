@@ -133,13 +133,7 @@ onBeforeMount(() => {
 	pointer-events: none;
 }
 
-.snippet-toggler .content-area [class^='language-'] {
-	margin: 0;
-	border-radius: 0;
-	display: none;
-}
-
-.snippet-toggler .content-area :global(.lang) {
+.snippet-toggler .content-area :deep(.lang) {
 	display: none;
 }
 
@@ -153,7 +147,6 @@ onBeforeMount(() => {
 	padding-inline: 24px;
 	padding-top: 8px;
 	padding-bottom: 8px;
-	/* padding-bottom: 32px; */
 	scrollbar-width: none;
 	overflow-y: auto;
 	tab-size: 2;
