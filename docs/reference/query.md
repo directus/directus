@@ -9,36 +9,6 @@ pageClass: page-reference
 > Most Directus API Endpoint operations can be manipulated with the following parameters. It is important to understand
 > them to get the most out of the platform.
 
-- [Global Query Parameters](#global-query-parameters)
-	- [Fields](#fields)
-		- [Examples](#examples)
-		- [Many-To-Any (Union Types)](#many-to-any-union-types)
-	- [Filter](#filter)
-		- [Examples](#examples-1)
-	- [Search](#search)
-		- [Example](#example)
-	- [Sort](#sort)
-		- [Examples](#examples-2)
-	- [Limit](#limit)
-		- [Examples](#examples-3)
-	- [Offset](#offset)
-		- [Examples](#examples-4)
-	- [Page](#page)
-		- [Examples](#examples-5)
-	- [Aggregation \& Grouping](#aggregation--grouping)
-		- [Grouping](#grouping)
-	- [Deep](#deep)
-		- [Examples](#examples-6)
-	- [Aliases](#aliases)
-	- [Export](#export)
-	- [Functions](#functions)
-		- [DateTime Functions](#datetime-functions)
-		- [Array Functions](#array-functions)
-	- [Metadata](#metadata)
-		- [Total Count](#total-count)
-		- [Filter Count](#filter-count)
-
-
 ## Fields
 
 Choose the fields that are returned in the current dataset. This parameter supports dot notation to request nested
