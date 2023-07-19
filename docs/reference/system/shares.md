@@ -785,7 +785,8 @@ Allows unauthenticated users to retrieve information about the share.
 
 <template #graphql>
 
-// Not currently available in GraphQL
+`// Not currently available in GraphQL`
+
 </template>
 </SnippetToggler>
 
