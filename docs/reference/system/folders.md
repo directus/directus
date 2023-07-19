@@ -55,7 +55,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -70,6 +69,7 @@ const result = await client.request(readFolders({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -107,7 +107,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -122,6 +121,7 @@ const result = await client.request(readFolders({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -148,7 +148,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -163,6 +162,7 @@ const result = await client.request(readFolder('folder_id',{
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -195,7 +195,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -210,6 +209,7 @@ const result = await client.request(readFolder('a141336b-398a-44d0-ad1b-4e31b092
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -242,7 +242,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -257,6 +256,7 @@ const result = await client.request(createFolder({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -314,6 +314,7 @@ const result = await client.request(createFolder({
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -349,8 +350,8 @@ type Mutation {
 	create_folders_items(data: [create_directus_folders_input]): [directus_folders]
 }
 ```
-</template>
 
+</template>
 <template #sdk>
 
 ```js
@@ -371,6 +372,7 @@ const result = await client.request(createFolders(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -419,7 +421,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -440,6 +441,7 @@ const result = await client.request(createFolders(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -472,7 +474,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -487,6 +488,7 @@ const result = await client.request(updateFolder('folder_id',{
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -533,7 +535,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -548,6 +549,7 @@ const result = await client.request(updateFolder('a3c77ec8-35f0-467b-9dc5-5195c4
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -583,7 +585,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -598,6 +599,7 @@ const result = await client.request(updatedFolders(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -651,7 +653,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -666,6 +667,7 @@ const result = await client.request(updatedFolders(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -698,7 +700,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -710,6 +711,7 @@ const result = await client.request(deleteFolder('folder_id'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -738,7 +740,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -750,6 +751,7 @@ const result = await client.request(deleteFolder('a3c77ec8-35f0-467b-9dc5-5195c4
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -786,7 +788,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -836,7 +837,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js

@@ -428,7 +428,7 @@ function sidebar() {
 							link: '/reference/system/webhooks',
 							text: 'Webhooks',
 						},
-					]
+					],
 				},
 			],
 		},
