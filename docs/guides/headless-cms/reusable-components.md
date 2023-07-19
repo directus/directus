@@ -31,7 +31,7 @@ To achieve this, you will:
 
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 You’ll need to have either a Directus Cloud project configured and running or a self-hosted instance of Directus up and
 running.
@@ -94,7 +94,7 @@ Let’s break down the data model for each section.
 
 Now let's create a Collection for each inside Directus.
 
-:::tip
+::: tip
 
 To keep things organized, we recommend that you namespace each collection with a prefix like `block`.
 
@@ -177,7 +177,7 @@ To keep things organized, we recommend that you namespace each collection with a
    c. Save the field. Directus will create a new, hidden
    [junction collection](/app/data-model/relationships#many-to-any-m2a) for you automatically.
 
-:::tip
+::: tip
 
 If you want more control over the name of the junction table and its fields, use the Continue in Advanced Field Creation
 Mode option.
@@ -203,7 +203,7 @@ Mode option.
 Next, you'll want to access these with the API. If you try to use `/items/pages` then `blocks` returns an array of IDs.
 Instead, you'll want to add a [field parameter](/reference/query#many-to-any-union-types) to get nested relational data.
 
-:::tip
+::: tip
 
 Study the [Global Query Parameters > Fields > Many-To-Any](/reference/query#many-to-any-union-types) article to learn
 how to properly fetch nested relational M2A data without over-fetching data that you might not need.
@@ -228,7 +228,7 @@ const response = await directus.items('pages').readByQuery({
 const page = response.data[0];
 ```
 
-:::details **Toggle Open to See Sample Response**
+::: details **Toggle Open to See Sample Response**
 
 ```json
 {

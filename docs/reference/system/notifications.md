@@ -76,7 +76,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -132,7 +131,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -175,7 +173,6 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -226,7 +223,6 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -276,7 +272,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -337,7 +332,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -355,6 +349,7 @@ const result = await client.request(createNotification({
 console.log(result);
 
 ```
+
 </template>
 </SnippetToggler>
 
@@ -396,7 +391,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -488,7 +482,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -554,7 +547,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -614,7 +606,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -666,7 +657,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -734,7 +724,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -778,7 +767,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -822,7 +810,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -867,7 +854,6 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
@@ -919,7 +905,6 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js

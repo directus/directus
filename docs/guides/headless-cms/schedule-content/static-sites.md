@@ -12,7 +12,7 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -51,7 +51,7 @@ If your site fetches content at runtime or at the time of a page request, please
 
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 You’ll need to have already created a collection for your site content like `articles` or `posts` or `pages` with a
 field `status` that controls the published state.
@@ -122,7 +122,7 @@ field `status` that controls the published state.
 
    d. Check **Emit Events**
 
-   :::warning
+   ::: warning
 
    Emit Events will trigger an `item.update` event in this flow. Be careful when using it in your Flows to avoid
    creating infinite loops where Flows continuously trigger one another.

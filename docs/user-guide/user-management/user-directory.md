@@ -14,7 +14,7 @@ readTime: 7 min read
 
 <!-- @TODO getting-started > learn-directus
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 To use this Module effectively, you will need to understand
 [Users, Roles and Permissions](/user-guide/user-management/users-roles-permissions).

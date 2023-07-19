@@ -11,7 +11,7 @@ This guide assumes you already know
 [how to establish, authenticate, and send messages](/guides/real-time/getting-started/websockets) over a WebSocket
 connection.
 
-:::info GraphQL
+::: info GraphQL
 
 The GraphQL Subscriptions specification does not support CRUD operations. This guide is only suitable for WebSockets
 connections not using GraphQL.

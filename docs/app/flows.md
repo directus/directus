@@ -10,13 +10,13 @@ readTime: 5 min read
 > Flows enable custom, event-driven data processing and task automation within Directus. Each flow is composed of one
 > trigger, followed by a series of operations.
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 Please be sure to see the [Quickstart Guide](/getting-started/quickstart) to get a basic overview of the platform.
 
 :::
 
-:::tip Learn More
+::: tip Learn More
 
 There is also dedicated API documentation on [Flows](/reference/system/flows) and
 [Operations](/reference/system/operations).
@@ -81,7 +81,7 @@ To put it in conceptual terms, operations do three things:
 - **Process data** a.k.a. transform it, validate it, or whatever.
 - **Send data** to Directus or another outside service.
 
-:::tip Developers
+::: tip Developers
 
 You can even develop your own [custom operations](/extensions/operations) to fit any use-case.
 
@@ -128,7 +128,7 @@ create a flow, which we discuss in the next section.
    - **Color** — Sets a color to help identify the flow.
    - **Activity and Logs Tracking** — Lets you **Track Activity and Logs**, **Activity**, or **Neither**.
 
-:::tip
+::: tip
 
 To learn more, see the section below on [Logs](#logs) as well as the [Activity Log](/user-guide/settings/activity-log)
 documentation.
@@ -245,14 +245,14 @@ lot of data and it will always be slightly different, based on your flow's uniqu
 and debugging, you'll need to use a tool like [The Log](#logs) to view your data chain and make sure each operation is
 accessing and generating data as you intended.
 
-:::tip
+::: tip
 
 In our examples, we are using generic _placeholders_ for operation keys, like `<operationKey>`, which might look funny
 to low-code users. In practice, operation keys will actually have unique and descriptive names, like `send_email_7538`.
 
 :::
 
-:::tip
+::: tip
 
 Remember, `$trigger`, `$accountability`, and `$last` begin with `$`, but not `operationKeys`.
 
@@ -306,7 +306,7 @@ You **cannot** pass any type of computation using double-moustache syntax.
 }
 ```
 
-:::tip
+::: tip
 
 To perform computations on flow data, use the [script operation](/app/flows/operations#script) or a
 [webhook](/app/flows/operations#webhook).
@@ -368,14 +368,14 @@ will be displayed as:
 }
 ```
 
-:::warning Logs are stored in the database
+::: warning Logs are stored in the database
 
 Keep in mind that if you've configured a flow to track logs, all this information is stored in the database. You may
 need to periodically delete this data.
 
 :::
 
-:::tip Where is `$last`?
+::: tip Where is `$last`?
 
 You may notice `$last` is not in the Logs. Remember, `$last` constantly updates to store the data of the most recently
 executed operation. The log shows the results of the entire flow. Therefore `$last` would simply be the very last
@@ -383,7 +383,7 @@ operation in the flow.
 
 :::
 
-:::tip More on Debugging
+::: tip More on Debugging
 
 You may find a tool like [Postman](https://www.postman.com/) quite helpful for viewing data and debugging flows.
 

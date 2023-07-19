@@ -10,7 +10,7 @@ export default defineConfig({
 	ignoreDeadLinks: true,
 	markdown: {
 		theme: {
-			light: 'solarized-light',
+			light: 'material-theme-lighter',
 			dark: 'material-theme-palenight',
 		},
 		toc: {
