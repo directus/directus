@@ -85,13 +85,14 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readActivities} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readActivities } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    readActivities({
-        fields: ['*']
-    })
+	readActivities({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -134,13 +135,14 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readActivities} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readActivities } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readActivities({
-        fields: ['*']
-    })
+	readActivities({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -174,13 +176,14 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readActivity} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readActivity } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    readActivity('activity_id',{
-        fields: ['*']
-    })
+	readActivity('activity_id', {
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -223,13 +226,14 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readActivity} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readActivity } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readActivity('53281',{
-        fields: ['*']
-    })
+	readActivity('53281', {
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -250,7 +254,6 @@ Creates a new comment on a given item.
 `POST /activity/comment`
 
 ```json
-
 {
 	"collection": "collection_name",
 	"item": "item_id",
@@ -274,16 +277,16 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createComment} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, createComment } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    createComment(
-    {
-        'collection' : 'collection_name',
-        'item' : 'item_id',
-        'comment' : 'value'
-    })
+	createComment({
+		collection: 'collection_name',
+		item: 'item_id',
+		comment: 'value',
+	})
 );
 
 console.log(result);
@@ -340,16 +343,16 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createComment} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, createComment } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createComment(
-    {
-        'collection' : 'articles',
-        'item' : '18',
-        'comment' : 'This is the wrong article to publish!'
-    })
+	createComment({
+		collection: 'articles',
+		item: '18',
+		comment: 'This is the wrong article to publish!',
+	})
 );
 
 console.log(result);
@@ -391,14 +394,14 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateComment} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, updateComment } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updateComment('comment_id',
-    {
-        'comment' : 'value'
-    })
+	updateComment('comment_id', {
+		comment: 'value',
+	})
 );
 
 console.log(result);
@@ -448,16 +451,16 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { staticToken } from '@directus/sdk/auth'; // OMIT
-import { rest, updateComment} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, updateComment } from '@directus/sdk/rest';
 
-await client.setToken("s79J1cEaSuGIF40auEN6s0gvN-MOK9G4"); // OMIT
+const client = createDirectus('https://directus.example.com').with(rest());
+
+await client.setToken('s79J1cEaSuGIF40auEN6s0gvN-MOK9G4'); // OMIT
 
 const result = await client.request(
-    updateComment('53727',
-    {
-        'comment' : 'Great work!'
-    })
+	updateComment('53727', {
+		comment: 'Great work!',
+	})
 );
 
 console.log(result);
@@ -493,8 +496,9 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteComment} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, deleteComment } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(deleteComment('comment_id'));
 
@@ -528,8 +532,9 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteComment} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, deleteComment } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteComment('53727'));
 

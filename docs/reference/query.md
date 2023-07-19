@@ -207,9 +207,9 @@ Find all items that mention Directus\
 
 ```graphql
 query {
-    articles(search: "Directus") {
-        id
-    }
+	articles(search: "Directus") {
+		id
+	}
 }
 ```
 

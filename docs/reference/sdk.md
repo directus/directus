@@ -838,7 +838,7 @@ await directus.collections.readOne(/* collection name */ 'articles');
 ### Read all collections
 
 ```js
-await directus.collections.readAll(); //does not currently support query or searching
+await directus.collections.readAll(); // Doesn't currently support query or searching
 ```
 
 ### Create a collection
@@ -880,13 +880,13 @@ await directus.fields.readOne(/* collection name */ 'articles', /* id of the fie
 ### Read multiple fields
 
 ```js
-await directus.fields.readMany(/* collection name */ 'articles'); //doesn't currently support query parameter
+await directus.fields.readMany(/* collection name */ 'articles'); // Doesn't currently support query parameter
 ```
 
 ### Read all fields
 
 ```js
-await directus.fields.readAll(); //does not currently support query or searching
+await directus.fields.readAll(); // Doesn't currently support query or searching
 ```
 
 ### Create a field

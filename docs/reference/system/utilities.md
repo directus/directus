@@ -20,7 +20,6 @@ Generate a hash for a given string.
 `POST /utils/hash/generate`
 
 ```json
-
 {
 	"string": "hash"
 }

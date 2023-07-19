@@ -90,17 +90,18 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readOperations } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(readOperations({
-        'fields' : ['*']
-    })
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(
+	readOperations({
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -145,17 +146,18 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readOperations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readOperations({
-        'fields' : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readOperations({
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -186,17 +188,18 @@ type Query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readOperation } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(readOperation('operation_id', {
-        'fields' : ['*']
-    })
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(
+	readOperation('operation_id', {
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -239,17 +242,18 @@ query {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readOperation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readOperation('0691f58d-ed72-40ea-81b4-81c0f1e83262', {
-        'fields' : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readOperation('0691f58d-ed72-40ea-81b4-81c0f1e83262', {
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -288,22 +292,22 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createOperation } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    createOperation({
-        'key': 'operation_key',
-        'type': 'operation_log',
-        'position_x' : 'operation_x_pos',
-        'position_y': 'operation_y_pos',
-        'flow': '9flow_id'
-    })
+	createOperation({
+		key: 'operation_key',
+		type: 'operation_log',
+		position_x: 'operation_x_pos',
+		position_y: 'operation_y_pos',
+		flow: '9flow_id',
+	})
 );
 
 console.log(result);
@@ -357,22 +361,22 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createOperation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createOperation({
-        'key': 'my_log',
-        'type': 'log',
-        'position_x' : '25',
-        'position_y': '25',
-        'flow': '90a0fdd5-e760-4b4c-ac22-c14d48d44f26'
-    })
+	createOperation({
+		key: 'my_log',
+		type: 'log',
+		position_x: '25',
+		position_y: '25',
+		flow: '90a0fdd5-e760-4b4c-ac22-c14d48d44f26',
+	})
 );
 
 console.log(result);
@@ -420,32 +424,31 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createOperations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createOperations(
-    [
-        {
-			'key': 'operation_key',
-			'type': 'operation_log',
-			'position_x' : 'operation_x_pos',
-			'position_y': 'operation_y_pos',
-			'flow': 'flow_id'
-        },
-        {
-			'key': 'operation_2_key',
-			'type': 'operation_2_log',
-			'position_x' : 'operation_2_x_pos',
-			'position_y': 'operation_2_y_pos',
-			'flow': 'flow_id'
-        }
-    ])
+	createOperations([
+		{
+			key: 'operation_key',
+			type: 'operation_log',
+			position_x: 'operation_x_pos',
+			position_y: 'operation_y_pos',
+			flow: 'flow_id',
+		},
+		{
+			key: 'operation_2_key',
+			type: 'operation_2_log',
+			position_x: 'operation_2_x_pos',
+			position_y: 'operation_2_y_pos',
+			flow: 'flow_id',
+		},
+	])
 );
 
 console.log(result);
@@ -510,32 +513,31 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createOperations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createOperations(
-    [
-        {
-            'key': 'my_log',
-            'type': 'log',
-            'position_x' : '40',
-            'position_y': '40',
-            'flow': '90a0fdd5-e760-4b4c-ac22-c14d48d44f26'
-        },
-        {
-            'key': 'my_other_log',
-            'type': 'log',
-            'position_x' : '20',
-            'position_y': '40',
-            'flow': '90a0fdd5-e760-4b4c-ac22-c14d48d44f26'
-        }
-    ])
+	createOperations([
+		{
+			key: 'my_log',
+			type: 'log',
+			position_x: '40',
+			position_y: '40',
+			flow: '90a0fdd5-e760-4b4c-ac22-c14d48d44f26',
+		},
+		{
+			key: 'my_other_log',
+			type: 'log',
+			position_x: '20',
+			position_y: '40',
+			flow: '90a0fdd5-e760-4b4c-ac22-c14d48d44f26',
+		},
+	])
 );
 
 console.log(result);
@@ -574,22 +576,21 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateOperation } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updateOperation('operation_id',{
-        'operation_field' : 'value',
-    })
+	updateOperation('operation_id', {
+		operation_field: 'value',
+	})
 );
 
 console.log(result);
-
 ```
 
 </template>
@@ -636,18 +637,18 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateOperation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateOperation('4b220e51-5e2b-48b5-a988-0a6451624d0c',{
-        'position_x' : '5',
-    })
+	updateOperation('4b220e51-5e2b-48b5-a988-0a6451624d0c', {
+		position_x: '5',
+	})
 );
 
 console.log(result);
@@ -676,7 +677,6 @@ Update multiple existing operations.
 ```
 
 </template>
-
 <template #graphql>
 
 `POST /graphql/system`
@@ -688,18 +688,18 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedOperations } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updatedOperations(['operation_1_id','operation_2_id'],{
-        'field' : 'value'
-    })
+	updatedOperations(['operation_1_id', 'operation_2_id'], {
+		field: 'value',
+	})
 );
 
 console.log(result);
@@ -760,18 +760,18 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedOperations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatedOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef','4b220e51-5e2b-48b5-a988-0a6451624d0c'],{
-        'position_y' : '50'
-    })
+	updatedOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'], {
+		position_y: '50',
+	})
 );
 
 console.log(result);
@@ -804,13 +804,13 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteOperation } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(deleteOperation('operation_id'));
 
@@ -843,13 +843,13 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteOperation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteOperation('263b18e6-7297-4a9f-af88-15af7317d4ef'));
 
@@ -887,16 +887,16 @@ type Mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteOperations } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef','4b220e51-5e2b-48b5-a988-0a6451624d0c'])
+	deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'])
 );
 
 console.log(result);
@@ -944,16 +944,16 @@ mutation {
 ```
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteOperations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef','4b220e51-5e2b-48b5-a988-0a6451624d0c'])
+	deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'])
 );
 
 console.log(result);
@@ -975,18 +975,18 @@ Trigger an operation based on primary key.
 `POST /operations/trigger/:operation_uuid`
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, triggerOperation } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    triggerOperation('operation_id', {
-        // payload
-    })
+	triggerOperation('operation_id', {
+		// Payload
+	})
 );
 
 console.log(result);
@@ -1012,18 +1012,18 @@ Result of the operation, if any.
 `// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
 
 </template>
-
 <template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, triggerOperation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    triggerOperation('0691f58d-ed72-40ea-81b4-81c0f1e83262', {
-        // payload
-    })
+	triggerOperation('0691f58d-ed72-40ea-81b4-81c0f1e83262', {
+		// Payload
+	})
 );
 
 console.log(result);

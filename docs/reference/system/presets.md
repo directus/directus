@@ -467,7 +467,6 @@ Update multiple existing presets.
 	"keys": ["preset_1_key", "preset_2_key"],
 	"data": {
 		"preset_object_field": "value_1"
-
 	}
 }
 ```
@@ -479,7 +478,7 @@ Update multiple existing presets.
 
 ```graphql
 type Mutation {
-    update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
+	update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
 }
 ```
 

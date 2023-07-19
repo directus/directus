@@ -92,11 +92,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readFlows } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(readFlows({
-       fields : ['*']
-    })
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(
+	readFlows({
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -146,11 +148,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readFlows } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readFlows({
-       fields : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readFlows({
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -187,11 +191,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readFlow } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(readFlow('flow_id',{
-       fields : ['*']
-    })
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(
+	readFlow('flow_id', {
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -236,11 +242,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readFlow } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readFlow('4c01419e-0797-4f43-b95e-cbaebd2ac118',{
-       fields : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readFlow('4c01419e-0797-4f43-b95e-cbaebd2ac118', {
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -285,12 +293,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createFlow } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(createFlow({
-       'flow_field_1' : 'value_1',
-       'flow_field_2' : 'value_2'
-    })
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(
+	createFlow({
+		flow_field_1: 'value_1',
+		flow_field_2: 'value_2',
+	})
 );
 
 console.log(result);
@@ -347,12 +357,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createFlow } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(createFlow({
-       'name' : 'Email on article published',
-       'trigger' : 'operation'
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createFlow({
+		name: 'Email on article published',
+		trigger: 'operation',
+	})
 );
 
 console.log(result);
@@ -383,7 +395,7 @@ Create multiple new flows.
 		"flow_2_field_1": "value_4",
 		"flow_2_field_2": "value_5",
 		"flow_2_field_3": "value_6"
-	},
+	}
 ]
 ```
 
@@ -394,7 +406,7 @@ Create multiple new flows.
 
 ```graphql
 type Mutation {
-    create_flows_items(data: [create_directus_flows_input!]!): [directus_flows]
+	create_flows_items(data: [create_directus_flows_input!]!): [directus_flows]
 }
 ```
 
@@ -404,20 +416,21 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createFlows } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(createFlows(
-    [
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(
+	createFlows([
 		{
-			"flow_1_field_1": "value_1",
-			"flow_1_field_2": "value_2",
+			flow_1_field_1: 'value_1',
+			flow_1_field_2: 'value_2',
 		},
 		{
-			"flow_2_field_1": "value_3",
-			"flow_2_field_2": "value_4",
-		}
-    ]
-));
+			flow_2_field_1: 'value_3',
+			flow_2_field_2: 'value_4',
+		},
+	])
+);
 
 console.log(result);
 ```
@@ -485,20 +498,21 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createFlows } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(createFlows(
-    [
-        {
-            'name' : 'Email on article published',
-            'trigger' : 'operation'
-        },
-        {
-            'name' : 'Archive articles after 12 months',
-            'trigger' : 'schedule'
-        }
-    ]
-));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createFlows([
+		{
+			name: 'Email on article published',
+			trigger: 'operation',
+		},
+		{
+			name: 'Archive articles after 12 months',
+			trigger: 'schedule',
+		},
+	])
+);
 
 console.log(result);
 ```
@@ -540,11 +554,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateFlow } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(updateFlow('flow_id', {
-        'flow_field' : 'value'
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateFlow('flow_id', {
+		flow_field: 'value',
+	})
 );
 
 console.log(result);
@@ -598,11 +614,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateFlow } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(updateFlow('53e623bd-cbeb-405d-8201-158af7e3ac83', {
-        'status' : 'inactive'
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateFlow('53e623bd-cbeb-405d-8201-158af7e3ac83', {
+		status: 'inactive',
+	})
 );
 
 console.log(result);
@@ -648,12 +666,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedFlows } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updatedFlows(['flow_1_id', 'flow_2_id'] , {
-        'flow_field' : 'value'
-    })
+	updatedFlows(['flow_1_id', 'flow_2_id'], {
+		flow_field: 'value',
+	})
 );
 
 console.log(result);
@@ -718,12 +737,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedFlows } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatedFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'] , {
-        'status' : 'inactive'
-    },)
+	updatedFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'], {
+		status: 'inactive',
+	})
 );
 
 console.log(result);
@@ -760,7 +780,8 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFlow } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(deleteFlow('flow_id'));
 
@@ -800,7 +821,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFlow } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFlow('53e623bd-cbeb-405d-8201-158af7e3ac83'));
 
@@ -842,11 +864,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFlows } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(
-    deleteFlows(['flow_1_id', 'flow_2_id'])
-);
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(deleteFlows(['flow_1_id', 'flow_2_id']));
 
 console.log(result);
 ```
@@ -898,10 +919,11 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFlows } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    deleteFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'])
+	deleteFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'])
 );
 
 console.log(result);
@@ -927,12 +949,13 @@ Start a flow with GET webhook trigger.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, triggerFlow } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    triggerFlow('GET','flow_id', {
-        fields : '*'
-    })
+	triggerFlow('GET', 'flow_id', {
+		fields: '*',
+	})
 );
 
 console.log(result);
@@ -959,12 +982,13 @@ Result of the flow, if any.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, triggerFlow } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    triggerFlow('GET','90a0fdd5-e760-4b4c-ac22-c14d48d44f26', {
-        fields : '*'
-    })
+	triggerFlow('GET', '90a0fdd5-e760-4b4c-ac22-c14d48d44f26', {
+		fields: '*',
+	})
 );
 
 console.log(result);
@@ -989,13 +1013,14 @@ Start a flow with POST webhook trigger.
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, triggerFlow} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, triggerFlow } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    triggerFlow('POST','flow_id', {
-        'field' : 'value' //payload for webhook
-    })
+	triggerFlow('POST', 'flow_id', {
+		field: 'value', // Payload for webhook
+	})
 );
 
 console.log(result);
@@ -1026,12 +1051,13 @@ Result of the flow, if any.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, triggerFlow } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    triggerFlow('POST','90a0fdd5-e760-4b4c-ac22-c14d48d44f26', {
-        'title' : 'Created with flows and webhooks'
-    })
+	triggerFlow('POST', '90a0fdd5-e760-4b4c-ac22-c14d48d44f26', {
+		title: 'Created with flows and webhooks',
+	})
 );
 
 console.log(result);

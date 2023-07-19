@@ -89,7 +89,7 @@ The SDL is based on the permissions of the currently authenticated user.
 
 ```graphql
 type Query {
-    server_specs_graphql(scope: graphql_sdl_scope): String
+	server_specs_graphql(scope: graphql_sdl_scope): String
 }
 ```
 
@@ -163,7 +163,7 @@ Ping... pong! 🏓
 
 ```graphql
 type Query {
-    server_ping: String
+	server_ping: String
 }
 ```
 

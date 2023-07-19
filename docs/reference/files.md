@@ -264,18 +264,19 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readFiles } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    readFiles( {
-        "query": {
-            "query_type": {
-                "field": {
-                    "query_operator": "value"
-                }
-            }
-        }
-    })
+	readFiles({
+		query: {
+			query_type: {
+				field: {
+					query_operator: 'value',
+				},
+			},
+		},
+	})
 );
 ```
 
@@ -318,18 +319,19 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readFiles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readFiles( {
-        "query": {
-            "filter": {
-                "type": {
-                    "_eq": "image"
-                }
-            }
-        }
-    })
+	readFiles({
+		query: {
+			filter: {
+				type: {
+					_eq: 'image',
+				},
+			},
+		},
+	})
 );
 ```
 
@@ -365,13 +367,14 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readFiles } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    readFile('file_id', {
-        fields : ['*']
-    })
-)
+	readFile('file_id', {
+		fields: ['*'],
+	})
+);
 ```
 
 </template>
@@ -413,13 +416,14 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readFiles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579', {
-        fields : ['*']
-    })
-)
+	readFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579', {
+		fields: ['*'],
+	})
+);
 ```
 
 </template>
@@ -545,13 +549,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, importFils } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    importFile('file_url', {
-        file_field : 'value'
-    })
-)
+	importFile('file_url', {
+		file_field: 'value',
+	})
+);
 ```
 
 </template>
@@ -609,13 +614,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, importFils } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    importFile('https://upload.wikimedia.org/wikipedia/commons/c/ca/Entlebucher.jpg', {
-        title : 'Dog'
-    })
-)
+	importFile('https://upload.wikimedia.org/wikipedia/commons/c/ca/Entlebucher.jpg', {
+		title: 'Dog',
+	})
+);
 ```
 
 </template>
@@ -655,13 +661,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateFils } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updateFile('file_id', {
-        file_field : 'value'
-    })
-)
+	updateFile('file_id', {
+		file_field: 'value',
+	})
+);
 ```
 
 </template>
@@ -714,13 +721,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateFils } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateFile('dc193671-13b9-4c37-a8af-42f17c036742', {
-        title : 'Entlebucher Mountain Dog'
-    })
-)
+	updateFile('dc193671-13b9-4c37-a8af-42f17c036742', {
+		title: 'Entlebucher Mountain Dog',
+	})
+);
 ```
 
 </template>
@@ -764,13 +772,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedFiles } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updatedFiles(['file_id', 'file_id_2'], {
-        item_field : ['value']
-    })
-)
+	updatedFiles(['file_id', 'file_id_2'], {
+		item_field: ['value'],
+	})
+);
 ```
 
 </template>
@@ -800,7 +809,6 @@ Returns the [file objects](#the-file-object) for the updated files.
 `PATCH /files`
 
 ```json
-
 {
 	"keys": ["b6123925-2fc0-4a30-9d86-863eafc0a6e7", "d17c10aa-0bad-4864-9296-84f522c753e5"],
 	"data": {
@@ -829,13 +837,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedFiles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatedFiles(['dc193671-13b9-4c37-a8af-42f17c036742', 'e88b0344-84cf-4bfd-a90b-c0b5b66c17eb'], {
-        tags : ['dogs']
-    })
-)
+	updatedFiles(['dc193671-13b9-4c37-a8af-42f17c036742', 'e88b0344-84cf-4bfd-a90b-c0b5b66c17eb'], {
+		tags: ['dogs'],
+	})
+);
 ```
 
 </template>
@@ -875,7 +884,8 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFils } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(deleteFile('file_id'));
 
@@ -919,7 +929,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFils } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579'));
 
@@ -967,23 +978,22 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFiles } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(
-    deleteFiles(['file_id_1','file_id_2'],)
-);
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(deleteFiles(['file_id_1', 'file_id_2']));
 
 //or
 
 const result = await client.request(
-    deleteFiles( {
-		'query_type': {
-			'field': {
-				'query_operator': 'value'
-			}
-        }
-    }
-));
+	deleteFiles({
+		query_type: {
+			field: {
+				query_operator: 'value',
+			},
+		},
+	})
+);
 
 console.log(result);
 ```
@@ -1034,25 +1044,26 @@ mutation {
 import { createDirectus } from '@directus/sdk';
 import { staticToken } from '@directus/sdk/auth'; // OMIT
 import { rest, deleteFiles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-await client.setToken("s79J1cEaSuGIF40auEN6s0gvN-MOK9G4"); // OMIT
+const client = createDirectus('https://directus.example.com').with(rest());
+
+await client.setToken('s79J1cEaSuGIF40auEN6s0gvN-MOK9G4'); // OMIT
 
 const result = await client.request(
-    deleteFiles(['90a416f0-28e0-4d51-84a2-387d1789add9','840e2f08-d5cd-4caa-ac0a-31363626efb4'],)
+	deleteFiles(['90a416f0-28e0-4d51-84a2-387d1789add9', '840e2f08-d5cd-4caa-ac0a-31363626efb4'])
 );
 
 //or
 
 const result = await client.request(
-    deleteFiles( {
-		'filter': {
-			'type': {
-				'_eq': 'image/jpeg'
-			}
-        }
-    }
-));
+	deleteFiles({
+		filter: {
+			type: {
+				_eq: 'image/jpeg',
+			},
+		},
+	})
+);
 
 console.log(result);
 ```

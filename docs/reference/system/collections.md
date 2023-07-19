@@ -171,8 +171,9 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readCollections} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readCollections } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(readCollections());
 
@@ -219,8 +220,9 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readCollections} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readCollections } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readCollections());
 
@@ -258,8 +260,9 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readCollection} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, readCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(readCollection('collection_name'));
 
@@ -302,8 +305,9 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readCollection} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readCollection('articles'));
 
@@ -349,16 +353,17 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createCollection} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, createCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    createCollection({
-        'collection' : 'collection_name',
-        'field' : {
-            'sub_field' : 'value'
-        }
-    })
+	createCollection({
+		collection: 'collection_name',
+		field: {
+			sub_field: 'value',
+		},
+	})
 );
 
 console.log(result);
@@ -425,16 +430,17 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createCollection} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, createCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createCollection({
-        'collection' : 'testimonials',
-        'meta' : {
-            'note' : 'Some quotes from our readers'
-        }
-    })
+	createCollection({
+		collection: 'testimonials',
+		meta: {
+			note: 'Some quotes from our readers',
+		},
+	})
 );
 
 console.log(result);
@@ -478,15 +484,16 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateCollection} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, updateCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updateCollection( 'collection_name', {
-        'meta' : {
-            'field' : 'value'
-        }
-    })
+	updateCollection('collection_name', {
+		meta: {
+			field: 'value',
+		},
+	})
 );
 
 console.log(result);
@@ -541,15 +548,16 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateCollection} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, updateCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateCollection( 'testimonials', {
-        'meta' : {
-            'note' : 'Will be removing these at the end of first quarter'
-        }
-    })
+	updateCollection('testimonials', {
+		meta: {
+			note: 'Will be removing these at the end of first quarter',
+		},
+	})
 );
 
 console.log(result);
@@ -591,8 +599,9 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteCollection} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+import { rest, deleteCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(deleteCollection('collection_name'));
 
@@ -627,8 +636,9 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteCollection} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, deleteCollection } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteCollection('testimonials'));
 

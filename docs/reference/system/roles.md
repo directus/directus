@@ -194,7 +194,7 @@ Create a new role.
 	"role_object_field_2": "value_2",
 	"role_object_field_3": value_3,
 	"role_object_field_4": value_4,
-	"role_object_field_5": value_5,
+	"role_object_field_5": value_5
 }
 ```
 
@@ -327,7 +327,6 @@ Returns the [role objects](#the-role-object) for the created roles.
 `POST /roles`
 
 ```json
-
 [
 	{
 		"name": "Interns",
@@ -474,7 +473,7 @@ Update multiple existing roles.
 
 ```graphql
 type Mutation {
-    update_roles_items(ids: [ID!]!, data: update_directus_roles_input): [directus_roles]
+	update_roles_items(ids: [ID!]!, data: update_directus_roles_input): [directus_roles]
 }
 ```
 

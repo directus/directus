@@ -243,7 +243,7 @@ to submit it here.
 
 ```json
 {
-    "refresh_token": "gmPd...8wuB"
+	"refresh_token": "gmPd...8wuB"
 }
 ```
 
@@ -274,7 +274,7 @@ Request a password reset email to be sent to the given user.
 
 ```json
 {
-    "email": "user_email"
+	"email": "user_email"
 }
 ```
 

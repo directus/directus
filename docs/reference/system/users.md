@@ -121,7 +121,7 @@ List all users that exist in Directus.
 
 ```graphql
 type Query {
-    users: [directus_users]
+	users: [directus_users]
 }
 ```
 
@@ -413,21 +413,16 @@ Returns the [user object](#the-user-object) for the created user.
 
 ```graphql
 mutation {
-  create_users_item(
-    data: {
-      email: "another@example.com"
-      password: "d1r3ctu5"
-      role: {
-        id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
-        name: "Public"
-        admin_access: false
-        enforce_tfa: false
-      }
-    }
-  ) {
-    email
-    role
-  }
+	create_users_item(
+		data: {
+			email: "another@example.com"
+			password: "d1r3ctu5"
+			role: { id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", name: "Public", admin_access: false, enforce_tfa: false }
+		}
+	) {
+		email
+		role
+	}
 }
 ```
 
@@ -525,33 +520,23 @@ Returns the [user objects](#the-user-object) for the created users.
 
 ```graphql
 mutation {
-  create_users_items(
-    data: [
-      {
-        email: "admin@example.com"
-        password: "p455w0rd"
-        role: {
-          id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
-          name: "Public"
-          admin_access: false
-          enforce_tfa: false
-        }
-      }
-      {
-        email: "another@example.com"
-        password: "d1r3ctu5"
-        role: {
-          id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
-          name: "Public"
-          admin_access: false
-          enforce_tfa: false
-        }
-      }
-    ]
-  ) {
-    email
-    role
-  }
+	create_users_items(
+		data: [
+			{
+				email: "admin@example.com"
+				password: "p455w0rd"
+				role: { id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", name: "Public", admin_access: false, enforce_tfa: false }
+			}
+			{
+				email: "another@example.com"
+				password: "d1r3ctu5"
+				role: { id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", name: "Public", admin_access: false, enforce_tfa: false }
+			}
+		]
+	) {
+		email
+		role
+	}
 }
 ```
 

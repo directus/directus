@@ -81,12 +81,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readNotifications } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readNotifications({
-        'fields' : ['*']
-    })
+	readNotifications({
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -136,12 +137,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readNotifications } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readNotifications({
-        'fields' : ['*']
-    })
+	readNotifications({
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -178,12 +180,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readNotification } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readNotification('4', {
-        'fields' : ['*']
-    })
+	readNotification('4', {
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -228,12 +231,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readNotification } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readNotification('4', {
-        'fields' : ['*']
-    })
+	readNotification('4', {
+		fields: ['*'],
+	})
 );
 
 console.log(result);
@@ -277,13 +281,16 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createNotification } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(createNotification({
-	'notification_field': 'value_1',
-	'notification_field_2': 'value_2',
-	'notification_field_3': 'value_3'
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createNotification({
+		notification_field: 'value_1',
+		notification_field_2: 'value_2',
+		notification_field_3: 'value_3',
+	})
+);
 
 console.log(result);
 ```
@@ -337,17 +344,18 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createNotification } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(createNotification({
-		'recipient': '86eb0719-f5fc-4465-91f6-9d9cd527e105',
-		'subject': 'Hello there!',
-		'message': 'Hi fellow user',
-	}
-));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createNotification({
+		recipient: '86eb0719-f5fc-4465-91f6-9d9cd527e105',
+		subject: 'Hello there!',
+		message: 'Hi fellow user',
+	})
+);
 
 console.log(result);
-
 ```
 
 </template>
@@ -396,23 +404,23 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createNotifications } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createNotifications(
-    [
-        {
-		'notification_field': 'value_1',
-		'notification_field_2': 'value_2',
-		'notification_field_3': 'value_3'
-        },
-        {
-		'notification_2_field': 'value_4',
-		'notification_2_field_2': 'value_5',
-		'notification_2_field_3': 'value_6'
-        }
-    ]
-));
+	createNotifications([
+		{
+			notification_field: 'value_1',
+			notification_field_2: 'value_2',
+			notification_field_3: 'value_3',
+		},
+		{
+			notification_2_field: 'value_4',
+			notification_2_field_2: 'value_5',
+			notification_2_field_3: 'value_6',
+		},
+	])
+);
 
 console.log(result);
 ```
@@ -487,23 +495,23 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createNotifications } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createNotifications(
-    [
-        {
-        "recipient": "86eb0719-f5fc-4465-91f6-9d9cd527e105",
-        "subject": "Hello there!",
-        "message": "Hi fellow user",
-        },
-        {
-        "recipient": "86eb0719-f5fc-4465-91f6-9d9cd527e105",
-        "subject": "How are you!",
-        "message": "I see you are a new contributor, can I help with anything?",
-        }
-    ]
-));
+	createNotifications([
+		{
+			recipient: '86eb0719-f5fc-4465-91f6-9d9cd527e105',
+			subject: 'Hello there!',
+			message: 'Hi fellow user',
+		},
+		{
+			recipient: '86eb0719-f5fc-4465-91f6-9d9cd527e105',
+			subject: 'How are you!',
+			message: 'I see you are a new contributor, can I help with anything?',
+		},
+	])
+);
 
 console.log(result);
 ```
@@ -552,12 +560,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateNotification } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updateNotification('notification_id', {
-        'field' : 'value'
-    })
+	updateNotification('notification_id', {
+		field: 'value',
+	})
 );
 
 console.log(result);
@@ -611,12 +620,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateNotification } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateNotification('4', {
-        'status' : 'archive'
-    })
+	updateNotification('4', {
+		status: 'archive',
+	})
 );
 
 console.log(result);
@@ -662,12 +672,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedNotifications } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+
+const client = createDirectus('app_url').with(rest());
 
 const result = await client.request(
-    updatedNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'], {
-        'field' : 'value'
-    })
+	updatedNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'], {
+		field: 'value',
+	})
 );
 
 console.log(result);
@@ -729,12 +740,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedNotifications } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatedNotifications(['1', '2', '3'], {
-        'status' : 'archive'
-    })
+	updatedNotifications(['1', '2', '3'], {
+		status: 'archive',
+	})
 );
 
 console.log(result);
@@ -772,11 +784,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteNotification } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
 
-const result = await client.request(
-    deleteNotification('notification_1_id')
-);
+const client = createDirectus('app_url').with(rest());
+
+const result = await client.request(deleteNotification('notification_1_id'));
 
 console.log(result);
 ```
@@ -815,11 +826,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteNotification } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteNotification('3')
-)
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteNotification('3'));
 
 console.log(result);
 ```
@@ -859,10 +869,11 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteNotifications } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    deleteNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'])
+	deleteNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'])
 );
 
 console.log(result);
@@ -910,11 +921,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteNotifications } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteNotifications(['4', '5', '6', '7'])
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteNotifications(['4', '5', '6', '7']));
 
 console.log(result);
 ```

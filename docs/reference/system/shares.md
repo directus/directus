@@ -302,7 +302,7 @@ Create multiple new shares.
 
 ```graphql
 type Mutation {
-    create_shares_items(data: [create_directus_shares_input!]!): [directus_shares]
+	create_shares_items(data: [create_directus_shares_input!]!): [directus_shares]
 }
 ```
 
