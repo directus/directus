@@ -57,6 +57,22 @@ type Query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFolders} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readFolders({
+    'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -95,6 +111,22 @@ query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFolders} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readFolders({
+    'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ## Retrieve a Folder
@@ -121,6 +153,22 @@ type Query {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFolder} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readFolder('folder_id',{
+    'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -155,6 +203,22 @@ query {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readFolder} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readFolder('a141336b-398a-44d0-ad1b-4e31b09219a1',{
+    'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ## Create a Folder
@@ -187,6 +251,22 @@ type Mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFolder} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(createFolder({
+    'name' : 'value'
+    })
+);
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -232,6 +312,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFolder} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createFolder({
+    'name' : 'banner images'
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ## Create Multiple Folders
@@ -268,7 +363,28 @@ type Mutation {
 	create_folders_items(data: [create_directus_folders_input]): [directus_folders]
 }
 ```
+</template>
 
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFolders} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(createFolders(
+    [
+        {
+        'name' : 'value_1'
+        },
+        {
+        'name' : 'value_2'
+        }
+    ])
+);
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -319,6 +435,28 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createFolders} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createFolders(
+    [
+        {
+        'name' : 'hero images'
+        },
+        {
+        'name' : 'transcript pdfs'
+        }
+    ])
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ## Update a Folder
@@ -351,6 +489,22 @@ type Mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFolder} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(updateFolder('folder_id',{
+        'field' : 'value'
+    })
+);
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -399,6 +553,22 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateFolder} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(updateFolder('a3c77ec8-35f0-467b-9dc5-5195c4cfdae0',{
+        'parent' : 'a151aa85-4784-44cb-8ee8-c568e45e00fd'
+    })
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ## Update Multiple Folders
@@ -434,6 +604,22 @@ type Mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedFolders} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(updatedFolders(
+        ['folder_1_id','folder_2_id'],
+        {'field' : 'value'})
+);
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -489,6 +675,22 @@ mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedFolders} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(updatedFolders(
+        ['a3c77ec8-35f0-467b-9dc5-5195c4cfdae0','1d8428f9-c437-4d4e-b3df-d276c605f454'],
+        {'parent' : 'a151aa85-4784-44cb-8ee8-c568e45e00fd'})
+);
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ## Delete a Folder
@@ -522,6 +724,19 @@ type Mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFolder} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(deleteFolder('folder_id'));
+
+console.log(result);
+```
+</template>
 </SnippetToggler>
 
 ### Response
@@ -550,6 +765,19 @@ mutation {
 }
 ```
 
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFolder} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteFolder('a3c77ec8-35f0-467b-9dc5-5195c4cfdae0'));
+
+console.log(result);
+```
 </template>
 </SnippetToggler>
 
@@ -588,6 +816,23 @@ type Mutation {
 ```
 
 </template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFolders} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteFolders(
+        ['folder_1_id','folder_2_id']
+    ));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Request Body
@@ -620,6 +865,23 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteFolders} from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteFolders(
+        ['1d8428f9-c437-4d4e-b3df-d276c605f454','a151aa85-4784-44cb-8ee8-c568e45e00f']
+    ));
+
+console.log(result);
 ```
 
 </template>
