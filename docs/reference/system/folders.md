@@ -62,7 +62,7 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFolders} from '@directus/sdk/rest';
+import { rest, readFolders } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(readFolders({
@@ -116,7 +116,7 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFolders} from '@directus/sdk/rest';
+import { rest, readFolders } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readFolders({
@@ -159,7 +159,7 @@ type Query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFolder} from '@directus/sdk/rest';
+import { rest, readFolder } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(readFolder('folder_id',{
@@ -208,7 +208,7 @@ query {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readFolder} from '@directus/sdk/rest';
+import { rest, readFolder } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readFolder('a141336b-398a-44d0-ad1b-4e31b09219a1',{
@@ -257,7 +257,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createFolder} from '@directus/sdk/rest';
+import { rest, createFolder } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(createFolder({
@@ -316,7 +316,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createFolder} from '@directus/sdk/rest';
+import { rest, createFolder } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(createFolder({
@@ -369,7 +369,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createFolders} from '@directus/sdk/rest';
+import { rest, createFolders } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(createFolders(
@@ -440,7 +440,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, createFolders} from '@directus/sdk/rest';
+import { rest, createFolders } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(createFolders(
@@ -495,7 +495,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFolder} from '@directus/sdk/rest';
+import { rest, updateFolder } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(updateFolder('folder_id',{
@@ -558,7 +558,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFolder} from '@directus/sdk/rest';
+import { rest, updateFolder } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(updateFolder('a3c77ec8-35f0-467b-9dc5-5195c4cfdae0',{
@@ -610,7 +610,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFolders} from '@directus/sdk/rest';
+import { rest, updatedFolders } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(updatedFolders(
@@ -680,7 +680,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFolders} from '@directus/sdk/rest';
+import { rest, updatedFolders } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(updatedFolders(
@@ -729,7 +729,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFolder} from '@directus/sdk/rest';
+import { rest, deleteFolder } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(deleteFolder('folder_id'));
@@ -771,7 +771,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFolder} from '@directus/sdk/rest';
+import { rest, deleteFolder } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteFolder('a3c77ec8-35f0-467b-9dc5-5195c4cfdae0'));
@@ -821,7 +821,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFolders} from '@directus/sdk/rest';
+import { rest, deleteFolders } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
@@ -873,7 +873,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFolders} from '@directus/sdk/rest';
+import { rest, deleteFolders } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
