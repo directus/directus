@@ -451,9 +451,6 @@ mutation {
 }
 ```
 
-</template>
-</SnippetToggler>
-
 ::: tip
 
 Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
@@ -461,6 +458,9 @@ as adding a relationship. So make sure the ID exists, and the other parameters m
 could be modified by the user call.
 
 :::
+
+</template>
+</SnippetToggler>
 
 ## Create Multiple Users
 
@@ -579,9 +579,6 @@ mutation {
 }
 ```
 
-</template>
-</SnippetToggler>
-
 ::: tip
 
 Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
@@ -589,6 +586,9 @@ as adding a relationship. So make sure the ID exists, and the other parameters m
 could be modified by the user call.
 
 :::
+
+</template>
+</SnippetToggler>
 
 ## Update a User
 
