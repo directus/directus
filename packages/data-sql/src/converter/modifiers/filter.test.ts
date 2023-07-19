@@ -24,7 +24,7 @@ beforeEach(() => {
 		condition: {
 			type: 'condition',
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					type: 'primitive',
 					field: randomIdentifier(),
@@ -46,7 +46,7 @@ describe('Convert condition', () => {
 		const con: AbstractQueryConditionNode = {
 			type: 'condition',
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					type: 'primitive',
 					field: randomField,
@@ -60,7 +60,7 @@ describe('Convert condition', () => {
 			type: 'condition',
 			negate: false,
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					type: 'primitive',
 					table: randomCollection,
@@ -89,7 +89,7 @@ describe('Convert condition', () => {
 		const con: AbstractQueryConditionNode = {
 			type: 'condition',
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					type: 'fn',
 					targetNode: {
@@ -106,7 +106,7 @@ describe('Convert condition', () => {
 		const expectedWhere: AbstractSqlQueryConditionNode = {
 			type: 'condition',
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					type: 'fn',
 					field: {
@@ -140,7 +140,7 @@ describe('Convert condition', () => {
 		const con: AbstractQueryConditionNode = {
 			type: 'condition',
 			condition: {
-				type: 'set-condition',
+				type: 'condition-set',
 				target: {
 					type: 'primitive',
 					field: randomField,
@@ -153,7 +153,7 @@ describe('Convert condition', () => {
 		const expectedWhere: AbstractSqlQueryConditionNode = {
 			type: 'condition',
 			condition: {
-				type: 'set-condition',
+				type: 'condition-set',
 				target: {
 					type: 'primitive',
 					table: randomCollection,
@@ -213,7 +213,7 @@ describe('Convert condition', () => {
 		const con: AbstractQueryConditionNode = {
 			type: 'condition',
 			condition: {
-				type: 'geo-condition',
+				type: 'condition-geo',
 				target: {
 					type: 'primitive',
 					field: randomField,
@@ -226,7 +226,7 @@ describe('Convert condition', () => {
 		const expectedWhere: AbstractSqlQueryConditionNode = {
 			type: 'condition',
 			condition: {
-				type: 'geo-condition',
+				type: 'condition-geo',
 				target: {
 					type: 'primitive',
 					table: randomCollection,
@@ -256,7 +256,7 @@ test.skip('Convert filter with one parameter and negation', () => {
 		type: 'condition',
 		negate: true,
 		condition: {
-			type: 'number-condition',
+			type: 'condition-number',
 			target: {
 				column: (sample.condition.condition.target as AbstractQueryFieldNodePrimitive).field,
 				table: sample.randomCollection,
@@ -293,7 +293,7 @@ test('Convert filter with logical', () => {
 			{
 				type: 'condition',
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						field: firstField,
@@ -305,7 +305,7 @@ test('Convert filter with logical', () => {
 			{
 				type: 'condition',
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						field: secondField,
@@ -328,7 +328,7 @@ test('Convert filter with logical', () => {
 				type: 'condition',
 				negate: false,
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: randomCollection,
@@ -345,7 +345,7 @@ test('Convert filter with logical', () => {
 				type: 'condition',
 				negate: false,
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: randomCollection,
@@ -390,7 +390,7 @@ test('Convert filter nested and with negation', () => {
 			{
 				type: 'condition',
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						field: firstField,
@@ -404,7 +404,7 @@ test('Convert filter nested and with negation', () => {
 				childNode: {
 					type: 'condition',
 					condition: {
-						type: 'number-condition',
+						type: 'condition-number',
 						target: {
 							type: 'primitive',
 							field: secondField,
@@ -425,7 +425,7 @@ test('Convert filter nested and with negation', () => {
 							childNode: {
 								type: 'condition',
 								condition: {
-									type: 'number-condition',
+									type: 'condition-number',
 									target: {
 										type: 'primitive',
 										field: thirdField,
@@ -442,7 +442,7 @@ test('Convert filter nested and with negation', () => {
 								childNode: {
 									type: 'condition',
 									condition: {
-										type: 'number-condition',
+										type: 'condition-number',
 										target: {
 											type: 'primitive',
 											field: fourthField,
@@ -470,7 +470,7 @@ test('Convert filter nested and with negation', () => {
 				type: 'condition',
 				negate: false,
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: randomCollection,
@@ -487,7 +487,7 @@ test('Convert filter nested and with negation', () => {
 				type: 'condition',
 				negate: true,
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: randomCollection,
@@ -509,7 +509,7 @@ test('Convert filter nested and with negation', () => {
 						type: 'condition',
 						negate: true,
 						condition: {
-							type: 'number-condition',
+							type: 'condition-number',
 							target: {
 								type: 'primitive',
 								table: randomCollection,
@@ -526,7 +526,7 @@ test('Convert filter nested and with negation', () => {
 						type: 'condition',
 						negate: false,
 						condition: {
-							type: 'number-condition',
+							type: 'condition-number',
 							target: {
 								type: 'primitive',
 								table: randomCollection,

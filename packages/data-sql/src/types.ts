@@ -120,14 +120,14 @@ export interface AbstractSqlQueryConditionNode {
 }
 
 export interface SqlLetterConditionNode {
-	type: 'letter-condition';
+	type: 'condition-letter';
 	target: AbstractSqlQuerySelectNode;
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';
 	compareTo: ValueNode;
 }
 
 export interface SqlNumberConditionNode {
-	type: 'number-condition';
+	type: 'condition-number';
 	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: ValueNode;
@@ -144,7 +144,7 @@ export interface SqlBetweenCondition {
 }
 
 export interface SqlGeoConditionNode {
-	type: 'geo-condition';
+	type: 'condition-geo';
 	target: AbstractSqlQuerySelectNode;
 	operation: 'intersects' | 'intersects_bbox';
 	compareTo: ValueNode;
@@ -152,7 +152,7 @@ export interface SqlGeoConditionNode {
 
 // remove set here - sub query it's a thing that the driver should take care of
 export interface SqlSetConditionNode {
-	type: 'set-condition';
+	type: 'condition-set';
 	operation: 'in';
 	target: AbstractSqlQuerySelectNode;
 	compareTo: ValuesNode;

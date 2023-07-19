@@ -100,7 +100,7 @@ test('statement with all possible modifiers', () => {
 			{
 				type: 'condition',
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: firstConditionTable,
@@ -117,7 +117,7 @@ test('statement with all possible modifiers', () => {
 			{
 				type: 'condition',
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: secondConditionTable,

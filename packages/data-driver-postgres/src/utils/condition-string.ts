@@ -8,7 +8,7 @@ import { wrapColumn } from './wrap-column.js';
 
 export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode): string => {
 	if (where.type === 'condition') {
-		if (where.condition.type === 'number-condition') {
+		if (where.condition.type === 'condition-number') {
 			const target = where.condition.target;
 			let firstOperand;
 
@@ -32,7 +32,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			return `${column} BETWEEN ${compareValue}`;
 		}
 
-		if (where.condition.type === 'letter-condition') {
+		if (where.condition.type === 'condition-letter') {
 			// TODO: support functions comparison here if needed
 
 			const column = wrapColumn(where.condition.target.table, where.condition.target.column);
@@ -59,7 +59,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			return `${column} ${where.negate ? 'NOT LIKE' : 'LIKE'} ${likeValue}`;
 		}
 
-		if (where.condition.type === 'geo-condition') {
+		if (where.condition.type === 'condition-geo') {
 			const column = wrapColumn(where.condition.target.table, where.condition.target.column);
 			const parameterIndex = where.condition.compareTo.parameterIndex;
 
@@ -78,7 +78,7 @@ export const conditionString = (where: AbstractSqlQueryConditionNode | AbstractS
 			}
 		}
 
-		if (where.condition.type === 'set-condition') {
+		if (where.condition.type === 'condition-set') {
 			const column = wrapColumn(where.condition.target.table, where.condition.target.column);
 			const compareValues = where.condition.compareTo.parameterIndexes.map((i) => `$${i + 1}`).join(', ');
 			return `${column} ${where.condition.operation.toUpperCase()} (${compareValues})`;

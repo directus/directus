@@ -82,8 +82,8 @@ export function convertCondition(
 	let compareTo: ValueNode | ValuesNode;
 
 	switch (condition.condition.type) {
-		case 'letter-condition':
-		case 'number-condition':
+		case 'condition-letter':
+		case 'condition-number':
 			compareTo = {
 				type: 'value',
 				parameterIndex: generator.next().value,
@@ -99,7 +99,7 @@ export function convertCondition(
 
 			parameters.push(...condition.condition.compareTo);
 			break;
-		case 'geo-condition':
+		case 'condition-geo':
 			compareTo = {
 				type: 'value',
 				parameterIndex: generator.next().value,
@@ -107,7 +107,7 @@ export function convertCondition(
 
 			parameters.push(condition.condition.compareTo);
 			break;
-		case 'set-condition':
+		case 'condition-set':
 			compareTo = {
 				type: 'values',
 				parameterIndexes: Array.from(condition.condition.compareTo).map(() => generator.next().value),

@@ -59,7 +59,7 @@ test('Convert query with filter', () => {
 		filter: {
 			type: 'condition',
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					type: 'primitive',
 					field: randomField,
@@ -90,7 +90,7 @@ test('Convert query with filter', () => {
 			type: 'condition',
 			negate: false,
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					column: randomField,
 					table: sample.query.collection,

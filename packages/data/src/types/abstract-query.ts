@@ -197,7 +197,7 @@ export interface AbstractQueryModifiers {
 
 interface AbstractQueryModifierNode {
 	type: string;
-	// 'limit' | 'offset' | 'sort' | 'logical' | 'letter-condition' | 'nu'| 'negate' | 'quantifier';
+	// 'limit' | 'offset' | 'sort' | 'logical' | 'condition-letter' | 'nu'| 'negate' | 'quantifier';
 }
 
 /**
@@ -385,7 +385,7 @@ export interface AbstractQueryConditionNode {
  * @example
  * ```
  * {
- * 	type: 'letter-condition',
+ * 	type: 'condition-letter',
  * 	target: {
  * 		type: 'primitive',
  * 		field: 'attribute_xy'
@@ -395,9 +395,9 @@ export interface AbstractQueryConditionNode {
  * ```
  */
 export interface LetterConditionNode {
-	type: 'letter-condition';
+	type: 'condition-letter';
 	target: AbstractQueryFieldNodePrimitive;
-	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';
+	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq'; /** @TODO maybe regex? */
 	compareTo: string;
 }
 
@@ -406,7 +406,7 @@ export interface LetterConditionNode {
  * @example
  * ```
  * {
- * 	type: 'number-condition',
+ * 	type: 'condition-number',
  * 	target: {
  * 		type: 'primitive',
  * 		field: 'attribute_xy'
@@ -416,7 +416,7 @@ export interface LetterConditionNode {
  * ```
  */
 export interface NumberConditionNode {
-	type: 'number-condition';
+	type: 'condition-number';
 	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: number;
@@ -427,27 +427,36 @@ export interface BetweenCondition {
 	target: AbstractQueryFieldNodePrimitive; // function support needed here?
 	operation: 'between';
 	compareTo: [number, number];
-}
+} /** @TODO remove between ^ */
 
 /**
  * Checks if a geo field intersects with a given geo value as string.
  * @example
  * ```
  * {
- * 	type: 'geo-condition',
+ * 	type: 'condition-geo',
  * 	target: {
  * 		type: 'primitive',
  * 		field: 'attribute_xy'
  * 	},
  * 	operation: 'intersects',
- * 	compareTo: 'SRID=4326;POLYGON((28 53,27.707 52.293,27 52,26.293 52.293,26 53,26.293 53.707,27 54,27.707 53.707,28 53))'
+ * 	compareTo: {
+ * 		"type": "Feature",
+ * 		"geometry": {
+ *   		"type": "Point",
+ *   		"coordinates": [125.6, 10.1]
+ * 		},
+ *		"properties": {
+ *   	"name": "Dinagat Islands"
+ * 	}
+ * }
  * ```
  */
 export interface GeoConditionNode {
-	type: 'geo-condition';
+	type: 'condition-geo';
 	target: AbstractQueryFieldNodePrimitive;
 	operation: 'intersects' | 'intersects_bbox';
-	compareTo: GeoJSONGeometry;
+	compareTo: GeoJSONGeometry; // split up the input types, lines and boxes..
 }
 
 /**
@@ -455,7 +464,7 @@ export interface GeoConditionNode {
  * @example
  * ```
  * {
- * 	type: 'set-condition',
+ * 	type: 'condition-set',
  * 	target: {
  * 		type: 'primitive',
  * 		field: 'attribute_xy'
@@ -465,7 +474,7 @@ export interface GeoConditionNode {
  * ```
  */
 export interface SetConditionNode {
-	type: 'set-condition';
+	type: 'condition-set';
 	target: AbstractQueryFieldNodePrimitive;
 	operation: 'in';
 	compareTo: (string | number)[]; // could also be an actual JS Set

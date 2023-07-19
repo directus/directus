@@ -30,7 +30,7 @@ describe('Where clause:', () => {
 					type: 'condition',
 					negate: false,
 					condition: {
-						type: 'number-condition',
+						type: 'condition-number',
 						operation: 'gt',
 						target: {
 							type: 'primitive',

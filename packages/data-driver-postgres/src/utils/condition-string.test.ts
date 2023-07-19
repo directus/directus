@@ -13,7 +13,7 @@ describe('Conditions', () => {
 			type: 'condition',
 			negate: false,
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					type: 'primitive',
 					table: randomTable,
@@ -67,7 +67,7 @@ describe('Conditions', () => {
 			type: 'condition',
 			negate: false,
 			condition: {
-				type: 'letter-condition',
+				type: 'condition-letter',
 				target: {
 					type: 'primitive',
 					table: randomTable,
@@ -93,7 +93,7 @@ describe('Conditions', () => {
 			type: 'condition',
 			negate: false,
 			condition: {
-				type: 'number-condition',
+				type: 'condition-number',
 				target: {
 					type: 'fn',
 					fn: 'month',
@@ -125,7 +125,7 @@ describe('Conditions', () => {
 			type: 'condition',
 			negate: false,
 			condition: {
-				type: 'geo-condition',
+				type: 'condition-geo',
 				target: {
 					type: 'primitive',
 					table: randomTable,
@@ -155,7 +155,7 @@ describe('Conditions', () => {
 			type: 'condition',
 			negate: false,
 			condition: {
-				type: 'geo-condition',
+				type: 'condition-geo',
 				target: {
 					type: 'primitive',
 					table: randomTable,
@@ -182,7 +182,7 @@ describe('Conditions', () => {
 			type: 'condition',
 			negate: false,
 			condition: {
-				type: 'set-condition',
+				type: 'condition-set',
 				target: {
 					type: 'primitive',
 					table: randomTable,
@@ -217,7 +217,7 @@ test('Convert filter with logical', () => {
 				type: 'condition',
 				negate: false,
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: randomTable,
@@ -234,7 +234,7 @@ test('Convert filter with logical', () => {
 				type: 'condition',
 				negate: false,
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: randomTable,
@@ -272,7 +272,7 @@ test('Convert filter nested and with negation', () => {
 				type: 'condition',
 				negate: false,
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: randomTable,
@@ -289,7 +289,7 @@ test('Convert filter nested and with negation', () => {
 				type: 'condition',
 				negate: true,
 				condition: {
-					type: 'number-condition',
+					type: 'condition-number',
 					target: {
 						type: 'primitive',
 						table: randomTable,
@@ -311,7 +311,7 @@ test('Convert filter nested and with negation', () => {
 						type: 'condition',
 						negate: true,
 						condition: {
-							type: 'number-condition',
+							type: 'condition-number',
 							target: {
 								type: 'primitive',
 								table: randomTable,
@@ -328,7 +328,7 @@ test('Convert filter nested and with negation', () => {
 						type: 'condition',
 						negate: false,
 						condition: {
-							type: 'number-condition',
+							type: 'condition-number',
 							target: {
 								type: 'primitive',
 								table: randomTable,
