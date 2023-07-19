@@ -9,7 +9,6 @@ pageClass: page-reference
 > The extensions endpoints are used by the Admin App to retrieve what extensions to install.
 > [Learn more about Extensions](/user-guide/overview/glossary#extensions).
 
-
 ## List Extensions
 
 List the available extensions in the project. The types of extensions that you can list are `interfaces`, `displays`,
@@ -34,6 +33,7 @@ type Query {
 	extensions: extensions
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -46,6 +46,7 @@ This endpoint doesn't currently support any query parameters.
 An array of interface extension keys.
 
 ### Example
+
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
 <template #rest>
@@ -57,6 +58,7 @@ An array of interface extension keys.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	extensions {

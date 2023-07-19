@@ -9,7 +9,6 @@ pageClass: page-reference
 > Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
 > item listings and bookmarks for users of the app. [Learn more about Presets](/user-guide/overview/glossary#presets).
 
-
 ## The Preset Object
 
 `id` **uuid**\
@@ -72,7 +71,6 @@ The options used by the layout. This structure is based on the used layout.
 }
 ```
 
-
 ## List Presets
 
 List all presets that exist in Directus.
@@ -92,12 +90,12 @@ other than the current user's role won't be returned.
 
 `GET /presets`
 
-`SEARCH /presets`
-</template>
+`SEARCH /presets` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	presets: [directus_presets]
@@ -126,12 +124,12 @@ will be an empty array.
 
 `GET /presets`
 
-`SEARCH /presets`
-</template>
+`SEARCH /presets` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	presets {
@@ -140,10 +138,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
-
 
 ## Retrieve a preset
 
@@ -155,17 +152,18 @@ List an existing preset by primary key.
 
 <template #rest>
 
-GET /presets/:id
-</template>
+GET /presets/:id </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	presets_by_id(id: ID!): directus_presets
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -177,19 +175,18 @@ Supports all [global query parameters](/reference/query).
 
 Returns the requested [preset object](#the-preset-object).
 
-
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
 <template #rest>
 
-`GET /presets/42`
-</template>
+`GET /presets/42` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	presets_by_id(id: 42) {
@@ -198,9 +195,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create a Preset
 
@@ -213,6 +210,7 @@ Create a new preset.
 <template #rest>
 
 `POST /presets`
+
 ```json
 {
 	"preset_object_field_1": "value_1",
@@ -220,11 +218,13 @@ Create a new preset.
 	"preset_object_field_3": "value_3"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_presets_item(data: create_directus_presets_input!): directus_presets
@@ -253,6 +253,7 @@ Returns the [preset object](#the-preset-object) for the created preset.
 <template #rest>
 
 `POST /presets`
+
 ```json
 {
 	"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
@@ -260,11 +261,13 @@ Returns the [preset object](#the-preset-object) for the created preset.
 	"search": "Directus"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_presets_item(data: { user: "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca", layout: "cards", search: "Directus" }) {
@@ -273,9 +276,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create Multiple Presets
 
@@ -288,6 +291,7 @@ Create multiple new presets.
 <template #rest>
 
 `POST /presets`
+
 ```json
 [
 	{
@@ -302,16 +306,19 @@ Create multiple new presets.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_presets_items(data: [create_directus_presets_input!]!): [directus_presets]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -334,6 +341,7 @@ Returns the [preset object](#the-preset-object) for the created preset.
 <template #rest>
 
 `POST /presets`
+
 ```json
 [
 	{
@@ -349,11 +357,13 @@ Returns the [preset object](#the-preset-object) for the created preset.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_presets_items(
@@ -372,9 +382,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update a Preset
 
@@ -387,16 +397,19 @@ Update an existing preset.
 <template #rest>
 
 `PATCH /presets/:id`
+
 ```json
 {
 	"preset_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_presets_item(id: ID!, data: update_directus_presets_input): directus_presets
@@ -425,6 +438,7 @@ Returns the [preset object](#the-preset-object) for the updated preset.
 <template #rest>
 
 `PATCH /presets/34`
+
 ```json
 {
 	"layout": "tabular"
@@ -436,6 +450,7 @@ Returns the [preset object](#the-preset-object) for the updated preset.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_presets_item(id: 32, data: { layout: "tabular" }) {
@@ -448,7 +463,6 @@ mutation {
 </template>
 </SnippetToggler>
 
-
 ## Update Multiple Presets
 
 Update multiple existing presets.
@@ -460,6 +474,7 @@ Update multiple existing presets.
 <template #rest>
 
 `PATCH /presets`
+
 ```json
 {
 	"keys": ["preset_1_key", "preset_2_key"],
@@ -475,6 +490,7 @@ Update multiple existing presets.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
     update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
@@ -507,6 +523,7 @@ Returns the [preset objects](#the-preset-object) for the updated presets.
 <template #rest>
 
 `PATCH /presets`
+
 ```json
 {
 	"keys": [15, 64],
@@ -515,11 +532,13 @@ Returns the [preset objects](#the-preset-object) for the updated presets.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_presets_items(ids: [15, 64], data: { layout: "tabular" }) {
@@ -528,9 +547,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete a Preset
 
@@ -549,6 +568,7 @@ Delete an existing preset.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_presets_item(id: ID!): delete_one
@@ -568,12 +588,12 @@ Empty body.
 
 <template #rest>
 
-`DELETE /presets/34`
-</template>
+`DELETE /presets/34` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_presets_item(id: 32) {
@@ -581,9 +601,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete Multiple Presets
 
@@ -596,19 +616,23 @@ Delete multiple existing presets.
 <template #rest>
 
 `DELETE /presets`
+
 ```json
 ["preset_1_key", "preset_2_key", "preset_3_key"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_presets_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -627,14 +651,17 @@ Empty body.
 <template #rest>
 
 `DELETE /presets`
+
 ```json
 [15, 251, 810]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_presets_items(ids: [15, 251, 810]) {
@@ -642,6 +669,6 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-

@@ -76,7 +76,7 @@
  * Add spacing between h3 and snippet toggler for api ref pages
  * -------------------------------------------------------------------------- */
 
- .vp-doc h3 + .snippet-toggler {
+.vp-doc h3 + .snippet-toggler {
 	margin-top: 1em;
 	margin-bottom: 1em;
- }
+}

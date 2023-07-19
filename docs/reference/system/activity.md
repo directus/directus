@@ -9,7 +9,6 @@ pageClass: page-reference
 > All events within Directus are tracked and stored in the activities collection. This gives you full accountability
 > over everything that happens. [Learn more about Activity](/user-guide/overview/glossary#activity).
 
-
 ## The Activity Object
 
 `action` **string**\
@@ -57,7 +56,6 @@ Any changes that were made in this activity. One-to-many to [revisions](/referen
 }
 ```
 
-
 ## List Activity Actions
 
 Returns a list of activity actions.
@@ -77,11 +75,13 @@ Returns a list of activity actions.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	activity: [directus_activity]
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -97,6 +97,7 @@ const result = await client.request(
     })
 );
 ```
+
 </template>
 </SnippetToggler>
 
@@ -132,6 +133,7 @@ query {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -147,9 +149,9 @@ const result = await client.request(
     })
 );
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Retrieve Activity Action
 
@@ -161,8 +163,7 @@ Returns a single activity action by primary key.
 
 <template #rest>
 
-`GET /activity/:id`
-</template>
+`GET /activity/:id` </template>
 
 <template #graphql>
 
@@ -173,6 +174,7 @@ type Query {
 	activity_by_id(id: ID!): directus_activity
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -190,6 +192,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 
 </SnippetToggler>
@@ -208,8 +211,7 @@ Returns an [activity object](#the-activity-object) if a valid identifier was pro
 
 <template #rest>
 
-`GET /activity/15`
-</template>
+`GET /activity/15` </template>
 
 <template #graphql>
 
@@ -222,6 +224,7 @@ query {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -239,9 +242,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create a Comment
 
@@ -254,6 +257,7 @@ Creates a new comment on a given item.
 <template #rest>
 
 `POST /activity/comment`
+
 ```json
 
 {
@@ -262,6 +266,7 @@ Creates a new comment on a given item.
 	"comment": "comment content"
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -273,6 +278,7 @@ type Mutation {
 	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -293,6 +299,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -318,6 +325,7 @@ Returns the [activity object](#the-activity-object) of the created comment.
 <template #rest>
 
 `POST /activity/comment`
+
 ```json
 {
 	"collection": "pages",
@@ -325,6 +333,7 @@ Returns the [activity object](#the-activity-object) of the created comment.
 	"comment": "Hello World"
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -338,6 +347,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -358,9 +368,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update a Comment
 
@@ -373,11 +383,13 @@ Updates an existing comment by activity action primary key.
 <template #rest>
 
 `PATCH /activity/comment/:id`
+
 ```json
 {
 	"comment": "value"
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -389,6 +401,7 @@ type Mutation {
 	delete_comment(id: ID): delete_one
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -407,6 +420,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -426,6 +440,7 @@ Returns the [activity object](#the-activity-object) of the created comment.
 <template #rest>
 
 `PATCH /activity/comment/15`
+
 ```json
 {
 	"comment": "Hello World!!"
@@ -445,6 +460,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -466,9 +482,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete a Comment
 
@@ -480,17 +496,18 @@ Deletes a comment.
 
 <template #rest>
 
-`DELETE /activity/comment/:id`
-</template>
+`DELETE /activity/comment/:id` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_comment(id: ID): delete_one
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -504,10 +521,10 @@ const result = await client.request(deleteComment('comment_id'));
 
 console.log(result);
 ```
+
 </template>
 
 </SnippetToggler>
-
 
 ### Example
 
@@ -515,8 +532,7 @@ console.log(result);
 
 <template #rest>
 
-`DELETE /activity/comment/15`
-</template>
+`DELETE /activity/comment/15` </template>
 
 <template #graphql>
 
@@ -527,6 +543,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -540,8 +557,7 @@ const result = await client.request(deleteComment('53727'));
 
 console.log(result);
 ```
+
 </template>
 
 </SnippetToggler>
-
-

@@ -9,7 +9,6 @@ pageClass: page-reference
 > Collections are the individual collections of items, similar to tables in a database. Changes to collections will
 > alter the schema of the database. [Learn more about Collections](/user-guide/overview/glossary#collections).
 
-
 ## The Collection Object
 
 `collection` **string**\
@@ -143,7 +142,6 @@ a primary key field is omitted, the request will auto-generate an auto-increment
 }
 ```
 
-
 ## List Collections
 
 List the available collections.
@@ -156,8 +154,7 @@ List the available collections.
 
 `GET /collections`
 
-`SEARCH /collections`
-</template>
+`SEARCH /collections` </template>
 
 <template #graphql>
 
@@ -168,6 +165,7 @@ type Query {
 	collections: [directus_collections]
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -181,6 +179,7 @@ const result = await client.request(readCollections());
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -202,12 +201,12 @@ An array of [collection objects](#the-collection-object).
 
 `GET /collections`
 
-`SEARCH /collections`
-</template>
+`SEARCH /collections` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	collections {
@@ -215,6 +214,7 @@ query {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -228,11 +228,10 @@ const result = await client.request(readCollections());
 
 console.log(result);
 ```
+
 </template>
 
 </SnippetToggler>
-
-
 
 ## Retrieve a Collection
 
@@ -244,8 +243,7 @@ Retrieve a single collection by table name.
 
 <template #rest>
 
-`GET /collections/:collection`
-</template>
+`GET /collections/:collection` </template>
 
 <template #graphql>
 
@@ -256,6 +254,7 @@ type Query {
 	collections_by_name(name: String!): directus_collections
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -269,6 +268,7 @@ const result = await client.request(readCollection('collection_name'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -286,12 +286,12 @@ A [collection object](#the-collection-object).
 
 <template #rest>
 
-`GET /collections/articles`
-</template>
+`GET /collections/articles` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	collections_by_name(name: "articles") {
@@ -299,6 +299,7 @@ query {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -312,9 +313,9 @@ const result = await client.request(readCollection('articles'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create a Collection
 
@@ -327,6 +328,7 @@ Create a new Collection. This will create a new table in the database as well.
 <template #rest>
 
 `POST /collections`
+
 ```json
 {
 	"collection": "collection_name",
@@ -335,16 +337,19 @@ Create a new Collection. This will create a new table in the database as well.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_collections_item(data: directus_collections): directus_collections
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -365,6 +370,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -399,6 +405,7 @@ The [collection object](#the-collection-object) for the collection created in th
 <template #rest>
 
 `POST /collections`
+
 ```json
 {
 	"collection": "testimonials",
@@ -407,11 +414,13 @@ The [collection object](#the-collection-object) for the collection created in th
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_collections_item(data: { collection: "testimonials", meta: { icon: "format_quote" } }) {
@@ -419,6 +428,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 <template #sdk>
 
@@ -438,10 +448,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
-
 
 ## Update a Collection
 
@@ -454,6 +463,7 @@ Update the metadata for an existing collection.
 <template #rest>
 
 `PATCH /collections/:collection`
+
 ```json
 {
 	"meta": {
@@ -467,11 +477,13 @@ Update the metadata for an existing collection.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_collections_item(collection: String!, data: update_directus_collections_input!): directus_collections
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -491,6 +503,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -508,11 +521,13 @@ is not supported at this time.
 The [collection object](#the-collection-object) for the updated collection in this request.
 
 ### Example
+
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
 <template #rest>
 
 `PATCH /collections/testimonials`
+
 ```json
 {
 	"meta": {
@@ -520,11 +535,13 @@ The [collection object](#the-collection-object) for the updated collection in th
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_collections_item(collection: "testimonials", data: { meta: { note: "Short quotes from happy customers." } }) {
@@ -532,6 +549,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -551,10 +569,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
-
 
 ## Delete a Collection
 
@@ -572,8 +589,7 @@ Be aware, this will delete the table from the database, including all items in i
 
 <template #rest>
 
-`DELETE /collections/:collection`
-</template>
+`DELETE /collections/:collection` </template>
 
 <template #graphql>
 
@@ -584,6 +600,7 @@ type Mutation {
 	delete_collections_item(collection: String!): delete_collection
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -597,6 +614,7 @@ const result = await client.request(deleteCollection('collection_name'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -606,12 +624,12 @@ console.log(result);
 
 <template #rest>
 
-`DELETE /collections/articles`
-</template>
+`DELETE /collections/articles` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_collections_item(collection: "articles") {
@@ -619,6 +637,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -632,7 +651,6 @@ const result = await client.request(deleteCollection('testimonials'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
-

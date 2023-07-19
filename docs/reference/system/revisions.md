@@ -9,7 +9,6 @@ pageClass: page-reference
 > Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a
 > previous state at will. [Learn more about Revisions](/user-guide/overview/glossary#revisions).
 
-
 ## The Revision Object
 
 `id` **integer**\
@@ -49,7 +48,6 @@ Parent revision that triggered this revision. Many-to-one to revisions (recursiv
 }
 ```
 
-
 ## List revisions
 
 List all revisions that exist in Directus.
@@ -69,17 +67,18 @@ to a collection that the current user doesn't have access to are stripped out.
 
 `GET /revisions`
 
-`SEARCH /revisions`
-</template>
+`SEARCH /revisions` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	revisions: [directus_revisions]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -102,12 +101,12 @@ data will be an empty array.
 
 `GET /revisions`
 
-`SEARCH /revisions`
-</template>
+`SEARCH /revisions` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	revisions {
@@ -117,9 +116,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Retrieve a revision
 
@@ -131,17 +130,18 @@ List an existing revision by primary key.
 
 <template #rest>
 
-`GET /revisions/:id`
-</template>
+`GET /revisions/:id` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	revisions_by_id(id: ID!): directus_revisions
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -159,12 +159,12 @@ Returns the requested [revision object](#the-revision-object).
 
 <template #rest>
 
-`GET /revisions/322`
-</template>
+`GET /revisions/322` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	revisions_by_id(id: 322) {
@@ -174,5 +174,6 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>

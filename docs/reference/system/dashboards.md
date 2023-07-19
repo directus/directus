@@ -10,7 +10,6 @@ pageClass: page-reference
 > data based on department, objective, business process or anything you choose.
 > [Learn more about Dashboards](/user-guide/insights/dashboards).
 
-
 ## The Dashboard Object
 
 `id` **uuid**\
@@ -50,7 +49,6 @@ Panels that are in this dashboard. One-to-may to [panels](/reference/system/pane
 }
 ```
 
-
 ## List Dashboards
 
 List all dashboards that exist in Directus.
@@ -76,6 +74,7 @@ type Query {
 	dashboards: [directus_dashboards]
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -93,6 +92,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -122,6 +122,7 @@ data will be an empty array.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	dashboards {
@@ -148,9 +149,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Retrieve a Dashboard
 
@@ -193,6 +194,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -210,8 +212,7 @@ Returns the requested [dashboard object](#the-dashboard-object).
 
 <template #rest>
 
-`GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
-</template>
+`GET /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2` </template>
 
 <template #graphql>
 
@@ -240,9 +241,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create a Dashboard
 
@@ -255,6 +256,7 @@ Create a new dashboard.
 <template #rest>
 
 `POST /dashboards`
+
 ```json
 
 {
@@ -262,6 +264,7 @@ Create a new dashboard.
 	"dashboard_field_2": "value_2"
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -273,6 +276,7 @@ type Mutation {
 	create_dashboards_item(data: create_directus_dashboards_input!): directus_dashboards
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -293,6 +297,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -315,17 +320,20 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 <template #rest>
 
 `POST /dashboards`
+
 ```json
 {
 	"name": "My Dashboard",
 	"icon": "dashboard"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_dashboards_item(data: { name: "My Dashboard", icon: "dashboards" }) {
@@ -334,6 +342,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -354,9 +363,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create Multiple Dashboards
 
@@ -369,6 +378,7 @@ Create multiple new dashboards.
 <template #rest>
 
 `// POST /dashboards`
+
 ```json
 [
 	{
@@ -381,6 +391,7 @@ Create multiple new dashboards.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
@@ -392,6 +403,7 @@ type Mutation {
 	create_dashboards_items(data: [create_directus_dashboards_input!]!): [directus_dashboards]
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -417,6 +429,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -439,6 +452,7 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 <template #rest>
 
 `// POST /dashboards`
+
 ```json
 [
 	{
@@ -451,11 +465,13 @@ Returns the [dashboard object](#the-dashboard-object) for the created dashboard.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_dashboards_items(
@@ -492,9 +508,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update a Dashboard
 
@@ -507,21 +523,25 @@ Update an existing dashboard.
 <template #rest>
 
 `PATCH /dashboards/:id`
+
 ```json
 {
 	"dashboard_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_dashboards_item(id: ID!, data: update_directus_dashboards_input): directus_dashboards
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -539,6 +559,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -561,16 +582,19 @@ Returns the [dashboard object](#the-dashboard-object) for the updated dashboard.
 <template #rest>
 
 `PATCH /dashboards/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
 ```json
 {
 	"name": "My Updated Dashboard"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_dashboards_item(id: "2fc325fb-299b-4d20-a9e7-a34349dee8b2", data: { name: "My Updated Dashboard" }) {
@@ -597,9 +621,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update Multiple Dashboards
 
@@ -612,6 +636,7 @@ Update multiple existing dashboards.
 <template #rest>
 
 `PATCH /dashboards`
+
 ```json
 {
 	"keys": ["dashboard_key_1", "dashboard_key_2"],
@@ -620,11 +645,13 @@ Update multiple existing dashboards.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_dashboards_items(ids: [ID!]!, data: update_directus_dashboards_input): [directus_dashboards]
@@ -648,6 +675,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -674,6 +702,7 @@ Returns the [dashboard objects](#the-dashboard-object) for the updated dashboard
 <template #rest>
 
 `PATCH /dashboards`
+
 ```json
 
 {
@@ -689,6 +718,7 @@ Returns the [dashboard objects](#the-dashboard-object) for the updated dashboard
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_dashboards_items(
@@ -718,9 +748,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete a Dashboard
 
@@ -745,6 +775,7 @@ type Mutation {
 	delete_dashboards_item(id: ID!): delete_one
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -758,6 +789,7 @@ const result = await client.request(deleteDashboard('dashboard_id'))
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -778,6 +810,7 @@ Empty body.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_dashboards_item(id: "12204ee2-2c82-4d9a-b044-2f4842a11dba") {
@@ -785,6 +818,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -798,9 +832,9 @@ const result = await client.request(deleteDashboard('cfcc3702-33bd-4616-865c-99b
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete Multiple Dashboards
 
@@ -813,9 +847,11 @@ Delete multiple existing dashboards.
 <template #rest>
 
 `DELETE /dashboards`
+
 ```json
 ["dashboard_id_1", "dashboard_id_2", "dashboard_id_3"]
 ```
+
 </template>
 
 <template #graphql>
@@ -827,6 +863,7 @@ type Mutation {
 	delete_dashboards_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -847,6 +884,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -865,14 +903,17 @@ Empty body.
 <template #rest>
 
 `DELETE /dashboards`
+
 ```json
 ["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_dashboards_items(
@@ -906,5 +947,6 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>

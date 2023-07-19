@@ -40,9 +40,9 @@ const props = defineProps<{
 	choices: string[];
 	label?: string;
 	alwaysDark?: {
-		type: boolean,
-		default: false
-	}
+		type: boolean;
+		default: false;
+	};
 }>();
 
 const selected = ref();

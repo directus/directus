@@ -1196,4 +1196,3 @@ await directus.utils.revert(451);
 ```
 
 Note: The key passed is the primary key of the revision you'd like to apply.
-

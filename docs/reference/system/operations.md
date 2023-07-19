@@ -8,7 +8,6 @@ pageClass: page-reference
 
 > Operations are the building blocks of Data Flows within Directus.
 
-
 ## The Operation Object
 
 `id` **uuid**\
@@ -66,7 +65,6 @@ The flow containing this operation. Many-to-one to [flows](/reference/system/flo
 }
 ```
 
-
 ## List Operations
 
 List all operations that exist in Directus.
@@ -86,11 +84,13 @@ List all operations that exist in Directus.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	operations: [directus_operations]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -120,6 +120,7 @@ data will be an empty array.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	operations {
@@ -129,9 +130,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Retrieve an operation
 
@@ -141,17 +142,18 @@ List an existing operation by primary key.
 
 <template #rest>
 
-`GET /operations/:id`
-</template>
+`GET /operations/:id` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	operations_by_id(id: ID!): directus_operations
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -171,12 +173,12 @@ Returns the requested [operation object](#the-operation-object).
 
 <template #rest>
 
-`GET /operations/3c636d1c-4eb2-49cd-8a6d-3ec571ab3390`
-</template>
+`GET /operations/3c636d1c-4eb2-49cd-8a6d-3ec571ab3390` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	operations_by_id(id: 42) {
@@ -186,9 +188,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create an Operation
 
@@ -198,8 +200,8 @@ Create a new operation.
 
 <template #rest>
 
-
 `POST /operations`
+
 ```json
 {
 	"operations_object_field_1": "value_1",
@@ -207,11 +209,13 @@ Create a new operation.
 	"operations_object_field_3": "value_3"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_operations_item(data: create_directus_operations_input!): directus_operations
@@ -242,6 +246,7 @@ Returns the [operation object](#the-operation-object) for the created operation.
 <template #rest>
 
 `POST /operations`
+
 ```json
 {
 	"name": "My Log",
@@ -255,6 +260,7 @@ Returns the [operation object](#the-operation-object) for the created operation.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_operations_item(data: { name: "My Log", key: "my_log", type: "log" }) {
@@ -264,9 +270,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create Multiple Operations
 
@@ -279,6 +285,7 @@ Create multiple new operations.
 <template #rest>
 
 `POST /operations`
+
 ```json
 [
 	{
@@ -293,19 +300,21 @@ Create multiple new operations.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_operations_items(data: [create_directus_operations_input!]!): [directus_operations]
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 #### Query Parameters
 
@@ -326,6 +335,7 @@ Returns the [operation object](#the-operation-object) for the created operation.
 <template #rest>
 
 `POST /operations`
+
 ```json
 [
 	{
@@ -340,11 +350,13 @@ Returns the [operation object](#the-operation-object) for the created operation.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_operations_items(
@@ -359,9 +371,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update an Operation
 
@@ -374,21 +386,25 @@ Update an existing operation.
 <template #rest>
 
 `PATCH /operation/:id`
+
 ```json
 {
 	"operation_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_operations_item(id: ID!, data: update_directus_operations_input): directus_operations
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -411,16 +427,19 @@ Returns the [operation object](#the-operation-object) for the updated operation.
 <template #rest>
 
 `PATCH /operation/7d62f1e9-a83f-407b-84f8-1c184f014501`
+
 ```json
 {
 	"name": "My Updated Operation"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_operations_item(id: "7d62f1e9-a83f-407b-84f8-1c184f014501", data: { name: "My Updated Operation" }) {
@@ -429,9 +448,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update Multiple Operations
 
@@ -442,6 +461,7 @@ Update multiple existing operations.
 <template #rest>
 
 `PATCH /operations`
+
 ```json
 {
 	"keys": ["operation_1_key", "operation_2_key"],
@@ -450,16 +470,19 @@ Update multiple existing operations.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_operations_items(ids: [ID!]!, data: update_directus_operations_input): [directus_operations]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -486,6 +509,7 @@ Returns the [operation objects](#the-operation-object) for the updated operation
 <template #rest>
 
 `PATCH /operations`
+
 ```json
 {
 	"keys": ["6a25fb7c-26a4-4dcb-a474-d47b6a203a38", "07ac467e-1900-4c62-9637-8dac2ab97f71"],
@@ -494,11 +518,13 @@ Returns the [operation objects](#the-operation-object) for the updated operation
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_operations_items(
@@ -511,9 +537,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete an Operation
 
@@ -525,17 +551,18 @@ Delete an existing operation.
 
 <template #rest>
 
-`DELETE /operations/:id`
-</template>
+`DELETE /operations/:id` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_operations_item(id: ID!): delete_one
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -549,8 +576,7 @@ Empty body.
 
 <template #rest>
 
-`DELETE /operations/07ac467e-1900-4c62-9637-8dac2ab97f71`
-</template>
+`DELETE /operations/07ac467e-1900-4c62-9637-8dac2ab97f71` </template>
 
 <template #graphql>
 
@@ -561,9 +587,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete Multiple Operations
 
@@ -576,19 +602,23 @@ Delete multiple existing operations.
 <template #rest>
 
 `DELETE /operations`
+
 ```json
 ["key_1", "key_2", "key_3"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_operations_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -607,14 +637,17 @@ Empty body.
 <template #rest>
 
 `DELETE /operations`
+
 ```json
 ["a791ce73-41a2-4fb7-8f67-c7ba176cc719", "4e57ab0e-f4ec-47b5-9dad-e36f08a25642", "5fe0a6f6-18ad-4bb3-94c6-2e033246c784"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_operations_items(
@@ -628,6 +661,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -661,8 +695,7 @@ Result of the operation, if any.
 
 <template #rest>
 
-`// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122`
-`// Payload here`
+`// POST /flows/trigger/202a940b-a00b-47df-b832-369c53f13122` `// Payload here`
 
 </template>
 

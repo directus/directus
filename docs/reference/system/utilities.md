@@ -8,7 +8,6 @@ pageClass: page-reference
 
 > Utilities are the various helper endpoints located within the API.
 
-
 ## Generate a Hash
 
 Generate a hash for a given string.
@@ -20,17 +19,20 @@ Generate a hash for a given string.
 <template #rest>
 
 `POST /utils/hash/generate`
+
 ```json
 
 {
 	"string": "hash"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	utils_hash_generate(string: String!): String
@@ -56,11 +58,13 @@ Hashed string.
 <template #rest>
 
 `POST /utils/hash/generate`
+
 ```json
 {
 	"string": "Hello World!"
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -70,9 +74,9 @@ mutation {
 	utils_hash_generate(string: "Hello World!")
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Verify a Hash
 
@@ -85,6 +89,7 @@ Verify a string with a hash.
 <template #rest>
 
 `POST /utils/hash/verify`
+
 ```json
 {
 	"string": "test_string",
@@ -97,11 +102,13 @@ Verify a string with a hash.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	utils_hash_verify(hash: String!, string: String!): Boolean
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -124,25 +131,28 @@ Boolean.
 <template #rest>
 
 `POST /utils/hash/verify`
+
 ```json
 {
 	"string": "Hello World!",
 	"hash": "$arg...fEfM"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	utils_hash_verify(hash: "$arg...fEfM", string: "Hello World!")
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Manually Sort Items in Collection
 
@@ -155,22 +165,26 @@ If a collection has a sort field, this util can be used to move items in that ma
 <template #rest>
 
 `POST /utils/sort/articles`
+
 ```json
 {
 	"item": item_to_move,
 	"to": item_moving_to
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	utils_sort(collection: String!, item: ID!, to: ID!): Boolean
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -193,25 +207,28 @@ Empty body.
 <template #rest>
 
 `POST /utils/sort/articles`
+
 ```json
 {
 	"item": 16,
 	"to": 51
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	utils_sort(collection: "articles", item: 16, to: 51)
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Import Data from File
 
@@ -228,6 +245,7 @@ this is an array of objects, where every object is an item. For CSV, the first l
 <template #rest>
 
 `POST /utils/import/:collection`
+
 ```
 Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
 Content-Length: //CONTENT LENGTH
@@ -240,13 +258,12 @@ Content-Type: MIME Content Type
 
 ...
 ```
+
 </template>
 
 <template #graphql>
 
-`// Not currently available in GraphQL`
-</template>
-</SnippetToggler>
+`// Not currently available in GraphQL` </template> </SnippetToggler>
 
 #### Request Body
 
@@ -264,6 +281,7 @@ Empty body.
 <template #rest>
 
 `POST /utils/import/articles`
+
 ```
 Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
 Content-Length: 3442422
@@ -280,14 +298,12 @@ Content-Type: text/csv
 5,"My Fifth Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
 ...
 ```
+
 </template>
 
 <template #graphql>
 
-`// Not currently available in GraphQL`
-</template>
-</SnippetToggler>
-
+`// Not currently available in GraphQL` </template> </SnippetToggler>
 
 ## Export Data to a File
 
@@ -300,6 +316,7 @@ Export a larger data set to a file in the File Library
 <template #rest>
 
 `POST /utils/export/:collection`
+
 ```json
 {
 	"query": {
@@ -314,13 +331,12 @@ Export a larger data set to a file in the File Library
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
-`// Not currently available in GraphQL`
-</template>
-</SnippetToggler>
+`// Not currently available in GraphQL` </template> </SnippetToggler>
 
 #### Query Parameters
 
@@ -348,6 +364,7 @@ Empty body
 <template #rest>
 
 `POST /utils/export/articles`
+
 ```json
 {
 	"query": {
@@ -362,14 +379,12 @@ Empty body
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
-`// Not currently available in GraphQL`
-</template>
-</SnippetToggler>
-
+`// Not currently available in GraphQL` </template> </SnippetToggler>
 
 ## Clear the Internal Cache
 
@@ -379,17 +394,18 @@ Resets both the data and schema cache of Directus. This endpoint is only availab
 
 <template #rest>
 
-`POST /utils/cache/clear`
-</template>
+`POST /utils/cache/clear` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	utils_cache_clear
 }
 ```
+
 </template>
 </SnippetToggler>
 

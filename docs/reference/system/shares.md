@@ -8,7 +8,6 @@ pageClass: page-reference
 
 > Shares are a way to publicly share an otherwise private item.
 
-
 ## The Share Object
 
 `id` **uuid**\
@@ -83,11 +82,13 @@ List all shares that exist in Directus.
 <template #graphql>
 
 POST /graphql/system
+
 ```graphql
 type Query {
 	shares: [directus_shares]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -110,12 +111,12 @@ will be an empty array.
 
 `GET /shares`
 
-`SEARCH /shares`
-</template>
+`SEARCH /shares` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	shares {
@@ -126,9 +127,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Retrieve a Share
 
@@ -138,17 +139,18 @@ List an existing share by primary key.
 
 <template #rest>
 
-`GET /shares/:id`
-</template>
+`GET /shares/:id` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	shares_by_id(id: ID!): directus_shares
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -166,12 +168,12 @@ Returns the requested [share object](#the-share-object).
 
 <template #rest>
 
-`GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302`
-</template>
+`GET /shares/b4cb3b64-8580-4ad9-a099-eade6da24302` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	shares_by_id(id: 2) {
@@ -182,9 +184,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create a Share
 
@@ -197,6 +199,7 @@ Create a new share.
 <template #rest>
 
 `POST /shares`
+
 ```json
 {
 	"share_object_field_1": "value_1",
@@ -205,16 +208,19 @@ Create a new share.
 	"share_object_field_4": "value_4"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_shares_item(data: create_directus_shares_input!): directus_shares
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -237,6 +243,7 @@ Returns the [share object](#the-share-object) for the created share.
 <template #rest>
 
 `POST /shares`
+
 ```json
 {
 	"name": "External Review",
@@ -245,11 +252,13 @@ Returns the [share object](#the-share-object) for the created share.
 	"max_uses": "5"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_shares_item(data: { name: "External Review", collection: "articles", item: "15", max_uses: "5" }) {
@@ -260,9 +269,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create Multiple Shares
 
@@ -275,6 +284,7 @@ Create multiple new shares.
 <template #rest>
 
 `POST /shares`
+
 ```json
 [
 	{
@@ -291,16 +301,19 @@ Create multiple new shares.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
     create_shares_items(data: [create_directus_shares_input!]!): [directus_shares]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -323,6 +336,7 @@ Returns the [share objects](#the-share-object) for the created shares.
 <template #rest>
 
 `POST /shares`
+
 ```json
 [
 	{
@@ -339,11 +353,13 @@ Returns the [share objects](#the-share-object) for the created shares.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_shares_items(
@@ -364,9 +380,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update a Share
 
@@ -379,21 +395,25 @@ Update an existing share.
 <template #rest>
 
 `PATCH /shares/:id`
+
 ```json
 {
 	"share_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_shares_item(id: ID!, data: update_directus_shares_input): directus_shares
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -416,16 +436,19 @@ Returns the [share object](#the-share-object) for the updated share.
 <template #rest>
 
 `PATCH /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
+
 ```json
 {
 	"max_uses": "30"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_shares_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", data: { icon: "attractions" }) {
@@ -436,9 +459,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update Multiple Shares
 
@@ -451,6 +474,7 @@ Update multiple existing shares.
 <template #rest>
 
 `PATCH /shares`
+
 ```json
 {
 	"keys": ["share_1_key", "share_2_key"],
@@ -459,16 +483,19 @@ Update multiple existing shares.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_shares_items(ids: [ID!]!, data: update_directus_shares_input): [directus_shares]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -495,6 +522,7 @@ Returns the [share objects](#the-share-object) for the updated shares.
 <template #rest>
 
 `PATCH /shares`
+
 ```json
 {
 	"keys": ["c86c2761-65d3-43c3-897f-6f74ad6a5bd7", "6fc3d5d3-a37b-4da8-a2f4-ed62ad5abe03"],
@@ -503,11 +531,13 @@ Returns the [share objects](#the-share-object) for the updated shares.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_shares_items(
@@ -521,9 +551,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete a Share
 
@@ -535,17 +565,18 @@ Delete an existing share.
 
 <template #rest>
 
-`DELETE /shares/:id`
-</template>
+`DELETE /shares/:id` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_shares_item(id: ID!): delete_one
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -559,12 +590,12 @@ Empty body.
 
 <template #rest>
 
-`DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7`
-</template>
+`DELETE /shares/c86c2761-65d3-43c3-897f-6f74ad6a5bd7` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_shares_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7") {
@@ -572,9 +603,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete Multiple Shares
 
@@ -587,19 +618,23 @@ Delete multiple existing shares.
 <template #rest>
 
 `DELETE /shares`
+
 ```json
 ["share_1_key", "share_2_key"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_shares_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -618,14 +653,17 @@ Empty body.
 <template #rest>
 
 `DELETE /shares`
+
 ```json
 ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_shares_items(ids: ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]) {
@@ -633,9 +671,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Authenticate a Share
 
@@ -651,6 +689,7 @@ with the credentials set returned by this endpoint.
 <template #rest>
 
 `POST /shares/auth`
+
 ```json
 {
 	"share": "share_key",
@@ -694,6 +733,7 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 <template #rest>
 
 `POST /shares/auth`
+
 ```json
 {
 	"share": "61e8a1b6-6eba-438c-91e8-8d912ef655d3",
@@ -710,8 +750,6 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 </template>
 </SnippetToggler>
 
-
-
 ## Send a Share by Email
 
 Sends an email to the provided email addresses with a link to the share.
@@ -723,6 +761,7 @@ Sends an email to the provided email addresses with a link to the share.
 <template #rest>
 
 `POST /shares/invite`
+
 ```json
 {
 	"share": "share_key",
@@ -734,9 +773,7 @@ Sends an email to the provided email addresses with a link to the share.
 
 <template #graphql>
 
-`// Not currently available in GraphQL`
-</template>
-</SnippetToggler>
+`// Not currently available in GraphQL` </template> </SnippetToggler>
 
 #### Request Body
 
@@ -757,20 +794,19 @@ Empty body.
 <template #rest>
 
 `POST /shares/invite`
+
 ```json
 {
 	"share": "653925a9-970e-487a-bfc0-ab6c96affcdc",
 	"emails": ["allison@example.com", "mike@example.com"]
 }
 ```
+
 </template>
 
 <template #graphql>
 
-`// Not currently available in GraphQL`
-</template>
-</SnippetToggler>
-
+`// Not currently available in GraphQL` </template> </SnippetToggler>
 
 ## Get Share Public Info
 
@@ -780,8 +816,7 @@ Allows unauthenticated users to retrieve information about the share.
 
 <template #rest>
 
-`GET /shares/info/:id`
-</template>
+`GET /shares/info/:id` </template>
 
 <template #graphql>
 
@@ -800,11 +835,8 @@ The [share objects](#the-share-object) for the given UUID, if it's still valid.
 
 <template #rest>
 
-`GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc`
-</template>
+`GET /shares/info/653925a9-970e-487a-bfc0-ab6c96affcdc` </template>
 
 <template #graphql>
 
-`// Not currently available in GraphQL`
-</template>
-</SnippetToggler>
+`// Not currently available in GraphQL` </template> </SnippetToggler>

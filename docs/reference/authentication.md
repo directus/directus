@@ -36,7 +36,6 @@ the request's Authorization Header.
 Authorization: Bearer <token>
 ```
 
-
 ## Login
 
 Retrieve a temporary access token and refresh token.
@@ -61,7 +60,6 @@ Retrieve a temporary access token and refresh token.
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -116,11 +114,13 @@ The token's expiration time can be configured through
 	"password": "d1r3ctu5"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	auth_login(email: "admin@example.com", password: "d1r3ctu5") {
@@ -129,9 +129,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Refresh
 
@@ -144,16 +144,17 @@ Retrieve a new access token using a refresh token.
 <template #rest>
 
 `POST /auth/refresh`
+
 ```json
 {
 	"refresh_token": "gmPd...8wuB",
 	"mode": "json"
 }
 ```
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -186,17 +187,20 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 <template #rest>
 
 `POST /auth/refresh`
+
 ```json
 {
 	"refresh_token": "gmPd...8wuB",
 	"mode": "json"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	auth_refresh(refresh_token: "abc...def", mode: json) {
@@ -205,9 +209,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Logout
 
@@ -220,15 +224,16 @@ Invalidate the refresh token thus destroying the user's session.
 <template #rest>
 
 `POST /auth/logout`
+
 ```json
 {
 	"refresh_token": "refresh_token_value"
 }
 ```
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -246,24 +251,27 @@ to submit it here.
 <template #rest>
 
 `POST /auth/logout`
+
 ```json
 {
     "refresh_token": "gmPd...8wuB"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	auth_logout(refresh_token: "gmPd...8wuB")
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Request Password Reset
 
@@ -276,15 +284,16 @@ Request a password reset email to be sent to the given user.
 <template #rest>
 
 `POST /auth/password/request`
+
 ```json
 {
     "email": "user_email"
 }
 ```
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -306,24 +315,27 @@ Provide a custom reset url which the link in the email will lead to. The reset t
 <template #rest>
 
 `POST /auth/password/request`
+
 ```json
 {
 	"email": "admin@example.com"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	auth_password_request(email: "admin@example.com")
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Reset a Password
 
@@ -337,16 +349,17 @@ this endpoint to allow the user to reset their password.
 <template #rest>
 
 `POST /auth/password/reset`
+
 ```json
 {
 	"token": "password_reset_token",
 	"password": "password"
 }
 ```
+
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -366,25 +379,28 @@ New password for the user.
 <template #rest>
 
 `POST /auth/password/reset`
+
 ```json
 {
 	"token": "eyJh...KmUk",
 	"password": "d1r3ctu5"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	auth_password_reset(token: "eyJh...KmUk", password: "d1r3ctu5")
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## List Auth Providers
 
@@ -404,6 +420,7 @@ To learn more about setting up auth providers, see
 <template #rest>
 
 `GET /auth`
+
 ```json
 {
 	"data": [
@@ -429,7 +446,6 @@ To learn more about setting up auth providers, see
 </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>
@@ -449,6 +465,7 @@ Whether or not the default authentication provider is disabled.
 <template #rest>
 
 `GET /auth`
+
 ```json
 {
 	"data": [
@@ -470,15 +487,13 @@ Whether or not the default authentication provider is disabled.
 	"disableDefault": false
 }
 ```
+
 </template>
 
 <template #graphql>
 
-
 </template>
 </SnippetToggler>
-
-
 
 ## Login Using SSO Providers
 
@@ -490,11 +505,9 @@ Will redirect to the configured SSO provider for the user to login.
 
 <template #rest>
 
-`GET /auth/login/:provider`
-</template>
+`GET /auth/login/:provider` </template>
 
 <template #graphql>
-
 
 </template>
 </SnippetToggler>

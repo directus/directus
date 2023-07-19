@@ -9,7 +9,6 @@ pageClass: page-reference
 > Fields are individual pieces of content within an item. They are mapped to columns in the database.
 > [Learn more about Fields](/user-guide/overview/glossary#fields).
 
-
 ## The Field Object
 
 `collection` **string**\
@@ -149,7 +148,6 @@ Comment as stored in the database.
 }
 ```
 
-
 ## List All Fields
 
 List the available fields.
@@ -167,6 +165,7 @@ List the available fields.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	fields: [directus_fields]
@@ -186,6 +185,7 @@ const result = await client.request(readFields());
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -203,12 +203,12 @@ An array of [field objects](#the-field-object).
 
 <template #rest>
 
-`GET /fields`
-</template>
+`GET /fields` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	fields {
@@ -217,6 +217,7 @@ query {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -230,9 +231,9 @@ const result = await client.request(readFields());
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## List Fields in Collection
 
@@ -271,6 +272,7 @@ const result = await client.request(readFieldsByCollection('collection_name'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -318,9 +320,9 @@ const result = await client.request(readFieldsByCollection('articles'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Retrieve a Field
 
@@ -339,11 +341,13 @@ Get a single field in a given collection.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	fields_by_name(collection: String!, field: String!): directus_fields
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -357,6 +361,7 @@ const result = await client.request(readField('collection_name','field_name'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -374,12 +379,12 @@ A [field object](#the-field-object).
 
 <template #rest>
 
-`GET /fields/articles/title`
-</template>
+`GET /fields/articles/title` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	fields_by_name(collection: "articles", field: "title") {
@@ -388,6 +393,7 @@ query {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -401,9 +407,9 @@ const result = await client.request(readField('articles','title'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create a Field
 
@@ -426,6 +432,7 @@ Create a new field in the given collection.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
@@ -437,6 +444,7 @@ type Mutation {
 	create_fields_item(collection: String!, data: create_directus_fields_input!): directus_fields
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -447,7 +455,7 @@ import { rest, createField} from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
-    createField('collection_name', { 
+    createField('collection_name', {
         'field' : 'field_name',
         'type' : 'field_type',
         'field_field' : {
@@ -458,6 +466,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -484,7 +493,6 @@ Any of the optional schema values in the [field object](#the-field-object).
 
 The [field object](#the-field-object) for the created field.
 
-
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
@@ -492,6 +500,7 @@ The [field object](#the-field-object) for the created field.
 <template #rest>
 
 `POST /fields/articles`
+
 ```json
 
 {
@@ -505,11 +514,13 @@ The [field object](#the-field-object) for the created field.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_fields_item(
@@ -531,7 +542,7 @@ import { rest, createField} from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    createField('articles', { 
+    createField('articles', {
         'field' : 'subject tags',
         'type' : 'csv',
         'meta' : {
@@ -543,9 +554,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update a Field
 
@@ -556,6 +567,7 @@ Updates the given field in the given collection.
 <template #rest>
 
 `PATCH /fields/articles/title`
+
 ```json
 {
 	"field": {
@@ -563,11 +575,13 @@ Updates the given field in the given collection.
 	}
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_fields_item(collection: String!, field: String!, data: update_directus_fields_input!): directus_fields
@@ -584,7 +598,7 @@ import { rest, updateField} from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
-    updateField('collection_name', 'field_name', { 
+    updateField('collection_name', 'field_name', {
         'field' : {
             'sub_field' : 'value'
         }
@@ -593,6 +607,7 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -631,6 +646,7 @@ The [field object](#the-field-object) for the updated field.
 <template #rest>
 
 `PATCH /fields/articles/title`
+
 ```json
 
 {
@@ -648,6 +664,7 @@ The [field object](#the-field-object) for the updated field.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_fields_item(
@@ -670,7 +687,7 @@ import { rest, updateField} from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updateField('articles', 'subject tags', { 
+    updateField('articles', 'subject tags', {
         'meta' : {
             'note' : 'tags for the article based on subjects addressed'
         }
@@ -679,9 +696,9 @@ const result = await client.request(
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete a Field
 
@@ -699,8 +716,7 @@ Be aware, this will delete the column from the database, including all data in i
 
 <template #rest>
 
-`DELETE /fields/:collection/:field`
-</template>
+`DELETE /fields/:collection/:field` </template>
 
 <template #graphql>
 
@@ -711,6 +727,7 @@ type Mutation {
 	delete_fields_item(collection: String!, field: String!): delete_field
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -724,6 +741,7 @@ const result = await client.request(deleteField('collection_name','field_name'))
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>
 
@@ -740,6 +758,7 @@ console.log(result);
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_fields_item(collection: "articles", field: "title") {
@@ -748,6 +767,7 @@ mutation {
 	}
 }
 ```
+
 </template>
 
 <template #sdk>
@@ -761,5 +781,6 @@ const result = await client.request(deleteField('articles','featured_quote'));
 
 console.log(result);
 ```
+
 </template>
 </SnippetToggler>

@@ -11,7 +11,6 @@ pageClass: page-reference
 
 [Learn more about Panels](/user-guide/insights/dashboards).
 
-
 ## The Panel Object
 
 `id` **uuid**\
@@ -79,7 +78,6 @@ User that created the panel. Many-to-one to [users](/reference/system/users).
 }
 ```
 
-
 ## List Panels
 
 List all panels that exist in Directus.
@@ -92,17 +90,18 @@ List all panels that exist in Directus.
 
 `GET /panels`
 
-`SEARCH /panels`
-</template>
+`SEARCH /panels` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	panels: [directus_panels]
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -125,12 +124,12 @@ will be an empty array.
 
 `GET /panels`
 
-`SEARCH /panels`
-</template>
+`SEARCH /panels` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	panels {
@@ -139,9 +138,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Retrieve a Panel
 
@@ -153,17 +152,18 @@ List an existing panel by primary key.
 
 <template #rest>
 
-`GET /panels/:id`
-</template>
+`GET /panels/:id` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Query {
 	panels_by_id(id: ID!): directus_panels
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -175,19 +175,18 @@ Supports all [global query parameters](/reference/query).
 
 Returns the requested [panel object](#the-panel-object).
 
-
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 
 <template #rest>
 
-`GET /panels/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
-</template>
+`GET /panels/2fc325fb-299b-4d20-a9e7-a34349dee8b2` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 query {
 	panels_by_id(id: "2fc325fb-299b-4d20-a9e7-a34349dee8b2") {
@@ -196,9 +195,9 @@ query {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create a Panel
 
@@ -211,6 +210,7 @@ Create a new panel.
 <template #rest>
 
 `POST /panels`
+
 ```json
 {
 	"panel_object_field_1": "value_1",
@@ -223,11 +223,13 @@ Create a new panel.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_panels_item(data: create_directus_panels_input!): directus_panels
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -250,6 +252,7 @@ Returns the [panel object](#the-panel-object) for the created panel.
 <template #rest>
 
 `POST /panels`
+
 ```json
 
 {
@@ -263,6 +266,7 @@ Returns the [panel object](#the-panel-object) for the created panel.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	create_panels_item(data: { name: "My Panel", icon: "panels" }) {
@@ -271,9 +275,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Create Multiple Panels
 
@@ -286,6 +290,7 @@ Create multiple new panels.
 <template #rest>
 
 `POST /panels`
+
 ```json
 [
 {
@@ -304,6 +309,7 @@ Create multiple new panels.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	create_panels_items(data: [create_directus_panels_input!]!): [directus_panels]
@@ -332,6 +338,7 @@ Returns the [panel object](#the-panel-object) for the created panel.
 <template #rest>
 
 `POST /panels`
+
 ```json
 [
 	{
@@ -344,11 +351,13 @@ Returns the [panel object](#the-panel-object) for the created panel.
 	}
 ]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
     create_panels_items(data: [{ name: "My Panel", icon: "architecture" }, { name: "Another Panel", icon: "person" }]) {
@@ -357,9 +366,9 @@ mutation {
     }
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update a Panel
 
@@ -372,21 +381,25 @@ Update an existing panel.
 <template #rest>
 
 `PATCH /panels/:id`
+
 ```json
 {
 	"panel_object_field": "value_1"
 }
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_panels_item(id: ID!, data: update_directus_panels_input): directus_panels
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -409,6 +422,7 @@ Returns the [panel object](#the-panel-object) for the updated panel.
 <template #rest>
 
 `PATCH /panels/2fc325fb-299b-4d20-a9e7-a34349dee8b2`
+
 ```json
 {
 	"name": "My Updated Panel"
@@ -420,6 +434,7 @@ Returns the [panel object](#the-panel-object) for the updated panel.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	update_panels_item(id: "2fc325fb-299b-4d20-a9e7-a34349dee8b2", data: { name: "My Updated Panel" }) {
@@ -428,9 +443,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Update Multiple Panels
 
@@ -443,6 +458,7 @@ Update multiple existing panels.
 <template #rest>
 
 `PATCH /panels`
+
 ```json
 {
 	"keys": ["panel_1_key", "panel_2_key"],
@@ -457,6 +473,7 @@ Update multiple existing panels.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	update_panels_items(ids: [ID!]!, data: update_directus_panels_input): [directus_panels]
@@ -489,6 +506,7 @@ Returns the [panel objects](#the-panel-object) for the updated panels.
 <template #rest>
 
 `PATCH /panels`
+
 ```json
 {
 	"keys": ["3f2facab-7f05-4ee8-a7a3-d8b9c634a1fc", "7259bfa8-3786-45c6-8c08-cc688e7ba229"],
@@ -503,6 +521,7 @@ Returns the [panel objects](#the-panel-object) for the updated panels.
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
     update_panels_items(
@@ -514,9 +533,9 @@ mutation {
     }
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete a Panel
 
@@ -528,17 +547,18 @@ Delete an existing panel.
 
 <template #rest>
 
-`DELETE /panels/:id`
-</template>
+`DELETE /panels/:id` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_panels_item(id: ID!): delete_one
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -552,12 +572,12 @@ Empty body.
 
 <template #rest>
 
-`DELETE /panels/12204ee2-2c82-4d9a-b044-2f4842a11dba`
-</template>
+`DELETE /panels/12204ee2-2c82-4d9a-b044-2f4842a11dba` </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_panels_item(id: "12204ee2-2c82-4d9a-b044-2f4842a11dba") {
@@ -565,9 +585,9 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
-
 
 ## Delete Multiple Panels
 
@@ -580,19 +600,23 @@ Delete multiple existing panels.
 <template #rest>
 
 `DELETE /panels`
+
 ```json
 ["key_1", "key_2", "key_3"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 type Mutation {
 	delete_panels_items(ids: [ID!]!): delete_many
 }
 ```
+
 </template>
 </SnippetToggler>
 
@@ -611,14 +635,17 @@ Empty body.
 <template #rest>
 
 `DELETE /panels`
+
 ```json
 ["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"]
 ```
+
 </template>
 
 <template #graphql>
 
 `POST /graphql/system`
+
 ```graphql
 mutation {
 	delete_panels_items(
@@ -632,5 +659,6 @@ mutation {
 	}
 }
 ```
+
 </template>
 </SnippetToggler>
