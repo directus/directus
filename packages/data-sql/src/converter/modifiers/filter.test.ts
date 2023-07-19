@@ -134,7 +134,7 @@ describe('Convert condition', () => {
 		const idGen = parameterIndexGenerator();
 		const randomCollection = randomIdentifier();
 		const randomField = randomIdentifier();
-		const randomValues = [randomInteger(1, 100), randomInteger(1, 100), randomInteger(1, 100)];
+		const randomValues: number[] = [randomInteger(1, 100), randomInteger(1, 100), randomInteger(1, 100)];
 
 		const con: AbstractQueryConditionNode = {
 			type: 'condition',
@@ -144,7 +144,7 @@ describe('Convert condition', () => {
 					type: 'primitive',
 					field: randomField,
 				},
-				operation: 'gt',
+				operation: 'in',
 				compareTo: randomValues,
 			},
 		};
@@ -158,7 +158,7 @@ describe('Convert condition', () => {
 					table: randomCollection,
 					column: randomField,
 				},
-				operation: 'gt',
+				operation: 'in',
 				compareTo: {
 					type: 'values',
 					parameterIndexes: [0, 1, 2],
@@ -227,7 +227,7 @@ test.skip('Convert filter with one parameter and negation', () => {
 		condition: {
 			type: 'number-condition',
 			target: {
-				column: (sample.condition.target as AbstractQueryFieldNodePrimitive).field,
+				column: (sample.condition.condition.target as AbstractQueryFieldNodePrimitive).field,
 				table: sample.randomCollection,
 				type: 'primitive',
 			},

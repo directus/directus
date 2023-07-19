@@ -9,7 +9,7 @@ import { wrapColumn } from './wrap-column.js';
  * @param column - The column which will be used as the argument for the function
  * @returns - EXTRACT(xy FROM ...)
  */
-export const convertDateTimeFn = (fnNode: AbstractSqlQueryFnNode, wrappedColumn: string): string => {
+export const applyDataTimeFn = (fnNode: AbstractSqlQueryFnNode, wrappedColumn: string): string => {
 	function getFnString(fn: string) {
 		return `EXTRACT(${fn} FROM ${wrappedColumn}${fnNode.isTimestampType ? " AT TIME ZONE 'UTC'" : ''})`;
 	}

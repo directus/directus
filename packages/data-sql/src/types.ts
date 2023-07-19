@@ -114,7 +114,8 @@ export interface AbstractSqlQueryConditionNode {
 		| SqlNumberConditionNode
 		| SqlGeoConditionNode
 		| SqlSetConditionNode
-		| SqlFieldConditionNode;
+		| SqlFieldConditionNode
+		| SqlBetweenCondition;
 	negate: boolean;
 }
 
@@ -130,6 +131,16 @@ export interface SqlNumberConditionNode {
 	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: ValueNode;
+}
+
+export interface SqlBetweenCondition {
+	type: 'between-condition';
+	target: AbstractSqlQuerySelectNode;
+	operation: 'between';
+	compareTo: {
+		type: 'values';
+		parameterIndexes: [number, number];
+	};
 }
 
 export interface SqlGeoConditionNode {
@@ -163,11 +174,17 @@ export interface AbstractSqlQueryLogicalNode extends AbstractSqlQueryNode {
 	childNodes: (AbstractSqlQueryConditionNode | AbstractSqlQueryLogicalNode)[];
 }
 
+/**
+ * Used pass a single value.
+ */
 export interface ValueNode {
 	type: 'value';
 	parameterIndex: number;
 }
 
+/**
+ * Used pass an arbitrary amount of values.
+ */
 export interface ValuesNode {
 	type: 'values';
 	parameterIndexes: number[];

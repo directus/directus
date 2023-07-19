@@ -101,12 +101,12 @@ test('statement with all possible modifiers', () => {
 				type: 'condition',
 				condition: {
 					type: 'number-condition',
-					operation: 'gt',
 					target: {
 						type: 'primitive',
 						table: firstConditionTable,
 						column: firstConditionColumn,
 					},
+					operation: 'gt',
 					compareTo: {
 						type: 'value',
 						parameterIndex: firstConditionParameterIndex,
@@ -118,12 +118,12 @@ test('statement with all possible modifiers', () => {
 				type: 'condition',
 				condition: {
 					type: 'number-condition',
-					operation: 'lt',
 					target: {
 						type: 'primitive',
 						table: secondConditionTable,
 						column: secondConditionColumn,
 					},
+					operation: 'lt',
 					compareTo: {
 						type: 'value',
 						parameterIndex: secondConditionParameterIndex,

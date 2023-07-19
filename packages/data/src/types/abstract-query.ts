@@ -376,7 +376,7 @@ export interface AbstractQueryConditionNode {
 	type: 'condition';
 
 	/* the type of the node */
-	condition: LetterConditionNode | NumberConditionNode | GeoConditionNode | SetConditionNode;
+	condition: LetterConditionNode | NumberConditionNode | GeoConditionNode | SetConditionNode | BetweenCondition;
 }
 
 /**
@@ -422,6 +422,13 @@ export interface NumberConditionNode {
 	compareTo: number;
 }
 
+export interface BetweenCondition {
+	type: 'between-condition';
+	target: AbstractQueryFieldNodePrimitive; // function support needed here?
+	operation: 'between';
+	compareTo: [number, number];
+}
+
 /**
  * Checks if a geo field intersects with a given geo value as string.
  * @example
@@ -457,11 +464,11 @@ export interface GeoConditionNode {
  * 	compareTo: 5
  * ```
  */
-export interface SetConditionNode { // could also be called 'IncludesConditions'
+export interface SetConditionNode {
 	type: 'set-condition';
 	target: AbstractQueryFieldNodePrimitive;
-	operation: 'in'
-	compareTo: Set<string | number>;
+	operation: 'in';
+	compareTo: (string | number)[]; // could also be an actual JS Set
 }
 
 /**

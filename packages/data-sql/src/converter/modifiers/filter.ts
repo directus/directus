@@ -79,7 +79,7 @@ export function convertCondition(
 	}
 
 	// convert compareTo
-	let compareTo: ValueNode | ValuesNode | AbstractSqlQuery;
+	let compareTo: ValueNode | ValuesNode;
 
 	switch (condition.condition.type) {
 		case 'letter-condition':
@@ -90,6 +90,14 @@ export function convertCondition(
 			} as ValueNode;
 
 			parameters.push(condition.condition.compareTo);
+			break;
+		case 'between-condition':
+			compareTo = {
+				type: 'values',
+				parameterIndexes: [generator.next().value, generator.next().value],
+			} as ValuesNode;
+
+			parameters.push(...condition.condition.compareTo);
 			break;
 		case 'geo-condition':
 			compareTo = {

@@ -1,5 +1,5 @@
 import { expect, test, describe } from 'vitest';
-import { convertDateTimeFn, convertCount } from './functions.js';
+import { applyDataTimeFn, convertCount } from './functions.js';
 import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 
@@ -19,7 +19,7 @@ describe('Extract date time', () => {
 			isTimestampType: false,
 		};
 
-		expect(convertDateTimeFn(fnNode, wrappedColumn)).toStrictEqual(`EXTRACT(YEAR FROM ${wrappedColumn})`);
+		expect(applyDataTimeFn(fnNode, wrappedColumn)).toStrictEqual(`EXTRACT(YEAR FROM ${wrappedColumn})`);
 	});
 
 	test('From non timestamp column', () => {
@@ -37,7 +37,7 @@ describe('Extract date time', () => {
 			isTimestampType: true,
 		};
 
-		expect(convertDateTimeFn(fnNode, wrappedColumn)).toStrictEqual(
+		expect(applyDataTimeFn(fnNode, wrappedColumn)).toStrictEqual(
 			`EXTRACT(YEAR FROM ${wrappedColumn} AT TIME ZONE 'UTC')`
 		);
 	});
