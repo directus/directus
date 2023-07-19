@@ -4,4 +4,4 @@
 '@directus/data': minor
 ---
 
-Added more conditions to the data abstraction
+Added more modifiers to the data abstraction and m2o join
