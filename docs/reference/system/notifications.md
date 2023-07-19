@@ -441,7 +441,7 @@ Update multiple existing notifications.
 `PATCH /notifications`
 ```json
 {
-	"keys": [notification_key_1, notification_key_2],
+	"keys": ["notification_key_1", "notification_key_2"],
 	"data": {
 		"notification_object_field": "field_1"
 	}

@@ -434,7 +434,7 @@ Update multiple existing webhooks.
 `PATCH /webhooks`
 ```json
 {
-	"keys": [webhook_1_key, webhook_2_key],
+	"keys": ["webhook_1_key", "webhook_2_key"],
 	"data": {
 		"webhook_object_field": "value_1"
 	}
@@ -565,7 +565,7 @@ Delete multiple existing webhooks.
 
 `DELETE /webhooks`
 ```json
-[webhook_1_key, webhook_2_key, webhook_3_key]
+["webhook_1_key", "webhook_2_key", "webhook_3_key"]
 ```
 </template>
 

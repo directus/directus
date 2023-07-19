@@ -462,7 +462,7 @@ Update multiple existing presets.
 `PATCH /presets`
 ```json
 {
-	"keys": [preset_1_key, preset_2_key],
+	"keys": ["preset_1_key", "preset_2_key"],
 	"data": {
 		"preset_object_field": "value_1"
 
@@ -597,7 +597,7 @@ Delete multiple existing presets.
 
 `DELETE /presets`
 ```json
-[preset_1_key, preset_2_key, preset_3_key]
+["preset_1_key", "preset_2_key", "preset_3_key"]
 ```
 </template>
 

@@ -449,7 +449,7 @@ Update multiple existing permissions rules.
 `PATCH /permissions`
 ```json
 {
-	"keys": [permission_1_key, permission_2_key],
+	"keys": ["permission_1_key", "permission_2_key"],
 	"data": {
 		"permissions_object_fields": ["value_1", "value_2", "value_3"]
 	}

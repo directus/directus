@@ -649,7 +649,7 @@ Update multiple items at the same time.
 `PATCH /items/:collection`
 ```json
 {
-	"keys": ['id_1', 'id_2'],
+	"keys": ["id_1", "id_2"],
 	"data": {
 		"field": "value"
 	}
@@ -841,13 +841,13 @@ Delete multiple existing items.
 `DELETE /items/:collection`
 ```json
 // Array
-[value_1, value_2, value_3]
+["key_1", "key_2", "key_3"]
 ```
 
 ```json
 // Object 
 {
-	"field": [value_1, value_2, value_3]
+	"field": ["key_1", "key_2", "key_3"]
 }
 ```
 
