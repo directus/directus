@@ -581,7 +581,7 @@ Delete multiple existing permissions rules
 
 `DELETE /permissions`
 ```json
-[permission_1_key, permission_2_key]
+["key_1", "key_2", "key_3"]
 ```
 
 </template>
