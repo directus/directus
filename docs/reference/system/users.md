@@ -462,9 +462,6 @@ could be modified by the user call.
 
 :::
 
-</template>
-</SnippetToggler>
-
 ## Create Multiple Users
 
 Create multiple new users
@@ -592,9 +589,6 @@ as adding a relationship. So make sure the ID exists, and the other parameters m
 could be modified by the user call.
 
 :::
-
-</template>
-</SnippetToggler>
 
 ## Update a User
 
