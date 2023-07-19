@@ -351,7 +351,9 @@ export default {
 - **Description** — Defines a callback function to indicate the upload progress.
 - **Default** — N/A
 
-:::tip ProgressEvent Please see the MDN documentation to learn more about the
+:::tip ProgressEvent
+
+Please see the MDN documentation to learn more about the
 [ProgressEvent](https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent).
 
 :::
