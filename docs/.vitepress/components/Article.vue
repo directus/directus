@@ -93,4 +93,4 @@ defineProps<{
 .article:hover .image img {
 	scale: 1.05;
 }
-</style> 
+</style>

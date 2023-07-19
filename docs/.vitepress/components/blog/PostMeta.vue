@@ -1,7 +1,5 @@
 <template>
-	<p class="date">
-		Published {{ getFriendlyDate(params.date_published) }}
-	</p>
+	<p class="date">Published {{ getFriendlyDate(params.date_published) }}</p>
 	<div class="wrapper">
 		<div class="author">
 			<div>
