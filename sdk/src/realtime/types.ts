@@ -5,10 +5,12 @@ export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
 export interface WebSocketConfig {
 	authMode?: WebSocketAuthModes;
-	reconnect?: {
-		delay: number; // in ms
-		retries: number;
-	} | false;
+	reconnect?:
+		| {
+				delay: number; // in ms
+				retries: number;
+		  }
+		| false;
 	heartbeat?: boolean;
 	url?: string;
 }

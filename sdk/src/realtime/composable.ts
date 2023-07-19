@@ -230,8 +230,6 @@ export function realtime(config: WebSocketConfig = {}) {
 
 				// const initialMessage = await messageCallback(ws);
 
-				
-
 				async function* subscriptionGenerator(): AsyncGenerator<
 					SubscriptionOutput<Schema, Collection, Options['query'], SubscriptionEvents>,
 					void,
