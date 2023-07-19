@@ -577,7 +577,7 @@ Delete multiple existing operations.
 
 `DELETE /operations`
 ```json
-["value_1", "value_2", "value_3"]
+["key_1", "key_2", "key_3"]
 ```
 </template>
 
