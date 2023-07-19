@@ -110,7 +110,7 @@ const stop = client.onWebSocket('message', (message) => {
 	}
 });
 
-client.message({ type: 'ping' });
+client.sendMessage({ type: 'ping' });
 ```
 
 ## Build your schema
@@ -131,10 +131,10 @@ interface CollectionA {
 	id: number;
 	status: string;
 	// relations
-	m2o: CollectionB;
-	o2m: CollectionB[];
-	m2m: CollectionAB_Many[];
-	m2a: CollectionAB_Any[];
+	m2o: number | CollectionB;
+	o2m: number[] | CollectionB[];
+	m2m: number[] | CollectionAB_Many[];
+	m2a: number[] | CollectionAB_Any[];
 }
 
 // Many-to-Many junction table
