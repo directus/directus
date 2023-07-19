@@ -1,8 +1,7 @@
 {
-	"extends": "@directus/tsconfig/node18-esm.json",
+	"extends": "@directus/tsconfig/vue",
 	"compilerOptions": {
-		"outDir": "dist",
-		"lib": ["es2022", "DOM"]
+		"outDir": "dist"
 	},
 	"include": ["src"],
 	"typedocOptions": {
