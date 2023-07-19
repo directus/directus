@@ -39,10 +39,7 @@ import { onBeforeMount, ref, watch } from 'vue';
 const props = defineProps<{
 	choices: string[];
 	label?: string;
-	alwaysDark?: {
-		type: boolean;
-		default: false;
-	};
+	alwaysDark?: boolean;
 }>();
 
 const selected = ref();
