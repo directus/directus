@@ -27,7 +27,6 @@ beforeEach(() => {
 			],
 			from: randomIdentifier(),
 			parameters: [],
-			root: true,
 		},
 	};
 });

@@ -26,7 +26,7 @@ export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSqlStat
 	const statement = `${statementParts
 		.map((part) => part(query))
 		.filter((p) => p !== null)
-		.join(' ')}${query.root ? ';' : ''}`;
+		.join(' ')};`;
 
 	return {
 		statement,
