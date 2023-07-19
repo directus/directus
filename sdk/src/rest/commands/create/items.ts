@@ -1,6 +1,5 @@
 import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateItemOutput<
 	Schema extends object,
@@ -32,7 +31,7 @@ export const createItems =
 
 		return {
 			path: `/items/${_collection}`,
-			params: queryToParams(query ?? {}),
+			params: query ?? {},
 			body: JSON.stringify(items),
 			method: 'POST',
 		};
@@ -62,7 +61,7 @@ export const createItem =
 
 		return {
 			path: `/items/${_collection}`,
-			params: queryToParams(query ?? {}),
+			params: query ?? {},
 			body: JSON.stringify(item),
 			method: 'POST',
 		};

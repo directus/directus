@@ -1,7 +1,6 @@
 import type { DirectusPanel } from '../../../schema/panel.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type UpdatePanelOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const updatedPanels =
 	): RestCommand<UpdatePanelOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/panels`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify({ keys, data: item }),
 		method: 'PATCH',
 	});
@@ -44,7 +43,7 @@ export const updatePanel =
 	): RestCommand<UpdatePanelOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/panels/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});

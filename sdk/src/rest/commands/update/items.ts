@@ -1,7 +1,6 @@
 import type { PrimaryKey } from '@directus/types';
 import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type UpdateItemOutput<
 	Schema extends object,
@@ -31,7 +30,7 @@ export const updatedItems =
 
 		return {
 			path: `/items/${_collection}`,
-			params: queryToParams(query ?? {}),
+			params: query ?? {},
 			body: JSON.stringify({ keys, data: item }),
 			method: 'PATCH',
 		};
@@ -68,7 +67,7 @@ export const updateItem =
 
 		return {
 			path: `/items/${_collection}/${key}`,
-			params: queryToParams(query ?? {}),
+			params: query ?? {},
 			body: JSON.stringify(item),
 			method: 'PATCH',
 		};

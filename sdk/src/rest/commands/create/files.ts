@@ -1,7 +1,6 @@
 import type { DirectusFile } from '../../../schema/file.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateFileOutput<
 	Schema extends object,
@@ -26,7 +25,7 @@ export const uploadFile =
 		path: '/files',
 		method: 'POST',
 		body: data,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		headers: { 'Content-Type': 'multipart/form-data' },
 	});
 
@@ -49,5 +48,5 @@ export const importFile =
 		path: '/files/import',
 		method: 'POST',
 		body: JSON.stringify({ url, data }),
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 	});

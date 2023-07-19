@@ -1,7 +1,6 @@
 import type { DirectusTranslation } from '../../../schema/translation.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateTranslationOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const createTranslations =
 	): RestCommand<CreateTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/translations`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
 	});
@@ -44,7 +43,7 @@ export const createTranslation =
 	): RestCommand<CreateTranslationOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/translations`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',
 	});

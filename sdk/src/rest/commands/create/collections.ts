@@ -1,7 +1,6 @@
 import type { DirectusCollection } from '../../../schema/collection.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateCollectionOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const createCollection =
 	): RestCommand<CreateCollectionOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/collections`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',
 	});

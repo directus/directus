@@ -1,7 +1,6 @@
 import type { DirectusPermission } from '../../../schema/permission.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreatePermissionOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const createPermissions =
 	): RestCommand<CreatePermissionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/permissions`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
 	});
@@ -44,7 +43,7 @@ export const createPermission =
 	): RestCommand<CreatePermissionOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/permissions`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',
 	});

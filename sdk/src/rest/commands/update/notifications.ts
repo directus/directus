@@ -1,7 +1,6 @@
 import type { DirectusNotification } from '../../../schema/notification.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type UpdateNotificationOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const updatedNotifications =
 	): RestCommand<UpdateNotificationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/notifications`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify({ keys, data: item }),
 		method: 'PATCH',
 	});
@@ -44,7 +43,7 @@ export const updateNotification =
 	): RestCommand<UpdateNotificationOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/notifications/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});

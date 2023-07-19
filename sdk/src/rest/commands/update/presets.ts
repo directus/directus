@@ -1,7 +1,6 @@
 import type { DirectusPreset } from '../../../schema/preset.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type UpdatePresetOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const updatedPresets =
 	): RestCommand<UpdatePresetOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/presets`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify({ keys, data: item }),
 		method: 'PATCH',
 	});
@@ -44,7 +43,7 @@ export const updatePreset =
 	): RestCommand<UpdatePresetOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/presets/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});

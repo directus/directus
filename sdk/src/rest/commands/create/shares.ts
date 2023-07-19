@@ -1,7 +1,6 @@
 import type { DirectusShare } from '../../../schema/share.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateShareOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const createShares =
 	): RestCommand<CreateShareOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
 	});
@@ -44,7 +43,7 @@ export const createShare =
 	): RestCommand<CreateShareOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',
 	});
