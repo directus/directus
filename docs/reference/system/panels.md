@@ -581,7 +581,7 @@ Delete multiple existing panels.
 
 `DELETE /panels`
 ```json
-["panel_1_key", "panel_2_key", "panel_3_key"]
+["key_1", "key_2", "key_3"]
 ```
 </template>
 
