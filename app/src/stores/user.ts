@@ -1,9 +1,10 @@
 import api from '@/api';
 import { useLatencyStore } from '@/stores/latency';
-import { User } from '@directus/types';
 import { userName } from '@/utils/user-name';
+import { User } from '@directus/types';
 import { merge } from 'lodash';
 import { defineStore } from 'pinia';
+import type { RouteLocationNormalized } from 'vue-router';
 
 type ShareUser = {
 	share: string;
@@ -72,13 +73,22 @@ export const useUserStore = defineStore({
 				// Do nothing
 			}
 		},
-		async trackPage(page: string) {
+		async trackPage(to: RouteLocationNormalized) {
+			/**
+			 * We don't want to track the full screen preview from live previews as part of the user's
+			 * last page, as that'll cause a fresh login to navigate to the full screen preview where
+			 * you can't navigate away from #19160
+			 */
+			if (to.path.endsWith('/preview')) {
+				return;
+			}
+
 			const latencyStore = useLatencyStore();
 
 			const start = performance.now();
 
 			await api.patch(`/users/me/track/page`, {
-				last_page: page,
+				last_page: to.fullPath,
 			});
 
 			const end = performance.now();
@@ -89,7 +99,7 @@ export const useUserStore = defineStore({
 			});
 
 			if (this.currentUser && !('share' in this.currentUser)) {
-				this.currentUser.last_page = page;
+				this.currentUser.last_page = to.fullPath;
 			}
 		},
 	},

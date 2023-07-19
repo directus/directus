@@ -1,8 +1,6 @@
 {
-	"extends": "@directus/tsconfig/node18-esm.json",
-	"compilerOptions": {
-		"lib": ["es2022", "DOM"]
-	},
+	"extends": "@directus/tsconfig/vue3",
+	"include": ["src"],
 	"typedocOptions": {
 		"entryPoints": ["./src/index.ts"]
 	}
