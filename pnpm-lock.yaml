@@ -529,6 +529,9 @@ importers:
       '@directus/stores':
         specifier: workspace:*
         version: link:../packages/stores
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../packages/tsconfig
       '@directus/types':
         specifier: workspace:*
         version: link:../packages/types
