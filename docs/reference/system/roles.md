@@ -77,6 +77,23 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRoles } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readRoles({
+        'fields': ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -117,6 +134,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRoles } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readRoles({
+        'fields': ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve a Role
@@ -137,6 +171,23 @@ List an existing role by primary key.
 type Query {
 	roles_by_id(id: ID!): directus_roles
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRole } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readRole('role_id',{
+        'fields': ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -175,6 +226,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRole } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readRole('39a178f6-d4d6-40e1-b0e7-ec6daaac8747',{
+        'fields': ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a Role
@@ -190,11 +258,11 @@ Create a new role.
 
 ```json
 {
-	"role_object_field_1": "value_1",
-	"role_object_field_2": "value_2",
-	"role_object_field_3": value_3,
-	"role_object_field_4": value_4,
-	"role_object_field_5": value_5
+	"role_field_1": "value_1",
+	"role_field_2": "value_2",
+	"role_field_3": value_3,
+	"role_field_4": value_4,
+	"role_field_5": value_5
 }
 ```
 
@@ -207,6 +275,27 @@ Create a new role.
 type Mutation {
 	create_roles_item(data: create_directus_roles_input!): directus_roles
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createRole } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createRole({
+		'role_field_1': 'value_1',
+		'role_field_2': 'value_2',
+		'role_field_3': value_3,
+		'role_field_4': value_4,
+		'role_field_5': value_5
+    })
+)
+
+console.log(result);
 ```
 
 </template>
@@ -261,6 +350,27 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createRole } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createRole({
+        'name': 'Interns',
+        'icon': 'verified_user',
+        'description': null,
+        'admin_access': false,
+        'app_access': true
+    })
+)
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create Multiple Roles
@@ -302,6 +412,37 @@ Create multiple new roles.
 type Mutation {
 	create_roles_items(data: [create_directus_roles_input!]!): [directus_roles]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createRoles } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createRoles(
+    [
+		{
+			'role_object_1_field_1': 'value_1',
+			'role_object_1_field_2': 'value_2',
+			'role_object_1_field_3': value_3,
+			'role_object_1_field_4': value_4,
+			'role_object_1_field_5': value_5,
+		},
+		{
+			'role_object_2_field_1': 'value_6',
+			'role_object_2_field_2': 'value_7',
+			'role_object_2_field_3': value_8,
+			'role_object_2_field_4': value_9,
+			'role_object_2_field_5': value_10,
+		},
+    ])
+)
+
+console.log(result);
 ```
 
 </template>
@@ -368,6 +509,37 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createRoles } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createRoles(
+    [
+        {
+            'name': 'Interns',
+            'icon': 'verified_user',
+            'description': null,
+            'admin_access': false,
+            'app_access': true
+        },
+        {
+            'name': 'Customers',
+            'icon': 'person',
+            'description': null,
+            'admin_access': false,
+            'app_access': false
+        }
+    ])
+)
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update a Role
@@ -396,6 +568,22 @@ Update an existing role.
 type Mutation {
 	update_roles_item(id: ID!, data: update_directus_roles_input): directus_roles
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateRole } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateRole('role_id', {
+            'role_field': 'value',
+        }
+    )
+)
 ```
 
 </template>
@@ -444,6 +632,22 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateRole } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateRole('a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658', {
+            'admin_access': true,
+        }
+    )
+)
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Multiple Roles
@@ -475,6 +679,24 @@ Update multiple existing roles.
 type Mutation {
 	update_roles_items(ids: [ID!]!, data: update_directus_roles_input): [directus_roles]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedRoles } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedRoles(['role_1_id','role_2_id'], {
+            'field': 'value',
+        }
+    )
+)
+
+console.log(result);
 ```
 
 </template>
@@ -533,6 +755,24 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedRoles } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658','1792dc2c-6142-4723-ae40-698d082ddc5e'], {
+            'admin_access': true,
+        }
+    )
+)
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete a Role
@@ -555,6 +795,21 @@ Delete an existing role.
 type Mutation {
 	delete_roles_item(id: ID!): delete_one
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteRole } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteRole('role_id')
+)
+
+console.log(result);
 ```
 
 </template>
@@ -585,6 +840,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteRole } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteRole('1792dc2c-6142-4723-ae40-698d082ddc5e')
+)
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete Multiple Roles
@@ -611,6 +881,21 @@ Delete multiple existing roles.
 type Mutation {
 	delete_roles_items(ids: [ID!]!): delete_many
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteRoles } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteRoles(['role_1_id','role_2_id'])
+)
+
+console.log(result);
 ```
 
 </template>
@@ -646,6 +931,21 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteRoles } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658','1792dc2c-6142-4723-ae40-698d082ddc5e'])
+)
+
+console.log(result);
 ```
 
 </template>
