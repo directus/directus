@@ -108,7 +108,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPresets } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(readPresets({
         'fields' : ['*']
@@ -202,7 +202,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPreset } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     readPreset('preset_id',{
@@ -478,7 +478,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePresets } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updatePreset('preset_id', {
@@ -584,7 +584,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedPresets } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updatePreset(['preset_1_id','preset_2_id'], {
@@ -688,7 +688,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePreset } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     deletePreset('preset_id')
@@ -774,7 +774,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePresets } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     deletePreset(['preset_1_id','preset_2_id'])

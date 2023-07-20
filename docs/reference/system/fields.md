@@ -177,7 +177,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readFields } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(readFields());
 
@@ -262,7 +262,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readFieldsByCollection } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(readFieldsByCollection('collection_name'));
 
@@ -347,7 +347,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readField } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(readField('collection_name', 'field_name'));
 
@@ -442,7 +442,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, createField } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	createField('collection_name', {
@@ -581,7 +581,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateField } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updateField('collection_name', 'field_name', {
@@ -719,7 +719,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteField } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(deleteField('collection_name', 'field_name'));
 

@@ -135,7 +135,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readSettings } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(readSettings())
 
@@ -221,7 +221,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedSettings } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updatedSettings({

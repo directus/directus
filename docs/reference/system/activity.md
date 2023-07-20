@@ -87,7 +87,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readActivities } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readActivities({
@@ -178,7 +178,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readActivity } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readActivity('activity_id', {
@@ -279,7 +279,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, createComment } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	createComment({
@@ -396,7 +396,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateComment } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updateComment('comment_id', {
@@ -498,7 +498,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteComment } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(deleteComment('comment_id'));
 

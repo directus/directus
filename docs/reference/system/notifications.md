@@ -561,7 +561,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateNotification } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updateNotification('notification_id', {
@@ -673,7 +673,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedNotifications } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updatedNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'], {
@@ -785,7 +785,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteNotification } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(deleteNotification('notification_1_id'));
 

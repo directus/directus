@@ -265,7 +265,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readFiles } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readFiles({
@@ -368,7 +368,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readFiles } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readFile('file_id', {
@@ -550,7 +550,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, importFils } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	importFile('file_url', {
@@ -662,7 +662,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateFils } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updateFile('file_id', {
@@ -773,7 +773,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedFiles } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updatedFiles(['file_id', 'file_id_2'], {
@@ -885,7 +885,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFils } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(deleteFile('file_id'));
 
@@ -979,7 +979,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteFiles } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(deleteFiles(['file_id_1', 'file_id_2']));
 

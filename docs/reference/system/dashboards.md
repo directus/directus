@@ -80,7 +80,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readDashboards } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readDashboards({
@@ -178,7 +178,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readDashboard } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readDashboard('dashboard_id', {
@@ -276,7 +276,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, createDashboard } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	createDashboard({
@@ -395,7 +395,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, createDashboards } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	createDashboards([
@@ -527,7 +527,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateDashboard } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updateDashboard('dashboard_id', {
@@ -639,7 +639,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedDashboards } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updatedDashboards(['dashboard_1_id', 'dashboard_2_id'], {
@@ -752,7 +752,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteDashboard } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(deleteDashboard('dashboard_id'));
 
@@ -836,7 +836,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteDashboards } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(deleteDashboards(['dashboard_id_1', 'dashboard_id_2']));
 

@@ -43,7 +43,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readOpenApiSpec } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(readOpenApiSpec())
 
@@ -225,7 +225,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverPing } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(serverPing())
 
@@ -307,7 +307,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverInfo } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(serverInfo())
 
@@ -476,7 +476,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverHealth } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(serverHealth())
 

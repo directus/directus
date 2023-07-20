@@ -108,7 +108,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPanels } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(readPanels({
         'fields' : ['*']
@@ -202,7 +202,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPanel } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(readPanel('panel_id',{
         'fields' : ['*']
@@ -298,7 +298,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPanel } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     createPanel({
@@ -425,7 +425,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPanels } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     createPanels(
@@ -571,7 +571,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePanel } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updatePanel('panel_id', {
@@ -682,7 +682,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedPanels } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(staticToken()).with(rest())
+const client = createDirectus('directus_project_url').with(staticToken()).with(rest())
 
 const result = await client.request(
     updatedPanels(['panel_1_id','panel_2_id'], {
@@ -793,7 +793,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePanel } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(deletePanel('panel_id'));
 
@@ -875,7 +875,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePanels } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(deletePanels(
     ['panel_1_id','panel_2_id']

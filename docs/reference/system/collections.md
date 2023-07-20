@@ -173,7 +173,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readCollections } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(readCollections());
 
@@ -262,7 +262,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readCollection } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(readCollection('collection_name'));
 
@@ -355,7 +355,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, createCollection } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	createCollection({
@@ -486,7 +486,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateCollection } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	updateCollection('collection_name', {
@@ -601,7 +601,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteCollection } from '@directus/sdk/rest';
 
-const client = createDirectus('app_url').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(deleteCollection('collection_name'));
 
