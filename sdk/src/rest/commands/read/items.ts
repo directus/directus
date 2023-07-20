@@ -8,6 +8,7 @@ export type ReadItemOutput<
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
 
+
 /**
  * List all items that exist in Directus.
  *
@@ -20,7 +21,7 @@ export const readItems =
 	<
 		Schema extends object,
 		Collection extends RegularCollections<Schema>,
-		TQuery extends Query<Schema, Schema[Collection]>
+		const TQuery extends Query<Schema, Schema[Collection]>
 	>(
 		collection: Collection,
 		query?: TQuery
@@ -52,7 +53,7 @@ export const readItem =
 	<
 		Schema extends object,
 		Collection extends RegularCollections<Schema>,
-		TQuery extends Query<Schema, Schema[Collection]>
+		const TQuery extends Query<Schema, Schema[Collection]>
 	>(
 		collection: Collection,
 		key: PrimaryKey,

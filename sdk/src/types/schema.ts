@@ -1,4 +1,5 @@
 import type { CoreSchema } from '../schema/index.js';
+import type { UnpackList } from './utils.js';
 
 /**
  * Get all available top level Item types from a given Schema
@@ -12,7 +13,7 @@ export type ItemType<Schema extends object> =
 /**
  * Return singular collection type
  */
-export type CollectionType<Schema extends object, Collection extends keyof Schema> = UnpackList<Schema[Collection]>;
+export type CollectionType<Schema extends object, Collection extends keyof Schema> = UnpackList<Schema[Collection]> extends object ? UnpackList<Schema[Collection]> : never;
 
 /**
  * Returns a list of singleton collections in the schema
@@ -48,11 +49,6 @@ export type RemoveRelationships<Schema extends object, Item> = {
 };
 
 /**
- * Flatten array types to their singular root
- */
-export type UnpackList<Item> = Item extends any[] ? Item[number] : Item;
-
-/**
  * Merge a core collection from the schema with the builtin schema
  */
 export type MergeCoreCollection<
@@ -79,3 +75,27 @@ export type CompleteSchema<Schema extends object> = CoreSchema<Schema> extends i
 				: never;
 	  }
 	: never;
+
+/**
+ * Merge custom schema with core schema
+ */
+export type AllCollections<Schema extends object> = RegularCollections<Schema> | RegularCollections<CoreSchema<Schema>>;
+
+/**
+ * Helper to extract a collection with fallback to defaults
+ */
+export type GetCollection<
+	Schema extends object,
+	CollectionName extends AllCollections<Schema>
+> = CollectionName extends keyof CoreSchema<Schema>
+	? CoreSchema<Schema>[CollectionName]
+	: CollectionName extends keyof Schema
+	? Schema[CollectionName]
+	: never;
+
+/**
+ * Helper to extract a collection name
+ */
+export type GetCollectionName<Schema extends object, Collection, FullSchema extends object = CompleteSchema<Schema>> = {
+	[K in keyof FullSchema]: UnpackList<FullSchema[K]> extends Collection ? K : never;
+}[keyof FullSchema];
