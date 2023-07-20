@@ -1,10 +1,10 @@
-import type { FilterOperator } from '@directus/types';
+import type { ClientFilterOperator } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { createError } from '@directus/errors';
 
 export interface FailedValidationErrorExtensions {
 	field: string;
-	type: FilterOperator | 'required' | 'regex';
+	type: ClientFilterOperator | 'required';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;

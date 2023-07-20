@@ -219,6 +219,14 @@ export class ExportService {
 					knex: trx,
 				});
 
+				const { primary } = this.schema.collections[collection]!;
+
+				const sort = query.sort ?? [];
+
+				if (sort.includes(primary) === false) {
+					sort.push(primary);
+				}
+
 				const totalCount = await service
 					.readByQuery({
 						...query,
@@ -244,6 +252,7 @@ export class ExportService {
 
 					const result = await service.readByQuery({
 						...query,
+						sort,
 						limit,
 						offset: batch * env['EXPORT_BATCH_SIZE'],
 					});

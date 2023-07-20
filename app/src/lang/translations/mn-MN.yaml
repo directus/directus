@@ -120,3 +120,6 @@ displays:
   formatted-value:
     prefix: Угтвар
     suffix: Дагавар
+operations:
+  notification:
+    subject: Сэдэв

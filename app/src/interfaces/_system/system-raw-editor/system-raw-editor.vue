@@ -9,7 +9,7 @@ import { useWindowSize } from '@/composables/use-window-size';
 import { parseJSON } from '@directus/utils';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/mode/simple';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
 
@@ -44,13 +44,18 @@ let previousContent: string | null = null;
 
 const isMultiLine = computed(() => ['text', 'json'].includes(props.type!));
 
+const isObjectLike = computed(() => {
+	if (props.type === 'json' || props.type === 'csv' || props.type?.startsWith('geometry')) return true;
+	return false;
+});
+
 onMounted(async () => {
 	if (codemirrorEl.value) {
 		CodeMirror.defineSimpleMode('mustache', mustacheMode);
 
 		codemirror = CodeMirror(codemirrorEl.value, {
 			mode: props.language,
-			value: typeof props.value === 'object' ? JSON.stringify(props.value, null, 4) : String(props.value ?? ''),
+			value: unref(isObjectLike) ? JSON.stringify(props.value, null, 4) : String(props.value ?? ''),
 			tabSize: 0,
 			autoRefresh: true,
 			indentUnit: 4,
@@ -94,7 +99,7 @@ onMounted(async () => {
 
 			if (origin === 'setValue') return;
 
-			if (typeof props.value === 'object') {
+			if (unref(isObjectLike)) {
 				try {
 					emit('input', content !== '' ? parseJSON(content) : null);
 				} catch {
@@ -124,6 +129,17 @@ watch(
 		codemirror?.setOption('cursorBlinkRate', disabled ? -1 : 530);
 	},
 	{ immediate: true }
+);
+
+watch(
+	() => props.value,
+	(newValue) => {
+		const currentValue = codemirror?.getValue();
+
+		if (currentValue !== newValue) {
+			codemirror?.setValue(unref(isObjectLike) ? JSON.stringify(newValue, null, 4) : String(newValue ?? ''));
+		}
+	}
 );
 </script>
 

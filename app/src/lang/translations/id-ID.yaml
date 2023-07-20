@@ -454,11 +454,6 @@ open_file_in_tab: Buka file di tab baru
 start_export: Mulai Ekspor
 not_available_for_local_downloads: Tidak tersedia untuk unduhan lokal
 exporting_all_items_in_collection: Ekspor semua {total} item dalam {collection}.
-exporting_limited_items_in_collection: Ekspor {limit} dari {total} keseluruhan item dalam {collection}.
-exporting_no_items_to_export: Tidak ada item untuk dieskpor. Atur proses ekspor melalui konfigurasi dibawah.
-exporting_download_hint: Setelah selesai, {format} berkas ini akan secara otomatis terunduh ke perangkat anda.
-exporting_batch_hint: Proses ekspor ini akan dilakukan melalui proses batch, dan ketika sudah selesai, {format} berkas ini akan disimpan kedalam Pustaka Berkas.
-exporting_batch_hint_forced: Dikarenakan jumlah item yang sangat banyak, maka proses ekspor ini harus dilakukan melalui proses batch, dan ketika sudah selesai, {format} berkas ini akan tersimpan kedalam Pustaka Berkas.
 collection_key: Kunci Koleksi
 name: Nama
 primary_key_field: Kolom Primary Key
@@ -1550,6 +1545,7 @@ operations:
   notification:
     recipient: Pengguna
     message: Pesan
+    subject: Subjek
   request:
     url: URL
   trigger:
