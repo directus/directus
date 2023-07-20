@@ -88,6 +88,23 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readShares } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readShares({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -127,6 +144,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readShares } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readShares({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve a Share
@@ -147,6 +181,23 @@ List an existing share by primary key.
 type Query {
 	shares_by_id(id: ID!): directus_shares
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readShare } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readShare('share_id', {
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -184,6 +235,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readShare } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readShare('2f8c03c3-4988-4869-a1b3-318e0a4b9b9d', {
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a Share
@@ -199,10 +267,10 @@ Create a new share.
 
 ```json
 {
-	"share_object_field_1": "value_1",
-	"share_object_field_2": "value_2",
-	"share_object_field_3": "value_3",
-	"share_object_field_4": "value_4"
+	"share_field_1": "value_1",
+	"share_field_2": "value_2",
+	"share_field_3": "value_3",
+	"share_field_4": "value_4"
 }
 ```
 
@@ -281,16 +349,16 @@ Create multiple new shares.
 ```json
 [
 	{
-		"share_object_1_field_1": "value_1",
-		"share_object_1_field_2": "value_2",
-		"share_object_1_field_3": "value_3",
-		"share_object_1_field_4": "value_4"
+		"share_1_field_1": "value_1",
+		"share_1_field_2": "value_2",
+		"share_1_field_3": "value_3",
+		"share_1_field_4": "value_4"
 	},
 	{
-		"share_object_2_field_1": "value_5",
-		"share_object_2_field_2": "value_6",
-		"share_object_2_field_3": "value_7",
-		"share_object_2_field_4": "value_8"
+		"share_2_field_1": "value_5",
+		"share_2_field_2": "value_6",
+		"share_2_field_3": "value_7",
+		"share_2_field_4": "value_8"
 	}
 ]
 ```
@@ -387,7 +455,7 @@ Update an existing share.
 
 ```json
 {
-	"share_object_field": "value_1"
+	"share_field": "value_1"
 }
 ```
 
@@ -400,6 +468,23 @@ Update an existing share.
 type Mutation {
 	update_shares_item(id: ID!, data: update_directus_shares_input): directus_shares
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateShare } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateShare('share_id', {
+        'share_field' : 'value',
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -447,6 +532,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateShare } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateShare('2f8c03c3-4988-4869-a1b3-318e0a4b9b9d', {
+        'max_uses' : 10,
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Multiple Shares
@@ -462,7 +564,7 @@ Update multiple existing shares.
 
 ```json
 {
-	"keys": ["share_1_key", "share_2_key"],
+	"keys": ["share_1_id", "share_2_id"],
 	"data": {
 		"share_object_field": "value_1"
 	}
@@ -478,6 +580,23 @@ Update multiple existing shares.
 type Mutation {
 	update_shares_items(ids: [ID!]!, data: update_directus_shares_input): [directus_shares]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedShare } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedShares(['share_1_id','share_2_id'], {
+        'field' : 'value',
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -535,6 +654,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedShare } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedShares(['2f8c03c3-4988-4869-a1b3-318e0a4b9b9d','153cdb59-7868-4187-8696-372aa07537f4'], {
+        'max_uses' : 10,
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete a Share
@@ -587,6 +723,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteShare } from '@directus/sdk/rest';
+const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest())
+
+const result = await client.request(
+    deleteShare('0375bb1d-5cbb-48cf-bfac-476a3440a104')
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete Multiple Shares
@@ -601,7 +752,7 @@ Delete multiple existing shares.
 `DELETE /shares`
 
 ```json
-["share_1_key", "share_2_key"]
+["share_1_id", "share_2_id"]
 ```
 
 </template>
@@ -613,6 +764,21 @@ Delete multiple existing shares.
 type Mutation {
 	delete_shares_items(ids: [ID!]!): delete_many
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteShares } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteShares(['share_1_id','share_2_id'])
+);
+
+console.log(result);
 ```
 
 </template>
@@ -648,6 +814,21 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteShares } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteShares(['2f8c03c3-4988-4869-a1b3-318e0a4b9b9d','153cdb59-7868-4187-8696-372aa07537f4'])
+);
+
+console.log(result);
 ```
 
 </template>
