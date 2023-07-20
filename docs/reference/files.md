@@ -637,7 +637,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFiles } from '@directus/sdk/rest';
+import { rest, updateFile } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
@@ -697,7 +697,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFiles } from '@directus/sdk/rest';
+import { rest, updateFile } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -748,12 +748,12 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFiles } from '@directus/sdk/rest';
+import { rest, updateFiles } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updatedFiles(['file_id', 'file_id_2'], {
+	updateFiles(['file_id', 'file_id_2'], {
 		item_field: ['value'],
 	})
 );
@@ -813,12 +813,12 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFiles } from '@directus/sdk/rest';
+import { rest, updateFiles } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updatedFiles(['dc193671-13b9-4c37-a8af-42f17c036742', 'e88b0344-84cf-4bfd-a90b-c0b5b66c17eb'], {
+	updateFiles(['dc193671-13b9-4c37-a8af-42f17c036742', 'e88b0344-84cf-4bfd-a90b-c0b5b66c17eb'], {
 		tags: ['dogs'],
 	})
 );
@@ -860,7 +860,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFiles } from '@directus/sdk/rest';
+import { rest, deleteFile } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
@@ -905,7 +905,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFiles } from '@directus/sdk/rest';
+import { rest, deleteFile } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
