@@ -93,7 +93,7 @@ articles that have a publish date AND have the `published` state are displayed o
 
 :::
 
-Using the [Directus JavaScript SDK](/reference/sdk) (preferred)
+Using the [Directus JavaScript SDK](/guides/sdk/getting-started) (preferred)
 
 ```js
 const articles = await directus.request(

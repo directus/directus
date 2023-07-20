@@ -1,6 +1,6 @@
 ---
 contributors: Esther Agbaje
-description: Learn how to use the new Directus JavaScript SDK to access your data.
+description: Learn how to use the Directus JavaScript SDK to work with your data and files.
 ---
 
 # Getting Started with the JavaScript SDK

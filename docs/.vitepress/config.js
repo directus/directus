@@ -330,10 +330,6 @@ function sidebar() {
 					text: 'Files',
 				},
 				{
-					link: '/reference/sdk',
-					text: 'JS-SDK',
-				},
-				{
 					link: '/reference/system/activity',
 					text: 'Activity',
 				},
@@ -432,6 +428,10 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{
+					text: 'JavaScript SDK',
+					link: '/guides/sdk/getting-started'
+				},
 				{
 					text: 'Flows',
 					items: [
