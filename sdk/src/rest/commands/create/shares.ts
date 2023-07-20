@@ -22,7 +22,7 @@ export const createShares =
 		query?: TQuery
 	): RestCommand<CreateShareOutput<Schema, TQuery>[], Schema> =>
 	() => ({
-		path: `/`,
+		path: `/shares`,
 		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
@@ -42,7 +42,7 @@ export const createShare =
 		query?: TQuery
 	): RestCommand<CreateShareOutput<Schema, TQuery>, Schema> =>
 	() => ({
-		path: `/`,
+		path: `/shares`,
 		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',

@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
 export const deleteWebhooks =
 	<Schema extends object>(keys: DirectusWebhook<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
-		path: `/`,
+		path: `/webhooks`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
 		onResponse: null,
@@ -23,7 +23,7 @@ export const deleteWebhooks =
 export const deleteWebhook =
 	<Schema extends object>(key: DirectusWebhook<Schema>['id']): RestCommand<void, Schema> =>
 	() => ({
-		path: `//${key}`,
+		path: `/webhooks/${key}`,
 		method: 'DELETE',
 		onResponse: null,
 	});
