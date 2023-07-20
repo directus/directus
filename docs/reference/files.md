@@ -452,15 +452,17 @@ Not supported by GraphQL
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, uploadFile } from '@directus/sdk/rest';
+import { rest, uploadFiles } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const formData = new FormData();
-formData.append('title', 'My First File');
+formData.append('file_1_property', 'Value');
 formData.append('file', raw_file);
+formData.append('file_2_property', 'Value');
+formData.append('file', raw_file_2);
 
-const result = await client.request(uploadFile(formData));
+const result = await client.request(uploadFiles(formData));
 
 console.log(result);
 ```
@@ -473,12 +475,10 @@ The file contents has to be provided in a property called `file`. All other prop
 
 ::: tip Order Matters
 
-Make sure to define the non-file properties _first_. This ensures that the file metadata is associated with the correct
+Make sure to define the non-file properties for each file _first_. This ensures that the file metadata is associated with the correct
 file.
 
 :::
-
-You can upload multiple files at a time by repeating the payload with different contents, always ending with a `file` property.
 
 #### Query Parameters
 
@@ -525,7 +525,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, importFils } from '@directus/sdk/rest';
+import { rest, importFile } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
@@ -590,7 +590,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, importFils } from '@directus/sdk/rest';
+import { rest, importFile } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -637,7 +637,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFils } from '@directus/sdk/rest';
+import { rest, updateFiles } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
@@ -697,7 +697,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateFils } from '@directus/sdk/rest';
+import { rest, updateFiles } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -860,7 +860,7 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFils } from '@directus/sdk/rest';
+import { rest, deleteFiles } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
@@ -905,7 +905,7 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, deleteFils } from '@directus/sdk/rest';
+import { rest, deleteFiles } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
