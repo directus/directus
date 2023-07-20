@@ -103,6 +103,22 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPresets } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readPresets({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -140,6 +156,22 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPresets } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readPresets({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve a preset
@@ -162,6 +194,23 @@ GET /presets/:id
 type Query {
 	presets_by_id(id: ID!): directus_presets
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPreset } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readPreset('preset_id',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -197,6 +246,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPreset } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readPreset('27',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a Preset
@@ -212,9 +278,9 @@ Create a new preset.
 
 ```json
 {
-	"preset_object_field_1": "value_1",
-	"preset_object_field_2": "value_2",
-	"preset_object_field_3": "value_3"
+	"preset_field_1": "value_1",
+	"preset_field_2": "value_2",
+	"preset_field_3": "value_3"
 }
 ```
 
@@ -290,14 +356,14 @@ Create multiple new presets.
 ```json
 [
 	{
-		"preset_object_field_1": "value_1",
-		"preset_object_field_2": "value_2",
-		"preset_object_field_3": "value_3"
+		"preset_1_field_1": "value_1",
+		"preset_1_field_2": "value_2",
+		"preset_1_field_3": "value_3"
 	},
 	{
-		"preset_object_field_1": "value_1",
-		"preset_object_field_2": "value_2",
-		"preset_object_field_3": "value_3"
+		"preset_2_field_1": "value_1",
+		"preset_2_field_2": "value_2",
+		"preset_2_field_3": "value_3"
 	}
 ]
 ```
@@ -407,6 +473,21 @@ type Mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePresets } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatePreset('preset_id', {
+        'field' : 'value'
+    })
+)
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -449,6 +530,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePreset } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatePreset('24',{
+        'layout' : 'tabular'
+    })
+)
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Multiple Presets
@@ -480,6 +576,21 @@ Update multiple existing presets.
 type Mutation {
 	update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedPresets } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatePreset(['preset_1_id','preset_2_id'], {
+        'field' : 'value'
+    })
+)
 ```
 
 </template>
@@ -532,6 +643,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedPresets } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatePreset(['24','34'] ,{
+        'layout' : 'tabular'
+    })
+)
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete a Preset
@@ -554,6 +680,21 @@ Delete an existing preset.
 type Mutation {
 	delete_presets_item(id: ID!): delete_one
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePreset } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deletePreset('preset_id')
+)
+
+console.log(result);
 ```
 
 </template>
@@ -584,6 +725,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePreset } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deletePreset('24')
+)
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete Multiple Presets
@@ -610,6 +766,21 @@ Delete multiple existing presets.
 type Mutation {
 	delete_presets_items(ids: [ID!]!): delete_many
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePresets } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deletePreset(['preset_1_id','preset_2_id'])
+)
+
+console.log(result);
 ```
 
 </template>
@@ -645,6 +816,21 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePresets } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deletePreset(['24','48'])
+)
+
+console.log(result);
 ```
 
 </template>
