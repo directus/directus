@@ -130,6 +130,19 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readSettings } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readSettings())
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -161,6 +174,19 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readSettings } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readSettings())
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Settings
@@ -187,6 +213,23 @@ query {
 type Mutation {
 	update_settings(data: update_directus_settings_input!): directus_settings
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedSettings } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedSettings({
+        'settings_field' : 'value'
+    })
+)
+
+console.log(result);
 ```
 
 </template>
@@ -229,6 +272,23 @@ mutation {
 		project_url
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedSettings } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedSettings({
+        'project_url' : 'https://example.com/'
+    })
+)
+
+console.log(result);
 ```
 
 </template>
