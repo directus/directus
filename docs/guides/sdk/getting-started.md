@@ -3,7 +3,7 @@ contributors: Esther Agbaje, Kevin Lewis
 description: Learn how to use the Directus JavaScript SDK to work with your data and files.
 ---
 
-# Getting Started with the JavaScript SDK
+# Directus JavaScript SDK
 
 Learn how to use the new Directus JavaScript SDK to easily access and manipulate your data.
 
