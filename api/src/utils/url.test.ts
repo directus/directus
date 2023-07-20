@@ -1,24 +1,6 @@
 import { expect, test, describe } from 'vitest';
 import { Url } from './url.js';
 
-describe('path handling', () => {
-	test('parse and serialize an URL without path', () => {
-		expect(new Url('https://example.com').toString()).toStrictEqual('https://example.com');
-	});
-
-	test('parse and serialize an URL without path, removing trailing slash', () => {
-		expect(new Url('https://example.com/').toString()).toStrictEqual('https://example.com');
-	});
-
-	test('parse and serialize an URL with path component', () => {
-		expect(new Url('https://example.com/path').toString()).toStrictEqual('https://example.com/path');
-	});
-
-	test('parse and serialize an URL with path component, removing trailing slash', () => {
-		expect(new Url('https://example.com/path/').toString()).toStrictEqual('https://example.com/path');
-	});
-});
-
 describe('relative URL handling', () => {
 	test('parse and serialize a relative path', () => {
 		expect(new Url('/sample-path').toString()).toStrictEqual('/sample-path');
@@ -136,6 +118,14 @@ describe('isRootRelative', () => {
 });
 
 describe('trailing slash handling', () => {
+	test('parse and serialize an URL without path', () => {
+		expect(new Url('https://example.com').toString()).toStrictEqual('https://example.com');
+	});
+
+	test('parse and serialize an URL without path, keeping trailing slash', () => {
+		expect(new Url('https://example.com/').toString()).toStrictEqual('https://example.com/');
+	});
+	
 	test('parse and serialize an URL preserving trailing slash with no query params', () => {
 		expect(new Url('https://example.com/path/').toString()).toStrictEqual('https://example.com/path/');
 	});

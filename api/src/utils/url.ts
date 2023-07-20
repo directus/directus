@@ -26,7 +26,9 @@ export class Url {
 		this.path = parsedUrl.pathname.split('/').filter((p) => p !== '');
 		this.query = Object.fromEntries(parsedUrl.searchParams.entries());
 		this.hash = parsedUrl.hash !== '' ? parsedUrl.hash.substring(1) : null;
-		this.hasTrailingSlash = parsedUrl.pathname.endsWith('/');
+
+		this.hasTrailingSlash = parsedUrl.pathname.length > 1
+			? parsedUrl.pathname.endsWith('/') : url.endsWith('/');
 	}
 
 	public isAbsolute(): boolean {
@@ -69,7 +71,7 @@ export class Url {
 
 		const path = this.path.length ? `/${this.path.join('/')}` : '';
 
-		const trailingSlash = this.hasTrailingSlash && this.path.length ? '/' : '';
+		const trailingSlash = this.hasTrailingSlash ? '/' : '';
 
 		const query = Object.keys(this.query).length !== 0 ? `?${new URLSearchParams(this.query).toString()}` : '';
 
