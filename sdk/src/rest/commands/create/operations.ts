@@ -1,7 +1,6 @@
 import type { DirectusOperation } from '../../../schema/operation.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateOperationOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const createOperations =
 	): RestCommand<CreateOperationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/operations`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
 	});
@@ -44,7 +43,7 @@ export const createOperation =
 	): RestCommand<CreateOperationOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/operations`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',
 	});

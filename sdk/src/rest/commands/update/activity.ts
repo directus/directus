@@ -1,7 +1,6 @@
 import type { DirectusActivity } from '../../../schema/activity.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type UpdateActivityOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const updateComment =
 	): RestCommand<UpdateActivityOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/activity/comment/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});

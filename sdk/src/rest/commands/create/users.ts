@@ -1,7 +1,6 @@
 import type { DirectusUser } from '../../../schema/user.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateUserOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const createUsers =
 	): RestCommand<CreateUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/users`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
 	});
@@ -44,7 +43,7 @@ export const createUser =
 	): RestCommand<CreateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',
 	});

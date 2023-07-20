@@ -42,14 +42,23 @@ export type AggregationTypes = {
 	};
 };
 
+/**
+ * Aggregation parameters
+ */
 export type AggregateRecord<Fields = string> = {
 	[Func in keyof AggregationTypes]?: Fields | (AggregationTypes[Func]['wildcard'] extends never ? never : '*');
 };
 
+/**
+ * GroupBy parameters
+ */
 export type GroupByFields<Schema extends object, Item> =
 	| WrappedFields<DateFields<Schema, Item>, GroupingFunctions['date']>
 	| WrappedFields<RelationalFields<Schema, Item>, GroupingFunctions['array']>;
 
+/**
+ * Aggregation input options
+ */
 export type AggregationOptions<
 	Schema extends object,
 	Collection extends AllCollections<Schema>,
@@ -61,6 +70,9 @@ export type AggregationOptions<
 	query?: Omit<Query<Schema, Item>, 'fields' | 'deep' | 'alias'>;
 };
 
+/**
+ * Output typing for aggregation
+ */
 export type AggregationOutput<
 	Schema extends object,
 	Collection extends AllCollections<Schema>,
@@ -90,8 +102,14 @@ export type AggregationOutput<
 		: never;
 })[];
 
+/**
+ * Merge custom schema with core schema
+ */
 export type AllCollections<Schema extends object> = RegularCollections<Schema> | RegularCollections<CoreSchema<Schema>>;
 
+/**
+ * Helper to extract a collection with fallback to defaults
+ */
 type GetCollection<
 	Schema extends object,
 	Collection extends AllCollections<Schema>
@@ -101,13 +119,19 @@ type GetCollection<
 	? Schema[Collection]
 	: never;
 
+/**
+ * Wrap fields in functions
+ */
 type WrappedFields<Fields, Funcs> = Fields extends string
 	? Funcs extends string
 		? `${Funcs}(${Fields})`
 		: never
 	: never;
 
-// all we can really check is for string types
+/**
+ * Try to detect date fields
+ * TODO all we can really check is for string types, can we do more?
+ */
 type DateFields<Schema extends object, Item> = {
 	[Key in keyof Item]: Extract<Item[Key], ItemType<Schema>> extends never
 		? NonNullable<Item[Key]> extends string
@@ -116,7 +140,11 @@ type DateFields<Schema extends object, Item> = {
 		: never;
 }[keyof Item];
 
-// TODO this must be doable in a simpler way to handle the logic below!
+/**
+ * The types below are helpers for working with fields wrapped in functions
+ *
+ * TODO this must be doable in a simpler way to handle the logic below!
+ */
 type PermuteFields<Fields, Funcs> = Fields extends string ? (Funcs extends string ? [Fields, Funcs] : never) : never;
 
 type MapFunctionFields<Fields, Funcs> = {

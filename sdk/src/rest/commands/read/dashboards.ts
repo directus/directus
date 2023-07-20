@@ -1,7 +1,6 @@
 import type { DirectusDashboard } from '../../../schema/dashboard.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadDashboardOutput<
 	Schema extends object,
@@ -20,7 +19,7 @@ export const readDashboards =
 	): RestCommand<ReadDashboardOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/dashboards`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
 
@@ -37,6 +36,6 @@ export const readDashboard =
 	): RestCommand<ReadDashboardOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/dashboards/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});

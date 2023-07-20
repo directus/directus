@@ -1,7 +1,6 @@
 import type { DirectusRole } from '../../../schema/role.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadRoleOutput<
 	Schema extends object,
@@ -20,7 +19,7 @@ export const readRoles =
 	): RestCommand<ReadRoleOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/roles`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
 
@@ -37,6 +36,6 @@ export const readRole =
 	): RestCommand<ReadRoleOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/roles/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});

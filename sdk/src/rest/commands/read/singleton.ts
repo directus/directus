@@ -1,6 +1,5 @@
 import type { ApplyQueryFields, CollectionType, Query, SingletonCollections } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadSingletonOutput<
 	Schema extends object,
@@ -34,7 +33,7 @@ export const readSingleton =
 
 		return {
 			path: `/items/${_collection}`,
-			params: queryToParams(query ?? {}),
+			params: query ?? {},
 			method: 'GET',
 		};
 	};

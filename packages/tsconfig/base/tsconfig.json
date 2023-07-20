@@ -1,15 +1,11 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"display": "Node 18 ESM",
+	"display": "Base",
 	"compilerOptions": {
-		"lib": ["es2022"],
-		"module": "es2022",
-		"target": "es2022",
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "NodeNext",
 		"allowUnusedLabels": false,
 		"allowUnreachableCode": false,
 		"exactOptionalPropertyTypes": true,
@@ -20,7 +16,6 @@
 		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"verbatimModuleSyntax": true,
 		"checkJs": true,
 		"allowSyntheticDefaultImports": true,
 		"declaration": true

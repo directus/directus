@@ -1,7 +1,6 @@
 import type { DirectusFile } from '../../../schema/file.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type UpdateFileOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const updatedFiles =
 	): RestCommand<UpdateFileOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/files`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify({ keys, data: item }),
 		method: 'PATCH',
 	});
@@ -44,7 +43,7 @@ export const updateFile =
 	): RestCommand<UpdateFileOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/files/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});

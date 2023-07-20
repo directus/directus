@@ -1,7 +1,6 @@
 import type { DirectusFile } from '../../../schema/file.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadFileOutput<
 	Schema extends object,
@@ -20,7 +19,7 @@ export const readFiles =
 	): RestCommand<ReadFileOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/files`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});
 
@@ -37,6 +36,6 @@ export const readFile =
 	): RestCommand<ReadFileOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/files/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		method: 'GET',
 	});

@@ -1,6 +1,5 @@
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 import type { DirectusUser } from '../../../schema/user.js';
 
 export type UpdateUserOutput<
@@ -26,7 +25,7 @@ export const updatedUsers =
 	): RestCommand<UpdateUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/users`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify({ keys, data: item }),
 		method: 'PATCH',
 	});
@@ -48,7 +47,7 @@ export const updateUser =
 	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});
@@ -68,7 +67,7 @@ export const updateMe =
 	): RestCommand<UpdateUserOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/users/me`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});

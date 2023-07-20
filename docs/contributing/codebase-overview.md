@@ -44,7 +44,7 @@ Contains the Directus Data Studio App, written in Vue.js 3 w/ the Composition AP
 | `/public` | Assets that are included with the app, but not bundled. |
 | `/src`    | App source code.                                        |
 
-The source code is located in `/api/src` and the below folders are inside there.
+The source code is located in `/app/src` and the below folders are inside there.
 
 | Folder         | Content                                                                                                                                                      |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |

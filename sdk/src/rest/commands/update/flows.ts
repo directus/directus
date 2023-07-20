@@ -1,7 +1,6 @@
 import type { DirectusFlow } from '../../../schema/flow.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type UpdateFlowOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const updatedFlows =
 	): RestCommand<UpdateFlowOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/flows`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify({ keys, data: item }),
 		method: 'PATCH',
 	});
@@ -44,7 +43,7 @@ export const updateFlow =
 	): RestCommand<UpdateFlowOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/flows/${key}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});

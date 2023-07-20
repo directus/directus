@@ -1,7 +1,6 @@
 import type { DirectusRelation } from '../../../schema/relation.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type UpdateRelationOutput<
 	Schema extends object,
@@ -26,7 +25,7 @@ export const updateRelation =
 	): RestCommand<UpdateRelationOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/relations/${collection}/${field}`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'PATCH',
 	});

@@ -1,7 +1,6 @@
 import type { DirectusWebhook } from '../../../schema/webhook.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type CreateWebhookOutput<
 	Schema extends object,
@@ -24,7 +23,7 @@ export const createWebhooks =
 	): RestCommand<CreateWebhookOutput<Schema, TQuery>[], Schema> =>
 	() => ({
 		path: `/webhooks`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
 	});
@@ -44,7 +43,7 @@ export const createWebhook =
 	): RestCommand<CreateWebhookOutput<Schema, TQuery>, Schema> =>
 	() => ({
 		path: `/webhooks`,
-		params: queryToParams(query ?? {}),
+		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',
 	});

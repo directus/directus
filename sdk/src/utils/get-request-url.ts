@@ -1,3 +1,5 @@
+import { queryToParams } from '../index.js';
+
 const SEPARATOR = '/';
 
 const mergePaths = (a: string, b: string) => {
@@ -19,7 +21,7 @@ export const getRequestUrl = (baseUrl: URL, path: string, params?: Record<string
 	const url = new globalThis.URL(newPath, baseUrl);
 
 	if (params) {
-		for (const [k, v] of Object.entries(params)) {
+		for (const [k, v] of Object.entries(queryToParams(params))) {
 			if (v && typeof v === 'object' && !Array.isArray(v)) {
 				for (const [k2, v2] of Object.entries(v)) {
 					url.searchParams.set(`${k}[${k2}]`, String(v2));

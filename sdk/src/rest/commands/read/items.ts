@@ -1,7 +1,6 @@
 import type { PrimaryKey } from '@directus/types';
 import type { ApplyQueryFields, CollectionType, Query, RegularCollections } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
-import { queryToParams } from '../../utils/query-to-params.js';
 
 export type ReadItemOutput<
 	Schema extends object,
@@ -35,7 +34,7 @@ export const readItems =
 
 		return {
 			path: `/items/${_collection}`,
-			params: queryToParams(query ?? {}),
+			params: query ?? {},
 			method: 'GET',
 		};
 	};
@@ -68,7 +67,7 @@ export const readItem =
 
 		return {
 			path: `/items/${_collection}/${key}`,
-			params: queryToParams(query ?? {}),
+			params: query ?? {},
 			method: 'GET',
 		};
 	};
