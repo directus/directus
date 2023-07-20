@@ -1,5 +1,4 @@
-import type { ItemType, Query, RegularCollections, RelationalFields, UnpackList } from './index.js';
-import type { CoreSchema } from '../schema/index.js';
+import type { AllCollections, GetCollection, ItemType, Query, RelationalFields, UnpackList } from './index.js';
 
 export type GroupingFunctions = {
 	date: 'year' | 'month' | 'week' | 'day' | 'weekday' | 'hour' | 'minute' | 'second';
@@ -101,23 +100,6 @@ export type AggregationOutput<
 			: never
 		: never;
 })[];
-
-/**
- * Merge custom schema with core schema
- */
-export type AllCollections<Schema extends object> = RegularCollections<Schema> | RegularCollections<CoreSchema<Schema>>;
-
-/**
- * Helper to extract a collection with fallback to defaults
- */
-type GetCollection<
-	Schema extends object,
-	Collection extends AllCollections<Schema>
-> = Collection extends keyof CoreSchema<Schema>
-	? CoreSchema<Schema>[Collection]
-	: Collection extends keyof Schema
-	? Schema[Collection]
-	: never;
 
 /**
  * Wrap fields in functions

@@ -1,5 +1,6 @@
 import type { PrimaryKey } from '@directus/types';
-import type { ApplyQueryFields, Query } from '../types/query.js';
+import type { Query } from '../types/query.js';
+import type { ApplyQueryFields } from '../index.js';
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
