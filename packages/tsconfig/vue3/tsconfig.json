@@ -1,0 +1,32 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "Vue.js 3",
+	"extends": "../base/tsconfig.json",
+	"compilerOptions": {
+		// It's recommended to author and ship in ES modules.
+		// This recommendation includes environments like Vitest, Vite Config File, Vite SSR, etc.
+		"module": "ES2022",
+
+		// - Vue 3 supports ES2016+
+		// - For Vite, the actual compilation target is determined by the
+		//   `build.target` option in the Vite config.
+		//   So don't change the `target` field here. It has to be
+		//   at least `ES2020` for dynamic `import()`s and `import.meta` to work correctly.
+		"target": "ES2022",
+
+		// Add DOM definitions.
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+
+		// Enable some resolution features that are only available in bundlers.
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+
+		// Any imports or exports without a type modifier are left around. This is important for `<script setup>`.
+		// Anything that uses the type modifier is dropped entirely.
+		"verbatimModuleSyntax": true,
+
+		// Required in Vue projects
+		"jsx": "preserve",
+		"jsxImportSource": "vue"
+	}
+}
