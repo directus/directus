@@ -191,7 +191,7 @@ const response = await directus.request(
         },
       },
     },
-    fields: ['*', 'translations.*'],
+    fields: ['*', { 'translations': ['*'] }],
     limit: 1,
   })
 );
