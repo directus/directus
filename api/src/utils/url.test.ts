@@ -125,7 +125,7 @@ describe('trailing slash handling', () => {
 	test('parse and serialize an URL without path, keeping trailing slash', () => {
 		expect(new Url('https://example.com/').toString()).toStrictEqual('https://example.com/');
 	});
-	
+
 	test('parse and serialize an URL preserving trailing slash with no query params', () => {
 		expect(new Url('https://example.com/path/').toString()).toStrictEqual('https://example.com/path/');
 	});

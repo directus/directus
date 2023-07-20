@@ -27,8 +27,7 @@ export class Url {
 		this.query = Object.fromEntries(parsedUrl.searchParams.entries());
 		this.hash = parsedUrl.hash !== '' ? parsedUrl.hash.substring(1) : null;
 
-		this.hasTrailingSlash = parsedUrl.pathname.length > 1
-			? parsedUrl.pathname.endsWith('/') : url.endsWith('/');
+		this.hasTrailingSlash = parsedUrl.pathname.length > 1 ? parsedUrl.pathname.endsWith('/') : url.endsWith('/');
 	}
 
 	public isAbsolute(): boolean {
