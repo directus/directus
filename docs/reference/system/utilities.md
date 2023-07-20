@@ -37,6 +37,21 @@ type Mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, generateHash } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    generateHash('string')
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Request Body
@@ -71,6 +86,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, generateHash } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    generateHash('test string to hash')
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Verify a Hash
@@ -100,6 +130,21 @@ Verify a string with a hash.
 type Mutation {
 	utils_hash_verify(hash: String!, string: String!): Boolean
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, verifyHash } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    verifyHash('string_to_verify','hash')
+);
+
+console.log(result);
 ```
 
 </template>
@@ -143,6 +188,21 @@ type Mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, verifyHash } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    verifyHash('test_string','$argon2id$v=19$m=65536,t=3,p=4$c81PPca80cdIbclXlL1PFg$+EKJsuXlkleP2wFGsEmA7Xu56wEqVKHeDXRrTLIAoJg')
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Manually Sort Items in Collection
@@ -158,8 +218,8 @@ If a collection has a sort field, this util can be used to move items in that ma
 
 ```json
 {
-	"item": item_to_move,
-	"to": item_moving_to
+	"item": id_item_to_move,
+	"to": id_item_moving_to
 }
 ```
 
@@ -172,6 +232,21 @@ If a collection has a sort field, this util can be used to move items in that ma
 type Mutation {
 	utils_sort(collection: String!, item: ID!, to: ID!): Boolean
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilitySort } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    utilitySort('collection_name','id_item_to_move','id_item_moving_to')
+);
+
+console.log(result);
 ```
 
 </template>
@@ -212,6 +287,21 @@ Empty body.
 mutation {
 	utils_sort(collection: "articles", item: 16, to: 51)
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilitySort } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    utilitySort('things','2','4')
+);
+
+console.log(result);
 ```
 
 </template>
