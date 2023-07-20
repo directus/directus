@@ -1,5 +1,5 @@
 ---
-contributors: Esther Agbaje
+contributors: Esther Agbaje, Kevin Lewis
 description: Learn how to use the Directus JavaScript SDK to work with your data and files.
 ---
 
@@ -7,18 +7,13 @@ description: Learn how to use the Directus JavaScript SDK to work with your data
 
 Learn how to use the new Directus JavaScript SDK to easily access and manipulate your data.
 
-If you have any questions or feedback on/about the new SDK, please join us in
-[`#new-sdk`](https://discord.com/channels/725371605378924594/1121094628037361768) on Discord!
+::: info Older SDK Documentation
 
-::: warning SDK in Beta
-
-The new SDK is currently in Beta, so we do not recommend using it in production.
+You can find the SDK reference for older versions (prior to v11) [here](/reference/old-sdk). Version 11 introduced a complete rewrite, and was released in July 2023.
 
 :::
 
 ## Features
-
-This SDK is a significant overhaul of the previous version, introducing new features and improvements.
 
 - **TypeScript first:** The SDK provides a robust and type-safe development experience
 - **Modular architecture:** The SDK is split into separate modules, giving you granular control over which features to
@@ -28,34 +23,26 @@ This SDK is a significant overhaul of the previous version, introducing new feat
 
 ## Installation
 
-Install the SDK from the `beta` tag:
+Install the SDK:
 
 ```js
-npm install @directus/sdk@beta
+npm install @directus/sdk
 ```
 
 ## Basic Usage
 
-Create a Directus client using the `createDirectus` hook from `@directus/sdk`. The client gives you access to your
-Directus project and data.
+Create a Directus client using the `createDirectus` hook from `@directus/sdk`. The client gives you access to your Directus project and data.
 
-```ts
+```js
 import { createDirectus } from '@directus/sdk';
 
-// Your Directus collection schema
-interface Schema {
-	// ...
-}
-
-const client = createDirectus<Schema>('http://directus.example.com');
+const client = createDirectus('http://directus.example.com');
 ```
 
 ## Creating a Composable Client
 
-The new SDK introduces the concept of a "Composable Client" which allows you to customize and build a client with the
-specific features you need.
-
-The client starts as an empty wrapper without any functionality. To add features, use the following composables:
+The Directus SDK is a "Composable Client" that allows you to customize and build a client with the
+specific features you need. The client starts as an empty wrapper without any functionality. To add features, use the following composables:
 
 - `rest()`: REST request functions, adds `.request(...)` to the client.
 - `graphql()`: GraphQL request functions, adds `.query(...)` to the client.
@@ -65,7 +52,9 @@ The client starts as an empty wrapper without any functionality. To add features
 
 For example, to create a client with REST or GraphQL support, use the following:
 
-```js
+::: code-group
+
+```js [JavaScript]
 import { createDirectus } from '@directus/sdk';
 import { rest } from '@directus/sdk/rest';
 import { graphql } from '@directus/sdk/graphql';
@@ -76,6 +65,31 @@ const client = createDirectus('http://directus.example.com').with(rest());
 // Client with GraphQL support
 const client = createDirectus('http://directus.example.com').with(graphql());
 ```
+
+```ts [TypeScript]
+import { createDirectus } from '@directus/sdk';
+import { rest } from '@directus/sdk/rest';
+import { graphql } from '@directus/sdk/graphql';
+
+interface Article {
+	id: number;
+	title: string;
+	content: string;
+}
+
+interface Schema {
+	articles: Article[];
+}
+
+// Client with REST support
+const client = createDirectus<Schema>('http://directus.example.com').with(rest());
+
+// Client with GraphQL support
+const client = createDirectus<Schema>('http://directus.example.com').with(graphql());
+```
+:::
+
+If using TypeScript, you must provide a `Schema` when creating a Directus client. This schema contains definitions for each collection you expect data back from. 
 
 ## Authentication
 
@@ -104,36 +118,11 @@ For example, to make a request to an `articles` collection.
 
 #### Read a single item
 
-JavaScript
-
 ```js
-import { createDirectus } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/rest';
-import { readItem } from '@directus/sdk@beta/rest/commands';
+import { createDirectus } from '@directus/sdk';
+import { rest, readItem } from '@directus/sdk/rest';
 
 const client = createDirectus('http://directus.example.com').with(rest());
-
-const result = await client.request(readItem('articles', 5));
-```
-
-TypeScript
-
-```ts
-import { createDirectus } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/rest';
-import { readItem } from '@directus/sdk@beta/rest/commands';
-
-interface Article {
-	id: number;
-	title: string;
-	content: string;
-}
-
-interface Schema {
-	articles: Article[];
-}
-
-const client = createDirectus<Schema>('http://directus.example.com').with(rest());
 
 const result = await client.request(readItem('articles', 5));
 ```
@@ -141,9 +130,8 @@ const result = await client.request(readItem('articles', 5));
 #### Read all items
 
 ```js
-import { createDirectus } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/rest';
-import { readItems } from '@directus/sdk@beta/rest/commands';
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -153,9 +141,8 @@ const result = await client.request(readItems('articles'));
 #### Read specific fields
 
 ```js
-import { createDirectus } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/rest';
-import { readItems } from '@directus/sdk@beta/rest/commands';
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -169,9 +156,8 @@ const result = await client.request(
 #### Read all fields
 
 ```js
-import { createDirectus } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/rest';
-import { readItems } from '@directus/sdk@beta/rest/commands';
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -185,9 +171,8 @@ const result = await client.request(
 #### Read nested fields
 
 ```js
-import { createDirectus } from '@directus/sdk@beta';
-import { rest } from '@directus/sdk@beta/rest';
-import { readItems } from '@directus/sdk@beta/rest/commands';
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
@@ -202,7 +187,7 @@ const result = await client.request(
 
 Add the `graphql()` composable to the client, this enables the `.query(...)` method to query the collection.
 
-For example, to make a request to an `articles` collection.
+For example, to make a request to an `articles` collection with TypeScript:
 
 ```ts
 import { createDirectus } from '@directus/sdk';
@@ -233,13 +218,6 @@ const result = await client.query<Article[]>(`
 
 ## Next Steps
 
-You have successfully created a composable client using the Directus SDK.
+You can find code examples using the Directus SDK throughout our [API reference](/reference/items). 
 
-As you progress, you may want to explore other available features like real-time updates, and GraphQL subscriptions.
-
-Keep an eye on our documentation as we continue to enhance and expand the SDK and take a look at the auto-generated
-[TypeDoc of the new SDK](</packages/@directus/SDK (beta)/>) to explore all available functions.
-
-If you encounter any issues or have questions, don't hesitate to reach out to us in our
-[Discord community](https://directus.chat/) in
-[the `#new-sdk` channel](https://discord.com/channels/725371605378924594/1121094628037361768).
+You can also find an auto-generated [TypeDoc of the new SDK](</packages/@directus/SDK/>).
