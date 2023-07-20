@@ -48,6 +48,23 @@ List all translations that exist in Directus.
 <template #graphql>
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readTranslations} from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readTranslations({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -60,6 +77,40 @@ Supports all [global query parameters](/reference/query).
 
 An array of up to [limit](/reference/query#limit) [translation objects](#the-translations-object). If no items are
 available, data will be an empty array.
+
+### Example
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+
+<template #rest>
+
+`GET /translations`
+
+`SEARCH /translations`
+
+</template>
+
+<template #graphql>
+
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readTranslations } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readTranslations({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a Translation
 
@@ -74,6 +125,23 @@ List an existing translation by primary key.
 
 </template>
 <template #graphql>
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readTranslation } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readTranslation('translation_id',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
 
 </template>
 </SnippetToggler>
@@ -97,6 +165,23 @@ Returns the requested [translation object](#the-translations-object).
 <template #graphql>
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readTranslation } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readTranslation('7b8c250a-6864-480f-b230-a4035d155123',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a Translation
@@ -112,14 +197,31 @@ Create a new translation.
 
 ```json
 {
-	"translation_object_field_1": "value_1",
-	"translation_object_field_2": "value_2",
-	"translation_object_field_3": "value_3"
+	"translation_field_1": "value_1",
+	"translation_field_2": "value_2",
+	"translation_field_3": "value_3"
 }
 ```
 
 </template>
 <template #graphql>
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createTranslation } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createTranslation({
+		'translation_field_1': 'value_1',
+		'translation_field_2': 'value_2',
+		'translation_field_3': 'value_3'
+    })
+);
+```
 
 </template>
 </SnippetToggler>
@@ -155,6 +257,24 @@ Returns the [translation object](#the-translations-object) for the created trans
 <template #graphql>
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createTranslation } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createTranslation({
+        'language' : 'fr_FR',
+        'key' : 'test',
+        'value' : 'test'
+
+    })
+);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create Multiple Translations
@@ -171,14 +291,14 @@ Create multiple new translation.
 ```json
 [
 	{
-		"translation_1_object_field_1": "value_1",
-		"translation_1_object_field_2": "value_2",
-		"translation_1_object_field_3": "value_3"
+		"translation_1_field_1": "value_1",
+		"translation_1_field_2": "value_2",
+		"translation_1_field_3": "value_3"
 	},
 	{
-		"translation_2_object_field_1": "value_4",
-		"translation_2_object_field_2": "value_5",
-		"translation_2_object_field_3": "value_6"
+		"translation_2_field_1": "value_4",
+		"translation_2_field_2": "value_5",
+		"translation_2_field_3": "value_6"
 	}
 ]
 ```
@@ -187,7 +307,33 @@ Create multiple new translation.
 <template #graphql>
 
 </template>
+<template #sdk>
 
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createTranslations } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createTranslations(
+	[
+		{
+			'translation_1_field_1': 'value_1',
+			'translation_1_field_2': 'value_2',
+			'translation_1_field_3': 'value_3'
+		},
+		{
+			'translation_2_field_1': 'value_4',
+			'translation_2_field_2': 'value_5',
+			'translation_2_field_3': 'value_6'
+		}
+	])
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -228,6 +374,33 @@ Returns the [translation object](#the-translations-object) for the created trans
 <template #graphql>
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createTranslations } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createTranslations(
+    [
+        {
+        'language' : 'fr-FR',
+        'key' : 'test',
+        'value' : 'test'
+        },
+        {
+        'language' : 'it-IT',
+        'key' : 'test_2',
+        'value' : 'test_2'
+        }
+    ])
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update a Translation
@@ -249,6 +422,23 @@ Update an existing translation.
 
 </template>
 <template #graphql>
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateTranslation } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateTranslation('translation_id',{
+        'translation_field' : 'value'
+    })
+);
+
+console.log(result);
+```
 
 </template>
 </SnippetToggler>
@@ -282,6 +472,23 @@ Returns the [translation object](#the-translations-object) for the updated trans
 <template #graphql>
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateTranslation } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateTranslation('74f2aa3e-ad5c-424a-9ace-adab5ecb0fca',{
+        'value' : 'this is the new value'
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Multiple Translations
@@ -306,6 +513,23 @@ Update multiple existing translations.
 
 </template>
 <template #graphql>
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedTranslations } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updatedTranslations(['translation_1_id','translation_2_id'],{
+        'field' : 'value'
+    })
+);
+
+console.log(result);
+```
 
 </template>
 </SnippetToggler>
@@ -344,6 +568,23 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 
 </template>
 <template #graphql>
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatedTranslations } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updatedTranslations(['91be30ed-4f4e-481f-84be-860e0c25b035','74f2aa3e-ad5c-424a-9ace-adab5ecb0fcajj'],{
+        'value' : 'this is the new value'
+    })
+);
+
+console.log(result);
+```
 
 </template>
 </SnippetToggler>
