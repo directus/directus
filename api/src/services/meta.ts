@@ -90,6 +90,6 @@ export class MetaService {
 
 		const records = await dbQuery;
 
-		return Number(records[0]!.count);
+		return Number(records[0]!['count']);
 	}
 }
