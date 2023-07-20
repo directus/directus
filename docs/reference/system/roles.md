@@ -260,9 +260,9 @@ Create a new role.
 {
 	"role_field_1": "value_1",
 	"role_field_2": "value_2",
-	"role_field_3": value_3,
-	"role_field_4": value_4,
-	"role_field_5": value_5
+	"role_field_3": "value_3",
+	"role_field_4": "value_4",
+	"role_field_5": "value_5"
 }
 ```
 
@@ -289,9 +289,9 @@ const result = await client.request(
     createRole({
 		'role_field_1': 'value_1',
 		'role_field_2': 'value_2',
-		'role_field_3': value_3,
-		'role_field_4': value_4,
-		'role_field_5': value_5
+		'role_field_3': 'value_3',
+		'role_field_4': 'value_4',
+		'role_field_5': 'value_5'
     })
 )
 
@@ -389,16 +389,16 @@ Create multiple new roles.
 {
 	"role_object_1_field_1": "value_1",
 	"role_object_1_field_2": "value_2",
-	"role_object_1_field_3": value_3,
-	"role_object_1_field_4": value_4,
-	"role_object_1_field_5": value_5,
+	"role_object_1_field_3": "value_3",
+	"role_object_1_field_4": "value_4",
+	"role_object_1_field_5": "value_5",
 },
 {
 	"role_object_2_field_1": "value_6",
 	"role_object_2_field_2": "value_7",
-	"role_object_2_field_3": value_8,
-	"role_object_2_field_4": value_9,
-	"role_object_2_field_5": value_10,
+	"role_object_2_field_3": "value_8",
+	"role_object_2_field_4": "value_9",
+	"role_object_2_field_5": "value_10",
 },
 ]
 ```
@@ -428,16 +428,16 @@ const result = await client.request(
 		{
 			'role_object_1_field_1': 'value_1',
 			'role_object_1_field_2': 'value_2',
-			'role_object_1_field_3': value_3,
-			'role_object_1_field_4': value_4,
-			'role_object_1_field_5': value_5,
+			'role_object_1_field_3': 'value_3',
+			'role_object_1_field_4': 'value_4',
+			'role_object_1_field_5': 'value_5',
 		},
 		{
 			'role_object_2_field_1': 'value_6',
 			'role_object_2_field_2': 'value_7',
-			'role_object_2_field_3': value_8,
-			'role_object_2_field_4': value_9,
-			'role_object_2_field_5': value_10,
+			'role_object_2_field_3': 'value_8',
+			'role_object_2_field_4': 'value_9',
+			'role_object_2_field_5': 'value_10',
 		},
     ])
 )
