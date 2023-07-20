@@ -126,6 +126,23 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readUsers } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readUsers({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -162,6 +179,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readUsers } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readUsers({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve a User
@@ -184,6 +218,23 @@ List an existing user by primary key.
 type Query {
 	users_by_id(id: ID!): directus_users
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readUser } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readUser('user_id',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -220,6 +271,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readUser } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readUser('0513b6e8-55f2-4ff5-906c-f1a29d7b983c',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve the Current User
@@ -242,6 +310,23 @@ Retrieve the currently authenticated user.
 type Query {
 	users_me: directus_users
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readMe } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readMe({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -274,6 +359,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readMe } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readMe({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update the Current User
@@ -302,6 +404,23 @@ Update the authenticated user.
 type Mutation {
 	update_users_me(data: update_directus_users_input!): directus_users
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateMe } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateMe({
+        'user_field' : 'value':w
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -342,6 +461,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateMe } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateMe({
+        'email_notifications' : false
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a User
@@ -372,6 +508,24 @@ Create a new user
 type Mutation {
 	create_users_item(data: create_directus_users_input!): directus_users
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createUser } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createUser({
+        'email' : 'user_email',
+        'password' : 'user_password'
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -435,6 +589,24 @@ could be modified by the user call.
 :::
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createUser } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createUser({
+        'email' : 'hi@email.com',
+        'password' : 'qwerty123'
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create Multiple Users
@@ -472,6 +644,31 @@ Create multiple new users
 type Mutation {
 	create_users_items(data: [create_directus_users_input!]!): [directus_users]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createUsers } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createUsers(
+    [
+        {
+        'email' : 'user_email',
+        'password' : 'user_password'
+        },
+        {
+        'email' : 'user_email',
+        'password' : 'user_password'
+        }
+    ])
+);
+
+console.log(result);
 ```
 
 </template>
@@ -549,6 +746,31 @@ could be modified by the user call.
 :::
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createUsers } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createUsers(
+    [
+        {
+        'email' : 'hello@email.com',
+        'password' : 'qwerty123'
+        },
+        {
+        'email' : 'person@email.com',
+        'password' : 'QwErTy1994'
+        }
+    ])
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update a User
@@ -577,6 +799,23 @@ Update an existing user.
 type Mutation {
 	update_users_item(id: ID!, data: update_directus_users_input!): directus_users
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateUser } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateUser('user_id',{
+        'user_fiels' : 'value'
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -622,6 +861,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateUser } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateUser('e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb',{
+        'email_notifications' : false
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update Multiple Users
@@ -653,6 +909,23 @@ Update multiple existing users.
 type Mutation {
 	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateUsers } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateUsers(['user_1_id','user_2_id'],{
+        'user_field' : 'value'
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -708,6 +981,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateUsers } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb','5ec6ee0a-62ad-460d-a91e-fed63e3d804c'],{
+        'email_notifications' : false
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete a User
@@ -730,6 +1020,21 @@ Delete an existing user.
 type Mutation {
 	delete_users_item(id: ID!): delete_one
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteUser } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteUser('user_id')
+);
+
+console.log(result);
 ```
 
 </template>
@@ -760,6 +1065,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteUser } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteUser('965749ad-e5e4-4e38-aa91-25a252b8ccd9')
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete Multiple Users
@@ -786,6 +1106,21 @@ Delete multiple existing users.
 type Mutation {
 	delete_users_items(ids: [ID!]!): delete_many
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteUsers } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteUsers(['user_1_id','user_2_id'])
+);
+
+console.log(result);
 ```
 
 </template>
@@ -819,6 +1154,21 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteUsers } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb','5ec6ee0a-62ad-460d-a91e-fed63e3d804c'])
+);
+
+console.log(result);
 ```
 
 </template>
