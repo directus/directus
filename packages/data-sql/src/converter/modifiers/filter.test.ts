@@ -213,12 +213,12 @@ describe('Convert condition', () => {
 		const con: AbstractQueryConditionNode = {
 			type: 'condition',
 			condition: {
-				type: 'condition-geo',
+				type: 'condition-geo-intersects-bbox',
 				target: {
 					type: 'primitive',
 					field: randomField,
 				},
-				operation: 'intersects',
+				operation: 'intersects_bbox',
 				compareTo: gisValue,
 			},
 		};
@@ -232,7 +232,7 @@ describe('Convert condition', () => {
 					table: randomCollection,
 					column: randomField,
 				},
-				operation: 'intersects',
+				operation: 'intersects_bbox',
 				compareTo: {
 					type: 'value',
 					parameterIndex: 0,

@@ -28,8 +28,10 @@ export function constructSqlQuery(query: AbstractSqlQuery): ParameterizedSqlStat
 		.filter((p) => p !== null)
 		.join(' ')};`;
 
+	const parameters = convertGeoJsonParameterToWKT(query.parameters);
+
 	return {
 		statement,
-		parameters: convertGeoJsonParameterToWKT(query.parameters),
+		parameters,
 	};
 }

@@ -78,6 +78,8 @@ export function convertCondition(
 		throw new Error('The related field types are not yet supported.');
 	}
 
+	let type: string = condition.condition.type;
+
 	// convert compareTo
 	let compareTo: ValueNode | ValuesNode;
 
@@ -91,13 +93,15 @@ export function convertCondition(
 
 			parameters.push(condition.condition.compareTo);
 			break;
-		case 'condition-geo':
+		case 'condition-geo-intersects':
+		case 'condition-geo-intersects-bbox':
 			compareTo = {
 				type: 'value',
 				parameterIndex: generator.next().value,
 			} as ValueNode;
 
 			parameters.push(condition.condition.compareTo);
+			type = 'condition-geo';
 			break;
 		case 'condition-set':
 			compareTo = {
@@ -113,7 +117,7 @@ export function convertCondition(
 		type: condition.type,
 		negate,
 		condition: {
-			type: condition.condition.type,
+			type,
 			operation: condition.condition.operation,
 			target,
 			compareTo,

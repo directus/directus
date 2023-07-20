@@ -1,4 +1,12 @@
-import type { GeoJSONGeometry } from 'wellknown';
+import type {
+	GeoJSONGeometryCollection,
+	GeoJSONLineString,
+	GeoJSONMultiLineString,
+	GeoJSONMultiPoint,
+	GeoJSONMultiPolygon,
+	GeoJSONPoint,
+	GeoJSONPolygon,
+} from 'wellknown';
 
 /**
  * The query can be seen as a tree with various nodes.
@@ -377,12 +385,16 @@ export interface AbstractQueryConditionNode {
 	type: 'condition';
 
 	/* the type of the node */
-	condition: LetterConditionNode | NumberConditionNode | GeoConditionNode | SetConditionNode;
+	condition:
+		| LetterConditionNode
+		| NumberConditionNode
+		| GeoConditionIntersectsNode
+		| GeoConditionIntersectsBBoxNode
+		| SetConditionNode;
 }
 
 /**
  * Used to compare a string field with a string value.
- * @todo support for functions as targets?
  * @example
  * ```
  * {
@@ -424,7 +436,7 @@ export interface NumberConditionNode {
 }
 
 /**
- * Checks if a geo field intersects with a given geo value as string.
+ * Checks if a geo field intersects with another geo value.
  * @example
  * ```
  * {
@@ -446,11 +458,18 @@ export interface NumberConditionNode {
  * }
  * ```
  */
-export interface GeoConditionNode {
-	type: 'condition-geo';
+export interface GeoConditionIntersectsNode {
+	type: 'condition-geo-intersects';
 	target: AbstractQueryFieldNodePrimitive;
-	operation: 'intersects' | 'intersects_bbox';
-	compareTo: GeoJSONGeometry; // split up the input types, lines and boxes..
+	operation: 'intersects';
+	compareTo: GeoJSONPoint | GeoJSONMultiPoint | GeoJSONLineString | GeoJSONMultiLineString | GeoJSONGeometryCollection;
+}
+
+export interface GeoConditionIntersectsBBoxNode {
+	type: 'condition-geo-intersects-bbox';
+	target: AbstractQueryFieldNodePrimitive;
+	operation: 'intersects_bbox';
+	compareTo: GeoJSONPolygon | GeoJSONMultiPolygon | GeoJSONGeometryCollection;
 }
 
 /**
@@ -463,8 +482,8 @@ export interface GeoConditionNode {
  * 		type: 'primitive',
  * 		field: 'attribute_xy'
  * 	},
- * 	operation: 'lt',
- * 	compareTo: 5
+ * 	operation: 'in',
+ * 	compareTo: [1, 2, 3]
  * ```
  */
 export interface SetConditionNode {
