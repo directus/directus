@@ -22,7 +22,7 @@ export const createPresets =
 		query?: TQuery
 	): RestCommand<CreatePresetOutput<Schema, TQuery>[], Schema> =>
 	() => ({
-		path: `/`,
+		path: `/presets`,
 		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
@@ -42,7 +42,7 @@ export const createPreset =
 		query?: TQuery
 	): RestCommand<CreatePresetOutput<Schema, TQuery>, Schema> =>
 	() => ({
-		path: `/`,
+		path: `/presets`,
 		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',
