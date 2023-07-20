@@ -282,6 +282,21 @@ Request a password reset email to be sent to the given user.
 <template #graphql>
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, passwordRequest } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    passwordRequest('user_email')
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Request Body
@@ -319,6 +334,21 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, passwordRequest } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    passwordRequest('admin@example.com')
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Reset a Password
@@ -342,6 +372,21 @@ this endpoint to allow the user to reset their password.
 
 </template>
 <template #graphql>
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, passwordReset } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    passwordReset('reset_token','new_password')
+);
+
+console.log(result);
+```
 
 </template>
 </SnippetToggler>
@@ -377,6 +422,21 @@ New password for the user.
 mutation {
 	auth_password_reset(token: "eyJh...KmUk", password: "d1r3ctu5")
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, passwordReset } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    passwordReset('reset_token','new_password')
+);
+
+console.log(result);
 ```
 
 </template>
@@ -426,6 +486,21 @@ To learn more about setting up auth providers, see
 <template #graphql>
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readProviders } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readProviders()
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ### Response
@@ -467,6 +542,21 @@ Whether or not the default authentication provider is disabled.
 
 </template>
 <template #graphql>
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readProviders } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readProviders()
+);
+
+console.log(result);
+```
 
 </template>
 </SnippetToggler>
