@@ -431,14 +431,45 @@ const result = await client.request(
 
 ## Upload a File
 
-Upload/create a new file.
+Upload a new file.
 
-To upload a file, use `multipart/form-data` as the encoding type. The file contents has to be provided in a part called
-`file`. All other properties of [the file object](#the-file-object) can be provided as parts as well, except
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /files`
+
+Body must be formatted as a `multipart/form-data` with a final property called `file`.
+
+</template>
+<template #graphql>
+
+Not supported by GraphQL
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, uploadFile } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const formData = new FormData();
+formData.append('title', 'My First File');
+formData.append('file', raw_file);
+
+const result = await client.request(uploadFile(formData));
+
+console.log(result);
+```
+
+</template>
+</SnippetToggler>
+
+The file contents has to be provided in a property called `file`. All other properties of [the file object](#the-file-object) can be provided as well, except
 `filename_disk` and `filename_download`.
-
-Alternatively, you can use `application/json` with JSON request body to associate metadata to a file that already exists
-in the storage. The `type` property will be required to specify the mimetype of that file.
 
 ::: tip Order Matters
 
@@ -447,43 +478,7 @@ file.
 
 :::
 
-You can upload multiple files at a time by repeating the payload with different contents, for example:
-
-```
---__X_BOUNDARY__
-Content-Disposition: form-data; name="title"
-
-Example
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="paulo-silva-vSRgXtQuns8-unsplash.jpg"
-Content-Type: image/jpeg
-
-// binary data
-
---__X_BOUNDARY__
-Content-Disposition: form-data; name="title"
-
-Another Title
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="mae-mu-GFhqNX1gE9E-unsplash.jpg"
-Content-Type: image/jpeg
-
-// binary data
-```
-
-In JavaScript, this can be achieved using the native `FormData` class:
-
-```js
-import axios from 'axios';
-
-const fileInput = document.querySelector('input[type="file"]');
-const formData = new FormData();
-
-formData.append('title', 'My First File');
-formData.append('file', fileInput.files[0]);
-
-await axios.post('/files', formData);
-```
+You can upload multiple files at a time by repeating the payload with different contents, always ending with a `file` property.
 
 #### Query Parameters
 
@@ -493,24 +488,6 @@ Supports all [global query parameters](/reference/query).
 
 Returns the [file object](#the-file-object) for the uploaded file, or an array of [file objects](#the-file-object) if
 multiple files were uploaded at once.
-
-```
-POST /files
-```
-
-```
-// Request
-
-Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
-Content-Length: 3442422
-
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="paulo-silva-vSRgXtQuns8-unsplash.jpg"
-Content-Type: image/jpeg
-
-ÿØÿàJFIFHHÿâICC_PROFILElcmsmntrRGB XYZ Ü)9acspAPPLöÖÓ-lcms
-descü^cprt\wtpthbkpt|rXYZgXYZ¤bXYZ¸rTRCÌ@gTRCÌ@bTRCÌ@descc2textIXXYZ öÖÓ-XYZ 3¤XYZ o¢8õXYZ b·ÚXYZ $ ¶ÏcurvËÉckö?Q4!ñ)2;FQw]íkpz±|¬i¿}ÓÃé0ÿÿÿÛ
-```
 
 ## Import a File
 
