@@ -101,6 +101,14 @@ rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
 suffix: Suffix
+branch_name: Branch Name
+main_branch: Main
+create_branch: Create Branch
+rename_branch: Rename Branch
+compare_branch: Compare Branch
+delete_branch: Delete Branch
+delete_branch_copy: >-
+  Are you sure you want to delete the "{branch}" branch? This action cannot be undone.
 reset_bookmark: Reset Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark

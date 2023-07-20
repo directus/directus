@@ -113,6 +113,7 @@ const page = ref<number>(1);
 const { revisionsByDate, revisionsCount, loading, pagesCount, refresh } = useRevisions(
 	ref('directus_flows'),
 	computed(() => unref(flow).id),
+	ref(null),
 	{
 		action: Action.RUN,
 	}
