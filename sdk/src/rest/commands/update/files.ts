@@ -15,7 +15,7 @@ export type UpdateFileOutput<
  * @param query
  * @returns Returns the file objects for the updated files.
  */
-export const updatedFiles =
+export const updateFiles =
 	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		keys: DirectusFile<Schema>['id'][],
 		item: Partial<DirectusFile<Schema>>,

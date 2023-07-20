@@ -16,7 +16,7 @@ export type CreateFileOutput<
  *
  * @returns Returns the file object for the uploaded file, or an array of file objects if multiple files were uploaded at once.
  */
-export const uploadFile =
+export const uploadFiles =
 	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		data: FormData,
 		query?: TQuery
