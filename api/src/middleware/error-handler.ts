@@ -16,20 +16,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 
 	const errors = toArray(err);
 
-	if (errors.some((err) => isDirectusError(err) === false)) {
+	if (!errors.length) {
 		res.status(500);
-	} else {
-		let status = errors[0].status;
-
-		for (const err of errors) {
-			if (status !== err.status) {
-				// If there's multiple different status codes in the errors, use 500
-				status = 500;
-				break;
-			}
-		}
-
-		res.status(status);
 	}
 
 	for (const err of errors) {
