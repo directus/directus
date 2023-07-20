@@ -416,6 +416,30 @@ Export a larger data set to a file in the File Library
 `// Not currently available in GraphQL`
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilsExport } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    utilsExport('collection_name','file_format',{
+        "query_type": {
+            "field": {
+                "query_operation": "value"
+            }
+        }
+    }, {
+        "file": {
+		    "file_field": "value"
+	}})
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -465,6 +489,30 @@ Empty body
 `// Not currently available in GraphQL`
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilsExport } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    utilsExport('articles','json',{
+        "filter": {
+            "status": {
+                "_eq": "published"
+            }
+        }
+    }, {
+        "file": {
+		    "folder": "34e95c19-cc50-42f2-83c8-b97616ac2390"
+	}})
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Clear the Internal Cache
@@ -485,6 +533,19 @@ Resets both the data and schema cache of Directus. This endpoint is only availab
 mutation {
 	utils_cache_clear
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, clearCache } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(clearCache());
+
+console.log(result);
 ```
 
 </template>
