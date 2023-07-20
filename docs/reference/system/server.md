@@ -38,6 +38,19 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readOpenApiSpec } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(readOpenApiSpec())
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ### Response
@@ -58,6 +71,19 @@ Object conforming to [the OpenAPI Specification](https://swagger.io/specificatio
 query {
 	server_specs_oas
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readOpenApiSpec } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readOpenApiSpec())
+
+console.log(result);
 ```
 
 </template>
@@ -91,6 +117,19 @@ The SDL is based on the permissions of the currently authenticated user.
 type Query {
 	server_specs_graphql(scope: graphql_sdl_scope): String
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readGraphqlSdl } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readGraphqlSdl('scope'))
+
+console.log(result);
 ```
 
 </template>
@@ -143,6 +182,19 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readGraphqlSdl } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readGraphqlSdl('item'))
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Ping
@@ -168,6 +220,19 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverPing } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(serverPing())
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ### Returns
@@ -190,6 +255,19 @@ Pong.
 query {
 	server_ping
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverPing } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(serverPing())
+
+console.log(result);
 ```
 
 </template>
@@ -221,6 +299,19 @@ The public information is returned for everybody. Admin users get additional inf
 type Query {
 	server_info: server_info
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverInfo } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(serverInfo())
+
+console.log(result);
 ```
 
 </template>
@@ -271,6 +362,19 @@ query {
 		}
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverInfo } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(serverInfo())
+
+console.log(result);
 ```
 
 </template>
@@ -367,6 +471,19 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverHealth } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(serverHealth())
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ### Returns
@@ -401,6 +518,19 @@ Array with the status of all individually connected services.
 query {
 	server_health
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverHealth } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(serverHealth())
+
+console.log(result);
 ```
 
 </template>
