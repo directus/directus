@@ -139,6 +139,23 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRelations } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readRelations({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -168,6 +185,23 @@ query {
 		field
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRelations } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readRelations({
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -203,6 +237,23 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRelationByCollection } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readRelationByCollection('collection_name',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -235,6 +286,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRelationByCollection } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readRelationByCollection('articles',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Retrieve a relation
@@ -257,6 +325,23 @@ List an existing relation by collection/field name.
 type Query {
 	relations_by_name(collection: String!, field: String!): directus_relations
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRelation } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    readRelation('collection_name', 'field_name',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -293,6 +378,23 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readRelation } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    readRelation('articles', 'authors',{
+        'fields' : ['*']
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Create a Relation
@@ -308,9 +410,9 @@ Create a new relation.
 
 ```json
 {
-	"relations_object_field_1": "value_1",
-	"relations_object_field_2": "value_2",
-	"relations_object_field_3": "value_3"
+	"relations_field_1": "value_1",
+	"relations_field_2": "value_2",
+	"relations_field_3": "value_3"
 }
 ```
 
@@ -323,6 +425,25 @@ Create a new relation.
 type Mutation {
 	create_relations_item(data: create_directus_relations_input!): directus_relations
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createRelation } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    createRelation({
+		'relations_field_1': 'value_1',
+		'relations_field_2': 'value_2',
+		'relations_field_3': 'value_3'
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -373,6 +494,25 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createRelation } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    createRelation({
+        'collection': 'articles', 
+        'field': 'header_image',
+        'related_collection' : 'header_images'
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Update a Relation
@@ -388,8 +528,8 @@ Update an existing relation.
 
 ```json
 {
-	"relations_object_field_1": {
-		"relations_object_field_1.1": "value"
+	"relations_field": {
+		"relations_subfield": "value"
 	}
 }
 ```
@@ -403,6 +543,25 @@ Update an existing relation.
 type Mutation {
 	update_relations_item(collection: String!, field: String!, data: update_directus_relations_input!): directus_relations
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateRelation } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    updateRelation('collection_name', 'field_name', {
+        'field': {
+		    'sub_field': 'value'
+	    }
+    })
+);
+
+console.log(result);
 ```
 
 </template>
@@ -451,6 +610,25 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateRelation } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    updateRelation('articles', 'authors', {
+        'meta': {
+		    'sort_field': 'articles'
+	    }
+    })
+);
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Delete a Relation
@@ -473,6 +651,21 @@ Delete an existing relation.
 type Mutation {
 	delete_relations_item(collection: String!, field: String!): delete_one
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteRelation } from '@directus/sdk/rest';
+const client = createDirectus('app_url').with(rest())
+
+const result = await client.request(
+    deleteRelation('collection_name', 'field_name')
+);
+
+console.log(result);
 ```
 
 </template>
@@ -501,6 +694,21 @@ mutation {
 		field
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteRelation } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+    deleteRelation('articles', 'authors')
+);
+
+console.log(result);
 ```
 
 </template>
