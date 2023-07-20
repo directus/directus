@@ -1042,18 +1042,15 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { staticToken } from '@directus/sdk/auth'; // OMIT
 import { rest, deleteFiles } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
-
-await client.setToken('s79J1cEaSuGIF40auEN6s0gvN-MOK9G4'); // OMIT
 
 const result = await client.request(
 	deleteFiles(['90a416f0-28e0-4d51-84a2-387d1789add9', '840e2f08-d5cd-4caa-ac0a-31363626efb4'])
 );
 
-//or
+// or
 
 const result = await client.request(
 	deleteFiles({
