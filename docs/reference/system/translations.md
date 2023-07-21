@@ -53,7 +53,7 @@ List all translations that exist in Directus.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readTranslations} from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     readTranslations({
@@ -132,7 +132,7 @@ List an existing translation by primary key.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readTranslation } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     readTranslation('translation_id',{
@@ -212,7 +212,7 @@ Create a new translation.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createTranslation } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     createTranslation({
@@ -312,7 +312,7 @@ Create multiple new translation.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createTranslations } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     createTranslations(
@@ -429,7 +429,7 @@ Update an existing translation.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateTranslation } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updateTranslation('translation_id',{
@@ -520,7 +520,7 @@ Update multiple existing translations.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedTranslations } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updatedTranslations(['translation_1_id','translation_2_id'],{

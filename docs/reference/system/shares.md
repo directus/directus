@@ -93,7 +93,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readShares } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     readShares({
@@ -189,7 +189,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readShare } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     readShare('share_id', {
@@ -476,7 +476,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateShare } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updateShare('share_id', {
@@ -588,7 +588,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatedShare } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updatedShares(['share_1_id','share_2_id'], {
