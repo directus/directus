@@ -2,9 +2,9 @@ import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
 import { Project, findWorkspacePackagesNoCheck } from '@pnpm/find-workspace-packages';
 import { existsSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
-import { MAIN_PACKAGE, PACKAGE_ORDER, UNTYPED_PACKAGES } from '../constants';
-import type { PackageVersion } from '../types';
-import { sortByExternalOrder } from './sort';
+import { MAIN_PACKAGE, PACKAGE_ORDER, UNTYPED_PACKAGES } from '../constants.js';
+import type { PackageVersion } from '../types.js';
+import { sortByExternalOrder } from './sort.js';
 
 export async function processPackages(): Promise<{
 	mainVersion: string | undefined;
