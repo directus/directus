@@ -178,8 +178,8 @@ const receiveMessage = (message) => {
 				type: 'subscribe', // [!code ++]
 				collection: 'messages', // [!code ++]
 				query: { // [!code ++]
-					fields: ['*', {'user_created': ['first_name']}], // [!code ++]
-					sort: ['date_created'], // [!code ++]
+					fields: ['*', 'user_created.first_name'], // [!code ++]
+					sort: 'date_created', // [!code ++]
 				}, // [!code ++]
 			}) // [!code ++]
 		); // [!code ++]
@@ -199,8 +199,8 @@ const receiveMessage = (message) => {
 				type: 'subscribe',
 				collection: 'messages',
 				query: {
-					fields: ['*', {'user_created': ['first_name']}],
-					sort: ['date_created'],
+					fields: ['*', 'user_created.first_name'],
+					sort: 'date_created',
 				},
 			})
 		);
@@ -354,8 +354,8 @@ export default function App() {
 					type: 'subscribe',
 					collection: 'messages',
 					query: {
-						fields: ['*', {'user_created': ['first_name']}],
-						sort: ['date_created'],
+						fields: ['*', 'user_created.first_name'],
+						sort: 'date_created',
 					},
 				})
 			);
