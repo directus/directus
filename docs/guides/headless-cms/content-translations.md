@@ -174,6 +174,12 @@ relational data . It's incredible powerful.
 const slug = 'slug-in-english';
 const languageCode = 'en-US';
 
+// Initialize the SDK
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
+
 // Call the Directus API using the SDK using the locale of the frontend and the slug.
 const response = await directus.request(
   readItems('articles', {

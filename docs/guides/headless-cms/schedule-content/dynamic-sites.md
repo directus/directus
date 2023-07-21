@@ -96,6 +96,13 @@ articles that have a publish date AND have the `published` state are displayed o
 Using the [Directus JavaScript SDK](/guides/sdk/getting-started) (preferred)
 
 ```js
+
+// Initialize the SDK
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
+
 const articles = await directus.request(
   readItems('articles', {
     filter: {
