@@ -587,11 +587,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedShare } from '@directus/sdk/rest';
+import { rest, updateShare } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
-    updatedShares(['share_1_id','share_2_id'], {
+    updateShares(['share_1_id','share_2_id'], {
         'field' : 'value',
     })
 );
@@ -658,11 +658,11 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedShare } from '@directus/sdk/rest';
+import { rest, updateShare } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updatedShares(['2f8c03c3-4988-4869-a1b3-318e0a4b9b9d','153cdb59-7868-4187-8696-372aa07537f4'], {
+    updateShares(['2f8c03c3-4988-4869-a1b3-318e0a4b9b9d','153cdb59-7868-4187-8696-372aa07537f4'], {
         'max_uses' : 10,
     })
 );

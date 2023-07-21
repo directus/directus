@@ -525,12 +525,12 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateDashboard } from '@directus/sdk/rest';
+import { rest, updateashboard } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateDashboard('dashboard_id', {
+	updateashboard('dashboard_id', {
 		dashboard_field: 'value',
 	})
 );
@@ -585,12 +585,12 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateDashboard } from '@directus/sdk/rest';
+import { rest, updateashboard } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updateDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9', {
+	updateashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9', {
 		color: '#6644FF',
 	})
 );
@@ -637,12 +637,12 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedDashboards } from '@directus/sdk/rest';
+import { rest, updateDashboards } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updatedDashboards(['dashboard_1_id', 'dashboard_2_id'], {
+	updateDashboards(['dashboard_1_id', 'dashboard_2_id'], {
 		dashboard_field: 'value_1',
 	})
 );
@@ -707,12 +707,12 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedDashboards } from '@directus/sdk/rest';
+import { rest, updateDashboards } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updatedDashboards(['cfcc3702-33bd-4616-865c-99b59dc1cdc9', '782c80a0-ad61-488d-b9e2-7d688f029421'], {
+	updateDashboards(['cfcc3702-33bd-4616-865c-99b59dc1cdc9', '782c80a0-ad61-488d-b9e2-7d688f029421'], {
 		color: '#81D4FA',
 	})
 );

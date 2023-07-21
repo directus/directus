@@ -665,12 +665,12 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFlows } from '@directus/sdk/rest';
+import { rest, updateFlows } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updatedFlows(['flow_1_id', 'flow_2_id'], {
+	updateFlows(['flow_1_id', 'flow_2_id'], {
 		flow_field: 'value',
 	})
 );
@@ -736,12 +736,12 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFlows } from '@directus/sdk/rest';
+import { rest, updateFlows } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updatedFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'], {
+	updateFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'], {
 		status: 'inactive',
 	})
 );

@@ -668,11 +668,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedWebhooks } from '@directus/sdk/rest';
+import { rest, updateWebhooks } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updatedWebhooks(['webhook_1_id','webhook_2_id'], {
+    updateWebhooks(['webhook_1_id','webhook_2_id'], {
         'webhook_field' : 'value',
     })
 );
@@ -735,11 +735,11 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedWebhooks } from '@directus/sdk/rest';
+import { rest, updateWebhooks } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updatedWebhooks(['5','6'], {
+    updateWebhooks(['5','6'], {
         'status' : 'inactive',
     })
 );

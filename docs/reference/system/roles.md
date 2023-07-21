@@ -686,11 +686,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedRoles } from '@directus/sdk/rest';
+import { rest, updateRoles } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
-    updatedRoles(['role_1_id','role_2_id'], {
+    updateRoles(['role_1_id','role_2_id'], {
             'field': 'value',
         }
     )
@@ -759,11 +759,11 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedRoles } from '@directus/sdk/rest';
+import { rest, updateRoles } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updatedRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658','1792dc2c-6142-4723-ae40-698d082ddc5e'], {
+    updateRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658','1792dc2c-6142-4723-ae40-698d082ddc5e'], {
             'admin_access': true,
         }
     )

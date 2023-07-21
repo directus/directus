@@ -220,11 +220,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedSettings } from '@directus/sdk/rest';
+import { rest, updateSettings } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
-    updatedSettings({
+    updateSettings({
         'settings_field' : 'value'
     })
 )
@@ -279,11 +279,11 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedSettings } from '@directus/sdk/rest';
+import { rest, updateSettings } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updatedSettings({
+    updateSettings({
         'project_url' : 'https://example.com/'
     })
 )

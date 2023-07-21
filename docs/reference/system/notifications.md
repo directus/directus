@@ -671,12 +671,12 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedNotifications } from '@directus/sdk/rest';
+import { rest, updateNotifications } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updatedNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'], {
+	updateNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'], {
 		field: 'value',
 	})
 );
@@ -739,12 +739,12 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedNotifications } from '@directus/sdk/rest';
+import { rest, updateNotifications } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updatedNotifications(['1', '2', '3'], {
+	updateNotifications(['1', '2', '3'], {
 		status: 'archive',
 	})
 );

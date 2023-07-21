@@ -607,11 +607,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFolders } from '@directus/sdk/rest';
+import { rest, updateFolders } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(updatedFolders(['folder_1_id', 'folder_2_id'], { field: 'value' }));
+const result = await client.request(updateFolders(['folder_1_id', 'folder_2_id'], { field: 'value' }));
 
 console.log(result);
 ```
@@ -673,12 +673,12 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedFolders } from '@directus/sdk/rest';
+import { rest, updateFolders } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updatedFolders(['a3c77ec8-35f0-467b-9dc5-5195c4cfdae0', '1d8428f9-c437-4d4e-b3df-d276c605f454'], {
+	updateFolders(['a3c77ec8-35f0-467b-9dc5-5195c4cfdae0', '1d8428f9-c437-4d4e-b3df-d276c605f454'], {
 		parent: 'a151aa85-4784-44cb-8ee8-c568e45e00fd',
 	})
 );

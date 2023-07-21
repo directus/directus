@@ -519,11 +519,11 @@ Update multiple existing translations.
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedTranslations } from '@directus/sdk/rest';
+import { rest, updateTranslations } from '@directus/sdk/rest';
 const client = createDirectus('app_url').with(rest())
 
 const result = await client.request(
-    updatedTranslations(['translation_1_id','translation_2_id'],{
+    updateTranslations(['translation_1_id','translation_2_id'],{
         'field' : 'value'
     })
 );
@@ -574,11 +574,11 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedTranslations } from '@directus/sdk/rest';
+import { rest, updateTranslations } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updatedTranslations(['91be30ed-4f4e-481f-84be-860e0c25b035','74f2aa3e-ad5c-424a-9ace-adab5ecb0fcajj'],{
+    updateTranslations(['91be30ed-4f4e-481f-84be-860e0c25b035','74f2aa3e-ad5c-424a-9ace-adab5ecb0fcajj'],{
         'value' : 'this is the new value'
     })
 );

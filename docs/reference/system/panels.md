@@ -681,11 +681,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedPanels } from '@directus/sdk/rest';
+import { rest, updatePanels } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(staticToken()).with(rest())
 
 const result = await client.request(
-    updatedPanels(['panel_1_id','panel_2_id'], {
+    updatePanels(['panel_1_id','panel_2_id'], {
         'field' : 'value'
     }
 ));
@@ -750,11 +750,11 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updatedPanels } from '@directus/sdk/rest';
+import { rest, updatePanels } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updatedPanels(['8d4acee9-f266-4664-801d-11d0273e9bfe','4a98c02e-62ac-4ceb-aabc-990ce603eb78'], {
+    updatePanels(['8d4acee9-f266-4664-801d-11d0273e9bfe','4a98c02e-62ac-4ceb-aabc-990ce603eb78'], {
         'position_x' : 30
     }
 ));
