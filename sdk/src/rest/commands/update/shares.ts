@@ -15,7 +15,7 @@ export type UpdateShareOutput<
  * @param query
  * @returns Returns the share objects for the updated shares.
  */
-export const updatedShares =
+export const updateShares =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		keys: DirectusShare<Schema>['id'][],
 		item: Partial<DirectusShare<Schema>>,

@@ -17,7 +17,7 @@ export type UpdateUserOutput<
  *
  * @returns Returns the user objects for the updated users.
  */
-export const updatedUsers =
+export const updateUsers =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		keys: DirectusUser<Schema>['id'][],
 		item: Partial<DirectusUser<Schema>>,

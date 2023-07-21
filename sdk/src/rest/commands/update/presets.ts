@@ -15,7 +15,7 @@ export type UpdatePresetOutput<
  * @param query
  * @returns Returns the preset objects for the updated presets.
  */
-export const updatedPresets =
+export const updatePresets =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPreset<Schema>>>(
 		keys: DirectusPreset<Schema>['id'][],
 		item: Partial<DirectusPreset<Schema>>,

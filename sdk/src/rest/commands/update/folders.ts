@@ -15,7 +15,7 @@ export type UpdateFolderOutput<
  * @param query
  * @returns Returns the folder objects of the folders that were updated.
  */
-export const updatedFolders =
+export const updateFolders =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		keys: DirectusFolder<Schema>['id'][],
 		item: Partial<DirectusFolder<Schema>>,

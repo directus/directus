@@ -15,7 +15,7 @@ export type UpdatePanelOutput<
  * @param query
  * @returns Returns the panel objects for the updated panels.
  */
-export const updatedPanels =
+export const updatePanels =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		keys: DirectusPanel<Schema>['id'][],
 		item: Partial<DirectusPanel<Schema>>,

@@ -15,7 +15,7 @@ export type UpdateFlowOutput<
  * @param query
  * @returns Returns the flow objects for the updated flows.
  */
-export const updatedFlows =
+export const updateFlows =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
 		keys: DirectusFlow<Schema>['id'][],
 		item: Partial<DirectusFlow<Schema>>,

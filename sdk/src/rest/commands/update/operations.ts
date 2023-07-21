@@ -15,7 +15,7 @@ export type UpdateOperationOutput<
  * @param query
  * @returns Returns the operation objects for the updated operations.
  */
-export const updatedOperations =
+export const updateOperations =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusOperation<Schema>>>(
 		keys: DirectusOperation<Schema>['id'][],
 		item: Partial<DirectusOperation<Schema>>,

@@ -14,7 +14,7 @@ export type UpdateSettingOutput<
  * @param query
  * @returns Returns the settings object.
  */
-export const updatedSettings =
+export const updateSettings =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusSettings<Schema>>>(
 		item: Partial<DirectusSettings<Schema>>,
 		query?: TQuery

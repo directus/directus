@@ -15,7 +15,7 @@ export type UpdatePermissionOutput<
  * @param query
  * @returns Returns the permission object for the updated permissions.
  */
-export const updatedPermissions =
+export const updatePermissions =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		keys: DirectusPermission<Schema>['id'][],
 		item: Partial<DirectusPermission<Schema>>,

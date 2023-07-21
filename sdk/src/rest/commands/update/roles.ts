@@ -15,7 +15,7 @@ export type UpdateRoleOutput<
  * @param query
  * @returns Returns the role objects for the updated roles.
  */
-export const updatedRoles =
+export const updateRoles =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		keys: DirectusRole<Schema>['id'][],
 		item: Partial<DirectusRole<Schema>>,

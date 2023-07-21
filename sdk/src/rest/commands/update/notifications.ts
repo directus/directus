@@ -15,7 +15,7 @@ export type UpdateNotificationOutput<
  * @param query
  * @returns Returns the notification objects for the updated notifications.
  */
-export const updatedNotifications =
+export const updateNotifications =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		keys: DirectusNotification<Schema>['id'][],
 		item: Partial<DirectusNotification<Schema>>,

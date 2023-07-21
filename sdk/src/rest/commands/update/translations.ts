@@ -15,7 +15,7 @@ export type UpdateTranslationOutput<
  * @param query
  * @returns Returns the translation objects for the updated translations.
  */
-export const updatedTranslations =
+export const updateTranslations =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		keys: DirectusTranslation<Schema>['id'][],
 		item: Partial<DirectusTranslation<Schema>>,

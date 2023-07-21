@@ -15,7 +15,7 @@ export type UpdateDashboardOutput<
  * @param query
  * @returns Returns the dashboard objects for the updated dashboards.
  */
-export const updatedDashboards =
+export const updateDashboards =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		keys: DirectusDashboard<Schema>['id'][],
 		item: Partial<DirectusDashboard<Schema>>,

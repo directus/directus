@@ -18,7 +18,7 @@ export type UpdateItemOutput<
  *
  * @returns Returns the item objects for the updated items.
  */
-export const updatedItems =
+export const updateItems =
 	<Schema extends object, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		keys: PrimaryKey[],

@@ -15,7 +15,7 @@ export type UpdateWebhookOutput<
  * @param query
  * @returns Returns the webhook objects for the updated webhooks.
  */
-export const updatedWebhooks =
+export const updateWebhooks =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
 		keys: DirectusWebhook<Schema>['id'][],
 		item: Partial<DirectusWebhook<Schema>>,
