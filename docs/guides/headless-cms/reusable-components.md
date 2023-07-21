@@ -216,6 +216,13 @@ how to properly fetch nested relational M2A data without over-fetching data that
 // Write some code here in your front-end framework that gets the slug from the current URL.
 const slug = 'the-ultimate-guide-to-rabbits';
 
+// Initialize the SDK
+import { createDirectus } from '@directus/sdk';
+import { rest } from '@directus/sdk/rest';
+import { readItems } from '@directus/sdk/rest/commands';
+
+const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
+
 // Fetch page data using the SDK.
 const response = await directus.request(
   readItems('pages', {
