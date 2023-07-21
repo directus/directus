@@ -587,7 +587,7 @@ import { rest, updatePresets } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
-    updatePreset(['preset_1_id','preset_2_id'], {
+    updatePresets(['preset_1_id','preset_2_id'], {
         'field' : 'value'
     })
 )
@@ -651,7 +651,7 @@ import { rest, updatePresets } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
-    updatePreset(['24','34'] ,{
+    updatePresets(['24','34'] ,{
         'layout' : 'tabular'
     })
 )

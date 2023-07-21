@@ -525,12 +525,12 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateashboard } from '@directus/sdk/rest';
+import { rest, updateDashboard } from '@directus/sdk/rest';
 
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateashboard('dashboard_id', {
+	updateDashboard('dashboard_id', {
 		dashboard_field: 'value',
 	})
 );
@@ -585,12 +585,12 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, updateashboard } from '@directus/sdk/rest';
+import { rest, updateDashboard } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-	updateashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9', {
+	updateDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9', {
 		color: '#6644FF',
 	})
 );
