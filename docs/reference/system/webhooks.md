@@ -80,7 +80,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     readWebhooks({
@@ -176,7 +176,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readWebhook } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     readWebhook('webhook_id',{
@@ -277,7 +277,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createWebhook } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     createWebhook({
@@ -560,7 +560,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateWebhook } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     updateWebhook('webhook_id', {

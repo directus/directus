@@ -42,7 +42,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, generateHash } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     generateHash('string')
@@ -138,7 +138,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, verifyHash } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     verifyHash('string_to_verify','hash')
@@ -240,7 +240,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, utilitySort } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     utilitySort('collection_name','id_item_to_move','id_item_moving_to')
@@ -309,11 +309,7 @@ console.log(result);
 
 ## Import Data from File
 
-Import multiple records from a JSON or CSV file into a collection. Relies on a `multipart/form-data` encoded request,
-just like regular file uploads. Check [Upload a File](/reference/files#upload-a-file) for more information.
-
-The import endpoint expects the file structure to match [the export query parameter](/reference/query#export). For JSON,
-this is an array of objects, where every object is an item. For CSV, the first line has to be the columns header.
+Import multiple records from a JSON or CSV file into a collection. 
 
 ### Request
 
@@ -322,18 +318,7 @@ this is an array of objects, where every object is an item. For CSV, the first l
 
 `POST /utils/import/:collection`
 
-```
-Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
-Content-Length: //CONTENT LENGTH
-
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="filename"
-Content-Type: MIME Content Type
-
-//CONTENT
-
-...
-```
+Body must be formatted as a `multipart/form-data` with a `file` property.
 
 </template>
 <template #graphql>
@@ -341,7 +326,26 @@ Content-Type: MIME Content Type
 `// Not currently available in GraphQL`
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilsImport } from '@directus/sdk/rest';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const formData = new FormData();
+formData.append('file', raw_file);
+
+const result = await client.request(utilsImport(formData));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
+
+The import endpoint expects the file structure to match [the export query parameter](/reference/query#export). For JSON, this is an array of objects, where every object is an item. For CSV, the first line has to be the columns header.
 
 #### Request Body
 
@@ -351,38 +355,6 @@ information.
 ### Response
 
 Empty body.
-
-### Example
-
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-<template #rest>
-
-`POST /utils/import/articles`
-
-```
-Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
-Content-Length: 3442422
-
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="articles.csv"
-Content-Type: text/csv
-
-"id","title","another","created_by"
-1,"My First Articled","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-2,"My Second Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-3,"My Updated Third Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-4,"My Fourth Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-5,"My Fifth Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-...
-```
-
-</template>
-<template #graphql>
-
-`// Not currently available in GraphQL`
-
-</template>
-</SnippetToggler>
 
 ## Export Data to a File
 
@@ -421,7 +393,7 @@ Export a larger data set to a file in the File Library
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, utilsExport } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(
     utilsExport('collection_name','file_format',{
@@ -541,7 +513,7 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, clearCache } from '@directus/sdk/rest';
-const client = createDirectus('app_url').with(rest())
+const client = createDirectus('directus_project_url').with(rest())
 
 const result = await client.request(clearCache());
 
