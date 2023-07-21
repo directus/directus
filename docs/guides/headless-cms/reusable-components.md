@@ -218,8 +218,7 @@ const slug = 'the-ultimate-guide-to-rabbits';
 
 // Initialize the SDK
 import { createDirectus } from '@directus/sdk';
-import { rest } from '@directus/sdk/rest';
-import { readItems } from '@directus/sdk/rest/commands';
+import { rest, readItems } from '@directus/sdk/rest';
 
 const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
 

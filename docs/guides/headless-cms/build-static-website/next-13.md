@@ -80,7 +80,7 @@ Inside of the `app` directory, create a new file called `page.tsx` inside of it.
 
 ```jsx
 import directus from 'lib/directus';
-import { readItems } from '@directus/sdk/rest/commands';
+import { readItems } from '@directus/sdk/rest';
 
 
 async function getGlobals() {
@@ -118,7 +118,7 @@ single file can be used for all of the top-level pages.
 ```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
-import { readItem } from '@directus/sdk/rest/commands';
+import { readItem } from '@directus/sdk/rest';
 
 
 async function getPage(slug) {
@@ -175,7 +175,7 @@ Inside of the `app` directory, create a new subdirectory called `blog` and a new
 
 ```jsx
 import directus from 'lib/directus';
-import { readItems } from '@directus/sdk/rest/commands';
+import { readItems } from '@directus/sdk/rest';
 
 
 async function getPosts() {
@@ -236,7 +236,7 @@ Each blog post links to a page that does not yet exist. In the `app/blog` direct
 ```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
-import { readItem } from '@directus/sdk/rest/commands';
+import { readItem } from '@directus/sdk/rest';
 
 
 async function getPost(slug) {
