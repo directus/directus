@@ -7,6 +7,7 @@ export class Url {
 	path: string[];
 	query: Record<string, string>;
 	hash: string | null;
+	hasTrailingSlash: boolean;
 
 	constructor(url: string) {
 		const parsedUrl = new URL(url, 'http://localhost');
@@ -25,6 +26,8 @@ export class Url {
 		this.path = parsedUrl.pathname.split('/').filter((p) => p !== '');
 		this.query = Object.fromEntries(parsedUrl.searchParams.entries());
 		this.hash = parsedUrl.hash !== '' ? parsedUrl.hash.substring(1) : null;
+
+		this.hasTrailingSlash = parsedUrl.pathname.length > 1 ? parsedUrl.pathname.endsWith('/') : url.endsWith('/');
 	}
 
 	public isAbsolute(): boolean {
@@ -67,10 +70,12 @@ export class Url {
 
 		const path = this.path.length ? `/${this.path.join('/')}` : '';
 
+		const trailingSlash = this.hasTrailingSlash ? '/' : '';
+
 		const query = Object.keys(this.query).length !== 0 ? `?${new URLSearchParams(this.query).toString()}` : '';
 
 		const hash = this.hash !== null ? `#${this.hash}` : '';
 
-		return `${!rootRelative ? origin : ''}${path}${query}${hash}`;
+		return `${!rootRelative ? origin : ''}${path}${trailingSlash}${query}${hash}`;
 	}
 }
