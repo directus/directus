@@ -20,7 +20,7 @@
 		/>
 	</div>
 	<div class="field">
-		<div class="type-label">Preview In Drawer</div>
+		<div class="type-label">Same Page Preview</div>
 		<v-checkbox
 			v-model="sideDrawerWritable"
 			label="Enabled"
