@@ -78,6 +78,21 @@ In GraphQL, this can be achieved using Union Types.
 ` // Natively supported in GraphQL`
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readItems('articles',{
+   'fields': ['title', 'date_created', { 'authors': ['name'] }]
+}));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Filter
@@ -160,6 +175,25 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readItems('articles',{
+    "filter": {
+        "status": {
+            "_eq": "draft"
+        }
+    }
+}));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ::: tip Filtering M2A fields
@@ -214,6 +248,21 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readItems('articles',{
+    'search': 'foobar'
+}));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Sort
@@ -258,6 +307,21 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readItems('articles',{
+    'sort': '-date_created' //Sort by creation date descending
+}));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Limit
@@ -296,6 +360,21 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readItems('articles',{
+    'limit' : 3
+}));
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ## Offset
@@ -321,6 +400,21 @@ query {
 		id
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readItems('articles',{
+    'offset' : 5
+}));
+
+console.log(result);
 ```
 
 </template>
@@ -353,6 +447,21 @@ query {
 		id
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readItems('articles',{
+    'page' : 1
+}));
+
+console.log(result);
 ```
 
 </template>
@@ -406,6 +515,22 @@ query {
 		}
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, aggregate } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(aggregate('articles', {
+        'aggregate' : { 'count' : '*' },
+        'groupBy' : 'authors'
+}));
+
+console.log(result);
 ```
 
 </template>
@@ -471,6 +596,25 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest())
+
+const result = await client.request(readItems('articles', {
+        'filter' : {
+            'authors' : {
+                'name' : {
+                    '_eq': 'John'
+            }
+        }
+    }
+}));
+```
+
+</template>
 </SnippetToggler>
 
 ## Aliases
@@ -513,6 +657,31 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest())
+
+const result = await client.request(readItems('articles', { 
+    alias: {
+        'all_translations': 'translations',
+        'dutch_translations': 'translations',
+    },
+    deep: {
+      dutch_translations: {
+        _filter: {
+            code: {
+                _eq: 'nl-NL'
+            }
+        }
+      }
+    }
+}));
+```
+
+</template>
 </SnippetToggler>
 
 ## Export
@@ -535,6 +704,13 @@ Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 <template #graphql>
 
 `// Not Applicable`
+
+</template>
+<template #sdk>
+
+```js
+// Not Applicable
+```
 
 </template>
 </SnippetToggler>
@@ -600,6 +776,19 @@ query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readItems('articles',{
+    fields : ['month(date_created)']
+}))
+```
+
+</template>
 </SnippetToggler>
 
 ## Metadata
@@ -646,6 +835,13 @@ query {
 		}
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+// Not applicable, use aggregate()
 ```
 
 </template>
