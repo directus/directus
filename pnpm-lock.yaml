@@ -529,6 +529,9 @@ importers:
       '@directus/stores':
         specifier: workspace:*
         version: link:../packages/stores
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../packages/tsconfig
       '@directus/types':
         specifier: workspace:*
         version: link:../packages/types
@@ -911,9 +914,9 @@ importers:
       '@directus/format-title':
         specifier: 10.0.0
         version: 10.0.0
-      '@vue/tsconfig':
-        specifier: 0.4.0
-        version: 0.4.0
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../packages/tsconfig
       eslint-parser-plain:
         specifier: 0.1.0
         version: 0.1.0
@@ -9237,10 +9240,6 @@ packages:
     optionalDependencies:
       '@vue/compiler-dom': 3.3.4
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
-    dev: true
-
-  /@vue/tsconfig@0.4.0:
-    resolution: {integrity: sha512-CPuIReonid9+zOG/CGTT05FXrPYATEqoDGNrEaqS4hwcw5BUNM2FguC0mOwJD4Jr16UpRVl9N0pY3P+srIbqmg==}
     dev: true
 
   /@vueuse/core@10.1.2(vue@3.3.4):

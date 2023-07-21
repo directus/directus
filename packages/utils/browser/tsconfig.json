@@ -1,7 +1,7 @@
 {
-	"extends": "@directus/tsconfig/node18-esm.json",
+	"extends": "@directus/tsconfig/node18-esm",
 	"compilerOptions": {
-		"lib": ["es2022", "dom"]
+		"lib": ["ES2022", "DOM"]
 	},
 	"include": ["."]
 }

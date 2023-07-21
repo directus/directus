@@ -1,5 +1,5 @@
-import { NOTICE_TYPE, REPO, VERSIONS_TITLE } from '../constants';
-import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types';
+import { NOTICE_TYPE, REPO, VERSIONS_TITLE } from '../constants.js';
+import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types.js';
 
 type Section = Type & { notices: Notice[] };
 
