@@ -34,6 +34,9 @@ Snapshot of the changes made in this revision.
 `parent` **many-to-one**\
 Parent revision that triggered this revision. Many-to-one to revisions (recursive).
 
+`branch` **many-to-one**\
+Branch of the changes made in this revision. Many-to-one to [branches](/reference/system/branches).
+
 ```json
 {
 	"id": 368,

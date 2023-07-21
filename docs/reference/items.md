@@ -110,7 +110,10 @@ Get an item that exists in Directus.
 
 ### Query Parameters
 
-Supports all [global query parameters](/reference/query).
+Supports all [global query parameters](/reference/query) and the following query parameters:
+
+`branch` **string**\
+Name of the branch. Requires the [Branch Enabled field](/app/data-model/collections#branch_enabled) to be enabled.
 
 ### Returns
 
