@@ -8,7 +8,6 @@ export type ReadItemOutput<
 	TQuery extends Query<Schema, Schema[Collection]>
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
 
-
 /**
  * List all items that exist in Directus.
  *

@@ -13,7 +13,11 @@ export type ItemType<Schema extends object> =
 /**
  * Return singular collection type
  */
-export type CollectionType<Schema extends object, Collection extends keyof Schema> = UnpackList<Schema[Collection]> extends object ? UnpackList<Schema[Collection]> : never;
+export type CollectionType<Schema extends object, Collection extends keyof Schema> = UnpackList<
+	Schema[Collection]
+> extends object
+	? UnpackList<Schema[Collection]>
+	: never;
 
 /**
  * Returns a list of singleton collections in the schema
