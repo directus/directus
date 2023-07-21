@@ -50,6 +50,7 @@ file that can be imported later. Create a new directory called `lib` and a new f
 
 ```js
 import { createDirectus } from '@directus/sdk';
+import { rest } from '@directus/sdk/rest';
 
 const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
 
@@ -79,6 +80,8 @@ Inside of the `app` directory, create a new file called `page.tsx` inside of it.
 
 ```jsx
 import directus from 'lib/directus';
+import { readItems } from '@directus/sdk/rest/commands';
+
 
 async function getGlobals() {
   const { data } = await directus.request(readItems('global'));
@@ -115,6 +118,8 @@ single file can be used for all of the top-level pages.
 ```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
+import { readItem } from '@directus/sdk/rest/commands';
+
 
 async function getPage(slug) {
   try {
@@ -137,7 +142,8 @@ export default async function DynamicPage({ params }) {
 ```
 
 Go to `http://localhost:3000/about`, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK,
-the single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the Primary ID Field.
+the single item with that slug is retrieved, and the page should show your data. `readItem()` allows you to specify the
+Primary ID Field.
 
 _Note that we check if a returned value exists, and return a 404 if not. Please also note that
 [`dangerouslySetInnerHTML` should only be used for trusted content](https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml)._
@@ -169,6 +175,8 @@ Inside of the `app` directory, create a new subdirectory called `blog` and a new
 
 ```jsx
 import directus from 'lib/directus';
+import { readItems } from '@directus/sdk/rest/commands';
+
 
 async function getPosts() {
   const posts = await directus.request(
@@ -228,6 +236,8 @@ Each blog post links to a page that does not yet exist. In the `app/blog` direct
 ```jsx
 import directus from 'lib/directus';
 import { notFound } from 'next/navigation';
+import { readItem } from '@directus/sdk/rest/commands';
+
 
 async function getPost(slug) {
   try {
