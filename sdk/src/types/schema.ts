@@ -1,5 +1,5 @@
 import type { CoreSchema } from '../schema/index.js';
-import type { UnpackList } from './utils.js';
+import type { IfAny, UnpackList } from './utils.js';
 
 /**
  * Get all available top level Item types from a given Schema
@@ -13,11 +13,15 @@ export type ItemType<Schema extends object> =
 /**
  * Return singular collection type
  */
-export type CollectionType<Schema extends object, Collection extends keyof Schema> = UnpackList<
-	Schema[Collection]
-> extends object
-	? UnpackList<Schema[Collection]>
-	: never;
+export type CollectionType<Schema extends object, Collection> = IfAny<
+	Schema,
+	any,
+	Collection extends keyof Schema
+		? UnpackList<Schema[Collection]> extends object
+			? UnpackList<Schema[Collection]>
+			: never
+		: never
+>;
 
 /**
  * Returns a list of singleton collections in the schema
@@ -29,7 +33,11 @@ export type SingletonCollections<Schema extends object> = {
 /**
  * Returns a list of regular collections in the schema
  */
-export type RegularCollections<Schema extends object> = Exclude<keyof Schema, SingletonCollections<Schema>>;
+export type RegularCollections<Schema extends object> = IfAny<
+	Schema,
+	string,
+	Exclude<keyof Schema, SingletonCollections<Schema>>
+>;
 
 /**
  * Return string keys of all Primitive fields in the given schema Item

@@ -1,20 +1,20 @@
 import type { HasNestedFields, QueryFields } from './fields.js';
 import type { ItemType, RelationalFields } from './schema.js';
-import type { UnpackList } from './utils.js';
+import type { IfAny, UnpackList } from './utils.js';
 
 /**
  * All query options available
  */
 export interface Query<Schema extends object, Item> {
-	readonly fields?: QueryFields<Schema, Item> | undefined;
-	readonly filter?: QueryFilter<Schema, Item> | undefined;
+	readonly fields?: IfAny<Schema, (string | Record<string, any>)[], QueryFields<Schema, Item>> | undefined;
+	readonly filter?: IfAny<Schema, Record<string, any>, QueryFilter<Schema, Item>> | undefined;
 	readonly search?: string | undefined;
-	readonly sort?: QuerySort<Schema, Item> | QuerySort<Schema, Item>[] | undefined;
+	readonly sort?: IfAny<Schema, string | string[], QuerySort<Schema, Item> | QuerySort<Schema, Item>[]> | undefined;
 	readonly limit?: number | undefined;
 	readonly offset?: number | undefined;
 	readonly page?: number | undefined;
-	readonly deep?: QueryDeep<Schema, Item> | undefined;
-	readonly alias?: QueryAlias<Schema, Item> | undefined;
+	readonly deep?: IfAny<Schema, Record<string, any>, QueryDeep<Schema, Item>> | undefined;
+	readonly alias?: IfAny<Schema, Record<string, string>, QueryAlias<Schema, Item>> | undefined;
 }
 
 /**
