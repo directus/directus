@@ -450,12 +450,9 @@ mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { staticToken } from '@directus/sdk/auth'; // OMIT
 import { rest, updateComment } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
-
-await client.setToken('s79J1cEaSuGIF40auEN6s0gvN-MOK9G4'); // OMIT
 
 const result = await client.request(
 	updateComment('53727', {
