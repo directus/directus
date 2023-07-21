@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadRoleOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusRole<Schema>
+	Item extends object = DirectusRole<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -14,7 +14,7 @@ export type ReadRoleOutput<
  * @returns An array of up to limit Role objects. If no items are available, data will be an empty array.
  */
 export const readRoles =
-	<Schema extends object, TQuery extends Query<Schema, DirectusRole<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		query?: TQuery
 	): RestCommand<ReadRoleOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -30,7 +30,7 @@ export const readRoles =
  * @returns Returns a Role object if a valid primary key was provided.
  */
 export const readRole =
-	<Schema extends object, TQuery extends Query<Schema, DirectusRole<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		key: DirectusRole<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadRoleOutput<Schema, TQuery>, Schema> =>

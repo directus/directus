@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateRelationOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusRelation<Schema>
+	Item extends object = DirectusRelation<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -17,7 +17,7 @@ export type UpdateRelationOutput<
  * @returns Returns the relation object for the created relation.
  */
 export const updateRelation =
-	<Schema extends object, TQuery extends Query<Schema, DirectusRelation<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusRelation<Schema>>>(
 		collection: DirectusRelation<Schema>['collection'],
 		field: DirectusRelation<Schema>['field'],
 		item: Partial<DirectusRelation<Schema>>,

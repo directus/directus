@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateSettingOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusSettings<Schema>
+	Item extends object = DirectusSettings<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -15,7 +15,7 @@ export type UpdateSettingOutput<
  * @returns Returns the settings object.
  */
 export const updatedSettings =
-	<Schema extends object, TQuery extends Query<Schema, DirectusSettings<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusSettings<Schema>>>(
 		item: Partial<DirectusSettings<Schema>>,
 		query?: TQuery
 	): RestCommand<UpdateSettingOutput<Schema, TQuery>[], Schema> =>

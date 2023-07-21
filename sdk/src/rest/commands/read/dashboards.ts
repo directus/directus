@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadDashboardOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusDashboard<Schema>
+	Item extends object = DirectusDashboard<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -14,7 +14,7 @@ export type ReadDashboardOutput<
  * @returns An array of up to limit dashboard objects. If no items are available, data will be an empty array.
  */
 export const readDashboards =
-	<Schema extends object, TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		query?: TQuery
 	): RestCommand<ReadDashboardOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -30,7 +30,7 @@ export const readDashboards =
  * @returns Returns the requested dashboard object.
  */
 export const readDashboard =
-	<Schema extends object, TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		key: DirectusDashboard<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadDashboardOutput<Schema, TQuery>, Schema> =>

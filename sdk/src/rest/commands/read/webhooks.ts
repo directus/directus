@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadWebhookOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusWebhook<Schema>
+	Item extends object = DirectusWebhook<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -14,7 +14,7 @@ export type ReadWebhookOutput<
  * @returns An array of up to limit Webhook objects. If no items are available, data will be an empty array.
  */
 export const readWebhooks =
-	<Schema extends object, TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
 		query?: TQuery
 	): RestCommand<ReadWebhookOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -30,7 +30,7 @@ export const readWebhooks =
  * @returns Returns a Webhook object if a valid primary key was provided.
  */
 export const readWebhook =
-	<Schema extends object, TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
 		key: DirectusWebhook<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadWebhookOutput<Schema, TQuery>, Schema> =>

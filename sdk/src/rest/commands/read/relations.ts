@@ -2,11 +2,10 @@ import type { DirectusRelation } from '../../../schema/relation.js';
 import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type ReadRelationOutput<Schema extends object, Item = DirectusRelation<Schema>> = ApplyQueryFields<
-	Schema,
-	Item,
-	'*'
->;
+export type ReadRelationOutput<
+	Schema extends object,
+	Item extends object = DirectusRelation<Schema>
+> = ApplyQueryFields<Schema, Item, '*'>;
 
 /**
  * List all Relations that exist in Directus.
@@ -41,7 +40,7 @@ export const readRelationByCollection =
  * @returns Returns a Relation object if a valid primary key was provided.
  */
 export const readRelation =
-	<Schema extends object, TQuery extends Query<Schema, DirectusRelation<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusRelation<Schema>>>(
 		collection: DirectusRelation<Schema>['collection'],
 		field: DirectusRelation<Schema>['field']
 	): RestCommand<ReadRelationOutput<Schema, TQuery>, Schema> =>

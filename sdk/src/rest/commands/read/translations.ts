@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadTranslationOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusTranslation<Schema>
+	Item extends object = DirectusTranslation<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -14,7 +14,7 @@ export type ReadTranslationOutput<
  * @returns An array of up to limit Translation objects. If no items are available, data will be an empty array.
  */
 export const readTranslations =
-	<Schema extends object, TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		query?: TQuery
 	): RestCommand<ReadTranslationOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -30,7 +30,7 @@ export const readTranslations =
  * @returns Returns a Translation object if a valid primary key was provided.
  */
 export const readTranslation =
-	<Schema extends object, TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
 		key: DirectusTranslation<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadTranslationOutput<Schema, TQuery>, Schema> =>

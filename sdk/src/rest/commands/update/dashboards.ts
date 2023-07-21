@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateDashboardOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusDashboard<Schema>
+	Item extends object = DirectusDashboard<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type UpdateDashboardOutput<
  * @returns Returns the dashboard objects for the updated dashboards.
  */
 export const updatedDashboards =
-	<Schema extends object, TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		keys: DirectusDashboard<Schema>['id'][],
 		item: Partial<DirectusDashboard<Schema>>,
 		query?: TQuery
@@ -36,7 +36,7 @@ export const updatedDashboards =
  * @returns Returns the dashboard object for the updated dashboard.
  */
 export const updateDashboard =
-	<Schema extends object, TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusDashboard<Schema>>>(
 		key: DirectusDashboard<Schema>['id'],
 		item: Partial<DirectusDashboard<Schema>>,
 		query?: TQuery

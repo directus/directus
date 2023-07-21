@@ -2,11 +2,10 @@ import type { DirectusCollection } from '../../../schema/collection.js';
 import type { ApplyQueryFields } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type ReadCollectionOutput<Schema extends object, Item = DirectusCollection<Schema>> = ApplyQueryFields<
-	Schema,
-	Item,
-	'*'
->;
+export type ReadCollectionOutput<
+	Schema extends object,
+	Item extends object = DirectusCollection<Schema>
+> = ApplyQueryFields<Schema, Item, '*'>;
 
 /**
  * List the available collections.

@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateNotificationOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusNotification<Schema>
+	Item extends object = DirectusNotification<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type UpdateNotificationOutput<
  * @returns Returns the notification objects for the updated notifications.
  */
 export const updatedNotifications =
-	<Schema extends object, TQuery extends Query<Schema, DirectusNotification<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		keys: DirectusNotification<Schema>['id'][],
 		item: Partial<DirectusNotification<Schema>>,
 		query?: TQuery
@@ -36,7 +36,7 @@ export const updatedNotifications =
  * @returns Returns the notification object for the updated notification.
  */
 export const updateNotification =
-	<Schema extends object, TQuery extends Query<Schema, DirectusNotification<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusNotification<Schema>>>(
 		key: DirectusNotification<Schema>['id'],
 		item: Partial<DirectusNotification<Schema>>,
 		query?: TQuery

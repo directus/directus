@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdatePermissionOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusPermission<Schema>
+	Item extends object = DirectusPermission<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type UpdatePermissionOutput<
  * @returns Returns the permission object for the updated permissions.
  */
 export const updatedPermissions =
-	<Schema extends object, TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		keys: DirectusPermission<Schema>['id'][],
 		item: Partial<DirectusPermission<Schema>>,
 		query?: TQuery
@@ -36,7 +36,7 @@ export const updatedPermissions =
  * @returns Returns the permission object for the updated permission.
  */
 export const updatePermission =
-	<Schema extends object, TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		key: DirectusPermission<Schema>['id'],
 		item: Partial<DirectusPermission<Schema>>,
 		query?: TQuery
