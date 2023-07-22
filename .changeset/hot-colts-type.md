@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Allowing users to zoom in/out the image even if the field is disabled
+Enabled zoom view on readonly image interfaces
