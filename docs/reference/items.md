@@ -233,6 +233,52 @@ console.log(result);
 
 </SnippetToggler>
 
+## Get Singleton
+
+List the singleton item in Directus.
+
+### Request
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readSingleton } from '@directus/sdk/rest';
+const client = createDirectus('directus_project_url').with(rest())
+
+const result = await client.request(readSingleton('collection_name'))
+
+console.log(result);
+```
+
+::: tip Info
+
+This endpoint is only supported by the SDK.
+
+:::
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+`collection_name` the name of the collection is required.
+
+### Response
+
+Returns an [item object](#the-item-object) if a valid primary key was provided.
+
+### Example
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readSingleton } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readSingleton('about'))
+
+console.log(result);
+```
+
 ## Create an Item
 
 Create a new item in the given collection.
@@ -608,6 +654,56 @@ console.log(result);
 </template>
 
 </SnippetToggler>
+
+## Update Singleton
+
+Update a singleton item
+
+### Request
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateSingleton } from '@directus/sdk/rest';
+const client = createDirectus('directus_project_url').with(rest())
+
+const result = await client.request(updateSingleton('collection_name', {
+    'item_field' : 'value'
+}))
+
+console.log(result);
+```
+
+::: tip Info
+
+This endpoint is only supported by the SDK.
+
+:::
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+The name of the collection `collection_name` is required and a partial [item object](#the-item-object).
+
+### Response
+
+Returns an [item object](#the-item-object) if a valid primary key was provided.
+
+### Example
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateSingleton } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(updateSingleton('about', {
+    'content' : 'Founded in 2023, this website is dedicated to...'
+}))
+
+console.log(result);
+```
 
 ## Update Multiple Items
 
