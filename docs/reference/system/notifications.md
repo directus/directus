@@ -82,12 +82,10 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readNotifications } from '@directus/sdk/rest';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readNotifications({
-		query,
-	})
+	readNotifications( query )
 );
 
 console.log(result);
@@ -181,12 +179,10 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readNotification } from '@directus/sdk/rest';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readNotification('4', {
-		query,
-	})
+	readNotification('notification_id', query )
 );
 
 console.log(result);

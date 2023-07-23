@@ -64,9 +64,7 @@ import { rest, readFolders } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readFolders({
-		query,
-	})
+	readFolders( query )
 );
 
 console.log(result);
@@ -161,9 +159,7 @@ import { rest, readFolder } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readFolder('folder_id', {
-		query,
-	})
+	readFolder('folder_id', query )
 );
 
 console.log(result);

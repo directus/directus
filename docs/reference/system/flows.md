@@ -96,9 +96,7 @@ import { rest, readFlows } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readFlows({
-		query,
-	})
+	readFlows( query )
 );
 
 console.log(result);
@@ -195,9 +193,7 @@ import { rest, readFlow } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readFlow('flow_id', {
-		query,
-	})
+	readFlow('flow_id', query )
 );
 
 console.log(result);

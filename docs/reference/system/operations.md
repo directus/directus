@@ -99,9 +99,7 @@ import { rest, readOperations } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readOperations({
-		query,
-	})
+	readOperations( query )
 );
 
 console.log(result);
@@ -197,9 +195,7 @@ import { rest, readOperation } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readOperation('operation_id', {
-		query,
-	})
+	readOperation('operation_id', query )
 );
 
 console.log(result);

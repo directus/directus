@@ -90,9 +90,7 @@ import { rest, readActivities } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readActivities({
-		query,
-	})
+	readActivities( query )
 );
 ```
 
@@ -181,9 +179,7 @@ import { rest, readActivity } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readActivity('activity_id', {
-		query,
-	})
+	readActivity('activity_id', query )
 );
 
 console.log(result);

@@ -83,9 +83,7 @@ import { rest, readDashboards } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readDashboards({
-		query,
-	})
+	readDashboards( query )
 );
 
 console.log(result);
@@ -181,9 +179,7 @@ import { rest, readDashboard } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readDashboard('dashboard_id', {
-		query,
-	})
+	readDashboard('dashboard_id', query )
 );
 
 console.log(result);
