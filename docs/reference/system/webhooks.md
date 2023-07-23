@@ -773,6 +773,19 @@ type Mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteWebhook } from '@directus/sdk/rest';
+const client = createDirectus('directus_project_url').with(rest())
+
+const result = await client.request(deleteWebhook('webhook_id'))
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 ### Response
@@ -797,6 +810,19 @@ mutation {
 		id
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteWebhook } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteWebhook('1'))
+
+console.log(result);
 ```
 
 </template>
@@ -826,6 +852,19 @@ Delete multiple existing webhooks.
 type Mutation {
 	delete_webhooks_items(ids: [ID!]!): delete_many
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteWebhooks } from '@directus/sdk/rest';
+const client = createDirectus('directus_project_url').with(rest())
+
+const result = await client.request(deleteWebhooks(['webhook_1_id','webhook_2_id']))
+
+console.log(result);
 ```
 
 </template>
@@ -861,6 +900,19 @@ mutation {
 		ids
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteWebhooks } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(deleteWebhooks(['2','3']))
+
+console.log(result);
 ```
 
 </template>
