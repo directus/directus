@@ -10,6 +10,18 @@ pageClass: page-reference
 > tracked within the `directus_files` system collection. Any requested file transformations are handled on the fly, and
 > are only saved to storage.
 
+## File Security
+
+Data and permissions around files are associated to the `directus_files` collection. 
+
+It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public' folder), rather than making the whole collection public.
+
+::: warning Exporting Data Creates Files
+
+Exporting data creates new files and adds them to your file storage. If these files are accessible publicly, you may leak data held in the exported collections.
+
+:::
+
 ## Accessing a File
 
 The location of your actual file originals is based on the project's configuration, but you can consistently access them
