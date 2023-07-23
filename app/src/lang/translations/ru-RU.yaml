@@ -1842,6 +1842,7 @@ displays:
     format: Формат
     format_label: Автоформат
     font: Шрифт
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Моноширинный
     bold: Жирный
@@ -1938,6 +1939,7 @@ layouts:
     default_template: Использование коллекции по умолчанию...
     no_compatible_fields: Нет совместимых полей
   kanban:
+    name: Канбан
     title: Заголовок Карточки
     title_placeholder: Название (необязательно)...
     text: Текст Карточки
@@ -2016,6 +2018,8 @@ panels:
     step_line: Ступенчатая линия
   meter:
     name: Счётчик
+  piechart:
+    name: Круговая или пончиковая диаграмма
   variable:
     name: Глобальная переменная
     description: Установить глобальное значение для использования в других фильтрах Панелей
@@ -2034,6 +2038,7 @@ triggers:
   event:
     name: Хук события
     action: 'Действие (не блокирующее)'
+    filter: 'Фильтр (блокирующий)'
   webhook:
     name: Вебхук
     description: Выполняется при входящем HTTP запросе
@@ -2045,7 +2050,10 @@ triggers:
     preview: Запускается операцией из другого процесса
   schedule:
     name: Расписание (CRON)
+    description: Срабатывание в определенные моменты времени
+    cron: Интервал
   manual:
+    name: Ручной
     description: Выполняется при ручном запуске в выбранной коллекции(ях)
     collection_and_item: Страницы Коллекции и Элемента
     collection_only: Только страница Коллекции
