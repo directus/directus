@@ -296,6 +296,22 @@ type Mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPreset } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createPreset({
+    'preset_field_1': 'value_1',
+    'preset_field_2': 'value_2'
+}))
+
+console.log(result)
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -340,6 +356,22 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPreset } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createPreset({
+    'collection': 'articles',
+    'layout': 'kanban'
+}))
+
+console.log(result)
+```
+
+</template>
 </SnippetToggler>
 
 ## Create Multiple Presets
@@ -377,6 +409,30 @@ Create multiple new presets.
 type Mutation {
 	create_presets_items(data: [create_directus_presets_input!]!): [directus_presets]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPresets } from '@directus/sdk/rest';
+const client = createDirectus('directus_project_url').with(rest())
+
+const result = await client.request(createPresets(
+    [
+        {
+		'preset_1_field_1': 'value_1',
+		'preset_1_field_2': 'value_2'
+        },
+        {
+		'preset_2_field_1': 'value_3',
+		'preset_2_field_2': 'value_4'
+        }
+    ]
+))
+
+console.log(result)
 ```
 
 </template>
@@ -439,6 +495,30 @@ mutation {
 		user
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPresets } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createPresets(
+    [
+        {
+        'collection': 'articles',
+        'layout': 'kanban'
+        },
+        {
+        'collection': 'authors',
+        'layout': 'tabular'
+        }
+    ]
+))
+
+console.log(result)
 ```
 
 </template>
