@@ -33,6 +33,19 @@ type Query {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readExtensions } from '@directus/sdk/rest';
+const client = createDirectus('directus_project_url').with(rest())
+
+const result = await client.request(readExtensions('extension_type'))
+
+console.log(result);
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -61,6 +74,19 @@ query {
 		interfaces
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readExtensions } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readExtensions('interfaces'))
+
+console.log(result);
 ```
 
 </template>
