@@ -299,6 +299,8 @@ const result = await client.request(createShare({
 	'share_field_3': 'value_3',
 	'share_field_4': 'value_4'
 }))
+
+console.log(result);
 ```
 
 </template>
@@ -362,6 +364,8 @@ const result = await client.request(createShare({
 	'item': '22',
 	'max_uses': '5'
 }))
+
+console.log(result);
 ```
 
 </template>
@@ -430,6 +434,8 @@ const result = await client.request(createShares(
         }
     ]
 ))
+
+console.log(result);
 ```
 
 </template>
@@ -521,6 +527,8 @@ const result = await client.request(createShares(
         }
     ]
 ))
+
+console.log(result);
 ```
 
 </template>
