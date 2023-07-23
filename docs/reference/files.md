@@ -12,13 +12,13 @@ pageClass: page-reference
 
 ## File Security
 
-Data and permissions around files are associated to the `directus_files` collection. 
+Data and permissions around files are associated to the `directus_files` collection.
 
-It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public' folder), rather than making the whole collection public.
+It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public' folder), rather than making the whole collection public. Read more on [custom access permissions](/user-guide/user-management/permissions.html#configure-custom-permissions).
 
 ::: warning Exporting Data Creates Files
 
-Exporting data creates new files and adds them to your file storage. If these files are accessible publicly, you may leak data held in the exported collections.
+[Exporting data](/user-guide/content-module/import-export.html#export-items) creates new files and adds them to your file storage. If these files are accessible publicly, you may leak data held in the exported collections.
 
 :::
 
