@@ -286,6 +286,22 @@ type Mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createShare } from '@directus/sdk/rest';
+const client = createDirectus('directus_project_url').with(rest())
+
+const result = await client.request(createShare({
+	'share_field_1': 'value_1',
+	'share_field_2': 'value_2',
+	'share_field_3': 'value_3',
+	'share_field_4': 'value_4'
+}))
+```
+
+</template>
 </SnippetToggler>
 
 #### Query Parameters
@@ -333,6 +349,22 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createShare } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createShare({
+	'name': 'External Review',
+	'collection': 'articles',
+	'item': '22',
+	'max_uses': '5'
+}))
+```
+
+</template>
 </SnippetToggler>
 
 ## Create Multiple Shares
@@ -372,6 +404,32 @@ Create multiple new shares.
 type Mutation {
 	create_shares_items(data: [create_directus_shares_input!]!): [directus_shares]
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createShares } from '@directus/sdk/rest';
+const client = createDirectus('directus_project_url').with(rest())
+
+const result = await client.request(createShares(
+    [
+        {
+		'share_1_field_1': 'value_1',
+		'share_1_field_2': 'value_2',
+		'share_1_field_3': 'value_3',
+		'share_1_field_4': 'value_4'
+        },
+        {
+		'share_2_field_1': 'value_5',
+		'share_2_field_2': 'value_6',
+		'share_2_field_3': 'value_7',
+		'share_2_field_4': 'value_8'
+        }
+    ]
+))
 ```
 
 </template>
@@ -437,6 +495,32 @@ mutation {
 		item
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createShares } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(createShares(
+    [
+        {
+        'name': 'External Review',
+        'collection': 'articles',
+        'item': '25',
+        'max_uses': '5'
+        },
+        {
+        'name': 'Early Access',
+        'collection': 'articles',
+        'item': '26',
+		"password": "EARLYACCESS2023"
+        }
+    ]
+))
 ```
 
 </template>
