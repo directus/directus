@@ -86,7 +86,7 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readNotifications({
-		fields: ['*'],
+		query,
 	})
 );
 
@@ -185,7 +185,7 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readNotification('4', {
-		fields: ['*'],
+		query,
 	})
 );
 

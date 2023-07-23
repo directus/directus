@@ -65,7 +65,7 @@ const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readFolders({
-		fields: ['*'],
+		query,
 	})
 );
 
@@ -162,7 +162,7 @@ const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readFolder('folder_id', {
-		fields: ['*'],
+		query,
 	})
 );
 

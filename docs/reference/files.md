@@ -383,9 +383,7 @@ import { rest, readFiles } from '@directus/sdk/rest';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readFile('file_id', {
-		fields: ['*'],
-	})
+	readFile('file_id', query )
 );
 ```
 

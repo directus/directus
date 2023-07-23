@@ -91,7 +91,7 @@ const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readActivities({
-		fields: ['*'],
+		query,
 	})
 );
 ```
@@ -182,7 +182,7 @@ const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readActivity('activity_id', {
-		fields: ['*'],
+		query,
 	})
 );
 

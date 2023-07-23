@@ -84,7 +84,7 @@ const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readDashboards({
-		fields: ['*'],
+		query,
 	})
 );
 
@@ -182,7 +182,7 @@ const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readDashboard('dashboard_id', {
-		fields: ['*'],
+		query,
 	})
 );
 

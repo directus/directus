@@ -97,7 +97,7 @@ const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readFlows({
-		fields: ['*'],
+		query,
 	})
 );
 
@@ -196,7 +196,7 @@ const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	readFlow('flow_id', {
-		fields: ['*'],
+		query,
 	})
 );
 
