@@ -59,6 +59,17 @@ Retrieve a temporary access token and refresh token.
 </template>
 <template #graphql>
 
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_login(email: "user_email", password: "user_password") {
+		access_token
+		refresh_token
+	}
+}
+```
+
 </template>
 </SnippetToggler>
 
@@ -150,6 +161,17 @@ Retrieve a new access token using a refresh token.
 </template>
 <template #graphql>
 
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_refresh(refresh_token: "abc...def", mode: json) {
+		access_token
+		refresh_token
+	}
+}
+```
+
 </template>
 </SnippetToggler>
 
@@ -218,12 +240,20 @@ Invalidate the refresh token thus destroying the user's session.
 
 ```json
 {
-	"refresh_token": "refresh_token_value"
+	"refresh_token": "refresh_token"
 }
 ```
 
 </template>
 <template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_logout(refresh_token: "refresh_token")
+}
+```
 
 </template>
 </SnippetToggler>
@@ -280,6 +310,14 @@ Request a password reset email to be sent to the given user.
 
 </template>
 <template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_password_request(email: "user_email")
+}
+```
 
 </template>
 <template #sdk>
@@ -372,6 +410,14 @@ this endpoint to allow the user to reset their password.
 
 </template>
 <template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_password_reset(token: "password_reset_token", password: "password")
+}
+```
 
 </template>
 <template #sdk>
@@ -567,13 +613,6 @@ Will redirect to the configured SSO provider for the user to login.
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-<template #rest>
-
-`GET /auth/login/:provider`
-
-</template>
-<template #graphql>
-
-</template>
-</SnippetToggler>
+```
+GET /auth/login/:provider
+```
