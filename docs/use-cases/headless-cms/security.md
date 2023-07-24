@@ -24,16 +24,15 @@ In this guide, we'll cover some best practices for keeping your Directus Headles
 
 Directus makes it super easy to share your content with our REST and GraphQL APIs.
 
-The Public role within [Roles and Permissions](/app/users-roles-permissions#roles) defines what content is
-available without authentication. To be safe, all permissions are turned off by default. This means that no data is
-available via the API without providing a proper [access token](/reference/authentication#access-tokens). Your use case
-may allow all data to be public, but it may instead require restricted access.
+The Public role within [Roles and Permissions](/user-guide/user-management/users-roles-permissions#roles) defines what
+content is available without authentication. To be safe, all permissions are turned off by default. This means that no
+data is available via the API without providing a proper [access token](/reference/authentication#access-tokens). Your
+use case may allow all data to be public, but it may instead require restricted access.
 
 **If you do want to make data public, we recommend these guidelines.**
 
 - On your public role, only enable read access.
-- Consider defining a
-  [Custom Permission](/app/users-roles-permissions/permissions#configure-custom-permissions) for read
+- Consider defining a [Custom Permission](/user-guide/user-management/permissions#configure-custom-permissions) for read
   operations to control which items are available and which fields within those items consumers can see.
 
   ![The custom permissions interface for the Public role is displayed. The Item Permissions table is active and one Rule is active - "Status" Equals "Published".](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/custom-permissions.webp)
@@ -109,17 +108,17 @@ But when it’s time to go to production and add all your different users, we re
 1. **Enable and enforce two-factor authentication.**
 
    Two-factor authentication can be enforced for each specific role by checking the Require 2FA field in a
-   [role's settings](/app/users-roles-permissions/roles#configure-role-details).
+   [role's settings](/user-guide/user-management/roles#configure-role-details).
 
    ![The Administrator role settings page is displayed. The Require 2FA form field is highlighted and enabled.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/2fa-role.webp)
 
    Individual users can enable two-factor authentication by checking the Two-Factor Authentication field on their own
-   [user detail page](/app/user-directory#user-details-page) and confirming their password.
+   [user detail page](/user-guide/user-management/user-directory#user-details-page) and confirming their password.
 
    ![A sample user's detail page is shown. The Two-Factor Authentication form field is highlighted. ](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/2fa-user.webp)
 
 2. **Enable the Strong option for Auth Password Policy under
-   [Project Settings > Security](/app/project-settings#security).**
+   [Project Settings > Security](/user-guide/cloud/project-settings#security).**
 
    ![The Project Settings page is shown. The Security section is highlighted. Within the Security, section there are two fields shown: Auth Password Policy and Auth Login Attempts.](https://cdn.directus.io/docs/v9/headless-cms/security-20230322/security-project-settings.webp)
 

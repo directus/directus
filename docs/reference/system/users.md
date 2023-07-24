@@ -7,7 +7,7 @@ pageClass: page-reference
 # Users
 
 > Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
-> which defines its granular Permissions. [Learn more about Users](/getting-started/glossary#users).
+> which defines its granular Permissions. [Learn more about Users](/user-guide/overview/glossary#users).
 
 ---
 
@@ -347,14 +347,27 @@ type Mutation {
 
 ```graphql
 mutation {
-	create_users_item(
-		data: { email: "another@example.com", password: "d1r3ctu5", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
-	) {
-		email
-		role
-	}
+  create_users_item(
+    data: {
+      email: "another@example.com"
+      password: "d1r3ctu5"
+      role: {
+        id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+        name: "Public"
+        admin_access: false
+        enforce_tfa: false
+      }
+    }
+  ) {
+    email
+    role
+  }
 }
 ```
+
+Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
+as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it
+could be modified by the user call.
 
 ---
 
@@ -417,17 +430,39 @@ type Mutation {
 
 ```graphql
 mutation {
-	create_users_items(
-		data: [
-			{ email: "admin@example.com", password: "p455w0rd", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
-			{ email: "another@example.com", password: "d1r3ctu5", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
-		]
-	) {
-		email
-		role
-	}
+  create_users_items(
+    data: [
+      {
+        email: "admin@example.com"
+        password: "p455w0rd"
+        role: {
+          id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+          name: "Public"
+          admin_access: false
+          enforce_tfa: false
+        }
+      }
+      {
+        email: "another@example.com"
+        password: "d1r3ctu5"
+        role: {
+          id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+          name: "Public"
+          admin_access: false
+          enforce_tfa: false
+        }
+      }
+    ]
+  ) {
+    email
+    role
+  }
 }
 ```
+
+Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
+as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it
+could be modified by the user call.
 
 ---
 

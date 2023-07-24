@@ -18,6 +18,7 @@ import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
 import { version } from '../directus/package.json';
+import UnheadVite from '@unhead/addons/vite';
 
 const API_PATH = path.join('..', 'api');
 const EXTENSIONS_PATH = path.join(API_PATH, 'extensions');
@@ -30,11 +31,21 @@ export default defineConfig({
 	plugins: [
 		directusExtensions(),
 		vue(),
+		UnheadVite(),
 		yaml({
 			transform(data) {
 				return data === null ? {} : undefined;
 			},
 		}),
+		{
+			name: 'watch-directus-dependencies',
+			configureServer: (server) => {
+				server.watcher.options = {
+					...server.watcher.options,
+					ignored: [/node_modules\/(?!@directus\/).*/, '**/.git/**'],
+				};
+			},
+		},
 	],
 	resolve: {
 		alias: [
@@ -67,7 +78,7 @@ function getExtensionsRealPaths() {
 				.readdirSync(EXTENSIONS_PATH)
 				.flatMap((typeDir) => {
 					const extensionTypeDir = path.join(EXTENSIONS_PATH, typeDir);
-					if (!fs.lstatSync(extensionTypeDir).isDirectory()) return;
+					if (!fs.statSync(extensionTypeDir).isDirectory()) return;
 					return fs.readdirSync(extensionTypeDir).map((dir) => fs.realpathSync(path.join(extensionTypeDir, dir)));
 				})
 				.filter((v) => v)

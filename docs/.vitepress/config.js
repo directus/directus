@@ -1,4 +1,6 @@
+import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
+import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 
 export default defineConfig({
 	base: '/',
@@ -107,7 +109,7 @@ gtag('config', 'UA-24637628-7');
 			'link',
 			{
 				rel: 'stylesheet',
-				href: 'https://fonts.googleapis.com/css2?family=Material+Icons+Outlined',
+				href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200',
 			},
 		],
 		[
@@ -126,7 +128,12 @@ gtag('config', 'UA-24637628-7');
 			dark: '/logo-dark.svg',
 		},
 		nav: [
-			{ text: 'Docs', link: '/' },
+			{ text: 'Docs', link: '/getting-started/quickstart' },
+			{
+				text: 'User Guide',
+				link: '/user-guide/overview/data-studio-app',
+				activeMatch: '/user-guide',
+			},
 			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
@@ -140,12 +147,59 @@ gtag('config', 'UA-24637628-7');
 		sidebar: {
 			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
+			'/user-guide/': sidebarUserGuide(),
+			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
 			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
 		},
 	},
 });
+
+function typeDocSidebarFormat(item) {
+	if (item.link !== null && !item.link.startsWith('/packages')) {
+		item.link = item.link.substring(item.link.indexOf('/packages'));
+	}
+
+	if (item.items) {
+		item.items = item.items.filter((subItem) => {
+			return subItem.link !== null || subItem.items.length > 0;
+		});
+	}
+
+	if (item.text.startsWith('@directus/')) {
+		item.items.unshift({
+			text: 'Overview',
+			link: `/packages/${item.text}/`,
+			items: [],
+			collapsed: true,
+		});
+
+		item.text = formatTitle(item.text.replace('@directus/', ''));
+		item.text = item.text.replace('Sdk', 'SDK');
+	}
+
+	if (item?.items?.length > 0) {
+		item.items.map((subItem) => {
+			return typeDocSidebarFormat(subItem);
+		});
+	} else {
+		delete item.items;
+		delete item.collapsed;
+	}
+
+	return item;
+}
+
+function sidebarTypedocs() {
+	let sidebar = TypeDocSidebar;
+
+	sidebar = sidebar.map((item) => {
+		return typeDocSidebarFormat(item);
+	});
+
+	return sidebar;
+}
 
 function sidebar() {
 	return [
@@ -172,10 +226,6 @@ function sidebar() {
 					text: 'Resources',
 					link: '/getting-started/resources',
 				},
-				{
-					text: 'Glossary',
-					link: '/getting-started/glossary',
-				},
 			],
 		},
 		{
@@ -183,66 +233,6 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
-				{
-					link: '/app/overview',
-					text: 'Overview',
-				},
-				{
-					link: '/app/content',
-					text: 'Content',
-					type: 'page',
-					items: [
-						{
-							link: '/app/content/collections',
-							text: 'Collection Page',
-							type: 'page',
-						},
-						{
-							link: '/app/content/items',
-							text: 'Item Page',
-						},
-						{
-							link: '/app/content/shares',
-							text: 'Shares',
-						},
-					],
-				},
-				{
-					link: '/app/user-directory',
-					text: 'User Directory',
-				},
-				{
-					link: '/app/file-library',
-					text: 'File Library',
-				},
-				{
-					link: '/app/insights',
-					text: 'Insights',
-				},
-				{
-					link: '/app/settings',
-					text: 'Settings',
-				},
-				{
-					link: '/app/display-templates',
-					text: 'Display Templates',
-				},
-				{
-					link: '/app/filters',
-					text: 'Filters',
-				},
-				{
-					link: '/app/layouts',
-					text: 'Layouts',
-				},
-				{
-					link: '/app/import-export',
-					text: 'Import / Export',
-				},
-				{
-					link: '/app/project-settings',
-					text: 'Project Settings',
-				},
 				{
 					link: '/app/data-model',
 					text: 'Data Model',
@@ -290,32 +280,6 @@ function sidebar() {
 					],
 				},
 				{
-					link: '/app/users-roles-permissions',
-					text: 'Users, Roles & Permissions',
-					items: [
-						{
-							link: '/app/users-roles-permissions/users',
-							text: 'Users',
-						},
-						{
-							link: '/app/users-roles-permissions/roles',
-							text: 'Roles',
-						},
-						{
-							link: '/app/users-roles-permissions/permissions',
-							text: 'Permissions',
-						},
-					],
-				},
-				{
-					link: '/app/presets-bookmarks',
-					text: 'Presets & Bookmarks',
-				},
-				{
-					link: '/app/translation-strings',
-					text: 'Translation Strings',
-				},
-				{
 					link: '/app/webhooks',
 					text: 'Webhooks',
 				},
@@ -333,10 +297,6 @@ function sidebar() {
 							text: 'Operations',
 						},
 					],
-				},
-				{
-					link: '/app/activity-log',
-					text: 'Activity Log',
 				},
 			],
 		},
@@ -488,26 +448,41 @@ function sidebar() {
 							link: '/guides/headless-cms/reusable-components',
 						},
 						{
-							link: '/guides/headless-cms/schedule-content/index.html',
+							link: '/guides/headless-cms/schedule-content/',
 							text: 'Scheduling Future Content',
 						},
 						{
-							link: '/guides/headless-cms/trigger-static-builds/index.html',
+							link: '/guides/headless-cms/trigger-static-builds/',
 							text: 'Trigger Static Site Builds',
 						},
 						{
 							text: 'Build a Static Website',
-							link: '/guides/headless-cms/build-static-website/index.html',
+							link: '/guides/headless-cms/build-static-website/',
 						},
-            {
+						{
 							text: 'Set Up Live Preview',
-							link: '/guides/headless-cms/live-preview/index.html',
+							link: '/guides/headless-cms/live-preview/',
+						},
+						{
+							text: 'Content Translations (i18n)',
+							link: '/guides/headless-cms/content-translations',
 						},
 					],
 				},
 				{
 					link: '/guides/migration/index.html',
 					text: 'Schema Migration',
+				},
+				{
+					text: 'Real-Time',
+					items: [
+						{ text: 'Getting Started', link: '/guides/real-time/getting-started/index.html' },
+						{ text: 'Authentication', link: '/guides/real-time/authentication' },
+						{ text: 'Operations', link: '/guides/real-time/operations' },
+						{ text: 'Subscriptions', link: '/guides/real-time/subscriptions/index.html' },
+						{ text: 'Build a Multi-User Chat', link: '/guides/real-time/chat/index.html' },
+						{ text: 'Build a Live Poll Result', link: '/guides/real-time/live-poll' },
+					],
 				},
 			],
 		},
@@ -549,52 +524,62 @@ function sidebar() {
 					text: 'Creating Extensions',
 				},
 				{
-					link: '/extensions/displays',
-					text: 'Displays',
+					text: 'Extension Types',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/displays',
+							text: 'Displays',
+						},
+						{
+							link: '/extensions/email-templates',
+							text: 'Email Templates',
+						},
+						{
+							link: '/extensions/endpoints',
+							text: 'Endpoints',
+						},
+						{
+							link: '/extensions/hooks',
+							text: 'Hooks',
+						},
+						{
+							link: '/extensions/interfaces',
+							text: 'Interfaces',
+						},
+						{
+							link: '/extensions/layouts',
+							text: 'Layouts',
+						},
+						{
+							link: '/extensions/migrations',
+							text: 'Migrations',
+						},
+						{
+							link: '/extensions/modules',
+							text: 'Modules',
+						},
+						{
+							link: '/extensions/operations',
+							text: 'Operations',
+						},
+						{
+							link: '/extensions/panels',
+							text: 'Panels',
+						},
+						{
+							link: '/extensions/themes',
+							text: 'Themes',
+						},
+						{
+							link: '/extensions/bundles',
+							text: 'Bundles',
+						},
+					],
 				},
 				{
-					link: '/extensions/email-templates',
-					text: 'Email Templates',
-				},
-				{
-					link: '/extensions/endpoints',
-					text: 'Endpoints',
-				},
-				{
-					link: '/extensions/hooks',
-					text: 'Hooks',
-				},
-				{
-					link: '/extensions/interfaces',
-					text: 'Interfaces',
-				},
-				{
-					link: '/extensions/layouts',
-					text: 'Layouts',
-				},
-				{
-					link: '/extensions/migrations',
-					text: 'Migrations',
-				},
-				{
-					link: '/extensions/modules',
-					text: 'Modules',
-				},
-				{
-					link: '/extensions/operations',
-					text: 'Operations',
-				},
-				{
-					link: '/extensions/panels',
-					text: 'Panels',
-				},
-				{
-					link: '/extensions/themes',
-					text: 'Themes',
-				},
-				{
-					link: '/extensions/bundles',
-					text: 'Bundles',
+					text: 'Packages',
+					link: '/contributing/codebase-overview.html#packages-packages',
 				},
 			],
 		},
@@ -604,7 +589,7 @@ function sidebar() {
 			collapsed: true,
 			items: [
 				{ link: '/contributing/introduction', text: 'Introduction' },
-				{ 
+				{
 					text: 'Code',
 					items: [
 						{ link: '/contributing/feature-request-process', text: 'Request a Feature' },
@@ -612,14 +597,14 @@ function sidebar() {
 						{ link: '/contributing/codebase-overview', text: 'Codebase Overview' },
 						{ link: '/contributing/running-locally', text: 'Running Locally' },
 						{ link: '/contributing/tests', text: 'Tests' },
-					]
+					],
 				},
 				{ link: '/contributing/community', text: 'Community' },
-				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' }
+				{ link: '/contributing/sponsor', text: 'Sponsorship & Advocacy' },
 			],
 		},
 		{
-			text: 'Self Hosted',
+			text: 'Self-Hosted',
 			collapsible: true,
 			collapsed: true,
 			items: [
@@ -647,6 +632,189 @@ function sidebar() {
 					type: 'page',
 					link: '/self-hosted/upgrades-migrations',
 					text: 'Upgrades & Migrations',
+				},
+			],
+		},
+	];
+}
+
+function sidebarUserGuide() {
+	return [
+		{
+			text: 'Overview',
+			items: [
+				{
+					text: 'Data Studio App',
+					link: '/user-guide/overview/data-studio-app',
+				},
+				{
+					text: 'Quickstart Guide',
+					link: '/user-guide/overview/quickstart',
+				},
+				{
+					text: 'Glossary',
+					link: '/user-guide/overview/glossary',
+				},
+			],
+		},
+		{
+			text: 'Content Module',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					link: '/user-guide/content-module/content',
+					text: 'Managing Content',
+					type: 'page',
+					items: [
+						{
+							link: '/user-guide/content-module/content/collections',
+							text: 'Collection Page',
+							type: 'page',
+						},
+						{
+							link: '/user-guide/content-module/content/items',
+							text: 'Item Page',
+						},
+						{
+							link: '/user-guide/content-module/content/shares',
+							text: 'Shares',
+						},
+					],
+				},
+				{
+					text: 'Layouts',
+					link: '/user-guide/content-module/layouts',
+				},
+				{
+					text: 'Import/Export',
+					link: '/user-guide/content-module/import-export',
+				},
+				{
+					text: 'Filters',
+					link: '/user-guide/content-module/filters',
+				},
+				{
+					text: 'Translation Strings',
+					link: '/user-guide/content-module/translation-strings',
+				},
+				{
+					text: 'Display Templates',
+					link: '/user-guide/content-module/display-templates',
+				},
+			],
+		},
+		{
+			text: 'User Management',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					link: '/user-guide/user-management/users-roles-permissions',
+					text: 'Users, Roles & Permissions',
+					type: 'page',
+					items: [
+						{
+							text: 'Users',
+							link: '/user-guide/user-management/users',
+						},
+						{
+							text: 'Roles',
+							link: '/user-guide/user-management/roles',
+						},
+						{
+							text: 'Permissions',
+							link: '/user-guide/user-management/permissions',
+						},
+					],
+				},
+				{
+					text: 'User Directory',
+					link: '/user-guide/user-management/user-directory',
+				},
+			],
+		},
+		{
+			text: 'File Library',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Files',
+					link: '/user-guide/file-library/files',
+				},
+				{
+					text: 'Folders',
+					link: '/user-guide/file-library/folders',
+				},
+			],
+		},
+		{
+			text: 'Insights',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Dashboards',
+					link: '/user-guide/insights/dashboards',
+				},
+				{
+					text: 'Panels',
+					link: '/user-guide/insights/panels',
+				},
+				{
+					text: 'Charts',
+					link: '/user-guide/insights/charts',
+				},
+			],
+		},
+		{
+			text: 'Directus Cloud',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Overview',
+					link: '/user-guide/cloud/overview',
+				},
+				{
+					text: 'Projects',
+					link: '/user-guide/cloud/projects',
+				},
+				{
+					text: 'Teams',
+					link: '/user-guide/cloud/teams',
+				},
+				{
+					text: 'Accounts',
+					link: '/user-guide/cloud/accounts',
+				},
+				{
+					text: 'Project Settings',
+					link: '/user-guide/cloud/project-settings',
+				},
+				{
+					text: 'Glossary',
+					link: '/user-guide/cloud/glossary',
+				},
+			],
+		},
+		{
+			text: 'General Settings',
+			collapsible: true,
+			collapsed: true,
+			items: [
+				{
+					text: 'Settings',
+					link: '/user-guide/settings/settings',
+				},
+				{
+					text: 'Preset and Bookmarks',
+					link: '/user-guide/settings/presets-bookmarks',
+				},
+				{
+					text: 'Activity Log',
+					link: '/user-guide/settings/activity-log',
 				},
 			],
 		},

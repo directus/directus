@@ -10,7 +10,7 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import { systemRelationRows } from '../database/system-data/relations/index.js';
 import emitter from '../emitter.js';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError } from '../errors/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
@@ -49,7 +49,7 @@ export class RelationsService {
 
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
 		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		const metaReadQuery: Query = {
@@ -80,18 +80,18 @@ export class RelationsService {
 	async readOne(collection: string, field: string): Promise<Relation> {
 		if (this.accountability && this.accountability.admin !== true) {
 			if (this.hasReadAccess === false) {
-				throw new ForbiddenException();
+				throw new ForbiddenError();
 			}
 
 			const permissions = this.accountability.permissions?.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
 
-			if (!permissions || !permissions.fields) throw new ForbiddenException();
+			if (!permissions || !permissions.fields) throw new ForbiddenError();
 
 			if (permissions.fields.includes('*') === false) {
 				const allowedFields = permissions.fields;
-				if (allowedFields.includes(field) === false) throw new ForbiddenException();
+				if (allowedFields.includes(field) === false) throw new ForbiddenError();
 			}
 		}
 
@@ -121,7 +121,7 @@ export class RelationsService {
 		const results = await this.filterForbidden(stitched);
 
 		if (results.length === 0) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		return results[0]!;
@@ -132,36 +132,36 @@ export class RelationsService {
 	 */
 	async createOne(relation: Partial<Relation>, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (!relation.collection) {
-			throw new InvalidPayloadException('"collection" is required');
+			throw new InvalidPayloadError({ reason: '"collection" is required' });
 		}
 
 		if (!relation.field) {
-			throw new InvalidPayloadException('"field" is required');
+			throw new InvalidPayloadError({ reason: '"field" is required' });
 		}
 
 		if (relation.collection in this.schema.collections === false) {
-			throw new InvalidPayloadException(`Collection "${relation.collection}" doesn't exist`);
+			throw new InvalidPayloadError({ reason: `Collection "${relation.collection}" doesn't exist` });
 		}
 
 		if (relation.field in this.schema.collections[relation.collection]!.fields === false) {
-			throw new InvalidPayloadException(
-				`Field "${relation.field}" doesn't exist in collection "${relation.collection}"`
-			);
+			throw new InvalidPayloadError({
+				reason: `Field "${relation.field}" doesn't exist in collection "${relation.collection}"`,
+			});
 		}
 
 		// A primary key should not be a foreign key
 		if (this.schema.collections[relation.collection]!.primary === relation.field) {
-			throw new InvalidPayloadException(
-				`Field "${relation.field}" in collection "${relation.collection}" is a primary key`
-			);
+			throw new InvalidPayloadError({
+				reason: `Field "${relation.field}" in collection "${relation.collection}" is a primary key`,
+			});
 		}
 
 		if (relation.related_collection && relation.related_collection in this.schema.collections === false) {
-			throw new InvalidPayloadException(`Collection "${relation.related_collection}" doesn't exist`);
+			throw new InvalidPayloadError({ reason: `Collection "${relation.related_collection}" doesn't exist` });
 		}
 
 		const existingRelation = this.schema.relations.find(
@@ -170,9 +170,9 @@ export class RelationsService {
 		);
 
 		if (existingRelation) {
-			throw new InvalidPayloadException(
-				`Field "${relation.field}" in collection "${relation.collection}" already has an associated relationship`
-			);
+			throw new InvalidPayloadError({
+				reason: `Field "${relation.field}" in collection "${relation.collection}" already has an associated relationship`,
+			});
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
@@ -252,15 +252,15 @@ export class RelationsService {
 		opts?: MutationOptions
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (collection in this.schema.collections === false) {
-			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
+			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't exist` });
 		}
 
 		if (field in this.schema.collections[collection]!.fields === false) {
-			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
+			throw new InvalidPayloadError({ reason: `Field "${field}" doesn't exist in collection "${collection}"` });
 		}
 
 		const existingRelation = this.schema.relations.find(
@@ -268,7 +268,9 @@ export class RelationsService {
 		);
 
 		if (!existingRelation) {
-			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
+			throw new InvalidPayloadError({
+				reason: `Field "${field}" in collection "${collection}" doesn't have a relationship.`,
+			});
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
@@ -362,15 +364,15 @@ export class RelationsService {
 	 */
 	async deleteOne(collection: string, field: string, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		if (collection in this.schema.collections === false) {
-			throw new InvalidPayloadException(`Collection "${collection}" doesn't exist`);
+			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't exist` });
 		}
 
 		if (field in this.schema.collections[collection]!.fields === false) {
-			throw new InvalidPayloadException(`Field "${field}" doesn't exist in collection "${collection}"`);
+			throw new InvalidPayloadError({ reason: `Field "${field}" doesn't exist in collection "${collection}"` });
 		}
 
 		const existingRelation = this.schema.relations.find(
@@ -378,7 +380,9 @@ export class RelationsService {
 		);
 
 		if (!existingRelation) {
-			throw new InvalidPayloadException(`Field "${field}" in collection "${collection}" doesn't have a relationship.`);
+			throw new InvalidPayloadError({
+				reason: `Field "${field}" in collection "${collection}" doesn't have a relationship.`,
+			});
 		}
 
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();

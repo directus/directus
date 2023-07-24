@@ -121,7 +121,7 @@
 					<p class="type-label">{{ t('export_location') }}</p>
 					<v-select
 						v-model="location"
-						:disabled="lockedToFiles"
+						:disabled="lockedToFiles !== null"
 						:items="[
 							{ value: 'download', text: t('download_file') },
 							{ value: 'files', text: t('file_library') },
@@ -137,51 +137,43 @@
 
 				<v-notice class="full" :type="lockedToFiles ? 'warning' : 'normal'">
 					<div>
-						<p>
-							<template v-if="itemCountLoading">
-								{{ t('loading') }}
-							</template>
-							<template v-else-if="exportSettings.limit === 0 || itemCount === 0">
-								{{ t('exporting_no_items_to_export') }}
-							</template>
-							<template
-								v-else-if="
-									!exportSettings.limit ||
-									exportSettings.limit === -1 ||
-									(itemCount && exportSettings.limit >= itemCount)
-								"
-							>
-								{{
-									t('exporting_all_items_in_collection', {
-										total: itemCount ? n(itemCount) : '??',
-										collection: collectionInfo?.name,
-									})
-								}}
-							</template>
-
-							<template v-else-if="itemCount && itemCount > exportSettings.limit">
-								{{
-									t('exporting_limited_items_in_collection', {
-										limit: exportSettings.limit ? n(exportSettings.limit) : '??',
-										total: itemCount ? n(itemCount) : '??',
-										collection: collectionInfo?.name,
-									})
-								}}
-							</template>
+						<p v-if="itemCountLoading">
+							{{ t('loading') }}
 						</p>
 
-						<p>
-							<template v-if="lockedToFiles">
-								{{ t('exporting_batch_hint_forced', { format: t(format) }) }}
-							</template>
+						<p v-else-if="exportCount === 0">
+							{{ t('exporting_no_items_to_export') }}
+						</p>
 
-							<template v-else-if="location === 'files'">
-								{{ t('exporting_batch_hint', { format: t(format) }) }}
-							</template>
+						<p v-else-if="itemCountTotal && exportCount >= itemCountTotal">
+							{{
+								t('exporting_all_items_in_collection', {
+									total: itemCountTotal ? n(itemCountTotal) : '??',
+									collection: collectionInfo?.name,
+								})
+							}}
+						</p>
 
-							<template v-else>
-								{{ t('exporting_download_hint', { format: t(format) }) }}
-							</template>
+						<p v-else-if="itemCountTotal && exportCount < itemCountTotal">
+							{{
+								t('exporting_limited_items_in_collection', {
+									count: n(exportCount),
+									total: itemCountTotal ? n(itemCountTotal) : '??',
+									collection: collectionInfo?.name,
+								})
+							}}
+						</p>
+
+						<p v-if="lockedToFiles">
+							{{ t('exporting_library_hint_forced', { format: t(format) }) }}
+						</p>
+
+						<p v-else-if="location === 'files'">
+							{{ t('exporting_library_hint', { format: t(format) }) }}
+						</p>
+
+						<p v-else>
+							{{ t('exporting_download_hint', { format: t(format) }) }}
 						</p>
 					</div>
 				</v-notice>
@@ -237,6 +229,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { usePermissionsStore } from '@/stores/permissions';
+import { useServerStore } from '@/stores/server';
 import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -256,18 +249,12 @@ type LayoutQuery = {
 	limit?: number;
 };
 
-interface Props {
+const props = defineProps<{
 	collection: string;
 	layoutQuery?: LayoutQuery;
 	filter?: Filter;
 	search?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	layoutQuery: undefined,
-	filter: undefined,
-	search: undefined,
-});
+}>();
 
 const emit = defineEmits(['refresh', 'download']);
 
@@ -289,8 +276,13 @@ const fileExtension = computed(() => {
 
 const { primaryKeyField, fields, info: collectionInfo } = useCollection(collection);
 
+const { info } = useServerStore();
+
+const queryLimitMax = info.queryLimit === undefined || info.queryLimit.max === -1 ? Infinity : info.queryLimit.max;
+const defaultLimit = info.queryLimit !== undefined ? Math.min(25, queryLimitMax) : 25;
+
 const exportSettings = reactive({
-	limit: props.layoutQuery?.limit ?? 25,
+	limit: props.layoutQuery?.limit ?? defaultLimit,
 	filter: props.filter,
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
@@ -309,7 +301,7 @@ watch(
 watch(
 	() => props.layoutQuery,
 	() => {
-		exportSettings.limit = props.layoutQuery?.limit ?? 25;
+		exportSettings.limit = props.layoutQuery?.limit ?? defaultLimit;
 
 		if (props.layoutQuery?.fields) {
 			exportSettings.fields = props.layoutQuery?.fields;
@@ -339,24 +331,13 @@ const format = ref('csv');
 const location = ref('download');
 const folder = ref<string | null>(null);
 
-const lockedToFiles = computed(() => {
-	const toBeDownloaded = exportSettings.limit ?? itemCount.value;
-	return toBeDownloaded >= 2500;
-});
+const lockedToFiles = ref<{ previousLocation: string } | null>(null);
 
-watch(
-	() => exportSettings.limit,
-	() => {
-		if (lockedToFiles.value) {
-			location.value = 'files';
-		}
-	}
-);
-
+const itemCountTotal = ref<number>();
 const itemCount = ref<number>();
 const itemCountLoading = ref(false);
 
-const getItemCount = debounce(async () => {
+const getItemCount = async () => {
 	itemCountLoading.value = true;
 
 	try {
@@ -386,16 +367,55 @@ const getItemCount = debounce(async () => {
 		}
 
 		itemCount.value = count;
+		return count;
 	} finally {
 		itemCountLoading.value = false;
 	}
-}, 250);
+};
 
-watch(exportSettings, () => {
-	if (exportDialogActive.value) {
-		getItemCount();
+watch([() => exportSettings.search, () => exportSettings.filter], debounce(getItemCount, 250));
+
+watch(
+	() => exportSettings.limit,
+	() => {
+		if (exportSettings.limit < -1) {
+			exportSettings.limit = -1;
+		}
+
+		if (
+			exportSettings.limit !== null &&
+			!Number.isNaN(exportSettings.limit) &&
+			!Number.isInteger(exportSettings.limit)
+		) {
+			exportSettings.limit = Math.round(exportSettings.limit);
+		}
 	}
+);
+
+const exportCount = computed(() => {
+	const limit = exportSettings.limit === null || exportSettings.limit === -1 ? Infinity : exportSettings.limit;
+	return itemCount.value !== undefined ? Math.min(itemCount.value, limit) : limit;
 });
+
+watch(
+	exportCount,
+	() => {
+		const queryLimitThreshold = exportCount.value > queryLimitMax;
+		const batchThreshold = exportCount.value >= 2500;
+
+		if (queryLimitThreshold || batchThreshold) {
+			lockedToFiles.value = {
+				previousLocation: lockedToFiles.value?.previousLocation ?? location.value,
+			};
+
+			location.value = 'files';
+		} else if (lockedToFiles.value) {
+			location.value = lockedToFiles.value.previousLocation;
+			lockedToFiles.value = null;
+		}
+	},
+	{ immediate: true }
+);
 
 watch(primaryKeyField, (newVal) => {
 	exportSettings.sort = newVal?.field ?? '';
@@ -430,8 +450,8 @@ const sortField = computed({
 
 const exporting = ref(false);
 
-function openExportDialog() {
-	getItemCount();
+async function openExportDialog() {
+	itemCountTotal.value = await getItemCount();
 	exportDialogActive.value = true;
 }
 
@@ -516,7 +536,7 @@ function exportDataLocal() {
 	// usually getEndpoint contains leading slash, but here we need to remove it
 	const url = getPublicURL() + endpoint.substring(1);
 
-	let params: Record<string, unknown> = {
+	const params: Record<string, unknown> = {
 		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: format.value,
 	};
@@ -527,7 +547,7 @@ function exportDataLocal() {
 	if (exportSettings.filter) params.filter = exportSettings.filter;
 	if (exportSettings.search) params.search = exportSettings.search;
 
-	params.limit = exportSettings.limit ?? -1;
+	params.limit = exportSettings.limit ? Math.min(exportSettings.limit, queryLimitMax) : -1;
 
 	const exportUrl = api.getUri({
 		url,

@@ -21,13 +21,6 @@
 	fill: var(--foreground-normal) !important;
 }
 
-.codex-editor .cdx-settings-button svg,
-.codex-editor .ce-inline-toolbar__dropdown svg,
-.codex-editor .ce-inline-toolbar .ce-inline-tool svg,
-.codex-editor .ce-settings .ce-settings__button svg {
-	fill: var(--v-list-color) !important;
-}
-
 .codex-editor .ce-inline-toolbar .ce-inline-tool--active svg,
 .codex-editor .ce-settings .cdx-settings-button--active svg {
 	fill: var(--primary) !important;

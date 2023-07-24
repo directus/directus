@@ -1,5 +1,5 @@
-import { NOTICE_TYPE, REPO, VERSIONS_TITLE } from '../constants';
-import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types';
+import { NOTICE_TYPE, REPO, VERSIONS_TITLE } from '../constants.js';
+import type { Change, Notice, Package, PackageVersion, Type, UntypedPackage } from '../types.js';
 
 type Section = Type & { notices: Notice[] };
 
@@ -64,7 +64,7 @@ function formatSections(sections: Section[]): string {
 
 function formatNotices(notices: Notice[]): string {
 	const output = notices.map((notice) => {
-		let lines = `**${formatChange(notice.change, false)}**\n`;
+		let lines = `**${formatChange(notice.change, true)}**\n`;
 		return (lines += `${notice.notice}`);
 	});
 
@@ -79,7 +79,12 @@ function formatPackages(packages: Package[]): string {
 			lines += `- **${name}**\n`;
 
 			lines += formatChanges(changes)
-				.map((change) => `  ${change}`)
+				.map((change) =>
+					change
+						.split('\n')
+						.map((line) => `  ${line}`)
+						.join('\n')
+				)
 				.join('\n');
 		}
 
@@ -107,10 +112,22 @@ function formatUntypedPackages(untypedPackages: UntypedPackage[]): string {
 }
 
 function formatChanges(changes: Change[]): string[] {
-	return changes.map((change) => `- ${formatChange(change)}`);
+	return changes.map((change) => {
+		const lines = [];
+
+		const [firstLine, ...remainingLines] = formatChange(change).split('\n');
+
+		lines.push(`- ${firstLine}`);
+
+		if (remainingLines.length > 0) {
+			lines.push(...remainingLines.map((line) => `  ${line}`));
+		}
+
+		return lines.join('\n');
+	});
 }
 
-function formatChange(change: Change, includeUser = true): string {
+function formatChange(change: Change, short?: boolean): string {
 	let refUser = '';
 	const refUserContent = [];
 
@@ -122,7 +139,7 @@ function formatChange(change: Change, includeUser = true): string {
 		refUserContent.push(`[${change.commit}](https://github.com/${REPO}/commit/${change.commit})`);
 	}
 
-	if (includeUser && change.githubInfo?.user) {
+	if (!short && change.githubInfo?.user) {
 		refUserContent.push(`by @${change.githubInfo.user}`);
 	}
 
@@ -132,7 +149,12 @@ function formatChange(change: Change, includeUser = true): string {
 		refUser += ')';
 	}
 
-	return `${change.summary}${refUser}`;
+	const [firstSummaryLine, ...remainingSummaryLines] = change.summary.split('\n');
+
+	const title = short && remainingSummaryLines.length > 0 ? `${firstSummaryLine}...` : firstSummaryLine;
+	const additionalLines = !short && remainingSummaryLines.length > 0 ? `\n${remainingSummaryLines.join('\n')}` : '';
+
+	return `${title}${refUser}${additionalLines}`;
 }
 
 function formatPackageVersions(packageVersions: PackageVersion[]): string {

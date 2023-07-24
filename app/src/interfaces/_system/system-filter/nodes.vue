@@ -16,7 +16,7 @@
 				<div v-if="filterInfo[index].isField" block class="node field">
 					<div class="header" :class="{ inline }">
 						<v-icon name="drag_indicator" class="drag-handle" small></v-icon>
-						<span v-if="!isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
+						<span v-if="field || !isExistingField(element)" class="plain-name">{{ getFieldPreview(element) }}</span>
 						<v-menu v-else placement="bottom-start" show-arrow>
 							<template #activator="{ toggle }">
 								<button class="name" @click="toggle">
@@ -256,7 +256,7 @@ function updateComparator(index: number, operator: keyof FieldFilterOperator) {
 	if (nodeInfo.isField === false) return;
 
 	const valuePath = nodeInfo.field + '.' + nodeInfo.comparator;
-	let value = get(nodeInfo.node, valuePath);
+	const value = get(nodeInfo.node, valuePath);
 
 	switch (operator) {
 		case '_in':

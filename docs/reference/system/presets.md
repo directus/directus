@@ -7,7 +7,7 @@ pageClass: page-reference
 # Preset
 
 > Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom
-> item listings and bookmarks for users of the app. [Learn more about Presets](/getting-started/glossary#presets).
+> item listings and bookmarks for users of the app. [Learn more about Presets](/user-guide/overview/glossary#presets).
 
 ---
 

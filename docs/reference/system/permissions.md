@@ -7,7 +7,7 @@ pageClass: page-reference
 # Permissions
 
 > Permissions are assigned to Roles, and control data access throughout the platform.
-> [Learn more about Permissions](/getting-started/glossary#permissions).
+> [Learn more about Permissions](/user-guide/overview/glossary#permissions).
 
 ---
 
@@ -31,7 +31,7 @@ What rules the item must pass before the role is allowed to alter it. Follows [t
 `validation` **object**\
 What rules the provided values must pass before the role is allowed to submit them for insertion/update. Follows [the Filter Rules spec](/reference/filter-rules).
 
-`preset` **object**\
+`presets` **object**\
 Additional default values for the role.
 
 `fields` **array**\

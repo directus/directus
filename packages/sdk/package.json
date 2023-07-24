@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "10.3.3",
+	"version": "10.3.4",
 	"description": "The official Directus SDK for use in JavaScript",
 	"keywords": [
 		"api",

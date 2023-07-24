@@ -3,12 +3,7 @@ import Busboy from 'busboy';
 import { Router } from 'express';
 import Joi from 'joi';
 import { flushCaches } from '../cache.js';
-import {
-	ForbiddenException,
-	InvalidPayloadException,
-	InvalidQueryException,
-	UnsupportedMediaTypeException,
-} from '../exceptions/index.js';
+import { ForbiddenError, InvalidPayloadError, InvalidQueryError, UnsupportedMediaTypeError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { ExportService, ImportService } from '../services/import-export.js';
@@ -26,7 +21,7 @@ router.get(
 		const { nanoid } = await import('nanoid');
 
 		if (req.query && req.query['length'] && Number(req.query['length']) > 500) {
-			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
+			throw new InvalidQueryError({ reason: `"length" can't be more than 500 characters` });
 		}
 
 		const string = nanoid(req.query?.['length'] ? Number(req.query['length']) : 32);
@@ -39,7 +34,7 @@ router.post(
 	'/hash/generate',
 	asyncHandler(async (req, res) => {
 		if (!req.body?.string) {
-			throw new InvalidPayloadException(`"string" is required`);
+			throw new InvalidPayloadError({ reason: `"string" is required` });
 		}
 
 		const hash = await generateHash(req.body.string);
@@ -52,11 +47,11 @@ router.post(
 	'/hash/verify',
 	asyncHandler(async (req, res) => {
 		if (!req.body?.string) {
-			throw new InvalidPayloadException(`"string" is required`);
+			throw new InvalidPayloadError({ reason: `"string" is required` });
 		}
 
 		if (!req.body?.hash) {
-			throw new InvalidPayloadException(`"hash" is required`);
+			throw new InvalidPayloadError({ reason: `"hash" is required` });
 		}
 
 		const result = await argon2.verify(req.body.hash, req.body.string);
@@ -75,7 +70,7 @@ router.post(
 	collectionExists,
 	asyncHandler(async (req, res) => {
 		const { error } = SortSchema.validate(req.body);
-		if (error) throw new InvalidPayloadException(error.message);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		const service = new UtilsService({
 			accountability: req.accountability,
@@ -107,7 +102,7 @@ router.post(
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
 		if (req.is('multipart/form-data') === false) {
-			throw new UnsupportedMediaTypeException(`Unsupported Content-Type header`);
+			throw new UnsupportedMediaTypeError({ mediaType: req.headers['content-type']!, where: 'Content-Type header' });
 		}
 
 		const service = new ImportService({
@@ -149,11 +144,11 @@ router.post(
 	collectionExists,
 	asyncHandler(async (req, _res, next) => {
 		if (!req.body.query) {
-			throw new InvalidPayloadException(`"query" is required.`);
+			throw new InvalidPayloadError({ reason: `"query" is required` });
 		}
 
 		if (!req.body.format) {
-			throw new InvalidPayloadException(`"format" is required.`);
+			throw new InvalidPayloadError({ reason: `"format" is required` });
 		}
 
 		const service = new ExportService({
@@ -177,7 +172,7 @@ router.post(
 	'/cache/clear',
 	asyncHandler(async (req, res) => {
 		if (req.accountability?.admin !== true) {
-			throw new ForbiddenException();
+			throw new ForbiddenError();
 		}
 
 		await flushCaches(true);

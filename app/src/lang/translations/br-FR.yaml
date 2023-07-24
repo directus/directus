@@ -50,13 +50,6 @@ logoutReason:
   SESSION_EXPIRED: N'eo ket mat ho sezenn ken
 public_description: Kontroll peseurt roadennoù API a zo hegerz hep dilesa.
 not_allowed: N'eo ket aotreet
-directus_version: Doare Directus
-node_version: Doare Node
-node_uptime: Amzer hegerzded an Node
-os_type: Seurt OS
-os_version: Doare OS
-os_uptime: Amzer hegerzded an OS
-os_totalmem: Memor an OS
 archive: Diellañ
 archive_confirm: Sur oc'h e fell deoc'h diellañ an elfenn-mañ ?
 archive_confirm_count: >-
@@ -313,7 +306,6 @@ selecting_items: Dibab elfennoù
 enable_select_button: Aktivañ ar bouton dibab
 comments: Evezhiadennoù
 no_comments: N'eus evezhiadenn ebet evit poent
-click_to_expand: Klikañ evit brasaat
 select_item: Dibab un elfenn
 no_items: Elfenn ebet
 search_items: Klask elfennoù...
@@ -812,6 +804,8 @@ save_current_datetime: Enrollañ devezh/eur a vremañ
 block: Bloc'h
 inline: En linenn
 comment: Evezhiadenn
+live_preview:
+  new_window: Digeriñ e-barzh ur prenestr nevez
 relational_triggers: Distegneroù darempred
 referential_action_field_label_m2o: Pa vez dilemet un {collection} ...
 referential_action_field_label_o2m: Pa vez diziuzet un {collection} ...
@@ -1072,6 +1066,14 @@ interfaces:
     toolbar: Barrenn ostilhoù
     custom_formats: Furmadoù personelaet
     options_override: Erlec'hiañ an dibarzhioù
+  input-block-editor:
+    tools: Barrenn ostilhoù
+    tools_options:
+      embed: Enklosennañ
+      code: Kod
+      image: Skeudenn
+      table: Taolenn
+      underline: Islinennañ
   input-autocomplete-api:
     input-autocomplete-api: Maezienn Emleuniet (API)
     description: Un doare klask evit an talvoudoù API diavaez.

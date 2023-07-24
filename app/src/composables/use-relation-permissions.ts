@@ -97,9 +97,7 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 
 	const deleteAllowed = computed(() => {
 		if (info.value?.junction.meta?.one_deselect_action === 'delete') {
-			return Object.fromEntries(
-				Object.entries(relatedPerms.value).map(([key, value]) => [key, value.delete && junctionPerms.value.delete])
-			);
+			return Object.fromEntries(Object.entries(relatedPerms.value).map(([key]) => [key, junctionPerms.value.delete]));
 		}
 
 		return Object.fromEntries(

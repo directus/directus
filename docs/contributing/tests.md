@@ -2,12 +2,13 @@
 
 > Tests ensure that the platform continues to work as intended when the existing codebase is modified.
 
-The current test strategy for Directus consists of `Blackbox Tests` testing the overall functionality of the platform as well as `Unit Tests` testing individual parts of the codebase.
-
+The current test strategy for Directus consists of `Blackbox Tests` testing the overall functionality of the platform as
+well as `Unit Tests` testing individual parts of the codebase.
 
 ## Running Unit Tests
 
 Use the following command to perform unit tests in all packages:
+
 ```bash
 pnpm --workspace-root test
 ```
@@ -32,7 +33,8 @@ pnpm --filter api test -- utils
 
 :::tip Relative Commands
 
-If you are already in a directory of a specific package, you may omit the `--filter` flag in `pnpm` commands since the commands will be executed relative to the current directory.
+If you are already in a directory of a specific package, you may omit the `--filter` flag in `pnpm` commands since the
+commands will be executed relative to the current directory.
 
 ```bash
 # Run API tests, from within the "/api" directory
@@ -60,7 +62,8 @@ pnpm --filter tests-blackbox exec docker compose up --detach --wait
 pnpm --workspace-root test:blackbox
 ```
 
-Subsequent test runs can be issued with the following command, if only modifications to the blackbox tests themselves have been made:
+Subsequent test runs can be issued with the following command, if only modifications to the blackbox tests themselves
+have been made:
 
 ```bash
 pnpm --filter tests-blackbox test
@@ -80,8 +83,8 @@ TEST_DB=sqlite3 pnpm --workspace-root test:blackbox
 
 ### Using an Existing Directus Instance
 
-Normally, the test suite will spin up a fresh copy of the Directus API built from the current state of the codebase. To use
-an already running instance of Directus instead, enable the `TEST_LOCAL` flag:
+Normally, the test suite will spin up a fresh copy of the Directus API built from the current state of the codebase. To
+use an already running instance of Directus instead, enable the `TEST_LOCAL` flag:
 
 ```bash
 TEST_DB=cockroachdb TEST_LOCAL=true pnpm --workspace-root test:blackbox
@@ -91,12 +94,15 @@ Note: The tests expect the instance running at `localhost:8055`. Make sure to co
 container found in the `tests-blackbox/docker-compose.yml` file.
 
 ## Writing Unit Tests
-Unit Tests are written throughout the codebase in a vite native unit test framework called [Vitest](https://vitest.dev). 
+
+Unit Tests are written throughout the codebase in a vite native unit test framework called [Vitest](https://vitest.dev).
 
 ### Example
+
 ```
 /directus/api/src/utils/get-date-formatted.test.ts
 ```
+
 ```ts
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 
