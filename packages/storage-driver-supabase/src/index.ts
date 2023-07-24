@@ -117,14 +117,12 @@ export class DriverSupabase implements Driver {
 		}
 	}
 
-	// CHECK: Should src/dest use fullpath?
 	async move(src: string, dest: string) {
-		await this.bucket.move(src, dest);
+		await this.bucket.move(this.getFullPath(src), this.getFullPath(dest));
 	}
 
-	// CHECK: Should src/dest use fullpath?
 	async copy(src: string, dest: string) {
-		await this.bucket.copy(src, dest);
+		await this.bucket.copy(this.getFullPath(src), this.getFullPath(dest));
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
