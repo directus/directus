@@ -57,7 +57,7 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		if (userID) return userID;
 
 		if (!allowPublicRegistration) {
-			logger.trace(`[SAML] User doesn't exist, and public registration not allowed for provider "${provider}"`);
+			logger.warn(`[SAML] User doesn't exist, and public registration not allowed for provider "${provider}"`);
 			throw new InvalidCredentialsError();
 		}
 

@@ -444,11 +444,6 @@ open_file_in_tab: أفتح الملف في علامة تبويب جديدة
 start_export: بدء التصدير
 not_available_for_local_downloads: غير متوفر للتنزيلات المحلية
 exporting_all_items_in_collection: تصدير جميع العناصر {total} ضمن {collection}.
-exporting_limited_items_in_collection: تصدير {limit} من أصل {total} عناصر داخل {collection}.
-exporting_no_items_to_export: لا توجد عناصر للتصدير. قم بتعديل تكوين التصدير أدناه.
-exporting_download_hint: بمجرد اكتمال هذا الملف {format} سيتم تنزيله تلقائيا إلى جهازك.
-exporting_batch_hint: سيتم معالجة هذا التصدير في الدفعات، وبمجرد اكتماله، سيتم حفظ الملف {format} في مكتبة الملفات.
-exporting_batch_hint_forced: بسبب العدد الكبير من العناصر، يجب معالجة هذا التصدير في دفعات، وبمجرد الانتهاء من ذلك، سيتم حفظ مِلَفّ {format} في مكتبة الملفات.
 collection_key: مفتاح المجموعة
 name: الاسم
 primary_key_field: '‮حقل المفتاح الرئيسي'
@@ -1653,6 +1648,7 @@ operations:
     description: إرسال إشعار داخل التطبيق إلى واحد أو أكثر من المستخدمين
     recipient: مستخدم
     message: الرسالة
+    subject: الموضوع
   request:
     description: 'تقديم طلب إلى عنوان URL'
     url: الرابط
