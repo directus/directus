@@ -398,6 +398,9 @@ export class DriverCloudinary implements Driver {
 				next_cursor: string;
 				resources: {
 					public_id: string;
+					format: string;
+					resource_type: string;
+					filename: string;
 				}[];
 			};
 
@@ -409,7 +412,11 @@ export class DriverCloudinary implements Driver {
 			nextCursor = json.next_cursor;
 
 			for (const file of json.resources) {
-				yield file.public_id.substring(this.root.length);
+				const filename = file.public_id.substring(this.root.length);
+				if (file.resource_type === 'image' || file.resource_type === 'video')
+					yield `${filename}.${file.format}`;
+				else
+					yield filename;
 			}
 		} while (nextCursor);
 	}
