@@ -5,3 +5,4 @@ export * from './hash.js';
 export * from './import.js';
 export * from './operations.js';
 export * from './sort.js';
+export * from './users.js';
