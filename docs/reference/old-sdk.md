@@ -14,7 +14,9 @@ readTime: 14 min read
 
 ::: danger This SDK is no longer supported!
 
-Version 11 introduced a complete rewrite of our SDK and the version referenced on this page is no longer supported either in terms of code or help in our community spaces. This page is for purely for reference. New SDK docs can be found [here](/guides/sdk/getting-started).
+Version 11 introduced a complete rewrite of our SDK and the version referenced on this page is no longer supported
+either in terms of code or help in our community spaces. This page is purely for reference. New SDK docs can be found
+[here](/guides/sdk/getting-started).
 
 :::
 
