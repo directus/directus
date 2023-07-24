@@ -35,16 +35,16 @@
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
+				<v-button
+					v-tooltip="t('download')"
+					icon
+					rounded
+					:href="getAssetUrl(image.id, true)"
+					:download="image.filename_download"
+				>
+					<v-icon name="download" />
+				</v-button>
 				<template v-if="!disabled">
-					<v-button
-						v-tooltip="t('download')"
-						icon
-						rounded
-						:href="getAssetUrl(image.id, true)"
-						:download="image.filename_download"
-					>
-						<v-icon name="download" />
-					</v-button>
 					<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
 						<v-icon name="open_in_new" />
 					</v-button>
