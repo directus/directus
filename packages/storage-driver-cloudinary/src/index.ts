@@ -95,9 +95,10 @@ export class DriverCloudinary implements Driver {
 	 * on the other hand requires the extension to be present.
 	 */
 	private getPublicId(filepath: string) {
+		const { base, name } = parse(filepath);
 		const resourceType = this.getResourceType(filepath);
-		if (resourceType === 'raw') return filepath;
-		return parse(filepath).name;
+		if (resourceType === 'raw') return base;
+		return name;
 	}
 
 	/**
@@ -231,6 +232,7 @@ export class DriverCloudinary implements Driver {
 	async write(filepath: string, content: Readable) {
 		const fullPath = this.fullPath(filepath);
 		const resourceType = this.getResourceType(fullPath);
+		const folderPath = this.getFolderPath(fullPath);
 
 		const uploadParameters = {
 			timestamp: this.getTimestamp(),
@@ -238,8 +240,11 @@ export class DriverCloudinary implements Driver {
 			type: 'upload',
 			access_mode: this.accessMode,
 			public_id: this.getPublicId(fullPath),
-			asset_folder: this.getFolderPath(fullPath),
-			use_asset_folder_as_public_id_prefix: true,
+			...(folderPath ? {
+					asset_folder: folderPath,
+					use_asset_folder_as_public_id_prefix: 'true'
+				} : {}
+			)
 		};
 
 		const signature = this.getFullSignature(uploadParameters);
