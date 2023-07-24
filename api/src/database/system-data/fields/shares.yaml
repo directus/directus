@@ -35,7 +35,7 @@ fields:
       iconRight: lock
       masked: true
     width: half
-    note: $t:shared_leave_blank_for_unlimited
+    note: $t:shared_leave_blank_for_passwordless_access
 
   - field: date_start
     width: half
