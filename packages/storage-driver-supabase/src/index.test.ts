@@ -51,7 +51,6 @@ beforeEach(() => {
 			projectId: randAlphaNumeric({ length: 10 }).join(''),
 			root: randDirectoryPath(),
 			endpoint: randDomainName(),
-			resumableUpload: false,
 		},
 		path: {
 			input: randUnique() + randFilePath(),
@@ -480,8 +479,6 @@ describe('#write', () => {
 			upsert: true,
 		});
 	});
-
-	test.todo('Test resumableUpload when it is out of beta');
 });
 
 describe('#delete', () => {

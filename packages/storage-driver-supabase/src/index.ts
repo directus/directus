@@ -3,7 +3,6 @@ import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
-import { Upload } from 'tus-js-client';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
 
@@ -14,8 +13,6 @@ export type DriverSupabaseConfig = {
 	// Allows a custom Supabase endpoint incase self-hosting
 	endpoint?: string;
 	root?: string;
-	// NOTE: Still in Supabase beta
-	resumableUpload?: boolean;
 };
 
 export class DriverSupabase implements Driver {
@@ -126,59 +123,11 @@ export class DriverSupabase implements Driver {
 	}
 
 	async write(filepath: string, content: Readable, type?: string) {
-		const fullPath = this.getFullPath(filepath);
-
-		if (this.config.resumableUpload) {
-			await this.resumableUpload(fullPath, content, type);
-		} else {
-			await this.bucket.upload(fullPath, content, {
-				contentType: type ?? '',
-				cacheControl: '3600',
-				upsert: true,
-				duplex: 'half',
-			});
-		}
-	}
-
-	// https://supabase.com/docs/guides/storage/uploads#resumable-upload
-	async resumableUpload(filepath: string, content: Readable, type?: string) {
-		const endpoint = normalizePath(join(this.endpoint, '/upload/resumable'));
-
-		await new Promise<void>((resolve, reject) => {
-			const upload = new Upload(content, {
-				endpoint,
-				retryDelays: [0, 3000, 5000, 10000, 20000],
-				headers: {
-					Authorization: `Bearer ${this.config.serviceRole}`,
-					'x-upsert': 'true',
-				},
-				uploadLengthDeferred: true,
-				uploadDataDuringCreation: true,
-				metadata: {
-					bucketName: this.config.bucket,
-					objectName: filepath,
-					contentType: type ?? '',
-					cacheControl: '3600',
-				},
-				// NOTE: Supabase only supports 6MB chunks (for now), so it must be set to 6MB
-				chunkSize: 6 * 1024 * 1024,
-				onError(error) {
-					reject(error);
-				},
-				onSuccess() {
-					resolve();
-				},
-			});
-
-			// Check if there are any previous uploads to continue.
-			return upload.findPreviousUploads().then(function (previousUploads) {
-				// Found previous uploads so we select the first one.
-				if (previousUploads[0]) {
-					upload.resumeFromPreviousUpload(previousUploads[0]);
-				}
-
-				upload.start();
-			});
+		await this.bucket.upload(this.getFullPath(filepath), content, {
+			contentType: type ?? '',
+			cacheControl: '3600',
+			upsert: true,
+			duplex: 'half',
 		});
 	}
 
