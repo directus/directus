@@ -16,8 +16,15 @@ export const request = async <Output = any>(
 			? (options.headers as Record<string, string>)
 			: {};
 
-	const outputFormatter =
-		formatter !== undefined && formatter !== null ? formatter : ({ data }: { data: Output }) => data;
+	const defaultFormatter = (data: Output | { data: Output }) => {
+		if (typeof data === 'object' && data && 'data' in data) {
+			return data.data;
+		}
+
+		return data;
+	};
+
+	const outputFormatter = formatter !== undefined && formatter !== null ? formatter : defaultFormatter;
 
 	// use json content by default but allow overrides
 	if ('Content-Type' in headers === false) {
