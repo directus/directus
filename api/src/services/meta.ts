@@ -88,9 +88,7 @@ export class MetaService {
 		if (hasJoins) {
 			const primaryKeyName = this.schema.collections[collection]!.primary;
 
-			dbQuery.countDistinct(this.knex.raw('??.??', [collection, primaryKeyName]), {
-				as: 'count',
-			});
+			dbQuery.countDistinct({ count: [`${collection}.${primaryKeyName}`] });
 		} else {
 			dbQuery.count('*', { as: 'count' });
 		}
