@@ -1,7 +1,6 @@
 {
 	"extends": "@directus/tsconfig/node18-esm",
 	"compilerOptions": {
-		"outDir": "dist",
 		"lib": ["DOM"]
 	},
 	"include": ["src"],

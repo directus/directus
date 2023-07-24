@@ -16,21 +16,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 
 	const errors = toArray(err);
 
-	if (errors.some((err) => isDirectusError(err) === false)) {
-		res.status(500);
-	} else {
-		let status = errors[0].status;
-
-		for (const err of errors) {
-			if (status !== err.status) {
-				// If there's multiple different status codes in the errors, use 500
-				status = 500;
-				break;
-			}
-		}
-
-		res.status(status);
-	}
+	let status: number | null = null;
 
 	for (const err of errors) {
 		if (env['NODE_ENV'] === 'development') {
@@ -43,7 +29,11 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 		if (isDirectusError(err)) {
 			logger.debug(err);
 
-			res.status(err.status);
+			if (!status) {
+				status = err.status;
+			} else if (status !== err.status) {
+				status = 500;
+			}
 
 			payload.errors.push({
 				message: err.message,
@@ -59,7 +49,7 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 		} else {
 			logger.error(err);
 
-			res.status(500);
+			status = 500;
 
 			if (req.accountability?.admin === true) {
 				payload = {
@@ -87,6 +77,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 			}
 		}
 	}
+
+	res.status(status ?? 500);
 
 	emitter
 		.emitFilter(
