@@ -1,6 +1,6 @@
 import type { FieldsWildcard, HasManyToAnyRelation, PickFlatFields, PickRelationalFields } from './fields.js';
 import type { ItemType } from './schema.js';
-import type { IfAny, Merge, Mutable, UnpackList } from './utils.js';
+import type { IfAny, IsNullable, Merge, Mutable, UnpackList } from './utils.js';
 
 /**
  * Apply the configured fields query parameter on a given Item type
@@ -26,11 +26,14 @@ export type ApplyQueryFields<
 			: {
 					[Field in keyof RelationalFields]: Field extends keyof CollectionItem
 						? Extract<CollectionItem[Field], ItemType<Schema>> extends infer RelatedCollection
-							? RelatedCollection extends any[]
-								? HasManyToAnyRelation<RelatedCollection> extends never
-									? ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]>[] // many-to-many or one-to-many
-									: ApplyManyToAnyFields<Schema, RelatedCollection, RelationalFields[Field]>[] // many-to-any'
-								: ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]> // many-to-one
+							? RelationNullable<
+									CollectionItem[Field],
+									RelatedCollection extends any[]
+										? HasManyToAnyRelation<RelatedCollection> extends never
+											? ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]>[] | null // many-to-many or one-to-many
+											: ApplyManyToAnyFields<Schema, RelatedCollection, RelationalFields[Field]>[] // many-to-any'
+										: ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]> // many-to-one
+							  >
 							: never
 						: never;
 			  }
@@ -69,3 +72,8 @@ export type ApplyManyToAnyFields<
 export type ApplyNestedQueryFields<Schema extends object, Collection, Fields> = Collection extends object
 	? ApplyQueryFields<Schema, Collection, Readonly<UnpackList<Fields>>>
 	: never;
+
+/**
+ * Carry nullability of
+ */
+export type RelationNullable<Relation, Output> = IsNullable<Relation, Output | null, Output>;

@@ -31,3 +31,5 @@ export type NeverToUnknown<T> = [T] extends [never] ? unknown : T;
  */
 export type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 export type IsAny<T> = IfAny<T, true, never>;
+
+export type IsNullable<T, Y = true, N = never> = T | null extends T ? Y : N;
