@@ -20,6 +20,8 @@ export const conditionString = (node: AbstractSqlQueryConditionNode | AbstractSq
 	return getCondition(node);
 };
 
+// split up functions in files, add tests..
+
 /**
  * Gets a single condition without logical operators.
  * @param conditionNode
@@ -95,7 +97,7 @@ function getCondition(conditionNode: AbstractSqlQueryConditionNode) {
 		return `${column} ${conditionNode.condition.operation.toUpperCase()} (${compareValues})`;
 	}
 
-	if (conditionNode.condition.type === 'field-condition') {
+	if (conditionNode.condition.type === 'condition-field') {
 		const column1 = wrapColumn(conditionNode.condition.target.table, conditionNode.condition.target.column);
 		const column2 = wrapColumn(conditionNode.condition.compareTo.table, conditionNode.condition.compareTo.column);
 		const operation = convertNumericOperators(conditionNode.condition.operation, conditionNode.negate);

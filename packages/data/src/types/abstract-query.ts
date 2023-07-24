@@ -283,20 +283,17 @@ export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
  * 	childNodes: [
  * 		{
  * 			type: 'condition',
- * 			operation: 'eq',
- * 			targetNode: { type: 'field', field: 'a' }
- * 			value: 5
+ * 			condition: {...}
  * 		},
  * 		{
  * 			type: 'condition',
- * 			operation: 'lt',
- * 			targetNode: { type: 'field', field: 'b' }
- * 			value: 28
+ * 			condition: {...}
  * 		}
  *  ]
  * }
  * ```
  * It is also possible to nest conditions with the logical operator.
+ * The following pseudo code mean: A AND (B AND C)
  * ```
  * {
  * 	type: 'logical',
@@ -304,9 +301,7 @@ export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
  * 	childNodes: [
  * 		{
  * 			type: 'condition',
- * 			operation: 'eq',
- * 			targetNode: { type: 'field', field: 'a' }
- * 			value: 5
+ * 			condition: {...}
  * 		},
  * 		{
  * 			type: 'logical',
@@ -314,16 +309,12 @@ export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
  * 			childNodes: [
  * 				{
  * 					type: 'condition',
- * 					operation: 'eq',
- * 					targetNode: { type: 'field', field: 'b' }
- * 					value: 'something'
+ * 					condition: {...}
  * 				},
  * 				{
  * 					type: 'condition',
- * 					operation: 'gt',
- * 					targetNode: { type: 'field', field: 'c' }
- * 					value: true
- * 				}
+ * 					condition: {...}
+ * 				},
  * 			],
  * 		}
  *  ]
@@ -333,12 +324,11 @@ export interface AbstractQueryNodeSort extends AbstractQueryModifierNode {
 export type AbstractQueryFilterNode =
 	| AbstractQueryNodeLogical
 	| AbstractQueryNodeNegate
-	| AbstractQueryQuantifierNode
+	| AbstractQueryQuantifierNode // this will probably be within relational nodes
 	| AbstractQueryConditionNode;
 
 export interface AbstractQueryNodeLogical extends AbstractQueryModifierNode {
 	type: 'logical';
-
 	operator: 'and' | 'or';
 
 	/** the values for the operation. */
@@ -355,7 +345,6 @@ export interface AbstractQueryNodeNegate extends AbstractQueryModifierNode {
 // continue on it after relationships
 export interface AbstractQueryQuantifierNode extends AbstractQueryModifierNode {
 	type: 'quantifier';
-
 	operator: 'every' | 'some';
 
 	/** The o2m field that the every/some should be applied on */
@@ -370,7 +359,7 @@ export interface AbstractQueryQuantifierNode extends AbstractQueryModifierNode {
 
 /**
  * Used to set conditions on a query. The item in question needs to match all conditions to be returned.
- * @TODO support for eq null (?)
+ * No explicit support to check for 'empty' (it's just an empty string) and null.
  *
  * @example
  * ```
@@ -381,17 +370,17 @@ export interface AbstractQueryQuantifierNode extends AbstractQueryModifierNode {
  * ```
  */
 export interface AbstractQueryConditionNode {
-	/* the type of the node */
 	type: 'condition';
-
-	/* the type of the node */
-	condition:
-		| LetterConditionNode
-		| NumberConditionNode
-		| GeoConditionIntersectsNode
-		| GeoConditionIntersectsBBoxNode
-		| SetConditionNode;
+	condition: ActualConditionNodes;
 }
+
+export type ActualConditionNodes =
+	| ConditionLetterNode
+	| ConditionNumberNode
+	| ConditionGeoIntersectsNode
+	| ConditionGeoIntersectsBBoxNode
+	| ConditionSetNode
+	| ConditionFieldNode;
 
 /**
  * Used to compare a string field with a string value.
@@ -407,9 +396,9 @@ export interface AbstractQueryConditionNode {
  * 	compareTo: 'someString'
  * ```
  */
-export interface LetterConditionNode {
+export interface ConditionLetterNode {
 	type: 'condition-letter';
-	target: AbstractQueryFieldNodePrimitive;
+	target: AbstractQueryFieldNodePrimitive; // | AbstractQueryFieldNodeFn; how do we check of the target is a valid input for the function?
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq' /** @TODO maybe regex? */;
 	compareTo: string;
 }
@@ -428,7 +417,7 @@ export interface LetterConditionNode {
  * 	compareTo: 5
  * ```
  */
-export interface NumberConditionNode {
+export interface ConditionNumberNode {
 	type: 'condition-number';
 	target: AbstractQueryFieldNodePrimitive | AbstractQueryFieldNodeFn;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
@@ -458,18 +447,19 @@ export interface NumberConditionNode {
  * }
  * ```
  */
-export interface GeoConditionIntersectsNode {
+export interface ConditionGeoIntersectsNode {
 	type: 'condition-geo-intersects';
-	target: AbstractQueryFieldNodePrimitive;
+	target: AbstractQueryFieldNodePrimitive /** the type of the field needs to be a 'geometry' object */;
 	operation: 'intersects';
 	compareTo: GeoJSONPoint | GeoJSONMultiPoint | GeoJSONLineString | GeoJSONMultiLineString | GeoJSONGeometryCollection;
 }
 
-export interface GeoConditionIntersectsBBoxNode {
+export interface ConditionGeoIntersectsBBoxNode {
 	type: 'condition-geo-intersects-bbox';
 	target: AbstractQueryFieldNodePrimitive;
 	operation: 'intersects_bbox';
 	compareTo: GeoJSONPolygon | GeoJSONMultiPolygon | GeoJSONGeometryCollection;
+	/** @TODO confirm if MultiPolygon works as expected across drivers */
 }
 
 /**
@@ -486,7 +476,7 @@ export interface GeoConditionIntersectsBBoxNode {
  * 	compareTo: [1, 2, 3]
  * ```
  */
-export interface SetConditionNode {
+export interface ConditionSetNode {
 	type: 'condition-set';
 	target: AbstractQueryFieldNodePrimitive;
 	operation: 'in';
@@ -494,11 +484,14 @@ export interface SetConditionNode {
 }
 
 /**
- * Used to indicate that is should be compared to an explicit value.
+ * It's mainly used to compare two fields for relational queries.
+ * That's why only the qe comparator is valid.
  */
-export interface AbstractQueryNodeConditionValue {
-	type: 'value';
-	value: string | number | boolean;
+export interface ConditionFieldNode {
+	type: 'condition-field';
+	target: AbstractQueryFieldNodePrimitive;
+	operation: 'eq';
+	compareTo: AbstractQueryFieldNodePrimitive & { collection: string };
 }
 
 /**

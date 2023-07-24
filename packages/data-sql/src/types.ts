@@ -110,29 +110,31 @@ export interface AbstractSqlQueryJoinNode extends AbstractSqlQueryNode {
 export interface AbstractSqlQueryConditionNode {
 	type: 'condition';
 	condition:
-		| SqlLetterConditionNode
-		| SqlNumberConditionNode
-		| SqlGeoConditionNode
-		| SqlSetConditionNode
-		| SqlFieldConditionNode;
+		| SqlConditionLetterNode
+		| SqlConditionNumberNode
+		| SqlConditionGeoNode
+		| SqlConditionSetNode
+		| SqlConditionFieldNode;
 	negate: boolean;
 }
 
-export interface SqlLetterConditionNode {
+export type SqlConditionType = 'condition-letter' | 'condition-number' | 'condition-geo' | 'condition-set' | 'condition-field';
+
+export interface SqlConditionLetterNode {
 	type: 'condition-letter';
 	target: AbstractSqlQuerySelectNode;
 	operation: 'contains' | 'starts_with' | 'ends_with' | 'eq';
 	compareTo: ValueNode;
 }
 
-export interface SqlNumberConditionNode {
+export interface SqlConditionNumberNode {
 	type: 'condition-number';
 	target: AbstractSqlQuerySelectNode | AbstractSqlQueryFnNode;
 	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
 	compareTo: ValueNode;
 }
 
-export interface SqlGeoConditionNode {
+interface SqlConditionGeoNode {
 	type: 'condition-geo';
 	target: AbstractSqlQuerySelectNode;
 	operation: 'intersects' | 'intersects_bbox';
@@ -140,16 +142,16 @@ export interface SqlGeoConditionNode {
 }
 
 // remove set here - sub query it's a thing that the driver should take care of
-export interface SqlSetConditionNode {
+interface SqlConditionSetNode {
 	type: 'condition-set';
 	operation: 'in';
 	target: AbstractSqlQuerySelectNode;
 	compareTo: ValuesNode;
 }
 
-export interface SqlFieldConditionNode {
-	type: 'field-condition';
-	operation: 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
+interface SqlConditionFieldNode {
+	type: 'condition-field';
+	operation: 'eq';
 	target: AbstractSqlQuerySelectNode;
 	compareTo: AbstractSqlQuerySelectNode;
 }
