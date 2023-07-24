@@ -238,7 +238,8 @@ export class DriverCloudinary implements Driver {
 			type: 'upload',
 			access_mode: this.accessMode,
 			public_id: this.getPublicId(fullPath),
-			folder: this.getFolderPath(fullPath),
+			asset_folder: this.getFolderPath(fullPath),
+			use_asset_folder_as_public_id_prefix: true,
 		};
 
 		const signature = this.getFullSignature(uploadParameters);
