@@ -182,7 +182,7 @@ const { $directus, $readItems } = useNuxtApp()
 
 const { data: posts } = await useAsyncData('posts', () => {
   return $directus.request(
-	readItems('posts', {
+	$readItems('posts', {
 		fields: ['slug', 'title', 'publish_date', { 'author': [ 'name' ] }],
 		sort: ['-publish_date']
 	})

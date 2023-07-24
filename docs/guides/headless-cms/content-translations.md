@@ -169,16 +169,16 @@ relational data . It's incredible powerful.
 
 **Sample Request**
 
-```javascript
-// Write some code here in your front-end framework that gets the slug from the current URL.
-const slug = 'slug-in-english';
-const languageCode = 'en-US';
-
-// Initialize the SDK
+```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
 
+// Initialize the SDK.
 const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
+
+// Write some code here in your front-end framework that gets the slug from the current URL.
+const slug = 'slug-in-english';
+const languageCode = 'en-US';
 
 // Call the Directus API using the SDK using the locale of the frontend and the slug.
 const response = await directus.request(
