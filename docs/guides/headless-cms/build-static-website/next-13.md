@@ -43,7 +43,7 @@ npm install @directus/sdk
 
 Open `my-website` in your code editor.
 
-## Create Helper for the SDK
+## Create a Helper for the SDK
 
 To share a single instance of the Directus JavaScript SDK between multiple pages in this project, create a single helper
 file that can be imported later. Create a new directory called `lib` and a new file called `directus.js` inside of it.
