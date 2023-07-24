@@ -1283,5 +1283,6 @@ operations:
   notification:
     recipient: Korisnik
     message: Poruka
+    subject: Naslov
   request:
     url: URL adresa

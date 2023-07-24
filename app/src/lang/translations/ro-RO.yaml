@@ -1791,6 +1791,7 @@ operations:
   notification:
     recipient: Utilizator
     message: Mesaj
+    subject: Subiect
   request:
     url: URL
     method: Metodă

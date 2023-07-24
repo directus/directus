@@ -151,6 +151,14 @@ validationError:
   required: Value is required
   unique: Value has to be unique
   regex: Value doesn't have the correct format
+  starts_with: Value has to start with {substring}
+  istarts_with: Value has to start with {substring}
+  nstarts_with: Value can't start with {substring}
+  nistarts_with: Value can't start with {substring}
+  ends_with: Value has to end with {substring}
+  iends_with: Value has to end with {substring}
+  nends_with: Value can't end with {substring}
+  niends_with: Value can't end with {substring}
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -467,14 +475,12 @@ open_file_in_tab: Open file in new tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
-exporting_limited_items_in_collection: Exporting {limit} out of {total} items within {collection}.
-exporting_no_items_to_export: No items to export. Adjust the exporting configuration.
-exporting_download_hint: Once completed, this {format} file will automatically be downloaded to your device.
-exporting_batch_hint:
-  This export will be processed in batches, and once completed, the {format} file will be saved to the File Library.
-exporting_batch_hint_forced:
-  Due to the large number of items, this export must be processed in batches, and once completed, the {format} file will
-  be saved to the File Library.
+exporting_limited_items_in_collection: '{count} out of {total} items within {collection} will be exported.'
+exporting_no_items_to_export: No items to export. Adjust the exporting configuration and/or add items to the collection.
+exporting_download_hint: Once the {format} file is created, it will be downloaded to your device.
+exporting_library_hint: Once the {format} file is created, it will be saved to the File Library.
+exporting_library_hint_forced:
+  This export must be processed in batches. Once completed, the {format} file will be saved to the File Library.
 collection_key: Collection Key
 name: Name
 primary_key_field: Primary Key Field
@@ -978,6 +984,7 @@ settings_flows: Flows
 settings_presets: Presets & Bookmarks
 settings_translations: Custom Translations
 one_or_more_options_are_missing: One or more options are missing
+configure_field_key_to_continue: Configure field key to continue
 scope: Scope
 actions: Actions
 select: Select...
@@ -1378,6 +1385,7 @@ share: Share
 share_item: Share Item
 shared_with_you: An item has been shared with you
 shared_enter_passcode: Enter your passcode to continue...
+shared_leave_blank_for_passwordless_access: Leave blank for passwordless access
 shared_leave_blank_for_unlimited: Leave blank for unlimited
 shared_times_remaining: This link can only be used {n} times
 shared_last_remaining: This link can only be used once
@@ -2183,7 +2191,9 @@ operations:
     recipient: User
     recipient_placeholder: Enter a UUID...
     recipient_note: Add user UUID and press enter...
+    item_note: Item Key or Relative URL
     message: Message
+    subject: Subject
   request:
     name: Webhook / Request URL
     description: 'Make a request to a URL'

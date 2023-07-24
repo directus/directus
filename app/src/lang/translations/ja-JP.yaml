@@ -447,11 +447,6 @@ open_file_in_tab: 新規タブで開く
 start_export: エクスポートを開始
 not_available_for_local_downloads: ローカルダウンロードはできません
 exporting_all_items_in_collection: '{collection} 内のすべての{total} アイテムをエクスポート中'
-exporting_limited_items_in_collection: '{collection} 内のすべての{total} アイテムから{limit} をエクスポート中'
-exporting_no_items_to_export: エクスポートするアイテムがありません。エクスポートの設定を見直して下さい。
-exporting_download_hint: 完了すると、自動的にこの {format} ファイルがデバイスへダウンロードされます。
-exporting_batch_hint: このエクスポートのバッチ処理が完了すると、 {format} ファイルはファイルライブラリへ保存されます。
-exporting_batch_hint_forced: アイテム数が多いため、このエクスポートはバッチ処理の必要があります。 完了すると、 {format} ファイルがファイルライブラリへ保存されます。
 collection_key: コレクション
 name: 名前
 primary_key_field: プライマリーキー
@@ -1463,6 +1458,7 @@ operations:
   notification:
     recipient: ユーザー
     message: メッセージ
+    subject: 件名
   request:
     url: URL
   trigger:

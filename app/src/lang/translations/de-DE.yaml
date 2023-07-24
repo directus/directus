@@ -460,11 +460,6 @@ open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
-exporting_limited_items_in_collection: '{limit} von {total} Elementen innerhalb von {collection} exportieren.'
-exporting_no_items_to_export: Keine Elemente zu exportieren. Passen Sie die Exportkonfiguration an.
-exporting_download_hint: Sobald abgeschlossen, wird die {format} Datei automatisch auf das Gerät heruntergeladen.
-exporting_batch_hint: Dieser Export wird in Batches abgearbeitet und sobald abgeschlossen wird die Datei {format} in der Dateibibliothek gespeichert.
-exporting_batch_hint_forced: Aufgrund der großen Anzahl von Elementen muss dieser Export in Batches abgearbeitet werden und nach Fertigstellung wird die Datei {format} in der Dateibibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
@@ -2143,6 +2138,7 @@ operations:
     recipient_placeholder: Eine UUID eingeben...
     recipient_note: Benutzer UUID hinzufügen und Enter drücken...
     message: Nachricht
+    subject: Betreff
   request:
     name: Webhook / Anfrage URL
     description: 'Eine Anfrage an eine URL senden'
