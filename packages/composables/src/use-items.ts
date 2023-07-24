@@ -40,10 +40,9 @@ export function useItems(collection: Ref<string | null>, query: ComputedQuery): 
 	const api = useApi();
 	const { primaryKeyField } = useCollection(collection);
 
-	const { fields, limit, sort, search, filter, page } = query;
-	let { alias, deep } = query;
-	alias = alias ?? ref();
-	deep = deep ?? ref();
+	const { fields, limit, sort, search, filter, page, alias: queryAlias, deep: queryDeep } = query;
+	const alias = queryAlias ?? ref();
+	const deep = queryDeep ?? ref();
 
 	const endpoint = computed(() => {
 		if (!collection.value) return null;
