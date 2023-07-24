@@ -1,11 +1,11 @@
-import { StorageClient } from '@supabase/storage-js';
 import type { Driver, Range } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
+import { StorageClient } from '@supabase/storage-js';
+import { join } from 'node:path';
+import { Readable } from 'node:stream';
 import { Upload } from 'tus-js-client';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
-import { join } from 'node:path';
-import { Readable } from 'node:stream';
 
 export type DriverSupabaseConfig = {
 	bucket: string;
