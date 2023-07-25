@@ -96,7 +96,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readOperations } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readOperations( query )
@@ -192,7 +192,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readOperation } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readOperation('operation_id', query )
@@ -294,7 +294,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, createOperation } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	createOperation({
@@ -578,7 +578,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateOperation } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	updateOperation('operation_id', {
@@ -690,7 +690,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateOperations } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	updateOperations(['operation_1_id', 'operation_2_id'], {
@@ -806,7 +806,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteOperation } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteOperation('operation_id'));
 
@@ -889,7 +889,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteOperations } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'])
@@ -977,7 +977,7 @@ Trigger an operation based on primary key.
 import { createDirectus } from '@directus/sdk';
 import { rest, triggerOperation } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	triggerOperation('operation_id', {

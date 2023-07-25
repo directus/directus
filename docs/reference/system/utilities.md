@@ -42,7 +42,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, generateHash } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     generateHash('string')
@@ -138,7 +138,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, verifyHash } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     verifyHash('string_to_verify','hash')
@@ -240,7 +240,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, utilitySort } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     utilitySort('collection_name','id_item_to_move','id_item_moving_to')
@@ -332,7 +332,7 @@ Body must be formatted as a `multipart/form-data` with a `file` property.
 import { createDirectus } from '@directus/sdk';
 import { rest, utilsImport } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const formData = new FormData();
 formData.append('file', raw_file);
@@ -393,7 +393,7 @@ Export a larger data set to a file in the File Library
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, utilsExport } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     utilsExport('collection_name','file_format',{
@@ -513,7 +513,7 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, clearCache } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(clearCache());
 

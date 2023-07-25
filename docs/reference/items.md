@@ -64,7 +64,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readItems('collection_name', {
@@ -178,7 +178,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readItem } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readItem('collection_name', 'item_id'));
 
@@ -242,7 +242,7 @@ List the singleton item in Directus.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readSingleton } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readSingleton('collection_name'))
 
@@ -315,7 +315,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, createItem } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	createItem('collection_name', {
@@ -443,7 +443,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, createItems } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	createItems('collection_name', [
@@ -580,7 +580,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateItem } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	updateItem('collection_name', 'item_id', {
@@ -664,7 +664,7 @@ Update a singleton item
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateSingleton } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(updateSingleton('collection_name', {
     'item_field' : 'value'
@@ -743,7 +743,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, updateItems } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	updateItems('collection_name', ['id_1', 'id_2'], {
@@ -858,7 +858,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteItem } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteItem('collection_name', 'id'));
 
@@ -962,7 +962,7 @@ type Mutation {
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteItems } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteItems('collection_name', ['id_1', 'id_2']));
 

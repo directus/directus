@@ -91,7 +91,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPermissions } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
 	readPermissions({
@@ -289,7 +289,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPermission } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     createPermission({
@@ -418,7 +418,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPermissions } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     createPermissions(
@@ -564,7 +564,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePermission } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     updatePermission('permission_id',{
@@ -673,7 +673,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePermissions } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     updatePermissions(['permission_1_id','permission_2_id'],{
@@ -780,7 +780,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePermission } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     deletePermission('permission_1_id')
@@ -866,7 +866,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePermissions } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     deletePermissions(['permission_1_id','permission_2_id'])

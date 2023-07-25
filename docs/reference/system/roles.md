@@ -82,7 +82,7 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRoles } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     readRoles({
@@ -283,7 +283,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createRole } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     createRole({
@@ -687,7 +687,7 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateRoles } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     updateRoles(['role_1_id','role_2_id'], {

@@ -87,7 +87,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readActivities } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readActivities( query )
@@ -176,7 +176,7 @@ type Query {
 import { createDirectus } from '@directus/sdk';
 import { rest, readActivity } from '@directus/sdk/rest';
 
-const client = createDirectus('directus_project_url').with(rest());
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readActivity('activity_id', query )

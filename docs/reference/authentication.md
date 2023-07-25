@@ -325,7 +325,7 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, passwordRequest } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     passwordRequest('user_email')
@@ -425,7 +425,7 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, passwordReset } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     passwordReset('reset_token','new_password')
@@ -537,7 +537,7 @@ To learn more about setting up auth providers, see
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readProviders } from '@directus/sdk/rest';
-const client = createDirectus('directus_project_url').with(rest())
+const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     readProviders()
