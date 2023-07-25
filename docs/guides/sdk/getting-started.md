@@ -9,7 +9,8 @@ Learn how to use the new Directus JavaScript SDK to easily access and manipulate
 
 ::: info Older SDK Documentation
 
-You can find the SDK reference for older versions (prior to v11) [here](/reference/old-sdk). Version 11 introduced a complete rewrite, and was released in July 2023.
+You can find the SDK reference for older versions (prior to v11) [here](/reference/old-sdk). Version 11 introduced a
+complete rewrite, and was released in July 2023.
 
 :::
 
@@ -31,7 +32,8 @@ npm install @directus/sdk
 
 ## Basic Usage
 
-Create a Directus client using the `createDirectus` hook from `@directus/sdk`. The client gives you access to your Directus project and data.
+Create a Directus client using the `createDirectus` hook from `@directus/sdk`. The client gives you access to your
+Directus project and data.
 
 ```js
 import { createDirectus } from '@directus/sdk';
@@ -41,14 +43,16 @@ const client = createDirectus('http://directus.example.com');
 
 ## Creating a Composable Client
 
-The Directus SDK is a "Composable Client" that allows you to customize and build a client with the
-specific features you need. The client starts as an empty wrapper without any functionality. To add features, use the following composables:
+The Directus SDK is a "Composable Client" that allows you to customize and build a client with the specific features you
+need. The client starts as an empty wrapper without any functionality. To add features, use the following composables:
 
 - `rest()`: REST request functions, adds `.request(...)` to the client.
 - `graphql()`: GraphQL request functions, adds `.query(...)` to the client.
-- `authentication()`: Authentication functions including refresh logic, adds `.login(...)`, `.logout()`, and .`refresh()` to the client.
+- `authentication()`: Authentication functions including refresh logic, adds `.login(...)`, `.logout()`, and
+  .`refresh()` to the client.
 - `staticToken()`: Authentication functions for static tokens.
-- `realtime()`: WebSocket connectivity, adds `.subscribe(...)`, `.sendMessage(...)` and `.onWebSocket(...)` to the client.
+- `realtime()`: WebSocket connectivity, adds `.subscribe(...)`, `.sendMessage(...)` and `.onWebSocket(...)` to the
+  client.
 
 For example, to create a client with REST or GraphQL support, use the following:
 
@@ -87,9 +91,12 @@ const client = createDirectus<Schema>('http://directus.example.com').with(rest()
 // Client with GraphQL support
 const client = createDirectus<Schema>('http://directus.example.com').with(graphql());
 ```
+
 :::
 
-If using TypeScript, you need to provide a `Schema` when creating a Directus client to make use of type hinting and completion. This schema contains definitions for each collection and provides you with type hints (on input) and completion (on output). 
+If using TypeScript, you need to provide a `Schema` when creating a Directus client to make use of type hinting and
+completion. This schema contains definitions for each collection and provides you with type hints (on input) and
+completion (on output).
 
 ## Authentication
 
@@ -217,8 +224,14 @@ const result = await client.query<Article[]>(`
 `);
 ```
 
+:::tip Importing SDK Composables
+
+All SDK composables can also be conveniently imported from the root package `@directus/sdk`.
+
+:::
+
 ## Next Steps
 
-You can find code examples using the Directus SDK throughout our [API reference](/reference/items). 
+You can find code examples using the Directus SDK throughout our [API reference](/reference/items).
 
-You can also find an auto-generated [TypeDoc of the new SDK](</packages/@directus/SDK/>).
+You can also find an auto-generated [TypeDoc of the new SDK](/packages/@directus/SDK/).
