@@ -110,7 +110,7 @@ describe('Flows Schedule Hook Tests', () => {
 				}
 			};
 
-			// Fetch log output of all instances
+			// Process logs of all instances
 			for (const instance of directusInstances[vendor]) {
 				// Discard data up to this point
 				instance.stdout?.read();
@@ -130,7 +130,7 @@ describe('Flows Schedule Hook Tests', () => {
 				.send({ status: 'inactive' })
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-			// Stop fetching log output
+			// Stop processing logs
 			for (const instance of directusInstances[vendor]) {
 				instance.stdout?.off('data', processLogLine);
 			}
