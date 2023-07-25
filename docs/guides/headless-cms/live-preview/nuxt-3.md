@@ -31,7 +31,8 @@ You will need:
 
 If you're just getting started with Nuxt and Directus, reference our
 [guide](/guides/headless-cms/build-static-website/nuxt-3.html) to set up Nuxt 3 with Directus by creating a custom
-plugin. This guide assumes you have already set up the plugin and have access to `this.$directus`, `this.$readItem` and `this.$readItems` in your project.
+plugin. This guide assumes you have already set up the plugin and have access to `this.$directus`, `this.$readItem` and
+`this.$readItems` in your project.
 
 In your Directus project, create a new `posts` collection. Add `title` and `content` fields to your collection. Create
 an item in the new collection, and make sure the Public role has Read access to the collection.

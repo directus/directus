@@ -430,7 +430,7 @@ function sidebar() {
 			items: [
 				{
 					text: 'JavaScript SDK',
-					link: '/guides/sdk/getting-started'
+					link: '/guides/sdk/getting-started',
 				},
 				{
 					text: 'Flows',
