@@ -357,6 +357,7 @@ stylization
 subdirectory
 subfolder
 substring
+(S|s)upabase
 SuperAdmins?
 superset
 Superset
