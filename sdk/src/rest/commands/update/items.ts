@@ -62,7 +62,7 @@ export const updateItem =
 		const _collection = String(collection);
 
 		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readItems for core collections');
+			throw new Error('Cannot use updateItem for core collections');
 		}
 
 		return {

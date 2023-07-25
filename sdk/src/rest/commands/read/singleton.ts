@@ -28,7 +28,7 @@ export const readSingleton =
 		const _collection = String(collection);
 
 		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readItems for core collections');
+			throw new Error('Cannot use readSingleton for core collections');
 		}
 
 		return {

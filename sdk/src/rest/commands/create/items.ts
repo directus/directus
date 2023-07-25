@@ -26,7 +26,7 @@ export const createItems =
 		const _collection = String(collection);
 
 		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readItems for core collections');
+			throw new Error('Cannot use createItems for core collections');
 		}
 
 		return {
@@ -56,7 +56,7 @@ export const createItem =
 		const _collection = String(collection);
 
 		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readItems for core collections');
+			throw new Error('Cannot use createItem for core collections');
 		}
 
 		return {

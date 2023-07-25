@@ -19,7 +19,7 @@ export const deleteItems =
 		const _collection = String(collection);
 
 		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readItems for core collections');
+			throw new Error('Cannot use deleteItems for core collections');
 		}
 
 		return {
@@ -46,7 +46,7 @@ export const deleteItem =
 		const _collection = String(collection);
 
 		if (_collection.startsWith('directus_')) {
-			throw new Error('Cannot use readItems for core collections');
+			throw new Error('Cannot use deleteItem for core collections');
 		}
 
 		return {
