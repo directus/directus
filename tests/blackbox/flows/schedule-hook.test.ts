@@ -110,7 +110,7 @@ describe('Flows Schedule Hook Tests', () => {
 
 				if (logLine.includes(logPrefix)) {
 					// Start timer as soon as first flow run has been executed
-					if (!sleepIsRunning) {
+					if (!sleepIsRunning()) {
 						sleepStart();
 					}
 

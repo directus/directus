@@ -7,18 +7,22 @@ export function sleep(ms: number) {
 }
 
 export function delayedSleep(ms: number) {
-	let sleepIsRunning = false;
+	let isRunning = false;
 	let resolve: (value?: unknown) => void;
 
 	const sleep = new Promise((r) => {
 		resolve = r;
 	});
 
+	const sleepIsRunning = () => {
+		return isRunning;
+	};
+
 	const sleepStart = () => {
-		sleepIsRunning = true;
+		isRunning = true;
 
 		const timeout = setTimeout(() => {
-			sleepIsRunning = false;
+			isRunning = false;
 			resolve();
 		}, ms);
 
