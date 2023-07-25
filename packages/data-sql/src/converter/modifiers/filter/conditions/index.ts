@@ -1,5 +1,5 @@
 import type { AbstractQueryConditionNode } from '@directus/data';
-import type { AbstractSqlQuery } from '../../../../types.js';
+import type { AbstractSqlQuery } from '../../../../types/index.js';
 import { convertFieldCondition } from './field.js';
 import { convertGeoCondition } from './geo.js';
 import { convertLetterNode } from './letter.js';

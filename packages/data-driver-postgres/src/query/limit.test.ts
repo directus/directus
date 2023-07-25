@@ -30,7 +30,7 @@ test('Empty parametrized statement when limit is not defined', () => {
 });
 
 test('Returns limit part with one parameter', () => {
-	sample.statement.limit = { parameterIndex: 0 };
+	sample.statement.limit = { type: 'value', parameterIndex: 0 };
 	sample.statement.parameters = [randomInteger(1, 100)];
 
 	expect(limit(sample.statement)).toStrictEqual(`LIMIT $1`);

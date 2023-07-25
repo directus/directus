@@ -1,5 +1,5 @@
 import type { AbstractQueryNodeLogical } from '@directus/data';
-import type { AbstractSqlQuery } from '../../../types.js';
+import type { AbstractSqlQuery } from '../../../types/index.js';
 import { convertFilter } from './index.js';
 
 export function convertLogical(

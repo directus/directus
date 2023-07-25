@@ -1,5 +1,5 @@
 import type { ConditionNumberNode } from '@directus/data';
-import type { AbstractSqlQuery } from '../../../../types.js';
+import type { AbstractSqlQuery } from '../../../../types/index.js';
 import { convertTarget } from './utils.js';
 
 export function convertNumberNode(

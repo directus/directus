@@ -1,4 +1,4 @@
-import type { AbstractSqlQueryJoinNode } from '../../types.js';
+import type { AbstractSqlQueryJoinNode } from '../../types/index.js';
 
 export const createJoin = (
 	currentCollection: string,

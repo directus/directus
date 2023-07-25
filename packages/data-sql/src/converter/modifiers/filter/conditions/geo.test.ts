@@ -2,7 +2,7 @@ import type { ConditionGeoIntersectsBBoxNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { GeoJSONGeometry } from 'wellknown';
-import type { AbstractSqlQueryConditionNode } from '../../../../types.js';
+import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter.js';
 import { parameterIndexGenerator } from '../../../../utils/param-index-generator.js';
 import { convertGeoCondition } from './geo.js';
 

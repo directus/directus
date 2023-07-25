@@ -1,6 +1,6 @@
 import type { AbstractQuery, AbstractQueryFieldNodePrimitive } from '@directus/data';
 import { beforeEach, expect, test } from 'vitest';
-import type { AbstractSqlQuery } from '../types.js';
+import type { AbstractSqlQuery } from '../types/index.js';
 import { convertAbstractQueryToAbstractSqlQuery } from './index.js';
 import { randomIdentifier, randomInteger } from '@directus/random';
 

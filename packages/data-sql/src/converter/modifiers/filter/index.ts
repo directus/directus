@@ -1,5 +1,5 @@
 import type { AbstractQueryFilterNode, AbstractQueryConditionNode } from '@directus/data';
-import type { AbstractSqlQuery } from '../../../types.js';
+import type { AbstractSqlQuery } from '../../../types/index.js';
 import { convertCondition } from './conditions/index.js';
 import { convertLogical } from './logical.js';
 

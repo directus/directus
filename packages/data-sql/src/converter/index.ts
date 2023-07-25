@@ -1,5 +1,5 @@
 import type { AbstractQuery } from '@directus/data';
-import type { AbstractSqlQuery } from '../types.js';
+import type { AbstractSqlQuery } from '../types/index.js';
 import { parameterIndexGenerator } from '../utils/param-index-generator.js';
 import { convertFilter, convertSort } from './modifiers/index.js';
 import { convertNodes } from './nodes/index.js';
@@ -24,12 +24,12 @@ export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQu
 	}
 
 	if (abstractQuery.modifiers?.limit) {
-		statement.limit = { parameterIndex: idGen.next().value };
+		statement.limit = { type: 'value', parameterIndex: idGen.next().value };
 		statement.parameters.push(abstractQuery.modifiers.limit.value);
 	}
 
 	if (abstractQuery.modifiers?.offset) {
-		statement.offset = { parameterIndex: idGen.next().value };
+		statement.offset = { type: 'value', parameterIndex: idGen.next().value };
 		statement.parameters.push(abstractQuery.modifiers.offset.value);
 	}
 
