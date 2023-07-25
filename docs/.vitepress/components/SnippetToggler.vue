@@ -35,7 +35,6 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue';
-import { selectedSynced } from './snippetTogglerStore.js';
 
 const props = defineProps<{
 	choices: string[];
@@ -67,14 +66,7 @@ onBeforeMount(() => {
 	}
 
 	watch(selected, (value) => {
-		selectedSynced.value = value;
 		setStorageValue(value);
-	});
-
-	watch(selectedSynced, (value) => {
-		if (value && props.choices.includes(value)) {
-			selected.value = value;
-		}
 	});
 });
 </script>
