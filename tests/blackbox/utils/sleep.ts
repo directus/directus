@@ -7,8 +7,7 @@ export function sleep(ms: number) {
 }
 
 export function delayedSleep(ms: number) {
-	let isRunning = false;
-	let done = false;
+	let hasStarted = false;
 	let resolve: (value?: unknown) => void;
 
 	const sleep = new Promise((r) => {
@@ -16,22 +15,20 @@ export function delayedSleep(ms: number) {
 	});
 
 	const sleepStart = () => {
-		if (done) {
+		if (hasStarted) {
 			return;
 		}
 
-		isRunning = true;
+		hasStarted = true;
 
 		setTimeout(() => {
-			isRunning = false;
-			done = true;
 			resolve();
 		}, ms);
 	};
 
-	const sleepIsRunning = () => {
-		return isRunning;
+	const sleepHasStarted = () => {
+		return hasStarted;
 	};
 
-	return { sleep, sleepStart, sleepIsRunning };
+	return { sleep, sleepStart, sleepHasStarted };
 }
