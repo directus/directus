@@ -6,3 +6,5 @@ export interface AbstractSqlQueryOrderNode extends AbstractSqlQueryNode {
 	orderBy: AbstractQueryNodeSortTargets;
 	direction: 'ASC' | 'DESC';
 }
+
+export * from './filter.js';

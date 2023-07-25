@@ -4,8 +4,11 @@
  * @module
  */
 import type { GeoJSONGeometry } from 'wellknown';
-import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from './modifiers/filter.js';
-import type { AbstractSqlQueryOrderNode } from './modifiers/order.js';
+import type {
+	AbstractSqlQueryConditionNode,
+	AbstractSqlQueryLogicalNode,
+	AbstractSqlQueryOrderNode,
+} from './modifiers/index.js';
 import type { AbstractSqlQueryFnNode, AbstractSqlQueryJoinNode, AbstractSqlQuerySelectNode } from './nodes.js';
 
 /**
@@ -87,3 +90,6 @@ export interface ParameterizedSqlStatement {
 	statement: string;
 	parameters: ParameterTypes[];
 }
+
+export * from './nodes.js';
+export * from './modifiers/index.js';
