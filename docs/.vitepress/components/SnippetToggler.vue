@@ -59,7 +59,11 @@ const { getStorageValue, setStorageValue } = useStorage('toggler-value');
 onBeforeMount(() => {
 	const value = getStorageValue();
 
-	selected.value = value || props.choices[0];
+	if (value && props.choices.includes(value)) {
+		selected.value = value;
+	} else {
+		selected.value = props.choices[0];
+	}
 
 	watch(selected, (value) => {
 		setStorageValue(value);
