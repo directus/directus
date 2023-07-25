@@ -89,7 +89,7 @@ const client = createDirectus<Schema>('http://directus.example.com').with(graphq
 ```
 :::
 
-If using TypeScript, you must provide a `Schema` when creating a Directus client. This schema contains definitions for each collection and provides you with type hints (on input) and completion (on output). 
+If using TypeScript, you need to provide a `Schema` when creating a Directus client to make use of type hinting and completion. This schema contains definitions for each collection and provides you with type hints (on input) and completion (on output). 
 
 ## Authentication
 
