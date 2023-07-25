@@ -595,7 +595,7 @@ To learn more about setting up auth providers, see
 
 ### Request
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" label="API">
 <template #rest>
 
 `GET /auth`
@@ -621,9 +621,6 @@ To learn more about setting up auth providers, see
 	"disableDefault": false
 }
 ```
-
-</template>
-<template #graphql>
 
 </template>
 <template #sdk>
@@ -651,7 +648,7 @@ Whether or not the default authentication provider is disabled.
 
 ### Example
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'SDK']" label="API">
 <template #rest>
 
 `GET /auth`
@@ -677,9 +674,6 @@ Whether or not the default authentication provider is disabled.
 	"disableDefault": false
 }
 ```
-
-</template>
-<template #graphql>
 
 </template>
 <template #sdk>
