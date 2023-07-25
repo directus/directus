@@ -240,11 +240,12 @@ export class DriverCloudinary implements Driver {
 			type: 'upload',
 			access_mode: this.accessMode,
 			public_id: this.getPublicId(fullPath),
-			...(folderPath ? {
-					asset_folder: folderPath,
-					use_asset_folder_as_public_id_prefix: 'true'
-				} : {}
-			)
+			...(folderPath
+				? {
+						asset_folder: folderPath,
+						use_asset_folder_as_public_id_prefix: 'true',
+				  }
+				: {}),
 		};
 
 		const signature = this.getFullSignature(uploadParameters);
@@ -361,8 +362,6 @@ export class DriverCloudinary implements Driver {
 		const folderPath = this.getFolderPath(fullPath);
 		const url = `https://api.cloudinary.com/v1_1/${this.cloudName}/${resourceType}/destroy`;
 
-		console.log(filepath, fullPath, folderPath, publicId);
-
 		const parameters = {
 			timestamp: this.getTimestamp(),
 			api_key: this.apiKey,
@@ -419,10 +418,8 @@ export class DriverCloudinary implements Driver {
 
 			for (const file of json.resources) {
 				const filename = file.public_id.substring(this.root.length);
-				if (file.resource_type === 'image' || file.resource_type === 'video')
-					yield `${filename}.${file.format}`;
-				else
-					yield filename;
+				if (file.resource_type === 'image' || file.resource_type === 'video') yield `${filename}.${file.format}`;
+				else yield filename;
 			}
 		} while (nextCursor);
 	}
