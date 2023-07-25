@@ -10,8 +10,8 @@ export default defineConfig({
 	ignoreDeadLinks: true,
 	markdown: {
 		theme: {
-			light: 'material-theme-lighter',
-			dark: 'material-theme-palenight',
+			light: 'github-light',
+			dark: 'github-dark',
 		},
 		toc: {
 			level: [2],
