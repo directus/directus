@@ -123,17 +123,17 @@ describe('Flows Schedule Hook Tests', () => {
 				.send({ status: 'active' })
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-			await sleep(10000);
-
-			await request(getUrl(vendor, env))
-				.patch(`/flows/${flowId}`)
-				.send({ status: 'inactive' })
-				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+			await sleep(11000);
 
 			// Stop processing logs
 			for (const instance of directusInstances[vendor]) {
 				instance.stdout?.off('data', processLogLine);
 			}
+
+			await request(getUrl(vendor, env))
+				.patch(`/flows/${flowId}`)
+				.send({ status: 'inactive' })
+				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
 			const redisExecutionCount = flowExecutions.filter((execution) => execution.includes('redis-')).length;
 			const memoryExecutionCount = flowExecutions.filter((execution) => execution.includes('memory-')).length;
