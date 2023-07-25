@@ -9,23 +9,6 @@ pageClass: page-reference
 > Most Directus API Endpoint operations can be manipulated with the following parameters. It is important to understand
 > them to get the most out of the platform.
 
-- [Fields](#fields)
-- [Filter](#filter)
-- [Search](#search)
-- [Sort](#sort)
-- [Limit](#limit)
-- [Offset](#offset) / [Page](#page)
-- [Aggregation & Grouping](#aggregation-grouping)
-- [Deep](#deep)
-- [Aliases](#aliases)
-- [Export](#export)
-- [Functions](#functions)
-- [Metadata](#metadata)
-  - [Total Count](#total-count)
-  - [Filter Count](#filter-count)
-
----
-
 ## Fields
 
 Choose the fields that are returned in the current dataset. This parameter supports dot notation to request nested
@@ -76,7 +59,8 @@ sections.item:videos.source
 
 In GraphQL, this can be achieved using Union Types.
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?fields=title,body,featured_image.*
@@ -88,11 +72,29 @@ In GraphQL, this can be achieved using Union Types.
 &fields[]=featured_image.*
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-_Natively supported in GraphQL_
+` // Natively supported in GraphQL`
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		fields: ['title', 'date_created', { authors: ['name'] }],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Filter
 
@@ -151,7 +153,8 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?filter[first_name][_eq]=Rijk
@@ -161,7 +164,8 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 ?filter={ "first_name": { "_eq": "Rijk" }}
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -171,7 +175,28 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		filter: {
+			status: {
+				_eq: 'draft',
+			},
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ::: tip Filtering M2A fields
 
@@ -184,7 +209,8 @@ query {
 	articles(
 		filter: {
 			sections: {
-				item__headings: { # Instead of: item:headings
+				item__headings: {
+					# Instead of: item:headings
 					title: { _eq: "Section 1" }
 				}
 			}
@@ -208,13 +234,13 @@ root item's fields, related item fields are not included.
 Find all items that mention Directus\
 `Directus`
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-```
-?search=Directus
-```
+`?search=Directus`
 
-### GraphQL
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -224,7 +250,24 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		search: 'foobar',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Sort
 
@@ -243,7 +286,8 @@ Sort by a "sort" field, followed by publish date descending\
 Sort by a "sort" field, followed by a nested author's name\
 `sort, -author.name`
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?sort=sort,-date_created,author.name
@@ -255,7 +299,8 @@ Sort by a "sort" field, followed by a nested author's name\
 &sort[]=-author.name
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -265,7 +310,24 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		sort: '-date_created', //Sort by creation date descending
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Limit
 
@@ -286,13 +348,13 @@ with caution.
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-```
-?limit=200
-```
+`?limit=200`
 
-### GraphQL
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -302,7 +364,24 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		limit: 3,
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Offset
 
@@ -313,13 +392,13 @@ Skip the first `n` items in the response. Can be used for pagination.
 Get items 101—200\
 `100`
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-```
-?offset=100
-```
+`?offset=100`
 
-### GraphQL
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -329,7 +408,24 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		offset: 5,
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Page
 
@@ -344,13 +440,13 @@ Get items 1-100\
 Get items 101-200\
 `2`
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-```
-?page=2
-```
+`?page=2`
 
-### GraphQL
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -360,7 +456,24 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		page: 1,
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Aggregation & Grouping
 
@@ -389,7 +502,8 @@ value. This allows for things like _"Average rating per month"_ or _"Total sales
 The `groupBy` query allows for grouping on multiple fields simultaneously. Combined with the [Functions](#functions),
 this allows for aggregate reporting per year-month-date.
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?aggregate[avg]=cost
@@ -397,7 +511,8 @@ this allows for aggregate reporting per year-month-date.
 &groupBy[]=year(publish_date)
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -410,7 +525,25 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, aggregate } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	aggregate('articles', {
+		aggregate: { count: '*' },
+		groupBy: 'authors',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Deep
 
@@ -442,7 +575,8 @@ Only get 3 related articles, with only the top rated comment nested
 }
 ```
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?deep[translations][_filter][languages_code][_eq]=en-US
@@ -452,9 +586,10 @@ Only get 3 related articles, with only the top rated comment nested
 ?deep={ "translations": { "_filter": { "languages_code": { "_eq": "en-US" }}}}
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-_Natively supported in GraphQL:_
+` // Natively supported in GraphQL`
 
 ```graphql
 query {
@@ -469,7 +604,30 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		filter: {
+			authors: {
+				name: {
+					_eq: 'John',
+				},
+			},
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Aliases
 
@@ -482,7 +640,8 @@ Alias for nested fields, f.e. `field.nested`, will not work.
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?alias[all_translations]=translations
@@ -490,7 +649,8 @@ Alias for nested fields, f.e. `field.nested`, will not work.
 &deep[dutch_translations][_filter][code][_eq]=nl-NL
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
 _Natively supported in GraphQL:_
 
@@ -508,7 +668,36 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		alias: {
+			all_translations: 'translations',
+			dutch_translations: 'translations',
+		},
+		deep: {
+			dutch_translations: {
+				_filter: {
+					code: {
+						_eq: 'nl-NL',
+					},
+				},
+			},
+		},
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Export
 
@@ -516,7 +705,8 @@ Save the current API response to a file.
 
 Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?export=csv
@@ -525,11 +715,20 @@ Saves the API response to a file. Accepts one of `csv`, `json`, `xml`, `yaml`.
 ?export=yaml
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-n/a
+`// Not Applicable`
 
----
+</template>
+<template #sdk>
+
+```js
+// Not Applicable
+```
+
+</template>
+</SnippetToggler>
 
 ## Functions
 
@@ -568,14 +767,16 @@ function name as the nested field (see the example that follows).
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?fields=id,title,weekday(date_published)
 &filter[year(date_published)][_eq]=2021
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -589,7 +790,24 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		fields: ['month(date_created)'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Metadata
 
@@ -613,7 +831,8 @@ For more details, see: [Aggregation & Grouping](#aggregation-grouping)
 
 :::
 
-### REST API
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```
 ?meta=total_count
@@ -623,9 +842,10 @@ For more details, see: [Aggregation & Grouping](#aggregation-grouping)
 ?meta=*
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
+```graphql
 query {
 	articles_aggregated {
 		count {
@@ -634,3 +854,13 @@ query {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+// Not applicable, use aggregate()
+```
+
+</template>
+</SnippetToggler>

@@ -123,3 +123,11 @@
 	from = "/cloud/*"
 	to = "/user-guide/cloud/:splat"
 	status = 301
+
+#####
+##### SDK
+#####
+
+[[redirects]]
+	from = "/reference/sdk"
+	to = "/guides/sdk/getting-started"

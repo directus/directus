@@ -8,42 +8,27 @@ pageClass: page-reference
 
 > Utilities are the various helper endpoints located within the API.
 
----
-
 ## Generate a Hash
 
 Generate a hash for a given string.
 
-### Request Body
+### Request
 
-`string` **Required**\
-String to hash.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-Hashed string.
-
-### REST API
-
-```
-POST /utils/hash/generate
-```
-
-##### Example
+`POST /utils/hash/generate`
 
 ```json
-// POST /utils/hash/generate
-
 {
-	"string": "Hello World!"
+	"string": "hash"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -51,7 +36,45 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, generateHash } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(generateHash('string'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`string` **Required**\
+String to hash.
+
+### Response
+
+Hashed string.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /utils/hash/generate`
+
+```json
+{
+	"string": "Hello World!"
+}
+```
+
+</template>
+<template #graphql>
 
 ```graphql
 mutation {
@@ -59,46 +82,43 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, generateHash } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(generateHash('test string to hash'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Verify a Hash
 
 Verify a string with a hash.
 
-### Request Body
+### Request
 
-`string` **Required**\
-Source string.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-`hash` **Required**\
-Hash you want to verify against.
-
-### Returns
-
-Boolean.
-
-### REST API
-
-```
-POST /utils/hash/verify
-```
-
-##### Example
+`POST /utils/hash/verify`
 
 ```json
-// POST /utils/hash/verify
-
 {
-	"string": "Hello World!",
-	"hash": "$arg...fEfM"
+	"string": "test_string",
+	"hash": "hash"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -106,11 +126,121 @@ type Mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, verifyHash } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(verifyHash('string_to_verify', 'hash'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`string` **Required**\
+Source string.
+
+`hash` **Required**\
+Hash you want to verify against.
+
+### Response
+
+Boolean.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /utils/hash/verify`
+
+```json
+{
+	"string": "Hello World!",
+	"hash": "$arg...fEfM"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	utils_hash_verify(hash: "$arg...fEfM", string: "Hello World!")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, verifyHash } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	verifyHash(
+		'test_string',
+		'$argon2id$v=19$m=65536,t=3,p=4$c81PPca80cdIbclXlL1PFg$+EKJsuXlkleP2wFGsEmA7Xu56wEqVKHeDXRrTLIAoJg'
+	)
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Manually Sort Items in Collection
 
 If a collection has a sort field, this util can be used to move items in that manual order.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /utils/sort/articles`
+
+```json
+{
+	"item": "id_item_to_move",
+	"to": "id_item_moving_to"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	utils_sort(collection: String!, item: ID!, to: ID!): Boolean
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilitySort } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(utilitySort('collection_name', 'id_item_to_move', 'id_item_moving_to'));
+```
+
+</template>
+</SnippetToggler>
 
 ### Request Body
 
@@ -120,40 +250,28 @@ Primary key of the item you're moving in the collection.
 `to` **Required**\
 Primary key of the item you're moving the source item too.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-POST /utils/sort/:collection
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /utils/sort/articles`
 
 ```json
-// POST /utils/sort/articles
-
 {
 	"item": 16,
 	"to": 51
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	utils_sort(collection: String!, item: ID!, to: ID!): Boolean
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -161,92 +279,79 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilitySort } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(utilitySort('things', '2', '4'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Import Data from File
 
-Import multiple records from a JSON or CSV file into a collection. Relies on a `multipart/form-data` encoded request,
-just like regular file uploads. Check [Upload a File](/reference/files#upload-a-file) for more information.
+Import multiple records from a JSON or CSV file into a collection.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /utils/import/:collection`
+
+Body must be formatted as a `multipart/form-data` with a `file` property.
+
+</template>
+<template #graphql>
+
+`// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilsImport } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const formData = new FormData();
+formData.append('file', raw_file);
+
+const result = await client.request(utilsImport(formData));
+```
+
+</template>
+</SnippetToggler>
 
 The import endpoint expects the file structure to match [the export query parameter](/reference/query#export). For JSON,
 this is an array of objects, where every object is an item. For CSV, the first line has to be the columns header.
 
-### Request Body
+#### Request Body
 
 Send the file in a `multipart/form-data` request. See [Upload a File](/reference/files#upload-a-file) for more
 information.
 
-### Returns
+### Response
 
 Empty body.
-
-### REST API
-
-```
-POST /utils/import/:collection
-```
-
-##### Example
-
-```
-POST /utils/import/articles
-
-Content-Type: multipart/form-data; charset=utf-8; boundary=__X_BOUNDARY__
-Content-Length: 3442422
-
---__X_BOUNDARY__
-Content-Disposition: form-data; name="file"; filename="articles.csv"
-Content-Type: text/csv
-
-"id","title","another","created_by"
-1,"My First Articled","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-2,"My Second Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-3,"My Updated Third Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-4,"My Fourth Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-5,"My Fifth Article","abc","506385A2-E444-4AE2-A860-F00957A62C8A"
-...
-```
-
-### GraphQL
-
-n/a
-
----
 
 ## Export Data to a File
 
 Export a larger data set to a file in the File Library
 
-### Query Parameters
+### Request
 
-Doesn't use any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-`format` **Required**\
-What file format to save the export to. One of `csv`, `json`, `xml`, `yaml`.
-
-`query` **Required**\
-The query object to use for the export. Supports the [global query parameters](/reference/query).
-
-`file` **File Object**\
-Partial file object to tweak where / how the export file is saved.
-
-### Returns
-
-Empty body
-
-### REST API
-
-```
-POST /utils/export/:collection
-```
-
-##### Example
-
-```
-POST /utils/export/articles
-```
+`POST /utils/export/:collection`
 
 ```json
 {
@@ -263,34 +368,156 @@ POST /utils/export/articles
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-n/a
+`// Not currently available in GraphQL`
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilsExport } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	utilsExport(
+		'collection_name',
+		'file_format',
+		{
+			query_type: {
+				field: {
+					query_operation: 'value',
+				},
+			},
+		},
+		{
+			file: {
+				file_field: 'value',
+			},
+		}
+	)
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Doesn't use any query parameters.
+
+#### Request Body
+
+`format` **Required**\
+What file format to save the export to. One of `csv`, `json`, `xml`, `yaml`.
+
+`query` **Required**\
+The query object to use for the export. Supports the [global query parameters](/reference/query).
+
+`file` **File Object**\
+Partial file object to tweak where / how the export file is saved.
+
+### Response
+
+Empty body
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /utils/export/articles`
+
+```json
+{
+	"query": {
+		"filter": {
+			"status": {
+				"_eq": "published"
+			}
+		}
+	},
+	"file": {
+		"folder": "34e95c19-cc50-42f2-83c8-b97616ac2390"
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, utilsExport } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	utilsExport(
+		'articles',
+		'json',
+		{
+			filter: {
+				status: {
+					_eq: 'published',
+				},
+			},
+		},
+		{
+			file: {
+				folder: '34e95c19-cc50-42f2-83c8-b97616ac2390',
+			},
+		}
+	)
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Clear the Internal Cache
 
 Resets both the data and schema cache of Directus. This endpoint is only available to admin users.
 
-### Request Body
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-n/a
+`POST /utils/cache/clear`
 
-### Returns
+</template>
+<template #graphql>
 
-Empty body
-
-### REST API
-
-```
-POST /utils/cache/clear
-```
-
-### GraphQL
+`POST /graphql/system`
 
 ```graphql
 mutation {
 	utils_cache_clear
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, clearCache } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(clearCache());
+```
+
+</template>
+</SnippetToggler>
+
+### Returns
+
+Empty body

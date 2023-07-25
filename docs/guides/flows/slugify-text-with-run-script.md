@@ -11,7 +11,7 @@ author: Eron Powell
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -29,7 +29,7 @@ English text.
 
 ## The Recipe
 
-:::tip Requirements
+::: tip Requirements
 
 You'll need a string somewhere in your [data chain](/app/flows#data-chains).
 

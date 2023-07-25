@@ -11,7 +11,7 @@ description:
 
 You should have [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
-:::info What Is Docker?
+::: info What Is Docker?
 
 Docker is a developer tool that allows software-creators to distribute their work along with all dependencies and
 required environment settings. This means that applications can run reliably and consistently, making it the perfect way
@@ -72,4 +72,5 @@ Run the following in your terminal:
 docker compose up
 ```
 
-Directus should now be available at http://localhost:8055 or http://127.0.0.1:8055
+Directus should now be available at <a href="http://localhost:8055" target="_blank">http://localhost:8055</a> or
+<a href="http://127.0.0.1:8055" target="_blank">http://127.0.0.1:8055</a>

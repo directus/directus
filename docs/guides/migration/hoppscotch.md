@@ -11,7 +11,7 @@ author: Kevin Lewis
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 **Directus Version:** {{$frontmatter.directus_version}}
 

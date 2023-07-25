@@ -9,8 +9,6 @@ pageClass: page-reference
 > Permissions are assigned to Roles, and control data access throughout the platform.
 > [Learn more about Permissions](/user-guide/overview/glossary#permissions).
 
----
-
 ## The Permission Object
 
 `id` **uuid**\
@@ -56,8 +54,6 @@ What fields the user is allowed to alter.
 }
 ```
 
----
-
 ## List Permissions
 
 List all permissions that exist in Directus.
@@ -69,29 +65,19 @@ other than the current user's role won't be returned.
 
 :::
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /permissions`
 
-An array of up to [limit](/reference/query#limit) [permission objects](#the-permission-object). If no items are
-available, data will be an empty array.
+`SEARCH /permissions`
 
-### REST API
+</template>
+<template #graphql>
 
-```
-GET /permissions
-SEARCH /permissions
-```
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -99,7 +85,49 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPermissions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPermissions({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [permission objects](#the-permission-object). If no items are
+available, data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /permissions`
+
+`SEARCH /permissions`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -111,56 +139,40 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPermissions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPermissions({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a Permission
 
 List an existing permission by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /permissions/:id`
 
-Returns the requested [permission object](#the-permission-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /permissions/:id
-```
-
-##### Example
-
-```json
-// GET /permissions/34
-
-{
-	"data": {
-		"id": 34,
-		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
-		"collection": "pages",
-		"action": "create",
-		"permissions": null,
-		"validation": {
-			"title": {
-				"_contains": "Directus"
-			}
-		},
-		"presets": {
-			"published": false
-		},
-		"fields": ["title", "translations"]
-	}
-}
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -168,7 +180,44 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPermission } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPermission('41', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [permission object](#the-permission-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /permissions/34`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -180,35 +229,97 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readPermission } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPermission('41', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a Permission Rule
 
 Create a new permission rule
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /permissions`
+
+```json
+{
+	"permission_field_1": "value_1",
+	"permission_field_2": "value_2",
+	"permission_field_3": "value_3",
+	"permission_field_4": ["value_4", "value_5"]
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_permissions_item(data: create_directus_permissions_input!): directus_permissions
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPermission } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createPermission({
+		role: 'role_id',
+		collection: 'collection_name',
+		action: 'action_name',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 A partial [permissions object](#the-permission-object). `action` and `collection` are required.
 
-### Returns
+### Response
 
 Returns the [permission object](#the-permission-object) for the created permission.
 
-### REST API
+### Example
 
-```
-POST /permissions
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /permissions`
 
 ```json
-// Request
-
 {
 	"collection": "pages",
 	"action": "read",
@@ -217,19 +328,10 @@ POST /permissions
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_permissions_item(data: create_directus_permissions_input!): directus_permissions
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -243,35 +345,115 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPermission } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createPermission({
+		role: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+		collection: 'articles',
+		action: 'delete',
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create Multiple Permission Rules
 
 Create multiple new permission rules
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /permissions`
+
+```json
+[
+	{
+		"permission_object_1_field_1": "value_1",
+		"permission_object_1_field_2": "value_2",
+		"permission_object_1_field_3": "value_3",
+		"permission_object_1_field_4": ["value_4", "value_5"]
+	},
+	{
+		"permission_object_2_field_1": "value_6",
+		"permission_object_2_field_2": "value_7",
+		"permission_object_2_field_3": "value_8",
+		"permission_object_2_field_4": ["value_9", "value_10"]
+	}
+]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_permissions_items(data: [create_directus_permissions_input!]!): [directus_permissions]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPermissions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createPermissions([
+		{
+			role: 'role_id',
+			collection: 'collection_name',
+			action: 'action_name',
+		},
+		{
+			role: 'role_id',
+			collection: 'collection_name',
+			action: 'action_name',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [permissions objects](#the-permission-object). `action` and `collection` are required.
 
-### Returns
+### Response
 
 Returns the [permission objects](#the-permission-object) for the created permissions.
 
-### REST API
+### Example
 
-```
-POST /permissions
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /permissions`
 
 ```json
-// Request
-
 [
 	{
 		"collection": "pages",
@@ -288,19 +470,10 @@ POST /permissions
 ]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_permissions_items(data: [create_directus_permissions_input!]!): [directus_permissions]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -317,45 +490,57 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createPermissions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createPermissions([
+		{
+			role: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+			collection: 'articles',
+			action: 'delete',
+			fields: ['*'],
+		},
+		{
+			role: '39a178f6-d4d6-40e1-b0e7-ec6daaac8747',
+			collection: 'articles',
+			action: 'update',
+			fields: ['*'],
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Permissions
 
 Update an existing permissions rule.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-A partial [permissions object](#the-permission-object).
-
-### Returns
-
-Returns the [permission object](#the-permission-object) for the updated permission.
-
-### REST API
-
-```
-PATCH /permissions/:id
-```
-
-##### Example
+`PATCH /permissions/:id`
 
 ```json
-// PATCH /permissions/34
-
 {
-	"fields": ["id", "title", "body"]
+	"permissions_object_fields": ["value_1", "value_2", "value_3"]
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -363,7 +548,52 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePermission } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updatePermission('permission_id', {
+		permission_field: ['value_1', 'value_2'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [permissions object](#the-permission-object).
+
+### Response
+
+Returns the [permission object](#the-permission-object) for the updated permission.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /permissions/34`
+
+```json
+{
+	"fields": ["id", "title", "body"]
+}
+```
+
+</template>
+<template #graphql>
 
 ```graphql
 mutation {
@@ -375,19 +605,80 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePermission } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updatePermission('57', {
+		fields: ['title', 'body'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Permissions
 
 Update multiple existing permissions rules.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /permissions`
+
+```json
+{
+	"keys": ["permission_1_key", "permission_2_key"],
+	"data": {
+		"permissions_object_fields": ["value_1", "value_2", "value_3"]
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePermissions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updatePermissions(['permission_1_id', 'permission_2_id'], {
+		permission_field: ['value_1', 'value_2'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
-
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the permissions you'd like to update.
@@ -399,17 +690,14 @@ Any of [the permission object](#the-permission-object)'s properties.
 
 Returns the [permission object](#the-permission-object) for the updated permissions.
 
-### REST API
+### Example
 
-```
-PATCH /permissions
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`PATCH /permissions`
 
 ```json
-// PATCH /permissions
-
 {
 	"keys": [34, 65],
 	"data": {
@@ -418,19 +706,8 @@ PATCH /permissions
 }
 ```
 
-### GraphQL
-
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
-}
-```
-
-##### Example
+</template>
+<template #graphql>
 
 ```graphql
 mutation {
@@ -442,33 +719,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updatePermissions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updatePermissions(['56', '57'], {
+		fields: ['title', 'body'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Permissions
 
 Delete an existing permissions rule
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`DELETE /permissions/:id`
 
-```
-DELETE /permissions/:id
-```
+</template>
+<template #graphql>
 
-##### Example
-
-```
-DELETE /permissions/34
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -476,7 +760,36 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePermission } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePermission('permission_1_id'));
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /permissions/34`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -486,39 +799,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePermission } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePermissions('56'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Multiple Permissions
 
 Delete multiple existing permissions rules
 
-### Request Body
+### Request
 
-An array of permission primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-Empty body.
-
-### REST API
-
-```
-DELETE /permissions
-```
-
-##### Example
+`DELETE /permissions`
 
 ```json
-// DELETE /permissions
-
-[34, 64]
+["key_1", "key_2", "key_3"]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -526,7 +840,42 @@ type Mutation {
 }
 ```
 
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePermissions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePermissions(['permission_1_id', 'permission_2_id']));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+An array of permission primary keys
+
+### Response
+
+Empty body.
+
 ##### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /permissions`
+
+```json
+[34, 64]
+```
+
+</template>
+<template #graphql>
 
 ```graphql
 mutation {
@@ -536,4 +885,17 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deletePermissions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePermissions(['56', '57']));
+```
+
+</template>
+</SnippetToggler>

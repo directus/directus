@@ -26,7 +26,7 @@ To create a Team:
    The Create Team page will open.
 2. Enter a Team Name and Team Slug, then click **"Save"**.
 
-:::tip Team Name and Team Slug
+::: tip Team Name and Team Slug
 
 The Team Name is a text name assigned to a Team, used in the Cloud Dashboard. The Team slug lies within the full URL
 `https://directus.cloud/TEAM-SLUG/projects`. These are purely organizational, allowing you to easily remember the Team
@@ -70,7 +70,7 @@ the Team. To invite Team Members:
 4. Enter one or more email(s), comma separated.
 5. Click **"Send Invites."**
 
-:::tip
+::: tip
 
 Clicking the emailed invitation link does not automatically create an Account for you. Invitees will need to
 [create an Account](/user-guide/cloud/accounts#create-account-and-login) before accepting an invitation to join a Team.
@@ -89,7 +89,7 @@ yourself:
 3. Click the <span mi icon>exit_to_app</span> or <span mi icon>close</span> button on the desired Member.
 4. Click **"Confirm"**.
 
-:::warning
+::: warning
 
 If an Account leaves or is removed from a Team, it will be fully "locked out" of the Team until re-invited by another
 Member.
@@ -109,14 +109,14 @@ To destroy a Team:
 5. Type the Team Name into the input box.
 6. Click **"Destroy Team"**.
 
-:::danger
+::: danger
 
 Destroying a Team completely removes all its data from Directus Cloud. This action is permanent and irreversible.
 Proceed with caution!
 
 :::
 
-:::tip Teams with Active Projects
+::: tip Teams with Active Projects
 
 To delete a Team, you must first delete any active Projects within it.
 
