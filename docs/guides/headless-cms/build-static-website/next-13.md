@@ -93,8 +93,7 @@ import directus from 'lib/directus';
 import { readItems } from '@directus/sdk/rest';
 
 async function getGlobals() {
-	const { data } = await directus.request(readItems('global'));
-	return data;
+	return directus.request(readItems('global'));
 }
 
 export default async function HomePage() {
@@ -186,14 +185,12 @@ import directus from '@/lib/directus';
 import { readItems } from '@directus/sdk/rest';
 
 async function getPosts() {
-	const posts = await directus.request(
+	return directus.request(
 		readItems('posts', {
 			fields: ['slug', 'title', 'publish_date', { author: ['name'] }],
 			sort: ['-publish_date'],
 		})
 	);
-
-	return posts.data;
 }
 
 export default async function DynamicPage() {
