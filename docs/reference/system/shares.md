@@ -820,7 +820,7 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteShare } from '@directus/sdk/rest';
-const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest())
+const client = createDirectus('https://directus.example.com').with(staticToken()).with(rest())
 
 const result = await client.request(
     deleteShare('0375bb1d-5cbb-48cf-bfac-476a3440a104')
