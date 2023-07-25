@@ -105,6 +105,10 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 | [@directus/update-check](/packages/@directus/update-check/)                                                              | Check if an update is available for a given package                                                                                                                   |
 | [@directus/utils](https://github.com/directus/directus/tree/main/packages/utils)                                         | Utilities shared between the Directus packages                                                                                                                        |
 
+## The JavaScript SDK (`/sdk`)
+
+Contains the new Directus JavaScript SDK available as [@directus/sdk](/packages/SDK/) package.
+
 ## Tests (`/tests`)
 
 Tests are maintained on a per-package base. This folder contains the platform-wide (end-to-end) tests. See
