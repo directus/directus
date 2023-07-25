@@ -1,6 +1,9 @@
+import api from '@/api';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { usePermissionsStore } from './permissions';
+import { useUserStore } from './user';
 
 beforeEach(() => {
 	setActivePinia(
@@ -10,10 +13,6 @@ beforeEach(() => {
 		})
 	);
 });
-
-import api from '@/api';
-import { usePermissionsStore } from './permissions';
-import { useUserStore } from './user';
 
 const mockUser = {
 	id: '00000000-0000-0000-0000-000000000000',
@@ -87,7 +86,13 @@ describe('actions', () => {
 
 			const permissionWithDynamicVariablesInPresets = {
 				role: '00000000-0000-0000-0000-000000000000',
-				permissions: {},
+				permissions: {
+					collection_b: {
+						role: {
+							_eq: '$CURRENT_ROLE.name',
+						},
+					},
+				},
 				validation: {
 					user: {
 						_eq: '$CURRENT_USER',
@@ -109,6 +114,7 @@ describe('actions', () => {
 			await permissionsStore.hydrate();
 
 			expect(hydrateAdditionalFieldsSpy).toHaveBeenCalledOnce();
+			expect(hydrateAdditionalFieldsSpy).toBeCalledWith(expect.arrayContaining(['role.name', 'custom_user_field']));
 		});
 
 		test('should not fetch additional fields when there are not dynamic variables in presets', async () => {
