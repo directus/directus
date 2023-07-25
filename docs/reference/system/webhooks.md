@@ -508,14 +508,14 @@ const result = await client.request(
         'method' : 'POST',
         'collections' : 'articles',
         'actions' : ['create','update','delete'],
-        'url' : 'https://phzn-malleable.directus.app/articles_activity'
+        'url' : 'https://directus.example.com/articles_activity'
          },
         {
         'name' : 'Author Changes',
         'method' : 'POST',
         'collections' : 'authors',
         'actions' : ['update'],
-        'url' : 'https://phzn-malleable.directus.app/authors_changes'
+        'url' : 'https://directus.example.com/authors_changes'
          }
     ])
 );
