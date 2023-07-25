@@ -2,7 +2,7 @@ import config, { Env, getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
 import { awaitDirectusConnection } from '@utils/await-connection';
-import { sleep } from '@utils/sleep';
+import { delayedSleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -86,7 +86,7 @@ describe('Flows Schedule Hook Tests', () => {
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
-			for (const instance of directusInstances[vendor]!) {
+			for (const instance of directusInstances[vendor]) {
 				instance.kill();
 			}
 
@@ -100,12 +100,20 @@ describe('Flows Schedule Hook Tests', () => {
 			const env = envs[vendor][0]; // All instances are connected via MESSENGER
 			const flowId = flowIds[vendor];
 
+			// Create delayed sleep, set to 8s (4 flow executions + a small delay)
+			const { sleep, sleepStart, sleepIsRunning } = delayedSleep(9000);
+
 			const flowExecutions: string[] = [];
 
 			const processLogLine = (chunk: any) => {
 				const logLine = String(chunk);
 
 				if (logLine.includes(logPrefix)) {
+					// Start timer as soon as first flow run has been executed
+					if (!sleepIsRunning) {
+						sleepStart();
+					}
+
 					flowExecutions.push(logLine.substring(logLine.indexOf(logPrefix) + logPrefix.length));
 				}
 			};
@@ -123,7 +131,7 @@ describe('Flows Schedule Hook Tests', () => {
 				.send({ status: 'active' })
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-			await sleep(11000);
+			await sleep;
 
 			// Stop processing logs
 			for (const instance of directusInstances[vendor]) {
