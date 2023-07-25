@@ -85,7 +85,6 @@ const result = await client.request(schemaSnapshot())
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Retrieve Schema Difference

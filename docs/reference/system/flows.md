@@ -924,7 +924,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ### Response
@@ -985,7 +984,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Request Body

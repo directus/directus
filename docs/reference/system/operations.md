@@ -158,7 +158,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Retrieve an operation
@@ -196,7 +195,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ### Request
@@ -248,7 +246,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Create an Operation
@@ -367,7 +364,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Create Multiple Operations
@@ -437,7 +433,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -524,7 +519,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Update an Operation
@@ -572,7 +566,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -631,7 +624,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Update Multiple Operations
@@ -680,7 +672,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -750,7 +741,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Delete an Operation
@@ -825,7 +815,6 @@ const result = await client.request(deleteOperation('263b18e6-7297-4a9f-af88-15a
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Delete Multiple Operations
@@ -924,7 +913,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Triggering an operation
@@ -955,7 +943,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Request Body
@@ -990,5 +977,4 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>

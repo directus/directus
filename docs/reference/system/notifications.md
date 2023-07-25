@@ -659,7 +659,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -725,7 +724,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Delete a Notification
@@ -763,7 +761,6 @@ const result = await client.request(deleteNotification('notification_1_id'));
 ```
 
 </template>
-
 </SnippetToggler>
 
 ### Response
@@ -803,7 +800,6 @@ const result = await client.request(deleteNotification('3'));
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Delete Multiple Notifications
@@ -846,7 +842,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Request Body

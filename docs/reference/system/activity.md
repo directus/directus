@@ -184,7 +184,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -485,7 +484,6 @@ const result = await client.request(deleteComment('comment_id'));
 ```
 
 </template>
-
 </SnippetToggler>
 
 ### Example
@@ -519,5 +517,4 @@ const result = await client.request(deleteComment('53727'));
 ```
 
 </template>
-
 </SnippetToggler>

@@ -351,7 +351,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Retrieve a File
@@ -391,7 +390,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -548,7 +546,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -720,7 +717,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Update Multiple Files

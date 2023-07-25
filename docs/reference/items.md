@@ -74,7 +74,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 [Learn more about SEARCH ->](/reference/introduction#search-http-method)
@@ -135,7 +134,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Get Item by ID
@@ -173,7 +171,6 @@ const result = await client.request(readItem('collection_name', 'item_id'));
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -354,7 +351,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -422,7 +418,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Create Multiple Items
@@ -484,7 +479,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -562,7 +556,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Update an Item
@@ -668,7 +661,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Update Singleton
@@ -962,7 +954,6 @@ const result = await client.request(deleteItem('articles', '5'));
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Delete Multiple Items
@@ -1035,7 +1026,6 @@ const result2 = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -1120,5 +1110,4 @@ const result2 = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>

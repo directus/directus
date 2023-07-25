@@ -226,7 +226,6 @@ const result = await client.request(readCollections());
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Retrieve a Collection
