@@ -96,13 +96,6 @@ The [Field Parameter](/reference/query#fields) is required to return nested rela
 An array of up to [limit](/reference/query#limit) [item objects](#the-item-object). If no items are available, data will
 be an empty array.
 
-::: tip Singleton
-
-If your collection is a singleton, this endpoint will return the item. If the item doesn't exist in the database, the
-default values will be returned.
-
-:::
-
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
@@ -230,7 +223,6 @@ console.log(result);
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Get Singleton
@@ -238,6 +230,25 @@ console.log(result);
 List the singleton item in Directus.
 
 ### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /items/:collection`
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+type Query {
+	<collection>: [<collection>]
+}
+```
+
+</template>
+<template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
@@ -249,9 +260,13 @@ const result = await client.request(readSingleton('collection_name'))
 console.log(result);
 ```
 
+</template>
+</SnippetToggler>
+
 ::: tip Info
 
-This endpoint is only supported by the SDK.
+The REST and GraphQL requests for singletons are the same as the ones used to [Get Items](#get-items) but in contrast
+the response consists of only one item (the singleton) instead of an array of items.
 
 :::
 
@@ -265,9 +280,31 @@ Supports all [global query parameters](/reference/query).
 
 ### Response
 
-Returns an [item object](#the-item-object) if a valid primary key was provided.
+Returns an [item object](#the-item-object) if a valid collection name was provided.
 
 ### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /items/about`
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+query {
+	about {
+		id
+		content
+	}
+}
+```
+
+</template>
+<template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
@@ -278,6 +315,9 @@ const result = await client.request(readSingleton('about'))
 
 console.log(result);
 ```
+
+</template>
+</SnippetToggler>
 
 ## Create an Item
 
