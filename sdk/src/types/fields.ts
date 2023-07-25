@@ -1,5 +1,6 @@
 import type { ExtractItem } from './query.js';
-import type { ItemType, RelationalFields, UnpackList } from './schema.js';
+import type { ItemType, RelationalFields, RemoveRelationships } from './schema.js';
+import type { UnpackList } from './utils.js';
 
 /**
  * Fields querying, including nested relational fields
@@ -12,7 +13,7 @@ export type QueryFields<Schema extends object, Item> = WrapQueryFields<
 /**
  * Wrap array of fields
  */
-export type WrapQueryFields<Item, NestedFields> = ('*' | keyof UnpackList<Item> | NestedFields)[];
+export type WrapQueryFields<Item, NestedFields> = readonly ('*' | keyof UnpackList<Item> | NestedFields)[];
 
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
@@ -37,7 +38,7 @@ export type ManyToAnyFields<Schema extends object, Item> = ExtractItem<Schema, I
 				? WrapQueryFields<
 						TItem,
 						Omit<QueryFieldsRelational<Schema, UnpackList<Item>>, 'item'> & {
-							item: {
+							item?: {
 								[Collection in keyof Schema as Collection extends TItem['collection']
 									? Collection
 									: never]?: QueryFields<Schema, Schema[Collection]>;
@@ -62,3 +63,43 @@ export type HasManyToAnyRelation<Item> = UnpackList<Item> extends infer TItem
 			: never
 		: never
 	: never;
+
+/**
+ * Returns true if the Fields has any nested field
+ */
+export type HasNestedFields<Fields> = UnpackList<Fields> extends infer Field
+	? Field extends object
+		? true
+		: never
+	: never;
+
+/**
+ * Return all keys if Fields is undefined or contains '*'
+ */
+export type FieldsWildcard<Item extends object, Fields> = UnpackList<Fields> extends infer Field
+	? Field extends undefined
+		? keyof Item
+		: Field extends '*'
+		? keyof Item
+		: Field extends string
+		? Field
+		: never
+	: never;
+
+/**
+ * Returns the relational fields from the fields list
+ */
+export type PickRelationalFields<Fields> = UnpackList<Fields> extends infer Field
+	? Field extends object
+		? Field
+		: never
+	: never;
+
+export type RelationalQueryFields<Fields> = PickRelationalFields<Fields>;
+
+/**
+ * Extract the required fields from an item
+ */
+export type PickFlatFields<Schema extends object, Item, Fields> = Extract<Fields, keyof Item> extends never
+	? never
+	: Pick<RemoveRelationships<Schema, Item>, Extract<Fields, keyof Item>>;

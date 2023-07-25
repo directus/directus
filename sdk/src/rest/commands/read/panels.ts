@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadPanelOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusPanel<Schema>
+	Item extends object = DirectusPanel<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -14,7 +14,7 @@ export type ReadPanelOutput<
  * @returns An array of up to limit panel objects. If no items are available, data will be an empty array.
  */
 export const readPanels =
-	<Schema extends object, TQuery extends Query<Schema, DirectusPanel<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		query?: TQuery
 	): RestCommand<ReadPanelOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -30,7 +30,7 @@ export const readPanels =
  * @returns Returns the requested panel object.
  */
 export const readPanel =
-	<Schema extends object, TQuery extends Query<Schema, DirectusPanel<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
 		key: DirectusPanel<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadPanelOutput<Schema, TQuery>, Schema> =>

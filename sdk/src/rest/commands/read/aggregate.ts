@@ -1,4 +1,5 @@
-import type { AggregationOptions, AggregationOutput, AllCollections } from '../../../types/aggregate.js';
+import type { AllCollections } from '../../../index.js';
+import type { AggregationOptions, AggregationOutput } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
 
 /**

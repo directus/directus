@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
 export const deleteTranslations =
 	<Schema extends object>(keys: DirectusTranslation<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => ({
-		path: `/`,
+		path: `/translations`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
 		onResponse: null,
@@ -23,7 +23,7 @@ export const deleteTranslations =
 export const deleteTranslation =
 	<Schema extends object>(key: DirectusTranslation<Schema>['id']): RestCommand<void, Schema> =>
 	() => ({
-		path: `//${key}`,
+		path: `/translations/${key}`,
 		method: 'DELETE',
 		onResponse: null,
 	});

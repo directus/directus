@@ -2,11 +2,10 @@ import type { DirectusRelation } from '../../../schema/relation.js';
 import type { ApplyQueryFields } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type CreateRelationOutput<Schema extends object, Item = DirectusRelation<Schema>> = ApplyQueryFields<
-	Schema,
-	Item,
-	'*'
->;
+export type CreateRelationOutput<
+	Schema extends object,
+	Item extends object = DirectusRelation<Schema>
+> = ApplyQueryFields<Schema, Item, '*'>;
 
 /**
  * Create a new relation.

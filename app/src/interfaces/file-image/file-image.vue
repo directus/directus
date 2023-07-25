@@ -31,7 +31,7 @@
 
 			<div class="shadow" />
 
-			<div v-if="!disabled" class="actions">
+			<div class="actions">
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
@@ -44,15 +44,17 @@
 				>
 					<v-icon name="download" />
 				</v-button>
-				<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
-					<v-icon name="open_in_new" />
-				</v-button>
-				<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
-					<v-icon name="tune" />
-				</v-button>
-				<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
-					<v-icon name="close" />
-				</v-button>
+				<template v-if="!disabled">
+					<v-button v-tooltip="t('edit')" icon rounded @click="editImageDetails = true">
+						<v-icon name="open_in_new" />
+					</v-button>
+					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
+						<v-icon name="tune" />
+					</v-button>
+					<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
+						<v-icon name="close" />
+					</v-button>
+				</template>
 			</div>
 
 			<div class="info">

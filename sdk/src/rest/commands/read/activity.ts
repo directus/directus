@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadActivityOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusActivity<Schema>
+	Item extends object = DirectusActivity<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -14,7 +14,7 @@ export type ReadActivityOutput<
  * @returns An array of up to limit activity objects. If no items are available, data will be an empty array.
  */
 export const readActivities =
-	<Schema extends object, TQuery extends Query<Schema, DirectusActivity<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusActivity<Schema>>>(
 		query?: TQuery
 	): RestCommand<ReadActivityOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -30,7 +30,7 @@ export const readActivities =
  * @returns Returns an activity object if a valid identifier was provided.
  */
 export const readActivity =
-	<Schema extends object, TQuery extends Query<Schema, DirectusActivity<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusActivity<Schema>>>(
 		key: DirectusActivity<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadActivityOutput<Schema, TQuery>, Schema> =>

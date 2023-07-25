@@ -2186,5 +2186,40 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
+
+		describe('Meta Service Tests', () => {
+			describe('retrieves filter count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const name = 'test-meta-service-count';
+					const artist = createArtist(pkType);
+					const artist2 = createArtist(pkType);
+
+					artist.name = name;
+					artist2.name = name;
+
+					await CreateItem(vendor, {
+						collection: localCollectionArtists,
+						item: [artist, artist2],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionArtists}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+							}),
+							meta: '*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.meta.filter_count).toBe(2);
+					expect(response.body.data.length).toBe(2);
+				});
+			});
+		});
 	});
 });

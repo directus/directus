@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateActivityOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusActivity<Schema>
+	Item extends object = DirectusActivity<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -16,7 +16,7 @@ export type UpdateActivityOutput<
  * @returns Returns the activity object of the created comment.
  */
 export const updateComment =
-	<Schema extends object, TQuery extends Query<Schema, DirectusActivity<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusActivity<Schema>>>(
 		key: DirectusActivity<Schema>['id'],
 		item: Partial<DirectusActivity<Schema>>,
 		query?: TQuery

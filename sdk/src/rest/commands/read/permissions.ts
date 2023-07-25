@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadPermissionOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusPermission<Schema>
+	Item extends object = DirectusPermission<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -14,7 +14,7 @@ export type ReadPermissionOutput<
  * @returns An array of up to limit Permission objects. If no items are available, data will be an empty array.
  */
 export const readPermissions =
-	<Schema extends object, TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		query?: TQuery
 	): RestCommand<ReadPermissionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -30,7 +30,7 @@ export const readPermissions =
  * @returns Returns a Permission object if a valid primary key was provided.
  */
 export const readPermission =
-	<Schema extends object, TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		key: DirectusPermission<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadPermissionOutput<Schema, TQuery>, Schema> =>

@@ -19,7 +19,7 @@ export const readSingleton =
 	<
 		Schema extends object,
 		Collection extends SingletonCollections<Schema>,
-		TQuery extends Query<Schema, Schema[Collection]>
+		const TQuery extends Query<Schema, Schema[Collection]>
 	>(
 		collection: Collection,
 		query?: TQuery

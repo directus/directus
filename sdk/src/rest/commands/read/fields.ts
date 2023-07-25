@@ -2,7 +2,11 @@ import type { DirectusField } from '../../../schema/field.js';
 import type { ApplyQueryFields } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type ReadFieldOutput<Schema extends object, Item = DirectusField<Schema>> = ApplyQueryFields<Schema, Item, '*'>;
+export type ReadFieldOutput<Schema extends object, Item extends object = DirectusField<Schema>> = ApplyQueryFields<
+	Schema,
+	Item,
+	'*'
+>;
 
 /**
  * List the available fields.

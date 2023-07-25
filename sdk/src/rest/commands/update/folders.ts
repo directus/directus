@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateFolderOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusFolder<Schema>
+	Item extends object = DirectusFolder<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -15,8 +15,8 @@ export type UpdateFolderOutput<
  * @param query
  * @returns Returns the folder objects of the folders that were updated.
  */
-export const updatedFolders =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+export const updateFolders =
+	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		keys: DirectusFolder<Schema>['id'][],
 		item: Partial<DirectusFolder<Schema>>,
 		query?: TQuery
@@ -36,7 +36,7 @@ export const updatedFolders =
  * @returns Returns the folder object of the folder that was updated.
  */
 export const updateFolder =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFolder<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusFolder<Schema>>>(
 		key: DirectusFolder<Schema>['id'],
 		item: Partial<DirectusFolder<Schema>>,
 		query?: TQuery

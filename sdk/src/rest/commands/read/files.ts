@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type ReadFileOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusFile<Schema>
+	Item extends object = DirectusFile<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -14,7 +14,7 @@ export type ReadFileOutput<
  * @returns An array of up to limit file objects. If no items are available, data will be an empty array.
  */
 export const readFiles =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		query?: TQuery
 	): RestCommand<ReadFileOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -30,7 +30,7 @@ export const readFiles =
  * @returns Returns a file object if a valid primary key was provided.
  */
 export const readFile =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		key: DirectusFile<Schema>['id'],
 		query?: TQuery
 	): RestCommand<ReadFileOutput<Schema, TQuery>, Schema> =>

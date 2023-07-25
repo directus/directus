@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateFlowOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusFlow<Schema>
+	Item extends object = DirectusFlow<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -15,8 +15,8 @@ export type UpdateFlowOutput<
  * @param query
  * @returns Returns the flow objects for the updated flows.
  */
-export const updatedFlows =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFlow<Schema>>>(
+export const updateFlows =
+	<Schema extends object, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
 		keys: DirectusFlow<Schema>['id'][],
 		item: Partial<DirectusFlow<Schema>>,
 		query?: TQuery
@@ -36,7 +36,7 @@ export const updatedFlows =
  * @returns Returns the flow object for the updated flow.
  */
 export const updateFlow =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFlow<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
 		key: DirectusFlow<Schema>['id'],
 		item: Partial<DirectusFlow<Schema>>,
 		query?: TQuery

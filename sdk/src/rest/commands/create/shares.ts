@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreateShareOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusShare<Schema>
+	Item extends object = DirectusShare<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -17,12 +17,12 @@ export type CreateShareOutput<
  * @returns Returns the share objects for the created shares.
  */
 export const createShares =
-	<Schema extends object, TQuery extends Query<Schema, DirectusShare<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		items: Partial<DirectusShare<Schema>>[],
 		query?: TQuery
 	): RestCommand<CreateShareOutput<Schema, TQuery>[], Schema> =>
 	() => ({
-		path: `/`,
+		path: `/shares`,
 		params: query ?? {},
 		body: JSON.stringify(items),
 		method: 'POST',
@@ -37,12 +37,12 @@ export const createShares =
  * @returns Returns the share object for the created share.
  */
 export const createShare =
-	<Schema extends object, TQuery extends Query<Schema, DirectusShare<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		item: Partial<DirectusShare<Schema>>,
 		query?: TQuery
 	): RestCommand<CreateShareOutput<Schema, TQuery>, Schema> =>
 	() => ({
-		path: `/`,
+		path: `/shares`,
 		params: query ?? {},
 		body: JSON.stringify(item),
 		method: 'POST',

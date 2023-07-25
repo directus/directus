@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type CreateFieldOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusField<Schema>
+	Item extends object = DirectusField<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -18,7 +18,7 @@ export type CreateFieldOutput<
  * @returns The field object for the created field.
  */
 export const createField =
-	<Schema extends object, TQuery extends Query<Schema, DirectusField<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusField<Schema>>>(
 		collection: keyof Schema,
 		item: Partial<DirectusField<Schema>>,
 		query?: TQuery

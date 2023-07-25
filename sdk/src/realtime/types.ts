@@ -1,5 +1,6 @@
 import type { PrimaryKey } from '@directus/types';
-import type { ApplyQueryFields, Query } from '../types/query.js';
+import type { Query } from '../types/query.js';
+import type { ApplyQueryFields, CollectionType } from '../index.js';
 
 export type WebSocketAuthModes = 'public' | 'handshake' | 'strict';
 
@@ -62,7 +63,7 @@ export type SubscriptionOutput<
 	TQuery extends Query<Schema, Schema[Collection]> | undefined,
 	Events extends SubscriptionEvents,
 	TItem = TQuery extends Query<Schema, Schema[Collection]>
-		? ApplyQueryFields<Schema, Schema[Collection], TQuery['fields']>
+		? ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>
 		: Partial<Schema[Collection]>
 > = { type: 'subscription' } & {
 	[Event in Events]: SubscriptionPayload<TItem>[Event];

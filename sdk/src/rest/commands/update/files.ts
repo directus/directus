@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateFileOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusFile<Schema>
+	Item extends object = DirectusFile<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -15,8 +15,8 @@ export type UpdateFileOutput<
  * @param query
  * @returns Returns the file objects for the updated files.
  */
-export const updatedFiles =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
+export const updateFiles =
+	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		keys: DirectusFile<Schema>['id'][],
 		item: Partial<DirectusFile<Schema>>,
 		query?: TQuery
@@ -36,7 +36,7 @@ export const updatedFiles =
  * @returns Returns the file object for the updated file.
  */
 export const updateFile =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFile<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusFile<Schema>>>(
 		key: DirectusFile<Schema>['id'],
 		item: Partial<DirectusFile<Schema>>,
 		query?: TQuery

@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
 export type UpdateRoleOutput<
 	Schema extends object,
 	TQuery extends Query<Schema, Item>,
-	Item = DirectusRole<Schema>
+	Item extends object = DirectusRole<Schema>
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
 
 /**
@@ -15,8 +15,8 @@ export type UpdateRoleOutput<
  * @param query
  * @returns Returns the role objects for the updated roles.
  */
-export const updatedRoles =
-	<Schema extends object, TQuery extends Query<Schema, DirectusRole<Schema>>>(
+export const updateRoles =
+	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		keys: DirectusRole<Schema>['id'][],
 		item: Partial<DirectusRole<Schema>>,
 		query?: TQuery
@@ -36,7 +36,7 @@ export const updatedRoles =
  * @returns Returns the role object for the updated role.
  */
 export const updateRole =
-	<Schema extends object, TQuery extends Query<Schema, DirectusRole<Schema>>>(
+	<Schema extends object, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
 		key: DirectusRole<Schema>['id'],
 		item: Partial<DirectusRole<Schema>>,
 		query?: TQuery

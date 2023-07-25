@@ -19,7 +19,7 @@ export const updateSingleton =
 	<
 		Schema extends object,
 		Collection extends SingletonCollections<Schema>,
-		TQuery extends Query<Schema, Schema[Collection]>,
+		const TQuery extends Query<Schema, Schema[Collection]>,
 		Item = Schema[Collection]
 	>(
 		collection: Collection,
