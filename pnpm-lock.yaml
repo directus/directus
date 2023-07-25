@@ -83,6 +83,9 @@ importers:
       '@directus/storage-driver-s3':
         specifier: workspace:*
         version: link:../packages/storage-driver-s3
+      '@directus/storage-driver-supabase':
+        specifier: workspace:*
+        version: link:../packages/storage-driver-supabase
       '@directus/utils':
         specifier: workspace:*
         version: link:../packages/utils
@@ -1576,6 +1579,37 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@ngneat/falso':
+        specifier: 6.4.0
+        version: 6.4.0
+      '@vitest/coverage-c8':
+        specifier: 0.31.1
+        version: 0.31.1(vitest@0.31.1)
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+      vitest:
+        specifier: 0.31.1
+        version: 0.31.1(jsdom@22.0.0)
+
+  packages/storage-driver-supabase:
+    dependencies:
+      '@directus/storage':
+        specifier: workspace:*
+        version: link:../storage
+      '@directus/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@supabase/storage-js':
+        specifier: 2.5.1
+        version: 2.5.1
+      undici:
+        specifier: 5.22.1
+        version: 5.22.1
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -3210,7 +3244,7 @@ packages:
       '@types/node-fetch': 2.6.4
       '@types/tunnel': 0.0.3
       form-data: 4.0.0
-      node-fetch: 2.6.11
+      node-fetch: 2.6.12
       process: 0.11.10
       tslib: 2.5.2
       tunnel: 0.0.6
@@ -6060,7 +6094,7 @@ packages:
       detect-libc: 2.0.1
       https-proxy-agent: 5.0.1
       make-dir: 3.1.0
-      node-fetch: 2.6.11
+      node-fetch: 2.6.12
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -7625,7 +7659,7 @@ packages:
       globby: 11.1.0
       ip: 2.0.0
       lodash: 4.17.21
-      node-fetch: 2.6.11
+      node-fetch: 2.6.12
       open: 8.4.2
       pretty-hrtime: 1.0.3
       prompts: 2.4.2
@@ -7875,6 +7909,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@supabase/storage-js@2.5.1:
+    resolution: {integrity: sha512-nkR0fQA9ScAtIKA3vNoPEqbZv1k5B5HVRYEvRWdlP6mUpFphM9TwPL2jZ/ztNGMTG5xT6SrHr+H7Ykz8qzbhjw==}
+    dependencies:
+      cross-fetch: 3.1.8
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /@szmarczak/http-timer@4.0.6:
     resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
@@ -11088,6 +11130,14 @@ packages:
     resolution: {integrity: sha512-YIaY9TR5Nxeb8SMdtrU8asWVM4jqJDNDYlKV21LxtYcfNJhp1kEsgSa6qXwXgzN0WQWGODps0+TlGp2xQSHwOg==}
     dev: true
 
+  /cross-fetch@3.1.8:
+    resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
+    dependencies:
+      node-fetch: 2.6.12
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
     dependencies:
@@ -12892,7 +12942,7 @@ packages:
       extend: 3.0.2
       https-proxy-agent: 5.0.1
       is-stream: 2.0.1
-      node-fetch: 2.6.11
+      node-fetch: 2.6.12
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -14125,7 +14175,7 @@ packages:
   /isomorphic-unfetch@3.1.0:
     resolution: {integrity: sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==}
     dependencies:
-      node-fetch: 2.6.11
+      node-fetch: 2.6.12
       unfetch: 4.2.0
     transitivePeerDependencies:
       - encoding
@@ -16606,6 +16656,17 @@ packages:
 
   /node-fetch@2.6.11:
     resolution: {integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+
+  /node-fetch@2.6.12:
+    resolution: {integrity: sha512-C/fGU2E8ToujUivIO0H+tpQ6HWo4eEmchoPIoXtxCrVghxdKq+QOHqEZW7tuP3KlV3bC8FRMO5nMCC7Zm1VP6g==}
     engines: {node: 4.x || >=6.0.0}
     peerDependencies:
       encoding: ^0.1.0
@@ -20560,7 +20621,7 @@ packages:
     dependencies:
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
-      node-fetch: 2.6.11
+      node-fetch: 2.6.12
       stream-events: 1.0.5
       uuid: 9.0.0
     transitivePeerDependencies:
