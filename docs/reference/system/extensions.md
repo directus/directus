@@ -38,9 +38,10 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readExtensions } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readExtensions('extension_type'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readExtensions('extension_type'));
 ```
 
 </template>
@@ -80,9 +81,10 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readExtensions } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readExtensions('interfaces'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readExtensions('interfaces'));
 ```
 
 </template>

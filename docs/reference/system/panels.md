@@ -108,11 +108,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPanels } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readPanels({
-        'fields' : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPanels({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -159,11 +161,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPanels } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readPanels({
-        'fields' : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPanels({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -198,11 +202,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPanel } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readPanel('panel_id',{
-        'fields' : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPanel('panel_id', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -244,11 +250,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPanel } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readPanel('bf5d1373-3eea-431f-aaac-54591ba5ecf1',{
-        'fields' : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPanel('bf5d1373-3eea-431f-aaac-54591ba5ecf1', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -290,18 +298,19 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPanel } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createPanel({
-        'name' : 'panel_name',
-        'type' : 'panel_type',
-        'dashboard' : 'dashboard_id',
-        'width' : panel_width,
-        'height' : panel_height,
-        'position_x' : panel_x,
-        'position_y' : panel_y,
-    })
+	createPanel({
+		name: 'panel_name',
+		type: 'panel_type',
+		dashboard: 'dashboard_id',
+		width: panel_width,
+		height: panel_height,
+		position_x: panel_x,
+		position_y: panel_y,
+	})
 );
 ```
 
@@ -354,18 +363,19 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPanel } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createPanel({
-        'name' : 'sales chart',
-        'type' : 'bar-chart',
-        'dashboard' : '2418e38c-2f0b-460a-b46d-37b63106bcdc',
-        'width' : 12,
-        'height' : 10,
-        'position_x' : 10,
-        'position_y' : 10,
-    })
+	createPanel({
+		name: 'sales chart',
+		type: 'bar-chart',
+		dashboard: '2418e38c-2f0b-460a-b46d-37b63106bcdc',
+		width: 12,
+		height: 10,
+		position_x: 10,
+		position_y: 10,
+	})
 );
 ```
 
@@ -413,31 +423,31 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPanels } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createPanels(
-    [
-        {
-			'name' : 'panel_name',
-			'type' : 'panel_type',
-			'dashboard' : 'dashboard_id',
-			'width' : panel_width,
-			'height' : panel_height,
-			'position_x' : panel_x,
-			'position_y' : panel_y,
-        },
-        {
-			'name' : 'panel_2_name',
-			'type' : 'panel_2_type',
-			'dashboard' : 'dashboard_2_id',
-			'width' : panel_2_width,
-			'height' : panel_2_height,
-			'position_x' : panel_2_x,
-			'position_y' : panel_2_y,
-        }
-    ]
-));
+	createPanels([
+		{
+			name: 'panel_name',
+			type: 'panel_type',
+			dashboard: 'dashboard_id',
+			width: panel_width,
+			height: panel_height,
+			position_x: panel_x,
+			position_y: panel_y,
+		},
+		{
+			name: 'panel_2_name',
+			type: 'panel_2_type',
+			dashboard: 'dashboard_2_id',
+			width: panel_2_width,
+			height: panel_2_height,
+			position_x: panel_2_x,
+			position_y: panel_2_y,
+		},
+	])
+);
 ```
 
 </template>
@@ -495,31 +505,31 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPanels } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createPanels(
-    [
-        {
-            'name' : 'sales chart',
-            'type' : 'bar-chart',
-            'dashboard' : '2418e38c-2f0b-460a-b46d-37b63106bcdc',
-            'width' : 12,
-            'height' : 10,
-            'position_x' : 20,
-            'position_y' : 10,
-        },
-        {
-            'name' : 'authorship percentage',
-            'type' : 'pie-chart',
-            'dashboard' : '2418e38c-2f0b-460a-b46d-37b63106bcdc',
-            'width' : 12,
-            'height' : 10,
-            'position_x' : 10,
-            'position_y' : 10,
-        }
-    ]
-));
+	createPanels([
+		{
+			name: 'sales chart',
+			type: 'bar-chart',
+			dashboard: '2418e38c-2f0b-460a-b46d-37b63106bcdc',
+			width: 12,
+			height: 10,
+			position_x: 20,
+			position_y: 10,
+		},
+		{
+			name: 'authorship percentage',
+			type: 'pie-chart',
+			dashboard: '2418e38c-2f0b-460a-b46d-37b63106bcdc',
+			width: 12,
+			height: 10,
+			position_x: 10,
+			position_y: 10,
+		},
+	])
+);
 ```
 
 </template>
@@ -559,13 +569,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePanel } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatePanel('panel_id', {
-        'field' : 'value'
-    }
-));
+	updatePanel('panel_id', {
+		field: 'value',
+	})
+);
 ```
 
 </template>
@@ -616,14 +627,15 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePanel } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatePanel('8d4acee9-f266-4664-801d-11d0273e9bfe', {
-        'height' : 20,
-        'width' : 20
-    }
-));
+	updatePanel('8d4acee9-f266-4664-801d-11d0273e9bfe', {
+		height: 20,
+		width: 20,
+	})
+);
 ```
 
 </template>
@@ -666,13 +678,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePanels } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(staticToken()).with(rest())
+
+const client = createDirectus('https://directus.example.com').with(staticToken()).with(rest());
 
 const result = await client.request(
-    updatePanels(['panel_1_id','panel_2_id'], {
-        'field' : 'value'
-    }
-));
+	updatePanels(['panel_1_id', 'panel_2_id'], {
+		field: 'value',
+	})
+);
 ```
 
 </template>
@@ -733,13 +746,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePanels } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatePanels(['8d4acee9-f266-4664-801d-11d0273e9bfe','4a98c02e-62ac-4ceb-aabc-990ce603eb78'], {
-        'position_x' : 30
-    }
-));
+	updatePanels(['8d4acee9-f266-4664-801d-11d0273e9bfe', '4a98c02e-62ac-4ceb-aabc-990ce603eb78'], {
+		position_x: 30,
+	})
+);
 ```
 
 </template>
@@ -773,7 +787,8 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePanel } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deletePanel('panel_id'));
 ```
@@ -811,7 +826,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePanel } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deletePanel('8d4acee9-f266-4664-801d-11d0273e9bfe'));
 ```
@@ -851,11 +867,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePanels } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(deletePanels(
-    ['panel_1_id','panel_2_id']
-));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePanels(['panel_1_id', 'panel_2_id']));
 ```
 
 </template>
@@ -905,11 +920,12 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePanels } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(deletePanels(
-    ['8d4acee9-f266-4664-801d-11d0273e9bfe','4a98c02e-62ac-4ceb-aabc-990ce603eb78']
-));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deletePanels(['8d4acee9-f266-4664-801d-11d0273e9bfe', '4a98c02e-62ac-4ceb-aabc-990ce603eb78'])
+);
 ```
 
 </template>

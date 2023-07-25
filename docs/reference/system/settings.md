@@ -135,9 +135,10 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readSettings } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readSettings())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readSettings());
 ```
 
 </template>
@@ -177,9 +178,10 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readSettings } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readSettings())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readSettings());
 ```
 
 </template>
@@ -217,13 +219,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateSettings } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateSettings({
-        'settings_field' : 'value'
-    })
-)
+	updateSettings({
+		settings_field: 'value',
+	})
+);
 ```
 
 </template>
@@ -274,13 +277,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateSettings } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateSettings({
-        'project_url' : 'https://example.com/'
-    })
-)
+	updateSettings({
+		project_url: 'https://example.com/',
+	})
+);
 ```
 
 </template>

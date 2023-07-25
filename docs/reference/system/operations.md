@@ -98,9 +98,7 @@ import { rest, readOperations } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readOperations( query )
-);
+const result = await client.request(readOperations(query));
 ```
 
 </template>
@@ -189,9 +187,7 @@ import { rest, readOperation } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readOperation('operation_id', query )
-);
+const result = await client.request(readOperation('operation_id', query));
 ```
 
 </template>

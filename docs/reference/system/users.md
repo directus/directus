@@ -131,12 +131,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readUsers } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readUsers({
-        'fields' : ['*']
-    })
+	readUsers({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -182,12 +183,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readUsers } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readUsers({
-        'fields' : ['*']
-    })
+	readUsers({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -222,12 +224,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readUser('user_id',{
-        'fields' : ['*']
-    })
+	readUser('user_id', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -270,12 +273,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readUser('0513b6e8-55f2-4ff5-906c-f1a29d7b983c',{
-        'fields' : ['*']
-    })
+	readUser('0513b6e8-55f2-4ff5-906c-f1a29d7b983c', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -310,12 +314,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readMe } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readMe({
-        'fields' : ['*']
-    })
+	readMe({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -354,12 +359,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readMe } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readMe({
-        'fields' : ['*']
-    })
+	readMe({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -400,12 +406,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateMe } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateMe({
-        'user_field' : 'value':w
-    })
+	updateMe({
+		user_field: 'value',
+	})
 );
 ```
 
@@ -452,12 +459,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateMe } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateMe({
-        'email_notifications' : false
-    })
+	updateMe({
+		email_notifications: false,
+	})
 );
 ```
 
@@ -500,13 +508,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createUser({
-        'email' : 'user_email',
-        'password' : 'user_password'
-    })
+	createUser({
+		email: 'user_email',
+		password: 'user_password',
+	})
 );
 ```
 
@@ -576,13 +585,14 @@ could be modified by the user call.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createUser({
-        'email' : 'hi@email.com',
-        'password' : 'qwerty123'
-    })
+	createUser({
+		email: 'hi@email.com',
+		password: 'qwerty123',
+	})
 );
 ```
 
@@ -632,20 +642,20 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createUsers } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createUsers(
-    [
-        {
-        'email' : 'user_email',
-        'password' : 'user_password'
-        },
-        {
-        'email' : 'user_email',
-        'password' : 'user_password'
-        }
-    ])
+	createUsers([
+		{
+			email: 'user_email',
+			password: 'user_password',
+		},
+		{
+			email: 'user_email',
+			password: 'user_password',
+		},
+	])
 );
 ```
 
@@ -729,20 +739,20 @@ could be modified by the user call.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createUsers } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createUsers(
-    [
-        {
-        'email' : 'hello@email.com',
-        'password' : 'qwerty123'
-        },
-        {
-        'email' : 'person@email.com',
-        'password' : 'QwErTy1994'
-        }
-    ])
+	createUsers([
+		{
+			email: 'hello@email.com',
+			password: 'qwerty123',
+		},
+		{
+			email: 'person@email.com',
+			password: 'QwErTy1994',
+		},
+	])
 );
 ```
 
@@ -783,12 +793,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateUser('user_id',{
-        'user_fiels' : 'value'
-    })
+	updateUser('user_id', {
+		user_fiels: 'value',
+	})
 );
 ```
 
@@ -840,12 +851,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateUser('e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb',{
-        'email_notifications' : false
-    })
+	updateUser('e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb', {
+		email_notifications: false,
+	})
 );
 ```
 
@@ -889,12 +901,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateUsers } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateUsers(['user_1_id','user_2_id'],{
-        'user_field' : 'value'
-    })
+	updateUsers(['user_1_id', 'user_2_id'], {
+		user_field: 'value',
+	})
 );
 ```
 
@@ -956,12 +969,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateUsers } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb','5ec6ee0a-62ad-460d-a91e-fed63e3d804c'],{
-        'email_notifications' : false
-    })
+	updateUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb', '5ec6ee0a-62ad-460d-a91e-fed63e3d804c'], {
+		email_notifications: false,
+	})
 );
 ```
 
@@ -996,11 +1010,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteUser('user_id')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteUser('user_id'));
 ```
 
 </template>
@@ -1036,11 +1049,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteUser('965749ad-e5e4-4e38-aa91-25a252b8ccd9')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteUser('965749ad-e5e4-4e38-aa91-25a252b8ccd9'));
 ```
 
 </template>
@@ -1078,11 +1090,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteUsers } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteUsers(['user_1_id','user_2_id'])
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteUsers(['user_1_id', 'user_2_id']));
 ```
 
 </template>
@@ -1124,10 +1135,11 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteUsers } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    deleteUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb','5ec6ee0a-62ad-460d-a91e-fed63e3d804c'])
+	deleteUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb', '5ec6ee0a-62ad-460d-a91e-fed63e3d804c'])
 );
 ```
 
@@ -1169,7 +1181,8 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, disableTwoFactor } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(disableTwoFactor('otp'));
 ```
@@ -1225,7 +1238,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, inviteUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(inviteUser('invited_user_email', 'invited_user_role'));
 ```
@@ -1270,11 +1284,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, inviteUser } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-	inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7'));
 ```
 
 </template>
@@ -1321,7 +1334,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, acceptUserInvite } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(acceptUserInvite('invite_token', 'user_password'));
 ```
@@ -1363,7 +1377,8 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, acceptUserInvite } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(acceptUserInvite('eyJh...KmUk', 'd1r3ctu5'));
 ```
@@ -1417,7 +1432,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, generateTwoFactorSecret } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(generateTwoFactorSecret('user_password'));
 ```
@@ -1460,7 +1476,8 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, generateTwoFactorSecret } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(generateTwoFactorSecret('d1r3ctu5'));
 ```
@@ -1511,7 +1528,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, enableTwoFactor } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(enableTwoFactor('secret', 'otp'));
 ```
@@ -1553,7 +1571,8 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, enableTwoFactor } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(enableTwoFactor('3CtiutsNBmY3szHE', '123456'));
 ```
@@ -1600,7 +1619,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, disableTwoFactor } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(disableTwoFactor('591763'));
 ```

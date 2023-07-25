@@ -242,9 +242,10 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readSingleton } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readSingleton('collection_name'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readSingleton('collection_name'));
 ```
 
 </template>
@@ -296,9 +297,10 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readSingleton } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readSingleton('about'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readSingleton('about'));
 ```
 
 </template>
@@ -676,7 +678,7 @@ Update a singleton item.
 
 ```json
 {
-    "item_field": "value"
+	"item_field": "value"
 }
 ```
 
@@ -697,11 +699,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateSingleton } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(updateSingleton('collection_name', {
-    'item_field' : 'value'
-}))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateSingleton('collection_name', {
+		item_field: 'value',
+	})
+);
 ```
 
 </template>
@@ -736,7 +741,7 @@ Returns an [item object](#the-item-object) if a valid primary key was provided.
 
 ```json
 {
-    "content": "Founded in 2023, this website is dedicated to..."
+	"content": "Founded in 2023, this website is dedicated to..."
 }
 ```
 
@@ -759,11 +764,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateSingleton } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(updateSingleton('about', {
-    'content' : 'Founded in 2023, this website is dedicated to...'
-}))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateSingleton('about', {
+		content: 'Founded in 2023, this website is dedicated to...',
+	})
+);
 ```
 
 </template>

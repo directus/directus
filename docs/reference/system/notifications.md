@@ -84,9 +84,7 @@ import { rest, readNotifications } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readNotifications( query )
-);
+const result = await client.request(readNotifications(query));
 ```
 
 </template>
@@ -177,9 +175,7 @@ import { rest, readNotification } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readNotification('notification_id', query )
-);
+const result = await client.request(readNotification('notification_id', query));
 ```
 
 </template>

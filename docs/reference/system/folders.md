@@ -63,9 +63,7 @@ import { rest, readFolders } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readFolders( query )
-);
+const result = await client.request(readFolders(query));
 ```
 
 </template>
@@ -154,9 +152,7 @@ import { rest, readFolder } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readFolder('folder_id', query )
-);
+const result = await client.request(readFolder('folder_id', query));
 ```
 
 </template>

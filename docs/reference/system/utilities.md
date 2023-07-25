@@ -42,11 +42,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, generateHash } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    generateHash('string')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(generateHash('string'));
 ```
 
 </template>
@@ -89,11 +88,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, generateHash } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    generateHash('test string to hash')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(generateHash('test string to hash'));
 ```
 
 </template>
@@ -134,11 +132,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, verifyHash } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    verifyHash('string_to_verify','hash')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(verifyHash('string_to_verify', 'hash'));
 ```
 
 </template>
@@ -187,10 +184,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, verifyHash } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    verifyHash('test_string','$argon2id$v=19$m=65536,t=3,p=4$c81PPca80cdIbclXlL1PFg$+EKJsuXlkleP2wFGsEmA7Xu56wEqVKHeDXRrTLIAoJg')
+	verifyHash(
+		'test_string',
+		'$argon2id$v=19$m=65536,t=3,p=4$c81PPca80cdIbclXlL1PFg$+EKJsuXlkleP2wFGsEmA7Xu56wEqVKHeDXRrTLIAoJg'
+	)
 );
 ```
 
@@ -210,8 +211,8 @@ If a collection has a sort field, this util can be used to move items in that ma
 
 ```json
 {
-	"item": id_item_to_move,
-	"to": id_item_moving_to
+	"item": "id_item_to_move",
+	"to": "id_item_moving_to"
 }
 ```
 
@@ -232,11 +233,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, utilitySort } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    utilitySort('collection_name','id_item_to_move','id_item_moving_to')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(utilitySort('collection_name', 'id_item_to_move', 'id_item_moving_to'));
 ```
 
 </template>
@@ -285,11 +285,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, utilitySort } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    utilitySort('things','2','4')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(utilitySort('things', '2', '4'));
 ```
 
 </template>
@@ -380,19 +379,26 @@ Export a larger data set to a file in the File Library
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, utilsExport } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    utilsExport('collection_name','file_format',{
-        "query_type": {
-            "field": {
-                "query_operation": "value"
-            }
-        }
-    }, {
-        "file": {
-		    "file_field": "value"
-	}})
+	utilsExport(
+		'collection_name',
+		'file_format',
+		{
+			query_type: {
+				field: {
+					query_operation: 'value',
+				},
+			},
+		},
+		{
+			file: {
+				file_field: 'value',
+			},
+		}
+	)
 );
 ```
 
@@ -451,19 +457,26 @@ Empty body
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, utilsExport } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    utilsExport('articles','json',{
-        "filter": {
-            "status": {
-                "_eq": "published"
-            }
-        }
-    }, {
-        "file": {
-		    "folder": "34e95c19-cc50-42f2-83c8-b97616ac2390"
-	}})
+	utilsExport(
+		'articles',
+		'json',
+		{
+			filter: {
+				status: {
+					_eq: 'published',
+				},
+			},
+		},
+		{
+			file: {
+				folder: '34e95c19-cc50-42f2-83c8-b97616ac2390',
+			},
+		}
+	)
 );
 ```
 
@@ -496,7 +509,8 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, clearCache } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(clearCache());
 ```

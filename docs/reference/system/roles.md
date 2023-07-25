@@ -82,12 +82,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRoles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRoles({
-        'fields': ['*']
-    })
+	readRoles({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -137,12 +138,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRoles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRoles({
-        'fields': ['*']
-    })
+	readRoles({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -175,12 +177,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRole } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRole('role_id',{
-        'fields': ['*']
-    })
+	readRole('role_id', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -225,12 +228,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRole } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRole('39a178f6-d4d6-40e1-b0e7-ec6daaac8747',{
-        'fields': ['*']
-    })
+	readRole('39a178f6-d4d6-40e1-b0e7-ec6daaac8747', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -275,17 +279,18 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createRole } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createRole({
-		'role_field_1': 'value_1',
-		'role_field_2': 'value_2',
-		'role_field_3': 'value_3',
-		'role_field_4': 'value_4',
-		'role_field_5': 'value_5'
-    })
-)
+	createRole({
+		role_field_1: 'value_1',
+		role_field_2: 'value_2',
+		role_field_3: 'value_3',
+		role_field_4: 'value_4',
+		role_field_5: 'value_5',
+	})
+);
 ```
 
 </template>
@@ -345,17 +350,18 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createRole } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createRole({
-        'name': 'Interns',
-        'icon': 'verified_user',
-        'description': null,
-        'admin_access': false,
-        'app_access': true
-    })
-)
+	createRole({
+		name: 'Interns',
+		icon: 'verified_user',
+		description: null,
+		admin_access: false,
+		app_access: true,
+	})
+);
 ```
 
 </template>
@@ -374,20 +380,20 @@ Create multiple new roles.
 
 ```json
 [
-{
-	"role_object_1_field_1": "value_1",
-	"role_object_1_field_2": "value_2",
-	"role_object_1_field_3": "value_3",
-	"role_object_1_field_4": "value_4",
-	"role_object_1_field_5": "value_5",
-},
-{
-	"role_object_2_field_1": "value_6",
-	"role_object_2_field_2": "value_7",
-	"role_object_2_field_3": "value_8",
-	"role_object_2_field_4": "value_9",
-	"role_object_2_field_5": "value_10",
-},
+	{
+		"role_object_1_field_1": "value_1",
+		"role_object_1_field_2": "value_2",
+		"role_object_1_field_3": "value_3",
+		"role_object_1_field_4": "value_4",
+		"role_object_1_field_5": "value_5"
+	},
+	{
+		"role_object_2_field_1": "value_6",
+		"role_object_2_field_2": "value_7",
+		"role_object_2_field_3": "value_8",
+		"role_object_2_field_4": "value_9",
+		"role_object_2_field_5": "value_10"
+	}
 ]
 ```
 
@@ -408,27 +414,27 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createRoles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createRoles(
-    [
+	createRoles([
 		{
-			'role_object_1_field_1': 'value_1',
-			'role_object_1_field_2': 'value_2',
-			'role_object_1_field_3': 'value_3',
-			'role_object_1_field_4': 'value_4',
-			'role_object_1_field_5': 'value_5',
+			role_object_1_field_1: 'value_1',
+			role_object_1_field_2: 'value_2',
+			role_object_1_field_3: 'value_3',
+			role_object_1_field_4: 'value_4',
+			role_object_1_field_5: 'value_5',
 		},
 		{
-			'role_object_2_field_1': 'value_6',
-			'role_object_2_field_2': 'value_7',
-			'role_object_2_field_3': 'value_8',
-			'role_object_2_field_4': 'value_9',
-			'role_object_2_field_5': 'value_10',
+			role_object_2_field_1: 'value_6',
+			role_object_2_field_2: 'value_7',
+			role_object_2_field_3: 'value_8',
+			role_object_2_field_4: 'value_9',
+			role_object_2_field_5: 'value_10',
 		},
-    ])
-)
+	])
+);
 ```
 
 </template>
@@ -500,27 +506,27 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createRoles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createRoles(
-    [
-        {
-            'name': 'Interns',
-            'icon': 'verified_user',
-            'description': null,
-            'admin_access': false,
-            'app_access': true
-        },
-        {
-            'name': 'Customers',
-            'icon': 'person',
-            'description': null,
-            'admin_access': false,
-            'app_access': false
-        }
-    ])
-)
+	createRoles([
+		{
+			name: 'Interns',
+			icon: 'verified_user',
+			description: null,
+			admin_access: false,
+			app_access: true,
+		},
+		{
+			name: 'Customers',
+			icon: 'person',
+			description: null,
+			admin_access: false,
+			app_access: false,
+		},
+	])
+);
 ```
 
 </template>
@@ -560,14 +566,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateRole } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateRole('role_id', {
-            'role_field': 'value',
-        }
-    )
-)
+	updateRole('role_id', {
+		role_field: 'value',
+	})
+);
 ```
 
 </template>
@@ -621,14 +627,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateRole } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateRole('a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658', {
-            'admin_access': true,
-        }
-    )
-)
+	updateRole('a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658', {
+		admin_access: true,
+	})
+);
 ```
 
 </template>
@@ -671,14 +677,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateRoles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateRoles(['role_1_id','role_2_id'], {
-            'field': 'value',
-        }
-    )
-)
+	updateRoles(['role_1_id', 'role_2_id'], {
+		field: 'value',
+	})
+);
 ```
 
 </template>
@@ -742,14 +748,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateRoles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658','1792dc2c-6142-4723-ae40-698d082ddc5e'], {
-            'admin_access': true,
-        }
-    )
-)
+	updateRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658', '1792dc2c-6142-4723-ae40-698d082ddc5e'], {
+		admin_access: true,
+	})
+);
 ```
 
 </template>
@@ -783,11 +789,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteRole } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteRole('role_id')
-)
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteRole('role_id'));
 ```
 
 </template>
@@ -823,11 +828,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteRole } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteRole('1792dc2c-6142-4723-ae40-698d082ddc5e')
-)
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteRole('1792dc2c-6142-4723-ae40-698d082ddc5e'));
 ```
 
 </template>
@@ -865,11 +869,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteRoles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteRoles(['role_1_id','role_2_id'])
-)
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteRoles(['role_1_id', 'role_2_id']));
 ```
 
 </template>
@@ -913,11 +916,12 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteRoles } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    deleteRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658','1792dc2c-6142-4723-ae40-698d082ddc5e'])
-)
+	deleteRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658', '1792dc2c-6142-4723-ae40-698d082ddc5e'])
+);
 ```
 
 </template>

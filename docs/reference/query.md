@@ -83,11 +83,14 @@ In GraphQL, this can be achieved using Union Types.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readItems('articles',{
-   'fields': ['title', 'date_created', { 'authors': ['name'] }]
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		fields: ['title', 'date_created', { authors: ['name'] }],
+	})
+);
 ```
 
 </template>
@@ -178,15 +181,18 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readItems('articles',{
-    "filter": {
-        "status": {
-            "_eq": "draft"
-        }
-    }
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		filter: {
+			status: {
+				_eq: 'draft',
+			},
+		},
+	})
+);
 ```
 
 </template>
@@ -203,7 +209,8 @@ query {
 	articles(
 		filter: {
 			sections: {
-				item__headings: { # Instead of: item:headings
+				item__headings: {
+					# Instead of: item:headings
 					title: { _eq: "Section 1" }
 				}
 			}
@@ -249,11 +256,14 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readItems('articles',{
-    'search': 'foobar'
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		search: 'foobar',
+	})
+);
 ```
 
 </template>
@@ -306,11 +316,14 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readItems('articles',{
-    'sort': '-date_created' //Sort by creation date descending
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		sort: '-date_created', //Sort by creation date descending
+	})
+);
 ```
 
 </template>
@@ -357,11 +370,14 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readItems('articles',{
-    'limit' : 3
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		limit: 3,
+	})
+);
 ```
 
 </template>
@@ -398,11 +414,14 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readItems('articles',{
-    'offset' : 5
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		offset: 5,
+	})
+);
 ```
 
 </template>
@@ -443,11 +462,14 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readItems('articles',{
-    'page' : 1
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		page: 1,
+	})
+);
 ```
 
 </template>
@@ -509,12 +531,15 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, aggregate } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(aggregate('articles', {
-        'aggregate' : { 'count' : '*' },
-        'groupBy' : 'authors'
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	aggregate('articles', {
+		aggregate: { count: '*' },
+		groupBy: 'authors',
+	})
+);
 ```
 
 </template>
@@ -585,17 +610,20 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest())
 
-const result = await client.request(readItems('articles', {
-        'filter' : {
-            'authors' : {
-                'name' : {
-                    '_eq': 'John'
-            }
-        }
-    }
-}));
+const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		filter: {
+			authors: {
+				name: {
+					_eq: 'John',
+				},
+			},
+		},
+	})
+);
 ```
 
 </template>
@@ -646,23 +674,26 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest())
 
-const result = await client.request(readItems('articles', {
-    alias: {
-        'all_translations': 'translations',
-        'dutch_translations': 'translations',
-    },
-    deep: {
-      dutch_translations: {
-        _filter: {
-            code: {
-                _eq: 'nl-NL'
-            }
-        }
-      }
-    }
-}));
+const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		alias: {
+			all_translations: 'translations',
+			dutch_translations: 'translations',
+		},
+		deep: {
+			dutch_translations: {
+				_filter: {
+					code: {
+						_eq: 'nl-NL',
+					},
+				},
+			},
+		},
+	})
+);
 ```
 
 </template>
@@ -765,11 +796,14 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readItems('articles',{
-    fields : ['month(date_created)']
-}))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readItems('articles', {
+		fields: ['month(date_created)'],
+	})
+);
 ```
 
 </template>

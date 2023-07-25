@@ -38,9 +38,10 @@ GET /schema/snapshot?export=yaml
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, schemaSnapshot } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(schemaSnapshot())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(schemaSnapshot());
 ```
 
 </template>
@@ -79,9 +80,10 @@ GET /schema/snapshot?export=yaml
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, schemaSnapshot } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(schemaSnapshot())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(schemaSnapshot());
 ```
 
 </template>
@@ -170,64 +172,65 @@ relations: []
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, schemaDiff } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(schemaDiff({
-    version: version_num,
-    directus: 'directus_version',
-    vendor: 'database_type',
-    collections:
-    [
-      {
-          collection: 'collection_name',
-          meta: {
-            // Meta fields
-          },
-          schema: {
-            // Schema fields
-          }
-      }
-    ],
-    fields:
-    [
-      {
-          collection: 'collection_name',
-          field: 'field_1_id',
-          type: 'field_1_type',
-          meta: {
-            // Meta fields
-          },
-          schema: {
-            // Meta fields
-          }
-      },
-      {
-        collection: 'collection_name',
-        field: 'field_2_id',
-        type: 'field_2_type',
-        meta: {
-          // Meta fields
-        },
-        schema: {
-          // Meta fields
-        }
-      },
-      {
-        collection: 'collection_name',
-        field: 'field_3_id',
-        type: 'field_3_type',
-        meta: {
-          // Meta fields
-        },
-        schema: {
-          // Meta fields
-        }
-      }
-    ],
-    relations: []
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
 
-console.dir(result, { depth: null })
+const result = await client.request(
+	schemaDiff({
+		version: version_num,
+		directus: 'directus_version',
+		vendor: 'database_type',
+		collections: [
+			{
+				collection: 'collection_name',
+				meta: {
+					// Meta fields
+				},
+				schema: {
+					// Schema fields
+				},
+			},
+		],
+		fields: [
+			{
+				collection: 'collection_name',
+				field: 'field_1_id',
+				type: 'field_1_type',
+				meta: {
+					// Meta fields
+				},
+				schema: {
+					// Meta fields
+				},
+			},
+			{
+				collection: 'collection_name',
+				field: 'field_2_id',
+				type: 'field_2_type',
+				meta: {
+					// Meta fields
+				},
+				schema: {
+					// Meta fields
+				},
+			},
+			{
+				collection: 'collection_name',
+				field: 'field_3_id',
+				type: 'field_3_type',
+				meta: {
+					// Meta fields
+				},
+				schema: {
+					// Meta fields
+				},
+			},
+		],
+		relations: [],
+	})
+);
+
+console.dir(result, { depth: null });
 ```
 
 :::
@@ -546,132 +549,133 @@ relations: []
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, schemaDiff } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(schemaDiff({
-    version: 1,
-    directus: '12.0.3',
-    vendor: 'postgres',
-    collections:
-    [
-      {
-          collection: 'posts',
-          meta: {
-          accountability: 'all',
-          archive_app_filter: true,
-          archive_field: null,
-          archive_value: null,
-          collapse: 'open',
-          collection: 'posts',
-          color: null,
-          display_template: null,
-          group: null,
-          hidden: false,
-          icon: null,
-          item_duplication_fields: null,
-          note: null,
-          singleton: false,
-          sort: null,
-          sort_field: null,
-          translations: null,
-          unarchive_value: null,
-          },
-          schema: {
-              name: 'posts'
-          }
-      }
-    ],
-    fields:
-    [
-      {
-          collection: 'posts',
-          field: 'id',
-          type: 'integer',
-          meta: {
-          collection: 'posts',
-          conditions: null,
-          display: null,
-          display_options: null,
-          field: 'id',
-          group: null,
-          hidden: true,
-          interface: 'input',
-          note: null,
-          options: null,
-          readonly: true,
-          required: false,
-          sort: null,
-          special: null,
-          translations: null,
-          validation: null,
-          validation_message: null,
-          width: 'full',
-          },
-          schema: {
-          name: 'id',
-          table: 'posts',
-          data_type: 'integer',
-          default_value: null,
-          max_length: null,
-          numeric_precision: null,
-          numeric_scale: null,
-          is_nullable: false,
-          is_unique: false,
-          is_primary_key: true,
-          is_generated: false,
-          generation_expression: null,
-          has_auto_increment: true,
-          foreign_key_table: null,
-          foreign_key_column: null,
-          }
-      },
-      {
-          collection: 'posts',
-          field: 'title',
-          type: 'string',
-          meta: {
-          collection: 'posts',
-          conditions: null,
-          display: null,
-          display_options: null,
-          field: 'title',
-          group: null,
-          hidden: false,
-          interface: 'input',
-          note: null,
-          options: null,
-          readonly: false,
-          required: false,
-          sort: null,
-          special: null,
-          translations: null,
-          validation: null,
-          validation_message: null,
-          width: 'full',
-          },
-          schema: {
-          name: 'title',
-          table: 'posts',
-          data_type: 'varchar',
-          default_value: null,
-          max_length: 255,
-          numeric_precision: null,
-          numeric_scale: null,
-          is_nullable: true,
-          is_unique: false,
-          is_primary_key: false,
-          is_generated: false,
-          generation_expression: null,
-          has_auto_increment: false,
-          foreign_key_table: null,
-          foreign_key_column: null,
-          }
-      }
-    ],
-    relations: []
-}));
+const client = createDirectus('https://directus.example.com').with(rest());
 
-console.dir(result, { depth: null })
+const result = await client.request(
+	schemaDiff({
+		version: 1,
+		directus: '12.0.3',
+		vendor: 'postgres',
+		collections: [
+			{
+				collection: 'posts',
+				meta: {
+					accountability: 'all',
+					archive_app_filter: true,
+					archive_field: null,
+					archive_value: null,
+					collapse: 'open',
+					collection: 'posts',
+					color: null,
+					display_template: null,
+					group: null,
+					hidden: false,
+					icon: null,
+					item_duplication_fields: null,
+					note: null,
+					singleton: false,
+					sort: null,
+					sort_field: null,
+					translations: null,
+					unarchive_value: null,
+				},
+				schema: {
+					name: 'posts',
+				},
+			},
+		],
+		fields: [
+			{
+				collection: 'posts',
+				field: 'id',
+				type: 'integer',
+				meta: {
+					collection: 'posts',
+					conditions: null,
+					display: null,
+					display_options: null,
+					field: 'id',
+					group: null,
+					hidden: true,
+					interface: 'input',
+					note: null,
+					options: null,
+					readonly: true,
+					required: false,
+					sort: null,
+					special: null,
+					translations: null,
+					validation: null,
+					validation_message: null,
+					width: 'full',
+				},
+				schema: {
+					name: 'id',
+					table: 'posts',
+					data_type: 'integer',
+					default_value: null,
+					max_length: null,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_nullable: false,
+					is_unique: false,
+					is_primary_key: true,
+					is_generated: false,
+					generation_expression: null,
+					has_auto_increment: true,
+					foreign_key_table: null,
+					foreign_key_column: null,
+				},
+			},
+			{
+				collection: 'posts',
+				field: 'title',
+				type: 'string',
+				meta: {
+					collection: 'posts',
+					conditions: null,
+					display: null,
+					display_options: null,
+					field: 'title',
+					group: null,
+					hidden: false,
+					interface: 'input',
+					note: null,
+					options: null,
+					readonly: false,
+					required: false,
+					sort: null,
+					special: null,
+					translations: null,
+					validation: null,
+					validation_message: null,
+					width: 'full',
+				},
+				schema: {
+					name: 'title',
+					table: 'posts',
+					data_type: 'varchar',
+					default_value: null,
+					max_length: 255,
+					numeric_precision: null,
+					numeric_scale: null,
+					is_nullable: true,
+					is_unique: false,
+					is_primary_key: false,
+					is_generated: false,
+					generation_expression: null,
+					has_auto_increment: false,
+					foreign_key_table: null,
+					foreign_key_column: null,
+				},
+			},
+		],
+		relations: [],
+	})
+);
+
+console.dir(result, { depth: null });
 ```
 
 :::
@@ -880,154 +884,157 @@ POST /schema/apply
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, schemaApply } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(schemaApply({
-  hash: '7d4499bc1e09bab3558b46cc09cd83fea2c05144',
-  diff: {
-    collections: [
-      {
-        "collection": "articles",
-        "diff": [
-          {
-            "kind": "N",
-            "rhs": {
-              "collection": "articles",
-              "meta": {
-                "accountability": "all",
-                "archive_app_filter": true,
-                "archive_field": null,
-                "archive_value": null,
-                "collapse": "open",
-                "collection": "articles",
-                "color": null,
-                "display_template": null,
-                "group": null,
-                "hidden": false,
-                "icon": null,
-                "item_duplication_fields": null,
-                "note": null,
-                "singleton": false,
-                "sort": null,
-                "sort_field": null,
-                "translations": null,
-                "unarchive_value": null
-              },
-              "schema": {
-                "name": "articles"
-              }
-            }
-          }
-        ]
-      }
-    ],
-    "fields": [
-      {
-        "collection": "articles",
-        "field": "id",
-        "diff": [
-          {
-            "kind": "N",
-            "rhs": {
-              "collection": "articles",
-              "field": "id",
-              "type": "integer",
-              "meta": {
-                "collection": "articles",
-                "conditions": null,
-                "display": null,
-                "display_options": null,
-                "field": "id",
-                "group": null,
-                "hidden": true,
-                "interface": "input",
-                "note": null,
-                "options": null,
-                "readonly": true,
-                "required": false,
-                "sort": null,
-                "special": null,
-                "translations": null,
-                "validation": null,
-                "validation_message": null,
-                "width": "full"
-              },
-              "schema": {
-                "name": "id",
-                "table": "articles",
-                "data_type": "integer",
-                "default_value": null,
-                "max_length": null,
-                "numeric_precision": null,
-                "numeric_scale": null,
-                "is_nullable": false,
-                "is_unique": false,
-                "is_primary_key": true,
-                "is_generated": false,
-                "generation_expression": null,
-                "has_auto_increment": true,
-                "foreign_key_table": null,
-                "foreign_key_column": null
-              }
-            }
-          }
-        ]
-      },
-      {
-        "collection": "articles",
-        "field": "title",
-        "diff": [
-          {
-            "kind": "N",
-            "rhs": {
-              "collection": "articles",
-              "field": "title",
-              "type": "string",
-              "meta": {
-                "collection": "articles",
-                "conditions": null,
-                "display": null,
-                "display_options": null,
-                "field": "title",
-                "group": null,
-                "hidden": false,
-                "interface": "input",
-                "note": null,
-                "options": null,
-                "readonly": false,
-                "required": false,
-                "sort": null,
-                "special": null,
-                "translations": null,
-                "validation": null,
-                "validation_message": null,
-                "width": "full"
-              },
-              "schema": {
-                "name": "title",
-                "table": "articles",
-                "data_type": "varchar",
-                "default_value": null,
-                "max_length": 255,
-                "numeric_precision": null,
-                "numeric_scale": null,
-                "is_nullable": true,
-                "is_unique": false,
-                "is_primary_key": false,
-                "is_generated": false,
-                "generation_expression": null,
-                "has_auto_increment": false,
-                "foreign_key_table": null,
-                "foreign_key_column": null
-              }
-            }
-          }
-        ]
-      }
-    ],
-    "relations": []
-  }
-}))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	schemaApply({
+		hash: '7d4499bc1e09bab3558b46cc09cd83fea2c05144',
+		diff: {
+			collections: [
+				{
+					collection: 'articles',
+					diff: [
+						{
+							kind: 'N',
+							rhs: {
+								collection: 'articles',
+								meta: {
+									accountability: 'all',
+									archive_app_filter: true,
+									archive_field: null,
+									archive_value: null,
+									collapse: 'open',
+									collection: 'articles',
+									color: null,
+									display_template: null,
+									group: null,
+									hidden: false,
+									icon: null,
+									item_duplication_fields: null,
+									note: null,
+									singleton: false,
+									sort: null,
+									sort_field: null,
+									translations: null,
+									unarchive_value: null,
+								},
+								schema: {
+									name: 'articles',
+								},
+							},
+						},
+					],
+				},
+			],
+			fields: [
+				{
+					collection: 'articles',
+					field: 'id',
+					diff: [
+						{
+							kind: 'N',
+							rhs: {
+								collection: 'articles',
+								field: 'id',
+								type: 'integer',
+								meta: {
+									collection: 'articles',
+									conditions: null,
+									display: null,
+									display_options: null,
+									field: 'id',
+									group: null,
+									hidden: true,
+									interface: 'input',
+									note: null,
+									options: null,
+									readonly: true,
+									required: false,
+									sort: null,
+									special: null,
+									translations: null,
+									validation: null,
+									validation_message: null,
+									width: 'full',
+								},
+								schema: {
+									name: 'id',
+									table: 'articles',
+									data_type: 'integer',
+									default_value: null,
+									max_length: null,
+									numeric_precision: null,
+									numeric_scale: null,
+									is_nullable: false,
+									is_unique: false,
+									is_primary_key: true,
+									is_generated: false,
+									generation_expression: null,
+									has_auto_increment: true,
+									foreign_key_table: null,
+									foreign_key_column: null,
+								},
+							},
+						},
+					],
+				},
+				{
+					collection: 'articles',
+					field: 'title',
+					diff: [
+						{
+							kind: 'N',
+							rhs: {
+								collection: 'articles',
+								field: 'title',
+								type: 'string',
+								meta: {
+									collection: 'articles',
+									conditions: null,
+									display: null,
+									display_options: null,
+									field: 'title',
+									group: null,
+									hidden: false,
+									interface: 'input',
+									note: null,
+									options: null,
+									readonly: false,
+									required: false,
+									sort: null,
+									special: null,
+									translations: null,
+									validation: null,
+									validation_message: null,
+									width: 'full',
+								},
+								schema: {
+									name: 'title',
+									table: 'articles',
+									data_type: 'varchar',
+									default_value: null,
+									max_length: 255,
+									numeric_precision: null,
+									numeric_scale: null,
+									is_nullable: true,
+									is_unique: false,
+									is_primary_key: false,
+									is_generated: false,
+									generation_expression: null,
+									has_auto_increment: false,
+									foreign_key_table: null,
+									foreign_key_column: null,
+								},
+							},
+						},
+					],
+				},
+			],
+			relations: [],
+		},
+	})
+);
 ```
 
 :::

@@ -427,11 +427,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, passwordRequest } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    passwordRequest('user_email')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordRequest('user_email'));
 ```
 
 </template>
@@ -477,11 +476,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, passwordRequest } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    passwordRequest('admin@example.com')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordRequest('admin@example.com'));
 ```
 
 </template>
@@ -523,11 +521,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, passwordReset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    passwordReset('reset_token','new_password')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordReset('reset_token', 'new_password'));
 ```
 
 </template>
@@ -572,11 +569,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, passwordReset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    passwordReset('reset_token','new_password')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordReset('reset_token', 'new_password'));
 ```
 
 </template>
@@ -628,11 +624,10 @@ To learn more about setting up auth providers, see
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readProviders } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    readProviders()
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readProviders());
 ```
 
 </template>
@@ -681,11 +676,10 @@ Whether or not the default authentication provider is disabled.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readProviders } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    readProviders()
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readProviders());
 ```
 
 </template>

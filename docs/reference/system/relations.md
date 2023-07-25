@@ -144,12 +144,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRelations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRelations({
-        'fields' : ['*']
-    })
+	readRelations({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -191,12 +192,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRelations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRelations({
-        'fields' : ['*']
-    })
+	readRelations({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -238,12 +240,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRelationByCollection } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRelationByCollection('collection_name',{
-        'fields' : ['*']
-    })
+	readRelationByCollection('collection_name', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -285,12 +288,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRelationByCollection } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRelationByCollection('articles',{
-        'fields' : ['*']
-    })
+	readRelationByCollection('articles', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -325,12 +329,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRelation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRelation('collection_name', 'field_name',{
-        'fields' : ['*']
-    })
+	readRelation('collection_name', 'field_name', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -373,12 +378,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRelation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRelation('articles', 'authors',{
-        'fields' : ['*']
-    })
+	readRelation('articles', 'authors', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -421,14 +427,15 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createRelation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createRelation({
-		'relations_field_1': 'value_1',
-		'relations_field_2': 'value_2',
-		'relations_field_3': 'value_3'
-    })
+	createRelation({
+		relations_field_1: 'value_1',
+		relations_field_2: 'value_2',
+		relations_field_3: 'value_3',
+	})
 );
 ```
 
@@ -485,14 +492,15 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createRelation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createRelation({
-        'collection': 'articles',
-        'field': 'header_image',
-        'related_collection' : 'header_images'
-    })
+	createRelation({
+		collection: 'articles',
+		field: 'header_image',
+		related_collection: 'header_images',
+	})
 );
 ```
 
@@ -535,14 +543,15 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateRelation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateRelation('collection_name', 'field_name', {
-        'field': {
-		    'sub_field': 'value'
-	    }
-    })
+	updateRelation('collection_name', 'field_name', {
+		field: {
+			sub_field: 'value',
+		},
+	})
 );
 ```
 
@@ -597,14 +606,15 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateRelation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateRelation('articles', 'authors', {
-        'meta': {
-		    'sort_field': 'articles'
-	    }
-    })
+	updateRelation('articles', 'authors', {
+		meta: {
+			sort_field: 'articles',
+		},
+	})
 );
 ```
 
@@ -639,11 +649,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteRelation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteRelation('collection_name', 'field_name')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteRelation('collection_name', 'field_name'));
 ```
 
 </template>
@@ -680,11 +689,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteRelation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteRelation('articles', 'authors')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteRelation('articles', 'authors'));
 ```
 
 </template>

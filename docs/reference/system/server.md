@@ -43,9 +43,10 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readOpenApiSpec } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readOpenApiSpec())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readOpenApiSpec());
 ```
 
 </template>
@@ -77,9 +78,10 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readOpenApiSpec } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readOpenApiSpec())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readOpenApiSpec());
 ```
 
 </template>
@@ -121,9 +123,10 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readGraphqlSdl } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readGraphqlSdl('scope'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readGraphqlSdl('scope'));
 ```
 
 </template>
@@ -181,9 +184,10 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readGraphqlSdl } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readGraphqlSdl('item'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readGraphqlSdl('item'));
 ```
 
 </template>
@@ -217,9 +221,10 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverPing } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(serverPing())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverPing());
 ```
 
 </template>
@@ -253,9 +258,10 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverPing } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(serverPing())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverPing());
 ```
 
 </template>
@@ -295,9 +301,10 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverInfo } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(serverInfo())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverInfo());
 ```
 
 </template>
@@ -356,9 +363,10 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverInfo } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(serverInfo())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverInfo());
 ```
 
 </template>
@@ -460,9 +468,10 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverHealth } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(serverHealth())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverHealth());
 ```
 
 </template>
@@ -508,9 +517,10 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, serverHealth } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(serverHealth())
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverHealth());
 ```
 
 </template>

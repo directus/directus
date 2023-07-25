@@ -108,11 +108,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readPresets({
-        'fields' : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPresets({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -159,11 +161,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(readPresets({
-        'fields' : ['*']
-    })
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readPresets({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -198,12 +202,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPreset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readPreset('preset_id',{
-        'fields' : ['*']
-    })
+	readPreset('preset_id', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -245,12 +250,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readPreset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readPreset('27',{
-        'fields' : ['*']
-    })
+	readPreset('27', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -293,12 +299,15 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPreset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(createPreset({
-    'preset_field_1': 'value_1',
-    'preset_field_2': 'value_2'
-}))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createPreset({
+		preset_field_1: 'value_1',
+		preset_field_2: 'value_2',
+	})
+);
 ```
 
 </template>
@@ -351,12 +360,15 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPreset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(createPreset({
-    'collection': 'articles',
-    'layout': 'kanban'
-}))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createPreset({
+		collection: 'articles',
+		layout: 'kanban',
+	})
+);
 ```
 
 </template>
@@ -405,20 +417,21 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(createPresets(
-    [
-        {
-		'preset_1_field_1': 'value_1',
-		'preset_1_field_2': 'value_2'
-        },
-        {
-		'preset_2_field_1': 'value_3',
-		'preset_2_field_2': 'value_4'
-        }
-    ]
-))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createPresets([
+		{
+			preset_1_field_1: 'value_1',
+			preset_1_field_2: 'value_2',
+		},
+		{
+			preset_2_field_1: 'value_3',
+			preset_2_field_2: 'value_4',
+		},
+	])
+);
 ```
 
 </template>
@@ -489,20 +502,21 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createPresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(createPresets(
-    [
-        {
-        'collection': 'articles',
-        'layout': 'kanban'
-        },
-        {
-        'collection': 'authors',
-        'layout': 'tabular'
-        }
-    ]
-))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createPresets([
+		{
+			collection: 'articles',
+			layout: 'kanban',
+		},
+		{
+			collection: 'authors',
+			layout: 'tabular',
+		},
+	])
+);
 ```
 
 </template>
@@ -542,13 +556,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatePreset('preset_id', {
-        'field' : 'value'
-    })
-)
+	updatePreset('preset_id', {
+		field: 'value',
+	})
+);
 ```
 
 </template>
@@ -599,13 +614,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePreset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatePreset('24',{
-        'layout' : 'tabular'
-    })
-)
+	updatePreset('24', {
+		layout: 'tabular',
+	})
+);
 ```
 
 </template>
@@ -648,13 +664,14 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatePresets(['preset_1_id','preset_2_id'], {
-        'field' : 'value'
-    })
-)
+	updatePresets(['preset_1_id', 'preset_2_id'], {
+		field: 'value',
+	})
+);
 ```
 
 </template>
@@ -712,13 +729,14 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updatePresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updatePresets(['24','34'] ,{
-        'layout' : 'tabular'
-    })
-)
+	updatePresets(['24', '34'], {
+		layout: 'tabular',
+	})
+);
 ```
 
 </template>
@@ -752,11 +770,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePreset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deletePreset('preset_id')
-)
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePreset('preset_id'));
 ```
 
 </template>
@@ -792,11 +809,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePreset } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deletePreset('24')
-)
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePreset('24'));
 ```
 
 </template>
@@ -834,11 +850,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deletePreset(['preset_1_id','preset_2_id'])
-)
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePreset(['preset_1_id', 'preset_2_id']));
 ```
 
 </template>
@@ -882,11 +897,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deletePresets } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deletePreset(['24','48'])
-)
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deletePreset(['24', '48']));
 ```
 
 </template>

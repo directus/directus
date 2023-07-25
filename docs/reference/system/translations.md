@@ -49,13 +49,14 @@ List all translations that exist in Directus.
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, readTranslations} from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+import { rest, readTranslations } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readTranslations({
-        'fields' : ['*']
-    })
+	readTranslations({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -88,12 +89,13 @@ available, data will be an empty array.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readTranslations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readTranslations({
-        'fields' : ['*']
-    })
+	readTranslations({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -117,12 +119,13 @@ List an existing translation by primary key.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readTranslation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readTranslation('translation_id',{
-        'fields' : ['*']
-    })
+	readTranslation('translation_id', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -150,12 +153,13 @@ Returns the requested [translation object](#the-translations-object).
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readTranslation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readTranslation('7b8c250a-6864-480f-b230-a4035d155123',{
-        'fields' : ['*']
-    })
+	readTranslation('7b8c250a-6864-480f-b230-a4035d155123', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -187,14 +191,15 @@ Create a new translation.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createTranslation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createTranslation({
-		'translation_field_1': 'value_1',
-		'translation_field_2': 'value_2',
-		'translation_field_3': 'value_3'
-    })
+	createTranslation({
+		translation_field_1: 'value_1',
+		translation_field_2: 'value_2',
+		translation_field_3: 'value_3',
+	})
 );
 ```
 
@@ -234,15 +239,15 @@ Returns the [translation object](#the-translations-object) for the created trans
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createTranslation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createTranslation({
-        'language' : 'fr_FR',
-        'key' : 'test',
-        'value' : 'test'
-
-    })
+	createTranslation({
+		language: 'fr_FR',
+		key: 'test',
+		value: 'test',
+	})
 );
 ```
 
@@ -281,21 +286,21 @@ Create multiple new translation.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createTranslations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createTranslations(
-	[
+	createTranslations([
 		{
-			'translation_1_field_1': 'value_1',
-			'translation_1_field_2': 'value_2',
-			'translation_1_field_3': 'value_3'
+			translation_1_field_1: 'value_1',
+			translation_1_field_2: 'value_2',
+			translation_1_field_3: 'value_3',
 		},
 		{
-			'translation_2_field_1': 'value_4',
-			'translation_2_field_2': 'value_5',
-			'translation_2_field_3': 'value_6'
-		}
+			translation_2_field_1: 'value_4',
+			translation_2_field_2: 'value_5',
+			translation_2_field_3: 'value_6',
+		},
 	])
 );
 ```
@@ -343,22 +348,22 @@ Returns the [translation object](#the-translations-object) for the created trans
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createTranslations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createTranslations(
-    [
-        {
-        'language' : 'fr-FR',
-        'key' : 'test',
-        'value' : 'test'
-        },
-        {
-        'language' : 'it-IT',
-        'key' : 'test_2',
-        'value' : 'test_2'
-        }
-    ])
+	createTranslations([
+		{
+			language: 'fr-FR',
+			key: 'test',
+			value: 'test',
+		},
+		{
+			language: 'it-IT',
+			key: 'test_2',
+			value: 'test_2',
+		},
+	])
 );
 ```
 
@@ -388,12 +393,13 @@ Update an existing translation.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateTranslation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateTranslation('translation_id',{
-        'translation_field' : 'value'
-    })
+	updateTranslation('translation_id', {
+		translation_field: 'value',
+	})
 );
 ```
 
@@ -431,12 +437,13 @@ Returns the [translation object](#the-translations-object) for the updated trans
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateTranslation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateTranslation('74f2aa3e-ad5c-424a-9ace-adab5ecb0fca',{
-        'value' : 'this is the new value'
-    })
+	updateTranslation('74f2aa3e-ad5c-424a-9ace-adab5ecb0fca', {
+		value: 'this is the new value',
+	})
 );
 ```
 
@@ -469,12 +476,13 @@ Update multiple existing translations.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateTranslations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateTranslations(['translation_1_id','translation_2_id'],{
-        'field' : 'value'
-    })
+	updateTranslations(['translation_1_id', 'translation_2_id'], {
+		field: 'value',
+	})
 );
 ```
 
@@ -519,12 +527,13 @@ Returns the [translation objects](#the-translations-object) for the updated tran
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateTranslations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateTranslations(['91be30ed-4f4e-481f-84be-860e0c25b035','74f2aa3e-ad5c-424a-9ace-adab5ecb0fcajj'],{
-        'value' : 'this is the new value'
-    })
+	updateTranslations(['91be30ed-4f4e-481f-84be-860e0c25b035', '74f2aa3e-ad5c-424a-9ace-adab5ecb0fcajj'], {
+		value: 'this is the new value',
+	})
 );
 ```
 
@@ -548,11 +557,10 @@ Delete an existing translation.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteTranslation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteTranslation('id')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteTranslation('id'));
 ```
 
 </template>
@@ -575,11 +583,10 @@ Empty body.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteTranslation } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(
-    deleteTranslation('91be30ed-4f4e-481f-84be-860e0c25b035')
-);
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteTranslation('91be30ed-4f4e-481f-84be-860e0c25b035'));
 ```
 
 </template>
@@ -606,10 +613,11 @@ Delete multiple existing translations.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteTranslations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    deleteTranslations(["translation_1_key", "translation_2_key", "translation_3_key"])
+	deleteTranslations(['translation_1_key', 'translation_2_key', 'translation_3_key'])
 );
 ```
 
@@ -641,10 +649,15 @@ Empty body.
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteTranslations } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    deleteTranslations(["25821236-8c2a-4f89-8fdc-c7d01f35877d", "02b9486e-4273-4fd5-b94b-e18fd923d1ed", "7d62f1e9-a83f-407b-84f8-1c184f014501"])
+	deleteTranslations([
+		'25821236-8c2a-4f89-8fdc-c7d01f35877d',
+		'02b9486e-4273-4fd5-b94b-e18fd923d1ed',
+		'7d62f1e9-a83f-407b-84f8-1c184f014501',
+	])
 );
 ```
 

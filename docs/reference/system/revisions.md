@@ -85,12 +85,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRevisions } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRevisions({
-        'fields': ['*']
-    })
+	readRevisions({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -138,12 +139,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRevisions } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRevisions({
-        'fields': ['*']
-    })
+	readRevisions({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -178,12 +180,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRevision } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRevision('revision_id',{
-        'fields': ['*']
-    })
+	readRevision('revision_id', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -226,12 +229,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readRevision } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readRevision('53201',{
-        'fields': ['*']
-    })
+	readRevision('53201', {
+		fields: ['*'],
+	})
 );
 ```
 

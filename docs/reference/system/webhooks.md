@@ -80,12 +80,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readWebhooks({
-        'fields' : ['*']
-    })
+	readWebhooks({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -132,12 +133,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readWebhooks({
-        'fields' : ['*']
-    })
+	readWebhooks({
+		fields: ['*'],
+	})
 );
 ```
 
@@ -172,12 +174,13 @@ type Query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readWebhook } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readWebhook('webhook_id',{
-        'fields' : ['*']
-    })
+	readWebhook('webhook_id', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -220,12 +223,13 @@ query {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, readWebhook } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    readWebhook('2',{
-        'fields' : ['*']
-    })
+	readWebhook('2', {
+		fields: ['*'],
+	})
 );
 ```
 
@@ -269,15 +273,16 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createWebhook } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createWebhook({
-        'name' : 'webhook_name',
-        'collections' : 'collection_name',
-        'actions' : ['action_1','action_2','action_3'],
-        'url' : 'webhook_url'
-    })
+	createWebhook({
+		name: 'webhook_name',
+		collections: 'collection_name',
+		actions: ['action_1', 'action_2', 'action_3'],
+		url: 'webhook_url',
+	})
 );
 ```
 
@@ -336,16 +341,17 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createWebhook } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createWebhook({
-        'name' : 'Articles Activity',
-        'method' : 'POST',
-        'collections' : 'articles',
-        'actions' : ['create','update','delete'],
-        'url' : 'https://directus.example.com/articles_activity'
-    })
+	createWebhook({
+		name: 'Articles Activity',
+		method: 'POST',
+		collections: 'articles',
+		actions: ['create', 'update', 'delete'],
+		url: 'https://directus.example.com/articles_activity',
+	})
 );
 ```
 
@@ -397,24 +403,24 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createWebhooks(
-    [
-        {
-			'name': 'name_1',
-			'collections': ['collection to act on'],
-			'actions': ['webhook_action_1', 'webhook_action_2'],
-			'url': 'url of webhook_1'
-        },
-        {
-			'name' : 'webhook_2_name',
-			'actions' : ['action_1','action_2','action_3'],
-			'collections' : 'collection_2_name',
-			'url' : 'webhook_2_url'
-		}
-    ])
+	createWebhooks([
+		{
+			name: 'name_1',
+			collections: ['collection to act on'],
+			actions: ['webhook_action_1', 'webhook_action_2'],
+			url: 'url of webhook_1',
+		},
+		{
+			name: 'webhook_2_name',
+			actions: ['action_1', 'action_2', 'action_3'],
+			collections: 'collection_2_name',
+			url: 'webhook_2_url',
+		},
+	])
 );
 ```
 
@@ -484,26 +490,26 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, createWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    createWebhooks(
-    [
-        {
-        'name' : 'Articles Activity',
-        'method' : 'POST',
-        'collections' : 'articles',
-        'actions' : ['create','update','delete'],
-        'url' : 'https://directus.example.com/articles_activity'
-         },
-        {
-        'name' : 'Author Changes',
-        'method' : 'POST',
-        'collections' : 'authors',
-        'actions' : ['update'],
-        'url' : 'https://directus.example.com/authors_changes'
-         }
-    ])
+	createWebhooks([
+		{
+			name: 'Articles Activity',
+			method: 'POST',
+			collections: 'articles',
+			actions: ['create', 'update', 'delete'],
+			url: 'https://directus.example.com/articles_activity',
+		},
+		{
+			name: 'Author Changes',
+			method: 'POST',
+			collections: 'authors',
+			actions: ['update'],
+			url: 'https://directus.example.com/authors_changes',
+		},
+	])
 );
 ```
 
@@ -544,12 +550,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateWebhook } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateWebhook('webhook_id', {
-        'field' : 'value',
-    })
+	updateWebhook('webhook_id', {
+		field: 'value',
+	})
 );
 ```
 
@@ -600,12 +607,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateWebhook } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateWebhook('6', {
-        'actions' : ['update','delete'],
-    })
+	updateWebhook('6', {
+		actions: ['update', 'delete'],
+	})
 );
 ```
 
@@ -649,12 +657,13 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateWebhooks(['webhook_1_id','webhook_2_id'], {
-        'webhook_field' : 'value',
-    })
+	updateWebhooks(['webhook_1_id', 'webhook_2_id'], {
+		webhook_field: 'value',
+	})
 );
 ```
 
@@ -714,12 +723,13 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
-    updateWebhooks(['5','6'], {
-        'status' : 'inactive',
-    })
+	updateWebhooks(['5', '6'], {
+		status: 'inactive',
+	})
 );
 ```
 
@@ -754,9 +764,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteWebhook } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(deleteWebhook('webhook_id'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteWebhook('webhook_id'));
 ```
 
 </template>
@@ -792,9 +803,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteWebhook } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(deleteWebhook('1'))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteWebhook('1'));
 ```
 
 </template>
@@ -832,9 +844,10 @@ type Mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(deleteWebhooks(['webhook_1_id','webhook_2_id']))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteWebhooks(['webhook_1_id', 'webhook_2_id']));
 ```
 
 </template>
@@ -878,9 +891,10 @@ mutation {
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, deleteWebhooks } from '@directus/sdk/rest';
-const client = createDirectus('https://directus.example.com').with(rest())
 
-const result = await client.request(deleteWebhooks(['2','3']))
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteWebhooks(['2', '3']));
 ```
 
 </template>
