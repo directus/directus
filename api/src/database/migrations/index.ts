@@ -63,3 +63,4 @@ export * as migration_20220826A_add_origin_to_accountability from './20220826A-a
 export * as migration_20230401A_update_material_icons from './20230401A-update-material-icons.js';
 export * as migration_20230525A_add_preview_settings from './20230525A-add-preview-settings.js';
 export * as migration_20230526A_migrate_translation_strings from './20230526A-migrate-translation-strings.js';
+export * as migration_20230721A_require_shares_fields from './20230721A-require-shares-fields.js';
