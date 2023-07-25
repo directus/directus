@@ -71,6 +71,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, login } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// login using the authentication composable
+const result = await client.login('email', 'password');
+
+// login http request
+const result = await client.request(login('email', 'password'));
+```
+
+</template>
 </SnippetToggler>
 
 #### Request Body
@@ -138,6 +155,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, login } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// login using the authentication composable
+const result = await client.login('admin@example.com', 'd1r3ctu5');
+
+// login http request
+const result = await client.request(login('admin@example.com', 'd1r3ctu5'));
+```
+
+</template>
 </SnippetToggler>
 
 ## Refresh
@@ -170,6 +204,23 @@ mutation {
 		refresh_token
 	}
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, refresh } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// refresh using the authentication composable
+const result = await client.refresh();
+
+// refresh http request
+const result = await client.request(refresh('refresh_token'));
 ```
 
 </template>
@@ -225,6 +276,23 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, refresh } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// refresh using the authentication composable
+const result = await client.refresh();
+
+// refresh http request
+const result = await client.request(refresh('gmPd...8wuB'));
+```
+
+</template>
 </SnippetToggler>
 
 ## Logout
@@ -253,6 +321,23 @@ Invalidate the refresh token thus destroying the user's session.
 mutation {
 	auth_logout(refresh_token: "refresh_token")
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, logout } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// logout using the authentication composable
+const result = await client.logout();
+
+// logout http request
+const result = await client.request(logout('refresh_token'));
 ```
 
 </template>
@@ -286,6 +371,23 @@ to submit it here.
 mutation {
 	auth_logout(refresh_token: "gmPd...8wuB")
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/authentication';
+import { rest, logout } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(authentication()).with(rest())
+
+// logout using the authentication composable
+const result = await client.logout();
+
+// logout http request
+const result = await client.request(logout('gmPd...8wuB'));
 ```
 
 </template>
