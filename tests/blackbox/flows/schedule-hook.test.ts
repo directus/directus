@@ -8,7 +8,7 @@ import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
 import request from 'supertest';
-import { collection, envTargetVariable, fieldData, flowName, seedDBValues } from './schedule-hook.seed';
+import { envTargetVariable, flowName, logPrefix, seedDBValues } from './schedule-hook.seed';
 
 let isSeeded = false;
 
@@ -40,6 +40,7 @@ describe('Flows Schedule Hook Tests', () => {
 			envRedis1[vendor].SYNCHRONIZATION_STORE = 'redis';
 			envRedis1[vendor].SYNCHRONIZATION_NAMESPACE = `directus-${vendor}`;
 			envRedis1[vendor][envTargetVariable] = 'redis-1';
+			envRedis1[vendor].LOG_LEVEL = 'info';
 
 			const envRedis2 = cloneDeep(envRedis1);
 			envRedis2[vendor][envTargetVariable] = 'redis-2';
@@ -99,6 +100,23 @@ describe('Flows Schedule Hook Tests', () => {
 			const env = envs[vendor][0]; // All instances are connected via MESSENGER
 			const flowId = flowIds[vendor];
 
+			const flowExecutions: string[] = [];
+
+			const processLogLine = (chunk: any) => {
+				const logLine = String(chunk);
+
+				if (logLine.includes(logPrefix)) {
+					flowExecutions.push(logLine.substring(logLine.indexOf(logPrefix) + logPrefix.length));
+				}
+			};
+
+			// Fetch log output of all instances
+			for (const instance of directusInstances[vendor]) {
+				// Discard data up to this point
+				instance.stdout?.read();
+				instance.stdout?.on('data', processLogLine);
+			}
+
 			// Action
 			await request(getUrl(vendor, env))
 				.patch(`/flows/${flowId}`)
@@ -112,37 +130,17 @@ describe('Flows Schedule Hook Tests', () => {
 				.send({ status: 'inactive' })
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-			const redisRunCount = (
-				await request(getUrl(vendor, env))
-					.get(`/items/${collection}`)
-					.query({
-						filter: JSON.stringify({
-							[fieldData]: { _starts_with: 'redis' },
-						}),
-						aggregate: {
-							count: 'id',
-						},
-					})
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-			).body.data[0].count.id;
+			// Stop fetching log output
+			for (const instance of directusInstances[vendor]) {
+				instance.stdout?.off('data', processLogLine);
+			}
 
-			const memoryRunCount = (
-				await request(getUrl(vendor, env))
-					.get(`/items/${collection}`)
-					.query({
-						filter: JSON.stringify({
-							[fieldData]: { _starts_with: 'memory' },
-						}),
-						aggregate: {
-							count: 'id',
-						},
-					})
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-			).body.data[0].count.id;
+			const redisExecutionCount = flowExecutions.filter((execution) => execution.includes('redis-')).length;
+			const memoryExecutionCount = flowExecutions.filter((execution) => execution.includes('memory-')).length;
 
 			// Assert
-			expect(parseInt(redisRunCount)).toBe(5);
-			expect(parseInt(memoryRunCount)).toBe(5);
+			expect(redisExecutionCount).toBe(5);
+			expect(memoryExecutionCount).toBe(5);
 		});
 	});
 });
