@@ -1,6 +1,4 @@
-# Directus JS SDK
-
-> This is a BETA release, expect that things do not work!
+# Directus JavaScript SDK
 
 The design goals for this rebuild:
 
@@ -113,7 +111,7 @@ const stop = client.onWebSocket('message', (message) => {
 client.sendMessage({ type: 'ping' });
 ```
 
-## Build your schema
+## Build Your Schema
 
 ```ts
 // The main schema type containing all collections available

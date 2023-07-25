@@ -107,8 +107,7 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 
 ## The JavaScript SDK (`/sdk`)
 
-Contains the new Directus JavaScript SDK available as [@directus/sdk](</packages/SDK (beta)/>) package. Currently in
-beta state.
+Contains the new Directus JavaScript SDK available as [@directus/sdk](/packages/SDK/) package.
 
 ## Tests (`/tests`)
 
