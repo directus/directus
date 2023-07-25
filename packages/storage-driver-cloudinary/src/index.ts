@@ -114,8 +114,8 @@ export class DriverCloudinary implements Driver {
 	 * Generates the Authorization header value for Cloudinary's basic auth endpoints
 	 */
 	private getBasicAuth() {
-		const creds = `${this.apiKey}:${this.apiSecret}`;
-		const base64 = Buffer.from(creds).toString('base64');
+		const credentials = `${this.apiKey}:${this.apiSecret}`;
+		const base64 = Buffer.from(credentials).toString('base64');
 		return `Basic ${base64}`;
 	}
 
