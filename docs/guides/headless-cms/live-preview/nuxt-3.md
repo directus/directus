@@ -31,7 +31,8 @@ You will need:
 
 If you're just getting started with Nuxt and Directus, reference our
 [guide](/guides/headless-cms/build-static-website/nuxt-3.html) to set up Nuxt 3 with Directus by creating a custom
-plugin. This guide assumes you have already set up the plugin and have access to `this.$directus` in your project.
+plugin. This guide assumes you have already set up the plugin and have access to `this.$directus`, `this.$readItem` and
+`this.$readItems` in your project.
 
 In your Directus project, create a new `posts` collection. Add `title` and `content` fields to your collection. Create
 an item in the new collection, and make sure the Public role has Read access to the collection.
@@ -44,7 +45,7 @@ Create an `index.vue` file to load all of the items in the posts collection:
 <template>
 	<h1>Blog</h1>
 	<ul>
-		<li v-for="post in posts.data" :key="post.id">
+		<li v-for="post in posts" :key="post.id">
 			<NuxtLink :href="`/${post.slug}`">
 				<h2>{{ post.title }}</h2>
 			</NuxtLink>
@@ -53,10 +54,10 @@ Create an `index.vue` file to load all of the items in the posts collection:
 </template>
 
 <script setup>
-const { $directus } = useNuxtApp()
+const { $directus, $readItems } = useNuxtApp()
 
-const { data: posts } = await useAsyncData('posts', () => {
-  return $directus.items('posts').readByQuery()
+const posts = await useAsyncData('posts', () => {
+  return $directus.request($readItems('posts'))
 })
 </script>
 ```
@@ -71,11 +72,11 @@ Create a `[id].vue` file that will load for single items in the collection:
 </template>
 
 <script setup>
-const { $directus } = useNuxtApp();
+const { $directus, $readItem } = useNuxtApp();
 const route = useRoute();
 
-const { data: post } = await useAsyncData('post', () => {
-  return $directus.items('posts').readOne(route.params.id);
+const post = await useAsyncData('post', () => {
+  return $directus.request($readItem('posts', route.params.id))
 });
 
 if (!post.value) throw createError({
@@ -124,18 +125,18 @@ In `[id].vue`, access the new `$preview` helper and re-fetch data if `$preview` 
 
 ```vue
 <script setup>
-const { $directus } = useNuxtApp(); // [!code --]
-const { $directus, $preview } = useNuxtApp(); // [!code ++]
+const { $directus, $readItem } = useNuxtApp(); // [!code --]
+const { $directus, $readItem, $preview } = useNuxtApp(); // [!code ++]
 const route = useRoute();
 
-if($preview) { // [!code ++]
-  const { data: post } = await useAsyncData('post', () => { // [!code ++]
-    return $directus.items('posts').readOne(route.params.id); // [!code ++]
+if ($preview) { // [!code ++]
+  const post = await useAsyncData('post', () => { // [!code ++]
+    return $directus.request($readItem('posts', route.params.id)) // [!code ++]
   }); // [!code ++]
 } // [!code ++]
 
-const { data: post } = await useAsyncData('post', () => {
-  return $directus.items('posts').readOne(route.params.id);
+const post = await useAsyncData('post', () => {
+  return $directus.request($readItem('posts', route.params.id))
 });
 
 if (!post.value) throw createError({

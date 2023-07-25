@@ -225,7 +225,7 @@ When configuring permissions, `$CURRENT_USER` and `$CURRENT_ROLE` allow you to s
 current user/role as well as the root ID. For example: `$CURRENT_ROLE.name` or `$CURRENT_USER.avatar.filesize`. This
 includes custom fields that were added to the directus_users/directus_roles tables.
 
-Note: This feature is only available for permissions, validation, and presets. Regular filters and conditional fields
-currently only support the root ID.
+Note: This feature is available for permissions, validation, presets and conditional fields. Regular filters only
+support the root ID.
 
 :::

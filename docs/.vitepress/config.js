@@ -323,113 +323,104 @@ function sidebar() {
 					text: 'Filter Rules',
 				},
 				{
-					link: '/reference/sdk',
-					text: 'JS-SDK',
+					link: '/reference/items',
+					text: 'Items',
 				},
 				{
-					text: 'Endpoints',
-					items: [
-						{
-							link: '/reference/items',
-							text: 'Items',
-						},
-						{
-							link: '/reference/system/activity',
-							text: 'Activity',
-						},
-						{
-							link: '/reference/system/collections',
-							text: 'Collections',
-						},
-						{
-							link: '/reference/system/dashboards',
-							text: 'Dashboards',
-						},
-						{
-							link: '/reference/system/extensions',
-							text: 'Extensions',
-						},
-						{
-							link: '/reference/system/fields',
-							text: 'Fields',
-						},
-						{
-							link: '/reference/files',
-							text: 'Files',
-						},
-						{
-							link: '/reference/system/flows',
-							text: 'Flows',
-						},
-						{
-							link: '/reference/system/folders',
-							text: 'Folders',
-						},
-						{
-							link: '/reference/system/notifications',
-							text: 'Notifications',
-						},
-						{
-							link: '/reference/system/operations',
-							text: 'Operations',
-						},
-						{
-							link: '/reference/system/panels',
-							text: 'Panels',
-						},
-						{
-							link: '/reference/system/permissions',
-							text: 'Permissions',
-						},
-						{
-							link: '/reference/system/presets',
-							text: 'Presets',
-						},
-						{
-							link: '/reference/system/relations',
-							text: 'Relations',
-						},
-						{
-							link: '/reference/system/revisions',
-							text: 'Revisions',
-						},
-						{
-							link: '/reference/system/roles',
-							text: 'Roles',
-						},
-						{
-							link: '/reference/system/schema',
-							text: 'Schema',
-						},
-						{
-							link: '/reference/system/server',
-							text: 'Server',
-						},
-						{
-							link: '/reference/system/settings',
-							text: 'Settings',
-						},
-						{
-							link: '/reference/system/shares',
-							text: 'Shares',
-						},
-						{
-							link: '/reference/system/translations',
-							text: 'Translations',
-						},
-						{
-							link: '/reference/system/users',
-							text: 'Users',
-						},
-						{
-							link: '/reference/system/utilities',
-							text: 'Utilities',
-						},
-						{
-							link: '/reference/system/webhooks',
-							text: 'Webhooks',
-						},
-					],
+					link: '/reference/files',
+					text: 'Files',
+				},
+				{
+					link: '/reference/system/activity',
+					text: 'Activity',
+				},
+				{
+					link: '/reference/system/collections',
+					text: 'Collections',
+				},
+				{
+					link: '/reference/system/dashboards',
+					text: 'Dashboards',
+				},
+				{
+					link: '/reference/system/extensions',
+					text: 'Extensions',
+				},
+				{
+					link: '/reference/system/fields',
+					text: 'Fields',
+				},
+				{
+					link: '/reference/system/flows',
+					text: 'Flows',
+				},
+				{
+					link: '/reference/system/folders',
+					text: 'Folders',
+				},
+				{
+					link: '/reference/system/notifications',
+					text: 'Notifications',
+				},
+				{
+					link: '/reference/system/operations',
+					text: 'Operations',
+				},
+				{
+					link: '/reference/system/panels',
+					text: 'Panels',
+				},
+				{
+					link: '/reference/system/permissions',
+					text: 'Permissions',
+				},
+				{
+					link: '/reference/system/presets',
+					text: 'Presets',
+				},
+				{
+					link: '/reference/system/relations',
+					text: 'Relations',
+				},
+				{
+					link: '/reference/system/revisions',
+					text: 'Revisions',
+				},
+				{
+					link: '/reference/system/roles',
+					text: 'Roles',
+				},
+				{
+					link: '/reference/system/schema',
+					text: 'Schema',
+				},
+				{
+					link: '/reference/system/server',
+					text: 'Server',
+				},
+				{
+					link: '/reference/system/settings',
+					text: 'Settings',
+				},
+				{
+					link: '/reference/system/shares',
+					text: 'Shares',
+				},
+				{
+					link: '/reference/system/translations',
+					text: 'Custom Translations',
+				},
+				{
+					link: '/reference/system/users',
+					text: 'Users',
+				},
+				{
+					link: '/reference/system/utilities',
+					text: 'Utilities',
+				},
+				{
+					link: '/reference/system/webhooks',
+					text: 'Webhooks',
 				},
 			],
 		},
@@ -438,6 +429,10 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{
+					text: 'JavaScript SDK',
+					link: '/guides/sdk/getting-started',
+				},
 				{
 					text: 'Flows',
 					items: [

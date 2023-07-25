@@ -40,7 +40,7 @@ running.
 
 ### Map Out Your Data Model
 
-Before you starting creating Collections inside Directus, it’s helpful to map out your data model (schema).
+Before creating Collections inside Directus, it’s helpful to map out your data model (schema).
 
 Consider this sample page below.
 
@@ -212,20 +212,28 @@ how to properly fetch nested relational M2A data without over-fetching data that
 
 **Sample Request**
 
-```javascript
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+// Initialize the SDK.
+const directus = createDirectus('https://directus.example.com').with(rest());
+
 // Write some code here in your front-end framework that gets the slug from the current URL.
 const slug = 'the-ultimate-guide-to-rabbits';
 
-// Call the Directus API using the SDK.
-const response = await directus.items('pages').readByQuery({
-	filter: {
-		slug: { _eq: slug },
-	},
-	fields: ['*', 'blocks.*', 'blocks.item.*', '*.collection'],
-	limit: 1,
-});
+// Fetch page data using the SDK.
+const pages = await directus.request(
+	readItems('pages', {
+		filter: {
+			slug: { _eq: slug },
+		},
+		fields: ['*', { blocks: ['*', { item: [{ collection_a: ['*'], collection_b: ['*'] }] }] }],
+		limit: 1,
+	})
+);
 
-const page = response.data[0];
+const page = page[0];
 ```
 
 ::: details **Toggle Open to See Sample Response**
