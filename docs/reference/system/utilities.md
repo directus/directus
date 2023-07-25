@@ -309,7 +309,7 @@ console.log(result);
 
 ## Import Data from File
 
-Import multiple records from a JSON or CSV file into a collection. 
+Import multiple records from a JSON or CSV file into a collection.
 
 ### Request
 
@@ -345,7 +345,8 @@ console.log(result);
 </template>
 </SnippetToggler>
 
-The import endpoint expects the file structure to match [the export query parameter](/reference/query#export). For JSON, this is an array of objects, where every object is an item. For CSV, the first line has to be the columns header.
+The import endpoint expects the file structure to match [the export query parameter](/reference/query#export). For JSON,
+this is an array of objects, where every object is an item. For CSV, the first line has to be the columns header.
 
 #### Request Body
 

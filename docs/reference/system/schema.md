@@ -171,6 +171,7 @@ relations: []
 <template #sdk>
 
 ::: details **Toggle Open to See Request**
+
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, schemaDiff } from '@directus/sdk/rest';
@@ -180,7 +181,7 @@ const result = await client.request(schemaDiff({
     version: version_num,
     directus: 'directus_version',
     vendor: 'database_type',
-    collections: 
+    collections:
     [
       {
           collection: 'collection_name',
@@ -192,7 +193,7 @@ const result = await client.request(schemaDiff({
           }
       }
     ],
-    fields: 
+    fields:
     [
       {
           collection: 'collection_name',
@@ -233,12 +234,11 @@ const result = await client.request(schemaDiff({
 
 console.dir(result, { depth: null })
 ```
+
 :::
 
 </template>
 </SnippetToggler>
-
-
 
 #### Query Parameters
 
@@ -547,6 +547,7 @@ relations: []
 <template #sdk>
 
 ::: details **Toggle Open to See Example Request**
+
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, schemaDiff } from '@directus/sdk/rest';
@@ -556,7 +557,7 @@ const result = await client.request(schemaDiff({
     version: 1,
     directus: '12.0.3',
     vendor: 'postgres',
-    collections: 
+    collections:
     [
       {
           collection: 'posts',
@@ -585,7 +586,7 @@ const result = await client.request(schemaDiff({
           }
       }
     ],
-    fields: 
+    fields:
     [
       {
           collection: 'posts',
@@ -677,6 +678,7 @@ const result = await client.request(schemaDiff({
 
 console.dir(result, { depth: null })
 ```
+
 :::
 
 </template>
@@ -1037,7 +1039,6 @@ const result = await client.request(schemaApply({
 
 </template>
 </SnippetToggler>
-
 
 ::: tip Hashes
 

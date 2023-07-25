@@ -14,11 +14,14 @@ pageClass: page-reference
 
 Data and permissions around files are associated to the `directus_files` collection.
 
-It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public' folder), rather than making the whole collection public. Read more on [custom access permissions](/user-guide/user-management/permissions.html#configure-custom-permissions).
+It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public'
+folder), rather than making the whole collection public. Read more on
+[custom access permissions](/user-guide/user-management/permissions.html#configure-custom-permissions).
 
 ::: warning Exporting Data Creates Files
 
-[Exporting data](/user-guide/content-module/import-export.html#export-items) creates new files and adds them to your file storage. If these files are accessible publicly, you may leak data held in the exported collections.
+[Exporting data](/user-guide/content-module/import-export.html#export-items) creates new files and adds them to your
+file storage. If these files are accessible publicly, you may leak data held in the exported collections.
 
 :::
 
@@ -480,13 +483,13 @@ console.log(result);
 </template>
 </SnippetToggler>
 
-The file contents has to be provided in a property called `file`. All other properties of [the file object](#the-file-object) can be provided as well, except
-`filename_disk` and `filename_download`.
+The file contents has to be provided in a property called `file`. All other properties of
+[the file object](#the-file-object) can be provided as well, except `filename_disk` and `filename_download`.
 
 ::: tip Order Matters
 
-Make sure to define the non-file properties for each file _first_. This ensures that the file metadata is associated with the correct
-file.
+Make sure to define the non-file properties for each file _first_. This ensures that the file metadata is associated
+with the correct file.
 
 :::
 

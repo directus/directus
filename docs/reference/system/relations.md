@@ -503,7 +503,7 @@ const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(
     createRelation({
-        'collection': 'articles', 
+        'collection': 'articles',
         'field': 'header_image',
         'related_collection' : 'header_images'
     })

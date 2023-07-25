@@ -664,7 +664,7 @@ import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
 const client = createDirectus('https://phzn-malleable.directus.app').with(staticToken()).with(rest())
 
-const result = await client.request(readItems('articles', { 
+const result = await client.request(readItems('articles', {
     alias: {
         'all_translations': 'translations',
         'dutch_translations': 'translations',

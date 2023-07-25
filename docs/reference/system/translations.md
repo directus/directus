@@ -79,6 +79,7 @@ An array of up to [limit](/reference/query#limit) [translation objects](#the-tra
 available, data will be an empty array.
 
 ### Example
+
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
 <template #rest>
 
@@ -88,7 +89,6 @@ available, data will be an empty array.
 
 </template>
 <template #graphql>
-
 
 </template>
 <template #sdk>
