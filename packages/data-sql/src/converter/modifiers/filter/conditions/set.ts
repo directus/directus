@@ -6,7 +6,7 @@ export function convertSetCondition(
 	node: ConditionSetNode,
 	collection: string,
 	generator: Generator,
-	negate: boolean,
+	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
 	return {
 		where: {

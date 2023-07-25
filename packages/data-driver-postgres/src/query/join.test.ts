@@ -39,7 +39,7 @@ beforeEach(() => {
 					on: {
 						type: 'condition',
 						condition: {
-							type: 'field-condition',
+							type: 'condition-field',
 							target: {
 								type: 'primitive',
 								table: targetTable,
@@ -87,7 +87,7 @@ test('With an alias', () => {
 						type: 'condition',
 						negate: false,
 						condition: {
-							type: 'field-condition',
+							type: 'condition-field',
 							target: {
 								type: 'primitive',
 								table: targetTable,
@@ -105,7 +105,7 @@ test('With an alias', () => {
 						type: 'condition',
 						negate: false,
 						condition: {
-							type: 'field-condition',
+							type: 'condition-field',
 							target: {
 								type: 'primitive',
 								table: targetTable2,
