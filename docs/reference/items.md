@@ -255,8 +255,8 @@ const result = await client.request(readSingleton('collection_name'))
 
 ::: tip Info
 
-The REST and GraphQL requests for singletons are the same as the ones used to [Get Items](#get-items) but in contrast
-the response consists of only one item (the singleton) instead of an array of items.
+The REST and GraphQL requests for singletons are the same as those used to [Get Items](#get-items) but in contrast the
+response consists of a plain [item object](#the-item-object) (the singleton) instead of an array of items.
 
 :::
 
@@ -673,9 +673,34 @@ const result = await client.request(
 
 ## Update Singleton
 
-Update a singleton item
+Update a singleton item.
 
 ### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /items/:collection`
+
+```json
+{
+    "item_field": "value"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+type Mutation {
+	update_<collection>_items(data: [update_<collection>_input]): [<collection>]
+}
+```
+
+</template>
+<template #sdk>
 
 ```js
 import { createDirectus } from '@directus/sdk';
@@ -687,9 +712,14 @@ const result = await client.request(updateSingleton('collection_name', {
 }))
 ```
 
+</template>
+</SnippetToggler>
+
 ::: tip Info
 
-This endpoint is only supported by the SDK.
+The REST and GraphQL requests for singletons are the same as those used to
+[Update Multiple Items](#update-multiple-items) but in contrast the request should consist of the plain
+[item object](#the-item-object).
 
 :::
 
@@ -707,6 +737,33 @@ Returns an [item object](#the-item-object) if a valid primary key was provided.
 
 ### Example
 
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /items/about`
+
+```json
+{
+    "content": "Founded in 2023, this website is dedicated to..."
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+mutation {
+	update_articles_items(data: { content: "Founded in 2023, this website is dedicated to..." }) {
+		content
+	}
+}
+```
+
+</template>
+<template #sdk>
+
 ```js
 import { createDirectus } from '@directus/sdk';
 import { rest, updateSingleton } from '@directus/sdk/rest';
@@ -716,6 +773,9 @@ const result = await client.request(updateSingleton('about', {
     'content' : 'Founded in 2023, this website is dedicated to...'
 }))
 ```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Items
 
@@ -765,7 +825,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 #### Query Parameters
@@ -775,13 +834,6 @@ Supports all [global query parameters](/reference/query).
 #### Request Body
 
 Object containing `data` for the values to set, and either `keys` or `query` to select what items to update.
-
-::: tip
-
-Singleton If your collection is a singleton, this endpoint will act the same as the [Update an Item](#update-an-item)
-endpoint.
-
-:::
 
 ### Response
 
@@ -834,7 +886,6 @@ const result = await client.request(
 ```
 
 </template>
-
 </SnippetToggler>
 
 ## Delete an Item
