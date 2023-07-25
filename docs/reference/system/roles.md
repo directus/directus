@@ -89,8 +89,6 @@ const result = await client.request(
         'fields': ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -146,8 +144,6 @@ const result = await client.request(
         'fields': ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -186,8 +182,6 @@ const result = await client.request(
         'fields': ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -238,8 +232,6 @@ const result = await client.request(
         'fields': ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -294,8 +286,6 @@ const result = await client.request(
 		'role_field_5': 'value_5'
     })
 )
-
-console.log(result);
 ```
 
 </template>
@@ -366,8 +356,6 @@ const result = await client.request(
         'app_access': true
     })
 )
-
-console.log(result);
 ```
 
 </template>
@@ -441,8 +429,6 @@ const result = await client.request(
 		},
     ])
 )
-
-console.log(result);
 ```
 
 </template>
@@ -535,8 +521,6 @@ const result = await client.request(
         }
     ])
 )
-
-console.log(result);
 ```
 
 </template>
@@ -695,8 +679,6 @@ const result = await client.request(
         }
     )
 )
-
-console.log(result);
 ```
 
 </template>
@@ -768,8 +750,6 @@ const result = await client.request(
         }
     )
 )
-
-console.log(result);
 ```
 
 </template>
@@ -808,8 +788,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteRole('role_id')
 )
-
-console.log(result);
 ```
 
 </template>
@@ -850,8 +828,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteRole('1792dc2c-6142-4723-ae40-698d082ddc5e')
 )
-
-console.log(result);
 ```
 
 </template>
@@ -894,8 +870,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteRoles(['role_1_id','role_2_id'])
 )
-
-console.log(result);
 ```
 
 </template>
@@ -944,8 +918,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658','1792dc2c-6142-4723-ae40-698d082ddc5e'])
 )
-
-console.log(result);
 ```
 
 </template>

@@ -85,8 +85,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readDashboards( query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -140,8 +138,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -181,8 +177,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readDashboard('dashboard_id', query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -229,8 +223,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -280,8 +272,6 @@ const result = await client.request(
 		dashboard_field_2: 'value_2',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -342,8 +332,6 @@ const result = await client.request(
 		note: 'Some insights on our users activity',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -405,8 +393,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -481,8 +467,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -530,8 +514,6 @@ const result = await client.request(
 		dashboard_field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -590,8 +572,6 @@ const result = await client.request(
 		color: '#6644FF',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -642,8 +622,6 @@ const result = await client.request(
 		dashboard_field: 'value_1',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -712,8 +690,6 @@ const result = await client.request(
 		color: '#81D4FA',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -751,8 +727,6 @@ import { rest, deleteDashboard } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteDashboard('dashboard_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -792,8 +766,6 @@ import { rest, deleteDashboard } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteDashboard('cfcc3702-33bd-4616-865c-99b59dc1cdc9'));
-
-console.log(result);
 ```
 
 </template>
@@ -835,8 +807,6 @@ import { rest, deleteDashboards } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteDashboards(['dashboard_id_1', 'dashboard_id_2']));
-
-console.log(result);
 ```
 
 </template>
@@ -892,8 +862,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	deleteDashboards(['751a81de-9e00-4ffe-a2c1-6e04619b859f', '782c80a0-ad61-488d-b9e2-7d688f029421'])
 );
-
-console.log(result);
 ```
 
 </template>

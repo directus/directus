@@ -476,8 +476,6 @@ formData.append('file_2_property', 'Value');
 formData.append('file', raw_file_2);
 
 const result = await client.request(uploadFiles(formData));
-
-console.log(result);
 ```
 
 </template>
@@ -878,8 +876,6 @@ import { rest, deleteFile } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFile('file_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -923,8 +919,6 @@ import { rest, deleteFile } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFile('b3000f41-6ce0-4ba3-b362-fb85c9de8579'));
-
-console.log(result);
 ```
 
 </template>
@@ -984,8 +978,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1051,8 +1043,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>

@@ -100,8 +100,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -156,8 +154,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -196,8 +192,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -247,8 +241,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -299,8 +291,6 @@ const result = await client.request(createShare({
 	'share_field_3': 'value_3',
 	'share_field_4': 'value_4'
 }))
-
-console.log(result);
 ```
 
 </template>
@@ -364,8 +354,6 @@ const result = await client.request(createShare({
 	'item': '22',
 	'max_uses': '5'
 }))
-
-console.log(result);
 ```
 
 </template>
@@ -434,8 +422,6 @@ const result = await client.request(createShares(
         }
     ]
 ))
-
-console.log(result);
 ```
 
 </template>
@@ -527,8 +513,6 @@ const result = await client.request(createShares(
         }
     ]
 ))
-
-console.log(result);
 ```
 
 </template>
@@ -575,8 +559,6 @@ const result = await client.request(
         'share_field' : 'value',
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -636,8 +618,6 @@ const result = await client.request(
         'max_uses' : 10,
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -687,8 +667,6 @@ const result = await client.request(
         'field' : 'value',
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -758,8 +736,6 @@ const result = await client.request(
         'max_uses' : 10,
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -825,8 +801,6 @@ const client = createDirectus('https://directus.example.com').with(staticToken()
 const result = await client.request(
     deleteShare('0375bb1d-5cbb-48cf-bfac-476a3440a104')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -869,8 +843,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteShares(['share_1_id','share_2_id'])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -919,8 +891,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteShares(['2f8c03c3-4988-4869-a1b3-318e0a4b9b9d','153cdb59-7868-4187-8696-372aa07537f4'])
 );
-
-console.log(result);
 ```
 
 </template>

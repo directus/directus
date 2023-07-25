@@ -98,8 +98,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -153,8 +151,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -195,8 +191,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -245,8 +239,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -298,8 +290,6 @@ const result = await client.request(
         'action' : 'action_name',
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -366,8 +356,6 @@ const result = await client.request(
         'fields' : [ '*' ]
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -435,8 +423,6 @@ const result = await client.request(
         },
     ]
 ));
-
-console.log(result);
 ```
 
 </template>
@@ -523,8 +509,6 @@ const result = await client.request(
         },
     ]
 ));
-
-console.log(result);
 ```
 
 </template>
@@ -571,8 +555,6 @@ const result = await client.request(
         "permission_field": ["value_1", "value_2"]
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -629,8 +611,6 @@ const result = await client.request(
         "fields": ["title", "body"]
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -680,8 +660,6 @@ const result = await client.request(
         "permission_field": ["value_1", "value_2"]
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -745,8 +723,6 @@ const result = await client.request(
         "fields": ["title", "body"]
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -785,8 +761,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deletePermission('permission_1_id')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -827,8 +801,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deletePermissions('56')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -871,8 +843,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deletePermissions(['permission_1_id','permission_2_id'])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -919,8 +889,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deletePermissions(['56','57'])
 );
-
-console.log(result);
 ```
 
 </template>

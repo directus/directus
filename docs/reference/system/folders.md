@@ -66,8 +66,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readFolders( query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -120,8 +118,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -161,8 +157,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readFolder('folder_id', query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -210,8 +204,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -259,8 +251,6 @@ const result = await client.request(
 		name: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -319,8 +309,6 @@ const result = await client.request(
 		name: 'banner images',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -378,8 +366,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -448,8 +434,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -497,8 +481,6 @@ const result = await client.request(
 		field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -560,8 +542,6 @@ const result = await client.request(
 		parent: 'a151aa85-4784-44cb-8ee8-c568e45e00fd',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -608,8 +588,6 @@ import { rest, updateFolders } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(updateFolders(['folder_1_id', 'folder_2_id'], { field: 'value' }));
-
-console.log(result);
 ```
 
 </template>
@@ -678,8 +656,6 @@ const result = await client.request(
 		parent: 'a151aa85-4784-44cb-8ee8-c568e45e00fd',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -723,8 +699,6 @@ import { rest, deleteFolder } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFolder('folder_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -764,8 +738,6 @@ import { rest, deleteFolder } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFolder('a3c77ec8-35f0-467b-9dc5-5195c4cfdae0'));
-
-console.log(result);
 ```
 
 </template>
@@ -813,8 +785,6 @@ import { rest, deleteFolders } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFolders(['folder_1_id', 'folder_2_id']));
-
-console.log(result);
 ```
 
 </template>
@@ -862,8 +832,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	deleteFolders(['1d8428f9-c437-4d4e-b3df-d276c605f454', 'a151aa85-4784-44cb-8ee8-c568e45e00f'])
 );
-
-console.log(result);
 ```
 
 </template>

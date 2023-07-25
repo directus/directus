@@ -98,8 +98,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readFlows( query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -154,8 +152,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -195,8 +191,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readFlow('flow_id', query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -246,8 +240,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -298,8 +290,6 @@ const result = await client.request(
 		flow_field_2: 'value_2',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -362,8 +352,6 @@ const result = await client.request(
 		trigger: 'operation',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -427,8 +415,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -509,8 +495,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -558,8 +542,6 @@ const result = await client.request(
 		flow_field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -618,8 +600,6 @@ const result = await client.request(
 		status: 'inactive',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -670,8 +650,6 @@ const result = await client.request(
 		flow_field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -741,8 +719,6 @@ const result = await client.request(
 		status: 'inactive',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -780,8 +756,6 @@ import { rest, deleteFlow } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFlow('flow_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -821,8 +795,6 @@ import { rest, deleteFlow } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFlow('53e623bd-cbeb-405d-8201-158af7e3ac83'));
-
-console.log(result);
 ```
 
 </template>
@@ -864,8 +836,6 @@ import { rest, deleteFlows } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteFlows(['flow_1_id', 'flow_2_id']));
-
-console.log(result);
 ```
 
 </template>
@@ -921,8 +891,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	deleteFlows(['53e623bd-cbeb-405d-8201-158af7e3ac83', '0ae04fb7-0f4e-4b5d-be2b-a166c4ee16e4'])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -953,8 +921,6 @@ const result = await client.request(
 		fields: '*',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -986,8 +952,6 @@ const result = await client.request(
 		fields: '*',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1018,8 +982,6 @@ const result = await client.request(
 		field: 'value', // Payload for webhook
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1055,8 +1017,6 @@ const result = await client.request(
 		title: 'Created with flows and webhooks',
 	})
 );
-
-console.log(result);
 ```
 
 </template>

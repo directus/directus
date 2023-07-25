@@ -47,8 +47,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     generateHash('string')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -96,8 +94,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     generateHash('test string to hash')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -143,8 +139,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     verifyHash('string_to_verify','hash')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -198,8 +192,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     verifyHash('test_string','$argon2id$v=19$m=65536,t=3,p=4$c81PPca80cdIbclXlL1PFg$+EKJsuXlkleP2wFGsEmA7Xu56wEqVKHeDXRrTLIAoJg')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -245,8 +237,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     utilitySort('collection_name','id_item_to_move','id_item_moving_to')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -300,8 +290,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     utilitySort('things','2','4')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -338,8 +326,6 @@ const formData = new FormData();
 formData.append('file', raw_file);
 
 const result = await client.request(utilsImport(formData));
-
-console.log(result);
 ```
 
 </template>
@@ -408,8 +394,6 @@ const result = await client.request(
 		    "file_field": "value"
 	}})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -481,8 +465,6 @@ const result = await client.request(
 		    "folder": "34e95c19-cc50-42f2-83c8-b97616ac2390"
 	}})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -517,8 +499,6 @@ import { rest, clearCache } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(clearCache());
-
-console.log(result);
 ```
 
 </template>

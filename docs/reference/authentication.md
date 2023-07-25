@@ -330,8 +330,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     passwordRequest('user_email')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -382,8 +380,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     passwordRequest('admin@example.com')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -430,8 +426,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     passwordReset('reset_token','new_password')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -481,8 +475,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     passwordReset('reset_token','new_password')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -542,8 +534,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     readProviders()
 );
-
-console.log(result);
 ```
 
 </template>
@@ -600,8 +590,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     readProviders()
 );
-
-console.log(result);
 ```
 
 </template>

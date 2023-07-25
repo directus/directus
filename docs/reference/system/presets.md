@@ -114,8 +114,6 @@ const result = await client.request(readPresets({
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -167,8 +165,6 @@ const result = await client.request(readPresets({
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -209,8 +205,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -258,8 +252,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -307,8 +299,6 @@ const result = await client.request(createPreset({
     'preset_field_1': 'value_1',
     'preset_field_2': 'value_2'
 }))
-
-console.log(result)
 ```
 
 </template>
@@ -367,8 +357,6 @@ const result = await client.request(createPreset({
     'collection': 'articles',
     'layout': 'kanban'
 }))
-
-console.log(result)
 ```
 
 </template>
@@ -431,8 +419,6 @@ const result = await client.request(createPresets(
         }
     ]
 ))
-
-console.log(result)
 ```
 
 </template>
@@ -517,8 +503,6 @@ const result = await client.request(createPresets(
         }
     ]
 ))
-
-console.log(result)
 ```
 
 </template>
@@ -773,8 +757,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deletePreset('preset_id')
 )
-
-console.log(result);
 ```
 
 </template>
@@ -815,8 +797,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deletePreset('24')
 )
-
-console.log(result);
 ```
 
 </template>
@@ -859,8 +839,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deletePreset(['preset_1_id','preset_2_id'])
 )
-
-console.log(result);
 ```
 
 </template>
@@ -909,8 +887,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deletePreset(['24','48'])
 )
-
-console.log(result);
 ```
 
 </template>

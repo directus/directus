@@ -176,8 +176,6 @@ import { rest, readCollections } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readCollections());
-
-console.log(result);
 ```
 
 </template>
@@ -225,8 +223,6 @@ import { rest, readCollections } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readCollections());
-
-console.log(result);
 ```
 
 </template>
@@ -265,8 +261,6 @@ import { rest, readCollection } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readCollection('collection_name'));
-
-console.log(result);
 ```
 
 </template>
@@ -310,8 +304,6 @@ import { rest, readCollection } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readCollection('articles'));
-
-console.log(result);
 ```
 
 </template>
@@ -365,8 +357,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -442,8 +432,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -495,8 +483,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -559,8 +545,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -604,8 +588,6 @@ import { rest, deleteCollection } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteCollection('collection_name'));
-
-console.log(result);
 ```
 
 </template>
@@ -641,8 +623,6 @@ import { rest, deleteCollection } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteCollection('testimonials'));
-
-console.log(result);
 ```
 
 </template>

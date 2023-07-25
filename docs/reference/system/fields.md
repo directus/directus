@@ -180,8 +180,6 @@ import { rest, readFields } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readFields());
-
-console.log(result);
 ```
 
 </template>
@@ -226,8 +224,6 @@ import { rest, readFields } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readFields());
-
-console.log(result);
 ```
 
 </template>
@@ -265,8 +261,6 @@ import { rest, readFieldsByCollection } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readFieldsByCollection('collection_name'));
-
-console.log(result);
 ```
 
 </template>
@@ -311,8 +305,6 @@ import { rest, readFieldsByCollection } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readFieldsByCollection('articles'));
-
-console.log(result);
 ```
 
 </template>
@@ -350,8 +342,6 @@ import { rest, readField } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readField('collection_name', 'field_name'));
-
-console.log(result);
 ```
 
 </template>
@@ -396,8 +386,6 @@ import { rest, readField } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readField('articles', 'title'));
-
-console.log(result);
 ```
 
 </template>
@@ -453,8 +441,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -539,8 +525,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -590,8 +574,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -677,8 +659,6 @@ const result = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -722,8 +702,6 @@ import { rest, deleteField } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteField('collection_name', 'field_name'));
-
-console.log(result);
 ```
 
 </template>
@@ -760,8 +738,6 @@ import { rest, deleteField } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteField('articles', 'featured_quote'));
-
-console.log(result);
 ```
 
 </template>

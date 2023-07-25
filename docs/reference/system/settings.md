@@ -138,8 +138,6 @@ import { rest, readSettings } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readSettings())
-
-console.log(result);
 ```
 
 </template>
@@ -182,8 +180,6 @@ import { rest, readSettings } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readSettings())
-
-console.log(result);
 ```
 
 </template>
@@ -228,8 +224,6 @@ const result = await client.request(
         'settings_field' : 'value'
     })
 )
-
-console.log(result);
 ```
 
 </template>
@@ -287,8 +281,6 @@ const result = await client.request(
         'project_url' : 'https://example.com/'
     })
 )
-
-console.log(result);
 ```
 
 </template>

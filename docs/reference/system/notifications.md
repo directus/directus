@@ -87,8 +87,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readNotifications( query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -143,8 +141,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -184,8 +180,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readNotification('notification_id', query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -235,8 +229,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -287,8 +279,6 @@ const result = await client.request(
 		notification_field_3: 'value_3',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -350,8 +340,6 @@ const result = await client.request(
 		message: 'Hi fellow user',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -417,8 +405,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -508,8 +494,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -564,8 +548,6 @@ const result = await client.request(
 		field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -624,8 +606,6 @@ const result = await client.request(
 		status: 'archive',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -676,8 +656,6 @@ const result = await client.request(
 		field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -744,8 +722,6 @@ const result = await client.request(
 		status: 'archive',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -784,8 +760,6 @@ import { rest, deleteNotification } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteNotification('notification_1_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -826,8 +800,6 @@ import { rest, deleteNotification } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteNotification('3'));
-
-console.log(result);
 ```
 
 </template>
@@ -871,8 +843,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	deleteNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -921,8 +891,6 @@ import { rest, deleteNotifications } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteNotifications(['4', '5', '6', '7']));
-
-console.log(result);
 ```
 
 </template>

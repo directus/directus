@@ -138,8 +138,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -191,8 +189,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -233,8 +229,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -283,8 +277,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -325,8 +317,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -371,8 +361,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -419,8 +407,6 @@ const result = await client.request(
         'user_field' : 'value':w
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -473,8 +459,6 @@ const result = await client.request(
         'email_notifications' : false
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -524,8 +508,6 @@ const result = await client.request(
         'password' : 'user_password'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -602,8 +584,6 @@ const result = await client.request(
         'password' : 'qwerty123'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -667,8 +647,6 @@ const result = await client.request(
         }
     ])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -766,8 +744,6 @@ const result = await client.request(
         }
     ])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -814,8 +790,6 @@ const result = await client.request(
         'user_fiels' : 'value'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -873,8 +847,6 @@ const result = await client.request(
         'email_notifications' : false
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -924,8 +896,6 @@ const result = await client.request(
         'user_field' : 'value'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -993,8 +963,6 @@ const result = await client.request(
         'email_notifications' : false
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1033,8 +1001,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteUser('user_id')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1075,8 +1041,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteUser('965749ad-e5e4-4e38-aa91-25a252b8ccd9')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1119,8 +1083,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteUsers(['user_1_id','user_2_id'])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1167,8 +1129,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb','5ec6ee0a-62ad-460d-a91e-fed63e3d804c'])
 );
-
-console.log(result);
 ```
 
 </template>

@@ -114,8 +114,6 @@ const result = await client.request(readPanels({
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -167,8 +165,6 @@ const result = await client.request(readPanels({
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -208,8 +204,6 @@ const result = await client.request(readPanel('panel_id',{
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -256,8 +250,6 @@ const result = await client.request(readPanel('bf5d1373-3eea-431f-aaac-54591ba5e
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -311,8 +303,6 @@ const result = await client.request(
         'position_y' : panel_y,
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -377,8 +367,6 @@ const result = await client.request(
         'position_y' : 10,
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -578,8 +566,6 @@ const result = await client.request(
         'field' : 'value'
     }
 ));
-
-console.log(result);
 ```
 
 </template>
@@ -638,8 +624,6 @@ const result = await client.request(
         'width' : 20
     }
 ));
-
-console.log(result);
 ```
 
 </template>
@@ -689,8 +673,6 @@ const result = await client.request(
         'field' : 'value'
     }
 ));
-
-console.log(result);
 ```
 
 </template>
@@ -758,8 +740,6 @@ const result = await client.request(
         'position_x' : 30
     }
 ));
-
-console.log(result);
 ```
 
 </template>
@@ -796,8 +776,6 @@ import { rest, deletePanel } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deletePanel('panel_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -836,8 +814,6 @@ import { rest, deletePanel } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deletePanel('8d4acee9-f266-4664-801d-11d0273e9bfe'));
-
-console.log(result);
 ```
 
 </template>
@@ -880,8 +856,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(deletePanels(
     ['panel_1_id','panel_2_id']
 ));
-
-console.log(result);
 ```
 
 </template>
@@ -936,8 +910,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(deletePanels(
     ['8d4acee9-f266-4664-801d-11d0273e9bfe','4a98c02e-62ac-4ceb-aabc-990ce603eb78']
 ));
-
-console.log(result);
 ```
 
 </template>

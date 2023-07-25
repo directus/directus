@@ -181,8 +181,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readActivity('activity_id', query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -231,8 +229,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -284,8 +280,6 @@ const result = await client.request(
 		comment: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -350,8 +344,6 @@ const result = await client.request(
 		comment: 'This is the wrong article to publish!',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -399,8 +391,6 @@ const result = await client.request(
 		comment: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -455,8 +445,6 @@ const result = await client.request(
 		comment: 'Great work!',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -494,8 +482,6 @@ import { rest, deleteComment } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteComment('comment_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -530,8 +516,6 @@ import { rest, deleteComment } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteComment('53727'));
-
-console.log(result);
 ```
 
 </template>

@@ -46,8 +46,6 @@ import { rest, readOpenApiSpec } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readOpenApiSpec())
-
-console.log(result);
 ```
 
 </template>
@@ -82,8 +80,6 @@ import { rest, readOpenApiSpec } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readOpenApiSpec())
-
-console.log(result);
 ```
 
 </template>
@@ -128,8 +124,6 @@ import { rest, readGraphqlSdl } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readGraphqlSdl('scope'))
-
-console.log(result);
 ```
 
 </template>
@@ -190,8 +184,6 @@ import { rest, readGraphqlSdl } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readGraphqlSdl('item'))
-
-console.log(result);
 ```
 
 </template>
@@ -228,8 +220,6 @@ import { rest, serverPing } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(serverPing())
-
-console.log(result);
 ```
 
 </template>
@@ -266,8 +256,6 @@ import { rest, serverPing } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(serverPing())
-
-console.log(result);
 ```
 
 </template>
@@ -310,8 +298,6 @@ import { rest, serverInfo } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(serverInfo())
-
-console.log(result);
 ```
 
 </template>
@@ -373,8 +359,6 @@ import { rest, serverInfo } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(serverInfo())
-
-console.log(result);
 ```
 
 </template>
@@ -479,8 +463,6 @@ import { rest, serverHealth } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(serverHealth())
-
-console.log(result);
 ```
 
 </template>
@@ -529,8 +511,6 @@ import { rest, serverHealth } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(serverHealth())
-
-console.log(result);
 ```
 
 </template>

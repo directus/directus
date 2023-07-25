@@ -60,8 +60,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -103,8 +101,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -137,8 +133,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -175,8 +169,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -327,8 +319,6 @@ const result = await client.request(
 		}
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -394,8 +384,6 @@ const result = await client.request(
         }
     ])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -434,8 +422,6 @@ const result = await client.request(
         'translation_field' : 'value'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -482,8 +468,6 @@ const result = await client.request(
         'value' : 'this is the new value'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -525,8 +509,6 @@ const result = await client.request(
         'field' : 'value'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -580,8 +562,6 @@ const result = await client.request(
         'value' : 'this is the new value'
     })
 );
-
-console.log(result);
 ```
 
 </template>

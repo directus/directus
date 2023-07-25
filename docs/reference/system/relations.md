@@ -151,8 +151,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -200,8 +198,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -249,8 +245,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -298,8 +292,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -340,8 +332,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -390,8 +380,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -442,8 +430,6 @@ const result = await client.request(
 		'relations_field_3': 'value_3'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -508,8 +494,6 @@ const result = await client.request(
         'related_collection' : 'header_images'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -560,8 +544,6 @@ const result = await client.request(
 	    }
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -624,8 +606,6 @@ const result = await client.request(
 	    }
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -664,8 +644,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteRelation('collection_name', 'field_name')
 );
-
-console.log(result);
 ```
 
 </template>
@@ -707,8 +685,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(
     deleteRelation('articles', 'authors')
 );
-
-console.log(result);
 ```
 
 </template>

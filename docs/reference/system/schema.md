@@ -41,8 +41,6 @@ import { rest, schemaSnapshot } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(schemaSnapshot())
-
-console.log(result);
 ```
 
 </template>
@@ -84,8 +82,6 @@ import { rest, schemaSnapshot } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(schemaSnapshot())
-
-console.log(result);
 ```
 
 </template>

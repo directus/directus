@@ -88,8 +88,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(readItems('articles',{
    'fields': ['title', 'date_created', { 'authors': ['name'] }]
 }));
-
-console.log(result);
 ```
 
 </template>
@@ -189,8 +187,6 @@ const result = await client.request(readItems('articles',{
         }
     }
 }));
-
-console.log(result);
 ```
 
 </template>
@@ -258,8 +254,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(readItems('articles',{
     'search': 'foobar'
 }));
-
-console.log(result);
 ```
 
 </template>
@@ -317,8 +311,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(readItems('articles',{
     'sort': '-date_created' //Sort by creation date descending
 }));
-
-console.log(result);
 ```
 
 </template>
@@ -370,8 +362,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(readItems('articles',{
     'limit' : 3
 }));
-
-console.log(result);
 ```
 
 </template>
@@ -413,8 +403,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(readItems('articles',{
     'offset' : 5
 }));
-
-console.log(result);
 ```
 
 </template>
@@ -460,8 +448,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(readItems('articles',{
     'page' : 1
 }));
-
-console.log(result);
 ```
 
 </template>
@@ -529,8 +515,6 @@ const result = await client.request(aggregate('articles', {
         'aggregate' : { 'count' : '*' },
         'groupBy' : 'authors'
 }));
-
-console.log(result);
 ```
 
 </template>

@@ -87,8 +87,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -141,8 +139,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -183,8 +179,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -233,8 +227,6 @@ const result = await client.request(
         'fields' : ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -287,8 +279,6 @@ const result = await client.request(
         'url' : 'webhook_url'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -357,8 +347,6 @@ const result = await client.request(
         'url' : 'https://directus.example.com/articles_activity'
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -428,8 +416,6 @@ const result = await client.request(
 		}
     ])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -519,8 +505,6 @@ const result = await client.request(
          }
     ])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -567,8 +551,6 @@ const result = await client.request(
         'field' : 'value',
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -625,8 +607,6 @@ const result = await client.request(
         'actions' : ['update','delete'],
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -676,8 +656,6 @@ const result = await client.request(
         'webhook_field' : 'value',
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -743,8 +721,6 @@ const result = await client.request(
         'status' : 'inactive',
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -781,8 +757,6 @@ import { rest, deleteWebhook } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteWebhook('webhook_id'))
-
-console.log(result);
 ```
 
 </template>
@@ -821,8 +795,6 @@ import { rest, deleteWebhook } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteWebhook('1'))
-
-console.log(result);
 ```
 
 </template>
@@ -863,8 +835,6 @@ import { rest, deleteWebhooks } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteWebhooks(['webhook_1_id','webhook_2_id']))
-
-console.log(result);
 ```
 
 </template>
@@ -911,8 +881,6 @@ import { rest, deleteWebhooks } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(deleteWebhooks(['2','3']))
-
-console.log(result);
 ```
 
 </template>

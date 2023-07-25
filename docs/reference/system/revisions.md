@@ -92,8 +92,6 @@ const result = await client.request(
         'fields': ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -147,8 +145,6 @@ const result = await client.request(
         'fields': ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -189,8 +185,6 @@ const result = await client.request(
         'fields': ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>
@@ -239,8 +233,6 @@ const result = await client.request(
         'fields': ['*']
     })
 );
-
-console.log(result);
 ```
 
 </template>

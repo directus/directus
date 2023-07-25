@@ -41,8 +41,6 @@ import { rest, readExtensions } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readExtensions('extension_type'))
-
-console.log(result);
 ```
 
 </template>
@@ -85,8 +83,6 @@ import { rest, readExtensions } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readExtensions('interfaces'))
-
-console.log(result);
 ```
 
 </template>

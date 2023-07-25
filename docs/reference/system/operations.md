@@ -101,8 +101,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readOperations( query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -157,8 +155,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -197,8 +193,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	readOperation('operation_id', query )
 );
-
-console.log(result);
 ```
 
 </template>
@@ -251,8 +245,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -305,8 +297,6 @@ const result = await client.request(
 		flow: '9flow_id',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -374,8 +364,6 @@ const result = await client.request(
 		flow: '90a0fdd5-e760-4b4c-ac22-c14d48d44f26',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -446,8 +434,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -535,8 +521,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -585,8 +569,6 @@ const result = await client.request(
 		operation_field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -646,8 +628,6 @@ const result = await client.request(
 		position_x: '5',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -697,8 +677,6 @@ const result = await client.request(
 		field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -769,8 +747,6 @@ const result = await client.request(
 		position_y: '50',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -809,8 +785,6 @@ import { rest, deleteOperation } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteOperation('operation_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -848,8 +822,6 @@ import { rest, deleteOperation } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteOperation('263b18e6-7297-4a9f-af88-15af7317d4ef'));
-
-console.log(result);
 ```
 
 </template>
@@ -894,8 +866,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -951,8 +921,6 @@ const client = createDirectus('https://directus.example.com').with(rest());
 const result = await client.request(
 	deleteOperations(['263b18e6-7297-4a9f-af88-15af7317d4ef', '4b220e51-5e2b-48b5-a988-0a6451624d0c'])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -984,8 +952,6 @@ const result = await client.request(
 		// Payload
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1021,8 +987,6 @@ const result = await client.request(
 		// Payload
 	})
 );
-
-console.log(result);
 ```
 
 </template>

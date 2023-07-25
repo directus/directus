@@ -71,8 +71,6 @@ const result = await client.request(
 		query,
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -134,8 +132,6 @@ const result = await client.request(
 		fields: ['*'],
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -174,8 +170,6 @@ import { rest, readItem } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readItem('collection_name', 'item_id'));
-
-console.log(result);
 ```
 
 </template>
@@ -218,8 +212,6 @@ import { rest, readItem } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(readItem('articles', '1'));
-
-console.log(result);
 ```
 
 </template>
@@ -256,8 +248,6 @@ import { rest, readSingleton } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readSingleton('collection_name'))
-
-console.log(result);
 ```
 
 </template>
@@ -312,8 +302,6 @@ import { rest, readSingleton } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest())
 
 const result = await client.request(readSingleton('about'))
-
-console.log(result);
 ```
 
 </template>
@@ -363,8 +351,6 @@ const result = await client.request(
 		field_2: 'value_2',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -433,8 +419,6 @@ const result = await client.request(
 		content: 'Directus is an Open Data Platform built to democratize the database.',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -497,8 +481,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -577,8 +559,6 @@ const result = await client.request(
 		},
 	])
 );
-
-console.log(result);
 ```
 
 </template>
@@ -627,8 +607,6 @@ const result = await client.request(
 		field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -687,8 +665,6 @@ const result = await client.request(
 		title: 'What is Directus and how it can help you build your next app!?',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -709,8 +685,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(updateSingleton('collection_name', {
     'item_field' : 'value'
 }))
-
-console.log(result);
 ```
 
 ::: tip Info
@@ -741,8 +715,6 @@ const client = createDirectus('https://directus.example.com').with(rest())
 const result = await client.request(updateSingleton('about', {
     'content' : 'Founded in 2023, this website is dedicated to...'
 }))
-
-console.log(result);
 ```
 
 ## Update Multiple Items
@@ -790,8 +762,6 @@ const result = await client.request(
 		field: 'value',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -861,8 +831,6 @@ const result = await client.request(
 		status: 'published',
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -901,8 +869,6 @@ import { rest, deleteItem } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteItem('collection_name', 'id'));
-
-console.log(result);
 ```
 
 </template>
@@ -942,8 +908,6 @@ import { rest, deleteItem } from '@directus/sdk/rest';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteItem('articles', '5'));
-
-console.log(result);
 ```
 
 </template>
@@ -1017,8 +981,6 @@ const result2 = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
@@ -1104,8 +1066,6 @@ const result2 = await client.request(
 		},
 	})
 );
-
-console.log(result);
 ```
 
 </template>
