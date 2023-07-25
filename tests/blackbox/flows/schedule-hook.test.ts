@@ -2,13 +2,13 @@ import config, { Env, getUrl, paths } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import * as common from '@common/index';
 import { awaitDirectusConnection } from '@utils/await-connection';
-import { sleep } from '@utils/sleep';
+import { delayedSleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash';
 import request from 'supertest';
-import { collection, envTargetVariable, fieldData, flowName, seedDBValues } from './schedule-hook.seed';
+import { envTargetVariable, flowName, logPrefix, seedDBValues } from './schedule-hook.seed';
 
 let isSeeded = false;
 
@@ -40,6 +40,7 @@ describe('Flows Schedule Hook Tests', () => {
 			envRedis1[vendor].SYNCHRONIZATION_STORE = 'redis';
 			envRedis1[vendor].SYNCHRONIZATION_NAMESPACE = `directus-${vendor}`;
 			envRedis1[vendor][envTargetVariable] = 'redis-1';
+			envRedis1[vendor].LOG_LEVEL = 'info';
 
 			const envRedis2 = cloneDeep(envRedis1);
 			envRedis2[vendor][envTargetVariable] = 'redis-2';
@@ -85,7 +86,7 @@ describe('Flows Schedule Hook Tests', () => {
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {
-			for (const instance of directusInstances[vendor]!) {
+			for (const instance of directusInstances[vendor]) {
 				instance.kill();
 			}
 
@@ -99,50 +100,55 @@ describe('Flows Schedule Hook Tests', () => {
 			const env = envs[vendor][0]; // All instances are connected via MESSENGER
 			const flowId = flowIds[vendor];
 
+			// Create delayed sleep, set to 9s (4 flow executions, execution every 2s + a small delay)
+			const { sleep, sleepStart, sleepIsRunning } = delayedSleep(9000);
+
+			const flowExecutions: string[] = [];
+
+			const processLogLine = (chunk: any) => {
+				const logLine = String(chunk);
+
+				if (logLine.includes(logPrefix)) {
+					// Start sleep timer as soon as first flow has been executed
+					if (!sleepIsRunning()) {
+						sleepStart();
+					}
+
+					flowExecutions.push(logLine.substring(logLine.indexOf(logPrefix) + logPrefix.length));
+				}
+			};
+
+			// Process logs of all instances
+			for (const instance of directusInstances[vendor]) {
+				// Discard data up to this point
+				instance.stdout?.read();
+				instance.stdout?.on('data', processLogLine);
+			}
+
 			// Action
 			await request(getUrl(vendor, env))
 				.patch(`/flows/${flowId}`)
 				.send({ status: 'active' })
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-			await sleep(10000);
+			await sleep;
+
+			// Stop processing logs
+			for (const instance of directusInstances[vendor]) {
+				instance.stdout?.off('data', processLogLine);
+			}
 
 			await request(getUrl(vendor, env))
 				.patch(`/flows/${flowId}`)
 				.send({ status: 'inactive' })
 				.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
 
-			const redisRunCount = (
-				await request(getUrl(vendor, env))
-					.get(`/items/${collection}`)
-					.query({
-						filter: JSON.stringify({
-							[fieldData]: { _starts_with: 'redis' },
-						}),
-						aggregate: {
-							count: 'id',
-						},
-					})
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-			).body.data[0].count.id;
-
-			const memoryRunCount = (
-				await request(getUrl(vendor, env))
-					.get(`/items/${collection}`)
-					.query({
-						filter: JSON.stringify({
-							[fieldData]: { _starts_with: 'memory' },
-						}),
-						aggregate: {
-							count: 'id',
-						},
-					})
-					.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`)
-			).body.data[0].count.id;
+			const redisExecutionCount = flowExecutions.filter((execution) => execution.includes('redis-')).length;
+			const memoryExecutionCount = flowExecutions.filter((execution) => execution.includes('memory-')).length;
 
 			// Assert
-			expect(parseInt(redisRunCount)).toBe(5);
-			expect(parseInt(memoryRunCount)).toBe(5);
+			expect(redisExecutionCount).toBe(5);
+			expect(memoryExecutionCount).toBe(5);
 		});
 	});
 });
