@@ -176,7 +176,7 @@ Boolean.
 `POST /graphql/system`
 
 ```graphql
-type Mutation {
+mutation {
 	utils_hash_verify(hash: "$arg...fEfM", string: "Hello World!")
 }
 ```
