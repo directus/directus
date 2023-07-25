@@ -46,9 +46,9 @@ specific features you need. The client starts as an empty wrapper without any fu
 
 - `rest()`: REST request functions, adds `.request(...)` to the client.
 - `graphql()`: GraphQL request functions, adds `.query(...)` to the client.
-- `auth()`: Authentication functions, adds `.login(...)`, `.logout()`, and .`refresh()` to the client.
-- `realtime()`: WebSocket connectivity, adds `.subscribe(...)` and `.message(...)` to the client.
-- `subscription()`: GraphQL Subscriptions, adds `.subscription()` to the client. (Coming soon).
+- `authentication()`: Authentication functions including refresh logic, adds `.login(...)`, `.logout()`, and .`refresh()` to the client.
+- `staticToken()`: Authentication functions for static tokens.
+- `realtime()`: WebSocket connectivity, adds `.subscribe(...)`, `.sendMessage(...)` and `.onWebSocket(...)` to the client.
 
 For example, to create a client with REST or GraphQL support, use the following:
 
