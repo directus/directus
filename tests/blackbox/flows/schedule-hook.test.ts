@@ -100,7 +100,7 @@ describe('Flows Schedule Hook Tests', () => {
 			const env = envs[vendor][0]; // All instances are connected via MESSENGER
 			const flowId = flowIds[vendor];
 
-			// Create delayed sleep, set to 9s (4 flow executions, execution every 2 sec + a small delay)
+			// Create delayed sleep, set to 9s (4 flow executions, execution every 2s + a small delay)
 			const { sleep, sleepStart, sleepIsRunning } = delayedSleep(9000);
 
 			const flowExecutions: string[] = [];
@@ -109,7 +109,7 @@ describe('Flows Schedule Hook Tests', () => {
 				const logLine = String(chunk);
 
 				if (logLine.includes(logPrefix)) {
-					// Start timer as soon as first flow run has been executed
+					// Start sleep timer as soon as first flow has been executed
 					if (!sleepIsRunning()) {
 						sleepStart();
 					}
