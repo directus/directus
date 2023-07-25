@@ -234,4 +234,4 @@ All SDK composables can also be conveniently imported from the root package `@di
 
 You can find code examples using the Directus SDK throughout our [API reference](/reference/items).
 
-You can also find an auto-generated [TypeDoc of the new SDK](/packages/@directus/SDK/).
+You can also find an auto-generated [TypeDoc of the new SDK](/packages/@directus/sdk/).

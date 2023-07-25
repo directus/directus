@@ -1,5 +1,5 @@
 <template>
-	<div class="snippet-toggler">
+	<div class="snippet-toggler" :class="{ dark: alwaysDark }">
 		<div class="snippet-toggler-header">
 			<span class="snippet-toggler-header-label">{{ label }}</span>
 
@@ -39,6 +39,7 @@ import { onBeforeMount, ref, watch } from 'vue';
 const props = defineProps<{
 	choices: string[];
 	label?: string;
+	alwaysDark?: boolean;
 }>();
 
 const selected = ref();
@@ -58,7 +59,11 @@ const { getStorageValue, setStorageValue } = useStorage('toggler-value');
 onBeforeMount(() => {
 	const value = getStorageValue();
 
-	selected.value = value || props.choices[0];
+	if (value && props.choices.includes(value)) {
+		selected.value = value;
+	} else {
+		selected.value = props.choices[0];
+	}
 
 	watch(selected, (value) => {
 		setStorageValue(value);
@@ -70,12 +75,13 @@ onBeforeMount(() => {
 .snippet-toggler {
 	overflow: hidden;
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
+	border: 1px solid var(--vp-snippet-toggler-border);
 }
 
 .snippet-toggler-header {
 	background: linear-gradient(172.36deg, rgba(228, 234, 241, 0.1) -5.49%, rgba(228, 234, 241, 0) 123.05%);
 	color: var(--vp-c-gray-light-2);
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	border-bottom: 1px solid var(--vp-snippet-toggler-border);
 	height: 40px;
 	display: flex;
 	align-items: center;
@@ -98,7 +104,7 @@ onBeforeMount(() => {
 }
 
 .snippet-toggler-header-lang-container:hover {
-	color: var(--vp-c-gray-light-5);
+	color: var(--vp-snippet-toggler-lang-hover);
 }
 
 .snippet-toggler-header-lang {
@@ -131,14 +137,12 @@ onBeforeMount(() => {
 	pointer-events: none;
 }
 
-.snippet-toggler .content-area [class^='language-'] {
-	margin: 0;
-	border-radius: 0;
+.snippet-toggler .content-area :deep(.lang) {
 	display: none;
 }
 
-.snippet-toggler .content-area :global(.lang) {
-	display: none;
+.snippet-toggler.dark .content-area :deep(.vp-code-dark) {
+	display: block;
 }
 
 @media (min-width: 640px) {
@@ -149,7 +153,8 @@ onBeforeMount(() => {
 
 .content-area {
 	padding-inline: 24px;
-	padding-bottom: 32px;
+	padding-top: 8px;
+	padding-bottom: 8px;
 	scrollbar-width: none;
 	overflow-y: auto;
 	tab-size: 2;

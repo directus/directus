@@ -32,7 +32,7 @@ The Directus community is growing quickly, which also means there are more and m
 your fellow developers by providing answers on [Discord](https://directus.chat) is a great way to help the project.
 Questions are opened in one of our help channels, and all are encouraged to respond.
 
-:::info Feature Requests & Code Contributions
+::: info Feature Requests & Code Contributions
 
 To learn more about how we use GitHub for Feature Requests and Code Contributions, check out our
 [Code Contributions guide](/contributing/introduction).

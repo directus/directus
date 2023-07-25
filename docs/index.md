@@ -24,7 +24,7 @@ import Github from './.vitepress/components/home/icons/Github.vue';
 		</div>
 		<div :class="$style.heroToggler">
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API" :alwaysDark="true">
 <template #rest>
 
 ```js

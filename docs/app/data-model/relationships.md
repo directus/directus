@@ -4,7 +4,7 @@
 > well as a few more of its own _compound_ types, which are custom-tailored to make certain _common but complex_ tasks a
 > breeze.
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 Regardless of the relationship you want to configure, we recommend you read every section of this document, in order, at
 least once. This is because you must understand how M2Os work in Directus to understand O2Ms, you must understand M2Os
@@ -79,7 +79,7 @@ not see related cities.
 
 This is where O2M fields come in to play.
 
-:::tip Configure an M2O
+::: tip Configure an M2O
 
 The easiest way to configure an M2O field is to follow the guide on how to
 [create a field (standard)](/app/data-model/fields#create-a-field-standard) and select the M2O Interface from the
@@ -126,7 +126,7 @@ Note the following points from the schema above. When we create an O2M in Direct
 	<source src="" type="video/mp4" />
 </video> -->
 
-:::tip Configure an O2M
+::: tip Configure an O2M
 
 The easiest way to configure an O2M is to follow the guide on how to
 [create a field (standard)](/app/data-model/fields#create-a-field-standard) and select the O2M alias field type from the
@@ -203,7 +203,7 @@ Note the following points from the schema above. When we create an O2O in Direct
   M2O fields in the related collection, you may want to [configure an O2M field](#one-to-many-o2m) so that you can
   access items from the related collection as well.
 
-:::tip Configure an O2O
+::: tip Configure an O2O
 
 <!-- <video title="Configure an O2O Relationship" autoplay playsinline muted loop controls>
 	<source src="" type="video/mp4" />
@@ -276,7 +276,7 @@ ingredients
 - You can also have a self-referencing M2M relationship that connects items in the _same collection_. One example is
   "Related Articles", where each article relates to many other articles.
 
-:::tip Configure an M2M
+::: tip Configure an M2M
 
 <!-- <video title="Configure an O2O Relationship" autoplay playsinline muted loop controls>
 	<source src="" type="video/mp4" />
@@ -344,7 +344,7 @@ Note the following points from the schema above. When we create an M2A in Direct
 - Each collection has a unique collection name, so this serves as an adequate foreign key in the
   `page_sections.collection` field.
 
-:::tip Configure an M2A
+::: tip Configure an M2A
 
 <!--
 <video title="Configure an M2A Relationship" autoplay playsinline muted loop controls>
@@ -409,7 +409,7 @@ Note the following points from the schema above. When we create a Translations O
   [duplicate a field](/app/data-model/fields#duplicate-a-field), move it to the translation collection, and then delete
   the parent field. However, be aware that duplicating a field does _not_ duplicate any existing field values.
 
-:::tip Configure a Translations O2M
+::: tip Configure a Translations O2M
 
 <!--
 <video title="Configure a Translations O2M" autoplay playsinline muted loop controls>

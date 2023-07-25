@@ -176,7 +176,7 @@ const auth = {
   for JWT.
 - **Default** — Defaults to `'cookie'` on browsers and `'json'` otherwise.
 
-:::tip
+::: tip
 
 We recommend using cookies when possible to prevent any kind of attacks, mostly XSS.
 
@@ -246,7 +246,7 @@ const storage = {
 };
 ```
 
-:::tip Multiple Instances
+::: tip Multiple Instances
 
 If you want to use multiple instances of the SDK you should set a different [`prefix`](#prefix) for each one.
 
@@ -359,7 +359,9 @@ export default {
 - **Description** — Defines a callback function to indicate the upload progress.
 - **Default** — N/A
 
-:::tip ProgressEvent Please see the MDN documentation to learn more about the
+::: tip ProgressEvent
+
+Please see the MDN documentation to learn more about the
 [ProgressEvent](https://developer.mozilla.org/en-US/docs/Web/API/ProgressEvent).
 
 :::
@@ -844,7 +846,7 @@ await directus.collections.readOne(/* collection name */ 'articles');
 ### Read all collections
 
 ```js
-await directus.collections.readAll(); //does not currently support query or searching
+await directus.collections.readAll(); // Doesn't currently support query or searching
 ```
 
 ### Create a collection
@@ -886,13 +888,13 @@ await directus.fields.readOne(/* collection name */ 'articles', /* id of the fie
 ### Read multiple fields
 
 ```js
-await directus.fields.readMany(/* collection name */ 'articles'); //doesn't currently support query parameter
+await directus.fields.readMany(/* collection name */ 'articles'); // Doesn't currently support query parameter
 ```
 
 ### Read all fields
 
 ```js
-await directus.fields.readAll(); //does not currently support query or searching
+await directus.fields.readAll(); // Doesn't currently support query or searching
 ```
 
 ### Create a field
@@ -1204,5 +1206,3 @@ await directus.utils.revert(451);
 ```
 
 Note: The key passed is the primary key of the revision you'd like to apply.
-
----

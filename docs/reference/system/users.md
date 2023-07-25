@@ -9,8 +9,6 @@ pageClass: page-reference
 > Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
 > which defines its granular Permissions. [Learn more about Users](/user-guide/overview/glossary#users).
 
----
-
 ## The User Object
 
 `id` **uuid**\
@@ -103,35 +101,23 @@ When this is enabled, the user will receive emails for notifications.
 }
 ```
 
----
-
 ## List Users
 
 List all users that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /users`
 
-An array of up to [limit](/reference/query#limit) [user objects](#the-user-object). If no items are available, data will
-be an empty array.
+`SEARCH /users`
 
-### REST API
+</template>
+<template #graphql>
 
-```
-GET /users
-SEARCH /users
-```
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -139,7 +125,47 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readUsers } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readUsers({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [user objects](#the-user-object). If no items are available, data will
+be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /users`
+
+`SEARCH /users`
+
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -151,37 +177,40 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readUsers } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readUsers({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a User
 
 List an existing user by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /users/:id`
 
-Returns the requested [user object](#the-user-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /users/:id
-```
-
-##### Example
-
-```
-GET /users/72a1ce24-4748-47de-a05f-ce9af3033727
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -189,7 +218,44 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readUser('user_id', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [user object](#the-user-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -201,31 +267,40 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readUser('0513b6e8-55f2-4ff5-906c-f1a29d7b983c', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve the Current User
 
 Retrieve the currently authenticated user.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /users/me`
 
-Returns the [user object](#the-user-object) for the currently authenticated user.
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /users/me
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -233,7 +308,42 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readMe } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readMe({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the [user object](#the-user-object) for the currently authenticated user.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /users/me`
+
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -243,39 +353,46 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readMe } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readMe({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update the Current User
 
 Update the authenticated user.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-Returns the updated [user object](#the-user-object) for the authenticated user.
-
-### REST API
-
-```
-PATCH /users/me
-```
+`PATCH /users/me`
 
 ```json
-// PATCH /users/me
-
 {
-	"email": "new.email@example.com"
+	"user_object_field": "value"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -283,7 +400,50 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateMe } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateMe({
+		user_field: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the updated [user object](#the-user-object) for the authenticated user.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /users/me`
+
+```json
+{
+	"email": "new.email@example.com"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -293,49 +453,48 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateMe } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateMe({
+		email_notifications: false,
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a User
 
 Create a new user
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-A partial [user object](#the-user-object).
-
-`email` and `password` are required to authenticate with the default authentication provider.
-
-### Returns
-
-Returns the [user object](#the-user-object) for the created user.
-
-### REST API
-
-```
-POST /users
-```
-
-##### Example
+`POST /users`
 
 ```json
-// POST /users
-
 {
-	"email": "another@example.com",
-	"password": "d1r3ctu5",
-	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+	"email": "user_email",
+	"password": "user_password",
+	"user_object_field": "value"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -343,63 +502,188 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createUser({
+		email: 'user_email',
+		password: 'user_password',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [user object](#the-user-object).
+
+`email` and `password` are required to authenticate with the default authentication provider.
+
+### Response
+
+Returns the [user object](#the-user-object) for the created user.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /users`
+
+```json
+{
+	"email": "another@example.com",
+	"password": "d1r3ctu5",
+	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
-  create_users_item(
-    data: {
-      email: "another@example.com"
-      password: "d1r3ctu5"
-      role: {
-        id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
-        name: "Public"
-        admin_access: false
-        enforce_tfa: false
-      }
-    }
-  ) {
-    email
-    role
-  }
+	create_users_item(
+		data: {
+			email: "another@example.com"
+			password: "d1r3ctu5"
+			role: { id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", name: "Public", admin_access: false, enforce_tfa: false }
+		}
+	) {
+		email
+		role
+	}
 }
 ```
+
+::: tip
 
 Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
 as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it
 could be modified by the user call.
 
----
+:::
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createUser({
+		email: 'hi@email.com',
+		password: 'qwerty123',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create Multiple Users
 
 Create multiple new users
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /users`
+
+```json
+[
+	{
+		"email": "user_email",
+		"password": "user_password",
+		"user_object_field": "value"
+	},
+	{
+		"email": "user_email",
+		"password": "user_password",
+		"user_object_field": "value"
+	}
+]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_users_items(data: [create_directus_users_input!]!): [directus_users]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createUsers } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createUsers([
+		{
+			email: 'user_email',
+			password: 'user_password',
+		},
+		{
+			email: 'user_email',
+			password: 'user_password',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [user objects](#the-user-object).
 
 `email` and `password` are required.
 
-### Returns
+### Response
 
 Returns the [user objects](#the-user-object) for the created users.
 
-### REST API
+### Example
 
-```
-POST /users
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /users`
 
 ```json
-// POST /users
-
 [
 	{
 		"email": "admin@example.com",
@@ -414,95 +698,88 @@ POST /users
 ]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_users_items(data: [create_directus_users_input!]!): [directus_users]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
-  create_users_items(
-    data: [
-      {
-        email: "admin@example.com"
-        password: "p455w0rd"
-        role: {
-          id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
-          name: "Public"
-          admin_access: false
-          enforce_tfa: false
-        }
-      }
-      {
-        email: "another@example.com"
-        password: "d1r3ctu5"
-        role: {
-          id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
-          name: "Public"
-          admin_access: false
-          enforce_tfa: false
-        }
-      }
-    ]
-  ) {
-    email
-    role
-  }
+	create_users_items(
+		data: [
+			{
+				email: "admin@example.com"
+				password: "p455w0rd"
+				role: { id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", name: "Public", admin_access: false, enforce_tfa: false }
+			}
+			{
+				email: "another@example.com"
+				password: "d1r3ctu5"
+				role: { id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", name: "Public", admin_access: false, enforce_tfa: false }
+			}
+		]
+	) {
+		email
+		role
+	}
 }
 ```
+
+::: tip
 
 Please note that if you include the Role in the `create_users_items` call it will be treated as an Upsert and not only
 as adding a relationship. So make sure the ID exists, and the other parameters match the existing role, otherwise it
 could be modified by the user call.
 
----
+:::
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createUsers } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createUsers([
+		{
+			email: 'hello@email.com',
+			password: 'qwerty123',
+		},
+		{
+			email: 'person@email.com',
+			password: 'QwErTy1994',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a User
 
 Update an existing user.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-A partial [user object](#the-user-object).
-
-### Returns
-
-Returns the [user object](#the-user-object) for the updated user.
-
-### REST API
-
-```
-PATCH /users/:id
-```
-
-##### Example
+`PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
 
 ```json
-// PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727
-
 {
-	"title": "CTO"
+	"user_object_field": "value"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -510,7 +787,54 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateUser('user_id', {
+		user_fiels: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [user object](#the-user-object).
+
+### Response
+
+Returns the [user object](#the-user-object) for the updated user.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
+```json
+{
+	"title": "CTO"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -521,17 +845,80 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateUser('e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb', {
+		email_notifications: false,
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Users
 
 Update multiple existing users.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /users`
+
+```json
+{
+	"keys": ["user_1_key", "user_2_key"],
+	"data": {
+		"user_object_field": "value"
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateUsers } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateUsers(['user_1_id', 'user_2_id'], {
+		user_field: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the users you'd like to update.
@@ -539,21 +926,18 @@ Array of primary keys of the users you'd like to update.
 `data` **Required**\
 Any of [the user object](#the-user-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [user objects](#the-user-object) for the updated users.
 
-### REST API
+### Example
 
-```
-PATCH /users
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`PATCH /users`
 
 ```json
-// PATCH /users
-
 {
 	"keys": ["72a1ce24-4748-47de-a05f-ce9af3033727", "9c3d75a8-7a5f-41a4-be0a-1488fd974511"],
 	"data": {
@@ -562,19 +946,10 @@ PATCH /users
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -588,33 +963,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateUsers } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb', '5ec6ee0a-62ad-460d-a91e-fed63e3d804c'], {
+		email_notifications: false,
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete a User
 
 Delete an existing user.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`DELETE /users/:id`
 
-```
-DELETE /users/:id
-```
+</template>
+<template #graphql>
 
-##### Example
-
-```
-DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -622,7 +1004,36 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteUser('user_id'));
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -632,38 +1043,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteUser('965749ad-e5e4-4e38-aa91-25a252b8ccd9'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Multiple Users
 
 Delete multiple existing users.
 
-### Request Body
+### Request
 
-An array of user primary keys
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-Empty body.
-
-### REST API
-
-```
-DELETE /users
-```
-
-##### Example
+`DELETE /users`
 
 ```json
-// Request
-["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+["user_1_key", "user_2_key"]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -671,7 +1084,42 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteUsers } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteUsers(['user_1_id', 'user_2_id']));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+An array of user primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /users`
+
+```json
+["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
+```
+
+</template>
+<template #graphql>
 
 ```graphql
 mutation {
@@ -681,13 +1129,68 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteUsers } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteUsers(['e41605bd-f9bc-4c9c-b09d-3ccb7b137fbb', '5ec6ee0a-62ad-460d-a91e-fed63e3d804c'])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Invite a new User
 
 Invite a new user by email.
 
-### Request Body
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /users/invite`
+
+```json
+{
+	"email": "invited_user_email",
+	"role": "invited_user_role"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	users_invite(email: String!, role: String!, invite_url: String): Boolean
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, disableTwoFactor } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(disableTwoFactor('otp'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
 
 `email` **Required**\
 User email to invite.
@@ -700,40 +1203,28 @@ Provide a custom invite url which the link in the email will lead to. The invite
 **Note**: You need to configure the
 [`USER_INVITE_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
 
-### Returns
+### Response
 
 Empty body.
 
-### REST API
+### Example
 
-```
-POST /users/invite
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /users/invite`
 
 ```json
-// POST /users/invite
-
 {
 	"email": "another@example.com",
 	"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	users_invite(email: String!, role: String!, invite_url: String): Boolean
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -741,7 +1232,20 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, inviteUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(inviteUser('invited_user_email', 'invited_user_role'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Accept User Invite
 
@@ -749,40 +1253,24 @@ Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the ema
 
 This link includes a token, which is then used to activate the invited user.
 
-### Request Body
+### Request
 
-`token` **Required**\
-Accept invite token.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-`password` **Required**\
-Password for the user.
-
-### Returns
-
-Empty body.
-
-### REST API
-
-```
-POST /users/invite/accept
-```
-
-##### Example
+`POST /users/invisponse/accept`
 
 ```json
-// POST /users/invite/accept
-
 {
-	"token": "eyJh...KmUk",
-	"password": "d1r3ctu5"
+	"token": "invite_token",
+	"password": "user_password"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -790,7 +1278,49 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, inviteUser } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`token` **Required**\
+Accept invite token.
+
+`password` **Required**\
+Password for the user.
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /users/invite/accept`
+
+```json
+{
+	"token": "eyJh...KmUk",
+	"password": "d1r3ctu5"
+}
+```
+
+</template>
+<template #graphql>
 
 ```graphql
 mutation {
@@ -798,45 +1328,42 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, acceptUserInvite } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(acceptUserInvite('invite_token', 'user_password'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Generate Two-Factor Authentication Secret
 
 Generates a secret and returns the URL to be used in an authenticator app.
 
-### Request Body
+### Request
 
-`password` **Required**\
-The user's password.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-`secret` **string**\
-OTP secret to be saved in the authenticator app.
-
-`otpauth_url` **string**\
-`otpauth://` formatted URL. Can be rendered as QR code and used in most authenticator apps.
-
-### REST API
-
-```
-POST /users/me/tfa/generate
-```
-
-##### Example
+`POST /users/me/tfa/generate`
 
 ```json
-// POST /users/me/tfa/generate
 {
-	"password": "d1r3ctu5"
+	"password": "user_password"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -844,7 +1371,51 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, acceptUserInvite } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(acceptUserInvite('eyJh...KmUk', 'd1r3ctu5'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`password` **Required**\
+The user's password.
+
+### Response
+
+`secret` **string**\
+OTP secret to be saved in the authenticator app.
+
+`otpauth_url` **string**\
+`otpauth://` formatted URL. Can be rendered as QR code and used in most authenticator apps.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /users/me/tfa/generate`
+
+```json
+{
+	"password": "d1r3ctu5"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -855,45 +1426,43 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, generateTwoFactorSecret } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(generateTwoFactorSecret('user_password'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Enable Two-Factor Authentication
 
 Adds a TFA secret to the user account.
 
-### Request Body
+### Request
 
-`secret` **Required**\
-The TFA secret from tfa/generate.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-`otp` **Required**\
-OTP generated with the secret, to recheck if the user has a correct TFA setup
-
-### Returns
-
-Empty response.
-
-### REST API
-
-```
-POST /users/me/tfa/enable
-```
-
-##### Example
+`POST /users/me/tfa/enable`
 
 ```json
-// POST /users/me/tfa/enable
 {
-	"otp": "123456",
-	"secret": "3CtiutsNBmY3szHE"
+	"otp": "One Time Password",
+	"secret": "Two-Factor_Authorization_secret"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -901,7 +1470,51 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, generateTwoFactorSecret } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(generateTwoFactorSecret('d1r3ctu5'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`secret` **Required**\
+The TFA secret from tfa/generate.
+
+`otp` **Required**\
+OTP generated with the secret, to recheck if the user has a correct TFA setup
+
+### Response
+
+Empty response.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /users/me/tfa/enable`
+
+```json
+{
+	"otp": "123456",
+	"secret": "3CtiutsNBmY3szHE"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -909,42 +1522,42 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, enableTwoFactor } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(enableTwoFactor('secret', 'otp'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Disable Two-Factor Authentication
 
 Disables two-factor authentication by removing the OTP secret from the user.
 
-### Request Body
+### Request
 
-`otp` **Required**\
-One-time password generated by the authenticator app.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
-
-Empty response.
-
-### REST API
-
-```
-POST /users/me/tfa/disable
-```
-
-##### Example
+`POST /users/me/tfa/disable`
 
 ```json
-// POST /users/me/tfa/disable
-
 {
-	"otp": "859014"
+	"otp": "One-time password"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -952,10 +1565,65 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, enableTwoFactor } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(enableTwoFactor('3CtiutsNBmY3szHE', '123456'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`otp` **Required**\
+One-time password generated by the authenticator app.
+
+### Response
+
+Empty response.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /users/me/tfa/disable`
+
+```json
+{
+	"otp": "859014"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
 	users_me_tfa_disable(otp: "591763")
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, disableTwoFactor } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(disableTwoFactor('591763'));
+```
+
+</template>
+</SnippetToggler>
