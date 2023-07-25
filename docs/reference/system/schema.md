@@ -15,7 +15,6 @@ Retrieve the current schema. This endpoint is only available to admin users.
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -27,7 +26,6 @@ GET /schema/snapshot?export=yaml
 ```
 
 </template>
-
 <template #graphql>
 
 ```
@@ -62,7 +60,6 @@ query parameter is used.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ```
@@ -74,7 +71,6 @@ GET /schema/snapshot?export=yaml
 ```
 
 </template>
-
 <template #graphql>
 
 // Not supported in GraphQL
@@ -114,7 +110,6 @@ unintentional diffs from being generated. You can opt in to bypass these checks 
 ### Request
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ::: details **Toggle Open to See Request**
@@ -166,7 +161,6 @@ relations: []
 :::
 
 </template>
-
 <template #graphql>
 
 ```
@@ -420,7 +414,6 @@ Returns the differences between the current instance's schema and the schema pas
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ::: details **Toggle Open to See Example Request**
@@ -544,7 +537,6 @@ relations: []
 :::
 
 </template>
-
 <template #graphql>
 
 ```
@@ -719,7 +711,6 @@ Empty body.
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 ::: details **Toggle Open to See Sample Body**

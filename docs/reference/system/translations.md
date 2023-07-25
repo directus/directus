@@ -80,7 +80,6 @@ available, data will be an empty array.
 
 ### Example
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
-
 <template #rest>
 
 `GET /translations`
@@ -88,7 +87,6 @@ available, data will be an empty array.
 `SEARCH /translations`
 
 </template>
-
 <template #graphql>
 
 
