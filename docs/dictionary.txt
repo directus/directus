@@ -16,7 +16,7 @@
 (C|c)loudinary
 (C|c)loudinary's
 (C|c)odebase
-(C|c)omposable
+(C|c)omposables?
 (C|c)onfigs?
 (C|c)ustomizable
 (D|d)atacenter
@@ -299,6 +299,7 @@ pnpm
 Postgres
 Postgres13
 PR
+pre
 pre-configured
 pre-defined
 pre-existing
