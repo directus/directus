@@ -56,7 +56,7 @@ Create an `index.vue` file to load all of the items in the posts collection:
 <script setup>
 const { $directus, $readItems } = useNuxtApp()
 
-const { data: posts } = await useAsyncData('posts', () => {
+const posts = await useAsyncData('posts', () => {
   return $directus.request($readItems('posts'))
 })
 </script>
@@ -75,7 +75,7 @@ Create a `[id].vue` file that will load for single items in the collection:
 const { $directus, $readItem } = useNuxtApp();
 const route = useRoute();
 
-const { data: post } = await useAsyncData('post', () => {
+const post = await useAsyncData('post', () => {
   return $directus.request($readItem('posts', route.params.id))
 });
 
@@ -129,13 +129,13 @@ const { $directus, $readItem } = useNuxtApp(); // [!code --]
 const { $directus, $readItem, $preview } = useNuxtApp(); // [!code ++]
 const route = useRoute();
 
-if($preview) { // [!code ++]
-  const { data: post } = await useAsyncData('post', () => { // [!code ++]
+if ($preview) { // [!code ++]
+  const post = await useAsyncData('post', () => { // [!code ++]
     return $directus.request($readItem('posts', route.params.id)) // [!code ++]
   }); // [!code ++]
 } // [!code ++]
 
-const { data: post } = await useAsyncData('post', () => {
+const post = await useAsyncData('post', () => {
   return $directus.request($readItem('posts', route.params.id))
 });
 

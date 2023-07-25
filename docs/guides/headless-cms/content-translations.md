@@ -181,7 +181,7 @@ const slug = 'slug-in-english';
 const languageCode = 'en-US';
 
 // Call the Directus API using the SDK using the locale of the frontend and the slug.
-const page = await directus.request(
+const pages = await directus.request(
 	readItems('articles', {
 		deep: {
 			translations: {
@@ -201,6 +201,8 @@ const page = await directus.request(
 		limit: 1,
 	})
 );
+
+const page = pages[0];
 ```
 
 :::details **Toggle Open to See Sample Response**

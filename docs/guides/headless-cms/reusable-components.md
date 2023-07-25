@@ -223,7 +223,7 @@ const directus = createDirectus('https://directus.example.com').with(rest());
 const slug = 'the-ultimate-guide-to-rabbits';
 
 // Fetch page data using the SDK.
-const response = await directus.request(
+const pages = await directus.request(
 	readItems('pages', {
 		filter: {
 			slug: { _eq: slug },
@@ -233,7 +233,7 @@ const response = await directus.request(
 	})
 );
 
-const page = response.data[0];
+const page = page[0];
 ```
 
 :::details **Toggle Open to See Sample Response**
