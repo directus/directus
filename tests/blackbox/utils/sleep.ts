@@ -8,25 +8,29 @@ export function sleep(ms: number) {
 
 export function delayedSleep(ms: number) {
 	let isRunning = false;
+	let done = false;
 	let resolve: (value?: unknown) => void;
 
 	const sleep = new Promise((r) => {
 		resolve = r;
 	});
 
-	const sleepIsRunning = () => {
-		return isRunning;
-	};
-
 	const sleepStart = () => {
+		if (done) {
+			return;
+		}
+
 		isRunning = true;
 
-		const timeout = setTimeout(() => {
+		setTimeout(() => {
 			isRunning = false;
+			done = true;
 			resolve();
 		}, ms);
+	};
 
-		timeout.unref();
+	const sleepIsRunning = () => {
+		return isRunning;
 	};
 
 	return { sleep, sleepStart, sleepIsRunning };
