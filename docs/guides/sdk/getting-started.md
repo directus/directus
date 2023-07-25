@@ -124,7 +124,8 @@ import { rest, readItem } from '@directus/sdk/rest';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
-const result = await client.request(readItem('articles', 5));
+const article_id = 5;
+const result = await client.request(readItem('articles', article_id));
 ```
 
 #### Read all items
