@@ -43,9 +43,10 @@ To expose an Node.js package available globally in your Nuxt project you must cr
 called `plugins` and a new file called `directus.js` inside of it.
 
 ```js
-import { createDirectus } from '@directus/sdk'
-import { rest, readItem, readItems } from '@directus/sdk/rest'
-const directus = createDirectus('https://your-project-id.directus.app').with(rest())
+import { createDirectus } from '@directus/sdk';
+import { rest, readItem, readItems } from '@directus/sdk/rest';
+
+const directus = createDirectus('https://your-project-id.directus.app').with(rest());
 
 export default defineNuxtPlugin(() => {
 	return {
@@ -99,6 +100,7 @@ Create a new directory called `pages` and a new file called `index.vue` inside o
 
 <script setup>
 const { $directus, $readItems } = useNuxtApp()
+
 const { data: global } = await useAsyncData('global', () => {
   return $directus.request($readItems('global'))
 })

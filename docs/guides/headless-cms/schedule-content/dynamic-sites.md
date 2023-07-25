@@ -100,25 +100,25 @@ Using the [Directus JavaScript SDK](/guides/sdk/getting-started) (preferred)
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
 
-const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
+const directus = createDirectus('https://your-project-id.directus.app').with(rest());
 
 const articles = await directus.request(
-  readItems('articles', {
-    filter: {
-      _and: [
-        {
-          status: {
-            _eq: 'published',
-          },
-        },
-        {
-          date_published: {
-            _lte: '$NOW',
-          },
-        },
-      ],
-    },
-  })
+	readItems('articles', {
+		filter: {
+			_and: [
+				{
+					status: {
+						_eq: 'published',
+					},
+				},
+				{
+					date_published: {
+						_lte: '$NOW',
+					},
+				},
+			],
+		},
+	})
 );
 ```
 

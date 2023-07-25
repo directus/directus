@@ -26,7 +26,7 @@ complete rewrite, and was released in July 2023.
 
 Install the SDK:
 
-```js
+```shell
 npm install @directus/sdk
 ```
 

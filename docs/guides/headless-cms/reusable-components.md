@@ -217,20 +217,20 @@ import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
 
 // Initialize the SDK.
-const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
+const directus = createDirectus('https://your-project-id.directus.app').with(rest());
 
 // Write some code here in your front-end framework that gets the slug from the current URL.
 const slug = 'the-ultimate-guide-to-rabbits';
 
 // Fetch page data using the SDK.
 const response = await directus.request(
-  readItems('pages', {
-    filter: {
-      slug: { _eq: slug },
-    },
-    fields: ['*', { 'blocks': ['*', { 'item': [ { 'collection_a': ['*'], 'collection_b': ['*'] } ] }]],
-    limit: 1,
-  })
+	readItems('pages', {
+		filter: {
+			slug: { _eq: slug },
+		},
+		fields: ['*', { blocks: ['*', { item: [{ collection_a: ['*'], collection_b: ['*'] }] }] }],
+		limit: 1,
+	})
 );
 
 const page = response.data[0];

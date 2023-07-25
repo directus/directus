@@ -174,34 +174,33 @@ import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
 
 // Initialize the SDK.
-const directus = createDirectus('https://your-project-id.directus.app/').with(rest());
+const directus = createDirectus('https://your-project-id.directus.app').with(rest());
 
 // Write some code here in your front-end framework that gets the slug from the current URL.
 const slug = 'slug-in-english';
 const languageCode = 'en-US';
 
 // Call the Directus API using the SDK using the locale of the frontend and the slug.
-const response = await directus.request(
-  readItems('articles', {
-    deep: {
-      translations: {
-        _filter: {
-          _and: [
-            {
-              languages_code: { _eq: languageCode },
-            },
-            {
-              slug: { _eq: slug },
-            },
-          ],
-        },
-      },
-    },
-    fields: ['*', { 'translations': ['*'] }],
-    limit: 1,
-  })
+const page = await directus.request(
+	readItems('articles', {
+		deep: {
+			translations: {
+				_filter: {
+					_and: [
+						{
+							languages_code: { _eq: languageCode },
+						},
+						{
+							slug: { _eq: slug },
+						},
+					],
+				},
+			},
+		},
+		fields: ['*', { translations: ['*'] }],
+		limit: 1,
+	})
 );
-const page = response.data[0];
 ```
 
 :::details **Toggle Open to See Sample Response**
