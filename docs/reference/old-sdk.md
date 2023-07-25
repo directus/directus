@@ -6,22 +6,24 @@ description:
 readTime: 14 min read
 ---
 
-# JavaScript SDK
+# JavaScript SDK (pre v11)
 
 > The JS SDK provides an intuitive interface for the Directus API from within a JavaScript-powered project (browsers and
 > Node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
 > storing state. Advanced customizations are available.
 
-<Card
-  title="Explore the New JavaScript SDK (Beta)"
-  h="2"
-  text="Learn how to compose a Directus client using our new modular SDK."
-  url="/guides/sdk/getting-started" />
+::: danger This SDK is no longer supported!
+
+Version 11 introduced a complete rewrite of our SDK and the version referenced on this page is no longer supported
+either in terms of code or help in our community spaces. This page is purely for reference. New SDK docs can be found
+[here](/guides/sdk/getting-started).
+
+:::
 
 ## Installation
 
 ```bash
-npm install @directus/sdk
+npm install @directus/sdk@10
 ```
 
 ## Basic Usage

@@ -37,19 +37,20 @@ npm install @directus/sdk
 Open `my-website` in your code editor and type `npm run dev` in your terminal to start the Nuxt development server and
 open `http://localhost:3000` in your browser.
 
-## Create Plugin For @directus/sdk
+## Create a Plugin for the SDK
 
-To expose an npm package available globally in your Nuxt project you must create a plugin. Create a new directory called
-`plugins` and a new file called `directus.js` inside of it.
+To expose an Node.js package available globally in your Nuxt project you must create a plugin. Create a new directory
+called `plugins` and a new file called `directus.js` inside of it.
 
 ```js
-import { Directus } from '@directus/sdk';
+import { createDirectus } from '@directus/sdk';
+import { rest, readItem, readItems } from '@directus/sdk/rest';
 
-const directus = new Directus('https://your-project-id.directus.app');
+const directus = createDirectus('https://directus.example.com').with(rest());
 
 export default defineNuxtPlugin(() => {
 	return {
-		provide: { directus },
+		provide: { directus, readItem, readItems },
 	};
 });
 ```
@@ -93,15 +94,15 @@ Create a new directory called `pages` and a new file called `index.vue` inside o
 
 ```vue
 <template>
-	<h1>{{global.data.title}}</h1>
-	<p>{{global.data.description}}</p>
+	<h1>{{global.title}}</h1>
+	<p>{{global.description}}</p>
 </template>
 
 <script setup>
-const { $directus } = useNuxtApp()
+const { $directus, $readItems } = useNuxtApp()
 
-const { data: global } = await useAsyncData('global', () => {
-  return $directus.items('global').readByQuery()
+const global = await useAsyncData('global', () => {
+  return $directus.request($readItems('global'))
 })
 </script>
 ```
@@ -127,11 +128,11 @@ of the top-level pages.
 </template>
 
 <script setup>
-const { $directus } = useNuxtApp()
+const { $directus, $readItem } = useNuxtApp()
 const route = useRoute()
 
-const { data: page } = await useAsyncData('page', () => {
-  return $directus.items('pages').readOne(route.params.slug)
+const page = await useAsyncData('page', () => {
+  return $directus.request($readItem('pages', route.params.slug))
 })
 
 if (!page.value) throw createError({
@@ -179,13 +180,15 @@ Inside of the `pages` directory, create a new subdirectory called `blog` and a n
 </template>
 
 <script setup>
-const { $directus } = useNuxtApp()
+const { $directus, $readItems } = useNuxtApp()
 
-const { data: posts } = await useAsyncData('posts', () => {
-  return $directus.items('posts').readByQuery({
-    fields: ['slug', 'title', 'publish_date', 'author.name'],
-    sort: ['-publish_date']
-  })
+const posts = await useAsyncData('posts', () => {
+  return $directus.request(
+	$readItems('posts', {
+		fields: ['slug', 'title', 'publish_date', { 'author': [ 'name' ] }],
+		sort: ['-publish_date']
+	})
+  )
 })
 </script>
 ```
@@ -200,7 +203,7 @@ Update the `<template>` section:
 <template>
 	<h1>Blog</h1>
 	<ul>
-		<li v-for="post in posts.data" :key="post.id">
+		<li v-for="post in posts" :key="post.id">
 			<NuxtLink :href="`/blog/${post.slug}`">
 				<h2>{{post.title}}</h2>
 			</NuxtLink>
@@ -227,13 +230,15 @@ Each blog post links to a page that does not yet exist. In the `pages/blog` dire
 </template>
 
 <script setup>
-const { $directus } = useNuxtApp()
+const { $directus, $readItem } = useNuxtApp()
 const route = useRoute()
 
-const { data: post } = await useAsyncData('post', () => {
-  return $directus.items('posts').readOne(route.params.slug, {
-    fields: ['*.*']
-  })
+const post = await useAsyncData('post', () => {
+  return $directus.request(
+    $readItem('posts', route.params.slug, {
+      fields: ['*', { '*': ['*'] }]
+    })
+  )
 })
 
 if (!post.value) throw createError({
