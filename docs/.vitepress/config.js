@@ -128,7 +128,7 @@ gtag('config', 'UA-24637628-7');
 			dark: '/logo-dark.svg',
 		},
 		nav: [
-			{ text: 'Docs', link: '/' },
+			{ text: 'Docs', link: '/getting-started/quickstart' },
 			{
 				text: 'User Guide',
 				link: '/user-guide/overview/data-studio-app',

@@ -446,11 +446,6 @@ open_file_in_tab: Megnyitás új fülön
 start_export: Indítsa el az exportálást
 not_available_for_local_downloads: Nem érhető el helyi letöltésekhez
 exporting_all_items_in_collection: A(z) {collection} összes {total} elemének exportálása.
-exporting_limited_items_in_collection: A(z) {total} elemből {limit} exportálása a(z) {collection} gyűjteménybe.
-exporting_no_items_to_export: Nincs exportálandó tétel. Módosítsa az alábbi exportálási konfigurációt.
-exporting_download_hint: Ha elkészült, ez a {format} fájl automatikusan letöltődik az eszközére.
-exporting_batch_hint: Ezt az exportálást kötegekben dolgozzuk fel, és a befejezést követően a {format} fájl a Fájlkönyvtárba kerül.
-exporting_batch_hint_forced: A tételek nagy száma miatt ezt az exportálást kötegekben kell feldolgozni, és a befejezés után a {format} fájl a Fájltárba kerül.
 collection_key: Gyűjtemény kulcsa
 name: Név
 primary_key_field: Elsődleges kulcs mező
@@ -2090,6 +2085,7 @@ operations:
     description: Alkalmazáson belüli értesítés küldése egy vagy több felhasználónak
     recipient: Felhasználó
     message: Üzenet
+    subject: Tárgy
   request:
     name: Webhook / URL-kérés
     description: 'Kérjen egy URL-t'

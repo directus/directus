@@ -1700,6 +1700,7 @@ operations:
     data: Data
   notification:
     recipient: User
+    subject: Subject
   request:
     url: URL
     method: Method

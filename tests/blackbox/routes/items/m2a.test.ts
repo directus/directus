@@ -2082,5 +2082,88 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				vendorSchemaValues
 			);
 		});
+
+		describe('Meta Service Tests', () => {
+			describe('retrieves filter count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const name = 'test-meta-service-count';
+					const shape = createShape(pkType);
+					const shape2 = createShape(pkType);
+					const shapes = [];
+					const shapes2 = [];
+					const circle = createCircle(pkType);
+					const circle2 = createCircle(pkType);
+					const square = createSquare(pkType);
+					const square2 = createSquare(pkType);
+
+					shape.name = name;
+					shape2.name = name;
+					circle.name = name;
+					circle2.name = name;
+					square.name = name;
+					square2.name = name;
+					shapes.push(circle);
+					shapes2.push(circle2);
+					shapes.push(square);
+					shapes2.push(square2);
+
+					await CreateItem(vendor, {
+						collection: localCollectionShapes,
+						item: [
+							{
+								...shape,
+								children: {
+									create: [
+										{ collection: localCollectionCircles, item: circle },
+										{ collection: localCollectionSquares, item: square },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+							{
+								...shape2,
+								children: {
+									create: [
+										{ collection: localCollectionCircles, item: circle2 },
+										{ collection: localCollectionSquares, item: square2 },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+						],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionShapes}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+								children: {
+									[`item:${localCollectionCircles}`]: {
+										name: {
+											_eq: name,
+										},
+									},
+								},
+							}),
+							meta: '*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.meta.filter_count).toBe(2);
+					expect(response.body.data.length).toBe(2);
+
+					for (const item of response.body.data) {
+						expect(item.children.length).toBe(2);
+					}
+				});
+			});
+		});
 	});
 });

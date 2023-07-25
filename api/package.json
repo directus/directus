@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "12.0.2",
+	"version": "12.0.3",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -80,6 +80,7 @@
 		"@directus/storage-driver-gcs": "workspace:*",
 		"@directus/storage-driver-local": "workspace:*",
 		"@directus/storage-driver-s3": "workspace:*",
+		"@directus/storage-driver-supabase": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "4.12.0",

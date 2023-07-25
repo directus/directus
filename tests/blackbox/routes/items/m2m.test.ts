@@ -2785,5 +2785,85 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 			});
 		});
+
+		describe('Meta Service Tests', () => {
+			describe('retrieves filter count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const name = 'test-meta-service-count';
+					const food = createFood(pkType);
+					const food2 = createFood(pkType);
+					const ingredients = [];
+					const ingredients2 = [];
+
+					food.name = name;
+					food2.name = name;
+
+					for (let count = 0; count < 2; count++) {
+						const ingredient = createIngredient(pkType);
+						const ingredient2 = createIngredient(pkType);
+						ingredient.name = name;
+						ingredient2.name = name;
+						ingredients.push(ingredient);
+						ingredients2.push(ingredient2);
+					}
+
+					await CreateItem(vendor, {
+						collection: localCollectionFoods,
+						item: [
+							{
+								...food,
+								ingredients: {
+									create: [
+										{ [`${localCollectionIngredients}_id`]: ingredients[0] },
+										{ [`${localCollectionIngredients}_id`]: ingredients[1] },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+							{
+								...food2,
+								ingredients: {
+									create: [
+										{ [`${localCollectionIngredients}_id`]: ingredients2[0] },
+										{ [`${localCollectionIngredients}_id`]: ingredients2[1] },
+									],
+									update: [],
+									delete: [],
+								},
+							},
+						],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionFoods}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+								ingredients: {
+									[`${localCollectionIngredients}_id`]: {
+										name: {
+											_eq: name,
+										},
+									},
+								},
+							}),
+							meta: '*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.meta.filter_count).toBe(2);
+					expect(response.body.data.length).toBe(2);
+
+					for (const item of response.body.data) {
+						expect(item.ingredients.length).toBe(2);
+					}
+				});
+			});
+		});
 	});
 });

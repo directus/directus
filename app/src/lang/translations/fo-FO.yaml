@@ -165,3 +165,6 @@ displays:
   formatted-value:
     prefix: Forskoyti
     suffix: Eftirskoyti
+operations:
+  notification:
+    subject: Evni
