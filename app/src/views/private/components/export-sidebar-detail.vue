@@ -202,6 +202,14 @@
 					/>
 				</div>
 
+				<!-- Use formatted display values instead -->
+				<div class="field half-left">
+					<p class="type-label">Use Display Values</p>
+					<interface-boolean
+						v-model="exportSettings.use_display_values"
+					/>
+				</div>
+
 				<div class="field full">
 					<p class="type-label">{{ t('full_text_search') }}</p>
 					<v-input v-model="exportSettings.search" :placeholder="t('search')" />
@@ -289,6 +297,7 @@ const exportSettings = reactive({
 	search: props.search,
 	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
+	use_display_values: false,
 });
 
 watch(
@@ -520,6 +529,7 @@ function exportDataLocal() {
 	if (exportSettings.search) params.search = exportSettings.search;
 	if (exportSettings.filter) params.filter = exportSettings.filter;
 	if (exportSettings.search) params.search = exportSettings.search;
+	if (exportSettings.use_display_values) params.use_display_values = exportSettings.use_display_values;
 
 	params.limit = exportSettings.limit ?? -1;
 

@@ -66,6 +66,10 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 		query.export = rawQuery['export'] as 'json' | 'csv';
 	}
 
+	if (rawQuery['use_display_values']) {
+		(query as any).use_display_values = rawQuery['use_display_values'] === 'true';
+	}
+
 	if (rawQuery['deep'] as Record<string, any>) {
 		if (!query.deep) query.deep = {};
 
