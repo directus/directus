@@ -923,6 +923,17 @@ with the credentials set returned by this endpoint.
 `// Not currently available in GraphQL`
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readShareInfo } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readShareInfo('share_key'));
+```
+
+</template>
 </SnippetToggler>
 
 #### Request Body
@@ -965,6 +976,17 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 `// Not currently available in GraphQL`
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, authenticateShare } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(authenticateShare('share_key', 'password'));
+```
+
+</template>
 </SnippetToggler>
 
 ## Send a Share by Email
@@ -989,6 +1011,19 @@ Sends an email to the provided email addresses with a link to the share.
 <template #graphql>
 
 `// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, authenticateShare } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+	authenticateShare('61e8a1b6-6eba-438c-91e8-8d912ef655d3', 'd1r3ct5us')
+);
+```
 
 </template>
 </SnippetToggler>
@@ -1025,6 +1060,19 @@ Empty body.
 `// Not currently available in GraphQL`
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, inviteShare } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+	inviteShare('share_key', ['email_addr_1', 'email_addr_2'])
+);
+```
+
+</template>
 </SnippetToggler>
 
 ## Get Share Public Info
@@ -1040,6 +1088,22 @@ Allows unauthenticated users to retrieve information about the share.
 <template #graphql>
 
 `// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, inviteShare } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+	inviteShare('653925a9-970e-487a-bfc0-ab6c96affcdc', [
+		'allison@example.com',
+		'mike@example.com',
+	])
+);
+```
 
 </template>
 </SnippetToggler>
@@ -1059,6 +1123,17 @@ The [share objects](#the-share-object) for the given UUID, if it's still valid.
 <template #graphql>
 
 `// Not currently available in GraphQL`
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readShareInfo } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(readShareInfo('653925a9-970e-487a-bfc0-ab6c96affcdc'));
+```
 
 </template>
 </SnippetToggler>

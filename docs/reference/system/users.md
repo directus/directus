@@ -1164,6 +1164,17 @@ type Mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, disableTwoFactor } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(disableTwoFactor('otp'));
+```
+
+</template>
 </SnippetToggler>
 
 #### Request Body
@@ -1209,6 +1220,17 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, inviteUser } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(inviteUser('invited_user_email', 'invited_user_role'));
+```
+
+</template>
 </SnippetToggler>
 
 ## Accept User Invite
@@ -1226,7 +1248,7 @@ This link includes a token, which is then used to activate the invited user.
 
 ```json
 {
-	"token": "invite_tokem",
+	"token": "invite_token",
 	"password": "user_password"
 }
 ```
@@ -1240,6 +1262,19 @@ This link includes a token, which is then used to activate the invited user.
 type Mutation {
 	users_invite_accept(token: String!, password: String!): Boolean
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, inviteUser } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(
+	inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7')
+);
 ```
 
 </template>
@@ -1281,6 +1316,17 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, acceptUserInvite } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(acceptUserInvite('invite_token', 'user_password'));
+```
+
+</template>
 </SnippetToggler>
 
 ## Generate Two-Factor Authentication Secret
@@ -1309,6 +1355,17 @@ Generates a secret and returns the URL to be used in an authenticator app.
 type Mutation {
 	users_me_tfa_generate(password: String!): users_me_tfa_generate_data
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, acceptUserInvite } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(acceptUserInvite('eyJh...KmUk', 'd1r3ctu5'));
 ```
 
 </template>
@@ -1355,6 +1412,17 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, generateTwoFactorSecret } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(generateTwoFactorSecret('user_password'));
+```
+
+</template>
 </SnippetToggler>
 
 ## Enable Two-Factor Authentication
@@ -1384,6 +1452,17 @@ Adds a TFA secret to the user account.
 type Mutation {
 	users_me_tfa_enable(otp: String!, secret: String!): Boolean
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, generateTwoFactorSecret } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(generateTwoFactorSecret('d1r3ctu5'));
 ```
 
 </template>
@@ -1427,6 +1506,17 @@ mutation {
 ```
 
 </template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, enableTwoFactor } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(enableTwoFactor('secret', 'otp'));
+```
+
+</template>
 </SnippetToggler>
 
 ## Disable Two-Factor Authentication
@@ -1455,6 +1545,17 @@ Disables two-factor authentication by removing the OTP secret from the user.
 type Mutation {
 	users_me_tfa_disable(otp: String!): Boolean
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, enableTwoFactor } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(enableTwoFactor('3CtiutsNBmY3szHE', '123456'));
 ```
 
 </template>
@@ -1491,6 +1592,17 @@ Empty response.
 mutation {
 	users_me_tfa_disable(otp: "591763")
 }
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, disableTwoFactor } from '@directus/sdk/rest';
+const client = createDirectus('https://directus.example.com').with(rest())
+
+const result = await client.request(disableTwoFactor('591763'));
 ```
 
 </template>
