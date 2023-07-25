@@ -33,3 +33,7 @@ export type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N;
 export type IsAny<T> = IfAny<T, true, never>;
 
 export type IsNullable<T, Y = true, N = never> = T | null extends T ? Y : N;
+
+export type NestedPartial<Item extends object> = {
+	[Key in keyof Item]?: Item[Key] extends object ? NestedPartial<Item[Key]> : Item[Key];
+};

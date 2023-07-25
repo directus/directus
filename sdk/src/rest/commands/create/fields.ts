@@ -1,5 +1,5 @@
 import type { DirectusField } from '../../../schema/field.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateFieldOutput<
@@ -20,7 +20,7 @@ export type CreateFieldOutput<
 export const createField =
 	<Schema extends object, const TQuery extends Query<Schema, DirectusField<Schema>>>(
 		collection: keyof Schema,
-		item: Partial<DirectusField<Schema>>,
+		item: NestedPartial<DirectusField<Schema>>,
 		query?: TQuery
 	): RestCommand<CreateFieldOutput<Schema, TQuery>, Schema> =>
 	() => ({
