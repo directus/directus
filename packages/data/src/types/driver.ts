@@ -1,4 +1,4 @@
-import type { AbstractQuery } from './abstract-query.js';
+import type { AbstractQuery } from './abstract-query/abstract-query.js';
 import type { ReadableStream } from 'node:stream/web';
 
 export interface DataDriver {
