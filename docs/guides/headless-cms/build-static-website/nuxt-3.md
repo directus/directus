@@ -46,7 +46,7 @@ called `plugins` and a new file called `directus.js` inside of it.
 import { createDirectus } from '@directus/sdk';
 import { rest, readItem, readItems } from '@directus/sdk/rest';
 
-const directus = createDirectus('https://your-project-id.directus.app').with(rest());
+const directus = createDirectus('https://directus.example.com').with(rest());
 
 export default defineNuxtPlugin(() => {
 	return {

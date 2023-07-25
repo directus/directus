@@ -100,7 +100,7 @@ Using the [Directus JavaScript SDK](/guides/sdk/getting-started) (preferred)
 import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
 
-const directus = createDirectus('https://your-project-id.directus.app').with(rest());
+const directus = createDirectus('https://directus.example.com').with(rest());
 
 const articles = await directus.request(
 	readItems('articles', {

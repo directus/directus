@@ -217,7 +217,7 @@ import { createDirectus } from '@directus/sdk';
 import { rest, readItems } from '@directus/sdk/rest';
 
 // Initialize the SDK.
-const directus = createDirectus('https://your-project-id.directus.app').with(rest());
+const directus = createDirectus('https://directus.example.com').with(rest());
 
 // Write some code here in your front-end framework that gets the slug from the current URL.
 const slug = 'the-ultimate-guide-to-rabbits';

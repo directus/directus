@@ -62,7 +62,7 @@ file that can be imported later. Create a new directory called `lib` and a new f
 import { createDirectus } from '@directus/sdk';
 import { rest } from '@directus/sdk/rest';
 
-const directus = createDirectus('https://your-project-id.directus.app').with(rest());
+const directus = createDirectus('https://directus.example.com').with(rest());
 
 export default directus;
 ```
