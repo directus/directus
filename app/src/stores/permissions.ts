@@ -19,7 +19,7 @@ export const usePermissionsStore = defineStore({
 				params: { filter: { role: { _eq: userStore.currentUser!.role.id } } },
 			});
 
-			const fields = getNestedDynamicVariableFieldsInPresets(response.data.data);
+			const fields = getNestedDynamicVariableFields(response.data.data);
 
 			if (fields.length > 0) {
 				await userStore.hydrateAdditionalFields(fields);
@@ -41,23 +41,25 @@ export const usePermissionsStore = defineStore({
 				return rawPermission;
 			});
 
-			function getNestedDynamicVariableFieldsInPresets(rawPermissions: Permission[]) {
-				const fields: string[] = [];
-				const rawPermissionsWithPresets = rawPermissions.filter((rawPermission: Permission) => rawPermission.presets);
+			function getNestedDynamicVariableFields(rawPermissions: Permission[]) {
+				const fields = new Set<string>();
 
-				for (const rawPermissions of rawPermissionsWithPresets) {
-					deepMap(rawPermissions.presets, (value) => {
-						if (typeof value !== 'string') return;
+				const checkDynamicVariable = (value: string) => {
+					if (typeof value !== 'string') return;
 
-						if (value.startsWith('$CURRENT_USER.')) {
-							fields.push(value.replace('$CURRENT_USER.', ''));
-						} else if (value.startsWith('$CURRENT_ROLE.')) {
-							fields.push(value.replace('$CURRENT_ROLE.', 'role.'));
-						}
-					});
-				}
+					if (value.startsWith('$CURRENT_USER.')) {
+						fields.add(value.replace('$CURRENT_USER.', ''));
+					} else if (value.startsWith('$CURRENT_ROLE.')) {
+						fields.add(value.replace('$CURRENT_ROLE.', 'role.'));
+					}
+				};
 
-				return fields;
+				rawPermissions.forEach((rawPermission: Permission) => {
+					deepMap(rawPermission.presets, checkDynamicVariable);
+					deepMap(rawPermission.permissions, checkDynamicVariable);
+				});
+
+				return Array.from(fields);
 			}
 		},
 		dehydrate() {

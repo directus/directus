@@ -3,15 +3,20 @@ import type { Accountability, Filter } from '@directus/types';
 import { parseFilter as parseFilterShared } from '@directus/utils';
 
 export function parseFilter(filter: Filter | null): Filter {
-	const userStore = useUserStore();
+	const { currentUser } = useUserStore();
 
-	if (!userStore.currentUser) return filter ?? {};
-	if (!('id' in userStore.currentUser)) return filter ?? {};
+	if (!currentUser) return filter ?? {};
+	if (!('id' in currentUser)) return filter ?? {};
 
 	const accountability: Accountability = {
-		role: userStore.currentUser.role.id,
-		user: userStore.currentUser.id,
+		role: currentUser.role.id,
+		user: currentUser.id,
 	};
 
-	return parseFilterShared(filter, accountability) ?? {};
+	return (
+		parseFilterShared(filter, accountability, {
+			$CURRENT_ROLE: currentUser.role,
+			$CURRENT_USER: currentUser,
+		}) ?? {}
+	);
 }
