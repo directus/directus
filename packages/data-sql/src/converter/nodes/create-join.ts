@@ -1,42 +1,71 @@
-import type { AbstractSqlQueryJoinNode } from '../../types/index.js';
+import type { AbstractQueryFieldNodeRelatedManyToOne } from '@directus/data';
+import type {
+	AbstractSqlQueryConditionNode,
+	AbstractSqlQueryJoinNode,
+	AbstractSqlQueryLogicalNode,
+} from '../../types/index.js';
 
 export const createJoin = (
 	currentCollection: string,
-	currentFields: string[],
-	externalCollection: string,
-	externalCollectionAlias: string,
-	externalFields: string[]
+	node: AbstractQueryFieldNodeRelatedManyToOne,
+	externalCollectionAlias: string
 ): AbstractSqlQueryJoinNode => {
-	return {
-		type: 'join',
-		table: externalCollection,
-		as: externalCollectionAlias,
-		on: {
+	let on: AbstractSqlQueryLogicalNode | AbstractSqlQueryConditionNode;
+
+	if (node.join.current.fields.length > 1) {
+		on = {
 			type: 'logical',
 			operator: 'and',
 			negate: false,
-			childNodes: currentFields.map((field, index) => {
-				const relatedColumn = externalFields[index];
+			childNodes: node.join.current.fields.map((currentField, index) => {
+				const externalField = node.join.external.fields[index];
 
-				if (!relatedColumn) {
-					throw new Error(`Missing related foreign key join column for current context column "${field}"`);
+				if (!externalField) {
+					throw new Error(`Missing related foreign key join column for current context column "${currentField}"`);
 				}
 
-				return {
-					type: 'join-condition',
-					target: {
-						type: 'primitive',
-						table: currentCollection,
-						column: field,
-					},
-					operator: 'eq',
-					compareTo: {
-						type: 'primitive',
-						table: externalCollectionAlias,
-						column: relatedColumn,
-					},
-				};
+				return getJoinCondition(currentCollection, currentField, externalCollectionAlias, externalField);
 			}),
-		},
+		};
+	} else {
+		on = getJoinCondition(
+			currentCollection,
+			node.join.current.fields[0],
+			externalCollectionAlias,
+			node.join.external.fields[0]
+		);
+	}
+
+	return {
+		type: 'join',
+		table: node.join.external.collection,
+		as: externalCollectionAlias,
+		on,
 	};
 };
+
+function getJoinCondition(
+	table1: string,
+	column1: string,
+	table2: string,
+	column2: string
+): AbstractSqlQueryConditionNode {
+	return {
+		type: 'condition',
+		negate: false,
+		condition: {
+			type: 'condition-field',
+			target: {
+				type: 'primitive',
+				table: table1,
+				column: column1,
+			},
+			operation: 'eq',
+			compareTo: {
+				type: 'primitive',
+				table: table2,
+				column: column2,
+			},
+		},
+	};
+}

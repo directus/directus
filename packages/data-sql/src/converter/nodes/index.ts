@@ -24,7 +24,6 @@ export const convertNodes = (
 
 			select.push(selectNode);
 			paths.set(selectNode.as, [...path, node.alias ?? node.field]);
-
 			continue;
 		}
 
@@ -39,15 +38,7 @@ export const convertNodes = (
 			 * @TODO
 			 */
 
-			join.push(
-				createJoin(
-					collection,
-					node.join.current.fields,
-					node.join.external.collection,
-					externalCollectionAlias,
-					node.join.external.fields
-				)
-			);
+			join.push(createJoin(collection, node, externalCollectionAlias));
 
 			const nestedOutput = convertNodes(externalCollectionAlias, node.nodes, idxGenerator, [...path, node.alias]);
 

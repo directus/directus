@@ -41,26 +41,26 @@ export type AbstractQueryFieldNodeRelated =
 export interface AbstractQueryFieldNodeRelatedJoinMany {
 	/** the field of the current collection which has the relational value to an external collection or item */
 	current: {
-		fields: string[];
+		fields: [string, ...string[]];
 	};
 
 	/** the external collection or item which should be pulled/joined/merged into the current collection */
 	external: {
 		store?: string;
 		collection: string;
-		fields: string[];
+		fields: [string, ...string[]];
 	};
 }
 
 export interface AbstractQueryFieldNodeRelatedJoinAny {
 	current: {
 		collectionField: string;
-		fields: string[];
+		fields: [string, ...string[]];
 	};
 
 	external: {
 		store?: string;
-		fields: string[];
+		fields: [string, ...string[]];
 	};
 }
 
