@@ -1,5 +1,5 @@
 import { convertNumericOperators, type SqlConditionNumberNode } from '@directus/data-sql';
-import { applyDataTimeFn } from '../functions.js';
+import { applyFunction } from '../functions.js';
 import { wrapColumn } from '../wrap-column.js';
 
 export const numberCondition = (conditionNode: SqlConditionNumberNode, negate: boolean): string => {
@@ -7,8 +7,7 @@ export const numberCondition = (conditionNode: SqlConditionNumberNode, negate: b
 	let firstOperand;
 
 	if (target.type === 'fn') {
-		const wrappedColumn = wrapColumn(target.field.table, target.field.column);
-		firstOperand = applyDataTimeFn(target, wrappedColumn);
+		firstOperand = applyFunction(target);
 	} else {
 		firstOperand = wrapColumn(target.table, target.column);
 	}

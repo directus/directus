@@ -2,6 +2,22 @@ import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
 import { wrapColumn } from './wrap-column.js';
 
 /**
+ * Wraps a column with a function.
+ *
+ * @param fnNode - The function node which holds the function name and the column
+ * @returns	Basically FN("table"."column")
+ */
+export function applyFunction(fnNode: AbstractSqlQueryFnNode) {
+	const wrappedColumn = wrapColumn(fnNode.field.table, fnNode.field.column);
+
+	if (fnNode.fn === 'count') {
+		return convertCount(wrappedColumn);
+	} else {
+		return applyDataTimeFn(fnNode, wrappedColumn);
+	}
+}
+
+/**
  * Applies an EXTRACT function to a column.
  * The extract functions needs two parameters
  * - the field to extract from
@@ -13,11 +29,11 @@ import { wrapColumn } from './wrap-column.js';
  *
  * @param fnNode - The function to use
  * @param column - The column which will be used as the argument for the function
- * @returns - EXTRACT(xy FROM ...)
+ * @returns - F.e. EXTRACT(YEAR FROM "table"."column")
  */
-export const applyDataTimeFn = (fnNode: AbstractSqlQueryFnNode, wrappedColumn: string): string => {
+export const applyDataTimeFn = (fnNode: AbstractSqlQueryFnNode, col: string): string => {
 	function applyFn(functionName: string) {
-		return `EXTRACT(${functionName} FROM ${wrappedColumn}${fnNode.isTimestampType ? " AT TIME ZONE 'UTC'" : ''})`;
+		return `EXTRACT(${functionName} FROM ${col}${fnNode.isTimestampType ? " AT TIME ZONE 'UTC'" : ''})`;
 	}
 
 	switch (fnNode.fn) {
@@ -42,7 +58,12 @@ export const applyDataTimeFn = (fnNode: AbstractSqlQueryFnNode, wrappedColumn: s
 	}
 };
 
-export const convertCount = (fnNode: AbstractSqlQueryFnNode) => {
-	const wrappedCol = wrapColumn(fnNode.field.table, fnNode.field.column);
-	return `COUNT(${wrappedCol})`;
+/**
+ * Applies a COUNT function to the column.
+ *
+ * @param col
+ * @returns COUNT("table"."column")
+ */
+export const convertCount = (col: string) => {
+	return `COUNT(${col})`;
 };

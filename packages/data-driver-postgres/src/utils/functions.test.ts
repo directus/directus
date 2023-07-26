@@ -1,79 +1,52 @@
-import { expect, test, describe } from 'vitest';
-import { applyDataTimeFn, convertCount } from './functions.js';
+import { expect, test, describe, beforeEach } from 'vitest';
+import { applyFunction } from './functions.js';
 import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
 import { randomIdentifier } from '@directus/random';
 
-describe('Extract date time', () => {
-	test('From timestamp column', () => {
-		const randomTableName = randomIdentifier();
-		const wrappedColumn = `"${randomTableName}"."${randomIdentifier()}"`;
+let randomTable: string;
+let randomColumn: string;
+let sample: AbstractSqlQueryFnNode;
 
-		const fnNode: AbstractSqlQueryFnNode = {
-			type: 'fn',
-			field: {
-				type: 'primitive',
-				table: randomTableName,
-				column: randomIdentifier(),
-			},
-			fn: 'year',
-			isTimestampType: false,
-		};
+beforeEach(() => {
+	randomTable = randomIdentifier();
+	randomColumn = randomIdentifier();
 
-		expect(applyDataTimeFn(fnNode, wrappedColumn)).toStrictEqual(`EXTRACT(YEAR FROM ${wrappedColumn})`);
+	sample = {
+		type: 'fn',
+		field: {
+			type: 'primitive',
+			table: randomTable,
+			column: randomColumn,
+		},
+		fn: 'year',
+		isTimestampType: false,
+	};
+});
+
+describe('Apply date time function', () => {
+	test('On timestamp column', () => {
+		expect(applyFunction(sample)).toStrictEqual(`EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}")`);
 	});
 
-	test('From non timestamp column', () => {
-		const randomTableName = randomIdentifier();
-		const wrappedColumn = `"${randomTableName}"."${randomIdentifier()}"`;
+	test('On non timestamp column', () => {
+		sample.isTimestampType = true;
 
-		const fnNode: AbstractSqlQueryFnNode = {
-			type: 'fn',
-			field: {
-				type: 'primitive',
-				table: randomTableName,
-				column: randomIdentifier(),
-			},
-			fn: 'year',
-			isTimestampType: true,
-		};
-
-		expect(applyDataTimeFn(fnNode, wrappedColumn)).toStrictEqual(
-			`EXTRACT(YEAR FROM ${wrappedColumn} AT TIME ZONE 'UTC')`
+		expect(applyFunction(sample)).toStrictEqual(
+			`EXTRACT(YEAR FROM "${randomTable}"."${randomColumn}" AT TIME ZONE 'UTC')`
 		);
 	});
 });
 
-describe('Count', () => {
-	const randomTable = 'sldfjlk';
-	const randomColumn = 'oiioii';
+test('Apply count', () => {
+	sample = {
+		type: 'fn',
+		fn: 'count',
+		field: {
+			type: 'primitive',
+			table: randomTable,
+			column: '*',
+		},
+	};
 
-	test('on an actual column', () => {
-		const fnNode: AbstractSqlQueryFnNode = {
-			type: 'fn',
-			fn: 'count',
-			field: {
-				type: 'primitive',
-				table: randomTable,
-				column: randomColumn,
-			},
-		};
-
-		const res = convertCount(fnNode);
-		expect(res).toStrictEqual(`COUNT("${randomTable}"."${randomColumn}")`);
-	});
-
-	test('without a specific column', () => {
-		const fnNode: AbstractSqlQueryFnNode = {
-			type: 'fn',
-			fn: 'count',
-			field: {
-				type: 'primitive',
-				table: randomTable,
-				column: '*',
-			},
-		};
-
-		const res = convertCount(fnNode);
-		expect(res).toStrictEqual(`COUNT("${randomTable}"."*")`);
-	});
+	expect(applyFunction(sample)).toStrictEqual(`COUNT("${randomTable}"."*")`);
 });

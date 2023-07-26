@@ -1,6 +1,6 @@
 import type { AbstractSqlQuery } from '@directus/data-sql';
 import { wrapColumn } from '../utils/wrap-column.js';
-import { convertCount } from '../utils/functions.js';
+import { applyFunction } from '../utils/functions.js';
 
 /**
  * Generates the `SELECT x, y` part of a SQL statement.
@@ -16,7 +16,7 @@ export const select = ({ select }: AbstractSqlQuery): string => {
 		}
 
 		if (node.type === 'fn') {
-			return convertCount(node);
+			return applyFunction(node);
 		}
 	});
 
