@@ -39,7 +39,7 @@ Allows users to create and edit content using blocks. These blocks represent ind
 images, videos, buttons, and more, that can be assembled and re-arranged within a flexible layout.
 
 - **Types**: `JSON`
-- **Toolbar**: Allows for customization of visible formatting options
+- **Toolbar**: Allows for customization of visible formatting options.
 - **Folder**: Default folder to store uploaded files. Does not affect existing files.
 - **Font**: Type of font used in Edit mode.
 
