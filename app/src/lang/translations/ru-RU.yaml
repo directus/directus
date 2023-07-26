@@ -1446,7 +1446,7 @@ sort_asc: По Возрастанию
 sort_desc: По Убыванию
 disable_sort: Отключить сортировку
 template: Шаблон
-require_value_to_be_set: Значение должно быть установлено при создании
+require_value_to_be_set: Требовать заполнения при создании
 translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение
@@ -1458,7 +1458,7 @@ list: Список
 search_filter: Поиск и фильтрация
 enable_search_filter: Включить поиск и фильтрацию
 item_link: Ссылка на элемент
-show_link_to_item: Показать ссылку на элемент
+show_link_to_item: Показывать ссылку на элемент
 undo_removed_item: Отменить удаление элемента
 remove_item: Удалить элемент
 delete_item: Удалить элемент
@@ -1842,6 +1842,7 @@ displays:
     format: Формат
     format_label: Автоформат
     font: Шрифт
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Моноширинный
     bold: Жирный
@@ -1938,6 +1939,7 @@ layouts:
     default_template: Использование коллекции по умолчанию...
     no_compatible_fields: Нет совместимых полей
   kanban:
+    name: Канбан
     title: Заголовок Карточки
     title_placeholder: Название (необязательно)...
     text: Текст Карточки
@@ -2016,6 +2018,8 @@ panels:
     step_line: Ступенчатая линия
   meter:
     name: Счётчик
+  piechart:
+    name: Круговая или пончиковая диаграмма
   variable:
     name: Глобальная переменная
     description: Установить глобальное значение для использования в других фильтрах Панелей
@@ -2034,6 +2038,7 @@ triggers:
   event:
     name: Хук события
     action: 'Действие (не блокирующее)'
+    filter: 'Фильтр (блокирующий)'
   webhook:
     name: Вебхук
     description: Выполняется при входящем HTTP запросе
@@ -2045,7 +2050,10 @@ triggers:
     preview: Запускается операцией из другого процесса
   schedule:
     name: Расписание (CRON)
+    description: Срабатывание в определенные моменты времени
+    cron: Интервал
   manual:
+    name: Ручной
     description: Выполняется при ручном запуске в выбранной коллекции(ях)
     collection_and_item: Страницы Коллекции и Элемента
     collection_only: Только страница Коллекции

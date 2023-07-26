@@ -9,7 +9,10 @@ export default defineConfig({
 	description: 'Directus. An Instant App & API for your SQL Database.',
 	ignoreDeadLinks: true,
 	markdown: {
-		theme: 'material-theme-palenight',
+		theme: {
+			light: 'github-light',
+			dark: 'github-dark',
+		},
 		toc: {
 			level: [2],
 		},
@@ -134,7 +137,6 @@ gtag('config', 'UA-24637628-7');
 				link: '/user-guide/overview/data-studio-app',
 				activeMatch: '/user-guide',
 			},
-			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
 			{ text: 'GitHub', link: 'https://github.com/directus/directus' },
@@ -145,7 +147,6 @@ gtag('config', 'UA-24637628-7');
 			indexName: 'directus',
 		},
 		sidebar: {
-			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
 			'/user-guide/': sidebarUserGuide(),
 			'/packages/': sidebarTypedocs(),
@@ -330,10 +331,6 @@ function sidebar() {
 					text: 'Files',
 				},
 				{
-					link: '/reference/sdk',
-					text: 'JS-SDK',
-				},
-				{
 					link: '/reference/system/activity',
 					text: 'Activity',
 				},
@@ -432,6 +429,10 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{
+					text: 'JavaScript SDK',
+					link: '/guides/sdk/getting-started',
+				},
 				{
 					text: 'Flows',
 					items: [

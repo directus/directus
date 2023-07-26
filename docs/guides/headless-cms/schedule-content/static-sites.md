@@ -12,7 +12,7 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -24,7 +24,7 @@ author: Bryant Gillespie
 
 ## Explanation
 
-This recipe explains how to schedule content to be published on a future date for a statically generated site (SSG).
+This guide explains how to schedule content to be published on a future date for a statically generated site (SSG).
 
 We'll be using [Flows](/app/flows) to publish articles when the current date matches the published date.
 
@@ -41,7 +41,7 @@ Last, we'll kick off a new deployment of your static site at your hosting provid
 ::: info Note
 
 If your site fetches content at runtime or at the time of a page request, please
-[follow the recipe for dynamic sites](/guides/headless-cms/schedule-content/dynamic-sites).
+[follow the guide for dynamic sites](/guides/headless-cms/schedule-content/dynamic-sites).
 
 :::
 
@@ -51,7 +51,7 @@ If your site fetches content at runtime or at the time of a page request, please
 
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 You’ll need to have already created a collection for your site content like `articles` or `posts` or `pages` with a
 field `status` that controls the published state.
@@ -122,7 +122,7 @@ field `status` that controls the published state.
 
    d. Check **Emit Events**
 
-   :::warning
+   ::: warning
 
    Emit Events will trigger an `item.update` event in this flow. Be careful when using it in your Flows to avoid
    creating infinite loops where Flows continuously trigger one another.

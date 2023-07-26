@@ -180,7 +180,7 @@ And update the image reference in the `docker-compose.yml` file:
 +    image: my-custom-directus-image:latest
 ```
 
-:::tip Don't forget to provide `FLOWS_EXEC_ALLOWED_MODULES` variable
+::: tip Don't forget to provide `FLOWS_EXEC_ALLOWED_MODULES` variable
 
 In your `docker-compose.yml` file, you will need to add:
 

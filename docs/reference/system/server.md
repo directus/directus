@@ -9,8 +9,6 @@ pageClass: page-reference
 > Provides detailed information about the project server, its schema, and its health.
 > [Learn more about Projects](/user-guide/overview/glossary#projects).
 
----
-
 ## Get OpenAPI Specification
 
 Retrieve the OpenAPI spec for the current project.
@@ -21,21 +19,17 @@ This OAS spec is based on the read permissions of the currently authenticated us
 
 :::
 
-### Returns
+### Request
 
-Object conforming to [the OpenAPI Specification](https://swagger.io/specification)
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`GET /server/specs/oas`
 
-```
-GET /server/specs/oas
-```
+</template>
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -43,7 +37,34 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readOpenApiSpec } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readOpenApiSpec());
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+Object conforming to [the OpenAPI Specification](https://swagger.io/specification)
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /server/specs/oas`
+
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -51,7 +72,20 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readOpenApiSpec } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readOpenApiSpec());
+```
+
+</template>
+</SnippetToggler>
 
 ## Get GraphQL SDL
 
@@ -62,6 +96,41 @@ Retrieve the GraphQL SDL for the current project.
 The SDL is based on the permissions of the currently authenticated user.
 
 :::
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /server/specs/graphql/`
+
+`GET /server/specs/graphql/system`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Query {
+	server_specs_graphql(scope: graphql_sdl_scope): String
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readGraphqlSdl } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readGraphqlSdl('scope'));
+```
+
+</template>
+</SnippetToggler>
 
 ### Returns
 
@@ -89,26 +158,19 @@ type articles {
 # etc
 ```
 
-### REST API
+### Example
 
-```
-GET /server/specs/graphql/
-GET /server/specs/graphql/system
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### GraphQL
+`GET /server/specs/graphql/`
 
-```
-POST /graphql/system
-```
+`GET /server/specs/graphql/system`
 
-```graphql
-type Query {
-	server_specs_graphql(scope: graphql_sdl_scope): String
-}
-```
+</template>
+<template #graphql>
 
-##### Example
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -116,27 +178,36 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readGraphqlSdl } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readGraphqlSdl('item'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Ping
 
 Ping... pong! 🏓
 
-### Returns
+### Request
 
-Pong.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`GET /server/ping`
 
-```
-GET /server/ping
-```
+</template>
+<template #graphql>
 
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -144,7 +215,36 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverPing } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverPing());
+```
+
+</template>
+</SnippetToggler>
+
+### Returns
+
+Pong.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /server/ping`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -152,7 +252,20 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverPing } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverPing());
+```
+
+</template>
+</SnippetToggler>
 
 ## Info
 
@@ -164,7 +277,40 @@ The public information is returned for everybody. Admin users get additional inf
 
 :::
 
-### Returns
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /server/info`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Query {
+	server_info: server_info
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverInfo } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverInfo());
+```
+
+</template>
+</SnippetToggler>
+
+### Response
 
 `project` **object**\
 Public information about the project. Used to render the Admin App public pages.
@@ -189,25 +335,17 @@ The default query limit used when not defined in the API request
 `queryLimit.max` **number**\
 The maximum query limit accepted on API requests
 
-### REST API
+### Example
 
-```
-GET /server/info
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### GraphQL
+`GET /server/info`
 
-```
-POST /graphql/system
-```
+</template>
+<template #graphql>
 
-```graphql
-type Query {
-	server_info: server_info
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -219,7 +357,20 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverInfo } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverInfo());
+```
+
+</template>
+</SnippetToggler>
 
 ## Health
 
@@ -293,6 +444,39 @@ return more in-depth information about the current health status of the system.
 
 :::
 
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /server/health`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Query {
+	server_health: JSON
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverHealth } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverHealth());
+```
+
+</template>
+</SnippetToggler>
+
 ### Returns
 
 `status` **string**\
@@ -309,25 +493,17 @@ UUID of the current Directus instance.
 `checks` **array**\
 Array with the status of all individually connected services.
 
-### REST API
+### Example
 
-```
-GET /server/health
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### GraphQL
+`GET /server/health`
 
-```
-POST /graphql/system
-```
+</template>
+<template #graphql>
 
-```graphql
-type Query {
-	server_health: JSON
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -335,4 +511,17 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, serverHealth } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(serverHealth());
+```
+
+</template>
+</SnippetToggler>

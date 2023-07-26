@@ -11,7 +11,7 @@ author: Esther Agbaje
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 **Directus Version:** {{$frontmatter.directus_version}}
 
@@ -36,7 +36,7 @@ You will need:
 - Some knowledge of React.js and Next.js.
 
 If you're just getting started with Next.js and Directus, reference our
-[guide](/guides/headless-cms/build-static-website/next-13.html) to set up Next.js 13 with Directus
+[guide](/guides/headless-cms/build-static-website/next-13) to set up Next.js 13 with Directus.
 
 ## Configure Live Preview URL in Directus
 
@@ -52,6 +52,45 @@ specify the Preview URL for your Next.js project by selecting ID from the dropdo
 
 Make sure to replace `MY_SECRET_TOKEN` with the secret you want in your Next.js project and save your changes.
 
+## Create Post Pages
+
+We'll need a basic page to display all the posts. For this, create the file `pages.tsx` under `app/posts/[id]` with the
+following content:
+
+```tsx
+import directus from '@/lib/directus';
+import { readItem, readItems } from '@directus/sdk/rest';
+
+export default async function Post({ params: { id } }: { params: { id: string } }) {
+	const post = await directus.request(readItem('Posts', id));
+
+	if (!post) {
+		return null;
+	}
+
+	const { title, body } = post;
+
+	return (
+		<article>
+			<h1>{title}</h1>
+			<p>{body}</p>
+		</article>
+	);
+}
+
+export async function generateStaticParams() {
+	const posts = await directus.request(
+		readItems('Posts', {
+			limit: -1,
+		})
+	);
+
+	return posts.map((post) => ({
+		id: String(post.id),
+	}));
+}
+```
+
 ## Set Up Draft Mode in Next.js
 
 By default, when rendering content from Directus to a live site using static rendering, changes made to an existing
@@ -62,6 +101,8 @@ In your Next.js application, create a route handler file at `app/api/draft/route
 
 ```ts
 import { draftMode } from 'next/headers';
+import directus from '@/lib/directus';
+import { readItem } from '@directus/sdk/rest';
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
@@ -76,7 +117,7 @@ export async function GET(request: Request) {
 		return new Response('Missing id', { status: 401 });
 	}
 
-	const post = await getPostById(id);
+	const post = await directus.request(readItem('Posts', id));
 
 	if (!post) {
 		return new Response('Invalid id', { status: 401 });
@@ -109,7 +150,8 @@ To enable draft mode while fetching post data, modify the `pages.tsx` file locat
 with the following code:
 
 ```tsx
-import { getPostById, getAllPosts } from '@/lib/directus';
+import directus from '@/lib/directus';
+import { readItem, readItems } from '@directus/sdk/rest';
 import { draftMode } from 'next/headers'; // [!code ++]
 
 export default async function Post({ params: { id } }: { params: { id: string } }) {
@@ -133,7 +175,11 @@ export default async function Post({ params: { id } }: { params: { id: string } 
 }
 
 export async function generateStaticParams() {
-	const posts = await getAllPosts();
+	const posts = await directus.request(
+		readItems('Posts', {
+			limit: -1,
+		})
+	);
 
 	return posts.map((post) => ({
 		id: String(post.id),
