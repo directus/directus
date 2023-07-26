@@ -31,6 +31,18 @@ A search input that will populate dropdown choices by making a request to a give
 - **Trigger**: `Throttle`, `Debounce` - The method used to trigger the web request as you type a query.
 - **Rate**: The delay in `milliseconds` used in the Trigger function.
 
+## Block Editor
+
+![A Block Editor allows users to create and edit content using blocks or modules](https://marketing.directus.app/assets/f631a2e1-cb27-434a-939b-eb15132ac46a.png)
+
+Allows users to create and edit content using blocks. These blocks represent individual pieces of content, such as text,
+images, videos, buttons, and more, that can be assembled and re-arranged within a flexible layout.
+
+- **Types**: `JSON`
+- **Toolbar**: Allows for customization of visible formatting options
+- **Folder**: Default folder to store uploaded files. Does not affect existing files.
+- **Font**: Type of font used in Edit mode.
+
 ## Code
 
 ![A code editor input](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-code.webp)
