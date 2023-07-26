@@ -3,7 +3,7 @@
  * Move this module outside of src/query because it's not only used for query, but also for modifications like update and delete.
  */
 import type { AbstractSqlQuery } from '@directus/data-sql';
-import { conditionString } from '../utils/condition-string.js';
+import { conditionString } from '../utils/conditions/index.js';
 
 /**
  * Creates the WHERE clause for a SQL query.

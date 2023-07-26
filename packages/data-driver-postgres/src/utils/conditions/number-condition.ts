@@ -1,0 +1,20 @@
+import { convertNumericOperators, type SqlConditionNumberNode } from '@directus/data-sql';
+import { applyDataTimeFn } from '../functions.js';
+import { wrapColumn } from '../wrap-column.js';
+
+export const numberCondition = (conditionNode: SqlConditionNumberNode, negate: boolean): string => {
+	const target = conditionNode.target;
+	let firstOperand;
+
+	if (target.type === 'fn') {
+		const wrappedColumn = wrapColumn(target.field.table, target.field.column);
+		firstOperand = applyDataTimeFn(target, wrappedColumn);
+	} else {
+		firstOperand = wrapColumn(target.table, target.column);
+	}
+
+	const compareValue = `$${conditionNode.compareTo.parameterIndex + 1}`;
+	const operation = convertNumericOperators(conditionNode.operation, negate);
+
+	return `${firstOperand} ${operation} ${compareValue}`;
+};

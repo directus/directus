@@ -22,6 +22,8 @@ export function convertNumericOperators(operation: string, negate: boolean) {
 		case 'lte':
 			result = `${negate ? '>' : '<='}`;
 			break;
+		default:
+			throw new Error(`Unknown numeric operator: ${operation}`);
 	}
 
 	return result;

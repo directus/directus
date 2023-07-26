@@ -2,35 +2,41 @@ import type { AbstractSqlQueryFnNode } from '@directus/data-sql';
 import { wrapColumn } from './wrap-column.js';
 
 /**
+ * Applies an EXTRACT function to a column.
+ * The extract functions needs two parameters
+ * - the field to extract from
+ * - the source - which can be TIMESTAMP or INTERVAL. Here we only use/support TIMESTAMP.
+ *
+ *  The result of a function is a number!
+ *
  * @todo Check datatype of the column. If timestamp then add "AT TIME ZONE 'UTC'" to the result string
- * @todo Probably add count support
  *
  * @param fnNode - The function to use
  * @param column - The column which will be used as the argument for the function
  * @returns - EXTRACT(xy FROM ...)
  */
 export const applyDataTimeFn = (fnNode: AbstractSqlQueryFnNode, wrappedColumn: string): string => {
-	function getFnString(fn: string) {
-		return `EXTRACT(${fn} FROM ${wrappedColumn}${fnNode.isTimestampType ? " AT TIME ZONE 'UTC'" : ''})`;
+	function applyFn(functionName: string) {
+		return `EXTRACT(${functionName} FROM ${wrappedColumn}${fnNode.isTimestampType ? " AT TIME ZONE 'UTC'" : ''})`;
 	}
 
 	switch (fnNode.fn) {
 		case 'year':
-			return getFnString('YEAR');
+			return applyFn('YEAR');
 		case 'month':
-			return getFnString('MONTH');
+			return applyFn('MONTH');
 		case 'week':
-			return getFnString('WEEK');
+			return applyFn('WEEK');
 		case 'day':
-			return getFnString('DAY');
+			return applyFn('DAY');
 		case 'dow':
-			return getFnString('DOW');
+			return applyFn('DOW');
 		case 'hour':
-			return getFnString('HOUR');
+			return applyFn('HOUR');
 		case 'minute':
-			return getFnString('MINUTE');
+			return applyFn('MINUTE');
 		case 'second':
-			return getFnString('SECOND');
+			return applyFn('SECOND');
 		default:
 			throw new Error(`Function ${fnNode} is not supported.`);
 	}

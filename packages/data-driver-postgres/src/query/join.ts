@@ -1,5 +1,5 @@
 import type { AbstractSqlQuery } from '@directus/data-sql';
-import { conditionString } from '../utils/condition-string.js';
+import { conditionString } from '../utils/conditions/index.js';
 import { escapeIdentifier } from '../utils/escape-identifier.js';
 
 /**
