@@ -33,7 +33,7 @@ A search input that will populate dropdown choices by making a request to a give
 
 ## Block Editor
 
-![A Block Editor allows users to create and edit content using blocks or modules](https://marketing.directus.app/assets/f631a2e1-cb27-434a-939b-eb15132ac46a.png)
+![Showcase of the block editor with example blocks](https://marketing.directus.app/assets/f631a2e1-cb27-434a-939b-eb15132ac46a.png)
 
 Allows users to create and edit content using blocks. These blocks represent individual pieces of content, such as text,
 images, videos, buttons, and more, that can be assembled and re-arranged within a flexible layout.
