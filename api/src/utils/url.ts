@@ -43,6 +43,13 @@ export class Url {
 	}
 
 	public addPath(...paths: (string | number)[]): Url {
+		const lastPath = paths.at(-1);
+		let hasTrailingSlash = false;
+
+		if (typeof lastPath === 'string' && lastPath.endsWith('/')) {
+			hasTrailingSlash = true;
+		}
+
 		const pathToAdd = paths.flatMap((p) => String(p).split('/')).filter((p) => p !== '');
 
 		for (const pathSegment of pathToAdd) {
@@ -51,6 +58,10 @@ export class Url {
 			} else if (pathSegment !== '.') {
 				this.path.push(pathSegment);
 			}
+		}
+
+		if (pathToAdd.length > 0 && lastPath !== '.' && lastPath !== '..') {
+			this.hasTrailingSlash = hasTrailingSlash;
 		}
 
 		return this;
