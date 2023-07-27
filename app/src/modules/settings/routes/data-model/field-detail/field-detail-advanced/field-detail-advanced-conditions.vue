@@ -92,7 +92,7 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 			interface: 'system-interface-options',
 			options: {
 				interface: interfaceId.value,
-				context: fieldDetailStore,
+				context: useFieldDetailStore,
 			},
 		},
 	},
