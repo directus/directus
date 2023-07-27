@@ -6,7 +6,7 @@ import type {
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { beforeEach, expect, test } from 'vitest';
 import type { AbstractSqlQueryConditionNode, AbstractSqlQueryLogicalNode } from '../../../types/modifiers/filter.js';
-import { parameterIndexGenerator } from '../../../utils/param-index-generator.js';
+import { parameterIndexGenerator } from '../../param-index-generator.js';
 import { convertFilter } from './index.js';
 
 let sample: {

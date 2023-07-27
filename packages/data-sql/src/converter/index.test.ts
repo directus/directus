@@ -133,7 +133,7 @@ test('Convert query with a limit', () => {
 			},
 		],
 		from: sample.query.collection,
-		limit: { parameterIndex: 0 },
+		limit: { type: 'value', parameterIndex: 0 },
 		parameters: [sample.query.modifiers.limit!.value],
 	};
 
@@ -168,8 +168,8 @@ test('Convert query with limit and offset', () => {
 			},
 		],
 		from: sample.query.collection,
-		limit: { parameterIndex: 0 },
-		offset: { parameterIndex: 1 },
+		limit: { type: 'value', parameterIndex: 0 },
+		offset: { type: 'value', parameterIndex: 1 },
 		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
 	};
 
@@ -307,8 +307,8 @@ test('Convert a query with all possible modifiers', () => {
 				direction: 'ASC',
 			},
 		],
-		limit: { parameterIndex: 0 },
-		offset: { parameterIndex: 1 },
+		limit: { type: 'value', parameterIndex: 0 },
+		offset: { type: 'value', parameterIndex: 1 },
 		parameters: [sample.query.modifiers.limit!.value, sample.query.modifiers.offset!.value],
 	};
 

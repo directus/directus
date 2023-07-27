@@ -2,7 +2,7 @@ import { expect, test, vi, afterEach } from 'vitest';
 import { convertNodes, type ConvertSelectOutput } from './index.js';
 import { randomIdentifier } from '@directus/random';
 import type { AbstractQueryFieldNode } from '@directus/data';
-import { parameterIndexGenerator } from '../../utils/param-index-generator.js';
+import { parameterIndexGenerator } from '../param-index-generator.js';
 
 afterEach(() => {
 	vi.restoreAllMocks();

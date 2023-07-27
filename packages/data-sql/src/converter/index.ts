@@ -1,6 +1,6 @@
 import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlQuery } from '../types/index.js';
-import { parameterIndexGenerator } from '../utils/param-index-generator.js';
+import { parameterIndexGenerator } from './param-index-generator.js';
 import { convertFilter, convertSort } from './modifiers/index.js';
 import { convertNodes } from './nodes/index.js';
 

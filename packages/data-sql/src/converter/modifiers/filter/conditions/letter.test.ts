@@ -2,7 +2,7 @@ import type { ConditionLetterNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
 import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter.js';
-import { parameterIndexGenerator } from '../../../../utils/param-index-generator.js';
+import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertLetterNode } from './letter.js';
 
 test('number', () => {
