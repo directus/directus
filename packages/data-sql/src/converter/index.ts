@@ -1,3 +1,10 @@
+/**
+ * Converts an abstract query to an more SQL specific query.
+ * It's used as the first action within the SQL drivers.
+ * For details about the target type, see {@link AbstractSqlQuery}.
+ *
+ * @module
+ */
 import type { AbstractQuery } from '@directus/data';
 import type { AbstractSqlQuery } from '../types/index.js';
 import { parameterIndexGenerator } from './param-index-generator.js';
@@ -5,8 +12,11 @@ import { convertFilter, convertSort } from './modifiers/index.js';
 import { convertNodes } from './nodes/index.js';
 
 /**
+ * The starting point of a query conversion.
+ * It calls all related conversion functions and takes care of the parameter index.
+ *
  * @param abstractQuery the abstract query to convert
- * @returns a format very close to actual SQL but without making assumptions about the actual SQL dialect
+ * @returns the abstract sql query
  */
 export const convertAbstractQueryToAbstractSqlQuery = (abstractQuery: AbstractQuery): AbstractSqlQuery => {
 	const idGen = parameterIndexGenerator();
