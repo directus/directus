@@ -242,7 +242,7 @@ const {
 	primaryKey,
 	props.primaryKey !== '+'
 		? {
-				fields: ['*', 'avatar.id', 'role.*'],
+				fields: ['*', 'role.*'],
 		  }
 		: undefined
 );
@@ -263,9 +263,7 @@ const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
-const avatarSrc = computed(() =>
-	item.value?.avatar?.id ? `/assets/${item.value.avatar.id}?key=system-medium-cover` : null
-);
+const avatarSrc = computed(() => (item.value?.avatar ? `/assets/${item.value.avatar}?key=system-medium-cover` : null));
 
 const avatarError = ref(null);
 
