@@ -1,3 +1,4 @@
+import type { loginOptions } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
 import { getRequestUrl } from '../utils/get-request-url.js';
 import { request } from '../utils/request.js';
@@ -115,21 +116,23 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 		return {
 			refresh,
-			async login(email: string, password: string) {
+			async login(email: string, password: string, options: loginOptions = {}) {
 				// TODO: allow for websocket only authentication
 				resetStorage();
 
-				const requestUrl = getRequestUrl(client.url, '/auth/login');
+				const authPath = options.provider ? `/auth/login/${options.provider}` : '/auth/login';
+				const requestUrl = getRequestUrl(client.url, authPath);
+
+				const authData: Record<string, string> = { email, password };
+				if ('otp' in options) authData['otp'] = options.otp;
+				if ('mode' in options) authData['mode'] = options.mode;
 
 				const data = await request<AuthenticationData>(requestUrl.toString(), {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({
-						email,
-						password,
-					}),
+					body: JSON.stringify(authData),
 				});
 
 				setCredentials(data);
