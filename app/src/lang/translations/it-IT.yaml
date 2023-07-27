@@ -973,6 +973,7 @@ settings_flows: Flussi
 settings_presets: Preset & Segnalibri
 settings_translations: Traduzioni personalizzate
 one_or_more_options_are_missing: Mancano una o più opzioni
+configure_field_key_to_continue: Imposta il nome del campo per continuare
 scope: Ambito
 actions: Azioni
 select: Seleziona...
@@ -1466,6 +1467,7 @@ translation: Traduzione
 translation_placeholder: Inserisci una traduzione...
 value: Valore
 view_project: Visualizza Progetto
+weeks: { }
 report_error: Segnala l'errore
 start: Inizio
 table: Tabella
