@@ -48,12 +48,14 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@directus/types": "workspace:*",
 		"@types/node-fetch": "2.6.4",
 		"@vitest/coverage-c8": "0.31.1",
 		"tsup": "7.1.0",
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
+	},
+	"dependencies": {
+		"@directus/types": "workspace:*"
 	},
 	"engines": {
 		"node": ">=18.0.0"
