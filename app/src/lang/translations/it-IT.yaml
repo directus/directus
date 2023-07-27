@@ -146,6 +146,14 @@ validationError:
   required: Il valore è obbligatorio
   unique: Il valore deve essere unico
   regex: Il valore non ha il formato corretto
+  starts_with: Il valore deve iniziare con {substring}
+  istarts_with: Il valore deve iniziare con {substring}
+  nstarts_with: Il valore non può iniziare con {substring}
+  nistarts_with: Il valore non può iniziare con {substring}
+  ends_with: Il valore deve terminare con {substring}
+  iends_with: Il valore deve terminare con {substring}
+  nends_with: Il valore non può terminare con {substring}
+  niends_with: Il valore non può terminare con {substring}
 all_access: Accesso totale
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato
@@ -461,6 +469,11 @@ open_file_in_tab: Apri il file in una nuova scheda
 start_export: Avvia l'esportazione
 not_available_for_local_downloads: Non disponibile per i download locali
 exporting_all_items_in_collection: Esportazione di tutti i {total} elementi in {collection}.
+exporting_limited_items_in_collection: '{count} su {total} elementi in {collection} verranno esportati.'
+exporting_no_items_to_export: Nessun elemento da esportare. Modifica la configurazione di esportazione e/o aggiungi elementi alla raccolta.
+exporting_download_hint: Una volta creato il file {format} verrà scaricato sul tuo dispositivo.
+exporting_library_hint: Una volta creato il file {format} verrà salvato nella Libreria file.
+exporting_library_hint_forced: Questa esportazione deve essere elaborata in batch. Una volta completata, il file {format} verrà salvato nella Libreria file.
 collection_key: Chiave Di Raccolta
 name: Nome
 primary_key_field: Campo Chiave Primaria
@@ -1351,6 +1364,7 @@ share: Condivisione
 share_item: Condividi elemento
 shared_with_you: Un elemento è stato condiviso con te
 shared_enter_passcode: Inserisci il codice di accesso per continuare...
+shared_leave_blank_for_passwordless_access: Lascia vuoto per l'accesso senza password
 shared_leave_blank_for_unlimited: Lascia vuoto per non impostare un limite
 shared_times_remaining: Questo link può essere usato solo {n} volte
 shared_last_remaining: Questo link può essere usato solo una volta
@@ -2142,6 +2156,7 @@ operations:
     recipient: Utente
     recipient_placeholder: Inserisci un UUID...
     recipient_note: Aggiungi l'UUID del'utente e premi invio...
+    item_note: Chiave dell'elemento o URL relativo
     message: Messaggio
     subject: Oggetto
   request:
