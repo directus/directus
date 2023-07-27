@@ -631,8 +631,11 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
-					link: '/self-hosted/sso',
 					text: 'Single Sign-On (SSO)',
+					items: [
+						{ link: '/self-hosted/sso', text: 'Quickstart' },
+						{ link: '/contributing/sso-examples', text: 'SSO Examples' },
+					],
 				},
 				{
 					type: 'page',
