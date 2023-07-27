@@ -629,6 +629,7 @@ function sidebar() {
 				{
 					link: '/self-hosted/cli',
 					text: 'CLI',
+				},
 				{
                     			text: 'Single Sign-On (SSO)',
                     			items: [
