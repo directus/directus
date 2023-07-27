@@ -123,6 +123,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 				const data = await request<AuthenticationData>(requestUrl.toString(), {
 					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
 					body: JSON.stringify({
 						email,
 						password,
@@ -137,6 +140,9 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 
 				const options: RequestInit = {
 					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
 				};
 
 				if (mode === 'json' && authData?.refresh_token) {
