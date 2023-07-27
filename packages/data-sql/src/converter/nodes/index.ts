@@ -7,6 +7,19 @@ import { convertFn } from '../functions.js';
 
 export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'join' | 'paths' | 'parameters'>;
 
+/**
+ * Splits up the nodes into the different parts of the query.
+ * Any primitive nodes and function nodes will be added to the list of selects.
+ * Any m2o node will be added to the list of joins, but the field will also be added to the list of selects.
+ *
+ * Also a map will be created, which stores the paths from the unique, hashed alias to the original field.
+ *
+ * @param collection - the current collection
+ * @param nodes - all nodes from the abstract query
+ * @param idxGenerator - the generator used to increase the parameter indices
+ * @param path - the mapping of uniques aliases to original fields
+ * @returns Select, join, paths and parameters
+ */
 export const convertNodes = (
 	collection: string,
 	nodes: AbstractQueryFieldNode[],
