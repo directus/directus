@@ -631,13 +631,12 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
-                    			text: 'Single Sign-On (SSO)',
-                    			items: [
-                        			{ link: '/self-hosted/sso', text: 'Quickstart' },
-                        			{ link: '/contributing/sso-examples', text: 'SSO Examples' },
-
-                    				],
-                		},
+					text: 'Single Sign-On (SSO)',
+					items: [
+						{ link: '/self-hosted/sso', text: 'Quickstart' },
+						{ link: '/contributing/sso-examples', text: 'SSO Examples' },
+					],
+				},
 				{
 					type: 'page',
 					link: '/self-hosted/upgrades-migrations',
