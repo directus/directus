@@ -1,5 +1,5 @@
 import type { DirectusRelation } from '../../../schema/relation.js';
-import type { ApplyQueryFields } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateRelationOutput<
@@ -16,7 +16,9 @@ export type CreateRelationOutput<
  * @returns Returns the relation object for the created relation.
  */
 export const createRelation =
-	<Schema extends object>(item: Partial<DirectusRelation<Schema>>): RestCommand<CreateRelationOutput<Schema>, Schema> =>
+	<Schema extends object>(
+		item: NestedPartial<DirectusRelation<Schema>>
+	): RestCommand<CreateRelationOutput<Schema>, Schema> =>
 	() => ({
 		path: `/relations`,
 		body: JSON.stringify(item),

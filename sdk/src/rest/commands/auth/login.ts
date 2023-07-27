@@ -20,7 +20,7 @@ export const login =
 	<Schema extends object>(
 		email: string,
 		password: string,
-		options: loginOptions
+		options: loginOptions = {}
 	): RestCommand<AuthenticationData, Schema> =>
 	() => {
 		const path = options.provider ? `/auth/login/${options.provider}` : '/auth/login';

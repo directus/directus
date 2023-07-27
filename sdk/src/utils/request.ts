@@ -26,11 +26,6 @@ export const request = async <Output = any>(
 
 	const outputFormatter = formatter !== undefined && formatter !== null ? formatter : defaultFormatter;
 
-	// use json content by default but allow overrides
-	if ('Content-Type' in headers === false) {
-		headers['Content-Type'] = 'application/json';
-	}
-
 	options.headers = headers;
 
 	const response = await globalThis
