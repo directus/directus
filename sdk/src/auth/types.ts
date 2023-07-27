@@ -1,4 +1,4 @@
-import type { loginOptions } from "../index.js";
+import type { loginOptions } from '../index.js';
 
 export type AuthenticationMode = 'json' | 'cookie';
 
