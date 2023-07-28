@@ -1,3 +1,4 @@
+import { type Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 
 import Article from '../components/Article.vue';
@@ -13,7 +14,7 @@ import './icons.css';
 import './overrides.css';
 import './vars.css';
 
-export default {
+const theme: Theme = {
 	extends: DefaultTheme,
 	Layout,
 	enhanceApp({ app }) {
@@ -26,3 +27,5 @@ export default {
 		app.component('Tabs', Tabs);
 	},
 };
+
+export default theme;
