@@ -26,7 +26,6 @@ export const deleteItems =
 			path: `/items/${_collection}`,
 			body: JSON.stringify(Array.isArray(keysOrQuery) ? { keys: keysOrQuery } : { query: keysOrQuery }),
 			method: 'DELETE',
-			onResponse: null,
 		};
 	};
 /**
@@ -52,6 +51,5 @@ export const deleteItem =
 		return {
 			path: `/items/${_collection}/${key}`,
 			method: 'DELETE',
-			onResponse: null,
 		};
 	};

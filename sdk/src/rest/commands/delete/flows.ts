@@ -12,7 +12,6 @@ export const deleteFlows =
 		path: `/flows`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deleteFlow =
 	() => ({
 		path: `/flows/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

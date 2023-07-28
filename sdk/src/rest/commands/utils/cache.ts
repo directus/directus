@@ -9,5 +9,4 @@ export const clearCache =
 	() => ({
 		method: 'POST',
 		path: `/utils/cache/clear`,
-		onResponse: null,
 	});
