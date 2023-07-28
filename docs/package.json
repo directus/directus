@@ -29,6 +29,7 @@
 		"typedoc-plugin-zod": "1.0.2",
 		"typedoc-vitepress-theme": "1.0.0-next.2",
 		"typescript": "5.1.6",
+		"vite-plugin-mkcert": "^1.16.0",
 		"vitepress": "1.0.0-beta.6",
 		"vue": "3.3.4"
 	}
