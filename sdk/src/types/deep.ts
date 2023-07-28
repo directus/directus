@@ -16,7 +16,7 @@ export type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends in
 						? MergeObjects<
 								QueryDeep<Schema, CollectionItem>,
 								{
-									[Key in keyof Omit<TQuery, 'deep' | 'alias'> as `_${string & Key}`]: TQuery[Key];
+									[Key in keyof Omit<TQuery, 'deep' | 'alias' | 'fields'> as `_${string & Key}`]: TQuery[Key];
 								}
 						  >
 						: never
