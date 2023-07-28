@@ -12,7 +12,6 @@ export const deletePresets =
 		path: `/presets`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deletePreset =
 	() => ({
 		path: `/presets/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

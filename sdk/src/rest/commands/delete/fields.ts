@@ -15,5 +15,4 @@ export const deleteField =
 	() => ({
 		path: `/fields/${collection}/${field}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

@@ -10,5 +10,4 @@ export const utilitySort =
 		method: 'POST',
 		path: `/utils/sort/${collection as string}`,
 		body: JSON.stringify({ item, to }),
-		onResponse: null,
 	});
