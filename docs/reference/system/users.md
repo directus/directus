@@ -1180,11 +1180,11 @@ type Mutation {
 
 ```js
 import { createDirectus } from '@directus/sdk';
-import { rest, disableTwoFactor } from '@directus/sdk/rest';
+import { rest, inviteUser } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(disableTwoFactor('otp'));
+const result = await client.request(inviteUser('invited_user_email', 'invited_user_role'));
 ```
 
 </template>
@@ -1241,7 +1241,7 @@ import { rest, inviteUser } from '@directus/sdk/rest';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(inviteUser('invited_user_email', 'invited_user_role'));
+const result = await client.request(inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7'));
 ```
 
 </template>
