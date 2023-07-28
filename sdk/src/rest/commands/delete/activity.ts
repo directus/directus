@@ -11,5 +11,4 @@ export const deleteComment =
 	() => ({
 		path: `/activity/comment/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

@@ -131,7 +131,12 @@ gtag('config', 'UA-24637628-7');
 			dark: '/logo-dark.svg',
 		},
 		nav: [
-			{ text: 'Docs', link: '/getting-started/quickstart' },
+			{
+				text: 'Developer Reference',
+				link: '/getting-started/quickstart',
+				// Active on every path except for '/', '/user-guide', '/packages'
+				activeMatch: '^\\/(?!$|user-guide|packages).*',
+			},
 			{
 				text: 'User Guide',
 				link: '/user-guide/overview/data-studio-app',
@@ -626,8 +631,11 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
-					link: '/self-hosted/sso',
 					text: 'Single Sign-On (SSO)',
+					items: [
+						{ link: '/self-hosted/sso', text: 'Quickstart' },
+						{ link: '/contributing/sso-examples', text: 'SSO Examples' },
+					],
 				},
 				{
 					type: 'page',

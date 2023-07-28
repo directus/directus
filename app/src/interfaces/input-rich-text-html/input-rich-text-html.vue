@@ -246,7 +246,6 @@ const props = withDefaults(
 		],
 		font: 'sans-serif',
 		customFormats: () => [],
-		disabled: true,
 	}
 );
 
