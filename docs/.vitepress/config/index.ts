@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress';
 import VitePluginMkCert from 'vite-plugin-mkcert';
 import { sharedConfig } from './shared';
 import { config as enUS } from './locales/en-US';
+import { config as ruRU } from './locales/ru-RU';
 
 export default defineConfig({
 	...sharedConfig,
@@ -20,6 +21,12 @@ export default defineConfig({
 			lang: 'en-US',
 			link: '/',
 			...enUS
+		},
+		ru: {
+			label: 'Русский',
+			lang: 'ru-RU',
+			link: '/ru/',
+			...ruRU
 		},
 		helpUsTranslate: {
 			label: 'Help us translate',
