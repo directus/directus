@@ -1,5 +1,6 @@
 export * from './aggregate.js';
 export * from './client.js';
+export * from './deep.js';
 export * from './fields.js';
 export * from './filters.js';
 export * from './output.js';

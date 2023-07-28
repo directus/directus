@@ -1,6 +1,7 @@
+import type { QueryDeep } from './deep.js';
 import type { HasNestedFields, QueryFields } from './fields.js';
 import type { QueryFilter } from './filters.js';
-import type { ItemType, RelationalFields } from './schema.js';
+import type { ItemType } from './schema.js';
 import type { IfAny, UnpackList } from './utils.js';
 
 /**
@@ -46,7 +47,6 @@ export type MergeFields<FieldList> = HasNestedFields<FieldList> extends never
 	? Extract<UnpackList<FieldList>, string>
 	: Extract<UnpackList<FieldList>, string> | MergeRelationalFields<FieldList>;
 
-
 /**
  * Query sort
  * TODO expand to relational sorting (same object notation as fields i guess)
@@ -55,24 +55,6 @@ export type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends i
 	? {
 			[Field in keyof FlatItem]: Field | `-${Field & string}`;
 	  }[keyof FlatItem]
-	: never;
-
-/**
- * Deep filter object
- */
-export type QueryDeep<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
-	? RelationalFields<Schema, FlatItem> extends never
-		? never
-		: {
-				[Field in RelationalFields<Schema, FlatItem>]?: Query<Schema, FlatItem[Field]> extends infer TQuery
-					? MergeObjects<
-							QueryDeep<Schema, FlatItem[Field]>,
-							{
-								[Key in keyof Omit<TQuery, 'deep' | 'alias'> as `_${string & Key}`]: TQuery[Key];
-							}
-					  >
-					: never;
-		  }
 	: never;
 
 export type MergeObjects<A, B extends object> = A extends object ? A & B : never;

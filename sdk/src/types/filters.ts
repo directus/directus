@@ -10,14 +10,14 @@ export type QueryFilter<Schema extends object, Item> = WrapLogicalFilters<Nested
  * Query filters without logical filters
  */
 export type NestedQueryFilter<Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
-    ? {
-            [Field in keyof FlatItem]?:
-                | (Field extends RelationalFields<Schema, FlatItem>
-                        ? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
-                        : never)
-                | FilterOperators<FlatItem[Field]>;
-    }
-    : never;
+	? {
+			[Field in keyof FlatItem]?:
+				| (Field extends RelationalFields<Schema, FlatItem>
+						? WrapRelationalFilters<NestedQueryFilter<Schema, FlatItem[Field]>>
+						: never)
+				| FilterOperators<FlatItem[Field]>;
+	  }
+	: never;
 
 /**
  * All regular filter operators
