@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Enable Home and End keys do in all inputs
+Enabled usage of `Home` and `End` keys in input fields
