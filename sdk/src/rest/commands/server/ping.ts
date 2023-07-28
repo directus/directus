@@ -9,5 +9,4 @@ export const serverPing =
 	() => ({
 		method: 'GET',
 		path: '/server/ping',
-		onResponse: null,
 	});

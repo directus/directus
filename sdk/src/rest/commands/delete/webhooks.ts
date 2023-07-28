@@ -12,7 +12,6 @@ export const deleteWebhooks =
 		path: `/webhooks`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deleteWebhook =
 	() => ({
 		path: `/webhooks/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});
