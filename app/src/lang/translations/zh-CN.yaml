@@ -35,6 +35,7 @@ tile_size: 瓦块大小
 edit_field: 编辑
 conditions: 条件
 location: 地理位置
+collection_names_are_case_sensitive: 集合名称是区分大小写
 condition_rules: 条件规则
 input: Input
 maps: 地图
@@ -145,6 +146,14 @@ validationError:
   required: 值是必需的
   unique: 值必须唯一
   regex: 值格式不正确
+  starts_with: 值必须以"{substring}"开头
+  istarts_with: 值必须以"{substring}"开头
+  nstarts_with: 值不能以"{substring}"开头
+  nistarts_with: 值不能以"{substring}"开头
+  ends_with: 值必须以"{substring}"结尾
+  iends_with: 值必须以"{substring}"结尾
+  nends_with: 值不能以"{substring}"结尾
+  niends_with: 值不能以"{substring}"结尾
 all_access: 允许所有
 no_access: 禁止访问
 use_custom: 自定义
@@ -460,6 +469,11 @@ open_file_in_tab: 在新标签页中打开文件
 start_export: 开始导出
 not_available_for_local_downloads: 本地下载不可用
 exporting_all_items_in_collection: 正在导出 {collection} 内所有的 {total} 项。
+exporting_limited_items_in_collection: '将导出的集合“{collection}”的条目数量{count} 超过总数{total}。'
+exporting_no_items_to_export: 没有要导出的项目。调整导出配置和/或添加项目到收藏中。
+exporting_download_hint: 一旦“{format}”文件被创建，它将被下载到您的设备。
+exporting_library_hint: 一旦创建“{format}”文件后, 它将保存到文件库中。
+exporting_library_hint_forced: 此导出必须分批处理，完成后 {format} 文件将被保存到文件库。
 collection_key: 模型的主键
 name: 名称
 primary_key_field: 主键字段
@@ -703,8 +717,12 @@ operators:
   icontains: 包含 (大小写不敏感)
   starts_with: 开始于
   nstarts_with: 不是以xx开始
+  istarts_with: 开始于 (不敏感)
+  nistarts_with: 不以(不敏感) 开始
   ends_with: 结束于
   nends_with: 结尾不是
+  iends_with: 结束于 (不敏感)
+  niends_with: 不以(不敏感) 结束
   between: 介于
   nbetween: 不介于
   empty: 空
@@ -955,6 +973,7 @@ settings_flows: 流程
 settings_presets: 预设&书签
 settings_translations: 自定义翻译
 one_or_more_options_are_missing: 缺少一个或多个选项
+configure_field_key_to_continue: 配置字段关键字再继续
 scope: 范围
 actions: 操作
 select: 选择...
@@ -1346,6 +1365,7 @@ share: 分享
 share_item: 分享条目
 shared_with_you: 已与您分享一个条目
 shared_enter_passcode: 输入您的密码以继续...
+shared_leave_blank_for_passwordless_access: 留空以无密码访问
 shared_leave_blank_for_unlimited: 留空表示无限制
 shared_times_remaining: 此链接只能使用 {n} 次
 shared_last_remaining: 此链接只能使用一次
@@ -1447,6 +1467,7 @@ translation: 翻译
 translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
+weeks: { }
 report_error: 报告错误
 start: 开始
 table: 表
@@ -2137,6 +2158,7 @@ operations:
     recipient: 用户
     recipient_placeholder: 输入一个UUID...
     recipient_note: 添加用户UUID并按回车键...
+    item_note: 条目关键字或相对网址
     message: 消息
     subject: 主題
   request:
