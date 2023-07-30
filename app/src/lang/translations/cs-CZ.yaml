@@ -35,6 +35,7 @@ tile_size: Velikost dlaždice
 edit_field: Upravit pole
 conditions: Podmínky
 location: Poloha
+collection_names_are_case_sensitive: Nazvý kolekcí jsou citlivé na malá a velká písmena
 condition_rules: Pravidla
 input: Vstup
 maps: Mapy
@@ -80,6 +81,10 @@ create_user: Vytvořit uživatele
 message: Zpráva
 delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
+create_custom_translation: Vytvořit Vlastní Překlad
+edit_custom_translation: Upravit Vlastní Překlad
+no_custom_translations: Žadné Vlastní Překlady
+no_custom_translations_copy: Zatím neexistují žádné vlastní překlady.
 invite_users: Pozvat uživatele
 invite: Pozvat
 email_already_invited: E-mail "{email}" již byl pozván
@@ -116,6 +121,7 @@ archive_confirm_count: >-
   Nevybrány žádné položky | Jste si jisti, že chcete archivovat tuto položku? | Jste si jisti, že chcete archivovat tyto {count} položky?
 reset_system_permissions_to: 'Resetovat systémová oprávnění na:'
 reset_system_permissions_copy: Tato akce přepíše libovolná vlastní oprávnění, která jste možná použili na kolekce systému. Jste si jisti?
+the_following_are_minimum_permissions: Následující minimální oprávnění jsou automaticky aplikována když je "Přístup k aplikací" povolená. Můžete povolit další povolení potřeby, ale nemůžete snížit pod touto ůrovní.
 app_access_minimum: Minimální přístup k aplikaci
 recommended_defaults: Doporučené výchozí hodnoty
 unarchive: Vyjmout z archivu
@@ -140,6 +146,12 @@ validationError:
   required: Hodnota je povinná
   unique: Hodnota musí být unikátní
   regex: Hodnota nemá správný formát
+  starts_with: Hodnota musí začínat s {substring}
+  istarts_with: Hodnota musí začínat s {substring}
+  nstarts_with: Hodnota nemůže začínat s {substring}
+  nistarts_with: Hodnota nemůže začínat s {substring}
+  ends_with: Hodnota musí skončit s {substring}
+  iends_with: Hodnota musí skončit s {substring}
 all_access: Veškerý přístup
 no_access: Žádný přístup
 use_custom: Použít vlastní
@@ -227,6 +239,7 @@ float: Plovoucí
 integer: Celé číslo
 json: JSON
 xml: XML
+yaml: YAML
 string: Text
 text: Text
 time: Čas
