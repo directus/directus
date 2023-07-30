@@ -1,5 +1,8 @@
+/**
+ * This file will be split up into multiple files soon.
+ */
 import type { AbstractQueryNode } from '../abstract-query.js';
-import type { AbstractQueryFilterNode } from '../modifiers/filter.js';
+import type { AbstractQueryFilterNode } from '../modifiers/filters/filter.js';
 import type { AbstractQueryModifiers } from '../modifiers/index.js';
 import type { AbstractQueryFieldNode } from './index.js';
 

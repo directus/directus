@@ -8,6 +8,8 @@ import { convertLogical } from './logical.js';
  * It also converts the negation format.
  * This function is called recursively for negation and logical nodes.
  *
+ * @todo move to separate file, index file should only export/input...
+ *
  * @param filter - all filter conditions
  * @param collection - the name of the collection
  * @param firstParameterIndex - The index of the parameter. Mandatory for all operators.

@@ -6,6 +6,9 @@ import { convertLetterNode } from './letter.js';
 import { convertNumberNode } from './number.js';
 import { convertSetCondition } from './set.js';
 
+/**
+ * @todo move to separate file
+ */
 export function convertCondition(
 	condition: AbstractQueryConditionNode,
 	collection: string,
