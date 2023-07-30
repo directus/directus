@@ -251,11 +251,24 @@ export class ExportService {
 					let result = await service.readByQuery(updatedQuery);
 					if (options?.emitEvents !== false) {
 						result = await emitter.emitFilter(
-							`export.batch`,
+							'export.batch',
 							result,
 							{
 								collection,
 								query: updatedQuery,
+							},
+							{
+								database,
+								schema: this.schema,
+								accountability: this.accountability,
+							}
+						);
+						emitter.emitAction(
+							'export.batch',
+							{
+								payload: result,
+								query: updatedQuery,
+								collection: collection,
 							},
 							{
 								database,
