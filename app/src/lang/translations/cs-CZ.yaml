@@ -152,6 +152,8 @@ validationError:
   nistarts_with: Hodnota nemůže začínat s {substring}
   ends_with: Hodnota musí skončit s {substring}
   iends_with: Hodnota musí skončit s {substring}
+  nends_with: Hodnota nemůže skončit s {substring}
+  niends_with: Hodnota nemůže skončit s {substring}
 all_access: Veškerý přístup
 no_access: Žádný přístup
 use_custom: Použít vlastní
@@ -178,11 +180,13 @@ permissions_for_role: 'Položky, které {role} role může {action}.'
 fields_for_role: 'Pole, které {role} role může {action}.'
 validation_for_role: 'Pole {action} praví, že role {role} musí uposlechnout.'
 presets_for_role: 'Výchozí hodnota pole pro roli {role}.'
+presets_field_warning: 'Relativní předvolby pro pole "{field}" by měly být nastaveny pomocí "podrobné" syntaxe.'
 presentation_and_aliases: Prezentace a aliasy
 revision_post_create: Zde je jak položka vypadala po jejím vytvoření.
 revision_post_update: Zde je jak položka vypadala po její aktualizaci.
 changes_made: Níže jsou uvedeny konkrétní změny provedené v této revizi.
 no_relational_data: Mějte na paměti, že údaje o vztazích zde nejsou zahrnuty.
+top: Nejlepší
 bottom: Dole
 hide_field: Skrýt pole
 hide_field_on_detail: Skrýt pole v detailu
@@ -231,6 +235,7 @@ bigInteger: Velké celé číslo
 boolean: Logická hodnota
 date: Datum
 date_range: Časový rozsah
+translation_key_placeholder: Zadejte něco...
 datetime: Datum a čas
 dateTime: Datum a čas
 precision: Přesnost
@@ -310,6 +315,7 @@ primary_key: Primární klíč
 foreign_key: Cizí klíč
 finish_setup: Dokončit nastavení
 dismiss: Odmítnout
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Surová hodnota
 copy_raw_value: Kopírovat surovou hodnotu
 copy_raw_value_success: Zkopírováno
