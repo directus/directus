@@ -1365,6 +1365,7 @@ share: Podijeli
 share_item: Podijeli stavku
 shared_with_you: Stavka je podijeljena s vama
 shared_enter_passcode: Unesite šifru za nastavak...
+shared_leave_blank_for_passwordless_access: Ostavi prazno za pristup bez Lozinke
 shared_leave_blank_for_unlimited: Ostavite prazno za neograničeno
 shared_times_remaining: Ova se poveznica može koristiti samo {n} puta
 shared_last_remaining: Ova se poveznica može koristiti samo jednom
@@ -1466,6 +1467,7 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
+weeks: { }
 report_error: Prijavi grešku
 start: Započni
 table: Tablica
