@@ -198,6 +198,7 @@ export class ExportService {
 		format: ExportFormat,
 		options?: {
 			file?: Partial<File>;
+			emitEvents?: boolean;
 		}
 	) {
 		try {
@@ -242,11 +243,27 @@ export class ExportService {
 						limit = requestedLimit - readCount;
 					}
 
-					const result = await service.readByQuery({
+					const updatedQuery = {
 						...query,
 						limit,
 						offset: batch * env['EXPORT_BATCH_SIZE'],
-					});
+					}
+					let result = await service.readByQuery(updatedQuery);
+					if (options?.emitEvents !== false) {
+						result = await emitter.emitFilter(
+							`export.batch`,
+							result,
+							{
+								collection,
+								query: updatedQuery,
+							},
+							{
+								database,
+								schema: this.schema,
+								accountability: this.accountability,
+							}
+						);
+					}
 
 					readCount += result.length;
 

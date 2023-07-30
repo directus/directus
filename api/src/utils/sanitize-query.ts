@@ -67,7 +67,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	}
 
 	if (rawQuery['use_display_values']) {
-		(query as any).use_display_values = rawQuery['use_display_values'] === 'true';
+		(query as any).use_display_values = rawQuery['use_display_values'] === 'true' || rawQuery['use_display_values'] === true;
 	}
 
 	if (rawQuery['deep'] as Record<string, any>) {
