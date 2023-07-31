@@ -28,7 +28,7 @@
 							/>
 
 							<small class="full">
-								<p class="type-note">Deleting existing presets allows you to override users/roles current views.</p>
+								<p class="type-note">Deleting existing presets allows you to override users/roles current presets.</p>
 							</small>
 
 						</div>
@@ -93,6 +93,7 @@ const saveBookmarkValue = computed(() => {
 
 });
 
+
 const availablePurgeOptions = computed(() => {
 
 	if(bookmarkValue.scope == "all"){
@@ -130,6 +131,7 @@ const availablePurgeOptions = computed(() => {
 });
 
 function setScope(scope: any) {
+	setPurge([]);
 	bookmarkValue.scope = scope;
 }
 
