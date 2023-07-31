@@ -1,17 +1,17 @@
-import type { ConditionLetterNode } from '@directus/data';
+import type { ConditionStringNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter/filter.js';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
-import { convertLetterNode } from './letter.js';
+import { convertStringNode } from './string.js';
+import type { AbstractSqlQueryConditionNode } from '../../../../index.js';
 
 test('number', () => {
 	const idGen = parameterIndexGenerator();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
 
-	const con: ConditionLetterNode = {
-		type: 'condition-letter',
+	const con: ConditionStringNode = {
+		type: 'condition-string',
 		target: {
 			type: 'primitive',
 			field: randomField,
@@ -24,7 +24,7 @@ test('number', () => {
 		type: 'condition',
 		negate: false,
 		condition: {
-			type: 'condition-letter',
+			type: 'condition-string',
 			target: {
 				type: 'primitive',
 				table: randomCollection,
@@ -38,7 +38,7 @@ test('number', () => {
 		},
 	};
 
-	expect(convertLetterNode(con, randomCollection, idGen, false)).toStrictEqual({
+	expect(convertStringNode(con, randomCollection, idGen, false)).toStrictEqual({
 		where: expectedWhere,
 		parameters: [con.compareTo],
 	});

@@ -1,6 +1,5 @@
 /**
- * @todo
- * Move this module outside of src/query because it's not only used for query, but also for modifications like update and delete.
+ * This module should be moved outside of src/query because it's not only used for querying, but also for UPDATE or DELETE commands.
  */
 import type { AbstractSqlQuery } from '@directus/data-sql';
 import { conditionString } from '../utils/conditions/index.js';

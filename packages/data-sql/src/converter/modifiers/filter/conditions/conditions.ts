@@ -2,22 +2,22 @@ import type { AbstractQueryConditionNode } from '@directus/data';
 import type { AbstractSqlQuery } from '../../../../types/index.js';
 import { convertFieldCondition } from './field.js';
 import { convertGeoCondition } from './geo.js';
-import { convertLetterNode } from './letter.js';
+import { convertStringNode } from './string.js';
 import { convertNumberNode } from './number.js';
 import { convertSetCondition } from './set.js';
 
 /**
- * @todo move to separate file
+ * Forward the condition to the correct converter.
  */
 export function convertCondition(
 	condition: AbstractQueryConditionNode,
 	collection: string,
-	generator: Generator<number, never, never>,
+	generator: Generator<number>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
 	switch (condition.condition.type) {
-		case 'condition-letter':
-			return convertLetterNode(condition.condition, collection, generator, negate);
+		case 'condition-string':
+			return convertStringNode(condition.condition, collection, generator, negate);
 		case 'condition-number':
 			return convertNumberNode(condition.condition, collection, generator, negate);
 		case 'condition-geo-intersects':

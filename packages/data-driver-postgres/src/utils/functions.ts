@@ -18,16 +18,13 @@ export function applyFunction(fnNode: AbstractSqlQueryFnNode) {
 }
 
 /**
- * Applies an EXTRACT function to a column.
- * The extract functions needs two parameters
+ * Applies a function to a column.
+ * The EXTRACT functions which is being used for this needs two parameters:
  * - the field to extract from
  * - the source - which can be TIMESTAMP or INTERVAL. Here we only use/support TIMESTAMP.
+ * The result of any of our supported functions is a number.
  *
- *  The result of a function is a number!
- *
- * @todo Check datatype of the column. If timestamp then add "AT TIME ZONE 'UTC'" to the result string
- *
- * @param fnNode - The function to use
+ * @param fnNode - Specifies the function to use and the type of the target column
  * @param column - The column which will be used as the argument for the function
  * @returns - F.e. EXTRACT(YEAR FROM "table"."column")
  */

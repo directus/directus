@@ -22,6 +22,12 @@ export interface AbstractQueryConditionNode extends AbstractQueryNode {
 	condition: ActualConditionNodes;
 }
 
+/**
+ * Possible nodes which specify the condition.
+ *
+ * @todo The API should make sure, that the type of the targeting column has the correct type,
+ * so that f.e. a condition-string will only be applied to a column of type string.
+ */
 export type ActualConditionNodes =
 	| ConditionStringNode
 	| ConditionNumberNode

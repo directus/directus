@@ -16,7 +16,7 @@ export interface AbstractSqlQueryConditionNode {
 }
 
 export type SqlConditionType =
-	| 'condition-letter'
+	| 'condition-string'
 	| 'condition-number'
 	| 'condition-geo'
 	| 'condition-set'

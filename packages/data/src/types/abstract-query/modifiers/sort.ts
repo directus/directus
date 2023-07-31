@@ -48,6 +48,6 @@ export interface AbstractQueryNodeSort extends AbstractQueryNode {
 export type AbstractQueryNodeSortTargets =
 	| AbstractQueryFieldNodePrimitive
 	| AbstractQueryFieldNodeFn
-	/**  @TODO when we implement relations: */
+	/**  @TODO support when working on relations */
 	| AbstractQueryFieldNodeRelatedManyToOne
 	| AbstractQueryFieldNodeRelatedAnyToOne;

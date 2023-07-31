@@ -1,12 +1,12 @@
 import type { AbstractSqlQueryNode } from '../abstract-sql-query.js';
 import type { AbstractSqlQuerySelectNode } from './primitive.js';
 import type { ValuesNode } from '../parameterized-statement.js';
+import type { SupportedFunctions } from '@directus/data';
 
 export interface AbstractSqlQueryFnNode extends AbstractSqlQueryNode {
 	type: 'fn';
 
-	/* Same as the the abstract functions @todo: add restrictions */
-	fn: string;
+	fn: SupportedFunctions;
 
 	field: AbstractSqlQuerySelectNode;
 

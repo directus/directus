@@ -1,9 +1,9 @@
-import type { ConditionLetterNode } from '@directus/data';
+import type { ConditionStringNode } from '@directus/data';
 import type { AbstractSqlQuery } from '../../../../types/index.js';
 import { convertPrimitive } from './utils.js';
 
-export function convertLetterNode(
-	node: ConditionLetterNode,
+export function convertStringNode(
+	node: ConditionStringNode,
 	collection: string,
 	generator: Generator,
 	negate: boolean

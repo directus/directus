@@ -1,11 +1,11 @@
 import type { AbstractQueryNodeLogical } from '@directus/data';
 import type { AbstractSqlQuery } from '../../../types/index.js';
-import { convertFilter } from './index.js';
+import { convertFilter } from './filter.js';
 
 export function convertLogical(
 	filter: AbstractQueryNodeLogical,
 	collection: string,
-	generator: Generator<number, never, never>,
+	generator: Generator<number>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
 	const children = filter.childNodes.map((childNode) => convertFilter(childNode, collection, generator, false));

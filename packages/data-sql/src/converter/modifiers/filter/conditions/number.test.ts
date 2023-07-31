@@ -1,11 +1,11 @@
 import type { ConditionNumberNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter/filter.js';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertNumberNode } from './number.js';
+import type { AbstractSqlQueryConditionNode } from '../../../../index.js';
 
-test('number', () => {
+test('convert number node', () => {
 	const idGen = parameterIndexGenerator();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
@@ -44,7 +44,7 @@ test('number', () => {
 	});
 });
 
-test('number with function', () => {
+test('convert number node with function', () => {
 	const idGen = parameterIndexGenerator();
 	const randomCollection = randomIdentifier();
 	const randomField = randomIdentifier();
