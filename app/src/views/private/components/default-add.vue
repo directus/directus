@@ -31,7 +31,7 @@
 								<p class="type-note">Deleting existing presets allows you to override users/roles current presets.</p>
 							</small>
 
-							<v-notice v-if="bookmarkValue.purge.length > 0" class="full" type="danger">
+							<v-notice v-if="bookmarkValue.purge.length > 0" class="full" type="warning">
 								{{ t('create_default_delete_warning') }}
 							</v-notice>
 
@@ -43,7 +43,7 @@
 				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :loading="saving" :kind="bookmarkValue.purge.length > 0 ? 'danger' : 'normal'" @click="$emit('save', saveBookmarkValue)" >
+				<v-button :loading="saving" :kind="bookmarkValue.purge.length > 0 ? 'warning' : 'normal'" @click="$emit('save', saveBookmarkValue)" >
 					{{ bookmarkValue.purge.length == 0 ? t('save') : 'Save and Delete' }}
 				</v-button>
 			</v-card-actions>
