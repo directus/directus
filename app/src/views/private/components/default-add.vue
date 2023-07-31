@@ -6,34 +6,40 @@
 
 		<v-card>
 			<v-card-title>
-				Create Bookmark or Default
+				{{t('create_default')}}
 			</v-card-title>
 
 			<v-card-text>
 
 						<div class="fields">
-							<interface-system-input-translated-string
-								:value="bookmarkValue.name"
-								class="full"
-								autofocus
-								trim
-								:placeholder="t('bookmark_name')"
-								@input="bookmarkValue.name = $event"
-								@keyup.enter="$emit('save', bookmarkValue)"
-							/>
-							<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
-							<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />
+
 							<interface-system-scope class="full" :value="bookmarkValue.scope" @input="setScope"  />
+
+							<v-divider   class="full">
+								Delete Existing Presets
+							</v-divider>
+
+							<interface-select-multiple-checkbox
+								class="full"
+								:choices="availablePurgeOptions"
+								:value="bookmarkValue.purge"
+								@input="setPurge"
+
+							/>
+
 							<small class="full">
-								<p class="type-note">Create a personal, role, or global bookmark.</p>
+								<p class="type-note">Deleting existing presets allows you to override users/roles current views.</p>
 							</small>
+
 						</div>
+
 			</v-card-text>
+
 			<v-card-actions>
 				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="$emit('save', saveBookmarkValue)">
+				<v-button :loading="saving" @click="$emit('save', saveBookmarkValue)">
 					{{ t('save') }}
 				</v-button>
 			</v-card-actions>
@@ -42,15 +48,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
+import { reactive, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useUserStore } from '@/stores/user';
 
-const userStore = useUserStore();
-
-import { User } from '@directus/types';
-
-const currentUser = userStore.currentUser as User;
 
 defineProps<{
 	modelValue?: boolean;
@@ -58,67 +58,88 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'save', value: { name: string | null; icon: string | null; color: string | null; user : string | null; role : string | null; }): void;
+	(e: 'save', value: { user : string | null; role : string | null; }): void;
 	(e: 'update:modelValue', value: boolean): void;
 }>();
 
 const { t } = useI18n();
 
-interface bookmarkValue {
-	name: string | null;
-	icon: string | null;
-	color: string | null;
-	scope: string | null;
-}
+const bookmarkValue = reactive({
+	scope: 'all',
+	purge: [],
+});
 
 const saveBookmarkValue = computed(() => {
 
 	if (bookmarkValue?.scope?.startsWith('user_')){
 		return {
-			...bookmarkValue,
 			user: bookmarkValue.scope.replace('user_', ''),
 			role: null,
+			purge: bookmarkValue.purge,
 		}
 	} else if (bookmarkValue?.scope?.startsWith('role_')){
 		return {
-			...bookmarkValue,
 			user: null,
 			role: bookmarkValue.scope.replace('role_', ''),
+			purge: bookmarkValue.purge,
 		}
 	} else {
 		return {
-			...bookmarkValue,
 			user: null,
 			role: null,
+			purge: bookmarkValue.purge,
 		}
 	}
 
 });
 
-const bookmarkValue = reactive({
-	name: 'My Bookmark',
-	icon: 'bookmark',
-	color: null,
-	scope: currentUser ? `user_${currentUser.id}` : 'all',
-}) as bookmarkValue;
+const availablePurgeOptions = computed(() => {
 
-function setIcon(icon: any) {
-	bookmarkValue.icon = icon;
-}
+	if(bookmarkValue.scope == "all"){
+		return [
+		{
+			text: 'Delete All User Presets for this collection',
+			value: 'all_users',
+		},
+		{
+			text: 'Delete All Role Presets for this collection',
+			value: 'all_roles',
+		}
+	];
+	} else if(bookmarkValue.scope.startsWith('role')) {
+		return [
+		{
+			text: 'Delete All User Presets in Selected Role for this collection',
+			value: 'all_role_users',
+		},
+		{
+			text: 'Delete Selected Role Presets for this collection',
+			value: 'all_role',
+		},
+	];
+	} else if(bookmarkValue.scope.startsWith('user')) {
+		return [
+		{
+			text: 'Delete Selected Users Presets for this collection',
+			value: 'all_user',
+		}
+	];
+	}
 
-function setColor(color: any) {
-	bookmarkValue.color = color;
-}
+	return [];
+});
 
 function setScope(scope: any) {
 	bookmarkValue.scope = scope;
 }
 
+function setPurge(purge: any) {
+	bookmarkValue.purge = purge;
+}
+
 function cancel() {
-	bookmarkValue.name = null;
-	bookmarkValue.icon = 'bookmark';
-	bookmarkValue.color = null;
-	bookmarkValue.scope = currentUser ? `user_${currentUser.id}` : 'all';
+	bookmarkValue.scope = 'all';
+	bookmarkValue.purge = [];
 	emit('update:modelValue', false);
 }
 </script>
