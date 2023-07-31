@@ -43,7 +43,13 @@
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon v-tooltip.right="t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
+							<v-icon
+								v-tooltip.right="t('create_bookmark')"
+								class="toggle"
+								clickable
+								name="bookmark"
+								@click="on"
+							/>
 						</template>
 					</bookmark-add>
 
@@ -82,17 +88,22 @@
 				</div>
 				<div class="bookmark-controls">
 					<default-add
-						v-if="!bookmark"
+						v-if="!bookmark && createDefaultAllowed"
 						v-model="defaultDialogActive"
 						class="add"
 						:saving="creatingDefault"
 						@save="createDefault"
 					>
 						<template #activator="{ on }">
-							<v-icon v-tooltip.right="t('create_default')" class="toggle" clickable name="star" @click="on" />
+							<v-icon
+								v-tooltip.right="t('create_default')"
+								class="toggle"
+								clickable
+								name="star"
+								@click="on"
+							/>
 						</template>
 					</default-add>
-
 				</div>
 			</template>
 
@@ -383,7 +394,8 @@ watch(
 	{ immediate: true }
 );
 
-const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed, createDefaultAllowed } = usePermissions();
+
 
 const hasArchive = computed(
 	() =>
@@ -575,117 +587,59 @@ function useDefaults() {
 		createDefault,
 	};
 
-	function determineDeleteFilters(defaultPreset: any){
-
+	function determineDeleteFilters(defaultPreset: any) {
 		const { user, role, purge } = defaultPreset;
 
 		const filterOptions = [];
 
-		for( const option of purge){
-			switch(option) {
-
+		for (const option of purge) {
+			switch (option) {
 				case 'all_users':
 					// Delete all users presets for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									user: {
-										_nnull: true
-									}
-								}
-							]
-						}
-					);
+					filterOptions.push({
+						user: {
+							_nnull: true,
+						},
+					});
 
 					break;
 
-
 				case 'all_roles':
 					// Delete all roles presets for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									role: {
-										_nnull: true
-									}
-								}
-							]
-						}
-					);
+					filterOptions.push({
+						role: {
+							_nnull: true,
+						},
+					});
 
 					break;
 				case 'all_role_users':
 					// Delete all user presets for users in this role for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									user: {
-										role: {
-											_eq: role
-										}
-									}
-								}
-							]
-						}
-					);
+					filterOptions.push({
+						user: {
+							role: {
+								_eq: role,
+							},
+						},
+					});
 
 					break;
 				case 'all_role':
 					// Delete all role presets for this role for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									role: {
-										_eq: role
-									}
-								}
-							]
-						}
-					);
+					filterOptions.push({
+						role: {
+							_eq: role,
+						},
+					});
 
 					break;
 				case 'all_user':
 					// Delete all user presets for this user for this collection
-					filterOptions.push(
-						{
-							_and: [
-								{
-									collection: {
-										_eq: collection
-									}
-								},
-								{
-									user: {
-										_eq: user
-									}
-								}
-							]
-						}
-					);
+					filterOptions.push({
+						user: {
+							_eq: user,
+						},
+					});
 
 					break;
 				default:
@@ -694,39 +648,42 @@ function useDefaults() {
 		}
 
 		// If we are creating a new global default, we need to delete all other global defaults.
-		if(!user && !role){
-			filterOptions.push(
-				{
-					_and: [
-						{
-							user: {
-								_null: true
-							}
-						},
-						{
-							role: {
-								_null: true
-							}
-						}
-					]
-				}
-			);
-		}
-
-		if(filterOptions.length > 0){
-			// If we have any filters, we need to only delete presets (not bookmarks) and apply the filters.
-			return {
-				_and : [
+		if (!user && !role) {
+			filterOptions.push({
+				_and: [
 					{
-						bookmark: {
-							_null: true
-						}
+						user: {
+							_null: true,
+						},
 					},
 					{
-						_or: filterOptions
-					}
-				]
-			}
+						role: {
+							_null: true,
+						},
+					},
+				],
+			});
+		}
+
+		if (filterOptions.length > 0) {
+			// If we have any filters, we need to only delete presets (not bookmarks) and apply the filters.
+			return {
+				_and: [
+					{
+						bookmark: {
+							_null: true,
+						},
+					},
+					{
+						collection: {
+							_eq: collection.value,
+						},
+					},
+					{
+						_or: filterOptions,
+					},
+				],
+			};
 		}
 
 		return null;
@@ -743,11 +700,13 @@ function useDefaults() {
 
 			const deleteFilters = determineDeleteFilters(defaultPreset);
 
-			if(deleteFilters){
+			if (deleteFilters) {
 				await api.delete(`/presets`, {
 					data: {
-						filter: deleteFilters
-					}
+						query: {
+							filter: deleteFilters,
+						},
+					},
 				});
 			}
 
@@ -814,7 +773,13 @@ function usePermissions() {
 		return !!createPermissions;
 	});
 
-	return { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed };
+	const createDefaultAllowed = computed<boolean>(() => {
+		const admin = userStore?.currentUser?.role.admin_access === true;
+		if (admin) return true;
+		return false
+	});
+
+	return { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed, createDefaultAllowed };
 }
 </script>
 
