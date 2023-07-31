@@ -639,6 +639,7 @@ security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
 create_bookmark: Create Bookmark
+create_default: Create Default
 edit_bookmark: Edit Bookmark
 edit_personal_bookmark: Edit Personal Bookmark
 edit_role_bookmark: Edit Role Bookmark
@@ -2225,3 +2226,117 @@ operations:
     batch: Batch
     batch_size: Batch Size
     cache: Cache
+core_unit_identifier: Core Unit Identifier
+g_force: G-Force
+meter_per_square_second: Meter per Square Second
+revolution: Revolution
+radian: Radian
+degree: Degree
+arc_minute: Arc Minute
+arc_second: Arc Second
+square_kilometer: Square Kilometer
+hectare: Hectare
+square_inch: Square Inch
+dunam: Dunam
+karat: Karat
+milligram_per_deciliter: Milligram per Deciliter
+millimole_per_liter: Milimole per Liter
+permillion: Permillion
+percent: Percent
+permille: Permille
+permyriad: Permyriad
+mole: Mole
+liter_per_kilometer: Liter per Kilometer
+liter_per_100_kilometer: Liter per 100 Kilometer
+mile_per_gallon_us: Mile per Gallon (US)
+mile_per_gallon_imperial: Mile per Gallon (Imperial)
+petabyte: Petabyte
+byte: Byte
+bit: Bit
+century: Century
+year_person: Year-Person
+month_person: Month-Person
+week: Week
+week_person: Week-Person
+day: Day
+day_person: Day-Person
+hour: Hour
+nanosecond: Nanosecond
+ampere: Ampere
+milliampere: Milliampere
+ohm: Ohm
+volt: Volt
+kilocalorie: Kilocalorie
+calorie: Calorie
+foodcalorie: Foodcalorie
+kilojoule: Kilojoule
+joule: Joule
+kilowatt_hour: Kilowatt Hour
+electronvolt: Electronvolt
+british_thermal_unit: British Thermal Unit
+pound_force: Pound-Force
+newton: Newton
+gigahertz: Gigahertz
+megahertz: Megahertz
+kilohertz: Kilohertz
+hertz: Hertz
+kilometer: Kilometer
+inch: Inch
+parsec: Parsec
+light_year: Light Year
+astronomical_unit: Astronomical Unit
+furlong: Furlong
+fathom: Fathom
+nautical_mile: Nautical Mile
+mile_scandinavian: Mile Scandinavian
+point: Point
+solar_radius: Solar Radius
+lux: Lux
+solar_luminosity: Solar Luminosity
+metric_ton: Metric Ton
+kilogram: Kilogram
+ounce: Ounce
+ounce_troy: Ounce Troy
+carat: Carat
+dalton: Dalton
+earth_mass: Earth Mass
+solar_mass: Solar Mass
+gigawatt: Gigawatt
+milliwatt: Milliwatt
+horsepower: Horsepower
+hectopascal: Hectopascal
+millimeter_ofhg: Millimeter of Mercury
+pound_force_per_square_inch: Pound-Force per Square Inch
+inch_ofhg: Inch of Mercury
+millibar: Millibar
+atmosphere: Atmosphere
+kilopascal: Kilopascal
+megapascal: Megapascal
+kilometer_per_hour: Kilometer per Hour
+meter_per_second: Meter per Second
+mile_per_hour: Mile per Hour
+knot: Knot
+generic: Generic
+celsius: Celsius
+fahrenheit: Fahrenheit
+kelvin: Kelvin
+pound_force_foot: Pound-Force Foot
+newton_meter: Newton Meter
+cubic_kilometer: Cubic Kilometer
+cubic_inch: Cubic Inch
+megaliter: Megaliter
+pint: Pint
+cup: Cup
+fluid_ounce_us: Fluid Ounce (US)
+fluid_ounce_imperial: Fluid Ounce (Imperial)
+tablespoon: Tablespoon
+teaspoon: Teaspoon
+barrel: Barrel
+unit: Unit
+standard: Standard
+scientific: Scientific
+engineering: Engineering
+compact: Compact
+currency: Currency
+notation: Notation
+style: Style
