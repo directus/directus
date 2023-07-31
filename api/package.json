@@ -87,6 +87,8 @@
 		"@rollup/plugin-alias": "5.0.0",
 		"@rollup/plugin-node-resolve": "15.0.2",
 		"@rollup/plugin-virtual": "3.0.1",
+		"@wasmer/wasi": "^1.2.2",
+		"@wasmer/wasmfs": "^0.12.0",
 		"argon2": "0.30.3",
 		"async": "3.2.4",
 		"axios": "1.4.0",

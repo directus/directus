@@ -1990,7 +1990,7 @@ export class GraphQLService {
 					},
 				}),
 				resolve: async () => {
-					const extensionManager = getExtensionManager();
+					const extensionManager = await getExtensionManager();
 
 					return {
 						interfaces: extensionManager.getExtensionsList('interface'),
