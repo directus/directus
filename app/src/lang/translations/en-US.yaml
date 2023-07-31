@@ -648,6 +648,13 @@ cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
 presets: Presets
 create_default: Create Default
+create_default_delete_warning: Are you sure you want to delete existing presets? This action can not be undone.
+create_default_options:
+  all_users: Delete All User Presets for this collection
+  all_roles: Delete All Role Presets for this collection
+  all_role_users: Delete All User Presets in Selected Role for this collection
+  all_role: Delete Selected Role Presets for this collection
+  all_user: Delete Selected Users Presets for this collection
 unexpected_error: Unexpected Error
 unexpected_error_copy: An unexpected error has occurred. Please try again later.
 copy_details: Copy Details
