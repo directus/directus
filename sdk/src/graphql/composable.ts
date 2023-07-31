@@ -31,7 +31,7 @@ export const graphql = () => {
 						headers['Authorization'] = `Bearer ${token}`;
 					}
 				}
-				
+
 				if ('Content-Type' in headers === false) {
 					headers['Content-Type'] = 'application/json';
 				}
