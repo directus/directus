@@ -14,5 +14,4 @@ export const passwordRequest =
 		path: '/auth/password/request',
 		method: 'POST',
 		body: JSON.stringify({ email, ...(reset_url ? { reset_url } : {}) }),
-		onResponse: null,
 	});

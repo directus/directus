@@ -160,7 +160,7 @@ Layout, search queries, filters, custom sort & order, etc. To create a Bookmark 
 steps.
 
 1. Navigate to the desired collection.
-2. Click <span mi btn muted>bookmark_outline</span> in the page header.
+2. Click <span mi btn muted>bookmark</span> in the page header.
 3. Enter a **Name** _(and optionally)_ an **Icon** and **Color**.
 4. Click **Save** to confirm.
 

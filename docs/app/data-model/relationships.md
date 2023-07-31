@@ -260,14 +260,15 @@ Note the following points from the schema above. When we create an M2M in Direct
 - Our junction collection, `recipe_ingredients`, each row contains two foreign key columns. This is what creates the
   relationships between the two tables.
 - Assuming the M2M alias field is created within the `recipes` collection, Directus does not automatically add a field
-  to display recipes within the `ingredients` collection. However, you can configure an alias field within `ingredients`
-  if desired:
+  to display recipes within the `ingredients` collection. However, you can easily add such a field when creating the M2M
+  field within the `recipes` collection, by clicking on `Continue in Advanced Field Creation Mode`, opening the
+  `Relationship` tab and selecting `Add M2M to "ingredients"`:
 
 ```
 ingredients
 - id
 - name
-- recipes (an O2M alias field, does not exist in the database, enables access to all the recipes related to an ingredient)
+- recipes (an M2M alias field, does not exist in the database, enables access to all the recipes related to an ingredient)
 ```
 
 - Notice that the junction collection also has a `quantity` field, which tracks how much of each ingredient is needed
