@@ -43,13 +43,7 @@
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon
-								v-tooltip.right="t('create_bookmark')"
-								class="toggle"
-								clickable
-								name="bookmark"
-								@click="on"
-							/>
+							<v-icon v-tooltip.right="t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
 						</template>
 					</bookmark-add>
 
@@ -95,13 +89,7 @@
 						@save="createDefault"
 					>
 						<template #activator="{ on }">
-							<v-icon
-								v-tooltip.right="t('create_default')"
-								class="toggle"
-								clickable
-								name="star"
-								@click="on"
-							/>
+							<v-icon v-tooltip.right="t('create_default')" class="toggle" clickable name="star" @click="on" />
 						</template>
 					</default-add>
 				</div>
@@ -363,6 +351,7 @@ const {
 	refreshInterval,
 	busy: bookmarkSaving,
 	clearLocalSave,
+	saveCurrentAsDefault,
 } = usePreset(collection, bookmarkID);
 
 const { layoutWrapper } = useLayout(layout);
@@ -394,8 +383,8 @@ watch(
 	{ immediate: true }
 );
 
-const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed, createDefaultAllowed } = usePermissions();
-
+const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed, createDefaultAllowed } =
+	usePermissions();
 
 const hasArchive = computed(
 	() =>
@@ -587,128 +576,11 @@ function useDefaults() {
 		createDefault,
 	};
 
-	function determineDeleteFilters(defaultPreset: any) {
-		const { user, role, purge } = defaultPreset;
-
-		const filterOptions = [];
-
-		for (const option of purge) {
-			switch (option) {
-				case 'all_users':
-					// Delete all users presets for this collection
-					filterOptions.push({
-						user: {
-							_nnull: true,
-						},
-					});
-
-					break;
-
-				case 'all_roles':
-					// Delete all roles presets for this collection
-					filterOptions.push({
-						role: {
-							_nnull: true,
-						},
-					});
-
-					break;
-				case 'all_role_users':
-					// Delete all user presets for users in this role for this collection
-					filterOptions.push({
-						user: {
-							role: {
-								_eq: role,
-							},
-						},
-					});
-
-					break;
-				case 'all_role':
-					// Delete all role presets for this role for this collection
-					filterOptions.push({
-						role: {
-							_eq: role,
-						},
-					});
-
-					break;
-				case 'all_user':
-					// Delete all user presets for this user for this collection
-					filterOptions.push({
-						user: {
-							_eq: user,
-						},
-					});
-
-					break;
-				default:
-					break;
-			}
-		}
-
-		// If we are creating a new global default, we need to delete all other global defaults.
-		if (!user && !role) {
-			filterOptions.push({
-				_and: [
-					{
-						user: {
-							_null: true,
-						},
-					},
-					{
-						role: {
-							_null: true,
-						},
-					},
-				],
-			});
-		}
-
-		if (filterOptions.length > 0) {
-			// If we have any filters, we need to only delete presets (not bookmarks) and apply the filters.
-			return {
-				_and: [
-					{
-						bookmark: {
-							_null: true,
-						},
-					},
-					{
-						collection: {
-							_eq: collection.value,
-						},
-					},
-					{
-						_or: filterOptions,
-					},
-				],
-			};
-		}
-
-		return null;
-	}
-
 	async function createDefault(defaultPreset: any) {
 		creatingDefault.value = true;
 
 		try {
-			await saveCurrentAsPreset({
-				user: defaultPreset.user,
-				role: defaultPreset.role,
-			});
-
-			const deleteFilters = determineDeleteFilters(defaultPreset);
-
-			if (deleteFilters) {
-				await api.delete(`/presets`, {
-					data: {
-						query: {
-							filter: deleteFilters,
-						},
-					},
-				});
-			}
+			await saveCurrentAsDefault(defaultPreset);
 
 			defaultDialogActive.value = false;
 		} catch (err: any) {
@@ -776,7 +648,7 @@ function usePermissions() {
 	const createDefaultAllowed = computed<boolean>(() => {
 		const admin = userStore?.currentUser?.role.admin_access === true;
 		if (admin) return true;
-		return false
+		return false;
 	});
 
 	return { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed, createDefaultAllowed };

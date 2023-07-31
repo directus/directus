@@ -1,3 +1,4 @@
+import api from '@/api';
 import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
@@ -23,6 +24,7 @@ type UsablePreset = {
 	busy: Ref<boolean>;
 	clearLocalSave: () => void;
 	localPreset: Ref<Partial<Preset>>;
+	saveCurrentAsDefault: (defaultPreset: any) => any;
 };
 
 export function usePreset(
@@ -62,6 +64,23 @@ export function usePreset(
 			...localPreset.value,
 			id: updatedValues.id
 		};
+
+		bookmarkSaved.value = true;
+		busy.value = false;
+		return updatedValues;
+	};
+
+	/**
+	 * Saves either a bookmark or default to the database
+	 * @param preset The preset that should be saved
+	 */
+	const createPreset = async (preset?: Partial<Preset>) => {
+		if (temporary || !preset) return;
+		busy.value = true;
+
+		const updatedValues = await presetsStore.create(preset);
+
+		localPreset.value = updatedValues;
 
 		bookmarkSaved.value = true;
 		busy.value = false;
@@ -163,6 +182,7 @@ export function usePreset(
 		busy,
 		clearLocalSave,
 		localPreset,
+		saveCurrentAsDefault
 	};
 
 	/**
@@ -189,15 +209,11 @@ export function usePreset(
 	}
 
 	function initLocalPreset() {
-		const preset = { layout: 'tabular', user: (userStore.currentUser as User).id };
-
-		if (bookmark.value === null) {
-			assign(preset, presetsStore.getPresetForCollection(collection.value));
-		} else if (bookmarkExists.value) {
-			assign(preset, presetsStore.getBookmark(Number(bookmark.value)));
+		if (bookmarkExists.value) {
+			return localPreset.value =  presetsStore.getBookmark(Number(bookmark.value))!;
 		}
 
-		localPreset.value = preset;
+		return localPreset.value =  presetsStore.getPresetForCollection(collection.value)!;
 	}
 
 	/**
@@ -217,6 +233,113 @@ export function usePreset(
 
 		if (data.id) delete data.id;
 
-		return await savePreset(data);
+		return await createPreset(data);
+	}
+
+	async function saveCurrentAsDefault(defaultPreset: any) {
+		const { user, role, purge } = defaultPreset;
+
+		const filterOptions = [];
+
+		for (const option of purge) {
+			switch (option) {
+				case 'all_users':
+					// Delete all users presets for this collection
+					filterOptions.push({
+						user: {
+							_nnull: true,
+						},
+					});
+
+					break;
+
+				case 'all_roles':
+					// Delete all roles presets for this collection
+					filterOptions.push({
+						role: {
+							_nnull: true,
+						},
+					});
+
+					break;
+				case 'all_role_users':
+					// Delete all user presets for users in this role for this collection
+					filterOptions.push({
+						user: {
+							role: {
+								_eq: role,
+							},
+						},
+					});
+
+					break;
+				case 'all_role':
+					// Delete all role presets for this role for this collection
+					filterOptions.push({
+						role: {
+							_eq: role,
+						},
+					});
+
+					break;
+				case 'all_user':
+					// Delete all user presets for this user for this collection
+					filterOptions.push({
+						user: {
+							_eq: user,
+						},
+					});
+
+					break;
+				default:
+					break;
+			}
+		}
+
+		// If we are creating a new global default, we need to delete all other global defaults if no other delete options are selected.
+		if (!user && !role) {
+			filterOptions.push({
+				_and: [
+					{
+						user: {
+							_null: true,
+						},
+					},
+					{
+						role: {
+							_null: true,
+						},
+					},
+				],
+			});
+		}
+
+		if(filterOptions.length > 0) {
+			// if we need to delete presets, we need to get their keys
+
+			const response = await api.get(`/presets`, {
+				params: {
+					filter: {
+						bookmark: {
+							_null: true,
+						},
+						collection: {
+							_eq: collection.value,
+						},
+						_or: filterOptions,
+					},
+					fields: ['id']
+				}
+			})
+
+			const keys = response.data.data.map((preset: any) => preset.id);
+
+			await presetsStore.delete(keys);
+		}
+
+		return await saveCurrentAsPreset({
+			user: defaultPreset.user,
+			role: defaultPreset.role,
+		})
 	}
 }
