@@ -1833,10 +1833,6 @@ importers:
         version: 0.31.1(happy-dom@9.18.3)(sass@1.62.1)
 
   sdk:
-    dependencies:
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../packages/types
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
