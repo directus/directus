@@ -12,7 +12,6 @@ export const deletePermissions =
 		path: `/permissions`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deletePermission =
 	() => ({
 		path: `/permissions/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

@@ -12,7 +12,6 @@ export const deleteNotifications =
 		path: `/notifications`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deleteNotification =
 	() => ({
 		path: `/notifications/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

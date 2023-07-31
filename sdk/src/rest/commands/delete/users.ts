@@ -14,7 +14,6 @@ export const deleteUsers =
 		path: `/users`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -29,5 +28,4 @@ export const deleteUser =
 	() => ({
 		path: `/users/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

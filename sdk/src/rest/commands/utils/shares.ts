@@ -40,7 +40,6 @@ export const inviteShare =
 		path: `/shares/invite`,
 		method: 'POST',
 		body: JSON.stringify({ share, emails }),
-		onResponse: null,
 	});
 
 /**

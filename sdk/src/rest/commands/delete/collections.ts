@@ -11,5 +11,4 @@ export const deleteCollection =
 	() => ({
 		path: `/collections/${collection}`,
 		method: 'DELETE',
-		onResponse: null,
 	});
