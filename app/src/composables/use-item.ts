@@ -82,8 +82,6 @@ export function useItem<T extends Record<string, any>>(
 	return {
 		edits,
 		hasEdits,
-		// TODO Find way to fix warning:
-		// 'T' could be instantiated with a different subtype of constraint 'Record<string, any>'
 		item,
 		error,
 		loading,
@@ -124,7 +122,7 @@ export function useItem<T extends Record<string, any>>(
 			defaultValues.value,
 			item.value,
 			edits.value,
-			function (from: any, to: any) {
+			function (_from: any, to: any) {
 				if (typeof to !== 'undefined') {
 					return to;
 				}
@@ -325,7 +323,10 @@ export function useItem<T extends Record<string, any>>(
 
 				for (const col of columns) {
 					const colName = col.split('.')[1];
-					item[colName] = updatedItem[colName];
+
+					if (colName !== undefined) {
+						item[colName] = updatedItem[colName];
+					}
 				}
 			}
 		}
@@ -396,7 +397,7 @@ export function useItem<T extends Record<string, any>>(
 			});
 
 			item.value = {
-				...item.value,
+				...(item.value as T),
 				[field]: value,
 			};
 
