@@ -64,13 +64,6 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-interface bookmarkValue {
-	name: string | null;
-	icon: string | null;
-	color: string | null;
-	scope: string | null;
-}
-
 const saveBookmarkValue = computed(() => {
 
 	if (bookmarkValue?.scope?.startsWith('user_')){
@@ -100,7 +93,7 @@ const bookmarkValue = reactive({
 	icon: 'bookmark',
 	color: null,
 	scope: currentUser ? `user_${currentUser.id}` : 'all',
-}) as bookmarkValue;
+});
 
 function setIcon(icon: any) {
 	bookmarkValue.icon = icon;
@@ -115,7 +108,7 @@ function setScope(scope: any) {
 }
 
 function cancel() {
-	bookmarkValue.name = null;
+	bookmarkValue.name = 'My Bookmark';
 	bookmarkValue.icon = 'bookmark';
 	bookmarkValue.color = null;
 	bookmarkValue.scope = currentUser ? `user_${currentUser.id}` : 'all';
@@ -132,26 +125,5 @@ function cancel() {
 	.full {
 		grid-column: 1 / span 2;
 	}
-}
-
-.bookmark-tabs {
-	width: 100%;
-	background-color: var(--background-normal-alt);
-	padding: 8px;
-	border-radius: var(--border-radius);
-	gap: 12px;
-}
-
-.bookmark-tab {
-	color: var(--foreground-normal) !important;
-	border-radius: var(--border-radius) !important;
-	height: 56px !important;
-}
-
-.bookmark-tab.active {
-	color: var(--white) !important;
-	background-color: var(--primary) !important;
-	box-shadow: 0 0 16px -8px var(--v-input-box-shadow-color-focus) !important;
-	font-weight: 600 !important;
 }
 </style>
