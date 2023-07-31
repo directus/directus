@@ -214,7 +214,7 @@ export function usePreset(
 			...localPreset.value,
 			...overrides,
 		};
-//create_default: Create Default
+
 		if (data.id) delete data.id;
 
 		return await savePreset(data);
