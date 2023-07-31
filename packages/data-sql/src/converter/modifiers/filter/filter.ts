@@ -17,7 +17,7 @@ import { convertLogical } from './logical.js';
 export const convertFilter = (
 	filter: AbstractQueryFilterNode,
 	collection: string,
-	generator: Generator<number>,
+	generator: Generator<number, number, number>,
 	negate = false
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> => {
 	if (filter.type === 'condition') {

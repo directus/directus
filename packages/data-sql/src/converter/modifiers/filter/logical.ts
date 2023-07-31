@@ -5,7 +5,7 @@ import { convertFilter } from './filter.js';
 export function convertLogical(
 	filter: AbstractQueryNodeLogical,
 	collection: string,
-	generator: Generator<number>,
+	generator: Generator<number, number, number>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
 	const children = filter.childNodes.map((childNode) => convertFilter(childNode, collection, generator, false));

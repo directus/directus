@@ -5,7 +5,7 @@ import { convertTarget } from './utils.js';
 export function convertNumberNode(
 	node: ConditionNumberNode,
 	collection: string,
-	generator: Generator,
+	generator: Generator<number, number, number>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
 	return {

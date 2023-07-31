@@ -23,7 +23,7 @@ export type ConvertSelectOutput = Pick<AbstractSqlQuery, 'select' | 'join' | 'pa
 export const convertNodes = (
 	collection: string,
 	nodes: AbstractQueryFieldNode[],
-	idxGenerator: Generator,
+	idxGenerator: Generator<number, number, number>,
 	path: string[] = []
 ): ConvertSelectOutput => {
 	const select: ConvertSelectOutput['select'] = [];

@@ -5,7 +5,7 @@ import { convertPrimitive } from './utils.js';
 export function convertSetCondition(
 	node: ConditionSetNode,
 	collection: string,
-	generator: Generator,
+	generator: Generator<number, number, number>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
 	return {

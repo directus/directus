@@ -11,7 +11,7 @@ let randomField1: string;
 let randomField2: string;
 let randomNumber1: number;
 let randomString1: string;
-let idxGen: Generator<number>;
+let idxGen: Generator<number, number, number>;
 
 beforeEach(() => {
 	randomCollection = randomIdentifier();

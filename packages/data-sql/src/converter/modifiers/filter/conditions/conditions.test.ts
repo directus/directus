@@ -10,7 +10,7 @@ import { convertGeoCondition } from './geo.js';
 
 let sample: AbstractQueryConditionNode;
 let randomCollection: string;
-let generator: Generator<number>;
+let generator: Generator<number, number, number>;
 
 afterEach(() => {
 	vi.restoreAllMocks();

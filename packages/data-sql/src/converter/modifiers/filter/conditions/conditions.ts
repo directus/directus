@@ -12,7 +12,7 @@ import { convertSetCondition } from './set.js';
 export function convertCondition(
 	condition: AbstractQueryConditionNode,
 	collection: string,
-	generator: Generator<number>,
+	generator: Generator<number, number, number>,
 	negate: boolean
 ): Required<Pick<AbstractSqlQuery, 'where' | 'parameters'>> {
 	switch (condition.condition.type) {
