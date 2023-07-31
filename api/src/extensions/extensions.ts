@@ -17,8 +17,6 @@ import { JobQueue } from '../utils/job-queue.js';
 import { ExtensionsService } from './service.js';
 import { RegistrationManager } from './registration.js';
 import { InstallationManager } from './installation.js';
-import { Worker, isMainThread, parentPort } from 'node:worker_threads'
-import { fileURLToPath } from 'node:url'
 import { WatcherManager } from './watcher.js';
 
 let extensionManager: ExtensionManager;
@@ -244,7 +242,7 @@ export class ExtensionManager {
 	}
 
 	private async unload(): Promise<void> {
-		this.registration.unregisterApiExtensions();
+		await this.registration.unregisterApiExtensions();
 
 		this.apiEmitter.offAll();
 

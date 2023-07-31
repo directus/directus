@@ -19,13 +19,10 @@ import { generateExtensionsEntrypoint, pathToRelativeUrl, resolvePackage } from 
 import emitter from '../emitter.js';
 import { getFlowManager } from '../flows.js';
 import type { EventHandler } from '../types/events.js';
-import { schedule, validate } from 'node-cron';
 import { getSchema } from '../utils/get-schema.js';
 import getDatabase from '../database/index.js';
 import env from '../env.js';
 import * as services from '../services/index.js';
-import * as exceptions from '../exceptions/index.js';
-import * as sharedExceptions from '@directus/exceptions';
 import express, { Router } from 'express';
 import { APP_SHARED_DEPS } from '@directus/constants';
 import { rollup } from 'rollup';
@@ -41,6 +38,8 @@ import { readdir } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const alias = aliasDefault as unknown as typeof aliasDefault.default;
@@ -87,7 +86,7 @@ export class RegistrationManager {
 
 				const config = getModuleDefault(hookInstance);
 
-				this.registerHook(config);
+				this.registerHook(config, hook.name);
 
 				this.apiExtensions.push({ path: hookPath });
 			} catch (error: any) {
@@ -174,8 +173,8 @@ export class RegistrationManager {
 
 				const configs = getModuleDefault(bundleInstances);
 
-				for (const { config } of configs.hooks) {
-					this.registerHook(config);
+				for (const { config, name } of configs.hooks) {
+					this.registerHook(config, name);
 				}
 
 				for (const { config, name } of configs.endpoints) {
@@ -194,7 +193,9 @@ export class RegistrationManager {
 		}
 	}
 
-	public registerHook(register: HookConfig): void {
+	public registerHook(register: HookConfig, name: string): void {
+		let scheduleIndex = 0;
+
 		const registerFunctions = {
 			filter: (event: string, handler: FilterHandler) => {
 				console.log('register filter', event, handler);
@@ -226,8 +227,8 @@ export class RegistrationManager {
 				});
 			},
 			schedule: (cron: string, handler: ScheduleHandler) => {
-				if (validate(cron)) {
-					const task = schedule(cron, async () => {
+				if (validateCron(cron)) {
+					const job = scheduleSynchronizedJob(`${name}:${scheduleIndex}`, cron, async () => {
 						if (this.extensionManager.options.schedule) {
 							try {
 								await handler();
@@ -237,9 +238,11 @@ export class RegistrationManager {
 						}
 					});
 
+					scheduleIndex++;
+
 					this.hookEvents.push({
 						type: 'schedule',
-						task,
+						job,
 					});
 				} else {
 					logger.warn(`Couldn't register cron hook. Provided cron is invalid: ${cron}`);
@@ -267,7 +270,6 @@ export class RegistrationManager {
 
 		register(registerFunctions, {
 			services,
-			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
 			emitter: this.extensionManager.apiEmitter,
@@ -289,7 +291,6 @@ export class RegistrationManager {
 
 		register(scopedRouter, {
 			services,
-			exceptions: { ...exceptions, ...sharedExceptions },
 			env,
 			database: getDatabase(),
 			emitter: this.extensionManager.apiEmitter,
@@ -304,7 +305,7 @@ export class RegistrationManager {
 		flowManager.addOperation(config.id, config.handler);
 	}
 
-	public unregisterApiExtensions(): void {
+	public async unregisterApiExtensions(): Promise<void> {
 		for (const event of this.hookEvents) {
 			switch (event.type) {
 				case 'filter':
@@ -317,7 +318,7 @@ export class RegistrationManager {
 					emitter.offInit(event.name, event.handler);
 					break;
 				case 'schedule':
-					event.task.stop();
+					await event.job.stop();
 					break;
 			}
 		}
