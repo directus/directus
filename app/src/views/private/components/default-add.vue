@@ -31,6 +31,10 @@
 								<p class="type-note">Deleting existing presets allows you to override users/roles current presets.</p>
 							</small>
 
+							<v-notice v-if="bookmarkValue.purge.length > 0" class="full" type="danger">
+								{{ t('create_default_delete_warning') }}
+							</v-notice>
+
 						</div>
 
 			</v-card-text>
@@ -39,8 +43,8 @@
 				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :loading="saving" @click="$emit('save', saveBookmarkValue)">
-					{{ t('save') }}
+				<v-button :loading="saving" :kind="bookmarkValue.purge.length > 0 ? 'danger' : 'normal'" @click="$emit('save', saveBookmarkValue)" >
+					{{ bookmarkValue.purge.length == 0 ? t('save') : 'Save and Delete' }}
 				</v-button>
 			</v-card-actions>
 		</v-card>
@@ -90,7 +94,6 @@ const saveBookmarkValue = computed(() => {
 			purge: bookmarkValue.purge,
 		}
 	}
-
 });
 
 
@@ -99,29 +102,29 @@ const availablePurgeOptions = computed(() => {
 	if(bookmarkValue.scope == "all"){
 		return [
 		{
-			text: 'Delete All User Presets for this collection',
+			text: t('create_default_options.all_users'),
 			value: 'all_users',
 		},
 		{
-			text: 'Delete All Role Presets for this collection',
+			text: t('create_default_options.all_roles'),
 			value: 'all_roles',
 		}
 	];
 	} else if(bookmarkValue.scope.startsWith('role')) {
 		return [
 		{
-			text: 'Delete All User Presets in Selected Role for this collection',
+			text: t('create_default_options.all_role_users'),
 			value: 'all_role_users',
 		},
 		{
-			text: 'Delete Selected Role Presets for this collection',
+			text: t('create_default_options.all_role'),
 			value: 'all_role',
 		},
 	];
 	} else if(bookmarkValue.scope.startsWith('user')) {
 		return [
 		{
-			text: 'Delete Selected Users Presets for this collection',
+			text: t('create_default_options.all_user'),
 			value: 'all_user',
 		}
 	];
