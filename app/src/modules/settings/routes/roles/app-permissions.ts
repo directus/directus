@@ -183,7 +183,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 				_eq: 'manual',
 			},
 		},
-		fields: ['id', 'name', 'icon', 'color', 'options', 'trigger'],
+		fields: ['id', 'status', 'name', 'icon', 'color', 'options', 'trigger'],
 	},
 ];
 
@@ -306,6 +306,10 @@ export const appMinimalPermissions: Partial<Permission>[] = [
 	},
 	{
 		collection: 'directus_settings',
+		action: 'read',
+	},
+	{
+		collection: 'directus_translations',
 		action: 'read',
 	},
 	{

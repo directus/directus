@@ -26,10 +26,10 @@
 		</template>
 		<folder-list-item
 			v-for="childFolder in folder.children"
-			:key="childFolder.id"
+			:key="childFolder.id!"
 			:folder="childFolder"
 			:current-folder="currentFolder"
-			:disabled="disabledFolders.includes(childFolder.id)"
+			:disabled="disabledFolders.includes(childFolder.id!)"
 			:disabled-folders="disabledFolders"
 			@click="$emit('click', $event)"
 		/>
@@ -37,11 +37,7 @@
 </template>
 
 <script setup lang="ts">
-type Folder = {
-	id: string;
-	name: string;
-	children: Folder[];
-};
+import type { Folder } from '@/composables/use-folders';
 
 withDefaults(
 	defineProps<{

@@ -43,8 +43,15 @@ PUBLIC_URL="/"
 # Whether or not to enable GraphQL Introspection [true]
 # GRAPHQL_INTROSPECTION=true
 
+# Limit the maximum amount of items that can get requested in one query.
+# QUERY_LIMIT_DEFAULT=100
+# QUERY_LIMIT_MAX=Infinity
+
 # The maximum number of items for batch mutations when creating, updating and deleting. ["Infinity"]
 # MAX_BATCH_MUTATION="Infinity"
+
+# Shared Redis server for things like caching, rate limiting, container synchronization, etc
+# REDIS="redis://@127.0.0.1:6379"
 
 ####################################################################################################
 ### Database
@@ -123,10 +130,8 @@ PUBLIC_URL="/"
 RATE_LIMITER_ENABLED=false
 
 # Where to store the rate limiter counts [memory]
-# memory, redis, memcache
+# memory, redis
 RATE_LIMITER_STORE=memory
-# RATE_LIMITER_REDIS="redis://@127.0.0.1:5105"
-# RATE_LIMITER_MEMCACHE="localhost:5109"
 
 # The amount of allowed hits per duration [50]
 RATE_LIMITER_POINTS=25
@@ -149,14 +154,14 @@ CACHE_ENABLED=false
 # Automatically purge the cache on create, update, and delete actions. [false]
 # CACHE_AUTO_PURGE=true
 
-# memory | redis | memcache
+# List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled. ["directus_activity,directus_presets"]
+# CACHE_AUTO_PURGE_IGNORE_LIST="directus_activity,directus_presets"
+
+# memory | redis
 CACHE_STORE=memory
 
 # How long assets will be cached for in the browser. Sets the max-age value of the Cache-Control header ["30d"]
 ASSETS_CACHE_TTL="30d"
-
-# CACHE_REDIS="redis://@127.0.0.1:5105"
-# CACHE_MEMCACHE="localhost:5109"
 
 ####################################################################################################
 ### File Storage

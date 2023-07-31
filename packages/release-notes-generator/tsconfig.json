@@ -1,0 +1,7 @@
+{
+	"extends": "@directus/tsconfig/node18-cjs",
+	"compilerOptions": {
+		"outDir": "dist"
+	},
+	"include": ["src"]
+}

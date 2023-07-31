@@ -114,17 +114,10 @@
 		</template>
 
 		<div class="file-item">
-			<div class="preview">
-				<file-preview
-					v-if="isBatch === false && item"
-					:src="fileSrc"
-					:mime="item.type"
-					:width="item.width"
-					:height="item.height"
-					:title="item.title"
-				/>
+			<div v-if="item" class="preview">
+				<file-preview :src="fileSrc" :mime="item.type" :width="item.width" :height="item.height" :title="item.title" />
 
-				<button v-if="isBatch === false && item" class="replace-toggle" @click="replaceFileDialogActive = true">
+				<button class="replace-toggle" @click="replaceFileDialogActive = true">
 					{{ t('replace_file') }}
 				</button>
 			</div>
@@ -142,7 +135,6 @@
 				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="item"
-				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
 				:validation-errors="validationErrors"
@@ -165,23 +157,19 @@
 		<template #sidebar>
 			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false && revisionsAllowed"
+				v-if="isNew === false && revisionsAllowed"
 				ref="revisionsDrawerDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
 			/>
-			<comments-sidebar-detail
-				v-if="isBatch === false && isNew === false"
-				collection="directus_files"
-				:primary-key="primaryKey"
-			/>
+			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>
 
 		<replace-file v-model="replaceFileDialogActive" :file="item" @replaced="refresh" />
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
@@ -192,6 +180,7 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FilePreview from '@/views/private/components/file-preview.vue';
+import FilesNavigation from '@/views/private/components/files-navigation.vue';
 import FolderPicker from '@/views/private/components/folder-picker.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
@@ -201,7 +190,6 @@ import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import FilesNavigation from '../components/navigation.vue';
 import ReplaceFile from '../components/replace-file.vue';
 import FilesNotFound from './not-found.vue';
 
@@ -222,21 +210,8 @@ const replaceFileDialogActive = ref(false);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const {
-	isNew,
-	edits,
-	hasEdits,
-	item,
-	saving,
-	loading,
-	save,
-	remove,
-	deleting,
-	saveAsCopy,
-	isBatch,
-	refresh,
-	validationErrors,
-} = useItem(ref('directus_files'), primaryKey);
+const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, refresh, validationErrors } =
+	useItem(ref('directus_files'), primaryKey);
 
 const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
@@ -339,6 +314,7 @@ async function saveAndStay() {
 	try {
 		await save();
 		revisionsDrawerDetailRef.value?.refresh?.();
+		refresh();
 	} catch {
 		// `save` will show unexpected error dialog
 	}

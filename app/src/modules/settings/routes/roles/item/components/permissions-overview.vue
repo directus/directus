@@ -100,8 +100,6 @@ const { permissions, fetchPermissions, refreshing } = usePermissions();
 
 const { resetActive, resetSystemPermissions, resetting } = useReset();
 
-fetchPermissions();
-
 watch(() => props.permission, fetchPermissions, { immediate: true });
 
 provide('refresh-permissions', fetchPermissions);
@@ -117,7 +115,7 @@ function usePermissions() {
 		loading.value = true;
 
 		try {
-			const params: any = { filter: { role: {} }, limit: -1 };
+			const params: any = { filter: { role: {} } };
 
 			if (props.role === null) {
 				params.filter.role = { _null: true };
@@ -126,7 +124,6 @@ function usePermissions() {
 			}
 
 			const response = await api.get('/permissions', { params });
-
 			permissions.value = response.data.data;
 		} catch (err: any) {
 			unexpectedError(err);

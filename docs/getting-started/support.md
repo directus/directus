@@ -37,7 +37,7 @@ resource for others developers with similar questions.
 Our [Discord Community](https://directus.chat) is another great way to get assistance. Please keep all questions in the
 help channels, be considerate, and remember that you are getting free help from the community.
 
-:::warning No Guaranteed Response Time
+::: warning No Guaranteed Response Time
 
 While the Directus Core Team plays an active and engaged role in community discussions, there is no guaranteed response
 time for Community Support.
@@ -58,8 +58,8 @@ us at [support@directus.io](mailto:support@directus.io).
 
 If you need a specific feature added to Directus faster than the normal development timeline,
 [reach out to us](https://directus.io/contact) for a quote. Our parent agency will often help subsidize the cost of
-developing new features if they pass our [80/20 Rule](/contributing/introduction#feature-requests) and can be merged
-into the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
+developing new features if they pass our 80/20 Rule (supports 80% of our user's common use cases) and can be merged into
+the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
 
 ### Expedited Fixes
 

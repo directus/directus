@@ -89,7 +89,6 @@ export type AppExtensionConfigs = {
 
 export type ApiExtensionContext = {
 	services: any;
-	exceptions: any;
 	database: Knex;
 	env: Record<string, any>;
 	logger: Logger;

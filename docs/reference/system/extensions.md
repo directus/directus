@@ -7,40 +7,24 @@ pageClass: page-reference
 # Extensions
 
 > The extensions endpoints are used by the Admin App to retrieve what extensions to install.
-> [Learn more about Extensions](/getting-started/glossary#extensions).
-
----
+> [Learn more about Extensions](/user-guide/overview/glossary#extensions).
 
 ## List Extensions
 
-List the available extensions in the project. The types of extensions that you can list are interfaces, displays,
-layouts, modules.
+List the available extensions in the project. The types of extensions that you can list are `interfaces`, `displays`,
+`layouts`, and `modules`.
 
-### Query Parameters
+### Request
 
-This endpoint doesn't currently support any query parameters.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /extensions/:type`
 
-An array of interface extension keys.
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /extensions/:type
-```
-
-##### Example
-
-```
-GET /extensions/interfaces
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -48,7 +32,40 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readExtensions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readExtensions('extension_type'));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+This endpoint doesn't currently support any query parameters.
+
+### Response
+
+An array of interface extension keys.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /extensions/interfaces`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -57,3 +74,18 @@ query {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readExtensions } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readExtensions('interfaces'));
+```
+
+</template>
+</SnippetToggler>

@@ -140,7 +140,7 @@ const isExisting = computed(() => editing.value !== '+');
 const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(collection.value!)?.field);
 
 const unsortableJunctionFields = computed(() => {
-	let fields = [];
+	const fields = [];
 
 	if (relatedCollection.value) {
 		const relations = relationsStore.getRelationsForCollection(relatedCollection.value);

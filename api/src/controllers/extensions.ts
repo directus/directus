@@ -1,20 +1,28 @@
 import { Router } from 'express';
 import env from '../env.js';
-import { ForbiddenException, RouteNotFoundException } from '../exceptions/index.js';
+import { ForbiddenError, RouteNotFoundError } from '../errors/index.js';
 import { getExtensionManager } from '../extensions/extensions.js';
 import { respond } from '../middleware/respond.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
-import type { PrimaryKey } from '@directus/types';
+import type { Plural, PrimaryKey } from '@directus/types';
 import { ExtensionsService } from '../extensions/service.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { depluralize, isIn } from '@directus/utils';
+import { EXTENSION_TYPES } from '@directus/constants';
 
 const router = Router();
 
 router.get(
-	'/',
-	asyncHandler(async (_req, res, next) => {
-		const extensionManager = getExtensionManager();
+	'/:type',
+	asyncHandler(async (req, res, next) => {
+		const type = depluralize(req.params['type'] as Plural<string>);
+
+		if (!isIn(type, EXTENSION_TYPES)) {
+			throw new RouteNotFoundError({ path: req.path });
+		}
+
+		const extensionManager = await getExtensionManager();
 
 		const extensions = extensionManager.getDisplayExtensions();
 
@@ -30,11 +38,11 @@ router.get(
 router.get(
 	'/:name',
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
+		if (req.accountability?.admin !== true) throw new RouteNotFoundError({ path: req.path });
 
 		const name = req.params['name'];
 
-		const extensionManager = getExtensionManager();
+		const extensionManager = await getExtensionManager();
 
 		const extension = extensionManager.getDisplayExtension(name);
 
@@ -50,9 +58,9 @@ router.get(
 router.patch(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
+		if (req.accountability?.admin !== true) throw new RouteNotFoundError({ path: req.path });
 
-		const extensionManager = getExtensionManager();
+		const extensionManager = await getExtensionManager();
 
 		let keys: PrimaryKey[] = [];
 
@@ -73,7 +81,7 @@ router.patch(
 				data: extensionManager.getDisplayExtensions().filter((extension) => keys.includes(extension.name)),
 			};
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (error instanceof ForbiddenError) {
 				return next();
 			}
 
@@ -88,11 +96,11 @@ router.patch(
 router.get(
 	'/:name',
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
+		if (req.accountability?.admin !== true) throw new RouteNotFoundError({ path: req.path });
 
 		const name = req.params['name'];
 
-		const extensionManager = getExtensionManager();
+		const extensionManager = await getExtensionManager();
 
 		const extension = extensionManager.getDisplayExtension(name);
 
@@ -108,9 +116,9 @@ router.get(
 router.patch(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.admin !== true) throw new RouteNotFoundException(req.path);
+		if (req.accountability?.admin !== true) throw new RouteNotFoundError({ path: req.path });
 
-		const extensionManager = getExtensionManager();
+		const extensionManager = await getExtensionManager();
 
 		let keys: PrimaryKey[] = [];
 
@@ -131,7 +139,7 @@ router.patch(
 				data: extensionManager.getDisplayExtensions().filter((extension) => keys.includes(extension.name)),
 			};
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (error instanceof ForbiddenError) {
 				return next();
 			}
 
@@ -147,7 +155,7 @@ router.get(
 	'/sources/:chunk',
 	asyncHandler(async (req, res) => {
 		const chunk = req.params['chunk'] as string;
-		const extensionManager = getExtensionManager();
+		const extensionManager = await getExtensionManager();
 
 		let source: string | null;
 
@@ -158,7 +166,7 @@ router.get(
 		}
 
 		if (source === null) {
-			throw new RouteNotFoundException(req.path);
+			throw new RouteNotFoundError({ path: req.path });
 		}
 
 		res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');

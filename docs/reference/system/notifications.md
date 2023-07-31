@@ -8,8 +8,6 @@ pageClass: page-reference
 
 > Notifications allow you to send/receive messages to/from other users of the platform.
 
----
-
 ## The Notification Object
 
 `id` **integer**\
@@ -53,35 +51,23 @@ Primary key of the item this notification references.
 }
 ```
 
----
-
 ## List Notifications
 
 List all notifications that exist in Directus.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /notifications`
 
-An array of up to [limit](/reference/query#limit) [notification objects](#the-notification-object). If no items are
-available, data will be an empty array.
+`SEARCH /notifications`
 
-### REST API
+</template>
+<template #graphql>
 
-```
-GET /notifications
-SEARCH /notifications
-```
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -89,7 +75,45 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readNotifications } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readNotifications(query));
+```
+
+</template>
+</SnippetToggler>
+
+[Learn more about SEARCH ->](/reference/introduction#search-http-method)
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+An array of up to [limit](/reference/query#limit) [notification objects](#the-notification-object). If no items are
+available, data will be an empty array.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /notifications`
+
+`SEARCH /notifications`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 query {
@@ -101,37 +125,40 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readNotifications } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readNotifications({
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Retrieve a notification
 
 List an existing notification by primary key.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Returns
+`GET /notifications/:id`
 
-Returns the requested [notification object](#the-notification-object).
+</template>
+<template #graphql>
 
-### REST API
-
-```
-GET /notifications/:id
-```
-
-##### Example
-
-```
-GET /notifications/42
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Query {
@@ -139,7 +166,38 @@ type Query {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readNotification } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(readNotification('notification_id', query));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+### Response
+
+Returns the requested [notification object](#the-notification-object).
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`GET /notifications/42`
+
+</template>
+<template #graphql>
 
 ```graphql
 query {
@@ -153,46 +211,47 @@ query {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, readNotification } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	readNotification('4', {
+		fields: ['*'],
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create a Notification
 
 Create a new notification.
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-A partial [notification object](#the-notification-object).
-
-### Returns
-
-Returns the [notification object](#the-notification-object) for the created notification.
-
-### REST API
-
-```
-POST /notifications
-```
-
-##### Example
+`POST /notifications`
 
 ```json
-// POST /notifications
-
 {
-	"recipient": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
-	"subject": "Hi there!"
+	"notification_object_field_1": "value_1",
+	"notification_object_field_2": "value_2"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -200,7 +259,57 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createNotification } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createNotification({
+		notification_field: 'value_1',
+		notification_field_2: 'value_2',
+		notification_field_3: 'value_3',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [notification object](#the-notification-object).
+
+### Response
+
+Returns the [notification object](#the-notification-object) for the created notification.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /notifications`
+
+```json
+{
+	"recipient": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
+	"subject": "Hi there!"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -211,35 +320,112 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createNotification } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createNotification({
+		recipient: '86eb0719-f5fc-4465-91f6-9d9cd527e105',
+		subject: 'Hello there!',
+		message: 'Hi fellow user',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Create Multiple Notifications
 
 Create multiple new notifications.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`POST /notifications`
+
+```json
+[
+	{
+		"notification_field": "value_1",
+		"notification_field_2": "value_2",
+		"notification_field_3": "value_3"
+	},
+	{
+		"notification_2_field": "value_3",
+		"notification_2_field_2": "value_4",
+		"notification_2_field_3": "value_5"
+	}
+]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	create_notifications_items(data: [create_directus_notifications_input!]!): [directus_notifications]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createNotifications } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createNotifications([
+		{
+			notification_field: 'value_1',
+			notification_field_2: 'value_2',
+			notification_field_3: 'value_3',
+		},
+		{
+			notification_2_field: 'value_4',
+			notification_2_field_2: 'value_5',
+			notification_2_field_3: 'value_6',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 An array of partial [notification objects](#the-notification-object).
 
-### Returns
+### Response
 
 Returns the [notification object](#the-notification-object) for the created notification.
 
-### REST API
+### Example
 
-```
-POST /notifications
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`POST /notifications`
 
 ```json
-// POST /notifications
-
 [
 	{
 		"collection": "directus_files",
@@ -254,19 +440,10 @@ POST /notifications
 ]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	create_notifications_items(data: [create_directus_notifications_input!]!): [directus_notifications]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -290,7 +467,33 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, createNotifications } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	createNotifications([
+		{
+			recipient: '86eb0719-f5fc-4465-91f6-9d9cd527e105',
+			subject: 'Hello there!',
+			message: 'Hi fellow user',
+		},
+		{
+			recipient: '86eb0719-f5fc-4465-91f6-9d9cd527e105',
+			subject: 'How are you!',
+			message: 'I see you are a new contributor, can I help with anything?',
+		},
+	])
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update a Notification
 
@@ -303,39 +506,23 @@ notification email to be sent.
 
 :::
 
-### Query Parameters
+### Request
 
-Supports all [global query parameters](/reference/query).
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### Request Body
-
-A partial [notification object](#the-notification-object).
-
-### Returns
-
-Returns the [notification object](#the-notification-object) for the updated notification.
-
-### REST API
-
-```
-PATCH /notifications/:id
-```
-
-##### Example
+`PATCH /notifications/:id`
 
 ```json
-// PATCH /notifications/34
-
 {
-	"message": "This is my updated notification"
+	"notification_object_field": "value_1"
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -343,7 +530,54 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateNotification } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateNotification('notification_id', {
+		field: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+A partial [notification object](#the-notification-object).
+
+### Response
+
+Returns the [notification object](#the-notification-object) for the updated notification.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /notifications/34`
+
+```json
+{
+	"message": "This is my updated notification"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -354,17 +588,80 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateNotification } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateNotification('4', {
+		status: 'archive',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Update Multiple Notifications
 
 Update multiple existing notifications.
 
-### Query Parameters
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`PATCH /notifications`
+
+```json
+{
+	"keys": ["notification_key_1", "notification_key_2"],
+	"data": {
+		"notification_object_field": "field_1"
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	update_notifications_items(ids: [ID!]!, data: update_directus_notifications_input): [directus_notifications]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateNotifications } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'], {
+		field: 'value',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
 
 Supports all [global query parameters](/reference/query).
 
-### Request Body
+#### Request Body
 
 `keys` **Required**\
 Array of primary keys of the notifications you'd like to update.
@@ -372,21 +669,18 @@ Array of primary keys of the notifications you'd like to update.
 `data` **Required**\
 Any of [the notification object](#the-notification-object)'s properties.
 
-### Returns
+### Response
 
 Returns the [notification objects](#the-notification-object) for the updated notifications.
 
-### REST API
+### Example
 
-```
-PATCH /notifications
-```
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-##### Example
+`PATCH /notifications`
 
 ```json
-// PATCH /notifications
-
 {
 	"keys": [15, 64],
 	"data": {
@@ -395,19 +689,10 @@ PATCH /notifications
 }
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
-
-```graphql
-type Mutation {
-	update_notifications_items(ids: [ID!]!, data: update_directus_notifications_input): [directus_notifications]
-}
-```
-
-##### Example
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -418,33 +703,40 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, updateNotifications } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateNotifications(['1', '2', '3'], {
+		status: 'archive',
+	})
+);
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete a Notification
 
 Delete an existing notification.
 
-### Returns
+### Request
 
-Empty body.
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
-### REST API
+`DELETE /notifications/:id`
 
-```
-DELETE /notifications/:id
-```
+</template>
+<template #graphql>
 
-##### Example
-
-```
-DELETE /notifications/34
-```
-
-### GraphQL
-
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -452,7 +744,36 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteNotification } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteNotification('notification_1_id'));
+```
+
+</template>
+</SnippetToggler>
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /notifications/34`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -462,38 +783,39 @@ mutation {
 }
 ```
 
----
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteNotification } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteNotification('3'));
+```
+
+</template>
+</SnippetToggler>
 
 ## Delete Multiple Notifications
 
 Delete multiple existing notifications.
 
-### Request Body
+### Request
 
-An array of notification primary keys
-
-### Returns
-
-Empty body.
-
-### REST API
-
-```
-DELETE /notifications
-```
-
-##### Example
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
 
 ```json
 // DELETE /notifications
-[15, 251, 810]
+["notification_1_id", "notification_2_id", "notification_3_id"]
 ```
 
-### GraphQL
+</template>
+<template #graphql>
 
-```
-POST /graphql/system
-```
+`POST /graphql/system`
 
 ```graphql
 type Mutation {
@@ -501,7 +823,46 @@ type Mutation {
 }
 ```
 
-##### Example
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteNotifications } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	deleteNotifications(['notification_1_id', 'notification_2_id', 'notification_3_id'])
+);
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+An array of notification primary keys
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<template #rest>
+
+`DELETE /notifications`
+
+```json
+[15, 251, 810]
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
 
 ```graphql
 mutation {
@@ -510,3 +871,18 @@ mutation {
 	}
 }
 ```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus } from '@directus/sdk';
+import { rest, deleteNotifications } from '@directus/sdk/rest';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteNotifications(['4', '5', '6', '7']));
+```
+
+</template>
+</SnippetToggler>

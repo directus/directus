@@ -29,7 +29,22 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run Linter
-        run: pnpm lint
+        run: pnpm exec eslint .
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
+      - name: Run Formatter
+        run: pnpm exec prettier --check .
 
   unit:
     name: Unit Tests

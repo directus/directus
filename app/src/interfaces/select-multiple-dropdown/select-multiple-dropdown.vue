@@ -53,7 +53,7 @@ const { t } = useI18n();
 
 function updateValue(value: string[]) {
 	const sortedValue = sortBy(value, (val) => {
-		const sortIndex = props.choices.findIndex((choice) => val === choice.value);
+		const sortIndex = props.choices!.findIndex((choice) => val === choice.value);
 		return sortIndex !== -1 ? sortIndex : value.length;
 	});
 

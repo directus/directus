@@ -1,9 +1,8 @@
-import { defineDisplay } from '@directus/utils';
-import { DisplayConfig } from '@directus/types';
-import DisplayFormattedValue from './formatted-value.vue';
 import formatTitle from '@directus/format-title';
-import { decode } from 'html-entities';
+import { defineDisplay } from '@directus/utils';
 import dompurify from 'dompurify';
+import { decode } from 'html-entities';
+import DisplayFormattedValue from './formatted-value.vue';
 
 export default defineDisplay({
 	id: 'formatted-value',
@@ -33,7 +32,7 @@ export default defineDisplay({
 		const stringOperators = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];
 		const numberOperators = ['eq', 'neq', 'gt', 'gte', 'lt', 'lte'];
 
-		const options: DisplayConfig['options'] = [
+		return [
 			{
 				field: 'format',
 				name: '$t:displays.formatted-value.format',
@@ -249,7 +248,5 @@ export default defineDisplay({
 				},
 			},
 		];
-
-		return options;
 	},
 });

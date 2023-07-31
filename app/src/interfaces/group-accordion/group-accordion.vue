@@ -15,7 +15,7 @@
 			:validation-errors="validationErrors"
 			:badge="badge"
 			:raw-editor-enabled="rawEditorEnabled"
-			:group="field.meta.field"
+			:group="field.meta!.field"
 			:multiple="accordionMode === false"
 			:direction="direction"
 			@apply="$emit('apply', $event)"
@@ -103,7 +103,7 @@ function toggleAll() {
 
 function useComputedGroup() {
 	const groupFields = ref<Field[]>(limitFields());
-	const groupValues = ref<Record<string, any>>({});
+	const groupValues = ref<Record<string, any>>(props.values);
 
 	watch(
 		() => props.fields,

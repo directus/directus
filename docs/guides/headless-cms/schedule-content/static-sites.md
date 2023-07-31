@@ -12,7 +12,7 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -24,7 +24,7 @@ author: Bryant Gillespie
 
 ## Explanation
 
-This recipe explains how to schedule content to be published on a future date for a statically generated site (SSG).
+This guide explains how to schedule content to be published on a future date for a statically generated site (SSG).
 
 We'll be using [Flows](/app/flows) to publish articles when the current date matches the published date.
 
@@ -41,7 +41,7 @@ Last, we'll kick off a new deployment of your static site at your hosting provid
 ::: info Note
 
 If your site fetches content at runtime or at the time of a page request, please
-[follow the recipe for dynamic sites](/guides/headless-cms/schedule-content/dynamic-sites).
+[follow the guide for dynamic sites](/guides/headless-cms/schedule-content/dynamic-sites).
 
 :::
 
@@ -51,7 +51,7 @@ If your site fetches content at runtime or at the time of a page request, please
 
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 You’ll need to have already created a collection for your site content like `articles` or `posts` or `pages` with a
 field `status` that controls the published state.
@@ -66,9 +66,9 @@ field `status` that controls the published state.
 
 3. [Add a new field](/app/data-model/fields#create-a-field-standard) to your content Collection.
 
-   ![The interface for creating a new field is shown. The field type Datetime is selected. The Key is named date_published. The field for Use 24-Hour format is checked.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-publish-date.webp)
+   ![The interface for creating a new field is shown. The field type Datetime is selected. The Key is named date_published. The field for Use 24-Hour format is checked.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-publish-date-timestamp.webp)
 
-   a. Choose **Datetime** for the Type.
+   a. Choose **Timestamp** for the Type.
 
    b. For the Key, use something relevant like `date_published`.
 
@@ -76,7 +76,7 @@ field `status` that controls the published state.
 
 ### Add Some Content and Set a Publish Date
 
-4. [Create or update an Item](/app/content/items) inside your Collection
+4. [Create or update an Item](/user-guide/content-module/content/items) inside your Collection
 
    ![A content item within the Articles collection is shown. The title is "What is Headless CMS?". English translations are also shown with a Summary field. The Summary reads "A quick overview of what Headless CMS is and how it's beneficial to your team."](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-create-content-scheduled.webp)
 
@@ -98,8 +98,8 @@ field `status` that controls the published state.
 
    ![Under the Creating New Flow interface, the Trigger Setup tab is shown. The selected trigger is Schedule(CRON). The Interval field has a value of "* 15 * * * *".](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/scheduling-content-trigger.webp)
 
-   a. For **Type**, Select [Schedule (CRON)](/app/flows/triggers#schedule-cron). This will trigger this flow
-   at regular intervals of time.
+   a. For **Type**, Select [Schedule (CRON)](/app/flows/triggers#schedule-cron). This will trigger this flow at regular
+   intervals of time.
 
    b. Add your **Interval** in proper CRON syntax.
 
@@ -122,7 +122,7 @@ field `status` that controls the published state.
 
    d. Check **Emit Events**
 
-   :::warning
+   ::: warning
 
    Emit Events will trigger an `item.update` event in this flow. Be careful when using it in your Flows to avoid
    creating infinite loops where Flows continuously trigger one another.
@@ -171,7 +171,6 @@ If you haven't already, you'll want to configure one of the recipes below.
 
 - [Triggering a static site build at Netlify](/guides/headless-cms/trigger-static-builds/netlify)
 - [Triggering a static site build at Vercel](/guides/headless-cms/trigger-static-builds/vercel)
-
 
 You checked Emit Events in the Operation during Step 7. This will emit an `item.update` event which is a trigger for the
 Flows in the recipes above.

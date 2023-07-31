@@ -22,7 +22,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref } from 'vue';
 
 defineProps<{
@@ -80,7 +80,7 @@ const active = ref(false);
 
 @media (min-width: 960px) {
 	.actions .action-buttons .sidebar-toggle {
-		display: none;
+		display: none !important;
 	}
 }
 

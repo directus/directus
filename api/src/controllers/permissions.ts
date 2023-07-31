@@ -1,5 +1,6 @@
+import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ForbiddenException } from '../exceptions/index.js';
+import { ErrorCode } from '../errors/index.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -40,7 +41,7 @@ router.post(
 				res.locals['payload'] = { data: item };
 			}
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -65,15 +66,19 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	let result;
 
+	// TODO fix this at the service level
+	// temporary fix for missing permissions https://github.com/directus/directus/issues/18654
+	const temporaryQuery = { ...req.sanitizedQuery, limit: -1 };
+
 	if (req.singleton) {
-		result = await service.readSingleton(req.sanitizedQuery);
+		result = await service.readSingleton(temporaryQuery);
 	} else if (req.body.keys) {
-		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+		result = await service.readMany(req.body.keys, temporaryQuery);
 	} else {
-		result = await service.readByQuery(req.sanitizedQuery);
+		result = await service.readByQuery(temporaryQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_permissions', req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_permissions', temporaryQuery);
 
 	res.locals['payload'] = { data: result, meta };
 	return next();
@@ -124,7 +129,7 @@ router.patch(
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals['payload'] = { data: result };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -150,7 +155,7 @@ router.patch(
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals['payload'] = { data: item || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 

@@ -1,4 +1,4 @@
-import api from '@/api';
+import { fetchAll } from '@/utils/fetch-all';
 import { ref, Ref } from 'vue';
 
 type FolderRaw = {
@@ -23,6 +23,8 @@ type UsableFolders = {
 	openFolders: Ref<string[] | null>;
 };
 
+export const openFoldersInitial = ['root'];
+
 let loading: Ref<boolean> | null = null;
 let folders: Ref<Folder[] | null> | null = null;
 let nestedFolders: Ref<Folder[] | null> | null = null;
@@ -35,7 +37,7 @@ export function useFolders(): UsableFolders {
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
 	if (error === null) error = ref(null);
-	if (openFolders === null) openFolders = ref(['root']);
+	if (openFolders === null) openFolders = ref(openFoldersInitial);
 
 	if (folders.value === null && loading.value === false) {
 		fetchFolders();
@@ -52,15 +54,14 @@ export function useFolders(): UsableFolders {
 		loading.value = true;
 
 		try {
-			const response = await api.get(`/folders`, {
+			const response = await fetchAll<Folder>(`/folders`, {
 				params: {
-					limit: -1,
 					sort: 'name',
 				},
 			});
 
-			folders.value = response.data.data;
-			nestedFolders.value = nestFolders(response.data.data);
+			folders.value = response;
+			nestedFolders.value = nestFolders(response as FolderRaw[]);
 		} catch (err: any) {
 			error.value = err;
 		} finally {

@@ -1,5 +1,6 @@
+import { isDirectusError } from '@directus/errors';
 import express from 'express';
-import { ForbiddenException, RouteNotFoundException } from '../exceptions/index.js';
+import { ErrorCode, ForbiddenError, RouteNotFoundError } from '../errors/index.js';
 import collectionExists from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -15,10 +16,10 @@ router.post(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 		if (req.singleton) {
-			throw new RouteNotFoundException(req.path);
+			throw new RouteNotFoundError({ path: req.path });
 		}
 
 		const service = new ItemsService(req.collection, {
@@ -45,7 +46,7 @@ router.post(
 				res.locals['payload'] = { data: result || null };
 			}
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -58,7 +59,7 @@ router.post(
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
-	if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
+	if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 	const service = new ItemsService(req.collection, {
 		accountability: req.accountability,
@@ -97,7 +98,7 @@ router.get(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
@@ -120,7 +121,7 @@ router.patch(
 	collectionExists,
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
-		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
@@ -150,7 +151,7 @@ router.patch(
 			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals['payload'] = { data: result };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -166,10 +167,10 @@ router.patch(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 		if (req.singleton) {
-			throw new RouteNotFoundException(req.path);
+			throw new RouteNotFoundError({ path: req.path });
 		}
 
 		const service = new ItemsService(req.collection, {
@@ -183,7 +184,7 @@ router.patch(
 			const result = await service.readOne(updatedPrimaryKey, req.sanitizedQuery);
 			res.locals['payload'] = { data: result || null };
 		} catch (error: any) {
-			if (error instanceof ForbiddenException) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
 			}
 
@@ -200,7 +201,7 @@ router.delete(
 	collectionExists,
 	validateBatch('delete'),
 	asyncHandler(async (req, _res, next) => {
-		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
@@ -225,7 +226,7 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, _res, next) => {
-		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenException();
+		if (req.params['collection']!.startsWith('directus_')) throw new ForbiddenError();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,

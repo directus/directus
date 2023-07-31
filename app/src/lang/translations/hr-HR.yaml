@@ -35,6 +35,7 @@ tile_size: Veličina pločice
 edit_field: Uredi polje
 conditions: Uvjeti
 location: Lokacija
+collection_names_are_case_sensitive: Imena ili nazivi zbirki su osjetljiva na velika i mala slova
 condition_rules: Uvjetna pravila
 input: Unos
 maps: Karte
@@ -80,14 +81,10 @@ create_user: Dodaj korisnika
 message: Poruka
 delete_panel: Ukloni ploču
 create_webhook: Kreiraj webhook
-create_translation_string: Dodaj prijevodni niz
-no_translation_string: Nema prijevodnih nizova
-no_translation_string_copy: Još nema prijevodnih nizova.
-translation_string_key_placeholder: Ključ niza prijevoda...
-translation_string_translations_placeholder: Dodaj novi prijevod
-edit_translation_string: Uredi prijevodni niz
-delete_translation_string_copy: >-
-  Jeste li sigurni da želite izbrisati prijevodni niz "{key}"? Ova se radnja ne može poništiti.
+create_custom_translation: Izradi Prilagođeni Prijevod
+edit_custom_translation: Uredi Prilagođeni Prijevod
+no_custom_translations: Nema Prilagođenih Prijevoda
+no_custom_translations_copy: Nema prilagođenih prijevoda trenutno.
 invite_users: Pozovite korisnike
 invite: Pozovi
 email_already_invited: Adresa e-pošte "{email}" već pozvana
@@ -118,19 +115,13 @@ public_label: Javno
 public_description: Određuje koji su API podaci dostupni bez provjere autentičnosti.
 admin_description: Početna administrativna uloga s neograničenim pristupom aplikaciji/API-ju.
 not_allowed: Nije dopušteno
-directus_version: Directus verzija
-node_version: Node verzija
-node_uptime: Node vrijeme rada
-os_type: Vrsta OS-a
-os_version: OS verzija
-os_uptime: OS vrijeme rada
-os_totalmem: OS memorija
 archive: Arhiva
 archive_confirm: Jeste li sigurni da želite arhivirati ovu stavku?
 archive_confirm_count: >-
   Nema odabranih stavki | Jeste li sigurni da želite arhivirati ovu stavku? | Jeste li sigurni da želite arhivirati ovih {count} stavki?
 reset_system_permissions_to: 'Resetirajte dopuštenja sustava na:'
 reset_system_permissions_copy: Ova će radnja prebrisati sva prilagođena dopuštenja koja ste možda primijenili na zbirke sustava. Jesi li sigurni?
+the_following_are_minimum_permissions: Sljedeće minimalne dozvole automatski se primjenjuju kada je "Pristup Aplikaciji" omogućen. Možete dodijeliti dodatne dozvole ako je potrebno, ali ne možete smanjiti dozvole ispod ovog nivoa.
 app_access_minimum: Minimum za pristup aplikaciji
 recommended_defaults: Preporučene zadane postavke
 unarchive: Poništi arhiviranje
@@ -155,6 +146,14 @@ validationError:
   required: Vrijednost je obavezna
   unique: Vrijednost mora biti jedinsrvena
   regex: Vrijednost nije ispravno formatirana
+  starts_with: Vrijednost mora zapoćeti sa {substring}
+  istarts_with: Vrijednost mora zapoćeti sa {substring}
+  nstarts_with: Vrijednost ne može zapoćeti sa {substring}
+  nistarts_with: Vrijednost ne može zapoćeti sa {substring}
+  ends_with: Vrijednost mora završiti sa {substring}
+  iends_with: Vrijednost mora završiti sa {substring}
+  nends_with: Vrijednost ne može završiti sa {substring}
+  niends_with: Vrijednost ne može završiti sa {substring}
 all_access: Puni prostup
 no_access: Bez pristupa
 use_custom: Prilagođeno
@@ -181,6 +180,7 @@ permissions_for_role: 'Stavke koje {role} može {action}.'
 fields_for_role: 'Stavke koje {role} može {action}.'
 validation_for_role: 'Polje {action} diktira {role} mora poštivati.'
 presets_for_role: 'Zadane vrijednosti polja za ulogu {role}.'
+presets_field_warning: 'Relacijske predloške za polje "{field}" treba konfigurirati pomoću "detaljne" sintakse.'
 presentation_and_aliases: Prezentacija i pseudonimi
 revision_post_create: Evo kako je ova stavka izgledala kada je nastala.
 revision_post_update: Evo kako je ova stavka izgledala nakon ažuriranja.
@@ -217,7 +217,7 @@ avg_distinct: Prosječno razlikovno
 count: Zbroj
 count_distinct: Zbroj razlikovno
 min: Min
-max: Max
+max: Maks
 exposure: Ekspozicija
 shutter: Zatvarač
 iso: ISO
@@ -236,6 +236,7 @@ bigInteger: Veliki cijeli broj
 boolean: Boolean
 date: Datum
 date_range: Raspon datuma
+translation_key_placeholder: Unesite ključ...
 datetime: Datum i vrijeme
 dateTime: Datum i vrijeme
 precision: Točnost
@@ -244,6 +245,7 @@ float: Plutajući
 integer: Cijeli broj
 json: JSON
 xml: XML
+yaml: YAML
 string: Niz
 text: Tekst
 time: Vrijeme
@@ -274,6 +276,7 @@ fields_group: Grupno polje
 no_collections_found: Nije pronađena nijedna zbirka.
 new_data_alert: 'Sljedeće će se stvoriti unutar vašeg podatkovnog modela:'
 search_collection: Pretraži zbirku...
+search_field: Pretraga Polja...
 new_field: 'Novo polje'
 new_collection: 'Nova zbirka'
 add_m2o_to_collection: 'Dodaj M2O u "{collection}"'
@@ -293,7 +296,12 @@ o2m_relationship: One to Many odnos
 m2m_relationship: Many to Manu odnos
 m2a_relationship: Many to Any odnos
 invalid_item: Nevažeća stavka
-modal: Modal
+require_confirmation: Potrebna Potvrda
+dialog: Dijalog
+modal: Modalno
+confirmation_dialog: Dijalog za Potvrdu
+confirmation_description: Opis Potvrdnog Dijaloga
+confirmation_input_fields: Potvrda Polja za Unos
 next: Nastavi
 field_name: Naziv polja
 translations: Prijevodi
@@ -312,6 +320,7 @@ updated_on: Ažurirano
 updated_by: Ažurirao/la
 primary_key: Primarni ključ
 foreign_key: Strani ključ
+field_key: Ključ Polja
 finish_setup: Završi postavljanje
 dismiss: Odbaci
 toggle_raw_editor: Uključi/isključi uređivač neobrađenog sadržaja
@@ -328,6 +337,7 @@ edit_raw_value: Uredi neobrađenu vrijednost
 enter_raw_value: Unesite neobrađenu vrijednost...
 clear_value: Očisti vrijednost
 clear_changes: Očisti izmjene
+clear_items: Očisti Stavke
 reset_to_default: Vrati na zadano
 undo_changes: Poništi promjene
 notifications: Obavijesti
@@ -347,7 +357,7 @@ revision_delta_reverted: Vraćeno
 revision_delta_update_message: Ovo polje je ažurirano, ali je njegova vrijednost skrivena iz sigurnosnih razloga.
 revision_delta_other: Revizija
 revision_delta_by: '{date} od strane {user}'
-presentation_text_values_cannot_be_reimported: "Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti."
+presentation_text_values_cannot_be_reimported: 'Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti.'
 download_page_as_csv: 'Preuzmite stranicu kao CSV'
 private_user: Privatni korisnik
 creation_preview: Pretpregled izrade
@@ -439,6 +449,7 @@ checksum: Kontrolni broj
 owner: Vlasnik
 edited_by: Uredio/la
 folder: Mapa
+folders: Mape
 zoom: Uvećaj
 download: Preuzmi
 open: Otvori
@@ -458,11 +469,11 @@ open_file_in_tab: Otvori datoteku u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
-exporting_limited_items_in_collection: Izvoz {limit} od {total} stavki unutar {collection}.
-exporting_no_items_to_export: Nema stavki za izvoz. Podesite konfiguraciju izvoza u nastavku.
-exporting_download_hint: Nakon dovršetka, {format} tip datoteke automatski će se preuzeti na vaš uređaj.
-exporting_batch_hint: Ovaj će se izvoz obraditi u serijama, a nakon dovršetka, {format} datoteka bit će spremljena u biblioteku datoteka.
-exporting_batch_hint_forced: Zbog velikog broja stavki, ovaj izvoz se mora obraditi u serijama, a nakon dovršetka, {format} datoteka bit će spremljena u biblioteku datoteka.
+exporting_limited_items_in_collection: '{count} od {total} stavki unutar {collection} bit će izvezeno.'
+exporting_no_items_to_export: Nema stavki za izvoz. Prilagodite postavke izvoza i/ili dodajte stavke u kolekciju.
+exporting_download_hint: Nakon što se datoteka {format} stvori, preuzet će se na vaš uređaj.
+exporting_library_hint: Nakon što se datoteka {format} stvori, bit će spremljena u biblioteku datoteka.
+exporting_library_hint_forced: Ovaj izvoz mora biti obrađen u serijama. Nakon završetka, datoteka {format} bit će spremljena u biblioteku datoteka.
 collection_key: Ključ zbirke
 name: Naziv
 primary_key_field: Polje primarnog ključa
@@ -487,7 +498,8 @@ enable_select_button: Omogući gumb za odabir
 allow_duplicates: Dopusti duplikate
 comments: Komentari
 no_comments: Još nema komentara
-click_to_expand: Klikni za proširenje
+expand: Proširi
+collapse: Sažmi
 select_item: Odaberi stavku
 no_items: Nema stavki
 search_items: Pretraži stavke...
@@ -521,6 +533,7 @@ create_collection: Nova zbirka
 no_collections_copy_admin: Još nemate niti jednu zbirku. Kliknite gumb u nastavku da biste započeli.
 no_collections_copy: Još nemate nijednu zbirku. Obratite se administratoru.
 relationship_not_setup: Odnos nije ispravno konfiguriran
+no_singleton_relations: Veze s Pojedinačnim Objektima "singletons" nisu podržane
 display_template_not_setup: Opcija predloška prikaza je pogrešno konfigurirana
 collection_field_not_setup: Opcija kolekcije polja je pogrešno konfigurirana
 select_a_collection: Odaberite zbirku
@@ -571,6 +584,8 @@ select_an_item: Odaberi stavku...
 edit: Uredi
 enabled: Omogućeno
 disable_tfa: Onemogući 2FA
+admin_disable_tfa_text: Jeste li sigurni da želite onemogućiti dvofaktorsku autentifikaciju "2FA" za ovog korisnika?
+tfa_setup: Postavi 2FA
 tfa_scan_code: Skenirajte kod u svojoj aplikaciji za autentifikaciju da biste dovršili postavljanje 2FA
 enter_otp_to_disable_tfa: Unesite OTP da biste onemogućili 2FA
 create_account: Kreiraj račun
@@ -612,6 +627,7 @@ errors:
   RANGE_NOT_SATISFIABLE: Nevažeći raspon
   METHOD_NOT_ALLOWED: Metoda nije dozvoljena
   REQUESTS_EXCEEDED: Dosegnuto je ograničenje zahtjeva
+  CONTENT_TOO_LARGE: Predmet koji ste poslali je prevelik
 security: Sigurnost
 value_hashed: Sigurno kriptirana vrijednost
 bookmark_name: Naziv oznake...
@@ -657,6 +673,7 @@ one_filtered_item: '1 filtrirana stavka'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati zbirku "{collection}"? Ovo će izbrisati zbirku i sve stavke u njoj. Ova akcija je trajna.
 delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati mapu "{folder}"? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
+delete_collection_peer_dependencies: Sljedeća polja također će biti izbrisana, budući da su povezana s trenutnom zbirkom.
 collections_shown: Prikazane zbirke
 visible_collections: Vidljive zbirke
 hidden_collections: Skrivene zbirke
@@ -700,8 +717,12 @@ operators:
   icontains: Sadrži (neosjetljivo)
   starts_with: Počinje sa
   nstarts_with: Ne počinje s
+  istarts_with: Počinje s (neosjetljivim)
+  nistarts_with: Ne Počinje s (neosjetljivim)
   ends_with: Završava s
   nends_with: Ne završava s
+  iends_with: Završava s (neosjetljivim)
+  niends_with: Ne Završava s (neosjetljivim)
   between: Je između
   nbetween: Nije između
   empty: Je prazno
@@ -751,6 +772,8 @@ add_file: Dodaj datoteku
 replace_file: Zamijeni datoteku
 no_results: Nema rezultata
 no_results_copy: Podesite ili obrišite filtre pretraživanja da biste vidjeli rezultate.
+no_visible_fields: Prazan Obrazac
+no_visible_fields_copy: Ovaj obrazac nema vidljiva polja.
 clear_filters: Poništi filtere
 saves_automatically: Automatski sprema
 role: Uloge
@@ -780,8 +803,15 @@ label: Oznaka
 flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
+run_flow_confirm: Jeste li sigurni da želite izvršiti ovaj tok?
+run_flow_on_current_collection: Pokreni Tok na Trenutnoj Zbirci
+run_flow_on_current: Pokreni Tok na Trenutnoj Stavci
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
+run_flow_on_selected: Prvo Odaberite Jednu ili Više Stavki | Pokreni Tok na 1 Odabranoj Stavci | Pokreni Tok na {n} Odabranih Stavki
+run_flow: Pokreni Tok
 run_flow_success: Tok "{flow}" je uspješno izvršen
+field_name_placeholder: Unesite naziv polja...
+field_key_placeholder: Unesite ključ polja...
 trigger: Okidač
 trigger_options: Opcije okidača
 view_trigger: Prikaži okidač
@@ -824,6 +854,7 @@ panel_header: Zaglavlje ploče
 panel_name_placeholder: Imenujte ovu ploču...
 panel_note_placeholder: Neobavezni detalji o ovoj ploči...
 panel_delete_confirm: Jeste li sigurni da želite izbrisati ovu ploču? Ova se radnja ne može poništiti.
+list_panel_allow_edit: Dopusti Izravno Uređivanje
 dashboard_delete_confirm: Jeste li sigurni da želite izbrisati ovu nadzornu ploču? Ova se radnja ne može poništiti.
 edit_dashboard: Uredi nadzornu ploču
 delete_dashboard: Izbriši nadzornu ploču
@@ -864,7 +895,7 @@ interface_group_relational: Relacijski
 interface_group_presentation: Prezentacija
 interface_group_groups: Grupe
 interface_group_other: Drugo
-tooltip: Tooltip
+tooltip: Kratka Poruka
 tooltip_placeholder: Unesite tooltip...
 unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
@@ -940,8 +971,9 @@ settings_project: Postavke projekta
 settings_webhooks: Web-dojavnici
 settings_flows: Tokovi
 settings_presets: Zadane postavke i oznake
-settings_translation_strings: Prijevodni nizovi
+settings_translations: Prilagođeni Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
+configure_field_key_to_continue: Uredi ključ polja za nastavak
 scope: Opseg
 actions: Radnje
 select: Odaberite...
@@ -990,7 +1022,8 @@ page_help_settings_webhooks_collection: '**Pregledaj web-dojavnike** — Prikazu
 page_help_settings_webhooks_item: '**Detalji web-dojavnika** — Forma za stvaranje i upravljanje web-dojavnicima.'
 page_help_settings_flows_collection: '**Pregledaj tokove** — Popisuje sve tokove unutar projekta.'
 page_help_settings_flows_item: '**Detalji toka** — Radni prostor za upravljanje jednom ili više operacija.'
-page_help_settings_translation_strings_collection: '**Pregledaj nizove prijevoda** — Navodi sve prijevodne nizove unutar projekta.'
+page_help_settings_translations_collection: '**Pregledaj Prilagođene Prijevode** — Prikazuje popis svih prilagođenih prijevoda u projektu.'
+page_help_settings_translations_item: '**Detalji Prilagođenih Prijevoda** — Obrazac za pregledavanje i upravljanje ovom stavkom.'
 page_help_users_collection: '**Korisnički imenik** — Prikazuje sve korisnike sustava unutar ovog projekta.'
 page_help_users_item: >-
   **Pojedinosti o korisniku** — Upravljajte podacima o svom računu ili pregledajte pojedinosti drugih korisnika.
@@ -1034,6 +1067,7 @@ directus_collection:
   directus_shares: Prati vanjske dijeljene stavke
   directus_users: Korisnici sustava za platformu
   directus_webhooks: Konfiguracija za HTTP zahtjeve temeljene na događajima
+  directus_translations: Prilagođeni prijevodi
 fields:
   directus_activity:
     item: Primarni ključ stavke
@@ -1122,6 +1156,7 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
     mapping: Mapiranje
     basemaps: Osnovne karte
     basemaps_raster: Raster
@@ -1253,6 +1288,7 @@ field_options:
     sort_field: Odaberite polje...
     accountability_divider: Odgovornost
     duplication_divider: Umnožavanje
+    preview_divider: Pretpregled
   directus_files:
     title: Jedinstven naslov...
     description: Neobavezan opis...
@@ -1310,6 +1346,14 @@ start_collapsed: Počni skupljen
 block: Blok
 inline: Inline
 comment: Komentar
+live_preview:
+  enable: Omogući Pregled
+  disable: Onemogu Pregled
+  change_size: Promijeni Dimenzije Prikaza
+  refresh: Osvježi Pregled
+  new_window: Otvori u novom prozoru
+  close_window: Otvori u Prikazu Podijeljenog ekrana
+  toggle_3d: Preklopi 3D
 shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
 uses_left: 'Nema više korištenja | Još 1 korištenje | Preostalo korištenja: {n}'
@@ -1415,6 +1459,7 @@ export_started: Izvoz je započet
 export_started_copy: Vaš izvoz je započet. Dobit ćete obavijest kada bude spremno za preuzimanje.
 sort_asc: Sortiraj uzlazno
 sort_desc: Sortiraj silazno
+disable_sort: Onemogući Sortiranje
 template: Predložak
 require_value_to_be_set: Zahtijevati postavljanje vrijednosti pri stvaranju
 translation: Prijevod
@@ -1578,6 +1623,9 @@ interfaces:
     many-to-one: Many to One
     description: Odaberite jednu srodnu stavku
     display_template: Predložak prikaza
+  collection-item-dropdown:
+    collection-item-dropdown: Padajući Izbornik Stavki Zbirke
+    description: Odaberite stavku iz zbirke u JSON formatu
   input-rich-text-md:
     markdown: Markdown
     description: Unesite i pregledajte markdown
@@ -1612,6 +1660,7 @@ interfaces:
     notice: Napomena
     description: Prikaži kratku obavijest
     text: Ovdje unesite sadržaj obavijesti...
+    no_text: Tekst nije konfiguriran...
   list-o2m:
     one-to-many: One to Many
     description: Odaberite više povezanih stavki
@@ -1619,6 +1668,7 @@ interfaces:
   system-folder:
     folder: Mapa
     description: Odaberite mapu
+    field_hint: Zadani direktorij za prenesene datoteke bez navedenog direktorija. Ne utječe na postojeće datoteke.
     root_name: Korijen biblioteke datoteka
     system_default: Sistemski zadano
   select-radio:
@@ -1670,9 +1720,9 @@ interfaces:
     description: Unesite običan tekst u više redaka
   input-translated-string:
     input-translated-string: Prevedeni nizovi
-    description: Odaberi ili dodaj prijevodni niz
+    description: Odaberite ili dodajte prilagođeni prijevod
     search_placeholder: Traži...
-    new_translation_string: Novi prijevodni niz
+    new_custom_translation: Novi Prilagođeni Prijevod
   boolean:
     toggle: Uključi/isključi
     description: Prebacivanje između uključivanja i isključivanja
@@ -1709,6 +1759,27 @@ interfaces:
     folder_note: Mapa za učitane datoteke. Ne utječe na postojeće datoteke.
     imageToken: Statički pristupni token
     imageToken_label: Statički pristupni token se dodaje URL-u
+  input-block-editor:
+    input-block-editor: Uređivač Blokova
+    description: Blok-stilizirani uređivač za obogaćene medijske priče, izlazni podaci u čistom JSON-u koristi Editor.js
+    tools: Alatna traka
+    tools_options:
+      header: Zaglavlje
+      nestedlist: Lista
+      embed: Ugradi
+      paragraph: Odlomak
+      code: Kôd
+      image: Slika
+      attaches: Prilozi
+      table: Tablica
+      quote: Citat
+      underline: Podcrtano
+      inlinecode: Ugrađeni Kod
+      delimiter: Razdjelnik
+      checklist: Lista provjere
+      toggle: Prekidač Bloka
+      alignment: Poravnanje
+      raw: Sirovi HTML
   input-autocomplete-api:
     input-autocomplete-api: Autocomplete unos (API)
     description: '"Typeahead" za pretraživanje vanjskih API vrijednosti.'
@@ -1899,11 +1970,57 @@ layouts:
     default_template: Korištenje zadane zbirke...
     no_compatible_fields: Nema kompatibilnih polja
   kanban:
+    name: Kanban
+    group_field: Grupiraj po
+    group_field_placeholder: Polje grupiranja prema...
+    group_title: Naslov Grupe
+    group_title_placeholder: Polje za naslove grupa...
+    title: Naslov Kartice
+    title_placeholder: Neobavezno polje naslova...
+    text: Tekst kartice
+    text_placeholder: Neobavezno tekstno polje...
+    date: Datum Kartice
+    date_placeholder: Neobavezno polje datuma...
+    tags: Oznake Kartice
+    tags_placeholder: Neobavezno polje oznaka...
+    user: Korisnik kartice
+    user_placeholder: Neobavezno polje korisnika...
+    image: Slika kartice
+    image_placeholder: Neobavezno polje slike...
+    image_fit: Prilagodi Sliku Kartice
     crop: Obreži
     advanced: Napredno
+    edit_group: Uredi Grupu
+    delete_group: Obriši Grupu
+    add_group: Dodaj Grupu
+    add_group_placeholder: Unesite novi naslov grupe...
+    show_ungrouped: Prikaži Negrupirano
+    show: Prikaži
+    no_group: Nema Grupe
     not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 horizontal: Horizontalno
+vertical: Uspravno
+x_axis: X-Os
+y_axis: Y-Os
+y_axis_function: Funkcija Y-Osi
+show_x_only: Prikaži Samo X-Os
+show_y_only: Prikaži Samo Y-Os
+show_data_label: Prikaži Oznaku Podatka
 both: Oboje
+show_axis_labels: Prikaži Oznaku Osi
+function: Funkcija
+half_circle: Polukrug
+full_circle: Puni Krug
+stroke_width: Širina Poteza
+rounded_stroke: Zaobljenost Poteza
+thin: Tanak
+medium: Srednji
+broad: Širok
+show_labels: Prikaži Oznake
+show_legend: Prikaži Legendu
+right: Desno
+left: Lijevo
+donut: Krafna
 panels:
   metric:
     name: Metrički
@@ -1929,6 +2046,8 @@ panels:
     select_collection: Morate odabrati kolekciju.
   linechart:
     name: Linijski grafikon
+    description: Linijski grafikon za usporedbu promjene polja
+    disabled_grouping: Onemogućeno kada je odabrano grupiranje.
     disabled_no_grouping: Onemogućeno kada nije odabrano grupiranje.
     show_marker: Prikaži markere opisa alata
     curve_type: Tip krivulje
@@ -1940,12 +2059,17 @@ panels:
     description: Mjerač za praćenje vrijednosti
   piechart:
     name: Tortni ili krafnasti dijagram
+    description: Kružni grafikon koji prikazuje omjere grupa na stupcu
   variable:
     name: Globalna varijabla
     description: Postavite globalnu vrijednost za korištenje u filtrima drugih ploča
     variable_key: Ključ varijable
   relational-variable:
+    name: Globalna Relacijska Varijabla
+    description: Postavi globalnu relacijsku vrijednost za korištenje u filtrima drugih Panela
     variable_key: Ključ varijable
+    multiple: Višestruko
+    multiple-label: Odaberite više stavki
 triggers:
   common:
     response_body: Tijelo odgovora
@@ -1975,6 +2099,9 @@ triggers:
     collection_and_item: Stranice o zbirkama i stavkama
     collection_only: Samo stranica zbirke
     item_only: Samo stranica stavki
+    collection_page: Stranica Zbirke
+    require_selection: Zahtjeva Odabir
+a_flow_uuid: Odaberite Tok za pokretanje...
 any_string_or_json: Bilo koji string ili JSON...
 item_payload_placeholder: Ovo je JSON koji se koristi za ažuriranje vrijednosti polja stavke...
 operation_variables_note: Podacima o toku možete pristupiti pomoću varijabli kao što su **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger {'}'}{'}'}** i **{'{'}{'{'}$accountability{'}'}{'}'}**, ili referencirajte prethodne operacije koristeći **{'{ '}{'{'}operation_key{'}'}{'}'}**.'
@@ -2027,10 +2154,14 @@ operations:
     name: Pošalji obavijest
     description: Pošaljite obavijest unutar aplikacije jednom ili više korisnika
     recipient: Korisnik
+    recipient_placeholder: Unesite UUID...
+    recipient_note: Dodajte UUID korisnika i pritisnite Enter...
+    item_note: Ključ Stavke ili Relativni URL
     message: Poruka
+    subject: Predmet
   request:
     name: Web dojavnik / URL zahtjeva
-    description: "Pošaljite zahtjev na URL"
+    description: 'Pošaljite zahtjev na URL'
     url: URL
     url_placeholder: https://example.com/example
     method: Metoda
@@ -2052,3 +2183,10 @@ operations:
     flows: Tokovi
     flow: Tok
     data: Podaci
+    iteration_mode: Način Iteracije
+    iteration_mode_note: Način za iteriranje po poljima "arrays".
+    serial: Serijski
+    parallel: Paralelno
+    batch: Serija
+    batch_size: Veličina Serije
+    cache: Predmemorija

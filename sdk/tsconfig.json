@@ -1,0 +1,10 @@
+{
+	"extends": "@directus/tsconfig/node18-esm",
+	"compilerOptions": {
+		"lib": ["DOM"]
+	},
+	"include": ["src"],
+	"typedocOptions": {
+		"entryPoints": ["./src/client.ts", "./src/*/index.ts"]
+	}
+}

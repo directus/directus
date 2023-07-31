@@ -5,17 +5,21 @@
 				<div class="container">
 					<div class="title-box">
 						<div
-							v-if="serverInfo?.project.project_logo"
+							v-if="serverInfo?.project?.project_logo"
 							class="logo"
-							:style="{ backgroundColor: serverInfo?.project.project_color }"
+							:style="serverInfo?.project?.project_color ? { backgroundColor: serverInfo.project.project_color } : {}"
 						>
-							<img :src="logoURL" :alt="serverInfo?.project.project_name || 'Logo'" />
+							<img :src="logoURL!" :alt="serverInfo?.project.project_name || 'Logo'" />
 						</div>
-						<div v-else class="logo" :style="{ backgroundColor: serverInfo?.project.project_color }">
+						<div
+							v-else
+							class="logo"
+							:style="serverInfo?.project?.project_color ? { backgroundColor: serverInfo.project.project_color } : {}"
+						>
 							<img src="../../assets/logo.svg" alt="Directus" class="directus-logo" />
 						</div>
 						<div class="title">
-							<p class="subtitle">{{ serverInfo?.project.project_name }}</p>
+							<p class="subtitle">{{ serverInfo?.project?.project_name }}</p>
 							<slot name="title">
 								<h1 class="type-title">{{ title ?? t('share_access_page') }}</h1>
 							</slot>
@@ -33,7 +37,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useServerStore } from '@/stores/server';
 import { getRootPath } from '@/utils/get-root-path';
 import { storeToRefs } from 'pinia';

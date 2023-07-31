@@ -29,6 +29,8 @@
 
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import { ExtensionOptionsContext } from '@directus/types';
+import { isVueComponent } from '@directus/utils';
 import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -38,6 +40,7 @@ const props = defineProps<{
 	interface?: string;
 	collection?: string;
 	disabled?: boolean;
+	context?: () => ExtensionOptionsContext;
 }>();
 
 const emit = defineEmits<{
@@ -57,48 +60,49 @@ const options = computed({
 
 const values = inject('values', ref<Record<string, any>>({}));
 
-const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField] ?? null);
+const selectedInterfaceId = computed(() => props.interface ?? values.value[props.interfaceField!] ?? null);
 const selectedInterface = useExtension('interface', selectedInterfaceId);
 
 const usesCustomComponent = computed(() => {
 	if (!selectedInterface.value) return false;
-	return selectedInterface.value.options && 'render' in selectedInterface.value.options;
+
+	return isVueComponent(selectedInterface.value.options);
 });
 
 const optionsFields = computed(() => {
-	if (!selectedInterface.value) return [];
-	if (!selectedInterface.value.options) return [];
-	if (usesCustomComponent.value === true) return [];
+	if (!selectedInterface.value?.options || usesCustomComponent.value) return [];
 
 	let optionsObjectOrArray;
 
 	if (typeof selectedInterface.value.options === 'function') {
-		optionsObjectOrArray = selectedInterface.value.options({
-			field: {
-				type: 'unknown',
-			},
-			editing: '+',
-			collection: props.collection,
-			relations: {
-				o2m: undefined,
-				m2o: undefined,
-				m2a: undefined,
-			},
-			collections: {
-				related: undefined,
-				junction: undefined,
-			},
-			fields: {
-				corresponding: undefined,
-				junctionCurrent: undefined,
-				junctionRelated: undefined,
-				sort: undefined,
-			},
-			items: {},
-			localType: 'standard',
-			autoGenerateJunctionRelation: false,
-			saving: false,
-		});
+		optionsObjectOrArray = selectedInterface.value.options(
+			props.context?.() ?? {
+				field: {
+					type: 'unknown',
+				},
+				editing: '+',
+				collection: props.collection,
+				relations: {
+					o2m: undefined,
+					m2o: undefined,
+					m2a: undefined,
+				},
+				collections: {
+					related: undefined,
+					junction: undefined,
+				},
+				fields: {
+					corresponding: undefined,
+					junctionCurrent: undefined,
+					junctionRelated: undefined,
+					sort: undefined,
+				},
+				items: {},
+				localType: 'standard',
+				autoGenerateJunctionRelation: false,
+				saving: false,
+			}
+		);
 	} else {
 		optionsObjectOrArray = selectedInterface.value.options;
 	}

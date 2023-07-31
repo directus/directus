@@ -15,7 +15,7 @@
 		:value="value"
 		:style="{ width }"
 		placeholder="--"
-		@input="emitValue($event.target.value)"
+		@input="emitValue(($event.target as HTMLInputElement).value)"
 	/>
 	<v-select
 		v-else-if="is === 'select'"
@@ -35,7 +35,7 @@
 			:value="value"
 			:style="{ width }"
 			placeholder="--"
-			@input="emitValue($event.target.value)"
+			@input="emitValue(($event.target as HTMLInputElement).value)"
 		/>
 		<v-menu
 			ref="dateTimeMenu"
@@ -139,7 +139,7 @@ onMounted(() => {
 	if (props.focus) inputEl.value?.focus();
 });
 
-function emitValue(val: unknown) {
+function emitValue(val: string) {
 	if (val === '') {
 		return emit('input', null);
 	}

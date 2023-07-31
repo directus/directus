@@ -4,7 +4,7 @@
 			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value"
+			:value="value as (string | number)"
 			@input="value = $event"
 		/>
 	</template>
@@ -15,9 +15,13 @@
 				'_ncontains',
 				'_icontains',
 				'_starts_with',
+				'_istarts_with',
 				'_nstarts_with',
+				'_nistarts_with',
 				'_ends_with',
+				'_iends_with',
 				'_nends_with',
+				'_niends_with',
 				'_regex',
 			].includes(comparator)
 		"
@@ -26,7 +30,7 @@
 			is="interface-input"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value"
+			:value="value as (string | number)"
 			@input="value = $event"
 		/>
 	</template>
@@ -53,7 +57,7 @@
 			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value[0]"
+			:value="(value as (string | number)[])[0] ?? ''"
 			@input="setValueAt(0, $event)"
 		/>
 		<div class="and">{{ t('interfaces.filter.and') }}</div>
@@ -61,7 +65,7 @@
 			:is="interfaceType"
 			:choices="choices"
 			:type="fieldInfo?.type ?? 'unknown'"
-			:value="value[1]"
+			:value="(value as (string | number)[])[1] ?? ''"
 			@input="setValueAt(1, $event)"
 		/>
 	</template>
@@ -135,7 +139,7 @@ const interfaceType = computed(() => {
 	return 'interface-' + types[fieldInfo.value?.type || 'string'];
 });
 
-const value = computed<any | any[]>({
+const value = computed<unknown | unknown[]>({
 	get() {
 		const fieldPath = getField(props.field);
 
@@ -167,7 +171,7 @@ const value = computed<any | any[]>({
 const choices = computed(() => fieldInfo.value?.meta?.options?.choices ?? []);
 
 function setValueAt(index: number, newVal: any) {
-	let newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
+	const newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
 	newArray[index] = newVal;
 	value.value = newArray;
 }

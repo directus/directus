@@ -42,7 +42,7 @@
 	</v-badge>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useElementSize } from '@directus/composables';
 import { Filter } from '@directus/types';
 import { isObject } from 'lodash';
@@ -111,7 +111,7 @@ watch(active, (newActive: boolean) => {
 const activeFilterCount = computed(() => {
 	if (!props.filter) return 0;
 
-	let filterOperators: string[] = [];
+	const filterOperators: string[] = [];
 
 	parseLevel(props.filter);
 

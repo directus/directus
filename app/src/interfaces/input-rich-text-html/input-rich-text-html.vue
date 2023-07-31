@@ -23,13 +23,13 @@
 			</span>
 		</template>
 		<v-dialog v-model="linkDrawerOpen">
-			<v-card class="card">
-				<v-card-title class="card-title">{{ t('wysiwyg_options.link') }}</v-card-title>
+			<v-card>
+				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
 					<div class="grid">
 						<div class="field">
 							<div class="type-label">{{ t('url') }}</div>
-							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')"></v-input>
+							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')" autofocus></v-input>
 						</div>
 						<div class="field">
 							<div class="type-label">{{ t('display_text') }}</div>
@@ -246,7 +246,6 @@ const props = withDefaults(
 		],
 		font: 'sans-serif',
 		customFormats: () => [],
-		disabled: true,
 	}
 );
 
@@ -258,19 +257,19 @@ const editorElement = ref<ComponentPublicInstance | null>(null);
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
 
-let storageAssetTransform = ref('all');
-let storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
+const storageAssetTransform = ref('all');
+const storageAssetPresets = ref<SettingsStorageAssetPreset[]>([]);
 
 if (settingsStore.settings?.storage_asset_transform) {
 	storageAssetTransform.value = settingsStore.settings.storage_asset_transform;
 	storageAssetPresets.value = settingsStore.settings.storage_asset_presets ?? [];
 }
 
-let count = ref(0);
+const count = ref(0);
 
 const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
 	editorRef,
-	imageToken,
+	imageToken!,
 	{
 		storageAssetTransform,
 		storageAssetPresets,
@@ -289,7 +288,7 @@ const {
 	mediaWidth,
 	mediaSource,
 	mediaButton,
-} = useMedia(editorRef, imageToken);
+} = useMedia(editorRef, imageToken!);
 
 const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
 
@@ -513,14 +512,5 @@ function setFocus(val: boolean) {
 	padding: var(--content-padding);
 	padding-top: 0;
 	padding-bottom: var(--content-padding);
-}
-
-.card {
-	overflow: auto;
-
-	.card-title {
-		margin-bottom: 24px;
-		font-size: 24px;
-	}
 }
 </style>

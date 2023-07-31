@@ -50,7 +50,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: 'input', value: Record<string, any>[] | null): void;
+	(e: 'input', value: Record<string, any> | null): void;
 }>();
 
 const { t } = useI18n();
@@ -90,7 +90,6 @@ const repeaterFields: DeepPartial<Field>[] = [
 				placeholder: t('field_name_placeholder'),
 			},
 		},
-		schema: null,
 	},
 	{
 		name: t('field_width'),
@@ -113,7 +112,6 @@ const repeaterFields: DeepPartial<Field>[] = [
 				],
 			},
 		},
-		schema: null,
 	},
 	{
 		name: t('type'),
@@ -127,7 +125,6 @@ const repeaterFields: DeepPartial<Field>[] = [
 				choices: translate(FIELD_TYPES_SELECT),
 			},
 		},
-		schema: null,
 	},
 	{
 		name: t('interface_label'),
@@ -141,7 +138,6 @@ const repeaterFields: DeepPartial<Field>[] = [
 				typeField: 'type',
 			},
 		},
-		schema: null,
 	},
 	{
 		name: t('note'),
@@ -155,7 +151,6 @@ const repeaterFields: DeepPartial<Field>[] = [
 				placeholder: t('interfaces.list.field_note_placeholder'),
 			},
 		},
-		schema: null,
 	},
 	{
 		name: t('required'),

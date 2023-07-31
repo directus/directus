@@ -56,8 +56,8 @@ const navItems = [
 	},
 	{
 		icon: 'translate',
-		name: t('settings_translation_strings'),
-		to: `/settings/translation-strings`,
+		name: t('settings_translations'),
+		to: `/settings/translations`,
 	},
 	{
 		icon: 'anchor',
@@ -81,12 +81,12 @@ const externalItems = computed(() => {
 		{
 			icon: 'bug_report',
 			name: t('report_bug'),
-			href: 'https://github.com/directus/directus/issues/new?template=bug_report.yml',
+			href: 'https://github.com/directus/directus/issues/new',
 		},
 		{
 			icon: 'new_releases',
 			name: t('request_feature'),
-			href: 'https://github.com/directus/directus/discussions/new?category=feature-requests',
+			href: 'https://github.com/directus/directus/discussions/new',
 		},
 	];
 });

@@ -12,12 +12,6 @@
 	framework = "#custom"
 
 [[redirects]]
-	from = "/"
-	to = "/getting-started/introduction"
-	status = 301
-	force = true
-
-[[redirects]]
 	from = "/api/*"
 	to = "/.netlify/functions/:splat"
 	status = 200
@@ -26,6 +20,10 @@
 	from = "/configuration/*"
 	to = "/app/:splat"
 	status = 301
+
+#####
+##### Consolidated Guides Section
+#####
 
 [[redirects]]
 	from = "/cookbook/*"
@@ -56,13 +54,80 @@
 	from = "/use-cases/headless-cms/build-website-*"
 	to = "/guides/headless-cms/build-static-website/:splat"
 	status = 301
-	
+
 [[redirects]]
 	from = "/use-cases/headless-cms/create-reusable-page-components-using-m2a"
 	to = "/guides/headless-cms/reusable-components"
 	status = 301
 
 [[redirects]]
-	from = "/cloud/*"
-	to = "/"
+	from = "/getting-started/backing-directus"
+	to = "/contributing/sponsor"
 	status = 301
+
+#####
+##### User Guide
+#####
+
+[[redirects]]
+	from = "/app"
+	to = "/user-guide/overview/data-studio-app.html"
+	status = 301
+
+[[redirects]]
+	from = "/app/content/*"
+	to = "/user-guide/content-module/content/:splat"
+	status = 301
+
+[[redirects]]
+	from = "/app/users-roles-permissions.html"
+	to = "/user-guide/user-management/users-roles-permissions.html"
+	status = 301
+
+[[redirects]]
+	from = "/getting-started/glossary.html"
+	to = "/user-guide/overview/glossary.html"
+	status = 301
+
+[[redirects]]
+	from = "/app/activity-log.html"
+	to = "/user-guide/settings/activity-log.html"
+	status = 301
+
+[[redirects]]
+	from = "/app/insights.html"
+	to = "/user-guide/insights/dashboards.html"
+	status = 301
+
+[[redirects]]
+	from = "/app/file-library.html"
+	to = "/user-guide/file-library/files.html"
+	status = 301
+
+[[redirects]]
+	from = "/app/project-settings.html"
+	to = "/user-guide/cloud/project-settings.html"
+	status = 301
+
+[[redirects]]
+	from = "/app/content/shares.html"
+	to = "/user-guide/content-module/content/shares.html"
+	status = 301
+
+[[redirects]]
+	from = "/app/user-directory.html"
+	to = "/user-guide/user-management/user-directory.html"
+	status = 301
+
+[[redirects]]
+	from = "/cloud/*"
+	to = "/user-guide/cloud/:splat"
+	status = 301
+
+#####
+##### SDK
+#####
+
+[[redirects]]
+	from = "/reference/sdk"
+	to = "/guides/sdk/getting-started"

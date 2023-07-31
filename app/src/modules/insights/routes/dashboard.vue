@@ -199,17 +199,17 @@
 	</private-view>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
-import { useAppStore } from '@/stores/app';
 import { useInsightsStore } from '@/stores/insights';
 import { usePermissionsStore } from '@/stores/permissions';
 import { pointOnLine } from '@/utils/point-on-line';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
+import { useAppStore } from '@directus/stores';
 import { applyOptionsData } from '@directus/utils';
 import { assign, isEmpty } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -387,7 +387,7 @@ const toggleZoomToFit = () => (zoomToFit.value = !zoomToFit.value);
 
 const refreshInterval = computed({
 	get() {
-		return unref(refreshIntervals)[props.primaryKey];
+		return unref(refreshIntervals)[props.primaryKey] ?? null;
 	},
 	set(val) {
 		refreshIntervals.value = assign({}, unref(refreshIntervals), { [props.primaryKey]: val });
