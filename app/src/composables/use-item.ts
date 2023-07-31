@@ -17,10 +17,10 @@ import { mergeWith } from 'lodash';
 import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 
-type UsableItem = {
+type UsableItem<T> = {
 	edits: Ref<Record<string, any>>;
 	hasEdits: Ref<boolean>;
-	item: Ref<Record<string, any> | null>;
+	item: Ref<T | null>;
 	error: Ref<any>;
 	loading: Ref<boolean>;
 	saving: Ref<boolean>;
@@ -37,11 +37,11 @@ type UsableItem = {
 	validationErrors: Ref<any[]>;
 };
 
-export function useItem(
+export function useItem<T extends Record<string, any>>(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
 	query: Ref<Query> | Query = {}
-): UsableItem {
+): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item = ref<Record<string, any> | null>(null);
 	const error = ref<any>(null);
@@ -82,6 +82,8 @@ export function useItem(
 	return {
 		edits,
 		hasEdits,
+		// TODO Find way to fix warning:
+		// 'T' could be instantiated with a different subtype of constraint 'Record<string, any>'
 		item,
 		error,
 		loading,
