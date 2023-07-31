@@ -6,7 +6,7 @@
 
 		<v-card>
 			<v-card-title>
-				Create Bookmark or Default
+				{{t('create_bookmark')}}
 			</v-card-title>
 
 			<v-card-text>
