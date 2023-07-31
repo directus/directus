@@ -43,7 +43,7 @@ export function useItem<T extends Record<string, any>>(
 	query: Ref<Query> | Query = {}
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
-	const item = ref<Record<string, any> | null>(null);
+	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
 	const loading = ref(false);
