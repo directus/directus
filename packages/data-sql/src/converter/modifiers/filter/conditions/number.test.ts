@@ -1,7 +1,7 @@
 import type { ConditionNumberNode } from '@directus/data';
 import { randomIdentifier, randomInteger } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter.js';
+import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter/filter.js';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertNumberNode } from './number.js';
 

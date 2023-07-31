@@ -1,7 +1,7 @@
 import type { ConditionLetterNode } from '@directus/data';
 import { randomIdentifier } from '@directus/random';
 import { expect, test } from 'vitest';
-import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter.js';
+import type { AbstractSqlQueryConditionNode } from '../../../../types/modifiers/filter/filter.js';
 import { parameterIndexGenerator } from '../../../param-index-generator.js';
 import { convertLetterNode } from './letter.js';
 

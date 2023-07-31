@@ -1,6 +1,6 @@
 import type { AbstractQueryFieldNodeFn } from '@directus/data';
 import type { ParameterTypes, ValuesNode } from '../types/index.js';
-import type { AbstractSqlQueryFnNode } from '../types/nodes.js';
+import type { AbstractSqlQueryFnNode } from '../types/nodes/index.js';
 
 /**
  * @param collection
