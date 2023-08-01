@@ -1,6 +1,6 @@
 {
 	"name": "@directus/data-driver-postgres",
-	"version": "0.1.0",
+	"version": "0.2.1",
 	"description": "Data storage abstraction layer for Postgres",
 	"homepage": "https://directus.io",
 	"repository": {

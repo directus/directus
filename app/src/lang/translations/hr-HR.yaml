@@ -146,6 +146,14 @@ validationError:
   required: Vrijednost je obavezna
   unique: Vrijednost mora biti jedinsrvena
   regex: Vrijednost nije ispravno formatirana
+  starts_with: Vrijednost mora zapoćeti sa {substring}
+  istarts_with: Vrijednost mora zapoćeti sa {substring}
+  nstarts_with: Vrijednost ne može zapoćeti sa {substring}
+  nistarts_with: Vrijednost ne može zapoćeti sa {substring}
+  ends_with: Vrijednost mora završiti sa {substring}
+  iends_with: Vrijednost mora završiti sa {substring}
+  nends_with: Vrijednost ne može završiti sa {substring}
+  niends_with: Vrijednost ne može završiti sa {substring}
 all_access: Puni prostup
 no_access: Bez pristupa
 use_custom: Prilagođeno
@@ -461,11 +469,11 @@ open_file_in_tab: Otvori datoteku u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
-exporting_limited_items_in_collection: Izvoz {limit} od {total} stavki unutar {collection}.
-exporting_no_items_to_export: Nema stavki za izvoz. Podesite konfiguraciju izvoza u nastavku.
-exporting_download_hint: Nakon dovršetka, {format} tip datoteke automatski će se preuzeti na vaš uređaj.
-exporting_batch_hint: Ovaj će se izvoz obraditi u serijama, a nakon dovršetka, {format} datoteka bit će spremljena u biblioteku datoteka.
-exporting_batch_hint_forced: Zbog velikog broja stavki, ovaj izvoz se mora obraditi u serijama, a nakon dovršetka, {format} datoteka bit će spremljena u biblioteku datoteka.
+exporting_limited_items_in_collection: '{count} od {total} stavki unutar {collection} bit će izvezeno.'
+exporting_no_items_to_export: Nema stavki za izvoz. Prilagodite postavke izvoza i/ili dodajte stavke u kolekciju.
+exporting_download_hint: Nakon što se datoteka {format} stvori, preuzet će se na vaš uređaj.
+exporting_library_hint: Nakon što se datoteka {format} stvori, bit će spremljena u biblioteku datoteka.
+exporting_library_hint_forced: Ovaj izvoz mora biti obrađen u serijama. Nakon završetka, datoteka {format} bit će spremljena u biblioteku datoteka.
 collection_key: Ključ zbirke
 name: Naziv
 primary_key_field: Polje primarnog ključa
@@ -965,6 +973,7 @@ settings_flows: Tokovi
 settings_presets: Zadane postavke i oznake
 settings_translations: Prilagođeni Prijevodi
 one_or_more_options_are_missing: Nedostaje jedna ili više opcija
+configure_field_key_to_continue: Uredi ključ polja za nastavak
 scope: Opseg
 actions: Radnje
 select: Odaberite...
@@ -1457,7 +1466,6 @@ translation: Prijevod
 translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekt
-weeks: { }
 report_error: Prijavi grešku
 start: Započni
 table: Tablica
@@ -2148,7 +2156,9 @@ operations:
     recipient: Korisnik
     recipient_placeholder: Unesite UUID...
     recipient_note: Dodajte UUID korisnika i pritisnite Enter...
+    item_note: Ključ Stavke ili Relativni URL
     message: Poruka
+    subject: Predmet
   request:
     name: Web dojavnik / URL zahtjeva
     description: 'Pošaljite zahtjev na URL'

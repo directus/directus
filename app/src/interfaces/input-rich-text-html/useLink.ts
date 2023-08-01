@@ -67,8 +67,14 @@ export default function useLink(editor: Ref<any>): UsableLink {
 					newTab: target === '_blank',
 				};
 			} else {
-				const overrideLinkSelection = { displayText: editor.value.selection.getContent() || null };
-				setLinkSelection(overrideLinkSelection);
+				const selectedContent = editor.value.selection.getContent();
+
+				try {
+					const url = new URL(selectedContent).toString();
+					setLinkSelection({ url });
+				} catch {
+					setLinkSelection({ displayText: selectedContent || null });
+				}
 			}
 		},
 		onSetup: (buttonApi: any) => {

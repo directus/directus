@@ -1,7 +1,7 @@
 import { getInfo as getGithubInfo } from '@changesets/get-github-info';
-import { MAIN_PACKAGE, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from '../constants';
-import type { Change, Changesets, Notice, Type, UntypedPackage } from '../types';
-import { sortByExternalOrder, sortByObjectValues } from './sort';
+import { MAIN_PACKAGE, PACKAGE_ORDER, REPO, TYPE_MAP, UNTYPED_PACKAGES } from '../constants.js';
+import type { Change, Changesets, Notice, Type, UntypedPackage } from '../types.js';
+import { sortByExternalOrder, sortByObjectValues } from './sort.js';
 
 export async function getInfo(changesets: Changesets): Promise<{
 	types: Type[];

@@ -193,7 +193,7 @@ receiveMessage(message) {
 			type: 'subscribe', // [!code ++]
 			collection: 'messages', // [!code ++]
 			query: { // [!code ++]
-				fields: ['*', 'user_created.first_name'], // [!code ++]
+				fields: ['*', {'user_created': ['first_name']}], // [!code ++]
 				sort: 'date_created' // [!code ++]
 			} // [!code ++]
 		})); // [!code ++]
@@ -213,7 +213,7 @@ receiveMessage(message) {
 				type: 'subscribe',
 				collection: 'messages',
 				query: {
-					fields: ['*', 'user_created.first_name'],
+					fields: ['*', {'user_created': ['first_name']}],
 					sort: 'date_created',
 				},
 			})
@@ -406,7 +406,7 @@ This guide covers authentication, item creation, and subscription using WebSocke
 									type: 'subscribe',
 									collection: 'messages',
 									query: {
-										fields: ['*', 'user_created.first_name'],
+										fields: ['*', {'user_created': ['first_name']}],
 										sort: 'date_created',
 									},
 								})

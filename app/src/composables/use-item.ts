@@ -17,10 +17,10 @@ import { mergeWith } from 'lodash';
 import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 
-type UsableItem = {
+type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
 	hasEdits: Ref<boolean>;
-	item: Ref<Record<string, any> | null>;
+	item: Ref<T | null>;
 	error: Ref<any>;
 	loading: Ref<boolean>;
 	saving: Ref<boolean>;
@@ -33,18 +33,17 @@ type UsableItem = {
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
 	saveAsCopy: () => Promise<any>;
-	isBatch: ComputedRef<boolean>;
 	getItem: () => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
 
-export function useItem(
+export function useItem<T extends Record<string, any>>(
 	collection: Ref<string>,
 	primaryKey: Ref<string | number | null>,
 	query: Ref<Query> | Query = {}
-): UsableItem {
+): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
-	const item = ref<Record<string, any> | null>(null);
+	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
 	const loading = ref(false);
@@ -123,7 +122,7 @@ export function useItem(
 			defaultValues.value,
 			item.value,
 			edits.value,
-			function (from: any, to: any) {
+			function (_from: any, to: any) {
 				if (typeof to !== 'undefined') {
 					return to;
 				}
@@ -324,7 +323,10 @@ export function useItem(
 
 				for (const col of columns) {
 					const colName = col.split('.')[1];
-					item[colName] = updatedItem[colName];
+
+					if (colName !== undefined) {
+						item[colName] = updatedItem[colName];
+					}
 				}
 			}
 		}
@@ -395,7 +397,7 @@ export function useItem(
 			});
 
 			item.value = {
-				...item.value,
+				...(item.value as T),
 				[field]: value,
 			};
 

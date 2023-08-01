@@ -418,6 +418,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	border-radius: var(--border-radius);
 }
 
+.interface-input-rich-text-md :deep(.CodeMirror-scroll) {
+	max-height: min(1000px, 80vh);
+}
+
 .interface-input-rich-text-md.disabled {
 	background-color: var(--background-subdued);
 }

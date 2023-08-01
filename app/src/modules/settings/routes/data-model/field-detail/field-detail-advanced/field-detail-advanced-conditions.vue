@@ -5,13 +5,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, unref } from 'vue';
-import { Field, DeepPartial } from '@directus/types';
-import { useI18n } from 'vue-i18n';
-import { useFieldDetailStore, syncFieldDetailStoreProperty } from '../store';
-import { storeToRefs } from 'pinia';
 import { useExtension } from '@/composables/use-extension';
+import { DeepPartial, Field } from '@directus/types';
 import { isVueComponent } from '@directus/utils';
+import { storeToRefs } from 'pinia';
+import { computed, unref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store';
 
 const { t } = useI18n();
 
@@ -92,6 +92,7 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 			interface: 'system-interface-options',
 			options: {
 				interface: interfaceId.value,
+				context: useFieldDetailStore,
 			},
 		},
 	},

@@ -7,11 +7,23 @@ readTime: 7 min read
 
 # Quickstart Guide
 
-> This quickstart guide is designed to get you up and running with a Directus Cloud Project in a snap. Along the way,
-> you will better understand what Directus is, setup your Directus Cloud Account, get a _hands-on introduction_ to the
-> App and API, and find more resources to deep-dive into.
+> This quickstart guide is designed to get you up and running with a Directus Project in a snap. Along the way, you will
+> better understand what Directus is, setup your Directus Cloud Account, get a _hands-on introduction_ to the App and
+> API, and find more resources to deep-dive into.
 
-## 1. Create Cloud Account and Login
+This guide primarily focuses on getting started with Directus Cloud. If you prefer self-hosting, we offer a guide to
+assist you in that process.
+
+<Card
+  title="Self-Host Directus"
+  h="2"
+  text="Learn how to run Directus on your own machine and self-host."
+  url="/self-hosted/quickstart"
+  icon="rocket_launch"
+  add-margin
+/>
+
+## 1. Create a Cloud Account and Login
 
 First, you'll need to create an Account and log in on [Directus Cloud](https://directus.cloud/login).
 
@@ -40,10 +52,10 @@ associated with your Cloud Account. The email will contain your Project URL as w
 If you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log
 in!_
 
-7. You can access a Project from within the Cloud Dashboard or type the URL into your browser.
-8. Log in with your username and password from the email.
+6. You can access a Project from within the Cloud Dashboard or type the URL into your browser.
+7. Log in with your username and password from the email.
 
-:::tip Check All Inbox Folders
+::: tip Check All Inbox Folders
 
 Due to the algorithms used by some email providers, it is possible the email containing your Project login information
 will end up in another folder like "Social" or "Promotions".
@@ -64,7 +76,7 @@ Once logged in, you're greeted with the option to create your first
    Keep the values in this menu at the default, toggled off, for now. You can adjust them later.
 5. Click <span mi btn>check</span> in the menu header.
 
-:::tip Learn More About Collections
+::: tip Learn More About Collections
 
 - [The Content Module](/user-guide/content-module/content)
 - [Create and Manage a Collection](/app/data-model/collections)
@@ -97,7 +109,7 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 3. Fill in the Field Value(s) as desired.
 4. Click <span mi btn>check</span> in the top-right to save your Item.
 
-:::tip Learn More About Items
+::: tip Learn More About Items
 
 - [The Content Module](/user-guide/content-module/content)
 - [The Item Page](/user-guide/content-module/content/items)
@@ -155,9 +167,9 @@ _In this example, we made a super-simple read request with the API, but there's 
 exhaustive endpoints for the data model and every single action that you can do in the App can be done via the API. In
 fact, the App is just a GUI powered by the API._
 
-:::tip Learn More About The API
+::: tip Learn More About The API
 
 - [Intro to the API](/reference/introduction)
-- [JS SDK](/reference/sdk)
+- [JavaScript SDK](/guides/sdk/getting-started)
 
 :::

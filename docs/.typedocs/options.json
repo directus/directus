@@ -6,7 +6,7 @@
 		"../../packages/extensions-sdk",
 		"../../packages/pressure",
 		"../../packages/random",
-		"../../packages/sdk",
+		"../../sdk",
 		"../../packages/stores",
 		"../../packages/themes",
 		"../../packages/types",

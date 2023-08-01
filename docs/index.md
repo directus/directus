@@ -24,7 +24,7 @@ import Github from './.vitepress/components/home/icons/Github.vue';
 		</div>
 		<div :class="$style.heroToggler">
 
-<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API">
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" label="API" :alwaysDark="true">
 <template #rest>
 
 ```js
@@ -54,16 +54,17 @@ query {
 <template #sdk>
 
 ```js
-await directus.items('articles').readOne(4, {
-  fields: [
-		'id',
-		'status',
-		'title',
-		'category',
-		'image.id',
-		'image.name'
-	],
-});
+await directus.request(
+  readItem('articles', 4, {
+    fields: [
+      'id',
+      'status',
+      'title',
+      'category,',
+      { image: ['id', 'name'] }
+    ]
+  })
+);
 ```
 
 </template>

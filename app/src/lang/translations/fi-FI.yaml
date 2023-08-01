@@ -444,11 +444,6 @@ open_file_in_tab: Avaa tiedosto uudessa välilehdessä
 start_export: Aloita vienti
 not_available_for_local_downloads: Ei saatavilla paikallisille latauksille
 exporting_all_items_in_collection: Viedään kaikki {total} kohdetta kokoelmasta {collection}.
-exporting_limited_items_in_collection: Viedään {limit} kohdetta kokoelman {collection} {total} kohteesta.
-exporting_no_items_to_export: Ei vietäviä kohteita. Muokkaa viennin asetuksia alla.
-exporting_download_hint: Valmistumisen jälkeen, tämä {format} tiedosto ladataan automaattisesti laitteellesi.
-exporting_batch_hint: Tämä vienti käsitellään erissä, ja kun vienti on valmis, tiedosto {format} tallennetaan Tiedostokirjastoon.
-exporting_batch_hint_forced: Koska kohteita on paljon, vienti on käsiteltävä erissä, ja kun vienti on valmis, {format} tiedosto tallennetaan Tiedostokirjastoon.
 collection_key: Kokoeilman avain
 name: Nimi
 primary_key_field: Ensisijainen avaimen kenttä
@@ -1764,6 +1759,7 @@ operations:
   notification:
     recipient: Käyttäjänimi
     message: Viesti
+    subject: Aihe
   request:
     url: URL
     method: Metodi

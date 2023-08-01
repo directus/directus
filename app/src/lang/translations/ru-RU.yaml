@@ -460,11 +460,6 @@ open_file_in_tab: Открыть файл в новой вкладке
 start_export: Начать экспорт
 not_available_for_local_downloads: Недоступно для локальных скачиваний
 exporting_all_items_in_collection: Экспортирование всех {total} элементов в {collection}.
-exporting_limited_items_in_collection: Экспортирование {limit} из {total} элементов в {collection}.
-exporting_no_items_to_export: Нет элементов для экспорта. Настройте конфигурацию экспорта ниже.
-exporting_download_hint: По завершении этот {format} файл будет автоматически скачан на ваше устройство.
-exporting_batch_hint: Этот экспорт будет обработан партиями, и по завершении {format} файл будет сохранен в Библиотеку файлов.
-exporting_batch_hint_forced: Из-за большого количества элементов этот экспорт будет обработан партиями, и по завершении {format} файл будет сохранен в Библиотеку файлов.
 collection_key: Ключ коллекции
 name: Название
 primary_key_field: Поле основного ключа
@@ -1451,7 +1446,7 @@ sort_asc: По Возрастанию
 sort_desc: По Убыванию
 disable_sort: Отключить сортировку
 template: Шаблон
-require_value_to_be_set: Значение должно быть установлено при создании
+require_value_to_be_set: Требовать заполнения при создании
 translation: Перевод
 translation_placeholder: Введите перевод...
 value: Значение
@@ -1463,7 +1458,7 @@ list: Список
 search_filter: Поиск и фильтрация
 enable_search_filter: Включить поиск и фильтрацию
 item_link: Ссылка на элемент
-show_link_to_item: Показать ссылку на элемент
+show_link_to_item: Показывать ссылку на элемент
 undo_removed_item: Отменить удаление элемента
 remove_item: Удалить элемент
 delete_item: Удалить элемент
@@ -1847,6 +1842,7 @@ displays:
     format: Формат
     format_label: Автоформат
     font: Шрифт
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Моноширинный
     bold: Жирный
@@ -1943,6 +1939,7 @@ layouts:
     default_template: Использование коллекции по умолчанию...
     no_compatible_fields: Нет совместимых полей
   kanban:
+    name: Канбан
     title: Заголовок Карточки
     title_placeholder: Название (необязательно)...
     text: Текст Карточки
@@ -2021,6 +2018,8 @@ panels:
     step_line: Ступенчатая линия
   meter:
     name: Счётчик
+  piechart:
+    name: Круговая или пончиковая диаграмма
   variable:
     name: Глобальная переменная
     description: Установить глобальное значение для использования в других фильтрах Панелей
@@ -2039,6 +2038,7 @@ triggers:
   event:
     name: Хук события
     action: 'Действие (не блокирующее)'
+    filter: 'Фильтр (блокирующий)'
   webhook:
     name: Вебхук
     description: Выполняется при входящем HTTP запросе
@@ -2050,7 +2050,10 @@ triggers:
     preview: Запускается операцией из другого процесса
   schedule:
     name: Расписание (CRON)
+    description: Срабатывание в определенные моменты времени
+    cron: Интервал
   manual:
+    name: Ручной
     description: Выполняется при ручном запуске в выбранной коллекции(ях)
     collection_and_item: Страницы Коллекции и Элемента
     collection_only: Только страница Коллекции
@@ -2103,6 +2106,7 @@ operations:
     recipient_placeholder: Введите UUID...
     recipient_note: Добавьте пользовательский UUID и нажмите Enter...
     message: Сообщение
+    subject: Тема
   request:
     name: Веб-хук / URL-адрес запроса
     description: 'Сделать запрос на URL-адрес'
