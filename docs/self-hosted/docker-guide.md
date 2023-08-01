@@ -199,7 +199,7 @@ For more information, please see the config section on
 The Directus Docker Image contains all optional dependencies supported in the API. This means the Docker image can be
 used with most of the supported databases and storage adapters without having to create a custom image.
 
-Directus supports the LTS versions of Postgres, MySQL, SQLite, MS SQL Server, MariaDB, CockroachDB, and OracleDB. Please 
+Directus supports the LTS versions of PostgreSQL, MySQL, SQLite, MS SQL Server, MariaDB, CockroachDB, and OracleDB. Please 
 see https://endoflife.date/ to make sure your database version is still supported.
 
 ## Requirements
