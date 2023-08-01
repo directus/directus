@@ -1,4 +1,3 @@
-import type { PrimaryKey } from '@directus/types';
 import type { Query } from '../types/query.js';
 import type { ApplyQueryFields, CollectionType } from '../index.js';
 
@@ -73,5 +72,5 @@ export type SubscriptionPayload<Item> = {
 	init: Item[];
 	create: Item[];
 	update: Item[];
-	delete: PrimaryKey[];
+	delete: string[] | number[];
 };

@@ -20,18 +20,23 @@ export const graphql = () => {
 				const options: RequestInit = {
 					method: 'POST',
 					body: JSON.stringify({ query, variables }),
-					headers: {},
 				};
+
+				const headers: Record<string, string> = {};
 
 				if ('getToken' in this) {
 					const token = await (this.getToken as AuthenticationClient<Schema>['getToken'])();
 
 					if (token) {
-						if (!options.headers) options.headers = {};
-						options.headers = { Authorization: `Bearer ${token}` };
+						headers['Authorization'] = `Bearer ${token}`;
 					}
 				}
 
+				if ('Content-Type' in headers === false) {
+					headers['Content-Type'] = 'application/json';
+				}
+
+				options.headers = headers;
 				const requestPath = scope === 'items' ? '/graphql' : '/graphql/system';
 				const requestUrl = getRequestUrl(client.url, requestPath);
 

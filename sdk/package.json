@@ -54,9 +54,6 @@
 		"typescript": "5.0.4",
 		"vitest": "0.31.1"
 	},
-	"dependencies": {
-		"@directus/types": "workspace:*"
-	},
 	"engines": {
 		"node": ">=18.0.0"
 	}
