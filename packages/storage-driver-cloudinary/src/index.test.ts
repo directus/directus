@@ -2,15 +2,15 @@ import { normalizePath } from '@directus/utils';
 import {
 	rand,
 	randAlphaNumeric,
+	randGitBranch as randCloudName,
 	randDirectoryPath,
 	randFilePath,
 	randFileType,
-	randGitBranch as randCloudName,
-	randGitCommitSha as randSha,
-	randGitShortSha as randUnique,
 	randNumber,
 	randPastDate,
+	randGitCommitSha as randSha,
 	randText,
+	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
 import { Blob } from 'node:buffer';
@@ -21,7 +21,7 @@ import { extname, join, parse } from 'node:path';
 import { PassThrough, Readable } from 'node:stream';
 import { ReadableStream } from 'node:stream/web';
 import type { Response } from 'undici';
-import { fetch, FormData } from 'undici';
+import { FormData, fetch } from 'undici';
 import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
@@ -39,10 +39,13 @@ let sample: {
 	path: {
 		input: string;
 		inputFull: string;
+		inputFolder: string;
 		src: string;
 		srcFull: string;
+		srcFolder: string;
 		dest: string;
 		destFull: string;
+		destFolder: string;
 	};
 	range: {
 		start: number;
@@ -82,10 +85,13 @@ beforeEach(() => {
 		path: {
 			input: randUnique() + randFilePath(),
 			inputFull: randUnique() + randFilePath(),
+			inputFolder: randUnique() + randFilePath(),
 			src: randUnique() + randFilePath(),
 			srcFull: randUnique() + randFilePath(),
+			srcFolder: randUnique() + randFilePath(),
 			dest: randUnique() + randFilePath(),
 			destFull: randUnique() + randFilePath(),
+			destFolder: randUnique() + randFilePath(),
 		},
 		range: {
 			start: randNumber(),
@@ -122,6 +128,14 @@ beforeEach(() => {
 		if (input === sample.path.src) return sample.path.srcFull;
 		if (input === sample.path.dest) return sample.path.destFull;
 		if (input === sample.path.input) return sample.path.inputFull;
+
+		return '';
+	});
+
+	driver['getFolderPath'] = vi.fn().mockImplementation((input) => {
+		if (input === sample.path.src) return sample.path.srcFolder;
+		if (input === sample.path.dest) return sample.path.destFolder;
+		if (input === sample.path.input) return sample.path.inputFolder;
 
 		return '';
 	});
@@ -458,6 +472,7 @@ describe('#getPublicId', () => {
 	});
 
 	test('Returns original file path if type is raw', () => {
+		vi.mocked(parse).mockReturnValueOnce({ base: sample.path.input } as ParsedPath);
 		driver['getResourceType'] = vi.fn().mockReturnValue('raw');
 		const publicId = driver['getPublicId'](sample.path.input);
 		expect(publicId).toBe(sample.path.input);
@@ -541,7 +556,7 @@ describe('#read', () => {
 	});
 
 	test('Adds optional Range header for start', async () => {
-		await driver.read(sample.path.input, { start: sample.range.start });
+		await driver.read(sample.path.input, { start: sample.range.start, end: undefined });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
@@ -550,7 +565,7 @@ describe('#read', () => {
 	});
 
 	test('Adds optional Range header for end', async () => {
-		await driver.read(sample.path.input, { end: sample.range.end });
+		await driver.read(sample.path.input, { start: undefined, end: sample.range.end });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
@@ -614,6 +629,8 @@ describe('#stat', () => {
 			json: vi.fn().mockResolvedValue(mockResponseBody),
 			status: 200,
 		};
+
+		vi.mocked(join).mockRestore();
 
 		vi.mocked(fetch).mockResolvedValue(mockResponse as unknown as Response);
 	});
@@ -1109,6 +1126,8 @@ describe('#uploadChunk', () => {
 
 describe('#delete', () => {
 	beforeEach(async () => {
+		vi.mocked(join).mockRestore();
+
 		await driver.delete(sample.path.input);
 	});
 
@@ -1133,7 +1152,7 @@ describe('#delete', () => {
 		});
 	});
 
-	test('Calls fetch with correct parameters', () => {
+	test('Calls fetch with correct parameters', async () => {
 		expect(driver['toFormUrlEncoded']).toHaveBeenCalledWith({
 			timestamp: sample.timestamp,
 			api_key: sample.config.apiKey,
@@ -1193,16 +1212,11 @@ describe('#list', () => {
 		expect(driver['fullPath']).toHaveBeenCalledWith(sample.path.input);
 	});
 
-	test('Gets public id for prefix', async () => {
-		await driver.list(sample.path.input).next();
-		expect(driver['getPublicId']).toHaveBeenCalledWith(sample.path.inputFull);
-	});
-
 	test('Fetches search api results', async () => {
 		await driver.list(sample.path.input).next();
 
 		expect(fetch).toHaveBeenCalledWith(
-			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.publicId.input}*&next_cursor=`,
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.path.inputFull}*&next_cursor=`,
 			{
 				method: 'GET',
 				headers: {
@@ -1240,7 +1254,7 @@ describe('#list', () => {
 		expect(fetch).toHaveBeenCalledTimes(2);
 
 		expect(fetch).toHaveBeenCalledWith(
-			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.publicId.input}*&next_cursor=${mockNextCursor}`,
+			`https://api.cloudinary.com/v1_1/${sample.config.cloudName}/resources/search?expression=${sample.path.inputFull}*&next_cursor=${mockNextCursor}`,
 			{
 				method: 'GET',
 				headers: {

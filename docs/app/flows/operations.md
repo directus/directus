@@ -12,7 +12,7 @@ readTime: 5 min read
 > transform the flow's data, send information off to outside services, set conditional logic, trigger other flows, _and
 > beyond!_
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 On this page, we'll explain what each operation does, the value it appends to the data chain, how to make use of its
 configuration options, as well as any well as other relevant details. We will assume you have read the documentation on
@@ -39,7 +39,7 @@ append an array containing an object you can use to help debug the misconfigurat
 
 **More Details**
 
-:::warning
+::: warning
 
 When using an [Event Hook](/app/flows/triggers#event-hook) configured to be **Filter (Blocking)**, if your flow ends
 with a condition that executes with a `reject` path, it will cancel your database transaction.
@@ -106,13 +106,13 @@ The returned value will be appended under the `myScript` operation key.
 
 ```
 
-:::tip
+::: tip
 
 Make sure your `return` value is valid JSON.
 
 :::
 
-:::tip Throwing Errors
+::: tip Throwing Errors
 
 If you throw an error in a **Run Script** operation, it will immediately break your flow chain and stop execution of
 subsequent flows. If you used a ["Blocking" Event hook](/app/flows/triggers#event-hook), throwing an error will cancel
@@ -120,7 +120,7 @@ the original event transaction to the database.
 
 :::
 
-:::tip Node Modules
+::: tip Node Modules
 
 For security reasons, module usage is disabled by default. You can configure what Node Modules are available through
 [the `FLOWS_EXEC_ALLOWED_MODULES` environment variable](/self-hosted/config-options#security).
@@ -146,7 +146,7 @@ An array with the ID(s) of all items created will be appended under its `<operat
 
 **More Details**
 
-:::warning
+::: warning
 
 **Emit Events** toggles the event's _visibility_ throughout Directus. For example, if toggled on, this operation will
 trigger relevant event hooks in other flows or custom extensions. If toggled off, the operation will not trigger other
@@ -157,7 +157,7 @@ triggers other event hooks.
 
 :::
 
-:::tip
+::: tip
 
 To learn about payload requirements when creating an item, see [API Reference > Items](/reference/items).
 
@@ -183,7 +183,7 @@ An array with the ID(s) of all items deleted will be appended under its `<operat
 
 **More Details**
 
-:::warning
+::: warning
 
 **Emit Events** toggles the event's _visibility_ throughout Directus. For example, if togged on, this operation will
 trigger relevant event hooks in other flows or custom extensions. If toggled off, the operation will not trigger other
@@ -215,7 +215,7 @@ An array containing all items read will be appended under its `<operationKey>`.
 
 **More Details**
 
-:::warning
+::: warning
 
 **Emit Events** toggles the event's _visibility_ throughout Directus. For example, if togged on, this operation will
 trigger relevant event hooks in other flows or custom extensions. If toggled off, the operation will not trigger other
@@ -247,7 +247,7 @@ An array containing all items updated will be appended under its `<operationKey>
 
 **More Details**
 
-:::warning
+::: warning
 
 **Emit Events** toggles the event's _visibility_ throughout Directus. For example, if togged on, this operation will
 trigger relevant event hooks in other flows or custom extensions. If toggled off, the operation will not trigger other
@@ -258,7 +258,7 @@ operation no longer triggers other event hooks.
 
 :::
 
-:::tip
+::: tip
 
 To learn about `payload` requirements when updating an item, see [API Reference > Items](/reference/items).
 
@@ -304,13 +304,13 @@ This operation does not generate data for the data chain. It will append a `null
 
 **More Details**
 
-:::tip Batch Emails
+::: tip Batch Emails
 
 You can input an array of emails in the `To` input option to send off multiple emails.
 
 :::
 
-:::tip
+::: tip
 
 If you are testing out this operation from `localhost:8080`, be sure to check your spam box, because your email provider
 may send it there automatically.
@@ -338,7 +338,7 @@ This operation does not generate data. It will append a `null` value on its `ope
 
 **More Details**
 
-:::tip Batch Notifications
+::: tip Batch Notifications
 
 You can input an array of UUIDs in the `To` input option to send off multiple notifications.
 
@@ -359,7 +359,7 @@ This operation makes a request to another URL.
 
 **Payload**
 
-When an operation completes successfully, the `response` is appended under its `<operationKey`.
+When an operation completes successfully, the `response` is appended under its `<operationKey>`.
 
 ## Sleep
 
@@ -428,7 +428,7 @@ If you've configured a **Response Body** in the trigger of the other flow, this 
 
 **More Details**
 
-:::tip Flows for-loops
+::: tip Flows for-loops
 
 If you pass an array to the other flow, the other flow will run once for each item in the array.
 

@@ -29,7 +29,7 @@
 					<div class="grid">
 						<div class="field">
 							<div class="type-label">{{ t('url') }}</div>
-							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')"></v-input>
+							<v-input v-model="linkSelection.url" :placeholder="t('url_placeholder')" autofocus></v-input>
 						</div>
 						<div class="field">
 							<div class="type-label">{{ t('display_text') }}</div>
@@ -246,7 +246,6 @@ const props = withDefaults(
 		],
 		font: 'sans-serif',
 		customFormats: () => [],
-		disabled: true,
 	}
 );
 

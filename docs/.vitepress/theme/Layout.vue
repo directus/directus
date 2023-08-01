@@ -17,7 +17,7 @@ const { Layout } = DefaultTheme;
 const { page } = useData();
 const route = useRoute();
 const title = computed(() => page.value.title);
-const contributors = computed(() => page.value.frontmatter.contributors);
+const contributors = computed(() => page.value.frontmatter['contributors']);
 const path = computed(() => route.path);
 const isHome = computed(() => ['/', '/index.html'].includes(path.value));
 </script>
