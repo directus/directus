@@ -10,13 +10,13 @@ readTime: 2 min read
 > This module provides a collective timeline of all _data-changing_ actions taken within your project. These detailed
 > records help you audit user activity and enforce accountability.
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 We recommend you try the [Quickstart Guide](/getting-started/quickstart) to get an overview of the platform.
 
 :::
 
-:::tip Learn More
+::: tip Learn More
 
 To manage the Activity Log programmatically, please see our guide on the [Activity Log API](/reference/system/activity).
 
@@ -40,7 +40,7 @@ _directly_ are not tracked.
 
 :::
 
-:::tip
+::: tip
 
 You can also view and revert the activity of _specific items_ under **Item Page > Sidebar > Revisions**. To learn more,
 please see [Revert an Item](/user-guide/content-module/content/items#revert-an-item).

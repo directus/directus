@@ -1958,5 +1958,63 @@ describe.each(common.PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				vendorSchemaValues
 			);
 		});
+
+		describe('Meta Service Tests', () => {
+			describe('retrieves filter count correctly', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Setup
+					const name = 'test-meta-service-count';
+					const country = createCountry(pkType);
+					const country2 = createCountry(pkType);
+
+					country.name = name;
+					country2.name = name;
+
+					const insertedCountry = await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: country,
+					});
+
+					const insertedCountry2 = await CreateItem(vendor, {
+						collection: localCollectionCountries,
+						item: country2,
+					});
+
+					const state = createState(pkType);
+					const state2 = createState(pkType);
+
+					state.name = name;
+					state2.name = name;
+					state.country_id = insertedCountry.id;
+					state2.country_id = insertedCountry2.id;
+
+					await CreateItem(vendor, {
+						collection: localCollectionStates,
+						item: [state, state2],
+					});
+
+					// Action
+					const response = await request(getUrl(vendor))
+						.get(`/items/${localCollectionStates}`)
+						.query({
+							filter: JSON.stringify({
+								name: { _eq: name },
+								country_id: {
+									name: {
+										_eq: name,
+									},
+								},
+							}),
+							meta: '*',
+						})
+						.set('Authorization', `Bearer ${common.USER.ADMIN.TOKEN}`);
+
+					// Assert
+					expect(response.statusCode).toBe(200);
+					expect(response.body.meta.filter_count).toBe(2);
+					expect(response.body.data.length).toBe(2);
+				});
+			});
+		});
 	});
 });

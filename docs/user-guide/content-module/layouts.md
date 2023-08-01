@@ -166,7 +166,7 @@ controls.
 
 - **Select Item** — Click an Item on the calendar to open its Item Page.
 
-:::tip Configuration Requirements
+::: tip Configuration Requirements
 
 To use this Layout, the Collection will need at least one datetime [Field](/app/data-model/fields) to set a start time,
 but ideally two datetime Fields _(to set a start time and end time)_.
@@ -203,7 +203,7 @@ _There is no Subheader on the Map Layout._
 - **Select Item** — Click a single Item to enter its Item Page.
 - **Select Items** — Click and drag to select multiple Items at once, opening the Item Page.
 
-:::tip Configuration Requirements
+::: tip Configuration Requirements
 
 To use this Layout, the Collection must have a Map Field configured.
 
@@ -250,7 +250,7 @@ _There is no Subheader for the Kanban Layout._
 - **Edit or Delete Status Column** — Click <span mi icon>more_horiz</span> and then click <span mi icon>edit</span> to
   edit or <span mi icon>delete</span> to delete.
 
-:::tip Configuration Requirements
+::: tip Configuration Requirements
 
 To make this Layout work, you will need to configure an appropriate status [Field](/app/data-model/fields) on the
 Collection, then identify this Field under **"Group By"** in the Layout Options menu.

@@ -10,7 +10,7 @@ readTime: 5 min read
 > The Item Page is a tailored form for managing Items and their Field values. This page also includes options for
 > archiving, reverting, and commenting on an Item.
 
-:::tip Programmatically Manage Items
+::: tip Programmatically Manage Items
 
 This page shows you how to manage Items within the no-code app. However, you can also [manage](/reference/items) Items
 programmatically via the API.
@@ -130,14 +130,14 @@ can be compared side-by-side to the current state. To revert an Item, follow the
 6. Click <span mi btn muted>restore</span> to revert the Item's values and return to the Item Page.
 7. Click <span mi btn>check</span> to confirm and exit to the Collection Page.
 
-:::tip Revision Preview
+::: tip Revision Preview
 
 You will also see a **"Revision Preview"** button in the side menu navigation, which will let you preview all the Item's
 values for that revision.
 
 :::
 
-:::tip
+::: tip
 
 You can also revert Items [programmatically via the API](/reference/system/revisions).
 
@@ -158,14 +158,14 @@ to view. To create a comment, follow these steps.
 4. Type your message into the input box.
 5. Click the **"Submit"** button.
 
-:::tip Mentions
+::: tip Mentions
 
 You can also search and mention any User by typing the **"@"** symbol along with their name or email to send an in-app
 notification, as well as an email directing them to your comment.
 
 :::
 
-:::tip Edit and Delete Comments
+::: tip Edit and Delete Comments
 
 Each comment displays the time it was created in its upper right-hand corner. Hover over this and the
 <span mi icon>more_horiz</span> menu will appear. Click <span mi icon>edit</span> to edit or <span mi icon>delete</span>
@@ -186,7 +186,7 @@ To delete an Item, follow these steps.
 3. Click <span mi btn dngr>delete</span> located in the header and a popup will appear.
 4. Click **"Delete"** to confirm the action.
 
-:::tip Soft-Delete
+::: tip Soft-Delete
 
 If you wish to remove an Item from view or use without fully deleting it, consider
 [archiving the Item](#archive-an-item) instead.

@@ -81,6 +81,10 @@
 	margin-left: 20px;
 }
 
+.heroToggler :global(.snippet-toggler .content-area .copy) {
+	display: none;
+}
+
 .flex {
 	display: flex;
 	align-items: center;

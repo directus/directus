@@ -10,7 +10,7 @@ readTime: 4 min read
 > This is where you can adjust all of the **global** settings for your project, such as project name, default language,
 > custom CSS, password policies, _and more!_ Changes saved here are instantly reflected throughout your project.
 
-:::tip Learn More
+::: tip Learn More
 
 To manage your project settings programmatically, see our API documentation on [settings](/reference/system/settings).
 
@@ -123,7 +123,7 @@ following options to limit what transformations are possible.
   - **Additional Transformations** — Adds additional transformations using
     [Sharp](https://sharp.pixelplumbing.com/api-constructor).
 
-:::tip How to Use Transformation Presets
+::: tip How to Use Transformation Presets
 
 To learn more, please see the API guide on [transformation presets](/reference/files#preset-transformations).
 

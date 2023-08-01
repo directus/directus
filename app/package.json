@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "10.5.0",
+	"version": "10.6.1",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -148,7 +148,7 @@
 		"react-dom": "18",
 		"sass": "1.62.1",
 		"storybook": "7.0.12",
-		"tinymce": "6.4.2",
+		"tinymce": "6.6.0",
 		"typescript": "5.0.4",
 		"vite": "4.3.7",
 		"vitest": "0.31.1",
