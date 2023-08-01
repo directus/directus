@@ -27,7 +27,11 @@
 				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
 			</button>
 			/
-			<button :class="{ active: showSelectionOnly === true }" :disabled="value == null || value.length === 0" @click="showSelectionOnly = true">
+			<button
+				:class="{ active: showSelectionOnly === true }"
+				:disabled="value == null || value.length === 0"
+				@click="showSelectionOnly = true"
+			>
 				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
 			</button>
 		</div>
