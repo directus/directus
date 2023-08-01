@@ -412,16 +412,14 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	--v-button-color-hover: var(--foreground-normal);
 
 	min-height: 300px;
-	max-height: min(80vh, 1000px);
 	overflow: hidden;
 	font-family: var(--family-sans-serif);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
 }
 
-.interface-input-rich-text-md :deep(.CodeMirror-wrap) {
-	// -43px to account for toolbar
-	max-height: calc(min(1000px, 80vh) - 43px);
+.interface-input-rich-text-md :deep(.CodeMirror-scroll) {
+	max-height: min(1000px, 80vh);
 }
 
 .interface-input-rich-text-md.disabled {
