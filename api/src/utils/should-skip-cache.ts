@@ -1,8 +1,7 @@
-import type { Request } from 'express';
-import { getEnv } from '../env.js';
-import { Url } from './url.js';
-import url from 'url';
 import { getEndpoint } from '@directus/utils';
+import type { Request } from 'express';
+import url from 'url';
+import { getEnv } from '../env.js';
 
 /**
  * Whether to skip caching for the current request
@@ -13,18 +12,9 @@ import { getEndpoint } from '@directus/utils';
 export function shouldSkipCache(req: Request): boolean {
 	const env = getEnv();
 
-	// Always skip cache for requests coming from the data studio based on Referer header
-	const referer = req.get('Referer');
-
-	if (referer) {
-		const adminUrl = new Url(env['PUBLIC_URL']).addPath('admin');
-
-		if (adminUrl.isRootRelative()) {
-			const refererUrl = new Url(referer);
-			if (refererUrl.path.join('/').startsWith(adminUrl.path.join('/')) && checkAutoPurge()) return true;
-		} else if (referer.startsWith(adminUrl.toString()) && checkAutoPurge()) {
-			return true;
-		}
+	// Always skip cache for requests coming from the data studio
+	if (req.accountability && req.accountability.app_name === 'directus-data-studio' && checkAutoPurge()) {
+		return true;
 	}
 
 	if (env['CACHE_SKIP_ALLOWED'] && req.get('cache-control')?.includes('no-store')) return true;

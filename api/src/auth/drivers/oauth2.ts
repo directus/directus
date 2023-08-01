@@ -275,7 +275,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			const prompt = !!req.query['prompt'];
 
 			const token = jwt.sign(
-				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
+				{ verifier: codeVerifier, redirect: req.query['redirect'], app: req.query['app'], prompt },
 				env['SECRET'] as string,
 				{
 					expiresIn: '5m',
@@ -314,13 +314,14 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;
+					app_name?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OAuth2] Couldn't verify OAuth2 cookie`);
 				throw new InvalidCredentialsError();
 			}
 
-			const { verifier, redirect, prompt } = tokenData;
+			const { verifier, redirect, prompt, app_name } = tokenData;
 
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
@@ -343,11 +344,15 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`oauth2.${providerName}`);
 
-				authResponse = await authenticationService.login(providerName, {
-					code: req.query['code'],
-					codeVerifier: verifier,
-					state: req.query['state'],
-				});
+				authResponse = await authenticationService.login(
+					providerName,
+					{
+						code: req.query['code'],
+						codeVerifier: verifier,
+						state: req.query['state'],
+					},
+					app_name
+				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
 				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {

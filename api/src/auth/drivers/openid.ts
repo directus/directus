@@ -306,7 +306,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			const prompt = !!req.query['prompt'];
 
 			const token = jwt.sign(
-				{ verifier: codeVerifier, redirect: req.query['redirect'], prompt },
+				{ verifier: codeVerifier, redirect: req.query['redirect'], app_name: req.query['app_name'], prompt },
 				env['SECRET'] as string,
 				{
 					expiresIn: '5m',
@@ -345,13 +345,14 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;
+					app_name?: string;
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
 				throw new InvalidCredentialsError();
 			}
 
-			const { verifier, redirect, prompt } = tokenData;
+			const { verifier, redirect, prompt, app_name } = tokenData;
 
 			const accountability: Accountability = {
 				ip: getIPFromReq(req),
@@ -374,12 +375,16 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			try {
 				res.clearCookie(`openid.${providerName}`);
 
-				authResponse = await authenticationService.login(providerName, {
-					code: req.query['code'],
-					codeVerifier: verifier,
-					state: req.query['state'],
-					iss: req.query['iss'],
-				});
+				authResponse = await authenticationService.login(
+					providerName,
+					{
+						code: req.query['code'],
+						codeVerifier: verifier,
+						state: req.query['state'],
+						iss: req.query['iss'],
+					},
+					app_name
+				);
 			} catch (error: any) {
 				// Prompt user for a new refresh_token if invalidated
 				if (isDirectusError(error, ErrorCode.InvalidToken) && !prompt) {

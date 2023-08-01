@@ -43,6 +43,7 @@ export class AuthenticationService {
 	async login(
 		providerName: string = DEFAULT_AUTH_PROVIDER,
 		payload: Record<string, any>,
+		appName?: string,
 		otp?: string
 	): Promise<LoginResult> {
 		const { nanoid } = await import('nanoid');
@@ -182,6 +183,7 @@ export class AuthenticationService {
 			role: user.role,
 			app_access: user.app_access,
 			admin_access: user.admin_access,
+			app_name: appName,
 		};
 
 		const customClaims = await emitter.emitFilter(
@@ -215,6 +217,7 @@ export class AuthenticationService {
 			ip: this.accountability?.ip,
 			user_agent: this.accountability?.userAgent,
 			origin: this.accountability?.origin,
+			app_name: appName,
 		});
 
 		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
@@ -261,6 +264,7 @@ export class AuthenticationService {
 		const record = await this.knex
 			.select({
 				session_expires: 's.expires',
+				app_name: 's.app_name',
 				user_id: 'u.id',
 				user_first_name: 'u.first_name',
 				user_last_name: 'u.last_name',
@@ -338,6 +342,7 @@ export class AuthenticationService {
 			role: record.role_id,
 			app_access: record.role_app_access,
 			admin_access: record.role_admin_access,
+			app_name: record.app_name,
 		};
 
 		if (record.share_id) {

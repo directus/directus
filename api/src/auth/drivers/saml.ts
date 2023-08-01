@@ -1,6 +1,7 @@
 import * as validator from '@authenio/samlify-node-xmllint';
 import { isDirectusError } from '@directus/errors';
 import express, { Router } from 'express';
+import jwt from 'jsonwebtoken';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
 import { COOKIE_OPTIONS } from '../../constants.js';
@@ -122,6 +123,16 @@ export function createSAMLAuthRouter(providerName: string) {
 				parsedUrl.searchParams.append('RelayState', req.query['redirect'] as string);
 			}
 
+			const token = jwt.sign({ app_name: req.query['app_name'] }, env['SECRET'] as string, {
+				expiresIn: '5m',
+				issuer: 'directus',
+			});
+
+			res.cookie(`saml.${providerName}`, token, {
+				httpOnly: true,
+				sameSite: 'lax',
+			});
+
 			return res.redirect(parsedUrl.toString());
 		})
 	);
@@ -152,13 +163,34 @@ export function createSAMLAuthRouter(providerName: string) {
 		express.urlencoded({ extended: false }),
 		asyncHandler(async (req, res, next) => {
 			const relayState: string | undefined = req.body?.RelayState;
+			let tokenData;
 
 			try {
+				tokenData = jwt.verify(req.cookies[`saml.${providerName}`], env['SECRET'] as string, {
+					issuer: 'directus',
+				}) as {
+					app_name?: string;
+				};
+			} catch (e: any) {
+				logger.warn(e, `[SAML] Couldn't verify SAML cookie`);
+				throw new InvalidCredentialsError();
+			}
+
+			const { app_name } = tokenData;
+
+			try {
+				res.clearCookie(`saml.${providerName}`);
+
 				const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 				const { extract } = await sp.parseLoginResponse(idp, 'post', req);
 
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
-				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
+
+				const { accessToken, refreshToken, expires } = await authService.login(
+					providerName,
+					extract.attributes,
+					app_name
+				);
 
 				res.locals['payload'] = {
 					data: {

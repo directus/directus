@@ -32,6 +32,7 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 	const response = await api.post<any>(getAuthEndpoint(provider, share), {
 		...credentials,
 		mode: 'cookie',
+		app_name: 'directus-data-studio',
 	});
 
 	const accessToken = response.data.data.access_token;

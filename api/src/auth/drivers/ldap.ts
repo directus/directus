@@ -403,6 +403,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 		password: Joi.string().required(),
 		mode: Joi.string().valid('cookie', 'json'),
 		otp: Joi.string(),
+		app_name: Joi.string(),
 	}).unknown();
 
 	router.post(
@@ -435,6 +436,7 @@ export function createLDAPAuthRouter(provider: string): Router {
 			const { accessToken, refreshToken, expires } = await authenticationService.login(
 				provider,
 				req.body,
+				req.body?.app_name,
 				req.body?.otp
 			);
 

@@ -29,6 +29,7 @@ export async function getAccountabilityForToken(
 			if (payload.share) accountability.share = payload.share;
 			if (payload.share_scope) accountability.share_scope = payload.share_scope;
 			if (payload.id) accountability.user = payload.id;
+			if (payload.app_name) accountability.app_name = payload.app_name;
 		} else {
 			// Try finding the user with the provided token
 			const database = getDatabase();

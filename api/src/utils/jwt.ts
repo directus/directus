@@ -23,11 +23,11 @@ export function verifyJWT(token: string, secret: string): Record<string, any> {
 }
 
 export function verifyAccessJWT(token: string, secret: string): DirectusTokenPayload {
-	const { id, role, app_access, admin_access, share, share_scope } = verifyJWT(token, secret);
+	const { id, role, app_access, admin_access, share, share_scope, app_name } = verifyJWT(token, secret);
 
 	if (role === undefined || app_access === undefined || admin_access === undefined) {
 		throw new InvalidTokenError();
 	}
 
-	return { id, role, app_access, admin_access, share, share_scope };
+	return { id, role, app_access, admin_access, share, share_scope, app_name };
 }

@@ -39,6 +39,7 @@ export type DirectusTokenPayload = {
 		collection: string;
 		item: string;
 	};
+	app_name?: string;
 };
 
 export type ShareData = {

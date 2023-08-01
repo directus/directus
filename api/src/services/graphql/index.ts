@@ -2079,6 +2079,7 @@ export class GraphQLService {
 					password: new GraphQLNonNull(GraphQLString),
 					mode: AuthMode,
 					otp: GraphQLString,
+					app_name: GraphQLString,
 				},
 				resolve: async (_, args, { req, res }) => {
 					const accountability: Accountability = { role: null };
@@ -2096,7 +2097,7 @@ export class GraphQLService {
 						schema: this.schema,
 					});
 
-					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.otp);
+					const result = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, args?.app_name, args?.otp);
 
 					if (args['mode'] === 'cookie') {
 						res?.cookie(env['REFRESH_TOKEN_COOKIE_NAME'], result['refreshToken'], {

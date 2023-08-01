@@ -50,6 +50,7 @@ watch(
 				ssoLoginLink.pathname = `${getRootPath()}auth/login/${provider.name}`;
 
 				const redirectToLink = new URL(window.location.href);
+				redirectToLink.searchParams.set('app_name', 'directus-data-studio');
 				redirectToLink.searchParams.set('continue', '');
 
 				ssoLoginLink.searchParams.set('redirect', redirectToLink.toString());
