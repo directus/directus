@@ -84,11 +84,9 @@ export class ExtensionManager {
 			...options,
 		};
 
-		const wasWatcherInitialized = this.watcher !== null;
-
-		if (this.options.watch && !wasWatcherInitialized) {
+		if (this.options.watch && !this.watcher.isWatcherInitialized()) {
 			this.watcher.initializeWatcher();
-		} else if (!this.options.watch && wasWatcherInitialized) {
+		} else if (!this.options.watch && this.watcher.isWatcherInitialized()) {
 			await this.watcher.closeWatcher();
 		}
 
@@ -112,7 +110,7 @@ export class ExtensionManager {
 			}
 		}
 
-		if (this.options.watch && !wasWatcherInitialized) {
+		if (this.options.watch && !this.watcher.isWatcherInitialized()) {
 			this.watcher.updateWatchedExtensions(this.extensions);
 		}
 	}

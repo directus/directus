@@ -1,51 +1,51 @@
 import type { ExtensionManager } from "./extensions.js";
-import { init, WASI } from '@wasmer/wasi';
-import { readFile } from "fs/promises";
+import { createRequire } from 'node:module';
 
-await init()
+const require = createRequire(import.meta.url);
+const ivm = require('isolated-vm');
+
 
 export class VmManager {
     private extensionManager: ExtensionManager;
-    private wasmModule: WebAssembly.Module | null = null;
 
     constructor(extensionManager: ExtensionManager) {
         this.extensionManager = extensionManager;
     }
 
     async run() {
-        let isFirstRun = false;
         this.extensionManager
 
-        if (!this.wasmModule) {
-            isFirstRun = true;
-            const wasmBytes = await readFile("./js.wasm");
-            this.wasmModule = await WebAssembly.compile(new Uint8Array(wasmBytes));
-        }
+        const isolateSizeMb = 64;
+        const scriptTimeoutMs = 10_000;
 
-        let wasi = new WASI({
-            args: ["js.wasm", "-f", "/input.js"],
-            preopens: { '/': '/' },
-            env: {},
-        })
+        const isolate = new ivm.Isolate({ memoryLimit: isolateSizeMb });
+        const context = await isolate.createContext();
 
-        wasi.instantiate(this.wasmModule, {});
+        const jail = context.global;
+        jail.setSync('global', jail.derefInto());
 
-        let file = wasi.fs.open("/input.js", { read: true, write: true, create: true });
-        file.writeString(`
-        console.log("hello wasi!")
-        `);
-        file.seek(0);
+        jail.setSync('log', function (...args: any[]) {
+            console.log(...args);
+        });
+
+        jail.setSync('addOne', function (num: number) {
+            return num + 1;
+        });
+
+        jail.setSync('process', { env: {} }, { copy: true });
 
         try {
-            let exitCode = wasi.start();
-            console.log("Done!")
-            let stdout = wasi.getStdoutString();
-            console.log(wasi.getStderrString())
-
-            console.log(`${stdout}(exit code: ${exitCode})`);
-        } catch (error) {
-            console.error(error);
-            console.log(wasi.getStderrString())
+            context.eval(`
+            while (true) {}
+        `, {
+                timeout: scriptTimeoutMs
+            }).then(() => {
+                console.log('Script completed successfully');
+            }).catch((err: any) => {
+                console.log('Script failed:', err);
+            })
+        } catch (e) {
+            console.log('Script failed:', e);
         }
     }
 }
