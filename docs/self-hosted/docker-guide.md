@@ -199,32 +199,7 @@ For more information, please see the config section on
 The Directus Docker Image contains all optional dependencies supported in the API. This means the Docker image can be
 used with most of the supported databases and storage adapters without having to create a custom image.
 
-To run Directus, you currently need one of the following databases:
-
-| Database                              | Version     |
-| ------------------------------------- | ----------- |
-| PostgreSQL                            | 10+         |
-| MySQL <sup>[1]</sup>                  | 5.7.8+ / 8+ |
-| SQLite                                | 3+          |
-| MS SQL Server                         | 13+         |
-| MariaDB <sup>[2]</sup>                | 10.2.7+     |
-| CockroachDB <sup>[2]</sup>            | 21.1.13+    |
-| OracleDB<sup>[2]</sup> <sup>[3]</sup> | 19+         |
-
-<sup>[1]</sup> MySQL 8+ requires
-[mysql_native_password](https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors)
-to be enabled\
-<sup>[2]</sup> Older versions may work, but aren't officially supported. Use at your own risk. \
-<sup>[3]</sup> Make sure to install `node-oracledb` and it's system dependencies when using OracleDB
-
-::: warning OracleDB
-
-OracleDB's Node client (`node-oracledb`) requires a couple more native dependencies, and specific configurations in
-order to run. The official Directus Docker image does not include these dependencies. See
-[https://blogs.oracle.com/opal/dockerfiles-for-node-oracledb-are-easy-and-simple](https://blogs.oracle.com/opal/dockerfiles-for-node-oracledb-are-easy-and-simple)
-for more information on what to include for OracleDB.
-
-:::
+For third party software like Databases, Directus aims to be compatible with their respective current LTS version. See https://endoflife.date/ to make sure your database is still currently supported.
 
 ## Requirements
 
