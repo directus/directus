@@ -21,7 +21,7 @@ export interface AuthenticationConfig {
 }
 
 export interface AuthenticationClient<_Schema extends object> {
-	login(email: string, password: string, options: loginOptions): Promise<AuthenticationData>;
+	login(email: string, password: string, options?: loginOptions): Promise<AuthenticationData>;
 	refresh(): Promise<AuthenticationData>;
 	logout(): Promise<void>;
 
