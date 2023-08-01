@@ -23,13 +23,13 @@
 		/>
 
 		<div class="footer">
-			<span :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
+			<button :class="{ active: showSelectionOnly === false }" @click="showSelectionOnly = false">
 				{{ t('interfaces.select-multiple-checkbox-tree.show_all') }}
-			</span>
+			</button>
 			/
-			<span :class="{ active: showSelectionOnly === true }" @click="showSelectionOnly = true">
+			<button :class="{ active: showSelectionOnly === true }" :disabled="value == null || value.length === 0" @click="showSelectionOnly = true">
 				{{ t('interfaces.select-multiple-checkbox-tree.show_selected') }}
-			</span>
+			</button>
 		</div>
 	</div>
 </template>
@@ -109,17 +109,21 @@ const searchDebounced = ref('');
 	border-top-left-radius: var(--border-radius);
 }
 
-.footer > span {
+.footer > button {
 	color: var(--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
 }
 
-.footer > span:hover {
+.footer > button:hover {
 	color: var(--foreground-normal);
 }
 
-.footer > span.active {
+.footer > button.active {
 	color: var(--primary);
+}
+
+.footer > button:disabled {
+	cursor: not-allowed;
 }
 </style>

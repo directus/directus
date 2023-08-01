@@ -26,10 +26,10 @@ export function useVisibleChildren(
 		if (showSelectionOnly.value) {
 			options = options.filter(
 				(child) =>
-					modelValue.value?.includes(child[itemValue.value]) ||
+					modelValue.value.includes(child[itemValue.value]) ||
 					childrenHaveValueMatch(child[itemChildren.value]) ||
-					(parentValue.value && modelValue.value?.includes(parentValue.value)) ||
-					modelValue.value?.includes(value.value)
+					(parentValue.value && modelValue.value.includes(parentValue.value)) ||
+					modelValue.value.includes(value.value)
 			);
 		}
 
