@@ -202,7 +202,7 @@ export const usePresetsStore = defineStore({
 					const updatedPreset = {
 						...response.data.data,
 						id: id,
-					}
+					};
 
 					if (preset.id === updatedPreset.id) {
 						return updatedPreset;

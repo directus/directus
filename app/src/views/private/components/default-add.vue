@@ -6,44 +6,41 @@
 
 		<v-card>
 			<v-card-title>
-				{{t('create_default')}}
+				{{ t('create_default') }}
 			</v-card-title>
 
 			<v-card-text>
+				<div class="fields">
+					<interface-system-scope class="full" :value="bookmarkValue.scope" @input="setScope" />
 
-						<div class="fields">
+					<v-divider class="full">Delete Existing Presets</v-divider>
 
-							<interface-system-scope class="full" :value="bookmarkValue.scope" @input="setScope"  />
+					<interface-select-multiple-checkbox
+						class="full"
+						:choices="availablePurgeOptions"
+						:value="bookmarkValue.purge"
+						@input="setPurge"
+					/>
 
-							<v-divider   class="full">
-								Delete Existing Presets
-							</v-divider>
+					<small class="full">
+						<p class="type-note">Deleting existing presets allows you to override users/roles current presets.</p>
+					</small>
 
-							<interface-select-multiple-checkbox
-								class="full"
-								:choices="availablePurgeOptions"
-								:value="bookmarkValue.purge"
-								@input="setPurge"
-
-							/>
-
-							<small class="full">
-								<p class="type-note">Deleting existing presets allows you to override users/roles current presets.</p>
-							</small>
-
-							<v-notice v-if="bookmarkValue.purge.length > 0" class="full" type="warning">
-								{{ t('create_default_delete_warning') }}
-							</v-notice>
-
-						</div>
-
+					<v-notice v-if="bookmarkValue.purge.length > 0" class="full" type="warning">
+						{{ t('create_default_delete_warning') }}
+					</v-notice>
+				</div>
 			</v-card-text>
 
 			<v-card-actions>
 				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :loading="saving" :kind="bookmarkValue.purge.length > 0 ? 'warning' : 'normal'" @click="$emit('save', saveBookmarkValue)" >
+				<v-button
+					:loading="saving"
+					:kind="bookmarkValue.purge.length > 0 ? 'warning' : 'normal'"
+					@click="$emit('save', saveBookmarkValue)"
+				>
 					{{ bookmarkValue.purge.length == 0 ? t('save') : 'Save and Delete' }}
 				</v-button>
 			</v-card-actions>
@@ -55,14 +52,13 @@
 import { reactive, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-
 defineProps<{
 	modelValue?: boolean;
 	saving?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(e: 'save', value: { user : string | null; role : string | null; }): void;
+	(e: 'save', value: { user: string | null; role: string | null }): void;
 	(e: 'update:modelValue', value: boolean): void;
 }>();
 
@@ -74,60 +70,57 @@ const bookmarkValue = reactive({
 });
 
 const saveBookmarkValue = computed(() => {
-
-	if (bookmarkValue?.scope?.startsWith('user_')){
+	if (bookmarkValue?.scope?.startsWith('user_')) {
 		return {
 			user: bookmarkValue.scope.replace('user_', ''),
 			role: null,
 			purge: bookmarkValue.purge,
-		}
-	} else if (bookmarkValue?.scope?.startsWith('role_')){
+		};
+	} else if (bookmarkValue?.scope?.startsWith('role_')) {
 		return {
 			user: null,
 			role: bookmarkValue.scope.replace('role_', ''),
 			purge: bookmarkValue.purge,
-		}
+		};
 	} else {
 		return {
 			user: null,
 			role: null,
 			purge: bookmarkValue.purge,
-		}
+		};
 	}
 });
 
-
 const availablePurgeOptions = computed(() => {
-
-	if(bookmarkValue.scope == "all"){
+	if (bookmarkValue.scope == 'all') {
 		return [
-		{
-			text: t('create_default_options.all_users'),
-			value: 'all_users',
-		},
-		{
-			text: t('create_default_options.all_roles'),
-			value: 'all_roles',
-		}
-	];
-	} else if(bookmarkValue.scope.startsWith('role')) {
+			{
+				text: t('create_default_options.all_users'),
+				value: 'all_users',
+			},
+			{
+				text: t('create_default_options.all_roles'),
+				value: 'all_roles',
+			},
+		];
+	} else if (bookmarkValue.scope.startsWith('role')) {
 		return [
-		{
-			text: t('create_default_options.all_role_users'),
-			value: 'all_role_users',
-		},
-		{
-			text: t('create_default_options.all_role'),
-			value: 'all_role',
-		},
-	];
-	} else if(bookmarkValue.scope.startsWith('user')) {
+			{
+				text: t('create_default_options.all_role_users'),
+				value: 'all_role_users',
+			},
+			{
+				text: t('create_default_options.all_role'),
+				value: 'all_role',
+			},
+		];
+	} else if (bookmarkValue.scope.startsWith('user')) {
 		return [
-		{
-			text: t('create_default_options.all_user'),
-			value: 'all_user',
-		}
-	];
+			{
+				text: t('create_default_options.all_user'),
+				value: 'all_user',
+			},
+		];
 	}
 
 	return [];

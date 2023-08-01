@@ -62,7 +62,7 @@ export function usePreset(
 
 		localPreset.value = {
 			...localPreset.value,
-			id: updatedValues.id
+			id: updatedValues.id,
 		};
 
 		bookmarkSaved.value = true;
@@ -182,7 +182,7 @@ export function usePreset(
 		busy,
 		clearLocalSave,
 		localPreset,
-		saveCurrentAsDefault
+		saveCurrentAsDefault,
 	};
 
 	/**
@@ -210,10 +210,10 @@ export function usePreset(
 
 	function initLocalPreset() {
 		if (bookmarkExists.value) {
-			return localPreset.value =  presetsStore.getBookmark(Number(bookmark.value))!;
+			return (localPreset.value = presetsStore.getBookmark(Number(bookmark.value))!);
 		}
 
-		return localPreset.value =  presetsStore.getPresetForCollection(collection.value)!;
+		return (localPreset.value = presetsStore.getPresetForCollection(collection.value)!);
 	}
 
 	/**
@@ -314,7 +314,7 @@ export function usePreset(
 			});
 		}
 
-		if(filterOptions.length > 0) {
+		if (filterOptions.length > 0) {
 			// if we need to delete presets, we need to get their keys
 
 			const response = await api.get(`/presets`, {
@@ -328,9 +328,9 @@ export function usePreset(
 						},
 						_or: filterOptions,
 					},
-					fields: ['id']
-				}
-			})
+					fields: ['id'],
+				},
+			});
 
 			const keys = response.data.data.map((preset: any) => preset.id);
 
@@ -340,6 +340,6 @@ export function usePreset(
 		return await saveCurrentAsPreset({
 			user: defaultPreset.user,
 			role: defaultPreset.role,
-		})
+		});
 	}
 }
