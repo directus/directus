@@ -17,7 +17,7 @@ import { mergeWith } from 'lodash';
 import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { usePermissions } from './use-permissions';
 
-type UsableItem<T> = {
+type UsableItem<T extends Record<string, any>> = {
 	edits: Ref<Record<string, any>>;
 	hasEdits: Ref<boolean>;
 	item: Ref<T | null>;
