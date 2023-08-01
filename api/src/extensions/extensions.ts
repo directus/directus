@@ -18,7 +18,7 @@ import { ExtensionsService } from './service.js';
 import { RegistrationManager } from './registration.js';
 import { InstallationManager } from './installation.js';
 import { WatcherManager } from './watcher.js';
-import { WasmManager } from './wasm.js';
+import { VmManager } from './vm.js';
 
 let extensionManager: ExtensionManager;
 
@@ -61,7 +61,7 @@ export class ExtensionManager {
 	public registration: RegistrationManager;
 	public installation: InstallationManager;
 	public watcher: WatcherManager;
-	public wasm: WasmManager;
+	public vm: VmManager;
 
 	constructor() {
 		this.options = defaultOptions;
@@ -71,10 +71,10 @@ export class ExtensionManager {
 		this.registration = new RegistrationManager(this);
 		this.installation = new InstallationManager(this);
 		this.watcher = new WatcherManager(this);
-		this.wasm = new WasmManager(this);
+		this.vm = new VmManager(this);
 
 		setTimeout(() => {
-			this.wasm.run();
+			this.vm.run();
 		}, 1000)
 	}
 

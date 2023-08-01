@@ -4,7 +4,7 @@ import { readFile } from "fs/promises";
 
 await init()
 
-export class WasmManager {
+export class VmManager {
     private extensionManager: ExtensionManager;
     private wasmModule: WebAssembly.Module | null = null;
 
