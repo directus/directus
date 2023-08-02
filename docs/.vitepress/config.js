@@ -799,10 +799,6 @@ function sidebarUserGuide() {
 					link: '/user-guide/cloud/accounts',
 				},
 				{
-					text: 'Project Settings',
-					link: '/user-guide/cloud/project-settings',
-				},
-				{
 					text: 'Glossary',
 					link: '/user-guide/cloud/glossary',
 				},
@@ -814,8 +810,8 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
-					text: 'Settings',
-					link: '/user-guide/settings/settings',
+					text: 'Project Settings',
+					link: '/user-guide/settings/project-settings',
 				},
 				{
 					text: 'Preset and Bookmarks',

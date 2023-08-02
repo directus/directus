@@ -11,7 +11,7 @@ export const request = async <Output = any>(
 	options: RequestInit,
 	formatter?: ((data: any) => Output) | null
 ): Promise<Output> => {
-	const headers =
+	options.headers =
 		typeof options.headers === 'object' && !Array.isArray(options.headers)
 			? (options.headers as Record<string, string>)
 			: {};
@@ -26,14 +26,25 @@ export const request = async <Output = any>(
 
 	const outputFormatter = formatter !== undefined && formatter !== null ? formatter : defaultFormatter;
 
-	options.headers = headers;
-
 	const response = await globalThis
 		.fetch(url, options)
 		.then(async (response) => {
-			if (!response.ok) throw await response.json();
-			if (formatter === null) return response.text();
-			return response.json();
+			const type = response.headers.get('Content-Type')?.toLowerCase();
+
+			if (type?.startsWith('application/json')) {
+				const result = await response.json();
+				if (!response.ok) throw result;
+				return result;
+			}
+
+			if (type?.startsWith('text/html') || type?.startsWith('text/plain')) {
+				const result = await response.text();
+				if (!response.ok) throw result;
+				return result;
+			}
+
+			// empty body fallback
+			return;
 		})
 		.catch((err) => {
 			throw err;

@@ -12,7 +12,6 @@ export const deleteShares =
 		path: `/shares`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deleteShare =
 	() => ({
 		path: `/shares/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

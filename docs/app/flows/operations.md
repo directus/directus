@@ -359,7 +359,7 @@ This operation makes a request to another URL.
 
 **Payload**
 
-When an operation completes successfully, the `response` is appended under its `<operationKey`.
+When an operation completes successfully, the `response` is appended under its `<operationKey>`.
 
 ## Sleep
 

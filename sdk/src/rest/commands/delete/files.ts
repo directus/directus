@@ -12,7 +12,6 @@ export const deleteFiles =
 		path: `/files`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deleteFile =
 	() => ({
 		path: `/files/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

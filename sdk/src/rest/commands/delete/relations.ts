@@ -15,5 +15,4 @@ export const deleteRelation =
 	() => ({
 		path: `/relations/${collection}/${field}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

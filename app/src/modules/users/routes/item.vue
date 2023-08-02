@@ -98,7 +98,7 @@
 		</template>
 
 		<template #navigation>
-			<users-navigation :current-role="item?.role.id || role" />
+			<users-navigation :current-role="item?.role?.id ?? role" />
 		</template>
 
 		<div class="user-item">
@@ -132,7 +132,7 @@
 							<v-icon name="place" small />
 							{{ item.location }}
 						</div>
-						<v-chip v-if="item.role.name" :class="item.status" small>{{ item.role.name }}</v-chip>
+						<v-chip v-if="item.role?.name" :class="item.status" small>{{ item.role.name }}</v-chip>
 					</template>
 				</div>
 			</div>
@@ -192,7 +192,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import { useCollection } from '@directus/composables';
-import { Field } from '@directus/types';
+import type { Field, User } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -237,7 +237,7 @@ const {
 	isArchived,
 	validationErrors,
 	refresh,
-} = useItem(
+} = useItem<User>(
 	ref('directus_users'),
 	primaryKey,
 	props.primaryKey !== '+'
@@ -247,7 +247,7 @@ const {
 		: undefined
 );
 
-const user = computed(() => ({ ...item.value, role: item.value?.role.id }));
+const user = computed(() => ({ ...item.value, role: item.value?.role?.id }));
 
 if (props.role) {
 	edits.value = {
