@@ -1,3 +1,3 @@
-import { AutoSequenceHelper } from "../types.js";
+import { AutoSequenceHelper } from '../types.js';
 
-export class AutoIncrementHelperDefault extends AutoSequenceHelper { }
+export class AutoIncrementHelperDefault extends AutoSequenceHelper {}
