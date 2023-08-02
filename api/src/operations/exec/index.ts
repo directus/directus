@@ -1,6 +1,5 @@
 import { defineOperationApi } from '@directus/utils';
 import { createRequire } from 'node:module';
-
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
 
@@ -49,7 +48,10 @@ export default defineOperationApi<Options>({
 				logger.error(err);
 				throw err;
 			});
-		const result = resultRef.copySync(); // TODO: Could be async
+		const result = await resultRef.copy().catch((err: any) => {
+			logger.error(err);
+			throw err;
+		});
 
 		// Memory cleanup
 		resultRef.release();

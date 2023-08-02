@@ -1,142 +1,180 @@
-import { VMError } from 'vm2';
 import { test, expect } from 'vitest';
-
 import config from './index.js';
+import logger from '../../logger.js';
+logger.level = 'silent'; // Avoid logging to keep output test related
 
-test('Rejects when modules are used without modules being allowed', async () => {
+test('Rejects when Isolate uses more than allowed memory', async () => {
 	const testCode = `
-		const test = require('test');
+		const storage = [];
+		const twoMegabytes = 1024 * 1024 * 2;
+		while (true) {
+			const array = new Uint8Array(twoMegabytes);
+			for (let ii = 0; ii < twoMegabytes; ii += 4096) {
+				array[ii] = 1; // we have to put something in the array to flush to real memory
+			}
+			storage.push(array);
+		}
 	`;
-
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_EXEC_ALLOWED_MODULES: '',
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
 			},
+			logger,
 		} as any)
-	).rejects.toEqual(new VMError("Cannot find module 'test'"));
+	).rejects.toThrow('Array buffer allocation failed');
+});
+
+test('Rejects when operation runs for longer than allowed ', async () => {
+	const testCode = `
+		while (true) {}
+	`;
+	await expect(
+		config.handler({ code: testCode }, {
+			data: {},
+			env: {
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 500,
+			},
+			logger,
+		} as any)
+	).rejects.toThrow('Script execution timed out.');
+});
+
+test('Rejects when cjs modules are used', async () => {
+	const testCode = `
+		const test = require('node:fs');
+	`;
+	await expect(
+		config.handler({ code: testCode }, {
+			data: {},
+			env: {
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+			},
+			logger,
+		} as any)
+	).rejects.toThrow('require is not defined');
+});
+
+test('Rejects when esm modules are used', async () => {
+	const testCode = `
+		import { readFileSync } from 'node:fs';
+	`;
+	await expect(
+		config.handler({ code: testCode }, {
+			data: {},
+			env: {
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+			},
+			logger,
+		} as any)
+	).rejects.toThrow('Cannot use import statement outside a module [<isolated-vm>:2:3]');
 });
 
 test('Rejects when code contains syntax errors', async () => {
 	const testCode = `
 		~~
 	`;
-
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_EXEC_ALLOWED_MODULES: '',
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
 			},
+			logger,
 		} as any)
-	).rejects.toEqual(new SyntaxError('Unexpected end of input'));
+	).rejects.toThrow('Unexpected end of input [<isolated-vm>:3:2]');
 });
 
-test('Rejects when returned function does something illegal', async () => {
+test('Rejects when code does something illegal', async () => {
 	const testCode = `
 		module.exports = function() {
 			return a + b;
 		};
 	`;
-
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_EXEC_ALLOWED_MODULES: '',
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
 			},
+			logger,
 		} as any)
-	).rejects.toEqual(new ReferenceError('a is not defined'));
+	).rejects.toThrow('a is not defined');
 });
 
 test("Rejects when code doesn't return valid function", async () => {
 	const testCode = `
 		module.exports = false;
 	`;
-
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_EXEC_ALLOWED_MODULES: '',
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
 			},
+			logger,
 		} as any)
-	).rejects.toEqual(new TypeError('fn is not a function'));
+	).rejects.toThrow('module.exports is not a function');
 });
 
-test('Rejects returned function throws errors', async () => {
+test('Rejects when returned function throws', async () => {
 	const testCode = `
 		module.exports = function () {
-			throw new Error('test');
+			throw new Error('yup, this failed');
 		};
 	`;
-
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_EXEC_ALLOWED_MODULES: '',
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
 			},
+			logger,
 		} as any)
-	).rejects.toEqual(new Error('test'));
+	).rejects.toThrow('yup, this failed');
 });
 
-test('Executes function when valid', () => {
+test('Resolves when synchronous function is valid', async () => {
 	const testCode = `
 		module.exports = function (data) {
-			return { result: data.input + ' test' };
+			return { result: data.greeting + ', I ran synchronously' };
 		};
 	`;
-
-	expect(
+	await expect(
 		config.handler({ code: testCode }, {
-			data: {
-				input: 'start',
-			},
+			data: { greeting: 'Hello' },
 			env: {
-				FLOWS_EXEC_ALLOWED_MODULES: '',
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
 			},
+			logger,
 		} as any)
-	).resolves.toEqual({ result: 'start test' });
+	).resolves.toEqual({ result: 'Hello, I ran synchronously' });
 });
 
-test('Allows built-in modules that are whitelisted', () => {
+test('Resolves when asynchronous function is valid', async () => {
 	const testCode = `
-		const crypto = require('crypto');
-
 		module.exports = async function (data) {
-			return {
-				result: crypto.createHash('sha256').update('directus').digest('hex'),
-			};
+			return { result: data.greeting + ', I ran asynchronously' };
 		};
 	`;
-
-	expect(
+	await expect(
 		config.handler({ code: testCode }, {
-			data: {},
+			data: { greeting: 'Hello' },
 			env: {
-				FLOWS_EXEC_ALLOWED_MODULES: 'crypto',
+				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
+				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
 			},
+			logger,
 		} as any)
-	).resolves.toEqual({ result: '943e891bf6042f2db8926493c0f94e45b72cb58a21145fdfa3c23b5c057e4b2d' });
-});
-
-test('Allows external modules that are whitelisted', () => {
-	const testCode = `
-		const bytes = require('bytes');
-
-		module.exports = function (data) {
-			return { result: bytes(1000) };
-		};
-	`;
-
-	expect(
-		config.handler({ code: testCode }, {
-			data: {},
-			env: {
-				FLOWS_EXEC_ALLOWED_MODULES: 'bytes',
-			},
-		} as any)
-	).resolves.toEqual({ result: '1000B' });
+	).resolves.toEqual({ result: 'Hello, I ran asynchronously' });
 });
