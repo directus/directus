@@ -11,13 +11,19 @@ export default {
 				slug: tag.slug,
 				title: tag.title,
 				type: tag.type,
-				articles: tag.developer_articles.map((article) => ({
-					title: article.developer_articles_id.title,
-					slug: article.developer_articles_id.slug,
-					date_published: article.developer_articles_id.date_published,
-					image: article.developer_articles_id.image,
-					author: article.developer_articles_id.author,
-				})),
+				articles: tag.developer_articles
+					.map((article) => {
+						if (!article.developer_articles_id) return;
+
+						return {
+							title: article.developer_articles_id.title,
+							slug: article.developer_articles_id.slug,
+							date_published: article.developer_articles_id.date_published,
+							image: article.developer_articles_id.image,
+							author: article.developer_articles_id.author,
+						};
+					})
+					.filter((article) => article),
 			},
 		}));
 
