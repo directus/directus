@@ -9,7 +9,7 @@ readTime: 2 min read
 > Webhooks are configured within the App (no code required) and send HTTP requests when a specific event is triggered.
 > [Learn more about Webhooks](https://en.wikipedia.org/wiki/Webhook).
 
-:::warning
+::: warning
 
 Webhooks are a deprecated feature and will be removed from the platform. This functionality has been fully replaced by
 [Flows](/app/flows).

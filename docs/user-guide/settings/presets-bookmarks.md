@@ -10,7 +10,7 @@ readTime: 3 min read
 > Presets are items which store the state of a Collection Page. This allows you to set layout defaults or define
 > bookmarks to specific datasets.
 
-:::tip Before You Begin
+::: tip Before You Begin
 
 We recommend you read through the [Quickstart Guide](/getting-started/quickstart) to get an overview of the platform
 first, then see our guide on the [Collection Page](/user-guide/content-module/content/collections) so you're familiar
@@ -18,7 +18,7 @@ with its features and functionalities.
 
 :::
 
-:::tip Learn More
+::: tip Learn More
 
 To manage Presets and Bookmarks programmatically, see our [API guide on Presets](/reference/system/presets).
 
@@ -66,7 +66,7 @@ becomes a Bookmark. If **Name** is left blank, the preset will be a Default. To 
    preset saves all of the information needed to recreate this Layout Preview, just as it is shown.
 5. Click <span mi btn>check</span> to confirm.
 
-:::tip Preset Priority
+::: tip Preset Priority
 
 Multiple Defaults can be created for the same Collection Page for the same user. When this happens, the preset priority
 is: User, then Role, then Global.

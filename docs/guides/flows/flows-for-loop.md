@@ -13,7 +13,7 @@ author: Eron Powell
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -38,7 +38,7 @@ However, to achieve a "for-loop", you can instead use the [trigger flow](/app/fl
 to pass the data into an [another flow](/app/flows/triggers#another-flow) trigger. When this type of trigger receives an
 array as a Payload, the flow runs for each item in the array individually.
 
-:::tip
+::: tip
 
 Remember: for some use-cases, you can also iterate through data in a [Run Script](/app/flows/operations#run-script)
 operation.
@@ -47,7 +47,7 @@ operation.
 
 ## The Recipe
 
-:::tip Requirements
+::: tip Requirements
 
 You'll need a flow with an array of data on its data chain.
 

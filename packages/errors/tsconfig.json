@@ -1,5 +1,5 @@
 {
-	"extends": "@directus/tsconfig/node18-esm.json",
+	"extends": "@directus/tsconfig/node18-esm",
 	"compilerOptions": {
 		"isolatedModules": true
 	},

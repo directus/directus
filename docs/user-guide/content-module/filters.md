@@ -48,7 +48,7 @@ From here, you can set multiple Filters at once, filter by
 [Fields in related Collections](#filtering-by-related-collections), set Values with
 [Dynamic Variables](#dynamic-variables), as well as apply [AND/OR Groups](#and-or-groups).
 
-:::tip Operators
+::: tip Operators
 
 The Field type will determine the kinds of Operators that can be used on it. In fact, some Fields cannot be filtered at
 all (read more in [Unfilterable Fields](#unfilterable-fields)). Once a Field is selected, the permitted operators will

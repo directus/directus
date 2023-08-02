@@ -12,7 +12,7 @@ author: Bryant Gillespie
 
 > {{ $frontmatter.description }}
 
-:::tip Author: {{$frontmatter.author}}
+::: tip Author: {{$frontmatter.author}}
 
 <!-- **Skill Level:** {{$frontmatter.skill_level}}\ -->
 
@@ -29,10 +29,10 @@ This recipe explains how to schedule content to be published on a future date fo
 Scheduling content has fewer steps for a dynamic site. Since you are calling your Directus API at the time that a
 visitor requests a page from your site, all you need to do is add a filter to your query.
 
-:::info Note
+::: info Note
 
 If your site is statically generated and your content fetched at build time, please
-[follow the recipe for static sites](/guides/headless-cms/schedule-content/static-sites).
+[follow the guide for static sites](/guides/headless-cms/schedule-content/static-sites).
 
 :::
 
@@ -42,7 +42,7 @@ If your site is statically generated and your content fetched at build time, ple
 
 ## How-To Guide
 
-:::tip Requirements
+::: tip Requirements
 
 You’ll need to have already created a collection for your site content like `articles` or `posts` or `pages` with a
 field `status` that controls the published state.
@@ -85,7 +85,7 @@ field `status` that controls the published state.
 
 #### Examples
 
-:::tip
+::: tip
 
 In these examples, we're using an [AND logical operator](/reference/filter-rules#logical-operators) to only return
 records that match both conditions. This provides a little more control over your published content by ensuring only
@@ -93,25 +93,33 @@ articles that have a publish date AND have the `published` state are displayed o
 
 :::
 
-Using the [Directus JavaScript SDK](/reference/sdk) (preferred)
+Using the [Directus JavaScript SDK](/guides/sdk/getting-started) (preferred)
 
 ```js
-const articles = await directus.items('articles').readByQuery({
-	filter: {
-		_and: [
-			{
-				status: {
-					_eq: 'published',
+// Initialize the SDK.
+import { createDirectus } from '@directus/sdk';
+import { rest, readItems } from '@directus/sdk/rest';
+
+const directus = createDirectus('https://directus.example.com').with(rest());
+
+const articles = await directus.request(
+	readItems('articles', {
+		filter: {
+			_and: [
+				{
+					status: {
+						_eq: 'published',
+					},
 				},
-			},
-			{
-				date_published: {
-					_lte: '$NOW',
+				{
+					date_published: {
+						_lte: '$NOW',
+					},
 				},
-			},
-		],
-	},
-});
+			],
+		},
+	})
+);
 ```
 
 Using the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) (JavaScript)
