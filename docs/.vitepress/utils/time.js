@@ -48,7 +48,7 @@ function getFriendlyDate(dateString) {
 	const date = d.getDate();
 
 	const dateSuffix = (date) => {
-		if (date > 3 && d < 21) return 'th';
+		if (date > 3 && date < 21) return 'th';
 
 		switch (date % 10) {
 			case 1:
@@ -64,8 +64,7 @@ function getFriendlyDate(dateString) {
 
 	const monthIndex = d.getMonth();
 	const monthName = months[monthIndex];
-	// const dayName = daysAbbr[d.getDay()];
-	const formatted = ` ${monthName} ${date}${dateSuffix()}, ${year}`;
+	const formatted = ` ${monthName} ${date}${dateSuffix(date)}, ${year}`;
 	return formatted;
 }
 
