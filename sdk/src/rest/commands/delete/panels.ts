@@ -12,7 +12,6 @@ export const deletePanels =
 		path: `/panels`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deletePanel =
 	() => ({
 		path: `/panels/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

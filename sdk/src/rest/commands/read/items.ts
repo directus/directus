@@ -1,4 +1,3 @@
-import type { PrimaryKey } from '@directus/types';
 import type { ApplyQueryFields, CollectionType, Query, RegularCollections } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -55,7 +54,7 @@ export const readItem =
 		const TQuery extends Query<Schema, CollectionType<Schema, Collection>>
 	>(
 		collection: Collection,
-		key: PrimaryKey,
+		key: string | number,
 		query?: TQuery
 	): RestCommand<ReadItemOutput<Schema, Collection, TQuery>, Schema> =>
 	() => {

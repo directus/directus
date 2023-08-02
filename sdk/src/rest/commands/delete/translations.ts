@@ -12,7 +12,6 @@ export const deleteTranslations =
 		path: `/translations`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deleteTranslation =
 	() => ({
 		path: `/translations/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});

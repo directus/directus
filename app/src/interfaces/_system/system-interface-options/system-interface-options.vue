@@ -40,7 +40,7 @@ const props = defineProps<{
 	interface?: string;
 	collection?: string;
 	disabled?: boolean;
-	context?: ExtensionOptionsContext;
+	context?: () => ExtensionOptionsContext;
 }>();
 
 const emit = defineEmits<{
@@ -76,7 +76,7 @@ const optionsFields = computed(() => {
 
 	if (typeof selectedInterface.value.options === 'function') {
 		optionsObjectOrArray = selectedInterface.value.options(
-			props.context ?? {
+			props.context?.() ?? {
 				field: {
 					type: 'unknown',
 				},

@@ -9,5 +9,4 @@ export const readGraphqlSdl =
 	() => ({
 		method: 'GET',
 		path: scope === 'item' ? '/server/specs/graphql' : '/server/specs/graphql/system',
-		onResponse: null,
 	});

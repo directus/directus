@@ -12,7 +12,6 @@ export const deleteRoles =
 		path: `/roles`,
 		body: JSON.stringify(keys),
 		method: 'DELETE',
-		onResponse: null,
 	});
 
 /**
@@ -25,5 +24,4 @@ export const deleteRole =
 	() => ({
 		path: `/roles/${key}`,
 		method: 'DELETE',
-		onResponse: null,
 	});
