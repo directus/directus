@@ -69,11 +69,7 @@ export class ExtensionManager {
 		this.registration = new RegistrationManager(this);
 		this.installation = new InstallationManager(this);
 		this.watcher = new WatcherManager(this);
-		this.vm = new VmManager(this);
-
-		setTimeout(() => {
-			this.vm.run();
-		}, 1000)
+		this.vm = new VmManager(this, this.registration.endpointRouter);
 	}
 
 	public async initialize(options: Partial<Options> = {}): Promise<void> {

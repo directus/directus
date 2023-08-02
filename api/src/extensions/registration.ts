@@ -67,8 +67,6 @@ export class RegistrationManager {
 		this.extensionManager = extensionManager;
 		this.endpointRouter = Router();
 		this.appExtensionChunks = new Map();
-
-		console.log(express.Router())
 	}
 
 	public async registerHooks(): Promise<void> {
@@ -77,6 +75,15 @@ export class RegistrationManager {
 			.filter((extension) => extension.type === 'hook') as ApiExtension[];
 
 		for (const hook of hooks) {
+			console.log(hook.name, hook.secure)
+			if (hook.secure) {
+				const hookPath = path.resolve(hook.path, hook.entrypoint);
+
+				this.extensionManager.vm.runHook(hookPath, hook.name);
+
+				return
+			}
+
 			try {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
 
@@ -102,6 +109,12 @@ export class RegistrationManager {
 			.filter((extension) => extension.type === 'endpoint') as ApiExtension[];
 
 		for (const endpoint of endpoints) {
+			if (endpoint.secure) {
+				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+				this.extensionManager.vm.runEndpoint(endpointPath, endpoint.name)
+				return
+			}
+
 			try {
 				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
 
@@ -164,6 +177,15 @@ export class RegistrationManager {
 			.filter((extension) => extension.type === 'bundle') as BundleExtension[];
 
 		for (const bundle of bundles) {
+
+			if (bundle.secure) {
+				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
+
+				this.extensionManager.vm.runBundle(bundlePath, bundle.name)
+
+				return
+			}
+
 			try {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
@@ -284,10 +306,6 @@ export class RegistrationManager {
 
 		const scopedRouter = express.Router();
 		this.endpointRouter.use(`/${routeName}`, scopedRouter);
-
-		scopedRouter.get('/test', function () {
-			console.log(structuredClone(arguments[0]), structuredClone(arguments[1]))
-		})
 
 		register(scopedRouter, {
 			services,

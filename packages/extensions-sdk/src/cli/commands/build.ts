@@ -415,6 +415,7 @@ async function buildBundleExtension({
 }
 
 async function buildExtension(config: RollupConfig | RollupConfig[]) {
+	console.log(config)
 	const configs = Array.isArray(config) ? config : [config];
 
 	const spinner = ora(chalk.bold('Building Directus extension...')).start();
@@ -572,9 +573,8 @@ function getRollupOutputOptions({
 function formatRollupError(error: RollupError): string {
 	let message = '';
 
-	message += `${chalk.bold.red(`[${error.name}]`)} ${error.message}${
-		error.plugin ? ` (plugin ${error.plugin})` : ''
-	}\n`;
+	message += `${chalk.bold.red(`[${error.name}]`)} ${error.message}${error.plugin ? ` (plugin ${error.plugin})` : ''
+		}\n`;
 
 	if (error.url) {
 		message += '\n' + chalk.green(error.url);

@@ -45,6 +45,7 @@ type ExtensionBase = {
 	icon?: string;
 	version?: string;
 	host?: string;
+	secure: boolean;
 	local: boolean;
 };
 
