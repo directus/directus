@@ -147,7 +147,6 @@ gtag('config', 'UA-24637628-7');
 			indexName: 'directus',
 		},
 		sidebar: {
-			'/blog/': sidebar(),
 			'/': sidebar(),
 			'/user-guide/': sidebarUserGuide(),
 			'/packages/': sidebarTypedocs(),
