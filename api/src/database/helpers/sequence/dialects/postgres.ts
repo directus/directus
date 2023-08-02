@@ -7,7 +7,7 @@ export class AutoIncrementHelperPostgres extends AutoSequenceHelper {
 	 * We're assuming that the default sequence name is being used,
 	 * which is the `${tableName}_${columnName}_seq`.
 	 */
-	override resetAutoIncrementSequence(_table: string, _column: string): Knex.Raw | null {
-		return this.knex.raw(`SELECT SETVAL('${_table}_${_column}_seq', (SELECT MAX(${_column}) FROM ${_table}));`);
+	override resetAutoIncrementSequence(table: string, column: string): Knex.Raw | null {
+		return this.knex.raw(`SELECT SETVAL('${table}_${column}_seq', (SELECT MAX(${column}) FROM ${table}));`);
 	}
 }
