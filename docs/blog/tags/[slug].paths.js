@@ -2,7 +2,7 @@ export default {
 	async paths() {
 		const response = await (
 			await fetch(
-				'https://marketing.directus.app/items/docs_tags?fields=*,developer_articles.developer_articles_id.title,developer_articles.developer_articles_id.date_published,developer_articles.developer_articles_id.slug,developer_articles.developer_articles_id.image,developer_articles.developer_articles_id.author.first_name,developer_articles.developer_articles_id.author.last_name,developer_articles.developer_articles_id.author.avatar,author.title&sort=-date_published'
+				'https://marketing.directus.app/items/docs_tags?fields=*,developer_articles.developer_articles_id.title,developer_articles.developer_articles_id.date_published,developer_articles.developer_articles_id.slug,developer_articles.developer_articles_id.image,developer_articles.developer_articles_id.author.first_name,developer_articles.developer_articles_id.author.last_name,developer_articles.developer_articles_id.author.avatar,author.title'
 			)
 		).json();
 
