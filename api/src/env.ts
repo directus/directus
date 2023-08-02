@@ -201,6 +201,8 @@ const allowedEnvironmentVars = [
 	// flows
 	'FLOWS_EXEC_ALLOWED_MODULES',
 	'FLOWS_ENV_ALLOW_LIST',
+	'FLOWS_ISOLATE_MAX_MEMORY_MB',
+	'FLOWS_SCRIPT_TIMEOUT_MS',
 	// websockets
 	'WEBSOCKETS_.+',
 ].map((name) => new RegExp(`^${name}$`));
@@ -317,6 +319,8 @@ const defaults: Record<string, any> = {
 
 	FLOWS_EXEC_ALLOWED_MODULES: false,
 	FLOWS_ENV_ALLOW_LIST: false,
+	FLOWS_ISOLATE_MAX_MEMORY_MB: 32,
+	FLOWS_SCRIPT_TIMEOUT_MS: 10000,
 
 	PRESSURE_LIMITER_ENABLED: true,
 	PRESSURE_LIMITER_SAMPLE_INTERVAL: 250,

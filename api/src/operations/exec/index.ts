@@ -1,7 +1,8 @@
-import { defineOperationApi, toArray } from '@directus/utils';
-import { isBuiltin } from 'node:module';
-import type { NodeVMOptions } from 'vm2';
-import { NodeVM, VMScript } from 'vm2';
+import { defineOperationApi } from '@directus/utils';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const ivm = require('isolated-vm');
 
 type Options = {
 	code: string;
@@ -9,41 +10,54 @@ type Options = {
 
 export default defineOperationApi<Options>({
 	id: 'exec',
-	handler: async ({ code }, { data, env }) => {
-		const allowedModules = env['FLOWS_EXEC_ALLOWED_MODULES'] ? toArray(env['FLOWS_EXEC_ALLOWED_MODULES']) : [];
-		const allowedModulesBuiltIn: string[] = [];
-		const allowedModulesExternal: string[] = [];
+	handler: async ({ code }, { data, env, logger }) => {
 		const allowedEnv = data['$env'] ?? {};
+		const isolateSizeMb = env['FLOWS_ISOLATE_MAX_MEMORY_MB'];
+		const scriptTimeoutMs = env['FLOWS_SCRIPT_TIMEOUT_MS'];
 
-		const opts: NodeVMOptions = {
-			eval: false,
-			wasm: false,
-			env: allowedEnv,
-		};
+		const isolate = new ivm.Isolate({ memoryLimit: isolateSizeMb });
 
-		for (const module of allowedModules) {
-			if (isBuiltin(module)) {
-				allowedModulesBuiltIn.push(module);
-			} else {
-				allowedModulesExternal.push(module);
-			}
-		}
+		const context = isolate.createContextSync();
+		const jail = context.global;
+		jail.setSync('global', jail.derefInto());
 
-		if (allowedModules.length > 0) {
-			opts.require = {
-				builtin: allowedModulesBuiltIn,
-				external: {
-					modules: allowedModulesExternal,
-					transitive: false,
-				},
-			};
-		}
+		// We will create a basic `log` function for the new isolate to use.
+		// TODO: This is just for testing, else the logs get swallowed inside the isolate.
+		jail.setSync('log', function (...args: any[]) {
+			console.log(...args);
+		});
+		jail.setSync('process', { env: allowedEnv }, { copy: true });
+		jail.setSync('module', { exports: null }, { copy: true });
 
-		const vm = new NodeVM(opts);
+		// We run the operation once to define the module.exports function
+		const hostile = await isolate.compileScript(code).catch((err: any) => {
+			logger.error(err);
+			throw err;
+		});
+		await hostile.run(context, { timeout: scriptTimeoutMs }).catch((err: any) => {
+			logger.error(err);
+			throw err;
+		});
 
-		const script = new VMScript(code).compile();
-		const fn = await vm.run(script);
+		const inputData = new ivm.Reference({ data });
+		const resultRef = await context
+			.evalClosure(`return module.exports($0.copySync().data)`, [inputData], {
+				result: { reference: true, promise: true },
+				timeout: scriptTimeoutMs,
+			})
+			.catch((err: any) => {
+				logger.error(err);
+				throw err;
+			});
+		const result = resultRef.copySync(); // TODO: Could be async
 
-		return await fn(data);
+		// Memory cleanup
+		resultRef.release();
+		inputData.release();
+		hostile.release();
+		context.release();
+		isolate.dispose();
+
+		return result;
 	},
 });
