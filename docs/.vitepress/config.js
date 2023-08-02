@@ -634,7 +634,7 @@ function sidebar() {
 					text: 'Single Sign-On (SSO)',
 					items: [
 						{ link: '/self-hosted/sso', text: 'Quickstart' },
-						{ link: '/contributing/sso-examples', text: 'SSO Examples' },
+						{ link: '/self-hosted/sso-examples', text: 'Examples' },
 					],
 				},
 				{
