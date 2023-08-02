@@ -40,8 +40,8 @@ condition_rules: Bedingte Stile
 input: Eingabe
 maps: Karten
 switch_user: Benutzer wechseln
-item_creation: Element erstellt
-item_revision: Element überarbeitet
+item_creation: Element-Erstellung
+item_revision: Element-Überarbeitung
 enter_a_name: Namen eingeben...
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
@@ -148,6 +148,12 @@ validationError:
   regex: Wert hat nicht das richtige Format
   starts_with: Wert muss mit {substring} beginnen
   istarts_with: Wert muss mit {substring} beginnen
+  nstarts_with: Wert kann nicht mit {substring} beginnen
+  nistarts_with: Wert kann nicht mit {substring} beginnen
+  ends_with: Wert muss mit {substring} enden
+  iends_with: Wert muss mit {substring} enden
+  nends_with: Wert kann nicht mit {substring} enden
+  niends_with: Wert kann nicht mit {substring} enden
 all_access: Kompletter Zugriff
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
@@ -465,6 +471,9 @@ not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle {total} Elemente innerhalb von {collection} exportieren.
 exporting_limited_items_in_collection: '{count} von {total} Elementen aus {collection} werden exportiert.'
 exporting_no_items_to_export: Keine zu exportierende Elemente. Passen Sie die Exportkonfiguration an und/oder fügen Sie Elemente zur Sammlung hinzu.
+exporting_download_hint: Sobald die {format} Datei erstellt wurde, wird sie auf Ihr Gerät heruntergeladen.
+exporting_library_hint: Sobald die {format} Datei erstellt wurde, wird sie in der Dateibibibliothek gespeichert.
+exporting_library_hint_forced: Dieser Export muss in mehreren Durchgängen durchgeführt werden. Nach Abschluss wird die {format} Datei in der Datei-Bibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
@@ -708,8 +717,12 @@ operators:
   icontains: Enthält (Groß-, Kleinschreibung wird ignoriert)
   starts_with: Beginnt mit
   nstarts_with: Beginnt nicht mit
+  istarts_with: Beginnt mit (Groß- und Kleinschreibung unbeachtet)
+  nistarts_with: Beginnt nicht mit (Groß- und Kleinschreibung unbeachtet)
   ends_with: Endet mit
   nends_with: Endet nicht mit
+  iends_with: Endet mit (Groß- und Kleinschreibung unbeachtet)
+  niends_with: Endet nicht mit (Groß- und Kleinschreibung unbeachtet)
   between: Ist zwischen
   nbetween: Ist nicht zwischen
   empty: Ist leer
@@ -960,6 +973,7 @@ settings_flows: Flows
 settings_presets: Vorlagen & Lesezeichen
 settings_translations: Benutzerdefinierte Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
+configure_field_key_to_continue: Feldschlüssel konfigurieren, um fortzufahren
 scope: Bereich
 actions: Aktionen
 select: Auswählen...
@@ -1009,7 +1023,7 @@ page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erste
 page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
 page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
 page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchsuchen** — Listet alle benutzerdefinierten Übersetzungen im Projekt auf.'
-page_help_settings_translations_item: '**Benutzerdefinierte Übersetzungen-Detail** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
+page_help_settings_translations_item: '**Detailansicht Benutzerdefinierte Übersetzungen** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
@@ -1453,6 +1467,7 @@ translation: Übersetzung
 translation_placeholder: Geben Sie eine Übersetzung ein...
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 start: Start
 table: Tabelle
@@ -2143,6 +2158,7 @@ operations:
     recipient: Benutzer
     recipient_placeholder: Eine UUID eingeben...
     recipient_note: Benutzer UUID hinzufügen und Enter drücken...
+    item_note: Elementschlüssel oder relative URL
     message: Nachricht
     subject: Betreff
   request:
