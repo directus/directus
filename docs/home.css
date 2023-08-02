@@ -128,6 +128,12 @@
 	gap: 24px;
 }
 
+.grid4 {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 24px;
+}
+
 .buttonGroup {
 	display: inline-flex;
 	gap: 32px;
@@ -158,6 +164,9 @@
 	.heroToggler {
 		display: none;
 	}
+	.grid4 {
+		grid-template-columns: 1fr 1fr;
+	}
 }
 
 @media only screen and (max-width: 768px) {
@@ -177,7 +186,8 @@
 	}
 
 	.grid2,
-	.grid3 {
+	.grid3,
+	.grid4 {
 		grid-template-columns: 1fr;
 	}
 

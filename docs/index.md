@@ -3,6 +3,7 @@ layout: home
 ---
 
 <script setup>
+import { data } from './.vitepress/data/blog.data.js';
 import Pattern from './.vitepress/components/home/Pattern.vue';
 import Footer from './.vitepress/components/home/Footer.vue';
 import Github from './.vitepress/components/home/icons/Github.vue';
@@ -154,6 +155,35 @@ await directus.request(
 			/>
 		</template>
 	</Tabs>
+</section>
+
+<div :class="$style.paddingBox">
+	<div :class="$style.sectionContainer">
+		<Divider />
+	</div>
+</div>
+
+
+<section :class="[$style.sectionPaddingMd, $style.paddingBox]">
+	<div :class="[$style.sectionContainer]">
+		<div :class="$style.header">
+			<h2>Latest From The Blog</h2>
+			<p>
+				Project tutorials, tips & tricks, and best practices from the Directus team and community.
+			</p>
+		</div>
+		<div :class="[$style.grid4, $style.m60]">
+			<Article
+				v-for="article in data.blog.articles"
+				:key="article.id"
+				:title="article.title"
+				:desc="article.description"
+				:url="`/blog/${article.id}`"
+				:img="`https://marketing.directus.app/assets/${article.image}?key=card`"
+				:showMeta="false"
+			/>
+		</div>
+    </div>
 </section>
 
 <section :class="[$style.grayBg, $style.paddingBox]">
