@@ -1,9 +1,9 @@
 import { appendFileSync } from 'node:fs';
-import { MAIN_PACKAGE } from './constants';
-import { generateMarkdown } from './utils/generate-markdown';
-import { getInfo } from './utils/get-info';
-import { processPackages } from './utils/process-packages';
-import { processReleaseLines } from './utils/process-release-lines';
+import { MAIN_PACKAGE } from './constants.js';
+import { generateMarkdown } from './utils/generate-markdown.js';
+import { getInfo } from './utils/get-info.js';
+import { processPackages } from './utils/process-packages.js';
+import { processReleaseLines } from './utils/process-release-lines.js';
 
 const { defaultChangelogFunctions, changesets } = processReleaseLines();
 

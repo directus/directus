@@ -56,9 +56,10 @@ export class MetaService {
 	}
 
 	async filterCount(collection: string, query: Query): Promise<number> {
-		const dbQuery = this.knex(collection).count('*', { as: 'count' });
+		const dbQuery = this.knex(collection);
 
 		let filter = query.filter || {};
+		let hasJoins = false;
 
 		if (this.accountability?.admin !== true) {
 			const permissionsRecord = this.accountability?.permissions?.find((permission) => {
@@ -77,15 +78,23 @@ export class MetaService {
 		}
 
 		if (Object.keys(filter).length > 0) {
-			applyFilter(this.knex, this.schema, dbQuery, filter, collection, {});
+			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}));
 		}
 
 		if (query.search) {
 			applySearch(this.schema, dbQuery, query.search, collection);
 		}
 
+		if (hasJoins) {
+			const primaryKeyName = this.schema.collections[collection]!.primary;
+
+			dbQuery.countDistinct({ count: [`${collection}.${primaryKeyName}`] });
+		} else {
+			dbQuery.count('*', { as: 'count' });
+		}
+
 		const records = await dbQuery;
 
-		return Number(records[0]!.count);
+		return Number(records[0]!['count']);
 	}
 }

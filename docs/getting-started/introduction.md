@@ -68,7 +68,7 @@ _and much more._
 - [Backend-as-a-Service](https://directus.io/engine)
 - [Full API-Based Data Architecture](https://directus.io/engine)
 
-:::tip Ready to dive in?
+::: tip Ready to dive in?
 
 Get a project running in minutes. Learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
@@ -93,7 +93,7 @@ have the option to bypass the Directus middleware (API, SDK, App) and connect to
 effectively removes all bottlenecks, latency overhead, and proprietary access limitations.
 
 <!--
-:::tip Ready to try the API?
+::: tip Ready to try the API?
 
 Get a Project running in minutes. Test the API hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
@@ -117,7 +117,7 @@ on the database.
 The no-code app is safe and intuitive enough to make data accessible to everyone, even the most non-technical users. Administrators
 can create fully granular permissions for roles as well as individual users.
 
-:::tip Directus Vocabulary
+::: tip Directus Vocabulary
 
 To keep things simpler, _especially for the no-code users_, Directus uses friendlier names for many database terms and
 technical concepts, including [Project](/user-guide/overview/glossary#projects) (database),
@@ -132,7 +132,7 @@ For more information on Directus-specific terms, see the guide on [how to learn 
 :::
 
 <!--
-:::tip Ready to see what Directus can do?
+::: tip Ready to see what Directus can do?
 
 Checkout the core features and learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
@@ -168,7 +168,7 @@ Establish _a single source of truth_ for all data. Build no-code analytics dashb
 and other metrics. Coalesce previously siloed department data.
 
 <!--
-:::tip Ready to dive-in?
+::: tip Ready to dive-in?
 
 Get a Project running in minutes. Learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
@@ -211,13 +211,13 @@ Members however you need. You'll be able to get a Project running in about 90 se
 over time, scale service up or down as needed at the click of a button. The cloud dashboard also provides simple,
 straightforward analytics to help understand traffic and inform scaling decisions.
 
-:::tip Ready to try Directus Cloud?
+::: tip Ready to try Directus Cloud?
 
 Set up your free Cloud account and learn Directus hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
 :::
 
-:::tip Enterprise Cloud
+::: tip Enterprise Cloud
 
 Need advanced configuration, unlimited scalability, and dedicated support? [Contact us](https://directus.io/contact)
 

@@ -12,7 +12,10 @@ export default defineConfig({
 	description: 'Directus. An Instant App & API for your SQL Database.',
 	ignoreDeadLinks: true,
 	markdown: {
-		theme: 'material-theme-palenight',
+		theme: {
+			light: 'github-light',
+			dark: 'github-dark',
+		},
 		toc: {
 			level: [2],
 		},
@@ -131,7 +134,12 @@ gtag('config', 'UA-24637628-7');
 			dark: '/logo-dark.svg',
 		},
 		nav: [
-			{ text: 'Docs', link: '/' },
+			{
+				text: 'Developer Reference',
+				link: '/getting-started/quickstart',
+				// Active on every path except for '/', '/user-guide', '/packages'
+				activeMatch: '^\\/(?!$|user-guide|packages).*',
+			},
 			{
 				text: 'User Guide',
 				link: '/user-guide/overview/data-studio-app',
@@ -337,10 +345,6 @@ function sidebar() {
 					text: 'Files',
 				},
 				{
-					link: '/reference/sdk',
-					text: 'JS-SDK',
-				},
-				{
 					link: '/reference/system/activity',
 					text: 'Activity',
 				},
@@ -439,6 +443,10 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{
+					text: 'JavaScript SDK',
+					link: '/guides/sdk/getting-started',
+				},
 				{
 					text: 'Flows',
 					items: [
@@ -632,8 +640,11 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
-					link: '/self-hosted/sso',
 					text: 'Single Sign-On (SSO)',
+					items: [
+						{ link: '/self-hosted/sso', text: 'Quickstart' },
+						{ link: '/self-hosted/sso-examples', text: 'Examples' },
+					],
 				},
 				{
 					type: 'page',
@@ -809,10 +820,6 @@ function sidebarUserGuide() {
 					link: '/user-guide/cloud/accounts',
 				},
 				{
-					text: 'Project Settings',
-					link: '/user-guide/cloud/project-settings',
-				},
-				{
 					text: 'Glossary',
 					link: '/user-guide/cloud/glossary',
 				},
@@ -824,8 +831,8 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
-					text: 'Settings',
-					link: '/user-guide/settings/settings',
+					text: 'Project Settings',
+					link: '/user-guide/settings/project-settings',
 				},
 				{
 					text: 'Preset and Bookmarks',
