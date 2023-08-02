@@ -9,6 +9,7 @@ import { MetaService } from '../services/meta.js';
 import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
+import { resetSequenceIfNeeded } from '../utils/reset-sequence.js';
 
 const router = express.Router();
 
@@ -36,6 +37,8 @@ router.post(
 			const key = await service.createOne(req.body);
 			savedKeys.push(key);
 		}
+
+		await resetSequenceIfNeeded(req);
 
 		try {
 			if (Array.isArray(req.body)) {
