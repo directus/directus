@@ -23,7 +23,8 @@ export default {
 							author: article.developer_articles_id.author,
 						};
 					})
-					.filter((article) => article),
+					.sort((a, b) => new Date(b.date_published) - new Date(a.date_published)),
+				test: 'a'
 			},
 		}));
 
