@@ -748,7 +748,7 @@ export function applyFilter(
 				if (relationsToMainCollection.length > 1) return;
 				const relation = relationsToMainCollection[0]!;
 
-				value.forEach((v) =>
+				value.forEach((v: any) =>
 					dbQuery[logical].whereExists(
 						knex
 							.select('*')
