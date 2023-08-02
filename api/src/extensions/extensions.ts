@@ -1,8 +1,6 @@
-import { APP_EXTENSION_TYPES, NESTED_EXTENSION_TYPES } from '@directus/constants';
+import { APP_EXTENSION_TYPES } from '@directus/constants';
 import type { Extension, ExtensionInfo, ExtensionRaw } from '@directus/types';
 import {
-	ensureExtensionDirs,
-	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackageExtensions,
 } from '@directus/utils/node';
@@ -226,8 +224,6 @@ export class ExtensionManager {
 
 	private async load(): Promise<void> {
 		try {
-			await ensureExtensionDirs(env['EXTENSIONS_PATH'], NESTED_EXTENSION_TYPES);
-
 			this.extensions = await this.getExtensions();
 		} catch (err: any) {
 			logger.warn(`Couldn't load extensions`);
@@ -260,10 +256,9 @@ export class ExtensionManager {
 
 	private async getExtensions(): Promise<FullExtension[]> {
 		const packageExtensions = await getPackageExtensions(env['PACKAGE_FILE_LOCATION']);
-		const localPackageExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
-		const localExtensions = await getLocalExtensions(env['EXTENSIONS_PATH']);
+		const localExtensions = await resolvePackageExtensions(env['EXTENSIONS_PATH']);
 
-		const extensions = [...packageExtensions, ...localPackageExtensions, ...localExtensions].filter(
+		const extensions = [...packageExtensions, ...localExtensions].filter(
 			(extension) => env['SERVE_APP'] || APP_EXTENSION_TYPES.includes(extension.type as any) === false
 		);
 
