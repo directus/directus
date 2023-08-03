@@ -17,7 +17,7 @@ withDefaults(
 
 <style scoped>
 .badge {
-	color: #fe97dc;
+	color: var(--vp-c-pink);
 	font-size: 14px;
 	font-weight: 700;
 	text-transform: uppercase;

@@ -30,7 +30,7 @@ defineProps<{
 	object-position: top;
 	width: 2.5rem;
 	border-radius: 9999px;
-	background-color: gray;
+	background-color: var(--vp-c-gray);
 }
 
 .avatar_name {
