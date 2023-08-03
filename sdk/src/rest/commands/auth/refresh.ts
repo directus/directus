@@ -11,11 +11,11 @@ import type { RestCommand } from '../../types.js';
  */
 export const refresh =
 	<Schema extends object>(
-		refresh_token: string,
-		mode: AuthenticationMode = 'json'
+		mode: AuthenticationMode = 'cookie',
+		refresh_token?: string,
 	): RestCommand<AuthenticationData, Schema> =>
 	() => ({
 		path: '/auth/refresh',
 		method: 'POST',
-		body: JSON.stringify({ refresh_token, ...(mode ? { mode } : {}) }),
+		body: JSON.stringify(mode === 'json' ? { refresh_token } : { mode })
 	});
