@@ -25,7 +25,7 @@
 
 		<div v-if="params.tags.length > 0" class="tags">
 			<span class="sm-gray-text">Tags</span>
-			<Tag class="tag" v-for="tag in params.tags" :key="tag.slug" :href="`/blog/tags/${tag.slug}`">{{ tag.title }}</Tag>
+			<Tag v-for="tag in params.tags" :key="tag.slug" class="tag" :href="`/blog/tags/${tag.slug}`">{{ tag.title }}</Tag>
 		</div>
 	</div>
 </template>

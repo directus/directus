@@ -16,16 +16,19 @@
 	</section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { getFriendlyDate } from '../../utils/time.js';
 import Badge from '../Badge.vue';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
 	tag: {
 		type: Object,
 		required: true,
 	},
 });
+
+
 </script>
 
 <style scoped>
