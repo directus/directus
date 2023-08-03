@@ -20,11 +20,6 @@ export default defineOperationApi<Options>({
 		const jail = context.global;
 		jail.setSync('global', jail.derefInto());
 
-		// We will create a basic `log` function for the new isolate to use.
-		// TODO: This is just for testing, else the logs get swallowed inside the isolate.
-		jail.setSync('log', function (...args: any[]) {
-			console.log(...args);
-		});
 		jail.setSync('process', { env: allowedEnv }, { copy: true });
 		jail.setSync('module', { exports: null }, { copy: true });
 
