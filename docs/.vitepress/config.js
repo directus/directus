@@ -170,7 +170,7 @@ gtag('config', 'UA-24637628-7');
 		function setOGImage(asset) {
 			return [['meta', { name: 'og:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }]];
 		}
-		
+
 		if (pageData.frontmatter.type == 'blog-post') {
 			pageData.title = pageData.params.title;
 			pageData.description = pageData.params.summary;
