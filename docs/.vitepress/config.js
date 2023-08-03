@@ -122,13 +122,6 @@ gtag('config', 'UA-24637628-7');
 				href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap',
 			},
 		],
-		[
-			'meta',
-			{
-				property: 'og:image',
-				content: 'https://marketing.directus.app/assets/246e2f8a-98cd-4d54-9907-8927d1b9fb77.png'
-			}
-		]
 	],
 	lastUpdated: true,
 	themeConfig: {
@@ -172,6 +165,19 @@ gtag('config', 'UA-24637628-7');
 				}
 			},
 		},
+	},
+	transformPageData(pageData) {
+		function setOGImage(asset) {
+			return [['meta', { name: 'og:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }]];
+		}
+		
+		if (pageData.frontmatter.type == 'blog-post') {
+			pageData.title = pageData.params.title;
+			pageData.description = pageData.params.summary;
+			pageData.frontmatter.head = setOGImage(pageData.params.image);
+		} else {
+			pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
+		}
 	},
 });
 
