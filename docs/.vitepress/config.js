@@ -1,7 +1,6 @@
 import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
-import blog from './data/blog.data.js';
 
 export default defineConfig({
 	base: '/',
@@ -663,7 +662,7 @@ function sidebar() {
 					text: 'Upgrades & Migrations',
 				},
 			],
-		}
+		},
 	];
 }
 

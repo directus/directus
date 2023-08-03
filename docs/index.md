@@ -163,7 +163,6 @@ await directus.request(
 	</div>
 </div>
 
-
 <section :class="[$style.sectionPaddingMd, $style.paddingBox]">
 	<div :class="[$style.sectionContainer]">
 		<div :class="$style.header">
