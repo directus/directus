@@ -6,7 +6,7 @@ export default defineConfig({
 	base: '/',
 	lang: 'en-US',
 	title: 'Directus Docs',
-	description: 'Directus. An Instant App & API for your SQL Database.',
+	description: 'Explore our resources and powerful data engine to build your projects confidently.',
 	ignoreDeadLinks: true,
 	markdown: {
 		theme: {
