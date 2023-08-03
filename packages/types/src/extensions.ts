@@ -7,6 +7,8 @@ import type {
 	ExtensionOptions,
 	ExtensionOptionsBundleEntries,
 	ExtensionOptionsBundleEntry,
+	ExtensionPermissionOptions,
+	ExtensionPermission,
 	ExtensionRaw,
 	HYBRID_EXTENSION_TYPES,
 	LOCAL_TYPES,
@@ -38,6 +40,20 @@ export type NestedExtensionType = (typeof NESTED_EXTENSION_TYPES)[number];
 
 export type SplitEntrypoint = z.infer<typeof SplitEntrypoint>;
 
+export type DatabaseExtension = {
+	name: string,
+	enabled: boolean,
+	options: Record<string, any>,
+	granted_permissions: DatabaseExtensionPermission[],
+}
+
+export type DatabaseExtensionPermission = {
+	id: number,
+	extension: string,
+	permission: string,
+	options: Record<string, any>,
+}
+
 type ExtensionBase = {
 	path: string;
 	name: string;
@@ -47,6 +63,7 @@ type ExtensionBase = {
 	host?: string;
 	secure: boolean;
 	local: boolean;
+	requested_permissions: ExtensionPermission[];
 };
 
 export type AppExtension = ExtensionBase & {
@@ -78,6 +95,9 @@ export type ExtensionOptionsBundleEntry = z.infer<typeof ExtensionOptionsBundleE
 export type ExtensionOptionsBundleEntries = z.infer<typeof ExtensionOptionsBundleEntries>;
 
 export type ExtensionManifest = z.infer<typeof ExtensionManifest>;
+
+export type ExtensionPermission = z.infer<typeof ExtensionPermission>;
+export type ExtensionPermissionOptions = z.infer<typeof ExtensionPermissionOptions>;
 
 export type AppExtensionConfigs = {
 	interfaces: InterfaceConfig[];

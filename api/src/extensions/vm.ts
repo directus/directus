@@ -1,10 +1,12 @@
 import type { ExtensionManager } from "./extensions.js";
 import { createRequire } from 'node:module';
 import { readFile } from 'fs/promises'
-import { ExternalCopy, Isolate } from 'isolated-vm';
+import { Isolate, Context } from 'isolated-vm';
 import express, { Router } from 'express';
 import { readFileSync } from "node:fs";
 import * as url from 'url';
+import { join } from 'path';
+import type { ApiExtension, BundleExtension, DatabaseExtension, DatabaseExtensionPermission, HybridExtension } from "@directus/types";
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -12,6 +14,7 @@ const WebSocket = require('ws');
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
+type ExtensionInfo = (ApiExtension | BundleExtension | HybridExtension) & DatabaseExtension
 
 export class VmManager {
 	private extensionManager: ExtensionManager;
@@ -25,93 +28,101 @@ export class VmManager {
 		this.extensionManager = extensionManager;
 		this.endpointRouter = endpointRouter;
 
-		this.defineEndpoint = readFileSync(`${__dirname}vm-functions/defineEndpoint.js`, 'utf-8')
-		this.defineHook = readFileSync(`${__dirname}vm-functions/defineHook.js`, 'utf-8')
-		this.defineOperation = readFileSync(`${__dirname}vm-functions/defineOperation.js`, 'utf-8')
-	}
-
-	async run() {
+		this.defineEndpoint = readFileSync(join(__dirname, 'vm-functions', 'defineEndpoint.js'), 'utf-8');
+		this.defineHook = readFileSync(join(__dirname, 'vm-functions', 'defineHook.js'), 'utf-8');
+		this.defineOperation = readFileSync(join(__dirname, 'vm-functions', 'defineOperation.js'), 'utf-8');
 		this.extensionManager
-
-		const isolateSizeMb = 64;
-		const scriptTimeoutMs = 1_000;
-
-		const isolate: Isolate = new ivm.Isolate({ inspector: true, memoryLimit: isolateSizeMb });
-		const context = await isolate.createContext({ inspector: true });
-
-		const jail = context.global;
-		jail.setSync('global', jail.derefInto());
-
-		jail.setSync('log', function (...args: any[]) {
-			console.log(...args);
-		});
-
-		jail.setSync('addOne', function (num: number) {
-			return num + 1;
-		});
-
-		jail.setSync('process', { env: {} }, { copy: true });
-
-		try {
-			context.eval(`
-            while (true) {}
-        `, {
-				timeout: scriptTimeoutMs
-			}).then(() => {
-				console.log('Script completed successfully');
-			}).catch((err: any) => {
-				console.log('Script failed:', err);
-			})
-		} catch (e) {
-			console.log('Script failed:', e);
-		}
 	}
 
-	async runHook(hookPath: string, name: string) {
-		console.log("Running hook", hookPath, name)
-	}
-
-	async runEndpoint(bundlePath: string, name: string) {
-
-	}
-
-	async runOperation() {
-
-	}
-
-	async runBundle() {
-
-	}
-
-	private async runExtension() {
-		console.log("endpoint", name)
+	async runExtension(extension: ExtensionInfo, extensionPath: string) {
 		const isolateSizeMb = 8;
 		const scriptTimeoutMs = 1000;
-
-		const scopedRouter = express.Router();
-		this.endpointRouter.use(`/${name}`, scopedRouter);
 
 		const isolate: Isolate = new ivm.Isolate({ inspector: true, memoryLimit: isolateSizeMb });
 		this.createInspector(isolate.createInspectorSession())
 		const context = await isolate.createContext({ inspector: true });
 
+		this.prepareGeneralContext(context, extension.granted_permissions)
+
+
+		if (extension.type === "endpoint") {
+			this.prepareEndpointContext(context, extension.name)
+		} else if (extension.type === "hook") {
+			this.prepareHookContext(context, extension.name)
+		} else if (extension.type === "operation") {
+			this.prepareOperationContext(context, extension.name)
+		} else if (extension.type === "bundle") {
+			let hasHook = false;
+			let hasOperation = false;
+			let hasEndpoint = false;
+
+			extension.entries.forEach(entry => {
+				if (entry.type === "hook") {
+					hasHook = true;
+				} else if (entry.type === "operation") {
+					hasOperation = true;
+				} else if (entry.type === "endpoint") {
+					hasEndpoint = true;
+				}
+			})
+
+			if (hasHook) this.prepareHookContext(context, extension.name)
+			if (hasOperation) this.prepareOperationContext(context, extension.name)
+			if (hasEndpoint) this.prepareEndpointContext(context, extension.name)
+		}
+
+		let code = await readFile(extensionPath, 'utf-8')
+
+		context.eval(code, {
+			timeout: scriptTimeoutMs
+		}).then(() => {
+			console.log('Script completed successfully');
+		}).catch((err: any) => {
+			console.log('Script failed:', err);
+		})
+	}
+
+	private async prepareGeneralContext(context: Context, permissions: DatabaseExtensionPermission[]) {
 		const jail = context.global;
 		jail.setSync('global', jail.derefInto());
-
-		const consoleObj: ExternalCopy = new ivm.ExternalCopy({
+		jail.setSync('console', new ivm.ExternalCopy({
 			log: new ivm.Callback((...args: any[]) => {
 				console.log(...args)
 			})
-		});
+		}).copyInto());
 
-		jail.setSync('console', consoleObj.copyInto());
-		jail.setSync('ivm', ivm)
+		jail.setSync('fetch', new ivm.ExternalCopy({
+			get: new ivm.Callback(async (url: string) => {
+				console.log(3)
+				if (permissions.find(permission => permission.permission === 'web') === undefined) {
+					return new Error("Permission denied")
+				}
+				return await (await fetch(url)).text()
+			})
+		}, { async: true }).copyInto())
+	}
+
+	private async prepareHookContext(context: Context, name: string) {
+		const jail = context.global;
+
+		context.eval(this.defineHook)
+	}
+
+	private async prepareOperationContext(context: Context, name: string) {
+		const jail = context.global;
+
+		context.eval(this.defineOperation)
+	}
+
+	private async prepareEndpointContext(context: Context, name: string) {
+		const jail = context.global;
+
+		const scopedRouter = express.Router();
+		this.endpointRouter.use(`/${name}`, scopedRouter);
 
 		context.eval(this.defineEndpoint)
 
-		jail.setSync('makeEndpoint', function (type: 'get' | 'post' | 'patch', path: string, callback: any) {
-			console.log("makeEndpoint", type, `/${name}${path}`, callback)
-
+		await jail.set('makeEndpoint', function (type: 'get' | 'post' | 'patch', path: string, callback: any) {
 			scopedRouter[type](path, (req, res) => {
 				callback(new ivm.ExternalCopy({
 					url: req.url
@@ -123,19 +134,11 @@ export class VmManager {
 			})
 
 		});
-
-		let code = await readFile(bundlePath, 'utf-8')
-
-		context.eval(code, {
-			timeout: scriptTimeoutMs
-		}).then(() => {
-			console.log('Script completed successfully');
-		}).catch((err: any) => {
-			console.log('Script failed:', err);
-		})
 	}
 
 	private async createInspector(channel: any) {
+		return
+
 		let wss = new WebSocket.Server({ port: 10000 });
 
 		wss.on('connection', function (ws: any) {

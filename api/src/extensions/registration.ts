@@ -2,6 +2,7 @@ import type {
 	ActionHandler,
 	ApiExtension,
 	BundleExtension,
+	DatabaseExtension,
 	EmbedHandler,
 	EndpointConfig,
 	FilterHandler,
@@ -72,14 +73,13 @@ export class RegistrationManager {
 	public async registerHooks(): Promise<void> {
 		const hooks = this.extensionManager
 			.getEnabledExtensions()
-			.filter((extension) => extension.type === 'hook') as ApiExtension[];
+			.filter((extension) => extension.type === 'hook') as (ApiExtension & DatabaseExtension)[];
 
 		for (const hook of hooks) {
-			console.log(hook.name, hook.secure)
 			if (hook.secure) {
 				const hookPath = path.resolve(hook.path, hook.entrypoint);
 
-				this.extensionManager.vm.runHook(hookPath, hook.name);
+				this.extensionManager.vm.runExtension(hook, hookPath);
 
 				return
 			}
@@ -106,18 +106,17 @@ export class RegistrationManager {
 	public async registerEndpoints(): Promise<void> {
 		const endpoints = this.extensionManager
 			.getEnabledExtensions()
-			.filter((extension) => extension.type === 'endpoint') as ApiExtension[];
+			.filter((extension) => extension.type === 'endpoint') as (ApiExtension & DatabaseExtension)[];
 
 		for (const endpoint of endpoints) {
+			const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
+
 			if (endpoint.secure) {
-				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-				this.extensionManager.vm.runEndpoint(endpointPath, endpoint.name)
+				this.extensionManager.vm.runExtension(endpoint, endpointPath)
 				return
 			}
 
 			try {
-				const endpointPath = path.resolve(endpoint.path, endpoint.entrypoint);
-
 				const endpointInstance: EndpointConfig | { default: EndpointConfig } = await import(
 					`./${pathToRelativeUrl(endpointPath, __dirname)}?t=${Date.now()}`
 				);
@@ -174,14 +173,14 @@ export class RegistrationManager {
 	public async registerBundles(): Promise<void> {
 		const bundles = this.extensionManager
 			.getEnabledExtensions()
-			.filter((extension) => extension.type === 'bundle') as BundleExtension[];
+			.filter((extension) => extension.type === 'bundle') as (BundleExtension & DatabaseExtension)[];
 
 		for (const bundle of bundles) {
 
 			if (bundle.secure) {
 				const bundlePath = path.resolve(bundle.path, bundle.entrypoint.api);
 
-				this.extensionManager.vm.runBundle(bundlePath, bundle.name)
+				this.extensionManager.vm.runExtension(bundle, bundlePath)
 
 				return
 			}
@@ -220,7 +219,6 @@ export class RegistrationManager {
 
 		const registerFunctions = {
 			filter: (event: string, handler: FilterHandler) => {
-				console.log('register filter', event, handler);
 
 				emitter.onFilter(event, handler);
 
@@ -287,8 +285,6 @@ export class RegistrationManager {
 				}
 			},
 		};
-
-		console.log(registerFunctions, register);
 
 		register(registerFunctions, {
 			services,

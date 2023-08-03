@@ -56,6 +56,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 				entries: extensionOptions.entries,
 				host: extensionOptions.host,
 				secure: extensionOptions.secure === true,
+				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
 		} else if (isTypeIn(extensionOptions, HYBRID_EXTENSION_TYPES)) {
@@ -72,6 +73,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 				},
 				host: extensionOptions.host,
 				secure: extensionOptions.secure === true,
+				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
 		} else {
@@ -85,6 +87,7 @@ export async function resolvePackageExtensions(root: string, extensionNames?: st
 				entrypoint: extensionOptions.path,
 				host: extensionOptions.host,
 				secure: extensionOptions.secure === true,
+				requested_permissions: extensionOptions.permissions ?? [],
 				local,
 			});
 		}

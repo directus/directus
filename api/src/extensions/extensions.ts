@@ -1,5 +1,5 @@
 import { APP_EXTENSION_TYPES } from '@directus/constants';
-import type { Extension, ExtensionInfo, ExtensionRaw } from '@directus/types';
+import type { DatabaseExtension, Extension, ExtensionInfo } from '@directus/types';
 import {
 	getPackageExtensions,
 	resolvePackageExtensions,
@@ -27,7 +27,7 @@ export async function getExtensionManager(): Promise<ExtensionManager> {
 	return extensionManager
 }
 
-type FullExtension = Extension & ExtensionRaw;
+type FullExtension = Extension & DatabaseExtension;
 
 type AppExtensions = string | null;
 
@@ -179,6 +179,9 @@ export class ExtensionManager {
 			host: extension.host,
 			version: extension.version,
 			enabled: extension.enabled,
+			secure: extension.secure,
+			requested_permissions: extension.requested_permissions,
+			granted_permissions: extension.granted_permissions,
 		};
 
 		if (extension.type === 'bundle') {
@@ -260,7 +263,7 @@ export class ExtensionManager {
 
 		const extensionsService = new ExtensionsService({ knex: getDatabase(), schema: await getSchema() });
 
-		let registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*'] });
+		let registeredExtensions = await extensionsService.readByQuery({ limit: -1, fields: ['*', 'granted_permissions.*'] });
 
 		if (registeredExtensions.length === 0 && extensions.length > 0) {
 			logger.info(
@@ -272,6 +275,7 @@ export class ExtensionManager {
 					return {
 						name: extension.name,
 						enabled: true,
+						options: {},
 					};
 				})
 			);
@@ -279,12 +283,14 @@ export class ExtensionManager {
 			registeredExtensions = extensions.map((extension) => ({
 				name: extension.name,
 				enabled: true,
+				options: {},
+				granted_permissions: [],
 			}));
 		}
 
 		return extensions.map((extension) => {
 			const registeredExtension = registeredExtensions.find(
-				(registeredExtension) => registeredExtension.name === extension.name
+				(registeredExtension) => registeredExtension['name'] === extension.name
 			);
 
 			if (!registeredExtension) throw new Error(`Extension ${extension.name} is not registered in the database`);
