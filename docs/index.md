@@ -183,7 +183,10 @@ await directus.request(
 				:showMeta="false"
 			/>
 		</div>
-    </div>
+		<div :class="$style.header">
+			<Button href="/blog">View All Posts</Button>
+		</div>
+	</div>
 </section>
 
 <section :class="[$style.grayBg, $style.paddingBox]">
