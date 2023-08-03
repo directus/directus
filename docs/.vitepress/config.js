@@ -3,8 +3,6 @@ import { defineConfig } from 'vitepress';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 import blog from './data/blog.data.js';
 
-const tagsForSidebar = await blog.load().then((data) => data.blog.tagsForSidebar);
-
 export default defineConfig({
 	base: '/',
 	lang: 'en-US',
@@ -240,6 +238,19 @@ function sidebar() {
 				{
 					text: 'Resources',
 					link: '/getting-started/resources',
+				},
+			],
+		},
+		{
+			text: 'Developer Blog',
+			items: [
+				{
+					link: '/blog/',
+					text: 'All Posts',
+				},
+				{
+					link: '/blog/guest-author',
+					text: 'Guest Author',
 				},
 			],
 		},
@@ -652,19 +663,7 @@ function sidebar() {
 					text: 'Upgrades & Migrations',
 				},
 			],
-		},
-		{
-			text: 'Developer Blog',
-			collapsible: true,
-			collapsed: true,
-			items: [
-				{
-					link: '/blog/',
-					text: 'All Posts',
-				},
-				...tagsForSidebar,
-			],
-		},
+		}
 	];
 }
 
