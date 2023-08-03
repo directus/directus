@@ -184,7 +184,7 @@ await directus.request(
 			/>
 		</div>
 		<div :class="$style.header">
-			<Button href="/blog">View All Posts</Button>
+			<Button href="/blog/">View All Posts</Button>
 		</div>
 	</div>
 </section>
