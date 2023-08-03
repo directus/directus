@@ -99,7 +99,7 @@ Special One-to-Many (O2M) interface that allows users to create and manage recur
 the same collection.
 
 The Tree View interface is only available on self-referencing (recursive) relationships. See
-[Many-to-Any (O2M) Relationships](/app/data-model/relationships#many-to-any-m2a).
+[Many-to-Any (M2A) Relationships](/app/data-model/relationships#many-to-any-m2a).
 
 - [**Display Template**](/user-guide/content-module/display-templates): Fields or custom text that represent the
   specific item through various places in the App Studio.
