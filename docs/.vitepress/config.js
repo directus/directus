@@ -122,6 +122,13 @@ gtag('config', 'UA-24637628-7');
 				href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap',
 			},
 		],
+		[
+			'meta',
+			{
+				property: 'og:image',
+				content: 'https://marketing.directus.app/assets/246e2f8a-98cd-4d54-9907-8927d1b9fb77.png'
+			}
+		]
 	],
 	lastUpdated: true,
 	themeConfig: {
