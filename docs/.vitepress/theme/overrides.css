@@ -79,3 +79,10 @@
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
+
+/**
+* Reduce spacing at bottom of sidebar section
+* -------------------------------------------------------------------------- */
+.VPSidebarItem.level-0 {
+	padding-bottom: 10px !important;
+}
