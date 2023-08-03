@@ -841,10 +841,12 @@ AUTH_FACEBOOK_LABEL="Facebook"
 
 ## Flows
 
-| Variable                     | Description                                      | Default Value |
-| ---------------------------- | ------------------------------------------------ | ------------- |
-| `FLOWS_ENV_ALLOW_LIST`       | A comma-separated list of environment variables. | `false`       |
-| `FLOWS_EXEC_ALLOWED_MODULES` | A comma-separated list of node modules.          | `false`       |
+| Variable                      | Description                                                        | Default Value |
+| ----------------------------- | ------------------------------------------------------------------ | ------------- |
+| `FLOWS_ENV_ALLOW_LIST`        | A comma-separated list of environment variables.                   | `false`       |
+| `FLOWS_EXEC_ALLOWED_MODULES`  | A comma-separated list of node modules.                            | `false`       |
+| `FLOWS_ISOLATE_MAX_MEMORY_MB` | The maximum amount of memory operations can allocate in megabytes. | `32`          |
+| `FLOWS_SCRIPT_TIMEOUT_MS`     | The maximum duration operations can run for in milliseconds.       | `10000`       |
 
 ::: tip Usage in Flows Run Script Operation
 
