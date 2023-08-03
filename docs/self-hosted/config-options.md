@@ -848,12 +848,6 @@ AUTH_FACEBOOK_LABEL="Facebook"
 
 ::: tip Usage in Flows Run Script Operation
 
-Allowed modules can be accessed using `require()`.
-
-```js
-const axios = require('axios');
-```
-
 Allowed environment variables can be accessed through the `$env` within the passed `data` or through `process.env`.
 
 ```js

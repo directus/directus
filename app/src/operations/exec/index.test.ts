@@ -23,19 +23,3 @@ describe('Overview', () => {
 		expect(config.overview()).toEqual([]);
 	});
 });
-
-describe('Options', () => {
-	it("Doesn't show notice when no modules are allowed", () => {
-		expect(config.options()).toHaveLength(1);
-	});
-
-	it('Shows notice when modules are allowed', () => {
-		const serverStore = useServerStore();
-
-		serverStore.info.flows = {
-			execAllowedModules: ['nanoid'],
-		};
-
-		expect(config.options()).toHaveLength(2);
-	});
-});
