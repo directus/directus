@@ -313,7 +313,6 @@ Redis is required when you run Directus load balanced across multiple containers
 | `CONTENT_SECURITY_POLICY_*`      | Custom overrides for the Content-Security-Policy header. See [helmet's documentation on `helmet.contentSecurityPolicy()`](https://helmetjs.github.io) for more information.                          | --                        |
 | `HSTS_ENABLED`                   | Enable the Strict-Transport-Security policy header.                                                                                                                                                  | `false`                   |
 | `HSTS_*`                         | Custom overrides for the Strict-Transport-Security header. See [helmet's documentation](https://helmetjs.github.io) for more information.                                                            | --                        |
-| `FLOWS_EXEC_ALLOWED_MODULES`     | CSV allowlist of node modules that are allowed to be used in the _run script_ operation in flows                                                                                                     | --                        |
 
 ::: tip Cookie Strictness
 
@@ -844,7 +843,6 @@ AUTH_FACEBOOK_LABEL="Facebook"
 | Variable                      | Description                                                        | Default Value |
 | ----------------------------- | ------------------------------------------------------------------ | ------------- |
 | `FLOWS_ENV_ALLOW_LIST`        | A comma-separated list of environment variables.                   | `false`       |
-| `FLOWS_EXEC_ALLOWED_MODULES`  | A comma-separated list of node modules.                            | `false`       |
 | `FLOWS_ISOLATE_MAX_MEMORY_MB` | The maximum amount of memory operations can allocate in megabytes. | `32`          |
 | `FLOWS_SCRIPT_TIMEOUT_MS`     | The maximum duration operations can run for in milliseconds.       | `10000`       |
 

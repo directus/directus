@@ -122,8 +122,7 @@ the original event transaction to the database.
 
 ::: tip Node Modules
 
-For security reasons, module usage is disabled by default. You can configure what Node Modules are available through
-[the `FLOWS_EXEC_ALLOWED_MODULES` environment variable](/self-hosted/config-options#security).
+For security reasons, module usage is disabled by default. In cases where you really do need specific modules, you may create a custom [operation extension](/extensions/operations).
 
 :::
 
