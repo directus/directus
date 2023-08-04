@@ -15,14 +15,14 @@ withDefaults(
 );
 </script>
 
-<style>
+<style scoped>
 .badge {
 	color: var(--vp-c-pink);
 	font-size: 14px;
 	font-weight: 700;
 	text-transform: uppercase;
 }
-.badge * {
+.badge :deep(*) {
 	color: inherit !important;
 }
 </style>
