@@ -1,18 +1,17 @@
 ---
 description:
-  This is where you can adjust all of the **global** settings for your project. Changes saved here are instantly
-  reflected throughout the platform.
-readTime: 4 min read
+  The Settings Module is where your entire Project is configured, making it the first place to go after installation.
+readTime: 5 min read
 ---
 
 # Project Settings
 
-> This is where you can adjust all of the **global** settings for your project, such as project name, default language,
-> custom CSS, password policies, _and more!_ Changes saved here are instantly reflected throughout your project.
+> This is where you can adjust all of the global settings for your project, such as project name, default language,
+> custom CSS, password policies, and more. Changes saved here are instantly reflected throughout the platform.
 
-::: tip Learn More
+::: warning Administrators Only
 
-To manage your project settings programmatically, see our API documentation on [settings](/reference/system/settings).
+To maintain project safety and integrity, only Administrators have access to the Settings Module.
 
 :::
 
@@ -29,6 +28,12 @@ To configure Project Settings, follow these steps.
 3. Click <span mi btn>check</span> to confirm.
 
 All configuration options are described in detail below.
+
+::: tip Learn More
+
+To manage your project settings programmatically, see our API documentation on [settings](/reference/system/settings).
+
+:::
 
 ## General
 

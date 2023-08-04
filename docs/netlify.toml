@@ -106,7 +106,7 @@
 
 [[redirects]]
 	from = "/app/project-settings.html"
-	to = "/user-guide/cloud/project-settings.html"
+	to = "/user-guide/settings/project-settings.html"
 	status = 301
 
 [[redirects]]
