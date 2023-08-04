@@ -13,7 +13,7 @@ import PostMeta from '../.vitepress/components/blog/PostMeta.vue'
 const { params } = useData()
 </script>
 
-<Badge>Developer Blog</Badge>
+<Badge><a href="/blog/">Developer Blog</a></Badge>
 
 <h1>{{ params.title }}</h1>
 
