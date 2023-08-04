@@ -6,7 +6,7 @@ export default defineConfig({
 	base: '/',
 	lang: 'en-US',
 	title: 'Directus Docs',
-	description: 'Directus. An Instant App & API for your SQL Database.',
+	description: 'Explore our resources and powerful data engine to build your projects confidently.',
 	ignoreDeadLinks: true,
 	markdown: {
 		theme: {
@@ -157,8 +157,31 @@ gtag('config', 'UA-24637628-7');
 			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
-			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
+			pattern: ({ filePath }) => {
+				if (filePath.includes('blog/')) {
+					return '/blog/guest-author';
+				} else {
+					return `https://github.com/directus/directus/edit/main/docs/${filePath}`;
+				}
+			},
 		},
+	},
+	transformPageData(pageData) {
+		function setOGImage(asset) {
+			return [
+				['meta', { name: 'og:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+			];
+		}
+
+		if (pageData.frontmatter.type == 'blog-post') {
+			pageData.title = pageData.params.title;
+			pageData.description = pageData.params.summary;
+			pageData.frontmatter.head = setOGImage(pageData.params.image);
+		} else {
+			pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
+		}
 	},
 });
 
@@ -231,6 +254,19 @@ function sidebar() {
 				{
 					text: 'Resources',
 					link: '/getting-started/resources',
+				},
+			],
+		},
+		{
+			text: 'Developer Blog',
+			items: [
+				{
+					link: '/blog/',
+					text: 'All Posts',
+				},
+				{
+					link: '/blog/guest-author',
+					text: 'Guest Author',
 				},
 			],
 		},
@@ -634,7 +670,7 @@ function sidebar() {
 					text: 'Single Sign-On (SSO)',
 					items: [
 						{ link: '/self-hosted/sso', text: 'Quickstart' },
-						{ link: '/contributing/sso-examples', text: 'SSO Examples' },
+						{ link: '/self-hosted/sso-examples', text: 'Examples' },
 					],
 				},
 				{
