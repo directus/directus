@@ -5,7 +5,6 @@ import { request } from '../utils/request.js';
 import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';
 import { memoryStorage } from './utils/memory-storage.js';
 
-
 const defaultConfigValues: AuthenticationConfig = {
 	msRefreshBeforeExpires: 30000, // 30 seconds
 	autoRefresh: true,
