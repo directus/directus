@@ -168,7 +168,11 @@ gtag('config', 'UA-24637628-7');
 	},
 	transformPageData(pageData) {
 		function setOGImage(asset) {
-			return [['meta', { name: 'og:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }]];
+			return [
+				['meta', { name: 'og:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+			];
 		}
 
 		if (pageData.frontmatter.type == 'blog-post') {
