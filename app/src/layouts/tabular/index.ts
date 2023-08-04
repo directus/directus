@@ -168,7 +168,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fields = computed({
 				get() {
-					console.log('layoutQuery.value.fields', layoutQuery.value.fields)
 					if (layoutQuery.value.fields) {
 						return layoutQuery.value.fields.filter(field => fieldsStore.getField(collection.value!, field))
 					} else {
