@@ -19,8 +19,8 @@ test('Rejects when Isolate uses more than allowed memory', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
@@ -35,8 +35,8 @@ test('Rejects when operation runs for longer than allowed ', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 500,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 500,
 			},
 			logger,
 		} as any)
@@ -51,8 +51,8 @@ test('Rejects when cjs modules are used', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
@@ -67,8 +67,8 @@ test('Rejects when esm modules are used', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
@@ -83,8 +83,8 @@ test('Rejects when code contains syntax errors', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
@@ -101,8 +101,8 @@ test('Rejects when code does something illegal', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
@@ -117,8 +117,8 @@ test("Rejects when code doesn't return valid function", async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
@@ -135,8 +135,8 @@ test('Rejects when returned function throws', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
@@ -153,8 +153,8 @@ test('Resolves when synchronous function is valid', async () => {
 		config.handler({ code: testCode }, {
 			data: { greeting: 'Hello' },
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
@@ -171,8 +171,8 @@ test('Resolves when asynchronous function is valid', async () => {
 		config.handler({ code: testCode }, {
 			data: { greeting: 'Hello' },
 			env: {
-				FLOWS_ISOLATE_MAX_MEMORY_MB: 8,
-				FLOWS_SCRIPT_TIMEOUT_MS: 10000,
+				FLOWS_MAX_MEMORY_MB: 8,
+				FLOWS_TIMEOUT_MS: 10000,
 			},
 			logger,
 		} as any)
