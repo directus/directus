@@ -6,8 +6,6 @@ import { cryptoStub } from '@/__utils__/crypto';
 
 vi.stubGlobal('crypto', cryptoStub);
 
-import { useServerStore } from '@/stores/server';
-
 import config from './index';
 
 beforeEach(() => {
