@@ -177,10 +177,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// In case of manual string / UUID primary keys, the PK already exists in the object we're saving.
 			let primaryKey = payloadWithTypeCasting[primaryKeyField];
 
-			// If a number PK was provided although the PK is set the auto_increment, the sequence needs to be reset for PostgreSQL
+			// If a PK of type number was provided, although the PK is set the auto_increment, the sequence needs to be reset for PostgreSQL to protect future PK collisions.
 			let autoIncrementSequenceNeedsToBeReset = false;
 
 			if (
+				opts.checkForSequenceReset && // if this item is part of a batch, it might not be the last item and hence no need to reset
+				primaryKey &&
 				typeof primaryKey === 'number' &&
 				this.schema.collections[this.collection]!.fields[primaryKeyField]!.defaultValue === 'AUTO_INCREMENT'
 			) {
