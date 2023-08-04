@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Disabled TinyMCE only after editor has been initialized
+Fixed an issue where the WYSIWYG editor could wrongly end up in read-only mode
