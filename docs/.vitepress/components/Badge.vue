@@ -22,4 +22,7 @@ withDefaults(
 	font-weight: 700;
 	text-transform: uppercase;
 }
+.badge :deep(*) {
+	color: inherit !important;
+}
 </style>
