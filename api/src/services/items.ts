@@ -177,6 +177,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// In case of manual string / UUID primary keys, the PK already exists in the object we're saving.
 			let primaryKey = payloadWithTypeCasting[primaryKeyField];
 
+			// If a number PK was provided although the PK is set the auto_increment, the sequence needs to be reset for PostgreSQL
+			let autoIncrementSequenceNeedsToBeReset = false;
+
+			if (
+				typeof primaryKey === 'number' &&
+				this.schema.collections[this.collection]!.fields[primaryKeyField]!.defaultValue === 'AUTO_INCREMENT'
+			) {
+				autoIncrementSequenceNeedsToBeReset = true;
+			}
+
 			try {
 				const result = await trx
 					.insert(payloadWithoutAliases)
@@ -262,6 +272,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						opts.onRevisionCreate(revision);
 					}
 				}
+			}
+
+			if (autoIncrementSequenceNeedsToBeReset) {
+				await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
 			}
 
 			return primaryKey;
