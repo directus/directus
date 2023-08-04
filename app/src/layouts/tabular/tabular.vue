@@ -184,7 +184,16 @@
 			:collection="collection"
 			:primary-key="sideDrawerItemKey"
 			@input="saveItem"
-		/>
+		>
+			<template #actions>
+				<v-button v-tooltip.bottom="t('back')" icon rounded @click="advanceItem(-1)">
+					<v-icon name="navigate_before" />
+				</v-button>
+				<v-button v-tooltip.bottom="t('next')" icon rounded @click="advanceItem(1)">
+					<v-icon name="navigate_next" />
+				</v-button>
+			</template>
+		</drawer-item>
 
 	</div>
 </template>
@@ -280,6 +289,38 @@ async function saveItem(values: Record<string, any>): Promise<void> {
 	}
 
 	await props.refresh();
+}
+function advanceItem(amount: number) {
+	console.log('advanceItem', amount);
+	let index = props.items.findIndex((item) => item[props.primaryKeyField!.field] === sideDrawerItemKey.value);
+	console.log('Index = ', index, 'key = ', sideDrawerItemKey.value);
+	if (index === -1) {
+		return;
+	}
+	index += amount;
+	if (index < 0) {
+		if (props.page > 1) {
+			props.toPage(props.page - 1);
+			index = props.limit - 1;
+		} else {
+			index = 0;
+		}
+	} else if (index >= props.limit) {
+		if (props.page < props.totalPages) {
+			props.toPage(props.page + 1);
+			index = 0;
+		} else {
+			index = props.limit - 1;
+		}
+	}
+	const newKey = props.items[index][props.primaryKeyField!.field];
+	console.log('New index = ', index, 'new key = ', newKey);
+	if (sideDrawerItemKey.value !== newKey) {
+		sideDrawerOpenWritable.value = false;
+		setTimeout(() => {
+			props.onRowClick({ item: props.items[index], event: null });
+		}, 0);
+	}
 }
 
 const mainElement = inject<Ref<Element | undefined>>('main-element');
