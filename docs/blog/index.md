@@ -1,5 +1,7 @@
 ---
 layout: page
+title: Blog
+description: Project tutorials, tips & tricks, and best practices from the Directus team and community.
 ---
 
 <script setup>
