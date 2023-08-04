@@ -106,7 +106,7 @@
 
 [[redirects]]
 	from = "/app/project-settings.html"
-	to = "/user-guide/cloud/project-settings.html"
+	to = "/user-guide/settings/project-settings.html"
 	status = 301
 
 [[redirects]]
@@ -123,3 +123,11 @@
 	from = "/cloud/*"
 	to = "/user-guide/cloud/:splat"
 	status = 301
+
+#####
+##### SDK
+#####
+
+[[redirects]]
+	from = "/reference/sdk"
+	to = "/guides/sdk/getting-started"

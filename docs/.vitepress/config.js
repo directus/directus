@@ -6,10 +6,13 @@ export default defineConfig({
 	base: '/',
 	lang: 'en-US',
 	title: 'Directus Docs',
-	description: 'Directus. An Instant App & API for your SQL Database.',
+	description: 'Explore our resources and powerful data engine to build your projects confidently.',
 	ignoreDeadLinks: true,
 	markdown: {
-		theme: 'material-theme-palenight',
+		theme: {
+			light: 'github-light',
+			dark: 'github-dark',
+		},
 		toc: {
 			level: [2],
 		},
@@ -128,13 +131,17 @@ gtag('config', 'UA-24637628-7');
 			dark: '/logo-dark.svg',
 		},
 		nav: [
-			{ text: 'Docs', link: '/getting-started/quickstart' },
+			{
+				text: 'Developer Reference',
+				link: '/getting-started/quickstart',
+				// Active on every path except for '/', '/user-guide', '/packages'
+				activeMatch: '^\\/(?!$|user-guide|packages).*',
+			},
 			{
 				text: 'User Guide',
 				link: '/user-guide/overview/data-studio-app',
 				activeMatch: '/user-guide',
 			},
-			// { text: 'Cookbook', link: '/cookbook/add-a-recipe', activeMatch: '/cookbook/' },
 			{ text: 'Website', link: 'https://directus.io/' },
 			{ text: 'Cloud', link: 'https://directus.cloud/' },
 			{ text: 'GitHub', link: 'https://github.com/directus/directus' },
@@ -145,14 +152,36 @@ gtag('config', 'UA-24637628-7');
 			indexName: 'directus',
 		},
 		sidebar: {
-			// '/cookbook/': sidebarCookbooks(),
 			'/': sidebar(),
 			'/user-guide/': sidebarUserGuide(),
 			'/packages/': sidebarTypedocs(),
 		},
 		editLink: {
-			pattern: 'https://github.com/directus/directus/edit/main/docs/:path',
+			pattern: ({ filePath }) => {
+				if (filePath.includes('blog/')) {
+					return '/blog/guest-author';
+				} else {
+					return `https://github.com/directus/directus/edit/main/docs/${filePath}`;
+				}
+			},
 		},
+	},
+	transformPageData(pageData) {
+		function setOGImage(asset) {
+			return [
+				['meta', { name: 'og:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:image', content: `https://marketing.directus.app/assets/${asset}?key=card` }],
+				['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+			];
+		}
+
+		if (pageData.frontmatter.type == 'blog-post') {
+			pageData.title = pageData.params.title;
+			pageData.description = pageData.params.summary;
+			pageData.frontmatter.head = setOGImage(pageData.params.image);
+		} else {
+			pageData.frontmatter.head = setOGImage('246e2f8a-98cd-4d54-9907-8927d1b9fb77');
+		}
 	},
 });
 
@@ -225,6 +254,19 @@ function sidebar() {
 				{
 					text: 'Resources',
 					link: '/getting-started/resources',
+				},
+			],
+		},
+		{
+			text: 'Developer Blog',
+			items: [
+				{
+					link: '/blog/',
+					text: 'All Posts',
+				},
+				{
+					link: '/blog/guest-author',
+					text: 'Guest Author',
 				},
 			],
 		},
@@ -330,10 +372,6 @@ function sidebar() {
 					text: 'Files',
 				},
 				{
-					link: '/reference/sdk',
-					text: 'JS-SDK',
-				},
-				{
 					link: '/reference/system/activity',
 					text: 'Activity',
 				},
@@ -432,6 +470,10 @@ function sidebar() {
 			collapsible: true,
 			collapsed: true,
 			items: [
+				{
+					text: 'JavaScript SDK',
+					link: '/guides/sdk/getting-started',
+				},
 				{
 					text: 'Flows',
 					items: [
@@ -625,8 +667,11 @@ function sidebar() {
 					text: 'CLI',
 				},
 				{
-					link: '/self-hosted/sso',
 					text: 'Single Sign-On (SSO)',
+					items: [
+						{ link: '/self-hosted/sso', text: 'Quickstart' },
+						{ link: '/self-hosted/sso-examples', text: 'Examples' },
+					],
 				},
 				{
 					type: 'page',
@@ -790,10 +835,6 @@ function sidebarUserGuide() {
 					link: '/user-guide/cloud/accounts',
 				},
 				{
-					text: 'Project Settings',
-					link: '/user-guide/cloud/project-settings',
-				},
-				{
 					text: 'Glossary',
 					link: '/user-guide/cloud/glossary',
 				},
@@ -805,8 +846,8 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
-					text: 'Settings',
-					link: '/user-guide/settings/settings',
+					text: 'Project Settings',
+					link: '/user-guide/settings/project-settings',
 				},
 				{
 					text: 'Preset and Bookmarks',

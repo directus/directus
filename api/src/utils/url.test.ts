@@ -165,4 +165,32 @@ describe('trailing slash handling', () => {
 		testUrl.setQuery('token', '123123');
 		expect(testUrl.toString()).toStrictEqual('https://example.com/path?foo=bar&token=123123');
 	});
+
+	test('parse an URL and serialize after adding paths with and without trailing slashes', () => {
+		const testUrl = new Url('https://example.com/');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/');
+
+		testUrl.addPath('path');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path');
+
+		testUrl.addPath('path2/');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/path2/');
+
+		testUrl.addPath('/');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/path2/');
+
+		testUrl.addPath('.');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/path2/');
+
+		testUrl.addPath('..');
+		expect(testUrl.toString()).toStrictEqual('https://example.com/path/');
+
+		const testUrl2 = new Url('https://example.com');
+		testUrl2.addPath('./');
+		expect(testUrl2.toString()).toStrictEqual('https://example.com/');
+
+		const testUrl3 = new Url('https://example.com/path');
+		testUrl3.addPath('../');
+		expect(testUrl3.toString()).toStrictEqual('https://example.com/');
+	});
 });

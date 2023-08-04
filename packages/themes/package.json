@@ -1,6 +1,6 @@
 {
 	"name": "@directus/themes",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Themes for Directus",
 	"homepage": "https://directus.io",
 	"sideEffects": false,
