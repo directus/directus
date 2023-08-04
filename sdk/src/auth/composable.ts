@@ -5,9 +5,11 @@ import { request } from '../utils/request.js';
 import type { AuthenticationClient, AuthenticationConfig, AuthenticationData, AuthenticationMode } from './types.js';
 import { memoryStorage } from './utils/memory-storage.js';
 
-const defaultConfigValues = {
+
+const defaultConfigValues: AuthenticationConfig = {
 	msRefreshBeforeExpires: 30000, // 30 seconds
 	autoRefresh: true,
+	credentials: 'include',
 };
 
 /**
@@ -18,19 +20,12 @@ const defaultConfigValues = {
  *
  * @returns A Directus authentication client.
  */
-export const authentication = (mode: AuthenticationMode = 'cookie', config: AuthenticationConfig = {}) => {
+export const authentication = (mode: AuthenticationMode = 'cookie', config: Partial<AuthenticationConfig> = {}) => {
 	return <Schema extends object>(client: DirectusClient<Schema>): AuthenticationClient<Schema> => {
-		config = { ...defaultConfigValues, ...config };
+		const authConfig = { ...defaultConfigValues, ...config };
 		let refreshPromise: Promise<AuthenticationData> | null = null;
 		let refreshTimeout: NodeJS.Timer | null = null;
-		const storage = config.storage ?? memoryStorage();
-
-		const autoRefresh = 'autoRefresh' in config ? config.autoRefresh : defaultConfigValues.autoRefresh;
-
-		const msRefreshBeforeExpires =
-			typeof config.msRefreshBeforeExpires === 'number'
-				? config.msRefreshBeforeExpires
-				: defaultConfigValues.msRefreshBeforeExpires;
+		const storage = authConfig.storage ?? memoryStorage();
 
 		const resetStorage = () => {
 			storage.set({ access_token: null, refresh_token: null, expires: null, expires_at: null });
@@ -52,7 +47,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 				return;
 			}
 
-			if (authData.expires_at < new Date().getTime() + msRefreshBeforeExpires) {
+			if (authData.expires_at < new Date().getTime() + authConfig.msRefreshBeforeExpires) {
 				refresh().catch((_err) => {
 					/* throw err; */
 				});
@@ -66,7 +61,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 			data.expires_at = new Date().getTime() + expires;
 			storage.set(data);
 
-			if (autoRefresh && expires > msRefreshBeforeExpires && expires < Number.MAX_SAFE_INTEGER) {
+			if (authConfig.autoRefresh && expires > authConfig.msRefreshBeforeExpires && expires < Number.MAX_SAFE_INTEGER) {
 				if (refreshTimeout) clearTimeout(refreshTimeout);
 
 				refreshTimeout = setTimeout(() => {
@@ -75,7 +70,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 					refresh().catch((_err) => {
 						/* throw err; */
 					});
-				}, expires - msRefreshBeforeExpires);
+				}, expires - authConfig.msRefreshBeforeExpires);
 			}
 		};
 
@@ -89,6 +84,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Auth
 					headers: {
 						'Content-Type': 'application/json',
 					},
+					credentials: authConfig.credentials,
 				} as RequestInit;
 
 				if (mode === 'json' && authData?.refresh_token) {
