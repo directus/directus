@@ -337,12 +337,23 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const primaryKeys: PrimaryKey[] = [];
 			const nestedActionEvents: ActionEventParams[] = [];
 
-			for (const payload of data) {
+			const pkField = this.schema.collections[this.collection]!.primary;
+
+			for (const [index, payload] of data.entries()) {
+				let checkForSequenceReset = false;
+
+				// if the current item includes a manual PK,
+				// then check to reset the sequence if the next item does not provide a PK or the current item is the last item
+				if (payload[pkField] && (index === data.length - 1 || !data[index + 1]?.[pkField])) {
+					checkForSequenceReset = true;
+				}
+
 				const primaryKey = await service.createOne(payload, {
 					...(opts || {}),
 					autoPurgeCache: false,
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
+					checkForSequenceReset,
 				});
 
 				primaryKeys.push(primaryKey);
