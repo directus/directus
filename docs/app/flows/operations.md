@@ -122,7 +122,8 @@ the original event transaction to the database.
 
 ::: tip Node Modules
 
-For security reasons, module usage is disabled by default. In cases where you really do need specific modules, you may create a custom [operation extension](/extensions/operations).
+For security reasons, module usage is disabled by default. In cases where you really do need specific modules, you may
+create a custom [operation extension](/extensions/operations).
 
 :::
 
