@@ -1,7 +1,5 @@
 import { test, expect } from 'vitest';
 import config from './index.js';
-import logger from '../../logger.js';
-logger.level = 'silent'; // Avoid logging to keep output test related
 
 test('Rejects when Isolate uses more than allowed memory', async () => {
 	const testCode = `
@@ -22,7 +20,6 @@ test('Rejects when Isolate uses more than allowed memory', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).rejects.toThrow('Array buffer allocation failed');
 });
@@ -38,7 +35,6 @@ test('Rejects when operation runs for longer than allowed ', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 500,
 			},
-			logger,
 		} as any)
 	).rejects.toThrow('Script execution timed out.');
 });
@@ -54,7 +50,6 @@ test('Rejects when cjs modules are used', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).rejects.toThrow('require is not defined');
 });
@@ -70,7 +65,6 @@ test('Rejects when esm modules are used', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).rejects.toThrow('Cannot use import statement outside a module [<isolated-vm>:2:3]');
 });
@@ -86,7 +80,6 @@ test('Rejects when code contains syntax errors', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).rejects.toThrow('Unexpected end of input [<isolated-vm>:3:2]');
 });
@@ -104,7 +97,6 @@ test('Rejects when code does something illegal', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).rejects.toThrow('a is not defined');
 });
@@ -120,7 +112,6 @@ test("Rejects when code doesn't return valid function", async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).rejects.toThrow('module.exports is not a function');
 });
@@ -138,7 +129,6 @@ test('Rejects when returned function throws', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).rejects.toThrow('yup, this failed');
 });
@@ -156,7 +146,6 @@ test('Resolves when synchronous function is valid', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).resolves.toEqual({ result: 'Hello, I ran synchronously' });
 });
@@ -174,7 +163,6 @@ test('Resolves when asynchronous function is valid', async () => {
 				FLOWS_MAX_MEMORY_MB: 8,
 				FLOWS_TIMEOUT_MS: 10000,
 			},
-			logger,
 		} as any)
 	).resolves.toEqual({ result: 'Hello, I ran asynchronously' });
 });

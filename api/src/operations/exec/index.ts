@@ -9,7 +9,7 @@ type Options = {
 
 export default defineOperationApi<Options>({
 	id: 'exec',
-	handler: async ({ code }, { data, env, logger }) => {
+	handler: async ({ code }, { data, env }) => {
 		const allowedEnv = data['$env'] ?? {};
 		const isolateSizeMb = env['FLOWS_MAX_MEMORY_MB'];
 		const scriptTimeoutMs = env['FLOWS_TIMEOUT_MS'];
@@ -22,25 +22,14 @@ export default defineOperationApi<Options>({
 		jail.setSync('module', { exports: null }, { copy: true });
 
 		// We run the operation once to define the module.exports function
-		await context.eval(code, { timeout: scriptTimeoutMs }).catch((err: any) => {
-			logger.error(err);
-			throw err;
-		});
+		await context.eval(code, { timeout: scriptTimeoutMs });
 
 		const inputData = new ivm.ExternalCopy({ data });
-		const resultRef = await context
-			.evalClosure(`return module.exports($0.data)`, [inputData.copyInto()], {
-				result: { reference: true, promise: true },
-				timeout: scriptTimeoutMs,
-			})
-			.catch((err: any) => {
-				logger.error(err);
-				throw err;
-			});
-		const result = await resultRef.copy().catch((err: any) => {
-			logger.error(err);
-			throw err;
+		const resultRef = await context.evalClosure(`return module.exports($0.data)`, [inputData.copyInto()], {
+			result: { reference: true, promise: true },
+			timeout: scriptTimeoutMs,
 		});
+		const result = await resultRef.copy();
 
 		// Memory cleanup
 		resultRef.release();
