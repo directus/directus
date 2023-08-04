@@ -5,6 +5,7 @@ import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema-inspector.js';
 import type { Table } from '../types/table.js';
 import { stripQuotes } from '../utils/strip-quotes.js';
+import { unescapeSingleQuotes } from '../utils/unescape-single-quotes.js';
 
 type RawTable = {
 	TABLE_NAME: string;
@@ -75,7 +76,7 @@ export function parseDefaultValue(value: string | null) {
 
 	if (value.trim().toLowerCase() === 'null') return null;
 
-	return stripQuotes(value);
+	return unescapeSingleQuotes(stripQuotes(value));
 }
 
 export default class MSSQL implements SchemaInspector {

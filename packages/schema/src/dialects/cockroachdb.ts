@@ -1,10 +1,11 @@
 import type { Knex } from 'knex';
-import type { SchemaInspector } from '../types/schema-inspector.js';
-import type { Table } from '../types/table.js';
 import type { Column } from '../types/column.js';
 import type { ForeignKey } from '../types/foreign-key.js';
-import { stripQuotes } from '../utils/strip-quotes.js';
 import type { SchemaOverview } from '../types/overview.js';
+import type { SchemaInspector } from '../types/schema-inspector.js';
+import type { Table } from '../types/table.js';
+import { stripQuotes } from '../utils/strip-quotes.js';
+import { unescapeSingleQuotes } from '../utils/unescape-single-quotes.js';
 
 type RawTable = {
 	table_name: string;
@@ -49,7 +50,7 @@ export function parseDefaultValue(value: string | null) {
 
 	if (value?.trim().toLowerCase() === 'null') return null;
 
-	return stripQuotes(value);
+	return unescapeSingleQuotes(stripQuotes(value));
 }
 
 export default class CockroachDB implements SchemaInspector {

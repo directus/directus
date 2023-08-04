@@ -7,6 +7,7 @@ import type { Table } from '../types/table.js';
 import extractMaxLength from '../utils/extract-max-length.js';
 import extractType from '../utils/extract-type.js';
 import { stripQuotes } from '../utils/strip-quotes.js';
+import { unescapeSingleQuotes } from '../utils/unescape-single-quotes.js';
 
 type RawForeignKey = {
 	id: number;
@@ -22,7 +23,7 @@ type RawForeignKey = {
 export function parseDefaultValue(value: string | null): string | null {
 	if (value === null || value.trim().toLowerCase() === 'null') return null;
 
-	return stripQuotes(value);
+	return unescapeSingleQuotes(stripQuotes(value));
 }
 
 export default class SQLite implements SchemaInspector {

@@ -1,10 +1,11 @@
 import type { Knex } from 'knex';
+import type { Column } from '../types/column.js';
 import type { ForeignKey } from '../types/foreign-key.js';
 import type { SchemaOverview } from '../types/overview.js';
 import type { SchemaInspector } from '../types/schema-inspector.js';
 import type { Table } from '../types/table.js';
 import { stripQuotes } from '../utils/strip-quotes.js';
-import type { Column } from '../types/column.js';
+import { unescapeSingleQuotes } from '../utils/unescape-single-quotes.js';
 
 /**
  * NOTE: Use previous optimizer for better data dictionary performance.
@@ -66,7 +67,7 @@ export function parseDefaultValue(value: string | null): string | null {
 	if (value === null || value.trim().toLowerCase() === 'null') return null;
 	if (value === 'CURRENT_TIMESTAMP ') return 'CURRENT_TIMESTAMP';
 
-	return stripQuotes(value);
+	return unescapeSingleQuotes(stripQuotes(value));
 }
 
 export default class oracleDB implements SchemaInspector {
