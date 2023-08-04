@@ -1,5 +1,6 @@
 import { defineOperationApi } from '@directus/utils';
 import { createRequire } from 'node:module';
+
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
 
@@ -25,10 +26,12 @@ export default defineOperationApi<Options>({
 		await context.eval(code, { timeout: scriptTimeoutMs });
 
 		const inputData = new ivm.ExternalCopy({ data });
+
 		const resultRef = await context.evalClosure(`return module.exports($0.data)`, [inputData.copyInto()], {
 			result: { reference: true, promise: true },
 			timeout: scriptTimeoutMs,
 		});
+
 		const result = await resultRef.copy();
 
 		// Memory cleanup

@@ -13,6 +13,7 @@ test('Rejects when Isolate uses more than allowed memory', async () => {
 			storage.push(array);
 		}
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
@@ -28,6 +29,7 @@ test('Rejects when operation runs for longer than allowed ', async () => {
 	const testCode = `
 		while (true) {}
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
@@ -43,6 +45,7 @@ test('Rejects when cjs modules are used', async () => {
 	const testCode = `
 		const test = require('node:fs');
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
@@ -58,6 +61,7 @@ test('Rejects when esm modules are used', async () => {
 	const testCode = `
 		import { readFileSync } from 'node:fs';
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
@@ -73,6 +77,7 @@ test('Rejects when code contains syntax errors', async () => {
 	const testCode = `
 		~~
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
@@ -90,6 +95,7 @@ test('Rejects when code does something illegal', async () => {
 			return a + b;
 		};
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
@@ -105,6 +111,7 @@ test("Rejects when code doesn't return valid function", async () => {
 	const testCode = `
 		module.exports = false;
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
@@ -122,6 +129,7 @@ test('Rejects when returned function throws', async () => {
 			throw new Error('yup, this failed');
 		};
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: {},
@@ -139,6 +147,7 @@ test('Resolves when synchronous function is valid', async () => {
 			return { result: data.greeting + ', I ran synchronously' };
 		};
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: { greeting: 'Hello' },
@@ -156,6 +165,7 @@ test('Resolves when asynchronous function is valid', async () => {
 			return { result: data.greeting + ', I ran asynchronously' };
 		};
 	`;
+
 	await expect(
 		config.handler({ code: testCode }, {
 			data: { greeting: 'Hello' },
