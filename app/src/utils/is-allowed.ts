@@ -1,6 +1,6 @@
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
-import { Filter, FieldFilter, Permission } from '@directus/types';
+import { FieldFilter, Permission } from '@directus/types';
 import { generateJoi } from '@directus/utils';
 
 export function isAllowed(
@@ -32,20 +32,13 @@ export function isAllowed(
 
 	if (!permissionInfo.permissions || Object.keys(permissionInfo.permissions).length === 0) return true;
 
-	return checkPermissions(permissionInfo.permissions);
+	const schema = generateJoi(permissionInfo.permissions as FieldFilter);
 
-	function checkPermissions(permissions: Filter): boolean {
-		if (Object.keys(permissions)[0] === '_and') {
-			const subPermissions = Object.values(permissions)[0] as FieldFilter[];
-			return subPermissions.every((permission) => checkPermissions(permission));
-		} else if (Object.keys(permissions)[0] === '_or') {
-			const subPermissions = Object.values(permissions)[0] as FieldFilter[];
-			return subPermissions.some((permission) => checkPermissions(permission));
-		} else {
-			const schema = generateJoi(permissions as FieldFilter);
+	const { error } = schema.validate(value);
 
-			const { error } = schema.validate(value);
-			return error === undefined;
-		}
+	if (!error) {
+		return true;
 	}
+
+	return false;
 }
