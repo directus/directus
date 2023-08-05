@@ -280,6 +280,8 @@ const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
 const limitWritable = useSync(props, 'limit', emit);
 const sideDrawerOpenWritable = useSync(props, 'sideDrawerOpen', emit);
+const interceptPageLoad = ref<boolean>(false);
+const newItemIndex = ref<number>(0);
 
 async function saveItem(values: Record<string, any>): Promise<void> {
 	try {
@@ -300,21 +302,27 @@ function advanceItem(amount: number) {
 	index += amount;
 	if (index < 0) {
 		if (props.page > 1) {
+			interceptPageLoad.value = true;
+			newItemIndex.value = props.limit - 1;
 			props.toPage(props.page - 1);
-			index = props.limit - 1;
+			console.log('Handoff');
+			return;
 		} else {
 			index = 0;
 		}
 	} else if (index >= props.limit) {
 		if (props.page < props.totalPages) {
+			interceptPageLoad.value = true;
+			newItemIndex.value = 0;
 			props.toPage(props.page + 1);
-			index = 0;
+			console.log('Handoff');
+			return;
 		} else {
 			index = props.limit - 1;
 		}
 	}
 	const newKey = props.items[index][props.primaryKeyField!.field];
-	console.log('New index = ', index, 'new key = ', newKey);
+	console.log('[Normal] New index = ', index, 'new key = ', newKey);
 	if (sideDrawerItemKey.value !== newKey) {
 		sideDrawerOpenWritable.value = false;
 		setTimeout(() => {
@@ -330,6 +338,24 @@ const table = ref<ComponentPublicInstance>();
 watch(
 	() => props.page,
 	() => mainElement?.value?.scrollTo({ top: 0, behavior: 'smooth' })
+);
+
+watch(
+	() => props.items,
+	() => {
+		if (interceptPageLoad.value) {
+			interceptPageLoad.value = false;
+			const index = newItemIndex.value;
+			const newKey = props.items[index][props.primaryKeyField!.field];
+			console.log('[Watch] New index = ', index, 'new key = ', newKey);
+			if (sideDrawerItemKey.value !== newKey) {
+				sideDrawerOpenWritable.value = false;
+				setTimeout(() => {
+					props.onRowClick({ item: props.items[index], event: null });
+				}, 0);
+			}
+		}
+	}
 );
 
 useShortcut(
