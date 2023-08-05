@@ -180,21 +180,21 @@
 		<slot v-else-if="itemCount === 0" name="no-items" />
 
 		<drawer-item
+			ref="itemDrawer"
 			v-model:active="sideDrawerOpenWritable"
 			:collection="collection"
 			:primary-key="sideDrawerItemKey"
 			@input="saveItem"
 		>
 			<template #actions>
-				<v-button v-tooltip.bottom="t('back')" icon rounded @click="advanceItem(-1)">
+				<v-button v-tooltip.bottom="t('back')" icon rounded @click="advanceItem(-1)" :disabled="backDisabled">
 					<v-icon name="navigate_before" />
 				</v-button>
-				<v-button v-tooltip.bottom="t('next')" icon rounded @click="advanceItem(1)">
+				<v-button v-tooltip.bottom="t('next')" icon rounded @click="advanceItem(1)" :disabled="nextDisabled">
 					<v-icon name="navigate_next" />
 				</v-button>
 			</template>
 		</drawer-item>
-
 	</div>
 </template>
 
@@ -220,6 +220,7 @@ import { useI18n } from 'vue-i18n';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
 import api from '@/api';
+import { nextTick } from 'vue';
 
 interface Props {
 	collection: string;
@@ -271,19 +272,34 @@ const props = withDefaults(defineProps<Props>(), {
 	onAlignChange: () => undefined,
 });
 
-const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:limit', 'update:fields', 'update:sideDrawerOpen']);
+const emit = defineEmits([
+	'update:selection',
+	'update:tableHeaders',
+	'update:limit',
+	'update:fields',
+	'update:sideDrawerOpen',
+	'update:sideDrawerItemKey',
+]);
 
 const { t } = useI18n();
-const { collection, sideDrawerItemKey } = toRefs(props);
+const { collection } = toRefs(props);
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
 const limitWritable = useSync(props, 'limit', emit);
 const sideDrawerOpenWritable = useSync(props, 'sideDrawerOpen', emit);
+const sideDrawerItemKey = useSync(props, 'sideDrawerItemKey', emit);
+const itemDrawer = ref();
 const interceptPageLoad = ref<boolean>(false);
 const newItemIndex = ref<number>(0);
 const lastVisitedRow = computed<number>(() => {
 	return props.items.findIndex((item) => item[props.primaryKeyField!.field] === sideDrawerItemKey.value);
+});
+const backDisabled = computed<boolean>(() => {
+	return lastVisitedRow.value === 0 && props.page === 1;
+});
+const nextDisabled = computed<boolean>(() => {
+	return lastVisitedRow.value === props.items.length - 1 && props.page === props.totalPages;
 });
 
 watch(lastVisitedRow, (value) => {
@@ -331,13 +347,15 @@ function advanceItem(amount: number) {
 			index = props.limit - 1;
 		}
 	}
-	const newKey = props.items[index][props.primaryKeyField!.field];
+	const item = props.items[index];
+	const newKey = item[props.primaryKeyField!.field];
+	// console.log('[Advance] Limit = ', props.limit, 'Page = ', props.page, '/ ', props.totalPages);
 	// console.log('[Normal] New index = ', index, 'new key = ', newKey);
 	if (sideDrawerItemKey.value !== newKey) {
-		sideDrawerOpenWritable.value = false;
-		setTimeout(() => {
-			props.onRowClick({ item: props.items[index], event: null });
-		}, 0);
+		sideDrawerItemKey.value = newKey;
+		nextTick(async () => {
+			await itemDrawer.value.fetchItem();
+		});
 	}
 }
 
@@ -355,14 +373,15 @@ watch(
 	() => {
 		if (interceptPageLoad.value) {
 			interceptPageLoad.value = false;
-			const index = newItemIndex.value;
-			const newKey = props.items[index][props.primaryKeyField!.field];
-			// console.log('[Watcher] New index = ', index, 'new key = ', newKey);
+			const item = props.items[newItemIndex.value];
+			const newKey = item[props.primaryKeyField!.field];
+			// console.log('[Watcher] Limit = ', props.limit, 'Page = ', props.page, '/ ', props.totalPages);
+			// console.log('[Watcher] New index = ', newItemIndex.value, 'new key = ', newKey);
 			if (sideDrawerItemKey.value !== newKey) {
-				sideDrawerOpenWritable.value = false;
-				setTimeout(() => {
-					props.onRowClick({ item: props.items[index], event: null });
-				}, 0);
+				sideDrawerItemKey.value = newKey;
+				nextTick(async () => {
+					await itemDrawer.value.fetchItem();
+				});
 			}
 		}
 	}
@@ -421,7 +440,7 @@ function removeField(fieldKey: string) {
  * Copies the values present in the given column to the clipboard
  * @param fieldKey The name of the field
  */
- async function copyValues(fieldKey: string) {
+async function copyValues(fieldKey: string) {
 	function fallbackCopy(text: string) {
 		const textArea = document.createElement('textarea');
 		textArea.value = text;
@@ -477,6 +496,9 @@ function removeField(fieldKey: string) {
 
 		tr.visited > td {
 			background-color: var(--primary-25);
+		}
+		tr.visited:hover > td {
+			background-color: var(--primary-25) !important;
 		}
 	}
 }
