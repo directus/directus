@@ -282,6 +282,19 @@ const limitWritable = useSync(props, 'limit', emit);
 const sideDrawerOpenWritable = useSync(props, 'sideDrawerOpen', emit);
 const interceptPageLoad = ref<boolean>(false);
 const newItemIndex = ref<number>(0);
+const lastVisitedRow = computed<number>(() => {
+	return props.items.findIndex((item) => item[props.primaryKeyField!.field] === sideDrawerItemKey.value);
+});
+
+watch(lastVisitedRow, (value) => {
+	// Remove visited class from all rows
+	const rows = document.querySelectorAll('main > div > .v-table tr.visited');
+	rows.forEach((row) => row.classList.remove('visited'));
+	if (value !== -1) {
+		const row = document.querySelector(`main > div > .v-table tr:not(.fixed):nth-child(${value + 1})`);
+		row?.classList.add('visited');
+	}
+});
 
 async function saveItem(values: Record<string, any>): Promise<void> {
 	try {
@@ -293,9 +306,8 @@ async function saveItem(values: Record<string, any>): Promise<void> {
 	await props.refresh();
 }
 function advanceItem(amount: number) {
-	console.log('advanceItem', amount);
-	let index = props.items.findIndex((item) => item[props.primaryKeyField!.field] === sideDrawerItemKey.value);
-	console.log('Index = ', index, 'key = ', sideDrawerItemKey.value);
+	let index = lastVisitedRow.value;
+	// console.log('[Advance] Index = ', index, 'key = ', sideDrawerItemKey.value);
 	if (index === -1) {
 		return;
 	}
@@ -305,7 +317,6 @@ function advanceItem(amount: number) {
 			interceptPageLoad.value = true;
 			newItemIndex.value = props.limit - 1;
 			props.toPage(props.page - 1);
-			console.log('Handoff');
 			return;
 		} else {
 			index = 0;
@@ -315,14 +326,13 @@ function advanceItem(amount: number) {
 			interceptPageLoad.value = true;
 			newItemIndex.value = 0;
 			props.toPage(props.page + 1);
-			console.log('Handoff');
 			return;
 		} else {
 			index = props.limit - 1;
 		}
 	}
 	const newKey = props.items[index][props.primaryKeyField!.field];
-	console.log('[Normal] New index = ', index, 'new key = ', newKey);
+	// console.log('[Normal] New index = ', index, 'new key = ', newKey);
 	if (sideDrawerItemKey.value !== newKey) {
 		sideDrawerOpenWritable.value = false;
 		setTimeout(() => {
@@ -347,7 +357,7 @@ watch(
 			interceptPageLoad.value = false;
 			const index = newItemIndex.value;
 			const newKey = props.items[index][props.primaryKeyField!.field];
-			console.log('[Watch] New index = ', index, 'new key = ', newKey);
+			// console.log('[Watcher] New index = ', index, 'new key = ', newKey);
 			if (sideDrawerItemKey.value !== newKey) {
 				sideDrawerOpenWritable.value = false;
 				setTimeout(() => {
@@ -463,6 +473,10 @@ function removeField(fieldKey: string) {
 
 		tr {
 			margin-right: var(--content-padding);
+		}
+
+		tr.visited > td {
+			background-color: var(--primary-25);
 		}
 	}
 }
