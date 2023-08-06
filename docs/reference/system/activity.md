@@ -69,6 +69,8 @@ Returns a list of activity actions.
 
 `SEARCH /activity`
 
+If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+
 </template>
 <template #graphql>
 
@@ -84,12 +86,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readActivities } from '@directus/sdk/rest';
+import { createDirectus, rest, readActivities } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readActivities(query));
+const result = await client.request(readActivities( query_object ));
 ```
 
 </template>
@@ -130,8 +131,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readActivities } from '@directus/sdk/rest';
+import { createDirectus, rest, readActivities } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -171,12 +171,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readActivity } from '@directus/sdk/rest';
+import { createDirectus, rest, readActivity } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readActivity('activity_id', query));
+const result = await client.request(readActivity( activity_id , query_object ));
 ```
 
 </template>
@@ -214,8 +213,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readActivity } from '@directus/sdk/rest';
+import { createDirectus, rest, readActivity } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -242,9 +240,9 @@ Creates a new comment on a given item.
 
 ```json
 {
-	"collection": "collection_name",
-	"item": "item_id",
-	"comment": "comment content"
+	"collection": collection_name,
+	"item": item_id,
+	"comment": comment_content
 }
 ```
 
@@ -263,16 +261,15 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createComment } from '@directus/sdk/rest';
+import { createDirectus, rest, createComment } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	createComment({
-		collection: 'collection_name',
-		item: 'item_id',
-		comment: 'value',
+		collection:  collection_name ,
+		item:  item_id ,
+		comment:  comment_content ,
 	})
 );
 ```
@@ -327,8 +324,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createComment } from '@directus/sdk/rest';
+import { createDirectus, rest, createComment } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -357,7 +353,7 @@ Updates an existing comment by activity action primary key.
 
 ```json
 {
-	"comment": "value"
+	"comment": comment_content
 }
 ```
 
@@ -376,14 +372,13 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateComment } from '@directus/sdk/rest';
+import { createDirectus, rest, updateComment } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateComment('comment_id', {
-		comment: 'value',
+	updateComment( comment_id , {
+		comment:  comment_content ,
 	})
 );
 ```
@@ -471,12 +466,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteComment } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteComment } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteComment('comment_id'));
+const result = await client.request(deleteComment( comment_id ));
 ```
 
 </template>
