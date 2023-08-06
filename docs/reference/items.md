@@ -46,6 +46,8 @@ List all items that exist in Directus.
 
 `SEARCH /items/:collection`
 
+If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+
 </template>
 <template #graphql>
 
@@ -61,15 +63,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readItems('collection_name', {
-		query,
-	})
+	readItems('collection_name', query_object )
 );
 ```
 
@@ -121,8 +120,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItems } from '@directus/sdk/rest';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -162,12 +160,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItem } from '@directus/sdk/rest';
+import { createDirectus, rest, readItem } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readItem('collection_name', 'item_id'));
+const result = await client.request(readItem( collection_name ,  item_id ));
 ```
 
 </template>
@@ -203,8 +200,7 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readItem } from '@directus/sdk/rest';
+import { createDirectus, rest, readItem } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -240,12 +236,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readSingleton } from '@directus/sdk/rest';
+import { createDirectus, rest, readSingleton } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readSingleton('collection_name'));
+const result = await client.request(readSingleton( collection_name ));
 ```
 
 </template>
@@ -295,8 +290,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readSingleton } from '@directus/sdk/rest';
+import { createDirectus, rest, readSingleton } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -317,12 +311,7 @@ Create a new item in the given collection.
 
 `POST /items/:collection`
 
-```json
-{
-	"field": "value",
-	"field_2": "value_2"
-}
-```
+Provide an [item object](#the-item-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -339,16 +328,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createItem } from '@directus/sdk/rest';
+import { createDirectus, rest, createItem } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createItem('collection_name', {
-		field: 'value_1',
-		field_2: 'value_2',
-	})
+	createItem( collection_name , item_object )
 );
 ```
 
@@ -361,7 +346,7 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-An array of partial [item objects](#the-item-object).
+A partial [item objects](#the-item-object).
 
 ::: tip Relational Data
 
@@ -406,8 +391,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createItem } from '@directus/sdk/rest';
+import { createDirectus, rest, createItem } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -433,18 +417,7 @@ Create new items in the given collection.
 
 `POST /items/:collection`
 
-```json
-[
-	{
-		"field_1": "value_1",
-		"field_2": "value_2"
-	},
-	{
-		"field_1": "value_3",
-		"field_2": "value_4"
-	}
-]
-```
+Provide an array of [item object](#the-item-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -461,22 +434,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createItems } from '@directus/sdk/rest';
+import { createDirectus, rest, createItems } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createItems('collection_name', [
-		{
-			field_1: 'value_1',
-			field_2: 'value_2',
-		},
-		{
-			field_1: 'value_3',
-			field_2: 'value_4',
-		},
-	])
+	createItems( collection_name , item_object_array )
 );
 ```
 
@@ -538,8 +501,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createItems } from '@directus/sdk/rest';
+import { createDirectus, rest, createItems } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -571,11 +533,7 @@ Update an existing item.
 
 `PATCH /items/:collection/:id`
 
-```json
-{
-	"field": "value"
-}
-```
+Provide a partial [item object](#the-item-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -592,15 +550,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateItem } from '@directus/sdk/rest';
+import { createDirectus, rest, updateItem } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateItem('collection_name', 'item_id', {
-		field: 'value',
-	})
+	updateItem( collection_name ,  item_id , partial_item_object )
 );
 ```
 
@@ -650,8 +605,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateItem } from '@directus/sdk/rest';
+import { createDirectus, rest, updateItem } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -676,11 +630,7 @@ Update a singleton item.
 
 `PATCH /items/:collection`
 
-```json
-{
-	"item_field": "value"
-}
-```
+Provide a partial [item object](#the-item-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -697,15 +647,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateSingleton } from '@directus/sdk/rest';
+import { createDirectus, rest, updateSingleton } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateSingleton('collection_name', {
-		item_field: 'value',
-	})
+	updateSingleton( collection_name , partial_item_object )
 );
 ```
 
@@ -762,8 +709,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateSingleton } from '@directus/sdk/rest';
+import { createDirectus, rest, updateSingleton } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -788,14 +734,7 @@ Update multiple items at the same time.
 
 `PATCH /items/:collection`
 
-```json
-{
-	"keys": ["id_1", "id_2"],
-	"data": {
-		"field": "value"
-	}
-}
-```
+Provide a partial [item object](#the-item-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -812,15 +751,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateItems } from '@directus/sdk/rest';
+import { createDirectus, rest, updateItems } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateItems('collection_name', ['id_1', 'id_2'], {
-		field: 'value',
-	})
+	updateItems( collection_name , item_object_array , partial_item_object )
 );
 ```
 
@@ -873,8 +809,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateItems } from '@directus/sdk/rest';
+import { createDirectus, rest, updateItems } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -914,12 +849,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteItem } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteItem } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteItem('collection_name', 'id'));
+const result = await client.request(deleteItem( collection_name , item_id ));
 ```
 
 </template>
@@ -953,8 +887,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteItem } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteItem } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -972,31 +905,8 @@ Delete multiple existing items.
 <template #rest>
 
 `DELETE /items/:collection`
-
-```json
-// Array
-["key_1", "key_2", "key_3"]
-```
-
-```json
-// Object
-{
-	"field": ["key_1", "key_2", "key_3"]
-}
-```
-
-```json
-// Object containing query
-{
-	"query": {
-		"query_type": {
-			"field_1": {
-				"filter_condition": "value_1"
-			}
-		}
-	}
-}
-```
+ 
+Provide an array of item primary keys or an object containing either `keys` or `query` as your request body. 
 
 </template>
 <template #graphql>
@@ -1013,23 +923,16 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteItems } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteItems } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteItems('collection_name', ['id_1', 'id_2']));
+const result = await client.request(deleteItems( collection_name , [ item_id_1 ,  item_id_2 ]));
 
 //or
 
 const result2 = await client.request(
-	deleteItems('collection_name', {
-		query_type: {
-			field_1: {
-				filter_condition: 'value_1',
-			},
-		},
-	})
+	deleteItems( collection_name , query_object )
 );
 ```
 
@@ -1097,8 +1000,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteItems } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteItems } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
