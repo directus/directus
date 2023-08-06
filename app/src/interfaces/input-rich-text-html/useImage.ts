@@ -156,7 +156,7 @@ export default function useImage(
 		}
 
 		const resizedImageUrl = addQueryToPath(newURL.toString(), queries);
-		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" ${img.lazy ? 'loading="lazy"' : ''} />`;
+		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" ${img.lazy ? 'loading="lazy" ' : ''}/>`;
 		editor.value.selection.setContent(imageHtml);
 		editor.value.undoManager.add();
 		closeImageDrawer();
