@@ -174,15 +174,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
 			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
 
-			// In case of manual string / UUID primary keys, the PK already exists in the object we're saving.
+			// The primary key can already exist in the object we're saving.
+			// In case of manual string / UUID primary keys it's always provided at this point,
+			// and for int primary keys, the user can provide the value manually.
 			let primaryKey = payloadWithTypeCasting[primaryKeyField];
 
-			// If a PK of type number was provided, although the PK is set the auto_increment, the sequence needs to be reset for PostgreSQL to protect future PK collisions.
+			// If a PK of type number was provided, although the PK is set the auto_increment,
+			// the sequence needs to be reset for PostgreSQL to protect future PK collisions.
 			let autoIncrementSequenceNeedsToBeReset = false;
 
 			if (
-				opts.checkForSequenceReset && // if this item is part of a batch, it might not be the last item and hence no need to reset
 				primaryKey &&
+				opts.resetAutoIncrementSequence &&
 				typeof primaryKey === 'number' &&
 				this.schema.collections[this.collection]!.fields[primaryKeyField]!.defaultValue === 'AUTO_INCREMENT'
 			) {
@@ -342,12 +345,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const pkField = this.schema.collections[this.collection]!.primary;
 
 			for (const [index, payload] of data.entries()) {
-				let checkForSequenceReset = false;
+				let resetAutoIncrementSequence = false;
 
-				// if the current item includes a manual PK,
-				// then check to reset the sequence if the next item does not provide a PK or the current item is the last item
+				// the auto_increment sequence needs to be reset if the current item contains a manual PK
+				// and if it's the last item of the batch, or if the next item doesn't include a PK.
 				if (payload[pkField] && (index === data.length - 1 || !data[index + 1]?.[pkField])) {
-					checkForSequenceReset = true;
+					resetAutoIncrementSequence = true;
 				}
 
 				const primaryKey = await service.createOne(payload, {
@@ -355,7 +358,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					autoPurgeCache: false,
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
-					checkForSequenceReset,
+					resetAutoIncrementSequence,
 				});
 
 				primaryKeys.push(primaryKey);
