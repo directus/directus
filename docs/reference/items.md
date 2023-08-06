@@ -756,7 +756,7 @@ import { createDirectus, rest, updateItems } from '@directus/sdk';
 const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateItems( collection_name , item_object_array , partial_item_object )
+	updateItems( collection_name , item_id_array , partial_item_object )
 );
 ```
 
@@ -927,7 +927,7 @@ import { createDirectus, rest, deleteItems } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(deleteItems( collection_name , [ item_id_1 ,  item_id_2 ]));
+const result = await client.request(deleteItems( collection_name , item_id_array ));
 
 //or
 
