@@ -215,6 +215,7 @@ export function getDatabaseClient(database?: Knex): DatabaseClient {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
+		case 'Client_MySQL2':
 		case 'Client_MySQL':
 			return 'mysql';
 		case 'Client_PG':
