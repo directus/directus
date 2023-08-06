@@ -155,6 +155,8 @@ List the available collections.
 
 `SEARCH /collections`
 
+If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+
 </template>
 <template #graphql>
 
@@ -170,10 +172,9 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readCollections } from '@directus/sdk/rest';
+import { createDirectus, rest, readCollections } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(readCollections());
 ```
@@ -217,8 +218,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readCollections } from '@directus/sdk/rest';
+import { createDirectus, rest, readCollections } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -254,12 +254,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, readCollection } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readCollection('collection_name'));
+const result = await client.request(readCollection( collection_name ));
 ```
 
 </template>
@@ -297,8 +296,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, readCollection } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -319,14 +317,7 @@ Create a new Collection. This will create a new table in the database as well.
 
 `POST /collections`
 
-```json
-{
-	"collection": "collection_name",
-	"field": {
-		"sub_field": "value"
-	}
-}
-```
+Provide an [collection object](#the-collection-object) as the body of your request with a `collection` name property being a required field.
 
 </template>
 <template #graphql>
@@ -343,10 +334,9 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, createCollection } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
 	createCollection({
@@ -418,8 +408,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, createCollection } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -447,13 +436,7 @@ Update the metadata for an existing collection.
 
 `PATCH /collections/:collection`
 
-```json
-{
-	"meta": {
-		"field": "value"
-	}
-}
-```
+Provide a partial [collection object](#the-collection-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -470,17 +453,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, updateCollection } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateCollection('collection_name', {
-		meta: {
-			field: 'value',
-		},
-	})
+	updateCollection( collection_name , partial_collection_object )
 );
 ```
 
@@ -532,8 +510,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, updateCollection } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -581,12 +558,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteCollection } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteCollection('collection_name'));
+const result = await client.request(deleteCollection( collection_name ));
 ```
 
 </template>
@@ -616,8 +592,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteCollection } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
