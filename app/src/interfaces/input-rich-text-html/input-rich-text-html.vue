@@ -96,6 +96,10 @@
 								<v-input v-model="imageSelection.height" :disabled="!!imageSelection.transformationKey" />
 							</div>
 						</template>
+						<div class="field half">
+							<div class="type-label">{{ t('wysiwyg_options.lazy_loading') }}</div>
+							<v-checkbox v-model="imageSelection.lazy" block :label="t('wysiwyg_options.lazy_loading_label')" />
+						</div>
 						<div v-if="storageAssetTransform !== 'none' && storageAssetPresets.length > 0" class="field half">
 							<div class="type-label">{{ t('transformation_preset_key') }}</div>
 							<v-select
