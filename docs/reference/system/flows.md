@@ -181,12 +181,11 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, readFlow } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readFlow('flow_id', query));
+const result = await client.request(readFlow( flow_id , query_object ));
 ```
 
 </template>
@@ -226,8 +225,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, readFlow } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -252,13 +250,7 @@ Create a new flow.
 
 `POST /flows`
 
-```json
-{
-	"flow_object_field_1": "value_1",
-	"flow_object_field_2": "value_2",
-	"flow_object_field_3": "value_3"
-}
-```
+Provide an [flow object](#the-flow-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -275,16 +267,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, createFlow } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createFlow({
-		flow_field_1: 'value_1',
-		flow_field_2: 'value_2',
-	})
+	createFlow( flow_object )
 );
 ```
 
@@ -337,8 +325,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, createFlow } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -364,20 +351,7 @@ Create multiple new flows.
 
 `POST /flows`
 
-```json
-[
-	{
-		"flow_1_field_1": "value_1",
-		"flow_1_field_2": "value_2",
-		"flow_1_field_3": "value_3"
-	},
-	{
-		"flow_2_field_1": "value_4",
-		"flow_2_field_2": "value_5",
-		"flow_2_field_3": "value_6"
-	}
-]
-```
+Provide an array of [flow objects](#the-flow-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -394,22 +368,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createFlows } from '@directus/sdk/rest';
+import { createDirectus, rest, createFlows } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createFlows([
-		{
-			flow_1_field_1: 'value_1',
-			flow_1_field_2: 'value_2',
-		},
-		{
-			flow_2_field_1: 'value_3',
-			flow_2_field_2: 'value_4',
-		},
-	])
+	createFlows( flow_object_array )
 );
 ```
 
@@ -474,8 +438,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createFlows } from '@directus/sdk/rest';
+import { createDirectus, rest, createFlows } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -507,11 +470,7 @@ Update an existing flow.
 
 `PATCH /flows/:id`
 
-```json
-{
-	"flow_object_field": "value_1"
-}
-```
+Provide a partial [flow object](#the-flow-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -528,15 +487,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFlow } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateFlow('flow_id', {
-		flow_field: 'value',
-	})
+	updateFlow( flow_id, partial_flow_object )
 );
 ```
 
@@ -586,8 +542,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFlow } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -614,10 +569,8 @@ Update multiple existing flows.
 
 ```json
 {
-	"keys": ["flow_1_key", "flow_2_key"],
-	"data": {
-		"flow_object_field": "value_1"
-	}
+	"keys": flow_id_array,
+	"data": partial_flow_object 
 }
 ```
 
@@ -636,15 +589,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFlows } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFlows } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateFlows(['flow_1_id', 'flow_2_id'], {
-		flow_field: 'value',
-	})
+	updateFlows( flow_id_array, partial_flow_object )
 );
 ```
 
@@ -705,8 +655,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateFlows } from '@directus/sdk/rest';
+import { createDirectus, rest, updateFlows } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -746,12 +695,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFlow } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFlow('flow_id'));
+const result = await client.request(deleteFlow( flow_id ));
 ```
 
 </template>
@@ -785,8 +733,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFlow } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -807,9 +754,7 @@ Delete multiple existing flows.
 
 `DELETE /flows`
 
-```json
-["flow_1_key", "flow_2_key", "flow_3_key"]
-```
+Provide an array of flow ids as your request body. 
 
 </template>
 <template #graphql>
@@ -826,12 +771,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFlows } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFlows } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteFlows(['flow_1_id', 'flow_2_id']));
+const result = await client.request(deleteFlows( flow_id_array ));
 ```
 
 </template>
@@ -879,8 +823,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteFlows } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteFlows } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -907,15 +850,12 @@ Start a flow with GET webhook trigger.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, triggerFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, triggerFlow } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	triggerFlow('GET', 'flow_id', {
-		fields: '*',
-	})
+	triggerFlow( 'GET', flow_id, query_object )
 );
 ```
 
@@ -937,8 +877,7 @@ Result of the flow, if any.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, triggerFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, triggerFlow } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -967,15 +906,12 @@ Start a flow with POST webhook trigger.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, triggerFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, triggerFlow } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	triggerFlow('POST', 'flow_id', {
-		field: 'value', // Payload for webhook
-	})
+	triggerFlow( 'POST', flow_id, webhook_payload )
 );
 ```
 
@@ -1001,8 +937,7 @@ Result of the flow, if any.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, triggerFlow } from '@directus/sdk/rest';
+import { createDirectus, rest, triggerFlow } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
