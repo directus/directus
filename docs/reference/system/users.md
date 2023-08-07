@@ -114,6 +114,8 @@ List all users that exist in Directus.
 
 `SEARCH /users`
 
+If using SEARCH you can provide an [query object](/reference/query) as the body of your request
+
 </template>
 <template #graphql>
 
@@ -129,15 +131,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readUsers } from '@directus/sdk/rest';
+import { createDirectus, rest, readUsers } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readUsers({
-		fields: ['*'],
-	})
+	readUsers( query_object )
 );
 ```
 
@@ -181,8 +180,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readUsers } from '@directus/sdk/rest';
+import { createDirectus, rest, readUsers } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -222,15 +220,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readUser } from '@directus/sdk/rest';
+import { createDirectus, rest, readUser } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readUser('user_id', {
-		fields: ['*'],
-	})
+	readUser( user_id, query_object )
 );
 ```
 
@@ -271,8 +266,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readUser } from '@directus/sdk/rest';
+import { createDirectus, rest, readUser } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -312,15 +306,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readMe } from '@directus/sdk/rest';
+import { createDirectus, rest, readMe } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readMe({
-		fields: ['*'],
-	})
+	readMe( query_object )
 );
 ```
 
@@ -357,8 +348,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readMe } from '@directus/sdk/rest';
+import { createDirectus, rest, readMe } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -383,11 +373,7 @@ Update the authenticated user.
 
 `PATCH /users/me`
 
-```json
-{
-	"user_object_field": "value"
-}
-```
+Provide a partial [user object](#the-user-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -404,15 +390,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateMe } from '@directus/sdk/rest';
+import { createDirectus, rest, updateMe } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateMe({
-		user_field: 'value',
-	})
+	updateMe( partial_user_object )
 );
 ```
 
@@ -457,8 +440,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateMe } from '@directus/sdk/rest';
+import { createDirectus, rest, updateMe } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -483,13 +465,7 @@ Create a new user
 
 `POST /users`
 
-```json
-{
-	"email": "user_email",
-	"password": "user_password",
-	"user_object_field": "value"
-}
-```
+Provide a [user object](#the-user-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -506,16 +482,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createUser } from '@directus/sdk/rest';
+import { createDirectus, rest, createUser } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createUser({
-		email: 'user_email',
-		password: 'user_password',
-	})
+	createUser( user_object )
 );
 ```
 
@@ -583,8 +555,7 @@ could be modified by the user call.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createUser } from '@directus/sdk/rest';
+import { createDirectus, rest, createUser } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -610,20 +581,7 @@ Create multiple new users
 
 `POST /users`
 
-```json
-[
-	{
-		"email": "user_email",
-		"password": "user_password",
-		"user_object_field": "value"
-	},
-	{
-		"email": "user_email",
-		"password": "user_password",
-		"user_object_field": "value"
-	}
-]
-```
+Provide an array of [user objects](#the-user-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -640,22 +598,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createUsers } from '@directus/sdk/rest';
+import { createDirectus, rest, createUsers } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	createUsers([
-		{
-			email: 'user_email',
-			password: 'user_password',
-		},
-		{
-			email: 'user_email',
-			password: 'user_password',
-		},
-	])
+	createUsers( user_object_array )
 );
 ```
 
@@ -737,8 +685,7 @@ could be modified by the user call.
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, createUsers } from '@directus/sdk/rest';
+import { createDirectus, rest, createUsers } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -770,11 +717,7 @@ Update an existing user.
 
 `PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727`
 
-```json
-{
-	"user_object_field": "value"
-}
-```
+Provide a partial [user object](#the-user-object) as the body of your request.
 
 </template>
 <template #graphql>
@@ -791,15 +734,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateUser } from '@directus/sdk/rest';
+import { createDirectus, rest, updateUser } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateUser('user_id', {
-		user_fiels: 'value',
-	})
+	updateUser( user_id, partial_user_object )
 );
 ```
 
@@ -849,8 +789,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateUser } from '@directus/sdk/rest';
+import { createDirectus, rest, updateUser } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -877,10 +816,8 @@ Update multiple existing users.
 
 ```json
 {
-	"keys": ["user_1_key", "user_2_key"],
-	"data": {
-		"user_object_field": "value"
-	}
+	"keys": user_id_array,
+	"data": partial_user_object 
 }
 ```
 
@@ -899,15 +836,12 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateUsers } from '@directus/sdk/rest';
+import { createDirectus, rest, updateUsers } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	updateUsers(['user_1_id', 'user_2_id'], {
-		user_field: 'value',
-	})
+	updateUsers( user_id_array, partial_user_object )
 );
 ```
 
@@ -967,8 +901,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, updateUsers } from '@directus/sdk/rest';
+import { createDirectus, rest, updateUsers } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -1008,12 +941,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteUser } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteUser } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteUser('user_id'));
+const result = await client.request(deleteUser( user_id ));
 ```
 
 </template>
@@ -1047,8 +979,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteUser } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteUser } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -1069,9 +1000,7 @@ Delete multiple existing users.
 
 `DELETE /users`
 
-```json
-["user_1_key", "user_2_key"]
-```
+Provide an array of user ids as the body of your request.
 
 </template>
 <template #graphql>
@@ -1088,12 +1017,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteUsers } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteUsers } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(deleteUsers(['user_1_id', 'user_2_id']));
+const result = await client.request(deleteUsers( user_id_array ));
 ```
 
 </template>
@@ -1133,8 +1061,7 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, deleteUsers } from '@directus/sdk/rest';
+import { createDirectus, rest, deleteUsers } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -1159,8 +1086,8 @@ Invite a new user by email.
 
 ```json
 {
-	"email": "invited_user_email",
-	"role": "invited_user_role"
+	"email": invited_user_email,
+	"role": invited_user_role
 }
 ```
 
@@ -1179,12 +1106,13 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, inviteUser } from '@directus/sdk/rest';
+import { createDirectus, rest, inviteUser } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(inviteUser('invited_user_email', 'invited_user_role'));
+const result = await client.request(
+	inviteUser( invited_user_email,  invited_user_role )
+);
 ```
 
 </template>
@@ -1236,12 +1164,13 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, inviteUser } from '@directus/sdk/rest';
+import { createDirectus, rest, inviteUser } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7'));
+const result = await client.request(
+	inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7')
+);
 ```
 
 </template>
@@ -1262,8 +1191,8 @@ This link includes a token, which is then used to activate the invited user.
 
 ```json
 {
-	"token": "invite_token",
-	"password": "user_password"
+	"token": invite_token,
+	"password": user_password
 }
 ```
 
@@ -1282,12 +1211,13 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, inviteUser } from '@directus/sdk/rest';
+import { createDirectus, rest, acceptUserInvite } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(inviteUser('another@example.com', 'c86c2761-65d3-43c3-897f-6f74ad6a5bd7'));
+const reSUlt = await client.request(
+	acceptUserInvite( invite_token,  user_password )
+);
 ```
 
 </template>
@@ -1332,12 +1262,13 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, acceptUserInvite } from '@directus/sdk/rest';
+import { createDirectus, rest, acceptUserInvite } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(acceptUserInvite('invite_token', 'user_password'));
+const result = await client.request(
+	acceptUserInvite('eyJh...KmUk', 'd1r3ctu5')
+);
 ```
 
 </template>
@@ -1356,7 +1287,7 @@ Generates a secret and returns the URL to be used in an authenticator app.
 
 ```json
 {
-	"password": "user_password"
+	"password": user_password
 }
 ```
 
@@ -1375,12 +1306,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, acceptUserInvite } from '@directus/sdk/rest';
+import { createDirectus, rest, generateTwoFactorSecret } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(acceptUserInvite('eyJh...KmUk', 'd1r3ctu5'));
+const result = await client.request(generateTwoFactorSecret( user_password ));
 ```
 
 </template>
@@ -1430,12 +1360,11 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, generateTwoFactorSecret } from '@directus/sdk/rest';
+import { createDirectus, rest, generateTwoFactorSecret } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(generateTwoFactorSecret('user_password'));
+const result = await client.request(generateTwoFactorSecret('d1r3ctu5'));
 ```
 
 </template>
@@ -1454,8 +1383,8 @@ Adds a TFA secret to the user account.
 
 ```json
 {
-	"otp": "One Time Password",
-	"secret": "Two-Factor_Authorization_secret"
+	"otp": One_Time_Password,
+	"secret": Two-Factor_Authorization_secret
 }
 ```
 
@@ -1474,12 +1403,13 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, generateTwoFactorSecret } from '@directus/sdk/rest';
+import { createDirectus, rest, enableTwoFactor } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(generateTwoFactorSecret('d1r3ctu5'));
+const result = await client.request(
+	enableTwoFactor( secret,  otp )
+);
 ```
 
 </template>
@@ -1526,12 +1456,13 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, enableTwoFactor } from '@directus/sdk/rest';
+import { createDirectus, rest, enableTwoFactor } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(enableTwoFactor('secret', 'otp'));
+const result = await client.request(
+	enableTwoFactor('123456', '3CtiutsNBmY3szHE')
+);
 ```
 
 </template>
@@ -1550,7 +1481,7 @@ Disables two-factor authentication by removing the OTP secret from the user.
 
 ```json
 {
-	"otp": "One-time password"
+	"otp": One-Time_Password
 }
 ```
 
@@ -1569,12 +1500,11 @@ type Mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, enableTwoFactor } from '@directus/sdk/rest';
+import { createDirectus, rest, disableTwoFactor } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(enableTwoFactor('3CtiutsNBmY3szHE', '123456'));
+const result = await client.request(disableTwoFactor( otp ));
 ```
 
 </template>
@@ -1617,10 +1547,9 @@ mutation {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, disableTwoFactor } from '@directus/sdk/rest';
+import { createDirectus, rest, disableTwoFactor } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(disableTwoFactor('591763'));
 ```
