@@ -18,8 +18,8 @@ test('Rejects when Isolate uses more than allowed memory', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).rejects.toThrow('Array buffer allocation failed');
@@ -34,8 +34,8 @@ test('Rejects when operation runs for longer than allowed ', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 500,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 500,
 			},
 		} as any)
 	).rejects.toThrow('Script execution timed out.');
@@ -50,8 +50,8 @@ test('Rejects when cjs modules are used', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).rejects.toThrow('require is not defined');
@@ -66,8 +66,8 @@ test('Rejects when esm modules are used', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).rejects.toThrow('Cannot use import statement outside a module [<isolated-vm>:2:3]');
@@ -82,8 +82,8 @@ test('Rejects when code contains syntax errors', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).rejects.toThrow('Unexpected end of input [<isolated-vm>:3:2]');
@@ -100,8 +100,8 @@ test('Rejects when code does something illegal', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).rejects.toThrow('a is not defined');
@@ -116,8 +116,8 @@ test("Rejects when code doesn't return valid function", async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).rejects.toThrow('module.exports is not a function');
@@ -134,8 +134,8 @@ test('Rejects when returned function throws', async () => {
 		config.handler({ code: testCode }, {
 			data: {},
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).rejects.toThrow('yup, this failed');
@@ -152,8 +152,8 @@ test('Resolves when synchronous function is valid', async () => {
 		config.handler({ code: testCode }, {
 			data: { greeting: 'Hello' },
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).resolves.toEqual({ result: 'Hello, I ran synchronously' });
@@ -170,8 +170,8 @@ test('Resolves when asynchronous function is valid', async () => {
 		config.handler({ code: testCode }, {
 			data: { greeting: 'Hello' },
 			env: {
-				FLOWS_MAX_MEMORY_MB: 8,
-				FLOWS_TIMEOUT_MS: 10000,
+				FLOWS_RUN_SCRIPT_MAX_MEMORY: 8,
+				FLOWS_RUN_SCRIPT_TIMEOUT: 10000,
 			},
 		} as any)
 	).resolves.toEqual({ result: 'Hello, I ran asynchronously' });
