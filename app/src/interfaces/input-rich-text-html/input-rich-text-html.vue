@@ -4,7 +4,7 @@
 			ref="editorElement"
 			v-model="internalValue"
 			:init="editorOptions"
-			:disabled="disabled"
+			:disabled="editorDisabled"
 			model-events="change keydown blur focus paste ExecCommand SetContent"
 			@focusin="setFocus(true)"
 			@focusout="setFocus(false)"
@@ -309,6 +309,14 @@ const internalValue = computed({
 	},
 });
 
+const editorInitialized = ref(false);
+
+const editorDisabled = computed(() => {
+	if (!editorInitialized.value) return false;
+
+	return props.disabled;
+});
+
 watch(
 	() => [props.direction, editorRef],
 	() => {
@@ -433,6 +441,8 @@ function setup(editor: any) {
 		});
 
 		setCount();
+
+		editorInitialized.value = true;
 	});
 
 	editor.on('OpenWindow', function (e: any) {
