@@ -64,6 +64,8 @@ const ratingPercentage = computed(() => ({
 	&.detailed {
 		position: relative;
 		width: min-content;
+		display: inline-flex;
+		height: var(--v-icon-size);
 
 		.active {
 			position: relative;
