@@ -1,68 +1,53 @@
 ---
 description:
-  Get up and running with Directus Cloud in minutes. Learn the basics of building your data model and managing
+  Get up and running with Directus in minutes. Learn the basics of building your data model and managing
   permissions.
 readTime: 7 min read
 ---
 
 # Quickstart Guide
 
-> This quickstart guide is designed to get you up and running with a Directus Project in a snap. Along the way, you will
-> better understand what Directus is, setup your Directus Cloud Account, get a _hands-on introduction_ to the App and
-> API, and find more resources to deep-dive into.
+> This quickstart guide is designed to get you up and running with a Directus Project in a few minutes. Along the way,
+> you will better understand what Directus is, setup your Directus project locally or with Directus Cloud, and get a
+> hands-on introduction to the App and API.
 
-This guide primarily focuses on getting started with Directus Cloud. If you prefer self-hosting, we offer a guide to
-assist you in that process.
+## 1. Create a Project
 
-<Card
-  title="Self-Host Directus"
-  h="2"
-  text="Learn how to run Directus on your own machine and self-host."
-  url="/self-hosted/quickstart"
-  icon="rocket_launch"
-  add-margin
-/>
+:::tabs \
+== Directus Cloud
 
-## 1. Create a Cloud Account and Login
-
-First, you'll need to create an Account and log in on [Directus Cloud](https://directus.cloud/login).
-
-Your Directus Cloud Account allows you to create and manage any number of Projects. We've made life easier by giving you
-the option to create and log in to your Cloud Account automatically with GitHub. If you don't have a GitHub account or
-prefer not to use this login method, email-and-password login is available as well.
+Create and login to your [Directus Cloud account](https://directus.cloud).
 
 The very first time you log in to your Cloud Account, you will be prompted to create a Team. Each Directus Cloud Project
 exists within the scope of one Team. They allow you to organize Team Members, Projects and Project Billing as desired.
 
-Once your Team is created, it's time to create your Directus Cloud Project!
+Create a new project - once started, it should take around 90 seconds for the Cloud Project to created. During this
+time, a link will be sent to the email associated with your Cloud Account. The email will contain your Project URL as
+well as an email and password to login. If you used GitHub to create your account, this will be your GitHub email.
 
-## 2. Create and Access Project
+Login to your new project using the URL in your email inbox or on your Directus Cloud Dashboard.
 
-To create a Project, follow the steps below:
+_Learn more about Directus Cloud Projects in our [User Guide](/user-guide/cloud/projects)._
 
-1. Open the Team Menu in the Dashboard Header and select or create the desired Team.
-2. Navigate to **"Projects"** and click **"Create Project"**.
-3. Set the Project Name and tier.
-4. Scroll to the bottom of the screen and choose the **"Empty Project"** Starting Template.\
-   Note: The **"Demo Project"** adds in dummy data for in-depth feature demonstrations.
-5. Click **"Create Project"**.
+== Self-Hosted Installation
 
-_It should take around 90 seconds for the Cloud Project to build out. During this time, a link will be sent to the email
-associated with your Cloud Account. The email will contain your Project URL as well as an email and password to login.
-If you used GitHub to create your account, this will be your GitHub email. Once the build is complete, it's time log
-in!_
+You will need [Docker](https://docs.docker.com/get-docker/) installed and running on your machine.
 
-6. You can access a Project from within the Cloud Dashboard or type the URL into your browser.
-7. Log in with your username and password from the email.
+Open up your terminal and run the following command:
 
-::: tip Check All Inbox Folders
+```
+docker run \
+-p 8055:8055 \
+-e KEY=replace-with-random-value \
+-e SECRET=replace-with-random-value \
+directus/directus
+```
 
-Due to the algorithms used by some email providers, it is possible the email containing your Project login information
-will end up in another folder like "Social" or "Promotions".
+_Learn more about self-hosting Directus in our [Self-Hosted Quickstart](/self-hosted/quickstart)._
 
 :::
 
-## 3. Create a Collection
+## 2. Create a Collection
 
 Once logged in, you're greeted with the option to create your first
 [Collection](/user-guide/overview/glossary#collections).
@@ -84,7 +69,7 @@ Once logged in, you're greeted with the option to create your first
 
 :::
 
-## 4. Create a Field
+## 3. Create a Field
 
 With your first Collection created, it's time to start adding some [Fields](/user-guide/overview/glossary#fields).
 
@@ -100,7 +85,7 @@ With your first Collection created, it's time to start adding some [Fields](/use
 
 :::
 
-## 5. Create an Item
+## 4. Create an Item
 
 Now that we have a Collection with a Field configured, it's time to add an [Item](/user-guide/overview/glossary#).
 
@@ -116,7 +101,7 @@ Now that we have a Collection with a Field configured, it's time to add an [Item
 
 :::
 
-## 6. Set Roles & Permissions
+## 5. Set Roles & Permissions
 
 Directus comes with two built-in roles: Public and Admin. The Public Role determines what data is returned to
 non-authenticated users. Public comes with all permissions turned off and can be reconfigured with fully granular
@@ -140,14 +125,13 @@ of creating a new Role.
 
 :::
 
-## 7. Connect to the API
+## 6. Connect to the API
 
 Now that your Project has some content in it which is exposed to the Public, it's time to start using this content
 externally! Data can be accessed in a number of ways, including the REST and GraphQL API endpoints. In this case, we'll
 use the `/items/` [REST API endpoint](/reference/items) to retrieve the Item we just created.
 
-1. Open `http://your-project-url.directus.app/items/articles`.\
-   You can use the browser or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud)
+1. Open `http://your-project-url.directus.app/items/articles` in your browser.
 
 _And there it is! The Article Item you just created is being served in beautiful JSON, ready to be used anywhere and
 everywhere!_

@@ -1,5 +1,6 @@
 import { formatTitle } from '@directus/format-title';
 import { defineConfig } from 'vitepress';
+import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import TypeDocSidebar from '../packages/typedoc-sidebar.json';
 
 export default defineConfig({
@@ -15,6 +16,9 @@ export default defineConfig({
 		},
 		toc: {
 			level: [2],
+		},
+		config(md) {
+			md.use(tabsMarkdownPlugin);
 		},
 	},
 	head: [
