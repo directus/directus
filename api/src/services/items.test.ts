@@ -1,4 +1,4 @@
-import type { CollectionsOverview, NestedDeepQuery } from '@directus/types';
+import type { CollectionsOverview, NestedDeepQuery, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
@@ -10,6 +10,7 @@ import { ItemsService } from '../../src/services/index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
 import { InvalidPayloadError } from '../errors/index.js';
+import type { DatabaseClient } from '../types/database.js';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
@@ -108,6 +109,88 @@ describe('Integration Tests', () => {
 			const response = await itemsService.createOne(item, { emitEvents: false });
 
 			expect(response).toBe(item.id.toUpperCase());
+		});
+	});
+
+	describe('reset auto increment sequence', () => {
+		const schema: SchemaOverview = {
+			collections: {
+				test_table: {
+					collection: 'test_table',
+					primary: 'id',
+					singleton: false,
+					note: null,
+					sortField: null,
+					accountability: null,
+					fields: {
+						id: {
+							field: 'id',
+							defaultValue: 'AUTO_INCREMENT',
+							nullable: false,
+							generated: true,
+							type: 'integer',
+							dbType: null,
+							precision: null,
+							scale: null,
+							special: [],
+							note: null,
+							alias: false,
+							validation: null,
+						},
+						name: {
+							field: 'name',
+							defaultValue: null,
+							nullable: false,
+							generated: false,
+							type: 'string',
+							dbType: null,
+							precision: null,
+							scale: null,
+							special: [],
+							note: null,
+							alias: false,
+							validation: null,
+						},
+					},
+				},
+			},
+			relations: [],
+		};
+
+		const dbsWhichDontNeedReset: DatabaseClient[] = ['mysql', 'cockroachdb', 'sqlite', 'oracle', 'mssql', 'redshift'];
+		const dbsWhichNeedReset: DatabaseClient[] = ['postgres'];
+		const item = { id: 42, name: 'random' };
+
+		it.each(dbsWhichDontNeedReset)('should reset the databases auto increment sequence', async (client) => {
+			vi.mocked(getDatabaseClient).mockReturnValue(client);
+
+			tracker.on.select(/select setval.* /).responseOnce(42);
+			tracker.on.insert('test_table').responseOnce(item);
+
+			await new ItemsService('test_table', {
+				knex: db,
+				accountability: null,
+				schema,
+			}).createOne(item, { emitEvents: false });
+
+			expect(tracker.history.select.length).toBe(0);
+			expect(tracker.history.insert.length).toBe(1);
+		});
+
+		it.each(dbsWhichNeedReset)('should reset the databases auto increment sequence', async (client) => {
+			vi.mocked(getDatabaseClient).mockReturnValue(client);
+
+			tracker.on.select(/select setval.* /).responseOnce(42);
+			tracker.on.insert('test_table').responseOnce(item);
+
+			await new ItemsService('test_table', {
+				knex: db,
+				accountability: null,
+				schema,
+			}).createOne(item, { emitEvents: false });
+
+			expect(tracker.history.select.length).toBe(1);
+			expect(tracker.history.insert.length).toBe(1);
 		});
 	});
 

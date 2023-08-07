@@ -183,11 +183,13 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			// the sequence needs to be reset for PostgreSQL to protect future PK collisions.
 			let autoIncrementSequenceNeedsToBeReset = false;
 
+			const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
+
 			if (
 				primaryKey &&
-				opts.resetAutoIncrementSequence &&
-				typeof primaryKey === 'number' &&
-				this.schema.collections[this.collection]!.fields[primaryKeyField]!.defaultValue === 'AUTO_INCREMENT'
+				!opts.bypassAutoIncrementSequenceReset &&
+				pkField!.type === 'integer' &&
+				pkField!.defaultValue === 'AUTO_INCREMENT'
 			) {
 				autoIncrementSequenceNeedsToBeReset = true;
 			}
@@ -201,7 +203,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 				const returnedKey = typeof result === 'object' ? result[primaryKeyField] : result;
 
-				if (this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === 'uuid') {
+				if (pkField!.type === 'uuid') {
 					primaryKey = getHelpers(trx).schema.formatUUID(primaryKey ?? returnedKey);
 				} else {
 					primaryKey = primaryKey ?? returnedKey;
@@ -345,12 +347,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const pkField = this.schema.collections[this.collection]!.primary;
 
 			for (const [index, payload] of data.entries()) {
-				let resetAutoIncrementSequence = false;
+				let bypassAutoIncrementSequenceReset = true;
 
-				// the auto_increment sequence needs to be reset if the current item contains a manual PK
-				// and if it's the last item of the batch, or if the next item doesn't include a PK.
+				// the auto_increment sequence needs to be reset if the current item contains a manual PK and
+				// if it's the last item of the batch or if the next item doesn't include a PK and hence one needs to be generated
 				if (payload[pkField] && (index === data.length - 1 || !data[index + 1]?.[pkField])) {
-					resetAutoIncrementSequence = true;
+					bypassAutoIncrementSequenceReset = false;
 				}
 
 				const primaryKey = await service.createOne(payload, {
@@ -358,7 +360,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					autoPurgeCache: false,
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
-					resetAutoIncrementSequence,
+					bypassAutoIncrementSequenceReset,
 				});
 
 				primaryKeys.push(primaryKey);

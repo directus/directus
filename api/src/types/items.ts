@@ -63,7 +63,7 @@ export type MutationOptions = {
 	 */
 	preMutationError?: DirectusError | undefined;
 
-	resetAutoIncrementSequence?: boolean;
+	bypassAutoIncrementSequenceReset?: boolean;
 };
 
 export type ActionEventParams = {
