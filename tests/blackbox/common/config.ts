@@ -112,7 +112,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		mysql: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',
@@ -123,7 +123,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		mysql5: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',
@@ -134,7 +134,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		maria: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',
@@ -235,7 +235,7 @@ const config: Config = {
 		},
 		mysql: {
 			...directusConfig,
-			DB_CLIENT: 'mysql',
+			DB_CLIENT: 'mysql2',
 			DB_HOST: `127.0.0.1`,
 			DB_PORT: '6102',
 			DB_USER: 'root',
@@ -245,7 +245,7 @@ const config: Config = {
 		},
 		mysql5: {
 			...directusConfig,
-			DB_CLIENT: 'mysql',
+			DB_CLIENT: 'mysql2',
 			DB_HOST: `127.0.0.1`,
 			DB_PORT: '6103',
 			DB_USER: 'root',
@@ -255,7 +255,7 @@ const config: Config = {
 		},
 		maria: {
 			...directusConfig,
-			DB_CLIENT: 'mysql',
+			DB_CLIENT: 'mysql2',
 			DB_HOST: `localhost`,
 			DB_PORT: '6104',
 			DB_USER: 'root',
