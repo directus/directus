@@ -2,7 +2,7 @@ import type { ExtensionManager } from "./extensions.js";
 import { createRequire } from 'node:module';
 import { readFile } from 'fs/promises'
 import { Isolate, Context } from 'isolated-vm';
-import type { ApiExtension, BundleExtension, DatabaseExtension, DatabaseExtensionPermission, HybridExtension } from "@directus/types";
+import type { ApiExtension, BundleExtension, DatabaseExtension, HybridExtension } from "@directus/types";
 import type { VMFunction } from "./vm-functions/vm-function.js";
 import { FetchVMFunction } from "./vm-functions/fetch/node.js";
 import { DefineEndpointVMFunction } from "./vm-functions/defineEndpoint/node.js";

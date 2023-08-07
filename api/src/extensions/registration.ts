@@ -148,9 +148,18 @@ export class RegistrationManager {
 
 		const operations = this.extensionManager
 			.getEnabledExtensions()
-			.filter((extension) => extension.type === 'operation') as HybridExtension[];
+			.filter((extension) => extension.type === 'operation') as (HybridExtension & DatabaseExtension)[];
 
 		for (const operation of operations) {
+
+			if (operation.secure) {
+				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
+
+				this.extensionManager.vm.runExtension(operation, operationPath)
+
+				return
+			}
+
 			try {
 				const operationPath = path.resolve(operation.path, operation.entrypoint.api!);
 

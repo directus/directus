@@ -415,7 +415,6 @@ async function buildBundleExtension({
 }
 
 async function buildExtension(config: RollupConfig | RollupConfig[]) {
-	console.log(config)
 	const configs = Array.isArray(config) ? config : [config];
 
 	const spinner = ora(chalk.bold('Building Directus extension...')).start();

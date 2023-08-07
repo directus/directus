@@ -7,7 +7,6 @@ import {
 } from '@directus/constants';
 import {
 	generateExtensionsEntrypoint,
-	getLocalExtensions,
 	getPackageExtensions,
 	resolvePackageExtensions,
 } from '@directus/utils/node';
