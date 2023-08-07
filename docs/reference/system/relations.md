@@ -142,15 +142,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelations } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelations } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readRelations({
-		fields: ['*'],
-	})
+	readRelations( query_object )
 );
 ```
 
@@ -190,8 +187,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelations } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -238,15 +234,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelationByCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelationByCollection } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readRelationByCollection('collection_name', {
-		fields: ['*'],
-	})
+	readRelationByCollection( collection_name, query_object )
 );
 ```
 
@@ -286,8 +279,7 @@ query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelationByCollection } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelationByCollection } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
@@ -327,15 +319,12 @@ type Query {
 <template #sdk>
 
 ```js
-import { createDirectus } from '@directus/sdk';
-import { rest, readRelation } from '@directus/sdk/rest';
+import { createDirectus, rest, readRelation } from '@directus/sdk';
 
-const client = createDirectus('https://directus.example.com').with(rest());
+const client = createDirectus('directus_project_url').with(rest());
 
 const result = await client.request(
-	readRelation('collection_name', 'field_name', {
-		fields: ['*'],
-	})
+	readRelation( collection_name, field_name, query_object )
 );
 ```
 
