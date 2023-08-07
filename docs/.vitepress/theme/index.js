@@ -1,4 +1,5 @@
 import DefaultTheme from 'vitepress/theme';
+import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client';
 
 import Article from '../components/Article.vue';
 import Button from '../components/Button.vue';
@@ -17,6 +18,7 @@ export default {
 	extends: DefaultTheme,
 	Layout,
 	enhanceApp({ app }) {
+		enhanceAppWithTabs(app);
 		app.component('Article', Article);
 		app.component('Button', Button);
 		app.component('Card', Card);

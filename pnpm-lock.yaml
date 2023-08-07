@@ -953,6 +953,9 @@ importers:
       vitepress:
         specifier: 1.0.0-alpha.75
         version: 1.0.0-alpha.75(@algolia/client-search@4.17.0)
+      vitepress-plugin-tabs:
+        specifier: ^0.3.0
+        version: 0.3.0(vitepress@1.0.0-alpha.75)(vue@3.3.4)
       vue:
         specifier: 3.3.4
         version: 3.3.4
@@ -21922,6 +21925,16 @@ packages:
       sass: 1.62.1
     optionalDependencies:
       fsevents: 2.3.2
+
+  /vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-alpha.75)(vue@3.3.4):
+    resolution: {integrity: sha512-3dKsBuP6PDzcFHgUtNCwwCs3bYoZduj7AcQkT9JfAKTRAKPCNmjiNInPT3IZ7AihL0SJNoQ3liz/e97z8oo+XA==}
+    peerDependencies:
+      vitepress: ^1.0.0-beta.2
+      vue: ^3.3.4
+    dependencies:
+      vitepress: 1.0.0-alpha.75(@algolia/client-search@4.17.0)
+      vue: 3.3.4
+    dev: true
 
   /vitepress@1.0.0-alpha.75(@algolia/client-search@4.17.0):
     resolution: {integrity: sha512-twpPZ/6UnDR8X0Nmj767KwKhXlTQQM9V/J1i2BP9ryO29/w4hpxBfEum6nvfpNhJ4H3h+cIhwzAK/e9crZ6HEQ==}
