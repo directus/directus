@@ -10,7 +10,7 @@ import { ItemsService } from '../../src/services/index.js';
 import { sqlFieldFormatter, sqlFieldList } from '../__utils__/items-utils.js';
 import { systemSchema, userSchema } from '../__utils__/schemas.js';
 import { InvalidPayloadError } from '../errors/index.js';
-import type { DatabaseClient } from '../types/database.js';
+import { DatabaseClients, type DatabaseClient } from '../types/database.js';
 
 vi.mock('../env', async () => {
 	const actual = (await vi.importActual('../env')) as { default: Record<string, any> };
@@ -112,24 +112,24 @@ describe('Integration Tests', () => {
 		});
 	});
 
-	describe('reset auto increment sequence', () => {
+	describe('reset auto increment sequence on manual PK', () => {
 		const schema: SchemaOverview = {
 			collections: {
-				test_table: {
-					collection: 'test_table',
+				author: {
+					collection: 'author',
 					primary: 'id',
 					singleton: false,
 					note: null,
 					sortField: null,
-					accountability: null,
+					accountability: 'all',
 					fields: {
 						id: {
 							field: 'id',
 							defaultValue: 'AUTO_INCREMENT',
 							nullable: false,
-							generated: true,
+							generated: false,
 							type: 'integer',
-							dbType: null,
+							dbType: 'integer',
 							precision: null,
 							scale: null,
 							special: [],
@@ -140,10 +140,10 @@ describe('Integration Tests', () => {
 						name: {
 							field: 'name',
 							defaultValue: null,
-							nullable: false,
+							nullable: true,
 							generated: false,
 							type: 'string',
-							dbType: null,
+							dbType: 'character varying',
 							precision: null,
 							scale: null,
 							special: [],
@@ -161,37 +161,50 @@ describe('Integration Tests', () => {
 		const dbsWhichNeedReset: DatabaseClient[] = ['postgres'];
 		const item = { id: 42, name: 'random' };
 
-		it.each(dbsWhichDontNeedReset)('should reset the databases auto increment sequence', async (client) => {
+		it.each(dbsWhichDontNeedReset)(
+			'should not reset the databases auto increment sequence for %s of the databases',
+			async (client) => {
+				vi.mocked(getDatabaseClient).mockReturnValue(client);
+
+				tracker.on.select(/select setval.* /).responseOnce(42);
+				tracker.on.insert('author').responseOnce(item);
+
+				const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
+				await itemService.createOne(item, { emitEvents: false });
+
+				expect(tracker.history.select.length).toBe(0);
+			}
+		);
+
+		it.each(dbsWhichNeedReset)('should reset the databases auto increment sequence for %s', async (client) => {
 			vi.mocked(getDatabaseClient).mockReturnValue(client);
 
 			tracker.on.select(/select setval.* /).responseOnce(42);
-			tracker.on.insert('test_table').responseOnce(item);
+			tracker.on.insert('author').responseOnce(item);
 
-			await new ItemsService('test_table', {
-				knex: db,
-				accountability: null,
-				schema,
-			}).createOne(item, { emitEvents: false });
-
-			expect(tracker.history.select.length).toBe(0);
-			expect(tracker.history.insert.length).toBe(1);
-		});
-
-		it.each(dbsWhichNeedReset)('should reset the databases auto increment sequence', async (client) => {
-			vi.mocked(getDatabaseClient).mockReturnValue(client);
-
-			tracker.on.select(/select setval.* /).responseOnce(42);
-			tracker.on.insert('test_table').responseOnce(item);
-
-			await new ItemsService('test_table', {
-				knex: db,
-				accountability: null,
-				schema,
-			}).createOne(item, { emitEvents: false });
+			const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
+			await itemService.createOne(item, { emitEvents: false });
 
 			expect(tracker.history.select.length).toBe(1);
-			expect(tracker.history.insert.length).toBe(1);
 		});
+
+		it.each(DatabaseClients)(
+			'should not reset the databases auto increment sequence for %s when PK is not manually provided',
+			async (client) => {
+				const itemWithoutPk = { name: 'John' };
+				vi.mocked(getDatabaseClient).mockReturnValue(client);
+
+				tracker.on.select(/select setval.* /).responseOnce(42);
+				tracker.on.insert('author').response({ ...itemWithoutPk, id: 42 });
+				tracker.on.select('author').responseOnce(42);
+
+				const itemService = new ItemsService('author', { knex: db, accountability: null, schema });
+				await itemService.createOne(itemWithoutPk, { emitEvents: false });
+
+				const resetQueryInHistory = tracker.history.select.find((query) => query.sql.includes('select setval'));
+				expect(resetQueryInHistory).toBe(undefined);
+			}
+		);
 	});
 
 	describe('readOne', () => {
